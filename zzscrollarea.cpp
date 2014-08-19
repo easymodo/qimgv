@@ -40,7 +40,10 @@ void zzScrollArea::mouseMoveEvent(QMouseEvent *event) {
         else {
             this->verticalScrollBar()->setValue(this->verticalScrollBar()->value()+temp.ry());
         }
-
         lastDragPos = event->pos();
     }
+}
+
+void zzScrollArea::wheelEvent(QWheelEvent *event) {
+    event->ignore();
 }

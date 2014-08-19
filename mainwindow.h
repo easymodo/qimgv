@@ -28,6 +28,7 @@ public slots:
     void normalSize();
     void next();
     void prev();
+    void switchFullscreen();
     void changeDir(QString);
     
 public:
@@ -35,6 +36,7 @@ public:
     ~MainWindow();
     
 private:
+    void init();
     void open(QString);
     void createActions();
     void createMenus();
@@ -45,6 +47,7 @@ private:
     QLabel *imgLabel;
     zzScrollArea *scrollArea;
     QMovie *movie;
+    QColor bgColor;
     double scaleFactor;
     bool isGif;
    // int gifFrameCount;
@@ -63,15 +66,18 @@ private:
     QAction *normalSizeAct;
     QAction *fitAllAct;
     QAction *fitWidthAct;
+    QAction *switchFullscreenAct;
     QAction *aboutAct;
     QAction *aboutQtAct;
 
     QMenu *fileMenu;
     QMenu *viewMenu;
+    QMenu *navigationMenu;
     QMenu *helpMenu;
 
 protected:
     void resizeEvent(QResizeEvent *event);
+    void wheelEvent(QWheelEvent *event);
 };
 
 #endif // MAINWINDOW_H

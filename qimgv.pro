@@ -20,3 +20,6 @@ HEADERS  += mainwindow.h \
     zzscrollarea.h
 
 FORMS    +=
+
+RESOURCES += \
+    resources.qrc

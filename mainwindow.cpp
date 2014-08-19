@@ -3,8 +3,17 @@
 
 MainWindow::MainWindow()
 {
+    init();
+    changeDir("C:/Users/Практик/Desktop/share/pics/"); //starting dir
+    setWindowTitle(tr("qimgv 0.04"));
+    resize(800, 650);
+    openDialog();
+}
+
+void MainWindow::init() {
     imgLabel = new QLabel;
-    QPalette bg(QColor(0,0,0,255));
+    bgColor = QColor(20,20,20,255);
+    QPalette bg(bgColor);
     imgLabel->setBackgroundRole(QPalette::Base);
     imgLabel->setAlignment(Qt::AlignCenter);
     imgLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
@@ -24,15 +33,8 @@ MainWindow::MainWindow()
     createActions();
     createMenus();
 
-    changeDir("C:/Users/Практик/Desktop/share/pics/"); //starting dir
-
     filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
     currentDir.setNameFilters(filters);
-
-    setWindowTitle(tr("qimgv 0.01"));
-    resize(650, 500);
-    openDialog();
-
 }
 
 void MainWindow::changeDir(QString path) {
@@ -56,7 +58,6 @@ void MainWindow::open(QString filePath) {
     if (movie->state() != QMovie::NotRunning) {
         movie->stop();
     }
-    updateWindowTitle();
     if(filePath.endsWith(".gif")) {
         movie->setFileName(filePath);
         if(!movie->isValid()) {
@@ -77,12 +78,12 @@ void MainWindow::open(QString filePath) {
             imgLabel->setPixmap(QPixmap::fromImage(image));
         }
     }
+    updateWindowTitle();
     scaleFactor = 1.0;
+    normalSizeAct->setEnabled(true);
     fitAllAct->setEnabled(true);
     fitWidthAct->setEnabled(true);
     updateActions();
-
-    imgLabel->setFixedSize(movie->currentPixmap().size());
     fitImage();
 }
 
@@ -99,15 +100,21 @@ void MainWindow::fitImage() {
     QSize newSize;
 
     if(fitAllAct->isChecked()) {
-        if(aspectRatio>=windowAspectRatio) {
-            newSize.setHeight(scrollArea->size().rheight());
-            newSize.setWidth(scrollArea->size().rheight()/aspectRatio);
+        if(currentSize.height()>scrollArea->size().height()
+                || currentSize.width()>scrollArea->size().width() ) {
+            if(aspectRatio>=windowAspectRatio) {
+                newSize.setHeight(scrollArea->size().rheight());
+                newSize.setWidth(scrollArea->size().rheight()/aspectRatio);
+            }
+            else {
+                newSize.setHeight(scrollArea->size().rwidth()*aspectRatio);
+                newSize.setWidth(scrollArea->size().rwidth());
+            }
+            imgLabel->setFixedSize(newSize);
         }
         else {
-            newSize.setHeight(scrollArea->size().rwidth()*aspectRatio);
-            newSize.setWidth(scrollArea->size().rwidth());
+            imgLabel->setFixedSize(currentSize);
         }
-        imgLabel->setFixedSize(newSize);
     }
     else if(fitWidthAct->isChecked()) {
         newSize.setHeight(scrollArea->size().rwidth()*aspectRatio);
@@ -151,49 +158,66 @@ void MainWindow::normalSize() {
 void MainWindow::createActions() {
     openAct = new QAction(tr("&Open..."), this);
     openAct->setShortcut(tr("Ctrl+O"));
+    this->addAction(openAct);
     connect(openAct, SIGNAL(triggered()), this, SLOT(openDialog()));
+
 
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcut(tr("Alt+X"));
+    this->addAction(exitAct);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
     nextAct = new QAction(tr("N&ext"), this);
     nextAct->setShortcut(Qt::Key_Right);
   //  nextAct->setShortcut(Qt::LeftButton);
     nextAct->setEnabled(true);
+    this->addAction(nextAct);
     connect(nextAct, SIGNAL(triggered()), this, SLOT(next()));
 
     prevAct = new QAction(tr("P&rev"), this);
     prevAct->setShortcut(Qt::Key_Left);
+    this->addAction(prevAct);
     connect(prevAct, SIGNAL(triggered()), this, SLOT(prev()));
 
     zoomInAct = new QAction(tr("Zoom &In (10%)"), this);
-    zoomInAct->setShortcut(tr("Ctrl++"));
+    zoomInAct->setShortcut(Qt::Key_Up);
     zoomInAct->setEnabled(false);
+    this->addAction(zoomInAct);
     connect(zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
 
     zoomOutAct = new QAction(tr("Zoom &Out (10%)"), this);
-    zoomOutAct->setShortcut(tr("Ctrl+-"));
+    zoomOutAct->setShortcut(Qt::Key_Down);
     zoomOutAct->setEnabled(false);
+    this->addAction(zoomOutAct);
     connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
 
     normalSizeAct = new QAction(tr("&Normal Size"), this);
     normalSizeAct->setShortcut(tr("Ctrl+S"));
     normalSizeAct->setEnabled(false);
     normalSizeAct->setCheckable(true);
+    this->addAction(normalSizeAct);
     connect(normalSizeAct, SIGNAL(triggered()), this, SLOT(normalSize()));
 
-    fitAllAct = new QAction(tr("&Fit to window"), this);
+    fitAllAct = new QAction(tr("Fit to window"), this);
     fitAllAct->setEnabled(false);
     fitAllAct->setCheckable(true);
     fitAllAct->setShortcut(tr("Ctrl+F"));
+    this->addAction(fitAllAct);
     connect(fitAllAct, SIGNAL(triggered()), this, SLOT(fitAll()));
 
     fitWidthAct = new QAction(tr("Fit to &width"), this);
     fitWidthAct->setEnabled(false);
     fitWidthAct->setCheckable(true);
     fitWidthAct->setShortcut(tr("Ctrl+W"));
+    this->addAction(fitWidthAct);
     connect(fitWidthAct, SIGNAL(triggered()), this, SLOT(fitWidth()));
+
+    switchFullscreenAct = new QAction(tr("&Fullscreen"), this);
+    switchFullscreenAct->setEnabled(true);
+    switchFullscreenAct->setCheckable(true);
+    switchFullscreenAct->setShortcut(Qt::Key_F);
+    this->addAction(switchFullscreenAct);
+    connect(switchFullscreenAct, SIGNAL(triggered()), this, SLOT(switchFullscreen()));
 
     aboutQtAct = new QAction(tr("About &Qt"), this);
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -209,7 +233,6 @@ void MainWindow::updateActions()
     else {
         zoomInAct->setEnabled(false);
         zoomOutAct->setEnabled(false);
-        normalSizeAct->setEnabled(false);
     }
 }
 
@@ -218,10 +241,9 @@ void MainWindow::createMenus() {
     fileMenu->addAction(openAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
-    fileMenu->addAction(nextAct);
-    fileMenu->addAction(prevAct);
 
     viewMenu = new QMenu(tr("&View"), this);
+    viewMenu->addAction(switchFullscreenAct);
     viewMenu->addAction(zoomInAct);
     viewMenu->addAction(zoomOutAct);
     viewMenu->addSeparator();
@@ -229,13 +251,30 @@ void MainWindow::createMenus() {
     viewMenu->addAction(fitAllAct);
     viewMenu->addAction(fitWidthAct);
 
+    navigationMenu = new QMenu(tr("&Navigate"), this);
+    navigationMenu->addAction(nextAct);
+    navigationMenu->addAction(prevAct);
+
     helpMenu = new QMenu(tr("&Help"), this);
     //helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
 
     menuBar()->addMenu(fileMenu);
     menuBar()->addMenu(viewMenu);
+    menuBar()->addMenu(navigationMenu);
     menuBar()->addMenu(helpMenu);
+}
+
+void MainWindow::switchFullscreen() {
+    if(switchFullscreenAct->isChecked()) {
+        //this->hide();
+        this->showFullScreen();
+        this->menuBar()->hide();
+    }
+    else {
+        this->showNormal();
+        this->menuBar()->show();
+    }
 }
 
 void MainWindow::next() {
@@ -265,7 +304,6 @@ void MainWindow::zoomOut() {
 }
 
 void MainWindow::scaleImage(double factor) {
-  //  Q_ASSERT(imgLabel->pixmap());
     scaleFactor *= factor;
     imgLabel->setFixedSize(imgLabel->size()*factor);
     adjustScrollBar(scrollArea->horizontalScrollBar(), factor);
@@ -289,8 +327,10 @@ void MainWindow::updateWindowTitle() {
         qint64 fsize=fileInfo.size()/1024;
         setWindowTitle(fileInfo.fileName()+" ("+QString::number(fsize)+"KB) - qimgv");
     }
+}
 
-
+void MainWindow::wheelEvent(QWheelEvent *event) {
+    event->angleDelta().ry()>0?prev():next();
 }
 
 MainWindow::~MainWindow()
