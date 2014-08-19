@@ -1,8 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "zzscrollarea.h"
 #include <QMainWindow>
 #include <QDir>
+
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -20,7 +22,9 @@ public slots:
     void openDialog();
     void zoomIn();
     void zoomOut();
-    void fitToWidth();
+    void fitImage();
+    void fitAll();
+    void fitWidth();
     void normalSize();
     void next();
     void prev();
@@ -38,17 +42,16 @@ private:
     void scaleImage(double factor);
     void adjustScrollBar(QScrollBar *scrollBar, double factor);
     QLabel *imgLabel;
+    zzScrollArea *scrollArea;
     QMovie *movie;
-    int gifFrameCount;
+    double scaleFactor;
+    bool isGif;
+   // int gifFrameCount;
     int fileNumber; // # in dir
     QStringList fileList;
     QStringList filters;
-    double scaleFactor;
-    bool isGif;
-    QScrollArea *scrollArea;
     QDir currentDir;
     QFileInfo fileInfo;
-    QFileInfoList list;
 
     QAction *openAct;
     QAction *nextAct;
@@ -57,13 +60,17 @@ private:
     QAction *zoomInAct;
     QAction *zoomOutAct;
     QAction *normalSizeAct;
-    QAction *fitToWidthAct;
+    QAction *fitAllAct;
+    QAction *fitWidthAct;
     QAction *aboutAct;
     QAction *aboutQtAct;
 
     QMenu *fileMenu;
     QMenu *viewMenu;
     QMenu *helpMenu;
+
+protected:
+    void resizeEvent(QResizeEvent *event);
 };
 
 #endif // MAINWINDOW_H
