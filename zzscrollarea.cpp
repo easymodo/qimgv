@@ -44,6 +44,10 @@ void zzScrollArea::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
+void zzScrollArea::mouseDoubleClickEvent(QMouseEvent *event) {
+    emit sendDoubleClick();
+}
+
 void zzScrollArea::wheelEvent(QWheelEvent *event) {
     event->ignore();
 }

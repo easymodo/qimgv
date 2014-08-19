@@ -14,6 +14,8 @@ class QScrollArea;
 class QScrollBar;
 QT_END_NAMESPACE
 
+enum fType { NONE, STATIC, GIF };
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -29,6 +31,7 @@ public slots:
     void next();
     void prev();
     void switchFullscreen();
+    void receiveDoubleClick();
     void changeDir(QString);
     
 public:
@@ -50,8 +53,8 @@ private:
     QColor bgColor;
     double scaleFactor;
     bool isGif;
-   // int gifFrameCount;
-    int fileNumber; // # in dir
+    int fileNumber; // position in directory
+    fType currentImgType;
     QStringList fileList;
     QStringList filters;
     QDir currentDir;

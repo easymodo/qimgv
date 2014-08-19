@@ -14,7 +14,8 @@ public:
     explicit zzScrollArea(QWidget *parent = 0);
     
 signals:
-    
+    void sendDoubleClick();
+
 public slots:
 
 protected:
@@ -22,6 +23,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
 QPoint lastDragPos,temp;
     
 };

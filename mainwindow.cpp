@@ -4,6 +4,7 @@
 MainWindow::MainWindow()
 {
     init();
+    fitAllAct->setChecked(true);
     changeDir("C:/Users/Практик/Desktop/share/pics/"); //starting dir
     setWindowTitle(tr("qimgv 0.04"));
     resize(800, 650);
@@ -12,9 +13,8 @@ MainWindow::MainWindow()
 
 void MainWindow::init() {
     imgLabel = new QLabel;
-    bgColor = QColor(20,20,20,255);
+    bgColor = QColor(25,25,25,255);
     QPalette bg(bgColor);
-    imgLabel->setBackgroundRole(QPalette::Base);
     imgLabel->setAlignment(Qt::AlignCenter);
     imgLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     imgLabel->setScaledContents(true);
@@ -26,6 +26,7 @@ void MainWindow::init() {
     scrollArea->setPalette(bg);
     scrollArea->setFrameShape(QFrame::NoFrame);
     setCentralWidget(scrollArea);
+    connect(scrollArea, SIGNAL(sendDoubleClick()), this, SLOT(receiveDoubleClick()));
 
     movie = new QMovie;
     movie->setCacheMode(QMovie::CacheNone);
@@ -35,11 +36,13 @@ void MainWindow::init() {
 
     filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
     currentDir.setNameFilters(filters);
+    currentImgType = NONE;
 }
 
 void MainWindow::changeDir(QString path) {
     currentDir.setCurrent(path);
     currentDir.setNameFilters(filters);
+    fileList = currentDir.entryList();
     fileNumber = 0;
 }
 
@@ -47,87 +50,87 @@ void MainWindow::openDialog() {
     QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), currentDir.currentPath());
     fileInfo.setFile(filePath);
     changeDir(fileInfo.path());
-    fileList = currentDir.entryList();
     fileNumber = fileList.indexOf(fileInfo.fileName());
     open(filePath);
 }
 
 void MainWindow::open(QString filePath) {
     scrollArea->repaint();
-    isGif=0;
+    currentImgType = NONE;
     if (movie->state() != QMovie::NotRunning) {
         movie->stop();
     }
     if(filePath.endsWith(".gif")) {
         movie->setFileName(filePath);
         if(!movie->isValid()) {
-            QMessageBox::information(this, tr("Image Viewer"), tr("Cannot load image."));
+            currentImgType = NONE;
+            qDebug() << "cant load file";
         }
         else {
             imgLabel->setMovie(movie);
             movie->start();
-            isGif=1;
+            currentImgType = GIF;
         }
     }
     else {
         QImage image(filePath);
         if(image.isNull()) {
-            QMessageBox::information(this, tr("Image Viewer"), tr("Cannot load image."));
+            currentImgType = NONE;
+            qDebug() << "cant load file";
         }
         else {
             imgLabel->setPixmap(QPixmap::fromImage(image));
+            currentImgType = STATIC;
         }
     }
     updateWindowTitle();
     scaleFactor = 1.0;
-    normalSizeAct->setEnabled(true);
-    fitAllAct->setEnabled(true);
-    fitWidthAct->setEnabled(true);
     updateActions();
     fitImage();
 }
 
 void MainWindow::fitImage() {
-    QSize currentSize;
-    if(isGif) {
-        currentSize = movie->currentPixmap().size();
-    }
-    else {
-        currentSize = imgLabel->pixmap()->size();
-    }
-    double aspectRatio = (double)currentSize.rheight()/currentSize.rwidth();
-    double windowAspectRatio = (double)scrollArea->size().rheight()/scrollArea->size().rwidth();
-    QSize newSize;
+    if(currentImgType != NONE) {
+        QSize currentSize;
+        if(currentImgType == GIF) {
+            currentSize = movie->currentPixmap().size();
+        }
+        else {
+            currentSize = imgLabel->pixmap()->size();
+        }
+        double aspectRatio = (double)currentSize.rheight()/currentSize.rwidth();
+        double windowAspectRatio = (double)scrollArea->size().rheight()/scrollArea->size().rwidth();
+        QSize newSize;
 
-    if(fitAllAct->isChecked()) {
-        if(currentSize.height()>scrollArea->size().height()
-                || currentSize.width()>scrollArea->size().width() ) {
-            if(aspectRatio>=windowAspectRatio) {
-                newSize.setHeight(scrollArea->size().rheight());
-                newSize.setWidth(scrollArea->size().rheight()/aspectRatio);
+        if(fitAllAct->isChecked()) {
+            if(currentSize.height()>scrollArea->size().height()
+                    || currentSize.width()>scrollArea->size().width() ) {
+                if(aspectRatio>=windowAspectRatio) {
+                    newSize.setHeight(scrollArea->size().rheight());
+                    newSize.setWidth(scrollArea->size().rheight()/aspectRatio);
+                }
+                else {
+                    newSize.setHeight(scrollArea->size().rwidth()*aspectRatio);
+                    newSize.setWidth(scrollArea->size().rwidth());
+                }
+                imgLabel->setFixedSize(newSize);
             }
             else {
-                newSize.setHeight(scrollArea->size().rwidth()*aspectRatio);
-                newSize.setWidth(scrollArea->size().rwidth());
+                imgLabel->setFixedSize(currentSize);
             }
+        }
+        else if(fitWidthAct->isChecked()) {
+            newSize.setHeight(scrollArea->size().rwidth()*aspectRatio);
+            newSize.setWidth(scrollArea->size().rwidth());
             imgLabel->setFixedSize(newSize);
+        }
+        else if(normalSizeAct->isChecked()) {
+            imgLabel->setFixedSize(currentSize);
         }
         else {
             imgLabel->setFixedSize(currentSize);
         }
     }
-    else if(fitWidthAct->isChecked()) {
-        newSize.setHeight(scrollArea->size().rwidth()*aspectRatio);
-        newSize.setWidth(scrollArea->size().rwidth());
-        imgLabel->setFixedSize(newSize);
-    }
-    else if(normalSizeAct->isChecked()) {
-        imgLabel->setFixedSize(currentSize);
-    }
-    else {
-        imgLabel->setFixedSize(currentSize);
-    }
-    qDebug() << this->size() << scrollArea->size() << imgLabel->size();
 }
 
 void MainWindow::fitAll() {
@@ -221,18 +224,21 @@ void MainWindow::createActions() {
 
     aboutQtAct = new QAction(tr("About &Qt"), this);
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+
+    normalSizeAct->setEnabled(true);
+    fitAllAct->setEnabled(true);
+    fitWidthAct->setEnabled(true);
 }
 
 void MainWindow::updateActions()
 {
-    if(!isGif) {
-        zoomInAct->setEnabled(!fitAllAct->isChecked());
-        zoomOutAct->setEnabled(!fitAllAct->isChecked());
-        normalSizeAct->setEnabled(!fitAllAct->isChecked());
-    }
-    else {
+    if(currentImgType != STATIC) {
         zoomInAct->setEnabled(false);
         zoomOutAct->setEnabled(false);
+    }
+    else {
+        zoomInAct->setEnabled(true);
+        zoomOutAct->setEnabled(true);
     }
 }
 
@@ -265,6 +271,10 @@ void MainWindow::createMenus() {
     menuBar()->addMenu(helpMenu);
 }
 
+void MainWindow::receiveDoubleClick() {
+    this->switchFullscreenAct->trigger();
+}
+
 void MainWindow::switchFullscreen() {
     if(switchFullscreenAct->isChecked()) {
         //this->hide();
@@ -278,21 +288,25 @@ void MainWindow::switchFullscreen() {
 }
 
 void MainWindow::next() {
-    if(++fileNumber>=fileList.length()) {
-        fileNumber=0;
+    if(currentDir.exists() && fileList.length()) {
+        if(++fileNumber>=fileList.length()) {
+            fileNumber=0;
+        }
+        QString fName = currentDir.currentPath()+"/"+fileList.at(fileNumber);
+        fileInfo.setFile(fName);
+        open(fName);
     }
-    QString fName = currentDir.currentPath()+"/"+fileList.at(fileNumber);
-    fileInfo.setFile(fName);
-    open(fName);
 }
 
 void MainWindow::prev() {
-    if(--fileNumber==-1) {
-        fileNumber=fileList.length()-1;
+    if(currentDir.exists() && fileList.length()) {
+        if(--fileNumber==-1) {
+            fileNumber=fileList.length()-1;
+        }
+        QString fName = currentDir.currentPath()+"/"+fileList.at(fileNumber);
+        fileInfo.setFile(fName);
+        open(fName);
     }
-    QString fName = currentDir.currentPath()+"/"+fileList.at(fileNumber);
-    fileInfo.setFile(fName);
-    open(fName);
 }
 
 void MainWindow::zoomIn() {
@@ -319,7 +333,9 @@ void MainWindow::adjustScrollBar(QScrollBar *scrollBar, double factor)
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
     QMainWindow::resizeEvent(event);
-    fitImage();
+    if(currentImgType != NONE) {
+        fitImage();
+    }
 }
 
 void MainWindow::updateWindowTitle() {
