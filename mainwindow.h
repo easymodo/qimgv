@@ -41,6 +41,7 @@ private:
     void updateActions();
     void scaleImage(double factor);
     void adjustScrollBar(QScrollBar *scrollBar, double factor);
+    void updateWindowTitle();
     QLabel *imgLabel;
     zzScrollArea *scrollArea;
     QMovie *movie;

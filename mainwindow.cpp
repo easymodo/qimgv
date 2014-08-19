@@ -56,8 +56,7 @@ void MainWindow::open(QString filePath) {
     if (movie->state() != QMovie::NotRunning) {
         movie->stop();
     }
-    qint64 fsize=fileInfo.size()/1024;
-    setWindowTitle(fileInfo.fileName()+" ("+QString::number(fsize)+"KB) - qimgv");
+    updateWindowTitle();
     if(filePath.endsWith(".gif")) {
         movie->setFileName(filePath);
         if(!movie->isValid()) {
@@ -115,6 +114,9 @@ void MainWindow::fitImage() {
         newSize.setWidth(scrollArea->size().rwidth());
         imgLabel->setFixedSize(newSize);
     }
+    else if(normalSizeAct->isChecked()) {
+        imgLabel->setFixedSize(currentSize);
+    }
     else {
         imgLabel->setFixedSize(currentSize);
     }
@@ -122,17 +124,28 @@ void MainWindow::fitImage() {
 }
 
 void MainWindow::fitAll() {
-    if(fitAllAct->isChecked() && fitWidthAct->isChecked()) {
-        fitWidthAct->trigger();
+    if(fitAllAct->isChecked()) {
+        fitWidthAct->setChecked(false);
+        normalSizeAct->setChecked(false);
     }
     fitImage();
 }
 
 void MainWindow::fitWidth() {
-    if(fitAllAct->isChecked() && fitWidthAct->isChecked()) {
-        fitAllAct->trigger();
+    if(fitWidthAct->isChecked()) {
+        fitAllAct->setChecked(false);
+        normalSizeAct->setChecked(false);
     }
     fitImage();
+}
+
+void MainWindow::normalSize() {
+    if(normalSizeAct->isChecked()) {
+        fitAllAct->setChecked(false);
+        fitWidthAct->setChecked(false);
+    }
+    fitImage();
+    scaleFactor = 1.0;
 }
 
 void MainWindow::createActions() {
@@ -167,6 +180,7 @@ void MainWindow::createActions() {
     normalSizeAct = new QAction(tr("&Normal Size"), this);
     normalSizeAct->setShortcut(tr("Ctrl+S"));
     normalSizeAct->setEnabled(false);
+    normalSizeAct->setCheckable(true);
     connect(normalSizeAct, SIGNAL(triggered()), this, SLOT(normalSize()));
 
     fitAllAct = new QAction(tr("&Fit to window"), this);
@@ -210,8 +224,8 @@ void MainWindow::createMenus() {
     viewMenu = new QMenu(tr("&View"), this);
     viewMenu->addAction(zoomInAct);
     viewMenu->addAction(zoomOutAct);
-    viewMenu->addAction(normalSizeAct);
     viewMenu->addSeparator();
+    viewMenu->addAction(normalSizeAct);
     viewMenu->addAction(fitAllAct);
     viewMenu->addAction(fitWidthAct);
 
@@ -242,11 +256,6 @@ void MainWindow::prev() {
     open(fName);
 }
 
-void MainWindow::normalSize() {
-    imgLabel->adjustSize();
-    scaleFactor = 1.0;
-}
-
 void MainWindow::zoomIn() {
     scaleImage(1.1);
 }
@@ -256,9 +265,9 @@ void MainWindow::zoomOut() {
 }
 
 void MainWindow::scaleImage(double factor) {
-    Q_ASSERT(imgLabel->pixmap());
+  //  Q_ASSERT(imgLabel->pixmap());
     scaleFactor *= factor;
-    imgLabel->resize(scaleFactor * imgLabel->pixmap()->size());
+    imgLabel->setFixedSize(imgLabel->size()*factor);
     adjustScrollBar(scrollArea->horizontalScrollBar(), factor);
     adjustScrollBar(scrollArea->verticalScrollBar(), factor);
     zoomInAct->setEnabled(scaleFactor < 3.0);
@@ -273,6 +282,15 @@ void MainWindow::adjustScrollBar(QScrollBar *scrollBar, double factor)
 void MainWindow::resizeEvent(QResizeEvent *event) {
     QMainWindow::resizeEvent(event);
     fitImage();
+}
+
+void MainWindow::updateWindowTitle() {
+    if(fileInfo.isFile()) {
+        qint64 fsize=fileInfo.size()/1024;
+        setWindowTitle(fileInfo.fileName()+" ("+QString::number(fsize)+"KB) - qimgv");
+    }
+
+
 }
 
 MainWindow::~MainWindow()
