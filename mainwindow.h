@@ -3,10 +3,10 @@
 
 #include "zzscrollarea.h"
 #include "infooverlay.h"
+#include "controlsoverlay.h"
 #include "fileinfo.h"
 #include <QMainWindow>
 #include <QDir>
-
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -15,8 +15,6 @@ class QMenu;
 class QScrollArea;
 class QScrollBar;
 QT_END_NAMESPACE
-
-
 
 class MainWindow : public QMainWindow
 {
@@ -33,8 +31,9 @@ public slots:
     void next();
     void prev();
     void switchFullscreen();
-    void receiveDoubleClick();
+    void triggerFullscreen();
     void changeDir(QString);
+    void minimize();
     
 public:
     MainWindow();
@@ -55,7 +54,6 @@ private:
     QMovie *movie;
     QColor bgColor;
     double scaleFactor;
-    int fileNumber; // position in directory
     QStringList fileList;
     QStringList filters;
     QDir currentDir;
@@ -78,6 +76,7 @@ private:
     QMenu *navigationMenu;
     QMenu *helpMenu;
     infoOverlay *overlay;
+    controlsOverlay *cOverlay;
 
 protected:
     void resizeEvent(QResizeEvent *event);

@@ -16,12 +16,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     zzscrollarea.cpp \
     infooverlay.cpp \
-    fileinfo.cpp
+    fileinfo.cpp \
+    controlsoverlay.cpp
 
 HEADERS  += mainwindow.h \
     zzscrollarea.h \
     infooverlay.h \
-    fileinfo.h
+    fileinfo.h \
+    controlsoverlay.h
 
 FORMS    +=
 

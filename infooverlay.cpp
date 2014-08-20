@@ -5,7 +5,7 @@ infoOverlay::infoOverlay(QWidget *parent) :QWidget(parent) {
     setAttribute(Qt::WA_TransparentForMouseEvents);
     currentText = "No file opened.";
     this->setFixedHeight(30);
-    this->setMinimumWidth(1000);
+    updateSize();
 }
 
 void infoOverlay::paintEvent(QPaintEvent *event) {
@@ -19,8 +19,13 @@ void infoOverlay::paintEvent(QPaintEvent *event) {
 }
 
 void infoOverlay::setText(QString text) {
+    qDebug() << this->parentWidget()->size();
     currentText = text;
     this->update();
+}
+
+void infoOverlay::updateSize() {
+    this->setMinimumWidth(this->parentWidget()->size().rwidth()-60);
 }
 
 

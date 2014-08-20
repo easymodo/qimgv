@@ -28,13 +28,19 @@ void MainWindow::init() {
     scrollArea->setPalette(bg);
     scrollArea->setFrameShape(QFrame::NoFrame);
     setCentralWidget(scrollArea);
-    connect(scrollArea, SIGNAL(sendDoubleClick()), this, SLOT(receiveDoubleClick()));
+    connect(scrollArea, SIGNAL(sendDoubleClick()), this, SLOT(triggerFullscreen()));
 
     movie = new QMovie;
     movie->setCacheMode(QMovie::CacheNone);
 
     overlay = new infoOverlay(centralWidget());
     overlay->setHidden(true);
+
+    cOverlay = new controlsOverlay(centralWidget());
+    cOverlay->setHidden(true);
+    connect(cOverlay, SIGNAL(exitClicked()), this, SLOT(close()));
+    connect(cOverlay, SIGNAL(exitFullscreenClicked()), this, SLOT(triggerFullscreen()));
+    connect(cOverlay, SIGNAL(minimizeClicked()), this, SLOT(minimize()));
 
     createActions();
     createMenus();
@@ -268,7 +274,7 @@ void MainWindow::createMenus() {
     menuBar()->addMenu(helpMenu);
 }
 
-void MainWindow::receiveDoubleClick() {
+void MainWindow::triggerFullscreen() {
     this->switchFullscreenAct->trigger();
 }
 
@@ -277,11 +283,13 @@ void MainWindow::switchFullscreen() {
         //this->hide();
         this->showFullScreen();
         overlay->setHidden(false);
+        cOverlay->setHidden(false);
         this->menuBar()->hide();
     }
     else {
         this->showNormal();
         overlay->setHidden(true);
+        cOverlay->setHidden(true);
         this->menuBar()->show();
     }
 }
@@ -332,6 +340,8 @@ void MainWindow::adjustScrollBar(QScrollBar *scrollBar, double factor)
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
     QMainWindow::resizeEvent(event);
+    overlay->updateSize();
+    cOverlay->updateSize();
     if(fInfo.type != NONE) {
         fitImage();
     }
@@ -347,6 +357,10 @@ void MainWindow::updateInfoOverlay() {
 
 void MainWindow::wheelEvent(QWheelEvent *event) {
     event->angleDelta().ry()>0?prev():next();
+}
+
+void MainWindow::minimize() {
+    this->setWindowState(Qt::WindowMinimized);
 }
 
 MainWindow::~MainWindow()
