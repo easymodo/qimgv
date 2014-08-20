@@ -14,10 +14,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    zzscrollarea.cpp
+    zzscrollarea.cpp \
+    infooverlay.cpp \
+    fileinfo.cpp
 
 HEADERS  += mainwindow.h \
-    zzscrollarea.h
+    zzscrollarea.h \
+    infooverlay.h \
+    fileinfo.h
 
 FORMS    +=
 

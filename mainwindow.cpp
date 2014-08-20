@@ -5,15 +5,17 @@ MainWindow::MainWindow()
 {
     init();
     fitAllAct->setChecked(true);
+
     changeDir("C:/Users/Практик/Desktop/share/pics/"); //starting dir
-    setWindowTitle(tr("qimgv 0.04"));
+    setWindowTitle(tr("qimgv 0.06"));
     resize(800, 650);
+    fInfo.getInfo();
     openDialog();
 }
 
 void MainWindow::init() {
     imgLabel = new QLabel;
-    bgColor = QColor(25,25,25,255);
+    bgColor = QColor(0,0,0,255);
     QPalette bg(bgColor);
     imgLabel->setAlignment(Qt::AlignCenter);
     imgLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
@@ -31,104 +33,100 @@ void MainWindow::init() {
     movie = new QMovie;
     movie->setCacheMode(QMovie::CacheNone);
 
+    overlay = new infoOverlay(centralWidget());
+    overlay->setHidden(true);
+
     createActions();
     createMenus();
 
     filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
     currentDir.setNameFilters(filters);
-    currentImgType = NONE;
 }
 
 void MainWindow::changeDir(QString path) {
     currentDir.setCurrent(path);
     currentDir.setNameFilters(filters);
     fileList = currentDir.entryList();
-    fileNumber = 0;
+    fInfo.fileNumber = 0;
 }
 
 void MainWindow::openDialog() {
     QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), currentDir.currentPath());
-    fileInfo.setFile(filePath);
-    changeDir(fileInfo.path());
-    fileNumber = fileList.indexOf(fileInfo.fileName());
+    fInfo.setFile(&filePath);
+    changeDir(fInfo.qInfo.path());
+    fInfo.fileNumber = fileList.indexOf(fInfo.qInfo.fileName());
     open(filePath);
 }
 
 void MainWindow::open(QString filePath) {
     scrollArea->repaint();
-    currentImgType = NONE;
+    fInfo.type = NONE;
     if (movie->state() != QMovie::NotRunning) {
         movie->stop();
     }
     if(filePath.endsWith(".gif")) {
         movie->setFileName(filePath);
         if(!movie->isValid()) {
-            currentImgType = NONE;
+            fInfo.type = NONE;
             qDebug() << "cant load file";
         }
         else {
             imgLabel->setMovie(movie);
             movie->start();
-            currentImgType = GIF;
+            fInfo.type = GIF;
+            fInfo.setDimensions(movie->currentPixmap().size());
         }
     }
     else {
         QImage image(filePath);
         if(image.isNull()) {
-            currentImgType = NONE;
+            fInfo.type = NONE;
             qDebug() << "cant load file";
         }
         else {
             imgLabel->setPixmap(QPixmap::fromImage(image));
-            currentImgType = STATIC;
+            fInfo.type = STATIC;
+            fInfo.setDimensions(imgLabel->pixmap()->size());
         }
     }
     updateWindowTitle();
+    updateInfoOverlay();
     scaleFactor = 1.0;
     updateActions();
     fitImage();
 }
 
 void MainWindow::fitImage() {
-    if(currentImgType != NONE) {
-        QSize currentSize;
-        if(currentImgType == GIF) {
-            currentSize = movie->currentPixmap().size();
-        }
-        else {
-            currentSize = imgLabel->pixmap()->size();
-        }
-        double aspectRatio = (double)currentSize.rheight()/currentSize.rwidth();
+    if(fInfo.type != NONE) {
         double windowAspectRatio = (double)scrollArea->size().rheight()/scrollArea->size().rwidth();
         QSize newSize;
-
         if(fitAllAct->isChecked()) {
-            if(currentSize.height()>scrollArea->size().height()
-                    || currentSize.width()>scrollArea->size().width() ) {
-                if(aspectRatio>=windowAspectRatio) {
+            if(fInfo.size.height()>scrollArea->size().height()
+                    || fInfo.size.width()>scrollArea->size().width() ) {
+                if(fInfo.aspectRatio>=windowAspectRatio) {
                     newSize.setHeight(scrollArea->size().rheight());
-                    newSize.setWidth(scrollArea->size().rheight()/aspectRatio);
+                    newSize.setWidth(scrollArea->size().rheight()/fInfo.aspectRatio);
                 }
                 else {
-                    newSize.setHeight(scrollArea->size().rwidth()*aspectRatio);
+                    newSize.setHeight(scrollArea->size().rwidth()*fInfo.aspectRatio);
                     newSize.setWidth(scrollArea->size().rwidth());
                 }
                 imgLabel->setFixedSize(newSize);
             }
             else {
-                imgLabel->setFixedSize(currentSize);
+                imgLabel->setFixedSize(fInfo.size);
             }
         }
         else if(fitWidthAct->isChecked()) {
-            newSize.setHeight(scrollArea->size().rwidth()*aspectRatio);
+            newSize.setHeight(scrollArea->size().rwidth()*fInfo.aspectRatio);
             newSize.setWidth(scrollArea->size().rwidth());
             imgLabel->setFixedSize(newSize);
         }
         else if(normalSizeAct->isChecked()) {
-            imgLabel->setFixedSize(currentSize);
+            imgLabel->setFixedSize(fInfo.size);
         }
         else {
-            imgLabel->setFixedSize(currentSize);
+            imgLabel->setFixedSize(fInfo.size);
         }
     }
 }
@@ -172,7 +170,6 @@ void MainWindow::createActions() {
 
     nextAct = new QAction(tr("N&ext"), this);
     nextAct->setShortcut(Qt::Key_Right);
-  //  nextAct->setShortcut(Qt::LeftButton);
     nextAct->setEnabled(true);
     this->addAction(nextAct);
     connect(nextAct, SIGNAL(triggered()), this, SLOT(next()));
@@ -232,7 +229,7 @@ void MainWindow::createActions() {
 
 void MainWindow::updateActions()
 {
-    if(currentImgType != STATIC) {
+    if(fInfo.type != STATIC) {
         zoomInAct->setEnabled(false);
         zoomOutAct->setEnabled(false);
     }
@@ -279,32 +276,34 @@ void MainWindow::switchFullscreen() {
     if(switchFullscreenAct->isChecked()) {
         //this->hide();
         this->showFullScreen();
+        overlay->setHidden(false);
         this->menuBar()->hide();
     }
     else {
         this->showNormal();
+        overlay->setHidden(true);
         this->menuBar()->show();
     }
 }
 
 void MainWindow::next() {
     if(currentDir.exists() && fileList.length()) {
-        if(++fileNumber>=fileList.length()) {
-            fileNumber=0;
+        if(++fInfo.fileNumber>=fileList.length()) {
+            fInfo.fileNumber=0;
         }
-        QString fName = currentDir.currentPath()+"/"+fileList.at(fileNumber);
-        fileInfo.setFile(fName);
+        QString fName = currentDir.currentPath()+"/"+fileList.at(fInfo.fileNumber);
+        fInfo.setFile(&fName);
         open(fName);
     }
 }
 
 void MainWindow::prev() {
     if(currentDir.exists() && fileList.length()) {
-        if(--fileNumber==-1) {
-            fileNumber=fileList.length()-1;
+        if(--fInfo.fileNumber==-1) {
+            fInfo.fileNumber=fileList.length()-1;
         }
-        QString fName = currentDir.currentPath()+"/"+fileList.at(fileNumber);
-        fileInfo.setFile(fName);
+        QString fName = currentDir.currentPath()+"/"+fileList.at(fInfo.fileNumber);
+        fInfo.setFile(&fName);
         open(fName);
     }
 }
@@ -333,16 +332,17 @@ void MainWindow::adjustScrollBar(QScrollBar *scrollBar, double factor)
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
     QMainWindow::resizeEvent(event);
-    if(currentImgType != NONE) {
+    if(fInfo.type != NONE) {
         fitImage();
     }
 }
 
 void MainWindow::updateWindowTitle() {
-    if(fileInfo.isFile()) {
-        qint64 fsize=fileInfo.size()/1024;
-        setWindowTitle(fileInfo.fileName()+" ("+QString::number(fsize)+"KB) - qimgv");
-    }
+    setWindowTitle(fInfo.getInfo()+"[ "+QString::number(fInfo.fileNumber+1)+" / "+QString::number(fileList.length())+" ] - qimgv");
+}
+
+void MainWindow::updateInfoOverlay() {
+    overlay->setText(fInfo.getInfo()+"[ "+QString::number(fInfo.fileNumber+1)+" / "+QString::number(fileList.length())+" ]");
 }
 
 void MainWindow::wheelEvent(QWheelEvent *event) {

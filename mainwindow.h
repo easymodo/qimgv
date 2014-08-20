@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include "zzscrollarea.h"
+#include "infooverlay.h"
+#include "fileinfo.h"
 #include <QMainWindow>
 #include <QDir>
 
@@ -14,7 +16,7 @@ class QScrollArea;
 class QScrollBar;
 QT_END_NAMESPACE
 
-enum fType { NONE, STATIC, GIF };
+
 
 class MainWindow : public QMainWindow
 {
@@ -47,19 +49,17 @@ private:
     void scaleImage(double factor);
     void adjustScrollBar(QScrollBar *scrollBar, double factor);
     void updateWindowTitle();
+    void updateInfoOverlay();
     QLabel *imgLabel;
     zzScrollArea *scrollArea;
     QMovie *movie;
     QColor bgColor;
     double scaleFactor;
-    bool isGif;
     int fileNumber; // position in directory
-    fType currentImgType;
     QStringList fileList;
     QStringList filters;
     QDir currentDir;
-    QFileInfo fileInfo;
-
+    fileInfo fInfo;
     QAction *openAct;
     QAction *nextAct;
     QAction *prevAct;
@@ -77,6 +77,7 @@ private:
     QMenu *viewMenu;
     QMenu *navigationMenu;
     QMenu *helpMenu;
+    infoOverlay *overlay;
 
 protected:
     void resizeEvent(QResizeEvent *event);
