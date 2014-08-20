@@ -5,8 +5,8 @@ MainWindow::MainWindow()
 {
     init();
     fitAllAct->setChecked(true);
-
-    changeDir("C:/Users/Практик/Desktop/share/pics/"); //starting dir
+    changeDir("/home/mitcher/");
+    //changeDir("C:/Users/Практик/Desktop/share/pics/"); //starting dir
     setWindowTitle(tr("qimgv 0.06"));
     resize(800, 650);
     fInfo.getInfo();
@@ -14,7 +14,7 @@ MainWindow::MainWindow()
 }
 
 void MainWindow::init() {
-    imgLabel = new QLabel;
+    imgLabel = new zzLabel();
     bgColor = QColor(0,0,0,255);
     QPalette bg(bgColor);
     imgLabel->setAlignment(Qt::AlignCenter);
@@ -38,9 +38,14 @@ void MainWindow::init() {
 
     cOverlay = new controlsOverlay(centralWidget());
     cOverlay->setHidden(true);
+
+    mOverlay = new mapOverlay(centralWidget());
+
     connect(cOverlay, SIGNAL(exitClicked()), this, SLOT(close()));
     connect(cOverlay, SIGNAL(exitFullscreenClicked()), this, SLOT(triggerFullscreen()));
     connect(cOverlay, SIGNAL(minimizeClicked()), this, SLOT(minimize()));
+    connect(imgLabel, SIGNAL(resized()), this, SLOT(updateMap()));
+    connect(scrollArea, SIGNAL(resized()), this, SLOT(updateMap()));
 
     createActions();
     createMenus();
@@ -57,7 +62,10 @@ void MainWindow::changeDir(QString path) {
 }
 
 void MainWindow::openDialog() {
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), currentDir.currentPath());
+    qDebug() << currentDir.currentPath();
+    QString filePath = QFileDialog::getOpenFileName(this,"Select File","/Users/mitcher/",QString(),0,QFileDialog::DontUseNativeDialog);
+                     //QFileDialog::getOpenFileName(this, tr("Open File"), currentDir.currentPath());
+
     fInfo.setFile(&filePath);
     changeDir(fInfo.qInfo.path());
     fInfo.fileNumber = fileList.indexOf(fInfo.qInfo.fileName());
@@ -265,7 +273,6 @@ void MainWindow::createMenus() {
     navigationMenu->addAction(prevAct);
 
     helpMenu = new QMenu(tr("&Help"), this);
-    //helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
 
     menuBar()->addMenu(fileMenu);
@@ -280,7 +287,6 @@ void MainWindow::triggerFullscreen() {
 
 void MainWindow::switchFullscreen() {
     if(switchFullscreenAct->isChecked()) {
-        //this->hide();
         this->showFullScreen();
         overlay->setHidden(false);
         cOverlay->setHidden(false);
@@ -333,8 +339,7 @@ void MainWindow::scaleImage(double factor) {
     zoomOutAct->setEnabled(scaleFactor > 0.333);
 }
 
-void MainWindow::adjustScrollBar(QScrollBar *scrollBar, double factor)
-{
+void MainWindow::adjustScrollBar(QScrollBar *scrollBar, double factor) {
     scrollBar->setValue(int(factor * scrollBar->value() + ((factor - 1) * scrollBar->pageStep()/2)));
 }
 
@@ -342,9 +347,15 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
     QMainWindow::resizeEvent(event);
     overlay->updateSize();
     cOverlay->updateSize();
+    mOverlay->updateSize();
     if(fInfo.type != NONE) {
         fitImage();
     }
+}
+
+void MainWindow::updateMap() {
+    mOverlay->updateMap(scrollArea->size(),imgLabel->size(),0,0);
+    //qDebug() << imgLabel->size() << scrollArea->size();
 }
 
 void MainWindow::updateWindowTitle() {

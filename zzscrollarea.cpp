@@ -24,9 +24,7 @@ void zzScrollArea::mouseReleaseEvent(QMouseEvent *event) {
 void zzScrollArea::mouseMoveEvent(QMouseEvent *event) {
     if (event->buttons() & Qt::LeftButton)
     {
-        //qDebug() << lastDragPos - event->pos();
         temp = lastDragPos - event->pos();
-        //qDebug() << temp;
         if( (temp.rx()+this->horizontalScrollBar()->value()) > this->horizontalScrollBar()->maximum() ) {
             this->horizontalScrollBar()->setValue(this->horizontalScrollBar()->maximum());
         }
@@ -51,3 +49,11 @@ void zzScrollArea::mouseDoubleClickEvent(QMouseEvent *event) {
 void zzScrollArea::wheelEvent(QWheelEvent *event) {
     event->ignore();
 }
+
+void zzScrollArea::resizeEvent(QResizeEvent *event) {
+    QScrollArea::resizeEvent(event);
+    emit resized();
+}
+
+
+

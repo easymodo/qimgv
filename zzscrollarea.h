@@ -4,6 +4,7 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QMouseEvent>
+#include <QResizeEvent>
 #include <QPoint>
 #include <QDebug>
 
@@ -15,6 +16,7 @@ public:
     
 signals:
     void sendDoubleClick();
+    void resized();
 
 public slots:
 
@@ -24,6 +26,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
+    void resizeEvent(QResizeEvent *event);
 QPoint lastDragPos,temp;
     
 };

@@ -2,8 +2,10 @@
 #define MAINWINDOW_H
 
 #include "zzscrollarea.h"
+#include "zzlabel.h"
 #include "infooverlay.h"
 #include "controlsoverlay.h"
+#include "mapoverlay.h"
 #include "fileinfo.h"
 #include <QMainWindow>
 #include <QDir>
@@ -34,6 +36,7 @@ public slots:
     void triggerFullscreen();
     void changeDir(QString);
     void minimize();
+    void updateMap();
     
 public:
     MainWindow();
@@ -49,7 +52,7 @@ private:
     void adjustScrollBar(QScrollBar *scrollBar, double factor);
     void updateWindowTitle();
     void updateInfoOverlay();
-    QLabel *imgLabel;
+    zzLabel *imgLabel;
     zzScrollArea *scrollArea;
     QMovie *movie;
     QColor bgColor;
@@ -77,6 +80,7 @@ private:
     QMenu *helpMenu;
     infoOverlay *overlay;
     controlsOverlay *cOverlay;
+    mapOverlay *mOverlay;
 
 protected:
     void resizeEvent(QResizeEvent *event);
