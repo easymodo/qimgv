@@ -1,4 +1,4 @@
 qimgv
 =====
 
-another shitty image viewer
+Simple image viewer written in Qt.

@@ -5,12 +5,11 @@ MainWindow::MainWindow()
 {
     init();
     fitAllAct->setChecked(true);
-    //changeDir("/home/mitcher/");
-    changeDir("K://_code/qimgv/sample images/");
-    setWindowTitle(tr("qimgv 0.08"));
+    changeDir("/home/mitcher/Pictures/");
+    //changeDir("K://_code/qimgv/sample images/");
+    setWindowTitle(tr("qimgv 0.1"));
     resize(800, 650);
     fInfo.getInfo();
-    openDialog();
 }
 
 void MainWindow::init() {
@@ -28,7 +27,6 @@ void MainWindow::init() {
     scrollArea->setPalette(bg);
     scrollArea->setFrameShape(QFrame::NoFrame);
     scrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-  //  scrollArea->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     setCentralWidget(scrollArea);
     connect(scrollArea, SIGNAL(sendDoubleClick()), this, SLOT(triggerFullscreen()));
@@ -65,16 +63,14 @@ void MainWindow::changeDir(QString path) {
 }
 
 void MainWindow::openDialog() {
-    QString filePath = QFileDialog::getOpenFileName(this,"Select File","/Users/mitcher/",QString(),0,QFileDialog::DontUseNativeDialog);
-                     //QFileDialog::getOpenFileName(this, tr("Open File"), currentDir.currentPath());
-
-    fInfo.setFile(&filePath);
-    changeDir(fInfo.qInfo.path());
-    fInfo.fileNumber = fileList.indexOf(fInfo.qInfo.fileName());
+    QString filePath = QFileDialog::getOpenFileName(this,tr("Open File"),tr("/home/mitcher/"),tr("Images (*.png *.jpg *jpeg *bmp *gif)"),0,QFileDialog::DontUseNativeDialog);
     open(filePath);
 }
 
 void MainWindow::open(QString filePath) {
+    fInfo.setFile(&filePath);
+    changeDir(fInfo.qInfo.path());
+    fInfo.fileNumber = fileList.indexOf(fInfo.qInfo.fileName());
     scrollArea->repaint();
     fInfo.type = NONE;
     if (movie->state() != QMovie::NotRunning) {
@@ -173,9 +169,24 @@ void MainWindow::normalSize() {
     scaleFactor = 1.0;
 }
 
+void MainWindow::switchFit() {
+    if(fitWidthAct->isChecked()) {
+        fitAllAct->setChecked(true);
+        fitAll();
+    }
+    else if(fitAllAct->isChecked()) {
+        normalSizeAct->setChecked(true);
+        normalSize();
+    }
+    else {
+        fitAllAct->setChecked(true);
+        fitAll();
+    }
+}
+
 void MainWindow::createActions() {
     openAct = new QAction(tr("&Open..."), this);
-    openAct->setShortcut(tr("Ctrl+O"));
+    openAct->setShortcut(Qt::Key_O);
     this->addAction(openAct);
     connect(openAct, SIGNAL(triggered()), this, SLOT(openDialog()));
 
@@ -209,23 +220,23 @@ void MainWindow::createActions() {
     connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
 
     normalSizeAct = new QAction(tr("&Normal Size"), this);
-    normalSizeAct->setShortcut(tr("Ctrl+S"));
+    normalSizeAct->setShortcut(Qt::Key_N);
     normalSizeAct->setEnabled(false);
     normalSizeAct->setCheckable(true);
     this->addAction(normalSizeAct);
     connect(normalSizeAct, SIGNAL(triggered()), this, SLOT(normalSize()));
 
-    fitAllAct = new QAction(tr("Fit to window"), this);
+    fitAllAct = new QAction(tr("Fit all"), this);
     fitAllAct->setEnabled(false);
     fitAllAct->setCheckable(true);
-    fitAllAct->setShortcut(tr("Ctrl+F"));
+    fitAllAct->setShortcut(Qt::Key_A);
     this->addAction(fitAllAct);
     connect(fitAllAct, SIGNAL(triggered()), this, SLOT(fitAll()));
 
-    fitWidthAct = new QAction(tr("Fit to &width"), this);
+    fitWidthAct = new QAction(tr("Fit &width"), this);
     fitWidthAct->setEnabled(false);
     fitWidthAct->setCheckable(true);
-    fitWidthAct->setShortcut(tr("Ctrl+W"));
+    fitWidthAct->setShortcut(Qt::Key_W);
     this->addAction(fitWidthAct);
     connect(fitWidthAct, SIGNAL(triggered()), this, SLOT(fitWidth()));
 
@@ -327,10 +338,16 @@ void MainWindow::prev() {
 }
 
 void MainWindow::zoomIn() {
-    scaleImage(1.1);
+    fitWidthAct->setChecked(false);
+    fitAllAct->setChecked(false);
+    normalSizeAct->setChecked(false);
+    scaleImage(1.25);
 }
 
 void MainWindow::zoomOut() {
+    fitWidthAct->setChecked(false);
+    fitAllAct->setChecked(false);
+    normalSizeAct->setChecked(false);
     scaleImage(0.9);
 }
 
@@ -340,7 +357,7 @@ void MainWindow::scaleImage(double factor) {
     adjustScrollBar(scrollArea->horizontalScrollBar(), factor);
     adjustScrollBar(scrollArea->verticalScrollBar(), factor);
     zoomInAct->setEnabled(scaleFactor < 3.0);
-    zoomOutAct->setEnabled(scaleFactor > 0.333);
+    zoomOutAct->setEnabled(scaleFactor > 0.5);
 }
 
 void MainWindow::adjustScrollBar(QScrollBar *scrollBar, double factor) {
@@ -360,22 +377,37 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 
 void MainWindow::updateMap() {
     if(fInfo.type != NONE) {
-        double scrx;
-        double scry;
-        if(scrollArea->horizontalScrollBar()->maximum()==0) {
-            scrx=0;
+        double xdiff=1.0;
+        double ydiff=1.0;
+        QSize img = imgLabel->size();
+        QSize scr = scrollArea->viewport()->size();
+
+        if(img.width()>scr.width())
+            xdiff=(double)scr.width()/img.width();
+        if(img.height()>scr.height())
+            ydiff=(double)scr.height()/img.height();
+        if(xdiff>=1 && ydiff>=1) {
+            mOverlay->hide();
         }
         else {
-            scrx=(double)scrollArea->horizontalScrollBar()->value()/scrollArea->horizontalScrollBar()->maximum();
+            mOverlay->show();
+            double scrx;
+            double scry;
+            double ar = (double)img.height()/img.width();
+            if(scrollArea->horizontalScrollBar()->maximum()==0) {
+                scrx=0.0;
+            }
+            else {
+                scrx=(double)scrollArea->horizontalScrollBar()->value()/scrollArea->horizontalScrollBar()->maximum();
+            }
+            if(scrollArea->verticalScrollBar()->maximum()==0) {
+                scry=0.0;
+            }
+            else {
+                scry=(double)scrollArea->verticalScrollBar()->value()/scrollArea->verticalScrollBar()->maximum();
+            }
+            mOverlay->updateMap(&xdiff, &ydiff, &scrx, &scry, &ar);
         }
-        if(scrollArea->verticalScrollBar()->maximum()==0) {
-            scry=0;
-        }
-        else {
-            scry=(double)scrollArea->verticalScrollBar()->value()/scrollArea->verticalScrollBar()->maximum();
-        }
-        mOverlay->updateMap(scrollArea->viewport()->size(),imgLabel->size(), scrx, scry);
-        qDebug() << "update" << scrollArea->viewport()->size() << imgLabel->size() << scrx << " " << scry;
     }
 }
 
@@ -389,6 +421,13 @@ void MainWindow::updateInfoOverlay() {
 
 void MainWindow::wheelEvent(QWheelEvent *event) {
     event->angleDelta().ry()>0?prev():next();
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+    QMainWindow::keyPressEvent(event);
+    if(event->key()==Qt::Key_Space) {
+        switchFit();
+    }
 }
 
 void MainWindow::minimize() {

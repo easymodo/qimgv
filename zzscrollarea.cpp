@@ -56,3 +56,7 @@ void zzScrollArea::resizeEvent(QResizeEvent *event) {
     emit resized();
 }
 
+void zzScrollArea::keyPressEvent(QKeyEvent *event) {
+    event->ignore();
+}
+

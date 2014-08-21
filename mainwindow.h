@@ -24,11 +24,13 @@ class MainWindow : public QMainWindow
 
 public slots:
     void openDialog();
+    void open(QString);
     void zoomIn();
     void zoomOut();
     void fitImage();
     void fitAll();
     void fitWidth();
+    void switchFit();
     void normalSize();
     void next();
     void prev();
@@ -44,7 +46,6 @@ public:
     
 private:
     void init();
-    void open(QString);
     void createActions();
     void createMenus();
     void updateActions();
@@ -52,6 +53,7 @@ private:
     void adjustScrollBar(QScrollBar *scrollBar, double factor);
     void updateWindowTitle();
     void updateInfoOverlay();
+    void keyPressEvent(QKeyEvent *event);
     zzLabel *imgLabel;
     zzScrollArea *scrollArea;
     QMovie *movie;

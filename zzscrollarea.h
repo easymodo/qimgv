@@ -5,6 +5,7 @@
 #include <QScrollBar>
 #include <QMouseEvent>
 #include <QResizeEvent>
+#include <QKeyEvent>
 #include <QPoint>
 #include <QDebug>
 
@@ -28,6 +29,7 @@ protected:
     void wheelEvent(QWheelEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void resizeEvent(QResizeEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
 QPoint lastDragPos,temp;
     
