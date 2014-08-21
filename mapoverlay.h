@@ -12,13 +12,14 @@ class mapOverlay : public QWidget
     Q_OBJECT
 public:
     explicit mapOverlay(QWidget *parent = 0);
-    void updateMap(QSize scr, QSize img, int srcx, int scry);
+    void updateMap(QSize scr, QSize img, double scrx, double scry);
     void updateSize();
 
 protected:
     void paintEvent(QPaintEvent *event);
-    QPen pen;
-    QRect outer,inner;
+    QPen penInner, penOuter;
+    QRect *outer,*inner;
+    int mapSize, mapMargin;
 
 signals:
 

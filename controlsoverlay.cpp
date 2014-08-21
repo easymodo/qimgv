@@ -28,7 +28,6 @@ void controlsOverlay::updateSize() {
 
 void controlsOverlay::mouseReleaseEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        qDebug() << event->pos();
         if(event->pos().rx() >=39)
             emit exitClicked();
         if(event->pos().rx() <39 && event->pos().rx() >=19)

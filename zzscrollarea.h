@@ -17,6 +17,7 @@ public:
 signals:
     void sendDoubleClick();
     void resized();
+    void scrollbarChanged();
 
 public slots:
 
@@ -27,6 +28,7 @@ protected:
     void wheelEvent(QWheelEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void resizeEvent(QResizeEvent *event);
+
 QPoint lastDragPos,temp;
     
 };

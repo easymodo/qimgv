@@ -5,9 +5,9 @@ MainWindow::MainWindow()
 {
     init();
     fitAllAct->setChecked(true);
-    changeDir("/home/mitcher/");
-    //changeDir("C:/Users/Практик/Desktop/share/pics/"); //starting dir
-    setWindowTitle(tr("qimgv 0.06"));
+    //changeDir("/home/mitcher/");
+    changeDir("K://_code/qimgv/sample images/");
+    setWindowTitle(tr("qimgv 0.08"));
     resize(800, 650);
     fInfo.getInfo();
     openDialog();
@@ -27,6 +27,9 @@ void MainWindow::init() {
     scrollArea->setAlignment(Qt::AlignCenter);
     scrollArea->setPalette(bg);
     scrollArea->setFrameShape(QFrame::NoFrame);
+    scrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+  //  scrollArea->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
     setCentralWidget(scrollArea);
     connect(scrollArea, SIGNAL(sendDoubleClick()), this, SLOT(triggerFullscreen()));
 
@@ -45,7 +48,7 @@ void MainWindow::init() {
     connect(cOverlay, SIGNAL(exitFullscreenClicked()), this, SLOT(triggerFullscreen()));
     connect(cOverlay, SIGNAL(minimizeClicked()), this, SLOT(minimize()));
     connect(imgLabel, SIGNAL(resized()), this, SLOT(updateMap()));
-    connect(scrollArea, SIGNAL(resized()), this, SLOT(updateMap()));
+    connect(scrollArea, SIGNAL(scrollbarChanged()), this, SLOT(updateMap()));
 
     createActions();
     createMenus();
@@ -62,7 +65,6 @@ void MainWindow::changeDir(QString path) {
 }
 
 void MainWindow::openDialog() {
-    qDebug() << currentDir.currentPath();
     QString filePath = QFileDialog::getOpenFileName(this,"Select File","/Users/mitcher/",QString(),0,QFileDialog::DontUseNativeDialog);
                      //QFileDialog::getOpenFileName(this, tr("Open File"), currentDir.currentPath());
 
@@ -111,6 +113,7 @@ void MainWindow::open(QString filePath) {
 }
 
 void MainWindow::fitImage() {
+   // qDebug() << "fitImage call";
     if(fInfo.type != NONE) {
         double windowAspectRatio = (double)scrollArea->size().rheight()/scrollArea->size().rwidth();
         QSize newSize;
@@ -287,17 +290,18 @@ void MainWindow::triggerFullscreen() {
 
 void MainWindow::switchFullscreen() {
     if(switchFullscreenAct->isChecked()) {
-        this->showFullScreen();
         overlay->setHidden(false);
         cOverlay->setHidden(false);
         this->menuBar()->hide();
+        this->showFullScreen();
     }
     else {
-        this->showNormal();
         overlay->setHidden(true);
         cOverlay->setHidden(true);
         this->menuBar()->show();
+        this->showNormal();
     }
+    updateMap();
 }
 
 void MainWindow::next() {
@@ -348,14 +352,31 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
     overlay->updateSize();
     cOverlay->updateSize();
     mOverlay->updateSize();
+    updateMap();
     if(fInfo.type != NONE) {
         fitImage();
     }
 }
 
 void MainWindow::updateMap() {
-    mOverlay->updateMap(scrollArea->size(),imgLabel->size(),0,0);
-    //qDebug() << imgLabel->size() << scrollArea->size();
+    if(fInfo.type != NONE) {
+        double scrx;
+        double scry;
+        if(scrollArea->horizontalScrollBar()->maximum()==0) {
+            scrx=0;
+        }
+        else {
+            scrx=(double)scrollArea->horizontalScrollBar()->value()/scrollArea->horizontalScrollBar()->maximum();
+        }
+        if(scrollArea->verticalScrollBar()->maximum()==0) {
+            scry=0;
+        }
+        else {
+            scry=(double)scrollArea->verticalScrollBar()->value()/scrollArea->verticalScrollBar()->maximum();
+        }
+        mOverlay->updateMap(scrollArea->viewport()->size(),imgLabel->size(), scrx, scry);
+        qDebug() << "update" << scrollArea->viewport()->size() << imgLabel->size() << scrx << " " << scry;
+    }
 }
 
 void MainWindow::updateWindowTitle() {

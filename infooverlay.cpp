@@ -19,7 +19,6 @@ void infoOverlay::paintEvent(QPaintEvent *event) {
 }
 
 void infoOverlay::setText(QString text) {
-    qDebug() << this->parentWidget()->size();
     currentText = text;
     this->update();
 }

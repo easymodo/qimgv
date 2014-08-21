@@ -39,6 +39,7 @@ void zzScrollArea::mouseMoveEvent(QMouseEvent *event) {
             this->verticalScrollBar()->setValue(this->verticalScrollBar()->value()+temp.ry());
         }
         lastDragPos = event->pos();
+        emit scrollbarChanged();
     }
 }
 
@@ -54,6 +55,4 @@ void zzScrollArea::resizeEvent(QResizeEvent *event) {
     QScrollArea::resizeEvent(event);
     emit resized();
 }
-
-
 
