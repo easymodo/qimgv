@@ -25,20 +25,20 @@ class MainWindow : public QMainWindow
 public slots:
     void openDialog();
     void open(QString);
+    void changeCurrentDir(QString);
     void zoomIn();
     void zoomOut();
     void fitImage();
-    void fitAll();
-    void fitWidth();
-    void switchFit();
-    void normalSize();
+    void fitModeAll();
+    void fitModeWidth();
+    void fitModeNormal();
+    void switchFitMode();
     void next();
     void prev();
     void switchFullscreen();
     void triggerFullscreen();
-    void changeDir(QString);
-    void minimize();
-    void updateMap();
+    void minimizeWindow();
+    void updateMapOverlay();
     
 public:
     MainWindow();
@@ -46,6 +46,8 @@ public:
     
 private:
     void init();
+    void loadMovie(QString*);
+    void loadStaticImage(QString*);
     void createActions();
     void createMenus();
     void updateActions();
@@ -53,6 +55,7 @@ private:
     void adjustScrollBar(QScrollBar *scrollBar, double factor);
     void updateWindowTitle();
     void updateInfoOverlay();
+
     void keyPressEvent(QKeyEvent *event);
     zzLabel *imgLabel;
     zzScrollArea *scrollArea;
@@ -69,10 +72,10 @@ private:
     QAction *exitAct;
     QAction *zoomInAct;
     QAction *zoomOutAct;
-    QAction *normalSizeAct;
-    QAction *fitAllAct;
-    QAction *fitWidthAct;
-    QAction *switchFullscreenAct;
+    QAction *fitModeNormalAct;
+    QAction *fitModeAllAct;
+    QAction *fitModeWidthAct;
+    QAction *fullscreenEnabledAct;
     QAction *aboutAct;
     QAction *aboutQtAct;
 

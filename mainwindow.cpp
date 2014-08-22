@@ -4,10 +4,10 @@
 MainWindow::MainWindow()
 {
     init();
-    fitAllAct->setChecked(true);
-    changeDir("/home/mitcher/Pictures/");
-    //changeDir("K://_code/qimgv/sample images/");
-    setWindowTitle(tr("qimgv 0.1"));
+    fitModeAllAct->setChecked(true);
+    //changeCurrentDir("/home/mitcher/Pictures/");
+    changeCurrentDir("K://_code/sample images/");
+    setWindowTitle(tr("qimgv 0.1.1"));
     resize(800, 650);
     fInfo.getInfo();
 }
@@ -44,9 +44,9 @@ void MainWindow::init() {
 
     connect(cOverlay, SIGNAL(exitClicked()), this, SLOT(close()));
     connect(cOverlay, SIGNAL(exitFullscreenClicked()), this, SLOT(triggerFullscreen()));
-    connect(cOverlay, SIGNAL(minimizeClicked()), this, SLOT(minimize()));
-    connect(imgLabel, SIGNAL(resized()), this, SLOT(updateMap()));
-    connect(scrollArea, SIGNAL(scrollbarChanged()), this, SLOT(updateMap()));
+    connect(cOverlay, SIGNAL(minimizeClicked()), this, SLOT(minimizeWindow()));
+    connect(imgLabel, SIGNAL(resized()), this, SLOT(updateMapOverlay()));
+    connect(scrollArea, SIGNAL(scrollbarChanged()), this, SLOT(updateMapOverlay()));
 
     createActions();
     createMenus();
@@ -55,21 +55,28 @@ void MainWindow::init() {
     currentDir.setNameFilters(filters);
 }
 
-void MainWindow::changeDir(QString path) {
+void MainWindow::changeCurrentDir(QString path) {
     currentDir.setCurrent(path);
     currentDir.setNameFilters(filters);
     fileList = currentDir.entryList();
-    fInfo.fileNumber = 0;
+    fInfo.fileNumber = -1;
 }
 
 void MainWindow::openDialog() {
-    QString filePath = QFileDialog::getOpenFileName(this,tr("Open File"),tr("/home/mitcher/"),tr("Images (*.png *.jpg *jpeg *bmp *gif)"),0,QFileDialog::DontUseNativeDialog);
+    QString filePath = QFileDialog::getOpenFileName(this,tr("Open File"),currentDir.currentPath(),tr("Images (*.png *.jpg *jpeg *bmp *gif)"),0);//,QFileDialog::DontUseNativeDialog);
     open(filePath);
 }
 
+/* opens file specified by argument
+ * stops current movie animation (if any)
+ * loads either new pixmap or movie and places it into imgLabel
+ * updates current fileInfo
+ * updates window title, checkable menu actions
+ * resizes imgLabel according to set fit options
+ */
 void MainWindow::open(QString filePath) {
     fInfo.setFile(&filePath);
-    changeDir(fInfo.qInfo.path());
+    changeCurrentDir(fInfo.qInfo.path());
     fInfo.fileNumber = fileList.indexOf(fInfo.qInfo.fileName());
     scrollArea->repaint();
     fInfo.type = NONE;
@@ -77,29 +84,10 @@ void MainWindow::open(QString filePath) {
         movie->stop();
     }
     if(filePath.endsWith(".gif")) {
-        movie->setFileName(filePath);
-        if(!movie->isValid()) {
-            fInfo.type = NONE;
-            qDebug() << "cant load file";
-        }
-        else {
-            imgLabel->setMovie(movie);
-            movie->start();
-            fInfo.type = GIF;
-            fInfo.setDimensions(movie->currentPixmap().size());
-        }
+        loadMovie(&filePath);
     }
     else {
-        QImage image(filePath);
-        if(image.isNull()) {
-            fInfo.type = NONE;
-            qDebug() << "cant load file";
-        }
-        else {
-            imgLabel->setPixmap(QPixmap::fromImage(image));
-            fInfo.type = STATIC;
-            fInfo.setDimensions(imgLabel->pixmap()->size());
-        }
+        loadStaticImage(&filePath);
     }
     updateWindowTitle();
     updateInfoOverlay();
@@ -108,12 +96,41 @@ void MainWindow::open(QString filePath) {
     fitImage();
 }
 
+void MainWindow::loadMovie(QString *filePath) {
+    movie->setFileName(*filePath);
+    if(!movie->isValid()) {
+        fInfo.type = NONE;
+        qDebug() << "Cannot load file:" +(*filePath);
+    }
+    else {
+        imgLabel->setMovie(movie);
+        movie->start();
+        fInfo.type = GIF;
+        fInfo.setDimensions(movie->currentPixmap().size());
+    }
+}
+
+void MainWindow::loadStaticImage(QString *filePath) {
+    QImage image(*filePath);
+    if(image.isNull()) {
+        fInfo.type = NONE;
+        qDebug() << "Cannot load file:" + (*filePath);
+    }
+    else {
+        imgLabel->setPixmap(QPixmap::fromImage(image));
+        fInfo.type = STATIC;
+        fInfo.setDimensions(imgLabel->pixmap()->size());
+    }
+}
+
+/* resizes imgLabel according to set fit options,
+ * which is then automatically redrawn
+ */
 void MainWindow::fitImage() {
-   // qDebug() << "fitImage call";
     if(fInfo.type != NONE) {
         double windowAspectRatio = (double)scrollArea->size().rheight()/scrollArea->size().rwidth();
         QSize newSize;
-        if(fitAllAct->isChecked()) {
+        if(fitModeAllAct->isChecked()) {
             if(fInfo.size.height()>scrollArea->size().height()
                     || fInfo.size.width()>scrollArea->size().width() ) {
                 if(fInfo.aspectRatio>=windowAspectRatio) {
@@ -130,12 +147,12 @@ void MainWindow::fitImage() {
                 imgLabel->setFixedSize(fInfo.size);
             }
         }
-        else if(fitWidthAct->isChecked()) {
+        else if(fitModeWidthAct->isChecked()) {
             newSize.setHeight(scrollArea->size().rwidth()*fInfo.aspectRatio);
             newSize.setWidth(scrollArea->size().rwidth());
             imgLabel->setFixedSize(newSize);
         }
-        else if(normalSizeAct->isChecked()) {
+        else if(fitModeNormalAct->isChecked()) {
             imgLabel->setFixedSize(fInfo.size);
         }
         else {
@@ -144,43 +161,43 @@ void MainWindow::fitImage() {
     }
 }
 
-void MainWindow::fitAll() {
-    if(fitAllAct->isChecked()) {
-        fitWidthAct->setChecked(false);
-        normalSizeAct->setChecked(false);
+void MainWindow::fitModeAll() {
+    if(fitModeAllAct->isChecked()) {
+        fitModeWidthAct->setChecked(false);
+        fitModeNormalAct->setChecked(false);
     }
     fitImage();
 }
 
-void MainWindow::fitWidth() {
-    if(fitWidthAct->isChecked()) {
-        fitAllAct->setChecked(false);
-        normalSizeAct->setChecked(false);
+void MainWindow::fitModeWidth() {
+    if(fitModeWidthAct->isChecked()) {
+        fitModeAllAct->setChecked(false);
+        fitModeNormalAct->setChecked(false);
     }
     fitImage();
 }
 
-void MainWindow::normalSize() {
-    if(normalSizeAct->isChecked()) {
-        fitAllAct->setChecked(false);
-        fitWidthAct->setChecked(false);
+void MainWindow::fitModeNormal() {
+    if(fitModeNormalAct->isChecked()) {
+        fitModeAllAct->setChecked(false);
+        fitModeWidthAct->setChecked(false);
     }
     fitImage();
     scaleFactor = 1.0;
 }
 
-void MainWindow::switchFit() {
-    if(fitWidthAct->isChecked()) {
-        fitAllAct->setChecked(true);
-        fitAll();
+void MainWindow::switchFitMode() {
+    if(fitModeWidthAct->isChecked()) {
+        fitModeAllAct->setChecked(true);
+        fitModeAll();
     }
-    else if(fitAllAct->isChecked()) {
-        normalSizeAct->setChecked(true);
-        normalSize();
+    else if(fitModeAllAct->isChecked()) {
+        fitModeNormalAct->setChecked(true);
+        fitModeNormal();
     }
     else {
-        fitAllAct->setChecked(true);
-        fitAll();
+        fitModeAllAct->setChecked(true);
+        fitModeAll();
     }
 }
 
@@ -189,7 +206,6 @@ void MainWindow::createActions() {
     openAct->setShortcut(Qt::Key_O);
     this->addAction(openAct);
     connect(openAct, SIGNAL(triggered()), this, SLOT(openDialog()));
-
 
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcut(tr("Alt+X"));
@@ -219,40 +235,40 @@ void MainWindow::createActions() {
     this->addAction(zoomOutAct);
     connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
 
-    normalSizeAct = new QAction(tr("&Normal Size"), this);
-    normalSizeAct->setShortcut(Qt::Key_N);
-    normalSizeAct->setEnabled(false);
-    normalSizeAct->setCheckable(true);
-    this->addAction(normalSizeAct);
-    connect(normalSizeAct, SIGNAL(triggered()), this, SLOT(normalSize()));
+    fitModeNormalAct = new QAction(tr("&Normal Size"), this);
+    fitModeNormalAct->setShortcut(Qt::Key_N);
+    fitModeNormalAct->setEnabled(false);
+    fitModeNormalAct->setCheckable(true);
+    this->addAction(fitModeNormalAct);
+    connect(fitModeNormalAct, SIGNAL(triggered()), this, SLOT(fitModeNormal()));
 
-    fitAllAct = new QAction(tr("Fit all"), this);
-    fitAllAct->setEnabled(false);
-    fitAllAct->setCheckable(true);
-    fitAllAct->setShortcut(Qt::Key_A);
-    this->addAction(fitAllAct);
-    connect(fitAllAct, SIGNAL(triggered()), this, SLOT(fitAll()));
+    fitModeAllAct = new QAction(tr("Fit all"), this);
+    fitModeAllAct->setEnabled(false);
+    fitModeAllAct->setCheckable(true);
+    fitModeAllAct->setShortcut(Qt::Key_A);
+    this->addAction(fitModeAllAct);
+    connect(fitModeAllAct, SIGNAL(triggered()), this, SLOT(fitModeAll()));
 
-    fitWidthAct = new QAction(tr("Fit &width"), this);
-    fitWidthAct->setEnabled(false);
-    fitWidthAct->setCheckable(true);
-    fitWidthAct->setShortcut(Qt::Key_W);
-    this->addAction(fitWidthAct);
-    connect(fitWidthAct, SIGNAL(triggered()), this, SLOT(fitWidth()));
+    fitModeWidthAct = new QAction(tr("Fit &width"), this);
+    fitModeWidthAct->setEnabled(false);
+    fitModeWidthAct->setCheckable(true);
+    fitModeWidthAct->setShortcut(Qt::Key_W);
+    this->addAction(fitModeWidthAct);
+    connect(fitModeWidthAct, SIGNAL(triggered()), this, SLOT(fitModeWidth()));
 
-    switchFullscreenAct = new QAction(tr("&Fullscreen"), this);
-    switchFullscreenAct->setEnabled(true);
-    switchFullscreenAct->setCheckable(true);
-    switchFullscreenAct->setShortcut(Qt::Key_F);
-    this->addAction(switchFullscreenAct);
-    connect(switchFullscreenAct, SIGNAL(triggered()), this, SLOT(switchFullscreen()));
+    fullscreenEnabledAct = new QAction(tr("&Fullscreen"), this);
+    fullscreenEnabledAct->setEnabled(true);
+    fullscreenEnabledAct->setCheckable(true);
+    fullscreenEnabledAct->setShortcut(Qt::Key_F);
+    this->addAction(fullscreenEnabledAct);
+    connect(fullscreenEnabledAct, SIGNAL(triggered()), this, SLOT(switchFullscreen()));
 
     aboutQtAct = new QAction(tr("About &Qt"), this);
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-    normalSizeAct->setEnabled(true);
-    fitAllAct->setEnabled(true);
-    fitWidthAct->setEnabled(true);
+    fitModeNormalAct->setEnabled(true);
+    fitModeAllAct->setEnabled(true);
+    fitModeWidthAct->setEnabled(true);
 }
 
 void MainWindow::updateActions()
@@ -274,13 +290,13 @@ void MainWindow::createMenus() {
     fileMenu->addAction(exitAct);
 
     viewMenu = new QMenu(tr("&View"), this);
-    viewMenu->addAction(switchFullscreenAct);
+    viewMenu->addAction(fullscreenEnabledAct);
     viewMenu->addAction(zoomInAct);
     viewMenu->addAction(zoomOutAct);
     viewMenu->addSeparator();
-    viewMenu->addAction(normalSizeAct);
-    viewMenu->addAction(fitAllAct);
-    viewMenu->addAction(fitWidthAct);
+    viewMenu->addAction(fitModeNormalAct);
+    viewMenu->addAction(fitModeAllAct);
+    viewMenu->addAction(fitModeWidthAct);
 
     navigationMenu = new QMenu(tr("&Navigate"), this);
     navigationMenu->addAction(nextAct);
@@ -296,11 +312,11 @@ void MainWindow::createMenus() {
 }
 
 void MainWindow::triggerFullscreen() {
-    this->switchFullscreenAct->trigger();
+    this->fullscreenEnabledAct->trigger();
 }
 
 void MainWindow::switchFullscreen() {
-    if(switchFullscreenAct->isChecked()) {
+    if(fullscreenEnabledAct->isChecked()) {
         overlay->setHidden(false);
         cOverlay->setHidden(false);
         this->menuBar()->hide();
@@ -312,9 +328,12 @@ void MainWindow::switchFullscreen() {
         this->menuBar()->show();
         this->showNormal();
     }
-    updateMap();
+    updateMapOverlay();
 }
 
+/* changes current position in directory
+ * loads image at that position
+ */
 void MainWindow::next() {
     if(currentDir.exists() && fileList.length()) {
         if(++fInfo.fileNumber>=fileList.length()) {
@@ -325,10 +344,11 @@ void MainWindow::next() {
         open(fName);
     }
 }
-
+/* same as above
+ */
 void MainWindow::prev() {
     if(currentDir.exists() && fileList.length()) {
-        if(--fInfo.fileNumber==-1) {
+        if(--fInfo.fileNumber<0) {
             fInfo.fileNumber=fileList.length()-1;
         }
         QString fName = currentDir.currentPath()+"/"+fileList.at(fInfo.fileNumber);
@@ -338,19 +358,21 @@ void MainWindow::prev() {
 }
 
 void MainWindow::zoomIn() {
-    fitWidthAct->setChecked(false);
-    fitAllAct->setChecked(false);
-    normalSizeAct->setChecked(false);
+    fitModeWidthAct->setChecked(false);
+    fitModeAllAct->setChecked(false);
+    fitModeNormalAct->setChecked(false);
     scaleImage(1.25);
 }
 
 void MainWindow::zoomOut() {
-    fitWidthAct->setChecked(false);
-    fitAllAct->setChecked(false);
-    normalSizeAct->setChecked(false);
+    fitModeWidthAct->setChecked(false);
+    fitModeAllAct->setChecked(false);
+    fitModeNormalAct->setChecked(false);
     scaleImage(0.9);
 }
 
+/* not my code, need to review
+ */
 void MainWindow::scaleImage(double factor) {
     scaleFactor *= factor;
     imgLabel->setFixedSize(imgLabel->size()*factor);
@@ -360,6 +382,8 @@ void MainWindow::scaleImage(double factor) {
     zoomOutAct->setEnabled(scaleFactor > 0.5);
 }
 
+/* not my code, need to review
+ */
 void MainWindow::adjustScrollBar(QScrollBar *scrollBar, double factor) {
     scrollBar->setValue(int(factor * scrollBar->value() + ((factor - 1) * scrollBar->pageStep()/2)));
 }
@@ -369,44 +393,50 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
     overlay->updateSize();
     cOverlay->updateSize();
     mOverlay->updateSize();
-    updateMap();
+    updateMapOverlay();
     if(fInfo.type != NONE) {
         fitImage();
     }
 }
 
-void MainWindow::updateMap() {
+/* calculates difference between current viewing area and total image size
+ * hides overlay if image fits in view entirely
+ * calculates image aspect ratio
+ * calculates current view area position in percent
+ * calls updateMap with above values
+ */
+void MainWindow::updateMapOverlay() {
     if(fInfo.type != NONE) {
-        double xdiff=1.0;
-        double ydiff=1.0;
-        QSize img = imgLabel->size();
-        QSize scr = scrollArea->viewport()->size();
+        double widthDifferenceRatio=1.0;
+        double heightDifferenceRatio=1.0;
+        QSize imageSize = imgLabel->size();
+        QSize viewportSize = scrollArea->viewport()->size();
 
-        if(img.width()>scr.width())
-            xdiff=(double)scr.width()/img.width();
-        if(img.height()>scr.height())
-            ydiff=(double)scr.height()/img.height();
-        if(xdiff>=1 && ydiff>=1) {
+        if(imageSize.width()>viewportSize.width())
+            widthDifferenceRatio=(double)viewportSize.width()/imageSize.width();
+        if(imageSize.height()>viewportSize.height())
+            heightDifferenceRatio=(double)viewportSize.height()/imageSize.height();
+        if(widthDifferenceRatio>=1 && heightDifferenceRatio>=1) {
             mOverlay->hide();
         }
         else {
             mOverlay->show();
-            double scrx;
-            double scry;
-            double ar = (double)img.height()/img.width();
+            double viewportPositionX;
+            double viewportPositionY;
+            double imageAspectRatio = (double)imageSize.height()/imageSize.width();
             if(scrollArea->horizontalScrollBar()->maximum()==0) {
-                scrx=0.0;
+                viewportPositionX=0.0;
             }
             else {
-                scrx=(double)scrollArea->horizontalScrollBar()->value()/scrollArea->horizontalScrollBar()->maximum();
+                viewportPositionX=(double)scrollArea->horizontalScrollBar()->value()/scrollArea->horizontalScrollBar()->maximum();
             }
             if(scrollArea->verticalScrollBar()->maximum()==0) {
-                scry=0.0;
+                viewportPositionY=0.0;
             }
             else {
-                scry=(double)scrollArea->verticalScrollBar()->value()/scrollArea->verticalScrollBar()->maximum();
+                viewportPositionY=(double)scrollArea->verticalScrollBar()->value()/scrollArea->verticalScrollBar()->maximum();
             }
-            mOverlay->updateMap(&xdiff, &ydiff, &scrx, &scry, &ar);
+            mOverlay->updateMap(&widthDifferenceRatio, &heightDifferenceRatio, &viewportPositionX, &viewportPositionY, &imageAspectRatio);
         }
     }
 }
@@ -426,11 +456,11 @@ void MainWindow::wheelEvent(QWheelEvent *event) {
 void MainWindow::keyPressEvent(QKeyEvent *event) {
     QMainWindow::keyPressEvent(event);
     if(event->key()==Qt::Key_Space) {
-        switchFit();
+        switchFitMode();
     }
 }
 
-void MainWindow::minimize() {
+void MainWindow::minimizeWindow() {
     this->setWindowState(Qt::WindowMinimized);
 }
 

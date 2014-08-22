@@ -21,6 +21,8 @@ void zzScrollArea::mouseReleaseEvent(QMouseEvent *event) {
     }
 }
 
+/* enables mouse dragging
+ */
 void zzScrollArea::mouseMoveEvent(QMouseEvent *event) {
     if (event->buttons() & Qt::LeftButton)
     {
