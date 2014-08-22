@@ -15,15 +15,6 @@ fileInfo::fileInfo(QString *_path) :
     qInfo.setFile(*_path);
 }
 
-fileInfo::fileInfo(QString *_path, QSize _size) :
-    size(_size),
-    fileNumber(-1),
-    aspectRatio(1),
-    type(NONE)
-{
-    qInfo.setFile(*_path);
-}
-
 bool fileInfo::setFile(QString *_path) {
     qInfo.setFile(*_path);
     type = NONE;

@@ -5,11 +5,12 @@ MainWindow::MainWindow()
 {
     init();
     fitModeAllAct->setChecked(true);
-    //changeCurrentDir("/home/mitcher/Pictures/");
-    changeCurrentDir("K://_code/sample images/");
-    setWindowTitle(tr("qimgv 0.1.1"));
+    changeCurrentDir("/home/mitcher/Pictures/");
+    //changeCurrentDir("K://_code/sample images/");
+    setMinimumSize(QSize(400,300));
+    setWindowTitle(tr("qimgv 0.12"));
     resize(800, 650);
-    fInfo.getInfo();
+    open(":/images/res/logo.png");
 }
 
 void MainWindow::init() {
@@ -75,6 +76,10 @@ void MainWindow::openDialog() {
  * resizes imgLabel according to set fit options
  */
 void MainWindow::open(QString filePath) {
+    QFile file(filePath);
+    file.open(QIODevice::ReadOnly);
+    //read first 2 bytes to determine file format
+    QByteArray startingBytes= file.read(2).toHex();
     fInfo.setFile(&filePath);
     changeCurrentDir(fInfo.qInfo.path());
     fInfo.fileNumber = fileList.indexOf(fInfo.qInfo.fileName());
@@ -83,11 +88,20 @@ void MainWindow::open(QString filePath) {
     if (movie->state() != QMovie::NotRunning) {
         movie->stop();
     }
-    if(filePath.endsWith(".gif")) {
-        loadMovie(&filePath);
+    if(startingBytes == "4749") {
+        fInfo.type = GIF;
+    }
+    else if(startingBytes == "ffd8" || startingBytes == "8950" || startingBytes == "424d") {
+        fInfo.type = STATIC;
+    }
+    if(fInfo.type == GIF) {
+        loadMovie(filePath);
+    }
+    else if(fInfo.type == STATIC) {
+        loadStaticImage(filePath);
     }
     else {
-        loadStaticImage(&filePath);
+        loadStaticImage(QString(":/images/res/logo.png"));
     }
     updateWindowTitle();
     updateInfoOverlay();
@@ -96,11 +110,11 @@ void MainWindow::open(QString filePath) {
     fitImage();
 }
 
-void MainWindow::loadMovie(QString *filePath) {
-    movie->setFileName(*filePath);
+void MainWindow::loadMovie(QString filePath) {
+    movie->setFileName(filePath);
     if(!movie->isValid()) {
         fInfo.type = NONE;
-        qDebug() << "Cannot load file:" +(*filePath);
+        qDebug() << "Cannot load file:" +filePath;
     }
     else {
         imgLabel->setMovie(movie);
@@ -110,11 +124,11 @@ void MainWindow::loadMovie(QString *filePath) {
     }
 }
 
-void MainWindow::loadStaticImage(QString *filePath) {
-    QImage image(*filePath);
+void MainWindow::loadStaticImage(QString filePath) {
+    QImage image(filePath);
     if(image.isNull()) {
         fInfo.type = NONE;
-        qDebug() << "Cannot load file:" + (*filePath);
+        qDebug() << "Cannot load file:" + filePath;
     }
     else {
         imgLabel->setPixmap(QPixmap::fromImage(image));

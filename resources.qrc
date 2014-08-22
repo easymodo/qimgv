@@ -1,3 +1,6 @@
 <RCC>
-    <qresource prefix="/images"/>
+    <qresource prefix="/images">
+        <file>res/error.png</file>
+        <file>res/logo.png</file>
+    </qresource>
 </RCC>

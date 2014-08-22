@@ -9,6 +9,7 @@
 #include "fileinfo.h"
 #include <QMainWindow>
 #include <QDir>
+#include <QFile>
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -46,8 +47,8 @@ public:
     
 private:
     void init();
-    void loadMovie(QString*);
-    void loadStaticImage(QString*);
+    void loadMovie(QString);
+    void loadStaticImage(QString);
     void createActions();
     void createMenus();
     void updateActions();
