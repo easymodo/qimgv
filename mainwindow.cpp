@@ -450,7 +450,7 @@ void MainWindow::updateMapOverlay() {
             else {
                 viewportPositionY=(double)scrollArea->verticalScrollBar()->value()/scrollArea->verticalScrollBar()->maximum();
             }
-            mOverlay->updateMap(&widthDifferenceRatio, &heightDifferenceRatio, &viewportPositionX, &viewportPositionY, &imageAspectRatio);
+            mOverlay->updateMap(widthDifferenceRatio, heightDifferenceRatio, viewportPositionX, viewportPositionY, imageAspectRatio);
         }
     }
 }
