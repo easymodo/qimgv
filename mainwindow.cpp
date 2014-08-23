@@ -5,7 +5,8 @@ MainWindow::MainWindow()
 {
     init();
     fitModeAllAct->setChecked(true);
-    changeCurrentDir("/home/mitcher/Pictures/");
+    //changeCurrentDir("/home/mitcher/Pictures/");
+    changeCurrentDir("/home/mitcher/projects/tests/");
     //changeCurrentDir("K://_code/sample images/");
     setMinimumSize(QSize(400,300));
     setWindowTitle(tr("qimgv 0.12"));
@@ -54,6 +55,10 @@ void MainWindow::init() {
 
     filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
     currentDir.setNameFilters(filters);
+
+    scrollArea->installEventFilter(this);
+    imgLabel->installEventFilter(this);
+    openFinished=true;
 }
 
 void MainWindow::changeCurrentDir(QString path) {
@@ -76,6 +81,7 @@ void MainWindow::openDialog() {
  * resizes imgLabel according to set fit options
  */
 void MainWindow::open(QString filePath) {
+    int time = clock();
     QFile file(filePath);
     file.open(QIODevice::ReadOnly);
     //read first 2 bytes to determine file format
@@ -108,13 +114,15 @@ void MainWindow::open(QString filePath) {
     scaleFactor = 1.0;
     updateActions();
     fitImage();
+    //qDebug() << "open() " << clock()-time << endl << "###################" << endl;
 }
 
 void MainWindow::loadMovie(QString filePath) {
+    int time = clock();
     movie->setFileName(filePath);
     if(!movie->isValid()) {
         fInfo.type = NONE;
-        qDebug() << "Cannot load file:" +filePath;
+        //qDebug() << "Cannot load file:" +filePath;
     }
     else {
         imgLabel->setMovie(movie);
@@ -122,25 +130,34 @@ void MainWindow::loadMovie(QString filePath) {
         fInfo.type = GIF;
         fInfo.setDimensions(movie->currentPixmap().size());
     }
+    //qDebug() << "LoadMovie() " << clock()-time;
 }
 
 void MainWindow::loadStaticImage(QString filePath) {
-    QImage image(filePath);
-    if(image.isNull()) {
+    int time = clock();
+    int tmp = clock();
+    QPixmap pixmap(filePath, NULL, Qt::ThresholdDither);
+    //qDebug() << "    QPixmap image(filePath) " << clock()-tmp;
+    if(pixmap.isNull()) {
         fInfo.type = NONE;
-        qDebug() << "Cannot load file:" + filePath;
+        //qDebug() << "Cannot load file:" + filePath;
     }
     else {
-        imgLabel->setPixmap(QPixmap::fromImage(image));
+        int tmp = clock();
+        //imgLabel->setPixmap(QPixmap::fromImage(image));
+        imgLabel->setPixmap(pixmap);
+        //qDebug() << "    setPixmap " << clock()-tmp;
         fInfo.type = STATIC;
         fInfo.setDimensions(imgLabel->pixmap()->size());
     }
+    //qDebug() << "loadStaticImage() " << clock()-time;
 }
 
 /* resizes imgLabel according to set fit options,
  * which is then automatically redrawn
  */
 void MainWindow::fitImage() {
+    int time = clock();
     if(fInfo.type != NONE) {
         double windowAspectRatio = (double)scrollArea->size().rheight()/scrollArea->size().rwidth();
         QSize newSize;
@@ -173,6 +190,7 @@ void MainWindow::fitImage() {
             imgLabel->setFixedSize(fInfo.size);
         }
     }
+    //qDebug() << "fitImage() " << clock()-time;
 }
 
 void MainWindow::fitModeAll() {
@@ -464,7 +482,10 @@ void MainWindow::updateInfoOverlay() {
 }
 
 void MainWindow::wheelEvent(QWheelEvent *event) {
+    openFinished=false;
     event->angleDelta().ry()>0?prev():next();
+    qDebug() << "LOAD FINISHED";
+    openFinished=true;
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
@@ -472,6 +493,17 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
     if(event->key()==Qt::Key_Space) {
         switchFitMode();
     }
+}
+
+bool MainWindow::eventFilter(QObject *target, QEvent *event) {
+    //qDebug() << "got event" << event->type() << QEvent::Wheel;
+    qDebug() << event->type() << " " <<  QEvent::Wheel<< " " << openFinished;
+    if(event->type()==QEvent::Wheel) {// && openFinished==false) {
+        qDebug() << "sup";
+        event->ignore();
+    }
+    else
+        QMainWindow::eventFilter(target, event);
 }
 
 void MainWindow::minimizeWindow() {

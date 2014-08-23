@@ -10,6 +10,7 @@
 #include <QMainWindow>
 #include <QDir>
 #include <QFile>
+#include <time.h>
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -87,10 +88,12 @@ private:
     infoOverlay *overlay;
     controlsOverlay *cOverlay;
     mapOverlay *mOverlay;
+    bool openFinished;
 
 protected:
     void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);
+    bool eventFilter(QObject *target, QEvent *event);
 };
 
 #endif // MAINWINDOW_H
