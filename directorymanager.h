@@ -20,12 +20,13 @@ public:
     void clearFileInfo();
     void next();
     void prev();
+    QString getInfo();
     QDir currentDir;
     QFileInfo fileInfo;
     QStringList fileList;
     QSize fileDimensions;
+    QStringList filters;
     fileType type;
-    QString getInfo();
     double aspectRatio;
     int currentPosition; // -1 = default (no file open)
 

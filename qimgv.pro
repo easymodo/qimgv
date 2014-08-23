@@ -19,7 +19,9 @@ SOURCES += main.cpp\
     controlsoverlay.cpp \
     mapoverlay.cpp \
     zzlabel.cpp \
-    directorymanager.cpp
+    directorymanager.cpp \
+    controller.cpp \
+    imagepreloader.cpp
 
 HEADERS  += mainwindow.h \
     zzscrollarea.h \
@@ -27,7 +29,10 @@ HEADERS  += mainwindow.h \
     controlsoverlay.h \
     mapoverlay.h \
     zzlabel.h \
-    directorymanager.h
+    directorymanager.h \
+    controller.h \
+    ImageContainer.h \
+    imagepreloader.h
 
 FORMS    +=
 

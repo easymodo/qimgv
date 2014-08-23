@@ -6,7 +6,6 @@
 #include "infooverlay.h"
 #include "controlsoverlay.h"
 #include "mapoverlay.h"
-#include "fileinfo.h"
 #include <QMainWindow>
 
 #include <time.h>
@@ -62,7 +61,7 @@ private:
     QColor bgColor;
     double scaleFactor;
 
-    QStringList filters;
+    
 
     QAction *openAct;
     QAction *nextAct;
