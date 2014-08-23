@@ -5,8 +5,8 @@ MainWindow::MainWindow()
 {
     init();
     fitModeAllAct->setChecked(true);
-    //changeCurrentDir("/home/mitcher/Pictures/");
-    changeCurrentDir("/home/mitcher/projects/tests/");
+    changeCurrentDir("/home/mitcher/Pictures/");
+    //changeCurrentDir("/home/mitcher/projects/tests/");
     //changeCurrentDir("K://_code/sample images/");
     setMinimumSize(QSize(400,300));
     setWindowTitle(tr("qimgv 0.12"));
@@ -86,6 +86,7 @@ void MainWindow::open(QString filePath) {
     file.open(QIODevice::ReadOnly);
     //read first 2 bytes to determine file format
     QByteArray startingBytes= file.read(2).toHex();
+    qDebug() << startingBytes;
     fInfo.setFile(&filePath);
     changeCurrentDir(fInfo.qInfo.path());
     fInfo.fileNumber = fileList.indexOf(fInfo.qInfo.fileName());
@@ -122,7 +123,7 @@ void MainWindow::loadMovie(QString filePath) {
     movie->setFileName(filePath);
     if(!movie->isValid()) {
         fInfo.type = NONE;
-        //qDebug() << "Cannot load file:" +filePath;
+        qDebug() << "Cannot load file:" +filePath;
     }
     else {
         imgLabel->setMovie(movie);
@@ -219,11 +220,7 @@ void MainWindow::fitModeNormal() {
 }
 
 void MainWindow::switchFitMode() {
-    if(fitModeWidthAct->isChecked()) {
-        fitModeAllAct->setChecked(true);
-        fitModeAll();
-    }
-    else if(fitModeAllAct->isChecked()) {
+    if(fitModeAllAct->isChecked()) {
         fitModeNormalAct->setChecked(true);
         fitModeNormal();
     }
@@ -497,12 +494,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 
 bool MainWindow::eventFilter(QObject *target, QEvent *event) {
     //qDebug() << "got event" << event->type() << QEvent::Wheel;
-    qDebug() << event->type() << " " <<  QEvent::Wheel<< " " << openFinished;
-    if(event->type()==QEvent::Wheel) {// && openFinished==false) {
-        qDebug() << "sup";
-        event->ignore();
-    }
-    else
+  //  qDebug() << event->type() << " " <<  QEvent::Wheel<< " " << openFinished;
+  //  if(event->type()==QEvent::Wheel) {// && openFinished==false) {
+ //       qDebug() << "sup";
+ //       event->ignore();
+ //   }
+ //   else
         QMainWindow::eventFilter(target, event);
 }
 
