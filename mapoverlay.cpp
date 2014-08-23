@@ -30,24 +30,28 @@ void mapOverlay::updateSize() {
 /* calculates outer(image) and inner(view area) squares
  * trust me, it just does
  */
-void mapOverlay::updateMap(double *widthDifferenceRatio, double *heightDifferenceRatio, double *viewportPositionX, double *viewportPositionY, double *imageAspectRatio) {
-    if(*imageAspectRatio==1) {
-        outer->setCoords(0,0,mapSize,mapSize);
+void mapOverlay::updateMap(double widthDifferenceRatio,
+                           double heightDifferenceRatio,
+                           double viewportPositionX,
+                           double viewportPositionY,
+                           double imageAspectRatio) {
+    if(imageAspectRatio == 1) {
+        outer->setCoords(0, 0, mapSize, mapSize);
     }
-    else if (*imageAspectRatio>1){
-        outer->setCoords(mapSize-mapSize/(*imageAspectRatio),0,mapSize,mapSize);
+    else if (imageAspectRatio > 1) {
+        outer->setCoords(mapSize - mapSize / imageAspectRatio, 0, mapSize, mapSize);
     }
     else {
-        outer->setCoords(0,mapSize-mapSize*(*imageAspectRatio),mapSize,mapSize);
+        outer->setCoords(0, mapSize-mapSize * imageAspectRatio, mapSize, mapSize);
     }
     double tmp1, tmp2, tmp3, tmp4;
-    tmp1=(*widthDifferenceRatio)*outer->width();
-    tmp2=(*heightDifferenceRatio)*outer->height();
-    tmp3=tmp1+outer->x()+(outer->width()-tmp1)*(*viewportPositionX);
-    tmp4=tmp2+outer->y()+(outer->height()-tmp2)*(*viewportPositionY);
-    inner->setCoords(outer->x()+(outer->width()-tmp1)*(*viewportPositionX)+1,
-                     outer->y()+(outer->height()-tmp2)*(*viewportPositionY)+1,
-                     tmp3-2,
-                     tmp4-2);
+    tmp1 = widthDifferenceRatio * outer->width();
+    tmp2 = heightDifferenceRatio * outer->height();
+    tmp3 = tmp1 + outer->x() + (outer->width() - tmp1) * viewportPositionX;
+    tmp4 = tmp2 + outer->y() + (outer->height() - tmp2) * viewportPositionY;
+    inner->setCoords(outer->x() + (outer->width() - tmp1) * viewportPositionX + 1,
+                     outer->y() + (outer->height() - tmp2) * viewportPositionY + 1,
+                     tmp3 - 2,
+                     tmp4 - 2);
     this->update();
 }
