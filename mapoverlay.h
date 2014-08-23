@@ -13,7 +13,7 @@ class mapOverlay : public QWidget
 public:
     explicit mapOverlay(QWidget *parent = 0);
     void setImageRect(QSize *_img);
-    void updateMap(double *widthDifferenceRatio, double *heightDifferenceRatio, double *viewportPositionX, double *viewportPositionY, double *imageAspectRatio);
+    void updateMap(double widthDifferenceRatio, double heightDifferenceRatio, double viewportPositionX, double viewportPositionY, double imageAspectRatio);
     void updateSize();
 
 protected:
