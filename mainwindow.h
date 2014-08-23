@@ -8,8 +8,7 @@
 #include "mapoverlay.h"
 #include "fileinfo.h"
 #include <QMainWindow>
-#include <QDir>
-#include <QFile>
+
 #include <time.h>
 
 QT_BEGIN_NAMESPACE
@@ -27,7 +26,7 @@ class MainWindow : public QMainWindow
 public slots:
     void openDialog();
     void open(QString);
-    void changeCurrentDir(QString);
+
     void zoomIn();
     void zoomOut();
     void fitImage();
@@ -35,8 +34,6 @@ public slots:
     void fitModeWidth();
     void fitModeNormal();
     void switchFitMode();
-    void next();
-    void prev();
     void switchFullscreen();
     void triggerFullscreen();
     void minimizeWindow();
@@ -64,10 +61,9 @@ private:
     QMovie *movie;
     QColor bgColor;
     double scaleFactor;
-    QStringList fileList;
+
     QStringList filters;
-    QDir currentDir;
-    fileInfo fInfo;
+
     QAction *openAct;
     QAction *nextAct;
     QAction *prevAct;

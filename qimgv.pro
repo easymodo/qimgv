@@ -16,18 +16,18 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     zzscrollarea.cpp \
     infooverlay.cpp \
-    fileinfo.cpp \
     controlsoverlay.cpp \
     mapoverlay.cpp \
-    zzlabel.cpp
+    zzlabel.cpp \
+    directorymanager.cpp
 
 HEADERS  += mainwindow.h \
     zzscrollarea.h \
     infooverlay.h \
-    fileinfo.h \
     controlsoverlay.h \
     mapoverlay.h \
-    zzlabel.h
+    zzlabel.h \
+    directorymanager.h
 
 FORMS    +=
 

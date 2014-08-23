@@ -53,20 +53,14 @@ void MainWindow::init() {
     createActions();
     createMenus();
 
-    filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
-    currentDir.setNameFilters(filters);
+
 
     scrollArea->installEventFilter(this);
     imgLabel->installEventFilter(this);
     openFinished=true;
 }
 
-void MainWindow::changeCurrentDir(QString path) {
-    currentDir.setCurrent(path);
-    currentDir.setNameFilters(filters);
-    fileList = currentDir.entryList();
-    fInfo.fileNumber = -1;
-}
+
 
 void MainWindow::openDialog() {
     QString filePath = QFileDialog::getOpenFileName(this,tr("Open File"),currentDir.currentPath(),tr("Images (*.png *.jpg *jpeg *bmp *gif)"),0);//,QFileDialog::DontUseNativeDialog);
@@ -95,12 +89,7 @@ void MainWindow::open(QString filePath) {
     if (movie->state() != QMovie::NotRunning) {
         movie->stop();
     }
-    if(startingBytes == "4749") {
-        fInfo.type = GIF;
-    }
-    else if(startingBytes == "ffd8" || startingBytes == "8950" || startingBytes == "424d") {
-        fInfo.type = STATIC;
-    }
+
     if(fInfo.type == GIF) {
         loadMovie(filePath);
     }
@@ -358,32 +347,6 @@ void MainWindow::switchFullscreen() {
         this->showNormal();
     }
     updateMapOverlay();
-}
-
-/* changes current position in directory
- * loads image at that position
- */
-void MainWindow::next() {
-    if(currentDir.exists() && fileList.length()) {
-        if(++fInfo.fileNumber>=fileList.length()) {
-            fInfo.fileNumber=0;
-        }
-        QString fName = currentDir.currentPath()+"/"+fileList.at(fInfo.fileNumber);
-        fInfo.setFile(&fName);
-        open(fName);
-    }
-}
-/* same as above
- */
-void MainWindow::prev() {
-    if(currentDir.exists() && fileList.length()) {
-        if(--fInfo.fileNumber<0) {
-            fInfo.fileNumber=fileList.length()-1;
-        }
-        QString fName = currentDir.currentPath()+"/"+fileList.at(fInfo.fileNumber);
-        fInfo.setFile(&fName);
-        open(fName);
-    }
 }
 
 void MainWindow::zoomIn() {
