@@ -1,17 +1,19 @@
 #include "scrollarea.h"
 
 ScrollArea::ScrollArea(QWidget *parent) : QScrollArea(parent), 
-    mImageViewer(new ImageViewer()), mHBar(horizontalScrollBar()),
+    imageViewer(new ImageViewer()), mHBar(horizontalScrollBar()),
     mVBar(verticalScrollBar())
 {
+    this->setMouseTracking(true);
+    this->setAlignment(Qt::AlignCenter);
+    this->setPalette(QPalette(Qt::black));
+    this->setFrameShape(QFrame::NoFrame);
+    this->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+
     mHBar->setStyleSheet("QScrollBar {height:0px;}");
     mVBar->setStyleSheet("QScrollBar {width:0px;}");
     
-    mImageViewer->setAlignment(Qt::AlignCenter);
-    mImageViewer->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    mImageViewer->setScaledContents(true);
-    
-    setWidget(mImageViewer);
+    setWidget(imageViewer);
 }
 
 void ScrollArea::mousePressEvent(QMouseEvent *event)
@@ -36,7 +38,7 @@ void ScrollArea::mouseMoveEvent(QMouseEvent *event)
     if (event->buttons() & Qt::LeftButton)
     {
         QPoint difference = lastDragPosition - event->pos();
-//         mImageViewer->set
+//         imageViewer->set
         int hMaxDistance = mHBar->maximum();
         int vMaxDistance = mVBar->maximum();
         
@@ -77,40 +79,40 @@ int ScrollArea::getAspect() const
 
 void ScrollArea::setImagePath(const QString& path)
 {
-    mImageViewer->setImagePath(path);
+    imageViewer->setImagePath(path);
     fitImageDefault();
 }
 
 void ScrollArea::fitImageHorizontal()
 {                                                  
-    QSize imageSz = mImageViewer->size();
+    QSize imageSz = imageViewer->size();
     int difference = imageSz.width() - width();
     
     if (difference <= 0)
         return;
     
     imageSz.rwidth() -= difference;
-    imageSz.rheight() -= difference * mImageViewer->getAspect();
+    imageSz.rheight() -= difference * imageViewer->getAspect();
     
-    mImageViewer->resize(imageSz);
+    imageViewer->resize(imageSz);
 }
 
 void ScrollArea::fitImageVertical()
 {                                                  
-    QSize imageSz = mImageViewer->size();
+    QSize imageSz = imageViewer->size();
     int difference = imageSz.height() - height();
     
     if (difference <= 0)
         return;
     
-    imageSz.rwidth() -= difference / mImageViewer->getAspect();
+    imageSz.rwidth() -= difference / imageViewer->getAspect();
     imageSz.rheight() -= difference;
     
-    mImageViewer->resize(imageSz);
+    imageViewer->resize(imageSz);
 }
 
 void ScrollArea::fitImageDefault() {
-    QSize imageSz = mImageViewer->size();
+    QSize imageSz = imageViewer->size();
     
     int diffHorizontal = width() - imageSz.width();
     int diffVertical = height() - imageSz.height();
@@ -124,13 +126,13 @@ void ScrollArea::fitImageDefault() {
 
 void ScrollArea::fitImageOriginal()
 {
-    mImageViewer->fitOriginalSize();
+    imageViewer->fitOriginalSize();
 }
 
 void ScrollArea::scaleImage(double factor)
 {
-    QSize size = mImageViewer->size() * factor;
-    mImageViewer->resize(size);
+    QSize size = imageViewer->size() * factor;
+    imageViewer->resize(size);
     
 //     hBar->setValue(hBar->value() * factor);
 //     vBar->setValue(vBar->value() * factor);

@@ -2,6 +2,9 @@
 
 ImageViewer::ImageViewer(QWidget *parent) : QLabel(parent)
 {
+    this->setAlignment(Qt::AlignCenter);
+    this->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    this->setScaledContents(true);
 }
 
 void ImageViewer::resizeEvent(QResizeEvent *event) {

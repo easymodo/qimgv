@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "core.h"
 #include "scrollarea.h"
 #include "imageviewer.h"
 #include "infooverlay.h"
@@ -27,7 +28,6 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public slots:
-    void openDialog();
     void open(QString);
     void setCurrentDirectory(QString);
     void zoomIn();
@@ -56,6 +56,8 @@ private:
     void updateWindowTitle();
     void updateInfoOverlay();
     void keyPressEvent(QKeyEvent *event);
+
+    Core *c;
     
     ScrollArea *mScrollArea;
     QMovie *movie;

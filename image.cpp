@@ -1,5 +1,5 @@
 #include "image.h"
-#include <qt/QtGui/qmovie.h>
+#include <QMovie>
 
 Image::Image() : QObject(), mFormat(), mType(0), mPath()
 {

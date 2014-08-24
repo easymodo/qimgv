@@ -15,7 +15,7 @@ public:
     int fileNumber; // -1 = default (no file open)
     FileInfo();
     FileInfo(QString *_path);
-    bool setFile(QString *_path);
+    fileType setFile(QString path);
     void setDimensions(QSize _size);
     void clear();
     QFileInfo qInfo;

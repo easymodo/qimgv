@@ -15,10 +15,23 @@ FileInfo::FileInfo(QString *_path) :
     qInfo.setFile(*_path);
 }
 
-bool FileInfo::setFile(QString *_path) {
-    qInfo.setFile(*_path);
+fileType FileInfo::setFile(QString path) {
+    qInfo.setFile(path);
     type = NONE;
-    return qInfo.isFile();
+    QFile file(qInfo.filePath());
+    file.open(QIODevice::ReadOnly);
+    //read first 2 bytes to determine file format
+    QByteArray startingBytes= file.read(2).toHex();
+    qDebug() << startingBytes;
+    if(startingBytes == "4749") {
+        type = GIF;
+    }
+    else if(startingBytes == "ffd8"
+            || startingBytes == "8950"
+            || startingBytes == "424d") {
+        type = STATIC;
+    }
+    return type;
 }
 
 void FileInfo::setDimensions(QSize _size) {

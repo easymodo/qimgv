@@ -43,7 +43,7 @@ private:
     QScrollBar *mHBar, *mVBar;
     QSize mSize;
     int mAspect;
-    ImageViewer* mImageViewer;
+    ImageViewer *imageViewer;
 };
 
 #endif // ZZSCROLLAREA_H

@@ -8,39 +8,13 @@ MainWindow::MainWindow()
     setMinimumSize(QSize(400,300));
     setWindowTitle(tr("qimgv 0.12"));
     resize(800, 650);
-    setDefaultLogo();
+ //   setDefaultLogo();
 }
 
 void MainWindow::init()
 {
-    mScrollArea = new ScrollArea;
-    mScrollArea->setMouseTracking(true);
-    mScrollArea->setAlignment(Qt::AlignCenter);
-    mScrollArea->setPalette(QPalette(Qt::black));
-    mScrollArea->setFrameShape(QFrame::NoFrame);
-    mScrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-
-    setCentralWidget(mScrollArea);
-
-    movie = new QMovie;
-    movie->setCacheMode(QMovie::CacheNone);
-
-    overlay = new infoOverlay(centralWidget());
-    overlay->setHidden(true);
-
-    cOverlay = new controlsOverlay(centralWidget());
-    cOverlay->setHidden(true);
-
-    mOverlay = new mapOverlay(centralWidget());
-
-    connect(cOverlay, SIGNAL(exitClicked()), this, SLOT(close()));
-    connect(cOverlay, SIGNAL(exitFullscreenClicked()), this, SLOT(triggerFullscreen()));
-    connect(cOverlay, SIGNAL(minimizeClicked()), this, SLOT(minimizeWindow()));
-    
-//     connect(mImageView, SIGNAL(resized()), this, SLOT(updateMapOverlay()));
-    
-    connect(mScrollArea, SIGNAL(scrollbarChanged()), this, SLOT(updateMapOverlay()));
-    connect(mScrollArea, SIGNAL(sendDoubleClick()), this, SLOT(triggerFullscreen()));
+    c = new Core();
+    setCentralWidget(c->getMainWidget());
 
     createActions();
     createMenus();
@@ -48,7 +22,6 @@ void MainWindow::init()
     filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
     currentDir.setNameFilters(filters);
 
-    mScrollArea->installEventFilter(this);
     openFinished = true;
 }
 
@@ -58,16 +31,11 @@ void MainWindow::setCurrentDirectory(QString path) {
     fileList = currentDir.entryList();
 }
 
-void MainWindow::openDialog() {
-    QString imagesFilter = tr("Images (*.png *.jpg *jpeg *bmp *gif)");
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"),
-            currentDir.currentPath(), imagesFilter, 0);//,QFileDialog::DontUseNativeDialog);
-    open(filePath);
-}
+
 
 void MainWindow::setDefaultLogo()
 {
-    mScrollArea->setImagePath(QString(":/images/res/logo.png"));
+    c->scrollArea->setImagePath(QString(":/images/res/logo.png"));
 }
 
 /* opens file specified by argument
@@ -79,7 +47,7 @@ void MainWindow::setDefaultLogo()
  */
 void MainWindow::open(QString filePath)
 {
-    mScrollArea->setImagePath(filePath);
+    c->scrollArea->setImagePath(filePath);
 
 //     setCurrentDirectory(filePath);
 //     updateWindowTitle();
@@ -112,7 +80,7 @@ void MainWindow::fitModeWidth()
 
 void MainWindow::fitModeNormal()
 {
-    mScrollArea->fitImageOriginal();
+    c->scrollArea->fitImageOriginal();
 }
 
 void MainWindow::createActions()
@@ -120,7 +88,7 @@ void MainWindow::createActions()
     openAct = new QAction(tr("&Open..."), this);
     openAct->setShortcut(Qt::Key_O);
     this->addAction(openAct);
-    connect(openAct, SIGNAL(triggered()), this, SLOT(openDialog()));
+    connect(openAct, SIGNAL(triggered()), c, SLOT(openDialog()));
 
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcut(tr("Alt+X"));
@@ -280,21 +248,21 @@ void MainWindow::prev()
 
 void MainWindow::zoomIn()
 {
-    mScrollArea->scaleImage(1.25);
+    c->scrollArea->scaleImage(1.25);
 }
 
 void MainWindow::zoomOut()
 {
-    mScrollArea->scaleImage(0.9);
+    c->scrollArea->scaleImage(0.9);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     QMainWindow::resizeEvent(event);
-    overlay->updateSize();
-    cOverlay->updateSize();
-    mOverlay->updateSize();
-    updateMapOverlay();
+    //overlay->updateSize();
+    //cOverlay->updateSize();
+    //mOverlay->updateSize();
+    //updateMapOverlay();
 }
 
 /* calculates difference between current viewing area and total image size
@@ -360,9 +328,7 @@ void MainWindow::updateInfoOverlay()
 
 void MainWindow::wheelEvent(QWheelEvent *event)
 {
-    openFinished = false;
-    event->angleDelta().ry() > 0 ? prev() : next();
-    openFinished = true;
+    event->angleDelta().ry() > 0 ? c->showPrevImage() : c->showNextImage();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -376,17 +342,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 bool MainWindow::eventFilter(QObject *target, QEvent *event)
 {
-    //qDebug() << "got event" << event->type() << QEvent::Wheel;
-//     qDebug() << event->type() << " " <<  QEvent::Wheel<< " " << openFinished;
-    if(event->type()==QEvent::Wheel)
-    {// && openFinished==false) {
-        qDebug() << "sup";
-        event->ignore();
-    }
-    else
-    {
-        QMainWindow::eventFilter(target, event);
-    }
+    QMainWindow::eventFilter(target, event);
 }
 
 void MainWindow::minimizeWindow()
