@@ -8,19 +8,26 @@
 #include <QKeyEvent>
 #include <QPoint>
 #include <QDebug>
+#include <QSize>
+#include "imageviewer.h"
 
-class zzScrollArea : public QScrollArea
+class ScrollArea : public QScrollArea
 {
     Q_OBJECT
 public:
-    explicit zzScrollArea(QWidget *parent = 0);
+    explicit ScrollArea(QWidget *parent = 0);
+    int getAspect() const;
+    void setImagePath(const QString& path);
+    void fitImageHorizontal();
+    void fitImageVertical();
+    void fitImageDefault();
+    void fitImageOriginal();
+    void scaleImage(double factor);
     
 signals:
     void sendDoubleClick();
     void resized();
     void scrollbarChanged();
-
-public slots:
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -31,8 +38,12 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
-QPoint lastDragPos,temp;
-    
+private:
+    QPoint lastDragPosition;
+    QScrollBar *mHBar, *mVBar;
+    QSize mSize;
+    int mAspect;
+    ImageViewer* mImageViewer;
 };
 
 #endif // ZZSCROLLAREA_H

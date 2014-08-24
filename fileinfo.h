@@ -8,13 +8,13 @@
 
 enum fileType { NONE, STATIC, GIF };
 
-class fileInfo
+class FileInfo
 {
 public:
-    double aspectRatio;
+    double aspect;
     int fileNumber; // -1 = default (no file open)
-    fileInfo();
-    fileInfo(QString *_path);
+    FileInfo();
+    FileInfo(QString *_path);
     bool setFile(QString *_path);
     void setDimensions(QSize _size);
     void clear();
