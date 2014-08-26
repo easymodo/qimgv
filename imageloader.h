@@ -2,8 +2,10 @@
 #define IMAGELOADER_H
 
 #include <QObject>
+#include "imagecache.h"
 #include "image.h"
 #include "directorymanager.h"
+#include "scrollarea.h"
 
 class ImageLoader : public QObject
 {
@@ -12,7 +14,12 @@ public:
     explicit ImageLoader(QObject *parent = 0);
     Image* loadNext();
     Image* loadPrev();
-    FileInfo f;
+    DirectoryManager *dirManager;
+
+private:
+    ImageCache *cache;
+
+
 
 signals:
 

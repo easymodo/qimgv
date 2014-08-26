@@ -13,10 +13,12 @@ FileInfo::FileInfo(QString *_path) :
     type(NONE)
 {
     qInfo.setFile(*_path);
+    lastModified = qInfo.lastModified();
 }
 
 fileType FileInfo::setFile(QString path) {
     qInfo.setFile(path);
+    lastModified = qInfo.lastModified();
     type = NONE;
     QFile file(qInfo.filePath());
     file.open(QIODevice::ReadOnly);
@@ -43,6 +45,26 @@ void FileInfo::clear() {
     qInfo.setFile("");
     type = NONE;
     aspect = 1;
+}
+
+QString FileInfo::getPath() {
+    return qInfo.filePath();
+}
+
+QString FileInfo::getName() {
+    return qInfo.fileName();
+}
+
+QDateTime FileInfo::getLastModified() {
+    return lastModified;
+}
+
+fileType FileInfo::getType() {
+    return type;
+}
+
+QSize FileInfo::getSize() {
+    return size;
 }
 
 QString FileInfo::getInfo() {

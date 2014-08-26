@@ -1,20 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "core.h"
 #include "scrollarea.h"
-#include "imageviewer.h"
-#include "infooverlay.h"
-#include "controlsoverlay.h"
-#include "mapoverlay.h"
-#include "fileinfo.h"
+
 #include <QMainWindow>
-#include <QDir>
-#include <QFile>
 #include <QtWidgets>
 #include <QAction>
-#include <time.h>
-#include "image.h"
 
 QT_BEGIN_NAMESPACE
     class QAction;
@@ -28,44 +19,42 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public slots:
-    void open(QString);
-    void setCurrentDirectory(QString);
-    void zoomIn();
-    void zoomOut();
-    void fitModeAll();
-    void fitModeWidth();
-    void fitModeNormal();
-    void next();
-    void prev();
-    void switchFullscreen();
-    void triggerFullscreen();
-    void minimizeWindow();
-    void updateMapOverlay();
-    
+    void slotFitAll();
+    void slotFitWidth();
+    void slotFitNormal();
+    void slotFullscreen();
+    void slotTriggerFullscreen();
+    void slotMinimize();
+    void slotOpenDialog();
+    void slotNextImage();
+    void slotPrevImage();
+    void slotZoomIn();
+    void slotZoomOut();
+
+signals:
+    void signalFitAll();
+    void signalFitWidth();
+    void signalFitNormal();
+    void signalOpenDialog();
+    void signalNextImage();
+    void signalPrevImage();
+    void signalZoomIn();
+    void signalZoomOut();
+
 public:
     MainWindow();
     ~MainWindow();
+
     
 private:
-    void setDefaultLogo();
     void init();
     void createActions();
     void createMenus();
     void updateActions();
-    void adjustScrollBar(QScrollBar *scrollBar, double factor);
-    void updateWindowTitle();
-    void updateInfoOverlay();
     void keyPressEvent(QKeyEvent *event);
-
-    Core *c;
     
-    ScrollArea *mScrollArea;
-    QMovie *movie;
     QColor bgColor;
     double scaleFactor;
-    QStringList fileList;
-    QStringList filters;
-    QDir currentDir;
     QAction *openAct;
     QAction *nextAct;
     QAction *prevAct;
@@ -83,13 +72,8 @@ private:
     QMenu *viewMenu;
     QMenu *navigationMenu;
     QMenu *helpMenu;
-    infoOverlay *overlay;
-    controlsOverlay *cOverlay;
-    mapOverlay *mOverlay;
-    bool openFinished;
 
 protected:
-    void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);
     bool eventFilter(QObject *target, QEvent *event);
 };

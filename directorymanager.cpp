@@ -9,11 +9,14 @@ DirectoryManager::DirectoryManager() :
     clearFileInfo();
 }
 
-void DirectoryManager::changeCurrentDir(QString path) {
-    currentDir.setCurrent(path);
-    currentDir.setNameFilters(filters);
-    fileList = currentDir.entryList();
-    currentPosition = -1;
+void DirectoryManager::setCurrentDir(QString path) {
+    if(currentDir.currentPath() != path) {
+        currentDir.setCurrent(path);
+        currentDir.setNameFilters(filters);
+        fileList = currentDir.entryList();
+        currentPosition = -1;
+        emit directoryChanged(path);
+    }
 }
 
 void DirectoryManager::next() {
@@ -25,7 +28,6 @@ void DirectoryManager::next() {
                         +"/"
                         +fileList.at(currentPosition);
         fileInfo->setFile(fileName);
-     //   open(fileName); //MOVE
     }
 }
 
@@ -38,7 +40,6 @@ void DirectoryManager::prev() {
                         +"/"
                         +fileList.at(currentPosition);
         fileInfo->setFile(fileName);
-     //   open(fileName); //MOVE
     }
 }
 

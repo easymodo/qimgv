@@ -4,83 +4,63 @@ MainWindow::MainWindow()
 {
     init();
     modeFitAll->setChecked(true);
-    setCurrentDirectory("/home/mitcher/projects/tests/");
     setMinimumSize(QSize(400,300));
     setWindowTitle(tr("qimgv 0.12"));
     resize(800, 650);
- //   setDefaultLogo();
 }
 
-void MainWindow::init()
-{
-    c = new Core();
-    setCentralWidget(c->getMainWidget());
-
+void MainWindow::init() {
     createActions();
     createMenus();
-
-    filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
-    currentDir.setNameFilters(filters);
-
-    openFinished = true;
 }
 
-void MainWindow::setCurrentDirectory(QString path) {
-    currentDir.setCurrent(path);
-    currentDir.setNameFilters(filters);
-    fileList = currentDir.entryList();
-}
-
-
-
-void MainWindow::setDefaultLogo()
-{
-    c->scrollArea->setImagePath(QString(":/images/res/logo.png"));
-}
-
-/* opens file specified by argument
- * stops current movie animation (if any)
- * loads either new pixmap or movie and places it into imgLabel
- * updates current fileInfo
- * updates window title, checkable menu actions
- * resizes imgLabel according to set fit options
- */
-void MainWindow::open(QString filePath)
-{
-    c->scrollArea->setImagePath(filePath);
-
-//     setCurrentDirectory(filePath);
-//     updateWindowTitle();
-//     updateInfoOverlay();
-//     scaleFactor = 1.0;
-//     updateActions();
-//     fitImage();
-}
-
-/* resizes imgLabel according to set fit options,
- * which is then automatically redrawn
- */
-
-void MainWindow::fitModeAll()
+void MainWindow::slotFitAll()
 {
     if(modeFitAll->isChecked())
     {
         modeFitWidth->setChecked(false);
         modeFitNormal->setChecked(false);
+        emit signalFitAll();
     }
 }
 
-void MainWindow::fitModeWidth()
+void MainWindow::slotFitWidth()
 {
-    bool isChecked = !modeFitWidth->isChecked();
-
-    modeFitAll->setChecked(isChecked);
-    modeFitNormal->setChecked(isChecked);
+    if(modeFitWidth->isChecked()) {
+        modeFitAll->setChecked(false);
+        modeFitNormal->setChecked(false);
+        emit signalFitWidth();
+    }
 }
 
-void MainWindow::fitModeNormal()
+void MainWindow::slotFitNormal()
 {
-    c->scrollArea->fitImageOriginal();
+    if(modeFitNormal->isChecked()) {
+        modeFitAll->setChecked(false);
+        modeFitWidth->setChecked(false);
+        emit signalFitNormal();
+    }
+
+}
+
+void MainWindow::slotOpenDialog() {
+    emit signalOpenDialog();
+}
+
+void MainWindow::slotNextImage() {
+    emit signalNextImage();
+}
+
+void MainWindow::slotPrevImage() {
+    emit signalPrevImage();
+}
+
+void MainWindow::slotZoomIn() {
+    emit signalZoomOut();
+}
+
+void MainWindow::slotZoomOut() {
+    emit signalZoomOut();
 }
 
 void MainWindow::createActions()
@@ -88,7 +68,7 @@ void MainWindow::createActions()
     openAct = new QAction(tr("&Open..."), this);
     openAct->setShortcut(Qt::Key_O);
     this->addAction(openAct);
-    connect(openAct, SIGNAL(triggered()), c, SLOT(openDialog()));
+    connect(openAct, SIGNAL(triggered()), this, SLOT(slotOpenDialog()));
 
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcut(tr("Alt+X"));
@@ -99,50 +79,50 @@ void MainWindow::createActions()
     nextAct->setShortcut(Qt::Key_Right);
     nextAct->setEnabled(true);
     this->addAction(nextAct);
-    connect(nextAct, SIGNAL(triggered()), this, SLOT(next()));
+    connect(nextAct, SIGNAL(triggered()), this, SLOT(slotNextImage()));
 
     prevAct = new QAction(tr("P&rev"), this);
     prevAct->setShortcut(Qt::Key_Left);
     this->addAction(prevAct);
-    connect(prevAct, SIGNAL(triggered()), this, SLOT(prev()));
+    connect(prevAct, SIGNAL(triggered()), this, SLOT(slotPrevImage()));
 
     zoomInAct = new QAction(tr("Zoom &In (10%)"), this);
     zoomInAct->setShortcut(Qt::Key_Up);
     this->addAction(zoomInAct);
-    connect(zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
+    connect(zoomInAct, SIGNAL(triggered()), this, SLOT(slotZoomIn()));
 
     zoomOutAct = new QAction(tr("Zoom &Out (10%)"), this);
     zoomOutAct->setShortcut(Qt::Key_Down);
     this->addAction(zoomOutAct);
-    connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
+    connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(slotZoomOut()));
 
     modeFitNormal = new QAction(tr("&Normal Size"), this);
     modeFitNormal->setShortcut(Qt::Key_N);
     modeFitNormal->setEnabled(false);
     modeFitNormal->setCheckable(true);
     this->addAction(modeFitNormal);
-    connect(modeFitNormal, SIGNAL(triggered()), this, SLOT(fitModeNormal()));
+    connect(modeFitNormal, SIGNAL(triggered()), this, SLOT(slotFitNormal()));
 
     modeFitAll = new QAction(tr("Fit all"), this);
     modeFitAll->setEnabled(false);
     modeFitAll->setCheckable(true);
     modeFitAll->setShortcut(Qt::Key_A);
     this->addAction(modeFitAll);
-    connect(modeFitAll, SIGNAL(triggered()), this, SLOT(fitModeAll()));
+    connect(modeFitAll, SIGNAL(triggered()), this, SLOT(slotFitAll()));
 
     modeFitWidth = new QAction(tr("Fit &width"), this);
     modeFitWidth->setEnabled(false);
     modeFitWidth->setCheckable(true);
     modeFitWidth->setShortcut(Qt::Key_W);
     this->addAction(modeFitWidth);
-    connect(modeFitWidth, SIGNAL(triggered()), this, SLOT(fitModeWidth()));
+    connect(modeFitWidth, SIGNAL(triggered()), this, SLOT(slotFitWidth()));
 
     fullscreenEnabledAct = new QAction(tr("&Fullscreen"), this);
     fullscreenEnabledAct->setEnabled(true);
     fullscreenEnabledAct->setCheckable(true);
     fullscreenEnabledAct->setShortcut(Qt::Key_F);
     this->addAction(fullscreenEnabledAct);
-    connect(fullscreenEnabledAct, SIGNAL(triggered()), this, SLOT(switchFullscreen()));
+    connect(fullscreenEnabledAct, SIGNAL(triggered()), this, SLOT(slotFullscreen()));
 
     aboutQtAct = new QAction(tr("About &Qt"), this);
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -194,84 +174,29 @@ void MainWindow::createMenus()
     menuBar()->addMenu(helpMenu);
 }
 
-void MainWindow::triggerFullscreen()
-{
+void MainWindow::slotTriggerFullscreen() {
     this->fullscreenEnabledAct->trigger();
 }
 
-void MainWindow::switchFullscreen()
-{
+void MainWindow::slotFullscreen() {
     if(fullscreenEnabledAct->isChecked())
     {
-        overlay->setHidden(false);
-        cOverlay->setHidden(false);
         this->menuBar()->hide();
         this->showFullScreen();
     }
     else
     {
-        overlay->setHidden(true);
-        cOverlay->setHidden(true);
         this->menuBar()->show();
         this->showNormal();
     }
-    updateMapOverlay();
 }
 
-/* changes current position in directory
- * loads image at that position
- */
-void MainWindow::next()
+void MainWindow::slotMinimize()
 {
-//     if(currentDir.exists() && fileList.length()) {
-//         if(++mFileInfo.fileNumber>=fileList.length()) {
-//             mFileInfo.fileNumber=0;
-//         }
-//         QString fName = currentDir.currentPath()+"/"+fileList.at(mFileInfo.fileNumber);
-//         mFileInfo.setFile(&fName);
-//         open(fName);
-//     }
-}
-/* same as above
- */
-void MainWindow::prev()
-{
-//     if(currentDir.exists() && fileList.length()) {
-//         if(--mFileInfo.fileNumber<0) {
-//             mFileInfo.fileNumber=fileList.length()-1;
-//         }
-//         QString fName = currentDir.currentPath()+"/"+fileList.at(mFileInfo.fileNumber);
-//         mFileInfo.setFile(&fName);
-//         open(fName);
-//     }
+    this->setWindowState(Qt::WindowMinimized);
 }
 
-void MainWindow::zoomIn()
-{
-    c->scrollArea->scaleImage(1.25);
-}
-
-void MainWindow::zoomOut()
-{
-    c->scrollArea->scaleImage(0.9);
-}
-
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
-    QMainWindow::resizeEvent(event);
-    //overlay->updateSize();
-    //cOverlay->updateSize();
-    //mOverlay->updateSize();
-    //updateMapOverlay();
-}
-
-/* calculates difference between current viewing area and total image size
- * hides overlay if image fits in view entirely
- * calculates image aspect ratio
- * calculates current view area position in percent
- * calls updateMap with above values
- */
-void MainWindow::updateMapOverlay()
+/*void MainWindow::updateMapOverlay()
 {
     double widthDifferenceRatio = 1.0;
     double heightDifferenceRatio = 1.0;
@@ -288,11 +213,11 @@ void MainWindow::updateMapOverlay()
     }
     if (widthDifferenceRatio>=1 && heightDifferenceRatio>=1)
     {
-        mOverlay->hide();
+        //mOverlay->hide();
     }
     else
     {
-        mOverlay->show();
+        //mOverlay->show();
         double viewportPositionX;
         double viewportPositionY;
         double imageAspectRatio = (double)imageSize.height() / imageSize.width();
@@ -312,23 +237,14 @@ void MainWindow::updateMapOverlay()
         {
             viewportPositionY=(double)mScrollArea->verticalScrollBar()->value()/mScrollArea->verticalScrollBar()->maximum();
         }
-        mOverlay->updateMap(widthDifferenceRatio, heightDifferenceRatio, viewportPositionX, viewportPositionY, imageAspectRatio);
+        //mOverlay->updateMap(widthDifferenceRatio, heightDifferenceRatio, viewportPositionX, viewportPositionY, imageAspectRatio);
     }
 }
-
-void MainWindow::updateWindowTitle()
-{
-//     setWindowTitle(mFileInfo.getInfo()+"[ "+QString::number(mFileInfo.fileNumber+1)+" / "+QString::number(fileList.length())+" ] - qimgv");
-}
-
-void MainWindow::updateInfoOverlay()
-{
-//     overlay->setText(mFileInfo.getInfo()+"[ "+QString::number(mFileInfo.fileNumber+1)+" / "+QString::number(fileList.length())+" ]");
-}
+*/
 
 void MainWindow::wheelEvent(QWheelEvent *event)
 {
-    event->angleDelta().ry() > 0 ? c->showPrevImage() : c->showNextImage();
+    event->angleDelta().ry() < 0 ? slotNextImage() : slotPrevImage();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -345,10 +261,6 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
     QMainWindow::eventFilter(target, event);
 }
 
-void MainWindow::minimizeWindow()
-{
-    this->setWindowState(Qt::WindowMinimized);
-}
 
 MainWindow::~MainWindow()
 {

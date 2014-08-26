@@ -1,69 +1,52 @@
 #include "image.h"
 #include <QMovie>
 
-Image::Image() : QObject(), mFormat(), mType(0), mPath()
+Image::Image() : QObject(), mPath()
 {
 }
 
-Image::Image(QString path) : QObject(), mFormat(), mType(0), mPath(path)
+Image::Image(QString path) : QObject(), mPath(path)
 {
     loadImage(path);
 }
 
+Image::Image(FileInfo *_info) : QObject()
+{
+    info=_info;
+    loadImage(info->getPath());
+}
+
 Image::~Image()
 {
-    free(mSource);
+    free(data);
 }
 
 void Image::loadImage(QString path)
 {
-    QFile file(path);
-    if (!file.exists())
-    {
-        mType = Type::NONE;
-        qDebug() << "File " << path << " not exists";
-        return;
+    if(getType() == GIF) {
+        data = new QMovie(path);
     }
-    
-    if (!file.open(QIODevice::ReadOnly))
-    {
-        mType = Type::NONE;
-        qDebug() << "Can't open file" << path;
-        return;
-    }
-    
-    if (file.read((char*)&mFormat, 2) == -1)
-    {
-        mType = Type::NONE;
-        qDebug() << "Can't read file";
-        return;
-    }
-    
-    mType = mFormat == Format::GIF ? Type::DYNAMIC : Type::STATIC;
-    
-    if (mFormat == Type::DYNAMIC) {
-        mSource = new QMovie(path);
-    } else {
-        mSource = new QPixmap(path);
+    else if(getType() == STATIC) {
+        data = new QPixmap(path);
     }
 }
 
-void* Image::getSource() const
+QMovie* Image::getMovie() const
 {
-    return mSource;
+    return movie;
 }
 
-int Image::getFormat() const
+QPixmap* Image::getPixmap() const
 {
-    return mFormat;
+    return pixmap;
 }
 
 int Image::getType() const
 {
-    return mType;
+    return info->getType();
 }
 
 QString Image::getPath() const
 {
-    return mPath;
+    return info->getPath();
 }

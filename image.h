@@ -1,7 +1,7 @@
 #ifndef QIMAGELOADER_H
 #define QIMAGELOADER_H
 
-#include <QFile>
+#include <fileinfo.h>
 #include <QString>
 #include <QIODevice>
 #include <QDebug>
@@ -9,45 +9,26 @@
 #include <QPixmap>
 #include <QObject>
 
-namespace Type
-{
-    enum
-    {
-        STATIC = 10,
-        DYNAMIC,
-        NONE
-    };
-};
-
-namespace Format
-{
-    enum 
-    {   // bytes in reversed order for litte endian systems
-        JPG = 0xd8ff,
-        PNG = 0x5089,
-        GIF = 0x4947,
-        //  bmp and other
-    };
-}
-
 class Image : public QObject
 {
     Q_OBJECT
 public:
     Image();
+    Image(FileInfo*);
     Image(QString path);
     ~Image();
     
-    void* getSource() const;
-    int getFormat() const;
+    QPixmap* getPixmap() const;
+    QMovie* getMovie() const;
     int getType() const;
+    QDateTime getModifyDate() const;
     void loadImage(QString path);
     QString getPath() const;
 private:
-    int mFormat;
-    int mType;
     QString mPath;
-    void* mSource;
+    QPixmap* pixmap;
+    QPixmap* movie;
+    FileInfo *info;
 };
 
 #endif // QIMAGELOADER_H

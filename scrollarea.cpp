@@ -1,8 +1,10 @@
 #include "scrollarea.h"
 
-ScrollArea::ScrollArea(QWidget *parent) : QScrollArea(parent), 
-    imageViewer(new ImageViewer()), mHBar(horizontalScrollBar()),
-    mVBar(verticalScrollBar())
+ScrollArea::ScrollArea(QWidget *parent) :
+    QScrollArea(parent),
+    hBar(this->horizontalScrollBar()),
+    vBar(this->verticalScrollBar()),
+    label(new CustomLabel())
 {
     this->setMouseTracking(true);
     this->setAlignment(Qt::AlignCenter);
@@ -10,10 +12,10 @@ ScrollArea::ScrollArea(QWidget *parent) : QScrollArea(parent),
     this->setFrameShape(QFrame::NoFrame);
     this->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
 
-    mHBar->setStyleSheet("QScrollBar {height:0px;}");
-    mVBar->setStyleSheet("QScrollBar {width:0px;}");
+    hBar->setStyleSheet("QScrollBar {height:0px;}");
+    vBar->setStyleSheet("QScrollBar {height:0px;}");
     
-    setWidget(imageViewer);
+    setWidget(label);
 }
 
 void ScrollArea::mousePressEvent(QMouseEvent *event)
@@ -38,15 +40,15 @@ void ScrollArea::mouseMoveEvent(QMouseEvent *event)
     if (event->buttons() & Qt::LeftButton)
     {
         QPoint difference = lastDragPosition - event->pos();
-//         imageViewer->set
-        int hMaxDistance = mHBar->maximum();
-        int vMaxDistance = mVBar->maximum();
+
+        int hMaxDistance = hBar->maximum();
+        int vMaxDistance = vBar->maximum();
         
-        int stepX = difference.x() + mHBar->value();
-        int stepY = difference.y() + mVBar->value();
+        int stepX = difference.x() + hBar->value();
+        int stepY = difference.y() + vBar->value();
         
-        mHBar->setValue(stepX > hMaxDistance ? hMaxDistance : stepX);
-        mVBar->setValue(stepY > vMaxDistance ? vMaxDistance : stepY);
+        this->hBar->setValue(stepX > hMaxDistance ? hMaxDistance : stepX);
+        vBar->setValue(stepY > vMaxDistance ? vMaxDistance : stepY);
 
         lastDragPosition = event->pos();
 //         emit scrollbarChanged();
@@ -72,29 +74,39 @@ void ScrollArea::keyPressEvent(QKeyEvent *event) {
     event->ignore();
 }
 
-int ScrollArea::getAspect() const
+void ScrollArea::displayImage(Image *img)
 {
-    return mAspect;
-}
 
-void ScrollArea::setImagePath(const QString& path)
-{
-    imageViewer->setImagePath(path);
+    if(img->getType() == NONE) {
+        return;
+    }
+    else if(img->getType() == STATIC) {
+        label->setPixmap((QPixmap*)(img->getData()));
+        currentImage = img;
+    }
+    else if(img->getType() == GIF) {
+
+        (QMovie)(currentImage->getData()).stop();
+        label->setMovie(img->getData());
+        currentImage = img;
+    }
+    img->getPath());
     fitImageDefault();
 }
 
 void ScrollArea::fitImageHorizontal()
 {                                                  
-    QSize imageSz = imageViewer->size();
-    int difference = imageSz.width() - width();
+    QSize imageSize = imageViewer->size();
+    int difference = imageSize.width() - width();
+    double aspectRatio =
     
     if (difference <= 0)
         return;
     
-    imageSz.rwidth() -= difference;
-    imageSz.rheight() -= difference * imageViewer->getAspect();
+    imageSize.rwidth() -= difference;
+    imageSize.rheight() -= difference * label->getAspect();
     
-    imageViewer->resize(imageSz);
+    imageViewer->resize(imageSize);
 }
 
 void ScrollArea::fitImageVertical()

@@ -4,30 +4,46 @@
 #include <QObject>
 #include <QWidget>
 #include <QFileDialog>
+#include "mainwindow.h"
 #include "scrollarea.h"
-#include "imageviewer.h"
+#include "customlabel.h"
 #include "directorymanager.h"
-
+#include "opendialog.h"
 
 class Core : public QObject
 {
     Q_OBJECT
 public:
-    explicit Core(QWidget *_parent = 0);
-    QWidget* getMainWidget();
+    explicit Core();
     ScrollArea *scrollArea;
     DirectoryManager *dirManager;
+    void connectGui(MainWindow*);
+
 
 private:
+    void initVariables();
+    void connectSlots();
+    void initSettings();
     void open(QString);
-    QWidget *parent;
+    MainWindow *mainWindow;
+    OpenDialog *openDialog;
 signals:
 
 public slots:
-    void showNextImage();
-    void showPrevImage();
+
     void updateOverlays();
-    void openDialog();
+    void setCurrentDir(QString);
+    void setDialogDir(QString);
+    //from gui
+    void showOpenDialog();
+    void slotNextImage();
+    void slotPrevImage();
+    void slotFitAll();
+    void slotFitWidth();
+    void slotFitNormal();
+    void slotZoomIn();
+    void slotZoomOut();
+    //
 };
 
 #endif // CORE_H

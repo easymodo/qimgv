@@ -19,11 +19,13 @@ SOURCES += main.cpp\
     controlsoverlay.cpp \
     mapoverlay.cpp \
     image.cpp \
-    imageviewer.cpp \
     scrollarea.cpp \
     core.cpp \
     directorymanager.cpp \
-    imageloader.cpp
+    imageloader.cpp \
+    opendialog.cpp \
+    imagecache.cpp \
+    customlabel.cpp
 
 HEADERS  += mainwindow.h \
     infooverlay.h \
@@ -31,11 +33,13 @@ HEADERS  += mainwindow.h \
     controlsoverlay.h \
     mapoverlay.h \
     image.h \
-    imageviewer.h \
     scrollarea.h \
     core.h \
     directorymanager.h \
-    imageloader.h
+    imageloader.h \
+    opendialog.h \
+    imagecache.h \
+    customlabel.h
 
 FORMS    +=
 

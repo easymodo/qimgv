@@ -1,5 +1,5 @@
-#ifndef ZZSCROLLAREA_H
-#define ZZSCROLLAREA_H
+#ifndef SCROLLAREA_H
+#define SCROLLAREA_H
 
 #include <QScrollArea>
 #include <QScrollBar>
@@ -9,15 +9,16 @@
 #include <QPoint>
 #include <QDebug>
 #include <QSize>
-#include "imageviewer.h"
+#include "customlabel.h"
+#include "image.h"
 
 class ScrollArea : public QScrollArea
 {
     Q_OBJECT
 public:
     explicit ScrollArea(QWidget *parent = 0);
-    int getAspect() const;
-    void setImagePath(const QString& path);
+    double getAspect() const;
+    void displayImage(Image*);
     void fitImageHorizontal();
     void fitImageVertical();
     void fitImageDefault();
@@ -40,10 +41,11 @@ protected:
 
 private:
     QPoint lastDragPosition;
-    QScrollBar *mHBar, *mVBar;
+    QScrollBar *hBar, *vBar;
     QSize mSize;
     int mAspect;
-    ImageViewer *imageViewer;
+    CustomLabel *label;
+    Image *currentImage;
 };
 
-#endif // ZZSCROLLAREA_H
+#endif // SCROLLAREA_H

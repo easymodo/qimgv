@@ -1,6 +1,7 @@
 #ifndef DIRECTORYMANAGER_H
 #define DIRECTORYMANAGER_H
 
+#include <QObject>
 #include <QDir>
 #include <QFile>
 #include <QString>
@@ -9,12 +10,13 @@
 #include <QFileInfo>
 #include "fileinfo.h"
 
-class DirectoryManager
+class DirectoryManager : public QObject
 {
+    Q_OBJECT
 public:
     DirectoryManager();
     fileType setFile(QString _path);
-    void changeCurrentDir(QString);
+    void setCurrentDir(QString);
     void clearFileInfo();
     void next();
     void prev();
@@ -24,6 +26,8 @@ public:
     QStringList filters;
     FileInfo *fileInfo;
     int currentPosition; // -1 = default (no file open)
+signals:
+    void directoryChanged(const QString &path);
 
 };
 

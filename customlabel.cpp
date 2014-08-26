@@ -1,23 +1,27 @@
-#include "imageviewer.h"
+#include "CustomLabel.h"
 
-ImageViewer::ImageViewer(QWidget *parent) : QLabel(parent)
+CustomLabel::CustomLabel(QWidget *parent) : QLabel(parent)
 {
     this->setAlignment(Qt::AlignCenter);
     this->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     this->setScaledContents(true);
 }
 
-void ImageViewer::resizeEvent(QResizeEvent *event) {
+void CustomLabel::resizeEvent(QResizeEvent *event) {
     QLabel::resizeEvent(event);
     emit resized();
 }
 
-QString ImageViewer::getImagePath() const
-{
-    mImage->getPath();
+void CustomLabel::setPixmap(QPixmap *pixmap) {
+    this->QLabel::setPixmap(pixmap);
 }
 
-bool ImageViewer::setImagePath(const QString& path)
+void CustomLabel::setMovie() {
+
+}
+
+/*
+bool CustomLabel::setImagePath(const QString& path)
 {
     mImage = new Image(path);
     int type = mImage->getType();
@@ -48,18 +52,4 @@ bool ImageViewer::setImagePath(const QString& path)
     resize(mSize);
     mAspect = (double) mSize.height() / mSize.width();
 }
-
-double ImageViewer::getAspect() const
-{
-    return mAspect;
-}
-
-QString ImageViewer::getImageInfo() const
-{
-    
-}
-
-void ImageViewer::fitOriginalSize()
-{
-    resize(mSize);
-}
+*/
