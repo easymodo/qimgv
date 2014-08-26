@@ -7,8 +7,9 @@ Core::Core() : QObject() {
 }
 
 void Core::initVariables() {
-    scrollArea = new ScrollArea();
+    imageViewer = new ImageViewer2();
     dirManager = new DirectoryManager();
+    imgLoader = new ImageLoader(dirManager);
     openDialog = new OpenDialog();
 }
 
@@ -28,8 +29,9 @@ void Core::initSettings() {
 
 void Core::connectGui(MainWindow *mw) {
     mainWindow = mw;
-    mainWindow->setCentralWidget(scrollArea);
+    mainWindow->setCentralWidget(imageViewer);
     openDialog->setParent(mainWindow);
+    imageViewer->setParent(mainWindow);
     connect(mainWindow, SIGNAL(signalOpenDialog()), this, SLOT(showOpenDialog()));
     connect(mainWindow, SIGNAL(signalNextImage()), this, SLOT(slotNextImage()));
     connect(mainWindow, SIGNAL(signalPrevImage()), this, SLOT(slotPrevImage()));
@@ -49,7 +51,7 @@ void Core::setDialogDir(QString path) {
 }
 
 void Core::showOpenDialog() {
-    qDebug() << openDialog->getOpenFileName();
+    open(openDialog->getOpenFileName());
 }
 
 void Core::slotNextImage() {
@@ -86,5 +88,6 @@ void Core::updateOverlays() {
 }
 
 void Core::open(QString filePath) {
-    scrollArea->setImagePath(filePath);
+    imageViewer->displayImage(imgLoader->load(filePath));
+    //scrollArea->setImagePath(filePath);
 }

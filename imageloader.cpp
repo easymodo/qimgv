@@ -1,8 +1,6 @@
 #include "imageloader.h"
 
-ImageLoader::ImageLoader(DirectoryManager *dm) :
-    QObject(parent)
-{
+ImageLoader::ImageLoader(DirectoryManager *dm) {
     cache = new ImageCache();
     dirManager = dm;
 }
@@ -15,7 +13,8 @@ Image* ImageLoader::loadPrev() {
 
 }
 
-Image* ImageLoader::load() {
+Image* ImageLoader::load(QString file) {
+    dirManager->setFile(file);
     Image *img = new Image(dirManager->getFile());
     return img;
 }

@@ -5,17 +5,18 @@
 #include <QWidget>
 #include <QFileDialog>
 #include "mainwindow.h"
-#include "scrollarea.h"
+#include "imageviewer2.h"
 #include "customlabel.h"
 #include "directorymanager.h"
 #include "opendialog.h"
+#include "imageloader.h"
 
 class Core : public QObject
 {
     Q_OBJECT
 public:
     explicit Core();
-    ScrollArea *scrollArea;
+    ImageViewer2 *imageViewer;
     DirectoryManager *dirManager;
     void connectGui(MainWindow*);
 
@@ -27,6 +28,7 @@ private:
     void open(QString);
     MainWindow *mainWindow;
     OpenDialog *openDialog;
+    ImageLoader *imgLoader;
 signals:
 
 public slots:

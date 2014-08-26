@@ -18,16 +18,17 @@ Image::Image(FileInfo *_info) : QObject()
 
 Image::~Image()
 {
-    free(data);
+    free(pixmap);
+    free(movie);
 }
 
 void Image::loadImage(QString path)
 {
     if(getType() == GIF) {
-        data = new QMovie(path);
+        movie = new QMovie(path);
     }
     else if(getType() == STATIC) {
-        data = new QPixmap(path);
+        pixmap = new QPixmap(path);
     }
 }
 

@@ -27,7 +27,7 @@ public:
 private:
     QString mPath;
     QPixmap* pixmap;
-    QPixmap* movie;
+    QMovie* movie;
     FileInfo *info;
 };
 

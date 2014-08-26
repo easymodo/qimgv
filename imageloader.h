@@ -11,9 +11,10 @@ class ImageLoader : public QObject
 {
     Q_OBJECT
 public:
-    explicit ImageLoader(QObject *parent = 0);
+    explicit ImageLoader(DirectoryManager*);
     Image* loadNext();
     Image* loadPrev();
+    Image* load(QString file);
     DirectoryManager *dirManager;
 
 private:

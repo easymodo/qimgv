@@ -13,12 +13,9 @@ void CustomLabel::resizeEvent(QResizeEvent *event) {
 }
 
 void CustomLabel::setPixmap(QPixmap *pixmap) {
-    this->QLabel::setPixmap(pixmap);
+    this->QLabel::setPixmap(*pixmap);
 }
 
-void CustomLabel::setMovie() {
-
-}
 
 /*
 bool CustomLabel::setImagePath(const QString& path)

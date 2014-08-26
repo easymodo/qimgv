@@ -81,30 +81,31 @@ void ScrollArea::displayImage(Image *img)
         return;
     }
     else if(img->getType() == STATIC) {
-        label->setPixmap((QPixmap*)(img->getData()));
+        label->setPixmap(img->getPixmap());
         currentImage = img;
     }
     else if(img->getType() == GIF) {
 
-        (QMovie)(currentImage->getData()).stop();
-        label->setMovie(img->getData());
+        currentImage->getMovie()->stop();
+        label->setMovie(img->getMovie());
         currentImage = img;
     }
-    img->getPath());
+    img->getPath();
     fitImageDefault();
 }
 
 void ScrollArea::fitImageHorizontal()
 {                                                  
-    QSize imageSize = imageViewer->size();
+    QSize imageSize = label->size();
     int difference = imageSize.width() - width();
-    double aspectRatio =
+    double aspectRatio = imageSize.height()/imageSize.width();
+    doudle aspectRatio =
     
     if (difference <= 0)
         return;
     
     imageSize.rwidth() -= difference;
-    imageSize.rheight() -= difference * label->getAspect();
+    imageSize.rheight() -= difference * label->aspectRatio();
     
     imageViewer->resize(imageSize);
 }

@@ -12,7 +12,6 @@ class CustomLabel : public QLabel
 public:
     explicit CustomLabel(QWidget *parent = 0);
     void setPixmap(QPixmap*);
-    void setMovie(QMovie*);
 signals:
     void resized();
 

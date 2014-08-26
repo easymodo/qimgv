@@ -5,15 +5,15 @@ ImageCache::ImageCache() {
 }
 
 
-Image* getCurrent() {
+Image* ImageCache::getCurrent() {
     return current;
 }
 
-Image* getPrev() {
+Image* ImageCache::getPrev() {
     return prev;
 }
 
-Image* getNext() {
+Image* ImageCache::getNext() {
     return next;
 }
 
