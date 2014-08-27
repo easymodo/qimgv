@@ -6,11 +6,16 @@ ImageLoader::ImageLoader(DirectoryManager *dm) {
 }
 
 Image* ImageLoader::loadNext() {
+    dirManager->next();
+    Image *img = new Image(dirManager->getFile());
+    return img;
 
 }
 
 Image* ImageLoader::loadPrev() {
-
+    dirManager->prev();
+    Image *img = new Image(dirManager->getFile());
+    return img;
 }
 
 Image* ImageLoader::load(QString file) {

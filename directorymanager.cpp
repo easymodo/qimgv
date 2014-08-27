@@ -27,7 +27,9 @@ void DirectoryManager::next() {
         QString fileName = currentDir.currentPath()
                         +"/"
                         +fileList.at(currentPosition);
+        fileInfo = new FileInfo(); // MEMORY LEAK
         fileInfo->setFile(fileName);
+        qDebug() << "file: " << fileName;
     }
 }
 
@@ -39,12 +41,15 @@ void DirectoryManager::prev() {
         QString fileName = currentDir.currentPath()
                         +"/"
                         +fileList.at(currentPosition);
+        fileInfo = new FileInfo(); // MEMORY LEAK
         fileInfo->setFile(fileName);
     }
 }
 
 fileType DirectoryManager::setFile(QString _path) {
-    return fileInfo->setFile(_path);
+    fileType ft = fileInfo->setFile(_path);
+    //setCurrentDir(fileInfo->getPath());
+    return ft;
 }
 
 FileInfo* DirectoryManager::getFile() {

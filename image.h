@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <QMovie>
 #include <QPixmap>
+#include <QPixmapCache>
+//#include <QImage>
 #include <QObject>
 
 class Image : public QObject
@@ -24,6 +26,10 @@ public:
     QDateTime getModifyDate() const;
     void loadImage(QString path);
     QString getPath() const;
+    double getAspect();
+    int height();
+    int width();
+    QSize size();
 private:
     QString mPath;
     QPixmap* pixmap;

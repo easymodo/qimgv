@@ -2,48 +2,47 @@
 
 ImageViewer2::ImageViewer2(): mCurrentScale(1.0)
 {
+    displaying = false;
+    fitMode = FITORIGINAL;
 }
 
-
-void ImageViewer2::displayImage(Image *img)
-{
+void ImageViewer2::displayImage(Image *img) {
     image = img;
     if (image->getType() == GIF) {
-        connect(image->getMovie(), SIGNAL(frameChanged(int)), this, SLOT(update()));
+        displaying = true;
+        connect(image->getMovie(), SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
+        image->getMovie()->start();
+        update();
     }
     if(image->getType() == STATIC) {
-        disconnect(image->getMovie(), SIGNAL(frameChanged(int)), this, SLOT(update()));
+        displaying = true;
+        disconnect(image->getMovie(), SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
         currentPixmap = *(image->getPixmap());
         update();
     }
+    fitDefault();
+    recalculateGeometry();
 }
 
-void ImageViewer2::animate()
+void ImageViewer2::animate(int n)
 {
+    qDebug() << "animating: " << n;
     currentPixmap = image->getMovie()->currentPixmap();
-}
-/*
-void ImageViewer2::onAnimation()
-{
-    AnimationInfo animationInfo = mAnimations.next();
-    mImage = animationInfo.image();
-    
-    recalculateGeometry();
     update();
-    
-    mAnimationTimer.start(animationInfo.delay());
 }
-*/
+
 void ImageViewer2::recalculateGeometry()
 {
-    mDrawingRect.setSize((currentPixmap.size() - mShrinkSize) * mCurrentScale);
+    mDrawingRect.setSize((currentPixmap.size()-mShrinkSize) * mCurrentScale);
     mDrawingRect.moveCenter(rect().center());
 }
 
 void ImageViewer2::paintEvent(QPaintEvent* event)
 {
-    QPainter painter(this);
-    painter.drawPixmap(mDrawingRect, currentPixmap);
+    if(displaying) {
+        QPainter painter(this);
+        painter.drawPixmap(mDrawingRect, currentPixmap);
+    }
 }
 
 void ImageViewer2::mousePressEvent(QMouseEvent* event)
@@ -99,8 +98,23 @@ bool ImageViewer2::imageInsideWidget(double aspect)
     return imageSz.height() < height() && imageSz.width() < width();
 }
 
-void ImageViewer2::fitImageHorizontal()
+void ImageViewer2::slotFitHorizontal() {
+    fitMode = FITHEIGHT;
+    fitHorizontal();
+    //recalculateGeometry();
+    update();
+}
+
+void ImageViewer2::slotFitVertical() {
+    fitMode = FITWIDTH;
+    fitVertical();
+    //recalculateGeometry();
+    update();
+}
+
+void ImageViewer2::fitHorizontal()
 {
+    qDebug() << "Hi2";
     int hDifference = currentPixmap.width() - width();
     if (hDifference <= 0) // nothing to fit
     {
@@ -110,12 +124,11 @@ void ImageViewer2::fitImageHorizontal()
 
     double aspect = (double) currentPixmap.height() / currentPixmap.width();
     mShrinkSize = QSize(hDifference, hDifference * aspect);
-    
-    update();
 }
 
-void ImageViewer2::fitImageVertical()
+void ImageViewer2::fitVertical()
 {
+    qDebug() << "Hi1";
     int vDifference = currentPixmap.height() - height();
     if (vDifference <= 0) // nothing to fit
     {
@@ -125,24 +138,40 @@ void ImageViewer2::fitImageVertical()
 
     double aspect = (double) currentPixmap.height() / currentPixmap.width();
     mShrinkSize = QSize(vDifference / aspect, vDifference);
+}
 
+void ImageViewer2::slotFitOriginal()
+{
+    fitMode = FITORIGINAL;
+    mDrawingRect.setSize(currentPixmap.size());
+    mShrinkSize=QSize();
+    mDrawingRect.moveTopLeft(rect().center());
+    //mDrawingRect.moveTopLeft();
+    //recalculateGeometry();
     update();
 }
 
-void ImageViewer2::fitImageDefault()
-{
+void ImageViewer2::slotFitAll() {
+    qDebug() << "Hi";
+    fitMode = FITALL;
     int hDifference = height() - mDrawingRect.height();
     int vDifference = width() - mDrawingRect.width();
-    
+
     if (hDifference > vDifference)
-        fitImageHorizontal();
+        fitHorizontal();
     else
-        fitImageVertical();
+        fitVertical();
+    recalculateGeometry();
+    update();
 }
 
-void ImageViewer2::fitImageOriginal()
-{
-    mDrawingRect.setSize(currentPixmap.size());
+void ImageViewer2::fitDefault() {
+    switch(fitMode) {
+        case FITALL: slotFitAll(); break;
+        case FITHEIGHT: slotFitHorizontal(); break;
+        case FITWIDTH: slotFitVertical(); break;
+        case FITORIGINAL: slotFitOriginal(); break;
+    }
 }
 
 void ImageViewer2::resizeEvent(QResizeEvent* event)
@@ -151,16 +180,16 @@ void ImageViewer2::resizeEvent(QResizeEvent* event)
     
     /* TODO: set appropriate behaviour: 
     *     
-    *     fitImageDefault
-    *     fitImageHorizontal
-    *     fitImageVertical
-    *     fitImageOriginal
+    *     FitDefault
+    *     FitHorizontal
+    *     FitVertical
+    *     FitOriginal
     *     
-    *     default: fitImageDefault()
+    *     default: FitDefault()
     */
 //     if (!isZoomed)
-        fitImageDefault();
-    recalculateGeometry();
+    if(fitMode==FITALL || fitMode == FITWIDTH || fitMode==FITHEIGHT)
+        fitDefault();
 }
 
 void ImageViewer2::wheelEvent(QWheelEvent* event)

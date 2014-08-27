@@ -1,19 +1,21 @@
 #include "fileinfo.h"
 
 FileInfo::FileInfo() :
-    aspect(1),
-    fileNumber(-1)
+    aspect(1)
 {
     clear();
 }
 
 FileInfo::FileInfo(QString *_path) :
-    fileNumber(-1),
     aspect(1),
     type(NONE)
 {
     qInfo.setFile(*_path);
     lastModified = qInfo.lastModified();
+}
+
+FileInfo::~FileInfo() {
+
 }
 
 fileType FileInfo::setFile(QString path) {

@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     opendialog.cpp \
     imagecache.cpp \
     customlabel.cpp \
-    imageviewer2.cpp
+    imageviewer2.cpp \
+    imageviewer.cpp
 
 HEADERS  += mainwindow.h \
     infooverlay.h \
@@ -39,7 +40,8 @@ HEADERS  += mainwindow.h \
     opendialog.h \
     imagecache.h \
     customlabel.h \
-    imageviewer2.h
+    imageviewer2.h \
+    imageviewer.h
 
 FORMS    +=
 

@@ -13,10 +13,9 @@ class FileInfo
 {
 public:
     double aspect;
-    int fileNumber; // -1 = default (no file open)
     FileInfo();
     FileInfo(QString *_path);
-
+    ~FileInfo();
 
     fileType setFile(QString path);
     void setDimensions(QSize _size);

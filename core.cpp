@@ -4,25 +4,22 @@ Core::Core() : QObject() {
     initVariables();
     connectSlots();
     initSettings();
+    QPixmapCache::setCacheLimit(100);
 }
 
 void Core::initVariables() {
-    imageViewer = new ImageViewer2();
+    imageViewer = new ImageViewer();
     dirManager = new DirectoryManager();
     imgLoader = new ImageLoader(dirManager);
     openDialog = new OpenDialog();
 }
 
+// misc connections not related to gui
 void Core::connectSlots() {
     connect(dirManager, SIGNAL(directoryChanged(QString)), this, SLOT(setDialogDir(QString)));
-    // connect(scrollArea, SIGNAL(exitClicked()), this, SLOT(close()));
-    // connect(scrollArea, SIGNAL(exitFullscreenClicked()), this, SLOT(triggerFullscreen()));
-    // connect(scrollArea, SIGNAL(minimizeClicked()), this, SLOT(minimizeWindow()));
-    // connect(mImageView, SIGNAL(resized()), this, SLOT(updateMapOverlay()));
-    // connect(scrollArea, SIGNAL(scrollbarChanged()), this, SLOT(updateMapOverlay()));
-    // connect(scrollArea, SIGNAL(sendDoubleClick()), this, SLOT(triggerFullscreen()));
 }
 
+//default settings, more to go
 void Core::initSettings() {
     dirManager->setCurrentDir(tr("C:\\"));
 }
@@ -35,11 +32,12 @@ void Core::connectGui(MainWindow *mw) {
     connect(mainWindow, SIGNAL(signalOpenDialog()), this, SLOT(showOpenDialog()));
     connect(mainWindow, SIGNAL(signalNextImage()), this, SLOT(slotNextImage()));
     connect(mainWindow, SIGNAL(signalPrevImage()), this, SLOT(slotPrevImage()));
-    connect(mainWindow, SIGNAL(signalFitAll()), this, SLOT(slotFitAll()));
-    connect(mainWindow, SIGNAL(signalFitWidth()), this, SLOT(slotFitWidth()));
-    connect(mainWindow, SIGNAL(signalFitNormal()), this, SLOT(slotFitNormal()));
+    connect(mainWindow, SIGNAL(signalFitAll()), imageViewer, SLOT(fitAll()));
+    connect(mainWindow, SIGNAL(signalFitWidth()), imageViewer, SLOT(fitWidth()));
+    connect(mainWindow, SIGNAL(signalFitNormal()), imageViewer, SLOT(fitNormal()));
     connect(mainWindow, SIGNAL(signalZoomIn()), this, SLOT(slotZoomIn()));
     connect(mainWindow, SIGNAL(signalZoomOut()), this, SLOT(slotZoomOut()));
+    connect(imageViewer, SIGNAL(sendDoubleClick()), mainWindow, SLOT(slotTriggerFullscreen()));
 }
 
 void Core::setCurrentDir(QString path) {
@@ -55,39 +53,27 @@ void Core::showOpenDialog() {
 }
 
 void Core::slotNextImage() {
-    dirManager->next();
-    qDebug() << dirManager->currentDir.currentPath();
-    qDebug() << dirManager->getFile()->getName() << " #" << dirManager->currentPosition;
-    qDebug() << dirManager->getFile()->getLastModified();
-
+    imageViewer->displayImage(imgLoader->loadNext());
+    //Image *img = imgLoader->loadNext();
+   // QPixmap *img1 = new QPixmap("K:/_code/sample images/New folder/8.jpg");
+    //QPixmapCache::remove(img1->cacheKey());
+    //img1->~QPixmap();
+    //QPixmapCache::clear();
 }
 
 void Core::slotPrevImage() {
-    dirManager->prev();
-    qDebug() << dirManager->currentDir.currentPath();
-    qDebug() << dirManager->getFile()->getName() << " #" << dirManager->currentPosition;
-    qDebug() << dirManager->getFile()->getLastModified();
-}
-
-void Core::slotFitAll() {
-}
-
-void Core::slotFitWidth() {
-}
-
-void Core::slotFitNormal() {
-}
-
-void Core::slotZoomIn() {
-}
-
-void Core::slotZoomOut() {
+    imageViewer->displayImage(imgLoader->loadPrev());
+    //QPixmap *img1 = new QPixmap("K:/_code/sample images/New folder/9.jpg");
+    //img1=dynamic_cast<QPixmap&>(img1);
+    //QPixmapCache::insert(dynamic_cast<const QPixmap&>(img1));
+    //img1->~QPixmap();
+    //QPixmapCache::clear();
 }
 
 void Core::updateOverlays() {
+    //todo
 }
 
 void Core::open(QString filePath) {
     imageViewer->displayImage(imgLoader->load(filePath));
-    //scrollArea->setImagePath(filePath);
 }

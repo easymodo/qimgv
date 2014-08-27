@@ -4,7 +4,6 @@ ImageCache::ImageCache() {
 
 }
 
-
 Image* ImageCache::getCurrent() {
     return current;
 }

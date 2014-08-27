@@ -15,6 +15,8 @@
 #include <iostream>
 using namespace std;
 
+enum FitMode { FITALL, FITWIDTH, FITHEIGHT, FITORIGINAL };
+
 class AnimationInfo
 {
     int mDelay;
@@ -46,14 +48,20 @@ public:
     ImageViewer2();
    // ImageViewer2(QWidget* parent, const QString& image);
     void displayImage(Image*);
-    void fitImageHorizontal();
-    void fitImageVertical();
-    void fitImageDefault();
-    void fitImageOriginal();
     void increaseScale(double value);
     void setScale(double scale);
     
+public slots:
+    void slotFitAll();
+    void slotFitOriginal();
+    void slotFitHorizontal();
+    void slotFitVertical();
+
 private slots:
+    void animate(int);
+    void fitDefault();
+    void fitHorizontal();
+    void fitVertical();
    // void onAnimation();
     
 protected:
@@ -65,10 +73,11 @@ protected:
     virtual void wheelEvent(QWheelEvent* event);
     
 private:
-    void animate();
+
     void recalculateGeometry();
     bool imageInsideWidget(double value);
-    
+    bool displaying;
+
     AnimationList mAnimations;
     QTimer mAnimationTimer;
     QImageReader *mImageReader;
@@ -77,6 +86,7 @@ private:
     QPoint mCursorMovedDistance;
     QRect mDrawingRect;
     QSize mShrinkSize;
+    FitMode fitMode;
     
     static const double maxScale = 2.5;
     double mCurrentScale;
