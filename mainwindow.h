@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "scrollarea.h"
+// #include "scrollarea.h"
 
 #include <QMainWindow>
 #include <QtWidgets>
