@@ -4,7 +4,8 @@ Core::Core() : QObject() {
     initVariables();
     connectSlots();
     initSettings();
-    QPixmapCache::setCacheLimit(100);
+    //QPixmapCache::setCacheLimit(100);
+    open(":/images/res/logo.png");
 }
 
 void Core::initVariables() {
@@ -32,9 +33,9 @@ void Core::connectGui(MainWindow *mw) {
     connect(mainWindow, SIGNAL(signalOpenDialog()), this, SLOT(showOpenDialog()));
     connect(mainWindow, SIGNAL(signalNextImage()), this, SLOT(slotNextImage()));
     connect(mainWindow, SIGNAL(signalPrevImage()), this, SLOT(slotPrevImage()));
-    connect(mainWindow, SIGNAL(signalFitAll()), imageViewer, SLOT(fitAll()));
-    connect(mainWindow, SIGNAL(signalFitWidth()), imageViewer, SLOT(fitWidth()));
-    connect(mainWindow, SIGNAL(signalFitNormal()), imageViewer, SLOT(fitNormal()));
+    connect(mainWindow, SIGNAL(signalFitAll()), imageViewer, SLOT(slotFitAll()));
+    connect(mainWindow, SIGNAL(signalFitWidth()), imageViewer, SLOT(slotFitWidth()));
+    connect(mainWindow, SIGNAL(signalFitNormal()), imageViewer, SLOT(slotFitNormal()));
     connect(mainWindow, SIGNAL(signalZoomIn()), this, SLOT(slotZoomIn()));
     connect(mainWindow, SIGNAL(signalZoomOut()), this, SLOT(slotZoomOut()));
     connect(imageViewer, SIGNAL(sendDoubleClick()), mainWindow, SLOT(slotTriggerFullscreen()));

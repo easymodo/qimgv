@@ -25,12 +25,24 @@ public:
     ImageViewer(QWidget* parent, Image* image);
     ~ImageViewer();
     void setImage(Image* image);
-    void fitImageHorizontal();
-    void fitImageVertical();
-    void fitImageDefault();
-    void fitImageOriginal();
+    void fitHorizontal();
+    void fitVertical();
+    void fitOriginal();
+    void fitWidth();
+    void fitAll();
+    void fitDefault();
     void increaseScale(double value);
     void setScale(double scale);
+
+signals:
+    void sendDoubleClick();
+
+public slots:
+    void slotFitNormal();
+    void slotFitWidth();
+    void slotFitAll();
+    void slotZoomIn();
+    void slotZoomOut();
 
 private slots:
     void onAnimation();
@@ -41,7 +53,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent* event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void resizeEvent(QResizeEvent* event);
-   // virtual void wheelEvent(QWheelEvent* event);
+    virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
 private:
     ImageViewerPrivate* d;

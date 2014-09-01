@@ -5,7 +5,7 @@ MainWindow::MainWindow()
     init();
     modeFitAll->setChecked(true);
     setMinimumSize(QSize(400,300));
-    setWindowTitle(tr("qimgv 0.12"));
+    setWindowTitle(tr("qimgv 0.1999"));
     resize(800, 650);
 }
 

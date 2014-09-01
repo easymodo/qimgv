@@ -9,7 +9,6 @@
 #include <QPoint>
 #include <QDebug>
 #include <QSize>
-#include "customlabel.h"
 #include "image.h"
 
 class ScrollArea : public QScrollArea
@@ -44,7 +43,6 @@ private:
     QScrollBar *hBar, *vBar;
     QSize mSize;
     int mAspect;
-    CustomLabel *label;
     Image *currentImage;
 };
 
