@@ -5,6 +5,7 @@ CustomLabel::CustomLabel(QWidget *parent) : QLabel(parent)
     this->setAlignment(Qt::AlignCenter);
     this->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     this->setScaledContents(true);
+    kek=false;
 }
 
 void CustomLabel::resizeEvent(QResizeEvent *event) {
@@ -12,10 +13,19 @@ void CustomLabel::resizeEvent(QResizeEvent *event) {
     emit resized();
 }
 
-void CustomLabel::setPixmap(QPixmap *pixmap) {
-    this->QLabel::setPixmap(*pixmap);
+void CustomLabel::setImage(QImage *_image) {
+    image = _image;
 }
 
+void CustomLabel::paintEvent(QPaintEvent *event) {
+    if(!kek) {
+        QLabel::paintEvent(event);
+    }
+    else {
+        QPainter p(this);
+        p.drawImage(0,0, static_cast<const QImage&>(*image),0,0,0,0);
+    }
+}
 
 /*
 bool CustomLabel::setImagePath(const QString& path)

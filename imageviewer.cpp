@@ -32,12 +32,14 @@ void ImageViewer::displayImage(Image *_img) {
         img = _img;
 
         if(img->getType()==GIF) {
+           label->kek=false;
            label->setMovie(img->getMovie());
             img->getMovie()->start();
         }
         if(img->getType()==STATIC) {
             //ololo
-            label->setPixmap(new QPixmap(QPixmap().fromImage(*img->getImage())));
+            label->kek = true;
+            label->setImage(img->getImage());
         }
         fitDefault();
      }
