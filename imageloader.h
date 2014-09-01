@@ -5,7 +5,7 @@
 #include "imagecache.h"
 #include "image.h"
 #include "directorymanager.h"
-#include "scrollarea.h"
+// #include "scrollarea.h"
 
 class ImageLoader : public QObject
 {
