@@ -1,12 +1,11 @@
 #include "directorymanager.h"
 
 DirectoryManager::DirectoryManager() :
-    currentPosition(-1)
+    currentPosition(-1),
+    fileInfo(NULL)
 {
     filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
-    fileInfo = new FileInfo();
     currentDir.setNameFilters(filters);
-    clearFileInfo();
 }
 
 void DirectoryManager::setCurrentDir(QString path) {
@@ -27,9 +26,7 @@ void DirectoryManager::next() {
         QString fileName = currentDir.currentPath()
                         +"/"
                         +fileList.at(currentPosition);
-        fileInfo = new FileInfo(); // MEMORY LEAK
-        fileInfo->setFile(fileName);
-        qDebug() << "file: " << fileName;
+        loadFileInfo(fileName);
     }
 }
 
@@ -41,21 +38,28 @@ void DirectoryManager::prev() {
         QString fileName = currentDir.currentPath()
                         +"/"
                         +fileList.at(currentPosition);
-        fileInfo = new FileInfo(); // MEMORY LEAK
-        fileInfo->setFile(fileName);
+        loadFileInfo(fileName);
     }
 }
 
-fileType DirectoryManager::setFile(QString _path) {
-    fileType ft = fileInfo->setFile(_path);
-    //setCurrentDir(fileInfo->getPath());
-    return ft;
+void DirectoryManager::loadFileInfo(QString path) {
+    if(fileInfo != NULL && !fileInfo->inUse) {
+        qDebug() << "deleting unused fileInfo";
+        delete fileInfo;
+    }
+    qDebug() << "loading file: " << path;
+    fileInfo = NULL;
+    fileInfo = new FileInfo(&path);
+    qDebug() << "current dir: " << currentDir.currentPath() << endl;
+}
+
+FileInfo* DirectoryManager::setFile(QString path) {
+    loadFileInfo(path);
+    qDebug() << fileInfo->getDirPath();
+    setCurrentDir(fileInfo->getDirPath());
+    return getFile();
 }
 
 FileInfo* DirectoryManager::getFile() {
     return fileInfo;
-}
-
-void DirectoryManager::clearFileInfo() {
-    fileInfo = new FileInfo();
 }

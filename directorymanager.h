@@ -15,9 +15,8 @@ class DirectoryManager : public QObject
     Q_OBJECT
 public:
     DirectoryManager();
-    fileType setFile(QString _path);
+    FileInfo* setFile(QString path);
     void setCurrentDir(QString);
-    void clearFileInfo();
     void next();
     void prev();
     FileInfo* getFile();
@@ -28,6 +27,8 @@ public:
     int currentPosition; // -1 = default (no file open)
 signals:
     void directoryChanged(const QString &path);
+private:
+    void loadFileInfo(QString path);
 
 };
 

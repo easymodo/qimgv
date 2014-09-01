@@ -35,6 +35,8 @@ private:
     QPixmap* pixmap;
     QMovie* movie;
     FileInfo *info;
+    QSize resolution;
+    double aspectRatio;
 };
 
 #endif // QIMAGELOADER_H

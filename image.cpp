@@ -15,13 +15,14 @@ Image::Image(QString path) : QObject(), mPath(path)
     info = NULL;
 }
 
-Image::Image(FileInfo *_info) : QObject()
+//use this constructor
+Image::Image(FileInfo *_info) :
+    QObject(),
+    pixmap(NULL),
+    movie(NULL),
+    info(_info)
 {
-    pixmap = NULL;
-    movie = NULL;
-    info = NULL;
-    info=_info;
-    loadImage(info->getPath());
+    loadImage(info->getFilePath());
 }
 
 Image::~Image()
@@ -31,19 +32,26 @@ Image::~Image()
     if(info->getType()==GIF)
         delete movie;
     delete info;
-    //QPixmapCache::
     QPixmapCache::clear(); // fuck this
-
 }
 
 void Image::loadImage(QString path)
 {
+    qDebug() << path;
     if(getType() == GIF) {
         movie = new QMovie(path);
+        movie->jumpToNextFrame();
+        aspectRatio = (double)movie->currentPixmap().height()/
+                movie->currentPixmap().width();
     }
     else if(getType() == STATIC) {
         pixmap = new QPixmap(path);
+        aspectRatio = (double)pixmap->height()/
+                pixmap->width();
+        qDebug() << pixmap->height();
     }
+    info->inUse = true;
+    qDebug() << aspectRatio;
 }
 
 QMovie* Image::getMovie() const
@@ -87,15 +95,7 @@ QSize Image::size() {
 }
 
 double Image::getAspect() {
-    if(info->getType() == GIF) {
-        return (double)movie->currentPixmap().height()/
-                movie->currentPixmap().width();
-    }
-    if(info->getType() == STATIC) {
-        return (double)pixmap->height()/
-                pixmap->width();
-    }
-    else return 1;
+    return aspectRatio;
 }
 
 int Image::getType() const
@@ -105,5 +105,5 @@ int Image::getType() const
 
 QString Image::getPath() const
 {
-    return info->getPath();
+    return info->getFilePath();
 }

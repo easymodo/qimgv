@@ -21,7 +21,7 @@ void Core::connectSlots() {
 
 //default settings, more to go
 void Core::initSettings() {
-    dirManager->setCurrentDir(tr("C:\\"));
+    dirManager->setCurrentDir(tr("C:/"));
 }
 
 void Core::connectGui(MainWindow *mw) {

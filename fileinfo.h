@@ -12,26 +12,20 @@ enum fileType { NONE, STATIC, GIF };
 class FileInfo
 {
 public:
-    double aspect;
-    FileInfo();
-    FileInfo(QString *_path);
+    FileInfo(QString *path);
     ~FileInfo();
-
-    fileType setFile(QString path);
-    void setDimensions(QSize _size);
-    void clear();
-    QString getPath();
+    bool inUse;
+    QString getDirPath();
+    QString getFilePath();
     QString getName();
-    QString getInfo();
     QDateTime getLastModified();
     fileType getType();
-    QSize getSize();
 
 private:
-    QFileInfo qInfo;
+    void setFile(QString path);
+    QFileInfo fInfo;
     QDateTime lastModified;
     fileType type;
-    QSize size;
 };
 
 #endif // FILEINFO_H

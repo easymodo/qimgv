@@ -16,7 +16,7 @@ ImageViewer::ImageViewer(QWidget *parent) :
     this->setAlignment(Qt::AlignCenter);
     this->setPalette(bg);
     this->setFrameShape(QFrame::NoFrame);
-    this->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+    //this->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     fitMode=ALL; //default; later will be defined in settings
 }
 
