@@ -8,7 +8,7 @@
 #include <QMovie>
 #include <QPixmap>
 #include <QPixmapCache>
-//#include <QImage>
+#include <QImage>
 #include <QObject>
 
 class Image : public QObject
@@ -20,7 +20,7 @@ public:
     Image(QString path);
     ~Image();
     
-    QPixmap* getPixmap() const;
+    QImage* getImage() const;
     QMovie* getMovie() const;
     int getType() const;
     QDateTime getModifyDate() const;
@@ -32,7 +32,7 @@ public:
     QSize size();
 private:
     QString mPath;
-    QPixmap* pixmap;
+    QImage* image;
     QMovie* movie;
     FileInfo *info;
     QSize resolution;

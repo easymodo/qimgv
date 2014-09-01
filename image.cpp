@@ -2,7 +2,7 @@
 
 Image::Image() : QObject(), mPath()
 {
-    pixmap = NULL;
+    image = NULL;
     movie = NULL;
     info = NULL;
 }
@@ -10,7 +10,7 @@ Image::Image() : QObject(), mPath()
 Image::Image(QString path) : QObject(), mPath(path)
 {
     loadImage(path);
-    pixmap = NULL;
+    image = NULL;
     movie = NULL;
     info = NULL;
 }
@@ -18,7 +18,7 @@ Image::Image(QString path) : QObject(), mPath(path)
 //use this constructor
 Image::Image(FileInfo *_info) :
     QObject(),
-    pixmap(NULL),
+    image(NULL),
     movie(NULL),
     info(_info)
 {
@@ -28,7 +28,7 @@ Image::Image(FileInfo *_info) :
 Image::~Image()
 {
     if(info->getType()==STATIC)
-        delete pixmap;
+        delete image;
     if(info->getType()==GIF)
         delete movie;
     delete info;
@@ -41,14 +41,13 @@ void Image::loadImage(QString path)
     if(getType() == GIF) {
         movie = new QMovie(path);
         movie->jumpToNextFrame();
-        aspectRatio = (double)movie->currentPixmap().height()/
-                movie->currentPixmap().width();
+        aspectRatio = (double)movie->currentImage().height()/
+                movie->currentImage().width();
     }
     else if(getType() == STATIC) {
-        pixmap = new QPixmap(path);
-        aspectRatio = (double)pixmap->height()/
-                pixmap->width();
-        qDebug() << pixmap->height();
+        image = new QImage(path);
+        aspectRatio = (double)image->height()/
+                image->width();
     }
     info->inUse = true;
     qDebug() << aspectRatio;
@@ -59,37 +58,37 @@ QMovie* Image::getMovie() const
     return movie;
 }
 
-QPixmap* Image::getPixmap() const
+QImage* Image::getImage() const
 {
-    return pixmap;
+    return image;
 }
 
 int Image::height() {
     if(info->getType() == GIF) {
-        return movie->currentPixmap().height();
+        return movie->currentImage().height();
     }
     if(info->getType() == STATIC) {
-        return pixmap->height();
+        return image->height();
     }
     else return 1;
 }
 
 int Image::width() {
     if(info->getType() == GIF) {
-        return movie->currentPixmap().width();
+        return movie->currentImage().width();
     }
     if(info->getType() == STATIC) {
-        return pixmap->width();
+        return image->width();
     }
     else return 1;
 }
 
 QSize Image::size() {
     if(info->getType() == GIF) {
-        return movie->currentPixmap().size();
+        return movie->currentImage().size();
     }
     if(info->getType() == STATIC) {
-        return pixmap->size();
+        return image->size();
     }
     else return QSize(1,1);
 }

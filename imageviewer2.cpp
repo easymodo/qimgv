@@ -17,7 +17,7 @@ void ImageViewer2::displayImage(Image *img) {
     if(image->getType() == STATIC) {
         displaying = true;
         disconnect(image->getMovie(), SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
-        currentPixmap = *(image->getPixmap());
+        currentPixmap = *(image->getImage());
         update();
     }
     fitDefault();

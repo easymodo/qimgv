@@ -36,7 +36,8 @@ void ImageViewer::displayImage(Image *_img) {
             img->getMovie()->start();
         }
         if(img->getType()==STATIC) {
-            label->setPixmap(img->getPixmap());
+            //ololo
+            label->setPixmap(new QPixmap(QPixmap().fromImage(*img->getImage())));
         }
         fitDefault();
      }
@@ -105,19 +106,8 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     if (event->buttons() & Qt::LeftButton)
     {
         temp = lastDragPos - event->pos();
-        if( (temp.rx()+hBar->value()) > hBar->maximum() ) {
-            hBar->setValue(hBar->maximum());
-        }
-        else {
-            hBar->setValue(hBar->value()+temp.rx());
-        }
-
-        if( (temp.ry()+vBar->value()) > vBar->maximum() ) {
-            vBar->setValue(vBar->maximum());
-        }
-        else {
-            vBar->setValue(vBar->value()+temp.ry());
-        }
+        hBar->setValue(hBar->value()+temp.rx());
+        vBar->setValue(vBar->value()+temp.ry());
         lastDragPos = event->pos();
         emit scrollbarChanged();
     }
