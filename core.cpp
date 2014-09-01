@@ -54,7 +54,6 @@ void Core::showOpenDialog() {
 
 void Core::slotNextImage() {
     imageViewer->setImage(imgLoader->loadNext());
-
 }
 
 void Core::slotPrevImage() {

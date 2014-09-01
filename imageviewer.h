@@ -41,7 +41,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent* event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void resizeEvent(QResizeEvent* event);
-    virtual void wheelEvent(QWheelEvent* event);
+   // virtual void wheelEvent(QWheelEvent* event);
 
 private:
     ImageViewerPrivate* d;

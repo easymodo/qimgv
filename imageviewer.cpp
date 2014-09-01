@@ -44,7 +44,7 @@ private:
 };
 
 ImageViewerPrivate::ImageViewerPrivate(ImageViewer* qq)
-    : q(qq), shrinkSize(), currentScale(1.0), resizePolicy(ZOOM), img(NULL) { }
+    : q(qq), shrinkSize(), currentScale(1.0), resizePolicy(FIT), img(NULL) { }
 
 ImageViewerPrivate::~ImageViewerPrivate()
 {
@@ -66,6 +66,7 @@ void ImageViewerPrivate::setImage(Image* i) {
     img = i;
     if(img->getType() == STATIC) {
         image = *img->getImage();
+        q->update();
     }
     else if (img->getType() == GIF) {
         img->getMovie()->jumpToNextFrame();
@@ -161,6 +162,7 @@ ImageViewer::~ImageViewer()
 void ImageViewer::setImage(Image* image)
 {
     d->setImage(image);
+    fitImageDefault();
 }
 
 void ImageViewer::onAnimation()
@@ -173,13 +175,6 @@ void ImageViewer::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
     painter.drawImage(d->drawingRect, d->image);
-
- /*   int ax, ay, aw, ah;
-    ax=ay=aw=ah=0;
-    ax=-d->drawingRect.x();
-    ay=-d->drawingRect.y();
-    painter.drawImage(0, 0, d->image, ax, ay, this->size().width()-ax, this->size().height()-ay);
-    */
 }
 
 void ImageViewer::mousePressEvent(QMouseEvent* event)
@@ -308,24 +303,24 @@ void ImageViewer::fitImageOriginal()
 void ImageViewer::resizeEvent(QResizeEvent* event)
 {
     resize(event->size());
-
+    qDebug() << "fuck you";
     if (d->resizePolicy == ZOOM)
         d->zoomAndSizeChanged();
     else if (d->resizePolicy == FIT)
         fitImageDefault();
 }
 
-void ImageViewer::wheelEvent(QWheelEvent* event)
-{
-    double forward = event->angleDelta().y();
+//void ImageViewer::wheelEvent(QWheelEvent* event)
+//{
+ //   double forward = event->angleDelta().y();
 
 /*
 *  TODO: set non const divident {10000}
 */
 
-    increaseScale(forward / 1200);
-    event->accept();
-}
+//    increaseScale(forward / 1200);
+//    event->accept();
+//}
 
 void ImageViewer::setScale(double scale)
 {
