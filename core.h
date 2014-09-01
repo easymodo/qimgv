@@ -7,7 +7,6 @@
 #include "mainwindow.h"
 #include "imageviewer.h"
 //#include "imageviewer2.h"
-// #include "customlabel.h"
 #include "directorymanager.h"
 #include "opendialog.h"
 #include "imageloader.h"
@@ -21,13 +20,13 @@ public:
     //ImageViewer2 *imageViewer;
     DirectoryManager *dirManager;
     void connectGui(MainWindow*);
+    void open(QString);
 
 
 private:
     void initVariables();
     void connectSlots();
     void initSettings();
-    void open(QString);
     MainWindow *mainWindow;
     OpenDialog *openDialog;
     ImageLoader *imgLoader;

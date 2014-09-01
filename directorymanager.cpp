@@ -57,6 +57,7 @@ FileInfo* DirectoryManager::setFile(QString path) {
     loadFileInfo(path);
     qDebug() << fileInfo->getDirPath();
     setCurrentDir(fileInfo->getDirPath());
+    currentPosition = fileList.indexOf(fileInfo->getName());
     return getFile();
 }
 

@@ -14,12 +14,10 @@ int main(int argc, char *argv[]) {
     MainWindow *mw = new MainWindow();
     c->connectGui(mw);
     mw->show();
-    /*
+
     if(a.arguments().length()>1) {
-        //mw->triggerFullscreen();
-        c->setCurrentDir(a.arguments().at(1));
+        //mw->slotTriggerFullscreen();
+        c->open(a.arguments().at(1));
     }
-    //qDebug() << a.arguments().length();
-    */
     return a.exec();
 }

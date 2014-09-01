@@ -9,12 +9,17 @@ find_package(Qt5Widgets REQUIRED)
 set (qimgv_SOURCES
         main.cpp
         mainwindow.cpp
-        zzscrollarea.cpp
         fileinfo.cpp
         controlsoverlay.cpp
         mapoverlay.cpp
-        zzlabel.cpp
         infooverlay.cpp
+        core.cpp
+        directorymanager.cpp
+        image.cpp
+        imagecache.cpp
+        imageviewer.cpp
+        imageloader.cpp
+        opendialog.cpp
     )
 
 set (qimgv_RESOURCES

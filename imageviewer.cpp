@@ -4,8 +4,9 @@
 
 enum WindowResizePolicy
 {
-    FIT,
-    ZOOM
+    NORMAL,
+    WIDTH,
+    ALL
 };
 
 class ImageViewerPrivate
@@ -44,7 +45,7 @@ private:
 };
 
 ImageViewerPrivate::ImageViewerPrivate(ImageViewer* qq)
-    : q(qq), shrinkSize(), currentScale(1.0), resizePolicy(FIT), img(NULL) { }
+    : q(qq), shrinkSize(), currentScale(1.0), resizePolicy(ALL), img(NULL) { }
 
 ImageViewerPrivate::~ImageViewerPrivate()
 {
@@ -74,7 +75,6 @@ void ImageViewerPrivate::setImage(Image* i) {
         q->connect(img->getMovie(), SIGNAL(frameChanged(int)), q, SLOT(onAnimation()));
         img->getMovie()->start();
     }
-
     drawingRect = image.rect();
 }
 
@@ -86,7 +86,6 @@ double ImageViewerPrivate::scale() const
 void ImageViewerPrivate::setScale(double scale)
 {
     currentScale = scale;
-
     QSize sz = image.size();
     sz = sz.scaled(sz * scale, Qt::KeepAspectRatio);
     drawingRect.setSize(sz);
@@ -136,9 +135,6 @@ ImageViewer::ImageViewer(): QWidget(), d(new ImageViewerPrivate(this))
 ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
 d(new ImageViewerPrivate(this))
 {
-    QColor bgColor = QColor(0,0,0,255);
-    QPalette bg(bgColor);
-    this->setPalette(bg);
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
@@ -162,7 +158,7 @@ ImageViewer::~ImageViewer()
 void ImageViewer::setImage(Image* image)
 {
     d->setImage(image);
-    fitImageDefault();
+    fitDefault();
 }
 
 void ImageViewer::onAnimation()
@@ -173,39 +169,55 @@ void ImageViewer::onAnimation()
 
 void ImageViewer::paintEvent(QPaintEvent* event)
 {
+    QColor bgColor = QColor(0,0,0,255);
     QPainter painter(this);
+    painter.setPen(bgColor);
+    painter.setBrush(Qt::SolidPattern);
+    painter.drawRect(QRect(0,0,this->width(),this->height()));
+
     painter.drawImage(d->drawingRect, d->image);
 }
 
 void ImageViewer::mousePressEvent(QMouseEvent* event)
 {
-    d->cursorMovedDistance = event->pos();
+    if (event->button() == Qt::LeftButton) {
+        this->setCursor(QCursor(Qt::ClosedHandCursor));
+        d->cursorMovedDistance = event->pos();
+    }
+
 }
 
 void ImageViewer::mouseMoveEvent(QMouseEvent* event)
 {
-    d->cursorMovedDistance -= event->pos();
+    if (event->buttons() & Qt::LeftButton) {
+        d->cursorMovedDistance -= event->pos();
 
-    int left = d->drawingRect.x() - d->cursorMovedDistance.x();
-    int top = d->drawingRect.y() - d->cursorMovedDistance.y();
-    int right = left + d->drawingRect.width();
-    int bottom = top + d->drawingRect.height();
+        int left = d->drawingRect.x() - d->cursorMovedDistance.x();
+        int top = d->drawingRect.y() - d->cursorMovedDistance.y();
+        int right = left + d->drawingRect.width();
+        int bottom = top + d->drawingRect.height();
 
-    if (left < 0 && right > size().width())
-        d->drawingRect.moveLeft(left);
+        if (left < 0 && right > size().width())
+            d->drawingRect.moveLeft(left);
 
-    if (top < 0 && bottom > size().height())
-        d->drawingRect.moveTop(top);
+        if (top < 0 && bottom > size().height())
+            d->drawingRect.moveTop(top);
 
-    d->cursorMovedDistance = event->pos();
-    update();
+        d->cursorMovedDistance = event->pos();
+        update();
+    }
 }
 
 void ImageViewer::mouseReleaseEvent(QMouseEvent* event)
 {
-    d->cursorMovedDistance = event->pos();
+    if (event->button() == Qt::LeftButton) {
+        this->setCursor(QCursor(Qt::ArrowCursor));
+        d->cursorMovedDistance = event->pos();
+    }
 }
 
+//holy shit
+//why
 void ImageViewer::increaseScale(double value)
 {
     bool zoomInto = value > 0;
@@ -220,7 +232,7 @@ void ImageViewer::increaseScale(double value)
 
     if (zoomOut)
     {
-        bool alreadyMaxZoomOut = d->resizePolicy == FIT;
+        bool alreadyMaxZoomOut = d->resizePolicy == ALL;
         if (alreadyMaxZoomOut)
             return;
 
@@ -229,14 +241,14 @@ void ImageViewer::increaseScale(double value)
 
         if (possibleScale <= 0.1 || insideWindow)
         {
-            d->resizePolicy = FIT;
-            fitImageDefault();
+            d->resizePolicy = ALL;
+            fitDefault();
             return;
         }
     }
 
     d->setScale(possibleScale);
-    d->resizePolicy = ZOOM;
+    d->resizePolicy = NORMAL;
 
     /*
     *     TODO: scale image to cursor position because
@@ -249,7 +261,16 @@ void ImageViewer::increaseScale(double value)
     update();
 }
 
-void ImageViewer::fitImageHorizontal()
+void ImageViewer::fitWidth()
+{
+    double scale = (double) width() / d->image.width();
+    d->drawingRect.setX(0);
+    d->setScale(scale);
+    d->centreVertical();
+    update();
+}
+
+void ImageViewer::fitHorizontal()
 {
     double scale = (double) width() / d->image.width();
     if (scale > 0 && scale < 1.0)
@@ -265,7 +286,7 @@ void ImageViewer::fitImageHorizontal()
     d->centreVertical();
 }
 
-void ImageViewer::fitImageVertical()
+void ImageViewer::fitVertical()
 {
     double scale = (double) height() / d->image.height();
     if (scale > 0 && scale < 1.0)
@@ -281,46 +302,68 @@ void ImageViewer::fitImageVertical()
     d->centreHorizontal();
 }
 
-void ImageViewer::fitImageDefault()
+void ImageViewer::fitAll()
 {
     double widgetAspect = (double) height() / width();
     double drawingAspect = (double) d->drawingRect.height() /
                                                     d->drawingRect.width();
 
     if (widgetAspect < drawingAspect)
-        fitImageVertical();
+        fitVertical();
     else
-        fitImageHorizontal();
-
+        fitHorizontal();
     update();
 }
 
-void ImageViewer::fitImageOriginal()
+void ImageViewer::fitOriginal()
 {
     d->drawingRect.setSize(d->image.size());
+    d->zoomAndSizeChanged();
+    update();
+}
+
+void ImageViewer::fitDefault() {
+    switch(d->resizePolicy) {
+        case NORMAL: fitOriginal(); break;
+        case WIDTH: fitWidth(); break;
+        case ALL: fitAll(); break;
+    }
+}
+
+void ImageViewer::slotFitNormal() {
+    d->resizePolicy = NORMAL;
+    fitDefault();
+}
+
+void ImageViewer::slotFitWidth() {
+    d->resizePolicy = WIDTH;
+    fitDefault();
+}
+
+void ImageViewer::slotFitAll() {
+    d->resizePolicy = ALL;
+    fitDefault();
 }
 
 void ImageViewer::resizeEvent(QResizeEvent* event)
 {
+    //Bug: doesnt work when maximizing window
     resize(event->size());
-    qDebug() << "fuck you";
-    if (d->resizePolicy == ZOOM)
-        d->zoomAndSizeChanged();
-    else if (d->resizePolicy == FIT)
-        fitImageDefault();
+    fitDefault();
 }
 
-//void ImageViewer::wheelEvent(QWheelEvent* event)
-//{
- //   double forward = event->angleDelta().y();
+void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
+    emit sendDoubleClick();
+}
 
-/*
-*  TODO: set non const divident {10000}
-*/
+void ImageViewer::slotZoomIn() {
+    increaseScale(-0.1);
+}
 
-//    increaseScale(forward / 1200);
-//    event->accept();
-//}
+void ImageViewer::slotZoomOut() {
+    increaseScale(0.1);
+}
+
 
 void ImageViewer::setScale(double scale)
 {
