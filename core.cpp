@@ -53,21 +53,13 @@ void Core::showOpenDialog() {
 }
 
 void Core::slotNextImage() {
-    imageViewer->displayImage(imgLoader->loadNext());
-    //Image *img = imgLoader->loadNext();
-   // QPixmap *img1 = new QPixmap("K:/_code/sample images/New folder/8.jpg");
-    //QPixmapCache::remove(img1->cacheKey());
-    //img1->~QPixmap();
-    //QPixmapCache::clear();
+    imageViewer->setImage(imgLoader->loadNext());
+
 }
 
 void Core::slotPrevImage() {
-    imageViewer->displayImage(imgLoader->loadPrev());
-    //QPixmap *img1 = new QPixmap("K:/_code/sample images/New folder/9.jpg");
-    //img1=dynamic_cast<QPixmap&>(img1);
-    //QPixmapCache::insert(dynamic_cast<const QPixmap&>(img1));
-    //img1->~QPixmap();
-    //QPixmapCache::clear();
+    imageViewer->setImage(imgLoader->loadPrev());
+
 }
 
 void Core::updateOverlays() {
@@ -75,5 +67,6 @@ void Core::updateOverlays() {
 }
 
 void Core::open(QString filePath) {
-    imageViewer->displayImage(imgLoader->load(filePath));
+    //imageViewer->displayImage(imgLoader->load(filePath));
+    imageViewer->setImage(imgLoader->load(filePath));
 }

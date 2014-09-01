@@ -9,7 +9,6 @@ Image* ImageLoader::loadNext() {
     dirManager->next();
     Image *img = new Image(dirManager->getFile());
     return img;
-
 }
 
 Image* ImageLoader::loadPrev() {

@@ -1,52 +1,50 @@
 #ifndef IMAGEVIEWER_H
 #define IMAGEVIEWER_H
 
-#include <QScrollArea>
-#include <QScrollBar>
-#include <QMouseEvent>
-#include <QResizeEvent>
-#include <QKeyEvent>
-#include <QPoint>
+#include <QWidget>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QImageReader>
 #include <QColor>
+#include <QPalette>
+#include <QTimer>
 #include <QDebug>
-#include "customlabel.h"
+#include <QErrorMessage>
+#include <vector>
 #include "image.h"
 
-enum FitMode { NORMAL, WIDTH, ALL };
+class ImageViewerPrivate;
 
-class ImageViewer : public QScrollArea
+class ImageViewer : public QWidget
 {
     Q_OBJECT
-    public:
-        explicit ImageViewer(QWidget *parent = 0);
-        void displayImage(Image*);
-        void refit();
 
-    signals:
-        void sendDoubleClick();
-        void resized();
-        void scrollbarChanged();
+public:
+    ImageViewer();
+    ImageViewer(QWidget* parent);
+    ImageViewer(QWidget* parent, Image* image);
+    ~ImageViewer();
+    void setImage(Image* image);
+    void fitImageHorizontal();
+    void fitImageVertical();
+    void fitImageDefault();
+    void fitImageOriginal();
+    void increaseScale(double value);
+    void setScale(double scale);
 
-    public slots:
-        void fitAll();
-        void fitWidth();
-        void fitNormal();
+private slots:
+    void onAnimation();
 
-    protected:
-        void mousePressEvent(QMouseEvent *event);
-        void mouseReleaseEvent(QMouseEvent *event);
-        void mouseMoveEvent(QMouseEvent *event);
-        void wheelEvent(QWheelEvent *event);
-        void mouseDoubleClickEvent(QMouseEvent *event);
-        void resizeEvent(QResizeEvent *event);
-        void keyPressEvent(QKeyEvent *event);
-        QPoint lastDragPos,temp;
-    private:
-        CustomLabel *label;
-        QScrollBar *vBar, *hBar;
-        Image *img;
-        FitMode fitMode;
-        void fitDefault();
+protected:
+    virtual void paintEvent(QPaintEvent* event);
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent* event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+    virtual void resizeEvent(QResizeEvent* event);
+    virtual void wheelEvent(QWheelEvent* event);
+
+private:
+    ImageViewerPrivate* d;
 };
 
 #endif // IMAGEVIEWER_H

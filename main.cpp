@@ -4,11 +4,9 @@
 #include <QDebug>
 #include "image.h"
 
-#include <iostream>
-using namespace std;
+//#include <iostream>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     Core *c = new Core();
     c->setCurrentDir("K:\\_code\\sample images");
@@ -23,6 +21,5 @@ int main(int argc, char *argv[])
     }
     //qDebug() << a.arguments().length();
     */
-    
     return a.exec();
 }

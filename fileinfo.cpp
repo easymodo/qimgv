@@ -8,7 +8,6 @@ FileInfo::FileInfo(QString *path) :
 }
 
 FileInfo::~FileInfo() {
-
 }
 
 void FileInfo::setFile(QString path) {
