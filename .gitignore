@@ -1,0 +1,4 @@
+.kdev4/
+build
+.kdev_include_paths
+*.xmi

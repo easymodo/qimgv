@@ -7,7 +7,7 @@
 #include "mainwindow.h"
 #include "imageviewer.h"
 //#include "imageviewer2.h"
-#include "customlabel.h"
+// #include "customlabel.h"
 #include "directorymanager.h"
 #include "opendialog.h"
 #include "imageloader.h"
