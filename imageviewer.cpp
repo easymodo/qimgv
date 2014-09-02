@@ -179,6 +179,7 @@ void ImageViewer::paintEvent(QPaintEvent* event)
     painter.setBrush(Qt::SolidPattern);
     painter.drawRect(QRect(0,0,this->width(),this->height()));
 
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     painter.drawImage(d->drawingRect, d->image);
 }
 
@@ -188,7 +189,6 @@ void ImageViewer::mousePressEvent(QMouseEvent* event)
         this->setCursor(QCursor(Qt::ClosedHandCursor));
         d->cursorMovedDistance = event->pos();
     }
-
 }
 
 void ImageViewer::mouseMoveEvent(QMouseEvent* event)
@@ -225,17 +225,12 @@ void ImageViewer::fitWidth()
     double scale = (double) width() / d->image.width();
     d->drawingRect.setX(0);
     d->setScale(scale);
-    //d->centreVertical();
-
     if(d->drawingRect.height()<=height()) {
         QPoint point(0, (height() - d->drawingRect.height()) / 2);
         d->drawingRect.moveTo(point);
     }
     else
         d->drawingRect.moveTop(0);
-    //d->drawingRect.
-
-    qDebug() << d->drawingRect << " sc: " << d->scale();
     update();
 }
 
