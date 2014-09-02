@@ -17,7 +17,6 @@ public:
     ~ImageViewerPrivate();
     void centreVertical();
     void centreHorizontal();
-    //void zoomAndSizeChanged();
     void setImage(Image* image);
     void setScale(double scale);
     double scale() const;
@@ -245,21 +244,28 @@ void ImageViewer::fitVertical()
 
 void ImageViewer::fitAll()
 {
-    double widgetAspect = (double) height() / width();
-    double drawingAspect = (double) d->drawingRect.height() /
-                                                    d->drawingRect.width();
-    if (widgetAspect < drawingAspect)
-        fitVertical();
-    else
-        fitHorizontal();
+    if(d->drawingRect.height()<=this->height()
+       || d->drawingRect.width()<=this->width()) {
+        setScale(1.0);
+        centerImage();
+    }
+    else {
+        double widgetAspect = (double) height() / width();
+        double drawingAspect = (double) d->drawingRect.height() /
+                                                        d->drawingRect.width();
+        if (widgetAspect < drawingAspect)
+            fitVertical();
+        else
+            fitHorizontal();
+    }
     update();
 }
 
 void ImageViewer::fitOriginal()
 {
-    setScale(1.0);
-    centerImage();
-    update();
+   setScale(1.0);
+   centerImage();
+   update();
 }
 
 void ImageViewer::fitDefault() {
@@ -272,8 +278,12 @@ void ImageViewer::fitDefault() {
 }
 
 void ImageViewer::centerImage() {
-    d->centreVertical();
-    d->centreHorizontal();
+    if(d->drawingRect.height()<=this->height()) {
+        d->centreVertical();
+    }
+    if(d->drawingRect.width()<=this->width()) {
+        d->centreHorizontal();
+    }
 }
 
 void ImageViewer::slotFitNormal() {
@@ -294,11 +304,7 @@ void ImageViewer::slotFitAll() {
 void ImageViewer::resizeEvent(QResizeEvent* event)
 {
     resize(event->size());
-    if(d->resizePolicy==NORMAL) {
-        update();
-    } else {
-        fitDefault();
-    }
+    fitDefault();
 }
 
 void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
