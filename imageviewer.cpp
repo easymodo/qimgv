@@ -225,7 +225,17 @@ void ImageViewer::fitWidth()
     double scale = (double) width() / d->image.width();
     d->drawingRect.setX(0);
     d->setScale(scale);
-    d->centreVertical();
+    //d->centreVertical();
+
+    if(d->drawingRect.height()<=height()) {
+        QPoint point(0, (height() - d->drawingRect.height()) / 2);
+        d->drawingRect.moveTo(point);
+    }
+    else
+        d->drawingRect.moveTop(0);
+    //d->drawingRect.
+
+    qDebug() << d->drawingRect << " sc: " << d->scale();
     update();
 }
 
@@ -284,10 +294,15 @@ void ImageViewer::fitDefault() {
 }
 
 void ImageViewer::centerImage() {
-    int spaceLeft = d->drawingRect.left() - rect().left();
-    int spaceTop = d->drawingRect.top() - rect().top();
-    int spaceRight = rect().right() - d->drawingRect.right();
-    int spaceBottom = rect().bottom() - d->drawingRect.bottom();
+    qDebug() << d->drawingRect;
+    int left = d->drawingRect.left()<0?0:d->drawingRect.left();
+    int right = d->drawingRect.right()<0?0:d->drawingRect.right();
+    int top = d->drawingRect.top()<0?0:d->drawingRect.top();
+    int bottom = d->drawingRect.bottom()<0?0:d->drawingRect.bottom();
+    int spaceLeft = left - rect().left();
+    int spaceTop = top - rect().top();
+    int spaceRight = rect().right() - right;
+    int spaceBottom = rect().bottom() - bottom;
 
     if (spaceLeft < 0 && spaceRight > 0)
         d->drawingRect.translate(spaceRight, 0);
@@ -337,6 +352,7 @@ void ImageViewer::slotZoomIn() {
     d->centreVertical();
     d->resizePolicy = FREE;
     update();
+    qDebug() << "zoomIn" << d->drawingRect;
 }
 
 void ImageViewer::slotZoomOut() {
@@ -351,6 +367,7 @@ void ImageViewer::slotZoomOut() {
     d->centreVertical();
     d->resizePolicy = FREE;
     update();
+    qDebug() << "zoomOut" << d->drawingRect;
 }
 
 void ImageViewer::setScale(double scale)
