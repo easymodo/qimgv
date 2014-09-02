@@ -263,7 +263,6 @@ void ImageViewer::fitOriginal()
 }
 
 void ImageViewer::fitDefault() {
-    //qDebug() << d->resizePolicy;
     switch(d->resizePolicy) {
         case NORMAL: fitOriginal(); break;
         case WIDTH: fitWidth(); break;
@@ -273,37 +272,33 @@ void ImageViewer::fitDefault() {
 }
 
 void ImageViewer::centerImage() {
-    //qDebug() << "ci";
-    if(d->drawingRect.height() < height()) {
-        d->centreVertical();
-    }
-    if(d->drawingRect.width() < width()) {
-        d->centreHorizontal();
-    }
+    d->centreVertical();
+    d->centreHorizontal();
 }
 
 void ImageViewer::slotFitNormal() {
     d->resizePolicy = NORMAL;
     fitDefault();
-    //qDebug() << "normal " <<" currentZoom: " << d->scale();
 }
 
 void ImageViewer::slotFitWidth() {
     d->resizePolicy = WIDTH;
     fitDefault();
-    //qDebug() << "width " <<" currentZoom: " << d->scale();
 }
 
 void ImageViewer::slotFitAll() {
     d->resizePolicy = ALL;
     fitDefault();
-    //qDebug() << "all " <<" currentZoom: " << d->scale();
 }
 
 void ImageViewer::resizeEvent(QResizeEvent* event)
 {
     resize(event->size());
-    fitDefault();
+    if(d->resizePolicy==NORMAL) {
+        update();
+    } else {
+        fitDefault();
+    }
 }
 
 void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
@@ -312,7 +307,6 @@ void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
 
 void ImageViewer::slotZoomIn() {
     double possibleScale = d->scale() + d->zoomStep;
-    //qDebug() << "in" <<" currentZoom: " << d->scale();
     if (possibleScale <= d->minScale) {
         d->setScale(possibleScale);
     }
@@ -327,7 +321,6 @@ void ImageViewer::slotZoomIn() {
 
 void ImageViewer::slotZoomOut() {
     double possibleScale = d->scale() - d->zoomStep;
-    //qDebug() << "out" <<" currentZoom: " << d->scale();
     if (possibleScale >= d->maxScale) {
         d->setScale(possibleScale);
     }
