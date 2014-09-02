@@ -222,7 +222,10 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent* event)
 
 void ImageViewer::fitWidth()
 {
-    fitHorizontal();
+    double scale = (double) width() / d->image.width();
+    d->drawingRect.setX(0);
+    d->setScale(scale);
+    d->centreVertical();
     update();
 }
 
@@ -244,16 +247,19 @@ void ImageViewer::fitVertical()
 
 void ImageViewer::fitAll()
 {
-    if(d->drawingRect.height()<=this->height()
-       || d->drawingRect.width()<=this->width()) {
-        setScale(1.0);
-        centerImage();
+    qDebug() << d->drawingRect;
+    qDebug() << "scale: " << d->scale();
+    bool h = d->image.height() < this->height();
+    bool w = d->image.width() < this->width();
+    qDebug() << h << w;
+    if(h && w) {
+        fitOriginal();
     }
     else {
         double widgetAspect = (double) height() / width();
         double drawingAspect = (double) d->drawingRect.height() /
-                                                        d->drawingRect.width();
-        if (widgetAspect < drawingAspect)
+                d->drawingRect.width();
+        if(widgetAspect < drawingAspect)
             fitVertical();
         else
             fitHorizontal();
@@ -278,12 +284,20 @@ void ImageViewer::fitDefault() {
 }
 
 void ImageViewer::centerImage() {
-    if(d->drawingRect.height()<=this->height()) {
-        d->centreVertical();
-    }
-    if(d->drawingRect.width()<=this->width()) {
+    int spaceLeft = d->drawingRect.left() - rect().left();
+    int spaceTop = d->drawingRect.top() - rect().top();
+    int spaceRight = rect().right() - d->drawingRect.right();
+    int spaceBottom = rect().bottom() - d->drawingRect.bottom();
+
+    if (spaceLeft < 0 && spaceRight > 0)
+        d->drawingRect.translate(spaceRight, 0);
+    else if (spaceLeft > 0 || spaceRight > 0)
         d->centreHorizontal();
-    }
+
+    if (spaceTop < 0 && spaceBottom > 0)
+        d->drawingRect.translate(0, spaceBottom);
+    else if (spaceTop > 0 || spaceBottom > 0)
+        d->centreVertical();
 }
 
 void ImageViewer::slotFitNormal() {
