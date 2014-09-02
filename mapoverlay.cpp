@@ -1,57 +1,99 @@
 #include "mapoverlay.h"
 
-mapOverlay::mapOverlay(QWidget *parent) :
-    QWidget(parent)
+class MapOverlayPrivate
 {
-    setAttribute(Qt::WA_TransparentForMouseEvents);
-    mapSize = 100;
-    mapMargin = 10;
-    outer = new QRect();
-    outer->setX(0);
-    outer->setY(0);
-    inner = new QRect();
-    setPalette(Qt::transparent);
-    this->setGeometry(parentWidget()->size().rwidth()-mapSize-mapMargin,parentWidget()->size().rheight()-mapSize-mapMargin,mapSize+mapMargin,mapSize+mapMargin);
+public:
+    MapOverlayPrivate(MapOverlay* qq);
+    QPen penInner;
+    QPen penOuter;
+    
+    QRect outerRect;
+    QRect innerRect;
+    
+    MapOverlay* q;
+    
+    /**
+     * @brief Drawing size of map
+     * This means cubic size of map because width == height
+     */
+    
+    int mapSz;
+    int mapMargin;
+};
+
+MapOverlayPrivate::MapOverlayPrivate(MapOverlay* qq) : mapSz(100), q(qq)
+{
 }
 
-void mapOverlay::paintEvent(QPaintEvent *event) {
+MapOverlay::MapOverlay(QWidget *parent) : QWidget(parent),
+    d(new MapOverlayPrivate(this))
+{
+    resize(d->mapSz, d->mapSz);
+}
+
+void MapOverlay::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
+    painter.setOpacity(0.7);
+    
     painter.setPen(QPen(QColor(150,150,150,200)));
-    painter.fillRect(*outer, QBrush(QColor(230,230,230,150), Qt::SolidPattern));
-    painter.drawRect(*outer);
-    painter.fillRect(*inner, QBrush(QColor(80,80,80,200), Qt::SolidPattern));
-    painter.drawRect(*inner);
-}
-
-void mapOverlay::updateSize() {
-    this->setGeometry(parentWidget()->size().rwidth()-mapSize-mapMargin,parentWidget()->size().rheight()-mapSize-mapMargin,mapSize+mapMargin,mapSize+mapMargin);
+    painter.fillRect(d->outerRect, QBrush(QColor(80,80,80,200), Qt::SolidPattern));
+    painter.drawRect(d->outerRect);
+    painter.fillRect(d->innerRect, QBrush(QColor(230,230,230,150), Qt::SolidPattern));
+    painter.drawRect(d->innerRect);
 }
 
 /* calculates outer(image) and inner(view area) squares
  * trust me, it just does
+ * 
+ * okay but I make it better. Your code make me cry.
  */
-void mapOverlay::updateMap(double widthDifferenceRatio,
-                           double heightDifferenceRatio,
-                           double viewportPositionX,
-                           double viewportPositionY,
-                           double imageAspectRatio) {
-    if(imageAspectRatio == 1) {
-        outer->setCoords(0, 0, mapSize, mapSize);
-    }
-    else if (imageAspectRatio > 1) {
-        outer->setCoords(mapSize - mapSize / imageAspectRatio, 0, mapSize, mapSize);
-    }
-    else {
-        outer->setCoords(0, mapSize-mapSize * imageAspectRatio, mapSize, mapSize);
-    }
-    double tmp1, tmp2, tmp3, tmp4;
-    tmp1 = widthDifferenceRatio * outer->width();
-    tmp2 = heightDifferenceRatio * outer->height();
-    tmp3 = tmp1 + outer->x() + (outer->width() - tmp1) * viewportPositionX;
-    tmp4 = tmp2 + outer->y() + (outer->height() - tmp2) * viewportPositionY;
-    inner->setCoords(outer->x() + (outer->width() - tmp1) * viewportPositionX + 1,
-                     outer->y() + (outer->height() - tmp2) * viewportPositionY + 1,
-                     tmp3 - 2,
-                     tmp4 - 2);
-    this->update();
+
+void MapOverlay::updateMap(const QSize& windowSz, const QRect& drawingRect)
+{
+    QSize outerSz = drawingRect.size();
+    outerSz.scale(d->mapSz, d->mapSz, Qt::KeepAspectRatio);
+    d->outerRect.setSize(outerSz);
+    
+    int width = windowSz.width();
+    int height = windowSz.height();
+    
+    float widthDiff = (float) windowSz.width() / drawingRect.width();
+    float heightDiff = (float) windowSz.height() / drawingRect.height();
+    
+    if (width > height)
+        width = d->mapSz * widthDiff;
+    else
+        height = d->mapSz * heightDiff;
+    
+    QSize innerSz = windowSz.scaled(width, height, Qt::KeepAspectRatio);
+    d->innerRect.setSize(innerSz);
+    
+    float xSpeedDiff = (float) innerSz.width() / windowSz.width();
+    float ySpeedDiff = (float) innerSz.height() / windowSz.height();
+    
+    int x = -drawingRect.left() * xSpeedDiff;
+    int y = -drawingRect.top() * ySpeedDiff;
+    
+    d->innerRect.setTopLeft(QPoint(x, y));
+    d->innerRect.setSize(innerSz);
+
+    update();
+}
+
+void MapOverlay::mouseMoveEvent(QMouseEvent* event)
+{
+    QWidget::mouseMoveEvent(event);
+    event->accept();
+}
+
+void MapOverlay::mousePressEvent(QMouseEvent* event)
+{
+    QWidget::mousePressEvent(event);
+    event->accept();
+}
+
+void MapOverlay::mouseReleaseEvent(QMouseEvent* event)
+{
+    QWidget::mouseReleaseEvent(event);
+    event->accept();
 }
