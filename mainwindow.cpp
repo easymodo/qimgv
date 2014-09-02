@@ -3,10 +3,10 @@
 MainWindow::MainWindow()
 {
     init();
-    modeFitAll->setChecked(true);
+    resize(800, 650);
+    modeFitNormal->setChecked(true);
     setMinimumSize(QSize(400,300));
     setWindowTitle(tr("qimgv 0.1999"));
-    resize(800, 650);
 }
 
 void MainWindow::init() {
@@ -16,31 +16,26 @@ void MainWindow::init() {
 
 void MainWindow::slotFitAll()
 {
-    if(modeFitAll->isChecked())
-    {
-        modeFitWidth->setChecked(false);
-        modeFitNormal->setChecked(false);
-        emit signalFitAll();
-    }
+    modeFitWidth->setChecked(false);
+    modeFitNormal->setChecked(false);
+    modeFitAll->setChecked(true);
+    emit signalFitAll();
 }
 
 void MainWindow::slotFitWidth()
 {
-    if(modeFitWidth->isChecked()) {
-        modeFitAll->setChecked(false);
-        modeFitNormal->setChecked(false);
-        emit signalFitWidth();
-    }
+    modeFitAll->setChecked(false);
+    modeFitNormal->setChecked(false);
+    modeFitWidth->setChecked(true);
+    emit signalFitWidth();
 }
 
 void MainWindow::slotFitNormal()
 {
-    if(modeFitNormal->isChecked()) {
-        modeFitAll->setChecked(false);
-        modeFitWidth->setChecked(false);
-        emit signalFitNormal();
-    }
-
+    modeFitAll->setChecked(false);
+    modeFitWidth->setChecked(false);
+    modeFitNormal->setChecked(true);
+    emit signalFitNormal();
 }
 
 void MainWindow::slotOpenDialog() {
@@ -56,7 +51,7 @@ void MainWindow::slotPrevImage() {
 }
 
 void MainWindow::slotZoomIn() {
-    emit signalZoomOut();
+    emit signalZoomIn();
 }
 
 void MainWindow::slotZoomOut() {
@@ -242,6 +237,15 @@ void MainWindow::slotMinimize()
 }
 */
 
+void MainWindow::spaceSwitchFitMode() {
+    if(modeFitAll->isChecked()) {
+        this->slotFitNormal();
+    }
+    else {
+        this->slotFitAll();
+    }
+}
+
 void MainWindow::wheelEvent(QWheelEvent *event)
 {
     event->angleDelta().ry() < 0 ? slotNextImage() : slotPrevImage();
@@ -252,7 +256,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     QMainWindow::keyPressEvent(event);
     if (event->key() == Qt::Key_Space)
     {
-        //switchFitMode();
+        spaceSwitchFitMode();
     }
 }
 
@@ -260,7 +264,6 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 {
     QMainWindow::eventFilter(target, event);
 }
-
 
 MainWindow::~MainWindow()
 {

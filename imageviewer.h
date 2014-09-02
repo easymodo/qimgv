@@ -25,14 +25,6 @@ public:
     ImageViewer(QWidget* parent, Image* image);
     ~ImageViewer();
     void setImage(Image* image);
-    void fitHorizontal();
-    void fitVertical();
-    void fitOriginal();
-    void fitWidth();
-    void fitAll();
-    void fitDefault();
-    void increaseScale(double value);
-    void setScale(double scale);
 
 signals:
     void sendDoubleClick();
@@ -56,6 +48,14 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
 private:
+    void fitHorizontal();
+    void fitVertical();
+    void fitOriginal();
+    void fitWidth();
+    void fitAll();
+    void fitDefault();
+    void setScale(double scale);
+    void centerImage();
     ImageViewerPrivate* d;
 };
 

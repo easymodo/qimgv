@@ -6,7 +6,8 @@ enum WindowResizePolicy
 {
     NORMAL,
     WIDTH,
-    ALL
+    ALL,
+    FREE
 };
 
 class ImageViewerPrivate
@@ -16,7 +17,7 @@ public:
     ~ImageViewerPrivate();
     void centreVertical();
     void centreHorizontal();
-    void zoomAndSizeChanged();
+    //void zoomAndSizeChanged();
     void setImage(Image* image);
     void setScale(double scale);
     double scale() const;
@@ -38,14 +39,16 @@ public:
     int freeSpaceRight;
     int freeSpaceTop;
 
-    static const double maxScale = 2.5;
+    static const double maxScale = 0.10;
+    static const double minScale = 3.0;
+    static const double zoomStep = 0.1;
 
 private:
     double currentScale;
 };
 
 ImageViewerPrivate::ImageViewerPrivate(ImageViewer* qq)
-    : q(qq), shrinkSize(), currentScale(1.0), resizePolicy(ALL), img(NULL) { }
+    : q(qq), shrinkSize(), currentScale(1.0), resizePolicy(NORMAL), img(NULL) { }
 
 ImageViewerPrivate::~ImageViewerPrivate()
 {
@@ -90,9 +93,10 @@ void ImageViewerPrivate::setScale(double scale)
     sz = sz.scaled(sz * scale, Qt::KeepAspectRatio);
     drawingRect.setSize(sz);
 }
-
+/*
 void ImageViewerPrivate::zoomAndSizeChanged()
 {
+    setScale(1.0);
     int spaceLeft = drawingRect.left() - q->rect().left();
     int spaceTop = drawingRect.top() - q->rect().top();
     int spaceRight = q->rect().right() - drawingRect.right();
@@ -108,6 +112,7 @@ void ImageViewerPrivate::zoomAndSizeChanged()
     else if (spaceTop > 0 || spaceBottom > 0)
         centreVertical();
 }
+*/
 
 void ImageViewerPrivate::centreHorizontal()
 {
@@ -216,89 +221,25 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent* event)
     }
 }
 
-//holy shit
-//why
-void ImageViewer::increaseScale(double value)
-{
-    bool zoomInto = value > 0;
-    bool zoomOut = value < 0;
-    double possibleScale = d->scale() + value;
-
-    if (zoomInto)
-    {
-        if (possibleScale >= d->maxScale)
-            possibleScale = d->maxScale;
-    }
-
-    if (zoomOut)
-    {
-        bool alreadyMaxZoomOut = d->resizePolicy == ALL;
-        if (alreadyMaxZoomOut)
-            return;
-
-        QSize s = d->drawingRect.size();
-        bool insideWindow = s.width() <= width() || s.height() <= height();
-
-        if (possibleScale <= 0.1 || insideWindow)
-        {
-            d->resizePolicy = ALL;
-            fitDefault();
-            return;
-        }
-    }
-
-    d->setScale(possibleScale);
-    d->resizePolicy = NORMAL;
-
-    /*
-    *     TODO: scale image to cursor position because
-    *     current zoom reset point that cursor are looking
-    */
-
-    d->centreHorizontal();
-    d->centreVertical();
-
-    update();
-}
-
 void ImageViewer::fitWidth()
 {
-    double scale = (double) width() / d->image.width();
-    d->drawingRect.setX(0);
-    d->setScale(scale);
-    d->centreVertical();
+    fitHorizontal();
     update();
 }
 
 void ImageViewer::fitHorizontal()
 {
     double scale = (double) width() / d->image.width();
-    if (scale > 0 && scale < 1.0)
-    {
-        d->drawingRect.setX(0);
-        d->setScale(scale);
-    }
-    else
-    {
-        d->centreHorizontal();
-    }
-
+    d->drawingRect.setX(0);
+    d->setScale(scale);
     d->centreVertical();
 }
 
 void ImageViewer::fitVertical()
 {
     double scale = (double) height() / d->image.height();
-    if (scale > 0 && scale < 1.0)
-    {
-        d->drawingRect.setY(0);
-        d->setScale(scale);
-    }
-    else
-    {
-        d->centreVertical();
-    }
-
+    d->drawingRect.setY(0);
+    d->setScale(scale);
     d->centreHorizontal();
 }
 
@@ -307,7 +248,6 @@ void ImageViewer::fitAll()
     double widgetAspect = (double) height() / width();
     double drawingAspect = (double) d->drawingRect.height() /
                                                     d->drawingRect.width();
-
     if (widgetAspect < drawingAspect)
         fitVertical();
     else
@@ -317,37 +257,51 @@ void ImageViewer::fitAll()
 
 void ImageViewer::fitOriginal()
 {
-    d->drawingRect.setSize(d->image.size());
-    d->zoomAndSizeChanged();
+    setScale(1.0);
+    centerImage();
     update();
 }
 
 void ImageViewer::fitDefault() {
+    //qDebug() << d->resizePolicy;
     switch(d->resizePolicy) {
         case NORMAL: fitOriginal(); break;
         case WIDTH: fitWidth(); break;
         case ALL: fitAll(); break;
+        default: centerImage(); break;
+    }
+}
+
+void ImageViewer::centerImage() {
+    //qDebug() << "ci";
+    if(d->drawingRect.height() < height()) {
+        d->centreVertical();
+    }
+    if(d->drawingRect.width() < width()) {
+        d->centreHorizontal();
     }
 }
 
 void ImageViewer::slotFitNormal() {
     d->resizePolicy = NORMAL;
     fitDefault();
+    //qDebug() << "normal " <<" currentZoom: " << d->scale();
 }
 
 void ImageViewer::slotFitWidth() {
     d->resizePolicy = WIDTH;
     fitDefault();
+    //qDebug() << "width " <<" currentZoom: " << d->scale();
 }
 
 void ImageViewer::slotFitAll() {
     d->resizePolicy = ALL;
     fitDefault();
+    //qDebug() << "all " <<" currentZoom: " << d->scale();
 }
 
 void ImageViewer::resizeEvent(QResizeEvent* event)
 {
-    //Bug: doesnt work when maximizing window
     resize(event->size());
     fitDefault();
 }
@@ -357,13 +311,34 @@ void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
 }
 
 void ImageViewer::slotZoomIn() {
-    increaseScale(-0.1);
+    double possibleScale = d->scale() + d->zoomStep;
+    //qDebug() << "in" <<" currentZoom: " << d->scale();
+    if (possibleScale <= d->minScale) {
+        d->setScale(possibleScale);
+    }
+    else {
+        d->setScale(d->minScale);
+    }
+    d->centreHorizontal();
+    d->centreVertical();
+    d->resizePolicy = FREE;
+    update();
 }
 
 void ImageViewer::slotZoomOut() {
-    increaseScale(0.1);
+    double possibleScale = d->scale() - d->zoomStep;
+    //qDebug() << "out" <<" currentZoom: " << d->scale();
+    if (possibleScale >= d->maxScale) {
+        d->setScale(possibleScale);
+    }
+    else {
+        d->setScale(d->maxScale);
+    }
+    d->centreHorizontal();
+    d->centreVertical();
+    d->resizePolicy = FREE;
+    update();
 }
-
 
 void ImageViewer::setScale(double scale)
 {

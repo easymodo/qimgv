@@ -47,10 +47,8 @@ void DirectoryManager::loadFileInfo(QString path) {
         qDebug() << "deleting unused fileInfo";
         delete fileInfo;
     }
-    qDebug() << "loading file: " << path;
     fileInfo = NULL;
     fileInfo = new FileInfo(&path);
-    qDebug() << "current dir: " << currentDir.currentPath() << endl;
 }
 
 FileInfo* DirectoryManager::setFile(QString path) {

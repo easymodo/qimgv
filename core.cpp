@@ -4,8 +4,6 @@ Core::Core() : QObject() {
     initVariables();
     connectSlots();
     initSettings();
-    //QPixmapCache::setCacheLimit(100);
-    open(":/images/res/logo.png");
 }
 
 void Core::initVariables() {
@@ -36,8 +34,8 @@ void Core::connectGui(MainWindow *mw) {
     connect(mainWindow, SIGNAL(signalFitAll()), imageViewer, SLOT(slotFitAll()));
     connect(mainWindow, SIGNAL(signalFitWidth()), imageViewer, SLOT(slotFitWidth()));
     connect(mainWindow, SIGNAL(signalFitNormal()), imageViewer, SLOT(slotFitNormal()));
-    connect(mainWindow, SIGNAL(signalZoomIn()), this, SLOT(slotZoomIn()));
-    connect(mainWindow, SIGNAL(signalZoomOut()), this, SLOT(slotZoomOut()));
+    connect(mainWindow, SIGNAL(signalZoomIn()), imageViewer, SLOT(slotZoomIn()));
+    connect(mainWindow, SIGNAL(signalZoomOut()), imageViewer, SLOT(slotZoomOut()));
     connect(imageViewer, SIGNAL(sendDoubleClick()), mainWindow, SLOT(slotTriggerFullscreen()));
 }
 
@@ -67,6 +65,5 @@ void Core::updateOverlays() {
 }
 
 void Core::open(QString filePath) {
-    //imageViewer->displayImage(imgLoader->load(filePath));
     imageViewer->setImage(imgLoader->load(filePath));
 }

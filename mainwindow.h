@@ -52,6 +52,7 @@ private:
     void createMenus();
     void updateActions();
     void keyPressEvent(QKeyEvent *event);
+    void spaceSwitchFitMode();
     
     QColor bgColor;
     double scaleFactor;
