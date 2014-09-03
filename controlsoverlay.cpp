@@ -1,6 +1,6 @@
 #include "controlsoverlay.h"
 
-controlsOverlay::controlsOverlay(QWidget *parent) :
+ControlsOverlay::ControlsOverlay(QWidget *parent) :
     QWidget(parent)
 {
     setPalette(Qt::transparent);
@@ -9,7 +9,7 @@ controlsOverlay::controlsOverlay(QWidget *parent) :
     pen.setWidth(1);
 }
 
-void controlsOverlay::paintEvent(QPaintEvent *event) {
+void ControlsOverlay::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.setPen(pen);
     painter.drawLine(QLine(4,15,15,15)); //minimize
@@ -18,11 +18,11 @@ void controlsOverlay::paintEvent(QPaintEvent *event) {
     painter.drawLine(QLine(44,15,54,5)); //cross 2
 }
 
-void controlsOverlay::updateSize() {
+void ControlsOverlay::updateSize() {
     this->setGeometry(parentWidget()->size().rwidth()-60,0,60,20);
 }
 
-void controlsOverlay::mouseReleaseEvent(QMouseEvent *event) {
+void ControlsOverlay::mouseReleaseEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         if(event->pos().rx() >=39)
             emit exitClicked();

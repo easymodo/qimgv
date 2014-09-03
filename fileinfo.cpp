@@ -5,6 +5,8 @@ FileInfo::FileInfo(QString *path) :
 {
     setFile(*path);
     inUse = 0;
+    positions[0] = 0;
+    positions[1] = 0;
 }
 
 FileInfo::~FileInfo() {
@@ -44,10 +46,25 @@ QString FileInfo::getName() {
     return fInfo.fileName();
 }
 
+qint64 FileInfo::getSize() {
+    return fInfo.size()/1024;
+}
+
 QDateTime FileInfo::getLastModified() {
     return lastModified;
 }
 
 fileType FileInfo::getType() {
     return type;
+}
+
+void FileInfo::setPositions(int current, int from) {
+    positions[0]=current;
+    positions[1]=from;
+}
+int FileInfo::getCurrentPos() {
+    return positions[0];
+}
+int FileInfo::getMaxPos() {
+    return positions[1];
 }

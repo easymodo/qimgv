@@ -6,7 +6,7 @@ MainWindow::MainWindow()
     resize(800, 650);
     modeFitNormal->setChecked(true);
     setMinimumSize(QSize(400,300));
-    setWindowTitle(tr("qimgv 0.1999"));
+    setWindowTitle(tr("qimgv 0.2"));
 }
 
 void MainWindow::init() {
@@ -129,15 +129,6 @@ void MainWindow::createActions()
 
 void MainWindow::updateActions()
 {
-//     if(mCurrentImage->getType() != Type::STATIC)
-//     {
-//         zoomInAct->setEnabled(false);
-//         zoomOutAct->setEnabled(false);
-//     }
-//     else {
-//         zoomInAct->setEnabled(true);
-//         zoomOutAct->setEnabled(true);
-//     }
 }
 
 void MainWindow::createMenus()
@@ -178,11 +169,13 @@ void MainWindow::slotFullscreen() {
     {
         this->menuBar()->hide();
         this->showFullScreen();
+        emit signalFullscreenEnabled(true);
     }
     else
     {
         this->menuBar()->show();
         this->showNormal();
+        emit signalFullscreenEnabled(false);
     }
 }
 
@@ -190,52 +183,6 @@ void MainWindow::slotMinimize()
 {
     this->setWindowState(Qt::WindowMinimized);
 }
-
-/*void MainWindow::updateMapOverlay()
-{
-    double widthDifferenceRatio = 1.0;
-    double heightDifferenceRatio = 1.0;
-    QSize imageSize = mScrollArea->size();
-    QSize viewportSize = mScrollArea->viewport()->size();
-
-    if (imageSize.width()>viewportSize.width())
-    {
-        widthDifferenceRatio=(double)viewportSize.width()/imageSize.width();
-    }
-    if (imageSize.height()>viewportSize.height())
-    {
-        heightDifferenceRatio=(double)viewportSize.height()/imageSize.height();
-    }
-    if (widthDifferenceRatio>=1 && heightDifferenceRatio>=1)
-    {
-        //mOverlay->hide();
-    }
-    else
-    {
-        //mOverlay->show();
-        double viewportPositionX;
-        double viewportPositionY;
-        double imageAspectRatio = (double)imageSize.height() / imageSize.width();
-        if (mScrollArea->horizontalScrollBar()->maximum() == 0)
-        {
-            viewportPositionX=0.0;
-        }
-        else
-        {
-            viewportPositionX=(double)mScrollArea->horizontalScrollBar()->value()/mScrollArea->horizontalScrollBar()->maximum();
-        }
-        if (mScrollArea->verticalScrollBar()->maximum() == 0)
-        {
-            viewportPositionY=0.0;
-        }
-        else
-        {
-            viewportPositionY=(double)mScrollArea->verticalScrollBar()->value()/mScrollArea->verticalScrollBar()->maximum();
-        }
-        //mOverlay->updateMap(widthDifferenceRatio, heightDifferenceRatio, viewportPositionX, viewportPositionY, imageAspectRatio);
-    }
-}
-*/
 
 void MainWindow::spaceSwitchFitMode() {
     if(modeFitAll->isChecked()) {

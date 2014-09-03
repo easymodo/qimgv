@@ -6,11 +6,11 @@
 #include <QPen>
 #include <QDebug>
 
-class infoOverlay : public QWidget
+class InfoOverlay : public QWidget
 {
     Q_OBJECT
 public:
-    infoOverlay(QWidget *parent);
+    InfoOverlay(QWidget *parent);
     void setText(QString text);
     void updateSize();
 

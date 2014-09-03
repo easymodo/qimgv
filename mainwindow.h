@@ -40,6 +40,7 @@ signals:
     void signalPrevImage();
     void signalZoomIn();
     void signalZoomOut();
+    void signalFullscreenEnabled(bool);
 
 public:
     MainWindow();

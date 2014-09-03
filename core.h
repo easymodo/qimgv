@@ -16,7 +16,6 @@ class Core : public QObject
 public:
     explicit Core();
     ImageViewer *imageViewer;
-    //ImageViewer2 *imageViewer;
     DirectoryManager *dirManager;
     void connectGui(MainWindow*);
     void open(QString);
@@ -29,6 +28,9 @@ private:
     MainWindow *mainWindow;
     OpenDialog *openDialog;
     ImageLoader *imgLoader;
+
+private slots:
+    void setInfoString();
 signals:
 
 public slots:

@@ -1,7 +1,6 @@
 #include "imageviewer.h"
 
 #include <qgraphicseffect.h>
-#include "mapoverlay.h"
 
 enum WindowResizePolicy
 {
@@ -31,6 +30,8 @@ public:
     QRect drawingRect;
     QSize shrinkSize;
     MapOverlay *mapOverlay;
+    InfoOverlay *infoOverlay;
+    ControlsOverlay *controlsOverlay;
     ImageViewer* q;
 
     WindowResizePolicy resizePolicy;
@@ -54,9 +55,12 @@ ImageViewerPrivate::ImageViewerPrivate(ImageViewer* qq)
       currentScale(1.0),
       resizePolicy(NORMAL),
       img(NULL)
-     // mapOverlay(new MapOverlay(q))
 {
+    infoOverlay = new InfoOverlay(q);
     mapOverlay = new MapOverlay(q);
+    controlsOverlay = new ControlsOverlay(q);
+    infoOverlay->hide();
+    controlsOverlay->hide();
 }
 
 ImageViewerPrivate::~ImageViewerPrivate()
@@ -137,30 +141,16 @@ void ImageViewerPrivate::centreVertical()
 
 ImageViewer::ImageViewer(): QWidget(), d(new ImageViewerPrivate(this))
 {
-    QColor bgColor = QColor(0,0,0,255);
-    QPalette bg(bgColor);
-    this->setPalette(bg);
-    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    this->setSizePolicy(sizePolicy);
 }
 
 ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
 d(new ImageViewerPrivate(this))
 {
-    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    this->setSizePolicy(sizePolicy);
 }
 
 ImageViewer::ImageViewer(QWidget* parent, Image* image) : QWidget(parent),
 d(new ImageViewerPrivate(this))
 {
-    QColor bgColor = QColor(0,0,0,255);
-    QPalette bg(bgColor);
-    this->setPalette(bg);
     setImage(image);
 }
 
@@ -173,6 +163,7 @@ void ImageViewer::setImage(Image* image)
 {
     d->setImage(image);
     fitDefault();
+    emit imageChanged();
 }
 
 void ImageViewer::onAnimation()
@@ -183,6 +174,7 @@ void ImageViewer::onAnimation()
 
 void ImageViewer::paintEvent(QPaintEvent* event)
 {
+
     QColor bgColor = QColor(0,0,0,255);
     QPainter painter(this);
     painter.setPen(bgColor);
@@ -301,7 +293,6 @@ void ImageViewer::fitDefault() {
 }
 
 void ImageViewer::centerImage() {
-    //qDebug() << d->drawingRect;
     int left = d->drawingRect.left()<0?0:d->drawingRect.left();
     int right = d->drawingRect.right()<0?0:d->drawingRect.right();
     int top = d->drawingRect.top()<0?0:d->drawingRect.top();
@@ -343,6 +334,7 @@ void ImageViewer::resizeEvent(QResizeEvent* event)
     fitDefault();
     d->mapOverlay->updateMap(size(),d->drawingRect);
     d->mapOverlay->updatePosition();
+    d->controlsOverlay->updateSize();
 }
 
 void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
@@ -379,7 +371,27 @@ void ImageViewer::slotZoomOut() {
     d->mapOverlay->updateMap(size(),d->drawingRect);
 }
 
+Image* ImageViewer::getImage() const {
+    return d->img;
+}
+
 void ImageViewer::setScale(double scale)
 {
     d->setScale(scale);
+}
+
+void ImageViewer::slotSetInfoString(QString info) {
+    d->infoOverlay->setText(info);
+}
+
+void ImageViewer::slotShowInfo(bool x) {
+    x?d->infoOverlay->show():d->infoOverlay->hide();
+}
+
+void ImageViewer::slotShowControls(bool x) {
+    x?d->controlsOverlay->show():d->controlsOverlay->hide();
+}
+
+ControlsOverlay* ImageViewer::getControls() {
+    return d->controlsOverlay;
 }

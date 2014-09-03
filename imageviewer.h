@@ -12,6 +12,10 @@
 #include <QErrorMessage>
 #include <vector>
 #include "image.h"
+#include "mapoverlay.h"
+#include "infooverlay.h"
+#include "controlsoverlay.h"
+#include <time.h>
 
 class ImageViewerPrivate;
 
@@ -25,9 +29,12 @@ public:
     ImageViewer(QWidget* parent, Image* image);
     ~ImageViewer();
     void setImage(Image* image);
+    Image* getImage() const;
+    ControlsOverlay* getControls();
 
 signals:
     void sendDoubleClick();
+    void imageChanged();
 
 public slots:
     void slotFitNormal();
@@ -35,6 +42,9 @@ public slots:
     void slotFitAll();
     void slotZoomIn();
     void slotZoomOut();
+    void slotSetInfoString(QString);
+    void slotShowInfo(bool);
+    void slotShowControls(bool);
 
 private slots:
     void onAnimation();

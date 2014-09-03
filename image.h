@@ -23,6 +23,10 @@ public:
     QImage* getImage() const;
     QMovie* getMovie() const;
     int getType() const;
+    FileInfo* getInfo() const;
+    qint64 getSize() const;
+    QString getName() const;
+    QString getResolution() const;
     QDateTime getModifyDate() const;
     void loadImage(QString path);
     QString getPath() const;

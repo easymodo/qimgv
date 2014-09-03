@@ -40,7 +40,7 @@ void Image::loadImage(QString path)
     qDebug() << path;
     if(getType() == GIF) {
         movie = new QMovie(path);
-        movie->jumpToNextFrame();
+        movie->jumpToFrame(1);
         aspectRatio = (double)movie->currentImage().height()/
                 movie->currentImage().width();
     }
@@ -105,4 +105,16 @@ int Image::getType() const
 QString Image::getPath() const
 {
     return info->getFilePath();
+}
+
+qint64 Image::getSize() const {
+    return info->getSize();
+}
+
+QString Image::getName() const {
+    return info->getName();
+}
+
+FileInfo* Image::getInfo() const {
+    return info;
 }

@@ -49,6 +49,7 @@ void DirectoryManager::loadFileInfo(QString path) {
     }
     fileInfo = NULL;
     fileInfo = new FileInfo(&path);
+    fileInfo->setPositions(currentPosition+1, fileList.length());
 }
 
 FileInfo* DirectoryManager::setFile(QString path) {
