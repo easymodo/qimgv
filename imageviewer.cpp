@@ -25,7 +25,7 @@ public:
     Image* img;
     QTimer animationTimer;
     QImageReader imageReader;
-    QImage *image, imageScaled;
+    QImage image, imageScaled;
     QPoint cursorMovedDistance;
     QRect drawingRect;
     QSize shrinkSize;
@@ -54,8 +54,7 @@ ImageViewerPrivate::ImageViewerPrivate(ImageViewer* qq)
       shrinkSize(),
       currentScale(1.0),
       resizePolicy(NORMAL),
-      img(NULL),
-      image(NULL)
+      img(NULL)
 {
     infoOverlay = new InfoOverlay(q);
     mapOverlay = new MapOverlay(q);
@@ -74,33 +73,30 @@ bool ImageViewerPrivate::scaled() const
     return scale() != 1.0;
 }
 
-
 void ImageViewerPrivate::setImage(Image* i) {
-  // add stop movie if prev img was gif
-    if (img!=NULL) {
-        if(img->getType()==GIF) {
-            img->getMovie()->stop();
-            q->disconnect(img->getMovie(), SIGNAL(frameChanged(int)), q, SLOT(onAnimation()));
+    if(i->getType()!=NONE) {
+        if (img!=NULL) {
+            if(img->getType()==GIF) {
+                img->getMovie()->stop();
+                q->disconnect(img->getMovie(), SIGNAL(frameChanged(int)), q, SLOT(onAnimation()));
+            }
+            delete img;
+            img = NULL;
         }
-        if(image!=NULL) {
-            //delete image;
-        }
-        //delete img;
-    }
 
-    img = i;
-    if(img->getType() == STATIC) {
-        image = img->getImage();
-        q->update();
+        img = i;
+        if(img->getType() == STATIC) {
+            image = *img->getImage();
+            q->update();
+        }
+        else if (img->getType() == GIF) {
+            img->getMovie()->jumpToNextFrame();
+            image = img->getMovie()->currentImage();
+            q->connect(img->getMovie(), SIGNAL(frameChanged(int)), q, SLOT(onAnimation()));
+            img->getMovie()->start();
+        }
+        drawingRect = image.rect();
     }
-    else if (img->getType() == GIF) {
-        img->getMovie()->jumpToNextFrame();
-        image = new QImage();
-        *image = img->getMovie()->currentImage();
-        q->connect(img->getMovie(), SIGNAL(frameChanged(int)), q, SLOT(onAnimation()));
-        img->getMovie()->start();
-    }
-    drawingRect = image->rect();
 }
 
 double ImageViewerPrivate::scale() const
@@ -111,7 +107,11 @@ double ImageViewerPrivate::scale() const
 void ImageViewerPrivate::setScale(double scale)
 {
     currentScale = scale;
-    QSize sz = img->getImage()->size();
+    QSize sz;
+    if(img==NULL)
+        sz = QSize(0,0);
+    else
+        sz = image.size();
     sz = sz.scaled(sz * scale, Qt::KeepAspectRatio);
     drawingRect.setSize(sz);
 }
@@ -177,7 +177,7 @@ void ImageViewer::setImage(Image* image)
 
 void ImageViewer::onAnimation()
 {
-    *d->image = d->img->getMovie()->currentImage();
+    d->image = d->img->getMovie()->currentImage();
     update();
 }
 
@@ -196,7 +196,7 @@ void ImageViewer::paintEvent(QPaintEvent* event)
         painter.drawImage(d->drawingRect, d->imageScaled);
     }
     else {
-        painter.drawImage(d->drawingRect, *d->image);
+        painter.drawImage(d->drawingRect, d->image);
     }
     qDebug() << clock() - time;
 }
@@ -241,7 +241,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent* event)
 
 void ImageViewer::fitWidth()
 {
-    double scale = (double) width() / d->image->width();
+    double scale = (double) width() / d->image.width();
     d->drawingRect.setX(0);
     d->setScale(scale);
     if(d->drawingRect.height()<=height()) {
@@ -258,7 +258,7 @@ void ImageViewer::fitWidth()
 
 void ImageViewer::fitHorizontal()
 {
-    double scale = (double) width() / d->image->width();
+    double scale = (double) width() / d->image.width();
     d->drawingRect.setX(0);
     d->setScale(scale);
     d->centreVertical();
@@ -266,7 +266,7 @@ void ImageViewer::fitHorizontal()
 
 void ImageViewer::fitVertical()
 {
-    double scale = (double) height() / d->image->height();
+    double scale = (double) height() / d->image.height();
     d->drawingRect.setY(0);
     d->setScale(scale);
     d->centreHorizontal();
@@ -274,11 +274,8 @@ void ImageViewer::fitVertical()
 
 void ImageViewer::fitAll()
 {
-    qDebug() << d->drawingRect;
-    qDebug() << "scale: " << d->scale();
-    bool h = d->image->height() < this->height();
-    bool w = d->image->width() < this->width();
-    qDebug() << h << w;
+    bool h = d->image.height() < this->height();
+    bool w = d->image.width() < this->width();
     if(h && w) {
         fitOriginal();
     }

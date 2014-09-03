@@ -9,18 +9,16 @@
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     Core *c = new Core();
-    c->setCurrentDir("C:/qt projects/");
+    c->setCurrentDir("C:/");
 
     MainWindow *mw = new MainWindow();
     c->connectGui(mw);
     mw->show();
 
     if(a.arguments().length()>1) {
-        //mw->slotTriggerFullscreen();
+        mw->slotTriggerFullscreen();
         c->open(a.arguments().at(1));
     }
-    else {
-        c->open(":/images/res/logo.png");
-    }
+
     return a.exec();
 }
