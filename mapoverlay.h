@@ -5,27 +5,26 @@
 #include <QPainter>
 #include <QPen>
 #include <QDebug>
+#include <QPaintEvent>
 
+class MapOverlayPrivate;
 
-class mapOverlay : public QWidget
+class MapOverlay : public QWidget
 {
     Q_OBJECT
 public:
-    explicit mapOverlay(QWidget *parent = 0);
-    void setImageRect(QSize *_img);
-    void updateMap(double widthDifferenceRatio, double heightDifferenceRatio, double viewportPositionX, double viewportPositionY, double imageAspectRatio);
-    void updateSize();
+    explicit MapOverlay(QWidget *parent = 0);
+    void updateMap(const QSize& windowRect, const QRect& drawingRect);
+    void updatePosition();
 
 protected:
-    void paintEvent(QPaintEvent *event);
-    QPen penInner, penOuter;
-    QRect *outer,*inner;
-    int mapSize, mapMargin;
-
-signals:
-
-public slots:
-
+    virtual void paintEvent(QPaintEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent* event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+    
+private:
+    MapOverlayPrivate* d;
 };
 
 #endif // MAPOVERLAY_H

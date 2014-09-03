@@ -14,25 +14,30 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    zzscrollarea.cpp \
     infooverlay.cpp \
+    fileinfo.cpp \
     controlsoverlay.cpp \
     mapoverlay.cpp \
-    zzlabel.cpp \
+    image.cpp \
+    core.cpp \
     directorymanager.cpp \
-    controller.cpp \
-    imagepreloader.cpp
+    imageloader.cpp \
+    opendialog.cpp \
+    imagecache.cpp \
+    imageviewer.cpp
 
 HEADERS  += mainwindow.h \
-    zzscrollarea.h \
     infooverlay.h \
+    fileinfo.h \
     controlsoverlay.h \
     mapoverlay.h \
-    zzlabel.h \
+    image.h \
+    core.h \
     directorymanager.h \
-    controller.h \
-    ImageContainer.h \
-    imagepreloader.h
+    imageloader.h \
+    opendialog.h \
+    imagecache.h \
+    imageviewer.h
 
 FORMS    +=
 

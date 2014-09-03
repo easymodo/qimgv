@@ -1,17 +1,26 @@
+#include "core.h"
 #include "mainwindow.h"
 #include <QApplication>
 #include <QDebug>
+#include "image.h"
 
-int main(int argc, char *argv[])
-{
+//#include <iostream>
+
+int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
-    //qDebug() << a.arguments().length();
+    Core *c = new Core();
+    c->setCurrentDir("C:/qt projects/");
+
+    MainWindow *mw = new MainWindow();
+    c->connectGui(mw);
+    mw->show();
+
     if(a.arguments().length()>1) {
-        w.triggerFullscreen();
-        w.open(a.arguments().at(1));
+        //mw->slotTriggerFullscreen();
+        c->open(a.arguments().at(1));
     }
-    
+    else {
+        c->open(":/images/res/logo.png");
+    }
     return a.exec();
 }

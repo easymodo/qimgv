@@ -1,5 +1,5 @@
-#ifndef CONTROLSOVERLAY_H
-#define CONTROLSOVERLAY_H
+#ifndef ControlsOverlay_H
+#define ControlsOverlay_H
 
 #include <QWidget>
 #include <QPainter>
@@ -7,11 +7,11 @@
 #include <QDebug>
 #include <QMouseEvent>
 
-class controlsOverlay : public QWidget
+class ControlsOverlay : public QWidget
 {
     Q_OBJECT
 public:
-    explicit controlsOverlay(QWidget *parent = 0);
+    explicit ControlsOverlay(QWidget *parent = 0);
     void updateSize();
 
 protected:
@@ -27,4 +27,4 @@ signals:
 public slots:
 };
 
-#endif // CONTROLSOVERLAY_H
+#endif // ControlsOverlay_H

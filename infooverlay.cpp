@@ -1,6 +1,6 @@
 #include "infooverlay.h"
 
-infoOverlay::infoOverlay(QWidget *parent) :QWidget(parent) {
+InfoOverlay::InfoOverlay(QWidget *parent) :QWidget(parent) {
     setPalette(Qt::transparent);
     setAttribute(Qt::WA_TransparentForMouseEvents);
     currentText = "No file opened.";
@@ -8,7 +8,7 @@ infoOverlay::infoOverlay(QWidget *parent) :QWidget(parent) {
     updateSize();
 }
 
-void infoOverlay::paintEvent(QPaintEvent *event) {
+void InfoOverlay::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     QFont font;
     font.setPixelSize(13);
@@ -18,12 +18,12 @@ void infoOverlay::paintEvent(QPaintEvent *event) {
     painter.drawText(QRect(10,5,950,16),currentText);
 }
 
-void infoOverlay::setText(QString text) {
+void InfoOverlay::setText(QString text) {
     currentText = text;
     this->update();
 }
 
-void infoOverlay::updateSize() {
+void InfoOverlay::updateSize() {
     this->setMinimumWidth(this->parentWidget()->size().rwidth()-60);
 }
 

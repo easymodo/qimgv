@@ -1,34 +1,34 @@
 #ifndef DIRECTORYMANAGER_H
 #define DIRECTORYMANAGER_H
 
+#include <QObject>
 #include <QDir>
 #include <QFile>
 #include <QString>
 #include <QSize>
 #include <QDebug>
 #include <QFileInfo>
+#include "fileinfo.h"
 
-enum fileType { NONE, STATIC, GIF };
-
-class DirectoryManager
+class DirectoryManager : public QObject
 {
+    Q_OBJECT
 public:
     DirectoryManager();
-    bool setFile(QString _path);
-    void setFileDimensions(QSize);
-    void changeCurrentDir(QString);
-    void clearFileInfo();
+    FileInfo* setFile(QString path);
+    void setCurrentDir(QString);
     void next();
     void prev();
-    QString getInfo();
+    FileInfo* getFile();
     QDir currentDir;
-    QFileInfo fileInfo;
     QStringList fileList;
-    QSize fileDimensions;
     QStringList filters;
-    fileType type;
-    double aspectRatio;
+    FileInfo *fileInfo;
     int currentPosition; // -1 = default (no file open)
+signals:
+    void directoryChanged(const QString &path);
+private:
+    void loadFileInfo(QString path);
 
 };
 

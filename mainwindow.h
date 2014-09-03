@@ -1,77 +1,71 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "zzscrollarea.h"
-#include "zzlabel.h"
-#include "infooverlay.h"
-#include "controlsoverlay.h"
-#include "mapoverlay.h"
-#include <QMainWindow>
+// #include "scrollarea.h"
 
-#include <time.h>
+#include <QMainWindow>
+#include <QtWidgets>
+#include <QAction>
 
 QT_BEGIN_NAMESPACE
-class QAction;
-class QLabel;
-class QMenu;
-class QScrollArea;
-class QScrollBar;
+    class QAction;
+    class QLabel;
+    class QMenu;
+    class QScrollArea;
+    class QScrollBar;
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public slots:
-    void openDialog();
-    void open(QString);
+    void slotFitAll();
+    void slotFitWidth();
+    void slotFitNormal();
+    void slotFullscreen();
+    void slotTriggerFullscreen();
+    void slotMinimize();
+    void slotOpenDialog();
+    void slotNextImage();
+    void slotPrevImage();
+    void slotZoomIn();
+    void slotZoomOut();
 
-    void zoomIn();
-    void zoomOut();
-    void fitImage();
-    void fitModeAll();
-    void fitModeWidth();
-    void fitModeNormal();
-    void switchFitMode();
-    void switchFullscreen();
-    void triggerFullscreen();
-    void minimizeWindow();
-    void updateMapOverlay();
-    
+signals:
+    void signalFitAll();
+    void signalFitWidth();
+    void signalFitNormal();
+    void signalOpenDialog();
+    void signalNextImage();
+    void signalPrevImage();
+    void signalZoomIn();
+    void signalZoomOut();
+    void signalFullscreenEnabled(bool);
+
 public:
     MainWindow();
     ~MainWindow();
+
     
 private:
     void init();
-    void loadMovie(QString);
-    void loadStaticImage(QString);
     void createActions();
     void createMenus();
     void updateActions();
-    void scaleImage(double factor);
-    void adjustScrollBar(QScrollBar *scrollBar, double factor);
-    void updateWindowTitle();
-    void updateInfoOverlay();
-
     void keyPressEvent(QKeyEvent *event);
-    zzLabel *imgLabel;
-    zzScrollArea *scrollArea;
-    QMovie *movie;
+    void spaceSwitchFitMode();
+    
     QColor bgColor;
     double scaleFactor;
-
-    
-
     QAction *openAct;
     QAction *nextAct;
     QAction *prevAct;
     QAction *exitAct;
     QAction *zoomInAct;
     QAction *zoomOutAct;
-    QAction *fitModeNormalAct;
-    QAction *fitModeAllAct;
-    QAction *fitModeWidthAct;
+    QAction *modeFitNormal;
+    QAction *modeFitAll;
+    QAction *modeFitWidth;
     QAction *fullscreenEnabledAct;
     QAction *aboutAct;
     QAction *aboutQtAct;
@@ -80,13 +74,8 @@ private:
     QMenu *viewMenu;
     QMenu *navigationMenu;
     QMenu *helpMenu;
-    infoOverlay *overlay;
-    controlsOverlay *cOverlay;
-    mapOverlay *mOverlay;
-    bool openFinished;
 
 protected:
-    void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);
     bool eventFilter(QObject *target, QEvent *event);
 };
