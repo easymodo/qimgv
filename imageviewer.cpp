@@ -1,6 +1,7 @@
 #include "imageviewer.h"
 
 #include <qgraphicseffect.h>
+#include "mapoverlay.h"
 
 enum WindowResizePolicy
 {
@@ -29,6 +30,7 @@ public:
     QPoint cursorMovedDistance;
     QRect drawingRect;
     QSize shrinkSize;
+    MapOverlay *mapOverlay;
     ImageViewer* q;
 
     WindowResizePolicy resizePolicy;
@@ -47,7 +49,15 @@ private:
 };
 
 ImageViewerPrivate::ImageViewerPrivate(ImageViewer* qq)
-    : q(qq), shrinkSize(), currentScale(1.0), resizePolicy(NORMAL), img(NULL) { }
+    : q(qq),
+      shrinkSize(),
+      currentScale(1.0),
+      resizePolicy(NORMAL),
+      img(NULL)
+     // mapOverlay(new MapOverlay(q))
+{
+    mapOverlay = new MapOverlay(q);
+}
 
 ImageViewerPrivate::~ImageViewerPrivate()
 {
@@ -209,6 +219,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent* event)
 
         d->cursorMovedDistance = event->pos();
         update();
+        d->mapOverlay->updateMap(size(),d->drawingRect);
     }
 }
 
@@ -286,10 +297,11 @@ void ImageViewer::fitDefault() {
         case ALL: fitAll(); break;
         default: centerImage(); break;
     }
+    d->mapOverlay->updateMap(size(),d->drawingRect);
 }
 
 void ImageViewer::centerImage() {
-    qDebug() << d->drawingRect;
+    //qDebug() << d->drawingRect;
     int left = d->drawingRect.left()<0?0:d->drawingRect.left();
     int right = d->drawingRect.right()<0?0:d->drawingRect.right();
     int top = d->drawingRect.top()<0?0:d->drawingRect.top();
@@ -329,6 +341,8 @@ void ImageViewer::resizeEvent(QResizeEvent* event)
 {
     resize(event->size());
     fitDefault();
+    d->mapOverlay->updatePosition();
+    d->mapOverlay->updateMap(size(),d->drawingRect);
 }
 
 void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {

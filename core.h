@@ -6,7 +6,6 @@
 #include <QFileDialog>
 #include "mainwindow.h"
 #include "imageviewer.h"
-//#include "imageviewer2.h"
 #include "directorymanager.h"
 #include "opendialog.h"
 #include "imageloader.h"
