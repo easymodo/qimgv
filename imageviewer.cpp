@@ -341,7 +341,6 @@ void ImageViewer::resizeEvent(QResizeEvent* event)
 {
     resize(event->size());
     fitDefault();
-    d->mapOverlay->updatePosition();
     d->mapOverlay->updateMap(size(),d->drawingRect);
 }
 
