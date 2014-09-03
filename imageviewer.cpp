@@ -342,6 +342,7 @@ void ImageViewer::resizeEvent(QResizeEvent* event)
     resize(event->size());
     fitDefault();
     d->mapOverlay->updateMap(size(),d->drawingRect);
+    d->mapOverlay->updatePosition();
 }
 
 void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
@@ -360,7 +361,7 @@ void ImageViewer::slotZoomIn() {
     d->centreVertical();
     d->resizePolicy = FREE;
     update();
-    qDebug() << "zoomIn" << d->drawingRect;
+    d->mapOverlay->updateMap(size(),d->drawingRect);
 }
 
 void ImageViewer::slotZoomOut() {
@@ -375,7 +376,7 @@ void ImageViewer::slotZoomOut() {
     d->centreVertical();
     d->resizePolicy = FREE;
     update();
-    qDebug() << "zoomOut" << d->drawingRect;
+    d->mapOverlay->updateMap(size(),d->drawingRect);
 }
 
 void ImageViewer::setScale(double scale)
