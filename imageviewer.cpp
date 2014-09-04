@@ -123,14 +123,14 @@ void ImageViewerPrivate::setScale(float scale)
     currentScale = scale;
     QSize sz;
     sz = image.size();
-    sz = sz.scaled(sz * scale, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    sz = sz.scaled(sz * scale, Qt::KeepAspectRatio);
     drawingRect.setSize(sz);
 }
 
 void ImageViewerPrivate::scaleImage()
 {
     if(scaled()) {
-        imageScaled = image.scaled(drawingRect.size(),Qt::KeepAspectRatio);
+        imageScaled = image.scaled(drawingRect.size(),Qt::KeepAspectRatio, Qt::SmoothTransformation);
     }
 }
 
