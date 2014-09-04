@@ -1,6 +1,7 @@
 #include "imageviewer.h"
 
 #include <qgraphicseffect.h>
+#define AVG(a,b)  ( ((((a)^(b)) & 0xfefefefeUL) >> 1) + ((a)&(b)) )
 
 enum WindowResizePolicy
 {
@@ -22,6 +23,7 @@ public:
     void scaleImage();
     float scale() const;
     bool scaled() const;
+    QImage halfSized(const QImage &source);
 
     Image* img;
     QTimer animationTimer;
@@ -127,10 +129,44 @@ void ImageViewerPrivate::setScale(float scale)
     drawingRect.setSize(sz);
 }
 
+QImage ImageViewerPrivate::halfSized(const QImage &source)
+{
+    QImage dest(source.size() * 0.5, QImage::Format_ARGB32_Premultiplied);
+
+    const quint32 *src = reinterpret_cast<const quint32*>(source.bits());
+    int sx = source.bytesPerLine() >> 2;
+    int sx2 = sx << 1;
+
+    quint32 *dst = reinterpret_cast<quint32*>(dest.bits());
+    int dx = dest.bytesPerLine() >> 2;
+    int ww = dest.width();
+    int hh = dest.height();
+
+    for (int y = hh; y; --y, dst += dx, src += sx2) {
+        const quint32 *p1 = src;
+        const quint32 *p2 = src + sx;
+        quint32 *q = dst;
+        for (int x = ww; x; --x, q++, p1 += 2, p2 += 2)
+            * q = AVG(AVG(p1[0], p1[1]), AVG(p2[0], p2[1]));
+    }
+    return dest;
+}
+
 void ImageViewerPrivate::scaleImage()
 {
     if(scaled()) {
-        imageScaled = image.scaled(drawingRect.size(),Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        int time = clock();
+      /*  imageScaled = image.scaled(drawingRect.size(), Qt::KeepAspectRatio);
+        qDebug() << "scale time: " << clock() - time;
+        time = clock();
+        imageScaled = image.scaled(drawingRect.size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        qDebug() << "smooth scale time: " << clock() - time;
+        */
+        QImage tmp;
+        time = clock();
+        tmp = image.scaled(drawingRect.width()*2, drawingRect.height()*2, Qt::KeepAspectRatio);
+        imageScaled = halfSized(tmp);
+        qDebug() << "half scale time: " << clock() - time;
     }
 }
 
@@ -192,14 +228,12 @@ void ImageViewer::paintEvent(QPaintEvent* event)
     painter.setBrush(Qt::SolidPattern);
     painter.drawRect(QRect(0,0,this->width(),this->height()));
 
-    int time = clock();
     if(d->scaled()) {
         painter.drawImage(d->drawingRect, d->imageScaled);
     }
     else {
         painter.drawImage(d->drawingRect, d->image);
     }
-    qDebug() << "render time: " << clock() - time;
 }
 
 void ImageViewer::mousePressEvent(QMouseEvent* event)
@@ -275,12 +309,13 @@ void ImageViewer::fitVertical()
 
 void ImageViewer::fitAll()
 {
-    bool h = d->image.height() < this->height();
-    bool w = d->image.width() < this->width();
+    bool h = d->image.height() <= this->height();
+    bool w = d->image.width() <= this->width();
     if(h && w) {
         fitOriginal();
     }
     else {
+        QSize oldSize = d->drawingRect.size();
         float widgetAspect = (float) height() / width();
         float drawingAspect = (float) d->drawingRect.height() /
                 d->drawingRect.width();
@@ -288,9 +323,10 @@ void ImageViewer::fitAll()
             fitVertical();
         else
             fitHorizontal();
-    }
-    if(d->scaled()) {
-        d->imageScaled = d->image.scaled(d->drawingRect.size(),Qt::KeepAspectRatio);
+        qDebug() << oldSize << d->drawingRect.size();
+        if(d->scaled() && oldSize != d->drawingRect.size()) {
+            d->imageScaled = d->image.scaled(d->drawingRect.size(),Qt::KeepAspectRatio);
+        }
     }
     update();
 }
@@ -309,7 +345,6 @@ void ImageViewer::fitDefault() {
         case ALL: fitAll(); break;
         default: centerImage(); break;
     }
-    d->scaleImage();
     d->mapOverlay->updateMap(size(),d->drawingRect);
 }
 
@@ -353,7 +388,6 @@ void ImageViewer::resizeEvent(QResizeEvent* event)
 {
     resize(event->size());
     fitDefault();
-    d->scaleImage();
     d->mapOverlay->updateMap(size(),d->drawingRect);
     d->controlsOverlay->updateSize();
     d->mapOverlay->updatePosition();
