@@ -55,8 +55,6 @@ private:
     void keyPressEvent(QKeyEvent *event);
     void spaceSwitchFitMode();
     
-    QColor bgColor;
-    double scaleFactor;
     QAction *openAct;
     QAction *nextAct;
     QAction *prevAct;

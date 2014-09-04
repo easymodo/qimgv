@@ -1,5 +1,13 @@
 #include "fileinfo.h"
 
+FileInfo::FileInfo() :
+    type(NONE)
+{
+    inUse = 0;
+    positions[0] = 0;
+    positions[1] = 0;
+}
+
 FileInfo::FileInfo(QString *path) :
     type(NONE)
 {

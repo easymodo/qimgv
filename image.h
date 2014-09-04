@@ -30,7 +30,7 @@ public:
     QDateTime getModifyDate() const;
     void loadImage(QString path);
     QString getPath() const;
-    double getAspect();
+    float getAspect();
     int height();
     int width();
     QSize size();
@@ -40,7 +40,7 @@ private:
     QMovie* movie;
     FileInfo *info;
     QSize resolution;
-    double aspectRatio;
+    float aspectRatio;
 };
 
 #endif // QIMAGELOADER_H

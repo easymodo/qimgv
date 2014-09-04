@@ -31,6 +31,8 @@ public:
     void setImage(Image* image);
     Image* getImage() const;
     ControlsOverlay* getControls();
+    bool isDisplaying();
+
 
 signals:
     void sendDoubleClick();
@@ -57,14 +59,15 @@ protected:
     virtual void resizeEvent(QResizeEvent* event);
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
+
 private:
+    void fitDefault();
     void fitHorizontal();
     void fitVertical();
     void fitOriginal();
     void fitWidth();
     void fitAll();
-    void fitDefault();
-    void setScale(double scale);
+    void setScale(float scale);
     void centerImage();
     ImageViewerPrivate* d;
 };

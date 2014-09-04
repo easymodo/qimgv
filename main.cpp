@@ -9,7 +9,6 @@
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     Core *c = new Core();
-    c->setCurrentDir("C:/");
 
     MainWindow *mw = new MainWindow();
     c->connectGui(mw);
