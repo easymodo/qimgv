@@ -123,7 +123,7 @@ void ImageViewerPrivate::setScale(float scale)
     currentScale = scale;
     QSize sz;
     sz = image.size();
-    sz = sz.scaled(sz * scale, Qt::KeepAspectRatio);
+    sz = sz.scaled(sz * scale, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     drawingRect.setSize(sz);
 }
 
@@ -192,7 +192,6 @@ void ImageViewer::paintEvent(QPaintEvent* event)
     painter.setBrush(Qt::SolidPattern);
     painter.drawRect(QRect(0,0,this->width(),this->height()));
 
-    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     int time = clock();
     if(d->scaled()) {
         painter.drawImage(d->drawingRect, d->imageScaled);
