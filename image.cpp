@@ -1,4 +1,5 @@
 #include "image.h"
+#include <time.h>
 
 Image::Image() : QObject(), mPath()
 {
@@ -22,7 +23,9 @@ Image::Image(FileInfo *_info) :
     movie(NULL),
     info(_info)
 {
-    loadImage(info->getFilePath());
+    if(info->getType()!=NONE)  {
+        loadImage(info->getFilePath());
+    }
 }
 
 Image::~Image()
@@ -32,7 +35,6 @@ Image::~Image()
     if(info->getType()==GIF)
         delete movie;
     delete info;
-    QPixmapCache::clear(); // fuck this
 }
 
 void Image::loadImage(QString path)
@@ -40,17 +42,22 @@ void Image::loadImage(QString path)
     qDebug() << path;
     if(getType() == GIF) {
         movie = new QMovie(path);
-        movie->jumpToFrame(1);
-        aspectRatio = (double)movie->currentImage().height()/
+        movie->jumpToFrame(0);
+        aspectRatio = (float)movie->currentImage().height()/
                 movie->currentImage().width();
     }
     else if(getType() == STATIC) {
-        image = new QImage(path);
-        aspectRatio = (double)image->height()/
+        int time = clock();
+        QImage *tmp = new QImage(path);
+        image = new QImage();
+        *image = tmp->convertToFormat(QImage::Format_ARGB32_Premultiplied);
+        delete tmp;
+        qDebug() << "load time: " << clock() - time;
+        qDebug() << "format: " << image->format();
+        aspectRatio = (float)image->height()/
                 image->width();
     }
     info->inUse = true;
-    qDebug() << aspectRatio;
 }
 
 QMovie* Image::getMovie() const
@@ -93,7 +100,7 @@ QSize Image::size() {
     else return QSize(1,1);
 }
 
-double Image::getAspect() {
+float Image::getAspect() {
     return aspectRatio;
 }
 

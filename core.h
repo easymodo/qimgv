@@ -36,7 +36,6 @@ signals:
 public slots:
     void slotNextImage();
     void slotPrevImage();
-    void updateOverlays();
     void setCurrentDir(QString);
     void setDialogDir(QString);
     //from gui

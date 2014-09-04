@@ -12,6 +12,7 @@ enum fileType { NONE, STATIC, GIF };
 class FileInfo
 {
 public:
+    FileInfo();
     FileInfo(QString *path);
     ~FileInfo();
     bool inUse;

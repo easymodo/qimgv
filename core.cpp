@@ -28,7 +28,7 @@ void Core::connectSlots() {
 
 //default settings, more to go
 void Core::initSettings() {
-    dirManager->setCurrentDir(tr("C:/"));
+    dirManager->setCurrentDir(tr("C:/qt projects"));
 }
 
 void Core::connectGui(MainWindow *mw) {
@@ -50,6 +50,8 @@ void Core::connectGui(MainWindow *mw) {
     connect(imageViewer->getControls(), SIGNAL(exitClicked()), mainWindow, SLOT(close()));
     connect(imageViewer->getControls(), SIGNAL(exitFullscreenClicked()), mainWindow, SLOT(slotTriggerFullscreen()));
     connect(imageViewer->getControls(), SIGNAL(minimizeClicked()), mainWindow, SLOT(slotMinimize()));
+    connect(imageViewer->getControls(), SIGNAL(minimizeClicked()), mainWindow, SLOT(slotMinimize()));
+
 }
 
 void Core::setInfoString() {
@@ -92,10 +94,6 @@ void Core::slotNextImage() {
 void Core::slotPrevImage() {
     imageViewer->setImage(imgLoader->loadPrev());
 
-}
-
-void Core::updateOverlays() {
-    //todo
 }
 
 void Core::open(QString filePath) {

@@ -2,7 +2,7 @@
 
 DirectoryManager::DirectoryManager() :
     currentPosition(-1),
-    fileInfo(NULL)
+    fileInfo(new FileInfo())
 {
     filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
     currentDir.setNameFilters(filters);
