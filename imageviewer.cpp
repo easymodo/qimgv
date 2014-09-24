@@ -23,6 +23,7 @@ public:
     void scaleImage();
     float scale() const;
     bool scaled() const;
+    void smoothScale();
     QImage halfSized(const QImage &source);
 
     Image* img;
@@ -35,7 +36,10 @@ public:
     MapOverlay *mapOverlay;
     InfoOverlay *infoOverlay;
     ControlsOverlay *controlsOverlay;
+    QFuture<void> scalerThread;
     ImageViewer* q;
+    QMutex mutex;
+    uint lock;
 
     WindowResizePolicy resizePolicy;
 
@@ -60,7 +64,8 @@ ImageViewerPrivate::ImageViewerPrivate(ImageViewer* qq)
       currentScale(1.0),
       resizePolicy(NORMAL),
       img(NULL),
-      isDisplaying(false)
+      isDisplaying(false),
+      lock(0)
 {
     infoOverlay = new InfoOverlay(q);
     mapOverlay = new MapOverlay(q);
@@ -96,6 +101,7 @@ void ImageViewerPrivate::setImage(Image* i) {
     }
     else {
         //ok, proceeding
+        isDisplaying = true;
         img = i;
         if(img->getType() == STATIC) {
             image = *img->getImage();
@@ -106,8 +112,6 @@ void ImageViewerPrivate::setImage(Image* i) {
             q->connect(img->getMovie(), SIGNAL(frameChanged(int)), q, SLOT(onAnimation()));
             img->getMovie()->start();
         }
-
-        isDisplaying = true;
         emit q->imageChanged();
     }
     drawingRect = image.rect();
@@ -125,11 +129,21 @@ void ImageViewerPrivate::setScale(float scale)
     currentScale = scale;
     QSize sz;
     sz = image.size();
-    sz = sz.scaled(sz * scale, Qt::KeepAspectRatio);
+    sz = sz.scaled(sz * scale, Qt::KeepAspectRatio); // for qt's
     drawingRect.setSize(sz);
 }
 
-QImage ImageViewerPrivate::halfSized(const QImage &source)
+void ImageViewerPrivate::smoothScale() {
+    lock++;
+    Sleeper::msleep(100); //unicorn magic. prevents some bad things
+    if(lock == 1) {
+        imageScaled = image.scaled(drawingRect.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation); //SLOW
+        q->update();
+    }
+    lock--;
+}
+
+/*QImage ImageViewerPrivate::halfSized(const QImage &source)
 {
     QImage dest(source.size() * 0.5, QImage::Format_ARGB32_Premultiplied);
 
@@ -151,23 +165,17 @@ QImage ImageViewerPrivate::halfSized(const QImage &source)
     }
     return dest;
 }
+*/
 
 void ImageViewerPrivate::scaleImage()
 {
-    if(scaled()) {
-        int time = clock();
-      /*  imageScaled = image.scaled(drawingRect.size(), Qt::KeepAspectRatio);
-        qDebug() << "scale time: " << clock() - time;
-        time = clock();
-        imageScaled = image.scaled(drawingRect.size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        qDebug() << "smooth scale time: " << clock() - time;
-        */
-        QImage tmp;
-        time = clock();
-        tmp = image.scaled(drawingRect.width()*2, drawingRect.height()*2, Qt::KeepAspectRatio);
-        imageScaled = halfSized(tmp);
-        qDebug() << "half scale time: " << clock() - time;
+    if(scaled()) {// && scale()<1.0) {
+        imageScaled = image.scaled(drawingRect.size(), Qt::IgnoreAspectRatio);
+        //smoothing + gif = lags
+        if(isDisplaying && img->getType() == STATIC)
+            QFuture<void> t1 = QtConcurrent::run(this, &ImageViewerPrivate::smoothScale);
     }
+    q->update();
 }
 
 void ImageViewerPrivate::centerHorizontal()
@@ -228,7 +236,8 @@ void ImageViewer::paintEvent(QPaintEvent* event)
     painter.setBrush(Qt::SolidPattern);
     painter.drawRect(QRect(0,0,this->width(),this->height()));
 
-    if(d->scaled()) {
+    if(d->scaled()) {// && d->scale() < 1.0) {
+        qDebug() << d->drawingRect << " <_> " << d->imageScaled.size();
         painter.drawImage(d->drawingRect, d->imageScaled);
     }
     else {
@@ -285,10 +294,7 @@ void ImageViewer::fitWidth()
     }
     else
         d->drawingRect.moveTop(0);
-    if(d->scaled()) {
-        d->imageScaled = d->image.scaled(d->drawingRect.size(),Qt::KeepAspectRatio);
-    }
-    update();
+    d->scaleImage();
 }
 
 void ImageViewer::fitHorizontal()
@@ -323,12 +329,10 @@ void ImageViewer::fitAll()
             fitVertical();
         else
             fitHorizontal();
-        qDebug() << oldSize << d->drawingRect.size();
         if(d->scaled() && oldSize != d->drawingRect.size()) {
-            d->imageScaled = d->image.scaled(d->drawingRect.size(),Qt::KeepAspectRatio);
+            d->scaleImage();
         }
     }
-    update();
 }
 
 void ImageViewer::fitOriginal()
@@ -398,35 +402,41 @@ void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
 }
 
 void ImageViewer::slotZoomIn() {
-    float possibleScale = d->scale() + d->zoomStep;
-    if (possibleScale <= d->minScale) {
-        d->setScale(possibleScale);
-    }
-    else {
-        d->setScale(d->minScale);
-    }
-    d->centerHorizontal();
-    d->centerVertical();
     d->resizePolicy = FREE;
-    d->scaleImage();
-    update();
-    d->mapOverlay->updateMap(size(),d->drawingRect);
+    if(d->isDisplaying) {
+        if(d->scale() == d->minScale)
+            return;
+        float possibleScale = d->scale() + d->zoomStep;
+        if (possibleScale <= d->minScale) {
+            d->setScale(possibleScale);
+        }
+        else {
+            d->setScale(d->minScale);
+        }
+        d->centerHorizontal();
+        d->centerVertical();
+        d->scaleImage();
+        d->mapOverlay->updateMap(size(), d->drawingRect);
+    }
 }
 
 void ImageViewer::slotZoomOut() {
-    float possibleScale = d->scale() - d->zoomStep;
-    if (possibleScale >= d->maxScale) {
-        d->setScale(possibleScale);
-    }
-    else {
-        d->setScale(d->maxScale);
-    }
-    d->centerHorizontal();
-    d->centerVertical();
     d->resizePolicy = FREE;
-    d->scaleImage();
-    update();
-    d->mapOverlay->updateMap(size(),d->drawingRect);
+    if(d->isDisplaying) {
+        if(d->scale() == d->maxScale)
+            return;
+        float possibleScale = d->scale() - d->zoomStep;
+        if (possibleScale >= d->maxScale) {
+            d->setScale(possibleScale);
+        }
+        else {
+            d->setScale(d->maxScale);
+        }
+        d->centerHorizontal();
+        d->centerVertical();
+        d->scaleImage();
+        d->mapOverlay->updateMap(size(), d->drawingRect);
+    }
 }
 
 Image* ImageViewer::getImage() const {

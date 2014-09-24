@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets
+QT       += core gui widgets concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     imageloader.cpp \
     opendialog.cpp \
     imagecache.cpp \
-    imageviewer.cpp
+    imageviewer.cpp \
+    sleep.cpp
 
 HEADERS  += mainwindow.h \
     infooverlay.h \

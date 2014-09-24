@@ -8,6 +8,9 @@
 #include <QColor>
 #include <QPalette>
 #include <QTimer>
+#include <QThread>
+#include <QtConcurrent>
+#include <QFuture>
 #include <QDebug>
 #include <QErrorMessage>
 #include <vector>
@@ -16,6 +19,7 @@
 #include "infooverlay.h"
 #include "controlsoverlay.h"
 #include <time.h>
+#include "sleep.cpp"
 
 class ImageViewerPrivate;
 

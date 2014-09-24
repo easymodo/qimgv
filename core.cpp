@@ -28,7 +28,7 @@ void Core::connectSlots() {
 
 //default settings, more to go
 void Core::initSettings() {
-    dirManager->setCurrentDir(tr("C:/qt projects"));
+    dirManager->setCurrentDir(tr("K:/_code/sao_test/"));
 }
 
 void Core::connectGui(MainWindow *mw) {
