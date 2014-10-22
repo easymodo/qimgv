@@ -10,91 +10,106 @@ Image::Image() : QObject(), mPath()
 
 Image::Image(QString path) : QObject(), mPath(path)
 {
-    loadImage(path);
     image = NULL;
     movie = NULL;
     info = NULL;
 }
 
 //use this constructor
-Image::Image(FileInfo *_info) :
+Image::Image(FileInfo _info) :
     QObject(),
     image(NULL),
     movie(NULL),
     info(_info)
 {
-    if(info->getType()!=NONE)  {
-        loadImage(info->getFilePath());
-    }
 }
 
 Image::~Image()
 {
-    if(info->getType()==STATIC)
+    if(info.getType()==STATIC)
         delete image;
-    if(info->getType()==GIF)
+    if(info.getType()==GIF)
         delete movie;
-    delete info;
 }
 
-void Image::loadImage(QString path)
+//load image data from disk
+void Image::loadImage()
 {
-    qDebug() << path;
+    QString path = info.getFilePath();
+    if(info.getType()!=NONE)  {
+        if(getType() == GIF) {
+            movie = new QMovie(path);
+            movie->jumpToFrame(0);
+            aspectRatio = (float)movie->currentImage().height()/
+                    movie->currentImage().width();
+        }
+        else if(getType() == STATIC) {
+            int time = clock();
+            QImage *tmp = new QImage(path);
+            image = new QImage();
+            *image = tmp->convertToFormat(QImage::Format_ARGB32_Premultiplied);
+            delete tmp;
+         //   qDebug() << "format: " << image->format();
+            aspectRatio = (float)image->height()/
+                    image->width();
+        }
+        info.inUse = true;
+    }
+}
+
+bool Image::isInUse() {
+    return inUseFlag;
+}
+
+void Image::setInUse(bool arg) {
+    inUseFlag=arg;
+}
+
+int Image::ramSize() {
     if(getType() == GIF) {
-        movie = new QMovie(path);
-        movie->jumpToFrame(0);
-        aspectRatio = (float)movie->currentImage().height()/
-                movie->currentImage().width();
+        return 1; //later
     }
     else if(getType() == STATIC) {
-        int time = clock();
-        QImage *tmp = new QImage(path);
-        image = new QImage();
-        *image = tmp->convertToFormat(QImage::Format_ARGB32_Premultiplied);
-        delete tmp;
-        qDebug() << "load time: " << clock() - time;
-        qDebug() << "format: " << image->format();
-        aspectRatio = (float)image->height()/
-                image->width();
+        return image->byteCount()/(1024*1024);
     }
-    info->inUse = true;
+    else return 0;
 }
 
-QMovie* Image::getMovie() const
+QMovie* Image::getMovie()
 {
     return movie;
 }
 
-QImage* Image::getImage() const
+QImage* Image::getImage()
 {
     return image;
 }
 
 int Image::height() {
-    if(info->getType() == GIF) {
+    if(info.getType() == GIF) {
         return movie->currentImage().height();
     }
-    if(info->getType() == STATIC) {
+    if(info.getType() == STATIC) {
         return image->height();
     }
     else return 1;
 }
 
 int Image::width() {
-    if(info->getType() == GIF) {
+    if(info.getType() == GIF) {
         return movie->currentImage().width();
     }
-    if(info->getType() == STATIC) {
+    if(info.getType() == STATIC) {
         return image->width();
     }
     else return 1;
 }
 
 QSize Image::size() {
-    if(info->getType() == GIF) {
+    if(info.getType() == GIF) {
         return movie->currentImage().size();
     }
-    if(info->getType() == STATIC) {
+    if(info.getType() == STATIC) {
         return image->size();
     }
     else return QSize(1,1);
@@ -104,24 +119,36 @@ float Image::getAspect() {
     return aspectRatio;
 }
 
-int Image::getType() const
+int Image::getType()
 {
-    return info->getType();
+    return info.getType();
 }
 
-QString Image::getPath() const
+QString Image::getPath()
 {
-    return info->getFilePath();
+    return info.getFilePath();
 }
 
-qint64 Image::getSize() const {
-    return info->getSize();
+qint64 Image::getSize() {
+    return info.getSize();
 }
 
-QString Image::getName() const {
-    return info->getName();
+QString Image::getName() {
+    return info.getName();
 }
 
-FileInfo* Image::getInfo() const {
+FileInfo Image::getInfo() {
     return info;
+}
+
+// returns true if files are identical
+// checks filename, size, date
+// does not check actual file contents
+bool Image::compare(Image* another) {
+    if(getSize() == another->getSize() &&
+       info.getLastModified() == another->getInfo().getLastModified() &&
+       getName() == another->getName() ) {
+        return true;
+    }
+    return false;
 }

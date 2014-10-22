@@ -24,11 +24,12 @@ void Core::initVariables() {
 void Core::connectSlots() {
     connect(dirManager, SIGNAL(directoryChanged(QString)), this, SLOT(setDialogDir(QString)));
     connect(imageViewer, SIGNAL(imageChanged()), this, SLOT(setInfoString()));
+    connect(imageViewer, SIGNAL(imageChanged()), imgLoader, SLOT(deleteLastImage()));
 }
 
 //default settings, more to go
 void Core::initSettings() {
-    dirManager->setCurrentDir(tr("C:/qt projects"));
+    dirManager->setCurrentDir(tr("K:/_code/sao_test/"));
 }
 
 void Core::connectGui(MainWindow *mw) {
@@ -51,7 +52,6 @@ void Core::connectGui(MainWindow *mw) {
     connect(imageViewer->getControls(), SIGNAL(exitFullscreenClicked()), mainWindow, SLOT(slotTriggerFullscreen()));
     connect(imageViewer->getControls(), SIGNAL(minimizeClicked()), mainWindow, SLOT(slotMinimize()));
     connect(imageViewer->getControls(), SIGNAL(minimizeClicked()), mainWindow, SLOT(slotMinimize()));
-
 }
 
 void Core::setInfoString() {
@@ -64,9 +64,9 @@ void Core::setInfoString() {
                       QString::number(i->height()) +
                       ")  ");
     infoString.append("[ " +
-                      QString::number(i->getInfo()->getCurrentPos()) +
+                      QString::number(i->getInfo().getCurrentPos()) +
                       "/" +
-                      QString::number(i->getInfo()->getMaxPos()) +
+                      QString::number(i->getInfo().getMaxPos()) +
                       " ] ");
     imageViewer->slotSetInfoString(infoString);
     if(mainWindow != NULL) {

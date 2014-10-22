@@ -40,6 +40,7 @@ void FileInfo::setFile(QString path) {
         type = STATIC;
     }
     lastModified = fInfo.lastModified();
+    file.close();
 }
 
 QString FileInfo::getDirPath() {
