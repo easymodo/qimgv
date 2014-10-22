@@ -24,6 +24,7 @@ public:
     QMovie* getMovie() const;
     int getType() const;
     FileInfo* getInfo() const;
+    // size in kbytes
     qint64 getSize() const;
     QString getName() const;
     QString getResolution() const;

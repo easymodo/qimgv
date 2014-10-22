@@ -2,20 +2,19 @@
 #define IMAGECACHE_H
 
 #include "image.h"
+#include <QVector>
 
 class ImageCache
 {
 public:
     ImageCache();
     ~ImageCache();
-    Image* getCurrent();
-    Image* getPrev();
-    Image* getNext();
-    void setCurrent(Image*);
-    void setPrev(Image*);
-    void setNext(Image*);
+    Image* findImagePointer(Image* image);
+    void pushImage(Image* image);
+    qint64 cacheSize() const;
 private:
-    Image *prev, *current, *next;
+    QVector<Image*> cachedImages;
+    uint maxCacheSize;
 };
 
 #endif // IMAGECACHE_H

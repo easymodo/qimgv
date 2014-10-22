@@ -90,8 +90,8 @@ void ImageViewerPrivate::setImage(Image* i) {
             img->getMovie()->stop();
             q->disconnect(img->getMovie(), SIGNAL(frameChanged(int)), q, SLOT(onAnimation()));
         }
-        delete img;
-        img = NULL;
+//         delete img;
+//         img = NULL;
     }
 
     if(i->getType()==NONE) {

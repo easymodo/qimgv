@@ -19,9 +19,7 @@ public:
 
 private:
     ImageCache *cache;
-
-
-
+    void loadFromCache(Image*& image);
 signals:
 
 public slots:

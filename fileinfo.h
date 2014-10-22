@@ -21,6 +21,8 @@ public:
     QString getName();
     QDateTime getLastModified();
     fileType getType();
+    
+    /* size in kbytes*/
     qint64 getSize();
     void setPositions(int current, int from);
     int getCurrentPos();
