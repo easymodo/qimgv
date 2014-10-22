@@ -29,6 +29,7 @@ signals:
     void directoryChanged(const QString &path);
 private:
     void loadFileInfo(QString path);
+    void setFilePositions();
 
 };
 

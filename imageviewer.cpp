@@ -50,7 +50,7 @@ public:
 
     bool isDisplaying;
 
-    static const float maxScale = 0.10;
+    static const float maxScale = 0.20;
     static const float minScale = 3.0;
     static const float zoomStep = 0.1;
 
@@ -169,7 +169,7 @@ void ImageViewerPrivate::smoothScale() {
 
 void ImageViewerPrivate::scaleImage()
 {
-    if(scaled()) {// && scale()<1.0) {
+    if(scaled() && scale() <= 1.4) {
         imageScaled = image.scaled(drawingRect.size(), Qt::IgnoreAspectRatio);
         //smoothing + gif = lags
         if(isDisplaying && img->getType() == STATIC)
@@ -236,13 +236,15 @@ void ImageViewer::paintEvent(QPaintEvent* event)
     painter.setBrush(Qt::SolidPattern);
     painter.drawRect(QRect(0,0,this->width(),this->height()));
 
-    if(d->scaled()) {// && d->scale() < 1.0) {
+    int time = clock();
+    if(d->scaled() && d->scale() <= 1.4) {
         qDebug() << d->drawingRect << " <_> " << d->imageScaled.size();
         painter.drawImage(d->drawingRect, d->imageScaled);
     }
     else {
         painter.drawImage(d->drawingRect, d->image);
     }
+    qDebug() << "draw time: " << clock() - time;
 }
 
 void ImageViewer::mousePressEvent(QMouseEvent* event)

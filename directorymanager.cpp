@@ -10,7 +10,8 @@ DirectoryManager::DirectoryManager() :
 
 void DirectoryManager::setCurrentDir(QString path) {
     if(currentDir.currentPath() != path) {
-        currentDir.setCurrent(path);
+        qDebug() << "attempting setDir" << path;
+        qDebug() << currentDir.setCurrent(path);
         currentDir.setNameFilters(filters);
         fileList = currentDir.entryList();
         currentPosition = -1;
@@ -27,6 +28,7 @@ void DirectoryManager::next() {
                         +"/"
                         +fileList.at(currentPosition);
         loadFileInfo(fileName);
+        setFilePositions();
     }
 }
 
@@ -39,6 +41,13 @@ void DirectoryManager::prev() {
                         +"/"
                         +fileList.at(currentPosition);
         loadFileInfo(fileName);
+        setFilePositions();
+    }
+}
+
+void DirectoryManager::setFilePositions() {
+    if(fileInfo) {
+        fileInfo->setPositions(currentPosition+1, fileList.length());
     }
 }
 
@@ -49,14 +58,14 @@ void DirectoryManager::loadFileInfo(QString path) {
     }
     fileInfo = NULL;
     fileInfo = new FileInfo(&path);
-    fileInfo->setPositions(currentPosition+1, fileList.length());
 }
 
 FileInfo* DirectoryManager::setFile(QString path) {
     loadFileInfo(path);
-    qDebug() << fileInfo->getDirPath();
     setCurrentDir(fileInfo->getDirPath());
+    qDebug() << fileInfo->getDirPath();
     currentPosition = fileList.indexOf(fileInfo->getName());
+    setFilePositions();
     return getFile();
 }
 
