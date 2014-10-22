@@ -125,3 +125,15 @@ QString Image::getName() const {
 FileInfo* Image::getInfo() const {
     return info;
 }
+
+// returns true if files are identical
+// checks filename, size, date
+// does not check actual file contents
+bool Image::compare(FileInfo* another) {
+    if(info->getSize() == another->getSize() &&
+       info->getLastModified() == another->getLastModified() &&
+       info->getName() == another->getName() ) {
+        return true;
+    }
+    return false;
+}

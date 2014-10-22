@@ -34,6 +34,9 @@ public:
     int height();
     int width();
     QSize size();
+
+    bool compare(FileInfo*);
+
 private:
     QString mPath;
     QImage* image;

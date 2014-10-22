@@ -137,8 +137,10 @@ void ImageViewerPrivate::smoothScale() {
     lock++;
     Sleeper::msleep(100); //unicorn magic. prevents some bad things
     if(lock == 1) {
+        qDebug() << "enter";
         imageScaled = image.scaled(drawingRect.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation); //SLOW
         q->update();
+        qDebug() << "quit";
     }
     lock--;
 }
@@ -238,13 +240,13 @@ void ImageViewer::paintEvent(QPaintEvent* event)
 
     int time = clock();
     if(d->scaled() && d->scale() <= 1.4) {
-        qDebug() << d->drawingRect << " <_> " << d->imageScaled.size();
+        //qDebug() << d->drawingRect << " <_> " << d->imageScaled.size();
         painter.drawImage(d->drawingRect, d->imageScaled);
     }
     else {
         painter.drawImage(d->drawingRect, d->image);
     }
-    qDebug() << "draw time: " << clock() - time;
+    //qDebug() << "draw time: " << clock() - time;
 }
 
 void ImageViewer::mousePressEvent(QMouseEvent* event)
@@ -258,22 +260,26 @@ void ImageViewer::mousePressEvent(QMouseEvent* event)
 void ImageViewer::mouseMoveEvent(QMouseEvent* event)
 {
     if (event->buttons() & Qt::LeftButton) {
-        d->cursorMovedDistance -= event->pos();
+        if(d->drawingRect.size().width() > this->width() ||
+           d->drawingRect.size().height() > this->height()) {
+           // qDebug() << d->drawingRect;
+           // qDebug() << this->size();
+            d->cursorMovedDistance -= event->pos();
+            int left = d->drawingRect.x() - d->cursorMovedDistance.x();
+            int top = d->drawingRect.y() - d->cursorMovedDistance.y();
+            int right = left + d->drawingRect.width();
+            int bottom = top + d->drawingRect.height();
 
-        int left = d->drawingRect.x() - d->cursorMovedDistance.x();
-        int top = d->drawingRect.y() - d->cursorMovedDistance.y();
-        int right = left + d->drawingRect.width();
-        int bottom = top + d->drawingRect.height();
+            if (left < 0 && right > size().width())
+                d->drawingRect.moveLeft(left);
 
-        if (left < 0 && right > size().width())
-            d->drawingRect.moveLeft(left);
+            if (top < 0 && bottom > size().height())
+                d->drawingRect.moveTop(top);
 
-        if (top < 0 && bottom > size().height())
-            d->drawingRect.moveTop(top);
-
-        d->cursorMovedDistance = event->pos();
-        update();
-        d->mapOverlay->updateMap(size(),d->drawingRect);
+            d->cursorMovedDistance = event->pos();
+            update();
+            d->mapOverlay->updateMap(size(),d->drawingRect);
+        }
     }
 }
 
