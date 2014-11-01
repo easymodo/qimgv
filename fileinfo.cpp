@@ -6,6 +6,8 @@ FileInfo::FileInfo() :
     inUse = 0;
     positions[0] = 0;
     positions[1] = 0;
+    width=0;
+    height=0;
 }
 
 FileInfo::FileInfo(QString *path) :
@@ -15,6 +17,8 @@ FileInfo::FileInfo(QString *path) :
     inUse = 0;
     positions[0] = 0;
     positions[1] = 0;
+    width=0;
+    height=0;
 }
 
 FileInfo::~FileInfo() {
@@ -31,6 +35,8 @@ void FileInfo::setFile(QString path) {
 
     //read first 2 bytes to determine file format
     QByteArray startingBytes= file.read(2).toHex();
+    file.close();
+
     if(startingBytes == "4749") {
         type = GIF;
     }
@@ -40,8 +46,27 @@ void FileInfo::setFile(QString path) {
         type = STATIC;
     }
     lastModified = fInfo.lastModified();
-    file.close();
 }
+int FileInfo::getWidth() const
+{
+    return width;
+}
+
+void FileInfo::setWidth(int value)
+{
+    width = value;
+}
+
+int FileInfo::getHeight() const
+{
+    return height;
+}
+
+void FileInfo::setHeight(int value)
+{
+    height = value;
+}
+
 
 QString FileInfo::getDirPath() {
     return fInfo.absolutePath();
@@ -65,6 +90,10 @@ QDateTime FileInfo::getLastModified() {
 
 fileType FileInfo::getType() {
     return type;
+}
+
+void FileInfo::setType(fileType _type) {
+    type = _type;
 }
 
 void FileInfo::setPositions(int current, int from) {

@@ -4,42 +4,41 @@
 #include <QObject>
 #include <QWidget>
 #include <QFileDialog>
-#include "mainwindow.h"
-#include "imageviewer.h"
 #include "directorymanager.h"
-#include "opendialog.h"
 #include "imageloader.h"
+#include "settings.h"
 
 class Core : public QObject
 {
     Q_OBJECT
 public:
     explicit Core();
-    ImageViewer *imageViewer;
-    DirectoryManager *dirManager;
-    void connectGui(MainWindow*);
     void open(QString);
-
 
 private:
     void initVariables();
     void connectSlots();
-    void initSettings();
-    MainWindow *mainWindow;
-    OpenDialog *openDialog;
-    ImageLoader *imgLoader;
+    ImageLoader *imageLoader;
+    DirectoryManager *dirManager;
+    Image* currentImage;
 
 private slots:
-    void setInfoString();
+    void updateInfoString();
+    void onLoadFinished(Image *img);
+
 signals:
+    void signalUnsetImage();
+    void signalSetImage(Image*);
+    void infoStringChanged(QString);
+    void slowLoading();
 
 public slots:
+    void loadImage(QString);
+    void initSettings();
     void slotNextImage();
     void slotPrevImage();
     void setCurrentDir(QString);
-    void setDialogDir(QString);
-    //from gui
-    void showOpenDialog();
+
 };
 
 #endif // CORE_H

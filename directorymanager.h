@@ -8,31 +8,32 @@
 #include <QSize>
 #include <QDebug>
 #include <QFileInfo>
+#include <QMessageBox>
 #include "fileinfo.h"
+#include "settings.h"
 
 class DirectoryManager : public QObject
 {
     Q_OBJECT
 public:
     DirectoryManager();
-    FileInfo setFile(QString path);
+    FileInfo* setFile(QString path);
     void setCurrentDir(QString);
-    void next();
-    void prev();
-    FileInfo getFile();
-    FileInfo peekPrev();
-    FileInfo peekNext();
+    FileInfo* next();
+    FileInfo* prev();
+    FileInfo* peekPrev();
+    FileInfo* peekNext();
     QDir currentDir;
     QStringList fileList;
     QStringList filters;
-    FileInfo *fileInfo;
-    int currentPosition; // -1 = default (no file open)
+    int currentPos;
 signals:
     void directoryChanged(const QString &path);
 private:
-    void loadFileInfo(QString path);
-    void setFilePositions();
-
+    void changePath(QString path);
+    int nextPos();
+    int prevPos();
+    FileInfo* loadInfo(QString path);
 };
 
 #endif // DIRECTORYMANAGER_H

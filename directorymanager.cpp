@@ -1,89 +1,88 @@
 #include "directorymanager.h"
 
 DirectoryManager::DirectoryManager() :
-    currentPosition(-1),
-    fileInfo(new FileInfo())
+    currentPos(-1)
 {
     filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
+    QString startDir;
+    startDir = globalSettings->s.value("lastDir",
+                                       currentDir.homePath()).toString();
+    setCurrentDir(startDir);
     currentDir.setNameFilters(filters);
 }
 
 void DirectoryManager::setCurrentDir(QString path) {
-    if(currentDir.currentPath() != path) {
-        qDebug() << "attempting setDir" << path;
-        qDebug() << currentDir.setCurrent(path);
-        currentDir.setNameFilters(filters);
-        fileList = currentDir.entryList();
-        currentPosition = -1;
-        emit directoryChanged(path);
-    }
-}
-
-void DirectoryManager::next() {
-    if(currentDir.exists() && fileList.length()) {
-        if(++currentPosition>=fileList.length()) {
-            currentPosition=0;
+    if(currentDir.exists()) {
+        if(currentDir.path() != path) {
+            changePath(path);
         }
-        QString fileName = currentDir.currentPath()
-                        +"/"
-                        +fileList.at(currentPosition);
-        loadFileInfo(fileName);
-        setFilePositions();
+    }
+    else changePath(path);
+}
+
+void DirectoryManager::changePath(QString path) {
+    currentDir.setPath(path);
+    if(currentDir.isReadable())
+        globalSettings->s.setValue("lastDir", path);
+    currentDir.setNameFilters(filters);
+    currentPos = -1;
+    fileList = currentDir.entryList();
+    emit directoryChanged(path);
+}
+
+FileInfo* DirectoryManager::next() {
+    if(fileList.length()) {
+        currentPos = nextPos();
+        QString filePath = currentDir.filePath(fileList.at(currentPos));
+        return setFile(filePath);
+    }
+}
+FileInfo* DirectoryManager::prev() {
+    if(fileList.length()) {
+        currentPos = prevPos();
+        QString filePath = currentDir.filePath(fileList.at(currentPos));
+        return setFile(filePath);
     }
 }
 
-void DirectoryManager::prev() {
-    if(currentDir.exists() && fileList.length()) {
-        if(--currentPosition<0) {
-            currentPosition=fileList.length()-1;
-        }
-        QString fileName = currentDir.currentPath()
-                        +"/"
-                        +fileList.at(currentPosition);
-        loadFileInfo(fileName);
-        setFilePositions();
+int DirectoryManager::nextPos() {
+    int newPos = currentPos;
+    if(++newPos>=fileList.length()) {
+        newPos=0;
     }
+    return newPos;
 }
 
-void DirectoryManager::setFilePositions() {
-    if(fileInfo) {
-        fileInfo->setPositions(currentPosition+1, fileList.length());
+int DirectoryManager::prevPos() {
+    int newPos = currentPos;
+    if(--newPos<0) {
+        newPos=fileList.length()-1;
     }
+    return newPos;
 }
 
-FileInfo DirectoryManager::peekPrev() {
-    FileInfo tmp;
-    prev();
-    tmp=getFile();
-    next();
-    return tmp;
+FileInfo* DirectoryManager::peekNext() {
+    QString path = currentDir.filePath(fileList.at(nextPos()));
+    return loadInfo(path);
 }
 
-FileInfo DirectoryManager::peekNext() {
-    FileInfo tmp;
-    next();
-    tmp=getFile();
-    prev();
-    return tmp;
+FileInfo* DirectoryManager::peekPrev() {
+    QString path = currentDir.filePath(fileList.at(prevPos()));
+    return loadInfo(path);
 }
 
-void DirectoryManager::loadFileInfo(QString path) {
-    if(fileInfo != NULL && !fileInfo->inUse) {
-        delete fileInfo;
+FileInfo* DirectoryManager::loadInfo(QString path) {
+    FileInfo *info = new FileInfo(&path);
+    if(info) {
+        info->setPositions(fileList.indexOf(info->getName()), fileList.length());
     }
-    fileInfo = NULL;
-    fileInfo = new FileInfo(&path);
+    return info;
 }
 
-FileInfo DirectoryManager::setFile(QString path) {
-    loadFileInfo(path);
-    setCurrentDir(fileInfo->getDirPath());
-    currentPosition = fileList.indexOf(fileInfo->getName());
-    setFilePositions();
-    qDebug() << "file count: " << fileList.length();
-    return getFile();
-}
-
-FileInfo DirectoryManager::getFile() {
-    return *fileInfo;
+FileInfo* DirectoryManager::setFile(QString path) {
+    FileInfo *info = loadInfo(path);
+    setCurrentDir(info->getDirPath());
+    currentPos = fileList.indexOf(info->getName());
+    globalSettings->s.setValue("lastPosition", currentPos);
+    return info;
 }

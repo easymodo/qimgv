@@ -2,31 +2,50 @@
 #define IMAGELOADER_H
 
 #include <QObject>
-#include "imagecache.h"
-#include "image.h"
 #include "directorymanager.h"
-// #include "scrollarea.h"
+#include "imagecache.h"
+#include "settings.h"
+#include "image.h"
+#include <QtConcurrent>
+#include <time.h>
+#include <QMutex>
+#include <QVector>
 
 class ImageLoader : public QObject
 {
     Q_OBJECT
 public:
-    explicit ImageLoader(DirectoryManager*);
-    Image* loadNext();
-    Image* loadPrev();
-    Image* load(QString file);
-    void preload(FileInfo);
-    DirectoryManager *dirManager;
+    explicit ImageLoader(DirectoryManager *);
+    void load(QString path);
+    void load(FileInfo* file);
+    void loadNext();
+    void loadPrev();
+    void preload(FileInfo* path);
 
 private:
+    DirectoryManager *dm;
     ImageCache *cache;
-    void loadImage(Image*& image);
-    Image* notCached;
+    Image* currentImg;
+    QMutex mutex, mutex2;
+    void lock();
+    void unlock();
+    Image *getCurrentImg() const;
+    void setCurrentImg(Image *value);
+    bool isCurrent(Image *img);
+    QVector<Image*> currentJobs;
+    bool loadDelayEnabled;
+
+    bool jobAlreadyStarted(Image *img);
 signals:
+    void loadStarted();
+    void loadFinished(Image*);
+    void startPreload();
 
-public slots:
-    void deleteLastImage();
-
+private slots:
+    void readSettings();
+    void preloadNearest();
+    void load_thread(Image* image);
+    void preload_thread(Image*);
 };
 
 #endif // IMAGELOADER_H

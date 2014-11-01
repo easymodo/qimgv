@@ -10,21 +10,20 @@
 #include <QPixmapCache>
 #include <QImage>
 #include <QObject>
+#include <QThread>
 
 class Image : public QObject
 {
     Q_OBJECT
 public:
-    Image();
-    Image(FileInfo);
-    Image(QString path);
+    Image(FileInfo*);
     ~Image();
-    
+
     QImage* getImage();
     QMovie* getMovie();
     int getType();
     int ramSize();
-    FileInfo getInfo();
+    FileInfo* getInfo() const;
     // size in kbytes
     qint64 getSize();
     QString getName();
@@ -41,10 +40,9 @@ public:
     void setInUse(bool);
 
 private:
-    QString mPath;
     QImage* image;
     QMovie* movie;
-    FileInfo info;
+    FileInfo* info;
     QSize resolution;
     float aspectRatio;
     bool inUseFlag;

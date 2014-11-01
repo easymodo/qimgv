@@ -36,10 +36,14 @@ MapOverlay::MapOverlay(QWidget *parent) : QWidget(parent),
 
 void MapOverlay::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
-    painter.setPen(QPen(QColor(40,40,40,160)));
-    painter.fillRect(d->outerRect, QBrush(QColor(80,80,80,160), Qt::SolidPattern));
+    painter.setPen(QPen(QColor(20,20,20,150)));
+    painter.fillRect(d->outerRect,
+                     QBrush(QColor(80,80,80,150),
+                            Qt::SolidPattern));
     painter.drawRect(d->outerRect);
-    painter.fillRect(d->innerRect, QBrush(QColor(230,230,230,160), Qt::SolidPattern));
+    painter.fillRect(d->innerRect,
+                     QBrush(QColor(190,190,190,150),
+                            Qt::SolidPattern));
     painter.drawRect(d->innerRect);
 }
 
@@ -51,7 +55,7 @@ void MapOverlay::updatePosition() {
 }
 
 // calculates outer(image) and inner(view area) squares
-void MapOverlay::updateMap(const QSize& windowSz, const QRect& drawingRect)
+void MapOverlay::updateMap(const QSizeF& windowSz, const QRectF& drawingRect)
 {
     if(windowSz.height() < drawingRect.height()
             || windowSz.width() < drawingRect.width()) {

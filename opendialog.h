@@ -3,6 +3,7 @@
 
 #include <QFileDialog>
 #include <QDebug>
+#include "settings.h"
 
 class OpenDialog : QObject
 {
@@ -13,13 +14,11 @@ public:
 
 private:
     QFileDialog dialog;
-    QString dir;
     QWidget *parent;
 
 signals:
 
 public slots:
-    void setDirectory(QString);
     void setParent(QWidget*);
 };
 

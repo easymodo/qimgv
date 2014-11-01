@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = qimgv
 TEMPLATE = app
-
+RC_FILE = qimgv.rc
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -25,7 +25,9 @@ SOURCES += main.cpp\
     opendialog.cpp \
     imagecache.cpp \
     imageviewer.cpp \
-    sleep.cpp
+    sleep.cpp \
+    settings.cpp \
+    settingsdialog.cpp
 
 HEADERS  += mainwindow.h \
     infooverlay.h \
@@ -38,9 +40,12 @@ HEADERS  += mainwindow.h \
     imageloader.h \
     opendialog.h \
     imagecache.h \
-    imageviewer.h
+    imageviewer.h \
+    settings.h \
+    settingsdialog.h
 
-FORMS    +=
+FORMS    += \
+    settingsdialog.ui
 
 RESOURCES += \
     resources.qrc

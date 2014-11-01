@@ -1,75 +1,120 @@
 #include "imageloader.h"
 
-ImageLoader::ImageLoader(DirectoryManager *dm) {
+ImageLoader::ImageLoader(DirectoryManager *_dm) {
     cache = new ImageCache();
-    dirManager = dm;
-    notCached = NULL;
+    dm = _dm;
+    loadDelayEnabled = false;
+    readSettings();
+    connect(globalSettings, SIGNAL(settingsChanged()),
+            this, SLOT(readSettings()));
 }
 
-Image* ImageLoader::loadNext() {
-    dirManager->next();
-    Image *img = new Image(dirManager->getFile());
-    loadImage(img);
-    preload(dirManager->peekNext()); // move to thread later.. maybe
-    return img;
+void ImageLoader::load(QString path) {
+    load(dm->setFile(path));
 }
 
-Image* ImageLoader::loadPrev() {
-    dirManager->prev();
-    Image *img = new Image(dirManager->getFile());
-    loadImage(img);
-    preload(dirManager->peekPrev()); // move to thread
-    return img;
+void ImageLoader::load(FileInfo* file) {
+    Image *img = new Image(file);
+    setCurrentImg(img);
+    QtConcurrent::run(this, &ImageLoader::load_thread, img);
 }
 
-Image* ImageLoader::load(QString file) {
-    dirManager->setFile(file);
-    Image *img = new Image(dirManager->getFile());
-    loadImage(img);
-    preload(dirManager->peekNext()); // move to thread
-    preload(dirManager->peekPrev()); // move to thread
-    return img;
-}
-
-void ImageLoader::preload(FileInfo info) {
-    qDebug() << "LOADER: PRELOADING = " << info.getName();
-    Image *img = new Image(info);
-    if (!cache->imageIsCached(img))
-    {
-        img->loadImage();
-        if(!cache->pushImage(img)) {
-            deleteLastImage();
-            notCached = img;
-        }
-        qDebug() << "LOADER: image preloaded";
-    }
-}
-
-void ImageLoader::loadImage(Image*& image)
+void ImageLoader::loadNext()
 {
-    qDebug() << "LOADER: opening " << image->getName();
-    Image* found = cache->findImagePointer(image);
-    if (!found)
-    {
-        image->loadImage();
-        image->setInUse(true);
-        if(!cache->pushImage(image)) {
-            deleteLastImage();
-            notCached = image;
-            qDebug() << "LOADER: image not found, loading";
+    load(dm->next());
+}
+
+void ImageLoader::loadPrev()
+{
+    load(dm->prev());
+}
+
+void ImageLoader::load_thread(Image* img)
+{
+    emit loadStarted();
+    if(loadDelayEnabled) QThread::msleep(35);
+    if(isCurrent(img)) {
+        mutex2.lock();
+        qDebug() << "loadStart: " << img->getName();
+        Image* found = cache->findImage(img);
+        if(!found) {
+            img->loadImage();
+            cache->cacheImageForced(img);
         }
-    }
-    else
-    {
-        delete image;
-        image = found;
-        qDebug() << "LOADER: image found" << image;
+        else {
+            delete img;
+            img = found;
+        }
+        img->setInUse(true);
+        mutex2.unlock();
+        emit startPreload();
+        emit loadFinished(img);
     }
 }
 
-void ImageLoader::deleteLastImage() {
-    if(notCached && !notCached->isInUse()) {// && !cache->imageIsCached(img)) {
-        delete notCached;
-        notCached = NULL;
+void ImageLoader::preloadNearest() {
+    preload(dm->peekNext());
+    preload(dm->peekPrev());
+}
+
+void ImageLoader::preload(FileInfo *file) {
+    Image* img = new Image(file);
+    if(!cache->findImage(img)) { // not found; preloading
+        QtConcurrent::run(this, &ImageLoader::preload_thread, img);
     }
+}
+
+void ImageLoader::preload_thread(Image* img) {
+    lock();
+    qDebug() << "PreloadStart: " << img->getName();
+    img->loadImage();
+    if(!cache->cacheImageForced(img)) {
+        delete img;
+        img = NULL;
+    }
+    else {
+        img->moveToThread(this->thread()); // important
+    }
+    unlock();
+}
+
+Image *ImageLoader::getCurrentImg() const
+{
+    return currentImg;
+}
+
+void ImageLoader::setCurrentImg(Image *value)
+{
+    lock();
+    currentImg = value;
+    unlock();
+}
+
+bool ImageLoader::isCurrent(Image* img) {
+    lock();
+    bool flag = (img == currentImg);
+    unlock();
+    return flag;
+}
+
+void ImageLoader::readSettings() {
+    loadDelayEnabled = globalSettings->s.value("loadDelay", "false").toBool();
+    if(globalSettings->s.value("usePreloader", true).toBool()) {
+        connect(this, SIGNAL(startPreload()),
+                this, SLOT(preloadNearest()));
+    }
+    else {
+        disconnect(this, SIGNAL(startPreload()),
+                   this, SLOT(preloadNearest()));
+    }
+}
+
+void ImageLoader::lock()
+{
+    mutex.lock();
+}
+
+void ImageLoader::unlock()
+{
+    mutex.unlock();
 }

@@ -2,22 +2,32 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QDebug>
-#include "image.h"
+#include "settings.h"
 
-//#include <iostream>
+void saveSettings() {
+    delete globalSettings;
+}
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    Core *c = new Core();
+    QCoreApplication::setOrganizationName("greenpepper software");
+    QCoreApplication::setOrganizationDomain("nosite.com");
+    QCoreApplication::setApplicationName("qimgv");
+    QCoreApplication::setApplicationVersion("0.28RC");
 
-    MainWindow *mw = new MainWindow();
-    c->connectGui(mw);
-    mw->show();
+    globalSettings = Settings::getInstance();
+    atexit(saveSettings);
+
+    MainWindow mw;
 
     if(a.arguments().length()>1) {
-        mw->slotTriggerFullscreen();
-        c->open(a.arguments().at(1));
+        QString fileName = a.arguments().at(1);
+        fileName.replace("\\\\","/");
+        fileName.replace("\\","/");
+        mw.slotTriggerFullscreen();
+        mw.open(fileName);
     }
+    mw.show();
 
     return a.exec();
 }
