@@ -31,9 +31,13 @@ void Image::loadImage()
             info->setWidth(movie->currentImage().width());
         }
         else if(getType() == STATIC) {
-       //     QImage *tmp = new QImage(path); // possibly created in worker thread
-            image = new QImage(path);//tmp->convertToFormat(QImage::Format_ARGB32_Premultiplied);
-            //delete tmp;
+            qDebug() << "ext: " << info->getExtension();
+            if(info->getExtension()) {
+                image = new QImage(path, info->getExtension());
+            }
+            else {
+                image = new QImage(path); // qt will guess format
+            }
             aspectRatio = (float)image->height()/
                     image->width();
             info->setHeight(image->height());

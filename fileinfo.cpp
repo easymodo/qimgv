@@ -8,17 +8,19 @@ FileInfo::FileInfo() :
     positions[1] = 0;
     width=0;
     height=0;
+    extension=NULL;
 }
 
 FileInfo::FileInfo(QString *path) :
     type(NONE)
 {
-    setFile(*path);
     inUse = 0;
     positions[0] = 0;
     positions[1] = 0;
     width=0;
     height=0;
+    extension=NULL;
+    setFile(*path);
 }
 
 FileInfo::~FileInfo() {
@@ -30,23 +32,35 @@ void FileInfo::setFile(QString path) {
         qDebug() << "Cannot open: " << path;
         return;
     }
+    lastModified = fInfo.lastModified();
+    detectType();
+}
+
+void FileInfo::detectType() {
     QFile file(fInfo.filePath());
     file.open(QIODevice::ReadOnly);
-
     //read first 2 bytes to determine file format
     QByteArray startingBytes= file.read(2).toHex();
     file.close();
 
-    if(startingBytes == "4749") {
-        type = GIF;
+    if(startingBytes=="4749") {
+        type=GIF;
+        extension="GIF";
     }
-    else if(startingBytes == "ffd8"
-         || startingBytes == "8950"
-         || startingBytes == "424d") {
-        type = STATIC;
+    else if(startingBytes=="ffd8") {
+        type=STATIC;
+        extension="JPG";
     }
-    lastModified = fInfo.lastModified();
+    else if(startingBytes=="8950") {
+        type=STATIC;
+        extension="PNG";
+    }
+    else if(startingBytes=="424d") {
+        type=STATIC;
+        extension="BMP";
+    }
 }
+
 int FileInfo::getWidth() const
 {
     return width;
@@ -94,6 +108,11 @@ fileType FileInfo::getType() {
 
 void FileInfo::setType(fileType _type) {
     type = _type;
+}
+
+char *FileInfo::getExtension() {
+    qDebug() << "get: " << extension;
+    return extension;
 }
 
 void FileInfo::setPositions(int current, int from) {
