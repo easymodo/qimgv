@@ -20,8 +20,9 @@ private:
     Ui::SettingsDialog *ui;
 
 private slots:
-    void writeSettings();
+    void applySettings();
 
+    void applySettingsAndClose();
 signals:
     void settingsChanged();
 };

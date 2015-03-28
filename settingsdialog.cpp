@@ -40,7 +40,7 @@ void SettingsDialog::readSettings() {
     }
 }
 
-void SettingsDialog::writeSettings() {
+void SettingsDialog::applySettings() {
     globalSettings->s.setValue("usePreloader",
                             ui->preloaderCheckBox->isChecked());
     globalSettings->s.setValue("loadDelay",
@@ -50,6 +50,10 @@ void SettingsDialog::writeSettings() {
     globalSettings->s.setValue("defaultFitMode",
                                ui->fitModeComboBox->currentText());
     emit settingsChanged();
+}
+
+void SettingsDialog::applySettingsAndClose() {
+    applySettings();
     this->close();
 }
 

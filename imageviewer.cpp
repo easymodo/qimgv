@@ -8,6 +8,7 @@ ImageViewer::ImageViewer(): QWidget(),
     errorFlag(false)
 {
     initMap();
+    bgColor.setRgb(0,0,0);
     image.load(":/images/res/logo.png");
     drawingRect = image.rect();
     fitDefault();
@@ -75,30 +76,31 @@ void ImageViewer::displayImage(Image* i) {
         else if (currentImage->getType() == GIF) {
             currentImage->getMovie()->jumpToFrame(0);
             image = currentImage->getMovie()->currentImage();
-            maxScale = defaultMaxScale;
             startAnimation();
         }
-        calculateMaxScale();
+        updateMaxScale();
     }
     drawingRect = image.rect();
     currentScale = 1.0;
     if(imageFitMode == FREE)
-        imageFitMode = NORMAL;
+        imageFitMode = ALL;
     fitDefault();
     emit imageChanged();
 }
 
-void ImageViewer::calculateMaxScale() {
+void ImageViewer::updateMaxScale() {
+    if (image.width() < width() && image.height() < height()) {
+        maxScale = 1;
+        return;
+    }
     float newMaxScaleX = (float)width()/image.width();
-    float newMaxScaleY = (float)height()/image.height();
+    float newMaxScaleY = (float)height()/image.height();    
     if(newMaxScaleX < newMaxScaleY) {
         maxScale = newMaxScaleX;
     }
     else {
         maxScale = newMaxScaleY;
     }
-    if(maxScale > defaultMaxScale)
-        maxScale = defaultMaxScale;
 }
 
 float ImageViewer::scale() const {
@@ -112,13 +114,13 @@ void ImageViewer::setScale(float scale) {
         }
         else if(scale <= maxScale) {
             currentScale = maxScale;
-            //resizePolicy = ALL;
+            imageFitMode = ALL;
         }
         else {
             currentScale = scale;
         }
         QSize sz = image.size();
-        sz = sz.scaled(sz * scale, Qt::KeepAspectRatio);
+        sz = sz.scaled(sz * scale, Qt::KeepAspectRatioByExpanding);
         drawingRect.setSize(sz);
     }
 }
@@ -131,7 +133,7 @@ void ImageViewer::onAnimation() {
 // ##############################################
 void ImageViewer::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
-    painter.fillRect(rect(), QBrush(QColor(0, 0, 0)));
+    painter.fillRect(rect(), QBrush(bgColor));
     painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     //int time = clock();
     painter.drawImage(drawingRect, image);
@@ -170,22 +172,23 @@ void ImageViewer::mouseMoveEvent(QMouseEvent* event) {
         }
     }
     if (event->buttons() & Qt::RightButton && isDisplayingFlag) {
-        float step = (maxScale - minScale) / -300.0;
+        float step = (maxScale - minScale) / -400.0;
         int currentPos = event->pos().y();
         int moveDistance = mouseMoveStartPos.y() - currentPos;
         float newScale = currentScale + step*(moveDistance);
-        if(moveDistance > 0 && newScale > minScale) {
-                newScale = minScale;
-        }
-        if(moveDistance < 0 && newScale < maxScale-FLT_EPSILON) {
-                newScale = maxScale;
-        }
+        mouseMoveStartPos = event->pos();
         if(newScale == currentScale) {
             return;
+        } else if(moveDistance > 0 && newScale > minScale) { // already at max zoom
+                newScale = minScale;
+                return;
+        } else if(moveDistance < 0 && newScale < maxScale-FLT_EPSILON) { // zooming out
+                newScale = maxScale;
+                slotFitAll();
+                return;
         }
         imageFitMode = FREE;
         scaleAround(fixedZoomPoint, newScale);
-        mouseMoveStartPos = event->pos();
     }
 }
 
@@ -200,8 +203,6 @@ void ImageViewer::fitWidth() {
         float scale = (float) width() / image.width();
         setScale(scale);
         imageAlign();
-        if(drawingRect.height()>height())
-            drawingRect.moveTop(0);
         update();
     }
     else if(errorFlag) {
@@ -218,6 +219,7 @@ void ImageViewer::fitAll() {
         bool w = image.width() <= this->width();
         if(h && w) {
             fitNormal();
+            return;
         }
         else {
             float widgetAspect = (float) height() / width();
@@ -281,7 +283,7 @@ void ImageViewer::slotFitAll() {
 }
 
 void ImageViewer::resizeEvent(QResizeEvent* event) {
-    calculateMaxScale();
+    updateMaxScale();
     if(imageFitMode == FREE || imageFitMode == NORMAL) {
         imageAlign();
     }
@@ -342,6 +344,8 @@ void ImageViewer::fixAlignVertical() {
     }
 }
 
+// scales image around point, so point's position
+// relative to window remains unchanged
 void ImageViewer::scaleAround(QPointF p, float newScale) {
     float xPos = (float)(p.x()-drawingRect.x())/drawingRect.width();
     float oldPx = (float)xPos*drawingRect.width();
@@ -392,6 +396,6 @@ Image* ImageViewer::getCurrentImage() const {
     return currentImage;
 }
 
-bool ImageViewer::isDisplaying() {
+bool ImageViewer::isDisplaying() const {
     return isDisplayingFlag;
 }

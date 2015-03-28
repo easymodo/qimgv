@@ -36,13 +36,14 @@ MapOverlay::MapOverlay(QWidget *parent) : QWidget(parent),
 
 void MapOverlay::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
-    painter.setPen(QPen(QColor(20,20,20,150)));
+    painter.setRenderHint(QPainter::Antialiasing, false);
+    painter.setPen(QPen(QColor(40,40,40,255)));
     painter.fillRect(d->outerRect,
                      QBrush(QColor(80,80,80,150),
                             Qt::SolidPattern));
     painter.drawRect(d->outerRect);
     painter.fillRect(d->innerRect,
-                     QBrush(QColor(190,190,190,150),
+                     QBrush(QColor(160,160,160,150),
                             Qt::SolidPattern));
     painter.drawRect(d->innerRect);
 }
@@ -65,7 +66,7 @@ void MapOverlay::updateMap(const QSizeF& windowSz, const QRectF& drawingRect)
         d->outerRect.setY(0);
     
         QSizeF outerSz = drawingRect.size();
-    
+
         outerSz.scale(d->mapSz, d->mapSz, Qt::KeepAspectRatio);
         d->outerRect.setSize(outerSz);
 
@@ -83,7 +84,7 @@ void MapOverlay::updateMap(const QSizeF& windowSz, const QRectF& drawingRect)
 
         QSizeF innerSz(width, height);
         d->innerRect.setSize(innerSz);
-        
+
         float xSpeedDiff = (float) innerSz.width() / windowSz.width();
         float ySpeedDiff = (float) innerSz.height() / windowSz.height();
 
@@ -97,7 +98,7 @@ void MapOverlay::updateMap(const QSizeF& windowSz, const QRectF& drawingRect)
             y = 0;
 
         d->innerRect.moveTo(QPointF(x, y));
-        
+
         //move to bottom left border
         d->outerRect.translate(d->mapSz - d->outerRect.width(),
                             d->mapSz - d->outerRect.height());

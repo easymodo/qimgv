@@ -38,7 +38,7 @@ public:
     ImageViewer(QWidget* parent);
     ~ImageViewer();
     Image* getCurrentImage() const;
-    bool isDisplaying();
+    bool isDisplaying() const;
 
 signals:
     void sendDoubleClick();
@@ -69,8 +69,10 @@ private:
     Image* currentImage;
     QImage image;
     QTimer animationTimer;
-    QRectF drawingRect;
+    QRect drawingRect;
     QPoint mouseMoveStartPos;
+
+    QColor bgColor;
 
     MapOverlay *mapOverlay;
 
@@ -78,16 +80,15 @@ private:
     bool errorFlag;
 
     float currentScale;
-    float maxScale = 0.50;
-    static const float defaultMaxScale = 0.50;
-    static const float minScale = 5.0;
+    float maxScale = 1.0; // zoom OUT
+    static const float minScale = 5.0; // zoom IN
     static const float scaleStep = 0.1;
     QPointF fixedZoomPoint;
 
     ImageFitMode imageFitMode;
     void initMap();
     void setScale(float scale);
-    void calculateMaxScale();
+    void updateMaxScale();
     void scaleAround(QPointF p, float oldScale);
     void fitDefault();
     void fitNormal();

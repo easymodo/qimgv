@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>322</width>
-    <height>221</height>
+    <width>388</width>
+    <height>330</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,12 +22,6 @@
     <height>221</height>
    </size>
   </property>
-  <property name="maximumSize">
-   <size>
-    <width>322</width>
-    <height>221</height>
-   </size>
-  </property>
   <property name="baseSize">
    <size>
     <width>322</width>
@@ -37,65 +31,11 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QSlider" name="cacheSlider">
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>80</y>
-     <width>131</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="minimum">
-    <number>32</number>
-   </property>
-   <property name="maximum">
-    <number>512</number>
-   </property>
-   <property name="singleStep">
-    <number>2</number>
-   </property>
-   <property name="value">
-    <number>64</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QLabel" name="cacheLabel1">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>80</y>
-     <width>81</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>When preloader used, ram usege may exceed this setting.</string>
-   </property>
-   <property name="text">
-    <string>Cache size, MB:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="cacheLabel2">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>80</y>
-     <width>21</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
   <widget class="QPushButton" name="Cancel">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>190</y>
+     <x>310</x>
+     <y>300</y>
      <width>71</width>
      <height>23</height>
     </rect>
@@ -108,8 +48,8 @@
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>190</y>
-     <width>81</width>
+     <y>300</y>
+     <width>71</width>
      <height>23</height>
     </rect>
    </property>
@@ -117,74 +57,164 @@
     <string>OK</string>
    </property>
   </widget>
-  <widget class="QLabel" name="fitModeLabel">
+  <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>
-     <x>11</x>
-     <y>110</y>
-     <width>101</width>
-     <height>20</height>
+     <x>10</x>
+     <y>10</y>
+     <width>371</width>
+     <height>281</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Default fit mode:</string>
+   <property name="currentIndex">
+    <number>0</number>
    </property>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>General</string>
+    </attribute>
+    <widget class="QLabel" name="fitModeLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Default fit mode:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="fitModeComboBox">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>10</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>ALL</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>WIDTH</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>NORMAL</string>
+      </property>
+     </item>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>Loader</string>
+    </attribute>
+    <widget class="QCheckBox" name="loadDelayCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>151</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Enable to reduce lag during fast image scrolling. Disable for max responsiveness.</string>
+     </property>
+     <property name="text">
+      <string>Enable small load delay</string>
+     </property>
+    </widget>
+    <widget class="QSlider" name="cacheSlider">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>70</y>
+       <width>151</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>32</number>
+     </property>
+     <property name="maximum">
+      <number>512</number>
+     </property>
+     <property name="singleStep">
+      <number>2</number>
+     </property>
+     <property name="value">
+      <number>64</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="preloaderCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>151</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Preloads next image in directory for faster scrolling.</string>
+     </property>
+     <property name="text">
+      <string>Enable preloader</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="cacheLabel2">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>70</y>
+       <width>21</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="cacheLabel1">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>When preloader used, ram usege may exceed this setting.</string>
+     </property>
+     <property name="text">
+      <string>Cache size, MB:</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
-  <widget class="QComboBox" name="fitModeComboBox">
+  <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>110</y>
+     <x>230</x>
+     <y>300</y>
      <width>71</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>ALL</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>WIDTH</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>NORMAL</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QCheckBox" name="preloaderCheckBox">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>20</y>
-     <width>151</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>Preloads next image in directory for faster scrolling.</string>
    </property>
    <property name="text">
-    <string>Enable preloader</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="loadDelayCheckBox">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>50</y>
-     <width>151</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>Enable to reduce lag during fast image scrolling. Disable for max responsiveness.</string>
-   </property>
-   <property name="text">
-    <string>Enable small load delay</string>
+    <string>Apply</string>
    </property>
   </widget>
  </widget>
@@ -197,12 +227,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>219</x>
-     <y>37</y>
+     <x>271</x>
+     <y>72</y>
     </hint>
     <hint type="destinationlabel">
-     <x>287</x>
-     <y>41</y>
+     <x>222</x>
+     <y>72</y>
     </hint>
    </hints>
   </connection>
@@ -213,8 +243,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>333</x>
-     <y>249</y>
+     <x>380</x>
+     <y>322</y>
     </hint>
     <hint type="destinationlabel">
      <x>383</x>
@@ -226,20 +256,37 @@
    <sender>OK</sender>
    <signal>clicked()</signal>
    <receiver>SettingsDialog</receiver>
-   <slot>writeSettings()</slot>
+   <slot>applySettingsAndClose()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>247</x>
-     <y>258</y>
+     <x>182</x>
+     <y>312</y>
     </hint>
     <hint type="destinationlabel">
-     <x>294</x>
-     <y>223</y>
+     <x>132</x>
+     <y>317</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>applySettings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>262</x>
+     <y>316</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>137</x>
+     <y>303</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
-  <slot>writeSettings()</slot>
+  <slot>applySettingsAndClose()</slot>
+  <slot>applySettings()</slot>
  </slots>
 </ui>
