@@ -110,8 +110,7 @@ void FileInfo::setType(fileType _type) {
     type = _type;
 }
 
-char *FileInfo::getExtension() {
-    qDebug() << "get: " << extension;
+char *FileInfo::getExtension() const {
     return extension;
 }
 

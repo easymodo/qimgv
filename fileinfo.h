@@ -30,7 +30,7 @@ public:
 
     void setType(fileType _type);
 
-    char* getExtension();
+    char* getExtension() const;
     int getHeight() const;
     void setHeight(int value);
     int getWidth() const;

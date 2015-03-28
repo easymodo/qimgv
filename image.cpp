@@ -23,7 +23,10 @@ void Image::loadImage()
     QString path = info->getFilePath();
     if(info->getType()!=NONE)  {
         if(getType() == GIF) {
+            qDebug() << "we here";
+            movie->setFormat("GIF");
             movie->setFileName(info->getFilePath());
+qDebug() <<             movie->isValid();
             movie->jumpToFrame(0);
             aspectRatio = (float)movie->currentImage().height()/
                     movie->currentImage().width();
@@ -31,7 +34,6 @@ void Image::loadImage()
             info->setWidth(movie->currentImage().width());
         }
         else if(getType() == STATIC) {
-            qDebug() << "ext: " << info->getExtension();
             if(info->getExtension()) {
                 image = new QImage(path, info->getExtension());
             }
