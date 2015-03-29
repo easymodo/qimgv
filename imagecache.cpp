@@ -58,10 +58,6 @@ bool ImageCache::pushImage(Image* image, bool forced) {
 void ImageCache::readSettings() {
     lock();
     maxCacheSize = globalSettings->s.value("cacheSize").toInt();
-    if(maxCacheSize < 32) {
-        maxCacheSize = 32;
-        globalSettings->s.setValue("cacheSize","32");
-    }
     unlock();
 }
 

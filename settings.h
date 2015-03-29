@@ -11,6 +11,7 @@ class Settings : public QObject
 public:
     static Settings* getInstance();
     QSettings s;
+    static void validate();
 private:
     explicit Settings(QObject *parent = 0);
 

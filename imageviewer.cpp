@@ -114,7 +114,7 @@ void ImageViewer::setScale(float scale) {
         }
         else if(scale <= maxScale) {
             currentScale = maxScale;
-            imageFitMode = ALL;
+            imageFitMode = ALL; // TODO: update gui checkbox
         }
         else {
             currentScale = scale;

@@ -23,10 +23,8 @@ void Image::loadImage()
     QString path = info->getFilePath();
     if(info->getType()!=NONE)  {
         if(getType() == GIF) {
-            qDebug() << "we here";
             movie->setFormat("GIF");
             movie->setFileName(info->getFilePath());
-qDebug() <<             movie->isValid();
             movie->jumpToFrame(0);
             aspectRatio = (float)movie->currentImage().height()/
                     movie->currentImage().width();
@@ -44,7 +42,7 @@ qDebug() <<             movie->isValid();
                     image->width();
             info->setHeight(image->height());
             info->setWidth(image->width());
-            qDebug() << "FORMAT: " << image->format();
+            //qDebug() << "FORMAT: " << image->format();
         }
         info->inUse = true;
     }
