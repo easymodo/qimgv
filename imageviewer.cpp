@@ -8,7 +8,7 @@ ImageViewer::ImageViewer(): QWidget(),
     errorFlag(false)
 {
     initMap();
-    bgColor.setRgb(0,0,0);
+    bgColor.setRgb(17,17,17,255);
     image.load(":/images/res/logo.png");
     drawingRect = image.rect();
     fitDefault();
@@ -22,6 +22,7 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
     errorFlag(false)
 {
     initMap();
+    bgColor.setRgb(17,17,17,255);
     image.load(":/images/res/logo.png");
     drawingRect = image.rect();
 }
