@@ -16,7 +16,7 @@ void textOverlay::paintEvent(QPaintEvent *event) {
     font.setPixelSize(13);
     painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setPen(QPen(Qt::green));
+    painter.setPen(QPen(QColor(10,205,10,255)));
     painter.drawText(QRect(4,2,950,16), currentText);
 }
 

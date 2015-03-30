@@ -5,7 +5,7 @@ ControlsOverlay::ControlsOverlay(QWidget *parent) :
 {
     setPalette(Qt::transparent);
     this->setGeometry(parentWidget()->size().rwidth()-60,0,60,20);
-    pen.setColor(Qt::green);
+    pen.setColor(QColor(10,205,10,255));
     pen.setWidth(1);
 }
 
