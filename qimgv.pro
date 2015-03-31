@@ -12,6 +12,10 @@ TARGET = qimgv
 TEMPLATE = app
 RC_FILE = qimgv.rc
 
+qimgv.path = /home/mitcher/build
+qimgv_files = qimgv
+INSTALLS +=qimgv
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     infooverlay.cpp \
