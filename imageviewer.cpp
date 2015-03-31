@@ -143,60 +143,66 @@ void ImageViewer::paintEvent(QPaintEvent* event) {
 // ##############################################
 
 void ImageViewer::mousePressEvent(QMouseEvent* event) {
-    mouseMoveStartPos = event->pos();
-    if (event->button() == Qt::LeftButton) {
-        this->setCursor(QCursor(Qt::ClosedHandCursor));
-    }
-    if (event->button() == Qt::RightButton) {
-        this->setCursor(QCursor(Qt::SizeVerCursor));
-        fixedZoomPoint = event->pos();
+    if(this->isDisplaying()) {
+        mouseMoveStartPos = event->pos();
+        if (event->button() == Qt::LeftButton) {
+            this->setCursor(QCursor(Qt::ClosedHandCursor));
+        }
+        if (event->button() == Qt::RightButton) {
+            this->setCursor(QCursor(Qt::SizeVerCursor));
+            fixedZoomPoint = event->pos();
+        }
     }
 }
 
 void ImageViewer::mouseMoveEvent(QMouseEvent* event) {
-    if (event->buttons() & Qt::LeftButton) {
-        if(drawingRect.size().width() > this->width() ||
-           drawingRect.size().height() > this->height())
-        {
-            mouseMoveStartPos -= event->pos();
-            int left = drawingRect.x() - mouseMoveStartPos.x();
-            int top = drawingRect.y() - mouseMoveStartPos.y();
-            int right = left + drawingRect.width();
-            int bottom = top + drawingRect.height();
-            if (left <= 0 && right > size().width())
-                drawingRect.moveLeft(left);
-            if (top <= 0 && bottom > size().height())
-                drawingRect.moveTop(top);
+    if(this->isDisplaying()) {
+        if (event->buttons() & Qt::LeftButton) {
+            if(drawingRect.size().width() > this->width() ||
+               drawingRect.size().height() > this->height())
+            {
+                mouseMoveStartPos -= event->pos();
+                int left = drawingRect.x() - mouseMoveStartPos.x();
+                int top = drawingRect.y() - mouseMoveStartPos.y();
+                int right = left + drawingRect.width();
+                int bottom = top + drawingRect.height();
+                if (left <= 0 && right > size().width())
+                    drawingRect.moveLeft(left);
+                if (top <= 0 && bottom > size().height())
+                    drawingRect.moveTop(top);
+                mouseMoveStartPos = event->pos();
+                update();
+                updateMap();
+            }
+        }
+        if (event->buttons() & Qt::RightButton && isDisplayingFlag) {
+            float step = (maxScale - minScale) / -400.0;
+            int currentPos = event->pos().y();
+            int moveDistance = mouseMoveStartPos.y() - currentPos;
+            float newScale = currentScale + step*(moveDistance);
             mouseMoveStartPos = event->pos();
-            update();
-            updateMap();
-        }
-    }
-    if (event->buttons() & Qt::RightButton && isDisplayingFlag) {
-        float step = (maxScale - minScale) / -400.0;
-        int currentPos = event->pos().y();
-        int moveDistance = mouseMoveStartPos.y() - currentPos;
-        float newScale = currentScale + step*(moveDistance);
-        mouseMoveStartPos = event->pos();
-        if(newScale == currentScale) {
-            return;
-        } else if(moveDistance > 0 && newScale > minScale) { // already at max zoom
-                newScale = minScale;
+            if(newScale == currentScale) {
                 return;
-        } else if(moveDistance < 0 && newScale < maxScale-FLT_EPSILON) { // zooming out
-                newScale = maxScale;
-                slotFitAll();
-                return;
+            } else if(moveDistance > 0 && newScale > minScale) { // already at max zoom
+                    newScale = minScale;
+                    return;
+            } else if(moveDistance < 0 && newScale < maxScale-FLT_EPSILON) { // zooming out
+                    newScale = maxScale;
+                    slotFitAll();
+                    return;
+            }
+            imageFitMode = FREE;
+            scaleAround(fixedZoomPoint, newScale);
         }
-        imageFitMode = FREE;
-        scaleAround(fixedZoomPoint, newScale);
     }
 }
 
 void ImageViewer::mouseReleaseEvent(QMouseEvent* event) {
-    mouseMoveStartPos = event->pos();
-    fixedZoomPoint = event->pos();
-    this->setCursor(QCursor(Qt::ArrowCursor));
+    if(this->isDisplaying()) {
+        mouseMoveStartPos = event->pos();
+        fixedZoomPoint = event->pos();
+        this->setCursor(QCursor(Qt::ArrowCursor));
+    }
 }
 
 void ImageViewer::fitWidth() {

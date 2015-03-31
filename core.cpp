@@ -52,13 +52,17 @@ void Core::setCurrentDir(QString path) {
 void Core::slotNextImage() {
     currentImage = NULL;
     FileInfo* f = dirManager->next();
-    imageLoader->load(f);
+    if(f) {
+        imageLoader->load(f);
+    }
 }
 
 void Core::slotPrevImage() {
     currentImage = NULL;
     FileInfo* f = dirManager->prev();
-    imageLoader->load(f);
+    if(f) {
+        imageLoader->load(f);
+    }
 }
 
 void Core::loadImage(QString path) {

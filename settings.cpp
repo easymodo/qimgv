@@ -17,6 +17,10 @@ Settings* Settings::getInstance() {
 
 void Settings::validate() {
     if(globalSettings) {
+        if(globalSettings->s.value("lastDir") == "") {
+            globalSettings->s.setValue("lastDir",
+                                       QApplication::applicationDirPath());
+        }
         // minimum cache size
         if(globalSettings->s.value("cacheSize").toInt() < 32) {
             globalSettings->s.setValue("cacheSize","32");

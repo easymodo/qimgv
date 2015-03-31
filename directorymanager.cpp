@@ -36,6 +36,7 @@ FileInfo* DirectoryManager::next() {
         QString filePath = currentDir.filePath(fileList.at(currentPos));
         return setFile(filePath);
     }
+    else return NULL;
 }
 FileInfo* DirectoryManager::prev() {
     if(fileList.length()) {
@@ -43,6 +44,7 @@ FileInfo* DirectoryManager::prev() {
         QString filePath = currentDir.filePath(fileList.at(currentPos));
         return setFile(filePath);
     }
+    else return NULL;
 }
 
 int DirectoryManager::nextPos() {
