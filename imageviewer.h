@@ -69,7 +69,7 @@ private:
     Image* currentImage;
     QImage image;
     QTimer animationTimer;
-    QRect drawingRect;
+    QRectF drawingRect;
     QPoint mouseMoveStartPos;
 
     QColor bgColor;

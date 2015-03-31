@@ -8,6 +8,8 @@
 #include <QPaintEvent>
 #include "settings.h"
 
+#define FLT_EPSILON 1.19209290E-07F
+
 class MapOverlayPrivate;
 
 class MapOverlay : public QWidget

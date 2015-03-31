@@ -58,7 +58,7 @@ void ImageLoader::preloadNearest() {
 }
 
 void ImageLoader::preload(FileInfo *file) {
-    if (file->getSize()>=2048) {
+    if (file->getSize()>=1024) {
         Image* img = new Image(file);
         if(!cache->findImage(img)) { // not found; preloading
             QtConcurrent::run(this, &ImageLoader::preload_thread, img);

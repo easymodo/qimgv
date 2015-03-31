@@ -120,7 +120,7 @@ void ImageViewer::setScale(float scale) {
         else {
             currentScale = scale;
         }
-        QSize sz = image.size();
+        QSizeF sz = image.size();
         sz = sz.scaled(sz * scale, Qt::KeepAspectRatioByExpanding);
         drawingRect.setSize(sz);
     }
