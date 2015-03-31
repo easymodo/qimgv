@@ -18,6 +18,12 @@ int main(int argc, char *argv[]) {
     globalSettings = Settings::getInstance();
     atexit(saveSettings);
 
+    QFile file(":/styles/res/style.qss");
+    if(file.open(QFile::ReadOnly)) {
+       QString StyleSheet = QLatin1String(file.readAll());
+       qApp->setStyleSheet(StyleSheet);
+    }
+
     MainWindow mw;
 
     if(a.arguments().length()>1) {

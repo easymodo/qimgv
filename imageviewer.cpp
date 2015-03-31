@@ -35,7 +35,7 @@ void ImageViewer::initMap() {
     mapOverlay = new MapOverlay(this);
 }
 
-bool ImageViewer::scaled() const {
+bool ImageViewer::imageIsScaled() const {
     return scale() != 1.0;
 }
 
@@ -57,7 +57,7 @@ void ImageViewer::startAnimation() {
 void ImageViewer::freeImage() {
     if (currentImage!=NULL) {
         stopAnimation();
-        currentImage->setInUse(false);
+        currentImage->setUseFlag(false);
     }
 }
 void ImageViewer::displayImage(Image* i) {
@@ -234,7 +234,7 @@ void ImageViewer::fitAll() {
                 float scale = (float) height() / image.height();
                 setScale(scale);
             }
-            if(scaled()) {
+            if(imageIsScaled()) {
                 drawingRect.moveCenter(rect().center());
                 update();
             }

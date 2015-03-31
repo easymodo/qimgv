@@ -37,7 +37,7 @@ public:
     QSize size();
     bool compare(Image*);
     bool isInUse();
-    void setInUse(bool);
+    void setUseFlag(bool);
 
 private:
     QImage* image;

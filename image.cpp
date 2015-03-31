@@ -52,7 +52,7 @@ bool Image::isInUse() {
     return inUseFlag;
 }
 
-void Image::setInUse(bool arg) {
+void Image::setUseFlag(bool arg) {
     inUseFlag=arg;
 }
 

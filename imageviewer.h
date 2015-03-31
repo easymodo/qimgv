@@ -100,7 +100,7 @@ private:
     void fixAlignHorizontal();
     void fixAlignVertical();
     float scale() const;
-    bool scaled() const;
+    bool imageIsScaled() const;
     void stopAnimation();
     void startAnimation();
 };

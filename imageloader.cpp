@@ -45,7 +45,7 @@ void ImageLoader::load_thread(Image* img)
             delete img;
             img = found;
         }
-        img->setInUse(true);
+        img->setUseFlag(true);
         mutex2.unlock();
         emit startPreload();
         emit loadFinished(img);
