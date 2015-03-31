@@ -56,6 +56,7 @@ public slots:
 
 private slots:
     void onAnimation();
+    void resizeImage();
 
 protected:
     virtual void paintEvent(QPaintEvent* event);
@@ -68,7 +69,7 @@ protected:
 private:
     Image* currentImage;
     QImage image;
-    QTimer animationTimer;
+    QTimer *resizeTimer;
     QRectF drawingRect;
     QPoint mouseMoveStartPos;
 
@@ -81,7 +82,7 @@ private:
 
     float currentScale;
     float maxScale = 1.0; // zoom OUT
-    static const float minScale = 5.0; // zoom IN
+    static const float minScale = 4.0; // zoom IN
     static const float scaleStep = 0.1;
     QPointF fixedZoomPoint;
 
