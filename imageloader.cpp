@@ -37,7 +37,7 @@ void ImageLoader::load_thread(Image* img)
         mutex2.lock();
         Image* found = cache->findImage(img);
         if(!found) {
-            qDebug() << "loadStart: " << img->getName();
+            //qDebug() << "loadStart: " << img->getName();
             img->loadImage();
             cache->cacheImageForced(img);
         }
@@ -68,7 +68,7 @@ void ImageLoader::preload(FileInfo *file) {
 
 void ImageLoader::preload_thread(Image* img) {
     lock();
-    qDebug() << "PreloadStart: " << img->getName();
+    //qDebug() << "PreloadStart: " << img->getName();
     img->loadImage();
     if(!cache->cacheImageForced(img)) {
         delete img;

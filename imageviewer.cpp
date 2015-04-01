@@ -152,18 +152,96 @@ void ImageViewer::setScale(float scale) {
     }
 }
 
+QImage ImageViewer::halfSized(const QImage &source)
+{
+    QSize halfSize = source.size() * 0.5;
+    if(source.width()%2) halfSize.setWidth(halfSize.width()-1);
+    if(source.height()%2) halfSize.setHeight(halfSize.height()-1);
+    QImage dest(halfSize, QImage::Format_ARGB32_Premultiplied);
+    qDebug() << "oldSize: " << source.size();
+    qDebug() << "halfSize: " << halfSize;
+
+    const quint32 *src = reinterpret_cast<const quint32*>(source.bits());
+    int sx = source.bytesPerLine() >> 2;
+    int sx2 = sx << 1;
+
+    quint32 *dst = reinterpret_cast<quint32*>(dest.bits());
+    int dx = dest.bytesPerLine() >> 2;
+    int ww = dest.width();
+    int hh = dest.height();
+
+    for (int y = hh; y; --y, dst += dx, src += sx2) {
+        const quint32 *p1 = src;
+        const quint32 *p2 = src + sx;
+        quint32 *q = dst;
+        for (int x = ww; x; --x, q++, p1 += 2, p2 += 2)
+            * q = AVG(AVG(p1[0], p1[1]), AVG(p2[0], p2[1]));
+    }
+    return dest;
+}
+
 void ImageViewer::resizeImage() {
     if(isDisplaying()) {
-        qDebug() << "resize..";
         resizeTimer->stop();
         if(image.size() != drawingRect.size()) {
-            image = currentImage->getImage()->scaled(drawingRect.width(),
-                                                 drawingRect.height(),
-                                                 Qt::KeepAspectRatioByExpanding,
-                                                 Qt::SmoothTransformation);
+            //############################ SCALING ################################
+            qDebug() << "###### scaling";
+            int time = clock();
+
+            if(drawingRect.width()>currentImage->getImage()->width() ||
+               drawingRect.height()>currentImage->getImage()->height() )
+            {
+                slowScaleFrom(currentImage->getImage());
+            }
+            else {
+                downScaleImage();
+            }
+            qDebug() << "###### scaling time: " << clock() - time;
+            //#####################################################################
+            qDebug() << "drawRect " << drawingRect.size();
+            qDebug() << "imgSize " << image.size();
             update();
         }
     }
+}
+
+void ImageViewer::downScaleImage() {
+    //1st run
+    if(image.width()/drawingRect.width() >= 2) {
+        image = halfSized(*currentImage->getImage());
+
+        //2nd+ runs
+        while(image.width()/drawingRect.width() >= 2 ) {
+            //QImage tmp;
+            image = halfSized(image);
+        }
+        slowScaleFrom(&image);
+    }
+    else {
+        slowScaleFrom(currentImage->getImage());
+    }
+}
+
+void ImageViewer::slowScaleFrom(QImage* src) {
+ /*   if(width()<=drawingRect.width()) { // width wont fit
+        qDebug() << "1";
+        image = src->scaledToWidth(width(),
+                                         Qt::SmoothTransformation);
+    }
+    else if (height()<=drawingRect.height()) { // height wont fit
+        qDebug() << "2";
+        image = src->scaledToHeight(drawingRect.height(),
+                                         Qt::SmoothTransformation);
+    }
+    else { //fits
+    */
+        qDebug() << "3";
+        image = src->scaled(drawingRect.width(),
+                                         drawingRect.height(),
+                                         Qt::IgnoreAspectRatio,
+                                         Qt::SmoothTransformation);
+    //}
+    qDebug() << "slowScale: " << image.size();
 }
 
 // ##############################################
@@ -173,6 +251,7 @@ void ImageViewer::paintEvent(QPaintEvent* event) {
     painter.fillRect(rect(), QBrush(bgColor));
     painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     //int time = clock();
+
     painter.drawImage(drawingRect, image, image.rect());
     //qDebug() << "VIEWER: draw time: " << clock() - time;
 }
