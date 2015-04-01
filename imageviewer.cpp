@@ -156,11 +156,13 @@ void ImageViewer::resizeImage() {
     if(isDisplaying()) {
         qDebug() << "resize..";
         resizeTimer->stop();
-        image = currentImage->getImage()->scaled(drawingRect.width(),
+        if(image.size() != drawingRect.size()) {
+            image = currentImage->getImage()->scaled(drawingRect.width(),
                                                  drawingRect.height(),
                                                  Qt::KeepAspectRatioByExpanding,
                                                  Qt::SmoothTransformation);
-        update();
+            update();
+        }
     }
 }
 

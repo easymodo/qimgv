@@ -85,10 +85,13 @@ void MapOverlay::updateMap(const QSizeF& windowSz, const QRectF& drawingRect)
         float height = outerSz.height() * heightDiff;
 
         QSizeF innerSz(width, height);
-        d->innerRect.setSize(innerSz);
+        //d->innerRect.setSize(innerSz);
 
         float xSpeedDiff = (float) innerSz.width() / windowSz.width();
         float ySpeedDiff = (float) innerSz.height() / windowSz.height();
+
+        d->innerRect.setWidth(innerSz.width());
+        d->innerRect.setHeight(innerSz.height());
 
         float x = (float) -drawingRect.left() * xSpeedDiff;
         float y = (float) -drawingRect.top() * ySpeedDiff;
