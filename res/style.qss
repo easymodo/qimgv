@@ -6,11 +6,14 @@ QMenu {
 
 QMenu::item {
     background-color: transparent;
-    padding: 8px 16px;
+    padding: 6px 16px;
+    border-style: solid;
+    border-width: 1px 0px 1px 0px;
 }
 
 QMenu::item:selected {
     background-color: #1A1A1A;
+    border-color: #161616;
 }
 
 QMenuBar {
@@ -20,15 +23,19 @@ QMenuBar {
 
 QMenuBar::item {
     spacing: 0px;
-    padding: 5px 7px;
-    margin: 0px;
+    padding: 2px 7px 5px 7px;
+    margin: 0px 0px;
     background: transparent;
+    border-style: solid;
+    border-width: 3px 0px 0px 0px;
 }
 
 QMenuBar::item:selected {
+
     background: #222222;
 }
 
 QMenuBar::item:pressed {
+    border-color: #E6E6E6;
     background: #222222;
 }

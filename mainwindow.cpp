@@ -240,7 +240,6 @@ void MainWindow::createMenus()
 {
     fileMenu = new QMenu(tr("&File"), this);
     fileMenu->addAction(openAct);
-    fileMenu->addSeparator();
     fileMenu->addAction(settingsAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
