@@ -4,10 +4,10 @@ pkgname=qimgv
 _gitname="qimgv"
 pkgver=0.29.2.g154f36f
 pkgrel=1
-pkgdesc="qimgv is an image viewer written in qt."
+pkgdesc="Simple image viewer written in qt."
 url=https://github.com/easymodo/qimgv
 license=( 'GPL' )
-depends=( qt5-base qt5-imageformats )
+depends=( qt5-base )
 arch=( 'i686' 'x86_64' )
 makedepends=( git sed )
 conflicts=( qimgv )
@@ -30,6 +30,4 @@ package() {
     mkdir -p "$pkgdir/usr/bin/"
     cd "$srcdir/$pkgname"
     install -m755 $pkgname "$pkgdir/usr/bin/"
-    #make install
-    #install -Dm644 qmigv "$pkgdir/usr/bin/qimgv"
 }
