@@ -87,7 +87,7 @@ void ImageCache::shrinkTo(int MB) {
     while (cacheSize() > MB && cachedImages.length() > 2) // leaves previous
     {
         if(!cachedImages.last()->isInUse()) {
-            qDebug() << "CACHE: deleting " << cachedImages.last()->getName();
+            //qDebug() << "CACHE: deleting " << cachedImages.last()->getName();
             delete cachedImages.last();
             cachedImages.removeLast();
         }

@@ -21,8 +21,6 @@
 
 #define FLT_EPSILON 1.19209290E-07F
 
-#define AVG(a,b)  ( ((((a)^(b)) & 0xfefefefeUL) >> 1) + ((a)&(b)) )
-
 enum ImageFitMode
 {
     NORMAL,
@@ -72,7 +70,7 @@ private:
     Image* currentImage;
     QImage image;
     QTimer *resizeTimer;
-    QRectF drawingRect;
+    QRect drawingRect;
     QPoint mouseMoveStartPos;
 
     QColor bgColor;
@@ -106,9 +104,6 @@ private:
     bool imageIsScaled() const;
     void stopAnimation();
     void startAnimation();
-    QImage halfSized(const QImage &source);
-    void downScaleImage();
-    void slowScaleFrom(QImage*);
 };
 
 #endif // IMAGEVIEWER_H
