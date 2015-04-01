@@ -10,6 +10,8 @@ ControlsOverlay::ControlsOverlay(QWidget *parent) :
 }
 
 void ControlsOverlay::paintEvent(QPaintEvent *event) {
+    Q_UNUSED(event)
+
     QPainter painter(this);
     painter.setPen(pen);
     painter.drawLine(QLine(4,15,15,15)); //minimize

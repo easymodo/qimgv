@@ -110,7 +110,7 @@ void FileInfo::setType(fileType _type) {
     type = _type;
 }
 
-char *FileInfo::getExtension() const {
+const char *FileInfo::getExtension() const {
     return extension;
 }
 

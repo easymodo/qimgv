@@ -309,6 +309,8 @@ void MainWindow::slotSetInfoString(QString info) {
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event) {
+    Q_UNUSED(event)
+
     controlsOverlay->updateSize();
     infoOverlay->updateWidth();
 }
@@ -334,7 +336,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 bool MainWindow::eventFilter(QObject *target, QEvent *event)
 {
-    QMainWindow::eventFilter(target, event);
+    return QMainWindow::eventFilter(target, event);
 }
 
 void MainWindow::slotAbout() {

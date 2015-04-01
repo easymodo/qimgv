@@ -22,9 +22,9 @@ public:
 };
 
 MapOverlayPrivate::MapOverlayPrivate(MapOverlay* qq) :
+    q(qq),
     mapSz(100),
-    mapMargin(10),
-    q(qq)
+    mapMargin(10)
 {
 }
 
@@ -35,6 +35,8 @@ MapOverlay::MapOverlay(QWidget *parent) : QWidget(parent),
 }
 
 void MapOverlay::paintEvent(QPaintEvent *event) {
+    Q_UNUSED(event)
+
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, false);
     painter.setPen(QPen(QColor(40,40,40,255)));

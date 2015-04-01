@@ -10,7 +10,6 @@ class OpenDialog : QObject
     Q_OBJECT
 public:
     explicit OpenDialog();
-    QString getOpenFileName();
 
 private:
     QFileDialog dialog;

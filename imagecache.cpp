@@ -43,8 +43,10 @@ bool ImageCache::pushImage(Image* image, bool forced) {
     lock();
     float imageMBytes = (float) image->ramSize();
     shrinkTo(maxCacheSize - imageMBytes);
-    if(forced || (!forced && cacheSize() <= maxCacheSize - imageMBytes ||
-                  cachedImages.count() == 0)) {
+    if((!forced && cacheSize() <= maxCacheSize - imageMBytes ) ||
+        cachedImages.count() == 0 ||
+        forced)
+    {
         cachedImages.push_front(image);
         unlock();
         return true;

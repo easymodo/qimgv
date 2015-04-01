@@ -1,11 +1,14 @@
 #include "imageviewer.h"
 
 ImageViewer::ImageViewer(): QWidget(),
-    currentScale(1.0),
-    imageFitMode(NORMAL),
     currentImage(NULL),
     isDisplayingFlag(false),
-    errorFlag(false)
+    errorFlag(false),
+    currentScale(1.0),
+    maxScale(1.0),
+    minScale(4.0),
+    scaleStep(0.1),
+    imageFitMode(NORMAL)
 {
     initMap();
     bgColor.setRgb(17,17,17,255);
@@ -13,22 +16,29 @@ ImageViewer::ImageViewer(): QWidget(),
     drawingRect = image.rect();
     fitDefault();
     resizeTimer = new QTimer(this);
-    connect(resizeTimer, SIGNAL(timeout()), this, SLOT(resizeImage()),Qt::UniqueConnection);
+    connect(resizeTimer, SIGNAL(timeout()),
+            this, SLOT(resizeImage()),
+            Qt::UniqueConnection);
 }
 
 ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
-    currentScale(1.0),
-    imageFitMode(NORMAL),
     currentImage(NULL),
     isDisplayingFlag(false),
-    errorFlag(false)
+    errorFlag(false),
+    currentScale(1.0),
+    maxScale(1.0),
+    minScale(4.0),
+    scaleStep(0.1),
+    imageFitMode(NORMAL)
 {
     initMap();
     bgColor.setRgb(17,17,17,255);
     image.load(":/images/res/logo.png");
     drawingRect = image.rect();
     resizeTimer = new QTimer(this);
-    connect(resizeTimer, SIGNAL(timeout()), this, SLOT(resizeImage()),Qt::UniqueConnection);
+    connect(resizeTimer, SIGNAL(timeout()),
+            this, SLOT(resizeImage()),
+            Qt::UniqueConnection);
 }
 
 ImageViewer::~ImageViewer() {
@@ -144,7 +154,7 @@ void ImageViewer::setScale(float scale) {
 
 void ImageViewer::resizeImage() {
     if(isDisplaying()) {
-        qDebug() << "sup..";
+        qDebug() << "resize..";
         resizeTimer->stop();
         image = currentImage->getImage()->scaled(drawingRect.width(),
                                                  drawingRect.height(),
@@ -156,16 +166,12 @@ void ImageViewer::resizeImage() {
 
 // ##############################################
 void ImageViewer::paintEvent(QPaintEvent* event) {
+    Q_UNUSED( event )
     QPainter painter(this);
     painter.fillRect(rect(), QBrush(bgColor));
     painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     //int time = clock();
-  //  if(currentImage->getType()==GIF) {
-   //     painter.drawImage(drawingRect, image);
-   // }
-   // else {
-        painter.drawImage(drawingRect, image, image.rect());
-   // }
+    painter.drawImage(drawingRect, image, image.rect());
     //qDebug() << "VIEWER: draw time: " << clock() - time;
 }
 // ##############################################
@@ -282,7 +288,7 @@ void ImageViewer::fitAll() {
                 setScale(scale);
             }
             if(imageIsScaled()) {
-                drawingRect.moveCenter(rect().center());
+                imageAlign();
                 update();
             }
         }
@@ -291,7 +297,8 @@ void ImageViewer::fitAll() {
         fitNormal();
     }
     else {
-        centerImage();
+        //centerImage();
+        imageAlign();
     }
 }
 
@@ -334,8 +341,9 @@ void ImageViewer::slotFitAll() {
 }
 
 void ImageViewer::resizeEvent(QResizeEvent* event) {
-    updateMaxScale();
+    Q_UNUSED( event )
 
+    updateMaxScale();
     if(imageFitMode == FREE || imageFitMode == NORMAL) {
         imageAlign();
     }
@@ -350,7 +358,6 @@ void ImageViewer::resizeEvent(QResizeEvent* event) {
 void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
     if(event->button() == Qt::RightButton) {
         emit sendRightDoubleClick();
-        //slotFitNormal();
     }
     else {
         emit sendDoubleClick();

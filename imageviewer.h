@@ -81,9 +81,9 @@ private:
     bool errorFlag;
 
     float currentScale;
-    float maxScale = 1.0; // zoom OUT
-    static const float minScale = 4.0; // zoom IN
-    static const float scaleStep = 0.1;
+    float maxScale; // zoom OUT
+    float minScale; // zoom IN
+    float scaleStep;
     QPointF fixedZoomPoint;
 
     ImageFitMode imageFitMode;

@@ -11,6 +11,8 @@ textOverlay::textOverlay(QWidget *parent, Position pos) :QWidget(parent) {
 }
 
 void textOverlay::paintEvent(QPaintEvent *event) {
+    Q_UNUSED(event)
+
     QPainter painter(this);
     QFont font;
     font.setPixelSize(13);

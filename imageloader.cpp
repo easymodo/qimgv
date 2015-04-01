@@ -21,7 +21,6 @@ void ImageLoader::load(FileInfo* file) {
 
 void ImageLoader::loadNext()
 {
-    FileInfo *fi = dm->peekNext();
     load(dm->next());
 }
 
