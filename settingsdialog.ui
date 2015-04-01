@@ -35,9 +35,9 @@
    <property name="geometry">
     <rect>
      <x>310</x>
-     <y>230</y>
+     <y>222</y>
      <width>71</width>
-     <height>23</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -48,9 +48,9 @@
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>230</y>
+     <y>222</y>
      <width>71</width>
-     <height>23</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -63,11 +63,11 @@
      <x>10</x>
      <y>10</y>
      <width>371</width>
-     <height>211</height>
+     <height>201</height>
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -79,7 +79,7 @@
        <x>10</x>
        <y>10</y>
        <width>101</width>
-       <height>20</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
@@ -89,10 +89,10 @@
     <widget class="QComboBox" name="fitModeComboBox">
      <property name="geometry">
       <rect>
-       <x>280</x>
+       <x>250</x>
        <y>10</y>
-       <width>71</width>
-       <height>22</height>
+       <width>101</width>
+       <height>31</height>
       </rect>
      </property>
      <item>
@@ -121,7 +121,7 @@
       <rect>
        <x>10</x>
        <y>40</y>
-       <width>151</width>
+       <width>191</width>
        <height>21</height>
       </rect>
      </property>
@@ -162,7 +162,7 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>151</width>
+       <width>171</width>
        <height>21</height>
       </rect>
      </property>
@@ -191,7 +191,7 @@
       <rect>
        <x>10</x>
        <y>70</y>
-       <width>81</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -208,9 +208,9 @@
    <property name="geometry">
     <rect>
      <x>230</x>
-     <y>230</y>
+     <y>222</y>
      <width>71</width>
-     <height>23</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
