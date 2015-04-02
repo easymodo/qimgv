@@ -185,6 +185,7 @@ void ImageViewer::resizeImage() {
         //int time = clock();
         delete image;
         image = new QImage(drawingRect.size().toSize(),QImage::Format_ARGB32_Premultiplied);
+        image->fill(qRgba(0,0,0,0));
         QPainter painter(image);
         painter.initFrom(this);
         painter.setRenderHint(QPainter::SmoothPixmapTransform, smoothEnabled);
