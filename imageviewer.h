@@ -71,7 +71,7 @@ private:
     Image* currentImage;
     QImage *image;
     QTimer *resizeTimer;
-    QRectF drawingRect;
+    QRect drawingRect;
     QPoint mouseMoveStartPos;
 
     QColor bgColor;

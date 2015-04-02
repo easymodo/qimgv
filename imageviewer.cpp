@@ -131,7 +131,7 @@ void ImageViewer::updateMaxScale() {
         else {
             maxScale = newMaxScaleY;
         }
-        qDebug() << "SET maxScale=" << maxScale;
+        //qDebug() << "SET maxScale=" << maxScale;
     }
 }
 
@@ -143,7 +143,7 @@ void ImageViewer::updateMinScale() {
     if(maxSize>25) {
         minScale=sqrt(25/imgSize);
     }
-    qDebug() << "SET minScale = " << minScale;
+    //qDebug() << "SET minScale = " << minScale;
 }
 
 float ImageViewer::scale() const {
@@ -151,7 +151,6 @@ float ImageViewer::scale() const {
 }
 
 void ImageViewer::setScale(float scale) {
-        qDebug() << "oldW " << drawingRect.width();
         if (scale > minScale) {
             currentScale = minScale;
         }
@@ -166,50 +165,66 @@ void ImageViewer::setScale(float scale) {
         float w = scale*currentImage->width();
         drawingRect.setHeight(h);
         drawingRect.setWidth(w);
-        qDebug() << "newW " << drawingRect.width();
 }
 
 // ##################################################
 // ###################  RESIZE  #####################
 // ##################################################
+
 void ImageViewer::resizeImage() {
     if(!isDisplaying()) {
         return;
     }
     resizeTimer->stop();
     if(image->size() != drawingRect.size()) {
-        bool smoothEnabled;
         float size = drawingRect.width()*drawingRect.height()/1000000;
-        size>=15?smoothEnabled=false:smoothEnabled=true;
 
-        //int time = clock();
+        int time = clock();
+
         delete image;
-        image = new QImage(drawingRect.size().toSize(),QImage::Format_ARGB32_Premultiplied);
+        image = new QImage(drawingRect.size(),QImage::Format_ARGB32_Premultiplied);
         image->fill(qRgba(0,0,0,0));
-        QPainter painter(image);
-        painter.initFrom(this);
-        painter.setRenderHint(QPainter::SmoothPixmapTransform, smoothEnabled);
-        painter.drawImage(QRectF(QPointF(0,0),
-                          drawingRect.size()),
-                          *currentImage->getImage(),
-                          currentImage->getImage()->rect()
-                          );
-        painter.end();
-        /*
-        image = currentImage->getImage()->scaled(drawingRect.width(),
+
+        // ######## QPainter scale ########## faster but looks kinda crappy
+        bool goPainter = false;
+        if(goPainter)
+        {
+            bool smoothEnabled;
+            size>=15?smoothEnabled=false:smoothEnabled=true;
+            QPainter painter(image);
+            painter.setRenderHint(QPainter::SmoothPixmapTransform, smoothEnabled);
+            painter.drawImage(QRectF(QPointF(0,0),
+                              drawingRect.size()),
+                              *currentImage->getImage(),
+                              currentImage->getImage()->rect()
+                              );
+        } else {
+
+        // ############ END #############
+
+        // ###### QImage-based scale ###### like 10x slower
+        Qt::TransformationMode mode;
+        size>=15?mode=Qt::FastTransformation:mode=Qt::SmoothTransformation;
+        *image = currentImage->getImage()->scaled(drawingRect.width(),
                                                  drawingRect.height(),
-                                                 Qt::KeepAspectRatio,
+                                                 Qt::IgnoreAspectRatio,
                                                  mode);
+        }
+        // ############ END #############
+
+        //########## save image to ~/compare
+          image->save("/home/mitcher/compare/out.jpg", "JPG", 100);
+
         qDebug() << "###### scaling ######";
-        qDebug() << "res: " << drawingRect.width() << "x" << drawingRect.height();
-        qDebug() << size << "  scale: " <<  currentScale;
+   //     qDebug() << "res: " << drawingRect.width() << "x" << drawingRect.height();
+     //   qDebug() << size << "  scale: " <<  currentScale;
         qDebug() << "time: " << clock()-time;
-        qDebug() << "size(MP): " << size;
         qDebug() << "#####################";
-        */
+
         update();
     }
 }
+
 // ##################################################
 // ####################  PAINT  #####################
 // ##################################################
@@ -221,7 +236,7 @@ void ImageViewer::paintEvent(QPaintEvent* event) {
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     }
     //int time = clock();
-    qDebug() << drawingRect << "  " << image->rect();
+        qDebug() << "drawing " << image->size() << " image on " << drawingRect.size() << " surface.";
     painter.drawImage(drawingRect, *image, image->rect());
     //qDebug() << "VIEWER: draw time: " << clock() - time;
 }
