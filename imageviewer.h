@@ -18,6 +18,7 @@
 #include "mapoverlay.h"
 #include "settings.h"
 #include <time.h>
+#include <cmath>
 
 #define FLT_EPSILON 1.19209290E-07F
 
@@ -68,9 +69,9 @@ protected:
 
 private:
     Image* currentImage;
-    QImage image;
+    QImage *image;
     QTimer *resizeTimer;
-    QRect drawingRect;
+    QRectF drawingRect;
     QPoint mouseMoveStartPos;
 
     QColor bgColor;
@@ -104,6 +105,7 @@ private:
     bool imageIsScaled() const;
     void stopAnimation();
     void startAnimation();
+    void updateMinScale();
 };
 
 #endif // IMAGEVIEWER_H

@@ -15,6 +15,7 @@ Image::~Image()
 {
     delete image;
     delete movie;
+    delete info;
 }
 
 //load image data from disk
@@ -42,7 +43,6 @@ void Image::loadImage()
                     image->width();
             info->setHeight(image->height());
             info->setWidth(image->width());
-            //qDebug() << "FORMAT: " << image->format();
         }
         info->inUse = true;
     }
