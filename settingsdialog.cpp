@@ -16,7 +16,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
 void SettingsDialog::readSettings() {
     QString tmp;
-    bool setting;
+    //bool setting;
     // ##### loader #####
     ui->preloaderCheckBox->setChecked(
                 globalSettings->s.value("usePreloader", "true").toBool());
@@ -29,13 +29,14 @@ void SettingsDialog::readSettings() {
     ui->cacheLabel2->setNum(ui->cacheSlider->value());
 
     // ##### scaling #####
+/*
     setting = globalSettings->s.value("useFastScale","false").toBool();
     if(setting==true) {
         ui->scalingQualityComboBox->setCurrentIndex(1);
     } else {
         ui->scalingQualityComboBox->setCurrentIndex(0);
     }
-
+*/
 
     // ##### fit mode #####
     tmp = globalSettings->s.value("defaultFitMode","ALL").toBool();
@@ -59,11 +60,13 @@ void SettingsDialog::applySettings() {
                                ui->cacheSlider->value());
     globalSettings->s.setValue("defaultFitMode",
                                ui->fitModeComboBox->currentText());
+    /*
     if(ui->scalingQualityComboBox->currentIndex()==1) {
         globalSettings->s.setValue("useFastScale", true);
     } else {
         globalSettings->s.setValue("useFastScale", false);
     }
+    */
     emit settingsChanged();
 }
 

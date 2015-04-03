@@ -71,7 +71,7 @@ QMovie* Image::getMovie()
     return movie;
 }
 
-QImage* Image::getImage()
+QImage* Image::getImage() const
 {
     return image;
 }

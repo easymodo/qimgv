@@ -173,6 +173,7 @@ void ImageViewer::setScale(float scale) {
 
 void ImageViewer::fastScale(bool smooth) {
     //bool smoothEnabled;
+    image->fill(qRgba(0,0,0,0));
     QPainter painter(image);
     painter.setRenderHint(QPainter::SmoothPixmapTransform, smooth);
     painter.drawImage(QRectF(QPointF(0,0),
@@ -183,8 +184,6 @@ void ImageViewer::fastScale(bool smooth) {
 }
 
 void ImageViewer::qualityScale() {
-//    Qt::TransformationMode mode;
-    //size>=15?mode=Qt::FastTransformation:mode=Qt::SmoothTransformation;
     *image = source->getImage()->scaled(drawingRect.width(),
                                              drawingRect.height(),
                                              Qt::IgnoreAspectRatio,
@@ -200,13 +199,12 @@ void ImageViewer::resizeImage() {
         int time = clock();
         delete image;
         image = new QImage(drawingRect.size(),QImage::Format_ARGB32_Premultiplied);
-        image->fill(qRgba(0,0,0,0));
 
         //if(globalSettings->s.value("useFastScale", false).toBool())
         float sourceSize = source->width()*source->height()/1000000;
         float size = drawingRect.width()*drawingRect.height()/1000000;
         if(currentScale==1.0) {
-            image=source->getImage();
+            *image=*source->getImage();
         } else if(currentScale<1.0){ // downscale
             if(sourceSize>15) {
                 if(size>10) {
@@ -307,6 +305,8 @@ void ImageViewer::mouseMoveEvent(QMouseEvent* event) {
         }
         imageFitMode = FREE;
         scaleAround(fixedZoomPoint, newScale);
+        resizeTimer->stop();
+        resizeTimer->start(75);
     }
 }
 
