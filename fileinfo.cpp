@@ -27,17 +27,17 @@ FileInfo::~FileInfo() {
 }
 
 void FileInfo::setFile(QString path) {
-    fInfo.setFile(path);
-    if(!fInfo.isFile()){
+    fileInfo.setFile(path);
+    if(!fileInfo.isFile()){
         qDebug() << "Cannot open: " << path;
         return;
     }
-    lastModified = fInfo.lastModified();
+    lastModified = fileInfo.lastModified();
     detectType();
 }
 
 void FileInfo::detectType() {
-    QFile file(fInfo.filePath());
+    QFile file(fileInfo.filePath());
     file.open(QIODevice::ReadOnly);
     //read first 2 bytes to determine file format
     QByteArray startingBytes= file.read(2).toHex();
@@ -82,23 +82,23 @@ void FileInfo::setHeight(int value)
 }
 
 
-QString FileInfo::getDirPath() {
-    return fInfo.absolutePath();
+QString FileInfo::getDirectoryPath() {
+    return fileInfo.absolutePath();
 }
 
 QString FileInfo::getFilePath() {
-    return fInfo.absoluteFilePath();
+    return fileInfo.absoluteFilePath();
 }
 
-QString FileInfo::getName() {
-    return fInfo.fileName();
+QString FileInfo::getFileName() {
+    return fileInfo.fileName();
 }
 
-qint64 FileInfo::getSize() {
-    return fInfo.size()/1024;
+float FileInfo::getFileSize() {
+    return truncf(fileInfo.size()*100/(1024*1024))/100;
 }
 
-QDateTime FileInfo::getLastModified() {
+QDateTime FileInfo::getLastModifiedDate() {
     return lastModified;
 }
 
@@ -112,15 +112,4 @@ void FileInfo::setType(fileType _type) {
 
 const char *FileInfo::getExtension() const {
     return extension;
-}
-
-void FileInfo::setPositions(int current, int from) {
-    positions[0]=current;
-    positions[1]=from;
-}
-int FileInfo::getCurrentPos() {
-    return positions[0];
-}
-int FileInfo::getMaxPos() {
-    return positions[1];
 }

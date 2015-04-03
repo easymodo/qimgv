@@ -1,7 +1,7 @@
 #include "imageviewer.h"
 
 ImageViewer::ImageViewer(): QWidget(),
-    currentImage(NULL),
+    source(NULL),
     isDisplayingFlag(false),
     errorFlag(false),
     currentScale(1.0),
@@ -23,7 +23,7 @@ ImageViewer::ImageViewer(): QWidget(),
 }
 
 ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
-    currentImage(NULL),
+    source(NULL),
     isDisplayingFlag(false),
     errorFlag(false),
     currentScale(1.0),
@@ -44,7 +44,7 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
 }
 
 ImageViewer::~ImageViewer() {
-    delete currentImage;
+    delete source;
 }
 
 void ImageViewer::initMap() {
@@ -56,35 +56,35 @@ bool ImageViewer::imageIsScaled() const {
 }
 
 void ImageViewer::stopAnimation() {
-    if(currentImage->getType()==GIF) {
-        currentImage->getMovie()->stop();
-        disconnect(currentImage->getMovie(), SIGNAL(frameChanged(int)),
+    if(source->getType()==GIF) {
+        source->getMovie()->stop();
+        disconnect(source->getMovie(), SIGNAL(frameChanged(int)),
                    this, SLOT(onAnimation()));
     }
 }
 
 void ImageViewer::startAnimation() {
     disconnect(resizeTimer, SIGNAL(timeout()), this, SLOT(resizeImage()));
-    connect(currentImage->getMovie(), SIGNAL(frameChanged(int)),
+    connect(source->getMovie(), SIGNAL(frameChanged(int)),
             this, SLOT(onAnimation()),Qt::DirectConnection);
-    currentImage->getMovie()->start();
+    source->getMovie()->start();
 }
 
 void ImageViewer::onAnimation() {
-    *image = currentImage->getMovie()->currentImage();
+    *image = source->getMovie()->currentImage();
     update();
 }
 
 void ImageViewer::freeImage() {
-    if (currentImage!=NULL) {
+    if (source!=NULL) {
         stopAnimation();
-        currentImage->setUseFlag(false);
+        source->setUseFlag(false);
     }
 }
 
 void ImageViewer::displayImage(Image* i) {
     resizeTimer->stop();
-    currentImage = i;
+    source = i;
     if(i->getType()==NONE) {
         //empty or corrupted image
         image->load(":/images/res/error.png");
@@ -94,14 +94,14 @@ void ImageViewer::displayImage(Image* i) {
     else {
         errorFlag=false;
         isDisplayingFlag = true;
-        if(currentImage->getType() == STATIC) {
-           *image = *currentImage->getImage();
+        if(source->getType() == STATIC) {
+           *image = *source->getImage();
             connect(resizeTimer, SIGNAL(timeout()),
                     this, SLOT(resizeImage()),Qt::UniqueConnection);
         }
-        else if (currentImage->getType() == GIF) {
-            currentImage->getMovie()->jumpToFrame(0);
-            *image = currentImage->getMovie()->currentImage();
+        else if (source->getType() == GIF) {
+            source->getMovie()->jumpToFrame(0);
+            *image = source->getMovie()->currentImage();
             startAnimation();
         }
         updateMaxScale();
@@ -118,13 +118,13 @@ void ImageViewer::displayImage(Image* i) {
 
 void ImageViewer::updateMaxScale() {
     if(isDisplaying()) {
-        if (currentImage->width() < width() &&
-            currentImage->height() < height()) {
+        if (source->width() < width() &&
+            source->height() < height()) {
             maxScale = 1;
             return;
         }
-        float newMaxScaleX = (float)width()/currentImage->width();
-        float newMaxScaleY = (float)height()/currentImage->height();
+        float newMaxScaleX = (float)width()/source->width();
+        float newMaxScaleY = (float)height()/source->height();
         if(newMaxScaleX < newMaxScaleY) {
             maxScale = newMaxScaleX;
         }
@@ -137,9 +137,9 @@ void ImageViewer::updateMaxScale() {
 
 void ImageViewer::updateMinScale() {
     minScale=3.0;
-    float imgSize = currentImage->width()*currentImage->height()/1000000;
+    float imgSize = source->width()*source->height()/1000000;
     float maxSize =
-            minScale*currentImage->width()*currentImage->height()/1000000;
+            minScale*source->width()*source->height()/1000000;
     if(maxSize>25) {
         minScale=sqrt(25/imgSize);
     }
@@ -161,8 +161,8 @@ void ImageViewer::setScale(float scale) {
         else {
             currentScale = scale;
         }
-        float h = scale*currentImage->height();
-        float w = scale*currentImage->width();
+        float h = scale*source->height();
+        float w = scale*source->width();
         drawingRect.setHeight(h);
         drawingRect.setWidth(w);
 }
@@ -179,7 +179,7 @@ void ImageViewer::resizeImage() {
     if(image->size() != drawingRect.size()) {
         float size = drawingRect.width()*drawingRect.height()/1000000;
 
-        int time = clock();
+        //int time = clock();
 
         delete image;
         image = new QImage(drawingRect.size(),QImage::Format_ARGB32_Premultiplied);
@@ -195,8 +195,8 @@ void ImageViewer::resizeImage() {
             painter.setRenderHint(QPainter::SmoothPixmapTransform, smoothEnabled);
             painter.drawImage(QRectF(QPointF(0,0),
                               drawingRect.size()),
-                              *currentImage->getImage(),
-                              currentImage->getImage()->rect()
+                              *source->getImage(),
+                              source->getImage()->rect()
                               );
         } else {
 
@@ -205,22 +205,20 @@ void ImageViewer::resizeImage() {
         // ###### QImage-based scale ###### like 10x slower
         Qt::TransformationMode mode;
         size>=15?mode=Qt::FastTransformation:mode=Qt::SmoothTransformation;
-        *image = currentImage->getImage()->scaled(drawingRect.width(),
+        *image = source->getImage()->scaled(drawingRect.width(),
                                                  drawingRect.height(),
                                                  Qt::IgnoreAspectRatio,
                                                  mode);
         }
         // ############ END #############
 
-        //########## save image to ~/compare
-          image->save("/home/mitcher/compare/out.jpg", "JPG", 100);
-
+        /*
         qDebug() << "###### scaling ######";
-   //     qDebug() << "res: " << drawingRect.width() << "x" << drawingRect.height();
-     //   qDebug() << size << "  scale: " <<  currentScale;
+        qDebug() << "res: " << drawingRect.width() << "x" << drawingRect.height();
+        qDebug() << size << "  scale: " <<  currentScale;
         qDebug() << "time: " << clock()-time;
         qDebug() << "#####################";
-
+        */
         update();
     }
 }
@@ -232,11 +230,11 @@ void ImageViewer::paintEvent(QPaintEvent* event) {
     Q_UNUSED( event )
     QPainter painter(this);
     painter.fillRect(rect(), QBrush(bgColor));
-    if(currentImage && currentImage->getType() == GIF) {
+    if(source && source->getType() == GIF) {
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     }
     //int time = clock();
-        qDebug() << "drawing " << image->size() << " image on " << drawingRect.size() << " surface.";
+    //qDebug() << "drawing " << image->size() << " image on " << drawingRect.size() << " surface.";
     painter.drawImage(drawingRect, *image, image->rect());
     //qDebug() << "VIEWER: draw time: " << clock() - time;
 }
@@ -314,7 +312,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent* event) {
 
 void ImageViewer::fitWidth() {
     if(isDisplaying()) {
-        float scale = (float) width() / currentImage->size().width();
+        float scale = (float) width() / source->size().width();
         setScale(scale);
         imageAlign();
         update();
@@ -329,8 +327,8 @@ void ImageViewer::fitWidth() {
 
 void ImageViewer::fitAll() {
     if(isDisplaying()) {
-        bool h = currentImage->height() <= height();
-        bool w = currentImage->width() <= width();
+        bool h = source->height() <= height();
+        bool w = source->width() <= width();
         // source image fits entirely
         if(h && w) {
             fitNormal();
@@ -505,7 +503,7 @@ void ImageViewer::slotZoomOut() {
 }
 
 Image* ImageViewer::getCurrentImage() const {
-    return currentImage;
+    return source;
 }
 
 bool ImageViewer::isDisplaying() const {

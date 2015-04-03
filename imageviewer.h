@@ -68,7 +68,7 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
 private:
-    Image* currentImage;
+    Image* source;
     QImage *image;
     QTimer *resizeTimer;
     QRect drawingRect;

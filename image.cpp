@@ -48,18 +48,17 @@ void Image::loadImage()
     }
 }
 
-bool Image::isInUse() {
+bool Image::useFlag() {
     return inUseFlag;
 }
 
-void Image::setUseFlag(bool arg) {
-    inUseFlag=arg;
+void Image::setUseFlag(bool flag) {
+    inUseFlag=flag;
 }
 
 int Image::ramSize() {
-    if(getType() == GIF) {
-        return 1;
-
+    if(getType() == GIF) { // maybe wrong
+        return movie->frameCount()*movie->currentImage().byteCount()/(1024*1024);
     }
     else if(getType() == STATIC) {
         return image->byteCount()/(1024*1024);
@@ -121,21 +120,21 @@ QString Image::getPath()
     return info->getFilePath();
 }
 
-qint64 Image::getSize() {
-    return info->getSize();
+qint64 Image::getFileSize() {
+    return info->getFileSize();
 }
 
-QString Image::getName() {
-    return info->getName();
+QString Image::getFileName() {
+    return info->getFileName();
 }
 
-FileInfo* Image::getInfo() const {
+FileInfo* Image::getFileInfo() const {
     return info;
 }
 
 bool Image::compare(Image* another) {
-    if(getName() == another->getName() &&
-       info->getLastModified() == another->getInfo()->getLastModified() ) {
+    if(getFileName() == another->getFileName() &&
+       info->getLastModifiedDate() == another->getFileInfo()->getLastModifiedDate() ) {
         return true;
     }
     return false;

@@ -20,14 +20,13 @@ public:
     ~Image();
 
     QImage* getImage();
-    QMovie* getMovie();
+    QMovie *getMovie();
     int getType();
     int ramSize();
-    FileInfo* getInfo() const;
+    FileInfo *getFileInfo() const;
     // size in kbytes
-    qint64 getSize();
-    QString getName();
-    QString getResolution();
+    qint64 getFileSize();
+    QString getFileName();
     QDateTime getModifyDate();
     void loadImage();
     QString getPath();
@@ -36,13 +35,13 @@ public:
     int width();
     QSize size();
     bool compare(Image*);
-    bool isInUse();
+    bool useFlag();
     void setUseFlag(bool);
 
 private:
-    QImage* image;
-    QMovie* movie;
-    FileInfo* info;
+    QImage *image;
+    QMovie *movie;
+    FileInfo *info;
     QSize resolution;
     float aspectRatio;
     bool inUseFlag;

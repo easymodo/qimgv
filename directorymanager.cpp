@@ -75,16 +75,13 @@ FileInfo* DirectoryManager::peekPrev() {
 
 FileInfo* DirectoryManager::loadInfo(QString path) {
     FileInfo *info = new FileInfo(&path);
-    if(info) {
-        info->setPositions(fileList.indexOf(info->getName()), fileList.length());
-    }
     return info;
 }
 
 FileInfo* DirectoryManager::setFile(QString path) {
     FileInfo *info = loadInfo(path);
-    setCurrentDir(info->getDirPath());
-    currentPos = fileList.indexOf(info->getName());
+    setCurrentDir(info->getDirectoryPath());
+    currentPos = fileList.indexOf(info->getFileName());
     globalSettings->s.setValue("lastPosition", currentPos);
     return info;
 }

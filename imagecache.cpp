@@ -73,7 +73,7 @@ void ImageCache::shrinkTo(int MB) {
     //while (cacheSize() > MB && cachedImages.length() > 1) // wipes previous
    while (cacheSize() > MB && cachedImages.length() > 2) // leaves previous
     {
-        if(!cachedImages.first()->isInUse()) {
+        if(!cachedImages.first()->useFlag()) {
            // qDebug() << "CACHE: deleting " << cachedImages.first()->getName();
             delete cachedImages.first();
             cachedImages.removeFirst();
@@ -86,7 +86,7 @@ void ImageCache::shrinkTo(int MB) {
     //while (cacheSize() > MB && cachedImages.length() > 1) // wipes previous
     while (cacheSize() > MB && cachedImages.length() > 2) // leaves previous
     {
-        if(!cachedImages.last()->isInUse()) {
+        if(!cachedImages.last()->useFlag()) {
             //qDebug() << "CACHE: deleting " << cachedImages.last()->getName();
             delete cachedImages.last();
             cachedImages.removeLast();

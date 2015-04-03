@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QFileInfo>
 #include <QDateTime>
+#include <cmath>
 
 enum fileType { NONE, STATIC, GIF };
 
@@ -16,17 +17,14 @@ public:
     FileInfo(QString *path);
     ~FileInfo();
     bool inUse;
-    QString getDirPath();
+    QString getDirectoryPath();
     QString getFilePath();
-    QString getName();
-    QDateTime getLastModified();
+    QString getFileName();
+    QDateTime getLastModifiedDate();
     fileType getType();
     
-    /* size in kbytes*/
-    qint64 getSize();
-    void setPositions(int current, int from);
-    int getCurrentPos();
-    int getMaxPos();
+    /* size in MB*/
+    float getFileSize();
 
     void setType(fileType _type);
 
@@ -38,7 +36,7 @@ public:
 
 private:
     void setFile(QString path);
-    QFileInfo fInfo;
+    QFileInfo fileInfo;
     QDateTime lastModified;
     fileType type;
     int positions[2];

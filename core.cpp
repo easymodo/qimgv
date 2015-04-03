@@ -34,12 +34,13 @@ void Core::updateInfoString() {
                       QString::number(dirManager->fileList.length()) +
                       " ]   ");
     if(currentImage) {
-        infoString.append(currentImage->getInfo()->getName() + "  ");
+        infoString.append(currentImage->getFileInfo()->getFileName() + "  ");
         infoString.append("(" +
-                          QString::number(currentImage->getInfo()->getWidth()) +
+                          QString::number(currentImage->getFileInfo()->getWidth()) +
                           "x" +
-                          QString::number(currentImage->getInfo()->getHeight()) +
-                          ")  ");
+                          QString::number(currentImage->getFileInfo()->getHeight()) +
+                          "  ");
+        infoString.append(QString::number(currentImage->getFileInfo()->getFileSize()) + " MB)");
     }
 
     emit infoStringChanged(infoString);
