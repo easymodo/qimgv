@@ -37,7 +37,7 @@ void ImageLoader::load_thread(Image* img)
         mutex2.lock();
         Image* found = cache->findImage(img);
         if(!found) {
-            //qDebug() << "loadStart: " << img->getName();
+            qDebug() << "loadStart: " << img->getFileName();
             img->loadImage();
             cache->cacheImageForced(img);
         }
@@ -47,8 +47,8 @@ void ImageLoader::load_thread(Image* img)
         }
         img->setUseFlag(true);
         mutex2.unlock();
-        emit startPreload();
         emit loadFinished(img);
+        emit startPreload();
     }
 }
 
@@ -58,7 +58,7 @@ void ImageLoader::preloadNearest() {
 }
 
 void ImageLoader::preload(FileInfo *file) {
-    if (file->getFileSize()>=1024) {
+    if (file->getFileSize()>=1.0) {
         Image* img = new Image(file);
         if(!cache->findImage(img)) { // not found; preloading
             QtConcurrent::run(this, &ImageLoader::preload_thread, img);
@@ -68,7 +68,7 @@ void ImageLoader::preload(FileInfo *file) {
 
 void ImageLoader::preload_thread(Image* img) {
     lock();
-    //qDebug() << "PreloadStart: " << img->getName();
+    qDebug() << "PreloadStart: " << img->getFileName();
     img->loadImage();
     if(!cache->cacheImageForced(img)) {
         delete img;

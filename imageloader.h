@@ -26,7 +26,7 @@ private:
     DirectoryManager *dm;
     ImageCache *cache;
     Image* currentImg;
-    QMutex mutex, mutex2;
+    QMutex mutex, mutex2, mutex3;
     void lock();
     void unlock();
     Image *getCurrentImg() const;
@@ -34,6 +34,7 @@ private:
     bool isCurrent(Image *img);
     QVector<Image*> currentJobs;
     bool loadDelayEnabled;
+    QStringList jobs;
 
     bool jobAlreadyStarted(Image *img);
 signals:

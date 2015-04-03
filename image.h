@@ -19,7 +19,7 @@ public:
     Image(FileInfo*);
     ~Image();
 
-    QImage* getImage() const;
+    const QImage* getImage();
     QMovie *getMovie();
     int getType();
     int ramSize();

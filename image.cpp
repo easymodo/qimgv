@@ -71,9 +71,9 @@ QMovie* Image::getMovie()
     return movie;
 }
 
-QImage* Image::getImage() const
+const QImage* Image::getImage()
 {
-    return image;
+    return const_cast<const QImage*>(image);
 }
 
 int Image::height() {

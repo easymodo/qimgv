@@ -112,7 +112,7 @@ void ImageViewer::displayImage(Image* i) {
     if(imageFitMode == FREE)
         imageFitMode = ALL;
     fitDefault();
-    resizeTimer->start(15);
+    resizeTimer->start(0);
     emit imageChanged();
 }
 
@@ -200,7 +200,6 @@ void ImageViewer::resizeImage() {
         delete image;
         image = new QImage(drawingRect.size(),QImage::Format_ARGB32_Premultiplied);
 
-        //if(globalSettings->s.value("useFastScale", false).toBool())
         float sourceSize = source->width()*source->height()/1000000;
         float size = drawingRect.width()*drawingRect.height()/1000000;
         if(currentScale==1.0) {
@@ -224,13 +223,13 @@ void ImageViewer::resizeImage() {
                 fastScale(true); // low src
             }
         }
-
+/*
         qDebug() << "###### scaling ######";
         qDebug() << currentScale;
         qDebug() << "size: " << size;
         qDebug() << "srcSize: " << sourceSize;
         qDebug() << "time: " << clock()-time;
-
+*/
         update();
     }
 }
