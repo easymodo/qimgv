@@ -33,6 +33,9 @@ void MainWindow::init() {
     connect(globalSettings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
 
+    connect(globalSettings, SIGNAL(settingsChanged()),
+            imageViewer, SLOT(resizeImage()));
+
     connect(this, SIGNAL(signalNextImage()),
             core, SLOT(slotNextImage()));
 

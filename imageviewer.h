@@ -54,10 +54,10 @@ public slots:
     void slotFitAll();
     void slotZoomIn();
     void slotZoomOut();
+    void resizeImage();
 
 private slots:
     void onAnimation();
-    void resizeImage();
 
 protected:
     virtual void paintEvent(QPaintEvent* event);
@@ -106,6 +106,8 @@ private:
     void stopAnimation();
     void startAnimation();
     void updateMinScale();
+    void fastScale(bool);
+    void qualityScale();
 };
 
 #endif // IMAGEVIEWER_H
