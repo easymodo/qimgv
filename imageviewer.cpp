@@ -171,25 +171,6 @@ void ImageViewer::setScale(float scale) {
 // ###################  RESIZE  #####################
 // ##################################################
 
-void ImageViewer::fastScale(bool smooth) {
-    //bool smoothEnabled;
-    image->fill(qRgba(0,0,0,0));
-    QPainter painter(image);
-    painter.setRenderHint(QPainter::SmoothPixmapTransform, smooth);
-    painter.drawImage(QRectF(QPointF(0,0),
-                      drawingRect.size()),
-                      *source->getImage(),
-                      source->getImage()->rect()
-                      );
-}
-
-void ImageViewer::qualityScale() {
-    *image = source->getImage()->scaled(drawingRect.width(),
-                                             drawingRect.height(),
-                                             Qt::IgnoreAspectRatio,
-                                             Qt::SmoothTransformation);
-}
-
 void ImageViewer::resizeImage() {
     if(!isDisplaying()) {
         return;
@@ -198,29 +179,35 @@ void ImageViewer::resizeImage() {
     if(image->size() != drawingRect.size()) {
         int time = clock();
         delete image;
-        image = new QImage(drawingRect.size(),QImage::Format_ARGB32_Premultiplied);
+        image = new QImage(drawingRect.size(), QImage::Format_ARGB32_Premultiplied);
 
         float sourceSize = source->width()*source->height()/1000000;
         float size = drawingRect.width()*drawingRect.height()/1000000;
         if(currentScale==1.0) {
             *image=*source->getImage();
-        } else if(currentScale<1.0){ // downscale
+        } else if(currentScale<1.0) { // downscale
             if(sourceSize>15) {
                 if(size>10) {
-                    fastScale(false); // large src, larde dest
+                    // large src, larde dest
+                    image = fastScale(source->getImage(), drawingRect.size(), false);
                 } else if(size>4 && size<10){
-                    fastScale(true); // large src, medium dest
+                    // large src, medium dest
+                    image = fastScale(source->getImage(), drawingRect.size(), true);
                 } else {
-                    qualityScale(); // large src, low dest
+                    // large src, low dest
+                    image = bilinearScale(source->getImage(), drawingRect.size());
                 }
             } else {
-                qualityScale(); // low src
+                // low src
+                image = bilinearScale(source->getImage(), drawingRect.size());
             }
         } else {
             if(sourceSize>10) { // upscale
-                fastScale(false); // large src
+                // large src
+                image = fastScale(source->getImage(), drawingRect.size(), false);
             } else {
-                fastScale(true); // low src
+                // low src
+                image = fastScale(source->getImage(), drawingRect.size(), true);
             }
         }
 /*
@@ -361,6 +348,9 @@ void ImageViewer::fitAll() {
 }
 
 void ImageViewer::fitNormal() {
+    if(!isDisplaying()) {
+        return;
+    }
    setScale(1.0);
    centerImage();
    update();

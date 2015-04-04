@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     imageviewer.cpp \
     sleep.cpp \
     settings.cpp \
-    settingsdialog.cpp
+    settingsdialog.cpp \
+    lib/imagelib.cpp
 
 HEADERS  += mainwindow.h \
     infooverlay.h \
@@ -44,7 +45,8 @@ HEADERS  += mainwindow.h \
     imagecache.h \
     imageviewer.h \
     settings.h \
-    settingsdialog.h
+    settingsdialog.h \
+    lib/imagelib.h
 
 FORMS    += \
     settingsdialog.ui

@@ -18,7 +18,7 @@
 #include "mapoverlay.h"
 #include "settings.h"
 #include <time.h>
-#include <cmath>
+#include "lib/imagelib.h"
 
 #define FLT_EPSILON 1.19209290E-07F
 
@@ -106,8 +106,6 @@ private:
     void stopAnimation();
     void startAnimation();
     void updateMinScale();
-    void fastScale(bool);
-    void qualityScale();
 };
 
 #endif // IMAGEVIEWER_H

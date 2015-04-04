@@ -39,7 +39,7 @@ void SettingsDialog::readSettings() {
 */
 
     // ##### fit mode #####
-    tmp = globalSettings->s.value("defaultFitMode","ALL").toBool();
+    tmp = globalSettings->s.value("defaultFitMode","ALL").toString();
     if(tmp == "WIDTH") {
         ui->fitModeComboBox->setCurrentIndex(1);
     }
