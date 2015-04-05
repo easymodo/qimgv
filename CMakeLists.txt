@@ -22,8 +22,11 @@ QT5_ADD_RESOURCES(RES resources.qrc)
 
 add_executable(qimgv ${SRC} ${RES} ${GUI})
 
-target_link_libraries(qimgv Qt5::Widgets Qt5::Concurrent)
+target_link_libraries(qimgv Qt5::Widgets Qt5::Concurrent mapoverlay)
      
 qt5_use_modules (qimgv Core Widgets Concurrent)
 
 install(FILES qimgv DESTINATION /usr/bin/)
+
+add_subdirectory(tests)
+add_subdirectory(mapoverlay)
