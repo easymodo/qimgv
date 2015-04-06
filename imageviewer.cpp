@@ -10,7 +10,7 @@ ImageViewer::ImageViewer(): QWidget(),
     scaleStep(0.05),
     imageFitMode(NORMAL)
 {
-    initMap();
+    initOverlays();
     bgColor.setRgb(17,17,17,255);
     image = new QImage();
     image->load(":/images/res/logo.png");
@@ -32,7 +32,7 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
     scaleStep(0.05),
     imageFitMode(NORMAL)
 {
-    initMap();
+    initOverlays();
     bgColor.setRgb(17,17,17,255);
     image = new QImage();
     image->load(":/images/res/logo.png");
@@ -47,7 +47,7 @@ ImageViewer::~ImageViewer() {
     delete source;
 }
 
-void ImageViewer::initMap() {
+void ImageViewer::initOverlays() {
     mapOverlay = new MapOverlay(this);
     connect(mapOverlay, &MapOverlay::positionChanged, [=](float x, float y)
     {
@@ -55,6 +55,8 @@ void ImageViewer::initMap() {
         alignImage();
         update();
     });
+
+    cropOverlay = new CropOverlay(this);
 }
 
 bool ImageViewer::imageIsScaled() const {
@@ -120,6 +122,7 @@ void ImageViewer::displayImage(Image* i) {
     fitDefault();
     //mapOverlay->updatePosition(width(), height());
     updateMap();
+    cropOverlay->setGeometry(rect());
     update();
     resizeTimer->start(5);
     //emit imageChanged();
@@ -127,6 +130,15 @@ void ImageViewer::displayImage(Image* i) {
 
 void ImageViewer::redisplay() {
     displayImage(source);
+}
+
+void ImageViewer::crop() {
+    if(cropOverlay->isHidden() && isDisplaying()) {
+        slotFitAll();
+        cropOverlay->display();
+    } else {
+        cropOverlay->hide();
+    }
 }
 
 void ImageViewer::updateMaxScale() {
@@ -179,8 +191,9 @@ void ImageViewer::setScale(float scale) {
         float w = scale*source->width();
         drawingRect.setHeight(h);
         drawingRect.setWidth(w);
-        
+
         mapOverlay->updateMap(rect(), drawingRect);
+        cropOverlay->setImageArea(drawingRect);
 }
 
 // ##################################################
@@ -353,7 +366,9 @@ void ImageViewer::fitAll() {
         }
         else { // doesnt fit
                 setScale(maxScale);
-                centerImage();
+                alignImage();
+                //centerImage();
+
         }
     }
     else if(errorFlag) {
@@ -379,6 +394,7 @@ void ImageViewer::fitDefault() {
         case ALL: fitAll(); break;
         default: /* FREE etc */ break;
     }
+    cropOverlay->setImageArea(drawingRect);
 }
 
 void ImageViewer::updateMap() {
@@ -417,6 +433,7 @@ void ImageViewer::resizeEvent(QResizeEvent* event) {
         fitDefault();
     }
     //mapOverlay->updatePosition(width(), height());
+    cropOverlay->hide();
     updateMap();
     update();
     resizeTimer->start(150);
@@ -433,7 +450,11 @@ void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
 
 // centers image inside window rectangle
 void ImageViewer::centerImage() {
+    int x = drawingRect.x();
     drawingRect.moveCenter(rect().center());
+    if(drawingRect.x()==1 && x!=1) {
+        qDebug() << "faggot!!";
+    }
 }
 
 // centers image inside window

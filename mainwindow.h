@@ -76,6 +76,7 @@ private:
     QAction *settingsAct;
     QAction *rotateLeftAct;
     QAction *rotateRightAct;
+    QAction *cropAct;
     QAction *nextAct;
     QAction *prevAct;
     QAction *exitAct;

@@ -182,6 +182,11 @@ void MainWindow::createActions()
     this->addAction(rotateLeftAct);
     connect(rotateLeftAct, SIGNAL(triggered()), this, SLOT(slotRotateLeft()));
 
+    cropAct = new QAction(tr("C&rop"), this);
+    cropAct->setShortcut(tr("C"));
+    this->addAction(cropAct);
+    connect(cropAct, SIGNAL(triggered()), imageViewer, SLOT(crop()));
+
     rotateRightAct = new QAction(tr("Rotate R&ight"), this);
     rotateRightAct->setShortcut(tr("R"));
     this->addAction(rotateRightAct);

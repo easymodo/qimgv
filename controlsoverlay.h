@@ -17,14 +17,13 @@ public:
 protected:
     void paintEvent(QPaintEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-    QPen pen;
     
+    QPen pen;
 signals:
     void exitClicked();
     void exitFullscreenClicked();
     void minimizeClicked();
     
-public slots:
 };
 
 #endif // ControlsOverlay_H

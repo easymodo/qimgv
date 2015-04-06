@@ -17,6 +17,7 @@
 #include "image.h"
 #include "mapoverlay/mapoverlay.h"
 #include "settings.h"
+#include "cropoverlay.h"
 #include <time.h>
 #include "lib/imagelib.h"
 
@@ -56,6 +57,7 @@ public slots:
     void slotZoomOut();
     void resizeImage();
     void redisplay();
+    void crop();
 
 private slots:
     void onAnimation();
@@ -78,6 +80,7 @@ private:
     QColor bgColor;
 
     MapOverlay *mapOverlay;
+    CropOverlay *cropOverlay;
 
     bool isDisplayingFlag;
     bool errorFlag;
@@ -89,7 +92,7 @@ private:
     QPointF fixedZoomPoint;
 
     ImageFitMode imageFitMode;
-    void initMap();
+    void initOverlays();
     void setScale(float scale);
     void updateMaxScale();
     void scaleAround(QPointF p, float oldScale);
