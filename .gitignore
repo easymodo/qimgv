@@ -1,0 +1,8 @@
+.kdev4/
+*.txt
+!CMakeLists.txt
+build*
+.kdev_include_paths
+*.xmi
+*.kdev*
+.dir*

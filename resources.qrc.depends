@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>res/error.png</file>
+        <file>res/logo.png</file>
+        <file>res/pepper32.png</file>
+    </qresource>
+    <qresource prefix="/styles">
+        <file>res/style.qss</file>
+    </qresource>
+</RCC>

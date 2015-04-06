@@ -15,7 +15,7 @@
 #include <QErrorMessage>
 #include <vector>
 #include "image.h"
-#include "mapoverlay.h"
+#include "mapoverlay/mapoverlay.h"
 #include "settings.h"
 #include <time.h>
 #include "lib/imagelib.h"

@@ -49,6 +49,12 @@ ImageViewer::~ImageViewer() {
 
 void ImageViewer::initMap() {
     mapOverlay = new MapOverlay(this);
+    connect(mapOverlay, &MapOverlay::positionChanged, [=](float x, float y)
+    {
+        drawingRect.moveTo(x, y);
+        imageAlign();
+        update();
+    });
 }
 
 bool ImageViewer::imageIsScaled() const {
@@ -165,6 +171,8 @@ void ImageViewer::setScale(float scale) {
         float w = scale*source->width();
         drawingRect.setHeight(h);
         drawingRect.setWidth(w);
+        
+        mapOverlay->updateMap(rect(), drawingRect);
 }
 
 // ##################################################
@@ -367,7 +375,7 @@ void ImageViewer::fitDefault() {
 }
 
 void ImageViewer::updateMap() {
-    mapOverlay->updateMap(size(), drawingRect);
+    mapOverlay->updateMap(rect(), drawingRect);
 }
 
 void ImageViewer::slotFitNormal() {
@@ -398,8 +406,8 @@ void ImageViewer::resizeEvent(QResizeEvent* event) {
     else {
         fitDefault();
     }
-    mapOverlay->updateMap(size(),drawingRect);
-    mapOverlay->updatePosition();
+    mapOverlay->updateMap(rect(), drawingRect);
+    mapOverlay->parentResized(width(), height());
     resizeTimer->start(150);
 }
 
@@ -421,13 +429,13 @@ void ImageViewer::centerImage() {
 // fix image positions
 void ImageViewer::imageAlign() {
     if(drawingRect.height() <= height()) {
-        drawingRect.moveTop((height()-drawingRect.height())/2);
+        drawingRect.moveTop((height() - drawingRect.height()) / 2);
     }
     else {
         fixAlignVertical();
     }
     if(drawingRect.width() <= width()) {
-        drawingRect.moveLeft((width()-drawingRect.width())/2);
+        drawingRect.moveLeft((width() - drawingRect.width()) / 2);
     }
     else {
         fixAlignHorizontal();
@@ -435,10 +443,10 @@ void ImageViewer::imageAlign() {
 }
 
 void ImageViewer::fixAlignHorizontal() {
-    if(drawingRect.x()>0 && drawingRect.right()>width()) {
+    if(drawingRect.x() > 0 && drawingRect.right() > width()) {
         drawingRect.moveLeft(0);
     }
-    if(width()-drawingRect.x()>drawingRect.width()) {
+    if(width() - drawingRect.x() > drawingRect.width()) {
         drawingRect.moveRight(width());
     }
 }
