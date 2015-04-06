@@ -96,16 +96,16 @@ private:
     void fitNormal();
     void fitWidth();
     void fitAll();
-    void imageAlign();
     void centerImage();
     void updateMap();
-    void fixAlignHorizontal();
-    void fixAlignVertical();
     float scale() const;
     bool imageIsScaled() const;
     void stopAnimation();
     void startAnimation();
     void updateMinScale();
+    void alignImage();
+    void fixAlignHorizontal();
+    void fixAlignVertical();
 };
 
 #endif // IMAGEVIEWER_H

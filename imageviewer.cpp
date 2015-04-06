@@ -52,7 +52,6 @@ void ImageViewer::initMap() {
     connect(mapOverlay, &MapOverlay::positionChanged, [=](float x, float y)
     {
         drawingRect.moveTo(x, y);
-        imageAlign();
         update();
     });
 }
@@ -103,7 +102,7 @@ void ImageViewer::displayImage(Image* i) {
         if(source->getType() == STATIC) {
            *image = *source->getImage();
             connect(resizeTimer, SIGNAL(timeout()),
-                    this, SLOT(resizeImage()),Qt::UniqueConnection);
+                    this, SLOT(resizeImage()), Qt::UniqueConnection);
         }
         else if (source->getType() == GIF) {
             source->getMovie()->jumpToFrame(0);
@@ -118,7 +117,10 @@ void ImageViewer::displayImage(Image* i) {
     if(imageFitMode == FREE)
         imageFitMode = ALL;
     fitDefault();
-    resizeTimer->start(0);
+    mapOverlay->updatePosition(width(), height());
+    updateMap();
+    update();
+    resizeTimer->start(5);
     emit imageChanged();
 }
 
@@ -162,7 +164,8 @@ void ImageViewer::setScale(float scale) {
         }
         else if(scale <= maxScale+FLT_EPSILON) {
             currentScale = maxScale;
-            imageFitMode = ALL; // TODO: update gui checkbox
+            if(imageFitMode == FREE)
+                imageFitMode = ALL; // TODO: update gui checkbox
         }
         else {
             currentScale = scale;
@@ -233,6 +236,7 @@ void ImageViewer::resizeImage() {
 // ####################  PAINT  #####################
 // ##################################################
 void ImageViewer::paintEvent(QPaintEvent* event) {
+    qDebug() << "paint at " << clock();
     Q_UNUSED( event )
     QPainter painter(this);
     painter.fillRect(rect(), QBrush(bgColor));
@@ -276,8 +280,8 @@ void ImageViewer::mouseMoveEvent(QMouseEvent* event) {
             if (top <= 0 && bottom > size().height())
                 drawingRect.moveTop(top);
             mouseMoveStartPos = event->pos();
-            update();
             updateMap();
+            update();
         }
     }
     if (event->buttons() & Qt::RightButton) {
@@ -291,16 +295,16 @@ void ImageViewer::mouseMoveEvent(QMouseEvent* event) {
             return;
         } else if(moveDistance > 0 && newScale > minScale) { // already at max zoom
                 newScale = minScale;
-                return;
         } else if(moveDistance < 0 && newScale < maxScale-FLT_EPSILON) { // a min zoom
                 newScale = maxScale;
                 slotFitAll();
-                return;
+        } else {
+            imageFitMode = FREE;
+            scaleAround(fixedZoomPoint, newScale);
+            resizeTimer->stop();
+            resizeTimer->start(75);
         }
-        imageFitMode = FREE;
-        scaleAround(fixedZoomPoint, newScale);
-        resizeTimer->stop();
-        resizeTimer->start(75);
+        update();
     }
 }
 
@@ -314,6 +318,8 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent* event) {
     if(event->button() == Qt::RightButton && imageFitMode!=ALL) {
         resizeTimer->start(0);
         fitDefault();
+        updateMap();
+        update();
     }
 }
 
@@ -321,8 +327,7 @@ void ImageViewer::fitWidth() {
     if(isDisplaying()) {
         float scale = (float) width() / source->size().width();
         setScale(scale);
-        imageAlign();
-        update();
+        centerImage();
     }
     else if(errorFlag) {
         fitNormal();
@@ -343,15 +348,14 @@ void ImageViewer::fitAll() {
         }
         else { // doesnt fit
                 setScale(maxScale);
-                imageAlign();
-                update();
+                centerImage();
         }
     }
     else if(errorFlag) {
         fitNormal();
     }
     else {
-        imageAlign();
+        centerImage();
     }
 }
 
@@ -361,7 +365,6 @@ void ImageViewer::fitNormal() {
     }
    setScale(1.0);
    centerImage();
-   update();
 }
 
 void ImageViewer::fitDefault() {
@@ -371,28 +374,31 @@ void ImageViewer::fitDefault() {
         case ALL: fitAll(); break;
         default: /* FREE etc */ break;
     }
-    updateMap();
 }
 
 void ImageViewer::updateMap() {
+    qDebug() << "here";
     mapOverlay->updateMap(rect(), drawingRect);
 }
 
 void ImageViewer::slotFitNormal() {
     imageFitMode = NORMAL;
     fitDefault();
+    updateMap();
     resizeTimer->start(0);
 }
 
 void ImageViewer::slotFitWidth() {
     imageFitMode = WIDTH;
     fitDefault();
+    updateMap();
     resizeTimer->start(0);
 }
 
 void ImageViewer::slotFitAll() {
     imageFitMode = ALL;
     fitDefault();
+    updateMap();
     resizeTimer->start(0);
 }
 
@@ -401,13 +407,14 @@ void ImageViewer::resizeEvent(QResizeEvent* event) {
 
     updateMaxScale();
     if(imageFitMode == FREE || imageFitMode == NORMAL) {
-        imageAlign();
+        alignImage();
     }
     else {
         fitDefault();
     }
-    mapOverlay->updateMap(rect(), drawingRect);
-    mapOverlay->parentResized(width(), height());
+    mapOverlay->updatePosition(width(), height());
+    updateMap();
+    update();
     resizeTimer->start(150);
 }
 
@@ -420,33 +427,33 @@ void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
     }
 }
 
-// center image
+// centers image inside window rectangle
 void ImageViewer::centerImage() {
     drawingRect.moveCenter(rect().center());
-    imageAlign();
 }
 
-// fix image positions
-void ImageViewer::imageAlign() {
+// centers image inside window
+// aligns image corner to window corner if needed
+void ImageViewer::alignImage() {
     if(drawingRect.height() <= height()) {
-        drawingRect.moveTop((height() - drawingRect.height()) / 2);
-    }
-    else {
-        fixAlignVertical();
-    }
-    if(drawingRect.width() <= width()) {
-        drawingRect.moveLeft((width() - drawingRect.width()) / 2);
-    }
-    else {
-        fixAlignHorizontal();
-    }
+            drawingRect.moveTop((height()-drawingRect.height())/2);
+        }
+        else {
+            fixAlignVertical();
+        }
+        if(drawingRect.width() <= width()) {
+            drawingRect.moveLeft((width()-drawingRect.width())/2);
+        }
+        else {
+            fixAlignHorizontal();
+        }
 }
 
 void ImageViewer::fixAlignHorizontal() {
-    if(drawingRect.x() > 0 && drawingRect.right() > width()) {
+    if(drawingRect.x()>0 && drawingRect.right()>width()) {
         drawingRect.moveLeft(0);
     }
-    if(width() - drawingRect.x() > drawingRect.width()) {
+    if(width()-drawingRect.x()>drawingRect.width()) {
         drawingRect.moveRight(width());
     }
 }
@@ -474,9 +481,7 @@ void ImageViewer::scaleAround(QPointF p, float newScale) {
     drawingRect.moveLeft(oldX - (newPx-oldPx));
     float newPy = (float)yPos*drawingRect.height();
     drawingRect.moveTop(oldY - (newPy-oldPy));
-    imageAlign();
-    update();
-    updateMap();
+    alignImage();
 }
 
 void ImageViewer::slotZoomIn() {
@@ -493,6 +498,8 @@ void ImageViewer::slotZoomIn() {
     imageFitMode = FREE;
     fixedZoomPoint = rect().center();
     scaleAround(fixedZoomPoint, newScale);
+    updateMap();
+    update();
     resizeTimer->start(100);
 }
 
@@ -509,6 +516,8 @@ void ImageViewer::slotZoomOut() {
     imageFitMode = FREE;
     fixedZoomPoint = rect().center();
     scaleAround(fixedZoomPoint, newScale);
+    updateMap();
+    update();
     resizeTimer->start(100);
 }
 

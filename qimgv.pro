@@ -13,13 +13,13 @@ TEMPLATE = app
 RC_FILE = qimgv.rc
 
 QMAKE_CXXFLAGS += -Wall
+QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     infooverlay.cpp \
     fileinfo.cpp \
     controlsoverlay.cpp \
-    mapoverlay.cpp \
     image.cpp \
     core.cpp \
     directorymanager.cpp \
@@ -30,13 +30,13 @@ SOURCES += main.cpp\
     sleep.cpp \
     settings.cpp \
     settingsdialog.cpp \
-    lib/imagelib.cpp
+    lib/imagelib.cpp \
+    mapoverlay/mapoverlay.cpp
 
 HEADERS  += mainwindow.h \
     infooverlay.h \
     fileinfo.h \
     controlsoverlay.h \
-    mapoverlay.h \
     image.h \
     core.h \
     directorymanager.h \
@@ -46,7 +46,8 @@ HEADERS  += mainwindow.h \
     imageviewer.h \
     settings.h \
     settingsdialog.h \
-    lib/imagelib.h
+    lib/imagelib.h \
+    mapoverlay/mapoverlay.h
 
 FORMS    += \
     settingsdialog.ui

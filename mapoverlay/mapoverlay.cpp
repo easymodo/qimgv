@@ -1,6 +1,6 @@
 #include "mapoverlay.h"
 #include <QPropertyAnimation>
-#include "settings.h"
+#include "../settings.h"
 
 class MapOverlay::MapOverlayPrivate : public QObject
 {
@@ -10,7 +10,7 @@ public:
     void moveInnerWidget(float x, float y);
     void moveMainImage(float xDist, float yDist);
     
-    QPen innerPen, outerPen;
+    QPen innerPen, outerPen, outlinePen;
     float xSpeedDiff, ySpeedDiff;
     QPen penInner, penOuter;
     QRectF outerRect, innerRect;
@@ -28,10 +28,11 @@ public:
 };
 
 MapOverlay::MapOverlayPrivate::MapOverlayPrivate(MapOverlay* qq) : q(qq), size(100),
-isAutoVisible(true), opacity(0.0f), innerOffset(-1), margin(10)
+isAutoVisible(true), opacity(1.0f), innerOffset(-1), margin(10)
 {
-    innerPen.setColor(QColor(150,150,150,200));
-    outerPen.setColor(QColor(150,150,150,200));
+    outlinePen.setColor(QColor(40,40,40,255));
+    innerPen.setColor(QColor(160,160,160,150));
+    outerPen.setColor(QColor(80,80,80,150));
     
     location = MapOverlay::RightBottom;
 }
@@ -86,7 +87,7 @@ MapOverlay::MapOverlay(QWidget *parent) : QWidget(parent),
 d(new MapOverlayPrivate(this))
 {
     d->animation = new QPropertyAnimation(this, "opacity");
-    d->animation->setDuration(300);
+    d->animation->setDuration(100);
     
     setCursor(Qt::OpenHandCursor);
  }
@@ -144,17 +145,19 @@ void MapOverlay::paintEvent(QPaintEvent *event)
     QBrush innerBrush(QColor(230,230,230,150), Qt::SolidPattern);
     
     painter.setOpacity(d->opacity);
-    
+
     painter.setPen(d->innerPen);
     painter.fillRect(d->innerRect, innerBrush);
-    painter.drawRect(d->innerRect);
-    
+
     painter.setPen(d->outerPen);
     painter.fillRect(d->outerRect, outerBrush);
+
+    painter.setPen(d->outlinePen);
     painter.drawRect(d->outerRect);
+    painter.drawRect(d->innerRect);
 }
 
-void MapOverlay::parentResized(int width, int height)
+void MapOverlay::updatePosition(int width, int height)
 {
     int x = 0, y = 0;
     switch (location())
@@ -164,16 +167,16 @@ void MapOverlay::parentResized(int width, int height)
             y = margin();
             break;
         case MapOverlay::RightTop:
-            x = width - (margin() + size());
+            x = width - (margin() + d->outerRect.width());
             y = margin();
             break;
         case MapOverlay::RightBottom:
-            x = width - (margin() + size());
-            y = height - (margin() + size());
+            x = width - (margin() + d->outerRect.width());
+            y = height - (margin() + d->outerRect.height());
             break;
         case MapOverlay::LeftBottom:
             x = width + margin();
-            y = height - (margin() + size());
+            y = height - (margin() + d->outerRect.height());
             break;
     }
     
@@ -186,12 +189,18 @@ void MapOverlay::parentResized(int width, int height)
 
 void MapOverlay::updateMap(const QRectF& windowRect, const QRectF& drawingRect)
 {
+    /*
     if (d->isAutoVisible)
     {
         bool needToBeHidden = !windowRect.contains(drawingRect);
         animateVisible(needToBeHidden);
     }
-    
+    */
+    if(windowRect.contains(drawingRect)) {
+        setVisible(false);
+        return;
+    }
+    setVisible(true);
     d->windowRect = windowRect;
     d->drawingRect = drawingRect;
     
@@ -207,7 +216,7 @@ void MapOverlay::updateMap(const QRectF& windowRect, const QRectF& drawingRect)
     QSizeF innerSz(innerWidth, innerHeight);
     d->innerRect.setSize(innerSz);
     
-    qDebug() << "outer" << d->outerRect.toAlignedRect() << "inner" << d->innerRect.toAlignedRect() << geometry();
+    //qDebug() << "outer" << d->outerRect.toAlignedRect() << "inner" << d->innerRect.toAlignedRect() << geometry();
     
     d->xSpeedDiff = innerSz.width() / windowRect.width();
     d->ySpeedDiff = innerSz.height() / windowRect.height();
@@ -250,9 +259,9 @@ MapOverlay::Location MapOverlay::location() const
     return d->location;
 }
 
-void MapOverlay::setLocation(MapOverlay::Location l)
+void MapOverlay::setLocation(MapOverlay::Location loc)
 {
-    d->location = l;
+    d->location = loc;
 }
 
 int MapOverlay::margin() const

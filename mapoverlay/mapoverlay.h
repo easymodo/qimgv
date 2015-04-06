@@ -10,7 +10,7 @@
 class MapOverlay : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY (float opacity READ opacity WRITE setOpacity);
+    Q_PROPERTY (float opacity READ opacity WRITE setOpacity)
 public:
     enum Location 
     {
@@ -45,7 +45,7 @@ public:
     /**
      * Recalculates map position on resize
      */
-    void parentResized(int width, int height);
+    void updatePosition(int width, int height);
     
     /**
      * Unit test functions
