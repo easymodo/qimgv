@@ -12,7 +12,7 @@ include_directories(res ${Qt5Widgets_INCLUDES} ${Qt5Concurrent_INCLUDES})
 
 add_definitions(${Qt5Widgets_DEFINITIONS} ${Qt5Concurrent_DEFINITIONS})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS} -std=c++11")
 
 FILE (GLOB SRC *.cpp)
 
@@ -22,7 +22,7 @@ QT5_ADD_RESOURCES(RES resources.qrc)
 
 add_executable(qimgv ${SRC} ${RES} ${GUI})
 
-target_link_libraries(qimgv Qt5::Widgets Qt5::Concurrent mapoverlay)
+target_link_libraries(qimgv Qt5::Widgets Qt5::Concurrent mapoverlay lib)
      
 qt5_use_modules (qimgv Core Widgets Concurrent)
 
@@ -30,3 +30,4 @@ install(FILES qimgv DESTINATION /usr/bin/)
 
 add_subdirectory(tests)
 add_subdirectory(mapoverlay)
+add_subdirectory(lib)

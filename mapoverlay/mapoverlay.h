@@ -11,6 +11,7 @@ class MapOverlay : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY (float opacity READ opacity WRITE setOpacity)
+    Q_PROPERTY (int y READ y WRITE setY)
 public:
     enum Location 
     {
@@ -24,7 +25,6 @@ public:
     virtual ~MapOverlay();
     void resize(int size);
     int size() const;
-    void setAutoVisible(bool state = true);
     void animateVisible(bool visible);
     
     void setOpacity(float opacity);
@@ -36,16 +36,19 @@ public:
     void setMargin(int margin);
     int margin() const;
     
+    void setY(int y);
+    int y() const;
+    
     /**
      * @brief Updating navigation map
      * calculates outer(image) and inner(view area) squares.
      */
-    void updateMap(const QRectF& windowRect, const QRectF& drawingRect);
+    void updateMap(const QRectF& drawingRect);
     
     /**
      * Recalculates map position on resize
      */
-    void updatePosition(int width, int height);
+    void updatePosition();
     
     /**
      * Unit test functions
@@ -60,6 +63,7 @@ protected:
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent* event);
     virtual void mouseReleaseEvent(QMouseEvent* event);
+    virtual void resizeEvent(QResizeEvent* event);
     
 private:
     class MapOverlayPrivate;
