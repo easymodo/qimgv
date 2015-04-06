@@ -119,6 +119,7 @@ void ImageViewer::redisplay() {
 void ImageViewer::crop() {
     if(cropOverlay->isHidden() && isDisplaying()) {
         slotFitAll();
+        cursorTimer->stop();
         cropOverlay->display();
     } else {
         cropOverlay->hide();

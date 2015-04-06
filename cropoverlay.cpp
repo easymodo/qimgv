@@ -9,6 +9,7 @@ CropOverlay::CropOverlay(QWidget *parent) :
     endPos = QPoint(0,0);
     imageArea.setRect(0,0,0,0);
     clear = true;
+    moving = false;
     this->hide();
 }
 
@@ -20,6 +21,7 @@ void CropOverlay::setImageArea(QRect area) {
 }
 
 void CropOverlay::display() {
+    this->setCursor(Qt::ArrowCursor);
     this->setGeometry(viewer->rect());
     this->setFocusPolicy(Qt::StrongFocus);
     this->setFocus();
@@ -43,7 +45,7 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
     QBrush brushDark(QColor(10,10,10,180)); // transparent black
     QBrush brushGray(QColor(80,80,80,180)); // transparent gray
 
-    // draw label
+    // draw label only
     if(clear) {
         painter.setPen(Qt::NoPen);
         painter.setBrush(brushGray);
@@ -56,10 +58,6 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
         painter.drawText(QRect(10,25,100,16), "CROP MODE");
         return;
     }
-
-    qDebug() << "selection" << selectionRect;
-    qDebug() << "this" << rect();
-    qDebug() << "imgArea" << imageArea;
 
     // draw selection
     painter.setBrush(brushDark);
@@ -74,49 +72,85 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
                      selectionRect.width(), imageArea.bottom() - selectionRect.bottom()); // cutout bottom
 }
 
-// takes QPoint and puts it inside imageArea
-QPoint CropOverlay::setInsidePoint(QPoint p) {
-    if(p.x()<imageArea.left()) { p.setX(imageArea.left()); }
-    else if(p.x()>imageArea.right()) { p.setX(imageArea.right()); }
-    if(p.y()<imageArea.top()) { p.setY(imageArea.top()); }
-    else if(p.y()>imageArea.bottom()) { p.setY(imageArea.bottom()); }
+// takes QPoint and puts it inside rectangle
+QPoint CropOverlay::setInsidePoint(QPoint p, QRect area) {
+    if(p.x()<area.left()) { p.setX(area.left()); }
+    else if(p.x()>area.right()) { p.setX(area.right()); }
+    if(p.y()<area.top()) { p.setY(area.top()); }
+    else if(p.y()>area.bottom()) { p.setY(area.bottom()); }
     return p;
 }
 
 void CropOverlay::mousePressEvent(QMouseEvent *event) {
     if(event->buttons() & Qt::LeftButton) {
-        clear=false;
-        startPos = setInsidePoint(event->pos());
-        endPos = setInsidePoint(event->pos());
-        selectionRect.setTopLeft(startPos);
-        selectionRect.setBottomRight(endPos);
+        if(selectionRect.contains(event->pos())) { // move selection
+            moveStartPos = QCursor::pos(); // just absolute pos to avoid headache
+        }
+        else { // select
+            clear=false;
+            startPos = setInsidePoint(event->pos(), imageArea);
+            endPos = setInsidePoint(event->pos(), imageArea);
+            selectionRect.setTopLeft(startPos);
+            selectionRect.setBottomRight(endPos);
+        }
     } else {
         clear=true;
     }
     update();
 }
 
+//places qrect inside another if it is not contained
+QRect CropOverlay::placeInside(QRect what, QRect where) {
+    if(what.left()<where.left()) {
+        what.moveLeft(where.left());
+    }
+    if(what.top()<where.top()) {
+        what.moveTop(where.top());
+    }
+    if(what.right()>where.right()) {
+        what.moveRight(where.right());
+    }
+    if(what.bottom()>where.bottom()) {
+        what.moveBottom(where.bottom());
+    }
+    return what;
+}
 
 void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() & Qt::LeftButton && !clear) {
-        endPos = setInsidePoint(event->pos());
+        if(selectionRect.contains(event->pos()) || moving) {
+            moving=true;
+            QPoint delta = QCursor::pos() - moveStartPos;
+            QRect tmp = selectionRect.translated(delta);
+            if(!imageArea.contains(tmp, false)) {
+                tmp = placeInside(tmp, imageArea);
+                QCursor::setPos(mapToGlobal(tmp.center()));
+            }
+            selectionRect = tmp;
+            moveStartPos = QCursor::pos();
+            update();
+        }
+        else {
+            endPos = setInsidePoint(event->pos(), imageArea);
 
-        //set exclusion rectangle
-        QPoint tl, br;
-        startPos.x()>=endPos.x()?tl.setX(endPos.x()):tl.setX(startPos.x());
-        startPos.y()>=endPos.y()?tl.setY(endPos.y()):tl.setY(startPos.y());
+            //set exclusion rectangle
+            QPoint tl, br;
+            startPos.x()>=endPos.x()?tl.setX(endPos.x()):tl.setX(startPos.x());
+            startPos.y()>=endPos.y()?tl.setY(endPos.y()):tl.setY(startPos.y());
 
-        startPos.x()<=endPos.x()?br.setX(endPos.x()):br.setX(startPos.x());
-        startPos.y()<=endPos.y()?br.setY(endPos.y()):br.setY(startPos.y());
+            startPos.x()<=endPos.x()?br.setX(endPos.x()):br.setX(startPos.x());
+            startPos.y()<=endPos.y()?br.setY(endPos.y()):br.setY(startPos.y());
 
-        selectionRect.setTopLeft(tl);
-        selectionRect.setBottomRight(br);
-        qDebug() << "EX:" << selectionRect;
-        update();
+            selectionRect.setTopLeft(tl);
+            selectionRect.setBottomRight(br);
+            qDebug() << "EX:" << selectionRect;
+            update();
+        }
     }
 }
 
 void CropOverlay::mouseReleaseEvent(QMouseEvent *event) {
+    moving = false;
     if(startPos==endPos) {
         clear=true;
         update();

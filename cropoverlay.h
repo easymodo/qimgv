@@ -14,6 +14,7 @@ public:
     explicit CropOverlay(QWidget *parent = 0);
     void setImageArea(QRect);
 
+    QRect placeInside(QRect what, QRect where);
 signals:
     void positionChanged(float x, float y);
 
@@ -26,11 +27,11 @@ protected:
 
 private:
     QWidget *viewer;
-    QPoint startPos, endPos;
+    QPoint startPos, endPos, moveStartPos;
     QRect imageArea, selectionRect;
-    bool clear;
+    bool clear, moving;
 
-    QPoint setInsidePoint(QPoint);
+    QPoint setInsidePoint(QPoint, QRect);
 public slots:
     void hide();
     void display();
