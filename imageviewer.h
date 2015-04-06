@@ -36,7 +36,6 @@ class ImageViewer : public QWidget
     Q_OBJECT
 
 public:
-    ImageViewer();
     ImageViewer(QWidget* parent);
     ~ImageViewer();
     Image* getCurrentImage() const;
@@ -59,6 +58,7 @@ public slots:
     void redisplay();
     void crop();
 
+    void hideCursor();
 private slots:
     void onAnimation();
 
@@ -73,7 +73,7 @@ protected:
 private:
     Image* source;
     QImage *image;
-    QTimer *resizeTimer;
+    QTimer *resizeTimer, *cursorTimer;
     QRect drawingRect;
     QPoint mouseMoveStartPos;
 

@@ -1,27 +1,5 @@
 #include "imageviewer.h"
 
-ImageViewer::ImageViewer(): QWidget(),
-    source(NULL),
-    isDisplayingFlag(false),
-    errorFlag(false),
-    currentScale(1.0),
-    maxScale(1.0),
-    minScale(3.0),
-    scaleStep(0.05),
-    imageFitMode(NORMAL)
-{
-    initOverlays();
-    bgColor.setRgb(17,17,17,255);
-    image = new QImage();
-    image->load(":/images/res/logo.png");
-    drawingRect = image->rect();
-    fitDefault();
-    resizeTimer = new QTimer(this);
-    connect(resizeTimer, SIGNAL(timeout()),
-            this, SLOT(resizeImage()),
-            Qt::UniqueConnection);
-}
-
 ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
     source(NULL),
     isDisplayingFlag(false),
@@ -37,9 +15,14 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
     image = new QImage();
     image->load(":/images/res/logo.png");
     drawingRect = image->rect();
+    this->setMouseTracking(true);
     resizeTimer = new QTimer(this);
+    cursorTimer = new QTimer(this);
     connect(resizeTimer, SIGNAL(timeout()),
             this, SLOT(resizeImage()),
+            Qt::UniqueConnection);
+    connect(cursorTimer, SIGNAL(timeout()),
+            this, SLOT(hideCursor()),
             Qt::UniqueConnection);
 }
 
@@ -114,6 +97,7 @@ void ImageViewer::displayImage(Image* i) {
         }
         updateMaxScale();
         updateMinScale();
+        cursorTimer->start(2000);
     }
     drawingRect = image->rect();
     currentScale = 1.0;
@@ -122,7 +106,7 @@ void ImageViewer::displayImage(Image* i) {
     fitDefault();
     //mapOverlay->updatePosition(width(), height());
     updateMap();
-    cropOverlay->setGeometry(rect());
+    cropOverlay->setImageArea(drawingRect);
     update();
     resizeTimer->start(5);
     //emit imageChanged();
@@ -270,6 +254,8 @@ void ImageViewer::mousePressEvent(QMouseEvent* event) {
     if(!isDisplaying()) {
         return;
     }
+    cursorTimer->stop();
+    setCursor(QCursor(Qt::ArrowCursor));
     mouseMoveStartPos = event->pos();
     if (event->button() == Qt::LeftButton) {
         this->setCursor(QCursor(Qt::ClosedHandCursor));
@@ -284,6 +270,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent* event) {
     if(!isDisplaying()) {
         return;
     }
+    cursorTimer->stop();
     if (event->buttons() & Qt::LeftButton) {
         if(drawingRect.size().width() > this->width() ||
            drawingRect.size().height() > this->height())
@@ -301,8 +288,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent* event) {
             updateMap();
             update();
         }
-    }
-    if (event->buttons() & Qt::RightButton) {
+    } else if (event->buttons() & Qt::RightButton) {
         float step = (maxScale - minScale) / -500.0;
         int currentPos = event->pos().y();
         int moveDistance = mouseMoveStartPos.y() - currentPos;
@@ -323,6 +309,9 @@ void ImageViewer::mouseMoveEvent(QMouseEvent* event) {
             resizeTimer->start(75);
         }
         update();
+    } else {
+        setCursor(QCursor(Qt::ArrowCursor));
+        cursorTimer->start(2000);
     }
 }
 
@@ -339,6 +328,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent* event) {
         updateMap();
         update();
     }
+    cursorTimer->start(2000);
 }
 
 void ImageViewer::fitWidth() {
@@ -367,7 +357,6 @@ void ImageViewer::fitAll() {
         else { // doesnt fit
                 setScale(maxScale);
                 alignImage();
-                //centerImage();
 
         }
     }
@@ -452,9 +441,6 @@ void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
 void ImageViewer::centerImage() {
     int x = drawingRect.x();
     drawingRect.moveCenter(rect().center());
-    if(drawingRect.x()==1 && x!=1) {
-        qDebug() << "faggot!!";
-    }
 }
 
 // centers image inside window
@@ -552,4 +538,9 @@ Image* ImageViewer::getCurrentImage() const {
 
 bool ImageViewer::isDisplaying() const {
     return isDisplayingFlag;
+}
+
+void ImageViewer::hideCursor() {
+    cursorTimer->stop();
+    setCursor(QCursor(Qt::BlankCursor));
 }

@@ -3,7 +3,6 @@
 CropOverlay::CropOverlay(QWidget *parent) :
     QWidget(parent)
 {
-    //this->setSizePolicy(QSizePolicy::Maximum);
     viewer = parent;
     this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     startPos = QPoint(0,0);
@@ -66,9 +65,9 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
     painter.setBrush(brushDark);
     painter.setPen(Qt::NoPen);
     painter.drawRect(imageArea.left(), imageArea.top(),
-                     selectionRect.left(), imageArea.height()); // left
+                     selectionRect.left()-imageArea.left(), imageArea.height()); // left
     painter.drawRect(selectionRect.right()+1, imageArea.top(),
-                     imageArea.width()-selectionRect.right(), imageArea.height()); // right
+                     imageArea.right()-selectionRect.right(), imageArea.height()); // right
     painter.drawRect(selectionRect.left(), imageArea.top(),
                      selectionRect.width(), selectionRect.top()-imageArea.top()); // cutout top
     painter.drawRect(selectionRect.left(), selectionRect.bottom()+1,
@@ -118,6 +117,10 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void CropOverlay::mouseReleaseEvent(QMouseEvent *event) {
+    if(startPos==endPos) {
+        clear=true;
+        update();
+    }
     //update();
 }
 
