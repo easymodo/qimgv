@@ -58,6 +58,8 @@ private slots:
     void slotFitNormal();
     void switchFitMode();
     void slotSetInfoString(QString info);
+    void slotRotateLeft();
+    void slotRotateRight();
 
     void slotShowControls(bool);
     void slotShowInfo(bool x);
@@ -72,6 +74,8 @@ private:
     
     QAction *openAct;
     QAction *settingsAct;
+    QAction *rotateLeftAct;
+    QAction *rotateRightAct;
     QAction *nextAct;
     QAction *prevAct;
     QAction *exitAct;
@@ -85,6 +89,7 @@ private:
     QAction *aboutQtAct;
 
     QMenu *fileMenu;
+    QMenu *editMenu;
     QMenu *viewMenu;
     QMenu *navigationMenu;
     QMenu *helpMenu;

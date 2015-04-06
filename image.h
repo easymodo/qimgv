@@ -11,6 +11,7 @@
 #include <QImage>
 #include <QObject>
 #include <QThread>
+#include <QMutex>
 
 class Image : public QObject
 {
@@ -38,6 +39,8 @@ public:
     bool useFlag();
     void setUseFlag(bool);
 
+    QImage *rotated(int grad);
+    void rotate(int grad);
 private:
     QImage *image;
     QMovie *movie;
@@ -45,6 +48,7 @@ private:
     QSize resolution;
     float aspectRatio;
     bool inUseFlag;
+    QMutex mutex;
 };
 
 #endif // QIMAGELOADER_H

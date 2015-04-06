@@ -29,8 +29,6 @@ void Image::loadImage()
             movie->jumpToFrame(0);
             aspectRatio = (float)movie->currentImage().height()/
                     movie->currentImage().width();
-            info->setHeight(movie->currentImage().height());
-            info->setWidth(movie->currentImage().width());
         }
         else if(getType() == STATIC) {
             if(info->getExtension()) {
@@ -41,8 +39,6 @@ void Image::loadImage()
             }
             aspectRatio = (float)image->height()/
                     image->width();
-            info->setHeight(image->height());
-            info->setWidth(image->width());
         }
         info->inUse = true;
     }
@@ -138,4 +134,24 @@ bool Image::compare(Image* another) {
         return true;
     }
     return false;
+}
+
+QImage* Image::rotated(int grad) {
+    if(info->getType()==STATIC) {
+        QImage *img = new QImage();
+        QTransform transform;
+        transform.rotate(grad);
+        *img = image->transformed(transform, Qt::SmoothTransformation);
+        return img;
+    }
+}
+
+void Image::rotate(int grad) {
+    if(info->getType()==STATIC) {
+        mutex.lock();
+        QImage *img = rotated(grad);
+        delete image;
+        image = img;
+        mutex.unlock();
+    }
 }

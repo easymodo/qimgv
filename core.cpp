@@ -36,9 +36,9 @@ void Core::updateInfoString() {
     if(currentImage) {
         infoString.append(currentImage->getFileInfo()->getFileName() + "  ");
         infoString.append("(" +
-                          QString::number(currentImage->getFileInfo()->getWidth()) +
+                          QString::number(currentImage->width()) +
                           "x" +
-                          QString::number(currentImage->getFileInfo()->getHeight()) +
+                          QString::number(currentImage->height()) +
                           "  ");
         infoString.append(QString::number(currentImage->getFileInfo()->getFileSize()) + " MB)");
     }
@@ -75,6 +75,7 @@ void Core::loadImage(QString path) {
 
 void Core::onLoadFinished(Image* img) {
     emit signalUnsetImage();
+    qDebug() << "zz";
     currentImage = img;
     emit signalSetImage(currentImage);
     updateInfoString();

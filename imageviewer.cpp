@@ -52,6 +52,7 @@ void ImageViewer::initMap() {
     connect(mapOverlay, &MapOverlay::positionChanged, [=](float x, float y)
     {
         drawingRect.moveTo(x, y);
+        alignImage();
         update();
     });
 }
@@ -117,11 +118,15 @@ void ImageViewer::displayImage(Image* i) {
     if(imageFitMode == FREE)
         imageFitMode = ALL;
     fitDefault();
-    mapOverlay->updatePosition(width(), height());
+    //mapOverlay->updatePosition(width(), height());
     updateMap();
     update();
     resizeTimer->start(5);
-    emit imageChanged();
+    //emit imageChanged();
+}
+
+void ImageViewer::redisplay() {
+    displayImage(source);
 }
 
 void ImageViewer::updateMaxScale() {
@@ -236,7 +241,7 @@ void ImageViewer::resizeImage() {
 // ####################  PAINT  #####################
 // ##################################################
 void ImageViewer::paintEvent(QPaintEvent* event) {
-    qDebug() << "paint at " << clock();
+    //qDebug() << "paint at " << clock();
     Q_UNUSED( event )
     QPainter painter(this);
     painter.fillRect(rect(), QBrush(bgColor));
@@ -377,7 +382,6 @@ void ImageViewer::fitDefault() {
 }
 
 void ImageViewer::updateMap() {
-    qDebug() << "here";
     mapOverlay->updateMap(rect(), drawingRect);
 }
 
@@ -412,7 +416,7 @@ void ImageViewer::resizeEvent(QResizeEvent* event) {
     else {
         fitDefault();
     }
-    mapOverlay->updatePosition(width(), height());
+    //mapOverlay->updatePosition(width(), height());
     updateMap();
     update();
     resizeTimer->start(150);

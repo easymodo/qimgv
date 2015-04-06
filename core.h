@@ -23,7 +23,6 @@ private:
     Image* currentImage;
 
 private slots:
-    void updateInfoString();
     void onLoadFinished(Image *img);
 
 signals:
@@ -33,6 +32,7 @@ signals:
     void slowLoading();
 
 public slots:
+    void updateInfoString();
     void loadImage(QString);
     void initSettings();
     void slotNextImage();

@@ -141,8 +141,8 @@ void MapOverlay::setAutoVisible(bool state)
 void MapOverlay::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    QBrush outerBrush(QColor(80, 80, 80, 200), Qt::SolidPattern);
-    QBrush innerBrush(QColor(230,230,230,150), Qt::SolidPattern);
+    QBrush outerBrush(QColor(80, 80, 80, 180), Qt::SolidPattern);
+    QBrush innerBrush(QColor(230,230,230,130), Qt::SolidPattern);
     
     painter.setOpacity(d->opacity);
 
@@ -200,6 +200,7 @@ void MapOverlay::updateMap(const QRectF& windowRect, const QRectF& drawingRect)
         setVisible(false);
         return;
     }
+    updatePosition(windowRect.width(), windowRect.height());
     setVisible(true);
     d->windowRect = windowRect;
     d->drawingRect = drawingRect;

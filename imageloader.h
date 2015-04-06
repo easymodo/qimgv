@@ -35,8 +35,8 @@ private:
     QVector<Image*> currentJobs;
     bool loadDelayEnabled;
     QStringList jobs;
-
     bool jobAlreadyStarted(Image *img);
+
 signals:
     void loadStarted();
     void loadFinished(Image*);

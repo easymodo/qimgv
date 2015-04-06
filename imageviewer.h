@@ -55,6 +55,7 @@ public slots:
     void slotZoomIn();
     void slotZoomOut();
     void resizeImage();
+    void redisplay();
 
 private slots:
     void onAnimation();

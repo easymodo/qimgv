@@ -175,6 +175,16 @@ void MainWindow::createActions()
     this->addAction(exitAct);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
+    rotateLeftAct = new QAction(tr("Rotate L&eft"), this);
+    rotateLeftAct->setShortcut(tr("L"));
+    this->addAction(rotateLeftAct);
+    connect(rotateLeftAct, SIGNAL(triggered()), this, SLOT(slotRotateLeft()));
+
+    rotateRightAct = new QAction(tr("Rotate Rslot&ight"), this);
+    rotateRightAct->setShortcut(tr("R"));
+    this->addAction(rotateRightAct);
+    connect(rotateRightAct, SIGNAL(triggered()), this, SLOT(slotRotateRight()));
+
     nextAct = new QAction(tr("N&ext"), this);
     nextAct->setShortcut(Qt::Key_Right);
     nextAct->setEnabled(true);
@@ -244,6 +254,10 @@ void MainWindow::createMenus()
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
+    editMenu = new QMenu(tr("&File"), this);
+    editMenu->addAction(rotateLeftAct);
+    editMenu->addAction(rotateRightAct);
+
     viewMenu = new QMenu(tr("&View"), this);
     viewMenu->addAction(fullscreenEnabledAct);
     viewMenu->addAction(zoomInAct);
@@ -262,6 +276,7 @@ void MainWindow::createMenus()
     helpMenu->addAction(aboutQtAct);
 
     menuBar()->addMenu(fileMenu);
+    menuBar()->addMenu(editMenu);
     menuBar()->addMenu(viewMenu);
     menuBar()->addMenu(navigationMenu);
     menuBar()->addMenu(helpMenu);
@@ -305,6 +320,18 @@ void MainWindow::slotSetInfoString(QString info) {
     info.append(" - ");
     info.append(QCoreApplication::applicationName());
     setWindowTitle(info);
+}
+
+void MainWindow::slotRotateLeft() {
+    imageViewer->getCurrentImage()->rotate(-90);
+    imageViewer->redisplay();
+    core->updateInfoString();
+}
+
+void MainWindow::slotRotateRight() {
+    imageViewer->getCurrentImage()->rotate(90);
+    imageViewer->redisplay();
+    core->updateInfoString();
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event) {
