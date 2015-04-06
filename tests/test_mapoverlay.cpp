@@ -8,13 +8,14 @@ QTEST_MAIN(Test_MapOverlay);
 void Test_MapOverlay::initTestCase()
 {
     // Called before the first testfunction is executed
-    minimap = new MapOverlay();
-    
-    QSizeF windowSize(200, 100);
+    QSize windowSize(200, 100);
     QSizeF drawingSize(1400, 1200);
     
-    minimap->updateMap(QRectF(QPoint(0, 0), windowSize),
-                       QRectF(QPoint(0, 0), drawingSize));
+    QWidget *parent = new QWidget();
+    parent->resize(windowSize);
+    
+    minimap = new MapOverlay(parent);
+    minimap->updateMap(QRectF(QPoint(0, 0), drawingSize));
     
     /**
      * Drawing area scaled to fit 100x100 rectangle
