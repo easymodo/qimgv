@@ -13,6 +13,7 @@ Core::Core() :
 void Core::initVariables() {
     dirManager = new DirectoryManager();
     imageLoader = new ImageLoader(dirManager);
+    currentImage = NULL;
 }
 
 // misc connections not related to gui
@@ -44,6 +45,14 @@ void Core::updateInfoString() {
     }
 
     emit infoStringChanged(infoString);
+}
+
+void Core::rotateImage(int grad) {
+    if(currentImage!=NULL) {
+        currentImage->rotate(grad);
+        updateInfoString();
+        emit imageAltered();
+    }
 }
 
 void Core::setCurrentDir(QString path) {

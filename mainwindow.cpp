@@ -89,6 +89,8 @@ void MainWindow::init() {
 
     connect(controlsOverlay, SIGNAL(minimizeClicked()),
             this, SLOT(slotMinimize()));
+
+    connect(core, SIGNAL(imageAltered()), imageViewer, SLOT(redisplay()));
 }
 
 void MainWindow::open(QString path) {
@@ -180,7 +182,7 @@ void MainWindow::createActions()
     this->addAction(rotateLeftAct);
     connect(rotateLeftAct, SIGNAL(triggered()), this, SLOT(slotRotateLeft()));
 
-    rotateRightAct = new QAction(tr("Rotate Rslot&ight"), this);
+    rotateRightAct = new QAction(tr("Rotate R&ight"), this);
     rotateRightAct->setShortcut(tr("R"));
     this->addAction(rotateRightAct);
     connect(rotateRightAct, SIGNAL(triggered()), this, SLOT(slotRotateRight()));
@@ -254,7 +256,7 @@ void MainWindow::createMenus()
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
-    editMenu = new QMenu(tr("&File"), this);
+    editMenu = new QMenu(tr("&Edit"), this);
     editMenu->addAction(rotateLeftAct);
     editMenu->addAction(rotateRightAct);
 
@@ -323,15 +325,11 @@ void MainWindow::slotSetInfoString(QString info) {
 }
 
 void MainWindow::slotRotateLeft() {
-    imageViewer->getCurrentImage()->rotate(-90);
-    imageViewer->redisplay();
-    core->updateInfoString();
+    core->rotateImage(-90);
 }
 
 void MainWindow::slotRotateRight() {
-    imageViewer->getCurrentImage()->rotate(90);
-    imageViewer->redisplay();
-    core->updateInfoString();
+    core->rotateImage(90);
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event) {

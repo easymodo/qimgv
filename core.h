@@ -30,6 +30,7 @@ signals:
     void signalSetImage(Image*);
     void infoStringChanged(QString);
     void slowLoading();
+    void imageAltered();
 
 public slots:
     void updateInfoString();
@@ -38,6 +39,7 @@ public slots:
     void slotNextImage();
     void slotPrevImage();
     void setCurrentDir(QString);
+    void rotateImage(int);
 
 };
 
