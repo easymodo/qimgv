@@ -32,6 +32,7 @@ ImageViewer::~ImageViewer() {
 
 void ImageViewer::initOverlays() {
     mapOverlay = new MapOverlay(this);
+    mapOverlay->setEnabled(false);
     connect(mapOverlay, &MapOverlay::positionChanged, [=](float x, float y)
     {
         drawingRect.moveTo(x, y);
@@ -80,6 +81,7 @@ void ImageViewer::displayImage(Image* i) {
         //empty or corrupted image
         image->load(":/images/res/error.png");
         isDisplayingFlag = false;
+        mapOverlay->setEnabled(false);
         errorFlag=true;
     }
     else {
@@ -104,9 +106,10 @@ void ImageViewer::displayImage(Image* i) {
     if(imageFitMode == FREE)
         imageFitMode = ALL;
     fitDefault();
-    //mapOverlay->updatePosition(width(), height());
+    mapOverlay->setEnabled(true);
     updateMap();
     cropOverlay->setImageArea(drawingRect);
+    mapOverlay->updatePosition();
     update();
     resizeTimer->start(5);
     //emit imageChanged();
@@ -177,7 +180,7 @@ void ImageViewer::setScale(float scale) {
         drawingRect.setHeight(h);
         drawingRect.setWidth(w);
 
-        mapOverlay->updateMap(rect(), drawingRect);
+        mapOverlay->updateMap(drawingRect);
         cropOverlay->setImageArea(drawingRect);
 }
 
@@ -239,7 +242,7 @@ void ImageViewer::resizeImage() {
 // ####################  PAINT  #####################
 // ##################################################
 void ImageViewer::paintEvent(QPaintEvent* event) {
-    //qDebug() << "paint at " << clock();
+//     qDebug() << "paint at " << clock();
     Q_UNUSED( event )
     QPainter painter(this);
     painter.fillRect(rect(), QBrush(bgColor));
@@ -356,8 +359,8 @@ void ImageViewer::fitAll() {
             return;
         }
         else { // doesnt fit
-                setScale(maxScale);
-                alignImage();
+            setScale(maxScale);
+            centerImage();
 
         }
     }
@@ -388,7 +391,7 @@ void ImageViewer::fitDefault() {
 }
 
 void ImageViewer::updateMap() {
-    mapOverlay->updateMap(rect(), drawingRect);
+    mapOverlay->updateMap(drawingRect);
 }
 
 void ImageViewer::slotFitNormal() {
@@ -422,7 +425,7 @@ void ImageViewer::resizeEvent(QResizeEvent* event) {
     else {
         fitDefault();
     }
-    //mapOverlay->updatePosition(width(), height());
+    mapOverlay->updatePosition();
     cropOverlay->hide();
     updateMap();
     update();
