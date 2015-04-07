@@ -32,6 +32,7 @@ private:
     bool clear, moving;
 
     QPoint setInsidePoint(QPoint, QRect);
+    void clearSelection();
 public slots:
     void hide();
     void display();

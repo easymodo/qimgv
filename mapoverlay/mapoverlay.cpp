@@ -26,7 +26,7 @@ public:
 };
 
 MapOverlay::MapOverlayPrivate::MapOverlayPrivate(MapOverlay* qq)
-    : q(qq), size(100), opacity(1.0f), innerOffset(-1), margin(10)
+    : q(qq), size(100), opacity(0.0f), innerOffset(-1), margin(10)
 {
     outlinePen.setColor(QColor(40,40,40,255));
     innerPen.setColor(QColor(160,160,160,150));
@@ -38,6 +38,7 @@ MapOverlay::MapOverlayPrivate::MapOverlayPrivate(MapOverlay* qq)
 MapOverlay::MapOverlayPrivate::~MapOverlayPrivate()
 {
     delete opacityAnimation;
+    delete transitionAnimation;
 }
 
 void MapOverlay::MapOverlayPrivate::moveInnerWidget(float x, float y)
@@ -85,12 +86,12 @@ MapOverlay::MapOverlay(QWidget *parent) : QWidget(parent),
 d(new MapOverlayPrivate(this))
 {
     d->opacityAnimation = new QPropertyAnimation(this, "opacity");
-    d->opacityAnimation->setEasingCurve(QEasingCurve::InQuad);
-    d->opacityAnimation->setDuration(300);
+    d->opacityAnimation->setEasingCurve(QEasingCurve::InQuint);
+    d->opacityAnimation->setDuration(10);
     
     d->transitionAnimation = new QPropertyAnimation(this, "y");
-    d->transitionAnimation->setDuration(300);
-    d->transitionAnimation->setEasingCurve(QEasingCurve::OutCubic);
+    d->transitionAnimation->setDuration(200);
+    d->transitionAnimation->setEasingCurve(QEasingCurve::OutExpo);
     
     setCursor(Qt::OpenHandCursor);
  }
@@ -241,7 +242,7 @@ void MapOverlay::updateMap(const QRectF& drawingRect)
 {
     if (!isEnabled())
         return;
-    
+
     QRectF windowRect = parentWidget()->rect();
     
     bool needToBeHidden = !contains(drawingRect, windowRect);
