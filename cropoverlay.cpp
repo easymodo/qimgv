@@ -7,13 +7,16 @@ CropOverlay::CropOverlay(QWidget *parent) : QWidget(parent),
     imageArea(QRect(0,0,0,0)),
     selectionRect(QRect(0,0,0,0)),
     clear(true),
-    moving(false)
+    moving(false),
+    scale(1.0f)
 {
     this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     this->hide();
 }
 
-void CropOverlay::setImageArea(QRect area) {
+void CropOverlay::setImageArea(QRect area, float _scale) {
+    clear = true;
+    scale = _scale;
     imageArea = area;
     startPos = QPoint(0,0);
     endPos = QPoint(0,0);
@@ -46,8 +49,12 @@ void CropOverlay::hide() {
     QWidget::hide();
 }
 
+
+//###################################################
+//##################### PAINT #######################
+//###################################################
 void CropOverlay::paintEvent(QPaintEvent *event) {
-    this->setGeometry(viewer->rect());
+    //this->setGeometry(viewer->rect());
     QPainter painter(this);
     QBrush brushDark(QColor(10,10,10,180)); // transparent black
     QBrush brushGray(QColor(80,80,80,180)); // transparent gray
@@ -78,6 +85,8 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
     painter.drawRect(selectionRect.left(), selectionRect.bottom()+1,
                      selectionRect.width(), imageArea.bottom() - selectionRect.bottom()); // cutout bottom
 }
+//###################################################
+//###################################################
 
 // takes QPoint and puts it inside rectangle
 QPoint CropOverlay::setInsidePoint(QPoint p, QRect area) {
@@ -168,14 +177,26 @@ void CropOverlay::mouseReleaseEvent(QMouseEvent *event) {
     //update();
 }
 
+QRect CropOverlay::mapSelection() {
+    QRect tmp = selectionRect;
+    tmp.setTopLeft(tmp.topLeft()/scale);
+    tmp.setSize(selectionRect.size()/scale);
+    qDebug() << "CROP selected rect: " << tmp;
+    return tmp;
+}
+
 void CropOverlay::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return && !clear) {
-        qDebug() << "CROP selected size: " << selectionRect.size() << "*scale";
+        emit cropSelected(mapSelection());
         clear=true;
         update();
     } else if(event->key() == Qt::Key_Escape) {
         this->hide();
+    } else if (event->matches(QKeySequence::SelectAll)){
+        clear = false;
+        selectionRect = imageArea;
+        update();
     } else {
         event->ignore();
     }

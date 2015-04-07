@@ -90,6 +90,9 @@ void MainWindow::init() {
     connect(controlsOverlay, SIGNAL(minimizeClicked()),
             this, SLOT(slotMinimize()));
 
+    connect(imageViewer, SIGNAL(cropSelected(QRect)),
+            core, SLOT(crop(QRect)));
+
     connect(core, SIGNAL(imageAltered()), imageViewer, SLOT(redisplay()));
 }
 

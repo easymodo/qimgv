@@ -41,6 +41,8 @@ public:
 
     QImage *rotated(int grad);
     void rotate(int grad);
+public slots:
+    void crop(QRect newRect);
 private:
     QImage *image;
     QMovie *movie;

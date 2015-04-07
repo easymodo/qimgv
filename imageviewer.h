@@ -45,6 +45,7 @@ signals:
     void sendDoubleClick();
     void sendRightDoubleClick();
     void imageChanged();
+    void cropSelected(QRect);
 
 public slots:
     void displayImage(Image* image);

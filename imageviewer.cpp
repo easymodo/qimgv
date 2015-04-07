@@ -41,6 +41,8 @@ void ImageViewer::initOverlays() {
     });
 
     cropOverlay = new CropOverlay(this);
+    connect(cropOverlay, SIGNAL(cropSelected(QRect)),
+            this, SIGNAL(cropSelected(QRect)));
 }
 
 bool ImageViewer::imageIsScaled() const {
@@ -108,7 +110,7 @@ void ImageViewer::displayImage(Image* i) {
     fitDefault();
     mapOverlay->setEnabled(true);
     updateMap();
-    cropOverlay->setImageArea(drawingRect);
+    cropOverlay->setImageArea(drawingRect, currentScale);
     mapOverlay->updatePosition();
     update();
     resizeTimer->start(5);
@@ -181,7 +183,7 @@ void ImageViewer::setScale(float scale) {
         drawingRect.setWidth(w);
 
         mapOverlay->updateMap(drawingRect);
-        cropOverlay->setImageArea(drawingRect);
+        cropOverlay->setImageArea(drawingRect, currentScale);
 }
 
 // ##################################################
@@ -387,7 +389,7 @@ void ImageViewer::fitDefault() {
         case ALL: fitAll(); break;
         default: /* FREE etc */ break;
     }
-    cropOverlay->setImageArea(drawingRect);
+    cropOverlay->setImageArea(drawingRect, currentScale);
 }
 
 void ImageViewer::updateMap() {

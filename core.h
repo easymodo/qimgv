@@ -25,6 +25,7 @@ private:
 private slots:
     void onLoadFinished(Image *img);
 
+    void crop(QRect newRect);
 signals:
     void signalUnsetImage();
     void signalSetImage(Image*);

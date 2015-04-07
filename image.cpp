@@ -155,3 +155,18 @@ void Image::rotate(int grad) {
         mutex.unlock();
     }
 }
+
+void Image::crop(QRect newRect) {
+    mutex.lock();
+    if(getType() == STATIC) {
+        qDebug() << "nigga";
+        QImage *tmp = new QImage(newRect.size(), QImage::Format_ARGB32_Premultiplied);
+        *tmp = image->copy(newRect);
+        delete image;
+        image = tmp;
+    }
+    if(getType() == GIF) {
+
+    }
+    mutex.unlock();
+}

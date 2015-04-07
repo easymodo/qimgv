@@ -55,6 +55,13 @@ void Core::rotateImage(int grad) {
     }
 }
 
+void Core::crop(QRect newRect) {
+    if(currentImage) {
+        currentImage->crop(newRect);
+    }
+    emit imageAltered();
+}
+
 void Core::setCurrentDir(QString path) {
     dirManager->setCurrentDir(path);
 }

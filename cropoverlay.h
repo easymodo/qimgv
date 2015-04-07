@@ -30,12 +30,18 @@ private:
     QPoint startPos, endPos, moveStartPos;
     QRect imageArea, selectionRect;
     bool clear, moving;
+    float scale;
 
     QPoint setInsidePoint(QPoint, QRect);
     void clearSelection();
+    QRect mapSelection();
 public slots:
+    void setImageArea(QRect area, float _scale);
     void hide();
     void display();
+
+signals:
+    void cropSelected(QRect);
 };
 
 #endif // CROPOVERLAY_H
