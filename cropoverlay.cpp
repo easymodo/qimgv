@@ -10,8 +10,17 @@ CropOverlay::CropOverlay(QWidget *parent) : QWidget(parent),
     moving(false),
     scale(1.0f)
 {
+
+    brushDark.setColor(QColor(10,10,10,180));  // transparent black
+    brushDark.setStyle(Qt::SolidPattern);
+    brushGray.setColor(QColor(80,80,80,180)); // transparent gray
+    brushGray.setStyle(Qt::SolidPattern);
     this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     this->hide();
+}
+
+void CropOverlay::setRealSize(QSize sz) {
+    realSize = sz;
 }
 
 void CropOverlay::setImageArea(QRect area, float _scale) {
@@ -56,37 +65,77 @@ void CropOverlay::hide() {
 void CropOverlay::paintEvent(QPaintEvent *event) {
     //this->setGeometry(viewer->rect());
     QPainter painter(this);
-    QBrush brushDark(QColor(10,10,10,180)); // transparent black
-    QBrush brushGray(QColor(80,80,80,180)); // transparent gray
 
-    // draw label only
+    // draw label + tint over image
     if(clear) {
         painter.setPen(Qt::NoPen);
-        painter.setBrush(brushGray);
-        painter.drawRect(10,23,77,20);
-        QFont font;
-        font.setPixelSize(13);
-        painter.setFont(font);
-        painter.setRenderHint(QPainter::Antialiasing);
-        painter.setPen(QPen(QColor(10,205,10,255)));
-        painter.drawText(QRect(13,25,100,16), "CROP MODE");
+        painter.setBrush(brushDark);
+        painter.drawRect(this->imageArea);
+        drawLabel("CROP MODE", QPoint(20,25), &painter);
         return;
     }
 
-    // draw selection
-    painter.setBrush(brushDark);
-    painter.setPen(Qt::NoPen);
-    painter.drawRect(imageArea.left(), imageArea.top(),
-                     selectionRect.left()-imageArea.left(), imageArea.height()); // left
-    painter.drawRect(selectionRect.right()+1, imageArea.top(),
-                     imageArea.right()-selectionRect.right(), imageArea.height()); // right
-    painter.drawRect(selectionRect.left(), imageArea.top(),
-                     selectionRect.width(), selectionRect.top()-imageArea.top()); // cutout top
-    painter.drawRect(selectionRect.left(), selectionRect.bottom()+1,
-                     selectionRect.width(), imageArea.bottom() - selectionRect.bottom()); // cutout bottom
+    //selection outline
+    drawAroundSelection(&painter);
+
+    //size label
+    QRect r = mapSelection();
+    QString info;
+    info.append(QString::number(r.width()));
+    info.append("x");
+    info.append(QString::number(r.height()));
+    if(selectionRect.width()<70 || selectionRect.height()<30) {
+        drawLabel(info, selectionRect.topRight()+QPoint(1,0), &painter);
+    } else {
+        drawLabel(info, selectionRect.topLeft(), &painter);
+    }
 }
 //###################################################
 //###################################################
+
+void CropOverlay::drawAroundSelection(QPainter *painter) {
+    // draw selection
+    painter->setBrush(brushDark);
+    painter->setPen(Qt::NoPen);
+    painter->drawRect(imageArea.left(),
+                      imageArea.top(),
+                      selectionRect.left()-imageArea.left(),
+                      imageArea.height()); // left
+    painter->drawRect(selectionRect.right()+1,
+                      imageArea.top(),
+                      imageArea.right()-selectionRect.right(),
+                      imageArea.height()); // right
+    painter->drawRect(selectionRect.left(),
+                      imageArea.top(),
+                      selectionRect.width(),
+                      selectionRect.top()-imageArea.top()); // top
+    painter->drawRect(selectionRect.left(),
+                      selectionRect.bottom()+1,
+                      selectionRect.width(),
+                      imageArea.bottom() - selectionRect.bottom()); // bottom
+}
+
+void CropOverlay::drawLabel(QString text, QPoint pos, QPainter *painter) {
+    QFont font;
+    font.setPixelSize(12);
+    QFontMetrics fm(font);
+    int textWidth = fm.width(text);
+    int textHeight = fm.height();
+
+    int marginH = 2;
+    int marginW = 4;
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(brushGray);
+    painter->drawRect(pos.x(),pos.y(),
+                      textWidth+marginW*2,textHeight+marginH*2);
+
+    painter->setFont(font);
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setPen(QPen(QColor(10,205,10,255)));
+    painter->drawText(QRect(pos.x()+marginW,pos.y()+marginH,
+                            textWidth,textHeight),
+                      text);
+}
 
 // takes QPoint and puts it inside rectangle
 QPoint CropOverlay::setInsidePoint(QPoint p, QRect area) {
@@ -136,7 +185,7 @@ void CropOverlay::mousePressEvent(QMouseEvent *event) {
 
 void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() & Qt::LeftButton && !clear) {
-        if(moving) {
+        if(moving) { // moving selection
             moving = true;
             QPoint delta = QCursor::pos() - moveStartPos;
             QRect tmp = selectionRect.translated(delta);
@@ -149,7 +198,7 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
             moveStartPos = QCursor::pos();
             update();
         }
-        else {
+        else { // selecting
             endPos = setInsidePoint(event->pos(), imageArea);
 
             //set exclusion rectangle
@@ -166,6 +215,7 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
             update();
         }
     }
+    qDebug() << mapSelection();
 }
 
 void CropOverlay::mouseReleaseEvent(QMouseEvent *event) {
@@ -179,9 +229,23 @@ void CropOverlay::mouseReleaseEvent(QMouseEvent *event) {
 
 QRect CropOverlay::mapSelection() {
     QRect tmp = selectionRect;
-    tmp.setTopLeft(tmp.topLeft()/scale);
+    tmp.moveTopLeft((tmp.topLeft()-imageArea.topLeft())/scale);
     tmp.setSize(selectionRect.size()/scale);
-    qDebug() << "CROP selected rect: " << tmp;
+    //qDebug() << "CROP selected rect: " << tmp;
+    // kinda ugly but works
+    if(selectionRect.top() == imageArea.top()) {
+        tmp.setTop(0);
+    }
+    if(selectionRect.left() == imageArea.left()) {
+        tmp.setLeft(0);
+    }
+    if(selectionRect.bottom() == imageArea.bottom()) {
+        tmp.setBottom(realSize.height()-1);
+    }
+    if(selectionRect.right() == imageArea.right()) {
+        tmp.setRight(realSize.width()-1);
+    }
+    qDebug() << "CROP after correction: " << tmp;
     return tmp;
 }
 
@@ -189,7 +253,7 @@ void CropOverlay::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return && !clear) {
         emit cropSelected(mapSelection());
-        clear=true;
+        this->hide();
         update();
     } else if(event->key() == Qt::Key_Escape) {
         this->hide();

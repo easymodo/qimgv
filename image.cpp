@@ -159,7 +159,6 @@ void Image::rotate(int grad) {
 void Image::crop(QRect newRect) {
     mutex.lock();
     if(getType() == STATIC) {
-        qDebug() << "nigga";
         QImage *tmp = new QImage(newRect.size(), QImage::Format_ARGB32_Premultiplied);
         *tmp = image->copy(newRect);
         delete image;

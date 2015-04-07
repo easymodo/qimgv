@@ -110,7 +110,9 @@ void ImageViewer::displayImage(Image* i) {
     fitDefault();
     mapOverlay->setEnabled(true);
     updateMap();
+    cropOverlay->setRealSize(source->size());
     cropOverlay->setImageArea(drawingRect, currentScale);
+    cropOverlay->hide();
     mapOverlay->updatePosition();
     update();
     resizeTimer->start(5);

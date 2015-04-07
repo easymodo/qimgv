@@ -58,6 +58,7 @@ void Core::rotateImage(int grad) {
 void Core::crop(QRect newRect) {
     if(currentImage) {
         currentImage->crop(newRect);
+        updateInfoString();
     }
     emit imageAltered();
 }
@@ -91,7 +92,6 @@ void Core::loadImage(QString path) {
 
 void Core::onLoadFinished(Image* img) {
     emit signalUnsetImage();
-    qDebug() << "zz";
     currentImage = img;
     emit signalSetImage(currentImage);
     updateInfoString();
