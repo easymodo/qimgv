@@ -344,6 +344,8 @@ void ImageViewer::fitWidth() {
         float scale = (float) width() / source->size().width();
         setScale(scale);
         centerImage();
+        if(drawingRect.height()>height())
+            drawingRect.moveTop(0);
     }
     else if(errorFlag) {
         fitNormal();

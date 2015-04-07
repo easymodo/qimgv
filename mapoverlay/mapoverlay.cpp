@@ -92,6 +92,8 @@ d(new MapOverlayPrivate(this))
     d->transitionAnimation = new QPropertyAnimation(this, "y");
     d->transitionAnimation->setDuration(200);
     d->transitionAnimation->setEasingCurve(QEasingCurve::OutExpo);
+
+
     
     setCursor(Qt::OpenHandCursor);
  }
