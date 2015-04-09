@@ -115,7 +115,7 @@ void ImageViewer::displayImage(Image* i) {
     cropOverlay->hide();
     mapOverlay->updatePosition();
     update();
-    resizeTimer->start(5);
+    resizeTimer->start(0);
     //emit imageChanged();
 }
 
@@ -125,7 +125,6 @@ void ImageViewer::redisplay() {
 
 void ImageViewer::crop() {
     if(cropOverlay->isHidden() && isDisplaying()) {
-        slotFitAll();
         cursorTimer->stop();
         cropOverlay->display();
     } else {
@@ -198,7 +197,7 @@ void ImageViewer::resizeImage() {
     }
     resizeTimer->stop();
     if(image->size() != drawingRect.size()) {
-        int time = clock();
+        //int time = clock();
         delete image;
         image = new QImage(drawingRect.size(), QImage::Format_ARGB32_Premultiplied);
 

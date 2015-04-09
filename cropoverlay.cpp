@@ -215,7 +215,6 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
             update();
         }
     }
-    qDebug() << mapSelection();
 }
 
 void CropOverlay::mouseReleaseEvent(QMouseEvent *event) {
@@ -245,7 +244,7 @@ QRect CropOverlay::mapSelection() {
     if(selectionRect.right() == imageArea.right()) {
         tmp.setRight(realSize.width()-1);
     }
-    qDebug() << "CROP after correction: " << tmp;
+    //qDebug() << "CROP after correction: " << tmp;
     return tmp;
 }
 
