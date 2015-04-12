@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QThread>
 #include <QMutex>
+#include <settings.h>
 
 class Image : public QObject
 {
@@ -31,7 +32,6 @@ public:
     QDateTime getModifyDate();
     void loadImage();
     QString getPath();
-    float getAspect();
     int height();
     int width();
     QSize size();
@@ -41,6 +41,9 @@ public:
 
     QImage *rotated(int grad);
     void rotate(int grad);
+    bool isLoaded();
+    QImage thumbnail();
+    void unloadImage();
 public slots:
     void crop(QRect newRect);
 private:
@@ -48,7 +51,6 @@ private:
     QMovie *movie;
     FileInfo *info;
     QSize resolution;
-    float aspectRatio;
     bool inUseFlag;
     QMutex mutex;
 };

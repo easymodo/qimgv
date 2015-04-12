@@ -6,6 +6,11 @@
 #include <QVector>
 #include <QMutex>
 
+struct CacheObject {
+    Image img;
+    QImage thumbnail;
+};
+
 class ImageCache : public QObject
 {
     Q_OBJECT
