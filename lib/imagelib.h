@@ -4,6 +4,7 @@
 #include <QImage>
 #include <QPainter>
 #include <cmath>
+#include <qDebug>
 
 QImage* fastScale(const QImage* source, QSize destSize, bool smooth);
 

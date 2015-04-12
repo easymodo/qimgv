@@ -199,12 +199,11 @@ void ImageViewer::resizeImage() {
     if(image->size() != drawingRect.size()) {
         //int time = clock();
         delete image;
-        image = new QImage(drawingRect.size(), QImage::Format_ARGB32_Premultiplied);
-
         float sourceSize = source->width()*source->height()/1000000;
         float size = drawingRect.width()*drawingRect.height()/1000000;
         if(currentScale==1.0) {
-            *image=*source->getImage();
+            image = new QImage();
+            *image = *source->getImage();
         } else if(currentScale<1.0) { // downscale
             if(sourceSize>15) {
                 if(size>10) {
@@ -330,10 +329,10 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent* event) {
     fixedZoomPoint = event->pos();
     this->setCursor(QCursor(Qt::ArrowCursor));
     if(event->button() == Qt::RightButton && imageFitMode!=ALL) {
-        resizeTimer->start(0);
-        fitDefault();
-        updateMap();
-        update();
+        //resizeTimer->start(0);
+        //fitDefault();
+        //updateMap();
+        //update();
     }
     cursorTimer->start(2000);
 }

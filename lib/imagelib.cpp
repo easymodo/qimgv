@@ -2,7 +2,6 @@
 
 QImage* fastScale(const QImage* source, QSize destSize, bool smooth) {
     //bool smoothEnabled;
-
     QImage* image = new QImage(destSize,QImage::Format_ARGB32_Premultiplied);
     image->fill(qRgba(0,0,0,0));
     QPainter painter(image);
