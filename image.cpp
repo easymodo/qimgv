@@ -3,19 +3,46 @@
 
 
 //use this one
-Image::Image(FileInfo* _info) : QObject()
+Image::Image(QString _path) : QObject()
 {
-    info = _info;
+    path = _path;
     inUseFlag = false;
     image = NULL;
     movie = NULL;
+    type = NONE;
+    extension = NULL;
 }
 
 Image::~Image()
 {
     delete image;
     delete movie;
-    delete info;
+}
+
+void Image::detectType() {
+    QFile file(path);
+    file.open(QIODevice::ReadOnly);
+    //read first 2 bytes to determine file format
+    QByteArray startingBytes= file.read(2).toHex();
+    file.close();
+
+    if(startingBytes=="4749") {
+        type=GIF;
+        extension="GIF";
+    }
+    else if(startingBytes=="ffd8") {
+        type=STATIC;
+        extension="JPG";
+    }
+    else if(startingBytes=="8950") {
+        type=STATIC;
+        extension="PNG";
+    }
+    else if(startingBytes=="424d") {
+        type=STATIC;
+        extension="BMP";
+    }
+    else type = STATIC;
 }
 
 //load image data from disk
@@ -24,27 +51,25 @@ void Image::loadImage()
     mutex.lock();
     if(isLoaded()) {
         mutex.unlock();
-        qDebug() << "IMAGE already loaded";
         return;
     }
-    QString path = info->getFilePath();
-    if(info->getType()!=NONE)  {
+    detectType();
+    if(type!=NONE)  {
         if(getType() == GIF) {
             movie = new QMovie();
             movie->setFormat("GIF");
-            movie->setFileName(info->getFilePath());
+            movie->setFileName(path);
             movie->jumpToFrame(0);
         }
         else if(getType() == STATIC) {
             image = new QImage();
-            if(info->getExtension()) {
-                image = new QImage(path, info->getExtension());
+            if(extension) {
+                image = new QImage(path, extension);
             }
             else {
                 image = new QImage(path); // qt will guess format
             }
         }
-        info->inUse = true;
     }
     thumbnail();
     mutex.unlock();
@@ -55,16 +80,11 @@ void Image::unloadImage() {
     if(isLoaded()) {
         delete movie;
         delete image;
+        movie = NULL;
+        image = NULL;
+        qDebug() << "unloading " << this->path;
     }
     mutex.unlock();
-}
-
-bool Image::useFlag() {
-    return inUseFlag;
-}
-
-void Image::setUseFlag(bool flag) {
-    inUseFlag=flag;
 }
 
 QImage Image::thumbnail() {
@@ -116,10 +136,10 @@ const QImage* Image::getImage()
 
 int Image::height() {
     if(isLoaded()) {
-        if(info->getType() == GIF) {
+        if(type == GIF) {
             return movie->currentImage().height();
         }
-        if(info->getType() == STATIC) {
+        if(type == STATIC) {
             return image->height();
         }
     }
@@ -128,10 +148,10 @@ int Image::height() {
 
 int Image::width() {
     if(isLoaded()) {
-        if(info->getType() == GIF) {
+        if(type == GIF) {
             return movie->currentImage().width();
         }
-        if(info->getType() == STATIC) {
+        if(type == STATIC) {
             return image->width();
         }
     }
@@ -140,10 +160,10 @@ int Image::width() {
 
 QSize Image::size() {
     if(isLoaded()) {
-        if(info->getType() == GIF) {
+        if(type == GIF) {
             return movie->currentImage().size();
         }
-        if(info->getType() == STATIC) {
+        if(type == STATIC) {
             return image->size();
         }
     }
@@ -152,37 +172,27 @@ QSize Image::size() {
 
 int Image::getType()
 {
-    return info->getType();
+    return type;
 }
 
 QString Image::getPath()
 {
-    return info->getFilePath();
+    return path;
 }
 
-qint64 Image::getFileSize() {
-    return info->getFileSize();
-}
-
-QString Image::getFileName() {
-    return info->getFileName();
-}
-
-FileInfo* Image::getFileInfo() const {
-    return info;
-}
-
+/*
 bool Image::compare(Image* another) {
     if(getFileName() == another->getFileName() &&
-       info->getLastModifiedDate() == another->getFileInfo()->getLastModifiedDate() ) {
+       info.getLastModifiedDate() == another->getFileInfo().getLastModifiedDate() ) {
         return true;
     }
     return false;
 }
+*/
 
 QImage* Image::rotated(int grad) {
     if(isLoaded()) {
-        if(info->getType()==STATIC) {
+        if(type==STATIC) {
             QImage *img = new QImage();
             QTransform transform;
             transform.rotate(grad);
@@ -195,7 +205,7 @@ QImage* Image::rotated(int grad) {
 
 void Image::rotate(int grad) {
     if(isLoaded()) {
-        if(info->getType()==STATIC) {
+        if(type==STATIC) {
             mutex.lock();
             QImage *img = rotated(grad);
             delete image;

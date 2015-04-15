@@ -30,58 +30,77 @@ void DirectoryManager::changePath(QString path) {
     emit directoryChanged(path);
 }
 
-FileInfo* DirectoryManager::next() {
-    if(fileList.length()) {
-        currentPos = nextPos();
-        QString filePath = currentDir.filePath(fileList.at(currentPos));
-        return setFile(filePath);
+// full paths array
+QStringList DirectoryManager::getFileList() {
+    QStringList files;
+    QString dirPath = currentDir.absolutePath();
+    for(int i=0; i<fileList.length(); i++) {
+        files.append(dirPath+"/"+fileList.at(i));
     }
-    else return NULL;
-}
-FileInfo* DirectoryManager::prev() {
-    if(fileList.length()) {
-        currentPos = prevPos();
-        QString filePath = currentDir.filePath(fileList.at(currentPos));
-        return setFile(filePath);
-    }
-    else return NULL;
+    return files;
 }
 
-int DirectoryManager::nextPos() {
-    int newPos = currentPos;
-    if(++newPos>=fileList.length()) {
-        newPos=0;
-    }
-    return newPos;
+QFileInfoList DirectoryManager::getFileInfoList() {
+    return currentDir.entryInfoList();
 }
 
-int DirectoryManager::prevPos() {
-    int newPos = currentPos;
-    if(--newPos<0) {
-        newPos=fileList.length()-1;
-    }
-    return newPos;
+bool DirectoryManager::existsInCurrentDir(QString file) {
+    return fileList.contains(file, Qt::CaseInsensitive);
 }
 
-FileInfo* DirectoryManager::peekNext() {
-    QString path = currentDir.filePath(fileList.at(nextPos()));
-    return loadInfo(path);
-}
-
-FileInfo* DirectoryManager::peekPrev() {
-    QString path = currentDir.filePath(fileList.at(prevPos()));
-    return loadInfo(path);
-}
-
-FileInfo* DirectoryManager::loadInfo(QString path) {
-    FileInfo *info = new FileInfo(&path);
-    return info;
-}
-
-FileInfo* DirectoryManager::setFile(QString path) {
+void DirectoryManager::setFile(QString path) {
     FileInfo *info = loadInfo(path);
     setCurrentDir(info->getDirectoryPath());
     currentPos = fileList.indexOf(info->getFileName());
     globalSettings->s.setValue("lastPosition", currentPos);
+    //return info;
+}
+
+QString DirectoryManager::currentFileName() {
+    return fileList.at(currentPos);
+}
+
+int DirectoryManager::currentFilePos() {
+    return currentPos;
+}
+
+int DirectoryManager::nextPos() {
+    if(currentPos<0) {
+        currentPos=0;
+    } else if(++currentPos>=fileList.length()) {
+        currentPos = fileList.length()-1;
+    }
+    return currentPos;
+}
+
+int DirectoryManager::prevPos() {
+    if(--currentPos<0) {
+        currentPos = 0;
+    }
+    return currentPos;
+}
+
+int DirectoryManager::peekNext(int offset) {
+    int pos = currentPos+offset;
+    if(pos>=fileList.length()) {
+        pos = fileList.length()-1;
+    }
+    return pos;
+}
+
+int DirectoryManager::peekPrev(int offset) {
+    int pos = currentPos-offset;
+    if(pos<0) {
+        pos = 0;
+    }
+    return pos;
+}
+
+int DirectoryManager::lastPos() {
+    return fileList.length()-1;
+}
+
+FileInfo* DirectoryManager::loadInfo(QString path) {
+    FileInfo *info = new FileInfo(path);
     return info;
 }

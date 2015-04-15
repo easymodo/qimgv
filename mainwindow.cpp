@@ -5,7 +5,7 @@ MainWindow::MainWindow() :
     settingsDialog(NULL)
 {
     init();
-    resize(800, 600);
+    resize(800, 480);
     readSettings();
     setMinimumSize(QSize(400,300));
     setWindowTitle(QCoreApplication::applicationName() +

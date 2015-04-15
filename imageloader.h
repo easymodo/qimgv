@@ -16,8 +16,8 @@ class ImageLoader : public QObject
     Q_OBJECT
 public:
     explicit ImageLoader(DirectoryManager *);
-    void load(QString path);
-    void load(FileInfo* file);
+    void open(QString path);
+    void load(int pos);
     void loadNext();
     void loadPrev();
     void preload(FileInfo* path);
@@ -25,17 +25,9 @@ public:
 private:
     DirectoryManager *dm;
     ImageCache *cache;
-    Image* currentImg;
-    QMutex mutex, mutex2, mutex3;
+    QMutex mutex, mutex2;
     void lock();
     void unlock();
-    Image *getCurrentImg() const;
-    void setCurrentImg(Image *value);
-    bool isCurrent(Image *img);
-    QVector<Image*> currentJobs;
-    bool loadDelayEnabled;
-    QStringList jobs;
-    bool jobAlreadyStarted(Image *img);
 
 signals:
     void loadStarted();
@@ -44,7 +36,6 @@ signals:
 
 private slots:
     void readSettings();
-    void preloadNearest();
     void load_thread(Image* image);
     void preload_thread(Image*);
 };

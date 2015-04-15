@@ -14,21 +14,19 @@
 #include <QMutex>
 #include <settings.h>
 
+enum fileType { NONE, STATIC, GIF };
+
 class Image : public QObject
 {
     Q_OBJECT
 public:
-    Image(FileInfo*);
+    Image(QString path);
     ~Image();
 
     const QImage* getImage();
     QMovie *getMovie();
     int getType();
     int ramSize();
-    FileInfo *getFileInfo() const;
-    // size in kbytes
-    qint64 getFileSize();
-    QString getFileName();
     QDateTime getModifyDate();
     void loadImage();
     QString getPath();
@@ -47,12 +45,15 @@ public:
 public slots:
     void crop(QRect newRect);
 private:
+    QString path;
+    const char* extension;
+    fileType type;
     QImage *image;
     QMovie *movie;
-    FileInfo *info;
     QSize resolution;
     bool inUseFlag;
     QMutex mutex;
+    void detectType();
 };
 
 #endif // QIMAGELOADER_H

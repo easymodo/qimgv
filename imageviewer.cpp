@@ -17,6 +17,7 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
     drawingRect = image->rect();
     this->setMouseTracking(true);
     resizeTimer = new QTimer(this);
+    resizeTimer->setSingleShot(true);
     cursorTimer = new QTimer(this);
     connect(resizeTimer, SIGNAL(timeout()),
             this, SLOT(resizeImage()),
@@ -58,6 +59,7 @@ void ImageViewer::stopAnimation() {
 }
 
 void ImageViewer::startAnimation() {
+    resizeTimer->stop();
     disconnect(resizeTimer, SIGNAL(timeout()), this, SLOT(resizeImage()));
     connect(source->getMovie(), SIGNAL(frameChanged(int)),
             this, SLOT(onAnimation()),Qt::DirectConnection);
@@ -72,7 +74,6 @@ void ImageViewer::onAnimation() {
 void ImageViewer::freeImage() {
     if (source!=NULL) {
         stopAnimation();
-        source->setUseFlag(false);
     }
 }
 

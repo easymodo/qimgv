@@ -3,13 +3,42 @@
 
 #include "image.h"
 #include "settings.h"
-#include <QVector>
+#include <QList>
 #include <QMutex>
 
-struct CacheObject {
-    Image img;
+class CacheObject {
+public:
+    CacheObject(QString path) : img(NULL), thumbnail(NULL) {
+        img = new Image(path);
+        info = new FileInfo(path);
+    }
+    ~CacheObject() {
+        delete img;
+        delete info;
+    }
+    void generateThumbnail() {
+        if(img) {
+            thumbnail = img->thumbnail();
+        }
+    }
+    bool isLoaded() {
+        return img->isLoaded();
+    }
+    void load() {
+        img->loadImage();
+    }
+    void unload() {
+        img->unloadImage();
+    }
+    Image* image() {
+        return img;
+    }
+    FileInfo *info;
+private:
+    Image *img;
     QImage thumbnail;
 };
+
 
 class ImageCache : public QObject
 {
@@ -17,18 +46,13 @@ class ImageCache : public QObject
 public:
     ImageCache();
     ~ImageCache();
-    Image* findImage(Image* image);
-    bool imageIsCached(Image*);
-    bool pushImage(Image*, bool);
-    qint64 cacheSize() const;
-    bool isFull();
-    bool cacheImage(Image *image);
-    bool cacheImageForced(Image *image);
     void lock();
     void unlock();
+    void loadAt(int pos);
+    Image *imageAt(int pos);
+    void init(QStringList list);
 private:
-    void shrinkTo(int);
-    QVector<Image*> cachedImages;
+    QList<CacheObject*> *cachedImages;
     uint maxCacheSize;
     QMutex mutex;
     void readSettings();

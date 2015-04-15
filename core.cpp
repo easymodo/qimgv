@@ -35,13 +35,13 @@ void Core::updateInfoString() {
                       QString::number(dirManager->fileList.length()) +
                       " ]   ");
     if(currentImage) {
-        infoString.append(currentImage->getFileInfo()->getFileName() + "  ");
+      //  infoString.append(currentImage->getFileInfo().getFileName() + "  ");
         infoString.append("(" +
                           QString::number(currentImage->width()) +
                           "x" +
                           QString::number(currentImage->height()) +
                           "  ");
-        infoString.append(QString::number(currentImage->getFileInfo()->getFileSize()) + " MB)");
+     //   infoString.append(QString::number(currentImage->getFileInfo().getFileSize()) + " MB)");
     }
 
     emit infoStringChanged(infoString);
@@ -69,24 +69,18 @@ void Core::setCurrentDir(QString path) {
 
 void Core::slotNextImage() {
     currentImage = NULL;
-    FileInfo* f = dirManager->next();
-    if(f) {
-        imageLoader->load(f);
-    }
+    imageLoader->loadNext();
 }
 
 void Core::slotPrevImage() {
     currentImage = NULL;
-    FileInfo* f = dirManager->prev();
-    if(f) {
-        imageLoader->load(f);
-    }
+    imageLoader->loadPrev();
 }
 
 void Core::loadImage(QString path) {
     if(!path.isEmpty()) {
         currentImage = NULL;
-        imageLoader->load(path);
+        imageLoader->open(path);
     }
 }
 

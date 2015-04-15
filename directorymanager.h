@@ -17,7 +17,7 @@ class DirectoryManager : public QObject
     Q_OBJECT
 public:
     DirectoryManager();
-    FileInfo* setFile(QString path);
+    void setFile(QString path);
     void setCurrentDir(QString);
     FileInfo* next();
     FileInfo* prev();
@@ -27,12 +27,20 @@ public:
     QStringList fileList;
     QStringList filters;
     int currentPos;
+    QStringList getFileList();
+    QFileInfoList getFileInfoList();
+    bool existsInCurrentDir(QString file);
+    QString currentFileName();
+    int currentFilePos();
+    int nextPos();
+    int prevPos();
+    int lastPos();
+    int peekNext(int offset);
+    int peekPrev(int offset);
 signals:
     void directoryChanged(const QString &path);
 private:
     void changePath(QString path);
-    int nextPos();
-    int prevPos();
     FileInfo* loadInfo(QString path);
 };
 
