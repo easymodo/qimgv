@@ -35,13 +35,13 @@ void Core::updateInfoString() {
                       QString::number(dirManager->fileList.length()) +
                       " ]   ");
     if(currentImage) {
-      //  infoString.append(currentImage->getFileInfo().getFileName() + "  ");
+        infoString.append(currentImage->getInfo()->getFileName() + "  ");
         infoString.append("(" +
                           QString::number(currentImage->width()) +
                           "x" +
                           QString::number(currentImage->height()) +
                           "  ");
-     //   infoString.append(QString::number(currentImage->getFileInfo().getFileSize()) + " MB)");
+        infoString.append(QString::number(currentImage->getInfo()->getFileSize()) + " MB)");
     }
 
     emit infoStringChanged(infoString);
@@ -61,6 +61,18 @@ void Core::crop(QRect newRect) {
         updateInfoString();
     }
     emit imageAltered();
+}
+
+void Core::saveImage(QString path) {
+    if(currentImage) {
+        currentImage->save(path);
+    }
+}
+
+void Core::saveImage() {
+    if(currentImage) {
+        currentImage->save();
+    }
 }
 
 void Core::setCurrentDir(QString path) {

@@ -42,9 +42,15 @@ public:
     bool isLoaded();
     QImage thumbnail();
     void unloadImage();
+    FileInfo* getInfo();
+    void attachInfo(FileInfo*);
 public slots:
     void crop(QRect newRect);
+    void save();
+    void save(QString destinationPath);
 private:
+    FileInfo* info;
+    bool loaded;
     QString path;
     const char* extension;
     fileType type;

@@ -19,10 +19,6 @@ public:
     DirectoryManager();
     void setFile(QString path);
     void setCurrentDir(QString);
-    FileInfo* next();
-    FileInfo* prev();
-    FileInfo* peekPrev();
-    FileInfo* peekNext();
     QDir currentDir;
     QStringList fileList;
     QStringList filters;

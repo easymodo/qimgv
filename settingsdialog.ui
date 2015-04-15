@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>388</width>
+    <width>370</width>
     <height>261</height>
    </rect>
   </property>
@@ -34,7 +34,7 @@
   <widget class="QPushButton" name="Cancel">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>290</x>
      <y>222</y>
      <width>71</width>
      <height>31</height>
@@ -47,7 +47,7 @@
   <widget class="QPushButton" name="OK">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>130</x>
      <y>222</y>
      <width>71</width>
      <height>31</height>
@@ -62,7 +62,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>371</width>
+     <width>351</width>
      <height>201</height>
     </rect>
    </property>
@@ -89,7 +89,7 @@
     <widget class="QComboBox" name="fitModeComboBox">
      <property name="geometry">
       <rect>
-       <x>280</x>
+       <x>260</x>
        <y>10</y>
        <width>71</width>
        <height>31</height>
@@ -130,7 +130,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>220</x>
        <y>50</y>
        <width>111</width>
        <height>31</height>
@@ -152,28 +152,15 @@
     <attribute name="title">
      <string>Loader</string>
     </attribute>
-    <widget class="QCheckBox" name="loadDelayCheckBox">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>191</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Enable to reduce lag during fast image scrolling. Disable for max responsiveness.</string>
-     </property>
-     <property name="text">
-      <string>Enable small load delay</string>
-     </property>
-    </widget>
     <widget class="QSlider" name="cacheSlider">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
-       <x>200</x>
-       <y>70</y>
-       <width>151</width>
+       <x>160</x>
+       <y>40</y>
+       <width>171</width>
        <height>22</height>
       </rect>
      </property>
@@ -210,10 +197,13 @@
      </property>
     </widget>
     <widget class="QLabel" name="cacheLabel2">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>70</y>
+       <x>130</x>
+       <y>40</y>
        <width>21</width>
        <height>21</height>
       </rect>
@@ -223,11 +213,14 @@
      </property>
     </widget>
     <widget class="QLabel" name="cacheLabel1">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>70</y>
-       <width>121</width>
+       <y>40</y>
+       <width>111</width>
        <height>21</height>
       </rect>
      </property>
@@ -243,7 +236,7 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>230</x>
+     <x>210</x>
      <y>222</y>
      <width>71</width>
      <height>31</height>

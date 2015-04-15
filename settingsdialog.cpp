@@ -20,8 +20,6 @@ void SettingsDialog::readSettings() {
     // ##### loader #####
     ui->preloaderCheckBox->setChecked(
                 globalSettings->s.value("usePreloader", "true").toBool());
-    ui->loadDelayCheckBox->setChecked(
-                globalSettings->s.value("loadDelay", "false").toBool());
 
     // ##### cache #####
     ui->cacheSlider->setValue(
@@ -54,8 +52,6 @@ void SettingsDialog::readSettings() {
 void SettingsDialog::applySettings() {
     globalSettings->s.setValue("usePreloader",
                             ui->preloaderCheckBox->isChecked());
-    globalSettings->s.setValue("loadDelay",
-                            ui->loadDelayCheckBox->isChecked());
     globalSettings->s.setValue("cacheSize",
                                ui->cacheSlider->value());
     globalSettings->s.setValue("defaultFitMode",

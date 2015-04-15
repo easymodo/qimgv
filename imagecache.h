@@ -11,6 +11,7 @@ public:
     CacheObject(QString path) : img(NULL), thumbnail(NULL) {
         img = new Image(path);
         info = new FileInfo(path);
+        img->attachInfo(info);
     }
     ~CacheObject() {
         delete img;

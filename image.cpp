@@ -7,8 +7,11 @@ Image::Image(QString _path) : QObject()
 {
     path = _path;
     inUseFlag = false;
-    image = NULL;
-    movie = NULL;
+   // image = NULL;
+  //  movie = NULL;
+    loaded = false;
+    movie = new QMovie();
+    image = new QImage();
     type = NONE;
     extension = NULL;
 }
@@ -50,13 +53,13 @@ void Image::loadImage()
 {
     mutex.lock();
     if(isLoaded()) {
+        //qDebug() << "already loaded: " << path;
         mutex.unlock();
         return;
     }
     detectType();
     if(type!=NONE)  {
         if(getType() == GIF) {
-            movie = new QMovie();
             movie->setFormat("GIF");
             movie->setFileName(path);
             movie->jumpToFrame(0);
@@ -70,6 +73,7 @@ void Image::loadImage()
                 image = new QImage(path); // qt will guess format
             }
         }
+        loaded = true;
     }
     thumbnail();
     mutex.unlock();
@@ -80,11 +84,32 @@ void Image::unloadImage() {
     if(isLoaded()) {
         delete movie;
         delete image;
-        movie = NULL;
-        image = NULL;
-        qDebug() << "unloading " << this->path;
+        movie = new QMovie();
+        image = new QImage();
+        loaded = false;
+        //qDebug() << "unloading " << this->path;
     }
     mutex.unlock();
+}
+
+FileInfo *Image::getInfo() {
+    return info;
+}
+
+void Image::attachInfo(FileInfo *_info) {
+    info = _info;
+}
+
+void Image::save(QString destinationPath) {
+    if(type == STATIC && isLoaded()) {
+        image->save(destinationPath, extension, 100);
+    }
+}
+
+void Image::save() {
+    if(type == STATIC && isLoaded()) {
+        image->save(path, extension, 100);
+    }
 }
 
 QImage Image::thumbnail() {
@@ -110,8 +135,7 @@ QImage Image::thumbnail() {
 }
 
 bool Image::isLoaded() {
-    if(!image && !movie) return false;
-    else return true;
+    return loaded;
 }
 
 int Image::ramSize() {

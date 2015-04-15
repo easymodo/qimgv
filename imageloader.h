@@ -20,24 +20,24 @@ public:
     void load(int pos);
     void loadNext();
     void loadPrev();
-    void preload(FileInfo* path);
 
 private:
     DirectoryManager *dm;
     ImageCache *cache;
     QMutex mutex, mutex2;
-    void lock();
-    void unlock();
 
 signals:
     void loadStarted();
     void loadFinished(Image*);
-    void startPreload();
+    void startPreload(int);
 
 private slots:
+    void lock();
+    void unlock();
     void readSettings();
-    void load_thread(Image* image);
-    void preload_thread(Image*);
+    void preload(int pos);
+    void load_thread(int pos);
+    void preload_thread(int pos);
 };
 
 #endif // IMAGELOADER_H

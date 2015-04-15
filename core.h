@@ -42,6 +42,8 @@ public slots:
     void setCurrentDir(QString);
     void rotateImage(int);
 
+    void saveImage(QString path);
+    void saveImage();
 };
 
 #endif // CORE_H

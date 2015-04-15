@@ -5,7 +5,7 @@ MainWindow::MainWindow() :
     settingsDialog(NULL)
 {
     init();
-    resize(800, 480);
+    resize(800, 600);
     readSettings();
     setMinimumSize(QSize(400,300));
     setWindowTitle(QCoreApplication::applicationName() +
@@ -94,6 +94,8 @@ void MainWindow::init() {
             core, SLOT(crop(QRect)));
 
     connect(core, SIGNAL(imageAltered()), imageViewer, SLOT(redisplay()));
+
+    connect(this, SIGNAL(fileSaved(QString)), core, SLOT(saveImage(QString)));
 }
 
 void MainWindow::open(QString path) {
@@ -169,6 +171,11 @@ void MainWindow::createActions()
     openAct->setShortcut(Qt::Key_O);
     this->addAction(openAct);
     connect(openAct, SIGNAL(triggered()), this, SLOT(slotOpenDialog()));
+
+    saveAct = new QAction(tr("Save"), this);
+    saveAct->setShortcut(Qt::CTRL+Qt::Key_S);
+    this->addAction(saveAct);
+    connect(saveAct, SIGNAL(triggered()), this, SLOT(slotSaveDialog()));
 
     settingsAct = new QAction(tr("&Settings"), this);
     settingsAct->setShortcut(Qt::Key_S);
@@ -262,6 +269,7 @@ void MainWindow::createMenus()
 {
     fileMenu = new QMenu(tr("&File"), this);
     fileMenu->addAction(openAct);
+    fileMenu->addAction(saveAct);
     fileMenu->addAction(settingsAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
@@ -344,6 +352,15 @@ void MainWindow::slotRotateRight() {
     core->rotateImage(90);
 }
 
+void MainWindow::slotSaveDialog() {
+    const QString imagesFilter = tr("Images (*.png *.jpg *jpeg *bmp *gif)");
+    QString lastDir = globalSettings->s.value("lastDir",".").toString();
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+                               lastDir,
+                               imagesFilter);
+    emit fileSaved(fileName);
+}
+
 void MainWindow::resizeEvent(QResizeEvent* event) {
     Q_UNUSED(event)
 
@@ -386,7 +403,10 @@ void MainWindow::slotAbout() {
                           QCoreApplication::applicationName() +
                           " " +
                           QCoreApplication::applicationVersion());
-    msgBox.setText("A simple qt image viewer \n \nMain developer: \nEugene G.");
+    QString message;
+    message = "A simple qt image viewer \n \nMain developer: \n    Eugene G.";
+    message.append("\nDeveloper:\n    Sergey V.");
+    msgBox.setText(message);
     msgBox.setIcon(QMessageBox::Information);
     QGridLayout* layout = (QGridLayout*)msgBox.layout();
     layout->addItem(horizontalSpacer,

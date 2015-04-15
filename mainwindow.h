@@ -43,6 +43,7 @@ signals:
     void signalZoomOut();
     void signalFullscreenEnabled(bool);
     void fileOpened(QString);
+    void fileSaved(QString);
 
 public:
     MainWindow();
@@ -60,6 +61,7 @@ private slots:
     void slotSetInfoString(QString info);
     void slotRotateLeft();
     void slotRotateRight();
+    void slotSaveDialog();
 
     void slotShowControls(bool);
     void slotShowInfo(bool x);
@@ -73,6 +75,7 @@ private:
     void keyPressEvent(QKeyEvent *event);
     
     QAction *openAct;
+    QAction *saveAct;
     QAction *settingsAct;
     QAction *rotateLeftAct;
     QAction *rotateRightAct;
