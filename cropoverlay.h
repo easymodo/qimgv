@@ -8,6 +8,10 @@
 #include <QColor>
 #include <QFont>
 
+enum mouseDragTarget { NO_DRAG, MOVE, DRAG_LEFT, DRAG_RIGHT,
+                        DRAG_TOP, DRAG_BOTTOM, DRAG_TOPLEFT,
+                        DRAG_TOPRIGHT, DRAG_BOTTOMLEFT, DRAG_BOTTOMRIGHT };
+
 class CropOverlay : public QWidget
 {
     Q_OBJECT
@@ -36,12 +40,16 @@ private:
     float scale;
     QBrush brushDark;
     QBrush brushGray;
+    mouseDragTarget dragTarget;
+    QPoint handles[8];
 
     QPoint setInsidePoint(QPoint, QRect);
     void clearSelection();
     QRect mapSelection();
     void drawLabel(QString text, QPoint pos, QPainter*);
     void drawAroundSelection(QPainter *);
+    void drawHandles(QPainter*);
+    void updateHandlesPositions();
 public slots:
     void setImageArea(QRect area, float _scale);
     void hide();

@@ -10,7 +10,6 @@ CropOverlay::CropOverlay(QWidget *parent) : QWidget(parent),
     moving(false),
     scale(1.0f)
 {
-
     brushDark.setColor(QColor(10,10,10,180));  // transparent black
     brushDark.setStyle(Qt::SolidPattern);
     brushGray.setColor(QColor(80,80,80,180)); // transparent gray
@@ -77,6 +76,8 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
 
     //selection outline
     drawAroundSelection(&painter);
+    //handles
+    drawHandles(&painter);
 
     //size label
     QRect r = mapSelection();
@@ -113,6 +114,18 @@ void CropOverlay::drawAroundSelection(QPainter *painter) {
                       selectionRect.bottom()+1,
                       selectionRect.width(),
                       imageArea.bottom() - selectionRect.bottom()); // bottom
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(Qt::black));
+    painter->drawRect(selectionRect.marginsAdded(QMargins(1,1,0,0)));
+}
+
+void CropOverlay::drawHandles(QPainter *painter) {
+    painter->setBrush(brushGray);
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(Qt::black));
+    for(int i=0; i<6; i++) {
+        painter->drawEllipse(handles[i],5,5);
+    }
 }
 
 void CropOverlay::drawLabel(QString text, QPoint pos, QPainter *painter) {
@@ -196,6 +209,7 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
             }
             selectionRect = tmp;
             moveStartPos = QCursor::pos();
+            updateHandlesPositions();
             update();
         }
         else { // selecting
@@ -211,6 +225,7 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
 
             selectionRect.setTopLeft(tl);
             selectionRect.setBottomRight(br);
+            updateHandlesPositions();
             //qDebug() << "EX:" << selectionRect;
             update();
         }
@@ -224,6 +239,17 @@ void CropOverlay::mouseReleaseEvent(QMouseEvent *event) {
         update();
     }
     //update();
+}
+
+void CropOverlay::updateHandlesPositions() {
+    handles[0] = selectionRect.topLeft();
+    handles[1] = selectionRect.topRight();
+    handles[2] = selectionRect.bottomLeft();
+    handles[3] = selectionRect.bottomRight();
+    handles[4] = QPoint(selectionRect.left(),selectionRect.center().y());   // left
+    handles[5] = QPoint(selectionRect.right(),selectionRect.center().y());  // right
+    handles[6] = QPoint(selectionRect.center().x(),selectionRect.top());    // top
+    handles[7] = QPoint(selectionRect.center().x(),selectionRect.bottom()); // bottom
 }
 
 QRect CropOverlay::mapSelection() {
