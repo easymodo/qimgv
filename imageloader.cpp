@@ -75,7 +75,7 @@ void ImageLoader::preload(int pos) {
 }
 
 void ImageLoader::preload_thread(int pos) {
-    qDebug() << "preloadStart: " << cache->imageAt(pos)->getPath();
+    //qDebug() << "preloadStart: " << cache->imageAt(pos)->getPath();
     cache->loadAt(pos);
 }
 
