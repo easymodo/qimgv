@@ -22,6 +22,7 @@ public:
     void loadNext();
     void loadPrev();
     const ImageCache* getCache();
+    void setCache(ImageCache*);
 
 private:
     DirectoryManager *dm;

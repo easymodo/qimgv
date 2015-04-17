@@ -18,6 +18,7 @@ void ImageCache::init(QStringList list) {
     }
     generateAllThumbnails();
     unlock();
+    emit initialized();
 }
 
 void ImageCache::loadAt(int pos) {

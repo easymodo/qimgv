@@ -15,7 +15,7 @@ MainWindow::MainWindow() :
 }
 
 void MainWindow::init() {
-    core = new Core();
+    ImageCache *cache = new ImageCache();
     settingsDialog = new SettingsDialog();
     imageViewer = new ImageViewer(this);
     controlsOverlay = new ControlsOverlay(imageViewer);
@@ -26,12 +26,14 @@ void MainWindow::init() {
     thumbnailDockWidget->setAllowedAreas(Qt::TopDockWidgetArea |
                                             Qt::BottomDockWidgetArea);
 
-    thumbnailStrip = new ThumbnailStrip(core->getCache(), thumbnailDockWidget);
+    thumbnailStrip = new ThumbnailStrip(cache, thumbnailDockWidget);
     thumbnailDockWidget->setWidget(thumbnailStrip);
     this->addDockWidget(Qt::BottomDockWidgetArea, thumbnailDockWidget);
 
     controlsOverlay->hide();
     this->setCentralWidget(imageViewer);
+
+    core = new Core(cache);
 
     createActions();
     createMenus();
@@ -104,8 +106,6 @@ void MainWindow::init() {
     connect(this, SIGNAL(fileSaved(QString)), core, SLOT(saveImage(QString)));
 
     connect(thumbnailStrip, SIGNAL(thumbnailClicked(int)), core, SLOT(loadImageByPos(int)));
-
-    connect(core, SIGNAL(directoryChanged(QString)), thumbnailStrip, SLOT(populate()));
 }
 
 void MainWindow::open(QString path) {

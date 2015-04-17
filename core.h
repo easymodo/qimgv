@@ -12,7 +12,7 @@ class Core : public QObject
 {
     Q_OBJECT
 public:
-    explicit Core();
+    explicit Core(ImageCache *cache);
     void open(QString);
     const ImageCache* getCache();
 
@@ -33,7 +33,6 @@ signals:
     void infoStringChanged(QString);
     void slowLoading();
     void imageAltered();
-    void directoryChanged(QString);
 
 public slots:
     void updateInfoString();

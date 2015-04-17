@@ -1,9 +1,7 @@
 #include "imageloader.h"
 
 ImageLoader::ImageLoader(DirectoryManager *_dm) {
-    cache = new ImageCache();
     dm = _dm;
-    cache->init(dm->getFileList());
     readSettings();
     connect(globalSettings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
@@ -77,7 +75,12 @@ void ImageLoader::loadPrev() {
 }
 
 const ImageCache *ImageLoader::getCache() {
-     return cache;
+    return cache;
+}
+
+void ImageLoader::setCache(ImageCache *_cache) {
+    this->cache = _cache;
+    cache->init(dm->getFileList());
 }
 
 void ImageLoader::preload(int pos) {

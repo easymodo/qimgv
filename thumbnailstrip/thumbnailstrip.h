@@ -14,13 +14,14 @@ class ThumbnailStrip : public QGraphicsView
 {
     Q_OBJECT
 public:
-    explicit ThumbnailStrip(const ImageCache *_cache, QWidget *parent = 0);
+    explicit ThumbnailStrip(ImageCache* _cache, QWidget *parent = 0);
     ~ThumbnailStrip();
 
 private:
     const ImageCache *cache;
     CustomScene* scene;
     void addItem(int pos);
+    int itemCount;
 
 signals:
     void thumbnailClicked(int);

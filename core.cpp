@@ -1,11 +1,12 @@
 #include "core.h"
 
-Core::Core() :
+Core::Core(ImageCache *cache) :
     QObject(),
     imageLoader(NULL),
     dirManager(NULL)
 {
     initVariables();
+    imageLoader->setCache(cache);
     connectSlots();
     initSettings();
 }
@@ -26,7 +27,6 @@ void Core::connectSlots() {
             this, SLOT(updateInfoString()));
     connect(imageLoader, SIGNAL(loadFinished(Image*)),
             this, SLOT(onLoadFinished(Image*)));
-    connect(dirManager, SIGNAL(directoryChanged(QString)), this, SIGNAL(directoryChanged(QString)));
 }
 
 void Core::initSettings() {

@@ -68,6 +68,8 @@ public:
     const FileInfo *infoAt(int pos);
     int length() const;
     void generateAllThumbnails();
+signals:
+    void initialized();
 public slots:
     const QImage *thumbnailAt(int pos) const;
 private:

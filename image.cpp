@@ -51,6 +51,7 @@ void Image::detectType() {
 //load image data from disk
 void Image::loadImage()
 {
+
     mutex.lock();
     if(isLoaded()) {
         //qDebug() << "already loaded: " << path;

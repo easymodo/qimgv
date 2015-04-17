@@ -1,25 +1,25 @@
 #include "thumbnailstrip.h"
 
-ThumbnailStrip::ThumbnailStrip(const ImageCache *_cache, QWidget *parent) : QGraphicsView(parent),
-    cache(_cache)
+ThumbnailStrip::ThumbnailStrip(ImageCache *_cache, QWidget *parent) : QGraphicsView(parent)
 {
-
     scene = new CustomScene;
-
+    cache = _cache;
     QPen outlinePen(Qt::black);
     outlinePen.setWidth(2);
 
     this->setScene(scene);
     this->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    populate();
     scene->setSceneRect(rect());
     connect(scene, SIGNAL(click(int)), this, SLOT(sceneClicked(int)));
+    connect(cache, SIGNAL(initialized()), this, SLOT(populate()));
     this->show();
 }
 
 void ThumbnailStrip::populate() {
-   // scene->clear();
+    scene->clear();
+    itemCount = 0;
+    scene->setSceneRect(rect());
 
     for(int i=0; i<cache->length(); i++) {
         addItem(i);
@@ -28,17 +28,16 @@ void ThumbnailStrip::populate() {
 
 void ThumbnailStrip::addItem(int pos) {
     QGraphicsPixmapItem *item = scene->addPixmap(QPixmap::fromImage(*cache->thumbnailAt(pos)));
-//    qDebug() << pos;
     item->setPos(pos*100,0);
-//    qDebug() << this->sceneRect();
     this->resize(sceneRect().size().toSize());
-    //qDebug() << rect();
+    itemCount++;
 }
 
 void ThumbnailStrip::sceneClicked(int wPos) {
     int clicked = wPos/100;
-    qDebug() << clicked;
-    emit thumbnailClicked(clicked);
+    if(clicked < itemCount) {
+        emit thumbnailClicked(clicked);
+    }
 
 }
 
