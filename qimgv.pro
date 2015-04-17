@@ -34,7 +34,6 @@ SOURCES += main.cpp\
     mapoverlay/mapoverlay.cpp \
     cropoverlay.cpp \
     thumbnailstrip/thumbnailstrip.cpp \
-    thumbnailstrip/thumbnailitem.cpp \
     thumbnailstrip/customscene.cpp
 
 HEADERS  += mainwindow.h \

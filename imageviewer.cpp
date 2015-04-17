@@ -345,6 +345,7 @@ void ImageViewer::fitWidth() {
         centerImage();
         if(drawingRect.height()>height())
             drawingRect.moveTop(0);
+        update();
     }
     else if(errorFlag) {
         fitNormal();
@@ -366,7 +367,7 @@ void ImageViewer::fitAll() {
         else { // doesnt fit
             setScale(maxScale);
             centerImage();
-
+            update();
         }
     }
     else if(errorFlag) {
@@ -383,6 +384,7 @@ void ImageViewer::fitNormal() {
     }
    setScale(1.0);
    centerImage();
+   update();
 }
 
 void ImageViewer::fitDefault() {
@@ -490,13 +492,14 @@ void ImageViewer::fixAlignVertical() {
 // scales image around point, so point's position
 // relative to window remains unchanged
 void ImageViewer::scaleAround(QPointF p, float newScale) {
-    float xPos = (float)(p.x()-drawingRect.x())/drawingRect.width();
-    float oldPx = (float)xPos*drawingRect.width();
     float oldX = drawingRect.x();
-    float yPos = (float)(p.y()-drawingRect.y())/drawingRect.height();
-    float oldPy = (float)yPos*drawingRect.height();
+    float xPos = (float)(p.x()-oldX)/(drawingRect.width()-oldX);
+    float oldPx = (float)xPos*drawingRect.width();
     float oldY = drawingRect.y();
+    float yPos = (float)(p.y()-oldY)/drawingRect.height();
+    float oldPy = (float)yPos*drawingRect.height();
     setScale(newScale);
+    //qDebug() << "new xPos = " << xPos;
     float newPx = (float)xPos*drawingRect.width();
     drawingRect.moveLeft(oldX - (newPx-oldPx));
     float newPy = (float)yPos*drawingRect.height();
