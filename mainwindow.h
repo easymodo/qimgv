@@ -11,6 +11,7 @@
 #include "settingsdialog.h"
 #include "imageviewer.h"
 #include "settings.h"
+#include "thumbnailstrip/thumbnailstrip.h"
 
 QT_BEGIN_NAMESPACE
     class QAction;
@@ -69,6 +70,8 @@ private:
     Core *core;
     textOverlay *infoOverlay, *messageOverlay;
     ControlsOverlay *controlsOverlay;
+    ThumbnailStrip *thumbnailStrip;
+    QDockWidget *thumbnailDockWidget;
     void init();
     void createActions();
     void createMenus();

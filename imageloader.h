@@ -17,9 +17,11 @@ class ImageLoader : public QObject
 public:
     explicit ImageLoader(DirectoryManager *);
     void open(QString path);
+    void open(int pos);
     void load(int pos);
     void loadNext();
     void loadPrev();
+    const ImageCache* getCache();
 
 private:
     DirectoryManager *dm;

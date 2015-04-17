@@ -16,7 +16,13 @@ void ImageLoader::open(QString path) {
     } else {
         dm->setFile(path);
     }
-    load(dm->currentFilePos());
+    //load(dm->currentFilePos());
+    lock();
+    QtConcurrent::run(this, &ImageLoader::load_thread, dm->currentFilePos());
+}
+
+void ImageLoader::open(int pos) {
+    dm->setCurrentPos(pos);
     lock();
     QtConcurrent::run(this, &ImageLoader::load_thread, dm->currentFilePos());
 }
@@ -68,6 +74,10 @@ void ImageLoader::loadPrev() {
             startPreload(dm->peekPrev(1));
         }
     }
+}
+
+const ImageCache *ImageLoader::getCache() {
+     return cache;
 }
 
 void ImageLoader::preload(int pos) {

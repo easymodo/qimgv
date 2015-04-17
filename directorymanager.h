@@ -33,6 +33,7 @@ public:
     int lastPos();
     int peekNext(int offset);
     int peekPrev(int offset);
+    void setCurrentPos(int pos);
 signals:
     void directoryChanged(const QString &path);
 private:

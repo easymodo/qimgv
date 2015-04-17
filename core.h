@@ -14,6 +14,7 @@ class Core : public QObject
 public:
     explicit Core();
     void open(QString);
+    const ImageCache* getCache();
 
 private:
     void initVariables();
@@ -44,6 +45,7 @@ public slots:
 
     void saveImage(QString path);
     void saveImage();
+    void loadImageByPos(int pos);
 };
 
 #endif // CORE_H

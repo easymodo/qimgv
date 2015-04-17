@@ -75,7 +75,7 @@ void Image::loadImage()
         }
         loaded = true;
     }
-    thumbnail();
+    generateThumbnail();
     mutex.unlock();
 }
 
@@ -112,20 +112,20 @@ void Image::save() {
     }
 }
 
-QImage Image::thumbnail() {
+QImage* Image::generateThumbnail() {
     int size = globalSettings->s.value("thumbnailSize", 100).toInt();
-    QImage thumbnail;
+    QImage *thumbnail = new QImage();
     bool unloadFlag = false;
     if(!isLoaded()) {
         loadImage();
         unloadFlag = true;
     }
     if(getType() == GIF) {
-        thumbnail = movie->currentImage()
+        *thumbnail = movie->currentImage()
                 .scaled(size*2, size*2, Qt::KeepAspectRatio)
                 .scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     } else if(getType() == STATIC) {
-        thumbnail = image->scaled(size*2, size*2, Qt::KeepAspectRatio)
+        *thumbnail = image->scaled(size*2, size*2, Qt::KeepAspectRatio)
                 .scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     }
     if(unloadFlag) {

@@ -56,6 +56,11 @@ void DirectoryManager::setFile(QString path) {
     //return info;
 }
 
+void DirectoryManager::setCurrentPos(int pos) {
+    currentPos = pos;
+    globalSettings->s.setValue("lastPosition", currentPos);
+}
+
 QString DirectoryManager::currentFileName() {
     return fileList.at(currentPos);
 }

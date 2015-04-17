@@ -40,7 +40,7 @@ public:
     QImage *rotated(int grad);
     void rotate(int grad);
     bool isLoaded();
-    QImage thumbnail();
+    QImage* generateThumbnail();
     void unloadImage();
     FileInfo* getInfo();
     void attachInfo(FileInfo*);

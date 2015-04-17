@@ -156,7 +156,7 @@ void CropOverlay::drawLabel(QString text, QPoint pos, QPainter *painter) {
     int marginW = 4;
     QRect labelRect(pos.x(),pos.y(),
                     textWidth+marginW*2,textHeight+marginH*2);
-    painter->setPen(QPen(Qt::black));
+    painter->setPen(selectionOutlinePen);
     painter->setBrush(brushGray);
     painter->drawRect(labelRect);
 
@@ -335,16 +335,16 @@ QRect CropOverlay::mapSelection() {
     tmp.moveTopLeft((tmp.topLeft()-imageArea.topLeft())/scale);
     tmp.setSize(selectionRect.size()/scale);
     // kinda ugly but works
-    if(selectionRect.top() == imageArea.top()) {
+    if(selectionRect.top() <= imageArea.top()) {
         tmp.setTop(0);
     }
-    if(selectionRect.left() == imageArea.left()) {
+    if(selectionRect.left() <= imageArea.left()) {
         tmp.setLeft(0);
     }
-    if(selectionRect.bottom() == imageArea.bottom()) {
+    if(selectionRect.bottom() >= imageArea.bottom()) {
         tmp.setBottom(realSize.height()-1);
     }
-    if(selectionRect.right() == imageArea.right()) {
+    if(selectionRect.right() >= imageArea.right()) {
         tmp.setRight(realSize.width()-1);
     }
     return tmp;
@@ -355,7 +355,6 @@ void CropOverlay::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return && !clear) {
         emit cropSelected(mapSelection());
         this->hide();
-        update();
     } else if(event->key() == Qt::Key_Escape) {
         this->hide();
     } else if (event->matches(QKeySequence::SelectAll)){
@@ -365,5 +364,15 @@ void CropOverlay::keyPressEvent(QKeyEvent *event)
         update();
     } else {
         event->ignore();
+    }
+}
+
+void CropOverlay::mouseDoubleClickEvent(QMouseEvent *event) {
+    if(event->button() == Qt::LeftButton && selectionRect.contains(event->pos())) {
+        emit cropSelected(mapSelection());
+        this->hide();
+    }
+    else {
+        QWidget::mouseDoubleClickEvent(event);
     }
 }

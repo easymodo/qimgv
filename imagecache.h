@@ -19,8 +19,17 @@ public:
     }
     void generateThumbnail() {
         if(img) {
-            thumbnail = img->thumbnail();
+            thumbnail = img->generateThumbnail();
         }
+    }
+    const QImage* getThumbnail() {
+        if(!thumbnail) {
+            generateThumbnail();
+        }
+        return const_cast<const QImage*>(thumbnail);
+    }
+    const FileInfo* getInfo() {
+        return const_cast<const FileInfo*>(info);
     }
     bool isLoaded() {
         return img->isLoaded();
@@ -34,10 +43,10 @@ public:
     Image* image() {
         return img;
     }
-    FileInfo *info;
 private:
+    FileInfo *info;
     Image *img;
-    QImage thumbnail;
+    QImage *thumbnail;
 };
 
 
@@ -52,6 +61,10 @@ public:
     void loadAt(int pos);
     Image *imageAt(int pos);
     void init(QStringList list);
+    const FileInfo *infoAt(int pos);
+    int length() const;
+public slots:
+    const QImage *thumbnailAt(int pos) const;
 private:
     QList<CacheObject*> *cachedImages;
     uint maxCacheSize;

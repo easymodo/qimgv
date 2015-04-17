@@ -10,6 +10,10 @@ Core::Core() :
     initSettings();
 }
 
+const ImageCache *Core::getCache() {
+    return imageLoader->getCache();
+}
+
 void Core::initVariables() {
     dirManager = new DirectoryManager();
     imageLoader = new ImageLoader(dirManager);
@@ -73,6 +77,11 @@ void Core::saveImage() {
     if(currentImage) {
         currentImage->save();
     }
+}
+
+void Core::loadImageByPos(int pos) {
+      currentImage = NULL;
+      imageLoader->open(pos);
 }
 
 void Core::setCurrentDir(QString path) {

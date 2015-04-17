@@ -32,7 +32,9 @@ SOURCES += main.cpp\
     settingsdialog.cpp \
     lib/imagelib.cpp \
     mapoverlay/mapoverlay.cpp \
-    cropoverlay.cpp
+    cropoverlay.cpp \
+    thumbnailstrip/thumbnailstrip.cpp \
+    thumbnailstrip/thumbnailitem.cpp
 
 HEADERS  += mainwindow.h \
     infooverlay.h \
@@ -49,7 +51,9 @@ HEADERS  += mainwindow.h \
     settingsdialog.h \
     lib/imagelib.h \
     mapoverlay/mapoverlay.h \
-    cropoverlay.h
+    cropoverlay.h \
+    thumbnailstrip/thumbnailstrip.h \
+    thumbnailstrip/thumbnailitem.h
 
 FORMS    += \
     settingsdialog.ui

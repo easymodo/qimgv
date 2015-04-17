@@ -15,17 +15,23 @@ MainWindow::MainWindow() :
 }
 
 void MainWindow::init() {
+    core = new Core();
     settingsDialog = new SettingsDialog();
     imageViewer = new ImageViewer(this);
     controlsOverlay = new ControlsOverlay(imageViewer);
     infoOverlay = new textOverlay(imageViewer, TOP);
-    //messageOverlay = new textOverlay(imageViewer, BOTTOM);
-    //messageOverlay->setText("Loading...");
     infoOverlay->hide();
-    //messageOverlay->hide();
+
+    thumbnailDockWidget = new QDockWidget("Thumbnails", this);
+    thumbnailDockWidget->setAllowedAreas(Qt::TopDockWidgetArea |
+                                            Qt::BottomDockWidgetArea);
+
+    thumbnailStrip = new ThumbnailStrip(core->getCache(), thumbnailDockWidget);
+    thumbnailDockWidget->setWidget(thumbnailStrip);
+    this->addDockWidget(Qt::BottomDockWidgetArea, thumbnailDockWidget);
+
     controlsOverlay->hide();
     this->setCentralWidget(imageViewer);
-    core = new Core();
 
     createActions();
     createMenus();
@@ -96,6 +102,8 @@ void MainWindow::init() {
     connect(core, SIGNAL(imageAltered()), imageViewer, SLOT(redisplay()));
 
     connect(this, SIGNAL(fileSaved(QString)), core, SLOT(saveImage(QString)));
+
+    connect(thumbnailStrip, SIGNAL(thumbnailClicked(int)), core, SLOT(loadImageByPos(int)));
 }
 
 void MainWindow::open(QString path) {

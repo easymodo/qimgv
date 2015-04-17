@@ -28,6 +28,18 @@ Image* ImageCache::imageAt(int pos) {
     return cachedImages->at(pos)->image();
 }
 
+const QImage* ImageCache::thumbnailAt(int pos) const {
+    return cachedImages->at(pos)->getThumbnail();
+}
+
+const FileInfo* ImageCache::infoAt(int pos) {
+    return cachedImages->at(pos)->getInfo();
+}
+
+int ImageCache::length() const {
+    return cachedImages->length();
+}
+
 void ImageCache::readSettings() {
     lock();
     maxCacheSize = globalSettings->s.value("cacheSize").toInt();
