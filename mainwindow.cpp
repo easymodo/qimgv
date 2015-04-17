@@ -104,6 +104,8 @@ void MainWindow::init() {
     connect(this, SIGNAL(fileSaved(QString)), core, SLOT(saveImage(QString)));
 
     connect(thumbnailStrip, SIGNAL(thumbnailClicked(int)), core, SLOT(loadImageByPos(int)));
+
+    connect(core, SIGNAL(directoryChanged(QString)), thumbnailStrip, SLOT(populate()));
 }
 
 void MainWindow::open(QString path) {

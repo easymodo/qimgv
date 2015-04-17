@@ -125,8 +125,10 @@ QImage* Image::generateThumbnail() {
                 .scaled(size*2, size*2, Qt::KeepAspectRatio)
                 .scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     } else if(getType() == STATIC) {
-        *thumbnail = image->scaled(size*2, size*2, Qt::KeepAspectRatio)
-                .scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        if(!image->isNull()) {
+            *thumbnail = image->scaled(size, size, Qt::KeepAspectRatio, Qt::FastTransformation);
+         //       .scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        }
     }
     if(unloadFlag) {
         unloadImage();

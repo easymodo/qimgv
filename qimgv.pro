@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     mapoverlay/mapoverlay.cpp \
     cropoverlay.cpp \
     thumbnailstrip/thumbnailstrip.cpp \
-    thumbnailstrip/thumbnailitem.cpp
+    thumbnailstrip/thumbnailitem.cpp \
+    thumbnailstrip/customscene.cpp
 
 HEADERS  += mainwindow.h \
     infooverlay.h \
@@ -53,7 +54,8 @@ HEADERS  += mainwindow.h \
     mapoverlay/mapoverlay.h \
     cropoverlay.h \
     thumbnailstrip/thumbnailstrip.h \
-    thumbnailstrip/thumbnailitem.h
+    thumbnailstrip/thumbnailitem.h \
+    thumbnailstrip/customscene.h
 
 FORMS    += \
     settingsdialog.ui

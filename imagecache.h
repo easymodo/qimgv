@@ -4,6 +4,7 @@
 #include "image.h"
 #include "settings.h"
 #include <QList>
+#include <QtConcurrent>
 #include <QMutex>
 
 class CacheObject {
@@ -18,9 +19,11 @@ public:
         delete info;
     }
     void generateThumbnail() {
-        if(img) {
+        mutex.lock();
+        if(img && !thumbnail) {
             thumbnail = img->generateThumbnail();
         }
+        mutex.unlock();
     }
     const QImage* getThumbnail() {
         if(!thumbnail) {
@@ -47,6 +50,7 @@ private:
     FileInfo *info;
     Image *img;
     QImage *thumbnail;
+    QMutex mutex;
 };
 
 
@@ -63,6 +67,7 @@ public:
     void init(QStringList list);
     const FileInfo *infoAt(int pos);
     int length() const;
+    void generateAllThumbnails();
 public slots:
     const QImage *thumbnailAt(int pos) const;
 private:

@@ -9,12 +9,14 @@ ImageCache::ImageCache() {
 
 // call when changing directory
 void ImageCache::init(QStringList list) {
+    QThreadPool::globalInstance()->setMaxThreadCount(4);
     // also should free memory
     lock();
     cachedImages->clear();
     for(int i=0; i<list.length(); i++) {
         cachedImages->append(new CacheObject(list.at(i)));
     }
+    generateAllThumbnails();
     unlock();
 }
 
@@ -30,6 +32,10 @@ Image* ImageCache::imageAt(int pos) {
 
 const QImage* ImageCache::thumbnailAt(int pos) const {
     return cachedImages->at(pos)->getThumbnail();
+}
+
+void ImageCache::generateAllThumbnails() {
+    QtConcurrent::map(*cachedImages, [](CacheObject* obj) {obj->generateThumbnail();} );
 }
 
 const FileInfo* ImageCache::infoAt(int pos) {

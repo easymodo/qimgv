@@ -1,0 +1,18 @@
+#include "customscene.h"
+
+CustomScene::CustomScene() {
+
+}
+
+
+
+CustomScene::~CustomScene()
+{
+
+}
+
+void CustomScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+    qDebug() << "test" << event->scenePos().x();
+    emit click(event->scenePos().x());
+}
+

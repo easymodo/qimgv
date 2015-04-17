@@ -26,6 +26,7 @@ void Core::connectSlots() {
             this, SLOT(updateInfoString()));
     connect(imageLoader, SIGNAL(loadFinished(Image*)),
             this, SLOT(onLoadFinished(Image*)));
+    connect(dirManager, SIGNAL(directoryChanged(QString)), this, SIGNAL(directoryChanged(QString)));
 }
 
 void Core::initSettings() {

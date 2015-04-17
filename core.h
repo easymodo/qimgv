@@ -33,6 +33,7 @@ signals:
     void infoStringChanged(QString);
     void slowLoading();
     void imageAltered();
+    void directoryChanged(QString);
 
 public slots:
     void updateInfoString();
