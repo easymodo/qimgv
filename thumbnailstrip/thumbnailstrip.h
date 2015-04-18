@@ -1,6 +1,9 @@
 #ifndef THUMBNAILSTRIP_H
 #define THUMBNAILSTRIP_H
 
+#include <QWidget>
+#include <QLabel>
+#include <QLayout>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsItem>
@@ -8,9 +11,9 @@
 #include <QWheelEvent>
 #include <QScrollBar>
 #include "../imagecache.h"
-#include "customscene.h"
+#include "thumbnaillabel.h"
 
-class ThumbnailStrip : public QGraphicsView
+class ThumbnailStrip : public QWidget
 {
     Q_OBJECT
 public:
@@ -19,9 +22,9 @@ public:
 
 private:
     const ImageCache *cache;
-    CustomScene* scene;
     void addItem(int pos);
-    int itemCount;
+    QHBoxLayout *layout;
+    QList<QLabel*> thumbnailLabels;
 
 signals:
     void thumbnailClicked(int);
@@ -33,7 +36,7 @@ protected:
     void wheelEvent(QWheelEvent *event);
 
 private slots:
-    void sceneClicked(int wPos);
+    void slotThumbnailClicked(QLabel*);
 };
 
 #endif // THUMBNAILSTRIP_H

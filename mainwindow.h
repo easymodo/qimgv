@@ -12,6 +12,7 @@
 #include "imageviewer.h"
 #include "settings.h"
 #include "thumbnailstrip/thumbnailstrip.h"
+#include "thumbnailstrip/thumbnailscrollarea.h"
 
 QT_BEGIN_NAMESPACE
     class QAction;

@@ -26,8 +26,10 @@ void MainWindow::init() {
     thumbnailDockWidget->setAllowedAreas(Qt::TopDockWidgetArea |
                                             Qt::BottomDockWidgetArea);
 
-    thumbnailStrip = new ThumbnailStrip(cache, thumbnailDockWidget);
-    thumbnailDockWidget->setWidget(thumbnailStrip);
+    ThumbnailScrollArea *scroll = new ThumbnailScrollArea();
+    thumbnailStrip = new ThumbnailStrip(cache, scroll);
+    scroll->setWidget(thumbnailStrip);
+    thumbnailDockWidget->setWidget(scroll);
     this->addDockWidget(Qt::BottomDockWidgetArea, thumbnailDockWidget);
 
     controlsOverlay->hide();
