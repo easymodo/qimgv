@@ -2,7 +2,7 @@
 #define CUSTOMSCENE_H
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsScene>
-#include <qDebug>
+#include <QDebug>
 
 class CustomScene : public QGraphicsScene {
     Q_OBJECT
