@@ -21,6 +21,16 @@ void ImageCache::init(QStringList list) {
     emit initialized();
 }
 
+void ImageCache::unloadAll() {
+    lock();
+    int time = clock();
+    for(int i=0; i<cachedImages->length(); i++) {
+        cachedImages->at(i)->unload();
+    }
+    qDebug() << "unload time: " << clock() - time;
+    unlock();
+}
+
 void ImageCache::loadAt(int pos) {
     lock();
     cachedImages->at(pos)->load();

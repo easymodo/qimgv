@@ -6,6 +6,7 @@
 #include <QList>
 #include <QtConcurrent>
 #include <QMutex>
+#include <ctime>
 
 class CacheObject {
 public:
@@ -68,6 +69,7 @@ public:
     const FileInfo *infoAt(int pos);
     int length() const;
     void generateAllThumbnails();
+    void unloadAll();
 signals:
     void initialized();
 public slots:

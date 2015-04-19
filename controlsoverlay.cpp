@@ -34,14 +34,3 @@ void ControlsOverlay::mouseReleaseEvent(QMouseEvent *event) {
             emit minimizeClicked();
     }
 }
-
-
-
-
-
-
-
-
-
-
-

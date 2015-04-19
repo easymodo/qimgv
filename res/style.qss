@@ -44,6 +44,10 @@ ThumbnailStrip {
     background-color: #262626;
 }
 
+ThumbnailScrollArea {
+    background-color: #262626;
+}
+
 QLabel {
     background-color: #262626;
 }
@@ -55,7 +59,7 @@ QScrollBar:horizontal {
 
 QScrollBar::handle:horizontal {
     background: #080808;
-    min-width: 20px;
+    min-width: 60px;
 }
 
 QScrollBar::handle:horizontal:hover {
@@ -67,11 +71,11 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
 }
 
 QScrollBar::add-line:horizontal {
-width: 0px;
-height: 0px;
+    width: 0px;
+    height: 0px;
 }
 
 QScrollBar::sub-line:horizontal {
-width: 0px;
-height: 0px;
+    width: 0px;
+    height: 0px;
 }

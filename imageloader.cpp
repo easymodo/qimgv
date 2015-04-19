@@ -8,33 +8,26 @@ ImageLoader::ImageLoader(DirectoryManager *_dm) {
 }
 
 void ImageLoader::open(QString path) {
+    cache->unloadAll();
     if(!dm->existsInCurrentDir(path)) {
         dm->setFile(path);
         cache->init(dm->getFileList());
     } else {
         dm->setFile(path);
     }
-    //load(dm->currentFilePos());
     lock();
     QtConcurrent::run(this, &ImageLoader::load_thread, dm->currentFilePos());
 }
 
 void ImageLoader::open(int pos) {
+    cache->unloadAll();
     dm->setCurrentPos(pos);
     lock();
     QtConcurrent::run(this, &ImageLoader::load_thread, dm->currentFilePos());
 }
 
-void ImageLoader::load(int pos) {
-    //qDebug() << "loader thread: " << this->thread();
-    lock();
-    QtConcurrent::run(this, &ImageLoader::load_thread, pos);
-
-}
-
 void ImageLoader::load_thread(int pos) {
     emit loadStarted();
-    //qDebug() << "loadStart: " << cache->imageAt(pos)->getPath();
     cache->loadAt(pos);
     emit loadFinished(cache->imageAt(pos));
     unlock();
