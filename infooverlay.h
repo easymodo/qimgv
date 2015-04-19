@@ -6,16 +6,11 @@
 #include <QPen>
 #include <QDebug>
 
-enum Position {
-    TOP,
-    BOTTOM
-};
-
 class textOverlay : public QWidget
 {
     Q_OBJECT
 public:
-    textOverlay(QWidget *parent, Position);
+    textOverlay(QWidget *parent);
     void setText(QString text);
     void updateWidth();
 
@@ -24,7 +19,6 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *event);
-    Position position;
     QString currentText;
 };
 

@@ -19,18 +19,14 @@ void MainWindow::init() {
     settingsDialog = new SettingsDialog();
     imageViewer = new ImageViewer(this);
     controlsOverlay = new ControlsOverlay(imageViewer);
-    infoOverlay = new textOverlay(imageViewer, TOP);
-    infoOverlay->hide();
+    infoOverlay = new textOverlay(imageViewer);
 
-    thumbnailDockWidget = new QDockWidget("Thumbnails", this);
-    thumbnailDockWidget->setAllowedAreas(Qt::TopDockWidgetArea |
-                                            Qt::BottomDockWidgetArea);
-
-    ThumbnailScrollArea *scroll = new ThumbnailScrollArea();
+    ThumbnailScrollArea *scroll = new ThumbnailScrollArea(imageViewer);
     thumbnailStrip = new ThumbnailStrip(cache, scroll);
     scroll->setWidget(thumbnailStrip);
-    thumbnailDockWidget->setWidget(scroll);
-    this->addDockWidget(Qt::BottomDockWidgetArea, thumbnailDockWidget);
+    imageViewer->addPanel(scroll, BOTTOM);
+    //thumbnailDockWidget->setWidget(scroll);
+    //this->addDockWidget(Qt::BottomDockWidgetArea, thumbnailDockWidget);
 
     controlsOverlay->hide();
     this->setCentralWidget(imageViewer);

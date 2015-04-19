@@ -39,3 +39,39 @@ QMenuBar::item:pressed {
     border-color: #E6E6E6;
     background: #222222;
 }
+
+ThumbnailStrip {
+    background-color: #262626;
+}
+
+QLabel {
+    background-color: #262626;
+}
+
+QScrollBar:horizontal {
+    height: 13px;
+    background-color: #262626;
+}
+
+QScrollBar::handle:horizontal {
+    background: #080808;
+    min-width: 20px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #171717;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+QScrollBar::add-line:horizontal {
+width: 0px;
+height: 0px;
+}
+
+QScrollBar::sub-line:horizontal {
+width: 0px;
+height: 0px;
+}

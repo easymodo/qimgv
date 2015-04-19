@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     cropoverlay.cpp \
     thumbnailstrip/thumbnailstrip.cpp \
     thumbnailstrip/thumbnailscrollarea.cpp \
-    thumbnailstrip/thumbnaillabel.cpp
+    thumbnailstrip/thumbnaillabel.cpp \
+    thumbnailstrip/slidingpanel.cpp
 
 HEADERS  += mainwindow.h \
     infooverlay.h \
@@ -57,7 +58,8 @@ HEADERS  += mainwindow.h \
     thumbnailstrip/thumbnailitem.h \
     thumbnailstrip/customscene.h \
     thumbnailstrip/thumbnailscrollarea.h \
-    thumbnailstrip/thumbnaillabel.h
+    thumbnailstrip/thumbnaillabel.h \
+    thumbnailstrip/slidingpanel.h
 
 FORMS    += \
     settingsdialog.ui

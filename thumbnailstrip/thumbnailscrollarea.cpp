@@ -1,26 +1,45 @@
 #include "thumbnailscrollarea.h"
 
-ThumbnailScrollArea::ThumbnailScrollArea() {
+ThumbnailScrollArea::ThumbnailScrollArea(QWidget *parent) :
+    QScrollArea(parent)
+{
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollStep = 100;
-    this->setMinimumHeight(120);
+    defaultHeight = 120;
+    setFrameShape(QFrame::NoFrame);
+    this->setMinimumHeight(defaultHeight);
+    this->hide();
 }
 
 void ThumbnailScrollArea::wheelEvent(QWheelEvent *event) {
 
     if(event->angleDelta().ry() < 0) {
-        horizontalScrollBar()->setValue(horizontalScrollBar()->value()+scrollStep);
+        horizontalScrollBar()->
+                setValue(horizontalScrollBar()->value()+scrollStep);
     }
     else {
-        horizontalScrollBar()->setValue(horizontalScrollBar()->value()-scrollStep);
+        horizontalScrollBar()->
+                setValue(horizontalScrollBar()->value()-scrollStep);
     }
     event->accept();
 }
 
+void ThumbnailScrollArea::mouseMoveEvent(QMouseEvent* event) {
+    Q_UNUSED(event)
+    event->accept();
+}
 
+void ThumbnailScrollArea::parentResized(QSize parentSize) {
+    this->setGeometry( QRect(0, parentSize.height() - defaultHeight + 1,
+                             parentSize.width(), defaultHeight) );
+}
 
-ThumbnailScrollArea::~ThumbnailScrollArea()
-{
+void ThumbnailScrollArea::leaveEvent(QEvent *event) {
+    Q_UNUSED(event)
+    this->hide();
+}
+
+ThumbnailScrollArea::~ThumbnailScrollArea() {
 
 }
 

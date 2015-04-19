@@ -72,7 +72,6 @@ private:
     textOverlay *infoOverlay, *messageOverlay;
     ControlsOverlay *controlsOverlay;
     ThumbnailStrip *thumbnailStrip;
-    QDockWidget *thumbnailDockWidget;
     void init();
     void createActions();
     void createMenus();

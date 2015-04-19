@@ -1,11 +1,11 @@
 #include "infooverlay.h"
 
-textOverlay::textOverlay(QWidget *parent, Position pos) :QWidget(parent) {
+textOverlay::textOverlay(QWidget *parent) :QWidget(parent) {
     setPalette(Qt::transparent);
     setAttribute(Qt::WA_TransparentForMouseEvents);
     currentText = "No file opened.";
     this->setFixedHeight(18);
-    position = pos;
+    this->hide();
     updateWidth();
     updatePosition();
 }
@@ -32,15 +32,8 @@ void textOverlay::updateWidth() {
 }
 
 void textOverlay::updatePosition() {
-    if(position == BOTTOM) {
-        QRect newPos = rect();
-        newPos.moveTop(18);
-        setGeometry(newPos);
-    }
-    else {
-        QRect newPos = rect();
-        newPos.moveTop(0);
-        setGeometry(newPos);
-    }
+    QRect newPos = rect();
+    newPos.moveTop(0);
+    setGeometry(newPos);
     update();
 }
