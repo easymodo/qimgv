@@ -5,13 +5,11 @@ ThumbnailStrip::ThumbnailStrip(ImageCache *_cache, QWidget *parent) : QWidget(pa
     cache = _cache;
     layout = new QHBoxLayout(this);
     layout->setSizeConstraint(QLayout::SetFixedSize);
-    qDebug() << this->rect();
     connect(cache, SIGNAL(initialized()), this, SLOT(populate()));
     this->show();
 }
 
 void ThumbnailStrip::populate() {
-    qDebug() << "hi";
     thumbnailLabels.clear();
     while(layout->count() > 0) {
         QLayoutItem *item = layout->takeAt(0);
@@ -38,10 +36,9 @@ void ThumbnailStrip::wheelEvent(QWheelEvent *event) {
 }
 
 void ThumbnailStrip::slotThumbnailClicked(QLabel* label) {
-    qDebug() << thumbnailLabels.indexOf(label);
     int id = thumbnailLabels.indexOf(label);
     if(id!=-1) {
-        emit thumbnailClicked(thumbnailLabels.indexOf(label));
+        emit thumbnailClicked(id);
     }
 }
 

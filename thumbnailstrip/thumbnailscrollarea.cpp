@@ -25,7 +25,6 @@ void ThumbnailScrollArea::wheelEvent(QWheelEvent *event) {
 }
 
 void ThumbnailScrollArea::mouseMoveEvent(QMouseEvent* event) {
-    Q_UNUSED(event)
     event->accept();
 }
 

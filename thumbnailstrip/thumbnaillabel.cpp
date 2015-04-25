@@ -7,6 +7,7 @@ ThumbnailLabel::ThumbnailLabel() : hovered(false) {
 void ThumbnailLabel::mousePressEvent ( QMouseEvent * event ) {
     Q_UNUSED(event)
     emit clicked(this);
+    event->accept();
 }
 
 void ThumbnailLabel::paintEvent(QPaintEvent* event) {

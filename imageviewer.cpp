@@ -63,7 +63,7 @@ void ImageViewer::startAnimation() {
     resizeTimer->stop();
     disconnect(resizeTimer, SIGNAL(timeout()), this, SLOT(resizeImage()));
     connect(source->getMovie(), SIGNAL(frameChanged(int)),
-            this, SLOT(onAnimation()),Qt::DirectConnection);
+            this, SLOT(onAnimation()), Qt::DirectConnection);
     source->getMovie()->start();
 }
 
@@ -340,7 +340,6 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent* event) {
         //updateMap();
         //update();
     }
-    cursorTimer->start(2000);
 }
 
 void ImageViewer::fitWidth() {
@@ -455,7 +454,6 @@ void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
 
 // centers image inside window rectangle
 void ImageViewer::centerImage() {
-    int x = drawingRect.x();
     drawingRect.moveCenter(rect().center());
 }
 
@@ -524,8 +522,8 @@ void ImageViewer::slotZoomIn() {
         newScale = minScale;
     }
     imageFitMode = FREE;
-    fixedZoomPoint = rect().center();
-    scaleAround(fixedZoomPoint, newScale);
+    setScale(newScale);
+    drawingRect.moveCenter(rect().center());
     updateMap();
     update();
     resizeTimer->start(100);
@@ -542,8 +540,8 @@ void ImageViewer::slotZoomOut() {
         newScale = maxScale;
     }
     imageFitMode = FREE;
-    fixedZoomPoint = rect().center();
-    scaleAround(fixedZoomPoint, newScale);
+    setScale(newScale);
+    drawingRect.moveCenter(rect().center());
     updateMap();
     update();
     resizeTimer->start(100);

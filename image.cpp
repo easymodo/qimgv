@@ -66,7 +66,6 @@ void Image::loadImage()
             movie->jumpToFrame(0);
         }
         else if(getType() == STATIC) {
-            image = new QImage();
             if(extension) {
                 image = new QImage(path, extension);
             }
@@ -88,7 +87,6 @@ void Image::unloadImage() {
         movie = new QMovie();
         image = new QImage();
         loaded = false;
-        //qDebug() << "unloading " << this->path;
     }
     mutex.unlock();
 }
@@ -116,23 +114,20 @@ void Image::save() {
 QImage* Image::generateThumbnail() {
     int size = globalSettings->s.value("thumbnailSize", 100).toInt();
     QImage *thumbnail = new QImage();
-    bool unloadFlag = false;
     if(!isLoaded()) {
-        loadImage();
-        unloadFlag = true;
-    }
-    if(getType() == GIF) {
+        QImage *tmp = new QImage(path);
+        *thumbnail = tmp->scaled(size*2, size*2, Qt::KeepAspectRatio, Qt::FastTransformation)
+            .scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        delete tmp;
+    } else if(getType() == GIF) {
         *thumbnail = movie->currentImage()
                 .scaled(size*2, size*2, Qt::KeepAspectRatio)
                 .scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     } else if(getType() == STATIC) {
         if(!image->isNull()) {
-            *thumbnail = image->scaled(size, size, Qt::KeepAspectRatio, Qt::FastTransformation);
-         //       .scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            *thumbnail = image->scaled(size*2, size*2, Qt::KeepAspectRatio, Qt::FastTransformation)
+                .scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         }
-    }
-    if(unloadFlag) {
-        unloadImage();
     }
     return thumbnail;
 }
