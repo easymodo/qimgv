@@ -11,9 +11,9 @@ void saveSettings() {
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     QCoreApplication::setOrganizationName("greenpepper software");
-    QCoreApplication::setOrganizationDomain("nosite.com");
+    QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
-    QCoreApplication::setApplicationVersion("0.32");
+    QCoreApplication::setApplicationVersion("0.33 (development version)");
 
     globalSettings = Settings::getInstance();
     atexit(saveSettings);

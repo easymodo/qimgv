@@ -48,22 +48,22 @@ ThumbnailScrollArea {
     background-color: #262626;
 }
 
-QLabel {
+ThumbnailLabels {
     background-color: #262626;
 }
 
 QScrollBar:horizontal {
-    height: 13px;
+    height: 12px;
     background-color: #262626;
 }
 
 QScrollBar::handle:horizontal {
-    background: #080808;
+    background: #141414;
     min-width: 60px;
 }
 
 QScrollBar::handle:horizontal:hover {
-    background: #171717;
+    background: #070707;
 }
 
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {

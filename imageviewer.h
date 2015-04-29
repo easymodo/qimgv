@@ -14,7 +14,7 @@
 #include <QDebug>
 #include <QErrorMessage>
 #include <vector>
-#include "image.h"
+#include "imagestatic.h"
 #include "mapoverlay/mapoverlay.h"
 #include "settings.h"
 #include "cropoverlay.h"
@@ -53,22 +53,20 @@ signals:
     void imageChanged();
     void cropSelected(QRect);
     void resized(QSize);
+    void scalingRequested(QSize);
 
 public slots:
-    void displayImage(Image* image);
-    void freeImage();
+    void displayImage(QPixmap* _image);
     void slotFitNormal();
     void slotFitWidth();
     void slotFitAll();
     void slotZoomIn();
     void slotZoomOut();
     void resizeImage();
-    void redisplay();
     void crop();
 
     void hideCursor();
-private slots:
-    void onAnimation();
+    void updateImage(QPixmap *scaled);
 
 protected:
     virtual void paintEvent(QPaintEvent* event);
@@ -79,12 +77,12 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
 private:
-    Image* source;
-    QImage *image;
+    QPixmap *image;
     QTimer *resizeTimer, *cursorTimer;
     QRect drawingRect;
     QPoint mouseMoveStartPos;
     ThumbnailScrollArea *panel;
+    QSize sourceSize;
 
     QColor bgColor;
 

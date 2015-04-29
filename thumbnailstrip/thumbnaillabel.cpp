@@ -14,7 +14,7 @@ void ThumbnailLabel::paintEvent(QPaintEvent* event) {
     QLabel::paintEvent(event);
     if(hovered) {
         QPainter painter(this);
-        painter.fillRect(rect(), QBrush(QColor(40,40,40,80)));
+        painter.fillRect(rect(), QBrush(QColor(50,50,100,40)));
     }
 }
 

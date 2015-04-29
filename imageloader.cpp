@@ -42,7 +42,7 @@ void ImageLoader::loadNext() {
         //free image at prev position
         int toUnload = dm->peekPrev(1);
         if(toUnload!=dm->currentFilePos()) {
-            cache->imageAt(toUnload)->unloadImage();
+            cache->imageAt(toUnload)->unload();
         }
         QtConcurrent::run(this, &ImageLoader::load_thread, dm->nextPos());
         if(dm->peekNext(1)!=dm->currentFilePos()) {
@@ -58,7 +58,7 @@ void ImageLoader::loadPrev() {
         //free image at next position
         int toUnload = dm->peekNext(1);
         if(toUnload!=dm->currentFilePos()) {
-            cache->imageAt(toUnload)->unloadImage();
+            cache->imageAt(toUnload)->unload();
         }
         QtConcurrent::run(this, &ImageLoader::load_thread, dm->prevPos());
         if(dm->peekPrev(1)!=dm->currentFilePos()) {

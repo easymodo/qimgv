@@ -25,8 +25,6 @@ void MainWindow::init() {
     thumbnailStrip = new ThumbnailStrip(cache, scroll);
     scroll->setWidget(thumbnailStrip);
     imageViewer->addPanel(scroll, BOTTOM);
-    //thumbnailDockWidget->setWidget(scroll);
-    //this->addDockWidget(Qt::BottomDockWidgetArea, thumbnailDockWidget);
 
     controlsOverlay->hide();
     this->setCentralWidget(imageViewer);
@@ -69,9 +67,6 @@ void MainWindow::init() {
     connect(imageViewer, SIGNAL(sendDoubleClick()),
             this, SLOT(slotTriggerFullscreen()));
 
-   // connect(imageViewer, SIGNAL(imageChanged()),
-   //         messageOverlay, SLOT(hide()));
-
     connect(this, SIGNAL(signalFullscreenEnabled(bool)),
             this, SLOT(slotShowControls(bool)));
 
@@ -81,11 +76,8 @@ void MainWindow::init() {
     connect(core, SIGNAL(infoStringChanged(QString)),
             this, SLOT(setInfoString(QString)));
 
-    connect(core, SIGNAL(signalUnsetImage()),
-            imageViewer, SLOT(freeImage()));
-
-    connect(core, SIGNAL(signalSetImage(Image*)),
-            imageViewer, SLOT(displayImage(Image*)));
+    connect(core, SIGNAL(signalSetImage(QPixmap*)),
+            imageViewer, SLOT(displayImage(QPixmap*)));
 
     connect(controlsOverlay, SIGNAL(exitClicked()),
             this, SLOT(close()));
@@ -99,11 +91,21 @@ void MainWindow::init() {
     connect(imageViewer, SIGNAL(cropSelected(QRect)),
             core, SLOT(crop(QRect)));
 
-    connect(core, SIGNAL(imageAltered()), imageViewer, SLOT(redisplay()));
+    //reload after image edits
+    connect(core, SIGNAL(imageAltered(QPixmap*)),
+            imageViewer, SLOT(displayImage(QPixmap*)));
 
     connect(this, SIGNAL(fileSaved(QString)), core, SLOT(saveImage(QString)));
 
     connect(thumbnailStrip, SIGNAL(thumbnailClicked(int)), core, SLOT(loadImageByPos(int)));
+
+    connect(imageViewer, SIGNAL(scalingRequested(QSize)), core, SLOT(rescaleForZoom(QSize)));
+
+    connect(core, SIGNAL(scalingFinished(QPixmap*)),
+            imageViewer, SLOT(updateImage(QPixmap*)));
+
+    connect(core, SIGNAL(frameChanged(QPixmap*)),
+            imageViewer, SLOT(updateImage(QPixmap*)));
 }
 
 void MainWindow::open(QString path) {
@@ -414,6 +416,8 @@ void MainWindow::slotAbout() {
     QString message;
     message = "A simple qt image viewer \n \nMain developer: \n    Eugene G.";
     message.append("\nDeveloper:\n    Sergey V.");
+    message.append("\n\n This is a pre-release software.");
+    message.append("\n Expect bugs.");
     msgBox.setText(message);
     msgBox.setIcon(QMessageBox::Information);
     QGridLayout* layout = (QGridLayout*)msgBox.layout();

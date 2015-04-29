@@ -1,65 +1,52 @@
-#ifndef QIMAGELOADER_H
-#define QIMAGELOADER_H
+#ifndef IMAGE_H
+#define IMAGE_H
 
+#include "lib/imagelib.h"
 #include <fileinfo.h>
+#include <QObject>
 #include <QString>
 #include <QIODevice>
 #include <QDebug>
-#include <QMovie>
 #include <QPixmap>
 #include <QPixmapCache>
-#include <QImage>
-#include <QObject>
 #include <QThread>
 #include <QMutex>
-#include <settings.h>
-
-enum fileType { NONE, STATIC, GIF };
 
 class Image : public QObject
 {
     Q_OBJECT
 public:
-    Image(QString path);
-    ~Image();
-
-    const QImage* getImage();
-    QMovie *getMovie();
-    int getType();
-    int ramSize();
-    QDateTime getModifyDate();
-    void loadImage();
+    virtual QPixmap* getPixmap() = 0;
+    virtual QImage* getImage() = 0;
+    fileType getType();
+    virtual void load() = 0;
+    virtual void unload() = 0;
     QString getPath();
-    int height();
-    int width();
-    QSize size();
-    bool compare(Image*);
-    bool useFlag();
-    void setUseFlag(bool);
-
-    QImage *rotated(int grad);
-    void rotate(int grad);
+    virtual int height() = 0;
+    virtual int width() = 0;
+    virtual QSize size() = 0;
     bool isLoaded();
-    QImage* generateThumbnail();
-    void unloadImage();
-    FileInfo* getInfo();
+    virtual QPixmap* generateThumbnail() = 0;
     void attachInfo(FileInfo*);
-public slots:
-    void crop(QRect newRect);
-    void save();
-    void save(QString destinationPath);
-private:
-    FileInfo* info;
+    FileInfo* getInfo();
+
+    virtual void crop(QRect newRect) = 0;
+    virtual void rotate(int grad) = 0;
+protected:
     bool loaded;
     QString path;
-    const char* extension;
     fileType type;
-    QImage *image;
-    QMovie *movie;
     QSize resolution;
-    bool inUseFlag;
+    const char* extension;
     QMutex mutex;
-    void detectType();
+    void guessType();
+    FileInfo* info;
+
+signals:
+
+public slots:
+    virtual void save() = 0;
+    virtual void save(QString destinationPath) = 0;
 };
 
-#endif // QIMAGELOADER_H
+#endif // IMAGE_H

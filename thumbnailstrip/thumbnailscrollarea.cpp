@@ -5,7 +5,7 @@ ThumbnailScrollArea::ThumbnailScrollArea(QWidget *parent) :
 {
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollStep = 150;
-    defaultHeight = 110;
+    defaultHeight = 125;
     setFrameShape(QFrame::NoFrame);
     this->setMinimumHeight(defaultHeight);
     this->hide();

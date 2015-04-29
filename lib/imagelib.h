@@ -4,10 +4,17 @@
 #include <QImage>
 #include <QPainter>
 #include <cmath>
+#include <ctime>
+#include <QDebug>
 
-QImage* fastScale(const QImage* source, QSize destSize, bool smooth);
+enum fileType { STATIC, GIF };
 
-QImage* bilinearScale(const QImage* source, QSize destSize);
+class ImageLib {
+public:
+    static QPixmap* fastScale(const QImage* source, QSize destSize, bool smooth);
+    static QPixmap* bilinearScale(const QImage *source, QSize destSize, bool smooth);
+    static fileType guessType(QString path);
+};
 
 #endif // IMAGELIB_H
 

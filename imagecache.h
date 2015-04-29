@@ -1,7 +1,9 @@
 #ifndef IMAGECACHE_H
 #define IMAGECACHE_H
 
-#include "image.h"
+#include "imagestatic.h"
+#include "imageanimated.h"
+#include "lib/imagelib.h"
 #include "settings.h"
 #include <QList>
 #include <QtConcurrent>
@@ -11,7 +13,11 @@
 class CacheObject {
 public:
     CacheObject(QString path) : img(NULL), thumbnail(NULL) {
-        img = new Image(path);
+        if(ImageLib::guessType(path) == GIF) {
+            img = new ImageAnimated(path);
+        } else {
+            img = new ImageStatic(path);
+        }
         info = new FileInfo(path);
         img->attachInfo(info);
     }
@@ -26,11 +32,11 @@ public:
         }
         mutex.unlock();
     }
-    const QImage* getThumbnail() {
+    const QPixmap* getThumbnail() {
         if(!thumbnail) {
             generateThumbnail();
         }
-        return const_cast<const QImage*>(thumbnail);
+        return const_cast<const QPixmap*>(thumbnail);
     }
     const FileInfo* getInfo() {
         return const_cast<const FileInfo*>(info);
@@ -39,10 +45,10 @@ public:
         return img->isLoaded();
     }
     void load() {
-        img->loadImage();
+        img->load();
     }
     void unload() {
-        img->unloadImage();
+        img->unload();
     }
     Image* image() {
         return img;
@@ -50,7 +56,7 @@ public:
 private:
     FileInfo *info;
     Image *img;
-    QImage *thumbnail;
+    QPixmap *thumbnail;
     QMutex mutex;
 };
 
@@ -73,7 +79,7 @@ public:
 signals:
     void initialized();
 public slots:
-    const QImage *thumbnailAt(int pos) const;
+    const QPixmap *thumbnailAt(int pos) const;
 private:
     QList<CacheObject*> *cachedImages;
     uint maxCacheSize;

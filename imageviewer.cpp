@@ -1,7 +1,6 @@
 #include "imageviewer.h"
 
 ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
-    source(NULL),
     isDisplayingFlag(false),
     errorFlag(false),
     currentScale(1.0),
@@ -13,7 +12,7 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
 {
     initOverlays();
     bgColor.setRgb(17,17,17,255);
-    image = new QImage();
+    image = new QPixmap();
     image->load(":/images/res/logo.png");
     drawingRect = image->rect();
     this->setMouseTracking(true);
@@ -29,7 +28,6 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
 }
 
 ImageViewer::~ImageViewer() {
-    delete source;
 }
 
 void ImageViewer::initOverlays() {
@@ -51,78 +49,68 @@ bool ImageViewer::imageIsScaled() const {
     return scale() != 1.0;
 }
 
-void ImageViewer::stopAnimation() {
-    if(source->getType()==GIF) {
-        source->getMovie()->stop();
-        disconnect(source->getMovie(), SIGNAL(frameChanged(int)),
-                   this, SLOT(onAnimation()));
+/* void ImageViewer::stopAnimation() {
+    if(sourceSize.getType()==fileType::GIF) {
+        sourceSize.getMovie()->stop();
+        disconnect(sourceSize.getMovie(), SIGNAL(frameChanged(int)),
+                   this, SLOT(frameUpdate()));
     }
 }
 
 void ImageViewer::startAnimation() {
     resizeTimer->stop();
     disconnect(resizeTimer, SIGNAL(timeout()), this, SLOT(resizeImage()));
-    connect(source->getMovie(), SIGNAL(frameChanged(int)),
-            this, SLOT(onAnimation()), Qt::DirectConnection);
-    source->getMovie()->start();
+    connect(sourceSize.getMovie(), SIGNAL(frameChanged(int)),
+            this, SLOT(frameUpdate()), Qt::DirectConnection);
+    sourceSize.getMovie()->start();
 }
 
-void ImageViewer::onAnimation() {
-    *image = source->getMovie()->currentImage();
+void ImageViewer::frameUpdate(QImage *const frame) {
+    delete image;
+    image = frame;
     update();
 }
+*/
 
-void ImageViewer::freeImage() {
-    if (source!=NULL) {
-        stopAnimation();
-    }
-}
-
-void ImageViewer::displayImage(Image* i) {
+// display & initialize
+void ImageViewer::displayImage(QPixmap* _image) {
+    delete image;
     resizeTimer->stop();
-    source = i;
-    if(i->getType()==NONE) {
-        //empty or corrupted image
-        image->load(":/images/res/error.png");
-        isDisplayingFlag = false;
-        mapOverlay->setEnabled(false);
-        errorFlag=true;
-    }
-    else {
-        errorFlag=false;
-        isDisplayingFlag = true;
-        if(source->getType() == STATIC) {
-           *image = *source->getImage();
-            connect(resizeTimer, SIGNAL(timeout()),
-                    this, SLOT(resizeImage()), Qt::UniqueConnection);
-        }
-        else if (source->getType() == GIF) {
-            source->getMovie()->jumpToFrame(0);
-            *image = source->getMovie()->currentImage();
-            startAnimation();
-        }
-        updateMaxScale();
-        updateMinScale();
-        cursorTimer->start(2000);
-    }
-    drawingRect = image->rect();
+    sourceSize  = _image->size();
+    drawingRect =  _image->rect();
+
+    errorFlag=false;
+    isDisplayingFlag = true;
+    image = _image;
+
+    updateMaxScale();
+    updateMinScale();
+
     currentScale = 1.0;
     if(imageFitMode == FREE)
         imageFitMode = ALL;
     fitDefault();
-    mapOverlay->setEnabled(true);
-    updateMap();
-    cropOverlay->setRealSize(source->size());
+
+    cropOverlay->setRealSize(sourceSize);
     cropOverlay->setImageArea(drawingRect, currentScale);
     cropOverlay->hide();
+
+    mapOverlay->setEnabled(true);
     mapOverlay->updatePosition();
+    updateMap();
     update();
+
+    connect(resizeTimer, SIGNAL(timeout()),
+            this, SLOT(resizeImage()), Qt::UniqueConnection);
     resizeTimer->start(0);
-    //emit imageChanged();
+   // cursorTimer->start(2000);
 }
 
-void ImageViewer::redisplay() {
-    displayImage(source);
+// takes scaled image
+void ImageViewer::updateImage(QPixmap *scaled) {
+    delete image;
+    image = scaled;
+    update();
 }
 
 void ImageViewer::crop() {
@@ -136,13 +124,13 @@ void ImageViewer::crop() {
 
 void ImageViewer::updateMaxScale() {
     if(isDisplaying()) {
-        if (source->width() < width() &&
-            source->height() < height()) {
+        if (sourceSize.width() < width() &&
+            sourceSize.height() < height()) {
             maxScale = 1;
             return;
         }
-        float newMaxScaleX = (float)width()/source->width();
-        float newMaxScaleY = (float)height()/source->height();
+        float newMaxScaleX = (float)width()/sourceSize.width();
+        float newMaxScaleY = (float)height()/sourceSize.height();
         if(newMaxScaleX < newMaxScaleY) {
             maxScale = newMaxScaleX;
         }
@@ -155,9 +143,9 @@ void ImageViewer::updateMaxScale() {
 
 void ImageViewer::updateMinScale() {
     minScale=3.0;
-    float imgSize = source->width()*source->height()/1000000;
+    float imgSize = sourceSize.width()*sourceSize.height()/1000000;
     float maxSize =
-            minScale*source->width()*source->height()/1000000;
+            minScale*sourceSize.width()*sourceSize.height()/1000000;
     if(maxSize>25) {
         minScale=sqrt(25/imgSize);
     }
@@ -180,8 +168,8 @@ void ImageViewer::setScale(float scale) {
         else {
             currentScale = scale;
         }
-        float h = scale*source->height();
-        float w = scale*source->width();
+        float h = scale*sourceSize.height();
+        float w = scale*sourceSize.width();
         drawingRect.setHeight(h);
         drawingRect.setWidth(w);
 
@@ -199,46 +187,7 @@ void ImageViewer::resizeImage() {
     }
     resizeTimer->stop();
     if(image->size() != drawingRect.size()) {
-        //int time = clock();
-        delete image;
-        float sourceSize = source->width()*source->height()/1000000;
-        float size = drawingRect.width()*drawingRect.height()/1000000;
-        if(currentScale==1.0) {
-            image = new QImage();
-            *image = *source->getImage();
-        } else if(currentScale<1.0) { // downscale
-            if(sourceSize>15) {
-                if(size>10) {
-                    // large src, larde dest
-                    image = fastScale(source->getImage(), drawingRect.size(), false);
-                } else if(size>4 && size<10){
-                    // large src, medium dest
-                    image = fastScale(source->getImage(), drawingRect.size(), true);
-                } else {
-                    // large src, low dest
-                    image = bilinearScale(source->getImage(), drawingRect.size());
-                }
-            } else {
-                // low src
-                image = bilinearScale(source->getImage(), drawingRect.size());
-            }
-        } else {
-            if(sourceSize>10) { // upscale
-                // large src
-                image = fastScale(source->getImage(), drawingRect.size(), false);
-            } else {
-                // low src
-                image = fastScale(source->getImage(), drawingRect.size(), true);
-            }
-        }
-/*
-        qDebug() << "###### scaling ######";
-        qDebug() << currentScale;
-        qDebug() << "size: " << size;
-        qDebug() << "srcSize: " << sourceSize;
-        qDebug() << "time: " << clock()-time;
-*/
-        update();
+        emit scalingRequested(drawingRect.size());
     }
 }
 
@@ -250,11 +199,9 @@ void ImageViewer::paintEvent(QPaintEvent* event) {
     Q_UNUSED( event )
     QPainter painter(this);
     painter.fillRect(rect(), QBrush(bgColor));
-    if(source && source->getType() == GIF) {
-        painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
-    }
+    //painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     //int time = clock();
-    painter.drawImage(drawingRect, *image, image->rect());
+    painter.drawPixmap(drawingRect, *image, image->rect());
     //qDebug() << "VIEWER: draw time: " << clock() - time;
 }
 
@@ -276,7 +223,8 @@ void ImageViewer::mousePressEvent(QMouseEvent* event) {
 
 void ImageViewer::mouseMoveEvent(QMouseEvent* event) {
     cursorTimer->stop();
-    if(event->pos().y() > height()-60 && panel) {
+    //hardcoded position for now
+    if(event->pos().y() > height()-80 && event->pos().x() < width()-130 && panel) {
         panel->show();
         return;
     }
@@ -344,7 +292,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent* event) {
 
 void ImageViewer::fitWidth() {
     if(isDisplaying()) {
-        float scale = (float) width() / source->size().width();
+        float scale = (float) width() / sourceSize.width();
         setScale(scale);
         centerImage();
         if(drawingRect.height()>height())
@@ -361,8 +309,8 @@ void ImageViewer::fitWidth() {
 
 void ImageViewer::fitAll() {
     if(isDisplaying()) {
-        bool h = source->height() <= height();
-        bool w = source->width() <= width();
+        bool h = sourceSize.height() <= height();
+        bool w = sourceSize.width() <= width();
         // source image fits entirely
         if(h && w) {
             fitNormal();
@@ -494,19 +442,22 @@ void ImageViewer::fixAlignVertical() {
 
 // scales image around point, so point's position
 // relative to window remains unchanged
+// literally shit. just center for now
 void ImageViewer::scaleAround(QPointF p, float newScale) {
-    float oldX = drawingRect.x();
+    /*float oldX = drawingRect.x();
     float xPos = (float)(p.x()-oldX)/(drawingRect.width()-oldX);
     float oldPx = (float)xPos*drawingRect.width();
     float oldY = drawingRect.y();
     float yPos = (float)(p.y()-oldY)/drawingRect.height();
     float oldPy = (float)yPos*drawingRect.height();
     setScale(newScale);
-    //qDebug() << "new xPos = " << xPos;
     float newPx = (float)xPos*drawingRect.width();
     drawingRect.moveLeft(oldX - (newPx-oldPx));
     float newPy = (float)yPos*drawingRect.height();
     drawingRect.moveTop(oldY - (newPy-oldPy));
+    */
+    setScale(newScale);
+    centerImage();
     alignImage();
 }
 

@@ -20,7 +20,7 @@ SOURCES += main.cpp\
     infooverlay.cpp \
     fileinfo.cpp \
     controlsoverlay.cpp \
-    image.cpp \
+    imagestatic.cpp \
     core.cpp \
     directorymanager.cpp \
     imageloader.cpp \
@@ -36,13 +36,14 @@ SOURCES += main.cpp\
     thumbnailstrip/thumbnailstrip.cpp \
     thumbnailstrip/thumbnailscrollarea.cpp \
     thumbnailstrip/thumbnaillabel.cpp \
-    thumbnailstrip/slidingpanel.cpp
+    image.cpp \
+    imageanimated.cpp
 
 HEADERS  += mainwindow.h \
     infooverlay.h \
     fileinfo.h \
     controlsoverlay.h \
-    image.h \
+    imagestatic.h \
     core.h \
     directorymanager.h \
     imageloader.h \
@@ -56,10 +57,10 @@ HEADERS  += mainwindow.h \
     cropoverlay.h \
     thumbnailstrip/thumbnailstrip.h \
     thumbnailstrip/thumbnailitem.h \
-    thumbnailstrip/customscene.h \
     thumbnailstrip/thumbnailscrollarea.h \
     thumbnailstrip/thumbnaillabel.h \
-    thumbnailstrip/slidingpanel.h
+    image.h \
+    imageanimated.h
 
 FORMS    += \
     settingsdialog.ui

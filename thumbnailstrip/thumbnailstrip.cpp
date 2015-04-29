@@ -23,7 +23,7 @@ void ThumbnailStrip::populate() {
 
 void ThumbnailStrip::addItem(int pos) {
     ThumbnailLabel *thumbLabel = new ThumbnailLabel();
-    thumbLabel->setPixmap(QPixmap::fromImage(*cache->thumbnailAt(pos)));
+    thumbLabel->setPixmap(*cache->thumbnailAt(pos));
 
     layout->addWidget(thumbLabel);
     thumbnailLabels.append(thumbLabel);

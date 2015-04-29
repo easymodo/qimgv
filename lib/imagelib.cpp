@@ -1,28 +1,48 @@
 #include "imagelib.h"
 
-QImage* fastScale(const QImage* source, QSize destSize, bool smooth) {
-    //bool smoothEnabled;
-    QImage* image = new QImage(destSize,QImage::Format_ARGB32_Premultiplied);
-    image->fill(qRgba(0,0,0,0));
-    QPainter painter(image);
+#include <QFile>
+
+QPixmap* ImageLib::fastScale(const QImage* source, QSize destSize, bool smooth) {
+    QPixmap* pixmap = new QPixmap(destSize);
+    pixmap->fill(qRgba(0,0,0,0));
+    QPainter painter(pixmap);
     painter.setRenderHint(QPainter::SmoothPixmapTransform, smooth);
     painter.drawImage(QRectF(QPointF(0,0),
                       destSize),
                       *source,
                       source->rect()
                       );
-    return image;
+    return pixmap;
 }
 
-QImage* bilinearScale(const QImage* source, QSize destSize) {
-    QImage* image = new QImage(destSize,QImage::Format_ARGB32_Premultiplied);
-    *image = source->scaled(destSize.width(),
-                                             destSize.height(),
-                                             Qt::IgnoreAspectRatio,
-                                             Qt::SmoothTransformation);
-    return image;
+QPixmap* ImageLib::bilinearScale(const QImage* source, QSize destSize, bool smooth) {
+    QPixmap* pixmap = new QPixmap(destSize);
+    Qt::TransformationMode mode;
+    if(smooth)
+        mode = Qt::SmoothTransformation;
+    else
+        mode = Qt::FastTransformation;
+    int time = clock();
+    QImage temp = source->scaled(destSize.width(),
+                                 destSize.height(),
+                                 Qt::IgnoreAspectRatio,
+                                 mode);
+    time = clock();
+    pixmap->convertFromImage(temp);
+    return pixmap;
 }
 
+fileType ImageLib::guessType(QString path) {
+    QFile file(path);
+    file.open(QIODevice::ReadOnly);
+    //read first 2 bytes to determine file format
+    QByteArray startingBytes= file.read(2).toHex();
+    file.close();
 
-
-
+    if(startingBytes=="4749") {
+        return GIF;
+    }
+    else {
+        return STATIC;
+    }
+}
