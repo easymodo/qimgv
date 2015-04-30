@@ -1,5 +1,5 @@
 file(GLOB SOURCES *.cpp)
 list (REMOVE_ITEM SOURCES moc_*.cpp)
 list (REMOVE_ITEM SOURCES *_automoc.cpp)
-add_library(thumbnailstrip SHARED ${SOURCES})
+add_library(thumbnailstrip STATIC ${SOURCES})
 target_link_libraries(thumbnailstrip Qt5::Widgets Qt5::Concurrent)
