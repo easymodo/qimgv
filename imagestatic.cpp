@@ -49,13 +49,17 @@ void ImageStatic::unload() {
 
 void ImageStatic::save(QString destinationPath) {
     if(isLoaded()) {
+        mutex.lock();
         image->save(destinationPath, extension, 100);
+        mutex.unlock();
     }
 }
 
 void ImageStatic::save() {
     if(isLoaded()) {
+        mutex.lock();
         image->save(path, extension, 100);
+        mutex.unlock();
     }
 }
 
@@ -70,10 +74,12 @@ QPixmap* ImageStatic::generateThumbnail() {
     } else {
         tmp = new QPixmap();
         if(!image->isNull()) {
+            mutex.lock();
             *tmp = QPixmap::fromImage(image->scaled(size*2, size*2,
                                                           Qt::KeepAspectRatio,
                                                           Qt::FastTransformation)
                 .scaled(size, size, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+            mutex.unlock();
         }
     }
     QRect target(0, 0, size,size);
@@ -86,7 +92,11 @@ QPixmap* ImageStatic::generateThumbnail() {
 QPixmap* ImageStatic::getPixmap()
 {
     QPixmap *pix = new QPixmap();
-    pix->convertFromImage(*image);
+    if(isLoaded()) {
+        mutex.lock();
+        pix->convertFromImage(*image);
+        mutex.unlock();
+    }
     return pix;
 }
 

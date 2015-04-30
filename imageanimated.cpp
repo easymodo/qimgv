@@ -60,9 +60,11 @@ QPixmap* ImageAnimated::generateThumbnail() {
             .scaled(size, size, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
     } else {
         tmp = new QPixmap();
+        mutex.lock();
         *tmp = movie->currentPixmap()
                 .scaled(size*2, size*2, Qt::KeepAspectRatioByExpanding)
                 .scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        mutex.unlock();
     }
     QRect target(0, 0, size,size);
     target.moveCenter(tmp->rect().center());
@@ -74,14 +76,18 @@ QPixmap* ImageAnimated::generateThumbnail() {
 QPixmap* ImageAnimated::getPixmap()
 {
     QPixmap *pix = new QPixmap();
-    *pix = movie->currentPixmap();
+    if(isLoaded()) {
+        *pix = movie->currentPixmap();
+    }
     return pix;
 }
 
 // todo: const ?
 QImage* ImageAnimated::getImage() {
     QImage* ptr = new QImage();
-    *ptr = movie->currentImage();
+    if(isLoaded()) {
+        *ptr = movie->currentImage();
+    }
     return ptr;
 }
 

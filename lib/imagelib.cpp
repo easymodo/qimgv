@@ -9,7 +9,6 @@ ImageLib::ImageLib() {
 void ImageLib::fastScale(QPixmap* dest, const QImage* source, QSize destSize, bool smooth) {
     dest->fill(qRgba(0,0,0,0));
     QPainter painter(dest);
-    qDebug() << source;
     painter.setRenderHint(QPainter::SmoothPixmapTransform, smooth);
     painter.drawImage(QRectF(QPointF(0,0),
                       destSize),

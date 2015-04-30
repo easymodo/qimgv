@@ -48,29 +48,6 @@ bool ImageViewer::imageIsScaled() const {
     return scale() != 1.0;
 }
 
-/* void ImageViewer::stopAnimation() {
-    if(sourceSize.getType()==fileType::GIF) {
-        sourceSize.getMovie()->stop();
-        disconnect(sourceSize.getMovie(), SIGNAL(frameChanged(int)),
-                   this, SLOT(frameUpdate()));
-    }
-}
-
-void ImageViewer::startAnimation() {
-    resizeTimer->stop();
-    disconnect(resizeTimer, SIGNAL(timeout()), this, SLOT(resizeImage()));
-    connect(sourceSize.getMovie(), SIGNAL(frameChanged(int)),
-            this, SLOT(frameUpdate()), Qt::DirectConnection);
-    sourceSize.getMovie()->start();
-}
-
-void ImageViewer::frameUpdate(QImage *const frame) {
-    delete image;
-    image = frame;
-    update();
-}
-*/
-
 // display & initialize
 void ImageViewer::displayImage(QPixmap* _image) {
     delete image;
