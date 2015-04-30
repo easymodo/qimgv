@@ -397,8 +397,10 @@ void MainWindow::resizeEvent(QResizeEvent* event) {
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event) {
-    if(event->pos().y() > height()-80 && event->pos().x() < width()-130 && panel) {
-        panel->show();
+    if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
+        if(event->pos().y() > height()-80 && event->pos().x() < width()-130 && panel) {
+            panel->show();
+        }
     }
     event->ignore();
 }
