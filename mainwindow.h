@@ -35,6 +35,7 @@ public slots:
     void setInfoString(QString);
     void readSettings();
 
+    void close();
 signals:
     void signalFitAll();
     void signalFitWidth();
@@ -71,7 +72,7 @@ private:
     Core *core;
     textOverlay *infoOverlay, *messageOverlay;
     ControlsOverlay *controlsOverlay;
-    ThumbnailStrip *thumbnailStrip;
+    ThumbnailScrollArea *panel;
     void init();
     void createActions();
     void createMenus();
@@ -105,6 +106,7 @@ protected:
     void wheelEvent(QWheelEvent *event);
     bool eventFilter(QObject *target, QEvent *event);
     void resizeEvent(QResizeEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
 };
 
 #endif // MAINWINDOW_H

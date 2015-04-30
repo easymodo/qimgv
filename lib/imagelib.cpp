@@ -2,34 +2,33 @@
 
 #include <QFile>
 
-QPixmap* ImageLib::fastScale(const QImage* source, QSize destSize, bool smooth) {
-    QPixmap* pixmap = new QPixmap(destSize);
-    pixmap->fill(qRgba(0,0,0,0));
-    QPainter painter(pixmap);
+ImageLib::ImageLib() {
+
+}
+
+void ImageLib::fastScale(QPixmap* dest, const QImage* source, QSize destSize, bool smooth) {
+    dest->fill(qRgba(0,0,0,0));
+    QPainter painter(dest);
+    qDebug() << source;
     painter.setRenderHint(QPainter::SmoothPixmapTransform, smooth);
     painter.drawImage(QRectF(QPointF(0,0),
                       destSize),
                       *source,
                       source->rect()
                       );
-    return pixmap;
 }
 
-QPixmap* ImageLib::bilinearScale(const QImage* source, QSize destSize, bool smooth) {
-    QPixmap* pixmap = new QPixmap(destSize);
+void ImageLib::bilinearScale(QPixmap *dest, const QImage* source, QSize destSize, bool smooth) {
     Qt::TransformationMode mode;
     if(smooth)
         mode = Qt::SmoothTransformation;
     else
         mode = Qt::FastTransformation;
-    int time = clock();
-    QImage temp = source->scaled(destSize.width(),
-                                 destSize.height(),
-                                 Qt::IgnoreAspectRatio,
-                                 mode);
-    time = clock();
-    pixmap->convertFromImage(temp);
-    return pixmap;
+    dest->convertFromImage(source->scaled(destSize.width(),
+                                          destSize.height(),
+                                          Qt::IgnoreAspectRatio,
+                                          mode)
+                           );
 }
 
 fileType ImageLib::guessType(QString path) {

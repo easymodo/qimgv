@@ -10,33 +10,33 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QScrollBar>
-#include "../imagecache.h"
 #include "thumbnaillabel.h"
 
 class ThumbnailStrip : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ThumbnailStrip(ImageCache* _cache, QWidget *parent = 0);
+    explicit ThumbnailStrip(QWidget *_parent = 0);
     ~ThumbnailStrip();
+    QList<ThumbnailLabel*> thumbnailLabels;
 
 private:
-    const ImageCache *cache;
+    QWidget *parent;
     void addItem(int pos);
     QHBoxLayout *layout;
-    QList<QLabel*> thumbnailLabels;
 
+    bool visible(int pos);
 signals:
     void thumbnailClicked(int);
 
 public slots:
-    void populate();
+    void populate(int count);
 
 protected:
     void wheelEvent(QWheelEvent *event);
 
 private slots:
-    void slotThumbnailClicked(QLabel*);
+    void slotThumbnailClicked(ThumbnailLabel*);
 };
 
 #endif // THUMBNAILSTRIP_H

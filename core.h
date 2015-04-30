@@ -13,7 +13,7 @@ class Core : public QObject
 {
     Q_OBJECT
 public:
-    explicit Core(ImageCache *cache);
+    explicit Core();
     void open(QString);
     const ImageCache* getCache();
 
@@ -24,6 +24,7 @@ private:
     DirectoryManager *dirManager;
     Image* currentImage;
     ImageAnimated* currentMovie;
+    ImageCache *cache;
 
 private slots:
     void onLoadFinished(Image *img);
@@ -37,11 +38,14 @@ signals:
     void imageAltered(QPixmap*);
     void scalingFinished(QPixmap*);
     void frameChanged(QPixmap*);
+    void thumbnailRequested(int);
+    void thumbnailReady(int, const QPixmap*);
+    void cacheInitialized(int);
 
 public slots:
+    void init();
     void updateInfoString();
     void loadImage(QString);
-    void initSettings();
     void slotNextImage();
     void slotPrevImage();
     void setCurrentDir(QString);

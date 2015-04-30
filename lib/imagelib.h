@@ -11,8 +11,9 @@ enum fileType { STATIC, GIF };
 
 class ImageLib {
 public:
-    static QPixmap* fastScale(const QImage* source, QSize destSize, bool smooth);
-    static QPixmap* bilinearScale(const QImage *source, QSize destSize, bool smooth);
+    ImageLib();
+    void fastScale(QPixmap *dest, const QImage* source, QSize destSize, bool smooth);
+    void bilinearScale(QPixmap *dest, const QImage *source, QSize destSize, bool smooth);
     static fileType guessType(QString path);
 };
 

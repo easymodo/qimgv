@@ -65,6 +65,10 @@ QString DirectoryManager::currentFileName() {
     return fileList.at(currentPos);
 }
 
+QString DirectoryManager::currentDirectory() {
+    return currentDir.absolutePath();
+}
+
 int DirectoryManager::currentFilePos() {
     return currentPos;
 }

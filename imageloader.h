@@ -23,15 +23,19 @@ public:
     const ImageCache* getCache();
     void setCache(ImageCache*);
 
+public slots:
+    void generateThumbnailFor(int pos);
 private:
     DirectoryManager *dm;
     ImageCache *cache;
     QMutex mutex, mutex2;
 
+    void generateThumbnailThread(int pos);
 signals:
     void loadStarted();
     void loadFinished(Image*);
     void startPreload(int);
+    void thumbnailReady(int, const QPixmap*);
 
 private slots:
     void lock();

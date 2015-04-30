@@ -7,6 +7,7 @@
 #include <QScrollBar>
 #include <QWheelEvent>
 #include <QDebug>
+#include "thumbnailstrip.h"
 
 class ThumbnailScrollArea : public QScrollArea
 {
@@ -17,10 +18,19 @@ public:
 
 public slots:
     void parentResized(QSize parentSize);
+    void loadVisibleThumbnails();   
+    void setThumbnail(int, const QPixmap*);
+    void cacheInitialized(int);
+
+signals:
+    void thumbnailRequested(int pos);
+    void thumbnailClicked(int pos);
 
 private:
     int scrollStep;
     int defaultHeight;
+    bool childVisible(ThumbnailLabel *label);
+    ThumbnailStrip *strip;
 
 protected:
     void wheelEvent(QWheelEvent*);

@@ -20,14 +20,8 @@
 #include "cropoverlay.h"
 #include <time.h>
 #include "lib/imagelib.h"
-#include "thumbnailstrip/thumbnailscrollarea.h"
 
 #define FLT_EPSILON 1.19209290E-07F
-
-enum Position {
-    TOP,
-    BOTTOM
-};
 
 enum ImageFitMode
 {
@@ -45,7 +39,6 @@ public:
     ImageViewer(QWidget* parent);
     ~ImageViewer();
     bool isDisplaying() const;
-    void addPanel(ThumbnailScrollArea*, Position);
 
 signals:
     void sendDoubleClick();
@@ -81,7 +74,6 @@ private:
     QTimer *resizeTimer, *cursorTimer;
     QRect drawingRect;
     QPoint mouseMoveStartPos;
-    ThumbnailScrollArea *panel;
     QSize sourceSize;
 
     QColor bgColor;
@@ -97,7 +89,6 @@ private:
     float minScale; // zoom IN
     float scaleStep;
     QPointF fixedZoomPoint;
-    Position panelPosition;
 
     ImageFitMode imageFitMode;
     void initOverlays();

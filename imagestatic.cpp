@@ -6,9 +6,10 @@ ImageStatic::ImageStatic(QString _path)
 {
     path = _path;
     loaded = false;
-    image = new QImage();
+    image = NULL;
     type = STATIC;
     extension = NULL;
+    info=NULL;
 }
 
 ImageStatic::~ImageStatic()
@@ -20,6 +21,7 @@ ImageStatic::~ImageStatic()
 void ImageStatic::load()
 {
     mutex.lock();
+    info = new FileInfo(path);
     if(isLoaded()) {
         mutex.unlock();
         return;
@@ -32,7 +34,6 @@ void ImageStatic::load()
         image = new QImage(path); // qt will guess format
     }
     loaded = true;
-    generateThumbnail();
     mutex.unlock();
 }
 
@@ -40,7 +41,7 @@ void ImageStatic::unload() {
     mutex.lock();
     if(isLoaded()) {
         delete image;
-        image = new QImage();
+        image = NULL;
         loaded = false;
     }
     mutex.unlock();

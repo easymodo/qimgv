@@ -27,6 +27,7 @@ public:
     QFileInfoList getFileInfoList();
     bool existsInCurrentDir(QString file);
     QString currentFileName();
+    QString currentDirectory();
     int currentFilePos();
     int nextPos();
     int prevPos();

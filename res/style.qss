@@ -58,12 +58,12 @@ QScrollBar:horizontal {
 }
 
 QScrollBar::handle:horizontal {
-    background: #141414;
+    background: #121212;
     min-width: 60px;
 }
 
 QScrollBar::handle:horizontal:hover {
-    background: #070707;
+    background: #050505;
 }
 
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {

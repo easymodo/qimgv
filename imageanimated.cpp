@@ -19,6 +19,7 @@ ImageAnimated::~ImageAnimated()
 void ImageAnimated::load()
 {
     mutex.lock();
+    info = new FileInfo(path);
     if(isLoaded()) {
         mutex.unlock();
         return;
@@ -28,7 +29,6 @@ void ImageAnimated::load()
     movie->setFileName(path);
     movie->jumpToFrame(0);
     loaded = true;
-    generateThumbnail();
     mutex.unlock();
 }
 

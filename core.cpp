@@ -1,14 +1,12 @@
 #include "core.h"
 
-Core::Core(ImageCache *cache) :
+Core::Core() :
     QObject(),
     imageLoader(NULL),
-    dirManager(NULL)
+    dirManager(NULL),
+    currentImage(NULL),
+    currentMovie(NULL)
 {
-    initVariables();
-    imageLoader->setCache(cache);
-    connectSlots();
-    initSettings();
 }
 
 const ImageCache *Core::getCache() {
@@ -16,10 +14,9 @@ const ImageCache *Core::getCache() {
 }
 
 void Core::initVariables() {
+    cache = new ImageCache();
     dirManager = new DirectoryManager();
     imageLoader = new ImageLoader(dirManager);
-    currentImage = NULL;
-    currentMovie = NULL;
 }
 
 // misc connections not related to gui
@@ -28,9 +25,17 @@ void Core::connectSlots() {
             this, SLOT(updateInfoString()));
     connect(imageLoader, SIGNAL(loadFinished(Image*)),
             this, SLOT(onLoadFinished(Image*)));
+    connect(this, SIGNAL(thumbnailRequested(int)),
+            imageLoader, SLOT(generateThumbnailFor(int)));
+    connect(imageLoader, SIGNAL(thumbnailReady(int, const QPixmap*)),
+            this, SIGNAL(thumbnailReady(int, const QPixmap*)));
+    connect(cache, SIGNAL(initialized(int)), this, SIGNAL(cacheInitialized(int)));
 }
 
-void Core::initSettings() {
+void Core::init() {
+    initVariables();
+    connectSlots();
+    imageLoader->setCache(cache);
 }
 
 void Core::updateInfoString() {
@@ -86,24 +91,20 @@ void Core::setCurrentDir(QString path) {
 }
 
 void Core::slotNextImage() {
-   // currentImage = NULL;
     imageLoader->loadNext();
 }
 
 void Core::slotPrevImage() {
-   // currentImage = NULL;
     imageLoader->loadPrev();
 }
 
 void Core::loadImage(QString path) {
     if(!path.isEmpty()) {
-    //    currentImage = NULL;
         imageLoader->open(path);
     }
 }
 
 void Core::loadImageByPos(int pos) {
-    //  currentImage = NULL;
       imageLoader->open(pos);
 }
 
@@ -119,40 +120,46 @@ void Core::onLoadFinished(Image* img) {
 }
 
 void Core::rescaleForZoom(QSize newSize) {
-    float sourceSize = currentImage->width()*
-                       currentImage->height()/1000000;
-    float size = newSize.width()*
-                 newSize.height()/1000000;
-    QPixmap *pixmap;
-    float currentScale = 2.0;
-    if(currentScale==1.0) {
-        pixmap = currentImage->getPixmap();
-    } else if(currentScale<1.0) { // downscale
-        if(sourceSize>15) {
-            if(size>10) {
-                // large src, larde dest
-                pixmap = ImageLib::fastScale(currentImage->getImage(), newSize, false);
-            } else if(size>4 && size<10){
-                // large src, medium dest
-                pixmap = ImageLib::fastScale(currentImage->getImage(), newSize, true);
+    if(currentImage && currentImage->isLoaded()) {
+        ImageLib imgLib;
+        float sourceSize = currentImage->width()*
+                           currentImage->height()/1000000;
+        float size = newSize.width()*
+                     newSize.height()/1000000;
+        QPixmap* pixmap;
+        float currentScale = 2.0;
+        if(currentScale==1.0) {
+            pixmap = currentImage->getPixmap();
+        } else {
+            pixmap = new QPixmap(newSize);
+            if(currentScale<1.0) { // downscale
+                if(sourceSize>15) {
+                    if(size>10) {
+                        // large src, larde dest
+                        imgLib.fastScale(pixmap, currentImage->getImage(), newSize, false);
+                    } else if(size>4 && size<10){
+                        // large src, medium dest
+                        imgLib.fastScale(pixmap, currentImage->getImage(), newSize, true);
+                    } else {
+                        // large src, low dest
+                        imgLib.bilinearScale(pixmap, currentImage->getImage(), newSize, true);
+                    }
+                } else {
+                    // low src
+                    imgLib.bilinearScale(pixmap, currentImage->getImage(), newSize, true);
+                }
             } else {
-                // large src, low dest
-                pixmap = ImageLib::bilinearScale(currentImage->getImage(), newSize, true);
+                if(sourceSize>10) { // upscale
+                    // large src
+                    imgLib.fastScale(pixmap, currentImage->getImage(), newSize, false);
+                } else {
+                    // low src
+                    imgLib.fastScale(pixmap, currentImage->getImage(), newSize, true);
+                }
             }
-        } else {
-            // low src
-            pixmap = ImageLib::bilinearScale(currentImage->getImage(), newSize, true);
         }
-    } else {
-        if(sourceSize>10) { // upscale
-            // large src
-            pixmap = ImageLib::fastScale(currentImage->getImage(), newSize, false);
-        } else {
-            // low src
-            pixmap = ImageLib::fastScale(currentImage->getImage(), newSize, true);
-        }
+        emit scalingFinished(pixmap);
     }
-    emit scalingFinished(pixmap);
 }
 
 void Core::startAnimation() {

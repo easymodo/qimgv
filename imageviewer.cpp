@@ -7,8 +7,7 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
     maxScale(1.0),
     minScale(4.0),
     scaleStep(0.05),
-    imageFitMode(NORMAL),
-    panel(NULL)
+    imageFitMode(NORMAL)
 {
     initOverlays();
     bgColor.setRgb(17,17,17,255);
@@ -206,6 +205,7 @@ void ImageViewer::paintEvent(QPaintEvent* event) {
 }
 
 void ImageViewer::mousePressEvent(QMouseEvent* event) {
+    QWidget::mousePressEvent(event);
     if(!isDisplaying()) {
         return;
     }
@@ -222,12 +222,8 @@ void ImageViewer::mousePressEvent(QMouseEvent* event) {
 }
 
 void ImageViewer::mouseMoveEvent(QMouseEvent* event) {
+    QWidget::mouseMoveEvent(event);
     cursorTimer->stop();
-    //hardcoded position for now
-    if(event->pos().y() > height()-80 && event->pos().x() < width()-130 && panel) {
-        panel->show();
-        return;
-    }
     if(!isDisplaying()) {
         return;
     }
@@ -276,6 +272,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent* event) {
 }
 
 void ImageViewer::mouseReleaseEvent(QMouseEvent* event) {
+    QWidget::mouseReleaseEvent(event);
     if(!isDisplaying()) {
         return;
     }
@@ -392,6 +389,7 @@ void ImageViewer::resizeEvent(QResizeEvent* event) {
 }
 
 void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
+    QWidget::mouseDoubleClickEvent(event);
     if(event->button() == Qt::RightButton) {
         emit sendRightDoubleClick();
     }
@@ -500,12 +498,6 @@ void ImageViewer::slotZoomOut() {
 
 bool ImageViewer::isDisplaying() const {
     return isDisplayingFlag;
-}
-
-void ImageViewer::addPanel(ThumbnailScrollArea *_panel, Position pos) {
-    this->panel = _panel;
-    panel->parentResized(size());
-    connect(this, SIGNAL(resized(QSize)), panel, SLOT(parentResized(QSize)));
 }
 
 void ImageViewer::hideCursor() {

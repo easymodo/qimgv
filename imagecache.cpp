@@ -8,7 +8,8 @@ ImageCache::ImageCache() {
 }
 
 // call when changing directory
-void ImageCache::init(QStringList list) {
+void ImageCache::init(QString directory, QStringList list) {
+    dir = directory;
     QThreadPool::globalInstance()->setMaxThreadCount(4);
     // also should free memory
     lock();
@@ -16,9 +17,12 @@ void ImageCache::init(QStringList list) {
     for(int i=0; i<list.length(); i++) {
         cachedImages->append(new CacheObject(list.at(i)));
     }
-    generateAllThumbnails();
     unlock();
-    emit initialized();
+    emit initialized(length());
+}
+
+QString ImageCache::directory() {
+    return dir;
 }
 
 void ImageCache::unloadAll() {
@@ -27,7 +31,6 @@ void ImageCache::unloadAll() {
     for(int i=0; i<cachedImages->length(); i++) {
         cachedImages->at(i)->unload();
     }
-    qDebug() << "unload time: " << clock() - time;
     unlock();
 }
 

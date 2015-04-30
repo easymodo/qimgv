@@ -2,12 +2,14 @@
 
 MainWindow::MainWindow() :
     imageViewer(NULL),
-    settingsDialog(NULL)
+    settingsDialog(NULL),
+    panel(NULL)
 {
     init();
     resize(800, 600);
     readSettings();
     setMinimumSize(QSize(400,300));
+    this->setMouseTracking(true);
     setWindowTitle(QCoreApplication::applicationName() +
                    " " +
                    QCoreApplication::applicationVersion());
@@ -15,24 +17,20 @@ MainWindow::MainWindow() :
 }
 
 void MainWindow::init() {
-    ImageCache *cache = new ImageCache();
     settingsDialog = new SettingsDialog();
     imageViewer = new ImageViewer(this);
+
     controlsOverlay = new ControlsOverlay(imageViewer);
+    controlsOverlay->hide();
+
     infoOverlay = new textOverlay(imageViewer);
 
-    ThumbnailScrollArea *scroll = new ThumbnailScrollArea(imageViewer);
-    thumbnailStrip = new ThumbnailStrip(cache, scroll);
-    scroll->setWidget(thumbnailStrip);
-    imageViewer->addPanel(scroll, BOTTOM);
-
-    controlsOverlay->hide();
     this->setCentralWidget(imageViewer);
 
-    core = new Core(cache);
+    panel = new ThumbnailScrollArea(this);
+    panel->parentResized(size());
 
-    createActions();
-    createMenus();
+    core = new Core();
 
     connect(globalSettings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
@@ -95,17 +93,34 @@ void MainWindow::init() {
     connect(core, SIGNAL(imageAltered(QPixmap*)),
             imageViewer, SLOT(displayImage(QPixmap*)));
 
-    connect(this, SIGNAL(fileSaved(QString)), core, SLOT(saveImage(QString)));
+    connect(this, SIGNAL(fileSaved(QString)),
+            core, SLOT(saveImage(QString)));
 
-    connect(thumbnailStrip, SIGNAL(thumbnailClicked(int)), core, SLOT(loadImageByPos(int)));
+    connect(panel, SIGNAL(thumbnailClicked(int)),
+            core, SLOT(loadImageByPos(int)));
 
-    connect(imageViewer, SIGNAL(scalingRequested(QSize)), core, SLOT(rescaleForZoom(QSize)));
+    connect(panel, SIGNAL(thumbnailRequested(int)),
+            core, SIGNAL(thumbnailRequested(int)));
+
+    connect(core, SIGNAL(thumbnailReady(int, const QPixmap*)),
+            panel, SLOT(setThumbnail(int, const QPixmap*)));
+
+    connect(core, SIGNAL(cacheInitialized(int)),
+            panel, SLOT(cacheInitialized(int)));
+
+    connect(imageViewer, SIGNAL(scalingRequested(QSize)),
+            core, SLOT(rescaleForZoom(QSize)));
 
     connect(core, SIGNAL(scalingFinished(QPixmap*)),
             imageViewer, SLOT(updateImage(QPixmap*)));
 
     connect(core, SIGNAL(frameChanged(QPixmap*)),
             imageViewer, SLOT(updateImage(QPixmap*)));
+
+    core->init();
+
+    createActions();
+    createMenus();
 }
 
 void MainWindow::open(QString path) {
@@ -374,8 +389,18 @@ void MainWindow::slotSaveDialog() {
 void MainWindow::resizeEvent(QResizeEvent* event) {
     Q_UNUSED(event)
 
+    if(panel) {
+        panel->parentResized(size());
+    }
     controlsOverlay->updateSize();
     infoOverlay->updateWidth();
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent* event) {
+    if(event->pos().y() > height()-80 && event->pos().x() < width()-130 && panel) {
+        panel->show();
+    }
+    event->ignore();
 }
 
 void MainWindow::wheelEvent(QWheelEvent *event)
@@ -427,6 +452,14 @@ void MainWindow::slotAbout() {
                     1,
                     layout->columnCount());
     msgBox.exec();
+}
+
+void MainWindow::close() {
+    if (QThreadPool::globalInstance()->activeThreadCount()) {
+        this->setWindowTitle("closing...");
+        QThreadPool::globalInstance()->waitForDone();
+    }
+    QMainWindow::close();
 }
 
 MainWindow::~MainWindow()

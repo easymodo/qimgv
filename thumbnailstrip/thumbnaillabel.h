@@ -4,6 +4,9 @@
 #include <QLabel>
 #include <QPainter>
 #include <QMouseEvent>
+#include <QDebug>
+
+enum loadState { EMPTY, LOADING, LOADED };
 
 class ThumbnailLabel : public QLabel
 {
@@ -12,15 +15,22 @@ public:
     ThumbnailLabel();
     ~ThumbnailLabel();
 
+    QRect relativeRect();
+    bool isLoaded();
+    loadState state;
+
+public slots:
+    void setPixmap(const QPixmap &pixmap);
 private:
-    bool hovered;
+    bool hovered, loaded;
+    QWidget *parent;
 
 signals:
- void clicked(QLabel*);
+ void clicked(ThumbnailLabel*);
 
 protected:
- void mousePressEvent ( QMouseEvent * event ) ;
- virtual void paintEvent(QPaintEvent* event);
+ void mousePressEvent(QMouseEvent* event);
+ void paintEvent(QPaintEvent* event);
 
  void enterEvent(QEvent *event);
  void leaveEvent(QEvent *event);

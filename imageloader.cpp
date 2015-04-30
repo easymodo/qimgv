@@ -11,7 +11,9 @@ void ImageLoader::open(QString path) {
     cache->unloadAll();
     if(!dm->existsInCurrentDir(path)) {
         dm->setFile(path);
-        cache->init(dm->getFileList());
+        if(cache->directory() != dm->currentDirectory()) {
+            cache->init(dm->currentDirectory(), dm->getFileList());
+        }
     } else {
         dm->setFile(path);
     }
@@ -33,7 +35,15 @@ void ImageLoader::load_thread(int pos) {
     unlock();
 }
 
+// for position in directory
+void ImageLoader::generateThumbnailFor(int pos) {
+    QtConcurrent::run(this, &ImageLoader::generateThumbnailThread, pos);
+}
 
+void ImageLoader::generateThumbnailThread(int pos) {
+    const QPixmap* pix = cache->thumbnailAt(pos);
+    emit thumbnailReady(pos, pix);
+}
 
 void ImageLoader::loadNext() {
     // dont do anything if already at last file
@@ -73,7 +83,7 @@ const ImageCache *ImageLoader::getCache() {
 
 void ImageLoader::setCache(ImageCache *_cache) {
     this->cache = _cache;
-    cache->init(dm->getFileList());
+    cache->init(dm->currentDirectory(), dm->getFileList());
 }
 
 void ImageLoader::preload(int pos) {
