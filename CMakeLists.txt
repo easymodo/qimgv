@@ -14,7 +14,14 @@ add_definitions(${Qt5Widgets_DEFINITIONS} ${Qt5Concurrent_DEFINITIONS})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS} -std=c++11")
 
+add_subdirectory(tests)
+add_subdirectory(mapoverlay)
+add_subdirectory(lib)
+add_subdirectory(thumbnailstrip)
+
 FILE (GLOB SRC *.cpp)
+list (REMOVE_ITEM SRC moc_*.cpp)
+list (REMOVE_ITEM SRC *_automoc.cpp)
 
 QT5_WRAP_UI (GUI settingsdialog.ui)
 
@@ -22,14 +29,9 @@ QT5_ADD_RESOURCES(RES resources.qrc)
 
 add_executable(qimgv ${SRC} ${RES} ${GUI})
 
-target_link_libraries(qimgv Qt5::Widgets Qt5::Concurrent mapoverlay lib thumbnailstrip)
+target_link_libraries(qimgv Qt5::Widgets Qt5::Concurrent mapoverlay imagestuff thumbnailstrip)
      
 qt5_use_modules (qimgv Core Widgets Concurrent)
 
 install(FILES qimgv DESTINATION /usr/bin/)
-
-add_subdirectory(tests)
-add_subdirectory(mapoverlay)
-add_subdirectory(lib)
-add_subdirectory(thumbnailstrip)
 

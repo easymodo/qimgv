@@ -1,6 +1,6 @@
 #include "mapoverlay.h"
 #include <QPropertyAnimation>
-#include "settings.h"
+#include "../settings.h"
 
 class MapOverlay::MapOverlayPrivate : public QObject
 {

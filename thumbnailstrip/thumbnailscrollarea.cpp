@@ -53,7 +53,7 @@ void ThumbnailScrollArea::setThumbnail(int pos, const QPixmap* thumb) {
 }
 
 bool ThumbnailScrollArea::childVisible(ThumbnailLabel *label) {
-    qDebug() << this->widget()->visibleRegion() << "   <>   " << label->relativeRect();
+    //qDebug() << this->widget()->visibleRegion() << "   <>   " << label->relativeRect();
     return this->widget()->visibleRegion().intersects(label->relativeRect());
 }
 

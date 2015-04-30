@@ -1,4 +1,5 @@
-include_directories(${CMAKE_SOURCE_DIR})
-set (SOURCES mapoverlay.cpp)
-add_library(mapoverlay STATIC ${SOURCES})
+file(GLOB SOURCES *.cpp)
+list (REMOVE_ITEM SOURCES moc_*.cpp)
+list (REMOVE_ITEM SOURCES *_automoc.cpp)
+add_library(mapoverlay SHARED ${SOURCES})
 target_link_libraries(mapoverlay Qt5::Widgets)

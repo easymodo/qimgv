@@ -1,3 +1,5 @@
-set(SOURCES imagelib.cpp)
-add_library(lib SHARED ${SOURCES})
-target_link_libraries(lib Qt5::Widgets)
+file(GLOB SOURCES *.cpp)
+list (REMOVE_ITEM SOURCES moc_*.cpp)
+list (REMOVE_ITEM SOURCES *_automoc.cpp)
+add_library(imagestuff SHARED ${SOURCES})
+target_link_libraries(imagestuff Qt5::Widgets)
