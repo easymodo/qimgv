@@ -12,7 +12,7 @@ class ThumbnailLabel : public QLabel
 {
     Q_OBJECT
 public:
-    ThumbnailLabel();
+    ThumbnailLabel(QWidget *parent);
     ~ThumbnailLabel();
 
     QRect relativeRect();

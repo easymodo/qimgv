@@ -1,13 +1,14 @@
 #include "thumbnaillabel.h"
 
-ThumbnailLabel::ThumbnailLabel() :
+ThumbnailLabel::ThumbnailLabel(QWidget *parent) :
+    QLabel(parent),
     hovered(false),
     loaded(false),
     state(EMPTY)
 {
     setMouseTracking(true);
     this->setMinimumSize(100,100);
-    this->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+    this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
 void ThumbnailLabel::mousePressEvent ( QMouseEvent * event ) {

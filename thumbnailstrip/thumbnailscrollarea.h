@@ -7,6 +7,7 @@
 #include <QScrollBar>
 #include <QWheelEvent>
 #include <QDebug>
+#include <QTimer>
 #include "thumbnailstrip.h"
 
 class ThumbnailScrollArea : public QScrollArea
@@ -31,11 +32,17 @@ private:
     int defaultHeight;
     bool childVisible(ThumbnailLabel *label);
     ThumbnailStrip *strip;
+    QRect visibleRegion;
+    QTimer loadTimer;
+    uint loadDelay;
 
 protected:
     void wheelEvent(QWheelEvent*);
     void leaveEvent(QEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+private slots:
+    void updateVisibleRegion();
+    void loadVisibleThumbnailsDelayed();
 };
 
 #endif // THUMBNAILSCROLLAREA_H

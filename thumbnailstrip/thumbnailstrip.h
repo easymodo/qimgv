@@ -20,6 +20,7 @@ public:
     ~ThumbnailStrip();
     QList<ThumbnailLabel*> thumbnailLabels;
 
+    QSize sizeHint() const;
 private:
     QWidget *parent;
     void addItem(int pos);

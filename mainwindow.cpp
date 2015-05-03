@@ -5,11 +5,11 @@ MainWindow::MainWindow() :
     settingsDialog(NULL),
     panel(NULL)
 {
-    init();
     resize(800, 600);
-    readSettings();
     setMinimumSize(QSize(400,300));
     this->setMouseTracking(true);
+    init();
+    readSettings();
     setWindowTitle(QCoreApplication::applicationName() +
                    " " +
                    QCoreApplication::applicationVersion());

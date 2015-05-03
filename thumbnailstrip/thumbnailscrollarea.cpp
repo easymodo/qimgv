@@ -1,21 +1,36 @@
+/*  QUALITY code here
+ *
+ */
+
 #include "thumbnailscrollarea.h"
 #include "thumbnaillabel.h"
 
 ThumbnailScrollArea::ThumbnailScrollArea(QWidget *parent) :
     QScrollArea(parent),
-    scrollStep(150),
-    defaultHeight(125)
+    scrollStep(200),
+    defaultHeight(125),
+    loadDelay(120)
 {
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    loadTimer.setSingleShot(true);
   //  setFrameShape(QFrame::NoFrame);
     this->setMinimumHeight(defaultHeight);
+    qDebug() << parent->size();
+    this->setGeometry(0,0, parent->width(), defaultHeight);
     this->hide();
     strip = new ThumbnailStrip(this);
     strip->setMinimumHeight(this->minimumHeight());
     this->setWidgetResizable(true);
     this->setWidget(strip);
+    updateVisibleRegion();
+
     connect(strip, SIGNAL(thumbnailClicked(int)),
             this, SIGNAL(thumbnailClicked(int)));
+    connect(this->horizontalScrollBar(), SIGNAL(valueChanged(int)),
+            this, SLOT(loadVisibleThumbnailsDelayed()));
+    connect(this->horizontalScrollBar(), SIGNAL(sliderMoved(int)),
+            this, SLOT(loadVisibleThumbnailsDelayed()));
+    connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
 }
 
 void ThumbnailScrollArea::cacheInitialized(int count) {
@@ -32,19 +47,31 @@ void ThumbnailScrollArea::wheelEvent(QWheelEvent *event) {
         horizontalScrollBar()->
                 setValue(horizontalScrollBar()->value()-scrollStep);
     }
-    loadVisibleThumbnails();
     event->accept();
 }
 
+void ThumbnailScrollArea::loadVisibleThumbnailsDelayed() {
+    loadTimer.stop();
+    loadTimer.start(loadDelay);
+}
+
+
 void ThumbnailScrollArea::loadVisibleThumbnails() {
+    qDebug() << "load";
+    loadTimer.stop();
+    updateVisibleRegion();
+    qDebug() << "visible: " << visibleRegion;
+    int counter = 0;
     for(int i=0; i<strip->thumbnailLabels.count(); i++) {
         if(strip->thumbnailLabels.at(i)->state == EMPTY  &&
             childVisible(strip->thumbnailLabels.at(i)))
         {
             strip->thumbnailLabels.at(i)->state = LOADING;
+            counter++;
             emit thumbnailRequested(i);
         }
     }
+    qDebug() << "loaded " << counter << " items.";
 }
 
 void ThumbnailScrollArea::setThumbnail(int pos, const QPixmap* thumb) {
@@ -52,9 +79,14 @@ void ThumbnailScrollArea::setThumbnail(int pos, const QPixmap* thumb) {
     strip->thumbnailLabels.at(pos)->state = LOADED;
 }
 
+void ThumbnailScrollArea::updateVisibleRegion() {
+    visibleRegion = rect();
+    visibleRegion.moveLeft(this->horizontalScrollBar()->value());
+    visibleRegion.adjust(-350,0,350,0);
+}
+
 bool ThumbnailScrollArea::childVisible(ThumbnailLabel *label) {
-    //qDebug() << this->widget()->visibleRegion() << "   <>   " << label->relativeRect();
-    return this->widget()->visibleRegion().intersects(label->relativeRect());
+    return this->visibleRegion.intersects(label->relativeRect());
 }
 
 void ThumbnailScrollArea::mouseMoveEvent(QMouseEvent* event) {
