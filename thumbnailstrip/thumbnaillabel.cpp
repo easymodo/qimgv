@@ -65,7 +65,6 @@ QSizeF ThumbnailLabel::sizeHint(Qt::SizeHint which, const QSizeF &constraint) co
 {
     switch (which) {
     case Qt::MinimumSize:
-        return QSize(100, 100);
     case Qt::PreferredSize:
         return QSize(100, 100) + QSize(border*2, border*2);
     case Qt::MaximumSize:
