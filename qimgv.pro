@@ -34,10 +34,10 @@ SOURCES += main.cpp\
     mapoverlay/mapoverlay.cpp \
     cropoverlay.cpp \
     thumbnailstrip/thumbnailstrip.cpp \
-    thumbnailstrip/thumbnailscrollarea.cpp \
     thumbnailstrip/thumbnaillabel.cpp \
     image.cpp \
-    imageanimated.cpp
+    imageanimated.cpp \
+    thumbnailstrip/customscene.cpp \
 
 HEADERS  += mainwindow.h \
     infooverlay.h \
@@ -56,11 +56,10 @@ HEADERS  += mainwindow.h \
     mapoverlay/mapoverlay.h \
     cropoverlay.h \
     thumbnailstrip/thumbnailstrip.h \
-    thumbnailstrip/thumbnailitem.h \
-    thumbnailstrip/thumbnailscrollarea.h \
     thumbnailstrip/thumbnaillabel.h \
     image.h \
-    imageanimated.h
+    imageanimated.h \
+    thumbnailstrip/customscene.h \
 
 FORMS    += \
     settingsdialog.ui

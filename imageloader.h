@@ -33,7 +33,7 @@ private:
     void generateThumbnailThread(int pos);
 signals:
     void loadStarted();
-    void loadFinished(Image*);
+    void loadFinished(Image*, int pos);
     void startPreload(int);
     void thumbnailReady(int, const QPixmap*);
 

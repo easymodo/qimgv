@@ -1,39 +1,42 @@
 #ifndef THUMBNAILLABEL_H
 #define THUMBNAILLABEL_H
 
-#include <QLabel>
-#include <QPainter>
+#include <QGraphicsLayoutItem>
+#include <QGraphicsPixmapItem>
 #include <QMouseEvent>
+#include <QPainter>
 #include <QDebug>
 
 enum loadState { EMPTY, LOADING, LOADED };
 
-class ThumbnailLabel : public QLabel
+class ThumbnailLabel : public QGraphicsLayoutItem, public QGraphicsPixmapItem
 {
-    Q_OBJECT
 public:
-    ThumbnailLabel(QWidget *parent);
+    ThumbnailLabel(QGraphicsPixmapItem *parent = 0);
     ~ThumbnailLabel();
 
-    QRect relativeRect();
+    void setGeometry(const QRectF &rect) Q_DECL_OVERRIDE;
+    QRectF boundingRect() const Q_DECL_OVERRIDE;
+
     bool isLoaded();
     loadState state;
-
-public slots:
     void setPixmap(const QPixmap &pixmap);
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void setHighlighted(bool x);
+    bool isHighlighted();
+    QColor *highlightColor, *outlineColor;
 private:
     bool hovered, loaded;
-    QWidget *parent;
-
-signals:
- void clicked(ThumbnailLabel*);
+    QPixmap* pix;
+    int border;
+    bool highlighted;
 
 protected:
- void mousePressEvent(QMouseEvent* event);
- void paintEvent(QPaintEvent* event);
+ QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const Q_DECL_OVERRIDE;
 
- void enterEvent(QEvent *event);
- void leaveEvent(QEvent *event);
+ //void enterEvent(QEvent *event);
+ //void leaveEvent(QEvent *event);
 };
 
 #endif // THUMBNAILLABEL_H

@@ -27,7 +27,7 @@ private:
     ImageCache *cache;
 
 private slots:
-    void onLoadFinished(Image *img);
+    void onLoadFinished(Image *img, int pos);
     void crop(QRect newRect);
 
 signals:
@@ -41,6 +41,7 @@ signals:
     void thumbnailRequested(int);
     void thumbnailReady(int, const QPixmap*);
     void cacheInitialized(int);
+    void imageChanged(int);
 
 public slots:
     void init();

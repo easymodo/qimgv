@@ -3,6 +3,10 @@
 ImageLoader::ImageLoader(DirectoryManager *_dm) {
     dm = _dm;
     readSettings();
+    // cache causes crash when creating thumbnails
+    // will look into this later
+    QPixmapCache::setCacheLimit(0);
+    QThreadPool::globalInstance()->setMaxThreadCount(4),
     connect(globalSettings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
 }
@@ -31,7 +35,7 @@ void ImageLoader::open(int pos) {
 void ImageLoader::load_thread(int pos) {
     emit loadStarted();
     cache->loadAt(pos);
-    emit loadFinished(cache->imageAt(pos));
+    emit loadFinished(cache->imageAt(pos), pos);
     unlock();
 }
 

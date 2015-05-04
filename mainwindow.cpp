@@ -27,7 +27,7 @@ void MainWindow::init() {
 
     this->setCentralWidget(imageViewer);
 
-    panel = new ThumbnailScrollArea(this);
+    panel = new ThumbnailStrip(this);
     panel->parentResized(size());
 
     core = new Core();
@@ -89,9 +89,13 @@ void MainWindow::init() {
     connect(imageViewer, SIGNAL(cropSelected(QRect)),
             core, SLOT(crop(QRect)));
 
-    //reload after image edits
+    // reload after image edits
     connect(core, SIGNAL(imageAltered(QPixmap*)),
             imageViewer, SLOT(displayImage(QPixmap*)));
+
+    // when loaded
+    connect(core, SIGNAL(imageChanged(int)),
+            panel, SLOT(selectThumbnail(int)));
 
     connect(this, SIGNAL(fileSaved(QString)),
             core, SLOT(saveImage(QString)));
@@ -106,7 +110,7 @@ void MainWindow::init() {
             panel, SLOT(setThumbnail(int, const QPixmap*)));
 
     connect(core, SIGNAL(cacheInitialized(int)),
-            panel, SLOT(cacheInitialized(int)));
+            panel, SLOT(fillPanel(int)));
 
     connect(imageViewer, SIGNAL(scalingRequested(QSize)),
             core, SLOT(rescaleForZoom(QSize)));

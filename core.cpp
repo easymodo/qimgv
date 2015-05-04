@@ -23,8 +23,8 @@ void Core::initVariables() {
 void Core::connectSlots() {
     connect(imageLoader, SIGNAL(loadStarted()),
             this, SLOT(updateInfoString()));
-    connect(imageLoader, SIGNAL(loadFinished(Image*)),
-            this, SLOT(onLoadFinished(Image*)));
+    connect(imageLoader, SIGNAL(loadFinished(Image*, int)),
+            this, SLOT(onLoadFinished(Image*, int)));
     connect(this, SIGNAL(thumbnailRequested(int)),
             imageLoader, SLOT(generateThumbnailFor(int)));
     connect(imageLoader, SIGNAL(thumbnailReady(int, const QPixmap*)),
@@ -108,7 +108,7 @@ void Core::loadImageByPos(int pos) {
       imageLoader->open(pos);
 }
 
-void Core::onLoadFinished(Image* img) {
+void Core::onLoadFinished(Image* img, int pos) {
     emit signalUnsetImage();
     stopAnimation();
     currentImage = img;
@@ -116,6 +116,7 @@ void Core::onLoadFinished(Image* img) {
     if( currentMovie = dynamic_cast<ImageAnimated*>(currentImage) ) {
         startAnimation();
     }
+    emit imageChanged(pos);
     updateInfoString();
 }
 

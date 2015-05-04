@@ -12,7 +12,6 @@
 #include "imageviewer.h"
 #include "settings.h"
 #include "thumbnailstrip/thumbnailstrip.h"
-#include "thumbnailstrip/thumbnailscrollarea.h"
 
 QT_BEGIN_NAMESPACE
     class QAction;
@@ -72,7 +71,7 @@ private:
     Core *core;
     textOverlay *infoOverlay, *messageOverlay;
     ControlsOverlay *controlsOverlay;
-    ThumbnailScrollArea *panel;
+    ThumbnailStrip *panel;
     void init();
     void createActions();
     void createMenus();
