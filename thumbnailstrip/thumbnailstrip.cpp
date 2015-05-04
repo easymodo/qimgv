@@ -14,7 +14,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
 
     this->setScene(scene);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->show();
+    this->hide();
     this->setGeometry(0,0,500,150);
 
     loadTimer.setSingleShot(true);
