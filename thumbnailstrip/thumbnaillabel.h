@@ -29,7 +29,7 @@ public:
 private:
     bool hovered, loaded;
     QPixmap* pix;
-    int border;
+    int borderW, borderH;
     bool highlighted;
 
 protected:

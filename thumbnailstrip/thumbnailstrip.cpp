@@ -3,13 +3,15 @@
 ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     : QGraphicsView(parent),
       scrollStep(200),
-      defaultHeight(132),
+      defaultHeight(124),
       loadDelay(120)
 {
     widget = new QGraphicsWidget();
     scene = new CustomScene;
     layout = new QGraphicsLinearLayout(Qt::Horizontal);
     widget->setLayout(layout);
+    layout->setSpacing(0);
+    layout->setContentsMargins(2,1,2,0);
     scene->addItem(widget);
 
     this->setScene(scene);
@@ -66,7 +68,7 @@ void ThumbnailStrip::populate(int count) {
 
     layout->invalidate();
     layout->activate();
-    scene->setSceneRect(scene->itemsBoundingRect());
+    scene->setSceneRect(layout->geometry());
 }
 
 // in theory faster than scene's version
@@ -78,7 +80,6 @@ QRectF ThumbnailStrip::itemsBoundingRect() {
         boundingRect.setBottomRight(
                     thumbnailLabels.at(thumbnailLabels.count()-1)->sceneBoundingRect().bottomRight());
     }
-    qDebug() << boundingRect;
     return boundingRect;
 }
 

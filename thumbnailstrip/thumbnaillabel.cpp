@@ -7,13 +7,14 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsPixmapItem *parent) :
     loaded(false),
     state(EMPTY),
     highlighted(false),
-    border(4)
+    borderW(3),
+    borderH(4)
 {
     highlightColor = new QColor(80, 80, 220);
     outlineColor = new QColor(Qt::black);
     setGraphicsItem(this);
     this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-    this->setOffset(QPointF(border, border));
+    this->setOffset(QPointF(borderW, borderH));
 //    setMouseTracking(true);
   //  this->setMinimumSize(100,100);
  //   this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -52,11 +53,6 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 {
     if(isHighlighted()) {
         painter->fillRect(boundingRect(), *highlightColor);
-        QPen pen;
-        pen.setColor(*outlineColor);
-        pen.setWidth(2);
-        painter->setPen(pen);
-        painter->drawRect(boundingRect());
     }
     QGraphicsPixmapItem::paint(painter,option,widget);
 }
@@ -66,9 +62,9 @@ QSizeF ThumbnailLabel::sizeHint(Qt::SizeHint which, const QSizeF &constraint) co
     switch (which) {
     case Qt::MinimumSize:
     case Qt::PreferredSize:
-        return QSize(100, 100) + QSize(border*2, border*2);
+        return QSize(100, 100) + QSize(borderW*2, borderH*2);
     case Qt::MaximumSize:
-        return QSize(100, 100) + QSize(border*2, border*2);
+        return QSize(100, 100) + QSize(borderW*2, borderH*2);
     default:
         break;
     }
