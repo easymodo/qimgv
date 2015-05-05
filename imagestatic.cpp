@@ -128,43 +128,34 @@ QSize ImageStatic::size() {
 
 QImage* ImageStatic::rotated(int grad) {
     if(isLoaded()) {
-        if(type==STATIC) {
-            QImage *img = new QImage();
-            QTransform transform;
-            transform.rotate(grad);
-            *img = image->transformed(transform, Qt::SmoothTransformation);
-            return img;
-        }
+        mutex.lock();
+        QImage *img = new QImage();
+        QTransform transform;
+        transform.rotate(grad);
+        *img = image->transformed(transform, Qt::SmoothTransformation);
+        mutex.unlock();
+        return img;
     }
     else return NULL;
 }
 
 void ImageStatic::rotate(int grad) {
-    mutex.lock();
     if(isLoaded()) {
-        if(type==STATIC) {
-            mutex.lock();
-            QImage *img = rotated(grad);
-            delete image;
-            image = img;
-            mutex.unlock();
-        }
+        QImage *img = rotated(grad);
+        delete image;
+        mutex.lock();
+        image = img;
+        mutex.unlock();
     }
-    mutex.unlock();
 }
 
 void ImageStatic::crop(QRect newRect) {
-    mutex.lock();
     if(isLoaded()) {
-        if(getType() == STATIC) {
-            QImage *tmp = new QImage(newRect.size(), QImage::Format_ARGB32_Premultiplied);
-            *tmp = image->copy(newRect);
-            delete image;
-            image = tmp;
-        }
-        if(getType() == GIF) {
-            // someday later
-        }
+        QImage *tmp = new QImage(newRect.size(), QImage::Format_ARGB32_Premultiplied);
+        mutex.lock();
+        *tmp = image->copy(newRect);
+        delete image;
+        image = tmp;
+        mutex.unlock();
     }
-    mutex.unlock();
 }
