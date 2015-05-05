@@ -147,6 +147,19 @@
       </property>
      </item>
     </widget>
+    <widget class="QCheckBox" name="fullscreenCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>171</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Open in fullscreen</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">

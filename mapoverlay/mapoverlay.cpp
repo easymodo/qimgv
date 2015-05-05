@@ -206,7 +206,7 @@ void MapOverlay::paintEvent(QPaintEvent *event)
 void MapOverlay::updatePosition()
 {
     QRect parentRect = parentWidget()->rect();
-    
+
     int x = 0, y = 0;
     switch (location())
     {

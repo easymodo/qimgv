@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationName("greenpepper software");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
-    QCoreApplication::setApplicationVersion("0.34");
+    QCoreApplication::setApplicationVersion("0.34.1");
 
     globalSettings = Settings::getInstance();
     atexit(saveSettings);
@@ -30,7 +30,9 @@ int main(int argc, char *argv[]) {
         QString fileName = a.arguments().at(1);
         fileName.replace("\\\\","/");
         fileName.replace("\\","/");
-        mw.slotTriggerFullscreen();
+        if(globalSettings->s.value("openInFullscreen").toBool()) {
+            mw.slotTriggerFullscreen();
+        }
         mw.open(fileName);
     }
     mw.show();

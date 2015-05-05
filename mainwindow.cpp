@@ -14,6 +14,7 @@ MainWindow::MainWindow() :
                    " " +
                    QCoreApplication::applicationVersion());
     setWindowIcon(QIcon(":/images/res/pepper32.png"));
+    resize(800, 600);
 }
 
 void MainWindow::init() {
@@ -445,8 +446,8 @@ void MainWindow::slotAbout() {
                           " " +
                           QCoreApplication::applicationVersion());
     QString message;
-    message = "A simple qt image viewer \n \nMain developer: \n    Eugene G.";
-    message.append("\nDeveloper:\n    Sergey V.");
+    message = "A simple qt image viewer \n \nMain developer: \n    Easymodo";
+    message.append("\nDeveloper:\n    Sevoan");
     message.append("\n\n This is a pre-release software.");
     message.append("\n Expect bugs.");
     msgBox.setText(message);

@@ -21,6 +21,9 @@ void SettingsDialog::readSettings() {
     ui->preloaderCheckBox->setChecked(
                 globalSettings->s.value("usePreloader", "true").toBool());
 
+    ui->fullscreenCheckBox->setChecked(
+                globalSettings->s.value("openInFullscreen", "true").toBool());
+
     // ##### cache #####
     ui->cacheSlider->setValue(
                 globalSettings->s.value("cacheSize",64).toInt());
@@ -52,6 +55,8 @@ void SettingsDialog::readSettings() {
 void SettingsDialog::applySettings() {
     globalSettings->s.setValue("usePreloader",
                             ui->preloaderCheckBox->isChecked());
+    globalSettings->s.setValue("openInFullscreen",
+                            ui->fullscreenCheckBox->isChecked());
     globalSettings->s.setValue("cacheSize",
                                ui->cacheSlider->value());
     globalSettings->s.setValue("defaultFitMode",

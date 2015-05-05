@@ -72,8 +72,8 @@ void ImageViewer::displayImage(QPixmap* _image) {
     cropOverlay->hide();
 
     mapOverlay->setEnabled(true);
-    mapOverlay->updatePosition();
     updateMap();
+    mapOverlay->updatePosition();
     update();
 
     connect(resizeTimer, SIGNAL(timeout()),
