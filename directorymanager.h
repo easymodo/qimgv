@@ -35,6 +35,8 @@ public:
     int peekNext(int offset);
     int peekPrev(int offset);
     void setCurrentPos(int pos);
+    bool isValidFile(QString path);
+    bool containsFiles();
 signals:
     void directoryChanged(const QString &path);
 private:

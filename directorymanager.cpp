@@ -61,6 +61,19 @@ void DirectoryManager::setCurrentPos(int pos) {
     globalSettings->s.setValue("lastPosition", currentPos);
 }
 
+bool DirectoryManager::isValidFile(QString path) {
+    QFile file(path);
+    QString extension = "nope";
+    if(path.contains('.')) {
+        extension = "*.";
+        extension.append(path.split(".",QString::SkipEmptyParts).at(1));
+    }
+    if( file.exists() && filters.contains(extension, Qt::CaseInsensitive) ) {
+        return true;
+    }
+    else return false;
+}
+
 QString DirectoryManager::currentFileName() {
     return fileList.at(currentPos);
 }
@@ -71,6 +84,10 @@ QString DirectoryManager::currentDirectory() {
 
 int DirectoryManager::currentFilePos() {
     return currentPos;
+}
+
+bool DirectoryManager::containsFiles() {
+    return !fileList.empty();
 }
 
 int DirectoryManager::nextPos() {

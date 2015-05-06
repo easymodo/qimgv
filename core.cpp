@@ -91,16 +91,23 @@ void Core::setCurrentDir(QString path) {
 }
 
 void Core::slotNextImage() {
-    imageLoader->loadNext();
+    if(dirManager->containsFiles()) {
+        imageLoader->loadNext();
+    }
 }
 
 void Core::slotPrevImage() {
-    imageLoader->loadPrev();
+    if(dirManager->containsFiles()) {
+        imageLoader->loadPrev();
+    }
 }
 
 void Core::loadImage(QString path) {
-    if(!path.isEmpty()) {
+    if(!path.isEmpty() && dirManager->isValidFile(path)) {
         imageLoader->open(path);
+    }
+    else {
+        qDebug() << "ERROR: invalid file selected.";
     }
 }
 
