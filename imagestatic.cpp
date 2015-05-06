@@ -69,16 +69,27 @@ QPixmap* ImageStatic::generateThumbnail() {
     QPixmap *tmp;
     if(!isLoaded()) {
         tmp = new QPixmap(path);
-        *tmp = tmp->scaled(size*2, size*2, Qt::KeepAspectRatio, Qt::FastTransformation)
-            .scaled(size, size, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+        *tmp = tmp->scaled(size*2,
+                           size*2,
+                           Qt::KeepAspectRatioByExpanding,
+                           Qt::FastTransformation)
+                   .scaled(size,
+                           size,
+                           Qt::KeepAspectRatioByExpanding,
+                           Qt::SmoothTransformation);
     } else {
         tmp = new QPixmap();
         if(!image->isNull()) {
             mutex.lock();
-            *tmp = QPixmap::fromImage(image->scaled(size*2, size*2,
-                                                          Qt::KeepAspectRatio,
-                                                          Qt::FastTransformation)
-                .scaled(size, size, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+            *tmp = QPixmap::fromImage(
+                        image->scaled(size*2,
+                                      size*2,
+                                      Qt::KeepAspectRatioByExpanding,
+                                      Qt::FastTransformation)
+                              .scaled(size,
+                                      size,
+                                      Qt::KeepAspectRatioByExpanding,
+                                      Qt::SmoothTransformation));
             mutex.unlock();
         }
     }

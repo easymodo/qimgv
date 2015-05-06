@@ -10,14 +10,11 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsPixmapItem *parent) :
     borderW(3),
     borderH(4)
 {
-    highlightColor = new QColor(80, 80, 220);
+    highlightColor = new QColor(144, 209, 75);
     outlineColor = new QColor(Qt::black);
     setGraphicsItem(this);
     this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     this->setOffset(QPointF(borderW, borderH));
-//    setMouseTracking(true);
-  //  this->setMinimumSize(100,100);
- //   this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
 void ThumbnailLabel::setPixmap(const QPixmap &pixmap){
@@ -25,19 +22,6 @@ void ThumbnailLabel::setPixmap(const QPixmap &pixmap){
     loaded = true;
 }
 
-/*
-void ThumbnailLabel::enterEvent(QEvent *event) {
-    Q_UNUSED(event)
-    hovered = true;
-    update();
-}
-
-void ThumbnailLabel::leaveEvent(QEvent *event) {
-    Q_UNUSED(event)
-    hovered = false;
-    update();
-}
-*/
 void ThumbnailLabel::setHighlighted(bool x) {
     bool toRepaint = (highlighted==x);
     highlighted = x;

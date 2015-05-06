@@ -56,14 +56,26 @@ QPixmap* ImageAnimated::generateThumbnail() {
     QPixmap *tmp;
     if(!isLoaded()) {
         tmp = new QPixmap(path);
-        *tmp = tmp->scaled(size*2, size*2, Qt::KeepAspectRatio, Qt::FastTransformation)
-            .scaled(size, size, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+        *tmp = tmp->scaled(size*2,
+                           size*2,
+                           Qt::KeepAspectRatioByExpanding,
+                           Qt::FastTransformation)
+                   .scaled(size,
+                           size,
+                           Qt::KeepAspectRatioByExpanding,
+                           Qt::SmoothTransformation);
     } else {
         tmp = new QPixmap();
         mutex.lock();
         *tmp = movie->currentPixmap()
-                .scaled(size*2, size*2, Qt::KeepAspectRatioByExpanding)
-                .scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                .scaled(size*2,
+                        size*2,
+                        Qt::KeepAspectRatioByExpanding,
+                        Qt::FastTransformation)
+                .scaled(size,
+                        size,
+                        Qt::KeepAspectRatio,
+                        Qt::SmoothTransformation);
         mutex.unlock();
     }
     QRect target(0, 0, size,size);
