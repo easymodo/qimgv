@@ -83,7 +83,7 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
         QPainter painter(this);
         painter.setPen(Qt::NoPen);
         painter.setBrush(brushDark);
-        painter.drawRect(this->imageArea);
+        painter.drawRect(this->rect());
         drawLabel("CROP MODE", QPoint(20,25), &painter);
         return;
     }
@@ -92,6 +92,10 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
     drawBuffer = new QImage(this->size(), QImage::Format_ARGB32_Premultiplied);
 
     QPainter painter(drawBuffer);
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(brushDark);
+    painter.drawRect(this->rect());
 
     //selection outline
     drawSelection(&painter);
