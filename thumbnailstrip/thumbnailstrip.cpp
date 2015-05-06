@@ -29,15 +29,16 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
             this, SLOT(loadVisibleThumbnailsDelayed()));
     connect(this->horizontalScrollBar(), SIGNAL(sliderMoved(int)),
             this, SLOT(loadVisibleThumbnailsDelayed()));
-    connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
+    connect(&loadTimer, SIGNAL(timeout()),
+            this, SLOT(loadVisibleThumbnails()));
 }
 
 void ThumbnailStrip::fillPanel(int count) {
     previous = -1;
     loadTimer.stop();
-    this->horizontalScrollBar()->setValue(0);
     populate(count);
-    loadVisibleThumbnails();
+    this->horizontalScrollBar()->setValue(0);
+    //loadVisibleThumbnails();
 }
 
 void ThumbnailStrip::selectThumbnail(int pos) {

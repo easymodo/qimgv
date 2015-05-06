@@ -36,7 +36,7 @@ QMenuBar::item:selected {
 }
 
 QMenuBar::item:pressed {
-    border-color: #E6E6E6;
+    border-color: #90D14B;
     background: #222222;
 }
 

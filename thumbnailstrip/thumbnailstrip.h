@@ -48,6 +48,7 @@ public slots:
     void populate(int count);
     void parentResized(QSize parentSize);
     void loadVisibleThumbnails();
+    void loadVisibleThumbnailsDelayed();
     void setThumbnail(int, const QPixmap*);
     void fillPanel(int);
 
@@ -59,7 +60,6 @@ protected:
 private slots:
     void sceneClicked(QPointF pos);
     void updateVisibleRegion();
-    void loadVisibleThumbnailsDelayed();
 };
 
 #endif // THUMBNAILSTRIP_H

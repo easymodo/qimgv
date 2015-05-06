@@ -10,7 +10,6 @@ ImageCache::ImageCache() {
 // call when changing directory
 void ImageCache::init(QString directory, QStringList list) {
     dir = directory;
-    QThreadPool::globalInstance()->setMaxThreadCount(4);
     // also should free memory
     lock();
     cachedImages->clear();
