@@ -66,7 +66,8 @@ bool DirectoryManager::isValidFile(QString path) {
     QString extension = "nope";
     if(path.contains('.')) {
         extension = "*.";
-        extension.append(path.split(".",QString::SkipEmptyParts).at(1));
+        QStringList dotSplit = path.split(".",QString::SkipEmptyParts);
+        extension.append(dotSplit.at(dotSplit.length()-1));
     }
     if( file.exists() && filters.contains(extension, Qt::CaseInsensitive) ) {
         return true;
