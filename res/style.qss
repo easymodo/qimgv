@@ -18,7 +18,7 @@ QMenu::item:selected {
 
 QMenuBar {
     color: #F5F5F5;
-    background-color: #111111;
+    background-color: #000000;
 }
 
 QMenuBar::item {
@@ -32,38 +32,37 @@ QMenuBar::item {
 
 QMenuBar::item:selected {
 
-    background: #222222;
+    background: #111111;
 }
 
 QMenuBar::item:pressed {
-    border-color: #90D14B;
     background: #222222;
 }
 
 ThumbnailStrip {
-    background-color: #262626;
+    background-color: #202020;
 }
 
 ThumbnailScrollArea {
-    background-color: #262626;
+    background-color: #202020;
 }
 
 ThumbnailLabels {
-    background-color: #262626;
+    background-color: #202020;
 }
 
 QScrollBar:horizontal {
     height: 12px;
-    background-color: #262626;
+    background-color: #202020;
 }
 
 QScrollBar::handle:horizontal {
-    background: #141414;
+    background: #121212;
     min-width: 60px;
 }
 
 QScrollBar::handle:horizontal:hover {
-    background: #020202;
+    background: #000000;
 }
 
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {

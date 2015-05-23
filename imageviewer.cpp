@@ -10,7 +10,7 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
     imageFitMode(NORMAL)
 {
     initOverlays();
-    bgColor.setRgb(17,17,17,255);
+    bgColor.setRgb(0,0,0,255);
     image = new QPixmap();
     image->load(":/images/res/logo.png");
     drawingRect = image->rect();
