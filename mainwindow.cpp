@@ -120,7 +120,7 @@ void MainWindow::init() {
             imageViewer, SLOT(updateImage(QPixmap*)));
 
     connect(core, SIGNAL(frameChanged(QPixmap*)),
-            imageViewer, SLOT(updateImage(QPixmap*)));
+            imageViewer, SLOT(updateImage(QPixmap*)), Qt::DirectConnection);
 
     core->init();
 

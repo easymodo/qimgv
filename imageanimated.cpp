@@ -13,6 +13,7 @@ ImageAnimated::ImageAnimated(QString _path)
 
 ImageAnimated::~ImageAnimated()
 {
+    timer->deleteLater();
     delete movie;
 }
 
@@ -128,9 +129,9 @@ QSize ImageAnimated::size() {
 void ImageAnimated::animationStart() {
     if(isLoaded()) {
         animationStop();
-        timer = new QTimer();
+        timer = new QTimer(0);
         timer->setInterval(movie->nextFrameDelay());
-        connect(timer, SIGNAL(timeout()), this, SLOT(frameChangedSlot()), Qt::UniqueConnection);
+        connect(timer, SIGNAL(timeout()), this, SLOT(frameChangedSlot()), Qt::DirectConnection);
         timer->start();
     }
 }
@@ -149,8 +150,8 @@ void ImageAnimated::frameChangedSlot() {
     if(!movie->jumpToNextFrame()) {
         movie->jumpToFrame(0);
     }
-    QPixmap *pixmap = new QPixmap(movie->currentPixmap());
-    emit frameChanged(pixmap);
+    QPixmap *newFrame = new QPixmap(movie->currentPixmap());
+    emit frameChanged(newFrame);
 }
 
 void ImageAnimated::rotate(int grad) {
