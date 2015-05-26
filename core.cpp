@@ -178,12 +178,6 @@ void Core::startAnimation() {
     }
 }
 
-void Core::pauseAnimation() {
-    if(currentMovie) {
-        currentMovie->animationPause();
-    }
-}
-
 void Core::stopAnimation() {
     if(currentMovie) {
         currentMovie->animationStop();

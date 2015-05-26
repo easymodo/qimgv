@@ -4,6 +4,7 @@
 //use this one
 ImageAnimated::ImageAnimated(QString _path)
 {
+    timer = NULL;
     path = _path;
     loaded = false;
     movie = new QMovie();
@@ -126,35 +127,31 @@ QSize ImageAnimated::size() {
 
 void ImageAnimated::animationStart() {
     if(isLoaded()) {
-        if(movie->state() == QMovie::MovieState::Paused) {
-            movie->setPaused(false);
-        }
-        else {
-            movie->start();
-            connect(movie, SIGNAL(frameChanged(int)), this, SLOT(frameChangedSlot(int)));
-        }
-    }
-}
-
-void ImageAnimated::animationPause() {
-    if(isLoaded()) {
-        movie->setPaused(true);
+        animationStop();
+        timer = new QTimer();
+        timer->setInterval(movie->nextFrameDelay());
+        connect(timer, SIGNAL(timeout()), this, SLOT(frameChangedSlot()), Qt::UniqueConnection);
+        timer->start();
     }
 }
 
 void ImageAnimated::animationStop() {
-    if(isLoaded()) {
-        movie->stop();
-        disconnect(movie, SIGNAL(frameChanged(int)), this, SLOT(frameChangedSlot(int)));
+    if(isLoaded() && timer) {
+        if(timer->isActive())
+            timer->stop();
+        disconnect(timer, SIGNAL(timeout()), this, SLOT(frameChangedSlot()));
+        delete timer;
+        timer = NULL;
     }
 }
 
-void ImageAnimated::frameChangedSlot(int frameNumber) {
-    Q_UNUSED(frameNumber)
+void ImageAnimated::frameChangedSlot() {
+    if(!movie->jumpToNextFrame()) {
+        movie->jumpToFrame(0);
+    }
     QPixmap *pixmap = new QPixmap(movie->currentPixmap());
     emit frameChanged(pixmap);
 }
-
 
 void ImageAnimated::rotate(int grad) {
     mutex.lock();

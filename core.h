@@ -57,7 +57,6 @@ public slots:
     void loadImageByPos(int pos);
     void rescaleForZoom(QSize newSize);
     void startAnimation();
-    void pauseAnimation();
     void stopAnimation();
 };
 

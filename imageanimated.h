@@ -4,6 +4,7 @@
 #include "settings.h"
 #include "image.h"
 #include <QMovie>
+#include <QTimer>
 
 class ImageAnimated : public Image
 {
@@ -27,17 +28,17 @@ public slots:
     void save();
     void save(QString destinationPath);
     void animationStart();
-    void animationPause();
     void animationStop();
 
 signals:
     void frameChanged(QPixmap*);
 
 private slots:
-    void frameChangedSlot(int frameNumber);
+    void frameChangedSlot();
 
 private:
     QMovie *movie;
+    QTimer *timer;
 };
 
 #endif // IMAGEANIMATED_H
