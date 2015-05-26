@@ -15,6 +15,7 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsPixmapItem *parent) :
     setGraphicsItem(this);
     this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     this->setOffset(QPointF(borderW, borderH));
+    this->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 }
 
 void ThumbnailLabel::setPixmap(const QPixmap &pixmap){

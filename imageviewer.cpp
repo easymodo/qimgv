@@ -6,7 +6,7 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
     currentScale(1.0),
     maxScale(1.0),
     minScale(4.0),
-    scaleStep(0.05),
+    scaleStep(0.08),
     imageFitMode(NORMAL)
 {
     initOverlays();
@@ -419,8 +419,8 @@ void ImageViewer::fixAlignVertical() {
 // relative to window remains unchanged
 // literally shit. just center for now
 void ImageViewer::scaleAround(QPointF p, float newScale) {
-    /*float oldX = drawingRect.x();
-    float xPos = (float)(p.x()-oldX)/(drawingRect.width()-oldX);
+    float oldX = drawingRect.x();
+    float xPos = (float)(p.x()-oldX)/(drawingRect.width());
     float oldPx = (float)xPos*drawingRect.width();
     float oldY = drawingRect.y();
     float yPos = (float)(p.y()-oldY)/drawingRect.height();
@@ -430,9 +430,9 @@ void ImageViewer::scaleAround(QPointF p, float newScale) {
     drawingRect.moveLeft(oldX - (newPx-oldPx));
     float newPy = (float)yPos*drawingRect.height();
     drawingRect.moveTop(oldY - (newPy-oldPy));
-    */
+
     setScale(newScale);
-    centerImage();
+    //centerImage();
     alignImage();
 }
 
@@ -448,8 +448,7 @@ void ImageViewer::slotZoomIn() {
         newScale = minScale;
     }
     imageFitMode = FREE;
-    setScale(newScale);
-    drawingRect.moveCenter(rect().center());
+    scaleAround(rect().center(), newScale);
     updateMap();
     update();
     resizeTimer->start(100);
@@ -466,8 +465,7 @@ void ImageViewer::slotZoomOut() {
         newScale = maxScale;
     }
     imageFitMode = FREE;
-    setScale(newScale);
-    drawingRect.moveCenter(rect().center());
+    scaleAround(rect().center(), newScale);
     updateMap();
     update();
     resizeTimer->start(100);

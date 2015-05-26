@@ -22,8 +22,8 @@ void DirectoryManager::setCurrentDir(QString path) {
 
 void DirectoryManager::changePath(QString path) {
     currentDir.setPath(path);
-    if(currentDir.isReadable())
-        globalSettings->s.setValue("lastDir", path);
+    //if(currentDir.isReadable())
+    //    globalSettings->s.setValue("lastDir", path);
     currentDir.setNameFilters(filters);
     currentPos = -1;
     fileList = currentDir.entryList();

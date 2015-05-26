@@ -12,22 +12,17 @@
 
 class CacheObject {
 public:
-    CacheObject(QString path) : img(NULL), thumbnail(NULL), info(NULL) {
-        if(ImageLib::guessType(path) == GIF) {
-            img = new ImageAnimated(path);
-        } else {
-            img = new ImageStatic(path);
-        }
+    CacheObject(QString _path) : img(NULL), thumbnail(NULL), info(NULL), path(_path) {
     }
+
     ~CacheObject() {
         delete img;
         delete info;
     }
     void generateThumbnail() {
         mutex.lock();
-        if(img && !thumbnail) {
-            thumbnail = img->generateThumbnail();
-        }
+        delete thumbnail;
+        thumbnail = getImg()->generateThumbnail();
         mutex.unlock();
     }
     const QPixmap* getThumbnail() {
@@ -37,22 +32,39 @@ public:
         return const_cast<const QPixmap*>(thumbnail);
     }
     const FileInfo* getInfo() {
-        return const_cast<const FileInfo*>(img->getInfo());
+        return const_cast<const FileInfo*>(getImg()->getInfo());
     }
     bool isLoaded() {
-        return img->isLoaded();
+        if(img) {
+            return img->isLoaded();
+        }
+        else return false;
     }
     void load() {
-        img->load();
-        info = img->getInfo();
+        getImg()->load();
+        info = getImg()->getInfo();
     }
     void unload() {
-        img->unload();
+        getImg()->unload();
     }
     Image* image() {
         return img;
     }
 private:
+    void init() {
+        if(ImageLib::guessType(path) == GIF) {
+            img = new ImageAnimated(path);
+        } else {
+            img = new ImageStatic(path);
+        }
+    }
+    Image* getImg() {
+        if(!img) {
+            init();
+        }
+        return img;
+    }
+    QString path;
     FileInfo *info;
     Image *img;
     QPixmap *thumbnail;
