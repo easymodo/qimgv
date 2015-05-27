@@ -130,9 +130,9 @@ void ImageAnimated::animationStart() {
     if(isLoaded()) {
         animationStop();
         timer = new QTimer(0);
-        timer->setInterval(movie->nextFrameDelay());
-        connect(timer, SIGNAL(timeout()), this, SLOT(frameChangedSlot()), Qt::DirectConnection);
-        timer->start();
+        timer->setSingleShot(true);
+        connect(timer, SIGNAL(timeout()), this, SLOT(nextFrame()), Qt::DirectConnection);
+        startAnimationTimer();
     }
 }
 
@@ -140,18 +140,25 @@ void ImageAnimated::animationStop() {
     if(isLoaded() && timer) {
         if(timer->isActive())
             timer->stop();
-        disconnect(timer, SIGNAL(timeout()), this, SLOT(frameChangedSlot()));
+        disconnect(timer, SIGNAL(timeout()), this, SLOT(nextFrame()));
         delete timer;
         timer = NULL;
     }
 }
 
-void ImageAnimated::frameChangedSlot() {
+void ImageAnimated::nextFrame() {
     if(!movie->jumpToNextFrame()) {
         movie->jumpToFrame(0);
     }
     QPixmap *newFrame = new QPixmap(movie->currentPixmap());
+    startAnimationTimer();
     emit frameChanged(newFrame);
+}
+
+void ImageAnimated::startAnimationTimer() {
+    if(timer && movie) {
+        timer->start(movie->nextFrameDelay());
+    }
 }
 
 void ImageAnimated::rotate(int grad) {

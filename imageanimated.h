@@ -34,11 +34,12 @@ signals:
     void frameChanged(QPixmap*);
 
 private slots:
-    void frameChangedSlot();
+    void nextFrame();
 
 private:
     QMovie *movie;
     QTimer *timer;
+    void startAnimationTimer();
 };
 
 #endif // IMAGEANIMATED_H
