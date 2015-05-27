@@ -130,40 +130,21 @@ void Core::onLoadFinished(Image* img, int pos) {
 void Core::rescaleForZoom(QSize newSize) {
     if(currentImage && currentImage->isLoaded()) {
         ImageLib imgLib;
-        float sourceSize = currentImage->width()*
+        float sourceSize = (float)currentImage->width()*
                            currentImage->height()/1000000;
-        float size = newSize.width()*
+        float size = (float)newSize.width()*
                      newSize.height()/1000000;
         QPixmap* pixmap;
-        float currentScale = 2.0;
+        float currentScale = (float)sourceSize/size;
         if(currentScale==1.0) {
             pixmap = currentImage->getPixmap();
         } else {
             pixmap = new QPixmap(newSize);
-            if(currentScale<1.0) { // downscale
-                if(sourceSize>15) {
-                    if(size>10) {
-                        // large src, larde dest
-                        imgLib.fastScale(pixmap, currentImage->getImage(), newSize, false);
-                    } else if(size>4 && size<10){
-                        // large src, medium dest
-                        imgLib.fastScale(pixmap, currentImage->getImage(), newSize, true);
-                    } else {
-                        // large src, low dest
-                        imgLib.bilinearScale(pixmap, currentImage->getImage(), newSize, true);
-                    }
-                } else {
-                    // low src
-                    imgLib.bilinearScale(pixmap, currentImage->getImage(), newSize, true);
-                }
-            } else {
-                if(sourceSize>10) { // upscale
-                    // large src
-                    imgLib.fastScale(pixmap, currentImage->getImage(), newSize, false);
-                } else {
-                    // low src
-                    imgLib.fastScale(pixmap, currentImage->getImage(), newSize, true);
-                }
+            if( globalSettings->s.value("useFastScale", "false").toBool() == true ) {
+                imgLib.fastScale(pixmap, currentImage->getImage(), newSize, true);
+            }
+            else {
+                imgLib.bilinearScale(pixmap, currentImage->getImage(), newSize, true);
             }
         }
         emit scalingFinished(pixmap);

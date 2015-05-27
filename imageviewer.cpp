@@ -239,7 +239,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent* event) {
             imageFitMode = FREE;
             scaleAround(fixedZoomPoint, newScale);
             resizeTimer->stop();
-            resizeTimer->start(75);
+            resizeTimer->start(65);
         }
         update();
     } else {
@@ -362,7 +362,7 @@ void ImageViewer::resizeEvent(QResizeEvent* event) {
     cropOverlay->hide();
     updateMap();
     update();
-    resizeTimer->start(150);
+    resizeTimer->start(130);
 }
 
 void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
@@ -451,7 +451,7 @@ void ImageViewer::slotZoomIn() {
     scaleAround(rect().center(), newScale);
     updateMap();
     update();
-    resizeTimer->start(100);
+    resizeTimer->start(90);
 }
 
 void ImageViewer::slotZoomOut() {
@@ -468,7 +468,7 @@ void ImageViewer::slotZoomOut() {
     scaleAround(rect().center(), newScale);
     updateMap();
     update();
-    resizeTimer->start(100);
+    resizeTimer->start(90);
 }
 
 bool ImageViewer::isDisplaying() const {

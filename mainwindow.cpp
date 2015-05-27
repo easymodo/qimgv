@@ -133,6 +133,7 @@ void MainWindow::open(QString path) {
 }
 
 void MainWindow::readSettings() {
+    menuBar()->setHidden(globalSettings->s.value("hideMenuBar", "false").toBool());
     QString fitMode =
             globalSettings->s.value("defaultFitMode", "ALL").toString();
     if(fitMode == "WIDTH") {
@@ -347,7 +348,7 @@ void MainWindow::slotFullscreen() {
     }
     else
     {
-        this->menuBar()->show();
+        showMenuBar();
         this->showNormal();
         emit signalFullscreenEnabled(false);
     }
@@ -427,6 +428,24 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     {
         switchFitMode();
     }
+    if(event->key() == Qt::Key_M) {
+        triggerMenuBar();
+    }
+}
+
+void MainWindow::showMenuBar() {
+    if(!globalSettings->s.value("hideMenuBar", "false").toBool()) {
+        menuBar()->show();
+    }
+}
+
+void MainWindow::triggerMenuBar() {
+    if(this->menuBar()->isHidden()) {
+        this->menuBar()->show();
+    } else {
+        this->menuBar()->hide();
+    }
+    globalSettings->s.setValue("hideMenuBar", this->menuBar()->isHidden());
 }
 
 bool MainWindow::eventFilter(QObject *target, QEvent *event)

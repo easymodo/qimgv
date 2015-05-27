@@ -54,6 +54,8 @@ public:
     SettingsDialog *settingsDialog;
 
     void open(QString path);
+    void triggerMenuBar();
+    void showMenuBar();
 private slots:
     void slotOpenDialog();
     void slotFitAll();

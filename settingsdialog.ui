@@ -126,7 +126,7 @@
     </widget>
     <widget class="QComboBox" name="scalingQualityComboBox">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>

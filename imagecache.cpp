@@ -10,8 +10,6 @@ ImageCache::ImageCache() {
 // call when changing directory
 void ImageCache::init(QString directory, QStringList list) {
     dir = directory;
-    int time = clock();
-    qDebug() << "init cache";
     // also should free memory
     lock();
     cachedImages->clear();
@@ -19,7 +17,6 @@ void ImageCache::init(QString directory, QStringList list) {
         cachedImages->append(new CacheObject(list.at(i)));
     }
     unlock();
-    qDebug() << "init finished in " << clock() - time;
     emit initialized(length());
 }
 
