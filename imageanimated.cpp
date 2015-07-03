@@ -21,11 +21,11 @@ ImageAnimated::~ImageAnimated()
 void ImageAnimated::load()
 {
     mutex.lock();
-    info = new FileInfo(path);
     if(isLoaded()) {
         mutex.unlock();
         return;
     }
+    info = new FileInfo(path);
     guessType();
     movie->setFormat("GIF");
     movie->setFileName(path);
@@ -37,6 +37,7 @@ void ImageAnimated::load()
 void ImageAnimated::unload() {
     mutex.lock();
     if(isLoaded()) {
+        animationStop();
         delete movie;
         movie = new QMovie();
         loaded = false;
