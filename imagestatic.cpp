@@ -68,7 +68,8 @@ QPixmap* ImageStatic::generateThumbnail() {
     QPixmap *thumbnail = new QPixmap(size, size);
     QPixmap *tmp;
     if(!isLoaded()) {
-        tmp = new QPixmap(path);
+        guessType();
+        tmp = new QPixmap(path, extension);
         *tmp = tmp->scaled(size*2,
                            size*2,
                            Qt::KeepAspectRatioByExpanding,

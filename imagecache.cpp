@@ -67,7 +67,6 @@ void ImageCache::readSettings() {
 
 void ImageCache::applySettings() {
     readSettings();
-    //shrinkTo(maxCacheSize);
 }
 
 void ImageCache::lock() {

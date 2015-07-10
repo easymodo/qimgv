@@ -111,7 +111,7 @@ void MainWindow::init() {
             panel, SLOT(setThumbnail(int, const QPixmap*)));
 
     connect(core, SIGNAL(cacheInitialized(int)),
-            panel, SLOT(fillPanel(int)));
+            panel, SLOT(fillPanel(int)), Qt::DirectConnection);
 
     connect(imageViewer, SIGNAL(scalingRequested(QSize)),
             core, SLOT(rescaleForZoom(QSize)));

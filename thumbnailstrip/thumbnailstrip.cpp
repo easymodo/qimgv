@@ -4,7 +4,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     : QGraphicsView(parent),
       scrollStep(200),
       defaultHeight(124),
-      loadDelay(120)
+      loadDelay(50)
 {
     widget = new QGraphicsWidget();
     scene = new CustomScene;
@@ -38,7 +38,6 @@ void ThumbnailStrip::fillPanel(int count) {
     loadTimer.stop();
     populate(count);
     this->horizontalScrollBar()->setValue(0);
-    //loadVisibleThumbnails();
 }
 
 void ThumbnailStrip::selectThumbnail(int pos) {
@@ -50,7 +49,7 @@ void ThumbnailStrip::selectThumbnail(int pos) {
     if(!childVisibleEntirely(pos)) {
         centerOn(thumbnailLabels.at(pos)->scenePos());
     }
-
+    loadVisibleThumbnails();
 }
 
 void ThumbnailStrip::populate(int count) {
@@ -94,7 +93,6 @@ void ThumbnailStrip::loadVisibleThumbnailsDelayed() {
 
 void ThumbnailStrip::loadVisibleThumbnails() {
     loadTimer.stop();
-
     updateVisibleRegion();
 
     int counter = 0;

@@ -3,6 +3,11 @@
 DirectoryManager::DirectoryManager() :
     currentPos(-1)
 {
+    /*  this is temporarily hardcoded
+        will add other formats after finishing
+        dicking around with architecture
+        webm/gifv support is planned too
+     */
     filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
     QString startDir;
     startDir = globalSettings->s.value("lastDir",
