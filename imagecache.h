@@ -90,6 +90,7 @@ public:
     void generateAllThumbnails();
     void unloadAll();
     QFuture<void> *future;
+    void unloadAt(int pos);
 signals:
     void initialized(int count);
 public slots:

@@ -32,6 +32,12 @@ void ImageCache::unloadAll() {
     unlock();
 }
 
+void ImageCache::unloadAt(int pos) {
+    lock();
+    cachedImages->at(pos)->unload();
+    unlock();
+}
+
 void ImageCache::loadAt(int pos) {
     lock();
     cachedImages->at(pos)->load();
