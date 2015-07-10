@@ -53,7 +53,6 @@ void ThumbnailStrip::selectThumbnail(int pos) {
 }
 
 void ThumbnailStrip::populate(int count) {
-    // clear thumb list
     // this will fail if list items != layout items
     // shouldnt happen though
     for(int i = layout->count()-1; i >= 0; --i) {

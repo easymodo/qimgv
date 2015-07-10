@@ -45,7 +45,9 @@ public:
         info = getImg()->getInfo();
     }
     void unload() {
-        getImg()->unload();
+        if(img) {
+            img->unload();
+        }
     }
     Image* image() {
         return img;

@@ -26,7 +26,6 @@ QString ImageCache::directory() {
 
 void ImageCache::unloadAll() {
     lock();
-    int time = clock();
     for(int i=0; i<cachedImages->length(); i++) {
         cachedImages->at(i)->unload();
     }
