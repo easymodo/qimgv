@@ -47,6 +47,7 @@ public slots:
     void init();
     void updateInfoString();
     void loadImage(QString);
+    void loadImageBlocking(QString);
     void slotNextImage();
     void slotPrevImage();
     void setCurrentDir(QString);

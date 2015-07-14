@@ -129,7 +129,7 @@ void MainWindow::init() {
 }
 
 void MainWindow::open(QString path) {
-    core->loadImage(path);
+    core->loadImageBlocking(path);
 }
 
 void MainWindow::readSettings() {

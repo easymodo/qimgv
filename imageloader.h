@@ -23,6 +23,7 @@ public:
     const ImageCache* getCache();
     void setCache(ImageCache*);
 
+    void openBlocking(QString path);
 public slots:
     void generateThumbnailFor(int pos);
 private:

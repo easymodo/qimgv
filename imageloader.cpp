@@ -25,6 +25,20 @@ void ImageLoader::open(QString path) {
     QtConcurrent::run(this, &ImageLoader::load_thread, dm->currentFilePos());
 }
 
+void ImageLoader::openBlocking(QString path) {
+    cache->unloadAll();
+    if(!dm->existsInCurrentDir(path)) {
+        dm->setFile(path);
+        if(cache->directory() != dm->currentDirectory()) {
+            cache->init(dm->currentDirectory(), dm->getFileList());
+        }
+    } else {
+        dm->setFile(path);
+    }
+    lock();
+    load_thread(dm->currentFilePos());
+}
+
 void ImageLoader::open(int pos) {
     cache->unloadAll();
     dm->setCurrentPos(pos);

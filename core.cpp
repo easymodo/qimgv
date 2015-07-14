@@ -111,6 +111,15 @@ void Core::loadImage(QString path) {
     }
 }
 
+void Core::loadImageBlocking(QString path) {
+    if(!path.isEmpty() && dirManager->isValidFile(path)) {
+        imageLoader->openBlocking(path);
+    }
+    else {
+        qDebug() << "ERROR: invalid file selected.";
+    }
+}
+
 void Core::loadImageByPos(int pos) {
       imageLoader->open(pos);
 }
