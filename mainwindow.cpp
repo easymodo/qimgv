@@ -14,7 +14,6 @@ MainWindow::MainWindow() :
                    " " +
                    QCoreApplication::applicationVersion());
     setWindowIcon(QIcon(":/images/res/pepper32.png"));
-    resize(800, 600);
 }
 
 void MainWindow::init() {
@@ -145,6 +144,7 @@ void MainWindow::readSettings() {
     else {
         slotFitAll();
     }
+    restoreWindowGeometry();
 }
 
 void MainWindow::slotOpenDialog() {
@@ -485,7 +485,16 @@ void MainWindow::close() {
         this->setWindowTitle("closing...");
         QThreadPool::globalInstance()->waitForDone();
     }
+    saveWindowGeometry();
     QMainWindow::close();
+}
+
+void MainWindow::saveWindowGeometry() {
+    globalSettings->s.setValue("windowGeometry", this->saveGeometry());
+}
+
+void MainWindow::restoreWindowGeometry() {
+    this->restoreGeometry(globalSettings->s.value("windowGeometry").toByteArray());
 }
 
 MainWindow::~MainWindow()

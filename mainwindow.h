@@ -56,6 +56,7 @@ public:
     void open(QString path);
     void triggerMenuBar();
     void showMenuBar();
+
 private slots:
     void slotOpenDialog();
     void slotFitAll();
@@ -77,6 +78,8 @@ private:
     void init();
     void createActions();
     void createMenus();
+    void saveWindowGeometry();
+    void restoreWindowGeometry();
     void keyPressEvent(QKeyEvent *event);
     
     QAction *openAct;
