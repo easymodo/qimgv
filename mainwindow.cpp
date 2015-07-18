@@ -402,6 +402,11 @@ void MainWindow::resizeEvent(QResizeEvent* event) {
     infoOverlay->updateWidth();
 }
 
+void MainWindow::closeEvent(QCloseEvent *event) {
+    saveWindowGeometry();
+    event->accept();
+}
+
 void MainWindow::mouseMoveEvent(QMouseEvent* event) {
     if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
         if(event->pos().y() > height()-80 && event->pos().x() < width()-130 && panel) {
@@ -485,7 +490,6 @@ void MainWindow::close() {
         this->setWindowTitle("closing...");
         QThreadPool::globalInstance()->waitForDone();
     }
-    saveWindowGeometry();
     QMainWindow::close();
 }
 

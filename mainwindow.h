@@ -110,6 +110,7 @@ protected:
     void wheelEvent(QWheelEvent *event);
     bool eventFilter(QObject *target, QEvent *event);
     void resizeEvent(QResizeEvent *event);
+    void closeEvent(QCloseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
 };
 
