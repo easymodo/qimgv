@@ -106,6 +106,7 @@ private:
     QMenu *navigationMenu;
     QMenu *helpMenu;
 
+    void readSettingsInitial();
 protected:
     void wheelEvent(QWheelEvent *event);
     bool eventFilter(QObject *target, QEvent *event);

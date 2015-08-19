@@ -9,7 +9,7 @@ MainWindow::MainWindow() :
     setMinimumSize(QSize(400,300));
     this->setMouseTracking(true);
     init();
-    readSettings();
+    readSettingsInitial();
     setWindowTitle(QCoreApplication::applicationName() +
                    " " +
                    QCoreApplication::applicationVersion());
@@ -131,6 +131,13 @@ void MainWindow::open(QString path) {
     core->loadImageBlocking(path);
 }
 
+void MainWindow::readSettingsInitial() {
+    readSettings();
+    if(!globalSettings->s.value("openInFullscreen", "false").toBool()) {
+        restoreWindowGeometry();
+    }
+}
+
 void MainWindow::readSettings() {
     menuBar()->setHidden(globalSettings->s.value("hideMenuBar", "false").toBool());
     QString fitMode =
@@ -144,7 +151,6 @@ void MainWindow::readSettings() {
     else {
         slotFitAll();
     }
-    restoreWindowGeometry();
 }
 
 void MainWindow::slotOpenDialog() {
@@ -403,7 +409,10 @@ void MainWindow::resizeEvent(QResizeEvent* event) {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    saveWindowGeometry();
+    if(!globalSettings->s.value("openInFullscreen", "false").toBool() &&
+       !this->isFullScreen()) {
+        saveWindowGeometry();
+}
     event->accept();
 }
 
@@ -498,7 +507,8 @@ void MainWindow::saveWindowGeometry() {
 }
 
 void MainWindow::restoreWindowGeometry() {
-    this->restoreGeometry(globalSettings->s.value("windowGeometry").toByteArray());
+    this->restoreGeometry(globalSettings->
+                          s.value("windowGeometry").toByteArray());
 }
 
 MainWindow::~MainWindow()
