@@ -11,13 +11,13 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     layout = new QGraphicsLinearLayout(Qt::Horizontal);
     widget->setLayout(layout);
     layout->setSpacing(0);
-    layout->setContentsMargins(2,1,2,0);
+    layout->setContentsMargins(2,0,2,0);
     scene->addItem(widget);
 
     this->setScene(scene);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setFrameShape(QFrame::NoFrame);
-    this->setGeometry(0,0,500,150);
+    this->setGeometry(0,0,500,140);
     this->hide();
 
     loadTimer.setSingleShot(true);

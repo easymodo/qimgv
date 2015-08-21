@@ -160,6 +160,32 @@
       <string>Open in fullscreen</string>
      </property>
     </widget>
+    <widget class="ClickableLabel" name="bgColorLabel">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>120</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>120</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Background color:</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -260,6 +286,16 @@
    </property>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>clickablelabel.h</header>
+   <slots>
+    <signal>clicked()</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -273,8 +309,8 @@
      <y>72</y>
     </hint>
     <hint type="destinationlabel">
-     <x>222</x>
-     <y>72</y>
+     <x>162</x>
+     <y>92</y>
     </hint>
    </hints>
   </connection>
@@ -326,9 +362,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>bgColorLabel</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>bgColorDialog()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>142</x>
+     <y>158</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>30</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>applySettingsAndClose()</slot>
   <slot>applySettings()</slot>
+  <slot>bgColorDialog()</slot>
  </slots>
 </ui>

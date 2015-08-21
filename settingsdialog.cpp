@@ -9,6 +9,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle(tr("Settings"));
     setWindowIcon(QIcon(":/images/res/pepper32.png"));
+    ui->bgColorLabel->setAutoFillBackground(true);
     connect(this, SIGNAL(settingsChanged()),
             globalSettings, SLOT(sendChangeNotification()));
     readSettings();
@@ -50,6 +51,11 @@ void SettingsDialog::readSettings() {
     else {
         ui->fitModeComboBox->setCurrentIndex(0);
     }
+
+    // ##### UI #####
+    QColor bgColor = globalSettings->s.value("bgColor", "Qt::black").value<QColor>();
+    bgLabelPalette.setColor(QPalette::Window, bgColor);
+    ui->bgColorLabel->setPalette(bgLabelPalette);
 }
 
 void SettingsDialog::applySettings() {
@@ -66,12 +72,24 @@ void SettingsDialog::applySettings() {
     } else {
         globalSettings->s.setValue("useFastScale", false);
     }
+    globalSettings->s.setValue("bgColor",
+                               bgLabelPalette.color(QPalette::Window));
     emit settingsChanged();
 }
 
 void SettingsDialog::applySettingsAndClose() {
     applySettings();
     this->close();
+}
+
+void SettingsDialog::bgColorDialog() {
+    QColorDialog *colorDialog = new QColorDialog(this);
+    QColor newColor;
+    newColor = colorDialog->getColor(bgLabelPalette.color(QPalette::Window),
+                                     this,
+                                     "Background color.");
+    bgLabelPalette.setColor(QPalette::Window, newColor);
+    ui->bgColorLabel->setPalette(bgLabelPalette);
 }
 
 SettingsDialog::~SettingsDialog()

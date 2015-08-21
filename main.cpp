@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationName("greenpepper software");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
-    QCoreApplication::setApplicationVersion("0.34.7");
+    QCoreApplication::setApplicationVersion("0.34.8");
 
     globalSettings = Settings::getInstance();
     atexit(saveSettings);

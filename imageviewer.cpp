@@ -10,7 +10,6 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
     imageFitMode(NORMAL)
 {
     initOverlays();
-    bgColor.setRgb(0,0,0,255);
     image = new QPixmap();
     image->load(":/images/res/logo.png");
     drawingRect = image->rect();
@@ -18,6 +17,9 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
     resizeTimer = new QTimer(this);
     resizeTimer->setSingleShot(true);
     cursorTimer = new QTimer(this);
+    readSettings();
+    connect(globalSettings, SIGNAL(settingsChanged()),
+            this, SLOT(readSettings()));
     connect(resizeTimer, SIGNAL(timeout()),
             this, SLOT(resizeImage()),
             Qt::UniqueConnection);
@@ -96,6 +98,12 @@ void ImageViewer::crop() {
     } else {
         cropOverlay->hide();
     }
+}
+
+void ImageViewer::readSettings() {
+   this->bgColor =
+            globalSettings->s.value("bgColor", "Qt::black").value<QColor>();
+    this->repaint();
 }
 
 void ImageViewer::updateMaxScale() {

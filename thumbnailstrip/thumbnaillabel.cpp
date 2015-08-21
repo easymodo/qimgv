@@ -8,9 +8,9 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsPixmapItem *parent) :
     state(EMPTY),
     highlighted(false),
     borderW(3),
-    borderH(4)
+    borderH(5)
 {
-    highlightColor = new QColor(144, 209, 75);
+    highlightColor = new QColor(115, 212, 13);
     outlineColor = new QColor(Qt::black);
     setGraphicsItem(this);
     this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -37,7 +37,9 @@ bool ThumbnailLabel::isHighlighted() {
 void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     if(isHighlighted()) {
-        painter->fillRect(boundingRect(), *highlightColor);
+        QRectF highlightRect(boundingRect().topLeft(),
+                             QPointF(boundingRect().width(), borderH));
+        painter->fillRect(highlightRect, *highlightColor);
     }
     QGraphicsPixmapItem::paint(painter,option,widget);
 }

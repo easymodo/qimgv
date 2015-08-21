@@ -26,11 +26,13 @@ public:
     void setHighlighted(bool x);
     bool isHighlighted();
     QColor *highlightColor, *outlineColor;
+
 private:
     bool hovered, loaded;
     QPixmap* pix;
     int borderW, borderH;
     bool highlighted;
+    QString infoString;
 
 protected:
  QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const Q_DECL_OVERRIDE;

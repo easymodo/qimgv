@@ -400,7 +400,6 @@ void MainWindow::slotSaveDialog() {
 
 void MainWindow::resizeEvent(QResizeEvent* event) {
     Q_UNUSED(event)
-
     if(panel) {
         panel->parentResized(size());
     }

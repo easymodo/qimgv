@@ -2,6 +2,9 @@
 #define SETTINGSDIALOG_H
 
 #include <QWidget>
+#include <QColorDialog>
+#include <QDebug>
+#include "clickablelabel.h"
 
 namespace Ui {
 class SettingsDialog;
@@ -16,13 +19,15 @@ public:
     ~SettingsDialog();
 
 private:
+    QPalette bgLabelPalette;
     void readSettings();
     Ui::SettingsDialog *ui;
 
 private slots:
     void applySettings();
-
     void applySettingsAndClose();
+    void bgColorDialog();
+
 signals:
     void settingsChanged();
 };

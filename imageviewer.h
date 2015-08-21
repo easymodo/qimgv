@@ -57,6 +57,7 @@ public slots:
     void slotZoomOut();
     void resizeImage();
     void crop();
+    void readSettings();
 
     void hideCursor();
     void updateImage(QPixmap *scaled);
