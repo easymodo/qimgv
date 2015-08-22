@@ -125,8 +125,6 @@ int DirectoryManager::peekPrev(int offset) {
     if(pos<0) {
         pos = 0;
     }
-    qDebug() << "currentPos = " << currentPos;
-    qDebug() << "pos= " << pos;
     return pos;
 }
 

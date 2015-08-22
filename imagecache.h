@@ -45,13 +45,17 @@ public:
         else return false;
     }
     void load() {
+        mutex.lock();
         getImg()->load();
         info = getImg()->getInfo();
+        mutex.unlock();
     }
     void unload() {
+        mutex.lock();
         if(img) {
             img->unload();
         }
+        mutex.unlock();
     }
     Image* image() {
         return img;

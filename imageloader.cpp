@@ -72,7 +72,16 @@ void ImageLoader::loadNext() {
         if(toUnload!=dm->currentFilePos()) {
             cache->unloadAt(toUnload);
         }
-        QtConcurrent::run(this, &ImageLoader::load_thread, dm->nextPos());
+        if(!cache->imageAt(dm->nextPos())->isLoaded()) {
+            QtConcurrent::run(this,
+                              &ImageLoader::load_thread,
+                              dm->currentFilePos());
+        }
+        else {
+            unlock();
+            emit loadFinished(cache->imageAt(dm->currentFilePos()),
+                              dm->currentFilePos());
+        }
         if(dm->peekNext(1)!=dm->currentFilePos()) {
             startPreload(dm->peekNext(1));
         }
@@ -88,7 +97,16 @@ void ImageLoader::loadPrev() {
         if(toUnload!=dm->currentFilePos()) {
             cache->unloadAt(toUnload);
         }
-        QtConcurrent::run(this, &ImageLoader::load_thread, dm->prevPos());
+        if(!cache->imageAt(dm->prevPos())->isLoaded()) {
+            QtConcurrent::run(this,
+                              &ImageLoader::load_thread,
+                              dm->currentFilePos());
+        }
+        else {
+            unlock();
+            emit loadFinished(cache->imageAt(dm->currentFilePos()),
+                              dm->currentFilePos());
+        }
         if(dm->peekPrev(1)!=dm->currentFilePos()) {
             startPreload(dm->peekPrev(1));
         }
@@ -109,7 +127,6 @@ void ImageLoader::preload(int pos) {
 }
 
 void ImageLoader::preload_thread(int pos) {
-    //qDebug() << "preloadStart: " << cache->imageAt(pos)->getPath();
     cache->loadAt(pos);
 }
 
