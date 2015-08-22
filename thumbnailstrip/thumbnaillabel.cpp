@@ -8,14 +8,24 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsPixmapItem *parent) :
     state(EMPTY),
     highlighted(false),
     borderW(3),
-    borderH(5)
+    borderH(5),
+    thumbnailSize(100)
 {
-    highlightColor = new QColor(115, 212, 13);
-    outlineColor = new QColor(Qt::black);
     setGraphicsItem(this);
     this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     this->setOffset(QPointF(borderW, borderH));
     this->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
+
+    highlightRect.setTopLeft(QPointF(borderW, 0));
+    highlightRect.setBottomRight(QPointF(borderW+thumbnailSize, borderH));
+    shadowRect.setTopLeft(QPointF(borderW, borderH));
+    shadowRect.setBottomRight(QPointF(borderW+thumbnailSize, borderH+10));
+    highlightColor = new QColor(76, 191, 10);
+    outlineColor = new QColor(Qt::black);
+    shadowGradient = new QLinearGradient(shadowRect.topLeft(),
+                                         shadowRect.bottomLeft());
+    shadowGradient->setColorAt(0, QColor(0,0,0,170));
+    shadowGradient->setColorAt(1, QColor(0,0,0,0));
 }
 
 void ThumbnailLabel::setPixmap(const QPixmap &pixmap){
@@ -36,12 +46,12 @@ bool ThumbnailLabel::isHighlighted() {
 }
 void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    if(isHighlighted()) {
-        QRectF highlightRect(boundingRect().topLeft(),
-                             QPointF(boundingRect().width(), borderH));
-        painter->fillRect(highlightRect, *highlightColor);
-    }
     QGraphicsPixmapItem::paint(painter,option,widget);
+    if(isHighlighted()) {
+        painter->fillRect(highlightRect, *highlightColor);
+        painter->fillRect(shadowRect, *shadowGradient);
+
+    }
 }
 
 QSizeF ThumbnailLabel::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
@@ -49,9 +59,11 @@ QSizeF ThumbnailLabel::sizeHint(Qt::SizeHint which, const QSizeF &constraint) co
     switch (which) {
     case Qt::MinimumSize:
     case Qt::PreferredSize:
-        return QSize(100, 100) + QSize(borderW*2, borderH*2);
+        return QSize(thumbnailSize, thumbnailSize)
+               + QSize(borderW*2, borderH*2);
     case Qt::MaximumSize:
-        return QSize(100, 100) + QSize(borderW*2, borderH*2);
+        return QSize(thumbnailSize, thumbnailSize)
+               + QSize(borderW*2, borderH*2);
     default:
         break;
     }

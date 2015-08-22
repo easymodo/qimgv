@@ -16,6 +16,7 @@ public:
     explicit Core();
     void open(QString);
     const ImageCache* getCache();
+    QString getCurrentFilePath();
 
 private:
     void initVariables();

@@ -391,9 +391,9 @@ void MainWindow::slotRotateRight() {
 
 void MainWindow::slotSaveDialog() {
     const QString imagesFilter = tr("Images (*.png *.jpg *jpeg *bmp *gif)");
-    QString lastDir = globalSettings->s.value("lastDir",".").toString();
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
-                               lastDir,
+    QString fileName = core->getCurrentFilePath();
+    fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+                               fileName,
                                imagesFilter);
     emit fileSaved(fileName);
 }

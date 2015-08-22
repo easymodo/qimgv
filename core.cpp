@@ -32,6 +32,14 @@ void Core::connectSlots() {
     connect(cache, SIGNAL(initialized(int)), this, SIGNAL(cacheInitialized(int)), Qt::DirectConnection);
 }
 
+QString Core::getCurrentFilePath() {
+    QString filePath = "";
+    if(currentImage) {
+        filePath = currentImage->getPath();
+    }
+    return filePath;
+}
+
 void Core::init() {
     initVariables();
     connectSlots();

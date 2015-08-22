@@ -37,6 +37,7 @@ private:
     QTimer loadTimer;
     uint loadDelay;
     int previous;
+    int offscreenPreloadArea;
 
     bool childVisibleEntirely(int pos);
     QRectF itemsBoundingRect();

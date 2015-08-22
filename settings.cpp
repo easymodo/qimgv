@@ -31,3 +31,4 @@ void Settings::validate() {
 void Settings::sendChangeNotification() {
     emit settingsChanged();
 }
+

@@ -4,7 +4,8 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     : QGraphicsView(parent),
       scrollStep(200),
       defaultHeight(124),
-      loadDelay(50)
+      loadDelay(30),
+      offscreenPreloadArea(400)
 {
     widget = new QGraphicsWidget();
     scene = new CustomScene;
@@ -119,7 +120,7 @@ void ThumbnailStrip::setThumbnail(int pos, const QPixmap* thumb) {
 void ThumbnailStrip::updateVisibleRegion() {
     QRect viewport_rect(0, 0, width(), height());
     visibleRegion = mapToScene(viewport_rect).boundingRect();
-    visibleRegion.adjust(-350,0,350,0);
+    visibleRegion.adjust(-offscreenPreloadArea,0,offscreenPreloadArea,0);
 }
 
 bool ThumbnailStrip::childVisible(int pos) {

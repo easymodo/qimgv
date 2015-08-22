@@ -23,6 +23,10 @@ public:
         mutex.lock();
         delete thumbnail;
         thumbnail = getImg()->generateThumbnail();
+        if(thumbnail->size() == QSize(0,0)) {
+            delete thumbnail;
+            thumbnail = new QPixmap(":/images/res/error_no_image_100px.png");
+        }
         mutex.unlock();
     }
     const QPixmap* getThumbnail() {

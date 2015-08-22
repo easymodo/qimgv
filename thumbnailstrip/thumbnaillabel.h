@@ -6,7 +6,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QDebug>
-
+#include <QLinearGradient>
 enum loadState { EMPTY, LOADING, LOADED };
 
 class ThumbnailLabel : public QGraphicsLayoutItem, public QGraphicsPixmapItem
@@ -30,9 +30,11 @@ public:
 private:
     bool hovered, loaded;
     QPixmap* pix;
-    int borderW, borderH;
+    int borderW, borderH, thumbnailSize;
     bool highlighted;
     QString infoString;
+    QLinearGradient *shadowGradient;
+    QRectF highlightRect, shadowRect;
 
 protected:
  QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const Q_DECL_OVERRIDE;
