@@ -1,11 +1,7 @@
 #include "thumbnailstrip.h"
 
 ThumbnailStrip::ThumbnailStrip(QWidget *parent)
-    : QGraphicsView(parent),
-      scrollStep(200),
-      defaultHeight(124),
-      loadDelay(30),
-      offscreenPreloadArea(400)
+    : QGraphicsView(parent)
 {
     widget = new QGraphicsWidget();
     scene = new CustomScene;
@@ -35,20 +31,20 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
 }
 
 void ThumbnailStrip::fillPanel(int count) {
-    previous = -1;
+    current = -1;
     loadTimer.stop();
     populate(count);
     this->horizontalScrollBar()->setValue(0);
 }
 
 void ThumbnailStrip::selectThumbnail(int pos) {
-    if(previous != -1) {
-        thumbnailLabels.at(previous)->setHighlighted(false);
-        thumbnailLabels.at(previous)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_INSTANT);
+    if(current != -1) {
+        thumbnailLabels.at(current)->setHighlighted(false);
+        thumbnailLabels.at(current)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_INSTANT);
     }
     thumbnailLabels.at(pos)->setHighlighted(true);
     thumbnailLabels.at(pos)->setOpacityAnimated(OPACITY_SELECTED, ANIMATION_SPEED_FAST);
-    previous = pos;
+    current = pos;
     if(!childVisibleEntirely(pos)) {
         centerOn(thumbnailLabels.at(pos)->scenePos());
     }
@@ -64,9 +60,14 @@ void ThumbnailStrip::populate(int count) {
     }
     thumbnailLabels.clear();
 
-    //add items
     for(int i=0; i<count; i++) {
         addItem();
+    }
+
+    // highlight current img if thumbnail was loaded after
+    // actual image was displayed (e.g. opened from FM)
+    if(current!=-1) {
+        thumbnailLabels.at(current)->setOpacity(OPACITY_SELECTED);
     }
 
     layout->invalidate();
@@ -89,7 +90,7 @@ QRectF ThumbnailStrip::itemsBoundingRect() {
 
 void ThumbnailStrip::loadVisibleThumbnailsDelayed() {
     loadTimer.stop();
-    loadTimer.start(loadDelay);
+    loadTimer.start(LOAD_DELAY);
 }
 
 
@@ -124,7 +125,7 @@ void ThumbnailStrip::setThumbnail(int pos, const QPixmap* thumb) {
 void ThumbnailStrip::updateVisibleRegion() {
     QRect viewport_rect(0, 0, width(), height());
     visibleRegion = mapToScene(viewport_rect).boundingRect();
-    visibleRegion.adjust(-offscreenPreloadArea,0,offscreenPreloadArea,0);
+    visibleRegion.adjust(-OFFSCREEN_PRELOAD_AREA,0,OFFSCREEN_PRELOAD_AREA,0);
 }
 
 bool ThumbnailStrip::childVisible(int pos) {
@@ -158,17 +159,17 @@ void ThumbnailStrip::wheelEvent(QWheelEvent *event) {
     event->setAccepted(true);
     QPointF viewCenter = mapToScene(width() / 2, 0);
     if(event->angleDelta().ry() < 0) {
-        viewCenter += QPointF(scrollStep, 0);
+        viewCenter += QPointF(SCROLL_STEP, 0);
     }
     else {
-        viewCenter -= QPointF(scrollStep, 0);
+        viewCenter -= QPointF(SCROLL_STEP, 0);
     }
     centerOn(viewCenter);
 }
 
 void ThumbnailStrip::parentResized(QSize parentSize) {
-    this->setGeometry( QRect(0, parentSize.height() - defaultHeight + 1,
-                             parentSize.width(), defaultHeight) );
+    this->setGeometry( QRect(0, parentSize.height() - DEFAULT_HEIGHT + 1,
+                             parentSize.width(), DEFAULT_HEIGHT) );
     loadVisibleThumbnailsDelayed();
 }
 

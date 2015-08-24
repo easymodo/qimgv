@@ -46,6 +46,10 @@ bool ThumbnailLabel::isHighlighted() {
 }
 
 void ThumbnailLabel::setOpacityAnimated(qreal amount, int speed) {
+    if(speed == 0.0) {
+        setOpacity(amount);
+        return;
+    }
     QPropertyAnimation *anim = new QPropertyAnimation(this, "opacity");
     anim->setDuration(speed);
     anim->setStartValue(this->opacity());

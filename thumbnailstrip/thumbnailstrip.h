@@ -24,7 +24,6 @@ public:
 
 private:
     void addItem();
-    int itemCount;
     QGraphicsLinearLayout *layout;
     QGraphicsWidget *widget;
     CustomScene* scene;
@@ -35,15 +34,17 @@ private:
     const int ANIMATION_SPEED_FAST = 100;
     const int ANIMATION_SPEED_NORMAL = 220;
 
-    int scrollStep;
-    int defaultHeight;
+    const int SCROLL_STEP = 200;
+    const int DEFAULT_HEIGHT = 124;
+    const uint LOAD_DELAY = 30;
+    const int OFFSCREEN_PRELOAD_AREA = 400;
+
+    int itemCount;
+    int current;
     bool childVisible(int pos);
     ThumbnailStrip *strip;
     QRectF visibleRegion;
     QTimer loadTimer;
-    uint loadDelay;
-    int previous;
-    int offscreenPreloadArea;
     bool childVisibleEntirely(int pos);
     QRectF itemsBoundingRect();
 
