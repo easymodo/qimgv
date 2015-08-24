@@ -44,6 +44,14 @@ void ThumbnailLabel::setHighlighted(bool x) {
 bool ThumbnailLabel::isHighlighted() {
     return highlighted;
 }
+
+void ThumbnailLabel::setOpacityAnimated(qreal amount, int speed) {
+    QPropertyAnimation *anim = new QPropertyAnimation(this, "opacity");
+    anim->setDuration(speed);
+    anim->setStartValue(this->opacity());
+    anim->setEndValue(amount);
+    anim->start(QAbstractAnimation::DeleteWhenStopped);
+}
 void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     QGraphicsPixmapItem::paint(painter,option,widget);

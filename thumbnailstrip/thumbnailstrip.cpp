@@ -44,8 +44,10 @@ void ThumbnailStrip::fillPanel(int count) {
 void ThumbnailStrip::selectThumbnail(int pos) {
     if(previous != -1) {
         thumbnailLabels.at(previous)->setHighlighted(false);
+        thumbnailLabels.at(previous)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_INSTANT);
     }
     thumbnailLabels.at(pos)->setHighlighted(true);
+    thumbnailLabels.at(pos)->setOpacityAnimated(OPACITY_SELECTED, ANIMATION_SPEED_FAST);
     previous = pos;
     if(!childVisibleEntirely(pos)) {
         centerOn(thumbnailLabels.at(pos)->scenePos());
@@ -108,6 +110,7 @@ void ThumbnailStrip::loadVisibleThumbnails() {
 
 void ThumbnailStrip::addItem() {
     ThumbnailLabel *thumbLabel = new ThumbnailLabel();
+    thumbLabel->setOpacityAnimated(0.0, ANIMATION_SPEED_INSTANT);
     thumbnailLabels.append(thumbLabel);
     layout->addItem(thumbLabel);
 }
@@ -115,6 +118,7 @@ void ThumbnailStrip::addItem() {
 void ThumbnailStrip::setThumbnail(int pos, const QPixmap* thumb) {
     thumbnailLabels.at(pos)->setPixmap(*thumb);
     thumbnailLabels.at(pos)->state = LOADED;
+    thumbnailLabels.at(pos)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_NORMAL);
 }
 
 void ThumbnailStrip::updateVisibleRegion() {
@@ -153,7 +157,6 @@ void ThumbnailStrip::sceneClicked(QPointF pos) {
 void ThumbnailStrip::wheelEvent(QWheelEvent *event) {
     event->setAccepted(true);
     QPointF viewCenter = mapToScene(width() / 2, 0);
-
     if(event->angleDelta().ry() < 0) {
         viewCenter += QPointF(scrollStep, 0);
     }
@@ -171,7 +174,7 @@ void ThumbnailStrip::parentResized(QSize parentSize) {
 
 void ThumbnailStrip::leaveEvent(QEvent *event) {
     Q_UNUSED(event)
-    this->hide();
+    hide();
 }
 
 ThumbnailStrip::~ThumbnailStrip() {

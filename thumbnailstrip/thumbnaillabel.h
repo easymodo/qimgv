@@ -7,10 +7,15 @@
 #include <QPainter>
 #include <QDebug>
 #include <QLinearGradient>
+#include <QPropertyAnimation>
+
 enum loadState { EMPTY, LOADING, LOADED };
 
-class ThumbnailLabel : public QGraphicsLayoutItem, public QGraphicsPixmapItem
+class ThumbnailLabel : public QObject, public QGraphicsLayoutItem, public QGraphicsPixmapItem
 {
+    Q_OBJECT
+    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
+
 public:
     ThumbnailLabel(QGraphicsPixmapItem *parent = 0);
     ~ThumbnailLabel();
@@ -26,6 +31,7 @@ public:
     void setHighlighted(bool x);
     bool isHighlighted();
     QColor *highlightColor, *outlineColor;
+    void setOpacityAnimated(qreal amount, int speed);
 
 private:
     bool hovered, loaded;
@@ -44,3 +50,4 @@ protected:
 };
 
 #endif // THUMBNAILLABEL_H
+
