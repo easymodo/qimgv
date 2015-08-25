@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     image.cpp \
     imageanimated.cpp \
     thumbnailstrip/customscene.cpp \
-    clickablelabel.cpp
+    clickablelabel.cpp \
+    thumbnail.cpp
 
 HEADERS  += mainwindow.h \
     infooverlay.h \
@@ -61,7 +62,8 @@ HEADERS  += mainwindow.h \
     image.h \
     imageanimated.h \
     thumbnailstrip/customscene.h \
-    clickablelabel.h
+    clickablelabel.h \
+    thumbnail.h
 
 FORMS    += \
     settingsdialog.ui

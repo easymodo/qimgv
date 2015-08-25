@@ -13,6 +13,7 @@
 #include <QPropertyAnimation>
 #include "customscene.h"
 #include "thumbnaillabel.h"
+#include "thumbnail.h"
 
 class ThumbnailStrip : public QGraphicsView
 {
@@ -57,7 +58,7 @@ public slots:
     void parentResized(QSize parentSize);
     void loadVisibleThumbnails();
     void loadVisibleThumbnailsDelayed();
-    void setThumbnail(int, const QPixmap*);
+    void setThumbnail(int, const Thumbnail*);
     void fillPanel(int);
     void selectThumbnail(int pos);
 

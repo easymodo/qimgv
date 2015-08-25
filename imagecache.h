@@ -9,10 +9,13 @@
 #include <QtConcurrent>
 #include <QMutex>
 #include <ctime>
+#include "thumbnail.h"
 
 class CacheObject {
 public:
     CacheObject(QString _path) : img(NULL), thumbnail(NULL), info(NULL), path(_path) {
+        //possible slowdown here
+        info = new FileInfo(path);
     }
 
     ~CacheObject() {
@@ -22,18 +25,21 @@ public:
     void generateThumbnail() {
         mutex.lock();
         delete thumbnail;
-        thumbnail = getImg()->generateThumbnail();
-        if(thumbnail->size() == QSize(0,0)) {
-            delete thumbnail;
-            thumbnail = new QPixmap(":/images/res/error_no_image_100px.png");
+        thumbnail = new Thumbnail;
+        thumbnail->image = getImg()->generateThumbnail();
+        if(getImg()->getType() == GIF)
+            thumbnail->name = "[gif]";
+        if(thumbnail->image->size() == QSize(0,0)) {
+            delete thumbnail->image;
+            thumbnail->image = new QPixmap(":/images/res/error_no_image_100px.png");
         }
         mutex.unlock();
     }
-    const QPixmap* getThumbnail() {
+    const Thumbnail* getThumbnail() {
         if(!thumbnail) {
             generateThumbnail();
         }
-        return const_cast<const QPixmap*>(thumbnail);
+        return const_cast<const Thumbnail*>(thumbnail);
     }
     const FileInfo* getInfo() {
         return const_cast<const FileInfo*>(getImg()->getInfo());
@@ -63,9 +69,9 @@ public:
 private:
     void init() {
         if(ImageLib::guessType(path) == GIF) {
-            img = new ImageAnimated(path);
+            img = new ImageAnimated(info);
         } else {
-            img = new ImageStatic(path);
+            img = new ImageStatic(info);
         }
     }
     Image* getImg() {
@@ -77,7 +83,7 @@ private:
     QString path;
     FileInfo *info;
     Image *img;
-    QPixmap *thumbnail;
+    Thumbnail *thumbnail;
     QMutex mutex;
 };
 
@@ -102,7 +108,7 @@ public:
 signals:
     void initialized(int count);
 public slots:
-    const QPixmap *thumbnailAt(int pos) const;
+    const Thumbnail *thumbnailAt(int pos) const;
     QString directory();
 private:
     QList<CacheObject*> *cachedImages;

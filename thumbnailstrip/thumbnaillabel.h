@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QLinearGradient>
 #include <QPropertyAnimation>
+#include "thumbnail.h"
 
 enum loadState { EMPTY, LOADING, LOADED };
 
@@ -25,7 +26,7 @@ public:
 
     bool isLoaded();
     loadState state;
-    void setPixmap(const QPixmap &pixmap);
+    void setThumbnail(const Thumbnail *_thumbnail);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setHighlighted(bool x);
@@ -34,8 +35,9 @@ public:
     void setOpacityAnimated(qreal amount, int speed);
 
 private:
+    const int SHADOW_HEIGHT = 10;
     bool hovered, loaded;
-    QPixmap* pix;
+    const Thumbnail *thumbnail;
     int borderW, borderH, thumbnailSize;
     bool highlighted;
     QString infoString;

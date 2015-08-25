@@ -11,6 +11,7 @@ class ImageStatic : public Image
     Q_OBJECT
 public:
     ImageStatic(QString _path);
+    ImageStatic(FileInfo *_info);
     ~ImageStatic();
 
     QPixmap* getPixmap();

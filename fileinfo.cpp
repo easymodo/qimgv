@@ -1,11 +1,9 @@
 #include "fileinfo.h"
 
-FileInfo::FileInfo()
-{
+FileInfo::FileInfo() {
 }
 
-FileInfo::FileInfo(QString path)
-{
+FileInfo::FileInfo(QString path) {
     setFile(path);
 }
 

@@ -48,7 +48,7 @@ Image* ImageCache::imageAt(int pos) {
     return cachedImages->at(pos)->image();
 }
 
-const QPixmap* ImageCache::thumbnailAt(int pos) const {
+const Thumbnail* ImageCache::thumbnailAt(int pos) const {
     return cachedImages->at(pos)->getThumbnail();
 }
 

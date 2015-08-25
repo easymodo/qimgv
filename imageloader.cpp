@@ -59,7 +59,7 @@ void ImageLoader::generateThumbnailFor(int pos) {
 }
 
 void ImageLoader::generateThumbnailThread(int pos) {
-    const QPixmap* pix = cache->thumbnailAt(pos);
+    const Thumbnail* pix = cache->thumbnailAt(pos);
     emit thumbnailReady(pos, pix);
 }
 

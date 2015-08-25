@@ -1,14 +1,22 @@
 #include "imageanimated.h"
 #include <time.h>
 
-//use this one
-ImageAnimated::ImageAnimated(QString _path)
-{
+ImageAnimated::ImageAnimated(QString _path) {
     timer = NULL;
     path = _path;
     loaded = false;
     movie = new QMovie();
     type = STATIC;
+    info=NULL;
+}
+
+ImageAnimated::ImageAnimated(FileInfo *_info) {
+    timer = NULL;
+    loaded = false;
+    movie = new QMovie();
+    type = STATIC;
+    info=_info;
+    path=info->getFilePath();
 }
 
 ImageAnimated::~ImageAnimated()
@@ -25,7 +33,8 @@ void ImageAnimated::load()
         mutex.unlock();
         return;
     }
-    info = new FileInfo(path);
+    if(!info)
+        info = new FileInfo(path);
     guessType();
     movie->setFormat("GIF");
     movie->setFileName(path);

@@ -11,6 +11,7 @@ class ImageAnimated : public Image
     Q_OBJECT
 public:
     ImageAnimated(QString _path);
+    ImageAnimated(FileInfo *_info);
     ~ImageAnimated();
 
     QPixmap* getPixmap();

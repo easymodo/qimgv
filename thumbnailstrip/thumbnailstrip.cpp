@@ -116,8 +116,8 @@ void ThumbnailStrip::addItem() {
     layout->addItem(thumbLabel);
 }
 
-void ThumbnailStrip::setThumbnail(int pos, const QPixmap* thumb) {
-    thumbnailLabels.at(pos)->setPixmap(*thumb);
+void ThumbnailStrip::setThumbnail(int pos, const Thumbnail* thumb) {
+    thumbnailLabels.at(pos)->setThumbnail(thumb);
     thumbnailLabels.at(pos)->state = LOADED;
     thumbnailLabels.at(pos)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_NORMAL);
 }

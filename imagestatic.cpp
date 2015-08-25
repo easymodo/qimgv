@@ -2,14 +2,22 @@
 #include <time.h>
 
 //use this one
-ImageStatic::ImageStatic(QString _path)
-{
+ImageStatic::ImageStatic(QString _path) {
     path = _path;
     loaded = false;
     image = NULL;
     type = STATIC;
     extension = NULL;
     info=NULL;
+}
+
+ImageStatic::ImageStatic(FileInfo *_info) {
+    loaded = false;
+    image = NULL;
+    type = STATIC;
+    extension = NULL;
+    info=_info;
+    path=info->getFilePath();
 }
 
 ImageStatic::~ImageStatic()
@@ -21,7 +29,8 @@ ImageStatic::~ImageStatic()
 void ImageStatic::load()
 {
     mutex.lock();
-    info = new FileInfo(path);
+    if(!info)
+        info = new FileInfo(path);
     if(isLoaded()) {
         mutex.unlock();
         return;

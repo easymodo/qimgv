@@ -36,7 +36,7 @@ signals:
     void loadStarted();
     void loadFinished(Image*, int pos);
     void startPreload(int);
-    void thumbnailReady(int, const QPixmap*);
+    void thumbnailReady(int, const Thumbnail*);
 
 private slots:
     void lock();

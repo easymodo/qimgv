@@ -40,7 +40,7 @@ signals:
     void scalingFinished(QPixmap*);
     void frameChanged(QPixmap*);
     void thumbnailRequested(int);
-    void thumbnailReady(int, const QPixmap*);
+    void thumbnailReady(int, const Thumbnail*);
     void cacheInitialized(int);
     void imageChanged(int);
 
