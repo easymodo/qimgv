@@ -3,6 +3,7 @@
 ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     : QGraphicsView(parent)
 {
+    current=-1;
     widget = new QGraphicsWidget();
     scene = new CustomScene;
     layout = new QGraphicsLinearLayout(Qt::Horizontal);
@@ -64,12 +65,6 @@ void ThumbnailStrip::populate(int count) {
         addItem();
     }
 
-    // highlight current img if thumbnail was loaded after
-    // actual image was displayed (e.g. opened from FM)
-    if(current!=-1) {
-        thumbnailLabels.at(current)->setOpacity(OPACITY_SELECTED);
-    }
-
     layout->invalidate();
     layout->activate();
     scene->setSceneRect(layout->geometry());
@@ -119,7 +114,9 @@ void ThumbnailStrip::addItem() {
 void ThumbnailStrip::setThumbnail(int pos, const Thumbnail* thumb) {
     thumbnailLabels.at(pos)->setThumbnail(thumb);
     thumbnailLabels.at(pos)->state = LOADED;
-    thumbnailLabels.at(pos)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_NORMAL);
+    if(pos != current) {
+        thumbnailLabels.at(pos)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_NORMAL);
+    }
 }
 
 void ThumbnailStrip::updateVisibleRegion() {

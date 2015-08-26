@@ -31,7 +31,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setHighlighted(bool x);
     bool isHighlighted();
-    QColor *highlightColor, *outlineColor;
+    QColor *highlightColor, *outlineColor, *highlightColorBorder;
     void setOpacityAnimated(qreal amount, int speed);
 
 private:
@@ -42,7 +42,8 @@ private:
     bool highlighted;
     QString infoString;
     QLinearGradient *shadowGradient;
-    QRectF highlightRect, shadowRect;
+    QRectF highlightRect, shadowRect, labelRect;
+    bool showLabel;
 
 protected:
  QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const Q_DECL_OVERRIDE;

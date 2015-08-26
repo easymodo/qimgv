@@ -5,6 +5,7 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsPixmapItem *parent) :
     QGraphicsPixmapItem(parent),
     hovered(false),
     loaded(false),
+    showLabel(false),
     state(EMPTY),
     highlighted(false),
     borderW(3),
@@ -16,11 +17,14 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsPixmapItem *parent) :
     this->setOffset(QPointF(borderW, borderH));
     this->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 
+    labelRect = QRectF(QPointF(borderW, borderH), //14:textHeight
+                       QPointF(borderW+24, borderH+16)); // 25:textwidth
     highlightRect.setTopLeft(QPointF(borderW, 0));
     highlightRect.setBottomRight(QPointF(borderW+thumbnailSize, borderH));
     shadowRect.setTopLeft(QPointF(borderW, borderH));
     shadowRect.setBottomRight(QPointF(borderW+thumbnailSize, borderH+SHADOW_HEIGHT));
-    highlightColor = new QColor(76, 191, 10);
+    highlightColor = new QColor(45, 179, 91);
+    highlightColorBorder = new QColor(20, 26, 17);
     outlineColor = new QColor(Qt::black);
     shadowGradient = new QLinearGradient(shadowRect.topLeft(),
                                          shadowRect.bottomLeft());
@@ -32,6 +36,9 @@ void ThumbnailLabel::setThumbnail(const Thumbnail *_thumbnail){
     thumbnail = _thumbnail;
     QGraphicsPixmapItem::setPixmap(*thumbnail->image);
     loaded = true;
+    if(!thumbnail->name.isEmpty()) {
+        showLabel = true;
+    }
 }
 
 void ThumbnailLabel::setHighlighted(bool x) {
@@ -57,18 +64,22 @@ void ThumbnailLabel::setOpacityAnimated(qreal amount, int speed) {
     anim->setEndValue(amount);
     anim->start(QAbstractAnimation::DeleteWhenStopped);
 }
-void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
+void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     QGraphicsPixmapItem::paint(painter,option,widget);
     if(isHighlighted()) {
         painter->fillRect(highlightRect, *highlightColor);
         painter->fillRect(shadowRect, *shadowGradient);
     }
-    QPointF textPos = boundingRect().bottomLeft()+QPointF(borderW+2, -borderH*2-1);
-    painter->setPen(QColor(0,0,0,210));
-    painter->drawText(textPos+QPointF(-1,-1), thumbnail->name);
-    painter->setPen(QColor(255,255,255,210));
-    painter->drawText(textPos, thumbnail->name);
+    if(showLabel) {
+        painter->fillRect(labelRect, *highlightColor);
+        painter->setPen(*highlightColorBorder);
+       // painter->drawRect(labelRect);
+        QPointF textPos = labelRect.bottomLeft()+QPointF(2,-5);
+        painter->setPen(QColor(10,10,10,200));
+        painter->drawText(textPos+QPointF(1,1), thumbnail->name);
+        painter->setPen(QColor(255,255,255,255));
+        painter->drawText(textPos, thumbnail->name);
+    }
 }
 
 QSizeF ThumbnailLabel::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
