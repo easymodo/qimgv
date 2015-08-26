@@ -48,6 +48,10 @@ Image* ImageCache::imageAt(int pos) {
     return cachedImages->at(pos)->image();
 }
 
+bool ImageCache::isLoaded(int pos) {
+    return cachedImages->at(pos)->isLoaded();
+}
+
 const Thumbnail* ImageCache::thumbnailAt(int pos) const {
     return cachedImages->at(pos)->getThumbnail();
 }

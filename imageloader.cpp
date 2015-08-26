@@ -72,7 +72,7 @@ void ImageLoader::loadNext() {
         if(toUnload!=dm->currentFilePos()) {
             cache->unloadAt(toUnload);
         }
-        if(!cache->imageAt(dm->nextPos())->isLoaded()) {
+        if(!cache->isLoaded(dm->nextPos())) {
             QtConcurrent::run(this,
                               &ImageLoader::load_thread,
                               dm->currentFilePos());
@@ -97,7 +97,7 @@ void ImageLoader::loadPrev() {
         if(toUnload!=dm->currentFilePos()) {
             cache->unloadAt(toUnload);
         }
-        if(!cache->imageAt(dm->prevPos())->isLoaded()) {
+        if(!cache->isLoaded(dm->prevPos())) {
             QtConcurrent::run(this,
                               &ImageLoader::load_thread,
                               dm->currentFilePos());
