@@ -5,7 +5,7 @@ ControlsOverlay::ControlsOverlay(QWidget *parent) :
 {
     setPalette(Qt::transparent);
     this->setGeometry(parentWidget()->size().rwidth()-60,0,60,20);
-    pen.setColor(QColor(10,205,10,255));
+    pen.setColor(QColor(255,255,255,255));
     pen.setWidth(1);
 }
 
@@ -13,6 +13,7 @@ void ControlsOverlay::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
 
     QPainter painter(this);
+    painter.fillRect(QRect(0,0,60,20),QBrush(QColor(0,0,0,60),Qt::SolidPattern));
     painter.setPen(pen);
     painter.drawLine(QLine(4,15,15,15)); //minimize
     painter.drawRect(QRect(24,10,10,5)); //square

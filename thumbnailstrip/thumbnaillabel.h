@@ -44,6 +44,7 @@ private:
     QLinearGradient *shadowGradient;
     QRectF highlightRect, shadowRect, labelRect;
     bool showLabel;
+    QFont font;
 
 protected:
  QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const Q_DECL_OVERRIDE;

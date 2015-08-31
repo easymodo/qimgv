@@ -4,7 +4,12 @@ textOverlay::textOverlay(QWidget *parent) :QWidget(parent) {
     setPalette(Qt::transparent);
     setAttribute(Qt::WA_TransparentForMouseEvents);
     currentText = "No file opened.";
-    this->setFixedHeight(18);
+    font.setPixelSize(13);
+    drawRect.setTopLeft(QPoint(4,2));
+    drawRect.setBottomRight(QPoint(950,17));
+    textColor = new QColor(255,255,255,255);
+    textShadowColor = new QColor(0,0,0,150);
+    this->setFixedHeight(19);
     this->hide();
     updateWidth();
     updatePosition();
@@ -13,13 +18,13 @@ textOverlay::textOverlay(QWidget *parent) :QWidget(parent) {
 void textOverlay::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
 
-    QPainter painter(this);
-    QFont font;
-    font.setPixelSize(13);
+    QPainter painter(this);    
     painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setPen(QPen(QColor(10,205,10,255)));
-    painter.drawText(QRect(4,2,950,16), currentText);
+    painter.setPen(QPen(*textShadowColor));
+    painter.drawText(drawRect.adjusted(1,1,1,1), currentText);
+    painter.setPen(QPen(*textColor));
+    painter.drawText(drawRect, currentText);
 }
 
 void textOverlay::setText(QString text) {

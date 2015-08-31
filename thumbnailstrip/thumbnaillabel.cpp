@@ -30,6 +30,7 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsPixmapItem *parent) :
                                          shadowRect.bottomLeft());
     shadowGradient->setColorAt(0, QColor(0,0,0,200));
     shadowGradient->setColorAt(1, QColor(0,0,0,0));
+    font.setPixelSize(11);
 }
 
 void ThumbnailLabel::setThumbnail(const Thumbnail *_thumbnail){
@@ -71,6 +72,7 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->fillRect(shadowRect, *shadowGradient);
     }
     if(showLabel) {
+        painter->setFont(font);
         painter->fillRect(labelRect, *highlightColor);
         painter->setPen(*highlightColorBorder);
        // painter->drawRect(labelRect);

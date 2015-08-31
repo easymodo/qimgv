@@ -14,6 +14,11 @@ public:
     void setText(QString text);
     void updateWidth();
 
+private:
+    QFont font;
+    QRect drawRect;
+    QColor *textColor, *textShadowColor;
+
 public slots:
     void updatePosition();
 
