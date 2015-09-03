@@ -94,12 +94,12 @@ QPixmap* ImageAnimated::generateThumbnail() {
     QRect target(0, 0, size,size);
     target.moveCenter(tmp->rect().center());
     *thumbnail = tmp->copy(target);
+    delete tmp;
     return thumbnail;
 }
 
 // in case of gif returns current frame
-QPixmap* ImageAnimated::getPixmap()
-{
+QPixmap* ImageAnimated::getPixmap() {
     QPixmap *pix = new QPixmap();
     if(isLoaded()) {
         *pix = movie->currentPixmap();
@@ -107,13 +107,13 @@ QPixmap* ImageAnimated::getPixmap()
     return pix;
 }
 
-// todo: const ?
-QImage* ImageAnimated::getImage() {
-    QImage* ptr = new QImage();
+const QImage* ImageAnimated::getImage() {
+    QImage* img = new QImage();
     if(isLoaded()) {
-        *ptr = movie->currentImage();
+        *img = movie->currentImage();
     }
-    return ptr;
+    const QImage* cPtr = img;
+    return cPtr;
 }
 
 int ImageAnimated::height() {

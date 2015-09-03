@@ -73,9 +73,11 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     }
     if(showLabel) {
         painter->setFont(font);
+        QFontMetrics fm(font);
+        int textWidth = fm.width(thumbnail->name);
+        labelRect.setWidth(textWidth + 5);
         painter->fillRect(labelRect, *highlightColor);
         painter->setPen(*highlightColorBorder);
-       // painter->drawRect(labelRect);
         QPointF textPos = labelRect.bottomLeft()+QPointF(2,-5);
         painter->setPen(QColor(10,10,10,200));
         painter->drawText(textPos+QPointF(1,1), thumbnail->name);

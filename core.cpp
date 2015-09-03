@@ -62,6 +62,7 @@ void Core::updateInfoString() {
                           "  ");
         infoString.append(QString::number(currentImage->getInfo()->getFileSize()) + " MB)");
     }
+    //infoString.append(" >>" + QString::number(cache->currentlyLoaded()));
 
     emit infoStringChanged(infoString);
 }
@@ -158,10 +159,10 @@ void Core::rescaleForZoom(QSize newSize) {
         } else {
             pixmap = new QPixmap(newSize);
             if( globalSettings->s.value("useFastScale", "false").toBool() == true ) {
-                imgLib.fastScale(pixmap, currentImage->getImage(), newSize, true);
+                imgLib.fastScale(pixmap, currentImage->getPixmap(), newSize, true);
             }
             else {
-                imgLib.bilinearScale(pixmap, currentImage->getImage(), newSize, true);
+                imgLib.bilinearScale(pixmap, currentImage->getPixmap(), newSize, true);
             }
         }
         emit scalingFinished(pixmap);

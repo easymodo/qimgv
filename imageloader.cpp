@@ -83,7 +83,7 @@ void ImageLoader::loadNext() {
                               dm->currentFilePos());
         }
         if(dm->peekNext(1)!=dm->currentFilePos()) {
-            startPreload(dm->peekNext(1));
+       //     startPreload(dm->peekNext(1));
         }
     }
 }
@@ -108,7 +108,7 @@ void ImageLoader::loadPrev() {
                               dm->currentFilePos());
         }
         if(dm->peekPrev(1)!=dm->currentFilePos()) {
-            startPreload(dm->peekPrev(1));
+        //    startPreload(dm->peekPrev(1));
         }
     }
 }

@@ -106,10 +106,10 @@ QPixmap* ImageStatic::generateThumbnail() {
     QRect target(0, 0, size,size);
     target.moveCenter(tmp->rect().center());
     *thumbnail = tmp->copy(target);
+    delete tmp;
     return thumbnail;
 }
 
-// in case of gif returns current frame
 QPixmap* ImageStatic::getPixmap()
 {
     QPixmap *pix = new QPixmap();
@@ -121,9 +121,9 @@ QPixmap* ImageStatic::getPixmap()
     return pix;
 }
 
-// todo: const
-QImage* ImageStatic::getImage() {
-    return image;
+const QImage* ImageStatic::getImage() {
+    const QImage* cPtr = image;
+    return cPtr;
 }
 
 int ImageStatic::height() {

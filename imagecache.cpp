@@ -52,6 +52,18 @@ bool ImageCache::isLoaded(int pos) {
     return cachedImages->at(pos)->isLoaded();
 }
 
+int ImageCache::currentlyLoaded() {
+    int x =0;
+    lock();
+    for(int i=0; i<cachedImages->length(); i++) {
+        if(isLoaded(i)) {
+            x++;
+        }
+    }
+    unlock();
+    return x;
+}
+
 const Thumbnail* ImageCache::thumbnailAt(int pos) const {
     return cachedImages->at(pos)->getThumbnail();
 }

@@ -106,6 +106,7 @@ public:
     QFuture<void> *future;
     void unloadAt(int pos);
     bool isLoaded(int pos);
+    int currentlyLoaded();
 signals:
     void initialized(int count);
 public slots:

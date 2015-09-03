@@ -15,7 +15,7 @@ public:
     ~ImageStatic();
 
     QPixmap* getPixmap();
-    QImage* getImage();
+    const QImage* getImage();
     void load();
     void unload();
     int height();

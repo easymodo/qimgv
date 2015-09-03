@@ -179,7 +179,7 @@ void ImageViewer::resizeImage() {
 // ####################  PAINT  #####################
 // ##################################################
 void ImageViewer::paintEvent(QPaintEvent* event) {
-//     qDebug() << "paint at " << clock();
+    // qDebug() << "paint at " << clock();
     Q_UNUSED( event )
     QPainter painter(this);
     painter.fillRect(rect(), QBrush(bgColor));
