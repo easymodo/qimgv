@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>370</width>
-    <height>261</height>
+    <width>333</width>
+    <height>264</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -34,10 +34,10 @@
   <widget class="QPushButton" name="Cancel">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>222</y>
+     <x>250</x>
+     <y>230</y>
      <width>71</width>
-     <height>31</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="text">
@@ -47,10 +47,10 @@
   <widget class="QPushButton" name="OK">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>222</y>
+     <x>90</x>
+     <y>230</y>
      <width>71</width>
-     <height>31</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="text">
@@ -62,12 +62,24 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>351</width>
-     <height>201</height>
+     <width>311</width>
+     <height>211</height>
     </rect>
    </property>
+   <property name="tabPosition">
+    <enum>QTabWidget::North</enum>
+   </property>
+   <property name="tabShape">
+    <enum>QTabWidget::Rounded</enum>
+   </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
+   </property>
+   <property name="elideMode">
+    <enum>Qt::ElideNone</enum>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -77,9 +89,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>20</y>
        <width>121</width>
-       <height>31</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -89,10 +101,10 @@
     <widget class="QComboBox" name="fitModeComboBox">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>10</y>
+       <x>180</x>
+       <y>20</y>
        <width>71</width>
-       <height>31</height>
+       <height>21</height>
       </rect>
      </property>
      <item>
@@ -115,9 +127,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>50</y>
+       <y>60</y>
        <width>121</width>
-       <height>31</height>
+       <height>16</height>
       </rect>
      </property>
      <property name="text">
@@ -126,14 +138,14 @@
     </widget>
     <widget class="QComboBox" name="scalingQualityComboBox">
      <property name="enabled">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="geometry">
       <rect>
-       <x>220</x>
-       <y>50</y>
+       <x>180</x>
+       <y>60</y>
        <width>111</width>
-       <height>31</height>
+       <height>21</height>
       </rect>
      </property>
      <item>
@@ -151,7 +163,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>90</y>
+       <y>100</y>
        <width>171</width>
        <height>19</height>
       </rect>
@@ -160,34 +172,11 @@
       <string>Open in fullscreen</string>
      </property>
     </widget>
-    <widget class="ClickableLabel" name="bgColorLabel">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>120</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>120</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Background color:</string>
-     </property>
-    </widget>
    </widget>
    <widget class="QWidget" name="tab_2">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <attribute name="title">
      <string>Loader</string>
     </attribute>
@@ -197,9 +186,9 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>150</x>
        <y>40</y>
-       <width>171</width>
+       <width>141</width>
        <height>22</height>
       </rect>
      </property>
@@ -271,14 +260,91 @@
      </property>
     </widget>
    </widget>
+   <widget class="QWidget" name="tab_3">
+    <attribute name="title">
+     <string>Appearance</string>
+    </attribute>
+    <widget class="ClickableLabel" name="bgColorLabel">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>20</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="bgColorTextLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Background color:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="thumbSizeTextLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>91</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Thumbnail size:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="thumbSizeComboBox">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>60</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Small</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Medium</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Large</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Very large</string>
+      </property>
+     </item>
+    </widget>
+   </widget>
   </widget>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>210</x>
-     <y>222</y>
+     <x>170</x>
+     <y>230</y>
      <width>71</width>
-     <height>31</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="text">
@@ -298,22 +364,6 @@
  </customwidgets>
  <resources/>
  <connections>
-  <connection>
-   <sender>cacheSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>cacheLabel2</receiver>
-   <slot>setNum(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>271</x>
-     <y>72</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>162</x>
-     <y>92</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>Cancel</sender>
    <signal>clicked()</signal>
@@ -359,6 +409,22 @@
     <hint type="destinationlabel">
      <x>137</x>
      <y>303</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cacheSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>cacheLabel2</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>271</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>162</x>
+     <y>92</y>
     </hint>
    </hints>
   </connection>

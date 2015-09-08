@@ -22,6 +22,12 @@ private:
     QPalette bgLabelPalette;
     void readSettings();
     Ui::SettingsDialog *ui;
+    static constexpr int thumbSizeSmall = 100,
+              thumbSizeMedium = 120,
+              thumbSizeLarge = 140,
+              thumbSizeVeryLarge = 160;
+
+    int thumbSizeCustom;
 
 private slots:
     void applySettings();

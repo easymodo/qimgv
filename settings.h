@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QSettings>
 #include <QApplication>
-#include "settings.h"
+#include <QDebug>
 
 class Settings : public QObject
 {

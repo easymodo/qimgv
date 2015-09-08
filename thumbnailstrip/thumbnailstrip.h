@@ -10,6 +10,7 @@
 #include <QWheelEvent>
 #include <QScrollBar>
 #include <QTimer>
+#include <QTimeLine>
 #include <QPropertyAnimation>
 #include "customscene.h"
 #include "thumbnaillabel.h"
@@ -28,6 +29,7 @@ private:
     QGraphicsLinearLayout *layout;
     QGraphicsWidget *widget;
     CustomScene* scene;
+    QTimeLine *timeLine;
 
     const qreal OPACITY_INACTIVE = 0.65;
     const qreal OPACITY_SELECTED = 1.0;
@@ -36,12 +38,11 @@ private:
     const int ANIMATION_SPEED_NORMAL = 220;
 
     const int SCROLL_STEP = 200;
-    const int DEFAULT_HEIGHT = 124;
     const uint LOAD_DELAY = 30;
     const int OFFSCREEN_PRELOAD_AREA = 400;
 
-    int itemCount;
-    int current;
+    int panelHeight;
+    int itemCount, current, thumbnailSize;
     bool childVisible(int pos);
     ThumbnailStrip *strip;
     QRectF visibleRegion;
@@ -67,8 +68,10 @@ protected:
     void leaveEvent(QEvent *event);
 
 private slots:
+    void centerOnSmooth(const QPointF &pos);
     void sceneClicked(QPointF pos);
     void updateVisibleRegion();
+    void translateX(int dx);
 };
 
 #endif // THUMBNAILSTRIP_H

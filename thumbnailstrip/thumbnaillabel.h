@@ -9,6 +9,7 @@
 #include <QLinearGradient>
 #include <QPropertyAnimation>
 #include "thumbnail.h"
+#include "../settings.h"
 
 enum loadState { EMPTY, LOADING, LOADED };
 

@@ -9,22 +9,22 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsPixmapItem *parent) :
     state(EMPTY),
     highlighted(false),
     borderW(3),
-    borderH(5),
-    thumbnailSize(100)
+    borderH(5)
 {
+    thumbnailSize = globalSettings->s.value("thumbnailSize", "120").toInt();
     setGraphicsItem(this);
     this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     this->setOffset(QPointF(borderW, borderH));
     this->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 
-    labelRect = QRectF(QPointF(borderW, borderH), //14:textHeight
-                       QPointF(borderW+24, borderH+16)); // 25:textwidth
+    labelRect = QRectF(QPointF(borderW, borderH),
+                       QPointF(borderW+24, borderH+16));
     highlightRect.setTopLeft(QPointF(borderW, 0));
     highlightRect.setBottomRight(QPointF(borderW+thumbnailSize, borderH));
     shadowRect.setTopLeft(QPointF(borderW, borderH));
     shadowRect.setBottomRight(QPointF(borderW+thumbnailSize, borderH+SHADOW_HEIGHT));
-    highlightColor = new QColor(45, 179, 91);
-    highlightColorBorder = new QColor(20, 26, 17);
+    highlightColor = new QColor(48, 140, 171);
+    highlightColorBorder = new QColor(20, 26, 17); //unused for now
     outlineColor = new QColor(Qt::black);
     shadowGradient = new QLinearGradient(shadowRect.topLeft(),
                                          shadowRect.bottomLeft());
@@ -75,9 +75,8 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setFont(font);
         QFontMetrics fm(font);
         int textWidth = fm.width(thumbnail->name);
-        labelRect.setWidth(textWidth + 5);
+        labelRect.setWidth(textWidth + 4);
         painter->fillRect(labelRect, *highlightColor);
-        painter->setPen(*highlightColorBorder);
         QPointF textPos = labelRect.bottomLeft()+QPointF(2,-5);
         painter->setPen(QColor(10,10,10,200));
         painter->drawText(textPos+QPointF(1,1), thumbnail->name);

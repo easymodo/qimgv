@@ -53,9 +53,26 @@ void SettingsDialog::readSettings() {
     }
 
     // ##### UI #####
+    ui->scalingQualityComboBox->setDisabled(true);
+
     QColor bgColor = globalSettings->s.value("bgColor", "Qt::black").value<QColor>();
     bgLabelPalette.setColor(QPalette::Window, bgColor);
     ui->bgColorLabel->setPalette(bgLabelPalette);
+
+    // thumbnail size
+    // maybe use slider instead of combobox?
+    int size = globalSettings->s.value("thumbnailSize", "120").toInt();
+
+    switch(size) {
+        case thumbSizeSmall: ui->thumbSizeComboBox->setCurrentIndex(0); break;
+        case thumbSizeMedium: ui->thumbSizeComboBox->setCurrentIndex(1); break;
+        case thumbSizeLarge: ui->thumbSizeComboBox->setCurrentIndex(2); break;
+        case thumbSizeVeryLarge: ui->thumbSizeComboBox->setCurrentIndex(3); break;
+        default:  ui->thumbSizeComboBox->addItem("Custom: " + QString::number(size)+"px.");
+                  ui->thumbSizeComboBox->setCurrentIndex(4);
+                  thumbSizeCustom = size;
+                  break;
+    }
 }
 
 void SettingsDialog::applySettings() {
@@ -67,6 +84,7 @@ void SettingsDialog::applySettings() {
                                ui->cacheSlider->value());
     globalSettings->s.setValue("defaultFitMode",
                                ui->fitModeComboBox->currentText());
+
     if(ui->scalingQualityComboBox->currentIndex()==1) {
         globalSettings->s.setValue("useFastScale", true);
     } else {
@@ -74,6 +92,18 @@ void SettingsDialog::applySettings() {
     }
     globalSettings->s.setValue("bgColor",
                                bgLabelPalette.color(QPalette::Window));
+
+    if(ui->thumbSizeComboBox->currentIndex() == 0) {
+        globalSettings->s.setValue("thumbnailSize", thumbSizeSmall);
+    } else if(ui->thumbSizeComboBox->currentIndex() == 1) {
+        globalSettings->s.setValue("thumbnailSize", thumbSizeMedium);
+    } else if(ui->thumbSizeComboBox->currentIndex() == 2) {
+        globalSettings->s.setValue("thumbnailSize", thumbSizeLarge);
+    } else if(ui->thumbSizeComboBox->currentIndex() == 3) {
+        globalSettings->s.setValue("thumbnailSize", thumbSizeVeryLarge);
+    } else if(ui->thumbSizeComboBox->currentIndex() == 4) {
+        globalSettings->s.setValue("thumbnailSize", thumbSizeCustom);
+    }
     emit settingsChanged();
 }
 

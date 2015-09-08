@@ -63,7 +63,7 @@ void ImageAnimated::save() {
 }
 
 QPixmap* ImageAnimated::generateThumbnail() {
-    int size = globalSettings->s.value("thumbnailSize", 100).toInt();
+    int size = globalSettings->s.value("thumbnailSize", 120).toInt();
     QPixmap *thumbnail = new QPixmap(size, size);
     QPixmap *tmp;
     if(!isLoaded()) {
@@ -87,7 +87,7 @@ QPixmap* ImageAnimated::generateThumbnail() {
                         Qt::FastTransformation)
                 .scaled(size,
                         size,
-                        Qt::KeepAspectRatio,
+                        Qt::KeepAspectRatioByExpanding,
                         Qt::SmoothTransformation);
         mutex.unlock();
     }
