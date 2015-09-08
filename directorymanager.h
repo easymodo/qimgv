@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QImageReader>
 #include "fileinfo.h"
 #include "settings.h"
 

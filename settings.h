@@ -5,6 +5,8 @@
 #include <QSettings>
 #include <QApplication>
 #include <QDebug>
+#include <QImageReader>
+#include <QStringList>
 
 class Settings : public QObject
 {
@@ -13,6 +15,9 @@ public:
     static Settings* getInstance();
     QSettings s;
     static void validate();
+    QStringList supportedFormats();
+    QString supportedFormatsString();
+
 private:
     explicit Settings(QObject *parent = 0);
 

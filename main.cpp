@@ -25,6 +25,7 @@ int main(int argc, char *argv[]) {
     }
 
     MainWindow mw;
+    qDebug() << QImageReader::supportedImageFormats();
 
     if(a.arguments().length()>1) {
         QString fileName = a.arguments().at(1);

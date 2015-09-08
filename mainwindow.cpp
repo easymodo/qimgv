@@ -155,7 +155,7 @@ void MainWindow::readSettings() {
 
 void MainWindow::slotOpenDialog() {
     QFileDialog dialog;
-    const QString imagesFilter = tr("Images (*.png *.jpg *jpeg *bmp *gif)");
+    const QString imagesFilter = globalSettings->supportedFormatsString();
     QString lastDir = globalSettings->s.value("lastDir",".").toString();
     QString str = dialog.getOpenFileName(this,
                                          tr("Open image"),
@@ -390,7 +390,7 @@ void MainWindow::slotRotateRight() {
 }
 
 void MainWindow::slotSaveDialog() {
-    const QString imagesFilter = tr("Images (*.png *.jpg *jpeg *bmp *gif)");
+    const QString imagesFilter = globalSettings->supportedFormatsString();
     QString fileName = core->getCurrentFilePath();
     fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
                                fileName,

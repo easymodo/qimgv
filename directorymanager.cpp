@@ -8,7 +8,10 @@ DirectoryManager::DirectoryManager() :
         dicking around with architecture
         webm/gifv support is planned too
      */
-    filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
+    //filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
+
+    filters = globalSettings->supportedFormats();
+
     QString startDir;
     startDir = globalSettings->s.value("lastDir",
                                        currentDir.homePath()).toString();

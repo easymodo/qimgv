@@ -35,6 +35,28 @@ void Settings::validate() {
     }
 }
 
+//returns list of regexps
+QStringList Settings::supportedFormats() {
+    QStringList filters;
+    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+    for(int i = 0; i < supportedFormats.count(); i++) {
+        filters << "*."+QString(supportedFormats.at(i));
+    }
+    return filters;
+}
+
+// as a single string (for open/save dialogs)
+QString Settings::supportedFormatsString() {
+    QString filters;
+    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+    filters.append("Images (");
+    for(int i = 0; i < supportedFormats.count(); i++) {
+        filters.append("*."+QString(supportedFormats.at(i))+" ");
+    }
+    filters.append(")");
+    return filters;
+}
+
 void Settings::sendChangeNotification() {
     emit settingsChanged();
 }
