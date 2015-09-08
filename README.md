@@ -37,4 +37,4 @@ INSTALLATION
     For linux, you'll have to build it yourself for now.
     Both cmake and qmake are supported.
 
-![alt tag](http://i.imgur.com/W8iKo61.jpg)
+![alt tag](http://i.imgur.com/AQowOiQ.jpg)
