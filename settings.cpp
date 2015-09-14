@@ -57,6 +57,28 @@ QString Settings::supportedFormatsString() {
     return filters;
 }
 
+/* 0: By name (default)
+ * 1: By name reversed
+ * 2: By date
+ * 3: By date reversed
+*/
+int Settings::sortingMode() {
+    bool ok = true;
+    int mode = this->s.value("sortingMode", "0").toInt(&ok);
+    if(!ok) {
+        mode = 0;
+    }
+    return mode;
+}
+
+bool Settings::setSortingMode(int mode) {
+    if(mode < 0 || mode > 3) {
+        qDebug() << "invalid sorting mode (" << mode << "), resetting to default.";
+        mode = 0;
+    }
+    s.setValue("sortingMode", mode);
+}
+
 void Settings::sendChangeNotification() {
     emit settingsChanged();
 }

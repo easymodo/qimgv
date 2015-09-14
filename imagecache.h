@@ -106,18 +106,23 @@ public:
     QFuture<void> *future;
     void unloadAt(int pos);
     bool isLoaded(int pos);
-    int currentlyLoaded();
+    int currentlyLoadedCount();
+    QString currentPath();
+
 signals:
     void initialized(int count);
+
 public slots:
     const Thumbnail *thumbnailAt(int pos) const;
     QString directory();
+
 private:
     QList<CacheObject*> *cachedImages;
     uint maxCacheSize;
     QString dir;
     QMutex mutex;
     void readSettings();
+
 private slots:
     void applySettings();
 };

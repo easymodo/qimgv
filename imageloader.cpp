@@ -15,14 +15,22 @@ void ImageLoader::open(QString path) {
     cache->unloadAll();
     if(!dm->existsInCurrentDir(path)) {
         dm->setFile(path);
-        if(cache->directory() != dm->currentDirectory()) {
-            cache->init(dm->currentDirectory(), dm->getFileList());
-        }
+
     } else {
         dm->setFile(path);
     }
     lock();
     QtConcurrent::run(this, &ImageLoader::load_thread, dm->currentFilePos());
+}
+
+void ImageLoader::reinitCache() {
+    if(cache->directory() != dm->currentDirectory()) {
+        cache->init(dm->currentDirectory(), dm->getFileList());
+    }
+}
+
+void ImageLoader::reinitCacheForced() {
+    cache->init(dm->currentDirectory(), dm->getFileList());
 }
 
 void ImageLoader::openBlocking(QString path) {

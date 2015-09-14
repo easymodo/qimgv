@@ -21,7 +21,7 @@ public:
     void setFile(QString path);
     void setCurrentDir(QString);
     QDir currentDir;
-    QStringList fileList;
+    QStringList fileNameList;
     QStringList filters;
     int currentPos;
     QStringList getFileList();
@@ -38,11 +38,19 @@ public:
     void setCurrentPos(int pos);
     bool isValidFile(QString path);
     bool containsFiles();
+    void readSettings();
+
+public slots:
+    void applySettingsChanges();
+
 signals:
     void directoryChanged(const QString &path);
+    void directorySortingChanged();
+
 private:
     void changePath(QString path);
     FileInfo* loadInfo(QString path);
+    QString startDir;
 };
 
 #endif // DIRECTORYMANAGER_H

@@ -53,8 +53,11 @@ void SettingsDialog::readSettings() {
     }
 
     // ##### UI #####
+
+    //not implemented
     ui->scalingQualityComboBox->setDisabled(true);
 
+    //bg color
     QColor bgColor = globalSettings->s.value("bgColor", "Qt::black").value<QColor>();
     bgLabelPalette.setColor(QPalette::Window, bgColor);
     ui->bgColorLabel->setPalette(bgLabelPalette);
@@ -62,7 +65,6 @@ void SettingsDialog::readSettings() {
     // thumbnail size
     // maybe use slider instead of combobox?
     int size = globalSettings->s.value("thumbnailSize", "120").toInt();
-
     switch(size) {
         case thumbSizeSmall: ui->thumbSizeComboBox->setCurrentIndex(0); break;
         case thumbSizeMedium: ui->thumbSizeComboBox->setCurrentIndex(1); break;
@@ -73,6 +75,10 @@ void SettingsDialog::readSettings() {
                   thumbSizeCustom = size;
                   break;
     }
+
+    // sorting mode
+    int mode = globalSettings->sortingMode();
+    ui->sortingComboBox->setCurrentIndex(mode);
 }
 
 void SettingsDialog::applySettings() {
@@ -84,6 +90,7 @@ void SettingsDialog::applySettings() {
                                ui->cacheSlider->value());
     globalSettings->s.setValue("defaultFitMode",
                                ui->fitModeComboBox->currentText());
+    globalSettings->setSortingMode(ui->sortingComboBox->currentIndex());
 
     if(ui->scalingQualityComboBox->currentIndex()==1) {
         globalSettings->s.setValue("useFastScale", true);

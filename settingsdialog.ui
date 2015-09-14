@@ -73,7 +73,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideNone</enum>
@@ -90,7 +90,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>121</width>
+       <width>151</width>
        <height>21</height>
       </rect>
      </property>
@@ -101,10 +101,10 @@
     <widget class="QComboBox" name="fitModeComboBox">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>170</x>
        <y>20</y>
-       <width>71</width>
-       <height>21</height>
+       <width>121</width>
+       <height>26</height>
       </rect>
      </property>
      <item>
@@ -128,8 +128,8 @@
       <rect>
        <x>10</x>
        <y>60</y>
-       <width>121</width>
-       <height>16</height>
+       <width>151</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -142,10 +142,10 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>170</x>
        <y>60</y>
-       <width>111</width>
-       <height>21</height>
+       <width>121</width>
+       <height>26</height>
       </rect>
      </property>
      <item>
@@ -163,14 +163,57 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
+       <y>138</y>
        <width>171</width>
-       <height>19</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
       <string>Open in fullscreen</string>
      </property>
+    </widget>
+    <widget class="QLabel" name="sortingLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>151</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Sorting:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="sortingComboBox">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>100</y>
+       <width>121</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Name</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Name (desc)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Date</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Date (desc)</string>
+      </property>
+     </item>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_2">

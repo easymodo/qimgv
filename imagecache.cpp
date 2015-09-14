@@ -52,7 +52,7 @@ bool ImageCache::isLoaded(int pos) {
     return cachedImages->at(pos)->isLoaded();
 }
 
-int ImageCache::currentlyLoaded() {
+int ImageCache::currentlyLoadedCount() {
     int x =0;
     lock();
     for(int i=0; i<cachedImages->length(); i++) {
@@ -62,6 +62,10 @@ int ImageCache::currentlyLoaded() {
     }
     unlock();
     return x;
+}
+
+QString ImageCache::currentPath() {
+
 }
 
 const Thumbnail* ImageCache::thumbnailAt(int pos) const {

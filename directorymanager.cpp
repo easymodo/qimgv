@@ -1,22 +1,12 @@
 #include "directorymanager.h"
 
 DirectoryManager::DirectoryManager() :
-    currentPos(-1)
+    currentPos(-1),
+    startDir("")
 {
-    /*  this is temporarily hardcoded
-        will add other formats after finishing
-        dicking around with architecture
-        webm/gifv support is planned too
-     */
-    //filters << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.bmp";
-
-    filters = globalSettings->supportedFormats();
-
-    QString startDir;
-    startDir = globalSettings->s.value("lastDir",
-                                       currentDir.homePath()).toString();
+    readSettings();
     setCurrentDir(startDir);
-    currentDir.setNameFilters(filters);
+    connect(globalSettings, SIGNAL(settingsChanged()), this, SLOT(applySettingsChanges()));
 }
 
 void DirectoryManager::setCurrentDir(QString path) {
@@ -34,16 +24,16 @@ void DirectoryManager::changePath(QString path) {
         globalSettings->s.setValue("lastDir", path);
     currentDir.setNameFilters(filters);
     currentPos = -1;
-    fileList = currentDir.entryList();
+    fileNameList = currentDir.entryList();
     emit directoryChanged(path);
 }
 
 // full paths array
 QStringList DirectoryManager::getFileList() {
-    QStringList files;
-    QString dirPath = currentDir.absolutePath();
-    for(int i=0; i<fileList.length(); i++) {
-        files.append(dirPath+"/"+fileList.at(i));
+    QStringList files = currentDir.entryList();
+    QString dirPath = currentDir.absolutePath() + "/";
+    for(int i=0; i<fileNameList.length(); i++) {
+        files.replace(i, dirPath+files.at(i));
     }
     return files;
 }
@@ -53,13 +43,13 @@ QFileInfoList DirectoryManager::getFileInfoList() {
 }
 
 bool DirectoryManager::existsInCurrentDir(QString file) {
-    return fileList.contains(file, Qt::CaseInsensitive);
+    return fileNameList.contains(file, Qt::CaseInsensitive);
 }
 
 void DirectoryManager::setFile(QString path) {
     FileInfo *info = loadInfo(path);
     setCurrentDir(info->getDirectoryPath());
-    currentPos = fileList.indexOf(info->getFileName());
+    currentPos = fileNameList.indexOf(info->getFileName());
     globalSettings->s.setValue("lastPosition", currentPos);
     //return info;
 }
@@ -84,7 +74,7 @@ bool DirectoryManager::isValidFile(QString path) {
 }
 
 QString DirectoryManager::currentFileName() {
-    return fileList.at(currentPos);
+    return fileNameList.at(currentPos);
 }
 
 QString DirectoryManager::currentDirectory() {
@@ -96,14 +86,42 @@ int DirectoryManager::currentFilePos() {
 }
 
 bool DirectoryManager::containsFiles() {
-    return !fileList.empty();
+    return !fileNameList.empty();
+}
+
+void DirectoryManager::readSettings() {
+    startDir = globalSettings->s.value("lastDir",
+                                       currentDir.homePath()).toString();
+    filters = globalSettings->supportedFormats();
+    currentDir.setNameFilters(filters);
+    switch(globalSettings->sortingMode()) {
+        case 1: currentDir.setSorting(QDir::Name | QDir::Reversed); break;
+        case 2: currentDir.setSorting(QDir::Time); break;
+        case 3: currentDir.setSorting(QDir::Time | QDir::Reversed); break;
+        default: currentDir.setSorting(QDir::Name); break;
+    }
+}
+
+void DirectoryManager::applySettingsChanges() {
+    QDir::SortFlags flags;
+    switch(globalSettings->sortingMode()) {
+        case 1: flags = QDir::SortFlags(QDir::Name | QDir::Reversed); break;
+        case 2: flags = QDir::SortFlags(QDir::Time); break;
+        case 3: flags = QDir::SortFlags(QDir::Time | QDir::Reversed); break;
+        default: flags = QDir::SortFlags(QDir::Name); break;
+    }
+    if(currentDir.sorting() != flags) {
+        currentDir.setSorting(flags);
+        fileNameList = currentDir.entryList();
+        emit directorySortingChanged(); //for now, sorting dir will cause full cache reload TODO
+    }
 }
 
 int DirectoryManager::nextPos() {
     if(currentPos<0) {
         currentPos=0;
-    } else if(++currentPos>=fileList.length()) {
-        currentPos = fileList.length()-1;
+    } else if(++currentPos>=fileNameList.length()) {
+        currentPos = fileNameList.length()-1;
     }
     return currentPos;
 }
@@ -117,8 +135,8 @@ int DirectoryManager::prevPos() {
 
 int DirectoryManager::peekNext(int offset) {
     int pos = currentPos+offset;
-    if(pos>=fileList.length()) {
-        pos = fileList.length()-1;
+    if(pos>=fileNameList.length()) {
+        pos = fileNameList.length()-1;
     }
     return pos;
 }
@@ -132,7 +150,7 @@ int DirectoryManager::peekPrev(int offset) {
 }
 
 int DirectoryManager::lastPos() {
-    return fileList.length()-1;
+    return fileNameList.length()-1;
 }
 
 FileInfo* DirectoryManager::loadInfo(QString path) {

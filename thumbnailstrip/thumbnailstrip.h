@@ -50,6 +50,7 @@ private:
     bool childVisibleEntirely(int pos);
     QRectF itemsBoundingRect();
 
+    void requestThumbnailLoad(int pos);
 signals:
     void thumbnailRequested(int pos);
     void thumbnailClicked(int pos);

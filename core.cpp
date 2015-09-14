@@ -30,6 +30,7 @@ void Core::connectSlots() {
     connect(imageLoader, SIGNAL(thumbnailReady(int, const Thumbnail*)),
             this, SIGNAL(thumbnailReady(int, const Thumbnail*)));
     connect(cache, SIGNAL(initialized(int)), this, SIGNAL(cacheInitialized(int)), Qt::DirectConnection);
+    connect(dirManager, SIGNAL(directorySortingChanged()), imageLoader, SLOT(reinitCacheForced()));
 }
 
 QString Core::getCurrentFilePath() {
@@ -51,7 +52,7 @@ void Core::updateInfoString() {
     infoString.append(" [ " +
                       QString::number(dirManager->currentPos+1) +
                       "/" +
-                      QString::number(dirManager->fileList.length()) +
+                      QString::number(dirManager->fileNameList.length()) +
                       " ]   ");
     if(currentImage) {
         infoString.append(currentImage->getInfo()->getFileName() + "  ");

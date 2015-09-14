@@ -22,16 +22,19 @@ public:
     void loadPrev();
     const ImageCache* getCache();
     void setCache(ImageCache*);
-
     void openBlocking(QString path);
+    void reinitCache();
+
 public slots:
+    void reinitCacheForced();
     void generateThumbnailFor(int pos);
+
 private:
     DirectoryManager *dm;
     ImageCache *cache;
     QMutex mutex, mutex2;
-
     void generateThumbnailThread(int pos);
+
 signals:
     void loadStarted();
     void loadFinished(Image*, int pos);

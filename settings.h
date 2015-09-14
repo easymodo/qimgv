@@ -17,6 +17,8 @@ public:
     static void validate();
     QStringList supportedFormats();
     QString supportedFormatsString();
+    int sortingMode();
+    bool setSortingMode(int);
 
 private:
     explicit Settings(QObject *parent = 0);

@@ -40,7 +40,8 @@ void ThumbnailStrip::fillPanel(int count) {
     current = -1;
     loadTimer.stop();
     populate(count);
-    this->horizontalScrollBar()->setValue(0);
+    loadVisibleThumbnailsDelayed();
+    //this->horizontalScrollBar()->setValue(0);
 }
 
 void ThumbnailStrip::selectThumbnail(int pos) {
@@ -65,7 +66,6 @@ void ThumbnailStrip::centerOnSmooth(const QPointF &pos) {
 }
 
 void ThumbnailStrip::translateX(int dx) {
-    qDebug()<< (qreal)dx/10;
     translate((qreal)dx/10, 0);
 }
 
@@ -110,14 +110,15 @@ void ThumbnailStrip::loadVisibleThumbnails() {
     loadTimer.stop();
     updateVisibleRegion();
 
-    int counter = 0;
     for(int i=0; i<thumbnailLabels.count(); i++) {
-        if(thumbnailLabels.at(i)->state == EMPTY  && childVisible(i))
-        {
-            thumbnailLabels.at(i)->state = LOADING;
-            counter++;
-            emit thumbnailRequested(i);
-        }
+        requestThumbnailLoad(i);
+    }
+}
+
+void ThumbnailStrip::requestThumbnailLoad(int pos) {
+    if(thumbnailLabels.at(pos)->state == EMPTY  && childVisible(pos)) {
+        thumbnailLabels.at(pos)->state = LOADING;
+        emit thumbnailRequested(pos);
     }
 }
 
@@ -126,6 +127,7 @@ void ThumbnailStrip::addItem() {
     thumbLabel->setOpacityAnimated(0.0, ANIMATION_SPEED_INSTANT);
     thumbnailLabels.append(thumbLabel);
     layout->addItem(thumbLabel);
+    requestThumbnailLoad(thumbnailLabels.length()-1);
 }
 
 void ThumbnailStrip::setThumbnail(int pos, const Thumbnail* thumb) {
