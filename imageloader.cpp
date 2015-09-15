@@ -1,6 +1,8 @@
 #include "imageloader.h"
 
-ImageLoader::ImageLoader(DirectoryManager *_dm) {
+ImageLoader::ImageLoader(DirectoryManager *_dm) :
+    reduceRam(false)
+{
     dm = _dm;
     readSettings();
     // cache causes crash when creating thumbnails
@@ -20,7 +22,7 @@ void ImageLoader::open(QString path) {
         dm->setFile(path);
     }
     lock();
-    QtConcurrent::run(this, &ImageLoader::load_thread, dm->currentFilePos());
+    QtConcurrent::run(this, &ImageLoader::doLoad, dm->currentFilePos());
 }
 
 void ImageLoader::reinitCache() {
@@ -44,17 +46,17 @@ void ImageLoader::openBlocking(QString path) {
         dm->setFile(path);
     }
     lock();
-    load_thread(dm->currentFilePos());
+    doLoad(dm->currentFilePos());
 }
 
 void ImageLoader::open(int pos) {
     cache->unloadAll();
     dm->setCurrentPos(pos);
     lock();
-    QtConcurrent::run(this, &ImageLoader::load_thread, dm->currentFilePos());
+    QtConcurrent::run(this, &ImageLoader::doLoad, dm->currentFilePos());
 }
 
-void ImageLoader::load_thread(int pos) {
+void ImageLoader::doLoad(int pos) {
     emit loadStarted();
     cache->loadAt(pos);
     emit loadFinished(cache->imageAt(pos), pos);
@@ -76,20 +78,25 @@ void ImageLoader::loadNext() {
     if(dm->peekNext(1) != dm->currentFilePos()) {
         lock();
         //free image at prev position
-        int toUnload = dm->peekPrev(1);
-        if(toUnload!=dm->currentFilePos()) {
-            cache->unloadAt(toUnload);
-        }
+        freePrev();
+        //switch to next image
         if(!cache->isLoaded(dm->nextPos())) {
-            QtConcurrent::run(this,
-                              &ImageLoader::load_thread,
-                              dm->currentFilePos());
+
+            //QtConcurrent::run(this,
+            //                  &ImageLoader::doLoad,
+            //                  dm->currentFilePos());
+            doLoad(dm->currentFilePos());
         }
         else {
             unlock();
             emit loadFinished(cache->imageAt(dm->currentFilePos()),
                               dm->currentFilePos());
         }
+        //free prev image again
+        if(reduceRam) {
+            freePrev();
+        }
+        //start preloading next
         if(dm->peekNext(1)!=dm->currentFilePos()) {
             startPreload(dm->peekNext(1));
         }
@@ -101,23 +108,41 @@ void ImageLoader::loadPrev() {
     if(dm->peekPrev(1) != dm->currentFilePos()) {
         lock();
         //free image at next position
-        int toUnload = dm->peekNext(1);
-        if(toUnload!=dm->currentFilePos()) {
-            cache->unloadAt(toUnload);
-        }
+        freeNext();
+        //switch to prev image
         if(!cache->isLoaded(dm->prevPos())) {
-            QtConcurrent::run(this,
-                              &ImageLoader::load_thread,
-                              dm->currentFilePos());
+            //QtConcurrent::run(this,
+            //                  &ImageLoader::doLoad,
+            //                  dm->currentFilePos());
+            doLoad(dm->currentFilePos());
         }
         else {
             unlock();
             emit loadFinished(cache->imageAt(dm->currentFilePos()),
                               dm->currentFilePos());
         }
+        //free next image again
+        if(reduceRam) {
+            freeNext();
+        }
+        //start preloading prev
         if(dm->peekPrev(1)!=dm->currentFilePos()) {
             startPreload(dm->peekPrev(1));
         }
+    }
+}
+
+void ImageLoader::freePrev() {
+    int toUnload = dm->peekPrev(1);
+    if(toUnload!=dm->currentFilePos()) {
+        cache->unloadAt(toUnload);
+    }
+}
+
+void ImageLoader::freeNext() {
+    int toUnload = dm->peekNext(1);
+    if(toUnload!=dm->currentFilePos()) {
+        cache->unloadAt(toUnload);
     }
 }
 
@@ -131,10 +156,10 @@ void ImageLoader::setCache(ImageCache *_cache) {
 }
 
 void ImageLoader::preload(int pos) {
-    QFuture<void> future = QtConcurrent::run(this, &ImageLoader::preload_thread, pos);
+    QFuture<void> future = QtConcurrent::run(this, &ImageLoader::doPreload, pos);
 }
 
-void ImageLoader::preload_thread(int pos) {
+void ImageLoader::doPreload(int pos) {
     cache->loadAt(pos);
 }
 
@@ -148,6 +173,7 @@ void ImageLoader::readSettings() {
         disconnect(this, SIGNAL(startPreload(int)),
                    this, SLOT(preload(int)));
     }
+    reduceRam = globalSettings->reduceRamUsage();
 }
 
 void ImageLoader::lock() {

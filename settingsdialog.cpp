@@ -7,7 +7,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
-    this->setWindowTitle(tr("Settings"));
+    this->setWindowTitle("Preferences - qimgv " +
+                         QCoreApplication::applicationVersion());
     setWindowIcon(QIcon(":/images/res/pepper32.png"));
     ui->bgColorLabel->setAutoFillBackground(true);
     connect(this, SIGNAL(settingsChanged()),
@@ -20,11 +21,9 @@ void SettingsDialog::readSettings() {
     bool setting;
 
     // ##### loader #####
-    ui->preloaderCheckBox->setChecked(
-                globalSettings->usePreloader());
+    ui->preloaderCheckBox->setChecked(globalSettings->usePreloader());
+    ui->reduceRamCheckBox->setChecked(globalSettings->reduceRamUsage());
 
-    ui->fullscreenCheckBox->setChecked(
-                globalSettings->fullscreenMode());
 
     // ##### cache #####
     //ui->cacheSlider->setValue(globalSettings->s.value("cacheSize",64).toInt());
@@ -47,6 +46,8 @@ void SettingsDialog::readSettings() {
     //not implemented
     ui->scalingQualityComboBox->setDisabled(true);
 
+    ui->fullscreenCheckBox->setChecked(globalSettings->fullscreenMode());
+
     //bg color
     QColor bgColor = globalSettings->backgroundColor();
     bgLabelPalette.setColor(QPalette::Window, bgColor);
@@ -60,10 +61,10 @@ void SettingsDialog::readSettings() {
         case thumbSizeMedium: ui->thumbSizeComboBox->setCurrentIndex(1); break;
         case thumbSizeLarge: ui->thumbSizeComboBox->setCurrentIndex(2); break;
         case thumbSizeVeryLarge: ui->thumbSizeComboBox->setCurrentIndex(3); break;
-        default:  ui->thumbSizeComboBox->addItem("Custom: " + QString::number(size)+"px.");
-                  ui->thumbSizeComboBox->setCurrentIndex(4);
-                  thumbSizeCustom = size;
-                  break;
+        default: ui->thumbSizeComboBox->addItem("Custom: " + QString::number(size)+"px.");
+                 ui->thumbSizeComboBox->setCurrentIndex(4);
+                 thumbSizeCustom = size;
+                 break;
     }
 
     // sorting mode
@@ -77,6 +78,7 @@ void SettingsDialog::applySettings() {
     globalSettings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
     globalSettings->setImageFitMode(ui->fitModeComboBox->currentIndex());
     globalSettings->setSortingMode(ui->sortingComboBox->currentIndex());
+    globalSettings->setReduceRamUsage(ui->reduceRamCheckBox->isChecked());
 
     if(ui->scalingQualityComboBox->currentIndex()==1) {
         globalSettings->setUseFastScale(true);

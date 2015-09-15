@@ -34,6 +34,9 @@ private:
     ImageCache *cache;
     QMutex mutex, mutex2;
     void generateThumbnailThread(int pos);
+    bool reduceRam;
+    void freePrev();
+    void freeNext();
 
 signals:
     void loadStarted();
@@ -46,8 +49,8 @@ private slots:
     void unlock();
     void readSettings();
     void preload(int pos);
-    void load_thread(int pos);
-    void preload_thread(int pos);
+    void doLoad(int pos);
+    void doPreload(int pos);
 };
 
 #endif // IMAGELOADER_H

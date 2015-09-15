@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>SettingsDialog</class>
  <widget class="QWidget" name="SettingsDialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -28,8 +31,11 @@
     <height>221</height>
    </size>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::TabFocus</enum>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Preferences</string>
   </property>
   <widget class="QPushButton" name="Cancel">
    <property name="geometry">
@@ -73,7 +79,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideNone</enum>
@@ -229,9 +235,9 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>40</y>
-       <width>141</width>
+       <x>160</x>
+       <y>80</y>
+       <width>131</width>
        <height>22</height>
       </rect>
      </property>
@@ -258,7 +264,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>20</y>
        <width>171</width>
        <height>21</height>
       </rect>
@@ -276,9 +282,9 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>40</y>
-       <width>21</width>
+       <x>120</x>
+       <y>80</y>
+       <width>31</width>
        <height>21</height>
       </rect>
      </property>
@@ -293,8 +299,8 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
-       <width>111</width>
+       <y>80</y>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
@@ -303,6 +309,25 @@
      </property>
      <property name="text">
       <string>Cache size, MB:</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="reduceRamCheckBox">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>171</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Checking this will make the program keep in memory only currently displayed image (except the preloaded one).</string>
+     </property>
+     <property name="text">
+      <string>Reduce RAM usage</string>
      </property>
     </widget>
    </widget>
@@ -408,6 +433,20 @@
    </slots>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>fitModeComboBox</tabstop>
+  <tabstop>scalingQualityComboBox</tabstop>
+  <tabstop>sortingComboBox</tabstop>
+  <tabstop>fullscreenCheckBox</tabstop>
+  <tabstop>OK</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>Cancel</tabstop>
+  <tabstop>preloaderCheckBox</tabstop>
+  <tabstop>reduceRamCheckBox</tabstop>
+  <tabstop>cacheSlider</tabstop>
+  <tabstop>thumbSizeComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

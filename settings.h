@@ -40,6 +40,8 @@ public:
     void setImageFitMode(int mode);
     QByteArray windowGeometry();
     void setWindowGeometry(QByteArray geometry);
+    bool reduceRamUsage();
+    void setReduceRamUsage(bool mode);
 
 private:
     explicit Settings(QObject *parent = 0);

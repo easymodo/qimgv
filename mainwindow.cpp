@@ -18,7 +18,6 @@ MainWindow::MainWindow() :
 
 void MainWindow::init() {
     settingsDialog = new SettingsDialog();
-    settingsDialog->setModal(true);
     imageViewer = new ImageViewer(this);
 
     controlsOverlay = new ControlsOverlay(imageViewer);
@@ -204,7 +203,7 @@ void MainWindow::slotFitNormal()
 void MainWindow::createActions()
 {
     openAct = new QAction(tr("&Open..."), this);
-    openAct->setShortcut(Qt::Key_O);
+    openAct->setShortcut(Qt::CTRL+Qt::Key_O);
     this->addAction(openAct);
     connect(openAct, SIGNAL(triggered()), this, SLOT(slotOpenDialog()));
 
@@ -213,56 +212,67 @@ void MainWindow::createActions()
     this->addAction(saveAct);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(slotSaveDialog()));
 
-    settingsAct = new QAction(tr("&Settings"), this);
-    settingsAct->setShortcut(Qt::Key_S);
+    settingsAct = new QAction(tr("&Preferences"), this);
+    settingsAct->setShortcut(Qt::CTRL+Qt::Key_P);
     this->addAction(settingsAct);
     connect(settingsAct, SIGNAL(triggered()), settingsDialog, SLOT(show()));
 
+    QList<QKeySequence> exitShortcuts;
+    exitShortcuts << Qt::Key_Escape << Qt::ALT+Qt::Key_X << Qt::CTRL+Qt::Key_Q;
     exitAct = new QAction(tr("E&xit"), this);
-    exitAct->setShortcut(tr("Alt+X"));
+    exitAct->setShortcuts(exitShortcuts);
     this->addAction(exitAct);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
     rotateLeftAct = new QAction(tr("Rotate L&eft"), this);
-    rotateLeftAct->setShortcut(tr("L"));
+    rotateLeftAct->setShortcut(Qt::Key_L);
     this->addAction(rotateLeftAct);
     connect(rotateLeftAct, SIGNAL(triggered()), this, SLOT(slotRotateLeft()));
 
     cropAct = new QAction(tr("C&rop"), this);
-    cropAct->setShortcut(tr("C"));
+    cropAct->setShortcut(Qt::Key_X);
     this->addAction(cropAct);
     connect(cropAct, &QAction::triggered, [=]() {
         this->slotFitAll();
         imageViewer->crop();
     });
+
     rotateRightAct = new QAction(tr("Rotate R&ight"), this);
-    rotateRightAct->setShortcut(tr("R"));
+    rotateRightAct->setShortcut(Qt::Key_R);
     this->addAction(rotateRightAct);
     connect(rotateRightAct, SIGNAL(triggered()), this, SLOT(slotRotateRight()));
 
+    QList<QKeySequence> nextShortcuts;
+    nextShortcuts << Qt::Key_Right << Qt::Key_D;
     nextAct = new QAction(tr("N&ext"), this);
-    nextAct->setShortcut(Qt::Key_Right);
+    nextAct->setShortcuts(nextShortcuts);
     nextAct->setEnabled(true);
     this->addAction(nextAct);
     connect(nextAct, SIGNAL(triggered()), core, SLOT(slotNextImage()));
 
+    QList<QKeySequence> prevShortcuts;
+    prevShortcuts << Qt::Key_Left << Qt::Key_A;
     prevAct = new QAction(tr("P&rev"), this);
-    prevAct->setShortcut(Qt::Key_Left);
+    prevAct->setShortcuts(prevShortcuts);
     this->addAction(prevAct);
     connect(prevAct, SIGNAL(triggered()), core, SLOT(slotPrevImage()));
 
+    QList<QKeySequence> zoomInShortcuts;
+    zoomInShortcuts << Qt::Key_Up << Qt::Key_W;
     zoomInAct = new QAction(tr("Zoom &In (10%)"), this);
-    zoomInAct->setShortcut(Qt::Key_Up);
+    zoomInAct->setShortcuts(zoomInShortcuts);
     this->addAction(zoomInAct);
     connect(zoomInAct, SIGNAL(triggered()), imageViewer, SLOT(slotZoomIn()));
 
+    QList<QKeySequence> zoomOutShortcuts;
+    zoomOutShortcuts << Qt::Key_Down << Qt::Key_S;
     zoomOutAct = new QAction(tr("Zoom &Out (10%)"), this);
-    zoomOutAct->setShortcut(Qt::Key_Down);
+    zoomOutAct->setShortcuts(zoomOutShortcuts);
     this->addAction(zoomOutAct);
     connect(zoomOutAct, SIGNAL(triggered()), imageViewer, SLOT(slotZoomOut()));
 
     modeFitNormal = new QAction(tr("&Normal Size"), this);
-    modeFitNormal->setShortcut(Qt::Key_N);
+    modeFitNormal->setShortcut(Qt::CTRL+Qt::Key_N);
     modeFitNormal->setEnabled(false);
     modeFitNormal->setCheckable(true);
     this->addAction(modeFitNormal);
@@ -271,14 +281,14 @@ void MainWindow::createActions()
     modeFitAll = new QAction(tr("Fit all"), this);
     modeFitAll->setEnabled(false);
     modeFitAll->setCheckable(true);
-    modeFitAll->setShortcut(Qt::Key_A);
+    modeFitAll->setShortcut(Qt::CTRL+Qt::Key_A);
     this->addAction(modeFitAll);
     connect(modeFitAll, SIGNAL(triggered()), this, SLOT(slotFitAll()));
 
     modeFitWidth = new QAction(tr("Fit &width"), this);
     modeFitWidth->setEnabled(false);
     modeFitWidth->setCheckable(true);
-    modeFitWidth->setShortcut(Qt::Key_W);
+    modeFitWidth->setShortcut(Qt::CTRL+Qt::Key_W);
     this->addAction(modeFitWidth);
     connect(modeFitWidth, SIGNAL(triggered()), this, SLOT(slotFitWidth()));
 

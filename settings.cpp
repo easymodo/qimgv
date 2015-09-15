@@ -66,7 +66,7 @@ QString Settings::supportedFormatsString() {
 */
 int Settings::sortingMode() {
     bool ok = true;
-    int mode = this->s.value("sortingMode", "0").toInt(&ok);
+    int mode = globalSettings->s.value("sortingMode", "0").toInt(&ok);
     if(!ok) {
         mode = 0;
     }
@@ -78,7 +78,7 @@ bool Settings::setSortingMode(int mode) {
         qDebug() << "Invalid sorting mode (" << mode << "), resetting to default.";
         mode = 0;
     }
-    s.setValue("sortingMode", mode);
+    globalSettings->s.setValue("sortingMode", mode);
 }
 
 bool Settings::useFastScale() {
@@ -191,6 +191,15 @@ QByteArray Settings::windowGeometry() {
 
 void Settings::setWindowGeometry(QByteArray geometry) {
     globalSettings->s.setValue("windowGeometry", geometry);
+}
+
+bool Settings::reduceRamUsage() {
+    bool mode = globalSettings->s.value("reduceRamUsage", false).toBool();
+    return mode;
+}
+
+void Settings::setReduceRamUsage(bool mode) {
+    globalSettings->s.setValue("reduceRamUsage", mode);
 }
 
 void Settings::sendChangeNotification() {
