@@ -109,6 +109,7 @@ private:
     void alignImage();
     void fixAlignHorizontal();
     void fixAlignVertical();
+
 };
 
 #endif // IMAGEVIEWER_H

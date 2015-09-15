@@ -25,15 +25,13 @@ int main(int argc, char *argv[]) {
     }
 
     MainWindow mw;
-    qDebug() << QImageReader::supportedImageFormats();
-
+    if( globalSettings->fullscreenMode() ) {
+        mw.slotTriggerFullscreen();
+    }
     if(a.arguments().length()>1) {
         QString fileName = a.arguments().at(1);
         fileName.replace("\\\\","/");
         fileName.replace("\\","/");
-        if(globalSettings->s.value("openInFullscreen").toBool()) {
-            mw.slotTriggerFullscreen();
-        }
         mw.open(fileName);
     }
     mw.show();

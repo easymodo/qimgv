@@ -86,7 +86,7 @@ int ImageCache::length() const {
 
 void ImageCache::readSettings() {
     lock();
-    maxCacheSize = globalSettings->s.value("cacheSize").toInt();
+    //maxCacheSize = globalSettings->s.value("cacheSize").toInt();
     unlock();
 }
 

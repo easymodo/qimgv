@@ -140,7 +140,7 @@ void ImageLoader::preload_thread(int pos) {
 
 
 void ImageLoader::readSettings() {
-    if(globalSettings->s.value("usePreloader", true).toBool()) {
+    if( globalSettings->usePreloader() ) {
         connect(this, SIGNAL(startPreload(int)),
                 this, SLOT(preload(int)));
     }

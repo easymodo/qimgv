@@ -5,7 +5,7 @@ MainWindow::MainWindow() :
     settingsDialog(NULL),
     panel(NULL)
 {
-    resize(800, 600);
+    resize(1100, 700);
     setMinimumSize(QSize(400,300));
     this->setMouseTracking(true);
     init();
@@ -18,11 +18,11 @@ MainWindow::MainWindow() :
 
 void MainWindow::init() {
     settingsDialog = new SettingsDialog();
+    settingsDialog->setModal(true);
     imageViewer = new ImageViewer(this);
 
     controlsOverlay = new ControlsOverlay(imageViewer);
     controlsOverlay->hide();
-
     infoOverlay = new textOverlay(imageViewer);
 
     this->setCentralWidget(imageViewer);
@@ -133,19 +133,18 @@ void MainWindow::open(QString path) {
 
 void MainWindow::readSettingsInitial() {
     readSettings();
-    if(!globalSettings->s.value("openInFullscreen", "false").toBool()) {
+    if ( !globalSettings->fullscreenMode() ) {
         restoreWindowGeometry();
     }
 }
 
 void MainWindow::readSettings() {
-    menuBar()->setHidden(globalSettings->s.value("hideMenuBar", "false").toBool());
-    QString fitMode =
-            globalSettings->s.value("defaultFitMode", "ALL").toString();
-    if(fitMode == "WIDTH") {
+    menuBar()->setHidden( globalSettings->menuBarHidden() );
+    int fitMode = globalSettings->imageFitMode();
+    if(fitMode == 1) {
         slotFitWidth();
     }
-    else if(fitMode == "NORMAL") {
+    else if(fitMode == 2) {
         slotFitNormal();
     }
     else {
@@ -156,7 +155,7 @@ void MainWindow::readSettings() {
 void MainWindow::slotOpenDialog() {
     QFileDialog dialog;
     const QString imagesFilter = globalSettings->supportedFormatsString();
-    QString lastDir = globalSettings->s.value("lastDir",".").toString();
+    QString lastDir = globalSettings->lastDirectory();
     QString str = dialog.getOpenFileName(this,
                                          tr("Open image"),
                                          lastDir,
@@ -408,11 +407,10 @@ void MainWindow::resizeEvent(QResizeEvent* event) {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    if(!globalSettings->s.value("openInFullscreen", "false").toBool() &&
-       !this->isFullScreen()) {
-        saveWindowGeometry();
-}
     event->accept();
+    if(!globalSettings->fullscreenMode() && !this->isFullScreen()) {
+        saveWindowGeometry();
+    }
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event) {
@@ -447,7 +445,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 }
 
 void MainWindow::showMenuBar() {
-    if(!globalSettings->s.value("hideMenuBar", "false").toBool()) {
+    if( !globalSettings->menuBarHidden() ) {
         menuBar()->show();
     }
 }
@@ -458,11 +456,10 @@ void MainWindow::triggerMenuBar() {
     } else {
         this->menuBar()->hide();
     }
-    globalSettings->s.setValue("hideMenuBar", this->menuBar()->isHidden());
+    globalSettings->setMenuBarHidden(this->menuBar()->isHidden());
 }
 
-bool MainWindow::eventFilter(QObject *target, QEvent *event)
-{
+bool MainWindow::eventFilter(QObject *target, QEvent *event) {
     return QMainWindow::eventFilter(target, event);
 }
 
@@ -502,12 +499,11 @@ void MainWindow::close() {
 }
 
 void MainWindow::saveWindowGeometry() {
-    globalSettings->s.setValue("windowGeometry", this->saveGeometry());
+    globalSettings->setWindowGeometry(this->saveGeometry());
 }
 
 void MainWindow::restoreWindowGeometry() {
-    this->restoreGeometry(globalSettings->
-                          s.value("windowGeometry").toByteArray());
+    this->restoreGeometry(globalSettings->windowGeometry());
 }
 
 MainWindow::~MainWindow()

@@ -78,3 +78,8 @@ QScrollBar::sub-line:horizontal {
     width: 0px;
     height: 0px;
 }
+
+QComboBox {
+    padding-left: 3px; 
+    padding-right: 3px;
+}

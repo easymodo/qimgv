@@ -3,7 +3,7 @@
 #include "settings.h"
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
-    QWidget(parent),
+    QDialog(parent),
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
@@ -16,24 +16,23 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 }
 
 void SettingsDialog::readSettings() {
-    QString tmp;
+
     bool setting;
 
     // ##### loader #####
     ui->preloaderCheckBox->setChecked(
-                globalSettings->s.value("usePreloader", "true").toBool());
+                globalSettings->usePreloader());
 
     ui->fullscreenCheckBox->setChecked(
-                globalSettings->s.value("openInFullscreen", "true").toBool());
+                globalSettings->fullscreenMode());
 
     // ##### cache #####
-    ui->cacheSlider->setValue(
-                globalSettings->s.value("cacheSize",64).toInt());
+    //ui->cacheSlider->setValue(globalSettings->s.value("cacheSize",64).toInt());
     ui->cacheLabel2->setNum(ui->cacheSlider->value());
 
     // ##### scaling #####
 
-    setting = globalSettings->s.value("useFastScale","false").toBool();
+    setting = globalSettings->useFastScale();
     if(setting==true) {
         ui->scalingQualityComboBox->setCurrentIndex(1);
     } else {
@@ -41,30 +40,21 @@ void SettingsDialog::readSettings() {
     }
 
     // ##### fit mode #####
-    tmp = globalSettings->s.value("defaultFitMode","ALL").toString();
-    if(tmp == "WIDTH") {
-        ui->fitModeComboBox->setCurrentIndex(1);
-    }
-    else if(tmp == "NORMAL") {
-        ui->fitModeComboBox->setCurrentIndex(2);
-    }
-    else {
-        ui->fitModeComboBox->setCurrentIndex(0);
-    }
+    int tmp = globalSettings->imageFitMode();
+    ui->fitModeComboBox->setCurrentIndex(tmp);
 
     // ##### UI #####
-
     //not implemented
     ui->scalingQualityComboBox->setDisabled(true);
 
     //bg color
-    QColor bgColor = globalSettings->s.value("bgColor", "Qt::black").value<QColor>();
+    QColor bgColor = globalSettings->backgroundColor();
     bgLabelPalette.setColor(QPalette::Window, bgColor);
     ui->bgColorLabel->setPalette(bgLabelPalette);
 
     // thumbnail size
     // maybe use slider instead of combobox?
-    int size = globalSettings->s.value("thumbnailSize", "120").toInt();
+    int size = globalSettings->thumbnailSize();
     switch(size) {
         case thumbSizeSmall: ui->thumbSizeComboBox->setCurrentIndex(0); break;
         case thumbSizeMedium: ui->thumbSizeComboBox->setCurrentIndex(1); break;
@@ -82,34 +72,29 @@ void SettingsDialog::readSettings() {
 }
 
 void SettingsDialog::applySettings() {
-    globalSettings->s.setValue("usePreloader",
-                            ui->preloaderCheckBox->isChecked());
-    globalSettings->s.setValue("openInFullscreen",
-                            ui->fullscreenCheckBox->isChecked());
-    globalSettings->s.setValue("cacheSize",
-                               ui->cacheSlider->value());
-    globalSettings->s.setValue("defaultFitMode",
-                               ui->fitModeComboBox->currentText());
+    //globalSettings->s.setValue("cacheSize", ui->cacheSlider->value());
+    globalSettings->setUsePreloader(ui->preloaderCheckBox->isChecked());
+    globalSettings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
+    globalSettings->setImageFitMode(ui->fitModeComboBox->currentIndex());
     globalSettings->setSortingMode(ui->sortingComboBox->currentIndex());
 
     if(ui->scalingQualityComboBox->currentIndex()==1) {
-        globalSettings->s.setValue("useFastScale", true);
+        globalSettings->setUseFastScale(true);
     } else {
-        globalSettings->s.setValue("useFastScale", false);
+        globalSettings->setUseFastScale(false);
     }
-    globalSettings->s.setValue("bgColor",
-                               bgLabelPalette.color(QPalette::Window));
+    globalSettings->setBackgroundColor(bgLabelPalette.color(QPalette::Window));
 
     if(ui->thumbSizeComboBox->currentIndex() == 0) {
-        globalSettings->s.setValue("thumbnailSize", thumbSizeSmall);
+        globalSettings->setThumbnailSize(thumbSizeSmall);
     } else if(ui->thumbSizeComboBox->currentIndex() == 1) {
-        globalSettings->s.setValue("thumbnailSize", thumbSizeMedium);
+        globalSettings->setThumbnailSize(thumbSizeMedium);
     } else if(ui->thumbSizeComboBox->currentIndex() == 2) {
-        globalSettings->s.setValue("thumbnailSize", thumbSizeLarge);
+        globalSettings->setThumbnailSize(thumbSizeLarge);
     } else if(ui->thumbSizeComboBox->currentIndex() == 3) {
-        globalSettings->s.setValue("thumbnailSize", thumbSizeVeryLarge);
+        globalSettings->setThumbnailSize(thumbSizeVeryLarge);
     } else if(ui->thumbSizeComboBox->currentIndex() == 4) {
-        globalSettings->s.setValue("thumbnailSize", thumbSizeCustom);
+        globalSettings->setThumbnailSize(thumbSizeCustom);
     }
     emit settingsChanged();
 }
@@ -129,7 +114,6 @@ void SettingsDialog::bgColorDialog() {
     ui->bgColorLabel->setPalette(bgLabelPalette);
 }
 
-SettingsDialog::~SettingsDialog()
-{
+SettingsDialog::~SettingsDialog() {
     delete ui;
 }

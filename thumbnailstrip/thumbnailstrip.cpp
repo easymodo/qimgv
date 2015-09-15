@@ -3,7 +3,7 @@
 ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     : QGraphicsView(parent)
 {
-    panelHeight = globalSettings->s.value("thumbnailSize", "120").toInt() + 22;
+    panelHeight = globalSettings->thumbnailSize() + 22;
     current=-1;
     widget = new QGraphicsWidget();
     scene = new CustomScene;

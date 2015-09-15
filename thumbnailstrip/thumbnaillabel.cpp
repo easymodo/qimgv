@@ -11,7 +11,7 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsPixmapItem *parent) :
     borderW(3),
     borderH(5)
 {
-    thumbnailSize = globalSettings->s.value("thumbnailSize", "120").toInt();
+    thumbnailSize = globalSettings->thumbnailSize();
     setGraphicsItem(this);
     this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     this->setOffset(QPointF(borderW, borderH));

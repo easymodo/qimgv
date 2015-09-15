@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>333</width>
-    <height>264</height>
+    <height>269</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -37,7 +37,7 @@
      <x>250</x>
      <y>230</y>
      <width>71</width>
-     <height>25</height>
+     <height>28</height>
     </rect>
    </property>
    <property name="text">
@@ -50,7 +50,7 @@
      <x>90</x>
      <y>230</y>
      <width>71</width>
-     <height>25</height>
+     <height>28</height>
     </rect>
    </property>
    <property name="text">
@@ -104,7 +104,7 @@
        <x>170</x>
        <y>20</y>
        <width>121</width>
-       <height>26</height>
+       <height>28</height>
       </rect>
      </property>
      <item>
@@ -145,7 +145,7 @@
        <x>170</x>
        <y>60</y>
        <width>121</width>
-       <height>26</height>
+       <height>28</height>
       </rect>
      </property>
      <item>
@@ -191,7 +191,7 @@
        <x>170</x>
        <y>100</y>
        <width>121</width>
-       <height>26</height>
+       <height>28</height>
       </rect>
      </property>
      <item>
@@ -218,7 +218,7 @@
    </widget>
    <widget class="QWidget" name="tab_2">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <attribute name="title">
      <string>Loader</string>
@@ -252,6 +252,9 @@
      </property>
     </widget>
     <widget class="QCheckBox" name="preloaderCheckBox">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -328,7 +331,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>91</width>
+       <width>141</width>
        <height>21</height>
       </rect>
      </property>
@@ -340,9 +343,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>60</y>
-       <width>91</width>
-       <height>20</height>
+       <y>50</y>
+       <width>141</width>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
@@ -353,9 +356,9 @@
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>60</y>
+       <y>50</y>
        <width>101</width>
-       <height>21</height>
+       <height>28</height>
       </rect>
      </property>
      <item>
@@ -387,7 +390,7 @@
      <x>170</x>
      <y>230</y>
      <width>71</width>
-     <height>25</height>
+     <height>28</height>
     </rect>
    </property>
    <property name="text">

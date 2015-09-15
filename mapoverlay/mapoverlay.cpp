@@ -247,8 +247,8 @@ void MapOverlay::updateMap(const QRectF& drawingRect)
 
     QRectF windowRect = parentWidget()->rect();
     
-    bool needToBeHidden = !contains(drawingRect, windowRect);
-    animateVisible(needToBeHidden);
+    bool isVisible = !contains(drawingRect, windowRect);
+    animateVisible(isVisible);
     
     /**
      * Always calculate this first for properly map location

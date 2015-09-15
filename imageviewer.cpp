@@ -61,6 +61,9 @@ void ImageViewer::displayImage(QPixmap* _image) {
     isDisplayingFlag = true;
     image = _image;
 
+    mapOverlay->setEnabled(true);
+
+
     updateMaxScale();
     updateMinScale();
 
@@ -73,9 +76,9 @@ void ImageViewer::displayImage(QPixmap* _image) {
     cropOverlay->setImageArea(drawingRect, currentScale);
     cropOverlay->hide();
 
-    mapOverlay->setEnabled(true);
-    updateMap();
     mapOverlay->updatePosition();
+    updateMap();
+
     update();
 
     connect(resizeTimer, SIGNAL(timeout()),
@@ -101,8 +104,7 @@ void ImageViewer::crop() {
 }
 
 void ImageViewer::readSettings() {
-   this->bgColor =
-            globalSettings->s.value("bgColor", "Qt::black").value<QColor>();
+    this->bgColor = globalSettings->backgroundColor();
     this->repaint();
 }
 

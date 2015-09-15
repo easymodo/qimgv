@@ -20,8 +20,12 @@ void DirectoryManager::setCurrentDir(QString path) {
 
 void DirectoryManager::changePath(QString path) {
     currentDir.setPath(path);
-    if(currentDir.isReadable())
-        globalSettings->s.setValue("lastDir", path);
+    if(currentDir.isReadable()) {
+        globalSettings->setLastDirectory(path);
+    } else {
+        qDebug() << "DirManager: Invalid directory specified. Removing setting.";
+        globalSettings->setLastDirectory("");
+    }
     currentDir.setNameFilters(filters);
     currentPos = -1;
     fileNameList = currentDir.entryList();
@@ -50,13 +54,13 @@ void DirectoryManager::setFile(QString path) {
     FileInfo *info = loadInfo(path);
     setCurrentDir(info->getDirectoryPath());
     currentPos = fileNameList.indexOf(info->getFileName());
-    globalSettings->s.setValue("lastPosition", currentPos);
+    globalSettings->setLastFilePosition(currentPos);
     //return info;
 }
 
 void DirectoryManager::setCurrentPos(int pos) {
     currentPos = pos;
-    globalSettings->s.setValue("lastPosition", currentPos);
+    globalSettings->setLastFilePosition(currentPos);
 }
 
 bool DirectoryManager::isValidFile(QString path) {
@@ -90,8 +94,10 @@ bool DirectoryManager::containsFiles() {
 }
 
 void DirectoryManager::readSettings() {
-    startDir = globalSettings->s.value("lastDir",
-                                       currentDir.homePath()).toString();
+    startDir = globalSettings->lastDirectory();
+    if( startDir.isEmpty() ) {
+        startDir = currentDir.homePath();
+    }
     filters = globalSettings->supportedFormats();
     currentDir.setNameFilters(filters);
     switch(globalSettings->sortingMode()) {

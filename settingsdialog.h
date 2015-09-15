@@ -1,7 +1,7 @@
 #ifndef SETTINGSDIALOG_H
 #define SETTINGSDIALOG_H
 
-#include <QWidget>
+#include <QDialog>
 #include <QColorDialog>
 #include <QDebug>
 #include "clickablelabel.h"
@@ -10,7 +10,7 @@ namespace Ui {
 class SettingsDialog;
 }
 
-class SettingsDialog : public QWidget
+class SettingsDialog : public QDialog
 {
     Q_OBJECT
 
