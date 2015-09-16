@@ -5,6 +5,7 @@ Settings *globalSettings=NULL;
 Settings::Settings(QObject *parent) :
     QObject(parent)
 {
+    tempDirectory = new QTemporaryDir();
 }
 
 Settings* Settings::getInstance() {
@@ -34,6 +35,20 @@ void Settings::validate() {
             globalSettings->s.setValue("thumbnailSize", "120");
         }
     }
+}
+
+QString Settings::tempDir() {
+    return tempDirectory->path()+"/";
+}
+
+QString Settings::ffmpegExecutable() {
+    return globalSettings->s.value("ffmpegExe", "").toString();
+    //QString tmp = "C:/Users/Eugene/Desktop/ffmpeg/bin/ffmpeg.exe";
+    //return tmp;
+}
+
+void Settings::setFfmpegExecutable(QString path) {
+    globalSettings->s.setValue("ffmpegExe", path);
 }
 
 //returns list of regexps

@@ -6,17 +6,11 @@ VideoPlayer::VideoPlayer(QWidget *parent) :
     path("")
 {
     scene = new CustomScene;
-    //layout = new QGraphicsLinearLayout(Qt::Horizontal);
-    //videoWidget = new QGraphicsWidget();
-    //videoWidget->setAttribute(Qt::WA_TransparentForMouseEvents);
-
     videoItem = new QGraphicsVideoItem();
     mediaPlayer.setVideoOutput(videoItem);
 
-    //videoWidget->setLayout(layout);
     scene->addItem(videoItem);
     videoItem->setFlag(QGraphicsItem::ItemIsMovable, true);
-    //layout->setContentsMargins(0, 0, 0, 0);
     this->setMouseTracking(true);
     this->setScene(scene);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -83,10 +77,6 @@ void VideoPlayer::handleMediaStatusChange(QMediaPlayer::MediaStatus status) {
 //fits entire video in window
 void VideoPlayer::adjustVideoSize() {
     QSize size = videoItem->nativeSize().toSize();
-    qDebug() << "##############################";
-    qDebug() << "view size: " << this->size();
-    qDebug() << "video native: " << size;
-    qDebug() << "sceneRect: " << scene->sceneRect();
     if(size.width() > this->width() || size.height() > this->height()) {
         size = size.boundedTo(this->size());
         videoItem->setSize(size);

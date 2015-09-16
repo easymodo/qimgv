@@ -8,6 +8,7 @@
 #include <QImageReader>
 #include <QStringList>
 #include <QColor>
+#include <QTemporaryDir>
 
 class Settings : public QObject
 {
@@ -47,10 +48,15 @@ public:
     void setPlayVideos(bool mode);
     bool playVideoSounds();
     void setPlayVideoSounds(bool mode);
+    QString tempDir();
+
+    QString ffmpegExecutable();
+    void setFfmpegExecutable(QString path);
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 120;
     QSettings s;
+    QTemporaryDir *tempDirectory;
 
 signals:
     void settingsChanged();

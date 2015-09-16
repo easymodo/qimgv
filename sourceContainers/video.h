@@ -4,6 +4,8 @@
 #include "settings.h"
 #include "image.h"
 #include <QImage>
+#include <QPixmap>
+#include <QProcess>
 
 class Video : public Image
 {
@@ -14,7 +16,6 @@ public:
     ~Video();
 
     QPixmap* getPixmap();
-    const QImage* getImage();
     void load();
     void unload();
     int height();
@@ -33,6 +34,7 @@ public slots:
 
 
 private:
+    QPixmap *thumbnailStub();
 };
 
 #endif // VIDEO_H

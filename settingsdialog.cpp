@@ -23,6 +23,8 @@ void SettingsDialog::readSettings() {
     ui->playVideosCheckBox->setChecked(globalSettings->playVideos());
     ui->playSoundsCheckBox->setChecked(globalSettings->playVideoSounds());
 
+    ui->ffmpegLineEdit->setText(globalSettings->ffmpegExecutable());
+
     // ##### loader #####
     ui->preloaderCheckBox->setChecked(globalSettings->usePreloader());
     ui->reduceRamCheckBox->setChecked(globalSettings->reduceRamUsage());
@@ -84,6 +86,8 @@ void SettingsDialog::applySettings() {
     globalSettings->setReduceRamUsage(ui->reduceRamCheckBox->isChecked());
     globalSettings->setPlayVideos(ui->playVideosCheckBox->isChecked());
     globalSettings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
+
+    globalSettings->setFfmpegExecutable(ui->ffmpegLineEdit->text());
 
     if(ui->scalingQualityComboBox->currentIndex()==1) {
         globalSettings->setUseFastScale(true);

@@ -5,10 +5,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsVideoItem>
 #include <QGraphicsWidget>
-#include <QGraphicsLinearLayout>
 #include <QWidget>
-#include <QMovie>
-#include <QBoxLayout>
 #include <qmediaplayer.h>
 #include <qvideowidget.h>
 #include <QMouseEvent>
@@ -39,21 +36,17 @@ private slots:
     void handleError();
     void handleMediaStatusChange(QMediaPlayer::MediaStatus status);
     void handlePlayerStateChange(QMediaPlayer::State status);
-
     void adjustVideoSize();
+
 private:
     QMediaPlayer mediaPlayer;
     QString path;
     CustomScene *scene;
-    QGraphicsLinearLayout *layout;
-    QGraphicsWidget *videoWidget;
     QGraphicsVideoItem *videoItem;
 
 protected:
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
-    //virtual void mouseReleaseEvent(QMouseEvent *event);
-
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
 };
 

@@ -34,6 +34,44 @@ void Video::save() {
 }
 
 QPixmap* Video::generateThumbnail() {
+
+    QString ffmpegExe = globalSettings->ffmpegExecutable();
+    if(ffmpegExe.isEmpty()) {
+        return thumbnailStub();
+    }
+
+
+    QString filePath = globalSettings->tempDir() + "tmp_" + info->getFileName();
+
+    QString command = ffmpegExe+" -i "+info->getFilePath()+
+            " -r 1 -f image2 "+filePath;
+    QProcess process;
+    process.start(command);
+    process.waitForFinished();
+    process.close();
+
+    int size = globalSettings->thumbnailSize();
+    QPixmap *thumbnail = new QPixmap(size, size);
+    QPixmap *tmp;
+    tmp = new QPixmap(filePath, "JPG");
+    tmp->save("C:/testThumb.jpg", "JPG", 95);
+    *tmp = tmp->scaled(size*2,
+                       size*2,
+                       Qt::KeepAspectRatioByExpanding,
+                       Qt::FastTransformation)
+               .scaled(size,
+                       size,
+                       Qt::KeepAspectRatioByExpanding,
+                       Qt::SmoothTransformation);
+
+    QRect target(0, 0, size,size);
+    target.moveCenter(tmp->rect().center());
+    *thumbnail = tmp->copy(target);
+    delete tmp;
+    return thumbnail;
+}
+
+QPixmap* Video::thumbnailStub() {
     int size = globalSettings->thumbnailSize();
     QImage *img = new QImage(size, size, QImage::Format_ARGB32_Premultiplied);
     QPainter painter(img);

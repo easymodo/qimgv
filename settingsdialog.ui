@@ -247,6 +247,29 @@
       <string>Play video sounds</string>
      </property>
     </widget>
+    <widget class="QLabel" name="ffmpegLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>180</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>FFmpeg exe:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="ffmpegLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>180</y>
+       <width>401</width>
+       <height>21</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_2">
     <property name="enabled">
