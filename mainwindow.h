@@ -64,6 +64,7 @@ public:
     void triggerMenuBar();
     void showMenuBar();
 
+    void updateOverlays();
 private slots:
     void slotOpenDialog();
     void slotFitAll();

@@ -79,7 +79,6 @@ void VideoPlayer::mouseDoubleClickEvent(QMouseEvent *event) {
 }
 void VideoPlayer::mouseMoveEvent(QMouseEvent* event) {
     QWidget::mouseMoveEvent(event);
-    qDebug() << "move" << event->pos();
     event->ignore();
 }
 

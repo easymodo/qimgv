@@ -22,7 +22,7 @@ void ControlsOverlay::paintEvent(QPaintEvent *event) {
 }
 
 void ControlsOverlay::updateSize() {
-    this->setGeometry(parentWidget()->size().rwidth()-60,0,60,20);
+    this->setGeometry(parentWidget()->width()-60,0,60,20);
 }
 
 void ControlsOverlay::mouseReleaseEvent(QMouseEvent *event) {

@@ -158,6 +158,7 @@ void MainWindow::enableImageViewer() {
         connect(imageViewer, SIGNAL(sendDoubleClick()),
                 this, SLOT(slotTriggerFullscreen()), Qt::UniqueConnection);
 
+        updateOverlays();
         currentViewer = 1;
     }
 }
@@ -196,6 +197,7 @@ void MainWindow::enableVideoPlayer() {
         layout->addWidget(videoPlayer);
         currentViewer = 2;
         videoPlayer->show();
+        updateOverlays();
     }
 }
 
@@ -502,6 +504,10 @@ void MainWindow::resizeEvent(QResizeEvent* event) {
     if(panel) {
         panel->parentResized(size());
     }
+    updateOverlays();
+}
+
+void MainWindow::updateOverlays() {
     controlsOverlay->updateSize();
     infoOverlay->updateWidth();
 }
