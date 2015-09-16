@@ -41,7 +41,7 @@ QStringList Settings::supportedFormats() {
     QStringList filters;
     QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
     if(this->playVideos()) {
-        supportedFormats << "webm" << "gifv";
+        supportedFormats << "webm";
     }
     for(int i = 0; i < supportedFormats.count(); i++) {
         filters << "*."+QString(supportedFormats.at(i));
@@ -54,6 +54,9 @@ QStringList Settings::supportedFormats() {
 QString Settings::supportedFormatsString() {
     QString filters;
     QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+    if(this->playVideos()) {
+        supportedFormats << "webm";
+    }
     filters.append("Images (");
     for(int i = 0; i < supportedFormats.count(); i++) {
         filters.append("*."+QString(supportedFormats.at(i))+" ");

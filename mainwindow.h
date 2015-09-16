@@ -52,6 +52,7 @@ signals:
     void signalFullscreenEnabled(bool);
     void fileOpened(QString);
     void fileSaved(QString);
+    void resized(QSize);
 
 public:
     MainWindow();

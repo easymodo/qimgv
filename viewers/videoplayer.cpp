@@ -1,26 +1,38 @@
 #include "videoplayer.h"
 
 VideoPlayer::VideoPlayer(QWidget *parent) :
-    QWidget(parent),
+    QGraphicsView(parent),
     mediaPlayer(0, QMediaPlayer::VideoSurface),
     path("")
 {
-    QVideoWidget *videoWidget = new QVideoWidget;
-    videoWidget->setAttribute(Qt::WA_TransparentForMouseEvents);
+    scene = new CustomScene;
+    //layout = new QGraphicsLinearLayout(Qt::Horizontal);
+    //videoWidget = new QGraphicsWidget();
+    //videoWidget->setAttribute(Qt::WA_TransparentForMouseEvents);
 
-    QBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(videoWidget);
-    layout->setContentsMargins(0, 0, 0, 0);
-    setLayout(layout);
+    videoItem = new QGraphicsVideoItem();
+    mediaPlayer.setVideoOutput(videoItem);
+
+    //videoWidget->setLayout(layout);
+    scene->addItem(videoItem);
+    videoItem->setFlag(QGraphicsItem::ItemIsMovable, true);
+    //layout->setContentsMargins(0, 0, 0, 0);
     this->setMouseTracking(true);
+    this->setScene(scene);
+    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->setFrameShape(QFrame::NoFrame);
 
-    mediaPlayer.setVideoOutput(videoWidget);
     readSettings();
 
     connect(&mediaPlayer, SIGNAL(error(QMediaPlayer::Error)), this, SLOT(handleError()));
     connect(&mediaPlayer, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)),
             this, SLOT(handleMediaStatusChange(QMediaPlayer::MediaStatus)));
+    connect(&mediaPlayer, SIGNAL(stateChanged(QMediaPlayer::State)),
+            this, SLOT(handlePlayerStateChange(QMediaPlayer::State)));
     connect(globalSettings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+    connect(this, SIGNAL(parentResized(QSize)), this, SLOT(adjustVideoSize()));
+    connect(videoItem, SIGNAL(nativeSizeChanged(QSizeF)), this, SLOT(adjustVideoSize()));
 
 }
 
@@ -29,7 +41,7 @@ VideoPlayer::~VideoPlayer() {
 
 void VideoPlayer::play(QString _path) {
     stop();
-    path= _path;
+    path = _path;
     if(!path.isEmpty()) {
         mediaPlayer.setMedia(QUrl::fromLocalFile(path));
         switch(mediaPlayer.state()) {
@@ -56,12 +68,35 @@ void VideoPlayer::stop() {
 
 void VideoPlayer::readSettings() {
     mediaPlayer.setMuted(!globalSettings->playVideoSounds());
+    QBrush brush(globalSettings->backgroundColor());
+    this->setBackgroundBrush(brush);
 }
 
 void VideoPlayer::handleMediaStatusChange(QMediaPlayer::MediaStatus status) {
     if(status == QMediaPlayer::EndOfMedia) {
         play(path);
+    } else if(status == QMediaPlayer::BufferedMedia) {
+        adjustVideoSize();
     }
+}
+
+//fits entire video in window
+void VideoPlayer::adjustVideoSize() {
+    QSize size = videoItem->nativeSize().toSize();
+    qDebug() << "##############################";
+    qDebug() << "view size: " << this->size();
+    qDebug() << "video native: " << size;
+    qDebug() << "sceneRect: " << scene->sceneRect();
+    if(size.width() > this->width() || size.height() > this->height()) {
+        size = size.boundedTo(this->size());
+        videoItem->setSize(size);
+    } else if(size != videoItem->size()) {
+        videoItem->setSize(videoItem->nativeSize());
+    }
+    scene->setSceneRect(scene->itemsBoundingRect());
+}
+
+void VideoPlayer::handlePlayerStateChange(QMediaPlayer::State state) {
 }
 
 void VideoPlayer::handleError() {
@@ -79,6 +114,9 @@ void VideoPlayer::mouseDoubleClickEvent(QMouseEvent *event) {
 }
 void VideoPlayer::mouseMoveEvent(QMouseEvent* event) {
     QWidget::mouseMoveEvent(event);
-    event->ignore();
+    //event->ignore();
 }
 
+void VideoPlayer::mousePressEvent(QMouseEvent* event) {
+    QWidget::mousePressEvent(event);
+}

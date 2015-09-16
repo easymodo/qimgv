@@ -51,6 +51,7 @@ void MainWindow::init() {
             this, SLOT(readSettings()));
 
     enableImageViewer();
+    connect(this, SIGNAL(resized(QSize)), panel, SLOT(parentResized(QSize)));
 
     connect(this, SIGNAL(signalNextImage()),
             core, SLOT(slotNextImage()));
@@ -113,7 +114,8 @@ void MainWindow::init() {
 void MainWindow::enableImageViewer() {
     if( currentViewer != 1 ) {
         disableVideoPlayer();
-
+        controlsOverlay->setParent(imageViewer);
+        infoOverlay->setParent(imageViewer);
         layout->addWidget(imageViewer);
 
         imageViewer->show();
@@ -157,7 +159,6 @@ void MainWindow::enableImageViewer() {
 
         connect(imageViewer, SIGNAL(sendDoubleClick()),
                 this, SLOT(slotTriggerFullscreen()), Qt::UniqueConnection);
-
         updateOverlays();
         currentViewer = 1;
     }
@@ -193,7 +194,11 @@ void MainWindow::disableImageViewer() {
 
 void MainWindow::enableVideoPlayer() {
     if( currentViewer != 2 ) {
+        connect(this, SIGNAL(resized(QSize)),
+                videoPlayer, SIGNAL(parentResized(QSize)), Qt::UniqueConnection);
         disableImageViewer();
+        controlsOverlay->setParent(videoPlayer);
+        infoOverlay->setParent(videoPlayer);
         layout->addWidget(videoPlayer);
         currentViewer = 2;
         videoPlayer->show();
@@ -204,6 +209,8 @@ void MainWindow::enableVideoPlayer() {
 void MainWindow::disableVideoPlayer() {
     layout->removeWidget(videoPlayer);
     videoPlayer->stop();
+    disconnect(this, SIGNAL(resized(QSize)),
+            videoPlayer, SIGNAL(parentResized(QSize)));
     currentViewer = 0;
     videoPlayer->hide();
 }
@@ -502,7 +509,7 @@ void MainWindow::slotSaveDialog() {
 void MainWindow::resizeEvent(QResizeEvent* event) {
     Q_UNUSED(event)
     if(panel) {
-        panel->parentResized(size());
+        emit resized(size());
     }
     updateOverlays();
 }

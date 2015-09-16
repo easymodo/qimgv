@@ -1,6 +1,11 @@
 #ifndef VIDEOPLAYER_H
 #define VIDEOPLAYER_H
 
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QGraphicsVideoItem>
+#include <QGraphicsWidget>
+#include <QGraphicsLinearLayout>
 #include <QWidget>
 #include <QMovie>
 #include <QBoxLayout>
@@ -10,8 +15,9 @@
 #include <qvideosurfaceformat.h>
 #include <QDebug>
 #include "../settings.h"
+#include "../thumbnailstrip/customscene.h"
 
-class VideoPlayer : public QWidget
+class VideoPlayer : public QGraphicsView
 {
     Q_OBJECT
 public:
@@ -21,6 +27,7 @@ public:
 signals:
     void sendDoubleClick();
     void sendRightDoubleClick();
+    void parentResized(QSize);
 
 public slots:
     void play(QString _path);
@@ -31,14 +38,20 @@ public slots:
 private slots:
     void handleError();
     void handleMediaStatusChange(QMediaPlayer::MediaStatus status);
+    void handlePlayerStateChange(QMediaPlayer::State status);
 
+    void adjustVideoSize();
 private:
     QMediaPlayer mediaPlayer;
     QString path;
+    CustomScene *scene;
+    QGraphicsLinearLayout *layout;
+    QGraphicsWidget *videoWidget;
+    QGraphicsVideoItem *videoItem;
 
 protected:
     virtual void mouseMoveEvent(QMouseEvent *event);
-    //virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
     //virtual void mouseReleaseEvent(QMouseEvent *event);
 
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
