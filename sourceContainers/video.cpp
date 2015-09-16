@@ -43,8 +43,8 @@ QPixmap* Video::generateThumbnail() {
 
     QString filePath = globalSettings->tempDir() + "tmp_" + info->getFileName();
 
-    QString command = ffmpegExe+" -i "+info->getFilePath()+
-            " -r 1 -f image2 "+filePath;
+    QString command = "\""+ffmpegExe+"\""+" -i "+"\""+info->getFilePath()+"\""+
+            " -r 1 -f image2 "+"\""+filePath+"\"";
     QProcess process;
     process.start(command);
     process.waitForFinished();

@@ -39,9 +39,7 @@ void ImageLoader::openBlocking(QString path) {
     cache->unloadAll();
     if(!dm->existsInCurrentDir(path)) {
         dm->setFile(path);
-        if(cache->directory() != dm->currentDirectory()) {
-            cache->init(dm->currentDirectory(), dm->getFileList());
-        }
+        reinitCache();
     } else {
         dm->setFile(path);
     }
