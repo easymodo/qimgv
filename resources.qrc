@@ -4,6 +4,7 @@
         <file>res/logo.png</file>
         <file>res/pepper32.png</file>
         <file>res/error_no_image_100px.png</file>
+        <file>res/video_thumb.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file>res/style.qss</file>

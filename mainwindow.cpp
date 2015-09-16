@@ -2,8 +2,11 @@
 
 MainWindow::MainWindow() :
     imageViewer(NULL),
+    videoPlayer(NULL),
     settingsDialog(NULL),
-    panel(NULL)
+    panel(NULL),
+    currentViewer(0),
+    layout(NULL)
 {
     resize(1100, 700);
     setMinimumSize(QSize(400,300));
@@ -19,12 +22,25 @@ MainWindow::MainWindow() :
 void MainWindow::init() {
     settingsDialog = new SettingsDialog();
     imageViewer = new ImageViewer(this);
+    imageViewer->hide();
+    videoPlayer = new VideoPlayer(this);
+    videoPlayer->hide();
 
+    QWidget* central = new QWidget();
     controlsOverlay = new ControlsOverlay(imageViewer);
     controlsOverlay->hide();
     infoOverlay = new textOverlay(imageViewer);
 
-    this->setCentralWidget(imageViewer);
+    layout = new QVBoxLayout;
+    //central->setAttribute(Qt::WA_TransparentForMouseEvents);
+    central->setAttribute(Qt::WA_MouseTracking);
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    central->setSizePolicy(sizePolicy);
+    layout->setContentsMargins(0, 0, 0, 0);
+    central->setLayout(layout);
+    this->setCentralWidget(central);
 
     panel = new ThumbnailStrip(this);
     panel->parentResized(size());
@@ -33,6 +49,8 @@ void MainWindow::init() {
 
     connect(globalSettings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
+
+    enableImageViewer();
 
     connect(this, SIGNAL(signalNextImage()),
             core, SLOT(slotNextImage()));
@@ -43,27 +61,6 @@ void MainWindow::init() {
     connect(this, SIGNAL(fileOpened(QString)),
             core, SLOT(loadImage(QString)));
 
-    connect(this, SIGNAL(signalFitAll()),
-            imageViewer, SLOT(slotFitAll()));
-
-    connect(this, SIGNAL(signalFitWidth()),
-            imageViewer, SLOT(slotFitWidth()));
-
-    connect(this, SIGNAL(signalFitNormal()),
-            imageViewer, SLOT(slotFitNormal()));
-
-    connect(imageViewer, SIGNAL(sendRightDoubleClick()),
-            this, SLOT(switchFitMode()));
-
-    connect(this, SIGNAL(signalZoomIn()),
-            imageViewer, SLOT(slotZoomIn()));
-
-    connect(this, SIGNAL(signalZoomOut()),
-            imageViewer, SLOT(slotZoomOut()));
-
-    connect(imageViewer, SIGNAL(sendDoubleClick()),
-            this, SLOT(slotTriggerFullscreen()));
-
     connect(this, SIGNAL(signalFullscreenEnabled(bool)),
             this, SLOT(slotShowControls(bool)));
 
@@ -73,9 +70,6 @@ void MainWindow::init() {
     connect(core, SIGNAL(infoStringChanged(QString)),
             this, SLOT(setInfoString(QString)));
 
-    connect(core, SIGNAL(signalSetImage(QPixmap*)),
-            imageViewer, SLOT(displayImage(QPixmap*)));
-
     connect(controlsOverlay, SIGNAL(exitClicked()),
             this, SLOT(close()));
 
@@ -84,13 +78,6 @@ void MainWindow::init() {
 
     connect(controlsOverlay, SIGNAL(minimizeClicked()),
             this, SLOT(slotMinimize()));
-
-    connect(imageViewer, SIGNAL(cropSelected(QRect)),
-            core, SLOT(crop(QRect)));
-
-    // reload after image edits
-    connect(core, SIGNAL(imageAltered(QPixmap*)),
-            imageViewer, SLOT(displayImage(QPixmap*)));
 
     // when loaded
     connect(core, SIGNAL(imageChanged(int)),
@@ -111,19 +98,122 @@ void MainWindow::init() {
     connect(core, SIGNAL(cacheInitialized(int)),
             panel, SLOT(fillPanel(int)), Qt::DirectConnection);
 
-    connect(imageViewer, SIGNAL(scalingRequested(QSize)),
-            core, SLOT(rescaleForZoom(QSize)));
+    connect(core, SIGNAL(videoChanged(QString)),
+            this, SLOT(openVideo(QString)), Qt::UniqueConnection);
 
-    connect(core, SIGNAL(scalingFinished(QPixmap*)),
-            imageViewer, SLOT(updateImage(QPixmap*)));
-
-    connect(core, SIGNAL(frameChanged(QPixmap*)),
-            imageViewer, SLOT(updateImage(QPixmap*)), Qt::DirectConnection);
+    connect(videoPlayer, SIGNAL(sendDoubleClick()),
+            this, SLOT(slotTriggerFullscreen()), Qt::UniqueConnection);
 
     core->init();
 
     createActions();
     createMenus();
+}
+
+void MainWindow::enableImageViewer() {
+    if( currentViewer != 1 ) {
+        disableVideoPlayer();
+
+        layout->addWidget(imageViewer);
+
+        imageViewer->show();
+
+        connect(imageViewer, SIGNAL(scalingRequested(QSize)),
+                core, SLOT(rescaleForZoom(QSize)), Qt::UniqueConnection);
+
+        connect(core, SIGNAL(scalingFinished(QPixmap*)),
+                imageViewer, SLOT(updateImage(QPixmap*)), Qt::UniqueConnection);
+
+        connect(core, SIGNAL(frameChanged(QPixmap*)),
+                imageViewer, SLOT(updateImage(QPixmap*)),
+                static_cast<Qt::ConnectionType>(Qt::DirectConnection | Qt::UniqueConnection));
+        // reload after image edits
+        connect(core, SIGNAL(imageAltered(QPixmap*)),
+                imageViewer, SLOT(displayImage(QPixmap*)), Qt::UniqueConnection);
+
+        connect(imageViewer, SIGNAL(cropSelected(QRect)),
+                core, SLOT(crop(QRect)), Qt::UniqueConnection);
+
+        connect(core, SIGNAL(signalSetImage(QPixmap*)),
+                this, SLOT(openImage(QPixmap*)), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(signalFitAll()),
+                imageViewer, SLOT(slotFitAll()), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(signalFitWidth()),
+                imageViewer, SLOT(slotFitWidth()), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(signalFitNormal()),
+                imageViewer, SLOT(slotFitNormal()), Qt::UniqueConnection);
+
+        connect(imageViewer, SIGNAL(sendRightDoubleClick()),
+                this, SLOT(switchFitMode()), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(signalZoomIn()),
+                imageViewer, SLOT(slotZoomIn()), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(signalZoomOut()),
+                imageViewer, SLOT(slotZoomOut()), Qt::UniqueConnection);
+
+        connect(imageViewer, SIGNAL(sendDoubleClick()),
+                this, SLOT(slotTriggerFullscreen()), Qt::UniqueConnection);
+
+        currentViewer = 1;
+    }
+}
+
+void MainWindow::disableImageViewer() {
+    layout->removeWidget(imageViewer);
+
+    disconnect(imageViewer, SIGNAL(scalingRequested(QSize)),
+            core, SLOT(rescaleForZoom(QSize)));
+
+    disconnect(imageViewer, SIGNAL(cropSelected(QRect)),
+            core, SLOT(crop(QRect)));
+
+    disconnect(core, SIGNAL(signalSetImage(QPixmap*)),
+            imageViewer, SLOT(displayImage(QPixmap*)));
+
+    disconnect(imageViewer, SIGNAL(sendRightDoubleClick()),
+            this, SLOT(switchFitMode()));
+
+    disconnect(this, SIGNAL(signalZoomIn()),
+            imageViewer, SLOT(slotZoomIn()));
+
+    disconnect(this, SIGNAL(signalZoomOut()),
+            imageViewer, SLOT(slotZoomOut()));
+
+    disconnect(imageViewer, SIGNAL(sendDoubleClick()),
+            this, SLOT(slotTriggerFullscreen()));
+
+    currentViewer = 0;
+    imageViewer->hide();
+}
+
+void MainWindow::enableVideoPlayer() {
+    if( currentViewer != 2 ) {
+        disableImageViewer();
+        layout->addWidget(videoPlayer);
+        currentViewer = 2;
+        videoPlayer->show();
+    }
+}
+
+void MainWindow::disableVideoPlayer() {
+    layout->removeWidget(videoPlayer);
+    videoPlayer->stop();
+    currentViewer = 0;
+    videoPlayer->hide();
+}
+
+void MainWindow::openVideo(QString path) {
+    enableVideoPlayer();
+    videoPlayer->play(path);
+}
+
+void MainWindow::openImage(QPixmap *pixmap) {
+    enableImageViewer();
+    imageViewer->displayImage(pixmap);
 }
 
 void MainWindow::open(QString path) {
@@ -516,7 +606,6 @@ void MainWindow::restoreWindowGeometry() {
     this->restoreGeometry(globalSettings->windowGeometry());
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
 
 }

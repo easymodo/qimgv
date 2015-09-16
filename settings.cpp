@@ -40,6 +40,9 @@ void Settings::validate() {
 QStringList Settings::supportedFormats() {
     QStringList filters;
     QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+    if(this->playVideos()) {
+        supportedFormats << "webm" << "gifv";
+    }
     for(int i = 0; i < supportedFormats.count(); i++) {
         filters << "*."+QString(supportedFormats.at(i));
     }
@@ -57,6 +60,24 @@ QString Settings::supportedFormatsString() {
     }
     filters.append(")");
     return filters;
+}
+
+bool Settings::playVideos() {
+    bool mode = globalSettings->s.value("playVideos", true).toBool();
+    return mode;
+}
+
+void Settings::setPlayVideos(bool mode) {
+    globalSettings->s.setValue("playVideos", mode);
+}
+
+bool Settings::playVideoSounds() {
+    bool mode = globalSettings->s.value("playVideoSounds", false).toBool();
+    return mode;
+}
+
+void Settings::setPlayVideoSounds(bool mode) {
+    globalSettings->s.setValue("playVideoSounds", mode);
 }
 
 /* 0: By name (default)
@@ -96,7 +117,7 @@ QString Settings::lastDirectory() {
 }
 
 void Settings::setLastDirectory(QString path) {
-    globalSettings->s.value("lastDir", path);
+    globalSettings->s.setValue("lastDir", path);
 }
 
 unsigned int Settings::lastFilePosition() {

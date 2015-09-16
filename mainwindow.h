@@ -5,11 +5,13 @@
 #include <QtWidgets>
 #include <QFileDialog>
 #include <QAction>
+#include <QBoxLayout>
 #include "core.h"
 #include "infooverlay.h"
 #include "controlsoverlay.h"
 #include "settingsdialog.h"
 #include "imageviewer.h"
+#include "viewers/videoplayer.h"
 #include "settings.h"
 #include "thumbnailstrip/thumbnailstrip.h"
 
@@ -33,8 +35,12 @@ public slots:
     void slotAbout();
     void setInfoString(QString);
     void readSettings();
-
     void close();
+    void enableImageViewer();
+    void enableVideoPlayer();
+    void disableImageViewer();
+    void disableVideoPlayer();
+
 signals:
     void signalFitAll();
     void signalFitWidth();
@@ -51,6 +57,7 @@ public:
     MainWindow();
     ~MainWindow();    
     ImageViewer *imageViewer;
+    VideoPlayer *videoPlayer;
     SettingsDialog *settingsDialog;
 
     void open(QString path);
@@ -70,11 +77,15 @@ private slots:
 
     void slotShowControls(bool);
     void slotShowInfo(bool x);
+    void openVideo(QString path);
+    void openImage(QPixmap *pixmap);
 private:
     Core *core;
     textOverlay *infoOverlay, *messageOverlay;
     ControlsOverlay *controlsOverlay;
     ThumbnailStrip *panel;
+    QBoxLayout *layout;
+    int currentViewer; // 0 = none; 1 = imageViewer; 2 = VideoPlayer;
     void init();
     void createActions();
     void createMenus();

@@ -36,18 +36,3 @@ void ImageLib::bilinearScale(QPixmap *dest, QPixmap* source, QSize destSize, boo
                            );
                            */
 }
-
-fileType ImageLib::guessType(QString path) {
-    QFile file(path);
-    file.open(QIODevice::ReadOnly);
-    //read first 2 bytes to determine file format
-    QByteArray startingBytes= file.read(2).toHex();
-    file.close();
-
-    if(startingBytes=="4749") {
-        return GIF;
-    }
-    else {
-        return STATIC;
-    }
-}

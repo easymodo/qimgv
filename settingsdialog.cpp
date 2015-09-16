@@ -20,6 +20,9 @@ void SettingsDialog::readSettings() {
 
     bool setting;
 
+    ui->playVideosCheckBox->setChecked(globalSettings->playVideos());
+    ui->playSoundsCheckBox->setChecked(globalSettings->playVideoSounds());
+
     // ##### loader #####
     ui->preloaderCheckBox->setChecked(globalSettings->usePreloader());
     ui->reduceRamCheckBox->setChecked(globalSettings->reduceRamUsage());
@@ -79,6 +82,8 @@ void SettingsDialog::applySettings() {
     globalSettings->setImageFitMode(ui->fitModeComboBox->currentIndex());
     globalSettings->setSortingMode(ui->sortingComboBox->currentIndex());
     globalSettings->setReduceRamUsage(ui->reduceRamCheckBox->isChecked());
+    globalSettings->setPlayVideos(ui->playVideosCheckBox->isChecked());
+    globalSettings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
 
     if(ui->scalingQualityComboBox->currentIndex()==1) {
         globalSettings->setUseFastScale(true);

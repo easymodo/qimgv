@@ -24,7 +24,8 @@ private:
     ImageLoader *imageLoader;
     DirectoryManager *dirManager;
     Image* currentImage;
-    ImageAnimated* currentMovie;
+    ImageAnimated* currentImageAnimated;
+    Video* currentVideo;
     ImageCache *cache;
 
 private slots:
@@ -43,6 +44,9 @@ signals:
     void thumbnailReady(int, const Thumbnail*);
     void cacheInitialized(int);
     void imageChanged(int);
+    void startVideo();
+    void stopVideo();
+    void videoChanged(QString);
 
 public slots:
     void init();

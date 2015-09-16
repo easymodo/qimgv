@@ -5,7 +5,8 @@ Core::Core() :
     imageLoader(NULL),
     dirManager(NULL),
     currentImage(NULL),
-    currentMovie(NULL)
+    currentImageAnimated(NULL),
+    currentVideo(NULL)
 {
 }
 
@@ -136,11 +137,22 @@ void Core::loadImageByPos(int pos) {
 
 void Core::onLoadFinished(Image* img, int pos) {
     emit signalUnsetImage();
-    stopAnimation();
+    if(currentImageAnimated) {
+        stopAnimation();
+    }
+    if(currentVideo) {
+        emit stopVideo();
+    }
     currentImage = img;
-    emit signalSetImage(currentImage->getPixmap());
-    if( currentMovie = dynamic_cast<ImageAnimated*>(currentImage) ) {
+
+    if( currentImageAnimated = dynamic_cast<ImageAnimated*>(currentImage) ) {
         startAnimation();
+    }
+    if (currentVideo = dynamic_cast<Video*>(currentImage)) {
+        emit videoChanged(currentVideo->filePath());
+    }
+    if(!currentVideo && !currentVideo) { //static image
+        emit signalSetImage(currentImage->getPixmap());
     }
     emit imageChanged(pos);
     updateInfoString();
@@ -171,17 +183,17 @@ void Core::rescaleForZoom(QSize newSize) {
 }
 
 void Core::startAnimation() {
-    if(currentMovie) {
-        currentMovie->animationStart();
-        connect(currentMovie, SIGNAL(frameChanged(QPixmap*)),
+    if(currentImageAnimated) {
+        currentImageAnimated->animationStart();
+        connect(currentImageAnimated, SIGNAL(frameChanged(QPixmap*)),
                    this, SIGNAL(frameChanged(QPixmap*)));
     }
 }
 
 void Core::stopAnimation() {
-    if(currentMovie) {
-        currentMovie->animationStop();
-        disconnect(currentMovie, SIGNAL(frameChanged(QPixmap*)),
+    if(currentImageAnimated) {
+        currentImageAnimated->animationStop();
+        disconnect(currentImageAnimated, SIGNAL(frameChanged(QPixmap*)),
                    this, SIGNAL(frameChanged(QPixmap*)));
     }
 }

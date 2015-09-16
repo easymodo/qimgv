@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>333</width>
-    <height>269</height>
+    <width>565</width>
+    <height>329</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -40,8 +40,8 @@
   <widget class="QPushButton" name="Cancel">
    <property name="geometry">
     <rect>
-     <x>250</x>
-     <y>230</y>
+     <x>480</x>
+     <y>290</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -53,8 +53,8 @@
   <widget class="QPushButton" name="OK">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>230</y>
+     <x>320</x>
+     <y>290</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -68,8 +68,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>311</width>
-     <height>211</height>
+     <width>541</width>
+     <height>271</height>
     </rect>
    </property>
    <property name="tabPosition">
@@ -79,7 +79,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideNone</enum>
@@ -220,6 +220,32 @@
        <string>Date (desc)</string>
       </property>
      </item>
+    </widget>
+    <widget class="QCheckBox" name="playVideosCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>20</y>
+       <width>211</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Webm support (experimental)</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="playSoundsCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>60</y>
+       <width>181</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Play video sounds</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_2">
@@ -412,8 +438,8 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>230</y>
+     <x>400</x>
+     <y>290</y>
      <width>71</width>
      <height>28</height>
     </rect>

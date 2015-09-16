@@ -123,7 +123,6 @@ void ImageViewer::updateMaxScale() {
         else {
             maxScale = newMaxScaleY;
         }
-        //qDebug() << "SET maxScale=" << maxScale;
     }
 }
 
@@ -135,7 +134,6 @@ void ImageViewer::updateMinScale() {
     if(maxSize>25) {
         minScale=sqrt(25/imgSize);
     }
-    //qDebug() << "SET minScale = " << minScale;
 }
 
 float ImageViewer::scale() const {
@@ -181,14 +179,11 @@ void ImageViewer::resizeImage() {
 // ####################  PAINT  #####################
 // ##################################################
 void ImageViewer::paintEvent(QPaintEvent* event) {
-    // qDebug() << "paint at " << clock();
     Q_UNUSED( event )
     QPainter painter(this);
     painter.fillRect(rect(), QBrush(bgColor));
     //painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
-    //int time = clock();
     painter.drawPixmap(drawingRect, *image, image->rect());
-    //qDebug() << "VIEWER: draw time: " << clock() - time;
 }
 
 void ImageViewer::mousePressEvent(QMouseEvent* event) {

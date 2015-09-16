@@ -6,7 +6,7 @@
 
 QT       += core gui widgets concurrent
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia multimediawidgets
 
 TARGET = qimgv
 TEMPLATE = app
@@ -39,7 +39,9 @@ SOURCES += main.cpp\
     imageanimated.cpp \
     thumbnailstrip/customscene.cpp \
     clickablelabel.cpp \
-    thumbnail.cpp
+    thumbnail.cpp \
+    viewers/videoplayer.cpp \
+    sourceContainers/video.cpp
 
 HEADERS  += mainwindow.h \
     infooverlay.h \
@@ -63,7 +65,9 @@ HEADERS  += mainwindow.h \
     imageanimated.h \
     thumbnailstrip/customscene.h \
     clickablelabel.h \
-    thumbnail.h
+    thumbnail.h \
+    viewers/videoplayer.h \
+    sourceContainers/video.h
 
 FORMS    += \
     settingsdialog.ui

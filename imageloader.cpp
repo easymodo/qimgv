@@ -17,7 +17,7 @@ void ImageLoader::open(QString path) {
     cache->unloadAll();
     if(!dm->existsInCurrentDir(path)) {
         dm->setFile(path);
-
+        reinitCache();
     } else {
         dm->setFile(path);
     }

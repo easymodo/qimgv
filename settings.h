@@ -43,6 +43,10 @@ public:
     bool reduceRamUsage();
     void setReduceRamUsage(bool mode);
 
+    bool playVideos();
+    void setPlayVideos(bool mode);
+    bool playVideoSounds();
+    void setPlayVideoSounds(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 120;

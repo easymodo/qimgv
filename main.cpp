@@ -1,7 +1,6 @@
 #include "core.h"
 #include "mainwindow.h"
 #include <QApplication>
-#include <QDebug>
 #include "settings.h"
 
 void saveSettings() {
@@ -13,7 +12,7 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationName("greenpepper software");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
-    QCoreApplication::setApplicationVersion("0.35.2");
+    QCoreApplication::setApplicationVersion("0.4");
 
     globalSettings = Settings::getInstance();
     atexit(saveSettings);

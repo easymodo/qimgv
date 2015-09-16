@@ -3,6 +3,7 @@
 
 #include "imagestatic.h"
 #include "imageanimated.h"
+#include "sourceContainers/video.h"
 #include "lib/imagelib.h"
 #include "settings.h"
 #include <QList>
@@ -27,8 +28,11 @@ public:
         delete thumbnail;
         thumbnail = new Thumbnail;
         thumbnail->image = getImg()->generateThumbnail();
-        if(getImg()->getType() == GIF)
+        if(info->getType() == GIF) {
             thumbnail->name = "[gif]";
+        } else if(info->getType() == VIDEO) {
+                thumbnail->name = "[webm]";
+        }
         if(thumbnail->image->size() == QSize(0,0)) {
             delete thumbnail->image;
             thumbnail->image = new QPixmap(":/images/res/error_no_image_100px.png");
@@ -68,8 +72,10 @@ public:
     }
 private:
     void init() {
-        if(ImageLib::guessType(path) == GIF) {
+        if(info->getType() == GIF) {
             img = new ImageAnimated(info);
+        } else if (info->getType() == VIDEO) {
+            img = new Video(info);
         } else {
             img = new ImageStatic(info);
         }
