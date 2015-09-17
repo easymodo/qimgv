@@ -55,6 +55,7 @@ void ImageAnimated::unload() {
 }
 
 void ImageAnimated::save(QString destinationPath) {
+    Q_UNUSED(destinationPath)
     //TODO
 }
 
@@ -173,6 +174,7 @@ void ImageAnimated::startAnimationTimer() {
 }
 
 void ImageAnimated::rotate(int grad) {
+    Q_UNUSED(grad)
     mutex.lock();
     if(isLoaded()) {
         //TODO
@@ -181,6 +183,7 @@ void ImageAnimated::rotate(int grad) {
 }
 
 void ImageAnimated::crop(QRect newRect) {
+    Q_UNUSED(newRect)
     mutex.lock();
     if(isLoaded()) {
         // TODO

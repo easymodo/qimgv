@@ -1,7 +1,7 @@
 #include "test_mapoverlay.h"
 
 #include <QtTest>
-#include "mapoverlay/mapoverlay.h"
+#include "../overlays/mapoverlay.h"
 
 QTEST_MAIN(Test_MapOverlay);
 

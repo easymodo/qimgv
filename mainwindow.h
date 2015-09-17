@@ -7,13 +7,13 @@
 #include <QAction>
 #include <QBoxLayout>
 #include "core.h"
-#include "infooverlay.h"
-#include "controlsoverlay.h"
+#include "overlays/infooverlay.h"
+#include "overlays/controlsoverlay.h"
 #include "settingsdialog.h"
-#include "imageviewer.h"
+#include "viewers/imageviewer.h"
 #include "viewers/videoplayer.h"
 #include "settings.h"
-#include "thumbnailstrip/thumbnailstrip.h"
+#include "thumbnailPanel/thumbnailstrip.h"
 
 QT_BEGIN_NAMESPACE
     class QAction;
@@ -86,8 +86,8 @@ private:
     textOverlay *infoOverlay, *messageOverlay;
     ControlsOverlay *controlsOverlay;
     ThumbnailStrip *panel;
-    QBoxLayout *layout;
     int currentViewer; // 0 = none; 1 = imageViewer; 2 = VideoPlayer;
+    QBoxLayout *layout;
     void init();
     void createActions();
     void createMenus();

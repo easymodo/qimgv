@@ -12,9 +12,9 @@
 #include <QTimer>
 #include <QTimeLine>
 #include <QPropertyAnimation>
-#include "customscene.h"
+#include "../customWidgets/customscene.h"
+#include "../sourceContainers/thumbnail.h"
 #include "thumbnaillabel.h"
-#include "thumbnail.h"
 
 class ThumbnailStrip : public QGraphicsView
 {

@@ -145,10 +145,10 @@ void Core::onLoadFinished(Image* img, int pos) {
     }
     currentImage = img;
 
-    if( currentImageAnimated = dynamic_cast<ImageAnimated*>(currentImage) ) {
+    if( (currentImageAnimated = dynamic_cast<ImageAnimated*>(currentImage)) != NULL ) {
         startAnimation();
     }
-    if (currentVideo = dynamic_cast<Video*>(currentImage)) {
+    if ( (currentVideo = dynamic_cast<Video*>(currentImage)) != NULL) {
         emit videoChanged(currentVideo->filePath());
     }
     if(!currentVideo && !currentVideo) { //static image
@@ -172,7 +172,7 @@ void Core::rescaleForZoom(QSize newSize) {
         } else {
             pixmap = new QPixmap(newSize);
             if( globalSettings->useFastScale() ) {
-                imgLib.fastScale(pixmap, currentImage->getPixmap(), newSize, true);
+                //imgLib.fastScale(pixmap, currentImage->getPixmap(), newSize, true);
             }
             else {
                 imgLib.bilinearScale(pixmap, currentImage->getPixmap(), newSize, true);

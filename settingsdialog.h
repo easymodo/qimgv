@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QColorDialog>
 #include <QDebug>
-#include "clickablelabel.h"
+#include "customWidgets/clickablelabel.h"
 
 namespace Ui {
 class SettingsDialog;

@@ -26,7 +26,7 @@ void ImageLoader::open(QString path) {
 }
 
 void ImageLoader::reinitCache() {
-    if(cache->directory() != dm->currentDirectory()) {
+    if(cache->currentDirectory() != dm->currentDirectory()) {
         cache->init(dm->currentDirectory(), dm->getFileList());
     }
 }

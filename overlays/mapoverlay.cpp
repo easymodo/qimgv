@@ -16,13 +16,13 @@ public:
     QRectF outerRect, innerRect;
     QRectF windowRect, drawingRect;
     MapOverlay* q;
-    QPropertyAnimation* opacityAnimation, *transitionAnimation;
-    float innerOffset;
-    float opacity;
-    
     int size;
-    MapOverlay::Location location;
+    float opacity;
+    float innerOffset;
     int margin;
+
+    QPropertyAnimation* opacityAnimation, *transitionAnimation;
+    MapOverlay::Location location;
 };
 
 MapOverlay::MapOverlayPrivate::MapOverlayPrivate(MapOverlay* qq)
@@ -186,6 +186,8 @@ int MapOverlay::y() const
 
 void MapOverlay::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event)
+
     QPainter painter(this);
     QBrush outerBrush(QColor(80, 80, 80, 130), Qt::SolidPattern);
     QBrush innerBrush(QColor(230,230,230,150), Qt::SolidPattern);

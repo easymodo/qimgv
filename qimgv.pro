@@ -17,55 +17,55 @@ QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    infooverlay.cpp \
+    overlays/infooverlay.cpp \
     fileinfo.cpp \
-    controlsoverlay.cpp \
-    imagestatic.cpp \
+    overlays/controlsoverlay.cpp \
+    sourceContainers/imagestatic.cpp \
     core.cpp \
     directorymanager.cpp \
     imageloader.cpp \
     opendialog.cpp \
     imagecache.cpp \
-    imageviewer.cpp \
+    viewers/imageviewer.cpp \
     sleep.cpp \
     settings.cpp \
     settingsdialog.cpp \
     lib/imagelib.cpp \
-    mapoverlay/mapoverlay.cpp \
-    cropoverlay.cpp \
-    thumbnailstrip/thumbnailstrip.cpp \
-    thumbnailstrip/thumbnaillabel.cpp \
-    image.cpp \
-    imageanimated.cpp \
-    thumbnailstrip/customscene.cpp \
-    clickablelabel.cpp \
-    thumbnail.cpp \
+    overlays/mapoverlay.cpp \
+    overlays/cropoverlay.cpp \
+    thumbnailPanel/thumbnailstrip.cpp \
+    thumbnailPanel/thumbnaillabel.cpp \
+    sourceContainers/image.cpp \
+    sourceContainers/imageanimated.cpp \
+    customWidgets/customscene.cpp \
+    customWidgets/clickablelabel.cpp \
+    sourceContainers/thumbnail.cpp \
     viewers/videoplayer.cpp \
     sourceContainers/video.cpp
 
 HEADERS  += mainwindow.h \
-    infooverlay.h \
+    overlays/infooverlay.h \
     fileinfo.h \
-    controlsoverlay.h \
-    imagestatic.h \
+    overlays/controlsoverlay.h \
+    sourceContainers/imagestatic.h \
     core.h \
     directorymanager.h \
     imageloader.h \
     opendialog.h \
     imagecache.h \
-    imageviewer.h \
+    viewers/imageviewer.h \
     settings.h \
     settingsdialog.h \
     lib/imagelib.h \
-    mapoverlay/mapoverlay.h \
-    cropoverlay.h \
-    thumbnailstrip/thumbnailstrip.h \
-    thumbnailstrip/thumbnaillabel.h \
-    image.h \
-    imageanimated.h \
-    thumbnailstrip/customscene.h \
-    clickablelabel.h \
-    thumbnail.h \
+    overlays/mapoverlay.h \
+    overlays/cropoverlay.h \
+    thumbnailPanel/thumbnailstrip.h \
+    thumbnailPanel/thumbnaillabel.h \
+    sourceContainers/image.h \
+    sourceContainers/imageanimated.h \
+    customWidgets/customscene.h \
+    customWidgets/clickablelabel.h \
+    sourceContainers/thumbnail.h \
     viewers/videoplayer.h \
     sourceContainers/video.h
 

@@ -12,7 +12,7 @@
 #include <qvideosurfaceformat.h>
 #include <QDebug>
 #include "../settings.h"
-#include "../thumbnailstrip/customscene.h"
+#include "../customWidgets/customscene.h"
 
 class VideoPlayer : public QGraphicsView
 {

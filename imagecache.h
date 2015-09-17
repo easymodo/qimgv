@@ -1,16 +1,16 @@
 #ifndef IMAGECACHE_H
 #define IMAGECACHE_H
 
-#include "imagestatic.h"
-#include "imageanimated.h"
+#include "sourceContainers/imagestatic.h"
+#include "sourceContainers/imageanimated.h"
 #include "sourceContainers/video.h"
+#include "sourceContainers/thumbnail.h"
 #include "lib/imagelib.h"
 #include "settings.h"
 #include <QList>
 #include <QtConcurrent>
 #include <QMutex>
 #include <ctime>
-#include "thumbnail.h"
 
 class CacheObject {
 public:
@@ -86,10 +86,10 @@ private:
         }
         return img;
     }
-    QString path;
-    FileInfo *info;
     Image *img;
     Thumbnail *thumbnail;
+    FileInfo *info;
+    QString path;
     QMutex mutex;
 };
 
@@ -113,14 +113,13 @@ public:
     void unloadAt(int pos);
     bool isLoaded(int pos);
     int currentlyLoadedCount();
-    QString currentPath();
 
 signals:
     void initialized(int count);
 
 public slots:
     const Thumbnail *thumbnailAt(int pos) const;
-    QString directory();
+    QString currentDirectory();
 
 private:
     QList<CacheObject*> *cachedImages;

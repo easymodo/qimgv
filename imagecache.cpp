@@ -20,7 +20,7 @@ void ImageCache::init(QString directory, QStringList list) {
     emit initialized(length());
 }
 
-QString ImageCache::directory() {
+QString ImageCache::currentDirectory() {
     return dir;
 }
 
@@ -62,10 +62,6 @@ int ImageCache::currentlyLoadedCount() {
     }
     unlock();
     return x;
-}
-
-QString ImageCache::currentPath() {
-
 }
 
 const Thumbnail* ImageCache::thumbnailAt(int pos) const {

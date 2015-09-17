@@ -87,6 +87,7 @@ void VideoPlayer::adjustVideoSize() {
 }
 
 void VideoPlayer::handlePlayerStateChange(QMediaPlayer::State state) {
+    Q_UNUSED(state)
 }
 
 void VideoPlayer::handleError() {

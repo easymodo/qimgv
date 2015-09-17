@@ -28,6 +28,7 @@ void Video::unload() {
 }
 
 void Video::save(QString destinationPath) {
+    Q_UNUSED(destinationPath)
 }
 
 void Video::save() {
@@ -114,13 +115,15 @@ QString Video::filePath() {
 }
 
 QImage* Video::rotated(int grad) {
-
+    Q_UNUSED(grad)
 }
 
 void Video::rotate(int grad) {
+    Q_UNUSED(grad)
 
 }
 
 void Video::crop(QRect newRect) {
+    Q_UNUSED(newRect)
 
 }

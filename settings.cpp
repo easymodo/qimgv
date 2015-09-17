@@ -112,7 +112,7 @@ int Settings::sortingMode() {
     return mode;
 }
 
-bool Settings::setSortingMode(int mode) {
+void Settings::setSortingMode(int mode) {
     if(mode < 0 || mode > 3) {
         qDebug() << "Invalid sorting mode (" << mode << "), resetting to default.";
         mode = 0;
@@ -170,7 +170,7 @@ bool Settings::usePreloader() {
     return mode;
 }
 
-bool Settings::setUsePreloader(bool mode) {
+void Settings::setUsePreloader(bool mode) {
     globalSettings->s.setValue("usePreloader", mode);
 }
 

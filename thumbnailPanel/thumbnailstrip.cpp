@@ -59,6 +59,8 @@ void ThumbnailStrip::selectThumbnail(int pos) {
 }
 
 void ThumbnailStrip::centerOnSmooth(const QPointF &pos) {
+    Q_UNUSED(pos)
+
     timeLine->setFrameRange(0, -1000);
     timeLine->setUpdateInterval(16);
     timeLine->start();

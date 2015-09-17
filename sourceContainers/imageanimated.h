@@ -1,7 +1,6 @@
 #ifndef IMAGEANIMATED_H
 #define IMAGEANIMATED_H
 
-#include "settings.h"
 #include "image.h"
 #include <QMovie>
 #include <QTimer>

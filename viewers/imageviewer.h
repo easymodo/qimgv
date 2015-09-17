@@ -14,12 +14,12 @@
 #include <QDebug>
 #include <QErrorMessage>
 #include <vector>
-#include "imagestatic.h"
-#include "mapoverlay/mapoverlay.h"
-#include "settings.h"
-#include "cropoverlay.h"
+#include "../sourceContainers/imagestatic.h"
+#include "../overlays/mapoverlay.h"
+#include "../settings.h"
+#include "../overlays/cropoverlay.h"
 #include <time.h>
-#include "lib/imagelib.h"
+#include "../lib/imagelib.h"
 
 #define FLT_EPSILON 1.19209290E-07F
 

@@ -7,7 +7,7 @@
 #include "directorymanager.h"
 #include "imageloader.h"
 #include "settings.h"
-#include "imageanimated.h"
+#include "sourceContainers/imageanimated.h"
 
 class Core : public QObject
 {

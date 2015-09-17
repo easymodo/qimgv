@@ -5,9 +5,9 @@
 ImageLib::ImageLib() {
 
 }
-
+/*
 void ImageLib::fastScale(QPixmap* dest, QPixmap* source, QSize destSize, bool smooth) {
-  /*  dest->fill(qRgba(0,0,0,0));
+    dest->fill(qRgba(0,0,0,0));
     QPainter painter(dest);
     painter.setRenderHint(QPainter::SmoothPixmapTransform, smooth);
     painter.drawImage(QRectF(QPointF(0,0),
@@ -15,8 +15,8 @@ void ImageLib::fastScale(QPixmap* dest, QPixmap* source, QSize destSize, bool sm
                       *source,
                       source->rect()
                       );
-                      */
 }
+*/
 
 void ImageLib::bilinearScale(QPixmap *dest, QPixmap* source, QSize destSize, bool smooth) {
     Qt::TransformationMode mode;

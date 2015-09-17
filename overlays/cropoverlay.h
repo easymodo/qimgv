@@ -40,10 +40,10 @@ private:
     bool clear, moving;
     float scale;
     QBrush brushDark, brushLightDark, brushGray;
-    mouseDragMode dragMode;
     QRect *handles[8];
     int handleSize;
     QImage *drawBuffer;
+    mouseDragMode dragMode;
     QPen selectionOutlinePen;
 
     QPoint setInsidePoint(QPoint, QRect);
@@ -54,7 +54,7 @@ private:
     void drawHandles(QPainter*);
     void updateHandlePositions();
     void prepareDrawElements();
-    mouseDragMode detectClickTarget(QPoint pos);
+    void detectClickTarget(QPoint pos);
     bool resizeSelection(QPoint d);
 public slots:
     void setImageArea(QRect area, float _scale);

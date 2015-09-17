@@ -19,7 +19,7 @@ public:
     QStringList supportedFormats();
     QString supportedFormatsString();
     int sortingMode();
-    bool setSortingMode(int);
+    void setSortingMode(int);
 
     bool useFastScale();
     void setUseFastScale(bool mode);
@@ -30,7 +30,7 @@ public:
     unsigned int thumbnailSize();
     void setThumbnailSize(unsigned int size);
     bool usePreloader();
-    bool setUsePreloader(bool mode);
+    void setUsePreloader(bool mode);
     QColor backgroundColor();
     void setBackgroundColor(QColor color);
     bool fullscreenMode();

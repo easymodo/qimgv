@@ -1,7 +1,6 @@
 #ifndef QIMAGESTATIC_H
 #define QIMAGESTATIC_H
 
-#include "settings.h"
 #include "image.h"
 #include <QImage>
 

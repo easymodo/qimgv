@@ -1,8 +1,9 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "lib/imagelib.h"
-#include <fileinfo.h>
+#include "../lib/imagelib.h"
+#include "../fileinfo.h"
+#include "../settings.h"
 #include <QObject>
 #include <QString>
 #include <QIODevice>

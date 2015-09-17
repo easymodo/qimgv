@@ -5,7 +5,7 @@
 #include "directorymanager.h"
 #include "imagecache.h"
 #include "settings.h"
-#include "imagestatic.h"
+#include "sourceContainers/imagestatic.h"
 #include <QtConcurrent>
 #include <time.h>
 #include <QMutex>

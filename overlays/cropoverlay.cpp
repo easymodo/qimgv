@@ -205,7 +205,7 @@ QRect CropOverlay::placeInside(QRect what, QRect where) {
     return what;
 }
 
-mouseDragMode CropOverlay::detectClickTarget(QPoint pos) {
+void CropOverlay::detectClickTarget(QPoint pos) {
     if(handles[0]->contains(pos)) dragMode = DRAG_TOPLEFT;
     else if(handles[1]->contains(pos)) dragMode = DRAG_TOPRIGHT;
     else if(handles[2]->contains(pos)) dragMode = DRAG_BOTTOMLEFT;
@@ -242,6 +242,7 @@ bool CropOverlay::resizeSelection(QPoint d) {
         case DRAG_BOTTOM:
             selectionRect.setBottom(selectionRect.bottom()+d.y());
             break;
+        default: break;
     }
     if(!selectionRect.isValid()) {
         selectionRect = tmp;
@@ -316,6 +317,7 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void CropOverlay::mouseReleaseEvent(QMouseEvent *event) {
+    Q_UNUSED(event)
     dragMode = NO_DRAG;
 }
 

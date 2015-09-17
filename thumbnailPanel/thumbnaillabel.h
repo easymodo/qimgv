@@ -8,7 +8,7 @@
 #include <QDebug>
 #include <QLinearGradient>
 #include <QPropertyAnimation>
-#include "thumbnail.h"
+#include "../sourceContainers/thumbnail.h"
 #include "../settings.h"
 
 enum loadState { EMPTY, LOADING, LOADED };
@@ -38,13 +38,13 @@ public:
 private:
     const int SHADOW_HEIGHT = 10;
     bool hovered, loaded;
+    bool showLabel;
     const Thumbnail *thumbnail;
-    int borderW, borderH, thumbnailSize;
     bool highlighted;
+    int borderW, borderH, thumbnailSize;
     QString infoString;
     QLinearGradient *shadowGradient;
     QRectF highlightRect, shadowRect, labelRect;
-    bool showLabel;
     QFont font;
 
 protected:
