@@ -12,7 +12,7 @@ class ControlsOverlay : public QWidget
     Q_OBJECT
 public:
     explicit ControlsOverlay(QWidget *parent = 0);
-    void updateSize();
+    void updateSize(QSize containerSz);
 
 protected:
     void paintEvent(QPaintEvent *event);

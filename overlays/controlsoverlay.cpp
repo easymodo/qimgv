@@ -21,8 +21,8 @@ void ControlsOverlay::paintEvent(QPaintEvent *event) {
     painter.drawLine(QLine(44,15,54,5)); //cross 2
 }
 
-void ControlsOverlay::updateSize() {
-    this->setGeometry(parentWidget()->width()-60,0,60,20);
+void ControlsOverlay::updateSize(QSize containerSz) {
+    this->setGeometry(containerSz.width()-60,0,60,20);
 }
 
 void ControlsOverlay::mouseReleaseEvent(QMouseEvent *event) {

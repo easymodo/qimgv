@@ -51,6 +51,7 @@ void MainWindow::init() {
             this, SLOT(readSettings()));
 
     enableImageViewer();
+
     connect(this, SIGNAL(resized(QSize)), panel, SLOT(parentResized(QSize)));
 
     connect(this, SIGNAL(signalNextImage()),
@@ -119,6 +120,7 @@ void MainWindow::enableImageViewer() {
         layout->addWidget(imageViewer);
 
         imageViewer->show();
+        qDebug() << "ff" << layout->itemAt(0)->widget()->width();
 
         connect(imageViewer, SIGNAL(scalingRequested(QSize)),
                 core, SLOT(rescaleForZoom(QSize)), Qt::UniqueConnection);
@@ -159,6 +161,7 @@ void MainWindow::enableImageViewer() {
 
         connect(imageViewer, SIGNAL(sendDoubleClick()),
                 this, SLOT(slotTriggerFullscreen()), Qt::UniqueConnection);
+
         updateOverlays();
         currentViewer = 1;
     }
@@ -515,8 +518,8 @@ void MainWindow::resizeEvent(QResizeEvent* event) {
 }
 
 void MainWindow::updateOverlays() {
-    controlsOverlay->updateSize();
-    infoOverlay->updateWidth();
+    controlsOverlay->updateSize(this->centralWidget()->size());
+    infoOverlay->updateWidth(this->centralWidget()->width());
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {

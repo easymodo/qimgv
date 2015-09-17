@@ -12,7 +12,7 @@ class textOverlay : public QWidget
 public:
     textOverlay(QWidget *parent);
     void setText(QString text);
-    void updateWidth();
+    void updateWidth(int maxWidth);
 
 private:
     QFont font;

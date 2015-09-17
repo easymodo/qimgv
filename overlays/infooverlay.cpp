@@ -11,8 +11,8 @@ textOverlay::textOverlay(QWidget *parent) :QWidget(parent) {
     textShadowColor = new QColor(0,0,0,150);
     this->setFixedHeight(20);
     this->hide();
-    updateWidth();
-    updatePosition();
+    //updateWidth();
+    //updatePosition();
 }
 
 void textOverlay::paintEvent(QPaintEvent *event) {
@@ -32,8 +32,8 @@ void textOverlay::setText(QString text) {
     this->update();
 }
 
-void textOverlay::updateWidth() {
-    this->setMinimumWidth(parentWidget()->width()-60);
+void textOverlay::updateWidth(int maxWidth) {
+    this->setMinimumWidth(maxWidth-60);
 }
 
 void textOverlay::updatePosition() {
