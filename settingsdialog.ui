@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>565</width>
-    <height>329</height>
+    <width>590</width>
+    <height>347</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -40,8 +40,8 @@
   <widget class="QPushButton" name="Cancel">
    <property name="geometry">
     <rect>
-     <x>480</x>
-     <y>290</y>
+     <x>510</x>
+     <y>310</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -53,8 +53,8 @@
   <widget class="QPushButton" name="OK">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>290</y>
+     <x>350</x>
+     <y>310</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -68,8 +68,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>541</width>
-     <height>271</height>
+     <width>571</width>
+     <height>291</height>
     </rect>
    </property>
    <property name="tabPosition">
@@ -79,7 +79,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideNone</enum>
@@ -224,7 +224,7 @@
     <widget class="QCheckBox" name="playVideosCheckBox">
      <property name="geometry">
       <rect>
-       <x>310</x>
+       <x>320</x>
        <y>20</y>
        <width>211</width>
        <height>21</height>
@@ -237,7 +237,7 @@
     <widget class="QCheckBox" name="playSoundsCheckBox">
      <property name="geometry">
       <rect>
-       <x>310</x>
+       <x>320</x>
        <y>60</y>
        <width>181</width>
        <height>21</height>
@@ -252,22 +252,53 @@
       <rect>
        <x>10</x>
        <y>180</y>
-       <width>101</width>
+       <width>151</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>FFmpeg exe:</string>
+      <string>FFmpeg executable:</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="ffmpegLineEdit">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>170</x>
        <y>180</y>
-       <width>401</width>
+       <width>381</width>
        <height>21</height>
       </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>210</y>
+       <width>521</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+       <kerning>true</kerning>
+      </font>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;FFmpeg is required for webm thumbnail generation. If you are on windows, get it &lt;a href=&quot;http://ffmpeg.zeranoe.com/builds/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="openExternalLinks">
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
@@ -461,8 +492,8 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>290</y>
+     <x>430</x>
+     <y>310</y>
      <width>71</width>
      <height>28</height>
     </rect>

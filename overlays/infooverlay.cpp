@@ -6,10 +6,10 @@ textOverlay::textOverlay(QWidget *parent) :QWidget(parent) {
     currentText = "No file opened.";
     font.setPixelSize(13);
     drawRect.setTopLeft(QPoint(4,2));
-    drawRect.setBottomRight(QPoint(950,17));
+    drawRect.setBottomRight(QPoint(950,19));
     textColor = new QColor(255,255,255,255);
     textShadowColor = new QColor(0,0,0,150);
-    this->setFixedHeight(19);
+    this->setFixedHeight(20);
     this->hide();
     updateWidth();
     updatePosition();

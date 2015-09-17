@@ -66,11 +66,16 @@ void ThumbnailLabel::setOpacityAnimated(qreal amount, int speed) {
     anim->start(QAbstractAnimation::DeleteWhenStopped);
 }
 void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    //thumbnail pixmap
     QGraphicsPixmapItem::paint(painter,option,widget);
+
+    //colored bar and shadow on the top
     if(isHighlighted()) {
         painter->fillRect(highlightRect, *highlightColor);
         painter->fillRect(shadowRect, *shadowGradient);
     }
+
+    //label
     if(showLabel) {
         painter->setFont(font);
         QFontMetrics fm(font);
