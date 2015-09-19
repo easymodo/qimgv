@@ -29,14 +29,15 @@ public:
         thumbnail = new Thumbnail;
         thumbnail->image = getImg()->generateThumbnail();
         if(info->getType() == GIF) {
-            thumbnail->name = "[gif]";
+            thumbnail->label = "[gif]";
         } else if(info->getType() == VIDEO) {
-                thumbnail->name = "[webm]";
+                thumbnail->label = "[webm]";
         }
         if(thumbnail->image->size() == QSize(0,0)) {
             delete thumbnail->image;
             thumbnail->image = new QPixmap(":/images/res/error_no_image_100px.png");
         }
+        thumbnail->name = info->getFileName();
         mutex.unlock();
     }
     const Thumbnail* getThumbnail() {

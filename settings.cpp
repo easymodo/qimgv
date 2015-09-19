@@ -183,6 +183,15 @@ void Settings::setBackgroundColor(QColor color) {
     globalSettings->s.setValue("bgColor", color);
 }
 
+QColor Settings::accentColor() {
+    QColor color = globalSettings->s.value("accentColor", QColor(201,165,0)).value<QColor>();
+    return color;
+}
+
+void Settings::setAccentColor(QColor color) {
+    globalSettings->s.setValue("accentColor", color);
+}
+
 bool Settings::fullscreenMode() {
     bool mode = true;
     mode = globalSettings->s.value("openInFullscreen", true).toBool();
@@ -200,6 +209,15 @@ bool Settings::menuBarHidden() {
 
 void Settings::setMenuBarHidden(bool mode) {
     globalSettings->s.setValue("hideMenuBar", mode);
+}
+
+bool Settings::showThumbnailLabels() {
+    bool mode = globalSettings->s.value("showThumbnailLabels", true).toBool();
+    return mode;
+}
+
+void Settings::setShowThumbnailLabels(bool mode) {
+    globalSettings->s.setValue("showThumbnailLabels", mode);
 }
 
 /* 0: all

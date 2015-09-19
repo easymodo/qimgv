@@ -79,7 +79,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideNone</enum>
@@ -448,7 +448,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>50</y>
+       <y>100</y>
        <width>141</width>
        <height>31</height>
       </rect>
@@ -461,7 +461,7 @@
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>50</y>
+       <y>100</y>
        <width>101</width>
        <height>28</height>
       </rect>
@@ -487,6 +487,51 @@
       </property>
      </item>
     </widget>
+    <widget class="ClickableLabel" name="accentColorLabel">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>60</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="accentColorTextLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>141</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Accent color:</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="thumbnailLabelsCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>150</y>
+       <width>271</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Show thumbnail labels</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QPushButton" name="pushButton">
@@ -508,6 +553,9 @@
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header>customWidgets/clickablelabel.h</header>
+   <slots>
+    <signal>clicked()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -581,12 +629,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>271</x>
-     <y>72</y>
+     <x>273</x>
+     <y>115</y>
     </hint>
     <hint type="destinationlabel">
      <x>162</x>
-     <y>92</y>
+     <y>117</y>
     </hint>
    </hints>
   </connection>
@@ -597,12 +645,28 @@
    <slot>bgColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>142</x>
-     <y>158</y>
+     <x>172</x>
+     <y>75</y>
     </hint>
     <hint type="destinationlabel">
      <x>30</x>
      <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>accentColorLabel</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>accentColorDialog()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>191</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>33</x>
+     <y>313</y>
     </hint>
    </hints>
   </connection>
@@ -611,5 +675,6 @@
   <slot>applySettingsAndClose()</slot>
   <slot>applySettings()</slot>
   <slot>bgColorDialog()</slot>
+  <slot>accentColorDialog()</slot>
  </slots>
 </ui>

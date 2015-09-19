@@ -181,7 +181,7 @@ void ThumbnailStrip::wheelEvent(QWheelEvent *event) {
         horizontalScrollBar()->setValue(timeLine->endFrame());
     }
     timeLine->setFrameRange(horizontalScrollBar()->value(),
-                            horizontalScrollBar()->value()-event->angleDelta().ry()*2);
+                            horizontalScrollBar()->value()-event->angleDelta().ry()*2.5);
     timeLine->setUpdateInterval(16);
     timeLine->start();
 

@@ -120,7 +120,6 @@ void MainWindow::enableImageViewer() {
         layout->addWidget(imageViewer);
 
         imageViewer->show();
-        qDebug() << "ff" << layout->itemAt(0)->widget()->width();
 
         connect(imageViewer, SIGNAL(scalingRequested(QSize)),
                 core, SLOT(rescaleForZoom(QSize)), Qt::UniqueConnection);

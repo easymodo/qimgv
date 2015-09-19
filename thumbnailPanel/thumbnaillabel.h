@@ -32,20 +32,21 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setHighlighted(bool x);
     bool isHighlighted();
-    QColor *highlightColor, *outlineColor, *highlightColorBorder;
     void setOpacityAnimated(qreal amount, int speed);
 
 private:
     const int SHADOW_HEIGHT = 10;
     bool hovered, loaded;
-    bool showLabel;
+    bool showLabel, showName;
     const Thumbnail *thumbnail;
     bool highlighted;
     int borderW, borderH, thumbnailSize;
     QString infoString;
     QLinearGradient *shadowGradient;
-    QRectF highlightRect, shadowRect, labelRect;
+    QRectF highlightRect, shadowRect, labelRect, nameRect;
+    QColor *highlightColor, *outlineColor, *highlightColorBorder, *nameColor;
     QFont font;
+    QFontMetrics *fm;
 
 protected:
  QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const Q_DECL_OVERRIDE;

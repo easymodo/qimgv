@@ -8,7 +8,7 @@ class Thumbnail
 {
 public:
     Thumbnail();
-    QString name;
+    QString name, label;
     QPixmap *image;
 };
 

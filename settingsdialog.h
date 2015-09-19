@@ -19,7 +19,7 @@ public:
     ~SettingsDialog();
 
 private:
-    QPalette bgLabelPalette;
+    QPalette bgLabelPalette, accentLabelPalette;
     void readSettings();
     Ui::SettingsDialog *ui;
     static constexpr int thumbSizeSmall = 100,
@@ -34,6 +34,7 @@ private slots:
     void applySettingsAndClose();
     void bgColorDialog();
 
+    void accentColorDialog();
 signals:
     void settingsChanged();
 };

@@ -11,6 +11,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
                          QCoreApplication::applicationVersion());
     setWindowIcon(QIcon(":/images/res/pepper32.png"));
     ui->bgColorLabel->setAutoFillBackground(true);
+    ui->accentColorLabel->setAutoFillBackground(true);
     connect(this, SIGNAL(settingsChanged()),
             globalSettings, SLOT(sendChangeNotification()));
     readSettings();
@@ -28,7 +29,6 @@ void SettingsDialog::readSettings() {
     // ##### loader #####
     ui->preloaderCheckBox->setChecked(globalSettings->usePreloader());
     ui->reduceRamCheckBox->setChecked(globalSettings->reduceRamUsage());
-
 
     // ##### cache #####
     //ui->cacheSlider->setValue(globalSettings->s.value("cacheSize",64).toInt());
@@ -52,11 +52,17 @@ void SettingsDialog::readSettings() {
     ui->scalingQualityComboBox->setDisabled(true);
 
     ui->fullscreenCheckBox->setChecked(globalSettings->fullscreenMode());
+    ui->thumbnailLabelsCheckBox->setChecked(globalSettings->showThumbnailLabels());
 
     //bg color
     QColor bgColor = globalSettings->backgroundColor();
     bgLabelPalette.setColor(QPalette::Window, bgColor);
     ui->bgColorLabel->setPalette(bgLabelPalette);
+
+    //accent color
+    QColor accentColor = globalSettings->accentColor();
+    accentLabelPalette.setColor(QPalette::Window, accentColor);
+    ui->accentColorLabel->setPalette(accentLabelPalette);
 
     // thumbnail size
     // maybe use slider instead of combobox?
@@ -79,6 +85,7 @@ void SettingsDialog::readSettings() {
 
 void SettingsDialog::applySettings() {
     //globalSettings->s.setValue("cacheSize", ui->cacheSlider->value());
+    globalSettings->setShowThumbnailLabels(ui->thumbnailLabelsCheckBox->isChecked());
     globalSettings->setUsePreloader(ui->preloaderCheckBox->isChecked());
     globalSettings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
     globalSettings->setImageFitMode(ui->fitModeComboBox->currentIndex());
@@ -95,6 +102,7 @@ void SettingsDialog::applySettings() {
         globalSettings->setUseFastScale(false);
     }
     globalSettings->setBackgroundColor(bgLabelPalette.color(QPalette::Window));
+    globalSettings->setAccentColor(accentLabelPalette.color(QPalette::Window));
 
     if(ui->thumbSizeComboBox->currentIndex() == 0) {
         globalSettings->setThumbnailSize(thumbSizeSmall);
@@ -123,6 +131,16 @@ void SettingsDialog::bgColorDialog() {
                                      "Background color.");
     bgLabelPalette.setColor(QPalette::Window, newColor);
     ui->bgColorLabel->setPalette(bgLabelPalette);
+}
+
+void SettingsDialog::accentColorDialog() {
+    QColorDialog *colorDialog = new QColorDialog(this);
+    QColor newColor;
+    newColor = colorDialog->getColor(accentLabelPalette.color(QPalette::Window),
+                                     this,
+                                     "Accent color.");
+    accentLabelPalette.setColor(QPalette::Window, newColor);
+    ui->accentColorLabel->setPalette(accentLabelPalette);
 }
 
 SettingsDialog::~SettingsDialog() {

@@ -33,6 +33,8 @@ public:
     void setUsePreloader(bool mode);
     QColor backgroundColor();
     void setBackgroundColor(QColor color);
+    QColor accentColor();
+    void setAccentColor(QColor color);
     bool fullscreenMode();
     void setFullscreenMode(bool mode);
     bool menuBarHidden();
@@ -52,6 +54,8 @@ public:
 
     QString ffmpegExecutable();
     void setFfmpegExecutable(QString path);
+    bool showThumbnailLabels();
+    void setShowThumbnailLabels(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 120;
