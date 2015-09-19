@@ -20,7 +20,7 @@ void Core::initVariables() {
     imageLoader = new ImageLoader(dirManager);
 }
 
-// misc connections not related to gui
+// misc connections not related to gu
 void Core::connectSlots() {
     connect(imageLoader, SIGNAL(loadStarted()),
             this, SLOT(updateInfoString()));
