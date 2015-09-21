@@ -39,6 +39,7 @@ void ImageViewer::initOverlays() {
         drawingRect.moveTo(x, y);
         alignImage();
         update();
+        updateMap();
     });
 
     cropOverlay = new CropOverlay(this);
@@ -191,6 +192,7 @@ void ImageViewer::mousePressEvent(QMouseEvent* event) {
     if(!isDisplaying()) {
         return;
     }
+    mapOverlay->enableVisibility(true);
     cursorTimer->stop();
     setCursor(QCursor(Qt::ArrowCursor));
     mouseMoveStartPos = event->pos();
@@ -267,6 +269,8 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent* event) {
         //updateMap();
         //update();
     }
+    mapOverlay->enableVisibility(false);
+    updateMap();
 }
 
 void ImageViewer::fitWidth() {

@@ -530,7 +530,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event) {
     if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
-        if(event->pos().y() > height()-50 && event->pos().x() < width()-130 && panel) {
+        if(event->pos().y() > height()-50 && event->pos().x() < width()-170 && panel) {
             panel->show();
         }
     }

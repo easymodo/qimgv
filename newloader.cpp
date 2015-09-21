@@ -103,7 +103,7 @@ void NewLoader::loadNext() {
     qDebug() << "#####################";
     qDebug() << "load start " << loadTarget;
 
-    if(current != loadTarget && dm->peekNext(1) != dm->currentFilePos()) {
+    if(dm->peekNext(1) != dm->currentFilePos()) {
 
         //freePrev();
 

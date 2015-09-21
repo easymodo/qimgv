@@ -26,7 +26,7 @@ public:
 };
 
 MapOverlay::MapOverlayPrivate::MapOverlayPrivate(MapOverlay* qq)
-    : q(qq), size(100), opacity(0.0f), innerOffset(-1), margin(10)
+    : q(qq), size(140), opacity(0.0f), innerOffset(-1), margin(20)
 {
     outlinePen.setColor(QColor(40,40,40,255));
     innerPen.setColor(QColor(100,100,100,180));
@@ -83,17 +83,19 @@ void MapOverlay::MapOverlayPrivate::moveMainImage(float xPos, float yPos)
 }
 
 MapOverlay::MapOverlay(QWidget *parent) : QWidget(parent),
-d(new MapOverlayPrivate(this))
+    visibilityEnabled(true),
+    d(new MapOverlayPrivate(this))
 {
+    this->setMouseTracking(true);
     d->opacityAnimation = new QPropertyAnimation(this, "opacity");
     d->opacityAnimation->setEasingCurve(QEasingCurve::InQuint);
-    d->opacityAnimation->setDuration(10);
+    d->opacityAnimation->setDuration(0);
     
     d->transitionAnimation = new QPropertyAnimation(this, "y");
     d->transitionAnimation->setDuration(200);
     d->transitionAnimation->setEasingCurve(QEasingCurve::OutExpo);
 
-
+    this->setVisible(true);
     
     setCursor(Qt::OpenHandCursor);
  }
@@ -118,17 +120,20 @@ float MapOverlay::opacity() const
     return d->opacity;
 }
 
+bool MapOverlay::enableVisibility(bool mode) {
+    visibilityEnabled = mode;
+}
+
 void MapOverlay::setOpacity(float opacity)
 {
     d->opacity = opacity;
     update();
-    setVisible(opacity != 0.0f);
 }
 
 void MapOverlay::animateVisible(bool isVisible)
 {
-    if (QWidget::isVisible() == isVisible) // already in this state
-        return;
+    //if (QWidget::isVisible() == isVisible) // already in this state
+    //    return;
 
     d->opacityAnimation->setEndValue(1.0f * isVisible);
     
@@ -166,7 +171,7 @@ void MapOverlay::animateVisible(bool isVisible)
     }
     
     d->opacityAnimation->start();
-    d->transitionAnimation->start();
+    //d->transitionAnimation->start();
 }
 
 void MapOverlay::resize(int size)
@@ -250,7 +255,7 @@ void MapOverlay::updateMap(const QRectF& drawingRect)
     QRectF windowRect = parentWidget()->rect();
     
     bool isVisible = !contains(drawingRect, windowRect);
-    animateVisible(isVisible);
+    animateVisible(isVisible && visibilityEnabled);
     
     /**
      * Always calculate this first for properly map location
@@ -294,7 +299,10 @@ void MapOverlay::mousePressEvent(QMouseEvent* event)
 void MapOverlay::mouseMoveEvent(QMouseEvent* event)
 {
     QWidget::mouseMoveEvent(event);
-    d->moveMainImage(event->x(), event->y());
+
+    if(event->buttons() & Qt::LeftButton) {
+        d->moveMainImage(event->x(), event->y());
+    }
     event->accept();
 }
 
@@ -302,12 +310,24 @@ void MapOverlay::mouseReleaseEvent(QMouseEvent* event)
 {
     QWidget::mouseReleaseEvent(event);
     setCursor(Qt::OpenHandCursor);
+    event->accept();
 }
 
-void MapOverlay::resizeEvent(QResizeEvent* event)
-{
+void MapOverlay::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
     updatePosition();
+}
+
+void MapOverlay::leaveEvent(QEvent *event) {
+    this->enableVisibility(false);
+    this->animateVisible(false);
+    this->update();
+}
+
+void MapOverlay::enterEvent(QEvent *event) {
+    this->enableVisibility(true);
+    this->animateVisible(true);
+    this->update();
 }
 
 int MapOverlay::size() const

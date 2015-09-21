@@ -29,6 +29,8 @@ public:
     
     void setOpacity(float opacity);
     float opacity() const;
+
+    bool enableVisibility(bool);
     
     void setLocation(Location l);
     Location location() const;
@@ -64,8 +66,11 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent* event);
     virtual void mouseReleaseEvent(QMouseEvent* event);
     virtual void resizeEvent(QResizeEvent* event);
+    virtual void leaveEvent(QEvent *);
+    virtual void enterEvent(QEvent *);
     
 private:
+    bool visibilityEnabled;
     class MapOverlayPrivate;
     MapOverlayPrivate* d;
 };

@@ -55,8 +55,6 @@ void Core::updateInfoString() {
                       "/" +
                       QString::number(dirManager->fileNameList.length()) +
                       " ]   ");
-
-    /*
     if(currentImage) {
         infoString.append(currentImage->getInfo()->getFileName() + "  ");
         infoString.append("(" +
@@ -66,7 +64,6 @@ void Core::updateInfoString() {
                           "  ");
         infoString.append(QString::number(currentImage->getInfo()->getFileSize()) + " MB)");
     }
-    */
 
     infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
 
