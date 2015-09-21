@@ -7,7 +7,8 @@ Video::Video(QString _path) {
     loaded = true;
     type = GIF;
     extension = NULL;
-    info=NULL;
+    info=new FileInfo(_path, this);
+    qDebug() << "image constructor: " << QThread::currentThread();
 }
 
 Video::Video(FileInfo *_info) {

@@ -8,9 +8,10 @@ ImageStatic::ImageStatic(QString _path) {
     image = NULL;
     type = STATIC;
     extension = NULL;
-    info=NULL;
+    info=new FileInfo(path, this);
     sem = new QSemaphore(1);
     unloadRequested = false;
+    qDebug() << "image constructor: " << QThread::currentThread();
 }
 
 ImageStatic::ImageStatic(FileInfo *_info) {
@@ -54,12 +55,9 @@ void ImageStatic::load()
 
 void ImageStatic::unload() {
     int z = sem->available();
-    qDebug() << z << ": " << info->getFileName();
     if(z == 0) {
         unloadRequested = true;
-        qDebug() << "set unload request " << info->getFileName();
     } else {
-        qDebug() << "unloading immediately " << info->getFileName();
         unloadBlocking();
     }
 }
@@ -83,7 +81,6 @@ void ImageStatic::save(QString destinationPath) {
 }
 
 void ImageStatic::lock() {
-    qDebug() << "locking..";
     sem->acquire(1);
 }
 

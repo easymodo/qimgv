@@ -10,7 +10,7 @@ class LoadHelper : public QObject
 {
     Q_OBJECT
 public:
-    explicit LoadHelper(ImageCache *_cache, QThread *mainThread, QObject *parent = 0);
+    explicit LoadHelper(ImageCache *_cache, QThread *mainThread);
 
 
     void setTarget(int pos, QString);

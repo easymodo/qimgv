@@ -29,6 +29,7 @@ public:
     virtual QPixmap* generateThumbnail() = 0;
     void attachInfo(FileInfo*);
     FileInfo* getInfo();
+    void deleteSelf();
 
     virtual void crop(QRect newRect) = 0;
     virtual void rotate(int grad) = 0;

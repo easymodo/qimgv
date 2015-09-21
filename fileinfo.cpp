@@ -3,7 +3,7 @@
 FileInfo::FileInfo() : type(NONE) {
 }
 
-FileInfo::FileInfo(QString path) : type(NONE) {
+FileInfo::FileInfo(QString path, QObject *parent) : QObject(parent), type(NONE) {
     setFile(path);
 }
 

@@ -10,11 +10,11 @@
 
 enum fileType { NONE, STATIC, GIF, VIDEO };
 
-class FileInfo
+class FileInfo : public QObject
 {
 public:
     FileInfo();
-    FileInfo(QString path);
+    FileInfo(QString path, QObject *parent = 0);
     ~FileInfo();
     
     /* size in MB*/

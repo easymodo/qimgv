@@ -5,7 +5,6 @@
 #include <QWidget>
 #include <QFileDialog>
 #include "directorymanager.h"
-#include "imageloader.h"
 #include "newloader.h"
 #include "settings.h"
 #include "sourceContainers/imageanimated.h"
@@ -27,6 +26,7 @@ private:
     Image* currentImage;
     ImageAnimated* currentImageAnimated;
     Video* currentVideo;
+    QMutex mutex;
     ImageCache *cache;
 
 private slots:

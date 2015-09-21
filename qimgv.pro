@@ -23,7 +23,6 @@ SOURCES += main.cpp\
     sourceContainers/imagestatic.cpp \
     core.cpp \
     directorymanager.cpp \
-    imageloader.cpp \
     opendialog.cpp \
     imagecache.cpp \
     viewers/imageviewer.cpp \
@@ -53,7 +52,6 @@ HEADERS  += mainwindow.h \
     sourceContainers/imagestatic.h \
     core.h \
     directorymanager.h \
-    imageloader.h \
     opendialog.h \
     imagecache.h \
     viewers/imageviewer.h \

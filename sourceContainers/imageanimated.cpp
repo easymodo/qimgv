@@ -2,18 +2,19 @@
 #include <time.h>
 
 ImageAnimated::ImageAnimated(QString _path) {
-    timer = NULL;
+    timer = new QTimer(this);
     path = _path;
     loaded = false;
-    movie = new QMovie();
+    movie = new QMovie(this);
     type = STATIC;
-    info=NULL;
+    info=new FileInfo(path, this);
+    qDebug() << "image constructor: " << QThread::currentThread();
 }
 
 ImageAnimated::ImageAnimated(FileInfo *_info) {
-    timer = NULL;
+    timer = new QTimer(this);
     loaded = false;
-    movie = new QMovie();
+    movie = new QMovie(this);
     type = STATIC;
     info=_info;
     path=info->getFilePath();
@@ -34,7 +35,7 @@ void ImageAnimated::load()
         return;
     }
     if(!info)
-        info = new FileInfo(path);
+        info = new FileInfo(path, this);
     guessType();
     movie->setFormat("GIF");
     movie->setFileName(path);
@@ -48,7 +49,7 @@ void ImageAnimated::unload() {
     if(isLoaded()) {
         animationStop();
         delete movie;
-        movie = new QMovie();
+        movie = new QMovie(this);
         loaded = false;
     }
     mutex.unlock();
@@ -141,20 +142,19 @@ QSize ImageAnimated::size() {
 void ImageAnimated::animationStart() {
     if(isLoaded()) {
         animationStop();
-        timer = new QTimer(0);
         timer->setSingleShot(true);
-        connect(timer, SIGNAL(timeout()), this, SLOT(nextFrame()), Qt::DirectConnection);
+        connect(timer, SIGNAL(timeout()), this, SLOT(nextFrame()));
         startAnimationTimer();
     }
 }
 
 void ImageAnimated::animationStop() {
     if(isLoaded() && timer) {
-        if(timer->isActive())
+        qDebug() << "timer is in:" << timer->thread();
+        if(timer->isActive()) {
             timer->stop();
-        disconnect(timer, SIGNAL(timeout()), this, SLOT(nextFrame()));
-        delete timer;
-        timer = NULL;
+            disconnect(timer, SIGNAL(timeout()), this, SLOT(nextFrame()));
+        }
     }
 }
 

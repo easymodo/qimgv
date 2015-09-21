@@ -65,18 +65,19 @@ public:
         mutex.unlock();
     }
     void unload() {
+        qDebug() << "unload";
         int time = clock();
-        //mutex.lock();
+        mutex.lock();
         if(img) {
             delete img;
             img = NULL;
         }
-        //mutex.unlock();
-        qDebug() << "unload:" << clock() - time;
+        mutex.unlock();
     }
     void setImage(Image* _img) {
         img = _img;
         info = img->getInfo();
+        qDebug() << img->thread();
     }
     Image* image() {
         if(!img) qDebug() << "returning null 2";

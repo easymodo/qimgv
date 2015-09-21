@@ -48,6 +48,7 @@ signals:
     void loadFinished(Image*, int pos);
     void startPreload(int);
     void thumbnailReady(int, const Thumbnail*);
+    void startLoad();
 
 private slots:
     void setLoadTarget(int);

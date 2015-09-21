@@ -55,7 +55,9 @@ void Core::updateInfoString() {
                       "/" +
                       QString::number(dirManager->fileNameList.length()) +
                       " ]   ");
-    /*if(currentImage) {
+
+    /*
+    if(currentImage) {
         infoString.append(currentImage->getInfo()->getFileName() + "  ");
         infoString.append("(" +
                           QString::number(currentImage->width()) +
@@ -64,8 +66,10 @@ void Core::updateInfoString() {
                           "  ");
         infoString.append(QString::number(currentImage->getInfo()->getFileSize()) + " MB)");
     }
-    //infoString.append(" >>" + QString::number(cache->currentlyLoaded()));
     */
+
+    infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
+
     emit infoStringChanged(infoString);
 }
 
@@ -136,6 +140,8 @@ void Core::loadImageByPos(int pos) {
 }
 
 void Core::onLoadFinished(Image* img, int pos) {
+    mutex.lock();
+    qDebug() << "core::finished threadId " << QThread::currentThread();
     emit signalUnsetImage();
     if(currentImageAnimated) {
         stopAnimation();
@@ -158,6 +164,7 @@ void Core::onLoadFinished(Image* img, int pos) {
     }
     emit imageChanged(pos);
     updateInfoString();
+    mutex.unlock();
 }
 
 void Core::rescaleForZoom(QSize newSize) {
@@ -194,6 +201,8 @@ void Core::startAnimation() {
 
 void Core::stopAnimation() {
     if(currentImageAnimated) {
+        qDebug() << "core: " << this->thread();
+        qDebug() << "gif: " << currentImageAnimated->thread();
         currentImageAnimated->animationStop();
         disconnect(currentImageAnimated, SIGNAL(frameChanged(QPixmap*)),
                    this, SIGNAL(frameChanged(QPixmap*)));
