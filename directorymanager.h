@@ -40,6 +40,9 @@ public:
     bool containsFiles();
     void readSettings();
 
+    QString nextFilePath();
+    QString prevFilePath();
+    QString currentFilePath();
 public slots:
     void applySettingsChanges();
 

@@ -9,6 +9,8 @@ ImageStatic::ImageStatic(QString _path) {
     type = STATIC;
     extension = NULL;
     info=NULL;
+    sem = new QSemaphore(1);
+    unloadRequested = false;
 }
 
 ImageStatic::ImageStatic(FileInfo *_info) {
@@ -18,21 +20,25 @@ ImageStatic::ImageStatic(FileInfo *_info) {
     extension = NULL;
     info=_info;
     path=info->getFilePath();
+    sem = new QSemaphore(1);
+    unloadRequested = false;
 }
 
 ImageStatic::~ImageStatic()
 {
     delete image;
+    delete sem;
 }
 
 //load image data from disk
 void ImageStatic::load()
 {
-    mutex.lock();
+    int time= clock();
+    lock();
     if(!info)
         info = new FileInfo(path);
     if(isLoaded()) {
-        mutex.unlock();
+        unlock();
         return;
     }
     guessType();
@@ -43,32 +49,59 @@ void ImageStatic::load()
         image = new QImage(path); // qt will guess format
     }
     loaded = true;
-    mutex.unlock();
+    unlock();
 }
 
 void ImageStatic::unload() {
-    mutex.lock();
+    int z = sem->available();
+    qDebug() << z << ": " << info->getFileName();
+    if(z == 0) {
+        unloadRequested = true;
+        qDebug() << "set unload request " << info->getFileName();
+    } else {
+        qDebug() << "unloading immediately " << info->getFileName();
+        unloadBlocking();
+    }
+}
+
+void ImageStatic::unloadBlocking() {
+    lock();
     if(isLoaded()) {
         delete image;
         image = NULL;
         loaded = false;
     }
-    mutex.unlock();
+    unlock();
 }
 
 void ImageStatic::save(QString destinationPath) {
     if(isLoaded()) {
-        mutex.lock();
+        lock();
         image->save(destinationPath, extension, 100);
-        mutex.unlock();
+        unlock();
+    }
+}
+
+void ImageStatic::lock() {
+    qDebug() << "locking..";
+    sem->acquire(1);
+}
+
+// performs unload if it was requested while object was blocked
+void ImageStatic::unlock() {
+    sem->release(1);
+    if(unloadRequested) {
+        qDebug() << "discarding via unblock " << info->getFileName();
+        unloadRequested = false;
+        unloadBlocking();
     }
 }
 
 void ImageStatic::save() {
     if(isLoaded()) {
-        mutex.lock();
+        lock();
         image->save(path, extension, 100);
-        mutex.unlock();
+        unlock();
     }
 }
 
@@ -90,7 +123,7 @@ QPixmap* ImageStatic::generateThumbnail() {
     } else {
         tmp = new QPixmap();
         if(!image->isNull()) {
-            mutex.lock();
+            lock();
             *tmp = QPixmap::fromImage(
                         image->scaled(size*2,
                                       size*2,
@@ -100,7 +133,7 @@ QPixmap* ImageStatic::generateThumbnail() {
                                       size,
                                       Qt::KeepAspectRatioByExpanding,
                                       Qt::SmoothTransformation));
-            mutex.unlock();
+            unlock();
         }
     }
     QRect target(0, 0, size,size);
@@ -114,9 +147,9 @@ QPixmap* ImageStatic::getPixmap()
 {
     QPixmap *pix = new QPixmap();
     if(isLoaded()) {
-        mutex.lock();
+        lock();
         pix->convertFromImage(*image);
-        mutex.unlock();
+        unlock();
     }
     return pix;
 }
@@ -149,12 +182,12 @@ QSize ImageStatic::size() {
 
 QImage* ImageStatic::rotated(int grad) {
     if(isLoaded()) {
-        mutex.lock();
+        lock();
         QImage *img = new QImage();
         QTransform transform;
         transform.rotate(grad);
         *img = image->transformed(transform, Qt::SmoothTransformation);
-        mutex.unlock();
+        unlock();
         return img;
     }
     else return NULL;
@@ -164,19 +197,19 @@ void ImageStatic::rotate(int grad) {
     if(isLoaded()) {
         QImage *img = rotated(grad);
         delete image;
-        mutex.lock();
+        lock();
         image = img;
-        mutex.unlock();
+        unlock();
     }
 }
 
 void ImageStatic::crop(QRect newRect) {
     if(isLoaded()) {
         QImage *tmp = new QImage(newRect.size(), QImage::Format_ARGB32_Premultiplied);
-        mutex.lock();
+        lock();
         *tmp = image->copy(newRect);
         delete image;
         image = tmp;
-        mutex.unlock();
+        unlock();
     }
 }

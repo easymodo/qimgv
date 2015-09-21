@@ -3,6 +3,7 @@
 
 #include "image.h"
 #include <QImage>
+#include <QSemaphore>
 
 class ImageStatic : public Image
 {
@@ -16,6 +17,7 @@ public:
     const QImage* getImage();
     void load();
     void unload();
+    void unloadBlocking();
     int height();
     int width();
     QSize size();
@@ -31,6 +33,10 @@ public slots:
 
 private:
     QImage *image;
+    QSemaphore *sem;
+    bool unloadRequested;
+    void lock();
+    void unlock();
 };
 
 #endif // QIMAGESTATIC_H

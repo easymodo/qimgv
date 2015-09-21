@@ -17,7 +17,7 @@ const ImageCache *Core::getCache() {
 void Core::initVariables() {
     cache = new ImageCache();
     dirManager = new DirectoryManager();
-    imageLoader = new ImageLoader(dirManager);
+    imageLoader = new NewLoader(dirManager);
 }
 
 // misc connections not related to gu
@@ -55,7 +55,7 @@ void Core::updateInfoString() {
                       "/" +
                       QString::number(dirManager->fileNameList.length()) +
                       " ]   ");
-    if(currentImage) {
+    /*if(currentImage) {
         infoString.append(currentImage->getInfo()->getFileName() + "  ");
         infoString.append("(" +
                           QString::number(currentImage->width()) +
@@ -65,7 +65,7 @@ void Core::updateInfoString() {
         infoString.append(QString::number(currentImage->getInfo()->getFileSize()) + " MB)");
     }
     //infoString.append(" >>" + QString::number(cache->currentlyLoaded()));
-
+    */
     emit infoStringChanged(infoString);
 }
 
@@ -151,8 +151,10 @@ void Core::onLoadFinished(Image* img, int pos) {
     if ( (currentVideo = dynamic_cast<Video*>(currentImage)) != NULL) {
         emit videoChanged(currentVideo->filePath());
     }
-    if(!currentVideo && !currentVideo) { //static image
+    if(!currentVideo && !currentVideo && currentImage) { //static image
         emit signalSetImage(currentImage->getPixmap());
+    } else {
+        qDebug() << "core got invalig image after load!";
     }
     emit imageChanged(pos);
     updateInfoString();

@@ -71,33 +71,61 @@ void ImageLoader::generateThumbnailThread(int pos) {
     emit thumbnailReady(pos, pix);
 }
 
+void ImageLoader::onLoadFinished(Image* img, int pos) {
+    if(pos == loadTarget)
+        emit loadFinished(img, pos);
+}
+
 void ImageLoader::loadNext() {
+    emit loadStarted();
+    setLoadTarget(dm->peekNext(1));
+    int localTarget = loadTarget;
     // dont do anything if already at last file
     if(dm->peekNext(1) != dm->currentFilePos()) {
         lock();
-        //free image at prev position
         freePrev();
-        //switch to next image
-        if(!cache->isLoaded(dm->nextPos())) {
+
+        if(!cache->isLoaded(dm->nextPos()) && localTarget == loadTarget) {
 
             //QtConcurrent::run(this,
             //                  &ImageLoader::doLoad,
             //                  dm->currentFilePos());
-            doLoad(dm->currentFilePos());
+            //doLoad(dm->currentFilePos());
+///test
+
+          /*  QThread *thread = new QThread();
+            LoadHelper *worker = new LoadHelper(cache, dm->currentFilePos());
+            worker->moveToThread(thread);
+
+            //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
+            connect(thread, SIGNAL(started()), worker, SLOT(doLoad()));
+            connect(worker, SIGNAL(finished(Image*,int)), this, SLOT(onLoadFinished(Image*,int)));
+            connect(worker, SIGNAL(finished(Image*, int)), thread, SLOT(quit()));
+            connect(worker, SIGNAL(finished(Image*, int)), worker, SLOT(deleteLater()));
+            connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+            QTimer *timer = new QTimer();
+            timer->setSingleShot(true);
+            connect(timer, SIGNAL(timeout()), thread, SLOT(start()));
+            connect(timer, SIGNAL(timeout()), timer, SLOT(deleteLater()));
+            timer->start(100);
+            */
+            unlock();
+///end
         }
         else {
             unlock();
-            emit loadFinished(cache->imageAt(dm->currentFilePos()),
-                              dm->currentFilePos());
+            //emit loadFinished(cache->imageAt(loadTarget),
+            //                  loadTarget);
         }
         //free prev image again
         if(reduceRam) {
             freePrev();
         }
         //start preloading next
-        if(dm->peekNext(1)!=dm->currentFilePos()) {
-            startPreload(dm->peekNext(1));
-        }
+       // if(dm->peekNext(1)!=dm->currentFilePos()) {
+       //     startPreload(dm->peekNext(1));
+       // }
     }
 }
 
@@ -124,9 +152,9 @@ void ImageLoader::loadPrev() {
             freeNext();
         }
         //start preloading prev
-        if(dm->peekPrev(1)!=dm->currentFilePos()) {
-            startPreload(dm->peekPrev(1));
-        }
+       // if(dm->peekPrev(1)!=dm->currentFilePos()) {
+       //     startPreload(dm->peekPrev(1));
+      // }
     }
 }
 
@@ -142,6 +170,10 @@ void ImageLoader::freeNext() {
     if(toUnload!=dm->currentFilePos()) {
         cache->unloadAt(toUnload);
     }
+}
+
+void ImageLoader::setLoadTarget(int _target) {
+    loadTarget = _target;
 }
 
 const ImageCache *ImageLoader::getCache() {

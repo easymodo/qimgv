@@ -1,5 +1,5 @@
-#ifndef IMAGELOADER_H
-#define IMAGELOADER_H
+#ifndef NEWLOADER_H
+#define NEWLOADER_H
 
 #include <QObject>
 #include "directorymanager.h"
@@ -12,11 +12,11 @@
 #include <QVector>
 #include "loadhelper.h"
 
-class ImageLoader : public QObject
+class NewLoader : public QObject
 {
     Q_OBJECT
 public:
-    explicit ImageLoader(DirectoryManager *);
+    explicit NewLoader(DirectoryManager *);
     void open(QString path);
     void open(int pos);
     void loadNext();
@@ -38,7 +38,10 @@ private:
     bool reduceRam;
     void freePrev();
     void freeNext();
-    int loadTarget;
+    int loadTarget, current;
+    LoadHelper *worker;
+    QThread *loadThread;
+    QTimer *loadTimer;
 
 signals:
     void loadStarted();
@@ -54,7 +57,8 @@ private slots:
     void preload(int pos);
     void doLoad(int pos);
     void doPreload(int pos);
-    void onLoadFinished(Image *img, int pos);
+    void onLoadFinished(int);
+    void onLoadTimeout();
 };
 
-#endif // IMAGELOADER_H
+#endif // NEWLOADER_H

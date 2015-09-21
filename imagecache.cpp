@@ -24,6 +24,11 @@ QString ImageCache::currentDirectory() {
     return dir;
 }
 
+void ImageCache::insert(Image *img, int pos) {
+    cachedImages->at(pos)->setImage(img);
+}
+
+// TO DELETE
 void ImageCache::unloadAll() {
     lock();
     for(int i=0; i<cachedImages->length(); i++) {
@@ -32,12 +37,16 @@ void ImageCache::unloadAll() {
     unlock();
 }
 
+// TO DELETE
 void ImageCache::unloadAt(int pos) {
     lock();
+    //int time = clock();
     cachedImages->at(pos)->unload();
+    //qDebug() << "cache unload: " << clock() - time;
     unlock();
 }
 
+// TO DELETE
 void ImageCache::loadAt(int pos) {
     lock();
     cachedImages->at(pos)->load();
@@ -64,14 +73,17 @@ int ImageCache::currentlyLoadedCount() {
     return x;
 }
 
+// TO DELETE
 const Thumbnail* ImageCache::thumbnailAt(int pos) const {
     return cachedImages->at(pos)->getThumbnail();
 }
 
+// TO DELETE
 void ImageCache::generateAllThumbnails() {
     QtConcurrent::map(*cachedImages, [](CacheObject* obj) {obj->generateThumbnail();} );
 }
 
+// TO DELETE
 const FileInfo* ImageCache::infoAt(int pos) {
     return cachedImages->at(pos)->getInfo();
 }

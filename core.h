@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include "directorymanager.h"
 #include "imageloader.h"
+#include "newloader.h"
 #include "settings.h"
 #include "sourceContainers/imageanimated.h"
 
@@ -21,7 +22,7 @@ public:
 private:
     void initVariables();
     void connectSlots();
-    ImageLoader *imageLoader;
+    NewLoader *imageLoader;
     DirectoryManager *dirManager;
     Image* currentImage;
     ImageAnimated* currentImageAnimated;

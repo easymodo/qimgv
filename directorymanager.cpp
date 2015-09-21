@@ -81,6 +81,22 @@ QString DirectoryManager::currentFileName() {
     return fileNameList.at(currentPos);
 }
 
+//returns next file's path. does not change current pos
+QString DirectoryManager::nextFilePath() {
+    QString path = currentDir.absolutePath()+"/"+fileNameList.at(peekNext(1));
+    return path;
+}
+
+QString DirectoryManager::prevFilePath() {
+    QString path = currentDir.absolutePath()+"/"+fileNameList.at(peekPrev(1));
+    return path;
+}
+
+QString DirectoryManager::currentFilePath() {
+    QString path = currentDir.absolutePath()+"/"+fileNameList.at(currentFilePos());
+    return path;
+}
+
 QString DirectoryManager::currentDirectory() {
     return currentDir.absolutePath();
 }

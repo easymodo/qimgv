@@ -41,7 +41,10 @@ SOURCES += main.cpp\
     customWidgets/clickablelabel.cpp \
     sourceContainers/thumbnail.cpp \
     viewers/videoplayer.cpp \
-    sourceContainers/video.cpp
+    sourceContainers/video.cpp \
+    loadhelper.cpp \
+    newloader.cpp \
+    imagefactory.cpp
 
 HEADERS  += mainwindow.h \
     overlays/infooverlay.h \
@@ -67,7 +70,10 @@ HEADERS  += mainwindow.h \
     customWidgets/clickablelabel.h \
     sourceContainers/thumbnail.h \
     viewers/videoplayer.h \
-    sourceContainers/video.h
+    sourceContainers/video.h \
+    loadhelper.h \
+    newloader.h \
+    imagefactory.h
 
 FORMS    += \
     settingsdialog.ui

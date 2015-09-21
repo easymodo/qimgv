@@ -27,7 +27,9 @@ public:
         mutex.lock();
         delete thumbnail;
         thumbnail = new Thumbnail;
-        thumbnail->image = getImg()->generateThumbnail();
+        if(!img) qDebug() << "returning null 3";
+        thumbnail->image = new QPixmap();
+        //thumbnail->image = getImg()->generateThumbnail();
         if(info->getType() == GIF) {
             thumbnail->label = "[gif]";
         } else if(info->getType() == VIDEO) {
@@ -47,44 +49,48 @@ public:
         return const_cast<const Thumbnail*>(thumbnail);
     }
     const FileInfo* getInfo() {
-        return const_cast<const FileInfo*>(getImg()->getInfo());
+        return const_cast<const FileInfo*>(info);
     }
     bool isLoaded() {
-        if(img) {
-            return img->isLoaded();
+        if(img==NULL) {
+            return false;
+        } else {
+            return true;
         }
-        else return false;
     }
     void load() {
         mutex.lock();
-        getImg()->load();
-        info = getImg()->getInfo();
+        //getImg()->load();
+        //info = getImg()->getInfo();
         mutex.unlock();
     }
     void unload() {
-        mutex.lock();
+        int time = clock();
+        //mutex.lock();
         if(img) {
-            img->unload();
+            delete img;
+            img = NULL;
         }
-        mutex.unlock();
+        //mutex.unlock();
+        qDebug() << "unload:" << clock() - time;
+    }
+    void setImage(Image* _img) {
+        img = _img;
+        info = img->getInfo();
     }
     Image* image() {
+        if(!img) qDebug() << "returning null 2";
         return img;
     }
 private:
     void init() {
-        if(info->getType() == GIF) {
-            img = new ImageAnimated(info);
-        } else if (info->getType() == VIDEO) {
-            img = new Video(info);
-        } else {
-            img = new ImageStatic(info);
-        }
+
     }
     Image* getImg() {
         if(!img) {
             init();
         }
+        if(!img) qDebug() << "returning null 1";
         return img;
     }
     Image *img;
@@ -115,6 +121,7 @@ public:
     bool isLoaded(int pos);
     int currentlyLoadedCount();
 
+    void insert(Image *img, int pos);
 signals:
     void initialized(int count);
 
