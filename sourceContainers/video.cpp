@@ -5,15 +5,15 @@
 Video::Video(QString _path) {
     path = _path;
     loaded = true;
-    type = GIF;
+    type = VIDEO;
     extension = NULL;
     info=new FileInfo(_path, this);
 }
 
 Video::Video(FileInfo *_info) {
     loaded = true;
-    type = GIF;
-    extension = "VIDEO";
+    type = VIDEO;
+    extension = NULL;
     info=_info;
     path=info->getFilePath();
 }
@@ -34,14 +34,13 @@ void Video::save() {
 }
 
 QPixmap* Video::generateThumbnail() {
-
     QString ffmpegExe = globalSettings->ffmpegExecutable();
     if(ffmpegExe.isEmpty()) {
         return thumbnailStub();
     }
 
-
     QString filePath = globalSettings->tempDir() + "tmp_" + info->getFileName();
+    qDebug() << globalSettings->tempDir();
 
     QString command = "\""+ffmpegExe+"\""+" -i "+"\""+info->getFilePath()+"\""+
             " -r 1 -f image2 "+"\""+filePath+"\"";
@@ -67,11 +66,13 @@ QPixmap* Video::generateThumbnail() {
     QRect target(0, 0, size,size);
     target.moveCenter(tmp->rect().center());
     *thumbnail = tmp->copy(target);
+    qDebug() << "ffmpeg!" << thumbnail;
     delete tmp;
     return thumbnail;
 }
 
 QPixmap* Video::thumbnailStub() {
+    qDebug() << "stub!";
     int size = globalSettings->thumbnailSize();
     QImage *img = new QImage(size, size, QImage::Format_ARGB32_Premultiplied);
     QPainter painter(img);

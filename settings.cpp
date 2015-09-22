@@ -5,7 +5,12 @@ Settings *globalSettings=NULL;
 Settings::Settings(QObject *parent) :
     QObject(parent)
 {
-    tempDirectory = new QTemporaryDir();
+    tempDirectory = new QTemporaryDir(QDir::tempPath()+"/qimgv_tmpXXXXXX");
+    tempDirectory->setAutoRemove(true);
+}
+
+Settings::~Settings() {
+    delete tempDirectory;
 }
 
 Settings* Settings::getInstance() {

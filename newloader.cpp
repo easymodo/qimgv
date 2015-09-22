@@ -16,7 +16,7 @@ NewLoader::NewLoader(DirectoryManager *_dm) :
 }
 
 void NewLoader::open(QString path) {
-    cache->unloadAll();
+    this->freeAll();
     if(!dm->existsInCurrentDir(path)) {
         dm->setFile(path);
         reinitCache();
@@ -68,7 +68,7 @@ void NewLoader::doLoad(int pos) {
         qDebug() << "DO_LOAD: start timer for " << pos;
         preloadTimer->stop();
         if(loadTimer->isActive()) {
-            loadTimer->start(150);
+            loadTimer->start(20);
         } else {
             loadTimer->start(0);
         }
@@ -91,17 +91,13 @@ void NewLoader::doPreload(int pos) {
 }
 
 void NewLoader::loadNext() {
-    //QMutexLocker locker(&mutex);
+    QMutexLocker locker(&mutex);
     if(dm->peekNext(1) != dm->currentFilePos()) {
-        //freePrev();
         if(setLoadTarget(dm->nextPos())) {
-            qDebug() << "nextEvent";
             //setLoadTarget(dm->nextPos());
-            freeAt(dm->peekPrev(2));
-            //freeAt(dm->peekPrev(2));
+            freeAuto();
             emit loadStarted();
             doLoad(loadTarget);
-            doPreload(dm->peekNext(1));
             if(reduceRam) {
             //    freeAt(dm->peekPrev(1));
             }
@@ -110,16 +106,12 @@ void NewLoader::loadNext() {
 }
 
 void NewLoader::loadPrev() {
-    //QMutexLocker locker(&mutex);
+    QMutexLocker locker(&mutex);
     if(dm->peekPrev(1) != dm->currentFilePos()) {
-        //freeNext();
         setLoadTarget(dm->prevPos());
-        //freeAt(dm->peekNext(1));
-        freeAt(dm->peekNext(2));
+        freeAuto();
         emit loadStarted();
         doLoad(loadTarget);
-        doPreload(dm->peekPrev(1));
-        //free next image again
         if(reduceRam) {
             //freeNext();
         }
@@ -127,12 +119,12 @@ void NewLoader::loadPrev() {
 }
 
 void NewLoader::onLoadFinished(int loaded) {
-    if(loaded == loadTarget) {
+    if(loaded == loadTarget && current != cache->imageAt(loaded)) {
         current = cache->imageAt(loaded);
-        qDebug() << loaded << ": " << clock() - time;
+        qDebug() << "loadFinished: setting new current to " << loaded;
         emit loadFinished(cache->imageAt(loaded), loaded);
     } else if(isRevelant(loaded)) {
-        qDebug() << "loaded image isnt current but revelant, keeping.." << loaded;
+        qDebug() << "loadfinished image isnt current but revelant, keeping.." << loaded;
     } else {
         cache->unloadAt(loaded);
         qDebug() << "load finished but unneeded ("<< loaded <<"). deleting..";
@@ -168,7 +160,29 @@ void NewLoader::onPreloadTimeout() {
     mutex.unlock();
 }
 
+void NewLoader::freeAuto() {
+    int time1 = clock();
+    for(int i=0; i<cache->length(); i++) {
+        if(!isRevelant(i) && cache->isLoaded(i)) {
+            bool flag = false;
+            if(cache->imageAt(i) == current) {
+                emit currentImageUnloading();
+                flag = true;
+
+            }
+            qDebug() <<"!!unloading: " << i;
+            cache->unloadAt(i);
+            if(flag)
+                current = NULL;
+        }
+    }
+    qDebug() << clock() - time1;
+}
+
 void NewLoader::freeAll() {
+    if(current) {
+        emit currentImageUnloading();
+    }
     cache->unloadAll();
     current = NULL;
 }

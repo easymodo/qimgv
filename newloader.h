@@ -65,6 +65,7 @@ private slots:
     void onLoadTimeout();
     void onThumbnailReady(int);
     void onPreloadTimeout();
+    void freeAuto();
 };
 
 #endif // NEWLOADER_H

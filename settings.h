@@ -56,6 +56,8 @@ public:
     void setFfmpegExecutable(QString path);
     bool showThumbnailLabels();
     void setShowThumbnailLabels(bool mode);
+
+    ~Settings();
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 120;

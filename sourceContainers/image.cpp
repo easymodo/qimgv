@@ -1,6 +1,17 @@
 #include "image.h"
 
-void Image::guessType() {
+fileType Image::guessType() {
+    QStringList lst;
+    QString ext = path;
+    do {
+        lst = ext.split(".");
+        ext = lst.last();
+    } while( lst.count() > 1 );
+    if(ext == "webm" || ext == "gifv") { // case sensitivity?
+        type = VIDEO;
+        return type;
+    }
+
     QFile file(path);
     file.open(QIODevice::ReadOnly);
     //read first 2 bytes to determine file format
@@ -24,6 +35,7 @@ void Image::guessType() {
         extension="BMP";
     }
     else type = STATIC;
+    return type;
 }
 
 void Image::safeDeleteSelf() {

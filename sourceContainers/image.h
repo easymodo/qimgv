@@ -35,15 +35,15 @@ public:
 
     virtual void lock();
     virtual void unlock();
+    fileType guessType();
+    const char* extension;
 
 protected:
     bool loaded;
     QString path;
     fileType type;
     QSize resolution;
-    const char* extension;
     QMutex mutex;
-    void guessType();
     FileInfo* info;
 
 signals:
