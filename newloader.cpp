@@ -1,9 +1,9 @@
 #include "newloader.h"
 
 NewLoader::NewLoader(DirectoryManager *_dm) :
-    reduceRam(false)
+    reduceRam(false),
+    current(NULL)
 {
-    qDebug() << "mainThread: " << this->thread();
     dm = _dm;
     loadThread = new QThread(this);
     readSettings();
@@ -23,8 +23,9 @@ void NewLoader::open(QString path) {
     } else {
         dm->setFile(path);
     }
-    lock();
-    QtConcurrent::run(this, &NewLoader::doLoad, dm->currentFilePos());
+    emit loadStarted();
+    freeAll();
+    doLoad(dm->currentFilePos());
 }
 
 void NewLoader::reinitCache() {
@@ -45,109 +46,79 @@ void NewLoader::openBlocking(QString path) {
     } else {
         dm->setFile(path);
     }
-    lock();
+    emit loadStarted();
+    freeAll();
     doLoad(dm->currentFilePos());
 }
 
 void NewLoader::open(int pos) {
-    cache->unloadAll();
+    //cache->unloadAll();
     dm->setCurrentPos(pos);
-    lock();
-    QtConcurrent::run(this, &NewLoader::doLoad, dm->currentFilePos());
+    emit loadStarted();
+    freeAll();
+    doLoad(dm->currentFilePos());
+    //QtConcurrent::run(this, &NewLoader::doLoad, dm->currentFilePos());
 }
 
 void NewLoader::doLoad(int pos) {
-    emit loadStarted();
-    cache->loadAt(pos);
-    emit loadFinished(cache->imageAt(pos), pos);
-    unlock();
-}
-
-// for position in directory
-void NewLoader::generateThumbnailFor(int pos) {
-    QtConcurrent::run(this, &NewLoader::generateThumbnailThread, pos);
-}
-
-void NewLoader::generateThumbnailThread(int pos) {
-    const Thumbnail* pix = cache->thumbnailAt(pos);
-    emit thumbnailReady(pos, pix);
-}
-
-void NewLoader::onLoadFinished(int loaded) {
-    if(loaded == loadTarget) {
-        qDebug() << "load finished" << loaded << ". Displaying image! && " << QThread::currentThread();
-        emit loadFinished(cache->imageAt(loaded), loaded);
-    } else {
-        cache->unloadAt(loaded);
-        qDebug() << "load finished but unneeded" << loaded << " vs current: " << loadTarget;
+    time = clock();
+    setLoadTarget(pos);
+    if(!cache->isLoaded(pos)) {
+        //worker->setTarget(pos, dm->filePathAt(pos));
+        qDebug() << "DO_LOAD: start timer for " << pos;
+        preloadTimer->stop();
+        if(loadTimer->isActive()) {
+            loadTimer->start(150);
+        } else {
+            loadTimer->start(0);
+        }
+    }
+    else {
+        emit onLoadFinished(pos);
+        qDebug() << "found" << pos << ", skipping load.";
     }
 }
 
-void NewLoader::onLoadTimeout() {
-    mutex.lock();
-    if(worker->target() == loadTarget) {
-        qDebug() << "load thread start " << loadTarget;
-        emit startLoad();
-    } else {
-        qDebug() << "timer: target expired:" << worker->target();
+void NewLoader::preload(int pos) {
+
+}
+
+void NewLoader::doPreload(int pos) {
+    if(!cache->isLoaded(pos)) {
+        preloadTarget = pos;
+        preloadTimer->start(100);
     }
-    mutex.unlock();
 }
 
 void NewLoader::loadNext() {
-    qDebug() << "loadNext (MAIN): " << QThread::currentThread();
-    emit loadStarted();
-
-    QMutexLocker locker(&mutex);
-    setLoadTarget(dm->peekNext(1));
-    qDebug() << "#####################";
-    qDebug() << "load start " << loadTarget;
-
+    //QMutexLocker locker(&mutex);
     if(dm->peekNext(1) != dm->currentFilePos()) {
-
         //freePrev();
-
-        if(!cache->isLoaded(dm->nextPos())) {
-
-            worker->setTarget(dm->currentFilePos(), dm->currentFilePath());
-            if(loadTimer->isActive()) {
-                loadTimer->start(35);
-            } else {
-                loadTimer->start(0);
+        if(setLoadTarget(dm->nextPos())) {
+            qDebug() << "nextEvent";
+            //setLoadTarget(dm->nextPos());
+            freeAt(dm->peekPrev(2));
+            //freeAt(dm->peekPrev(2));
+            emit loadStarted();
+            doLoad(loadTarget);
+            doPreload(dm->peekNext(1));
+            if(reduceRam) {
+            //    freeAt(dm->peekPrev(1));
             }
-        }
-        else {
-            emit loadFinished(cache->imageAt(dm->currentFilePos()), dm->currentFilePos());
-        }
-        if(reduceRam) {
-            //freePrev();
         }
     }
 }
 
 void NewLoader::loadPrev() {
-    emit loadStarted();
-
-    QMutexLocker locker(&mutex);
-    setLoadTarget(dm->peekPrev(1));
-    qDebug() << "#####################";
-    qDebug() << "load start " << loadTarget;
-
+    //QMutexLocker locker(&mutex);
     if(dm->peekPrev(1) != dm->currentFilePos()) {
-
         //freeNext();
-
-        if(!cache->isLoaded(dm->prevPos())) {
-            worker->setTarget(dm->currentFilePos(), dm->currentFilePath());
-            if(loadTimer->isActive()) {
-                loadTimer->start(35);
-            } else {
-                loadTimer->start(0);
-            }
-        }
-        else {
-            emit loadFinished(cache->imageAt(dm->currentFilePos()), dm->currentFilePos());
-        }
+        setLoadTarget(dm->prevPos());
+        //freeAt(dm->peekNext(1));
+        freeAt(dm->peekNext(2));
+        emit loadStarted();
+        doLoad(loadTarget);
+        doPreload(dm->peekPrev(1));
         //free next image again
         if(reduceRam) {
             //freeNext();
@@ -155,23 +126,74 @@ void NewLoader::loadPrev() {
     }
 }
 
-void NewLoader::freePrev() {
-    int toUnload = dm->peekPrev(1);
-    if(toUnload!=dm->currentFilePos()) {
-        cache->unloadAt(toUnload);
+void NewLoader::onLoadFinished(int loaded) {
+    if(loaded == loadTarget) {
+        current = cache->imageAt(loaded);
+        qDebug() << loaded << ": " << clock() - time;
+        emit loadFinished(cache->imageAt(loaded), loaded);
+    } else if(isRevelant(loaded)) {
+        qDebug() << "loaded image isnt current but revelant, keeping.." << loaded;
+    } else {
+        cache->unloadAt(loaded);
+        qDebug() << "load finished but unneeded ("<< loaded <<"). deleting..";
     }
 }
 
-void NewLoader::freeNext() {
-    int toUnload = dm->peekNext(1);
-    if(toUnload!=dm->currentFilePos()) {
-        cache->unloadAt(toUnload);
+bool NewLoader::isRevelant(int pos) {
+    if(pos<loadTarget-1 || pos>loadTarget+1) {
+        return false;
+    } else {
+        return true;
     }
 }
 
-void NewLoader::setLoadTarget(int _target) {
-    qDebug() << "setLoadTarget " << _target;
-    loadTarget = _target;
+void NewLoader::onLoadTimeout() {
+    mutex.lock();
+    if(loadTarget != worker->target()) {
+        qDebug() << "###### " << loadTarget << worker->target() << "(setting worker target)";
+        worker->setTarget(loadTarget, dm->filePathAt(loadTarget));
+        emit startLoad();
+    }
+
+    mutex.unlock();
+}
+
+void NewLoader::onPreloadTimeout() {
+    mutex.lock();
+   if(isRevelant(preloadTarget)) {
+        worker->setTarget(preloadTarget, dm->filePathAt(preloadTarget));
+        qDebug()<< "starting preload for" << worker->target();
+        emit startLoad();
+    }
+    mutex.unlock();
+}
+
+void NewLoader::freeAll() {
+    cache->unloadAll();
+    current = NULL;
+}
+
+void NewLoader::freeAt(int toUnload) {
+    if(!isRevelant(toUnload)) {
+        qDebug() << "!!!deleting" << toUnload << "  "<< cache->imageAt(toUnload);
+        if(current == cache->imageAt(toUnload)) {
+            emit currentImageUnloading();
+            cache->unloadAt(toUnload);
+            current = NULL;
+        } else {
+            cache->unloadAt(toUnload);
+        }
+        qDebug() << "image freed: "<< toUnload;
+    }
+}
+
+bool NewLoader::setLoadTarget(int _target) {
+    if(_target == loadTarget) {
+        return false;
+    } else {
+        loadTarget = _target;
+        return true;
+    }
 }
 
 const ImageCache *NewLoader::getCache() {
@@ -179,7 +201,6 @@ const ImageCache *NewLoader::getCache() {
 }
 
 void NewLoader::setCache(ImageCache *_cache) {
-    qDebug() << "loader::mainId " << QThread::currentThread();
     this->cache = _cache;
     cache->init(dm->currentDirectory(), dm->getFileList());
     worker = new LoadHelper(cache, this->thread());
@@ -195,20 +216,28 @@ void NewLoader::setCache(ImageCache *_cache) {
     loadTimer = new QTimer(this);
     loadTimer->setSingleShot(true);
     connect(loadTimer, SIGNAL(timeout()), this, SLOT(onLoadTimeout()));
+    preloadTimer = new QTimer(this);
+    preloadTimer->setSingleShot(true);
+    if(globalSettings->usePreloader()) {
+            connect(preloadTimer, SIGNAL(timeout()), this, SLOT(onPreloadTimeout()));
+    }
     loadThread->start();
     //connect(loadTimer, SIGNAL(timeout()), loadTimer, SLOT(deleteLater()));
 
 }
 
-void NewLoader::preload(int pos) {
-    QFuture<void> future = QtConcurrent::run(this, &NewLoader::doPreload, pos);
-
+// for position in directory
+void NewLoader::generateThumbnailFor(int pos) {
+    Thumbnailer *thWorker = new Thumbnailer(cache, dm->filePathAt(pos), pos);
+    connect(thWorker, SIGNAL(thumbnailReady(int)), this, SLOT(onThumbnailReady(int)));
+    thWorker->setAutoDelete(true);
+    QThreadPool::globalInstance()->start(thWorker);
+    //QtConcurrent::run(this, &NewLoader::generateThumbnailThread, pos);
 }
 
-void NewLoader::doPreload(int pos) {
-    cache->loadAt(pos);
+void NewLoader::onThumbnailReady(int pos) {
+    emit thumbnailReady(pos, cache->thumbnailAt(pos));
 }
-
 
 void NewLoader::readSettings() {
     if( globalSettings->usePreloader() ) {

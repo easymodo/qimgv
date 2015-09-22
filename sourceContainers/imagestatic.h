@@ -16,8 +16,6 @@ public:
     QPixmap* getPixmap();
     const QImage* getImage();
     void load();
-    void unload();
-    void unloadBlocking();
     int height();
     int width();
     QSize size();
@@ -35,8 +33,6 @@ private:
     QImage *image;
     QSemaphore *sem;
     bool unloadRequested;
-    void lock();
-    void unlock();
 };
 
 #endif // QIMAGESTATIC_H

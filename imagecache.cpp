@@ -28,6 +28,10 @@ void ImageCache::insert(Image *img, int pos) {
     cachedImages->at(pos)->setImage(img);
 }
 
+void ImageCache::insertThumbnail(Thumbnail *thumb, int pos) {
+    cachedImages->at(pos)->setThumbnail(thumb);
+}
+
 // TO DELETE
 void ImageCache::unloadAll() {
     lock();
@@ -46,19 +50,16 @@ void ImageCache::unloadAt(int pos) {
     unlock();
 }
 
-// TO DELETE
-void ImageCache::loadAt(int pos) {
-    lock();
-    cachedImages->at(pos)->load();
-    unlock();
+bool ImageCache::isLoaded(int pos) {
+    return cachedImages->at(pos)->isLoaded();
 }
 
 Image* ImageCache::imageAt(int pos) {
     return cachedImages->at(pos)->image();
 }
 
-bool ImageCache::isLoaded(int pos) {
-    return cachedImages->at(pos)->isLoaded();
+const Thumbnail* ImageCache::thumbnailAt(int pos) const {
+    return cachedImages->at(pos)->getThumbnail();
 }
 
 int ImageCache::currentlyLoadedCount() {
@@ -73,20 +74,6 @@ int ImageCache::currentlyLoadedCount() {
     return x;
 }
 
-// TO DELETE
-const Thumbnail* ImageCache::thumbnailAt(int pos) const {
-    return cachedImages->at(pos)->getThumbnail();
-}
-
-// TO DELETE
-void ImageCache::generateAllThumbnails() {
-    QtConcurrent::map(*cachedImages, [](CacheObject* obj) {obj->generateThumbnail();} );
-}
-
-// TO DELETE
-const FileInfo* ImageCache::infoAt(int pos) {
-    return cachedImages->at(pos)->getInfo();
-}
 
 int ImageCache::length() const {
     return cachedImages->length();

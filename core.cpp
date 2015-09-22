@@ -4,7 +4,6 @@ Core::Core() :
     QObject(),
     imageLoader(NULL),
     dirManager(NULL),
-    currentImage(NULL),
     currentImageAnimated(NULL),
     currentVideo(NULL)
 {
@@ -23,7 +22,7 @@ void Core::initVariables() {
 // misc connections not related to gu
 void Core::connectSlots() {
     connect(imageLoader, SIGNAL(loadStarted()),
-            this, SLOT(updateInfoString()));
+            this, SLOT(onLoadStarted()));
     connect(imageLoader, SIGNAL(loadFinished(Image*, int)),
             this, SLOT(onLoadFinished(Image*, int)));
     connect(this, SIGNAL(thumbnailRequested(int)),
@@ -32,12 +31,14 @@ void Core::connectSlots() {
             this, SIGNAL(thumbnailReady(int, const Thumbnail*)));
     connect(cache, SIGNAL(initialized(int)), this, SIGNAL(cacheInitialized(int)), Qt::DirectConnection);
     connect(dirManager, SIGNAL(directorySortingChanged()), imageLoader, SLOT(reinitCacheForced()));
+    connect(imageLoader, SIGNAL(currentImageUnloading()),
+            this, SLOT(releaseCurrentImage()));
 }
 
 QString Core::getCurrentFilePath() {
     QString filePath = "";
-    if(currentImage) {
-        filePath = currentImage->getPath();
+    if(imageLoader->current) {
+        filePath = imageLoader->current->getPath();
     }
     return filePath;
 }
@@ -48,6 +49,13 @@ void Core::init() {
     imageLoader->setCache(cache);
 }
 
+void Core::onLoadStarted() {
+    //if(imageLoader->current) imageLoader->current->lock();
+    stopAnimation();
+    updateInfoString();
+    //if(imageLoader->current) imageLoader->current->unlock();
+}
+
 void Core::updateInfoString() {
     QString infoString = "";
     infoString.append(" [ " +
@@ -55,14 +63,14 @@ void Core::updateInfoString() {
                       "/" +
                       QString::number(dirManager->fileNameList.length()) +
                       " ]   ");
-    if(currentImage) {
-        infoString.append(currentImage->getInfo()->getFileName() + "  ");
+    if(imageLoader->current) {
+        infoString.append(imageLoader->current->getInfo()->getFileName() + "  ");
         infoString.append("(" +
-                          QString::number(currentImage->width()) +
+                          QString::number(imageLoader->current->width()) +
                           "x" +
-                          QString::number(currentImage->height()) +
+                          QString::number(imageLoader->current->height()) +
                           "  ");
-        infoString.append(QString::number(currentImage->getInfo()->getFileSize()) + " MB)");
+        infoString.append(QString::number(imageLoader->current->getInfo()->getFileSize()) + " MB)");
     }
 
     infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
@@ -71,30 +79,39 @@ void Core::updateInfoString() {
 }
 
 void Core::rotateImage(int grad) {
-    if(currentImage!=NULL) {
-        currentImage->rotate(grad);
+    if(imageLoader->current!=NULL) {
+        imageLoader->current->rotate(grad);
         updateInfoString();
-        emit imageAltered(currentImage->getPixmap());
+        emit imageAltered(imageLoader->current->getPixmap());
     }
 }
 
 void Core::crop(QRect newRect) {
-    if(currentImage) {
-        currentImage->crop(newRect);
+    if(imageLoader->current) {
+        imageLoader->current->crop(newRect);
         updateInfoString();
     }
-    emit imageAltered(currentImage->getPixmap());
+    emit imageAltered(imageLoader->current->getPixmap());
+}
+
+void Core::releaseCurrentImage() {
+    if(imageLoader->current == currentImageAnimated) {
+        qDebug() << "###";
+        qDebug() << "######releasing!";
+        qDebug() << "###";
+        stopAnimation();
+    }
 }
 
 void Core::saveImage(QString path) {
-    if(currentImage) {
-        currentImage->save(path);
+    if(imageLoader->current) {
+        imageLoader->current->save(path);
     }
 }
 
 void Core::saveImage() {
-    if(currentImage) {
-        currentImage->save();
+    if(imageLoader->current) {
+        imageLoader->current->save();
     }
 }
 
@@ -137,27 +154,27 @@ void Core::loadImageByPos(int pos) {
 }
 
 void Core::onLoadFinished(Image* img, int pos) {
+    qDebug() << "loadFinished" << pos;
     mutex.lock();
-    qDebug() << "core::finished threadId " << QThread::currentThread();
     emit signalUnsetImage();
     if(currentImageAnimated) {
-        stopAnimation();
+     //   stopAnimation();
     }
     if(currentVideo) {
         emit stopVideo();
     }
-    currentImage = img;
+    //imageLoader->current = img;
 
-    if( (currentImageAnimated = dynamic_cast<ImageAnimated*>(currentImage)) != NULL ) {
+    if( (currentImageAnimated = dynamic_cast<ImageAnimated*>(imageLoader->current)) != NULL ) {
         startAnimation();
     }
-    if ( (currentVideo = dynamic_cast<Video*>(currentImage)) != NULL) {
+    if ( (currentVideo = dynamic_cast<Video*>(imageLoader->current)) != NULL) {
         emit videoChanged(currentVideo->filePath());
     }
-    if(!currentVideo && !currentVideo && currentImage) { //static image
-        emit signalSetImage(currentImage->getPixmap());
+    if(!currentVideo && !currentVideo && imageLoader->current) { //static image
+        emit signalSetImage(imageLoader->current->getPixmap());
     } else {
-        qDebug() << "core got invalig image after load!";
+        qDebug() << "core: got invalid image after load!";
     }
     emit imageChanged(pos);
     updateInfoString();
@@ -165,23 +182,23 @@ void Core::onLoadFinished(Image* img, int pos) {
 }
 
 void Core::rescaleForZoom(QSize newSize) {
-    if(currentImage && currentImage->isLoaded()) {
+    if(imageLoader->current && imageLoader->current->isLoaded()) {
         ImageLib imgLib;
-        float sourceSize = (float)currentImage->width()*
-                           currentImage->height()/1000000;
+        float sourceSize = (float)imageLoader->current->width()*
+                           imageLoader->current->height()/1000000;
         float size = (float)newSize.width()*
                      newSize.height()/1000000;
         QPixmap* pixmap;
         float currentScale = (float)sourceSize/size;
         if(currentScale==1.0) {
-            pixmap = currentImage->getPixmap();
+            pixmap = imageLoader->current->getPixmap();
         } else {
             pixmap = new QPixmap(newSize);
             if( globalSettings->useFastScale() ) {
-                //imgLib.fastScale(pixmap, currentImage->getPixmap(), newSize, true);
+                //imgLib.fastScale(pixmap, imageLoader->current->getPixmap(), newSize, true);
             }
             else {
-                imgLib.bilinearScale(pixmap, currentImage->getPixmap(), newSize, true);
+                imgLib.bilinearScale(pixmap, imageLoader->current->getPixmap(), newSize, true);
             }
         }
         emit scalingFinished(pixmap);
@@ -189,17 +206,15 @@ void Core::rescaleForZoom(QSize newSize) {
 }
 
 void Core::startAnimation() {
-    if(currentImageAnimated) {
+    if(imageLoader->current && currentImageAnimated) {
         currentImageAnimated->animationStart();
         connect(currentImageAnimated, SIGNAL(frameChanged(QPixmap*)),
-                   this, SIGNAL(frameChanged(QPixmap*)));
+                   this, SIGNAL(frameChanged(QPixmap*)), Qt::UniqueConnection);
     }
 }
 
 void Core::stopAnimation() {
-    if(currentImageAnimated) {
-        qDebug() << "core: " << this->thread();
-        qDebug() << "gif: " << currentImageAnimated->thread();
+    if(imageLoader->current && currentImageAnimated) {
         currentImageAnimated->animationStop();
         disconnect(currentImageAnimated, SIGNAL(frameChanged(QPixmap*)),
                    this, SIGNAL(frameChanged(QPixmap*)));

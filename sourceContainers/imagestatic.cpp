@@ -11,7 +11,6 @@ ImageStatic::ImageStatic(QString _path) {
     info=new FileInfo(path, this);
     sem = new QSemaphore(1);
     unloadRequested = false;
-    qDebug() << "image constructor: " << QThread::currentThread();
 }
 
 ImageStatic::ImageStatic(FileInfo *_info) {
@@ -28,18 +27,17 @@ ImageStatic::ImageStatic(FileInfo *_info) {
 ImageStatic::~ImageStatic()
 {
     delete image;
-    delete sem;
+    delete info;
+    delete extension;
 }
 
 //load image data from disk
 void ImageStatic::load()
 {
-    int time= clock();
-    lock();
+    QMutexLocker locker(&mutex);
     if(!info)
         info = new FileInfo(path);
     if(isLoaded()) {
-        unlock();
         return;
     }
     guessType();
@@ -50,26 +48,6 @@ void ImageStatic::load()
         image = new QImage(path); // qt will guess format
     }
     loaded = true;
-    unlock();
-}
-
-void ImageStatic::unload() {
-    int z = sem->available();
-    if(z == 0) {
-        unloadRequested = true;
-    } else {
-        unloadBlocking();
-    }
-}
-
-void ImageStatic::unloadBlocking() {
-    lock();
-    if(isLoaded()) {
-        delete image;
-        image = NULL;
-        loaded = false;
-    }
-    unlock();
 }
 
 void ImageStatic::save(QString destinationPath) {
@@ -77,20 +55,6 @@ void ImageStatic::save(QString destinationPath) {
         lock();
         image->save(destinationPath, extension, 100);
         unlock();
-    }
-}
-
-void ImageStatic::lock() {
-    sem->acquire(1);
-}
-
-// performs unload if it was requested while object was blocked
-void ImageStatic::unlock() {
-    sem->release(1);
-    if(unloadRequested) {
-        qDebug() << "discarding via unblock " << info->getFileName();
-        unloadRequested = false;
-        unloadBlocking();
     }
 }
 

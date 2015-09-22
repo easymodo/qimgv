@@ -8,7 +8,6 @@ Video::Video(QString _path) {
     type = GIF;
     extension = NULL;
     info=new FileInfo(_path, this);
-    qDebug() << "image constructor: " << QThread::currentThread();
 }
 
 Video::Video(FileInfo *_info) {
@@ -20,12 +19,11 @@ Video::Video(FileInfo *_info) {
 }
 
 Video::~Video() {
+    delete info;
+    delete extension;
 }
 
 void Video::load() {
-}
-
-void Video::unload() {
 }
 
 void Video::save(QString destinationPath) {

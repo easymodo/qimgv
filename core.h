@@ -23,15 +23,17 @@ private:
     void connectSlots();
     NewLoader *imageLoader;
     DirectoryManager *dirManager;
-    Image* currentImage;
+
     ImageAnimated* currentImageAnimated;
     Video* currentVideo;
     QMutex mutex;
     ImageCache *cache;
 
 private slots:
+    void onLoadStarted();
     void onLoadFinished(Image *img, int pos);
     void crop(QRect newRect);
+    void releaseCurrentImage();
 
 signals:
     void signalUnsetImage();

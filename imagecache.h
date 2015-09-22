@@ -44,7 +44,7 @@ public:
     }
     const Thumbnail* getThumbnail() {
         if(!thumbnail) {
-            generateThumbnail();
+            qDebug() << "!returning empty thumbnail";
         }
         return const_cast<const Thumbnail*>(thumbnail);
     }
@@ -65,19 +65,21 @@ public:
         mutex.unlock();
     }
     void unload() {
-        qDebug() << "unload";
-        int time = clock();
-        mutex.lock();
         if(img) {
-            delete img;
+            img->safeDeleteSelf();
             img = NULL;
         }
-        mutex.unlock();
     }
     void setImage(Image* _img) {
         img = _img;
         info = img->getInfo();
         qDebug() << img->thread();
+    }
+    void setThumbnail(Thumbnail* _thumbnail) {
+        if(thumbnail && _thumbnail) {
+            delete thumbnail;
+        }
+        thumbnail = _thumbnail;
     }
     Image* image() {
         if(!img) qDebug() << "returning null 2";
@@ -110,12 +112,9 @@ public:
     ~ImageCache();
     void lock();
     void unlock();
-    void loadAt(int pos);
     Image *imageAt(int pos);
     void init(QString dir, QStringList list);
-    const FileInfo *infoAt(int pos);
     int length() const;
-    void generateAllThumbnails();
     void unloadAll();
     QFuture<void> *future;
     void unloadAt(int pos);
@@ -123,6 +122,7 @@ public:
     int currentlyLoadedCount();
 
     void insert(Image *img, int pos);
+    void insertThumbnail(Thumbnail *thumb, int pos);
 signals:
     void initialized(int count);
 

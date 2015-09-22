@@ -8,7 +8,6 @@ ImageAnimated::ImageAnimated(QString _path) {
     movie = new QMovie(this);
     type = STATIC;
     info=new FileInfo(path, this);
-    qDebug() << "image constructor: " << QThread::currentThread();
 }
 
 ImageAnimated::ImageAnimated(FileInfo *_info) {
@@ -24,6 +23,8 @@ ImageAnimated::~ImageAnimated()
 {
     timer->deleteLater();
     delete movie;
+    delete info;
+    delete extension;
 }
 
 //load image data from disk
@@ -41,17 +42,6 @@ void ImageAnimated::load()
     movie->setFileName(path);
     movie->jumpToFrame(0);
     loaded = true;
-    mutex.unlock();
-}
-
-void ImageAnimated::unload() {
-    mutex.lock();
-    if(isLoaded()) {
-        animationStop();
-        delete movie;
-        movie = new QMovie(this);
-        loaded = false;
-    }
     mutex.unlock();
 }
 
@@ -150,7 +140,6 @@ void ImageAnimated::animationStart() {
 
 void ImageAnimated::animationStop() {
     if(isLoaded() && timer) {
-        qDebug() << "timer is in:" << timer->thread();
         if(timer->isActive()) {
             timer->stop();
             disconnect(timer, SIGNAL(timeout()), this, SLOT(nextFrame()));

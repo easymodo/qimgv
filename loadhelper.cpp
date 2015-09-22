@@ -2,7 +2,7 @@
 
 LoadHelper::LoadHelper(ImageCache *_cache, QThread *_mainThread) :
     cache(_cache),
-    loadTarget(0),
+    loadTarget(-1),
     mainThread(_mainThread)
 {
 
@@ -24,19 +24,19 @@ void LoadHelper::doLoad() {
     int targetLocal = loadTarget;
     QString pathLocal = path;
     mutex.unlock();
-    //Image* tmp = new ImageStatic("/home/mitcher/tests/mix/3.png");
-    //tmp->load();
-    //cache->loadAt(toLoad);
+    if(cache->isLoaded(targetLocal)) {
+        qDebug() << "LOADHELPER: skipping loading "<< targetLocal << ", already in cache";
+        emit finished(targetLocal);
+        return;
+    }
+    qDebug() << "LOADHELPER: loading! "<< targetLocal;
     //this->thread()->msleep(1000);
-    qDebug() << "worker::loadId " << QThread::currentThread();
     ImageFactory *factory = new ImageFactory();
     Image *img = factory->createImage(pathLocal);
-    img->moveToThread(mainThread);
-    qDebug() << "moving to " << mainThread;
-    //cache->insert(factory->createImage("/home/mitcher/tests/mix/3.png"), toLoad)
-    cache->insert(img, targetLocal);
     delete factory;
 
-    qDebug() << "load thread finished: " << targetLocal;
+    img->moveToThread(mainThread);
+    cache->insert(img, targetLocal);
+
     emit finished(targetLocal);
 }

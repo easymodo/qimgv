@@ -20,7 +20,6 @@ public:
     virtual QPixmap* getPixmap() = 0;
     fileType getType();
     virtual void load() = 0;
-    virtual void unload() = 0;
     QString getPath();
     virtual int height() = 0;
     virtual int width() = 0;
@@ -29,10 +28,14 @@ public:
     virtual QPixmap* generateThumbnail() = 0;
     void attachInfo(FileInfo*);
     FileInfo* getInfo();
-    void deleteSelf();
+    void safeDeleteSelf();
 
     virtual void crop(QRect newRect) = 0;
     virtual void rotate(int grad) = 0;
+
+    virtual void lock();
+    virtual void unlock();
+
 protected:
     bool loaded;
     QString path;

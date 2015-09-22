@@ -77,6 +77,15 @@ bool DirectoryManager::isValidFile(QString path) {
     else return false;
 }
 
+QString DirectoryManager::filePathAt(int pos) {
+    if(pos<0 || pos >fileNameList.length()-1) {
+        qDebug() << "dirManager: requested index out of range";
+        return "";
+    }
+    QString path = currentDir.absolutePath()+"/"+fileNameList.at(pos);
+    return path;
+}
+
 QString DirectoryManager::currentFileName() {
     return fileNameList.at(currentPos);
 }

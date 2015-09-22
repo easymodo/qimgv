@@ -43,6 +43,7 @@ public:
     QString nextFilePath();
     QString prevFilePath();
     QString currentFilePath();
+    QString filePathAt(int pos);
 public slots:
     void applySettingsChanges();
 

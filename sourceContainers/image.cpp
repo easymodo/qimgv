@@ -26,9 +26,17 @@ void Image::guessType() {
     else type = STATIC;
 }
 
-void Image::deleteSelf() {
+void Image::safeDeleteSelf() {
     mutex.lock(); // ensure we are not used
     delete this;
+}
+
+void Image::lock() {
+    mutex.lock();
+}
+
+void Image::unlock() {
+    mutex.unlock();
 }
 
 QString Image::getPath() {

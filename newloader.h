@@ -11,6 +11,7 @@
 #include <QMutex>
 #include <QVector>
 #include "loadhelper.h"
+#include "thumbnailer.h"
 
 class NewLoader : public QObject
 {
@@ -25,6 +26,7 @@ public:
     void setCache(ImageCache*);
     void openBlocking(QString path);
     void reinitCache();
+    Image *current;
 
 public slots:
     void reinitCacheForced();
@@ -34,24 +36,25 @@ private:
     DirectoryManager *dm;
     ImageCache *cache;
     QMutex mutex, mutex2;
-    void generateThumbnailThread(int pos);
     bool reduceRam;
-    void freePrev();
-    void freeNext();
-    int loadTarget, current;
+    void freeAt(int);
+    int loadTarget, preloadTarget, time;
     LoadHelper *worker;
     QThread *loadThread;
-    QTimer *loadTimer;
+    QTimer *loadTimer, *preloadTimer;
 
+    void freeAll();
+    bool isRevelant(int pos);
 signals:
     void loadStarted();
     void loadFinished(Image*, int pos);
     void startPreload(int);
     void thumbnailReady(int, const Thumbnail*);
     void startLoad();
+    void currentImageUnloading();
 
 private slots:
-    void setLoadTarget(int);
+    bool setLoadTarget(int);
     void lock();
     void unlock();
     void readSettings();
@@ -60,6 +63,8 @@ private slots:
     void doPreload(int pos);
     void onLoadFinished(int);
     void onLoadTimeout();
+    void onThumbnailReady(int);
+    void onPreloadTimeout();
 };
 
 #endif // NEWLOADER_H

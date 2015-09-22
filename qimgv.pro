@@ -43,7 +43,8 @@ SOURCES += main.cpp\
     sourceContainers/video.cpp \
     loadhelper.cpp \
     newloader.cpp \
-    imagefactory.cpp
+    imagefactory.cpp \
+    thumbnailer.cpp
 
 HEADERS  += mainwindow.h \
     overlays/infooverlay.h \
@@ -71,7 +72,8 @@ HEADERS  += mainwindow.h \
     sourceContainers/video.h \
     loadhelper.h \
     newloader.h \
-    imagefactory.h
+    imagefactory.h \
+    thumbnailer.h
 
 FORMS    += \
     settingsdialog.ui
