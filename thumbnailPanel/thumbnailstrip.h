@@ -31,7 +31,7 @@ private:
     CustomScene* scene;
     QTimeLine *timeLine;
 
-    const qreal OPACITY_INACTIVE = 0.65;
+    const qreal OPACITY_INACTIVE = 0.75;
     const qreal OPACITY_SELECTED = 1.0;
     const int ANIMATION_SPEED_INSTANT = 0;
     const int ANIMATION_SPEED_FAST = 100;

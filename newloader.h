@@ -48,9 +48,9 @@ private:
 signals:
     void loadStarted();
     void loadFinished(Image*, int pos);
-    void startPreload(int);
     void thumbnailReady(int, const Thumbnail*);
     void startLoad();
+    void startPreload();
     void currentImageUnloading();
 
 private slots:
@@ -58,9 +58,8 @@ private slots:
     void lock();
     void unlock();
     void readSettings();
-    void preload(int pos);
     void doLoad(int pos);
-    void doPreload(int pos);
+    void doPreload();
     void onLoadFinished(int);
     void onLoadTimeout();
     void onThumbnailReady(int);

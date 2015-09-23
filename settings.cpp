@@ -180,7 +180,7 @@ void Settings::setUsePreloader(bool mode) {
 }
 
 QColor Settings::backgroundColor() {
-    QColor color = globalSettings->s.value("bgColor", "Qt::Black").value<QColor>();
+    QColor color = globalSettings->s.value("bgColor", QColor(14,14,14)).value<QColor>();
     return color;
 }
 
@@ -189,7 +189,7 @@ void Settings::setBackgroundColor(QColor color) {
 }
 
 QColor Settings::accentColor() {
-    QColor color = globalSettings->s.value("accentColor", QColor(201,165,0)).value<QColor>();
+    QColor color = globalSettings->s.value("accentColor", QColor(0,182,91)).value<QColor>();
     return color;
 }
 

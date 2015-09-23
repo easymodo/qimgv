@@ -25,12 +25,11 @@ void LoadHelper::doLoad() {
     QString pathLocal = path;
     mutex.unlock();
     if(cache->isLoaded(targetLocal)) {
-        qDebug() << "LOADHELPER: skipping loading "<< targetLocal << ", already in cache";
+        //qDebug() << "LOADHELPER: skipping loading "<< targetLocal << ", already in cache";
         emit finished(targetLocal);
         return;
     }
-    qDebug() << "LOADHELPER: loading! "<< targetLocal;
-    //this->thread()->msleep(1000);
+    //qDebug() << "LOADHELPER: loading! "<< targetLocal;
     ImageFactory *factory = new ImageFactory();
     Image *img = factory->createImage(pathLocal);
     delete factory;

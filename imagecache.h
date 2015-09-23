@@ -73,7 +73,6 @@ public:
     void setImage(Image* _img) {
         img = _img;
         info = img->getInfo();
-        qDebug() << img->thread();
     }
     void setThumbnail(Thumbnail* _thumbnail) {
         if(thumbnail && _thumbnail) {

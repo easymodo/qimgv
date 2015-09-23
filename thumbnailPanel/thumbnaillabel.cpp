@@ -35,7 +35,7 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsPixmapItem *parent) :
     highlightColor = new QColor(globalSettings->accentColor());
     highlightColorBorder = new QColor(20, 26, 17); //unused for now
     outlineColor = new QColor(Qt::black);
-    nameColor = new QColor(20, 20, 20, 160);
+    nameColor = new QColor(10, 10, 10, 200);
     shadowGradient = new QLinearGradient(shadowRect.topLeft(),
                                          shadowRect.bottomLeft());
     shadowGradient->setColorAt(0, QColor(0,0,0,100));
@@ -86,7 +86,7 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     //colored bar and shadow on the top
     if(isHighlighted()) {
         painter->fillRect(highlightRect, *highlightColor);
-        painter->fillRect(shadowRect, *shadowGradient);
+        //painter->fillRect(shadowRect, *shadowGradient);
     }
 
     //setup font
@@ -95,9 +95,9 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     //nameLabel
     painter->fillRect(nameRect, *nameColor);
     painter->setPen(QColor(10,10,10,200));
-    painter->drawText(nameRect.adjusted(2,1,0,0), thumbnail->name);
+    painter->drawText(nameRect.adjusted(3,2,0,0), thumbnail->name);
     painter->setPen(QColor(255,255,255,255));
-    painter->drawText(nameRect.adjusted(1,0,0,0), thumbnail->name);
+    painter->drawText(nameRect.adjusted(2,1,0,0), thumbnail->name);
 
     //typeLabel
     if(showLabel) {

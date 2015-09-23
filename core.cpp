@@ -71,9 +71,11 @@ void Core::updateInfoString() {
                           QString::number(imageLoader->current->height()) +
                           "  ");
         infoString.append(QString::number(imageLoader->current->getInfo()->getFileSize()) + " MB)");
+    } else {
+        infoString.append(" ...");
     }
 
-    infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
+    //infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
 
     emit infoStringChanged(infoString);
 }
@@ -95,11 +97,9 @@ void Core::crop(QRect newRect) {
 }
 
 void Core::releaseCurrentImage() {
-    if(imageLoader->current == currentImageAnimated) {
-        qDebug() << "###";
-        qDebug() << "######releasing!";
-        qDebug() << "###";
+    if(imageLoader->current == currentImageAnimated != NULL) {
         stopAnimation();
+        stopVideo();
     }
 }
 
@@ -154,16 +154,11 @@ void Core::loadImageByPos(int pos) {
 }
 
 void Core::onLoadFinished(Image* img, int pos) {
-    qDebug() << "loadFinished" << pos;
     mutex.lock();
     emit signalUnsetImage();
-    if(currentImageAnimated) {
-     //   stopAnimation();
-    }
     if(currentVideo) {
         emit stopVideo();
     }
-    //imageLoader->current = img;
 
     if( (currentImageAnimated = dynamic_cast<ImageAnimated*>(imageLoader->current)) != NULL ) {
         startAnimation();
