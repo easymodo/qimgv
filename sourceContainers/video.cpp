@@ -20,7 +20,6 @@ Video::Video(FileInfo *_info) {
 
 Video::~Video() {
     delete info;
-    delete extension;
 }
 
 void Video::load() {

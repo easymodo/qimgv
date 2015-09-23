@@ -24,7 +24,6 @@ ImageAnimated::~ImageAnimated()
     timer->deleteLater();
     delete movie;
     delete info;
-    delete extension;
 }
 
 //load image data from disk

@@ -28,7 +28,6 @@ ImageStatic::~ImageStatic()
 {
     delete image;
     delete info;
-    delete extension;
 }
 
 //load image data from disk
