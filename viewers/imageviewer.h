@@ -45,6 +45,7 @@ signals:
     void sendRightDoubleClick();
     void imageChanged();
     void cropSelected(QRect);
+    void wallpaperSelected(QRect);
     void resized(QSize);
     void scalingRequested(QSize);
 
@@ -61,6 +62,7 @@ public slots:
     void hideCursor();
     void updateImage(QPixmap *scaled);
 
+    void selectWallpaper();
 protected:
     virtual void paintEvent(QPaintEvent* event);
     virtual void mousePressEvent(QMouseEvent *event);

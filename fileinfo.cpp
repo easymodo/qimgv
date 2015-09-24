@@ -36,12 +36,7 @@ float FileInfo::getFileSize() {
 }
 
 fileType FileInfo::guessType() {
-    QStringList lst;
-    QString ext = fileInfo.fileName();
-    do {
-        lst = ext.split(".");
-        ext = lst.last();
-    } while( lst.count() > 1 );
+    QString ext = getExtension(fileInfo.filePath());
     if(ext == "webm" || ext == "gifv") { // case sensitivity?
         return VIDEO;
     }

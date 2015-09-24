@@ -43,8 +43,6 @@ void ImageViewer::initOverlays() {
     });
 
     cropOverlay = new CropOverlay(this);
-    connect(cropOverlay, SIGNAL(cropSelected(QRect)),
-            this, SIGNAL(cropSelected(QRect)));
 }
 
 bool ImageViewer::imageIsScaled() const {
@@ -96,8 +94,27 @@ void ImageViewer::updateImage(QPixmap *scaled) {
 }
 
 void ImageViewer::crop() {
+    disconnect(cropOverlay, SIGNAL(selected(QRect)),
+            this, SIGNAL(wallpaperSelected(QRect)));
+    connect(cropOverlay, SIGNAL(selected(QRect)),
+            this, SIGNAL(cropSelected(QRect)), Qt::UniqueConnection);
     if(cropOverlay->isHidden() && isDisplaying()) {
         cursorTimer->stop();
+        cropOverlay->setButtonText("CROP");
+        cropOverlay->display();
+    } else {
+        cropOverlay->hide();
+    }
+}
+
+void ImageViewer::selectWallpaper() {
+    disconnect(cropOverlay, SIGNAL(selected(QRect)),
+            this, SIGNAL(cropSelected(QRect)));
+    connect(cropOverlay, SIGNAL(selected(QRect)),
+            this, SIGNAL(wallpaperSelected(QRect)), Qt::UniqueConnection);
+    if(cropOverlay->isHidden() && isDisplaying()) {
+        cursorTimer->stop();
+        cropOverlay->setButtonText("SET WALLPAPER");
         cropOverlay->display();
     } else {
         cropOverlay->hide();

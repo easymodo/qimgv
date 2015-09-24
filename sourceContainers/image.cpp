@@ -1,12 +1,7 @@
 #include "image.h"
 
 fileType Image::guessType() {
-    QStringList lst;
-    QString ext = path;
-    do {
-        lst = ext.split(".");
-        ext = lst.last();
-    } while( lst.count() > 1 );
+    QString ext = getExtension(path);
     if(ext == "webm" || ext == "gifv") { // case sensitivity?
         type = VIDEO;
         return type;

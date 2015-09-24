@@ -3,11 +3,14 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include "directorymanager.h"
 #include "newloader.h"
 #include "settings.h"
 #include "sourceContainers/imageanimated.h"
+#include "wallpapersetter.h"
+#include "lib/stuff.h"
 
 class Core : public QObject
 {
@@ -67,6 +70,7 @@ public slots:
     void rescaleForZoom(QSize newSize);
     void startAnimation();
     void stopAnimation();
+    void setWallpaper(QRect wpRect);
 };
 
 #endif // CORE_H

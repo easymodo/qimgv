@@ -137,6 +137,9 @@ void MainWindow::enableImageViewer() {
         connect(imageViewer, SIGNAL(cropSelected(QRect)),
                 core, SLOT(crop(QRect)), Qt::UniqueConnection);
 
+        connect(imageViewer, SIGNAL(wallpaperSelected(QRect)),
+                core, SLOT(setWallpaper(QRect)), Qt::UniqueConnection);
+
         connect(core, SIGNAL(signalSetImage(QPixmap*)),
                 this, SLOT(openImage(QPixmap*)), Qt::UniqueConnection);
 
@@ -174,6 +177,9 @@ void MainWindow::disableImageViewer() {
 
     disconnect(imageViewer, SIGNAL(cropSelected(QRect)),
             core, SLOT(crop(QRect)));
+
+    disconnect(imageViewer, SIGNAL(wallpaperSelected(QRect)),
+            core, SLOT(setWallpaper(QRect)));
 
     disconnect(core, SIGNAL(signalSetImage(QPixmap*)),
             imageViewer, SLOT(displayImage(QPixmap*)));
@@ -319,7 +325,7 @@ void MainWindow::createActions()
     connect(settingsAct, SIGNAL(triggered()), settingsDialog, SLOT(show()));
 
     QList<QKeySequence> exitShortcuts;
-    exitShortcuts << Qt::Key_Escape << Qt::ALT+Qt::Key_X << Qt::CTRL+Qt::Key_Q;
+    exitShortcuts << Qt::ALT+Qt::Key_X << Qt::CTRL+Qt::Key_Q;
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcuts(exitShortcuts);
     this->addAction(exitAct);
@@ -336,6 +342,14 @@ void MainWindow::createActions()
     connect(cropAct, &QAction::triggered, [=]() {
         this->slotFitAll();
         imageViewer->crop();
+    });
+
+    selectWallpaperAct = new QAction(tr("Set wallpaper"), this);
+    selectWallpaperAct->setShortcut(Qt::Key_Z);
+    this->addAction(selectWallpaperAct);
+    connect(selectWallpaperAct, &QAction::triggered, [=]() {
+        this->slotFitAll();
+        imageViewer->selectWallpaper();
     });
 
     rotateRightAct = new QAction(tr("Rotate R&ight"), this);
@@ -426,6 +440,8 @@ void MainWindow::createMenus()
     editMenu->addSeparator();
     editMenu->addAction(rotateLeftAct);
     editMenu->addAction(rotateRightAct);
+    editMenu->addSeparator();
+    editMenu->addAction(selectWallpaperAct);
 
     viewMenu = new QMenu(tr("&View"), this);
     viewMenu->addAction(fullscreenEnabledAct);

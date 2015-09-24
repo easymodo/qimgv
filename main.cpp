@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationName("greenpepper software");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
-    QCoreApplication::setApplicationVersion("0.41");
+    QCoreApplication::setApplicationVersion("0.42dev");
 
     globalSettings = Settings::getInstance();
     atexit(saveSettings);
@@ -34,6 +34,5 @@ int main(int argc, char *argv[]) {
         mw.open(fileName);
     }
     mw.show();
-
     return a.exec();
 }

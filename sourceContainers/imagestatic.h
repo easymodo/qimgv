@@ -23,6 +23,7 @@ public:
     QImage *rotated(int grad);
     void rotate(int grad);
     QPixmap* generateThumbnail();
+    QImage *cropped(QRect newRect, QRect targetRes, bool upscaled);
 
 public slots:
     void crop(QRect newRect);

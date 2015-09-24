@@ -90,10 +90,29 @@ void Core::rotateImage(int grad) {
 
 void Core::crop(QRect newRect) {
     if(imageLoader->current) {
-        imageLoader->current->crop(newRect);
-        updateInfoString();
+        ImageStatic* staticImage;
+        if((staticImage = dynamic_cast<ImageStatic*>(imageLoader->current)) != NULL) {
+            staticImage->crop(newRect);
+            updateInfoString();
+        }
     }
     emit imageAltered(imageLoader->current->getPixmap());
+}
+
+void Core::setWallpaper(QRect wpRect) {
+    if(imageLoader->current) {
+        ImageStatic* staticImage;
+        if((staticImage = dynamic_cast<ImageStatic*>(imageLoader->current)) != NULL) {
+            QImage* cropped = NULL;
+            QRect screenRes = QApplication::desktop()->screenGeometry();
+            if(cropped = staticImage->cropped(wpRect, screenRes, true)) {
+                QString savePath = QDir::homePath()+"/"+".wallpaper.jpg";
+                cropped->save(savePath, getExtension(savePath), 100);
+                WallpaperSetter::setWallpaper(savePath);
+                delete cropped;
+            }
+        }
+    }
 }
 
 void Core::releaseCurrentImage() {

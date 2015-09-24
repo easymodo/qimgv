@@ -2,6 +2,7 @@
 #define IMAGE_H
 
 #include "../lib/imagelib.h"
+#include "../lib/stuff.h"
 #include "../fileinfo.h"
 #include "../settings.h"
 #include <QObject>

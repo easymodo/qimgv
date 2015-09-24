@@ -52,7 +52,7 @@ void ImageStatic::load()
 void ImageStatic::save(QString destinationPath) {
     if(isLoaded()) {
         lock();
-        image->save(destinationPath, extension, 100);
+        image->save(destinationPath, getExtension(destinationPath), 100);
         unlock();
     }
 }
@@ -165,11 +165,32 @@ void ImageStatic::rotate(int grad) {
 
 void ImageStatic::crop(QRect newRect) {
     if(isLoaded()) {
-        QImage *tmp = new QImage(newRect.size(), QImage::Format_ARGB32_Premultiplied);
         lock();
+        QImage *tmp = new QImage(newRect.size(), image->format());
         *tmp = image->copy(newRect);
         delete image;
         image = tmp;
         unlock();
+    }
+}
+
+QImage* ImageStatic::cropped(QRect newRect, QRect targetRes, bool upscaled) {
+    if(isLoaded()) {
+        lock();
+        QImage *cropped = new QImage(targetRes.size(), image->format());
+        if(upscaled) {
+            QImage temp = image->copy(newRect);
+            *cropped = temp.scaled(targetRes.size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+            QRect target(QPoint(0,0), targetRes.size());
+            target.moveCenter(cropped->rect().center());
+            *cropped = cropped->copy(target);
+        } else {
+            newRect.moveCenter(image->rect().center());
+            *cropped = image->copy(newRect);
+        }
+        unlock();
+        return cropped;
+    } else {
+        return NULL;
     }
 }

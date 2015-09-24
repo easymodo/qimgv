@@ -101,6 +101,7 @@ private:
     QAction *rotateLeftAct;
     QAction *rotateRightAct;
     QAction *cropAct;
+    QAction *selectWallpaperAct;
     QAction *nextAct;
     QAction *prevAct;
     QAction *exitAct;

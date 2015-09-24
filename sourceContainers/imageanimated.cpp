@@ -27,11 +27,9 @@ ImageAnimated::~ImageAnimated()
 }
 
 //load image data from disk
-void ImageAnimated::load()
-{
-    mutex.lock();
+void ImageAnimated::load() {
+    QMutexLocker mutexLocker(&mutex);
     if(isLoaded()) {
-        mutex.unlock();
         return;
     }
     if(!info)
@@ -41,7 +39,6 @@ void ImageAnimated::load()
     movie->setFileName(path);
     movie->jumpToFrame(0);
     loaded = true;
-    mutex.unlock();
 }
 
 void ImageAnimated::save(QString destinationPath) {

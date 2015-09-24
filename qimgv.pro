@@ -44,7 +44,9 @@ SOURCES += main.cpp\
     loadhelper.cpp \
     newloader.cpp \
     imagefactory.cpp \
-    thumbnailer.cpp
+    thumbnailer.cpp \
+    lib/stuff.cpp \
+    wallpapersetter.cpp
 
 HEADERS  += mainwindow.h \
     overlays/infooverlay.h \
@@ -73,7 +75,9 @@ HEADERS  += mainwindow.h \
     loadhelper.h \
     newloader.h \
     imagefactory.h \
-    thumbnailer.h
+    thumbnailer.h \
+    wallpapersetter.h \
+    lib/stuff.h
 
 FORMS    += \
     settingsdialog.ui
