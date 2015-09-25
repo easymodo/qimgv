@@ -37,11 +37,7 @@ void SettingsDialog::readSettings() {
     // ##### scaling #####
 
     setting = globalSettings->useFastScale();
-    if(setting==true) {
-        ui->scalingQualityComboBox->setCurrentIndex(1);
-    } else {
-        ui->scalingQualityComboBox->setCurrentIndex(0);
-    }
+    ui->scalingQualityComboBox->setCurrentIndex(setting ? 1 : 0);
 
     // ##### fit mode #####
     int tmp = globalSettings->imageFitMode();
@@ -98,13 +94,11 @@ void SettingsDialog::applySettings() {
 
     globalSettings->setFfmpegExecutable(ui->ffmpegLineEdit->text());
 
-    if(ui->scalingQualityComboBox->currentIndex()==1) {
-        globalSettings->setUseFastScale(true);
-    } else {
-        globalSettings->setUseFastScale(false);
-    }
+    bool useFastScale = ui->scalingQualityComboBox->currentIndex() == 1;
+    globalSettings->setUseFastScale(useFastScale);
 
     globalSettings->setPanelPosition((PanelPosition)ui->panelPositionComboBox->currentIndex());
+
     globalSettings->setBackgroundColor(bgLabelPalette.color(QPalette::Window));
     globalSettings->setAccentColor(accentLabelPalette.color(QPalette::Window));
 

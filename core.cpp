@@ -185,7 +185,7 @@ void Core::onLoadFinished(Image* img, int pos) {
     if ( (currentVideo = dynamic_cast<Video*>(imageLoader->current)) != NULL) {
         emit videoChanged(currentVideo->filePath());
     }
-    if(!currentVideo && !currentVideo && imageLoader->current) { //static image
+    if(!currentVideo && imageLoader->current) { //static image
         emit signalSetImage(imageLoader->current->getPixmap());
     } else {
         qDebug() << "core: got invalid image after load!";
