@@ -40,12 +40,7 @@ void ImageStatic::load()
         return;
     }
     guessType();
-    if(extension) {
-        image = new QImage(path, extension);
-    }
-    else {
-        image = new QImage(path); // qt will guess format
-    }
+    image = extension ? new QImage(path, extension) : new QImage(path);
     loaded = true;
 }
 
@@ -115,29 +110,19 @@ QPixmap* ImageStatic::getPixmap()
 }
 
 const QImage* ImageStatic::getImage() {
-    const QImage* cPtr = image;
-    return cPtr;
+    return image;
 }
 
 int ImageStatic::height() {
-    if(isLoaded()) {
-        return image->height();
-    }
-    return 0;
+    return isLoaded() ? image->height() : 0;
 }
 
 int ImageStatic::width() {
-    if(isLoaded()) {
-        return image->width();
-    }
-    return 0;
+    return isLoaded() ? image->width() : 0;
 }
 
 QSize ImageStatic::size() {
-    if(isLoaded()) {
-        return image->size();
-    }
-    return QSize(0,0);
+    return isLoaded() ? image->size() : QSize(0,0);
 }
 
 QImage* ImageStatic::rotated(int grad) {
@@ -150,7 +135,7 @@ QImage* ImageStatic::rotated(int grad) {
         unlock();
         return img;
     }
-    else return NULL;
+    return NULL;
 }
 
 void ImageStatic::rotate(int grad) {
@@ -190,7 +175,6 @@ QImage* ImageStatic::cropped(QRect newRect, QRect targetRes, bool upscaled) {
         }
         unlock();
         return cropped;
-    } else {
-        return NULL;
     }
+    return NULL;
 }
