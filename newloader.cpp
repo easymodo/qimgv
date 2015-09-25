@@ -56,11 +56,7 @@ void NewLoader::doLoad(int pos) {
         //worker->setTarget(pos, dm->filePathAt(pos));
        //qDebug() << "DO_LOAD: start timer for " << pos;
         preloadTimer->stop();
-        if(loadTimer->isActive()) {
-            loadTimer->start(20);
-        } else {
-            loadTimer->start(0);
-        }
+        loadTimer->start(loadTimer->isActive() ? 20 : 0);
     }
     else {
        //qDebug() << "found" << pos << ", skipping load.";
@@ -113,11 +109,7 @@ void NewLoader::onLoadFinished(int loaded) {
 }
 
 bool NewLoader::isRevelant(int pos) {
-    if(pos<loadTarget-1 || pos>loadTarget+1) {
-        return false;
-    } else {
-        return true;
-    }
+    return !(pos<loadTarget-1 || pos>loadTarget+1);
 }
 
 void NewLoader::onLoadTimeout() {
@@ -170,11 +162,9 @@ void NewLoader::freeAt(int toUnload) {
        //qDebug() << "!!!deleting" << toUnload << "  "<< cache->imageAt(toUnload);
         if(current == cache->imageAt(toUnload)) {
             emit currentImageUnloading();
-            cache->unloadAt(toUnload);
             current = NULL;
-        } else {
-            cache->unloadAt(toUnload);
         }
+        cache->unloadAt(toUnload);
        //qDebug() << "image freed: "<< toUnload;
     }
 }
@@ -182,10 +172,9 @@ void NewLoader::freeAt(int toUnload) {
 bool NewLoader::setLoadTarget(int _target) {
     if(_target == loadTarget) {
         return false;
-    } else {
-        loadTarget = _target;
-        return true;
     }
+    loadTarget = _target;
+    return true;
 }
 
 const ImageCache *NewLoader::getCache() {
