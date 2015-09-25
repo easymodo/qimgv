@@ -5,6 +5,7 @@
 #include <windows.h>
 #endif
 #include <QString>
+#include <QProcess>
 #include <QDebug>
 #include "lib/stuff.h"
 
