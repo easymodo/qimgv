@@ -14,5 +14,6 @@ Image* ImageFactory::createImage(QString path) {
         img = new ImageStatic(path);
     }
     img->load();
+    delete info;
     return img;
 }
