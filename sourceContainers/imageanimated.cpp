@@ -112,17 +112,11 @@ int ImageAnimated::height() {
 }
 
 int ImageAnimated::width() {
-    if(isLoaded()) {
-        return movie->currentImage().width();
-    }
-    return 0;
+    return isLoaded() ? movie->currentImage().width() : 0;
 }
 
 QSize ImageAnimated::size() {
-    if(isLoaded()) {
-        return movie->currentImage().size();
-    }
-    return QSize(0,0);
+    return isLoaded() ? movie->currentImage().size() : QSize(0,0);
 }
 
 void ImageAnimated::animationStart() {
@@ -135,11 +129,9 @@ void ImageAnimated::animationStart() {
 }
 
 void ImageAnimated::animationStop() {
-    if(isLoaded() && timer) {
-        if(timer->isActive()) {
-            timer->stop();
-            disconnect(timer, SIGNAL(timeout()), this, SLOT(nextFrame()));
-        }
+    if(isLoaded() && timer && timer->isActive()) {
+        timer->stop();
+        disconnect(timer, SIGNAL(timeout()), this, SLOT(nextFrame()));
     }
 }
 
