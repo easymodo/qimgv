@@ -35,7 +35,9 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsPixmapItem *parent) :
     highlightColor = new QColor(globalSettings->accentColor());
     highlightColorBorder = new QColor(20, 26, 17); //unused for now
     outlineColor = new QColor(Qt::black);
-    nameColor = new QColor(10, 10, 10, 200);
+    nameColor = new QColor(10, 10, 10, 230);
+    labelColor = new QColor(globalSettings->accentColor());
+    labelColor->setAlpha(230);
     shadowGradient = new QLinearGradient(shadowRect.topLeft(),
                                          shadowRect.bottomLeft());
     shadowGradient->setColorAt(0, QColor(0,0,0,100));
@@ -101,7 +103,7 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
     //typeLabel
     if(showLabel) {
-        painter->fillRect(labelRect, *highlightColor);
+        painter->fillRect(labelRect, *labelColor);
         QPointF labelTextPos = labelRect.bottomLeft()+QPointF(2,-5);
         painter->setPen(QColor(10,10,10,200));
         painter->drawText(labelTextPos+QPointF(1,1), thumbnail->label);

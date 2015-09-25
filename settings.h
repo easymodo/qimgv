@@ -10,6 +10,13 @@
 #include <QColor>
 #include <QTemporaryDir>
 
+enum PanelPosition {
+    BOTTOM,
+    TOP,
+    LEFT,
+    RIGHT
+};
+
 class Settings : public QObject
 {
     Q_OBJECT
@@ -56,6 +63,9 @@ public:
     void setFfmpegExecutable(QString path);
     bool showThumbnailLabels();
     void setShowThumbnailLabels(bool mode);
+
+    PanelPosition panelPosition();
+    void setPanelPosition(PanelPosition);
 
     ~Settings();
 private:

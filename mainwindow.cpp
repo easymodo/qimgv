@@ -246,6 +246,7 @@ void MainWindow::readSettingsInitial() {
 
 void MainWindow::readSettings() {
     menuBar()->setHidden( globalSettings->menuBarHidden() );
+    panelPosition = globalSettings->panelPosition();
     int fitMode = globalSettings->imageFitMode();
     if(fitMode == 1) {
         slotFitWidth();
@@ -256,6 +257,8 @@ void MainWindow::readSettings() {
     else {
         slotFitAll();
     }
+    calculatePanelTriggerArea();
+    emit resized(size());
 }
 
 void MainWindow::slotOpenDialog() {
@@ -426,8 +429,7 @@ void MainWindow::createActions()
     modeFitWidth->setEnabled(true);
 }
 
-void MainWindow::createMenus()
-{
+void MainWindow::createMenus() {
     fileMenu = new QMenu(tr("&File"), this);
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
@@ -527,9 +529,26 @@ void MainWindow::slotSaveDialog() {
 void MainWindow::resizeEvent(QResizeEvent* event) {
     Q_UNUSED(event)
     if(panel) {
+        calculatePanelTriggerArea();
         emit resized(size());
     }
     updateOverlays();
+}
+
+void MainWindow::calculatePanelTriggerArea() {
+    switch (panelPosition) {
+        case LEFT:   panelArea.setRect(0, 0, 80, height());
+                     break;
+        case RIGHT:  panelArea.setRect(width() - 80, 0, width(), height());
+                     break;
+        case BOTTOM: panelArea.setRect(0, height() - 80, width() - 180, height());
+                     break;
+        case TOP:    panelArea.setRect(0, 0, width(), 80);
+                     if(isFullScreen()) {
+                        panelArea.setRight(width() - 250);
+                     }
+                     break;
+    }
 }
 
 void MainWindow::updateOverlays() {
@@ -546,15 +565,20 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event) {
     if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
-        if(event->pos().y() > height()-60 && event->pos().x() < width()-170 && panel) {
+        if(panelArea.contains(event->pos()) && panel) {
             panel->show();
         }
+        event->ignore();
     }
-    event->ignore();
 }
 
-void MainWindow::wheelEvent(QWheelEvent *event)
-{
+void MainWindow::wheelEvent(QWheelEvent *event) {
+    if(panel && !panel->isHidden() && panel->rect().contains(event->pos())) {
+        event->ignore();
+        return;
+    }
+    qDebug() << "WAT";
+    event->accept();
     if(event->angleDelta().ry() < 0) {
         emit signalNextImage();
     }
@@ -563,8 +587,7 @@ void MainWindow::wheelEvent(QWheelEvent *event)
     }
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
+void MainWindow::keyPressEvent(QKeyEvent *event) {
     QMainWindow::keyPressEvent(event);
     if (event->key() == Qt::Key_Space)
     {

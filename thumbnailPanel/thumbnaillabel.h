@@ -44,7 +44,7 @@ private:
     QString infoString;
     QLinearGradient *shadowGradient;
     QRectF highlightRect, shadowRect, labelRect, nameRect;
-    QColor *highlightColor, *outlineColor, *highlightColorBorder, *nameColor;
+    QColor *highlightColor, *outlineColor, *highlightColorBorder, *nameColor, *labelColor;
     QFont font;
     QFontMetrics *fm;
 

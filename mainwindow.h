@@ -88,6 +88,8 @@ private:
     ThumbnailStrip *panel;
     int currentViewer; // 0 = none; 1 = imageViewer; 2 = VideoPlayer;
     QBoxLayout *layout;
+    PanelPosition panelPosition;
+    QRect panelArea;
     void init();
     void createActions();
     void createMenus();
@@ -121,6 +123,7 @@ private:
     QMenu *helpMenu;
 
     void readSettingsInitial();
+    void calculatePanelTriggerArea();
 protected:
     void wheelEvent(QWheelEvent *event);
     bool eventFilter(QObject *target, QEvent *event);

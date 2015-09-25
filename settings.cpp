@@ -225,6 +225,30 @@ void Settings::setShowThumbnailLabels(bool mode) {
     globalSettings->s.setValue("showThumbnailLabels", mode);
 }
 
+PanelPosition Settings::panelPosition() {
+    QString posString = globalSettings->s.value("panelPosition", "bottom").toString();
+    if(posString == "top") {
+        return PanelPosition::TOP;
+    } else if(posString == "left") {
+        return PanelPosition::LEFT;
+    } else if(posString == "right") {
+        return PanelPosition::RIGHT;
+    } else {
+        return PanelPosition::BOTTOM;
+    }
+}
+
+void Settings::setPanelPosition(PanelPosition pos) {
+    QString posString;
+    switch(pos) {
+        case LEFT: posString = "left"; break;
+        case RIGHT: posString = "right"; break;
+        case TOP: posString = "top"; break;
+        case BOTTOM: posString = "bottom"; break;
+    }
+    globalSettings->s.setValue("panelPosition", posString);
+}
+
 /* 0: all
  * 1: fit width
  * 2: orginal size

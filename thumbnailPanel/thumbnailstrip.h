@@ -22,9 +22,9 @@ class ThumbnailStrip : public QGraphicsView
 public:
     explicit ThumbnailStrip(QWidget *parent = 0);
     ~ThumbnailStrip();
-    QList<ThumbnailLabel*> thumbnailLabels;
 
 private:
+    QList<ThumbnailLabel*> thumbnailLabels;
     void addItem();
     QGraphicsLinearLayout *layout;
     QGraphicsWidget *widget;
@@ -39,9 +39,9 @@ private:
 
     const int SCROLL_STEP = 200;
     const uint LOAD_DELAY = 30;
-    const int OFFSCREEN_PRELOAD_AREA = 400;
+    const int OFFSCREEN_PRELOAD_AREA = 550;
 
-    int panelHeight;
+    int panelSize;
     int itemCount, current, thumbnailSize;
     bool childVisible(int pos);
     ThumbnailStrip *strip;
@@ -49,6 +49,8 @@ private:
     QTimer loadTimer;
     bool childVisibleEntirely(int pos);
     QRectF itemsBoundingRect();
+    QScrollBar *scrollBar;
+    PanelPosition position;
 
     void requestThumbnailLoad(int pos);
 signals:
@@ -73,6 +75,7 @@ private slots:
     void sceneClicked(QPointF pos);
     void updateVisibleRegion();
     void translateX(int dx);
+    void readSettings();
 };
 
 #endif // THUMBNAILSTRIP_H

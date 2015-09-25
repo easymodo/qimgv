@@ -54,6 +54,8 @@ void SettingsDialog::readSettings() {
     ui->fullscreenCheckBox->setChecked(globalSettings->fullscreenMode());
     ui->thumbnailLabelsCheckBox->setChecked(globalSettings->showThumbnailLabels());
 
+    ui->panelPositionComboBox->setCurrentIndex(globalSettings->panelPosition());
+
     //bg color
     QColor bgColor = globalSettings->backgroundColor();
     bgLabelPalette.setColor(QPalette::Window, bgColor);
@@ -101,18 +103,21 @@ void SettingsDialog::applySettings() {
     } else {
         globalSettings->setUseFastScale(false);
     }
+
+    globalSettings->setPanelPosition((PanelPosition)ui->panelPositionComboBox->currentIndex());
     globalSettings->setBackgroundColor(bgLabelPalette.color(QPalette::Window));
     globalSettings->setAccentColor(accentLabelPalette.color(QPalette::Window));
 
-    if(ui->thumbSizeComboBox->currentIndex() == 0) {
+    int index = ui->thumbSizeComboBox->currentIndex();
+    if(index == 0) {
         globalSettings->setThumbnailSize(thumbSizeSmall);
-    } else if(ui->thumbSizeComboBox->currentIndex() == 1) {
+    } else if(index == 1) {
         globalSettings->setThumbnailSize(thumbSizeMedium);
-    } else if(ui->thumbSizeComboBox->currentIndex() == 2) {
+    } else if(index == 2) {
         globalSettings->setThumbnailSize(thumbSizeLarge);
-    } else if(ui->thumbSizeComboBox->currentIndex() == 3) {
+    } else if(index == 3) {
         globalSettings->setThumbnailSize(thumbSizeVeryLarge);
-    } else if(ui->thumbSizeComboBox->currentIndex() == 4) {
+    } else if(index == 4) {
         globalSettings->setThumbnailSize(thumbSizeCustom);
     }
     emit settingsChanged();

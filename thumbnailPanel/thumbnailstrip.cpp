@@ -1,25 +1,28 @@
 #include "thumbnailstrip.h"
 
 ThumbnailStrip::ThumbnailStrip(QWidget *parent)
-    : QGraphicsView(parent)
+    : QGraphicsView(parent),
+      panelSize(122),
+      current(-1)
 {
-    panelHeight = globalSettings->thumbnailSize() + 22;
-    current=-1;
+    scrollBar = this->horizontalScrollBar();
+    horizontalScrollBar()->setAttribute(Qt::WA_NoMousePropagation, true);
+    verticalScrollBar()->setAttribute(Qt::WA_NoMousePropagation, true);
     widget = new QGraphicsWidget();
+    widget->setAttribute(Qt::WA_TransparentForMouseEvents);
     scene = new CustomScene;
-    layout = new QGraphicsLinearLayout(Qt::Horizontal);
+    layout = new QGraphicsLinearLayout();
     timeLine = new QTimeLine(50, this);
     timeLine->setCurveShape(QTimeLine::EaseInCurve);
     widget->setLayout(layout);
     layout->setSpacing(0);
-    layout->setContentsMargins(2,0,2,0);
     scene->addItem(widget);
 
     this->setScene(scene);
-    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     this->setFrameShape(QFrame::NoFrame);
-    this->setGeometry(0,0,300,panelHeight);
-    this->horizontalScrollBar()->setAttribute(Qt::WA_NoMousePropagation, true);
+
+    readSettings();
     this->hide();
 
     loadTimer.setSingleShot(true);
@@ -27,13 +30,47 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     connect(scene, SIGNAL(sceneClick(QPointF)),
             this, SLOT(sceneClicked(QPointF)));
 
-    connect(this->horizontalScrollBar(), SIGNAL(valueChanged(int)),
-            this, SLOT(loadVisibleThumbnailsDelayed()));
-    connect(this->horizontalScrollBar(), SIGNAL(sliderMoved(int)),
-            this, SLOT(loadVisibleThumbnailsDelayed()));
     connect(&loadTimer, SIGNAL(timeout()),
             this, SLOT(loadVisibleThumbnails()));
-    connect(timeLine, SIGNAL(frameChanged(int)), horizontalScrollBar(), SLOT(setValue(int)));
+
+    connect(globalSettings, SIGNAL(settingsChanged()),
+            this, SLOT(readSettings()));
+}
+
+void ThumbnailStrip::readSettings() {
+    qDebug() << "settings!";
+    position = globalSettings->panelPosition();
+    panelSize = globalSettings->thumbnailSize() + 22;
+    scrollBar->setValue(0);
+
+    disconnect(timeLine, SIGNAL(frameChanged(int)), scrollBar, SLOT(setValue(int)));
+    disconnect(scrollBar, SIGNAL(valueChanged(int)),
+            this, SLOT(loadVisibleThumbnailsDelayed()));
+    disconnect(scrollBar, SIGNAL(sliderMoved(int)),
+            this, SLOT(loadVisibleThumbnailsDelayed()));
+    if(position == LEFT || position == RIGHT) {
+        horizontalScrollBar()->setDisabled(true);
+        this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        scrollBar = this->verticalScrollBar();
+        layout->setOrientation(Qt::Vertical);
+        layout->setContentsMargins(0,2,0,2);
+
+    } else {
+        this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        this->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        scrollBar = this->horizontalScrollBar();
+        layout->setOrientation(Qt::Horizontal);
+        layout->setContentsMargins(2,0,2,0);
+    }
+    connect(timeLine, SIGNAL(frameChanged(int)), scrollBar, SLOT(setValue(int)), Qt::UniqueConnection);
+    connect(scrollBar, SIGNAL(valueChanged(int)),
+            this, SLOT(loadVisibleThumbnailsDelayed()), Qt::UniqueConnection);
+    connect(scrollBar, SIGNAL(sliderMoved(int)),
+            this, SLOT(loadVisibleThumbnailsDelayed()), Qt::UniqueConnection);
+    layout->invalidate();
+    layout->activate();
+    scene->setSceneRect(layout->geometry());
 }
 
 void ThumbnailStrip::fillPanel(int count) {
@@ -41,7 +78,6 @@ void ThumbnailStrip::fillPanel(int count) {
     loadTimer.stop();
     populate(count);
     loadVisibleThumbnailsDelayed();
-    //this->horizontalScrollBar()->setValue(0);
 }
 
 void ThumbnailStrip::selectThumbnail(int pos) {
@@ -143,7 +179,11 @@ void ThumbnailStrip::setThumbnail(int pos, const Thumbnail* thumb) {
 void ThumbnailStrip::updateVisibleRegion() {
     QRect viewport_rect(0, 0, width(), height());
     visibleRegion = mapToScene(viewport_rect).boundingRect();
-    visibleRegion.adjust(-OFFSCREEN_PRELOAD_AREA,0,OFFSCREEN_PRELOAD_AREA,0);
+    if(layout->orientation() == Qt::Vertical) {
+        visibleRegion.adjust(0,-OFFSCREEN_PRELOAD_AREA,0,OFFSCREEN_PRELOAD_AREA);
+    } else {
+        visibleRegion.adjust(-OFFSCREEN_PRELOAD_AREA,0,OFFSCREEN_PRELOAD_AREA,0);
+    }
 }
 
 bool ThumbnailStrip::childVisible(int pos) {
@@ -174,38 +214,31 @@ void ThumbnailStrip::sceneClicked(QPointF pos) {
 }
 
 void ThumbnailStrip::wheelEvent(QWheelEvent *event) {
-    event->setAccepted(true);
-
+    event->accept();
     if(timeLine->state() == QTimeLine::Running) {
         timeLine->stop();
-        horizontalScrollBar()->setValue(timeLine->endFrame());
+        scrollBar->setValue(timeLine->endFrame());
     }
-    timeLine->setFrameRange(horizontalScrollBar()->value(),
-                            horizontalScrollBar()->value()-event->angleDelta().ry()*2.5);
+    timeLine->setFrameRange(scrollBar->value(),
+                            scrollBar->value()-event->angleDelta().ry()*2.5);
     timeLine->setUpdateInterval(16);
     timeLine->start();
-
-
-    /* instant
-    horizontalScrollBar()->setValue(horizontalScrollBar()->
-                                    value()-event->angleDelta().ry());
-    */
-
-    /*
-    QPointF viewCenter = mapToScene(width() / 2, 0);
-    if(event->angleDelta().ry() < 0) {
-        viewCenter += QPointF(SCROLL_STEP, 0);
-    }
-    else {
-        viewCenter -= QPointF(SCROLL_STEP, 0);
-    }
-    centerOnSmooth(viewCenter);
-    */
 }
 
-void ThumbnailStrip::parentResized(QSize parentSize) {
-    this->setGeometry( QRect(0, parentSize.height() - panelHeight + 1,
-                             parentSize.width(), panelHeight) );
+void ThumbnailStrip::parentResized(QSize parentSz) {
+    if(position == BOTTOM) {
+        this->setGeometry( QRect(QPoint(0, parentSz.height() - panelSize + 1),
+                                 QPoint(parentSz.width(), parentSz.height())) );
+    } else if (position == LEFT){
+        this->setGeometry( QRect(QPoint(0, 0),
+                                 QPoint(panelSize, parentSz.height())) );
+    } else if (position == RIGHT) {
+        this->setGeometry( QRect(QPoint(parentSz.width() - panelSize, 0),
+                                 QPoint(parentSz.width(), parentSz.height())) );
+    } else if(position == TOP) {
+        this->setGeometry( QRect(QPoint(0, 0),
+                                 QPoint(parentSz.width(), panelSize)) );
+    }
     loadVisibleThumbnailsDelayed();
 }
 
@@ -217,3 +250,4 @@ void ThumbnailStrip::leaveEvent(QEvent *event) {
 ThumbnailStrip::~ThumbnailStrip() {
 
 }
+
