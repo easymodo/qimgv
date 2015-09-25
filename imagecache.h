@@ -15,32 +15,10 @@
 class CacheObject {
 public:
     CacheObject(QString _path) : img(NULL), thumbnail(NULL), info(NULL), path(_path) {
-        //possible slowdown here
-        info = new FileInfo(path);
     }
 
     ~CacheObject() {
         delete img;
-        delete info;
-    }
-    void generateThumbnail() {
-        mutex.lock();
-        delete thumbnail;
-        thumbnail = new Thumbnail;
-        if(!img) qDebug() << "returning null 3";
-        thumbnail->image = new QPixmap();
-        //thumbnail->image = getImg()->generateThumbnail();
-        if(info->getType() == GIF) {
-            thumbnail->label = "[gif]";
-        } else if(info->getType() == VIDEO) {
-                thumbnail->label = "[webm]";
-        }
-        if(thumbnail->image->size() == QSize(0,0)) {
-            delete thumbnail->image;
-            thumbnail->image = new QPixmap(":/images/res/error_no_image_100px.png");
-        }
-        thumbnail->name = info->getFileName();
-        mutex.unlock();
     }
     const Thumbnail* getThumbnail() {
         if(!thumbnail) {
@@ -48,8 +26,9 @@ public:
         }
         return const_cast<const Thumbnail*>(thumbnail);
     }
-    const FileInfo* getInfo() {
-        return const_cast<const FileInfo*>(info);
+    FileInfo* getInfo() {
+        if(img)
+            return img->getInfo();
     }
     bool isLoaded() {
         if(img==NULL) {
@@ -58,16 +37,11 @@ public:
             return true;
         }
     }
-    void load() {
-        mutex.lock();
-        //getImg()->load();
-        //info = getImg()->getInfo();
-        mutex.unlock();
-    }
     void unload() {
         if(img) {
             img->safeDeleteSelf();
             img = NULL;
+            info = NULL;
         }
     }
     void setImage(Image* _img) {

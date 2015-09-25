@@ -14,7 +14,6 @@ public:
     WallpaperSetter();
 
     static void setWallpaper(QString path);
-    static void setWallpaperWin(QString path);
 };
 
 #endif // WALLPAPERSETTER_H

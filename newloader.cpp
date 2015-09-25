@@ -44,9 +44,9 @@ void NewLoader::openBlocking(QString path) {
 void NewLoader::open(int pos) {
     //cache->unloadAll();
     dm->setCurrentPos(pos);
-    freeAuto();
     emit loadStarted();
     doLoad(dm->currentFilePos());
+    freeAuto();
 }
 
 void NewLoader::doLoad(int pos) {
@@ -78,10 +78,10 @@ void NewLoader::loadNext() {
     QMutexLocker locker(&mutex);
     if(dm->peekNext(1) != dm->currentFilePos()) {
         if(setLoadTarget(dm->nextPos())) {
-            freeAuto();
             emit loadStarted();
             preloadTarget = dm->peekNext(1);
             doLoad(loadTarget);
+            freeAuto();
         }
     }
 }
@@ -90,10 +90,10 @@ void NewLoader::loadPrev() {
     QMutexLocker locker(&mutex);
     if(dm->peekPrev(1) != dm->currentFilePos()) {
         if(setLoadTarget(dm->prevPos())) {
-            freeAuto();
             emit loadStarted();
             preloadTarget = dm->peekPrev(1);
             doLoad(loadTarget);
+            freeAuto();
         }
     }
 }
