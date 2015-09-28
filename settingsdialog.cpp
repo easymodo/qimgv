@@ -21,6 +21,7 @@ void SettingsDialog::readSettings() {
 
     bool setting;
 
+    ui->infiniteScrollingCheckBox->setChecked(globalSettings->infiniteScrolling());
     ui->playVideosCheckBox->setChecked(globalSettings->playVideos());
     ui->playSoundsCheckBox->setChecked(globalSettings->playVideoSounds());
 
@@ -83,6 +84,7 @@ void SettingsDialog::readSettings() {
 
 void SettingsDialog::applySettings() {
     //globalSettings->s.setValue("cacheSize", ui->cacheSlider->value());
+    globalSettings->setInfiniteScrolling(ui->infiniteScrollingCheckBox->isChecked());
     globalSettings->setShowThumbnailLabels(ui->thumbnailLabelsCheckBox->isChecked());
     globalSettings->setUsePreloader(ui->preloaderCheckBox->isChecked());
     globalSettings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());

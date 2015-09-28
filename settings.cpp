@@ -86,8 +86,7 @@ QString Settings::supportedFormatsString() {
 }
 
 bool Settings::playVideos() {
-    bool mode = globalSettings->s.value("playVideos", true).toBool();
-    return mode;
+    return globalSettings->s.value("playVideos", true).toBool();
 }
 
 void Settings::setPlayVideos(bool mode) {
@@ -95,8 +94,7 @@ void Settings::setPlayVideos(bool mode) {
 }
 
 bool Settings::playVideoSounds() {
-    bool mode = globalSettings->s.value("playVideoSounds", false).toBool();
-    return mode;
+    return globalSettings->s.value("playVideoSounds", false).toBool();
 }
 
 void Settings::setPlayVideoSounds(bool mode) {
@@ -126,8 +124,7 @@ void Settings::setSortingMode(int mode) {
 }
 
 bool Settings::useFastScale() {
-    bool mode = globalSettings->s.value("useFastScale", "false").toBool();
-    return mode;
+    return globalSettings->s.value("useFastScale", "false").toBool();
 }
 
 void Settings::setUseFastScale(bool mode) {
@@ -135,8 +132,7 @@ void Settings::setUseFastScale(bool mode) {
 }
 
 QString Settings::lastDirectory() {
-    QString dir = globalSettings->s.value("lastDir", "").toString();
-    return dir;
+    return globalSettings->s.value("lastDir", "").toString();
 }
 
 void Settings::setLastDirectory(QString path) {
@@ -171,8 +167,7 @@ void Settings::setThumbnailSize(unsigned int size) {
 }
 
 bool Settings::usePreloader() {
-    bool mode = globalSettings->s.value("usePreloader", true).toBool();
-    return mode;
+    return globalSettings->s.value("usePreloader", true).toBool();
 }
 
 void Settings::setUsePreloader(bool mode) {
@@ -180,8 +175,7 @@ void Settings::setUsePreloader(bool mode) {
 }
 
 QColor Settings::backgroundColor() {
-    QColor color = globalSettings->s.value("bgColor", QColor(14,14,14)).value<QColor>();
-    return color;
+    return globalSettings->s.value("bgColor", QColor(14,14,14)).value<QColor>();
 }
 
 void Settings::setBackgroundColor(QColor color) {
@@ -189,8 +183,7 @@ void Settings::setBackgroundColor(QColor color) {
 }
 
 QColor Settings::accentColor() {
-    QColor color = globalSettings->s.value("accentColor", QColor(0,182,91)).value<QColor>();
-    return color;
+    return globalSettings->s.value("accentColor", QColor(0,182,91)).value<QColor>();
 }
 
 void Settings::setAccentColor(QColor color) {
@@ -198,9 +191,7 @@ void Settings::setAccentColor(QColor color) {
 }
 
 bool Settings::fullscreenMode() {
-    bool mode = true;
-    mode = globalSettings->s.value("openInFullscreen", true).toBool();
-    return mode;
+    return globalSettings->s.value("openInFullscreen", true).toBool();
 }
 
 void Settings::setFullscreenMode(bool mode) {
@@ -208,8 +199,7 @@ void Settings::setFullscreenMode(bool mode) {
 }
 
 bool Settings::menuBarHidden() {
-    bool mode = globalSettings->s.value("hideMenuBar", true).toBool();
-    return mode;
+    return globalSettings->s.value("hideMenuBar", true).toBool();
 }
 
 void Settings::setMenuBarHidden(bool mode) {
@@ -217,8 +207,7 @@ void Settings::setMenuBarHidden(bool mode) {
 }
 
 bool Settings::showThumbnailLabels() {
-    bool mode = globalSettings->s.value("showThumbnailLabels", true).toBool();
-    return mode;
+    return globalSettings->s.value("showThumbnailLabels", true).toBool();
 }
 
 void Settings::setShowThumbnailLabels(bool mode) {
@@ -271,8 +260,7 @@ void Settings::setImageFitMode(int mode) {
 }
 
 QByteArray Settings::windowGeometry() {
-    QByteArray geometry = globalSettings->s.value("windowGeometry").toByteArray();
-    return geometry;
+    return globalSettings->s.value("windowGeometry").toByteArray();
 }
 
 void Settings::setWindowGeometry(QByteArray geometry) {
@@ -280,12 +268,19 @@ void Settings::setWindowGeometry(QByteArray geometry) {
 }
 
 bool Settings::reduceRamUsage() {
-    bool mode = globalSettings->s.value("reduceRamUsage", false).toBool();
-    return mode;
+    return globalSettings->s.value("reduceRamUsage", false).toBool();
 }
 
 void Settings::setReduceRamUsage(bool mode) {
     globalSettings->s.setValue("reduceRamUsage", mode);
+}
+
+bool Settings::infiniteScrolling() {
+    return globalSettings->s.value("infiniteScrolling", false).toBool();
+}
+
+void Settings::setInfiniteScrolling(bool mode) {
+    globalSettings->s.setValue("infiniteScrolling", mode);
 }
 
 void Settings::sendChangeNotification() {

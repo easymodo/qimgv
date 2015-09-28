@@ -68,6 +68,8 @@ public:
     void setPanelPosition(PanelPosition);
 
     ~Settings();
+    bool infiniteScrolling();
+    void setInfiniteScrolling(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 120;

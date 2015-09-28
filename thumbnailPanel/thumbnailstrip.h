@@ -45,7 +45,7 @@ private:
     int itemCount, current, thumbnailSize;
     bool childVisible(int pos);
     ThumbnailStrip *strip;
-    QRectF visibleRegion;
+    QRectF preloadArea, visibleRegion;
     QTimer loadTimer;
     bool childVisibleEntirely(int pos);
     QRectF itemsBoundingRect();

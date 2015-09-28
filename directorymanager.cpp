@@ -2,7 +2,8 @@
 
 DirectoryManager::DirectoryManager() :
     currentPos(-1),
-    startDir("")
+    startDir(""),
+    infiniteScrolling(false)
 {
     readSettings();
     setCurrentDir(startDir);
@@ -134,6 +135,7 @@ void DirectoryManager::readSettings() {
 }
 
 void DirectoryManager::applySettingsChanges() {
+    infiniteScrolling = globalSettings->infiniteScrolling();
     QDir::SortFlags flags;
     switch(globalSettings->sortingMode()) {
         case 1: flags = QDir::SortFlags(QDir::Name | QDir::Reversed); break;
@@ -149,33 +151,37 @@ void DirectoryManager::applySettingsChanges() {
 }
 
 int DirectoryManager::nextPos() {
-    if(currentPos<0) {
-        currentPos=0;
-    } else if(++currentPos>=fileNameList.length()) {
-        currentPos = fileNameList.length()-1;
-    }
+    currentPos = peekNext(1);
     return currentPos;
 }
 
 int DirectoryManager::prevPos() {
-    if(--currentPos<0) {
-        currentPos = 0;
-    }
+    currentPos = peekPrev(1);
     return currentPos;
 }
 
 int DirectoryManager::peekNext(int offset) {
-    int pos = currentPos+offset;
-    if(pos>=fileNameList.length()) {
-        pos = fileNameList.length()-1;
+    int pos = currentPos + offset;
+    if(pos < 0) {
+        pos = 0;
+    } else if(pos >= fileNameList.length()) {
+        if(infiniteScrolling) {
+            pos = 0;
+        } else {
+            pos = fileNameList.length() - 1;
+        }
     }
     return pos;
 }
 
 int DirectoryManager::peekPrev(int offset) {
-    int pos = currentPos-offset;
-    if(pos<0) {
-        pos = 0;
+    int pos = currentPos - offset;
+    if(pos < 0) {
+        if(infiniteScrolling) {
+            pos = fileNameList.length() - 1;
+        } else {
+            pos = 0;
+        }
     }
     return pos;
 }

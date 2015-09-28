@@ -33,8 +33,11 @@ public:
     void setHighlighted(bool x);
     bool isHighlighted();
     void setOpacityAnimated(qreal amount, int speed);
+    void readSettings();
+    void applySettings();
 
 private:
+    Qt::Orientation orientation;
     const int SHADOW_HEIGHT = 10;
     bool hovered, loaded;
     bool showLabel, showName;

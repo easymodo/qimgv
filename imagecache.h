@@ -18,7 +18,7 @@ public:
     }
 
     ~CacheObject() {
-        delete img;
+        img->safeDeleteSelf();
     }
     const Thumbnail* getThumbnail() {
         if(!thumbnail) {

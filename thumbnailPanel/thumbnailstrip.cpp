@@ -8,9 +8,9 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     scrollBar = this->horizontalScrollBar();
     horizontalScrollBar()->setAttribute(Qt::WA_NoMousePropagation, true);
     verticalScrollBar()->setAttribute(Qt::WA_NoMousePropagation, true);
+    this->setAttribute(Qt::WA_NoMousePropagation, true);
     widget = new QGraphicsWidget();
-    widget->setAttribute(Qt::WA_TransparentForMouseEvents);
-    scene = new CustomScene;
+    scene = new CustomScene();
     layout = new QGraphicsLinearLayout();
     timeLine = new QTimeLine(50, this);
     timeLine->setCurveShape(QTimeLine::EaseInCurve);
@@ -38,10 +38,13 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
 }
 
 void ThumbnailStrip::readSettings() {
-    qDebug() << "settings!";
     position = globalSettings->panelPosition();
     panelSize = globalSettings->thumbnailSize() + 22;
     scrollBar->setValue(0);
+
+    for(int i = 0; i < thumbnailLabels.count(); i++) {
+        thumbnailLabels.at(i)->applySettings();
+    }
 
     disconnect(timeLine, SIGNAL(frameChanged(int)), scrollBar, SLOT(setValue(int)));
     disconnect(scrollBar, SIGNAL(valueChanged(int)),
@@ -137,12 +140,10 @@ QRectF ThumbnailStrip::itemsBoundingRect() {
     return boundingRect;
 }
 
-
 void ThumbnailStrip::loadVisibleThumbnailsDelayed() {
     loadTimer.stop();
     loadTimer.start(LOAD_DELAY);
 }
-
 
 void ThumbnailStrip::loadVisibleThumbnails() {
     loadTimer.stop();
@@ -178,28 +179,29 @@ void ThumbnailStrip::setThumbnail(int pos, const Thumbnail* thumb) {
 
 void ThumbnailStrip::updateVisibleRegion() {
     QRect viewport_rect(0, 0, width(), height());
-    visibleRegion = mapToScene(viewport_rect).boundingRect();
+    preloadArea = visibleRegion = mapToScene(viewport_rect).boundingRect();
     if(layout->orientation() == Qt::Vertical) {
-        visibleRegion.adjust(0,-OFFSCREEN_PRELOAD_AREA,0,OFFSCREEN_PRELOAD_AREA);
+        preloadArea.adjust(0,-OFFSCREEN_PRELOAD_AREA,0,OFFSCREEN_PRELOAD_AREA);
     } else {
-        visibleRegion.adjust(-OFFSCREEN_PRELOAD_AREA,0,OFFSCREEN_PRELOAD_AREA,0);
+        preloadArea.adjust(-OFFSCREEN_PRELOAD_AREA,0,OFFSCREEN_PRELOAD_AREA,0);
     }
 }
 
 bool ThumbnailStrip::childVisible(int pos) {
-    if(thumbnailLabels.count() >pos) {
+    if(thumbnailLabels.count() > pos) {
         return thumbnailLabels.at(pos)->
-                sceneBoundingRect().intersects(visibleRegion);
+                sceneBoundingRect().intersects(preloadArea);
     } else {
         return false;
     }
 }
 
 bool ThumbnailStrip::childVisibleEntirely(int pos) {
-    if(thumbnailLabels.count() >pos) {
-        QRectF visibleRegionReduced = visibleRegion.adjusted(500,0,-500,0);
+    if(thumbnailLabels.count() > pos) {
+        qDebug()<< thumbnailLabels.at(pos)->sceneBoundingRect();
+
         return thumbnailLabels.at(pos)->
-                sceneBoundingRect().intersects(visibleRegionReduced);
+                sceneBoundingRect().intersects(visibleRegion);
     } else {
         return false;
     }
@@ -248,6 +250,4 @@ void ThumbnailStrip::leaveEvent(QEvent *event) {
 }
 
 ThumbnailStrip::~ThumbnailStrip() {
-
 }
-

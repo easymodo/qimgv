@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>590</width>
-    <height>347</height>
+    <height>357</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -41,7 +41,7 @@
    <property name="geometry">
     <rect>
      <x>510</x>
-     <y>310</y>
+     <y>320</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -54,7 +54,7 @@
    <property name="geometry">
     <rect>
      <x>350</x>
-     <y>310</y>
+     <y>320</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -69,7 +69,7 @@
      <x>10</x>
      <y>10</y>
      <width>571</width>
-     <height>291</height>
+     <height>301</height>
     </rect>
    </property>
    <property name="tabPosition">
@@ -79,7 +79,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideNone</enum>
@@ -238,7 +238,7 @@
      <property name="geometry">
       <rect>
        <x>320</x>
-       <y>60</y>
+       <y>50</y>
        <width>181</width>
        <height>21</height>
       </rect>
@@ -251,7 +251,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>180</y>
+       <y>210</y>
        <width>151</width>
        <height>21</height>
       </rect>
@@ -264,7 +264,7 @@
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>180</y>
+       <y>210</y>
        <width>381</width>
        <height>21</height>
       </rect>
@@ -274,7 +274,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>210</y>
+       <y>230</y>
        <width>521</width>
        <height>41</height>
       </rect>
@@ -299,6 +299,19 @@
      </property>
      <property name="openExternalLinks">
       <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="infiniteScrollingCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>170</y>
+       <width>171</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Infinite scrolling</string>
      </property>
     </widget>
    </widget>
@@ -448,7 +461,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
+       <y>80</y>
        <width>141</width>
        <height>31</height>
       </rect>
@@ -461,7 +474,7 @@
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>100</y>
+       <y>80</y>
        <width>101</width>
        <height>28</height>
       </rect>
@@ -491,7 +504,7 @@
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>60</y>
+       <y>50</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -507,7 +520,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>60</y>
+       <y>50</y>
        <width>141</width>
        <height>21</height>
       </rect>
@@ -520,7 +533,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>200</y>
+       <y>160</y>
        <width>271</width>
        <height>21</height>
       </rect>
@@ -536,7 +549,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>150</y>
+       <y>120</y>
        <width>141</width>
        <height>31</height>
       </rect>
@@ -549,7 +562,7 @@
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>150</y>
+       <y>120</y>
        <width>101</width>
        <height>28</height>
       </rect>
@@ -581,7 +594,7 @@
    <property name="geometry">
     <rect>
      <x>430</x>
-     <y>310</y>
+     <y>320</y>
      <width>71</width>
      <height>28</height>
     </rect>

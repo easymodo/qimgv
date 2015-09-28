@@ -75,7 +75,7 @@ void Core::updateInfoString() {
         infoString.append(" ...");
     }
 
-    //infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
+    infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
 
     emit infoStringChanged(infoString);
 }
@@ -187,8 +187,6 @@ void Core::onLoadFinished(Image* img, int pos) {
     }
     if(!currentVideo && imageLoader->current) { //static image
         emit signalSetImage(imageLoader->current->getPixmap());
-    } else {
-        qDebug() << "core: got invalid image after load!";
     }
     emit imageChanged(pos);
     updateInfoString();

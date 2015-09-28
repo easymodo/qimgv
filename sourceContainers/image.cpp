@@ -35,6 +35,7 @@ fileType Image::guessType() {
 
 void Image::safeDeleteSelf() {
     mutex.lock(); // ensure we are not used
+    mutex.unlock();
     delete this;
 }
 

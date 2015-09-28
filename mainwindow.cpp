@@ -573,11 +573,10 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event) {
 }
 
 void MainWindow::wheelEvent(QWheelEvent *event) {
-    if(panel && !panel->isHidden() && panel->rect().contains(event->pos())) {
+    if(!panel->isHidden() && panel->rect().contains(event->pos())) {
         event->ignore();
         return;
     }
-    qDebug() << "WAT";
     event->accept();
     if(event->angleDelta().ry() < 0) {
         emit signalNextImage();

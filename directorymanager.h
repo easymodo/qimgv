@@ -44,6 +44,7 @@ public:
     QString prevFilePath();
     QString currentFilePath();
     QString filePathAt(int pos);
+
 public slots:
     void applySettingsChanges();
 
@@ -55,6 +56,7 @@ private:
     void changePath(QString path);
     FileInfo* loadInfo(QString path);
     QString startDir;
+    bool infiniteScrolling;
 };
 
 #endif // DIRECTORYMANAGER_H
