@@ -75,7 +75,7 @@ void Core::updateInfoString() {
         infoString.append(" ...");
     }
 
-    infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
+    //infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
 
     emit infoStringChanged(infoString);
 }
