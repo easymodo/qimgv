@@ -3,6 +3,8 @@
 
 #include <QString>
 #include <QSize>
+#include <QUrl>
+#include <QMimeDatabase>
 #include <QDebug>
 #include <QFileInfo>
 #include <QDateTime>
@@ -25,13 +27,15 @@ public:
     QString getFilePath();
     QString getFileName();
     fileType getType();
+    const char* getExtension();
 
 private:
     void setFile(QString path);
     QFileInfo fileInfo;
     QDateTime lastModified;
+    void guessType();
     fileType type;
-    fileType guessType();
+    const char* extension;
 };
 
 #endif // FILEINFO_H

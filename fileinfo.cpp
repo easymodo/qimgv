@@ -1,9 +1,9 @@
 #include "fileinfo.h"
 
-FileInfo::FileInfo() : type(NONE) {
+FileInfo::FileInfo() : type(NONE), extension(NULL) {
 }
 
-FileInfo::FileInfo(QString path, QObject *parent) : QObject(parent), type(NONE) {
+FileInfo::FileInfo(QString path, QObject *parent) : QObject(parent), type(NONE), extension(NULL) {
     setFile(path);
 }
 
@@ -17,6 +17,7 @@ void FileInfo::setFile(QString path) {
         return;
     }
     lastModified = fileInfo.lastModified();
+    guessType();
 }
 
 QString FileInfo::getDirectoryPath() {
@@ -35,30 +36,38 @@ float FileInfo::getFileSize() {
     return truncf(fileInfo.size()*100/(1024*1024))/100;
 }
 
-fileType FileInfo::guessType() {
-    QString ext = getExtension(fileInfo.filePath());
-    if(ext == "webm" || ext == "gifv") { // case sensitivity?
-        return VIDEO;
-    }
+void FileInfo::guessType() {
+    QMimeDatabase mimeDb;
+    QMimeType mimeType = mimeDb.mimeTypeForUrl(QUrl(fileInfo.filePath()));
+    QString mimeName = mimeType.name();
 
-    QFile file(fileInfo.filePath());
-    file.open(QIODevice::ReadOnly);
-    //read first 2 bytes to determine file format
-    QByteArray startingBytes= file.read(2).toHex();
-    file.close();
-
-    if(startingBytes=="4749") {
-
-        return GIF;
-    }
-    else {
-        return STATIC;
+    if(mimeName == "video/webm") { // case sensitivity?
+        extension = "webm";
+        type = fileType::VIDEO;
+    } else if(mimeName == "image/jpeg") {
+        extension = "jpg";
+        type = STATIC;
+    } else if(mimeName == "image/png") {
+        extension = "png";
+        type = STATIC;
+    } else if(mimeName == "image/gif") {
+        extension = "gif";
+        type = GIF;
+    } else if(mimeName == "image/bmp") {
+        extension = "bmp";
+        type = STATIC;
+    } else {
+        type = STATIC;
     }
 }
 
 fileType FileInfo::getType() {
     if(type == NONE) {
-        type = guessType();
+        guessType();
     }
     return type;
+}
+
+const char *FileInfo::getExtension() {
+    return extension;
 }

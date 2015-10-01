@@ -6,8 +6,6 @@ ImageStatic::ImageStatic(QString _path) {
     path = _path;
     loaded = false;
     image = NULL;
-    type = STATIC;
-    extension = NULL;
     info=new FileInfo(path, this);
     sem = new QSemaphore(1);
     unloadRequested = false;
@@ -16,8 +14,6 @@ ImageStatic::ImageStatic(QString _path) {
 ImageStatic::ImageStatic(FileInfo *_info) {
     loaded = false;
     image = NULL;
-    type = STATIC;
-    extension = NULL;
     info=_info;
     path=info->getFilePath();
     sem = new QSemaphore(1);
@@ -39,8 +35,7 @@ void ImageStatic::load()
     if(isLoaded()) {
         return;
     }
-    guessType();
-    image = extension ? new QImage(path, extension) : new QImage(path);
+    image = new QImage(path, info->getExtension());
     loaded = true;
 }
 
@@ -55,7 +50,7 @@ void ImageStatic::save(QString destinationPath) {
 void ImageStatic::save() {
     if(isLoaded()) {
         lock();
-        image->save(path, extension, 100);
+        image->save(path, info->getExtension(), 100);
         unlock();
     }
 }
@@ -65,8 +60,7 @@ QPixmap* ImageStatic::generateThumbnail() {
     QPixmap *thumbnail = new QPixmap(size, size);
     QPixmap *tmp;
     if(!isLoaded()) {
-        guessType();
-        tmp = new QPixmap(path, extension);
+        tmp = new QPixmap(path, info->getExtension());
         *tmp = tmp->scaled(size*2,
                            size*2,
                            Qt::KeepAspectRatioByExpanding,

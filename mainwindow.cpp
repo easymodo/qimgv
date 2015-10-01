@@ -263,14 +263,16 @@ void MainWindow::readSettings() {
 
 void MainWindow::slotOpenDialog() {
     QFileDialog dialog;
-    const QString imagesFilter = globalSettings->supportedFormatsString();
+    QStringList imageFilter;
+    imageFilter.append(globalSettings->supportedFormatsString());
+    imageFilter.append("All Files (*)");
     QString lastDir = globalSettings->lastDirectory();
-    QString str = dialog.getOpenFileName(this,
-                                         tr("Open image"),
-                                         lastDir,
-                                         imagesFilter,
-                                         0);
-    emit fileOpened(str);
+    dialog.setDirectory(lastDir);
+    dialog.setNameFilters(imageFilter);
+    dialog.setWindowTitle("Open image");
+    dialog.setParent(this);
+    connect(&dialog, SIGNAL(fileSelected(QString)), this, SIGNAL(fileOpened(QString)));
+    dialog.exec();
 }
 
 void MainWindow::slotShowControls(bool x) {

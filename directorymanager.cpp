@@ -19,6 +19,17 @@ void DirectoryManager::setCurrentDir(QString path) {
     else changePath(path);
 }
 
+void DirectoryManager::generateFileList() {
+    fileNameList.clear();
+    QStringList unfiltered = currentDir.entryList();
+    for(int i = 0; i < unfiltered.count(); i++) {
+        QString filePath = currentDir.absolutePath()+"/"+unfiltered.at(i);
+        if(isValidFile(filePath)) {
+            fileNameList.append(unfiltered.at(i));
+        }
+    }
+}
+
 void DirectoryManager::changePath(QString path) {
     currentDir.setPath(path);
     if(currentDir.isReadable()) {
@@ -27,15 +38,16 @@ void DirectoryManager::changePath(QString path) {
         qDebug() << "DirManager: Invalid directory specified. Removing setting.";
         globalSettings->setLastDirectory("");
     }
-    currentDir.setNameFilters(filters);
+    generateFileList();
+    //mimeDb.
+    //currentDir.setNameFilters(filters);  !!
     currentPos = -1;
-    fileNameList = currentDir.entryList();
     emit directoryChanged(path);
 }
 
 // full paths array
 QStringList DirectoryManager::getFileList() {
-    QStringList files = currentDir.entryList();
+    QStringList files = fileNameList;
     QString dirPath = currentDir.absolutePath() + "/";
     for(int i=0; i<fileNameList.length(); i++) {
         files.replace(i, dirPath+files.at(i));
@@ -43,6 +55,7 @@ QStringList DirectoryManager::getFileList() {
     return files;
 }
 
+//broken
 QFileInfoList DirectoryManager::getFileInfoList() {
     return currentDir.entryInfoList();
 }
@@ -64,18 +77,15 @@ void DirectoryManager::setCurrentPos(int pos) {
     globalSettings->setLastFilePosition(currentPos);
 }
 
-bool DirectoryManager::isValidFile(QString path) {
-    QFile file(path);
-    QString extension = "nope";
-    if(path.contains('.')) {
-        extension = "*.";
-        QStringList dotSplit = path.split(".",QString::SkipEmptyParts);
-        extension.append(dotSplit.at(dotSplit.length()-1));
+bool DirectoryManager::isValidFile(QString filePath) {
+    QFile file(filePath);
+    if(file.exists()) {
+        QMimeType type = mimeDb.mimeTypeForUrl(QUrl(filePath));
+        if(mimeFilters.contains(type.name())) {
+            return true;
+        }
     }
-    if( file.exists() && filters.contains(extension, Qt::CaseInsensitive) ) {
-        return true;
-    }
-    else return false;
+    return false;
 }
 
 QString DirectoryManager::filePathAt(int pos) {
@@ -120,18 +130,19 @@ bool DirectoryManager::containsFiles() {
 }
 
 void DirectoryManager::readSettings() {
+    infiniteScrolling = globalSettings->infiniteScrolling();
     startDir = globalSettings->lastDirectory();
     if( startDir.isEmpty() ) {
         startDir = currentDir.homePath();
     }
-    filters = globalSettings->supportedFormats();
-    currentDir.setNameFilters(filters);
+    mimeFilters = globalSettings->supportedFormats();
     switch(globalSettings->sortingMode()) {
         case 1: currentDir.setSorting(QDir::Name | QDir::Reversed); break;
         case 2: currentDir.setSorting(QDir::Time); break;
         case 3: currentDir.setSorting(QDir::Time | QDir::Reversed); break;
         default: currentDir.setSorting(QDir::Name); break;
     }
+    generateFileList();
 }
 
 void DirectoryManager::applySettingsChanges() {
@@ -145,7 +156,7 @@ void DirectoryManager::applySettingsChanges() {
     }
     if(currentDir.sorting() != flags) {
         currentDir.setSorting(flags);
-        fileNameList = currentDir.entryList();
+        generateFileList();
         emit directorySortingChanged(); //for now, sorting dir will cause full cache reload TODO
     }
 }

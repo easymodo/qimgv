@@ -5,15 +5,11 @@
 Video::Video(QString _path) {
     path = _path;
     loaded = true;
-    type = VIDEO;
-    extension = NULL;
     info=new FileInfo(_path, this);
 }
 
 Video::Video(FileInfo *_info) {
     loaded = true;
-    type = VIDEO;
-    extension = NULL;
     info=_info;
     path=info->getFilePath();
 }

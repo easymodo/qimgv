@@ -198,8 +198,6 @@ bool ThumbnailStrip::childVisible(int pos) {
 
 bool ThumbnailStrip::childVisibleEntirely(int pos) {
     if(thumbnailLabels.count() > pos) {
-        qDebug()<< thumbnailLabels.at(pos)->sceneBoundingRect();
-
         return thumbnailLabels.at(pos)->
                 sceneBoundingRect().intersects(visibleRegion);
     } else {

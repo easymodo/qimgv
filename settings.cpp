@@ -59,12 +59,12 @@ void Settings::setFfmpegExecutable(QString path) {
 //returns list of regexps
 QStringList Settings::supportedFormats() {
     QStringList filters;
-    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+    QList<QByteArray> supportedFormats = QImageReader::supportedMimeTypes();
     if(this->playVideos()) {
-        supportedFormats << "webm";
+        supportedFormats << "video/webm";
     }
     for(int i = 0; i < supportedFormats.count(); i++) {
-        filters << "*."+QString(supportedFormats.at(i));
+        filters << QString(supportedFormats.at(i));
     }
     return filters;
 }

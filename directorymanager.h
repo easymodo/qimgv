@@ -2,7 +2,9 @@
 #define DIRECTORYMANAGER_H
 
 #include <QObject>
+#include <QMimeDatabase>
 #include <QDir>
+#include <QUrl>
 #include <QFile>
 #include <QString>
 #include <QSize>
@@ -22,7 +24,7 @@ public:
     void setCurrentDir(QString);
     QDir currentDir;
     QStringList fileNameList;
-    QStringList filters;
+    QStringList mimeFilters;
     int currentPos;
     QStringList getFileList();
     QFileInfoList getFileInfoList();
@@ -36,7 +38,7 @@ public:
     int peekNext(int offset);
     int peekPrev(int offset);
     void setCurrentPos(int pos);
-    bool isValidFile(QString path);
+    bool isValidFile(QString filePath);
     bool containsFiles();
     void readSettings();
 
@@ -57,6 +59,8 @@ private:
     FileInfo* loadInfo(QString path);
     QString startDir;
     bool infiniteScrolling;
+    void generateFileList();
+    QMimeDatabase mimeDb;
 };
 
 #endif // DIRECTORYMANAGER_H

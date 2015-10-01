@@ -6,7 +6,6 @@ ImageAnimated::ImageAnimated(QString _path) {
     path = _path;
     loaded = false;
     movie = new QMovie(this);
-    type = STATIC;
     info=new FileInfo(path, this);
 }
 
@@ -14,7 +13,6 @@ ImageAnimated::ImageAnimated(FileInfo *_info) {
     timer = new QTimer(this);
     loaded = false;
     movie = new QMovie(this);
-    type = STATIC;
     info=_info;
     path=info->getFilePath();
 }
@@ -34,7 +32,6 @@ void ImageAnimated::load() {
     }
     if(!info)
         info = new FileInfo(path, this);
-    guessType();
     movie->setFormat("GIF");
     movie->setFileName(path);
     movie->jumpToFrame(0);
@@ -55,8 +52,7 @@ QPixmap* ImageAnimated::generateThumbnail() {
     QPixmap *thumbnail = new QPixmap(size, size);
     QPixmap *tmp;
     if(!isLoaded()) {
-        guessType();
-        tmp = new QPixmap(path, extension);
+        tmp = new QPixmap(path, info->getExtension());
         *tmp = tmp->scaled(size*2,
                            size*2,
                            Qt::KeepAspectRatioByExpanding,
