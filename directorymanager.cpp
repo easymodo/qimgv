@@ -80,7 +80,7 @@ void DirectoryManager::setCurrentPos(int pos) {
 bool DirectoryManager::isValidFile(QString filePath) {
     QFile file(filePath);
     if(file.exists()) {
-        QMimeType type = mimeDb.mimeTypeForUrl(QUrl(filePath));
+        QMimeType type = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchContent);
         if(mimeFilters.contains(type.name())) {
             return true;
         }

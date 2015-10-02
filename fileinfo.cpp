@@ -38,7 +38,7 @@ float FileInfo::getFileSize() {
 
 void FileInfo::guessType() {
     QMimeDatabase mimeDb;
-    QMimeType mimeType = mimeDb.mimeTypeForUrl(QUrl(fileInfo.filePath()));
+    QMimeType mimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
     QString mimeName = mimeType.name();
 
     if(mimeName == "video/webm") { // case sensitivity?
