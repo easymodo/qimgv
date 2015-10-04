@@ -27,8 +27,8 @@ void Core::connectSlots() {
             this, SLOT(onLoadFinished(Image*, int)));
     connect(this, SIGNAL(thumbnailRequested(int)),
             imageLoader, SLOT(generateThumbnailFor(int)));
-    connect(imageLoader, SIGNAL(thumbnailReady(int, const Thumbnail*)),
-            this, SIGNAL(thumbnailReady(int, const Thumbnail*)));
+    connect(imageLoader, SIGNAL(thumbnailReady(int, Thumbnail*)),
+            this, SIGNAL(thumbnailReady(int, Thumbnail*)));
     connect(cache, SIGNAL(initialized(int)), this, SIGNAL(cacheInitialized(int)), Qt::DirectConnection);
     connect(dirManager, SIGNAL(directorySortingChanged()), imageLoader, SLOT(reinitCacheForced()));
     connect(imageLoader, SIGNAL(currentImageUnloading()),

@@ -62,7 +62,7 @@ public slots:
     void parentResized(QSize parentSize);
     void loadVisibleThumbnails();
     void loadVisibleThumbnailsDelayed();
-    void setThumbnail(int, const Thumbnail*);
+    void setThumbnail(int, Thumbnail*);
     void fillPanel(int);
     void selectThumbnail(int pos);
 

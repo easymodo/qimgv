@@ -58,7 +58,7 @@ Image* ImageCache::imageAt(int pos) {
     return cachedImages->at(pos)->image();
 }
 
-const Thumbnail* ImageCache::thumbnailAt(int pos) const {
+Thumbnail* ImageCache::thumbnailAt(int pos) const {
     return cachedImages->at(pos)->getThumbnail();
 }
 

@@ -169,7 +169,7 @@ void ThumbnailStrip::addItem() {
     requestThumbnailLoad(thumbnailLabels.length()-1);
 }
 
-void ThumbnailStrip::setThumbnail(int pos, const Thumbnail* thumb) {
+void ThumbnailStrip::setThumbnail(int pos, Thumbnail* thumb) {
     thumbnailLabels.at(pos)->setThumbnail(thumb);
     thumbnailLabels.at(pos)->state = LOADED;
     if(pos != current) {

@@ -47,7 +47,7 @@ signals:
     void scalingFinished(QPixmap*);
     void frameChanged(QPixmap*);
     void thumbnailRequested(int);
-    void thumbnailReady(int, const Thumbnail*);
+    void thumbnailReady(int, Thumbnail*);
     void cacheInitialized(int);
     void imageChanged(int);
     void startVideo();

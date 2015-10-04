@@ -94,8 +94,8 @@ void MainWindow::init() {
     connect(panel, SIGNAL(thumbnailRequested(int)),
             core, SIGNAL(thumbnailRequested(int)));
 
-    connect(core, SIGNAL(thumbnailReady(int, const Thumbnail*)),
-            panel, SLOT(setThumbnail(int, const Thumbnail*)));
+    connect(core, SIGNAL(thumbnailReady(int, Thumbnail*)),
+            panel, SLOT(setThumbnail(int, Thumbnail*)));
 
     connect(core, SIGNAL(cacheInitialized(int)),
             panel, SLOT(fillPanel(int)), Qt::DirectConnection);

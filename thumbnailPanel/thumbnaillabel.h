@@ -27,7 +27,7 @@ public:
 
     bool isLoaded();
     loadState state;
-    void setThumbnail(const Thumbnail *_thumbnail);
+    void setThumbnail(Thumbnail *_thumbnail);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setHighlighted(bool x);
@@ -41,7 +41,7 @@ private:
     const int SHADOW_HEIGHT = 10;
     bool hovered, loaded;
     bool showLabel, showName;
-    const Thumbnail *thumbnail;
+    Thumbnail *thumbnail;
     bool highlighted;
     int borderW, borderH, thumbnailSize;
     QString infoString;

@@ -20,11 +20,11 @@ public:
     ~CacheObject() {
         img->safeDeleteSelf();
     }
-    const Thumbnail* getThumbnail() {
+    Thumbnail* getThumbnail() {
         if(!thumbnail) {
             qDebug() << "!returning empty thumbnail";
         }
-        return const_cast<const Thumbnail*>(thumbnail);
+        return const_cast<Thumbnail*>(thumbnail);
     }
     FileInfo* getInfo() {
         if(img)
@@ -100,7 +100,7 @@ signals:
     void initialized(int count);
 
 public slots:
-    const Thumbnail *thumbnailAt(int pos) const;
+    Thumbnail *thumbnailAt(int pos) const;
     QString currentDirectory();
 
 private:

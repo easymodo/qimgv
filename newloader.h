@@ -48,7 +48,7 @@ private:
 signals:
     void loadStarted();
     void loadFinished(Image*, int pos);
-    void thumbnailReady(int, const Thumbnail*);
+    void thumbnailReady(int, Thumbnail*);
     void startLoad();
     void startPreload();
     void currentImageUnloading();
