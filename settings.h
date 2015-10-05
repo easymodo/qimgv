@@ -72,7 +72,7 @@ public:
     void setInfiniteScrolling(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
-    const int thumbnailSizeDefault = 120;
+    const int thumbnailSizeDefault = 135;
     QSettings s;
     QTemporaryDir *tempDirectory;
 

@@ -22,10 +22,10 @@ private:
     QPalette bgLabelPalette, accentLabelPalette;
     void readSettings();
     Ui::SettingsDialog *ui;
-    static constexpr int thumbSizeSmall = 100,
-              thumbSizeMedium = 120,
-              thumbSizeLarge = 140,
-              thumbSizeVeryLarge = 160;
+    static constexpr int thumbSizeSmall = 120,
+              thumbSizeMedium = 135,
+              thumbSizeLarge = 170,
+              thumbSizeVeryLarge = 200;
 
     int thumbSizeCustom;
 
