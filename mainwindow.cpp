@@ -270,7 +270,8 @@ void MainWindow::slotOpenDialog() {
     dialog.setDirectory(lastDir);
     dialog.setNameFilters(imageFilter);
     dialog.setWindowTitle("Open image");
-    dialog.setParent(this);
+    //dialog.setParent(this);
+    dialog.setWindowModality(Qt::ApplicationModal);
     connect(&dialog, SIGNAL(fileSelected(QString)), this, SIGNAL(fileOpened(QString)));
     dialog.exec();
 }
