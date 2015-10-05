@@ -37,9 +37,12 @@ private:
     const int ANIMATION_SPEED_FAST = 100;
     const int ANIMATION_SPEED_NORMAL = 220;
 
+    const int SCROLL_UPDATE_RATE = 8;
+    const float SCROLL_SPEED_MULTIPLIER = 3.1;
+    const int SCROLL_ANIMATION_SPEED = 80;
     const int SCROLL_STEP = 200;
-    const uint LOAD_DELAY = 30;
-    const int OFFSCREEN_PRELOAD_AREA = 550;
+    const uint LOAD_DELAY = 20;
+    const int OFFSCREEN_PRELOAD_AREA = 1900;
 
     int panelSize;
     int itemCount, current, thumbnailSize;

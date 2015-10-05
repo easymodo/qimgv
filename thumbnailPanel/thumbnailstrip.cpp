@@ -12,8 +12,8 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     widget = new QGraphicsWidget();
     scene = new CustomScene();
     layout = new QGraphicsLinearLayout();
-    timeLine = new QTimeLine(50, this);
-    timeLine->setCurveShape(QTimeLine::EaseInCurve);
+    timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
+    timeLine->setCurveShape(QTimeLine::EaseInOutCurve);
     widget->setLayout(layout);
     layout->setSpacing(0);
     scene->addItem(widget);
@@ -217,11 +217,16 @@ void ThumbnailStrip::wheelEvent(QWheelEvent *event) {
     event->accept();
     if(timeLine->state() == QTimeLine::Running) {
         timeLine->stop();
-        scrollBar->setValue(timeLine->endFrame());
+        timeLine->setFrameRange(scrollBar->value(),
+                                timeLine->endFrame() -
+                                event->angleDelta().ry() * SCROLL_SPEED_MULTIPLIER);
+        //scrollBar->setValue(timeLine->endFrame());
+    } else {
+        timeLine->setFrameRange(scrollBar->value(),
+                                scrollBar->value() -
+                                event->angleDelta().ry() * SCROLL_SPEED_MULTIPLIER);
     }
-    timeLine->setFrameRange(scrollBar->value(),
-                            scrollBar->value()-event->angleDelta().ry()*2.5);
-    timeLine->setUpdateInterval(16);
+    timeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
     timeLine->start();
 }
 
