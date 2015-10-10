@@ -48,6 +48,7 @@ void SettingsDialog::readSettings() {
     //not implemented
     ui->scalingQualityComboBox->setDisabled(true);
 
+    ui->fullscreenTaskbarShownCheckBox->setChecked(globalSettings->fullscreenTaskbarShown());
     ui->fullscreenCheckBox->setChecked(globalSettings->fullscreenMode());
     ui->thumbnailLabelsCheckBox->setChecked(globalSettings->showThumbnailLabels());
 
@@ -93,6 +94,7 @@ void SettingsDialog::applySettings() {
     globalSettings->setReduceRamUsage(ui->reduceRamCheckBox->isChecked());
     globalSettings->setPlayVideos(ui->playVideosCheckBox->isChecked());
     globalSettings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
+    globalSettings->setFullscreenTaskbarShown(ui->fullscreenTaskbarShownCheckBox->isChecked());
 
     globalSettings->setFfmpegExecutable(ui->ffmpegLineEdit->text());
 

@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>590</width>
-    <height>357</height>
+    <height>377</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -41,7 +41,7 @@
    <property name="geometry">
     <rect>
      <x>510</x>
-     <y>320</y>
+     <y>340</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -54,7 +54,7 @@
    <property name="geometry">
     <rect>
      <x>350</x>
-     <y>320</y>
+     <y>340</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -69,7 +69,7 @@
      <x>10</x>
      <y>10</y>
      <width>571</width>
-     <height>301</height>
+     <height>321</height>
     </rect>
    </property>
    <property name="tabPosition">
@@ -169,8 +169,8 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>138</y>
-       <width>171</width>
+       <y>170</y>
+       <width>201</width>
        <height>21</height>
       </rect>
      </property>
@@ -251,7 +251,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>210</y>
+       <y>230</y>
        <width>151</width>
        <height>21</height>
       </rect>
@@ -264,7 +264,7 @@
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>210</y>
+       <y>230</y>
        <width>381</width>
        <height>21</height>
       </rect>
@@ -274,7 +274,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>230</y>
+       <y>250</y>
        <width>521</width>
        <height>41</height>
       </rect>
@@ -305,13 +305,29 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>170</y>
-       <width>171</width>
+       <y>200</y>
+       <width>191</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
       <string>Infinite scrolling</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="fullscreenTaskbarShownCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>140</y>
+       <width>191</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Maximized borderless window instead of fullscreen mode.</string>
+     </property>
+     <property name="text">
+      <string>Show taskbar in fullscreen</string>
      </property>
     </widget>
    </widget>
@@ -594,7 +610,7 @@
    <property name="geometry">
     <rect>
      <x>430</x>
-     <y>320</y>
+     <y>340</y>
      <width>71</width>
      <height>28</height>
     </rect>

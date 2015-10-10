@@ -70,6 +70,8 @@ public:
     ~Settings();
     bool infiniteScrolling();
     void setInfiniteScrolling(bool mode);
+    bool fullscreenTaskbarShown();
+    void setFullscreenTaskbarShown(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 135;

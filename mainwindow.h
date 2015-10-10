@@ -124,6 +124,8 @@ private:
 
     void readSettingsInitial();
     void calculatePanelTriggerArea();
+    QRect savedGeometry;
+    bool borderlessEnabled;
 protected:
     void wheelEvent(QWheelEvent *event);
     bool eventFilter(QObject *target, QEvent *event);

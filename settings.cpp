@@ -206,6 +206,15 @@ void Settings::setMenuBarHidden(bool mode) {
     globalSettings->s.setValue("hideMenuBar", mode);
 }
 
+// maximized borderless window instead of fullscreen
+bool Settings::fullscreenTaskbarShown() {
+    return globalSettings->s.value("fullscreenTaskbarShown", false).toBool();
+}
+
+void Settings::setFullscreenTaskbarShown(bool mode) {
+    globalSettings->s.setValue("fullscreenTaskbarShown", mode);
+}
+
 bool Settings::showThumbnailLabels() {
     return globalSettings->s.value("showThumbnailLabels", true).toBool();
 }

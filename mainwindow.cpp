@@ -6,7 +6,8 @@ MainWindow::MainWindow() :
     settingsDialog(NULL),
     panel(NULL),
     currentViewer(0),
-    layout(NULL)
+    layout(NULL),
+    borderlessEnabled(false)
 {
     resize(1100, 700);
     setMinimumSize(QSize(400,300));
@@ -245,6 +246,7 @@ void MainWindow::readSettingsInitial() {
 }
 
 void MainWindow::readSettings() {
+    borderlessEnabled = globalSettings->fullscreenTaskbarShown();
     menuBar()->setHidden( globalSettings->menuBarHidden() );
     panelPosition = globalSettings->panelPosition();
     int fitMode = globalSettings->imageFitMode();
@@ -479,14 +481,24 @@ void MainWindow::slotTriggerFullscreen() {
 void MainWindow::slotFullscreen() {
     if(fullscreenEnabledAct->isChecked())
     {
+        savedGeometry = geometry();
         this->menuBar()->hide();
-        this->showFullScreen();
+        if(borderlessEnabled) {
+            this->setWindowFlags(Qt::FramelessWindowHint);
+            this->showMaximized();
+        } else {
+            this->showFullScreen();
+        }
         emit signalFullscreenEnabled(true);
     }
     else
     {
         showMenuBar();
+        this->setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint);
         this->showNormal();
+        if(borderlessEnabled) {
+            this->setGeometry(savedGeometry);
+        }
         emit signalFullscreenEnabled(false);
     }
 }
@@ -561,7 +573,8 @@ void MainWindow::updateOverlays() {
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     event->accept();
-    if(!globalSettings->fullscreenMode() && !this->isFullScreen()) {
+    if(!globalSettings->fullscreenMode() && !isFullScreen() && !isMaximized()) { // for borderless mode
+    //if(!globalSettings->fullscreenMode() && !isFullScreen()) { // for fullscreen mode
         saveWindowGeometry();
     }
 }
