@@ -3,7 +3,8 @@
 DirectoryManager::DirectoryManager() :
     currentPos(-1),
     startDir(""),
-    infiniteScrolling(false)
+    infiniteScrolling(false),
+    quickFormatDetection(true)
 {
     readSettings();
     setCurrentDir(startDir);
@@ -19,7 +20,10 @@ void DirectoryManager::setCurrentDir(QString path) {
     else changePath(path);
 }
 
+// Filter by mime type. Basically opens every file in a folder
+// and checks what's inside. Very slow.
 void DirectoryManager::generateFileList() {
+    currentDir.setNameFilters(QStringList("*"));
     fileNameList.clear();
     QStringList unfiltered = currentDir.entryList();
     for(int i = 0; i < unfiltered.count(); i++) {
@@ -30,6 +34,15 @@ void DirectoryManager::generateFileList() {
     }
 }
 
+// Filter by file extension, fast.
+// Files with unsupported extension are ignored.
+// Additionally there is a mime type check on image load (FileInfo::guessType()).
+// For example an .exe wont open, but a gif with .jpg extension will still play.
+void DirectoryManager::generateFileListQuick() {
+    currentDir.setNameFilters(extensionFilters);
+    fileNameList = currentDir.entryList();
+}
+
 void DirectoryManager::changePath(QString path) {
     currentDir.setPath(path);
     if(currentDir.isReadable()) {
@@ -38,9 +51,7 @@ void DirectoryManager::changePath(QString path) {
         qDebug() << "DirManager: Invalid directory specified. Removing setting.";
         globalSettings->setLastDirectory("");
     }
-    generateFileList();
-    //mimeDb.
-    //currentDir.setNameFilters(filters);  !!
+    quickFormatDetection?generateFileListQuick():generateFileList();
     currentPos = -1;
     emit directoryChanged(path);
 }
@@ -55,11 +66,6 @@ QStringList DirectoryManager::getFileList() {
     return files;
 }
 
-//broken
-QFileInfoList DirectoryManager::getFileInfoList() {
-    return currentDir.entryInfoList();
-}
-
 bool DirectoryManager::existsInCurrentDir(QString file) {
     return fileNameList.contains(file, Qt::CaseInsensitive);
 }
@@ -69,7 +75,6 @@ void DirectoryManager::setFile(QString path) {
     setCurrentDir(info->getDirectoryPath());
     currentPos = fileNameList.indexOf(info->getFileName());
     globalSettings->setLastFilePosition(currentPos);
-    //return info;
 }
 
 void DirectoryManager::setCurrentPos(int pos) {
@@ -135,7 +140,8 @@ void DirectoryManager::readSettings() {
     if( startDir.isEmpty() ) {
         startDir = currentDir.homePath();
     }
-    mimeFilters = globalSettings->supportedFormats();
+    mimeFilters = globalSettings->supportedMimeTypes();
+    extensionFilters = globalSettings->supportedFormats();
     switch(globalSettings->sortingMode()) {
         case 1: currentDir.setSorting(QDir::Name | QDir::Reversed); break;
         case 2: currentDir.setSorting(QDir::Time); break;

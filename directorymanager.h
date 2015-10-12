@@ -14,6 +14,7 @@
 #include <QImageReader>
 #include "fileinfo.h"
 #include "settings.h"
+#include <time.h>
 
 class DirectoryManager : public QObject
 {
@@ -24,10 +25,9 @@ public:
     void setCurrentDir(QString);
     QDir currentDir;
     QStringList fileNameList;
-    QStringList mimeFilters;
+    QStringList mimeFilters, extensionFilters;
     int currentPos;
     QStringList getFileList();
-    QFileInfoList getFileInfoList();
     bool existsInCurrentDir(QString file);
     QString currentFileName();
     QString currentDirectory();
@@ -61,6 +61,8 @@ private:
     bool infiniteScrolling;
     void generateFileList();
     QMimeDatabase mimeDb;
+    bool quickFormatDetection;
+    void generateFileListQuick();
 };
 
 #endif // DIRECTORYMANAGER_H

@@ -23,7 +23,7 @@ class Settings : public QObject
 public:
     static Settings* getInstance();
     static void validate();
-    QStringList supportedFormats();
+    QStringList supportedMimeTypes();
     QString supportedFormatsString();
     int sortingMode();
     void setSortingMode(int);
@@ -70,6 +70,9 @@ public:
     ~Settings();
     bool infiniteScrolling();
     void setInfiniteScrolling(bool mode);
+    bool fullscreenTaskbarShown();
+    void setFullscreenTaskbarShown(bool mode);
+    QStringList supportedFormats();
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 135;

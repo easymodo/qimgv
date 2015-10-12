@@ -48,23 +48,21 @@ QString Settings::tempDir() {
 
 QString Settings::ffmpegExecutable() {
     return globalSettings->s.value("ffmpegExe", "").toString();
-    //QString tmp = "C:/Users/Eugene/Desktop/ffmpeg/bin/ffmpeg.exe";
-    //return tmp;
 }
 
 void Settings::setFfmpegExecutable(QString path) {
     globalSettings->s.setValue("ffmpegExe", path);
 }
 
-//returns list of regexps
+// returns list of regexps
 QStringList Settings::supportedFormats() {
     QStringList filters;
-    QList<QByteArray> supportedFormats = QImageReader::supportedMimeTypes();
+    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
     if(this->playVideos()) {
-        supportedFormats << "video/webm";
+        supportedFormats << "webm";
     }
     for(int i = 0; i < supportedFormats.count(); i++) {
-        filters << QString(supportedFormats.at(i));
+        filters << "*."+QString(supportedFormats.at(i));
     }
     return filters;
 }
@@ -82,6 +80,19 @@ QString Settings::supportedFormatsString() {
         filters.append("*."+QString(supportedFormats.at(i))+" ");
     }
     filters.append(")");
+    return filters;
+}
+
+// returns list of mime types
+QStringList Settings::supportedMimeTypes() {
+    QStringList filters;
+    QList<QByteArray> mimeTypes = QImageReader::supportedMimeTypes();
+    if(this->playVideos()) {
+        mimeTypes << "video/webm";
+    }
+    for(int i = 0; i < mimeTypes.count(); i++) {
+        filters << QString(mimeTypes.at(i));
+    }
     return filters;
 }
 
@@ -206,6 +217,15 @@ void Settings::setMenuBarHidden(bool mode) {
     globalSettings->s.setValue("hideMenuBar", mode);
 }
 
+// maximized borderless window instead of fullscreen
+bool Settings::fullscreenTaskbarShown() {
+    return globalSettings->s.value("fullscreenTaskbarShown", false).toBool();
+}
+
+void Settings::setFullscreenTaskbarShown(bool mode) {
+    globalSettings->s.setValue("fullscreenTaskbarShown", mode);
+}
+
 bool Settings::showThumbnailLabels() {
     return globalSettings->s.value("showThumbnailLabels", true).toBool();
 }
@@ -286,4 +306,3 @@ void Settings::setInfiniteScrolling(bool mode) {
 void Settings::sendChangeNotification() {
     emit settingsChanged();
 }
-
