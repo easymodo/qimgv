@@ -41,8 +41,6 @@ public:
     bool isDisplaying() const;
 
 signals:
-    void sendDoubleClick();
-    void sendRightDoubleClick();
     void imageChanged();
     void cropSelected(QRect);
     void wallpaperSelected(QRect);
@@ -69,7 +67,6 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent* event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void resizeEvent(QResizeEvent* event);
-    virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
 private:
     QPixmap *image;

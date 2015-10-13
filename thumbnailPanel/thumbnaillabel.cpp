@@ -53,6 +53,7 @@ void ThumbnailLabel::readSettings() {
     nameRect.setWidth(thumbnailSize);
     labelRect = QRectF(QPointF(borderW+thumbnailSize-25, borderH),
                        QPointF(borderW+thumbnailSize, borderH+nameRect.height()));
+    updateLabelWidth();
     shadowRect.setTopLeft(QPointF(borderW, borderH));
     shadowRect.setBottomRight(QPointF(borderW+thumbnailSize, borderH+nameRect.height()));
 
@@ -76,6 +77,10 @@ void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail){
     QGraphicsPixmapItem::setPixmap(*thumbnail->image);
     loaded = true;
     showLabel = settings->showThumbnailLabels() && !thumbnail->label.isEmpty();
+    updateLabelWidth();
+}
+
+void ThumbnailLabel::updateLabelWidth() {
     if(showLabel) {
         int labelWidth = fm->width(thumbnail->label);
         labelRect.setWidth(labelWidth + 4);

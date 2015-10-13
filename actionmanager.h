@@ -27,8 +27,9 @@ private:
     static void initKeyMap();
     static void initShortcuts();
 
-    bool detectWheel(QWheelEvent *event);
-    bool detectKeypress(QKeyEvent *event);
+    bool processWheelEvent(QWheelEvent *event);
+    bool processMouseEvent(QMouseEvent *event);
+    bool processKeyEvent(QKeyEvent *event);
     void startAction(QString action);
 signals:
     void open();

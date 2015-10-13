@@ -103,8 +103,8 @@ void MainWindow::init() {
     connect(core, SIGNAL(videoChanged(QString)),
             this, SLOT(openVideo(QString)), Qt::UniqueConnection);
 
-    connect(videoPlayer, SIGNAL(sendDoubleClick()),
-            this, SLOT(slotTriggerFullscreen()), Qt::UniqueConnection);
+    //connect(videoPlayer, SIGNAL(sendDoubleClick()),
+    //        this, SLOT(slotTriggerFullscreen()), Qt::UniqueConnection);
 
     core->init();
 
@@ -172,8 +172,8 @@ void MainWindow::enableImageViewer() {
         connect(this, SIGNAL(signalFitNormal()),
                 imageViewer, SLOT(slotFitNormal()), Qt::UniqueConnection);
 
-        connect(imageViewer, SIGNAL(sendRightDoubleClick()),
-                this, SLOT(switchFitMode()), Qt::UniqueConnection);
+        //connect(imageViewer, SIGNAL(sendRightDoubleClick()),
+        //        this, SLOT(switchFitMode()), Qt::UniqueConnection);
 
         connect(this, SIGNAL(signalZoomIn()),
                 imageViewer, SLOT(slotZoomIn()), Qt::UniqueConnection);
@@ -181,8 +181,8 @@ void MainWindow::enableImageViewer() {
         connect(this, SIGNAL(signalZoomOut()),
                 imageViewer, SLOT(slotZoomOut()), Qt::UniqueConnection);
 
-        connect(imageViewer, SIGNAL(sendDoubleClick()),
-                this, SLOT(slotTriggerFullscreen()), Qt::UniqueConnection);
+        //connect(imageViewer, SIGNAL(sendDoubleClick()),
+        //        this, SLOT(slotTriggerFullscreen()), Qt::UniqueConnection);
 
         updateOverlays();
         currentViewer = 1;
@@ -204,8 +204,8 @@ void MainWindow::disableImageViewer() {
     disconnect(core, SIGNAL(signalSetImage(QPixmap*)),
             imageViewer, SLOT(displayImage(QPixmap*)));
 
-    disconnect(imageViewer, SIGNAL(sendRightDoubleClick()),
-            this, SLOT(switchFitMode()));
+    //disconnect(imageViewer, SIGNAL(sendRightDoubleClick()),
+    //        this, SLOT(switchFitMode()));
 
     disconnect(this, SIGNAL(signalZoomIn()),
             imageViewer, SLOT(slotZoomIn()));
@@ -213,8 +213,8 @@ void MainWindow::disableImageViewer() {
     disconnect(this, SIGNAL(signalZoomOut()),
             imageViewer, SLOT(slotZoomOut()));
 
-    disconnect(imageViewer, SIGNAL(sendDoubleClick()),
-            this, SLOT(slotTriggerFullscreen()));
+    //disconnect(imageViewer, SIGNAL(sendDoubleClick()),
+    //        this, SLOT(slotTriggerFullscreen()));
 
     currentViewer = 0;
     imageViewer->hide();

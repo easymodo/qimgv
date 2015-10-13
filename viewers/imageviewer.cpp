@@ -391,16 +391,6 @@ void ImageViewer::resizeEvent(QResizeEvent* event) {
     resizeTimer->start(130);
 }
 
-void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
-    QWidget::mouseDoubleClickEvent(event);
-    if(event->button() == Qt::RightButton) {
-        emit sendRightDoubleClick();
-    }
-    else {
-        emit sendDoubleClick();
-    }
-}
-
 // centers image inside window rectangle
 void ImageViewer::centerImage() {
     drawingRect.moveCenter(rect().center());

@@ -118,9 +118,13 @@ void ActionManager::resetDefaults() {
     actionManager->shortcuts.clear();
     actionManager->addShortcut("Right", "nextImage");
     actionManager->addShortcut("Left", "prevImage");
+    actionManager->addShortcut("XButton2", "nextImage");
+    actionManager->addShortcut("XButton1", "prevImage");
     actionManager->addShortcut("WheelUp", "nextImage");
     actionManager->addShortcut("WheelDown", "prevImage");
     actionManager->addShortcut("F", "toggleFullscreen");
+    actionManager->addShortcut("LMB_DoubleClick", "toggleFullscreen");
+    actionManager->addShortcut("RMB_DoubleClick", "toggleFitMode");
     actionManager->addShortcut("Space", "toggleFitMode");
     actionManager->addShortcut("Ctrl+M", "toggleMenuBar");
     actionManager->addShortcut("Ctrl+R", "rotateRight");
@@ -138,7 +142,7 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("Ctrl+Q", "exit");
 }
 
-bool ActionManager::detectWheel(QWheelEvent *event) {
+bool ActionManager::processWheelEvent(QWheelEvent *event) {
     QString keys;
     QString mods;
 
@@ -161,23 +165,56 @@ bool ActionManager::detectWheel(QWheelEvent *event) {
     return true;
 }
 
-bool ActionManager::detectKeypress(QKeyEvent *event) {
+// Detects mouse button clicks only
+// DoubleClick works only for LMB/RMB
+// Otherwise treated as regular click
+bool ActionManager::processMouseEvent(QMouseEvent *event) {
     QString keys;
-    keys = actionManager->keyMap[event->nativeScanCode()];
-    if(!keys.isEmpty()) {
-        QString mods;
-        if(event->modifiers().testFlag(Qt::ControlModifier)) {
-            mods.append("Ctrl+");
+    if(event->button() == Qt::XButton1) {
+        keys = "XButton1";
+    }
+    if(event->button() == Qt::XButton2) {
+        keys = "XButton2";
+    }
+    if(event->button() == Qt::LeftButton) {
+        keys = "LMB";
+    }
+    if(event->button() == Qt::RightButton) {
+        keys = "RMB";
+    }
+    if(event->type() == QEvent::MouseButtonDblClick) {
+        if(event->button() == Qt::LeftButton || event->button() == Qt::RightButton) {
+            keys.append("_DoubleClick");
         }
-        if(event->modifiers().testFlag(Qt::AltModifier)) {
-            mods.append("Alt+");
-        }
-        if(event->modifiers().testFlag(Qt::ShiftModifier)) {
-            mods.append("Shift+");
-        }
-        keys.prepend(mods);
         actionManager->startAction(keys);
         return true;
+    }
+    if(event->type() == QEvent::MouseButtonPress) {
+        actionManager->startAction(keys);
+        return true;
+    }
+    return false;
+}
+
+bool ActionManager::processKeyEvent(QKeyEvent *event) {
+    if(event->type() == QEvent::KeyPress) {
+        QString keys;
+        keys = actionManager->keyMap[event->nativeScanCode()];
+        if(!keys.isEmpty()) {
+            QString mods;
+            if(event->modifiers().testFlag(Qt::ControlModifier)) {
+                mods.append("Ctrl+");
+            }
+            if(event->modifiers().testFlag(Qt::AltModifier)) {
+                mods.append("Alt+");
+            }
+            if(event->modifiers().testFlag(Qt::ShiftModifier)) {
+                mods.append("Shift+");
+            }
+            keys.prepend(mods);
+            actionManager->startAction(keys);
+            return true;
+        }
     }
     return false;
 }
@@ -199,10 +236,13 @@ void ActionManager::startAction(QString shortcut) {
 bool ActionManager::processEvent(QEvent *event) {
     QKeyEvent *keyEvent = dynamic_cast<QKeyEvent*>(event);
     QWheelEvent *wheelEvent = dynamic_cast<QWheelEvent*>(event);
-    if(keyEvent && keyEvent->type() == QEvent::KeyPress) {
-        return actionManager->detectKeypress(keyEvent);
+    QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent*>(event);
+    if(keyEvent) {
+        return actionManager->processKeyEvent(keyEvent);
     } else if(wheelEvent) {
-        actionManager->detectWheel(wheelEvent);
+        actionManager->processWheelEvent(wheelEvent);
+    } else if(mouseEvent) {
+        actionManager->processMouseEvent(mouseEvent);
     }
     return false;
 }

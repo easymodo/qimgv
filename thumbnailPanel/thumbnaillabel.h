@@ -51,6 +51,7 @@ private:
     QFont font;
     QFontMetrics *fm;
 
+    void updateLabelWidth();
 protected:
  QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const Q_DECL_OVERRIDE;
 
