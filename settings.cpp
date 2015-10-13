@@ -306,3 +306,4 @@ void Settings::setInfiniteScrolling(bool mode) {
 void Settings::sendChangeNotification() {
     emit settingsChanged();
 }
+
