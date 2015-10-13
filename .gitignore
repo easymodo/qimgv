@@ -8,11 +8,3 @@
 .dir*
 *.orig
 
-debug/*
-ui_settingsdialog.h
-object_script.qimgv.Release
-qimgv.pro.user
-object_script.qimgv.Debug
-Makefile
-Makefile.Release
-Makefile.Debug
