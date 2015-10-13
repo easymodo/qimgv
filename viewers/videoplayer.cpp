@@ -5,7 +5,7 @@ VideoPlayer::VideoPlayer(QWidget *parent) :
     mediaPlayer(0, QMediaPlayer::VideoSurface),
     path("")
 {
-    scene = new CustomScene;
+    scene = new QGraphicsScene;
     videoItem = new QGraphicsVideoItem();
     mediaPlayer.setVideoOutput(videoItem);
 
@@ -15,6 +15,7 @@ VideoPlayer::VideoPlayer(QWidget *parent) :
     this->setScene(scene);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->setAttribute(Qt::WA_TransparentForMouseEvents);
     this->setFrameShape(QFrame::NoFrame);
 
     readSettings();

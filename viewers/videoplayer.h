@@ -12,7 +12,6 @@
 #include <qvideosurfaceformat.h>
 #include <QDebug>
 #include "../settings.h"
-#include "../customWidgets/customscene.h"
 
 class VideoPlayer : public QGraphicsView
 {
@@ -41,7 +40,7 @@ private slots:
 private:
     QMediaPlayer mediaPlayer;
     QString path;
-    CustomScene *scene;
+    QGraphicsScene *scene;
     QGraphicsVideoItem *videoItem;
 
 protected:
