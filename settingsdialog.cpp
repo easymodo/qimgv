@@ -13,7 +13,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->bgColorLabel->setAutoFillBackground(true);
     ui->accentColorLabel->setAutoFillBackground(true);
     connect(this, SIGNAL(settingsChanged()),
-            globalSettings, SLOT(sendChangeNotification()));
+            settings, SLOT(sendChangeNotification()));
     readSettings();
 }
 
@@ -21,15 +21,15 @@ void SettingsDialog::readSettings() {
 
     bool setting;
 
-    ui->infiniteScrollingCheckBox->setChecked(globalSettings->infiniteScrolling());
-    ui->playVideosCheckBox->setChecked(globalSettings->playVideos());
-    ui->playSoundsCheckBox->setChecked(globalSettings->playVideoSounds());
+    ui->infiniteScrollingCheckBox->setChecked(settings->infiniteScrolling());
+    ui->playVideosCheckBox->setChecked(settings->playVideos());
+    ui->playSoundsCheckBox->setChecked(settings->playVideoSounds());
 
-    ui->ffmpegLineEdit->setText(globalSettings->ffmpegExecutable());
+    ui->ffmpegLineEdit->setText(settings->ffmpegExecutable());
 
     // ##### loader #####
-    ui->preloaderCheckBox->setChecked(globalSettings->usePreloader());
-    ui->reduceRamCheckBox->setChecked(globalSettings->reduceRamUsage());
+    ui->preloaderCheckBox->setChecked(settings->usePreloader());
+    ui->reduceRamCheckBox->setChecked(settings->reduceRamUsage());
 
     // ##### cache #####
     //ui->cacheSlider->setValue(globalSettings->s.value("cacheSize",64).toInt());
@@ -37,36 +37,36 @@ void SettingsDialog::readSettings() {
 
     // ##### scaling #####
 
-    setting = globalSettings->useFastScale();
+    setting = settings->useFastScale();
     ui->scalingQualityComboBox->setCurrentIndex(setting ? 1 : 0);
 
     // ##### fit mode #####
-    int tmp = globalSettings->imageFitMode();
+    int tmp = settings->imageFitMode();
     ui->fitModeComboBox->setCurrentIndex(tmp);
 
     // ##### UI #####
     //not implemented
     ui->scalingQualityComboBox->setDisabled(true);
 
-    ui->fullscreenTaskbarShownCheckBox->setChecked(globalSettings->fullscreenTaskbarShown());
-    ui->fullscreenCheckBox->setChecked(globalSettings->fullscreenMode());
-    ui->thumbnailLabelsCheckBox->setChecked(globalSettings->showThumbnailLabels());
+    ui->fullscreenTaskbarShownCheckBox->setChecked(settings->fullscreenTaskbarShown());
+    ui->fullscreenCheckBox->setChecked(settings->fullscreenMode());
+    ui->thumbnailLabelsCheckBox->setChecked(settings->showThumbnailLabels());
 
-    ui->panelPositionComboBox->setCurrentIndex(globalSettings->panelPosition());
+    ui->panelPositionComboBox->setCurrentIndex(settings->panelPosition());
 
     //bg color
-    QColor bgColor = globalSettings->backgroundColor();
+    QColor bgColor = settings->backgroundColor();
     bgLabelPalette.setColor(QPalette::Window, bgColor);
     ui->bgColorLabel->setPalette(bgLabelPalette);
 
     //accent color
-    QColor accentColor = globalSettings->accentColor();
+    QColor accentColor = settings->accentColor();
     accentLabelPalette.setColor(QPalette::Window, accentColor);
     ui->accentColorLabel->setPalette(accentLabelPalette);
 
     // thumbnail size
     // maybe use slider instead of combobox?
-    int size = globalSettings->thumbnailSize();
+    int size = settings->thumbnailSize();
     switch(size) {
         case thumbSizeSmall: ui->thumbSizeComboBox->setCurrentIndex(0); break;
         case thumbSizeMedium: ui->thumbSizeComboBox->setCurrentIndex(1); break;
@@ -79,44 +79,44 @@ void SettingsDialog::readSettings() {
     }
 
     // sorting mode
-    int mode = globalSettings->sortingMode();
+    int mode = settings->sortingMode();
     ui->sortingComboBox->setCurrentIndex(mode);
 }
 
 void SettingsDialog::applySettings() {
     //globalSettings->s.setValue("cacheSize", ui->cacheSlider->value());
-    globalSettings->setInfiniteScrolling(ui->infiniteScrollingCheckBox->isChecked());
-    globalSettings->setShowThumbnailLabels(ui->thumbnailLabelsCheckBox->isChecked());
-    globalSettings->setUsePreloader(ui->preloaderCheckBox->isChecked());
-    globalSettings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
-    globalSettings->setImageFitMode(ui->fitModeComboBox->currentIndex());
-    globalSettings->setSortingMode(ui->sortingComboBox->currentIndex());
-    globalSettings->setReduceRamUsage(ui->reduceRamCheckBox->isChecked());
-    globalSettings->setPlayVideos(ui->playVideosCheckBox->isChecked());
-    globalSettings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
-    globalSettings->setFullscreenTaskbarShown(ui->fullscreenTaskbarShownCheckBox->isChecked());
+    settings->setInfiniteScrolling(ui->infiniteScrollingCheckBox->isChecked());
+    settings->setShowThumbnailLabels(ui->thumbnailLabelsCheckBox->isChecked());
+    settings->setUsePreloader(ui->preloaderCheckBox->isChecked());
+    settings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
+    settings->setImageFitMode(ui->fitModeComboBox->currentIndex());
+    settings->setSortingMode(ui->sortingComboBox->currentIndex());
+    settings->setReduceRamUsage(ui->reduceRamCheckBox->isChecked());
+    settings->setPlayVideos(ui->playVideosCheckBox->isChecked());
+    settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
+    settings->setFullscreenTaskbarShown(ui->fullscreenTaskbarShownCheckBox->isChecked());
 
-    globalSettings->setFfmpegExecutable(ui->ffmpegLineEdit->text());
+    settings->setFfmpegExecutable(ui->ffmpegLineEdit->text());
 
     bool useFastScale = ui->scalingQualityComboBox->currentIndex() == 1;
-    globalSettings->setUseFastScale(useFastScale);
+    settings->setUseFastScale(useFastScale);
 
-    globalSettings->setPanelPosition((PanelPosition)ui->panelPositionComboBox->currentIndex());
+    settings->setPanelPosition((PanelPosition)ui->panelPositionComboBox->currentIndex());
 
-    globalSettings->setBackgroundColor(bgLabelPalette.color(QPalette::Window));
-    globalSettings->setAccentColor(accentLabelPalette.color(QPalette::Window));
+    settings->setBackgroundColor(bgLabelPalette.color(QPalette::Window));
+    settings->setAccentColor(accentLabelPalette.color(QPalette::Window));
 
     int index = ui->thumbSizeComboBox->currentIndex();
     if(index == 0) {
-        globalSettings->setThumbnailSize(thumbSizeSmall);
+        settings->setThumbnailSize(thumbSizeSmall);
     } else if(index == 1) {
-        globalSettings->setThumbnailSize(thumbSizeMedium);
+        settings->setThumbnailSize(thumbSizeMedium);
     } else if(index == 2) {
-        globalSettings->setThumbnailSize(thumbSizeLarge);
+        settings->setThumbnailSize(thumbSizeLarge);
     } else if(index == 3) {
-        globalSettings->setThumbnailSize(thumbSizeVeryLarge);
+        settings->setThumbnailSize(thumbSizeVeryLarge);
     } else if(index == 4) {
-        globalSettings->setThumbnailSize(thumbSizeCustom);
+        settings->setThumbnailSize(thumbSizeCustom);
     }
     emit settingsChanged();
 }

@@ -1,0 +1,60 @@
+##########  "q"  #########
+nativeScanCode 16
+##########  "w"  #########
+nativeScanCode 17
+##########  "e"  #########
+nativeScanCode 18
+##########  "r"  #########
+nativeScanCode 19
+##########  "t"  #########
+nativeScanCode 20
+##########  "y"  #########
+nativeScanCode 21
+##########  "u"  #########
+nativeScanCode 22
+##########  "i"  #########
+nativeScanCode 23
+##########  "o"  #########
+nativeScanCode 24
+##########  "p"  #########
+nativeScanCode 25
+##########  "a"  #########
+nativeScanCode 30
+##########  "s"  #########
+nativeScanCode 31
+##########  "d"  #########
+nativeScanCode 32
+##########  "f"  #########
+nativeScanCode 33
+##########  "g"  #########
+nativeScanCode 34
+##########  "h"  #########
+nativeScanCode 35
+##########  "j"  #########
+nativeScanCode 36
+##########  "k"  #########
+nativeScanCode 37
+##########  "l"  #########
+nativeScanCode 38
+##########  "z"  #########
+nativeScanCode 44
+##########  "x"  #########
+nativeScanCode 45
+##########  "c"  #########
+nativeScanCode 46
+##########  "v"  #########
+nativeScanCode 47
+##########  "b"  #########
+nativeScanCode 48
+##########  "n"  #########
+nativeScanCode 49
+##########  "m"  #########
+nativeScanCode 50
+##########  "left"  #########
+nativeScanCode 331
+##########  "right"  #########
+nativeScanCode 333
+##########  "up"  #########
+nativeScanCode 328
+##########  "down"  #########
+nativeScanCode 336

@@ -18,7 +18,7 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
     resizeTimer->setSingleShot(true);
     cursorTimer = new QTimer(this);
     readSettings();
-    connect(globalSettings, SIGNAL(settingsChanged()),
+    connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
     connect(resizeTimer, SIGNAL(timeout()),
             this, SLOT(resizeImage()),
@@ -122,7 +122,7 @@ void ImageViewer::selectWallpaper() {
 }
 
 void ImageViewer::readSettings() {
-    this->bgColor = globalSettings->backgroundColor();
+    this->bgColor = settings->backgroundColor();
     this->repaint();
 }
 

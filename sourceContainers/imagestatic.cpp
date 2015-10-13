@@ -56,7 +56,7 @@ void ImageStatic::save() {
 }
 
 QPixmap* ImageStatic::generateThumbnail() {
-    int size = globalSettings->thumbnailSize();
+    int size = settings->thumbnailSize();
     QPixmap *thumbnail = new QPixmap(size, size);
     QPixmap *tmp;
     if(!isLoaded()) {

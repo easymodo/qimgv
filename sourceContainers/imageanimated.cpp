@@ -48,7 +48,7 @@ void ImageAnimated::save() {
 }
 
 QPixmap* ImageAnimated::generateThumbnail() {
-    int size = globalSettings->thumbnailSize();
+    int size = settings->thumbnailSize();
     QPixmap *thumbnail = new QPixmap(size, size);
     QPixmap *tmp;
     if(!isLoaded()) {

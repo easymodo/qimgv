@@ -24,7 +24,7 @@ VideoPlayer::VideoPlayer(QWidget *parent) :
             this, SLOT(handleMediaStatusChange(QMediaPlayer::MediaStatus)));
     connect(&mediaPlayer, SIGNAL(stateChanged(QMediaPlayer::State)),
             this, SLOT(handlePlayerStateChange(QMediaPlayer::State)));
-    connect(globalSettings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
     connect(this, SIGNAL(parentResized(QSize)), this, SLOT(adjustVideoSize()));
     connect(videoItem, SIGNAL(nativeSizeChanged(QSizeF)), this, SLOT(adjustVideoSize()));
 
@@ -61,8 +61,8 @@ void VideoPlayer::stop() {
 }
 
 void VideoPlayer::readSettings() {
-    mediaPlayer.setMuted(!globalSettings->playVideoSounds());
-    QBrush brush(globalSettings->backgroundColor());
+    mediaPlayer.setMuted(!settings->playVideoSounds());
+    QBrush brush(settings->backgroundColor());
     this->setBackgroundBrush(brush);
 }
 

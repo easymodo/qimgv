@@ -13,6 +13,7 @@
 #include "viewers/imageviewer.h"
 #include "viewers/videoplayer.h"
 #include "settings.h"
+#include "actionmanager.h"
 #include "thumbnailPanel/thumbnailstrip.h"
 
 QT_BEGIN_NAMESPACE
@@ -41,6 +42,7 @@ public slots:
     void disableImageViewer();
     void disableVideoPlayer();
 
+    void slotCrop();
 signals:
     void signalFitAll();
     void signalFitWidth();
@@ -62,11 +64,11 @@ public:
     SettingsDialog *settingsDialog;
 
     void open(QString path);
-    void triggerMenuBar();
     void showMenuBar();
-
     void updateOverlays();
+
 private slots:
+    void triggerMenuBar();
     void slotOpenDialog();
     void slotFitAll();
     void slotFitWidth();
@@ -95,7 +97,6 @@ private:
     void createMenus();
     void saveWindowGeometry();
     void restoreWindowGeometry();
-    void keyPressEvent(QKeyEvent *event);
     
     QAction *openAct;
     QAction *saveAct;
@@ -126,8 +127,7 @@ private:
     void calculatePanelTriggerArea();
     bool borderlessEnabled;
 protected:
-    void wheelEvent(QWheelEvent *event);
-    bool eventFilter(QObject *target, QEvent *event);
+    bool event(QEvent *event);
     void resizeEvent(QResizeEvent *event);
     void closeEvent(QCloseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);

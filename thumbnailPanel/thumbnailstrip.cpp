@@ -33,13 +33,13 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     connect(&loadTimer, SIGNAL(timeout()),
             this, SLOT(loadVisibleThumbnails()));
 
-    connect(globalSettings, SIGNAL(settingsChanged()),
+    connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
 }
 
 void ThumbnailStrip::readSettings() {
-    position = globalSettings->panelPosition();
-    panelSize = globalSettings->thumbnailSize() + 22;
+    position = settings->panelPosition();
+    panelSize = settings->thumbnailSize() + 22;
     scrollBar->setValue(0);
 
     for(int i = 0; i < thumbnailLabels.count(); i++) {

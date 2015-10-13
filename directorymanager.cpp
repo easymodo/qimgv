@@ -8,7 +8,7 @@ DirectoryManager::DirectoryManager() :
 {
     readSettings();
     setCurrentDir(startDir);
-    connect(globalSettings, SIGNAL(settingsChanged()), this, SLOT(applySettingsChanges()));
+    connect(settings, SIGNAL(settingsChanged()), this, SLOT(applySettingsChanges()));
 }
 
 void DirectoryManager::setCurrentDir(QString path) {
@@ -46,10 +46,10 @@ void DirectoryManager::generateFileListQuick() {
 void DirectoryManager::changePath(QString path) {
     currentDir.setPath(path);
     if(currentDir.isReadable()) {
-        globalSettings->setLastDirectory(path);
+        settings->setLastDirectory(path);
     } else {
         qDebug() << "DirManager: Invalid directory specified. Removing setting.";
-        globalSettings->setLastDirectory("");
+        settings->setLastDirectory("");
     }
     quickFormatDetection?generateFileListQuick():generateFileList();
     currentPos = -1;
@@ -74,12 +74,12 @@ void DirectoryManager::setFile(QString path) {
     FileInfo *info = loadInfo(path);
     setCurrentDir(info->getDirectoryPath());
     currentPos = fileNameList.indexOf(info->getFileName());
-    globalSettings->setLastFilePosition(currentPos);
+    settings->setLastFilePosition(currentPos);
 }
 
 void DirectoryManager::setCurrentPos(int pos) {
     currentPos = pos;
-    globalSettings->setLastFilePosition(currentPos);
+    settings->setLastFilePosition(currentPos);
 }
 
 bool DirectoryManager::isValidFile(QString filePath) {
@@ -135,14 +135,14 @@ bool DirectoryManager::containsFiles() {
 }
 
 void DirectoryManager::readSettings() {
-    infiniteScrolling = globalSettings->infiniteScrolling();
-    startDir = globalSettings->lastDirectory();
+    infiniteScrolling = settings->infiniteScrolling();
+    startDir = settings->lastDirectory();
     if( startDir.isEmpty() ) {
         startDir = currentDir.homePath();
     }
-    mimeFilters = globalSettings->supportedMimeTypes();
-    extensionFilters = globalSettings->supportedFormats();
-    switch(globalSettings->sortingMode()) {
+    mimeFilters = settings->supportedMimeTypes();
+    extensionFilters = settings->supportedFormats();
+    switch(settings->sortingMode()) {
         case 1: currentDir.setSorting(QDir::Name | QDir::Reversed); break;
         case 2: currentDir.setSorting(QDir::Time); break;
         case 3: currentDir.setSorting(QDir::Time | QDir::Reversed); break;
@@ -152,9 +152,9 @@ void DirectoryManager::readSettings() {
 }
 
 void DirectoryManager::applySettingsChanges() {
-    infiniteScrolling = globalSettings->infiniteScrolling();
+    infiniteScrolling = settings->infiniteScrolling();
     QDir::SortFlags flags;
-    switch(globalSettings->sortingMode()) {
+    switch(settings->sortingMode()) {
         case 1: flags = QDir::SortFlags(QDir::Name | QDir::Reversed); break;
         case 2: flags = QDir::SortFlags(QDir::Time); break;
         case 3: flags = QDir::SortFlags(QDir::Time | QDir::Reversed); break;

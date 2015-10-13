@@ -2,9 +2,10 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include "settings.h"
+#include "actionmanager.h"
 
 void saveSettings() {
-    delete globalSettings;
+    delete settings;
 }
 
 int main(int argc, char *argv[]) {
@@ -14,7 +15,9 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationName("qimgv");
     QCoreApplication::setApplicationVersion("0.42.1");
 
-    globalSettings = Settings::getInstance();
+    settings = Settings::getInstance();
+    actionManager = ActionManager::getInstance();
+
     atexit(saveSettings);
 
     QFile file(":/styles/res/style.qss");
@@ -24,7 +27,7 @@ int main(int argc, char *argv[]) {
     }
 
     MainWindow mw;
-    if( globalSettings->fullscreenMode() ) {
+    if( settings->fullscreenMode() ) {
         mw.slotTriggerFullscreen();
     }
     if(a.arguments().length()>1) {

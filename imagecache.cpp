@@ -3,7 +3,7 @@
 ImageCache::ImageCache() {
     cachedImages = new QList<CacheObject*>();
     applySettings();
-    connect(globalSettings, SIGNAL(settingsChanged()),
+    connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(applySettings()));
 }
 

@@ -9,6 +9,9 @@
 #include <QStringList>
 #include <QColor>
 #include <QTemporaryDir>
+#include <QKeySequence>
+#include <QMap>
+#include "actionmanager.h"
 
 enum PanelPosition {
     BOTTOM,
@@ -27,7 +30,6 @@ public:
     QString supportedFormatsString();
     int sortingMode();
     void setSortingMode(int);
-
     bool useFastScale();
     void setUseFastScale(bool mode);
     QString lastDirectory();
@@ -52,27 +54,24 @@ public:
     void setWindowGeometry(QByteArray geometry);
     bool reduceRamUsage();
     void setReduceRamUsage(bool mode);
-
     bool playVideos();
     void setPlayVideos(bool mode);
     bool playVideoSounds();
     void setPlayVideoSounds(bool mode);
     QString tempDir();
-
     QString ffmpegExecutable();
     void setFfmpegExecutable(QString path);
     bool showThumbnailLabels();
     void setShowThumbnailLabels(bool mode);
-
     PanelPosition panelPosition();
     void setPanelPosition(PanelPosition);
-
     ~Settings();
     bool infiniteScrolling();
     void setInfiniteScrolling(bool mode);
     bool fullscreenTaskbarShown();
     void setFullscreenTaskbarShown(bool mode);
     QStringList supportedFormats();
+    void readShortcuts();
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 135;
@@ -87,6 +86,6 @@ public slots:
 
 };
 
-extern Settings *globalSettings;
+extern Settings *settings;
 
 #endif // SETTINGS_H

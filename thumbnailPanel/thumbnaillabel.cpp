@@ -34,8 +34,8 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsPixmapItem *parent) :
 
 // call manually from thumbnailStrip
 void ThumbnailLabel::readSettings() {
-    thumbnailSize = globalSettings->thumbnailSize();
-    if(globalSettings->panelPosition() == LEFT || globalSettings->panelPosition() == RIGHT) {
+    thumbnailSize = settings->thumbnailSize();
+    if(settings->panelPosition() == LEFT || settings->panelPosition() == RIGHT) {
         orientation = Qt::Vertical;
         borderW = 5;
         borderH = 3;
@@ -62,8 +62,8 @@ void ThumbnailLabel::readSettings() {
     shadowRect.setTopLeft(QPointF(borderW, borderH));
     shadowRect.setBottomRight(QPointF(borderW+thumbnailSize, borderH+nameRect.height()));
 
-    highlightColor->setRgb(globalSettings->accentColor().rgb());
-    labelColor->setRgb(globalSettings->accentColor().rgb());
+    highlightColor->setRgb(settings->accentColor().rgb());
+    labelColor->setRgb(settings->accentColor().rgb());
 
     shadowGradient->setStart(shadowRect.topLeft());
     shadowGradient->setFinalStop(shadowRect.bottomLeft());
@@ -81,7 +81,7 @@ void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail){
     thumbnail = _thumbnail;
     QGraphicsPixmapItem::setPixmap(*thumbnail->image);
     loaded = true;
-    showLabel = globalSettings->showThumbnailLabels() && !thumbnail->label.isEmpty();
+    showLabel = settings->showThumbnailLabels() && !thumbnail->label.isEmpty();
     if(showLabel) {
         int labelWidth = fm->width(thumbnail->label);
         labelRect.setWidth(labelWidth + 4);

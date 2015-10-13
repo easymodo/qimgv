@@ -10,7 +10,7 @@ NewLoader::NewLoader(DirectoryManager *_dm) :
     readSettings();
     //QPixmapCache::setCacheLimit(0);
     QThreadPool::globalInstance()->setMaxThreadCount(4),
-    connect(globalSettings, SIGNAL(settingsChanged()),
+    connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
 }
 
@@ -199,7 +199,7 @@ void NewLoader::setCache(ImageCache *_cache) {
     connect(loadTimer, SIGNAL(timeout()), this, SLOT(onLoadTimeout()));
     preloadTimer = new QTimer(this);
     preloadTimer->setSingleShot(true);
-    if(globalSettings->usePreloader()) {
+    if(settings->usePreloader()) {
             connect(preloadTimer, SIGNAL(timeout()), this, SLOT(onPreloadTimeout()));
     }
     loadThread->start();
@@ -231,7 +231,7 @@ void NewLoader::onThumbnailReady(int pos) {
 }
 
 void NewLoader::readSettings() {
-    if( globalSettings->usePreloader() ) {
+    if( settings->usePreloader() ) {
         connect(this, SIGNAL(startPreload()),
                 this, SLOT(doPreload()));
     }
@@ -239,7 +239,7 @@ void NewLoader::readSettings() {
         disconnect(this, SIGNAL(startPreload()),
                    this, SLOT(doPreload()));
     }
-    reduceRam = globalSettings->reduceRamUsage();
+    reduceRam = settings->reduceRamUsage();
 }
 
 void NewLoader::lock() {

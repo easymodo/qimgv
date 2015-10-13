@@ -29,12 +29,12 @@ void Video::save() {
 }
 
 QPixmap* Video::generateThumbnail() {
-    QString ffmpegExe = globalSettings->ffmpegExecutable();
+    QString ffmpegExe = settings->ffmpegExecutable();
     if(ffmpegExe.isEmpty()) {
         return thumbnailStub();
     }
 
-    QString filePath = globalSettings->tempDir() + "tmp_" + info->getFileName();
+    QString filePath = settings->tempDir() + "tmp_" + info->getFileName();
 
     QString command = "\""+ffmpegExe+"\""+" -i "+"\""+info->getFilePath()+"\""+
             " -r 1 -f image2 "+"\""+filePath+"\"";
@@ -43,7 +43,7 @@ QPixmap* Video::generateThumbnail() {
     process.waitForFinished();
     process.close();
 
-    int size = globalSettings->thumbnailSize();
+    int size = settings->thumbnailSize();
     QPixmap *thumbnail = new QPixmap(size, size);
     QPixmap *tmp;
     tmp = new QPixmap(filePath, "JPG");
@@ -64,7 +64,7 @@ QPixmap* Video::generateThumbnail() {
 }
 
 QPixmap* Video::thumbnailStub() {
-    int size = globalSettings->thumbnailSize();
+    int size = settings->thumbnailSize();
     QImage *img = new QImage(size, size, QImage::Format_ARGB32_Premultiplied);
     QPainter painter(img);
     painter.setCompositionMode(QPainter::CompositionMode_Source);

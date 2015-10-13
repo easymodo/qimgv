@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>590</width>
-    <height>377</height>
+    <height>447</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -41,7 +41,7 @@
    <property name="geometry">
     <rect>
      <x>510</x>
-     <y>340</y>
+     <y>410</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -54,7 +54,7 @@
    <property name="geometry">
     <rect>
      <x>350</x>
-     <y>340</y>
+     <y>410</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -69,7 +69,7 @@
      <x>10</x>
      <y>10</y>
      <width>571</width>
-     <height>321</height>
+     <height>391</height>
     </rect>
    </property>
    <property name="tabPosition">
@@ -79,10 +79,13 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideNone</enum>
+   </property>
+   <property name="documentMode">
+    <bool>false</bool>
    </property>
    <property name="movable">
     <bool>false</bool>
@@ -170,7 +173,7 @@
       <rect>
        <x>10</x>
        <y>170</y>
-       <width>201</width>
+       <width>281</width>
        <height>21</height>
       </rect>
      </property>
@@ -226,7 +229,7 @@
       <rect>
        <x>320</x>
        <y>20</y>
-       <width>211</width>
+       <width>231</width>
        <height>21</height>
       </rect>
      </property>
@@ -239,7 +242,7 @@
       <rect>
        <x>320</x>
        <y>50</y>
-       <width>181</width>
+       <width>231</width>
        <height>21</height>
       </rect>
      </property>
@@ -252,7 +255,7 @@
       <rect>
        <x>10</x>
        <y>230</y>
-       <width>151</width>
+       <width>161</width>
        <height>21</height>
       </rect>
      </property>
@@ -263,9 +266,9 @@
     <widget class="QLineEdit" name="ffmpegLineEdit">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>180</x>
        <y>230</y>
-       <width>381</width>
+       <width>371</width>
        <height>21</height>
       </rect>
      </property>
@@ -275,8 +278,8 @@
       <rect>
        <x>10</x>
        <y>250</y>
-       <width>521</width>
-       <height>41</height>
+       <width>541</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="font">
@@ -306,7 +309,7 @@
       <rect>
        <x>10</x>
        <y>200</y>
-       <width>191</width>
+       <width>281</width>
        <height>21</height>
       </rect>
      </property>
@@ -319,7 +322,7 @@
       <rect>
        <x>10</x>
        <y>140</y>
-       <width>191</width>
+       <width>281</width>
        <height>21</height>
       </rect>
      </property>
@@ -346,7 +349,7 @@
       <rect>
        <x>160</x>
        <y>80</y>
-       <width>131</width>
+       <width>151</width>
        <height>22</height>
       </rect>
      </property>
@@ -374,7 +377,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>171</width>
+       <width>201</width>
        <height>21</height>
       </rect>
      </property>
@@ -409,7 +412,7 @@
       <rect>
        <x>10</x>
        <y>80</y>
-       <width>101</width>
+       <width>141</width>
        <height>21</height>
       </rect>
      </property>
@@ -428,7 +431,7 @@
       <rect>
        <x>10</x>
        <y>50</y>
-       <width>171</width>
+       <width>201</width>
        <height>21</height>
       </rect>
      </property>
@@ -605,12 +608,43 @@
      </item>
     </widget>
    </widget>
+   <widget class="QWidget" name="tab_4">
+    <attribute name="title">
+     <string>Shortcuts</string>
+    </attribute>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>561</width>
+       <height>351</height>
+      </rect>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOn</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>537</width>
+        <height>347</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </widget>
   </widget>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
      <x>430</x>
-     <y>340</y>
+     <y>410</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -619,6 +653,11 @@
     <string>Apply</string>
    </property>
   </widget>
+  <zorder>Cancel</zorder>
+  <zorder>OK</zorder>
+  <zorder>tabWidget</zorder>
+  <zorder>pushButton</zorder>
+  <zorder>scrollArea</zorder>
  </widget>
  <customwidgets>
   <customwidget>

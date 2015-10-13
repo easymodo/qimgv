@@ -206,7 +206,7 @@ void Core::rescaleForZoom(QSize newSize) {
             pixmap = imageLoader->current->getPixmap();
         } else {
             pixmap = new QPixmap(newSize);
-            if( globalSettings->useFastScale() ) {
+            if( settings->useFastScale() ) {
                 //imgLib.fastScale(pixmap, imageLoader->current->getPixmap(), newSize, true);
             }
             else {

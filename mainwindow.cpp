@@ -33,7 +33,6 @@ void MainWindow::init() {
     infoOverlay = new textOverlay(imageViewer);
 
     layout = new QVBoxLayout;
-    //central->setAttribute(Qt::WA_TransparentForMouseEvents);
     central->setAttribute(Qt::WA_MouseTracking);
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     sizePolicy.setHorizontalStretch(0);
@@ -48,7 +47,7 @@ void MainWindow::init() {
 
     core = new Core();
 
-    connect(globalSettings, SIGNAL(settingsChanged()),
+    connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
 
     enableImageViewer();
@@ -108,6 +107,26 @@ void MainWindow::init() {
             this, SLOT(slotTriggerFullscreen()), Qt::UniqueConnection);
 
     core->init();
+
+    //##############################################################
+    //######################### Shortcuts ##########################
+    //##############################################################
+
+    connect(actionManager, SIGNAL(nextImage()), core, SLOT(slotNextImage()));
+    connect(actionManager, SIGNAL(prevImage()), core, SLOT(slotPrevImage()));
+    connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
+    connect(actionManager, SIGNAL(toggleFullscreen()), this, SLOT(slotTriggerFullscreen()));
+    connect(actionManager, SIGNAL(toggleMenuBar()), this, SLOT(triggerMenuBar()));
+    connect(actionManager, SIGNAL(zoomIn()), imageViewer, SLOT(slotZoomIn()));
+    connect(actionManager, SIGNAL(zoomOut()), imageViewer, SLOT(slotZoomOut()));
+    connect(actionManager, SIGNAL(rotateLeft()), this, SLOT(slotRotateLeft()));
+    connect(actionManager, SIGNAL(rotateRight()), this, SLOT(slotRotateRight()));
+    connect(actionManager, SIGNAL(settings()), settingsDialog, SLOT(show()));
+    connect(actionManager, SIGNAL(crop()), this, SLOT(slotCrop()));
+    connect(actionManager, SIGNAL(setWallpaper()), this, SLOT(slotCrop())); // todo
+    connect(actionManager, SIGNAL(open()), this, SLOT(slotOpenDialog()));
+    connect(actionManager, SIGNAL(save()), this, SLOT(slotSaveDialog()));
+    connect(actionManager, SIGNAL(exit()), this, SLOT(close()));
 
     createActions();
     createMenus();
@@ -240,16 +259,16 @@ void MainWindow::open(QString path) {
 
 void MainWindow::readSettingsInitial() {
     readSettings();
-    if ( !globalSettings->fullscreenMode() ) {
+    if ( !settings->fullscreenMode() ) {
         restoreWindowGeometry();
     }
 }
 
 void MainWindow::readSettings() {
-    borderlessEnabled = globalSettings->fullscreenTaskbarShown();
-    menuBar()->setHidden( globalSettings->menuBarHidden() );
-    panelPosition = globalSettings->panelPosition();
-    int fitMode = globalSettings->imageFitMode();
+    borderlessEnabled = settings->fullscreenTaskbarShown();
+    menuBar()->setHidden( settings->menuBarHidden() );
+    panelPosition = settings->panelPosition();
+    int fitMode = settings->imageFitMode();
     if(fitMode == 1) {
         slotFitWidth();
     }
@@ -266,9 +285,9 @@ void MainWindow::readSettings() {
 void MainWindow::slotOpenDialog() {
     QFileDialog dialog;
     QStringList imageFilter;
-    imageFilter.append(globalSettings->supportedFormatsString());
+    imageFilter.append(settings->supportedFormatsString());
     imageFilter.append("All Files (*)");
-    QString lastDir = globalSettings->lastDirectory();
+    QString lastDir = settings->lastDirectory();
     dialog.setDirectory(lastDir);
     dialog.setNameFilters(imageFilter);
     dialog.setWindowTitle("Open image");
@@ -318,84 +337,55 @@ void MainWindow::slotFitNormal()
 void MainWindow::createActions()
 {
     openAct = new QAction(tr("&Open..."), this);
-    openAct->setShortcut(Qt::CTRL+Qt::Key_O);
     this->addAction(openAct);
     connect(openAct, SIGNAL(triggered()), this, SLOT(slotOpenDialog()));
 
     saveAct = new QAction(tr("Save"), this);
-    saveAct->setShortcut(Qt::CTRL+Qt::Key_S);
     this->addAction(saveAct);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(slotSaveDialog()));
 
     settingsAct = new QAction(tr("&Preferences"), this);
-    settingsAct->setShortcut(Qt::CTRL+Qt::Key_P);
     this->addAction(settingsAct);
     connect(settingsAct, SIGNAL(triggered()), settingsDialog, SLOT(show()));
 
-    QList<QKeySequence> exitShortcuts;
-    exitShortcuts << Qt::ALT+Qt::Key_X << Qt::CTRL+Qt::Key_Q;
     exitAct = new QAction(tr("E&xit"), this);
-    exitAct->setShortcuts(exitShortcuts);
     this->addAction(exitAct);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
     rotateLeftAct = new QAction(tr("Rotate L&eft"), this);
-    rotateLeftAct->setShortcut(Qt::Key_L);
     this->addAction(rotateLeftAct);
     connect(rotateLeftAct, SIGNAL(triggered()), this, SLOT(slotRotateLeft()));
 
     cropAct = new QAction(tr("C&rop"), this);
-    cropAct->setShortcut(Qt::Key_X);
     this->addAction(cropAct);
-    connect(cropAct, &QAction::triggered, [=]() {
-        this->slotFitAll();
-        imageViewer->crop();
-    });
+    connect(cropAct, SIGNAL(triggered()), this, SLOT(slotCrop()));
 
     selectWallpaperAct = new QAction(tr("Set wallpaper"), this);
-    selectWallpaperAct->setShortcut(Qt::Key_Z);
     this->addAction(selectWallpaperAct);
-    connect(selectWallpaperAct, &QAction::triggered, [=]() {
-        this->slotFitAll();
-        imageViewer->selectWallpaper();
-    });
+    connect(selectWallpaperAct, SIGNAL(triggered()), this, SLOT(slotCrop()));
 
     rotateRightAct = new QAction(tr("Rotate R&ight"), this);
-    rotateRightAct->setShortcut(Qt::Key_R);
     this->addAction(rotateRightAct);
     connect(rotateRightAct, SIGNAL(triggered()), this, SLOT(slotRotateRight()));
 
-    QList<QKeySequence> nextShortcuts;
-    nextShortcuts << Qt::Key_Right << Qt::Key_D;
     nextAct = new QAction(tr("N&ext"), this);
-    nextAct->setShortcuts(nextShortcuts);
     nextAct->setEnabled(true);
     this->addAction(nextAct);
     connect(nextAct, SIGNAL(triggered()), core, SLOT(slotNextImage()));
 
-    QList<QKeySequence> prevShortcuts;
-    prevShortcuts << Qt::Key_Left << Qt::Key_A;
     prevAct = new QAction(tr("P&rev"), this);
-    prevAct->setShortcuts(prevShortcuts);
     this->addAction(prevAct);
     connect(prevAct, SIGNAL(triggered()), core, SLOT(slotPrevImage()));
 
-    QList<QKeySequence> zoomInShortcuts;
-    zoomInShortcuts << Qt::Key_Up << Qt::Key_W;
     zoomInAct = new QAction(tr("Zoom &In (10%)"), this);
-    zoomInAct->setShortcuts(zoomInShortcuts);
     this->addAction(zoomInAct);
     connect(zoomInAct, SIGNAL(triggered()), imageViewer, SLOT(slotZoomIn()));
 
-    QList<QKeySequence> zoomOutShortcuts;
-    zoomOutShortcuts << Qt::Key_Down << Qt::Key_S;
     zoomOutAct = new QAction(tr("Zoom &Out (10%)"), this);
-    zoomOutAct->setShortcuts(zoomOutShortcuts);
     this->addAction(zoomOutAct);
     connect(zoomOutAct, SIGNAL(triggered()), imageViewer, SLOT(slotZoomOut()));
 
     modeFitNormal = new QAction(tr("&Normal Size"), this);
-    modeFitNormal->setShortcut(Qt::CTRL+Qt::Key_N);
     modeFitNormal->setEnabled(false);
     modeFitNormal->setCheckable(true);
     this->addAction(modeFitNormal);
@@ -404,21 +394,18 @@ void MainWindow::createActions()
     modeFitAll = new QAction(tr("Fit all"), this);
     modeFitAll->setEnabled(false);
     modeFitAll->setCheckable(true);
-    modeFitAll->setShortcut(Qt::CTRL+Qt::Key_A);
     this->addAction(modeFitAll);
     connect(modeFitAll, SIGNAL(triggered()), this, SLOT(slotFitAll()));
 
     modeFitWidth = new QAction(tr("Fit &width"), this);
     modeFitWidth->setEnabled(false);
     modeFitWidth->setCheckable(true);
-    modeFitWidth->setShortcut(Qt::CTRL+Qt::Key_W);
     this->addAction(modeFitWidth);
     connect(modeFitWidth, SIGNAL(triggered()), this, SLOT(slotFitWidth()));
 
     fullscreenEnabledAct = new QAction(tr("&Fullscreen"), this);
     fullscreenEnabledAct->setEnabled(true);
     fullscreenEnabledAct->setCheckable(true);
-    fullscreenEnabledAct->setShortcut(Qt::Key_F);
     this->addAction(fullscreenEnabledAct);
     connect(fullscreenEnabledAct, SIGNAL(triggered()),
             this, SLOT(slotFullscreen()));
@@ -478,6 +465,11 @@ void MainWindow::slotTriggerFullscreen() {
     this->fullscreenEnabledAct->trigger();
 }
 
+void MainWindow::slotCrop() {
+    this->slotFitAll();
+    imageViewer->selectWallpaper();
+}
+
 void MainWindow::slotFullscreen() {
     if(fullscreenEnabledAct->isChecked()) {
         saveWindowGeometry();
@@ -530,7 +522,7 @@ void MainWindow::slotRotateRight() {
 }
 
 void MainWindow::slotSaveDialog() {
-    const QString imagesFilter = globalSettings->supportedFormatsString();
+    const QString imagesFilter = settings->supportedFormatsString();
     QString fileName = core->getCurrentFilePath();
     fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
                                fileName,
@@ -582,33 +574,8 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event) {
     }
 }
 
-void MainWindow::wheelEvent(QWheelEvent *event) {
-    if(!panel->isHidden() && panel->rect().contains(event->pos())) {
-        event->ignore();
-        return;
-    }
-    event->accept();
-    if(event->angleDelta().ry() < 0) {
-        emit signalNextImage();
-    }
-    else {
-        emit signalPrevImage();
-    }
-}
-
-void MainWindow::keyPressEvent(QKeyEvent *event) {
-    QMainWindow::keyPressEvent(event);
-    if (event->key() == Qt::Key_Space)
-    {
-        switchFitMode();
-    }
-    if(event->key() == Qt::Key_M) {
-        triggerMenuBar();
-    }
-}
-
 void MainWindow::showMenuBar() {
-    if( !globalSettings->menuBarHidden() ) {
+    if( !settings->menuBarHidden() ) {
         menuBar()->show();
     }
 }
@@ -619,11 +586,11 @@ void MainWindow::triggerMenuBar() {
     } else {
         this->menuBar()->hide();
     }
-    globalSettings->setMenuBarHidden(this->menuBar()->isHidden());
+    settings->setMenuBarHidden(this->menuBar()->isHidden());
 }
 
-bool MainWindow::eventFilter(QObject *target, QEvent *event) {
-    return QMainWindow::eventFilter(target, event);
+bool MainWindow::event(QEvent *event) {
+    return (actionManager->processEvent(event))?true:QMainWindow::event(event);
 }
 
 void MainWindow::slotAbout() {
@@ -662,11 +629,11 @@ void MainWindow::close() {
 }
 
 void MainWindow::saveWindowGeometry() {
-    globalSettings->setWindowGeometry(this->saveGeometry());
+    settings->setWindowGeometry(this->saveGeometry());
 }
 
 void MainWindow::restoreWindowGeometry() {
-    this->restoreGeometry(globalSettings->windowGeometry());
+    this->restoreGeometry(settings->windowGeometry());
 }
 
 MainWindow::~MainWindow() {
