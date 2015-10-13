@@ -143,10 +143,10 @@ void DirectoryManager::readSettings() {
     mimeFilters = settings->supportedMimeTypes();
     extensionFilters = settings->supportedFormats();
     switch(settings->sortingMode()) {
-        case 1: currentDir.setSorting(QDir::Name | QDir::Reversed); break;
+        case 1: currentDir.setSorting(QDir::Name | QDir::Reversed | QDir::IgnoreCase); break;
         case 2: currentDir.setSorting(QDir::Time); break;
         case 3: currentDir.setSorting(QDir::Time | QDir::Reversed); break;
-        default: currentDir.setSorting(QDir::Name); break;
+        default: currentDir.setSorting(QDir::Name | QDir::IgnoreCase); break;
     }
     generateFileList();
 }
@@ -155,10 +155,10 @@ void DirectoryManager::applySettingsChanges() {
     infiniteScrolling = settings->infiniteScrolling();
     QDir::SortFlags flags;
     switch(settings->sortingMode()) {
-        case 1: flags = QDir::SortFlags(QDir::Name | QDir::Reversed); break;
+        case 1: flags = QDir::SortFlags(QDir::Name | QDir::Reversed | QDir::IgnoreCase); break;
         case 2: flags = QDir::SortFlags(QDir::Time); break;
         case 3: flags = QDir::SortFlags(QDir::Time | QDir::Reversed); break;
-        default: flags = QDir::SortFlags(QDir::Name); break;
+        default: flags = QDir::SortFlags(QDir::Name | QDir::IgnoreCase); break;
     }
     if(currentDir.sorting() != flags) {
         currentDir.setSorting(flags);
