@@ -9,6 +9,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     horizontalScrollBar()->setAttribute(Qt::WA_NoMousePropagation, true);
     verticalScrollBar()->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setAttribute(Qt::WA_NoMousePropagation, true);
+    this->setFocusPolicy(Qt::NoFocus);
     widget = new QGraphicsWidget();
     scene = new CustomScene();
     layout = new QGraphicsLinearLayout();
