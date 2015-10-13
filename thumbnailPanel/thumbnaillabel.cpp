@@ -41,24 +41,18 @@ void ThumbnailLabel::readSettings() {
         borderH = 3;
         highlightRect.setTopLeft(QPointF(thumbnailSize+borderW, borderH));
         highlightRect.setBottomRight(QPointF(borderW*2+thumbnailSize, thumbnailSize+borderH));
-        nameRect.setTopLeft(QPointF(borderW, borderH));
-        nameRect.setBottomRight(QPointF(borderW+thumbnailSize, borderH+16));
-        nameRect.setWidth(thumbnailSize);
-        labelRect = QRectF(QPointF(borderW+thumbnailSize-24, borderH),
-                           QPointF(borderW+thumbnailSize, borderH+nameRect.height()));
     } else {
         orientation = Qt::Horizontal;
         borderW = 3;
         borderH = 5;
         highlightRect.setTopLeft(QPointF(borderW, 0));
         highlightRect.setBottomRight(QPointF(borderW+thumbnailSize, borderH));
-        nameRect.setTopLeft(QPointF(borderW, borderH));
-        nameRect.setBottomRight(QPointF(borderW+thumbnailSize, borderH+16));
-        nameRect.setWidth(thumbnailSize);
-        labelRect = QRectF(QPointF(borderW, borderH),
-                           QPointF(borderW+24, borderH+nameRect.height()));
     }
-
+    nameRect.setTopLeft(QPointF(borderW, borderH));
+    nameRect.setBottomRight(QPointF(borderW+thumbnailSize, borderH+17));
+    nameRect.setWidth(thumbnailSize);
+    labelRect = QRectF(QPointF(borderW+thumbnailSize-25, borderH),
+                       QPointF(borderW+thumbnailSize, borderH+nameRect.height()));
     shadowRect.setTopLeft(QPointF(borderW, borderH));
     shadowRect.setBottomRight(QPointF(borderW+thumbnailSize, borderH+nameRect.height()));
 
