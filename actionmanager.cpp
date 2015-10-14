@@ -12,10 +12,30 @@ ActionManager::~ActionManager() {
 ActionManager* ActionManager::getInstance() {
     if(!actionManager) {
         actionManager = new ActionManager();
+        createActionList();
         initKeyMap();
         initShortcuts();
     }
     return actionManager;
+}
+
+// valid action names
+void ActionManager::createActionList() {
+    actionManager->validActions << "nextImage"
+                                   << "prevImage"
+                                   << "toggleFullscreen"
+                                   << "toggleFitMode"
+                                   << "toggleMenuBar"
+                                   << "rotateRight"
+                                   << "rotateLeft"
+                                   << "zoomIn"
+                                   << "zoomOut"
+                                   << "open"
+                                   << "save"
+                                   << "setWallpaper"
+                                   << "crop"
+                                   << "openSettings"
+                                   << "exit";
 }
 
 //TODO: update keymap for ps/2 keyboards
@@ -108,10 +128,41 @@ void ActionManager::initKeyMap() {
 // todo: check on windows
 void ActionManager::initShortcuts() {
     actionManager->resetDefaults();
+    settings->readShortcuts();
 }
 
 void ActionManager::addShortcut(QString keys, QString action) {
-    actionManager->shortcuts.insert(keys, action);
+    if(actionManager->validActions.contains(action)) {
+        actionManager->shortcuts.insert(keys, action);
+    } else {
+        qDebug() << "ActionManager: action " << action << " is invalid.";
+    }
+}
+
+void ActionManager::removeShortcut(QString keys) {
+    actionManager->shortcuts.remove(keys);
+}
+
+const QStringList& ActionManager::actionList() {
+    return actionManager->validActions;
+}
+
+const QStringList ActionManager::keys() {
+    QStringList list;
+    QMapIterator<int,QString> i(actionManager->keyMap);
+    while (i.hasNext()) {
+        i.next();
+        list << i.value();
+    }
+    return list;
+}
+
+const QMap<QString,QString>& ActionManager::allShortcuts() {
+    return actionManager->shortcuts;
+}
+
+void ActionManager::removeAll() {
+    shortcuts.clear();
 }
 
 void ActionManager::resetDefaults() {
@@ -137,7 +188,7 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("Ctrl+S", "save");
     actionManager->addShortcut("Ctrl+W", "setWallpaper");
     actionManager->addShortcut("X", "crop");
-    actionManager->addShortcut("Ctrl+P", "settings");
+    actionManager->addShortcut("Ctrl+P", "openSettings");
     actionManager->addShortcut("Alt+X", "exit");
     actionManager->addShortcut("Ctrl+Q", "exit");
 }

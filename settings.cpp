@@ -17,7 +17,6 @@ Settings* Settings::getInstance() {
     if (!settings) {
         settings=new Settings();
         validate();
-        settings->readShortcuts();
     }
     return settings;
 }
@@ -309,10 +308,27 @@ void Settings::sendChangeNotification() {
 }
 
 void Settings::readShortcuts() {
-    settings->s.beginGroup("Shortcuts");
-
-    //...
-
+    settings->s.beginGroup("Controls");
+    QStringList in, pair;
+    in = settings->s.value("shortcuts").toStringList();
+    for(int i=0; i<in.count(); i++) {
+        pair = in[i].split("=");
+        if(!pair[0].isEmpty() && !pair[1].isEmpty()) {
+            actionManager->addShortcut(pair[1], pair[0]);
+        }
+    }
     settings->s.endGroup();
 }
 
+void Settings::saveShortcuts() {
+    settings->s.beginGroup("Controls");
+    const QMap<QString, QString> &shortcuts = actionManager->allShortcuts();
+    QMapIterator<QString,QString> i(shortcuts);
+    QStringList out;
+    while (i.hasNext()) {
+        i.next();
+        out << i.value()+"="+i.key();
+    }
+    settings->s.setValue("shortcuts", out);
+    settings->s.endGroup();
+}

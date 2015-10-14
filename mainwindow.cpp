@@ -121,7 +121,7 @@ void MainWindow::init() {
     connect(actionManager, SIGNAL(zoomOut()), imageViewer, SLOT(slotZoomOut()));
     connect(actionManager, SIGNAL(rotateLeft()), this, SLOT(slotRotateLeft()));
     connect(actionManager, SIGNAL(rotateRight()), this, SLOT(slotRotateRight()));
-    connect(actionManager, SIGNAL(settings()), settingsDialog, SLOT(show()));
+    connect(actionManager, SIGNAL(openSettings()), settingsDialog, SLOT(show()));
     connect(actionManager, SIGNAL(crop()), this, SLOT(slotCrop()));
     connect(actionManager, SIGNAL(setWallpaper()), this, SLOT(slotCrop())); // todo
     connect(actionManager, SIGNAL(open()), this, SLOT(slotOpenDialog()));

@@ -5,6 +5,9 @@
 #include <QColorDialog>
 #include <QDebug>
 #include "customWidgets/clickablelabel.h"
+#include "customWidgets/settingsshortcutwidget.h"
+#include "settings.h"
+#include "actionmanager.h"
 
 namespace Ui {
 class SettingsDialog;
@@ -21,6 +24,7 @@ public:
 private:
     QPalette bgLabelPalette, accentLabelPalette;
     void readSettings();
+    void fillShortcuts();
     Ui::SettingsDialog *ui;
     static constexpr int thumbSizeSmall = 120,
               thumbSizeMedium = 135,
@@ -28,13 +32,18 @@ private:
               thumbSizeVeryLarge = 200;
 
     int thumbSizeCustom;
+    QStringList shortcutKeys;
 
+    void applyShortcuts();
 private slots:
     void applySettings();
     void applySettingsAndClose();
     void bgColorDialog();
 
     void accentColorDialog();
+    void removeShortcut();
+    void addShortcut();
+    void resetShortcuts();
 signals:
     void settingsChanged();
 };

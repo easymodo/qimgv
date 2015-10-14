@@ -72,6 +72,7 @@ public:
     void setFullscreenTaskbarShown(bool mode);
     QStringList supportedFormats();
     void readShortcuts();
+    void saveShortcuts();
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 135;

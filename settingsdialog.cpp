@@ -1,6 +1,5 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
-#include "settings.h"
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
@@ -12,6 +11,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     setWindowIcon(QIcon(":/images/res/pepper32.png"));
     ui->bgColorLabel->setAutoFillBackground(true);
     ui->accentColorLabel->setAutoFillBackground(true);
+    shortcutKeys = actionManager->keys();
     connect(this, SIGNAL(settingsChanged()),
             settings, SLOT(sendChangeNotification()));
     readSettings();
@@ -81,6 +81,8 @@ void SettingsDialog::readSettings() {
     // sorting mode
     int mode = settings->sortingMode();
     ui->sortingComboBox->setCurrentIndex(mode);
+
+    fillShortcuts();
 }
 
 void SettingsDialog::applySettings() {
@@ -118,12 +120,52 @@ void SettingsDialog::applySettings() {
     } else if(index == 4) {
         settings->setThumbnailSize(thumbSizeCustom);
     }
+
+    settings->saveShortcuts();
     emit settingsChanged();
 }
 
 void SettingsDialog::applySettingsAndClose() {
     applySettings();
     this->close();
+}
+
+void SettingsDialog::fillShortcuts() {
+    ui->shortcutsListWidget->clear();
+    const QMap<QString,QString> shortcuts = actionManager->allShortcuts();
+    QMapIterator<QString,QString> i(shortcuts);
+    while (i.hasNext()) {
+        i.next();
+        ui->shortcutsListWidget->addItem(i.value() + "=" + i.key());
+    }
+}
+
+void SettingsDialog::addShortcut() {
+    const QStringList actionList = actionManager->actionList(); // move to constructor?
+    SettingsShortcutWidget w(actionList, shortcutKeys, this);
+    if(w.exec()) {
+        ui->shortcutsListWidget->addItem(w.text());
+    }
+}
+
+void SettingsDialog::removeShortcut() {
+    int row = ui->shortcutsListWidget->currentRow();
+    if(row >= 0) {
+        delete ui->shortcutsListWidget->takeItem(row);
+    }
+}
+
+void SettingsDialog::applyShortcuts() {
+    actionManager->removeAll();
+    for(int i = 0; i < ui->shortcutsListWidget->count(); i++) {
+        QStringList s = ui->shortcutsListWidget->item(i)->text().split("=");
+        actionManager->addShortcut(s[1],s[0]);
+    }
+}
+
+void SettingsDialog::resetShortcuts() {
+    actionManager->resetDefaults();
+    fillShortcuts();
 }
 
 void SettingsDialog::bgColorDialog() {

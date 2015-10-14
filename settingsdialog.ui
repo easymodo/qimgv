@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>590</width>
-    <height>447</height>
+    <height>384</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -41,7 +41,7 @@
    <property name="geometry">
     <rect>
      <x>510</x>
-     <y>410</y>
+     <y>350</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -54,7 +54,7 @@
    <property name="geometry">
     <rect>
      <x>350</x>
-     <y>410</y>
+     <y>350</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -69,8 +69,14 @@
      <x>10</x>
      <y>10</y>
      <width>571</width>
-     <height>391</height>
+     <height>331</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>571</width>
+     <height>200</height>
+    </size>
    </property>
    <property name="tabPosition">
     <enum>QTabWidget::North</enum>
@@ -610,41 +616,124 @@
    </widget>
    <widget class="QWidget" name="tab_4">
     <attribute name="title">
-     <string>Shortcuts</string>
+     <string>Controls</string>
     </attribute>
-    <widget class="QScrollArea" name="scrollArea">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>561</width>
-       <height>351</height>
-      </rect>
-     </property>
-     <property name="verticalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOn</enum>
-     </property>
-     <property name="widgetResizable">
-      <bool>true</bool>
-     </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>537</width>
-        <height>347</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QWidget" name="widget" native="true">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>28</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Right mouse button behavior:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>28</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string>Zoom</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Menu</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="text">
+             <string>Add</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_4">
+            <property name="text">
+             <string>Remove</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_3">
+            <property name="text">
+             <string>Defaults</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QListWidget" name="shortcutsListWidget">
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
      <x>430</x>
-     <y>410</y>
+     <y>350</y>
      <width>71</width>
      <height>28</height>
     </rect>
@@ -653,11 +742,6 @@
     <string>Apply</string>
    </property>
   </widget>
-  <zorder>Cancel</zorder>
-  <zorder>OK</zorder>
-  <zorder>tabWidget</zorder>
-  <zorder>pushButton</zorder>
-  <zorder>scrollArea</zorder>
  </widget>
  <customwidgets>
   <customwidget>
@@ -692,8 +776,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>380</x>
-     <y>322</y>
+     <x>510</x>
+     <y>350</y>
     </hint>
     <hint type="destinationlabel">
      <x>383</x>
@@ -708,8 +792,8 @@
    <slot>applySettingsAndClose()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>182</x>
-     <y>312</y>
+     <x>350</x>
+     <y>350</y>
     </hint>
     <hint type="destinationlabel">
      <x>132</x>
@@ -724,8 +808,8 @@
    <slot>applySettings()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>262</x>
-     <y>316</y>
+     <x>430</x>
+     <y>350</y>
     </hint>
     <hint type="destinationlabel">
      <x>137</x>
@@ -756,8 +840,8 @@
    <slot>bgColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>172</x>
-     <y>75</y>
+     <x>174</x>
+     <y>72</y>
     </hint>
     <hint type="destinationlabel">
      <x>30</x>
@@ -772,12 +856,60 @@
    <slot>accentColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>191</x>
-     <y>106</y>
+     <x>193</x>
+     <y>102</y>
     </hint>
     <hint type="destinationlabel">
      <x>33</x>
      <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_4</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>removeShortcut()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>186</x>
+     <y>99</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>584</x>
+     <y>18</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>addShortcut()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>105</x>
+     <y>98</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>7</x>
+     <y>84</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>resetShortcuts()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>524</x>
+     <y>101</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>587</x>
+     <y>72</y>
     </hint>
    </hints>
   </connection>
@@ -787,5 +919,8 @@
   <slot>applySettings()</slot>
   <slot>bgColorDialog()</slot>
   <slot>accentColorDialog()</slot>
+  <slot>removeShortcut()</slot>
+  <slot>addShortcut()</slot>
+  <slot>resetShortcuts()</slot>
  </slots>
 </ui>

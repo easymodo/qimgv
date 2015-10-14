@@ -7,6 +7,7 @@
 #include <QWheelEvent>
 #include <QMap>
 #include <QDebug>
+#include "settings.h"
 
 class ActionManager : public QObject
 {
@@ -20,12 +21,19 @@ public:
 
     QString actionForScanCode(int code);
     QString actionForShortcut(QString keys);
+    const QStringList& actionList();
+    const QMap<QString,QString>& allShortcuts();
+    void removeShortcut(QString keys);
+    const QStringList keys();
+    void removeAll();
 private:
     explicit ActionManager(QObject *parent = 0);
     QMap<QString, QString> shortcuts;
     QMap<int, QString> keyMap;
+    static void createActionList();
     static void initKeyMap();
     static void initShortcuts();
+    QStringList validActions;
 
     bool processWheelEvent(QWheelEvent *event);
     bool processMouseEvent(QMouseEvent *event);
@@ -34,7 +42,7 @@ private:
 signals:
     void open();
     void save();
-    void settings();
+    void openSettings();
     void crop();
     void setWallpaper();
     void nextImage();
