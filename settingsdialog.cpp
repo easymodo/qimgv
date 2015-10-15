@@ -121,6 +121,7 @@ void SettingsDialog::applySettings() {
         settings->setThumbnailSize(thumbSizeCustom);
     }
 
+    applyShortcuts();
     settings->saveShortcuts();
     emit settingsChanged();
 }
@@ -136,6 +137,7 @@ void SettingsDialog::fillShortcuts() {
     QMapIterator<QString,QString> i(shortcuts);
     while (i.hasNext()) {
         i.next();
+        qDebug() << i.key() << " = " << i.value();
         ui->shortcutsListWidget->addItem(i.value() + "=" + i.key());
     }
 }

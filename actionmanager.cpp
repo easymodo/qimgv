@@ -154,6 +154,7 @@ const QStringList ActionManager::keys() {
         i.next();
         list << i.value();
     }
+    list << "XButton1" << "XButton2" << "LMB" << "RMB" << "MiddleButton";
     return list;
 }
 
@@ -176,6 +177,7 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("F", "toggleFullscreen");
     actionManager->addShortcut("LMB_DoubleClick", "toggleFullscreen");
     actionManager->addShortcut("RMB_DoubleClick", "toggleFitMode");
+    actionManager->addShortcut("MiddleButton", "toggleFitMode");
     actionManager->addShortcut("Space", "toggleFitMode");
     actionManager->addShortcut("Ctrl+M", "toggleMenuBar");
     actionManager->addShortcut("Ctrl+R", "rotateRight");
@@ -233,6 +235,9 @@ bool ActionManager::processMouseEvent(QMouseEvent *event) {
     if(event->button() == Qt::RightButton) {
         keys = "RMB";
     }
+    if(event->button() == Qt::MiddleButton) {
+        keys = "MiddleButton";
+    }
     if(event->type() == QEvent::MouseButtonDblClick) {
         if(event->button() == Qt::LeftButton || event->button() == Qt::RightButton) {
             keys.append("_DoubleClick");
@@ -279,9 +284,11 @@ QString ActionManager::actionForShortcut(QString keys) {
 }
 
 void ActionManager::startAction(QString shortcut) {
-    QMetaObject::invokeMethod(this,
+    if(shortcuts.contains(shortcut)) {
+        QMetaObject::invokeMethod(this,
                               actionManager->shortcuts[shortcut].toLatin1().constData(),
                               Qt::DirectConnection);
+    }
 }
 
 bool ActionManager::processEvent(QEvent *event) {
