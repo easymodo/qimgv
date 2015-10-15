@@ -14,6 +14,7 @@ const ImageCache *Core::getCache() {
 }
 
 void Core::initVariables() {
+    int time = clock();
     cache = new ImageCache();
     dirManager = new DirectoryManager();
     imageLoader = new NewLoader(dirManager);

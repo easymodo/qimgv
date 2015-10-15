@@ -20,9 +20,13 @@ void DirectoryManager::setCurrentDir(QString path) {
     else changePath(path);
 }
 
+void DirectoryManager::generateFileList() {
+    quickFormatDetection?generateFileListQuick():generateFileListDeep();
+}
+
 // Filter by mime type. Basically opens every file in a folder
 // and checks what's inside. Very slow.
-void DirectoryManager::generateFileList() {
+void DirectoryManager::generateFileListDeep() {
     currentDir.setNameFilters(QStringList("*"));
     fileNameList.clear();
     QStringList unfiltered = currentDir.entryList();
@@ -51,7 +55,7 @@ void DirectoryManager::changePath(QString path) {
         qDebug() << "DirManager: Invalid directory specified. Removing setting.";
         settings->setLastDirectory("");
     }
-    quickFormatDetection?generateFileListQuick():generateFileList();
+    generateFileList();
     currentPos = -1;
     emit directoryChanged(path);
 }

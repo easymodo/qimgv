@@ -3,7 +3,6 @@
 MainWindow::MainWindow() :
     imageViewer(NULL),
     videoPlayer(NULL),
-    settingsDialog(NULL),
     panel(NULL),
     currentViewer(0),
     layout(NULL),
@@ -21,7 +20,6 @@ MainWindow::MainWindow() :
 }
 
 void MainWindow::init() {
-    settingsDialog = new SettingsDialog();
     imageViewer = new ImageViewer(this);
     imageViewer->hide();
     videoPlayer = new VideoPlayer(this);
@@ -103,9 +101,6 @@ void MainWindow::init() {
     connect(core, SIGNAL(videoChanged(QString)),
             this, SLOT(openVideo(QString)), Qt::UniqueConnection);
 
-    //connect(videoPlayer, SIGNAL(sendDoubleClick()),
-    //        this, SLOT(slotTriggerFullscreen()), Qt::UniqueConnection);
-
     core->init();
 
     //##############################################################
@@ -121,7 +116,7 @@ void MainWindow::init() {
     connect(actionManager, SIGNAL(zoomOut()), imageViewer, SLOT(slotZoomOut()));
     connect(actionManager, SIGNAL(rotateLeft()), this, SLOT(slotRotateLeft()));
     connect(actionManager, SIGNAL(rotateRight()), this, SLOT(slotRotateRight()));
-    connect(actionManager, SIGNAL(openSettings()), settingsDialog, SLOT(show()));
+    connect(actionManager, SIGNAL(openSettings()), this, SLOT(showSettings()));
     connect(actionManager, SIGNAL(crop()), this, SLOT(slotCrop()));
     connect(actionManager, SIGNAL(setWallpaper()), this, SLOT(slotCrop())); // todo
     connect(actionManager, SIGNAL(open()), this, SLOT(slotOpenDialog()));
@@ -172,17 +167,11 @@ void MainWindow::enableImageViewer() {
         connect(this, SIGNAL(signalFitNormal()),
                 imageViewer, SLOT(slotFitNormal()), Qt::UniqueConnection);
 
-        //connect(imageViewer, SIGNAL(sendRightDoubleClick()),
-        //        this, SLOT(switchFitMode()), Qt::UniqueConnection);
-
         connect(this, SIGNAL(signalZoomIn()),
                 imageViewer, SLOT(slotZoomIn()), Qt::UniqueConnection);
 
         connect(this, SIGNAL(signalZoomOut()),
                 imageViewer, SLOT(slotZoomOut()), Qt::UniqueConnection);
-
-        //connect(imageViewer, SIGNAL(sendDoubleClick()),
-        //        this, SLOT(slotTriggerFullscreen()), Qt::UniqueConnection);
 
         updateOverlays();
         currentViewer = 1;
@@ -297,6 +286,11 @@ void MainWindow::slotOpenDialog() {
     dialog.exec();
 }
 
+void MainWindow::showSettings() {
+    SettingsDialog settingsDialog;
+    settingsDialog.exec();
+}
+
 void MainWindow::slotShowControls(bool x) {
     x?controlsOverlay->show():controlsOverlay->hide();
 }
@@ -346,7 +340,7 @@ void MainWindow::createActions()
 
     settingsAct = new QAction(tr("&Preferences"), this);
     this->addAction(settingsAct);
-    connect(settingsAct, SIGNAL(triggered()), settingsDialog, SLOT(show()));
+    connect(settingsAct, SIGNAL(triggered()), this, SLOT(showSettings()));
 
     exitAct = new QAction(tr("E&xit"), this);
     this->addAction(exitAct);
@@ -560,11 +554,6 @@ void MainWindow::updateOverlays() {
     infoOverlay->updateWidth(this->centralWidget()->width());
 }
 
-void MainWindow::closeEvent(QCloseEvent *event) {
-    event->accept();
-    saveWindowGeometry();
-}
-
 void MainWindow::mouseMoveEvent(QMouseEvent* event) {
     if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
         if(panelArea.contains(event->pos()) && panel) {
@@ -624,12 +613,13 @@ void MainWindow::slotAbout() {
     msgBox.exec();
 }
 
-void MainWindow::close() {
+void MainWindow::closeEvent(QCloseEvent *event) {
+    this->hide();
     if (QThreadPool::globalInstance()->activeThreadCount()) {
-        this->setWindowTitle("closing...");
         QThreadPool::globalInstance()->waitForDone();
     }
-    QMainWindow::close();
+    saveWindowGeometry();
+    QMainWindow::closeEvent(event);
 }
 
 void MainWindow::saveWindowGeometry() {

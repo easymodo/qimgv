@@ -63,6 +63,7 @@ private:
     QMimeDatabase mimeDb;
     bool quickFormatDetection;
     void generateFileListQuick();
+    void generateFileListDeep();
 };
 
 #endif // DIRECTORYMANAGER_H

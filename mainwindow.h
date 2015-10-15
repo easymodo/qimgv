@@ -15,6 +15,7 @@
 #include "settings.h"
 #include "actionmanager.h"
 #include "thumbnailPanel/thumbnailstrip.h"
+#include <time.h>
 
 QT_BEGIN_NAMESPACE
     class QAction;
@@ -36,13 +37,12 @@ public slots:
     void slotAbout();
     void setInfoString(QString);
     void readSettings();
-    void close();
     void enableImageViewer();
     void enableVideoPlayer();
     void disableImageViewer();
     void disableVideoPlayer();
-
     void slotCrop();
+
 signals:
     void signalFitAll();
     void signalFitWidth();
@@ -61,7 +61,6 @@ public:
     ~MainWindow();    
     ImageViewer *imageViewer;
     VideoPlayer *videoPlayer;
-    SettingsDialog *settingsDialog;
 
     void open(QString path);
     void showMenuBar();
@@ -83,6 +82,8 @@ private slots:
     void slotShowInfo(bool x);
     void openVideo(QString path);
     void openImage(QPixmap *pixmap);
+    void showSettings();
+
 private:
     Core *core;
     textOverlay *infoOverlay, *messageOverlay;

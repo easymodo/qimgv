@@ -11,6 +11,7 @@
 #include "sourceContainers/imageanimated.h"
 #include "wallpapersetter.h"
 #include "lib/stuff.h"
+#include <time.h>
 
 class Core : public QObject
 {
