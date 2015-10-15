@@ -8,7 +8,6 @@ NewLoader::NewLoader(DirectoryManager *_dm) :
     dm = _dm;
     loadThread = new QThread(this);
     readSettings();
-    //QPixmapCache::setCacheLimit(0);
     QThreadPool::globalInstance()->setMaxThreadCount(4),
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
@@ -38,11 +37,17 @@ void NewLoader::openBlocking(QString path) {
         dm->setFile(path);
     }
     emit loadStarted();
-    doLoad(dm->currentFilePos());
+    //ugly shit
+    int target = dm->currentFilePos();
+    setLoadTarget(target);
+    LoadHelper *localWorker = new LoadHelper(cache, thread());
+    localWorker->setTarget(target, dm->currentFilePath());
+    localWorker->doLoad();
+    onLoadFinished(target);
+    delete localWorker;
 }
 
 void NewLoader::open(int pos) {
-    //cache->unloadAll();
     dm->setCurrentPos(pos);
     emit loadStarted();
     doLoad(dm->currentFilePos());
@@ -50,16 +55,12 @@ void NewLoader::open(int pos) {
 }
 
 void NewLoader::doLoad(int pos) {
-    time = clock();
     setLoadTarget(pos);
     if(!cache->isLoaded(pos)) {
-        //worker->setTarget(pos, dm->filePathAt(pos));
-       //qDebug() << "DO_LOAD: start timer for " << pos;
         preloadTimer->stop();
         loadTimer->start(loadTimer->isActive() ? 20 : 0);
     }
     else {
-       //qDebug() << "found" << pos << ", skipping load.";
         emit onLoadFinished(pos);
     }
 }
@@ -118,7 +119,6 @@ void NewLoader::onLoadTimeout() {
         worker->setTarget(loadTarget, dm->filePathAt(loadTarget));
         emit startLoad();
     }
-
     mutex.unlock();
 }
 
@@ -186,13 +186,8 @@ void NewLoader::setCache(ImageCache *_cache) {
     cache->init(dm->currentDirectory(), dm->getFileList());
     worker = new LoadHelper(cache, this->thread());
     worker->moveToThread(loadThread);
-    //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
-    //connect(loadThread, SIGNAL(started()), worker, SLOT(doLoad()));
     connect(this, SIGNAL(startLoad()), worker, SLOT(doLoad()));
     connect(worker, SIGNAL(finished(int)), this, SLOT(onLoadFinished(int)));
-    //connect(worker, SIGNAL(finished(int)), loadThread, SLOT(quit()));
-    //connect(worker, SIGNAL(finished(Image*, int)), worker, SLOT(deleteLater()));
-    //connect(loadThread, SIGNAL(finished()), loadThread, SLOT(deleteLater()));
 
     loadTimer = new QTimer(this);
     loadTimer->setSingleShot(true);
@@ -203,8 +198,6 @@ void NewLoader::setCache(ImageCache *_cache) {
             connect(preloadTimer, SIGNAL(timeout()), this, SLOT(onPreloadTimeout()));
     }
     loadThread->start();
-    //connect(loadTimer, SIGNAL(timeout()), loadTimer, SLOT(deleteLater()));
-
 }
 
 void NewLoader::reinitCache() {

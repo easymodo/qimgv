@@ -25,7 +25,6 @@ void LoadHelper::doLoad() {
     QString pathLocal = path;
     mutex.unlock();
     if(cache->isLoaded(targetLocal)) {
-        //qDebug() << "LOADHELPER: skipping loading "<< targetLocal << ", already in cache";
         emit finished(targetLocal);
         return;
     }

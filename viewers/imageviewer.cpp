@@ -6,7 +6,7 @@ ImageViewer::ImageViewer(QWidget* parent): QWidget(parent),
     currentScale(1.0),
     maxScale(1.0),
     minScale(4.0),
-    scaleStep(0.08),
+    scaleStep(0.16),
     imageFitMode(NORMAL)
 {
     initOverlays();
