@@ -72,7 +72,7 @@ void SettingsDialog::readSettings() {
         case thumbSizeMedium: ui->thumbSizeComboBox->setCurrentIndex(1); break;
         case thumbSizeLarge: ui->thumbSizeComboBox->setCurrentIndex(2); break;
         case thumbSizeVeryLarge: ui->thumbSizeComboBox->setCurrentIndex(3); break;
-        default: ui->thumbSizeComboBox->addItem("Custom: " + QString::number(size)+"px.");
+        default: ui->thumbSizeComboBox->addItem("Custom: " + QString::number(size)+"px");
                  ui->thumbSizeComboBox->setCurrentIndex(4);
                  thumbSizeCustom = size;
                  break;

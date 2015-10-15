@@ -595,6 +595,7 @@ bool MainWindow::event(QEvent *event) {
 
 void MainWindow::slotAbout() {
     QMessageBox msgBox;
+    msgBox.setIconPixmap(QPixmap(":/images/res/pepper.png"));
     QSpacerItem* horizontalSpacer =
             new QSpacerItem(250,
                             0,
@@ -605,12 +606,15 @@ void MainWindow::slotAbout() {
                           " " +
                           QCoreApplication::applicationVersion());
     QString message;
-    message = "A simple qt image viewer \n \nMain developer: \n    Easymodo";
-    message.append("\nDeveloper:\n    Sevoan");
-    message.append("\n\n This is a pre-release software.");
-    message.append("\n Expect bugs.");
+    message = "qimgv is a simple image viewer written in qt.";
+    message.append("<br>This program is licensed under GNU GPL Version 3");
+    message.append("<br>Website: <a href='https://github.com/easymodo/qimgv'>github.com/easymodo/qimgv</a>");
+    message.append("<br><br>Main developer: <br>&nbsp;Easymodo (easymodofrf@gmail.com)");
+    message.append("<br>Developers:<br>&nbsp;Sevoan");
+    message.append("<br><br> This is a pre-release software.");
+    message.append("<br> Expect bugs.");
+    msgBox.setTextFormat(Qt::RichText);
     msgBox.setText(message);
-    msgBox.setIcon(QMessageBox::Information);
     QGridLayout* layout = (QGridLayout*)msgBox.layout();
     layout->addItem(horizontalSpacer,
                     layout->rowCount(),
