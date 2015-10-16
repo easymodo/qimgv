@@ -76,3 +76,4 @@ public slots:
 
 #endif // CORE_H
 
+

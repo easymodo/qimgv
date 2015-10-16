@@ -7,7 +7,7 @@
 #include <QCheckBox>
 #include <QString>
 #include <QPushButton>
-#include "actionmanager.h"
+#include "../actionmanager.h"
 
 class SettingsShortcutWidget : public QDialog
 {

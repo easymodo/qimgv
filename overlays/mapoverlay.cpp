@@ -2,355 +2,350 @@
 #include <QPropertyAnimation>
 #include "../settings.h"
 
-class MapOverlay::MapOverlayPrivate : public QObject
-{
+class MapOverlay::MapOverlayPrivate : public QObject {
 public:
-    MapOverlayPrivate(MapOverlay* qq);
-    ~MapOverlayPrivate();
-    void moveInnerWidget(float x, float y);
-    void moveMainImage(float xDist, float yDist);
-    
-    QPen innerPen, outerPen, outlinePen;
-    float xSpeedDiff, ySpeedDiff;
-    QPen penInner, penOuter;
-    QRectF outerRect, innerRect;
-    QRectF windowRect, drawingRect;
-    MapOverlay* q;
-    int size;
-    float opacity;
-    float innerOffset;
-    int margin;
+     MapOverlayPrivate ( MapOverlay* qq );
+     ~MapOverlayPrivate();
+     void moveInnerWidget ( float x, float y );
+     void moveMainImage ( float xDist, float yDist );
 
-    QPropertyAnimation* opacityAnimation, *transitionAnimation;
-    MapOverlay::Location location;
+     QPen innerPen, outerPen, outlinePen;
+     float xSpeedDiff, ySpeedDiff;
+     QPen penInner, penOuter;
+     QRectF outerRect, innerRect;
+     QRectF windowRect, drawingRect;
+     MapOverlay* q;
+     int size;
+     float opacity;
+     float innerOffset;
+     int margin;
+
+     QPropertyAnimation* opacityAnimation, *transitionAnimation;
+     MapOverlay::Location location;
 };
 
-MapOverlay::MapOverlayPrivate::MapOverlayPrivate(MapOverlay* qq)
-    : q(qq), size(140), opacity(0.0f), innerOffset(-1), margin(20)
+MapOverlay::MapOverlayPrivate::MapOverlayPrivate ( MapOverlay* qq )
+     : q ( qq ), size ( 140 ), opacity ( 0.0f ), innerOffset ( -1 ), margin ( 20 )
 {
-    outlinePen.setColor(QColor(40,40,40,255));
-    innerPen.setColor(QColor(100,100,100,180));
-    outerPen.setColor(QColor(80,80,80,150));
-    
-    location = MapOverlay::RightBottom;
+     outlinePen.setColor ( QColor ( 40,40,40,255 ) );
+     innerPen.setColor ( QColor ( 100,100,100,180 ) );
+     outerPen.setColor ( QColor ( 80,80,80,150 ) );
+
+     location = MapOverlay::RightBottom;
 }
 
 MapOverlay::MapOverlayPrivate::~MapOverlayPrivate()
 {
-    delete opacityAnimation;
-    delete transitionAnimation;
+     delete opacityAnimation;
+     delete transitionAnimation;
 }
 
-void MapOverlay::MapOverlayPrivate::moveInnerWidget(float x, float y)
+void MapOverlay::MapOverlayPrivate::moveInnerWidget ( float x, float y )
 {
-    if (x + innerRect.width() > outerRect.right())
-        x = outerRect.right() - innerRect.width();
-    
-    if (x < 0)
-        x = 0;
-    
-    if (y + innerRect.height() > outerRect.bottom())
-        y = outerRect.bottom() - innerRect.height();
-    
-    if (y < 0)
-        y = 0;
-    
-    innerRect.moveTo(QPointF(x, y));
-    q->update();
+     if ( x + innerRect.width() > outerRect.right() )
+          x = outerRect.right() - innerRect.width();
+
+     if ( x < 0 )
+          x = 0;
+
+     if ( y + innerRect.height() > outerRect.bottom() )
+          y = outerRect.bottom() - innerRect.height();
+
+     if ( y < 0 )
+          y = 0;
+
+     innerRect.moveTo ( QPointF ( x, y ) );
+     q->update();
 }
 
-void MapOverlay::MapOverlayPrivate::moveMainImage(float xPos, float yPos)
+void MapOverlay::MapOverlayPrivate::moveMainImage ( float xPos, float yPos )
 {
-    float x = xPos - (innerRect.width() / 2);
-    float y = yPos - (innerRect.height() / 2);
-    
-    moveInnerWidget(x, y);
-    
-    x /= -xSpeedDiff;
-    y /= -ySpeedDiff;
-    
-    // Check limits;
-    float invisibleX = windowRect.width() - drawingRect.width();
-    float invisibleY = windowRect.height() - drawingRect.height();
-    
-    if (x < invisibleX) x = invisibleX;
-    if (x > 0) x = 0;
-    
-    if (y < invisibleY) y = invisibleY;
-    if (y > 0) y = 0;
-    
-    emit q->positionChanged(x, y);
+     float x = xPos - ( innerRect.width() / 2 );
+     float y = yPos - ( innerRect.height() / 2 );
+
+     moveInnerWidget ( x, y );
+
+     x /= -xSpeedDiff;
+     y /= -ySpeedDiff;
+
+     // Check limits;
+     float invisibleX = windowRect.width() - drawingRect.width();
+     float invisibleY = windowRect.height() - drawingRect.height();
+
+     if ( x < invisibleX ) x = invisibleX;
+     if ( x > 0 ) x = 0;
+
+     if ( y < invisibleY ) y = invisibleY;
+     if ( y > 0 ) y = 0;
+
+     emit q->positionChanged ( x, y );
 }
 
-MapOverlay::MapOverlay(QWidget *parent) : QWidget(parent),
-    visibilityEnabled(true),
-    d(new MapOverlayPrivate(this))
+MapOverlay::MapOverlay ( QWidget *parent ) : QWidget ( parent ),
+     visibilityEnabled ( true ),
+     d ( new MapOverlayPrivate ( this ) )
 {
-    this->setMouseTracking(true);
-    d->opacityAnimation = new QPropertyAnimation(this, "opacity");
-    d->opacityAnimation->setEasingCurve(QEasingCurve::InQuint);
-    d->opacityAnimation->setDuration(0);
-    
-    d->transitionAnimation = new QPropertyAnimation(this, "y");
-    d->transitionAnimation->setDuration(200);
-    d->transitionAnimation->setEasingCurve(QEasingCurve::OutExpo);
+     this->setMouseTracking ( true );
+     d->opacityAnimation = new QPropertyAnimation ( this, "opacity" );
+     d->opacityAnimation->setEasingCurve ( QEasingCurve::InQuint );
+     d->opacityAnimation->setDuration ( 0 );
 
-    this->setVisible(true);
-    
-    setCursor(Qt::OpenHandCursor);
- }
+     d->transitionAnimation = new QPropertyAnimation ( this, "y" );
+     d->transitionAnimation->setDuration ( 200 );
+     d->transitionAnimation->setEasingCurve ( QEasingCurve::OutExpo );
+
+     this->setVisible ( true );
+
+     setCursor ( Qt::OpenHandCursor );
+}
 
 MapOverlay::~MapOverlay()
 {
-    delete d;
+     delete d;
 }
 
 QSizeF MapOverlay::inner() const
 {
-    return d->innerRect.size();
+     return d->innerRect.size();
 }
 
 QSizeF MapOverlay::outer() const
 {
-    return d->outerRect.size();
+     return d->outerRect.size();
 }
 
 float MapOverlay::opacity() const
 {
-    return d->opacity;
+     return d->opacity;
 }
 
-bool MapOverlay::enableVisibility(bool mode) {
-    visibilityEnabled = mode;
-}
-
-void MapOverlay::setOpacity(float opacity)
+bool MapOverlay::enableVisibility ( bool mode )
 {
-    d->opacity = opacity;
-    update();
+     visibilityEnabled = mode;
 }
 
-void MapOverlay::animateVisible(bool isVisible)
+void MapOverlay::setOpacity ( float opacity )
 {
-    //if (QWidget::isVisible() == isVisible) // already in this state
-    //    return;
-
-    d->opacityAnimation->setEndValue(1.0f * isVisible);
-    
-    switch (location())
-    {
-        case MapOverlay::LeftTop:
-        case MapOverlay::RightTop:
-            if (isVisible)
-            {
-                d->transitionAnimation->setStartValue(0);
-                d->transitionAnimation->setEndValue(margin());
-            }
-            else
-            {
-                d->transitionAnimation->setStartValue(margin());
-                d->transitionAnimation->setEndValue(0);
-            }
-            break;
-        case MapOverlay::RightBottom:
-        case MapOverlay::LeftBottom:
-            int h = parentWidget()->height();
-            int offset = d->outerRect.height() + margin();
-            
-            if (isVisible)
-            {
-                d->transitionAnimation->setStartValue(h);
-                d->transitionAnimation->setEndValue(h - offset);
-            }
-            else
-            {
-                d->transitionAnimation->setStartValue(h - offset);
-                d->transitionAnimation->setEndValue(h);
-            }
-            break;
-    }
-    
-    d->opacityAnimation->start();
-    //d->transitionAnimation->start();
+     d->opacity = opacity;
+     update();
 }
 
-void MapOverlay::resize(int size)
+void MapOverlay::animateVisible ( bool isVisible )
 {
-    QWidget::resize(size, size);
+     //if (QWidget::isVisible() == isVisible) // already in this state
+     //    return;
+
+     d->opacityAnimation->setEndValue ( 1.0f * isVisible );
+
+     switch ( location() ) {
+     case MapOverlay::LeftTop:
+     case MapOverlay::RightTop:
+          if ( isVisible ) {
+               d->transitionAnimation->setStartValue ( 0 );
+               d->transitionAnimation->setEndValue ( margin() );
+          } else {
+               d->transitionAnimation->setStartValue ( margin() );
+               d->transitionAnimation->setEndValue ( 0 );
+          }
+          break;
+     case MapOverlay::RightBottom:
+     case MapOverlay::LeftBottom:
+          int h = parentWidget()->height();
+          int offset = d->outerRect.height() + margin();
+
+          if ( isVisible ) {
+               d->transitionAnimation->setStartValue ( h );
+               d->transitionAnimation->setEndValue ( h - offset );
+          } else {
+               d->transitionAnimation->setStartValue ( h - offset );
+               d->transitionAnimation->setEndValue ( h );
+          }
+          break;
+     }
+
+     d->opacityAnimation->start();
+     //d->transitionAnimation->start();
 }
 
-void MapOverlay::setY(int y)
+void MapOverlay::resize ( int size )
 {
-    move(x(), y);
+     QWidget::resize ( size, size );
+}
+
+void MapOverlay::setY ( int y )
+{
+     move ( x(), y );
 }
 
 int MapOverlay::y() const
 {
-    return QWidget::y();
+     return QWidget::y();
 }
 
-void MapOverlay::paintEvent(QPaintEvent *event)
+void MapOverlay::paintEvent ( QPaintEvent *event )
 {
-    Q_UNUSED(event)
+     Q_UNUSED ( event )
 
-    QPainter painter(this);
-    QBrush outerBrush(QColor(80, 80, 80, 130), Qt::SolidPattern);
-    QBrush innerBrush(QColor(230,230,230,150), Qt::SolidPattern);
-    
-    painter.setOpacity(d->opacity);
+     QPainter painter ( this );
+     QBrush outerBrush ( QColor ( 80, 80, 80, 130 ), Qt::SolidPattern );
+     QBrush innerBrush ( QColor ( 230,230,230,150 ), Qt::SolidPattern );
 
-    painter.setPen(d->innerPen);
-    painter.fillRect(d->innerRect, innerBrush);
+     painter.setOpacity ( d->opacity );
 
-    painter.setPen(d->outerPen);
-    painter.fillRect(d->outerRect, outerBrush);
+     painter.setPen ( d->innerPen );
+     painter.fillRect ( d->innerRect, innerBrush );
 
-    painter.setPen(d->outlinePen);
-    painter.drawRect(d->outerRect);
-    painter.drawRect(d->innerRect);
+     painter.setPen ( d->outerPen );
+     painter.fillRect ( d->outerRect, outerBrush );
+
+     painter.setPen ( d->outlinePen );
+     painter.drawRect ( d->outerRect );
+     painter.drawRect ( d->innerRect );
 }
 
 void MapOverlay::updatePosition()
 {
-    QRect parentRect = parentWidget()->rect();
+     QRect parentRect = parentWidget()->rect();
 
-    int x = 0, y = 0;
-    switch (location())
-    {
-        case MapOverlay::LeftTop:
-            x = parentRect.left() + margin();
-            y = parentRect.top() + margin();
-            break;
-        case MapOverlay::RightTop:
-            x = parentRect.right() - (margin() + d->outerRect.width());
-            y = parentRect.top() + margin();
-            break;
-        case MapOverlay::RightBottom:
-            x = parentRect.right() - (margin() + d->outerRect.width());
-            y = parentRect.bottom() - (margin() + d->outerRect.height());
-            break;
-        case MapOverlay::LeftBottom:
-            x = parentRect.left() + margin();
-            y = parentRect.bottom() - (margin() + d->outerRect.height());
-            break;
-    }
+     int x = 0, y = 0;
+     switch ( location() ) {
+     case MapOverlay::LeftTop:
+          x = parentRect.left() + margin();
+          y = parentRect.top() + margin();
+          break;
+     case MapOverlay::RightTop:
+          x = parentRect.right() - ( margin() + d->outerRect.width() );
+          y = parentRect.top() + margin();
+          break;
+     case MapOverlay::RightBottom:
+          x = parentRect.right() - ( margin() + d->outerRect.width() );
+          y = parentRect.bottom() - ( margin() + d->outerRect.height() );
+          break;
+     case MapOverlay::LeftBottom:
+          x = parentRect.left() + margin();
+          y = parentRect.bottom() - ( margin() + d->outerRect.height() );
+          break;
+     }
 
-    /**
-     * Save extra space for outer rect border
-     * one pixel for right and bottom sides
-     */
-    setGeometry(x, y, d->size + 1, d->size + 1);
+     /**
+      * Save extra space for outer rect border
+      * one pixel for right and bottom sides
+      */
+     setGeometry ( x, y, d->size + 1, d->size + 1 );
 }
 
-bool contains(const QRectF& real, const QRectF& expected)
+bool contains ( const QRectF& real, const QRectF& expected )
 {
-    return real.width() <= expected.width() && real.height() <= expected.height();
+     return real.width() <= expected.width() && real.height() <= expected.height();
 }
 
-void MapOverlay::updateMap(const QRectF& drawingRect)
+void MapOverlay::updateMap ( const QRectF& drawingRect )
 {
-    if (!isEnabled())
-        return;
+     if ( !isEnabled() )
+          return;
 
-    QRectF windowRect = parentWidget()->rect();
-    
-    bool isVisible = !contains(drawingRect, windowRect);
-    animateVisible(isVisible && visibilityEnabled);
-    
-    /**
-     * Always calculate this first for properly map location
-     */
-    QSizeF outerSz = drawingRect.size();
-    outerSz.scale(d->size, d->size, Qt::KeepAspectRatio);
-    d->outerRect.setSize(outerSz);
-    
-    d->windowRect = windowRect;
-    d->drawingRect = drawingRect;
-    
-    float aspect = outerSz.width() / drawingRect.width();
-    
-    float innerWidth = std::min((float) windowRect.width() * aspect,
-                                (float) outerSz.width());
-    
-    float innerHeight = std::min((float) windowRect.height() * aspect,
-                                 (float) outerSz.height());
-    
-    QSizeF innerSz(innerWidth, innerHeight);
-    d->innerRect.setSize(innerSz);
-    
-    d->xSpeedDiff = innerSz.width() / windowRect.width();
-    d->ySpeedDiff = innerSz.height() / windowRect.height();
-    
-    float x = (float) -drawingRect.left() * d->xSpeedDiff;
-    float y = (float) -drawingRect.top() * d->ySpeedDiff;
-    
-    d->moveInnerWidget(x, y);
-    update();
+     QRectF windowRect = parentWidget()->rect();
+
+     bool isVisible = !contains ( drawingRect, windowRect );
+     animateVisible ( isVisible && visibilityEnabled );
+
+     /**
+      * Always calculate this first for properly map location
+      */
+     QSizeF outerSz = drawingRect.size();
+     outerSz.scale ( d->size, d->size, Qt::KeepAspectRatio );
+     d->outerRect.setSize ( outerSz );
+
+     d->windowRect = windowRect;
+     d->drawingRect = drawingRect;
+
+     float aspect = outerSz.width() / drawingRect.width();
+
+     float innerWidth = std::min ( ( float ) windowRect.width() * aspect,
+                                   ( float ) outerSz.width() );
+
+     float innerHeight = std::min ( ( float ) windowRect.height() * aspect,
+                                    ( float ) outerSz.height() );
+
+     QSizeF innerSz ( innerWidth, innerHeight );
+     d->innerRect.setSize ( innerSz );
+
+     d->xSpeedDiff = innerSz.width() / windowRect.width();
+     d->ySpeedDiff = innerSz.height() / windowRect.height();
+
+     float x = ( float ) -drawingRect.left() * d->xSpeedDiff;
+     float y = ( float ) -drawingRect.top() * d->ySpeedDiff;
+
+     d->moveInnerWidget ( x, y );
+     update();
 }
 
-void MapOverlay::mousePressEvent(QMouseEvent* event)
+void MapOverlay::mousePressEvent ( QMouseEvent* event )
 {
-    QWidget::mousePressEvent(event);
-    setCursor(Qt::ClosedHandCursor);
-    d->moveMainImage(event->x(), event->y());
-    event->accept();
+     QWidget::mousePressEvent ( event );
+     setCursor ( Qt::ClosedHandCursor );
+     d->moveMainImage ( event->x(), event->y() );
+     event->accept();
 }
 
-void MapOverlay::mouseMoveEvent(QMouseEvent* event)
+void MapOverlay::mouseMoveEvent ( QMouseEvent* event )
 {
-    QWidget::mouseMoveEvent(event);
+     QWidget::mouseMoveEvent ( event );
 
-    if(event->buttons() & Qt::LeftButton) {
-        d->moveMainImage(event->x(), event->y());
-    }
-    event->accept();
+     if ( event->buttons() & Qt::LeftButton ) {
+          d->moveMainImage ( event->x(), event->y() );
+     }
+     event->accept();
 }
 
-void MapOverlay::mouseReleaseEvent(QMouseEvent* event)
+void MapOverlay::mouseReleaseEvent ( QMouseEvent* event )
 {
-    QWidget::mouseReleaseEvent(event);
-    setCursor(Qt::OpenHandCursor);
-    event->accept();
+     QWidget::mouseReleaseEvent ( event );
+     setCursor ( Qt::OpenHandCursor );
+     event->accept();
 }
 
-void MapOverlay::resizeEvent(QResizeEvent* event) {
-    QWidget::resizeEvent(event);
-    updatePosition();
+void MapOverlay::resizeEvent ( QResizeEvent* event )
+{
+     QWidget::resizeEvent ( event );
+     updatePosition();
 }
 
-void MapOverlay::leaveEvent(QEvent *event) {
-    this->enableVisibility(false);
-    this->animateVisible(false);
-    this->update();
+void MapOverlay::leaveEvent ( QEvent *event )
+{
+     this->enableVisibility ( false );
+     this->animateVisible ( false );
+     this->update();
 }
 
-void MapOverlay::enterEvent(QEvent *event) {
-    this->enableVisibility(true);
-    this->animateVisible(true);
-    this->update();
+void MapOverlay::enterEvent ( QEvent *event )
+{
+     this->enableVisibility ( true );
+     this->animateVisible ( true );
+     this->update();
 }
 
 int MapOverlay::size() const
 {
-    return d->size;
+     return d->size;
 }
 
 MapOverlay::Location MapOverlay::location() const
 {
-    return d->location;
+     return d->location;
 }
 
-void MapOverlay::setLocation(MapOverlay::Location loc)
+void MapOverlay::setLocation ( MapOverlay::Location loc )
 {
-    d->location = loc;
+     d->location = loc;
 }
 
 int MapOverlay::margin() const
 {
-    return d->margin;
+     return d->margin;
 }
 
-void MapOverlay::setMargin(int margin)
+void MapOverlay::setMargin ( int margin )
 {
-    d->margin = margin;
+     d->margin = margin;
 }
