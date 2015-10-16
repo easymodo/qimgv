@@ -15,7 +15,7 @@ VideoPlayer::VideoPlayer(QWidget *parent) :
     this->setScene(scene);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->setAttribute(Qt::WA_TransparentForMouseEvents);
+    //this->setAttribute(Qt::WA_TransparentForMouseEvents);
     this->setFrameShape(QFrame::NoFrame);
 
     readSettings();
@@ -95,20 +95,20 @@ void VideoPlayer::handleError() {
     qDebug() << "VideoPlayer: Error - " + mediaPlayer.errorString();
 }
 
-void VideoPlayer::mouseDoubleClickEvent(QMouseEvent *event) {
-    QWidget::mouseDoubleClickEvent(event);
-    if(event->button() == Qt::RightButton) {
-        //emit sendRightDoubleClick();
-    }
-    else {
-        emit sendDoubleClick();
-    }
-}
 void VideoPlayer::mouseMoveEvent(QMouseEvent* event) {
     QWidget::mouseMoveEvent(event);
     //event->ignore();
 }
 
 void VideoPlayer::mousePressEvent(QMouseEvent* event) {
-    QWidget::mousePressEvent(event);
+    //QWidget::mousePressEvent(event);
+    event->ignore();
+}
+
+void VideoPlayer::mouseReleaseEvent(QMouseEvent *event) {
+    event->ignore();
+}
+
+void VideoPlayer::wheelEvent(QWheelEvent *event) {
+    event->ignore();
 }

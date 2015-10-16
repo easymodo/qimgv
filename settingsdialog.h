@@ -2,6 +2,7 @@
 #define SETTINGSDIALOG_H
 
 #include <QDialog>
+#include <QFileDialog>
 #include <QColorDialog>
 #include <QDebug>
 #include "customWidgets/clickablelabel.h"
@@ -44,6 +45,7 @@ private slots:
     void removeShortcut();
     void addShortcut();
     void resetShortcuts();
+    void selectFFMPEG();
 signals:
     void settingsChanged();
 };

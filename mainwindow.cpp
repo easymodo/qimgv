@@ -109,6 +109,9 @@ void MainWindow::init() {
 
     connect(actionManager, SIGNAL(nextImage()), core, SLOT(slotNextImage()));
     connect(actionManager, SIGNAL(prevImage()), core, SLOT(slotPrevImage()));
+    connect(actionManager, SIGNAL(fitAll()), this, SLOT(slotFitAll()));
+    connect(actionManager, SIGNAL(fitWidth()), this, SLOT(slotFitWidth()));
+    connect(actionManager, SIGNAL(fitNormal()), this, SLOT(slotFitNormal()));
     connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
     connect(actionManager, SIGNAL(toggleFullscreen()), this, SLOT(slotTriggerFullscreen()));
     connect(actionManager, SIGNAL(toggleMenuBar()), this, SLOT(triggerMenuBar()));
@@ -118,7 +121,7 @@ void MainWindow::init() {
     connect(actionManager, SIGNAL(rotateRight()), this, SLOT(slotRotateRight()));
     connect(actionManager, SIGNAL(openSettings()), this, SLOT(showSettings()));
     connect(actionManager, SIGNAL(crop()), this, SLOT(slotCrop()));
-    connect(actionManager, SIGNAL(setWallpaper()), this, SLOT(slotCrop())); // todo
+    connect(actionManager, SIGNAL(setWallpaper()), this, SLOT(slotSelectWallpaper()));
     connect(actionManager, SIGNAL(open()), this, SLOT(slotOpenDialog()));
     connect(actionManager, SIGNAL(save()), this, SLOT(slotSaveDialog()));
     connect(actionManager, SIGNAL(exit()), this, SLOT(close()));
@@ -193,17 +196,11 @@ void MainWindow::disableImageViewer() {
     disconnect(core, SIGNAL(signalSetImage(QPixmap*)),
             imageViewer, SLOT(displayImage(QPixmap*)));
 
-    //disconnect(imageViewer, SIGNAL(sendRightDoubleClick()),
-    //        this, SLOT(switchFitMode()));
-
     disconnect(this, SIGNAL(signalZoomIn()),
             imageViewer, SLOT(slotZoomIn()));
 
     disconnect(this, SIGNAL(signalZoomOut()),
             imageViewer, SLOT(slotZoomOut()));
-
-    //disconnect(imageViewer, SIGNAL(sendDoubleClick()),
-    //        this, SLOT(slotTriggerFullscreen()));
 
     currentViewer = 0;
     imageViewer->hide();
@@ -356,7 +353,7 @@ void MainWindow::createActions()
 
     selectWallpaperAct = new QAction(tr("Set wallpaper"), this);
     this->addAction(selectWallpaperAct);
-    connect(selectWallpaperAct, SIGNAL(triggered()), this, SLOT(slotCrop()));
+    connect(selectWallpaperAct, SIGNAL(triggered()), this, SLOT(slotSelectWallpaper()));
 
     rotateRightAct = new QAction(tr("Rotate R&ight"), this);
     this->addAction(rotateRightAct);
@@ -460,6 +457,11 @@ void MainWindow::slotTriggerFullscreen() {
 }
 
 void MainWindow::slotCrop() {
+    this->slotFitAll();
+    imageViewer->crop();
+}
+
+void MainWindow::slotSelectWallpaper() {
     this->slotFitAll();
     imageViewer->selectWallpaper();
 }
@@ -618,7 +620,9 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     if (QThreadPool::globalInstance()->activeThreadCount()) {
         QThreadPool::globalInstance()->waitForDone();
     }
-    saveWindowGeometry();
+    if(!isMaximized() && !isFullScreen()) {
+        saveWindowGeometry();
+    }
     QMainWindow::closeEvent(event);
 }
 

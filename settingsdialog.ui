@@ -400,6 +400,25 @@
          <item>
           <widget class="QLineEdit" name="ffmpegLineEdit"/>
          </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_5">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item>
@@ -1126,8 +1145,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>510</x>
-     <y>350</y>
+     <x>589</x>
+     <y>389</y>
     </hint>
     <hint type="destinationlabel">
      <x>383</x>
@@ -1142,8 +1161,8 @@
    <slot>applySettingsAndClose()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>350</x>
-     <y>350</y>
+     <x>427</x>
+     <y>389</y>
     </hint>
     <hint type="destinationlabel">
      <x>132</x>
@@ -1158,8 +1177,8 @@
    <slot>applySettings()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>430</x>
-     <y>350</y>
+     <x>508</x>
+     <y>389</y>
     </hint>
     <hint type="destinationlabel">
      <x>137</x>
@@ -1178,8 +1197,8 @@
      <y>115</y>
     </hint>
     <hint type="destinationlabel">
-     <x>162</x>
-     <y>117</y>
+     <x>161</x>
+     <y>131</y>
     </hint>
    </hints>
   </connection>
@@ -1190,8 +1209,8 @@
    <slot>bgColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>174</x>
-     <y>72</y>
+     <x>270</x>
+     <y>65</y>
     </hint>
     <hint type="destinationlabel">
      <x>30</x>
@@ -1206,8 +1225,8 @@
    <slot>accentColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>193</x>
-     <y>102</y>
+     <x>270</x>
+     <y>103</y>
     </hint>
     <hint type="destinationlabel">
      <x>33</x>
@@ -1222,8 +1241,8 @@
    <slot>removeShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>186</x>
-     <y>99</y>
+     <x>185</x>
+     <y>117</y>
     </hint>
     <hint type="destinationlabel">
      <x>584</x>
@@ -1238,8 +1257,8 @@
    <slot>addShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>105</x>
-     <y>98</y>
+     <x>104</x>
+     <y>117</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -1263,6 +1282,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_5</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>selectFFMPEG()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>535</x>
+     <y>198</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>596</x>
+     <y>185</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>applySettingsAndClose()</slot>
@@ -1272,5 +1307,6 @@
   <slot>removeShortcut()</slot>
   <slot>addShortcut()</slot>
   <slot>resetShortcuts()</slot>
+  <slot>selectFFMPEG()</slot>
  </slots>
 </ui>

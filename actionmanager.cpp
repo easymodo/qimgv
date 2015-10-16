@@ -22,20 +22,23 @@ ActionManager* ActionManager::getInstance() {
 // valid action names
 void ActionManager::createActionList() {
     actionManager->validActions << "nextImage"
-                                   << "prevImage"
-                                   << "toggleFullscreen"
-                                   << "toggleFitMode"
-                                   << "toggleMenuBar"
-                                   << "rotateRight"
-                                   << "rotateLeft"
-                                   << "zoomIn"
-                                   << "zoomOut"
-                                   << "open"
-                                   << "save"
-                                   << "setWallpaper"
-                                   << "crop"
-                                   << "openSettings"
-                                   << "exit";
+                                << "prevImage"
+                                << "toggleFullscreen"
+                                << "fitAll"
+                                << "fitWidth"
+                                << "fitNormal"
+                                << "toggleFitMode"
+                                << "toggleMenuBar"
+                                << "rotateRight"
+                                << "rotateLeft"
+                                << "zoomIn"
+                                << "zoomOut"
+                                << "open"
+                                << "save"
+                                << "setWallpaper"
+                                << "crop"
+                                << "openSettings"
+                                << "exit";
 }
 
 //TODO: update keymap for ps/2 keyboards
@@ -52,7 +55,6 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(23, "I");
     actionManager->keyMap.insert(24, "O");
     actionManager->keyMap.insert(25, "P");
-
     actionManager->keyMap.insert(30, "A");
     actionManager->keyMap.insert(31, "S");
     actionManager->keyMap.insert(32, "D");
@@ -62,7 +64,6 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(36, "J");
     actionManager->keyMap.insert(37, "K");
     actionManager->keyMap.insert(38, "L");
-
     actionManager->keyMap.insert(44, "Z");
     actionManager->keyMap.insert(45, "X");
     actionManager->keyMap.insert(46, "C");
@@ -70,12 +71,25 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(48, "B");
     actionManager->keyMap.insert(49, "N");
     actionManager->keyMap.insert(50, "M");
-
-    actionManager->keyMap.insert(57, "Space");
     actionManager->keyMap.insert(331, "Left");
     actionManager->keyMap.insert(333, "Right");
     actionManager->keyMap.insert(328, "Up");
     actionManager->keyMap.insert(336, "Down");
+    actionManager->keyMap.insert(57, "Space");
+    actionManager->keyMap.insert(28, "Return");
+    actionManager->keyMap.insert(15, "Tab");
+    actionManager->keyMap.insert(59, "F1");
+    actionManager->keyMap.insert(60, "F2");
+    actionManager->keyMap.insert(61, "F3");
+    actionManager->keyMap.insert(62, "F4");
+    actionManager->keyMap.insert(63, "F5");
+    actionManager->keyMap.insert(64, "F6");
+    actionManager->keyMap.insert(65, "F7");
+    actionManager->keyMap.insert(66, "F8");
+    actionManager->keyMap.insert(67, "F9");
+    actionManager->keyMap.insert(68, "F10");
+    actionManager->keyMap.insert(87, "F11");
+    actionManager->keyMap.insert(88, "F12");
 #elif defined __linux__
     actionManager->keyMap.insert(24, "Q");
     actionManager->keyMap.insert(25, "W");
@@ -89,7 +103,6 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(33, "P");
     actionManager->keyMap.insert(34, "[");
     actionManager->keyMap.insert(35, "]");
-
     actionManager->keyMap.insert(38, "A");
     actionManager->keyMap.insert(39, "S");
     actionManager->keyMap.insert(40, "D");
@@ -101,7 +114,6 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(46, "L");
     actionManager->keyMap.insert(47, ";");
     actionManager->keyMap.insert(48, "'");
-
     actionManager->keyMap.insert(52, "Z");
     actionManager->keyMap.insert(53, "X");
     actionManager->keyMap.insert(54, "C");
@@ -109,7 +121,6 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(56, "B");
     actionManager->keyMap.insert(57, "N");
     actionManager->keyMap.insert(58, "M");
-
     actionManager->keyMap.insert(59, ",");
     actionManager->keyMap.insert(60, ".");
     actionManager->keyMap.insert(61, "/");
@@ -121,14 +132,28 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(65, "Space");
     actionManager->keyMap.insert(36, "Return");
     actionManager->keyMap.insert(23, "Tab");
+    actionManager->keyMap.insert(67, "F1");
+    actionManager->keyMap.insert(68, "F2");
+    actionManager->keyMap.insert(69, "F3");
+    actionManager->keyMap.insert(70, "F4");
+    actionManager->keyMap.insert(71, "F5");
+    actionManager->keyMap.insert(72, "F6");
+    actionManager->keyMap.insert(73, "F7");
+    actionManager->keyMap.insert(74, "F8");
+    actionManager->keyMap.insert(75, "F9");
+    actionManager->keyMap.insert(76, "F10");
+    actionManager->keyMap.insert(95, "F11");
+    actionManager->keyMap.insert(96, "F12");
 #endif
 }
 
 // fills actionManager->keyMap with defaults
 // todo: check on windows
 void ActionManager::initShortcuts() {
-    actionManager->resetDefaults();
     settings->readShortcuts();
+    if(actionManager->shortcuts.isEmpty()) {
+        actionManager->resetDefaults();
+    }
 }
 
 void ActionManager::addShortcut(QString keys, QString action) {
@@ -175,10 +200,14 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("WheelUp", "nextImage");
     actionManager->addShortcut("WheelDown", "prevImage");
     actionManager->addShortcut("F", "toggleFullscreen");
+    actionManager->addShortcut("F11", "toggleFullscreen");
     actionManager->addShortcut("LMB_DoubleClick", "toggleFullscreen");
     actionManager->addShortcut("RMB_DoubleClick", "toggleFitMode");
     actionManager->addShortcut("MiddleButton", "toggleFitMode");
     actionManager->addShortcut("Space", "toggleFitMode");
+    actionManager->addShortcut("A", "fitAll");
+    actionManager->addShortcut("W", "fitWidth");
+    actionManager->addShortcut("N", "fitNormal");
     actionManager->addShortcut("Ctrl+M", "toggleMenuBar");
     actionManager->addShortcut("Ctrl+R", "rotateRight");
     actionManager->addShortcut("Ctrl+L", "rotateLeft");
@@ -241,9 +270,9 @@ bool ActionManager::processMouseEvent(QMouseEvent *event) {
     if(event->type() == QEvent::MouseButtonDblClick) {
         if(event->button() == Qt::LeftButton || event->button() == Qt::RightButton) {
             keys.append("_DoubleClick");
+            actionManager->startAction(keys);
+            return true;
         }
-        actionManager->startAction(keys);
-        return true;
     }
     if(event->type() == QEvent::MouseButtonPress) {
         actionManager->startAction(keys);
@@ -304,6 +333,3 @@ bool ActionManager::processEvent(QEvent *event) {
     }
     return false;
 }
-
-
-

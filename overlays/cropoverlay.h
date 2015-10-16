@@ -41,7 +41,7 @@ private:
     QSize realSize;
     bool clear, moving;
     float scale;
-    QBrush brushInactiveTint, brushLightDark, brushGray, brushGreen;
+    QBrush brushInactiveTint, brushDarkGray, brushGray, brushLightGray;
     QRect *handles[8];
     int handleSize;
     QImage *drawBuffer;
@@ -51,8 +51,8 @@ private:
     QFontMetrics *fm;
     QString buttonText;
     QRect buttonRect;
-    const int textMarginH = 2;
-    const int textMarginW = 4;
+    const int textMarginH = 5;
+    const int textMarginW = 8;
 
     QPoint setInsidePoint(QPoint, QRect);
     void clearSelection();

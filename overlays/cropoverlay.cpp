@@ -20,12 +20,12 @@ CropOverlay::CropOverlay(QWidget *parent) : QWidget(parent),
     prepareDrawElements();
     brushInactiveTint.setColor(QColor(0,10,0,210));  // transparent black
     brushInactiveTint.setStyle(Qt::Dense4Pattern);
-    brushLightDark.setColor(QColor(110,110,110,210));  // transparent black
-    brushLightDark.setStyle(Qt::SolidPattern);
-    brushGray.setColor(QColor(140,140,150,255)); // gray
+    brushDarkGray.setColor(QColor(120,120,120,210));  // transparent black
+    brushDarkGray.setStyle(Qt::SolidPattern);
+    brushGray.setColor(QColor(150,150,150,255)); // gray
     brushGray.setStyle(Qt::SolidPattern);
-    brushGreen.setColor(QColor(70,220,40,210));  // transparent green
-    brushGreen.setStyle(Qt::SolidPattern);
+    brushLightGray.setColor(QColor(220,220,220,210));  // transparent green
+    brushLightGray.setStyle(Qt::SolidPattern);
     selectionOutlinePen.setColor(Qt::black);
     selectionOutlinePen.setStyle(Qt::SolidLine);
     this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
@@ -44,7 +44,7 @@ void CropOverlay::setRealSize(QSize sz) {
 
 void CropOverlay::setButtonText(QString text) {
     buttonText = text;
-    buttonRect = QRect(QPoint(10,45),
+    buttonRect = QRect(QPoint(15,75),
                        QSize(fm->width(buttonText)+textMarginW*2,
                              fm->height()+textMarginH*2));
 }
@@ -104,7 +104,7 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
         painter.setPen(Qt::NoPen);
         painter.setBrush(brushInactiveTint);
         painter.drawRect(this->rect());
-        drawLabel(buttonText, buttonRect, brushGreen, &painter);
+        drawLabel(buttonText, buttonRect, brushLightGray, &painter);
         return;
 
     } else {
@@ -127,13 +127,13 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
         info.append("x");
         info.append(QString::number(r.height()));
         if(selectionRect.width()<70 || selectionRect.height()<40) {
-            drawLabel(info, selectionRect.topRight()+QPoint(1,0), brushLightDark, &painter);
+            drawLabel(info, selectionRect.topRight()+QPoint(1,0), brushDarkGray, &painter);
         } else {
-            drawLabel(info, selectionRect.topLeft()+QPoint(handleSize*2,handleSize*2), brushLightDark, &painter);
-            drawHandles(brushLightDark, &painter);
+            drawLabel(info, selectionRect.topLeft()+QPoint(handleSize*2,handleSize*2), brushLightGray, &painter);
+            drawHandles(brushDarkGray, &painter);
         }
 
-        drawLabel(buttonText, buttonRect, brushGreen, &painter);
+        drawLabel(buttonText, buttonRect, brushLightGray, &painter);
         // draw result on screen
         QPainter(this).drawImage(QPoint(0,0), *drawBuffer);
     }
@@ -319,7 +319,6 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
             QRect tmp = selectionRect.translated(delta);
             if(!imageArea.contains(tmp, false)) {
                 tmp = placeInside(tmp, imageArea);
-                QCursor::setPos(mapToGlobal(setInsidePoint(event->pos(), tmp)));
             }
             selectionRect = tmp;
             moveStartPos = QCursor::pos();
@@ -350,8 +349,6 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
                 }
                 updateHandlePositions();
                 update();
-            } else {
-                QCursor::setPos(moveStartPos);
             }
         }
     }

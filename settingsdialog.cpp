@@ -137,7 +137,6 @@ void SettingsDialog::fillShortcuts() {
     QMapIterator<QString,QString> i(shortcuts);
     while (i.hasNext()) {
         i.next();
-        qDebug() << i.key() << " = " << i.value();
         ui->shortcutsListWidget->addItem(i.value() + "=" + i.key());
     }
 }
@@ -168,6 +167,15 @@ void SettingsDialog::applyShortcuts() {
 void SettingsDialog::resetShortcuts() {
     actionManager->resetDefaults();
     fillShortcuts();
+}
+
+void SettingsDialog::selectFFMPEG() {
+    QFileDialog dialog;
+    QString file;
+    file = dialog.getOpenFileName(this, "Navigate to ffmpeg.exe", "", "ffmpeg.exe");
+    if(!file.isEmpty()) {
+        ui->ffmpegLineEdit->setText(file);
+    }
 }
 
 void SettingsDialog::bgColorDialog() {

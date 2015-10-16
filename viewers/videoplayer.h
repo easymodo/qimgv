@@ -21,8 +21,6 @@ public:
     ~VideoPlayer();
 
 signals:
-    void sendDoubleClick();
-    void sendRightDoubleClick();
     void parentResized(QSize);
 
 public slots:
@@ -46,7 +44,8 @@ private:
 protected:
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
-    virtual void mouseDoubleClickEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+    virtual void wheelEvent(QWheelEvent *event);
 };
 
 #endif // VIDEOPLAYER_H

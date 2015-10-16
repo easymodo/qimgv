@@ -20,7 +20,6 @@ void Core::initVariables() {
     imageLoader = new NewLoader(dirManager);
 }
 
-// misc connections not related to gu
 void Core::connectSlots() {
     connect(imageLoader, SIGNAL(loadStarted()),
             this, SLOT(onLoadStarted()));

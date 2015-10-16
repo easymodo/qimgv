@@ -47,6 +47,9 @@ signals:
     void setWallpaper();
     void nextImage();
     void prevImage();
+    void fitAll();
+    void fitWidth();
+    void fitNormal();
     void toggleFitMode();
     void toggleMenuBar();
     void toggleFullscreen();

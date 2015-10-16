@@ -41,6 +41,7 @@ void NewLoader::openBlocking(QString path) {
     int target = dm->currentFilePos();
     setLoadTarget(target);
     LoadHelper *localWorker = new LoadHelper(cache, thread());
+    worker->setTarget(target, dm->currentFilePath());
     localWorker->setTarget(target, dm->currentFilePath());
     localWorker->doLoad();
     onLoadFinished(target);

@@ -84,6 +84,7 @@ private slots:
     void openImage(QPixmap *pixmap);
     void showSettings();
 
+    void slotSelectWallpaper();
 private:
     Core *core;
     textOverlay *infoOverlay, *messageOverlay;
