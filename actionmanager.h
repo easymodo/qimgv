@@ -38,7 +38,7 @@ private:
     bool processWheelEvent(QWheelEvent *event);
     bool processMouseEvent(QMouseEvent *event);
     bool processKeyEvent(QKeyEvent *event);
-    void startAction(QString action);
+    bool startAction(QString action);
 signals:
     void open();
     void save();

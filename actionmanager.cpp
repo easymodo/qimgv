@@ -257,8 +257,7 @@ bool ActionManager::processWheelEvent ( QWheelEvent *event )
           mods.append ( "Shift+" );
      }
      keys.prepend ( mods );
-     actionManager->startAction ( keys );
-     return true;
+     return actionManager->startAction ( keys );
 }
 
 // Detects mouse button clicks only
@@ -284,14 +283,16 @@ bool ActionManager::processMouseEvent ( QMouseEvent *event )
      }
      if ( event->type() == QEvent::MouseButtonDblClick ) {
           if ( event->button() == Qt::LeftButton || event->button() == Qt::RightButton ) {
-               keys.append ( "_DoubleClick" );
-               actionManager->startAction ( keys );
-               return true;
+              // use regular click if there is no action for doubleclick
+              if ( actionManager->startAction ( keys + "_DoubleClick" ) ) {
+                  return true;
+              } else {
+                  return actionManager->startAction( keys );
+              }
           }
      }
      if ( event->type() == QEvent::MouseButtonPress ) {
-          actionManager->startAction ( keys );
-          return true;
+          return actionManager->startAction ( keys );
      }
      return false;
 }
@@ -313,8 +314,7 @@ bool ActionManager::processKeyEvent ( QKeyEvent *event )
                     mods.append ( "Shift+" );
                }
                keys.prepend ( mods );
-               actionManager->startAction ( keys );
-               return true;
+               return actionManager->startAction ( keys );
           }
      }
      return false;
@@ -330,13 +330,15 @@ QString ActionManager::actionForShortcut ( QString keys )
      return actionManager->shortcuts[keys];
 }
 
-void ActionManager::startAction ( QString shortcut )
+bool ActionManager::startAction ( QString shortcut )
 {
      if ( shortcuts.contains ( shortcut ) ) {
           QMetaObject::invokeMethod ( this,
                                       actionManager->shortcuts[shortcut].toLatin1().constData(),
                                       Qt::DirectConnection );
+          return true;
      }
+     return false;
 }
 
 bool ActionManager::processEvent ( QEvent *event )
