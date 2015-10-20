@@ -2,11 +2,15 @@
     <qresource prefix="/images">
         <file>res/error.png</file>
         <file>res/logo.png</file>
-        <file>res/qimgv32.png</file>
         <file>res/error_no_image_100px.png</file>
         <file>res/video_thumb.png</file>
-        <file>res/pepper.png</file>
-        <file>res/qimgv64.png</file>
+        <file>res/icons/pepper.png</file>
+        <file>res/icons/16.png</file>
+        <file>res/icons/32.png</file>
+        <file>res/icons/64.png</file>
+        <file>res/icons/128.png</file>
+        <file>res/icons/256.png</file>
+        <file>res/icons/48.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file>res/style.qss</file>

@@ -16,7 +16,6 @@ MainWindow::MainWindow() :
      setWindowTitle ( QCoreApplication::applicationName() +
                       " " +
                       QCoreApplication::applicationVersion() );
-     setWindowIcon ( QIcon ( ":/images/res/pepper32.png" ) );
 }
 
 void MainWindow::init()
