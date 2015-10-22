@@ -619,7 +619,7 @@ bool MainWindow::event ( QEvent *event )
 void MainWindow::slotAbout()
 {
      QMessageBox msgBox;
-     msgBox.setIconPixmap ( QPixmap ( ":/images/res/pepper.png" ) );
+     msgBox.setIconPixmap ( QPixmap ( ":/images/res/icons/pepper.png" ) );
      QSpacerItem* horizontalSpacer =
           new QSpacerItem ( 250,
                             0,
