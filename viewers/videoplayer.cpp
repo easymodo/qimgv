@@ -75,15 +75,15 @@ void VideoPlayer::handleMediaStatusChange(QMediaPlayer::MediaStatus status) {
     }
 }
 
-//fits entire video in window
+//fits && centers video in window
 void VideoPlayer::adjustVideoSize() {
     QSize size = videoItem->nativeSize().toSize();
     if(size.width() > this->width() || size.height() > this->height()) {
-        size = size.boundedTo(this->size());
-        videoItem->setSize(size);
-    } else if(size != videoItem->size()) {
-        videoItem->setSize(videoItem->nativeSize());
+        size = size.scaled(this->width(), this->height(), Qt::KeepAspectRatio);
+    } else {
+        size = videoItem->nativeSize().toSize();
     }
+    videoItem->setSize(size);
     scene->setSceneRect(scene->itemsBoundingRect());
 }
 
