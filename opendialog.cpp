@@ -1,10 +1,8 @@
 #include "opendialog.h"
 
-OpenDialog::OpenDialog()
-{
+OpenDialog::OpenDialog() {
 }
 
-void OpenDialog::setParent ( QWidget* _parent )
-{
-     parent = _parent;
+void OpenDialog::setParent(QWidget *_parent) {
+    parent = _parent;
 }

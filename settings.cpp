@@ -1,128 +1,114 @@
 #include "settings.h"
 
-Settings *settings=NULL;
+Settings *settings = NULL;
 
-Settings::Settings ( QObject *parent ) :
-     QObject ( parent )
-{
-     tempDirectory = new QTemporaryDir ( QDir::tempPath() +"/qimgv_tmpXXXXXX" );
-     tempDirectory->setAutoRemove ( true );
+Settings::Settings(QObject *parent) :
+    QObject(parent) {
+    tempDirectory = new QTemporaryDir(QDir::tempPath() + "/qimgv_tmpXXXXXX");
+    tempDirectory->setAutoRemove(true);
 }
 
-Settings::~Settings()
-{
-     delete tempDirectory;
+Settings::~Settings() {
+    delete tempDirectory;
 }
 
-Settings* Settings::getInstance()
-{
-     if ( !settings ) {
-          settings=new Settings();
-          validate();
-     }
-     return settings;
+Settings *Settings::getInstance() {
+    if(!settings) {
+        settings = new Settings();
+        validate();
+    }
+    return settings;
 }
 
-void Settings::validate()
-{
-     if ( settings ) {
-          bool ok = true;
-          if ( settings->s.value ( "lastDir" ) == "" ) {
-               settings->s.setValue ( "lastDir",
-                                      QApplication::applicationDirPath() );
-          }
-          // minimum cache size
-          if ( settings->s.value ( "cacheSize" ).toInt() < 32 ) {
-               settings->s.setValue ( "cacheSize","32" );
-          }
+void Settings::validate() {
+    if(settings) {
+        bool ok = true;
+        if(settings->s.value("lastDir") == "") {
+            settings->s.setValue("lastDir",
+                                 QApplication::applicationDirPath());
+        }
+        // minimum cache size
+        if(settings->s.value("cacheSize").toInt() < 32) {
+            settings->s.setValue("cacheSize", "32");
+        }
 
-          if ( !ok ) {
-               qDebug() << "Settings: error reading thumbnail size (int conversion failed).";
-               qDebug() << "Settings: setting default size.";
-               ok = true;
-               settings->s.setValue ( "thumbnailSize", 135 );
-          }
-     }
+        if(!ok) {
+            qDebug() << "Settings: error reading thumbnail size (int conversion failed).";
+            qDebug() << "Settings: setting default size.";
+            ok = true;
+            settings->s.setValue("thumbnailSize", 135);
+        }
+    }
 }
 
-QString Settings::tempDir()
-{
-     return tempDirectory->path() +"/";
+QString Settings::tempDir() {
+    return tempDirectory->path() + "/";
 }
 
-QString Settings::ffmpegExecutable()
-{
-     return settings->s.value ( "ffmpegExe", "" ).toString();
+QString Settings::ffmpegExecutable() {
+    return settings->s.value("ffmpegExe", "").toString();
 }
 
-void Settings::setFfmpegExecutable ( QString path )
-{
-     settings->s.setValue ( "ffmpegExe", path );
+void Settings::setFfmpegExecutable(QString path) {
+    settings->s.setValue("ffmpegExe", path);
 }
 
 // returns list of regexps
-QStringList Settings::supportedFormats()
-{
-     QStringList filters;
-     QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-     if ( this->playVideos() ) {
-          supportedFormats << "webm";
-     }
-     for ( int i = 0; i < supportedFormats.count(); i++ ) {
-          filters << "*."+QString ( supportedFormats.at ( i ) );
-     }
-     return filters;
+QStringList Settings::supportedFormats() {
+    QStringList filters;
+    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+    if(this->playVideos()) {
+        supportedFormats << "webm";
+    }
+    for(int i = 0; i < supportedFormats.count(); i++) {
+        filters << "*." + QString(supportedFormats.at(i));
+    }
+    return filters;
 }
 
 // (for open/save dialogs)
 // example:  "Images (*.jpg, *.png)"
-QString Settings::supportedFormatsString()
-{
-     QString filters;
-     QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-     if ( this->playVideos() ) {
-          supportedFormats << "webm";
-     }
-     filters.append ( "Images (" );
-     for ( int i = 0; i < supportedFormats.count(); i++ ) {
-          filters.append ( "*."+QString ( supportedFormats.at ( i ) ) +" " );
-     }
-     filters.append ( ")" );
-     return filters;
+QString Settings::supportedFormatsString() {
+    QString filters;
+    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+    if(this->playVideos()) {
+        supportedFormats << "webm";
+    }
+    filters.append("Images (");
+    for(int i = 0; i < supportedFormats.count(); i++) {
+        filters.append("*." + QString(supportedFormats.at(i)) + " ");
+    }
+    filters.append(")");
+    return filters;
 }
 
 // returns list of mime types
-QStringList Settings::supportedMimeTypes()
-{
-     QStringList filters;
-     QList<QByteArray> mimeTypes = QImageReader::supportedMimeTypes();
-     if ( this->playVideos() ) {
-          mimeTypes << "video/webm";
-     }
-     for ( int i = 0; i < mimeTypes.count(); i++ ) {
-          filters << QString ( mimeTypes.at ( i ) );
-     }
-     return filters;
+QStringList Settings::supportedMimeTypes() {
+    QStringList filters;
+    QList<QByteArray> mimeTypes = QImageReader::supportedMimeTypes();
+    if(this->playVideos()) {
+        mimeTypes << "video/webm";
+    }
+    for(int i = 0; i < mimeTypes.count(); i++) {
+        filters << QString(mimeTypes.at(i));
+    }
+    return filters;
 }
 
-bool Settings::playVideos()
-{
-     return settings->s.value ( "playVideos", true ).toBool();
+bool Settings::playVideos() {
+    return settings->s.value("playVideos", true).toBool();
 }
 
-void Settings::setPlayVideos ( bool mode )
-{
-     settings->s.setValue ( "playVideos", mode );
+void Settings::setPlayVideos(bool mode) {
+    settings->s.setValue("playVideos", mode);
 }
 
-bool Settings::playVideoSounds()
-{
-     return settings->s.value ( "playVideoSounds", false ).toBool();
+bool Settings::playVideoSounds() {
+    return settings->s.value("playVideoSounds", false).toBool();
 }
 
-void Settings::setPlayVideoSounds ( bool mode )
-{
-     settings->s.setValue ( "playVideoSounds", mode );
+void Settings::setPlayVideoSounds(bool mode) {
+    settings->s.setValue("playVideoSounds", mode);
 }
 
 /* 0: By name (default)
@@ -130,263 +116,226 @@ void Settings::setPlayVideoSounds ( bool mode )
  * 2: By date
  * 3: By date reversed
 */
-int Settings::sortingMode()
-{
-     bool ok = true;
-     int mode = settings->s.value ( "sortingMode", "0" ).toInt ( &ok );
-     if ( !ok ) {
-          mode = 0;
-     }
-     return mode;
+int Settings::sortingMode() {
+    bool ok = true;
+    int mode = settings->s.value("sortingMode", "0").toInt(&ok);
+    if(!ok) {
+        mode = 0;
+    }
+    return mode;
 }
 
-void Settings::setSortingMode ( int mode )
-{
-     if ( mode < 0 || mode > 3 ) {
-          qDebug() << "Invalid sorting mode (" << mode << "), resetting to default.";
-          mode = 0;
-     }
-     settings->s.setValue ( "sortingMode", mode );
+void Settings::setSortingMode(int mode) {
+    if(mode < 0 || mode > 3) {
+        qDebug() << "Invalid sorting mode (" << mode << "), resetting to default.";
+        mode = 0;
+    }
+    settings->s.setValue("sortingMode", mode);
 }
 
-bool Settings::useFastScale()
-{
-     return settings->s.value ( "useFastScale", "false" ).toBool();
+bool Settings::useFastScale() {
+    return settings->s.value("useFastScale", "false").toBool();
 }
 
-void Settings::setUseFastScale ( bool mode )
-{
-     settings->s.setValue ( "useFastScale", mode );
+void Settings::setUseFastScale(bool mode) {
+    settings->s.setValue("useFastScale", mode);
 }
 
-QString Settings::lastDirectory()
-{
-     return settings->s.value ( "lastDir", "" ).toString();
+QString Settings::lastDirectory() {
+    return settings->s.value("lastDir", "").toString();
 }
 
-void Settings::setLastDirectory ( QString path )
-{
-     settings->s.setValue ( "lastDir", path );
+void Settings::setLastDirectory(QString path) {
+    settings->s.setValue("lastDir", path);
 }
 
-unsigned int Settings::lastFilePosition()
-{
-     bool ok = true;
-     unsigned int pos = settings->s.value ( "lastFilePosition", "0" ).toInt ( &ok );
-     if ( !ok ) {
-          qDebug() << "Settings: Invalid lastFilePosition. Resetting to 0.";
-          pos = 0;
-     }
-     return pos;
+unsigned int Settings::lastFilePosition() {
+    bool ok = true;
+    unsigned int pos = settings->s.value("lastFilePosition", "0").toInt(&ok);
+    if(!ok) {
+        qDebug() << "Settings: Invalid lastFilePosition. Resetting to 0.";
+        pos = 0;
+    }
+    return pos;
 }
 
-void Settings::setLastFilePosition ( unsigned int pos )
-{
-     settings->s.setValue ( "lastFilePosition", pos );
+void Settings::setLastFilePosition(unsigned int pos) {
+    settings->s.setValue("lastFilePosition", pos);
 }
 
-unsigned int Settings::thumbnailSize()
-{
-     bool ok = true;
-     unsigned int size = settings->s.value ( "thumbnailSize", thumbnailSizeDefault ).toInt ( &ok );
-     if ( !ok ) {
-          size = thumbnailSizeDefault;
-     }
-     return size;
+unsigned int Settings::thumbnailSize() {
+    bool ok = true;
+    unsigned int size = settings->s.value("thumbnailSize", thumbnailSizeDefault).toInt(&ok);
+    if(!ok) {
+        size = thumbnailSizeDefault;
+    }
+    return size;
 }
 
-void Settings::setThumbnailSize ( unsigned int size )
-{
-     settings->s.setValue ( "thumbnailSize", size );
+void Settings::setThumbnailSize(unsigned int size) {
+    settings->s.setValue("thumbnailSize", size);
 }
 
-bool Settings::usePreloader()
-{
-     return settings->s.value ( "usePreloader", true ).toBool();
+bool Settings::usePreloader() {
+    return settings->s.value("usePreloader", true).toBool();
 }
 
-void Settings::setUsePreloader ( bool mode )
-{
-     settings->s.setValue ( "usePreloader", mode );
+void Settings::setUsePreloader(bool mode) {
+    settings->s.setValue("usePreloader", mode);
 }
 
-QColor Settings::backgroundColor()
-{
-     return settings->s.value ( "bgColor", QColor ( 14,14,14 ) ).value<QColor>();
+QColor Settings::backgroundColor() {
+    return settings->s.value("bgColor", QColor(14, 14, 14)).value<QColor>();
 }
 
-void Settings::setBackgroundColor ( QColor color )
-{
-     settings->s.setValue ( "bgColor", color );
+void Settings::setBackgroundColor(QColor color) {
+    settings->s.setValue("bgColor", color);
 }
 
-QColor Settings::accentColor()
-{
-     return settings->s.value ( "accentColor", QColor ( 0,182,91 ) ).value<QColor>();
+QColor Settings::accentColor() {
+    return settings->s.value("accentColor", QColor(0, 182, 91)).value<QColor>();
 }
 
-void Settings::setAccentColor ( QColor color )
-{
-     settings->s.setValue ( "accentColor", color );
+void Settings::setAccentColor(QColor color) {
+    settings->s.setValue("accentColor", color);
 }
 
-bool Settings::fullscreenMode()
-{
-     return settings->s.value ( "openInFullscreen", true ).toBool();
+bool Settings::fullscreenMode() {
+    return settings->s.value("openInFullscreen", true).toBool();
 }
 
-void Settings::setFullscreenMode ( bool mode )
-{
-     settings->s.setValue ( "openInFullscreen", mode );
+void Settings::setFullscreenMode(bool mode) {
+    settings->s.setValue("openInFullscreen", mode);
 }
 
-bool Settings::menuBarHidden()
-{
-     return settings->s.value ( "hideMenuBar", true ).toBool();
+bool Settings::menuBarHidden() {
+    return settings->s.value("hideMenuBar", true).toBool();
 }
 
-void Settings::setMenuBarHidden ( bool mode )
-{
-     settings->s.setValue ( "hideMenuBar", mode );
+void Settings::setMenuBarHidden(bool mode) {
+    settings->s.setValue("hideMenuBar", mode);
 }
 
 // maximized borderless window instead of fullscreen
-bool Settings::fullscreenTaskbarShown()
-{
-     return settings->s.value ( "fullscreenTaskbarShown", false ).toBool();
+bool Settings::fullscreenTaskbarShown() {
+    return settings->s.value("fullscreenTaskbarShown", false).toBool();
 }
 
-void Settings::setFullscreenTaskbarShown ( bool mode )
-{
-     settings->s.setValue ( "fullscreenTaskbarShown", mode );
+void Settings::setFullscreenTaskbarShown(bool mode) {
+    settings->s.setValue("fullscreenTaskbarShown", mode);
 }
 
-bool Settings::showThumbnailLabels()
-{
-     return settings->s.value ( "showThumbnailLabels", true ).toBool();
+bool Settings::showThumbnailLabels() {
+    return settings->s.value("showThumbnailLabels", true).toBool();
 }
 
-void Settings::setShowThumbnailLabels ( bool mode )
-{
-     settings->s.setValue ( "showThumbnailLabels", mode );
+void Settings::setShowThumbnailLabels(bool mode) {
+    settings->s.setValue("showThumbnailLabels", mode);
 }
 
-PanelPosition Settings::panelPosition()
-{
-     QString posString = settings->s.value ( "panelPosition", "bottom" ).toString();
-     if ( posString == "top" ) {
-          return PanelPosition::TOP;
-     } else if ( posString == "left" ) {
-          return PanelPosition::LEFT;
-     } else if ( posString == "right" ) {
-          return PanelPosition::RIGHT;
-     } else {
-          return PanelPosition::BOTTOM;
-     }
+PanelPosition Settings::panelPosition() {
+    QString posString = settings->s.value("panelPosition", "bottom").toString();
+    if(posString == "top") {
+        return PanelPosition::TOP;
+    } else if(posString == "left") {
+        return PanelPosition::LEFT;
+    } else if(posString == "right") {
+        return PanelPosition::RIGHT;
+    } else {
+        return PanelPosition::BOTTOM;
+    }
 }
 
-void Settings::setPanelPosition ( PanelPosition pos )
-{
-     QString posString;
-     switch ( pos ) {
-     case LEFT:
-          posString = "left";
-          break;
-     case RIGHT:
-          posString = "right";
-          break;
-     case TOP:
-          posString = "top";
-          break;
-     case BOTTOM:
-          posString = "bottom";
-          break;
-     }
-     settings->s.setValue ( "panelPosition", posString );
+void Settings::setPanelPosition(PanelPosition pos) {
+    QString posString;
+    switch(pos) {
+        case LEFT:
+            posString = "left";
+            break;
+        case RIGHT:
+            posString = "right";
+            break;
+        case TOP:
+            posString = "top";
+            break;
+        case BOTTOM:
+            posString = "bottom";
+            break;
+    }
+    settings->s.setValue("panelPosition", posString);
 }
 
 /* 0: all
  * 1: fit width
  * 2: orginal size
  */
-int Settings::imageFitMode()
-{
-     int mode = settings->s.value ( "defaultFitMode", 0 ).toInt();
-     if ( mode < 0 || mode > 2 ) {
-          qDebug() << "Settings: Invalid fit mode ( " + QString::number ( mode ) + " ). Resetting to default.";
-          mode = 0;
-     }
-     return mode;
+int Settings::imageFitMode() {
+    int mode = settings->s.value("defaultFitMode", 0).toInt();
+    if(mode < 0 || mode > 2) {
+        qDebug() << "Settings: Invalid fit mode ( " + QString::number(mode) + " ). Resetting to default.";
+        mode = 0;
+    }
+    return mode;
 }
 
-void Settings::setImageFitMode ( int mode )
-{
-     if ( mode < 0 || mode > 2 ) {
-          qDebug() << "Settings: Invalid fit mode ( " + QString::number ( mode ) + " ). Resetting to default.";
-          mode = 0;
-     }
-     settings->s.setValue ( "defaultFitMode", mode );
+void Settings::setImageFitMode(int mode) {
+    if(mode < 0 || mode > 2) {
+        qDebug() << "Settings: Invalid fit mode ( " + QString::number(mode) + " ). Resetting to default.";
+        mode = 0;
+    }
+    settings->s.setValue("defaultFitMode", mode);
 }
 
-QByteArray Settings::windowGeometry()
-{
-     return settings->s.value ( "windowGeometry" ).toByteArray();
+QByteArray Settings::windowGeometry() {
+    return settings->s.value("windowGeometry").toByteArray();
 }
 
-void Settings::setWindowGeometry ( QByteArray geometry )
-{
-     settings->s.setValue ( "windowGeometry", geometry );
+void Settings::setWindowGeometry(QByteArray geometry) {
+    settings->s.setValue("windowGeometry", geometry);
 }
 
-bool Settings::reduceRamUsage()
-{
-     return settings->s.value ( "reduceRamUsage", false ).toBool();
+bool Settings::reduceRamUsage() {
+    return settings->s.value("reduceRamUsage", false).toBool();
 }
 
-void Settings::setReduceRamUsage ( bool mode )
-{
-     settings->s.setValue ( "reduceRamUsage", mode );
+void Settings::setReduceRamUsage(bool mode) {
+    settings->s.setValue("reduceRamUsage", mode);
 }
 
-bool Settings::infiniteScrolling()
-{
-     return settings->s.value ( "infiniteScrolling", false ).toBool();
+bool Settings::infiniteScrolling() {
+    return settings->s.value("infiniteScrolling", false).toBool();
 }
 
-void Settings::setInfiniteScrolling ( bool mode )
-{
-     settings->s.setValue ( "infiniteScrolling", mode );
+void Settings::setInfiniteScrolling(bool mode) {
+    settings->s.setValue("infiniteScrolling", mode);
 }
 
-void Settings::sendChangeNotification()
-{
-     emit settingsChanged();
+void Settings::sendChangeNotification() {
+    emit settingsChanged();
 }
 
-void Settings::readShortcuts()
-{
-     settings->s.beginGroup ( "Controls" );
-     QStringList in, pair;
-     in = settings->s.value ( "shortcuts" ).toStringList();
-     for ( int i=0; i<in.count(); i++ ) {
-          pair = in[i].split ( "=" );
-          if ( !pair[0].isEmpty() && !pair[1].isEmpty() ) {
-               actionManager->addShortcut ( pair[1], pair[0] );
-          }
-     }
-     settings->s.endGroup();
+void Settings::readShortcuts() {
+    settings->s.beginGroup("Controls");
+    QStringList in, pair;
+    in = settings->s.value("shortcuts").toStringList();
+    for(int i = 0; i < in.count(); i++) {
+        pair = in[i].split("=");
+        if(!pair[0].isEmpty() && !pair[1].isEmpty()) {
+            actionManager->addShortcut(pair[1], pair[0]);
+        }
+    }
+    settings->s.endGroup();
 }
 
-void Settings::saveShortcuts()
-{
-     settings->s.beginGroup ( "Controls" );
-     const QMap<QString, QString> &shortcuts = actionManager->allShortcuts();
-     QMapIterator<QString,QString> i ( shortcuts );
-     QStringList out;
-     while ( i.hasNext() ) {
-          i.next();
-          out << i.value() +"="+i.key();
-     }
-     settings->s.setValue ( "shortcuts", out );
-     settings->s.endGroup();
+void Settings::saveShortcuts() {
+    settings->s.beginGroup("Controls");
+    const QMap<QString, QString> &shortcuts = actionManager->allShortcuts();
+    QMapIterator<QString, QString> i(shortcuts);
+    QStringList out;
+    while(i.hasNext()) {
+        i.next();
+        out << i.value() + "=" + i.key();
+    }
+    settings->s.setValue("shortcuts", out);
+    settings->s.endGroup();
 }

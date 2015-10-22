@@ -1,27 +1,25 @@
 #include "stuff.h"
 
 // 0 - mac, 1 - linux, 2 - windows, 3 - other
-int probeOS()
-{
+int probeOS() {
 #ifdef TARGET_OS_MAC
-     return 0;
+    return 0;
 #elif defined __linux__
-     return 1;
+    return 1;
 #elif defined _WIN32 || defined _WIN64
-     return 2;
+    return 2;
 #else
-     return 3;
+    return 3;
 #endif
 }
 
 
-const char* getExtension ( QString path )
-{
-     QStringList lst;
-     QString ext = path;
-     do {
-          lst = ext.split ( "." );
-          ext = lst.last();
-     } while ( lst.count() > 1 );
-     return ext.toStdString().c_str();
+const char *getExtension(QString path) {
+    QStringList lst;
+    QString ext = path;
+    do {
+        lst = ext.split(".");
+        ext = lst.last();
+    } while(lst.count() > 1);
+    return ext.toStdString().c_str();
 }
