@@ -32,8 +32,9 @@ QString FileInfo::getFileName() {
     return fileInfo.fileName();
 }
 
+// in KB
 float FileInfo::getFileSize() {
-    return truncf(fileInfo.size() * 100 / (1024 * 1024)) / 100;
+    return truncf(fileInfo.size()/1024);
 }
 
 void FileInfo::guessType() {

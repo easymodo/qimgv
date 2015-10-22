@@ -69,7 +69,7 @@ void Core::updateInfoString() {
                           "x" +
                           QString::number(imageLoader->current->height()) +
                           "  ");
-        infoString.append(QString::number(imageLoader->current->getInfo()->getFileSize()) + " MB)");
+        infoString.append(QString::number(imageLoader->current->getInfo()->getFileSize()) + " KB)");
     } else {
         infoString.append(" ...");
     }
