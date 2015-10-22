@@ -496,9 +496,12 @@ void MainWindow::slotFullscreen()
           emit signalFullscreenEnabled ( true );
      } else {
           showMenuBar();
-          restoreWindowGeometry();
           this->setWindowFlags ( windowFlags() & ~Qt::FramelessWindowHint );
-          this->windowState() & Qt::WindowMaximized ? this->showMaximized() : this->show();
+          this->show();
+          restoreWindowGeometry();
+          if (this->windowState() & Qt::WindowMaximized) {
+               this->showMaximized();
+          }
           this->activateWindow();
           this->raise();
           emit signalFullscreenEnabled ( false );
