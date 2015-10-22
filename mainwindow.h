@@ -133,6 +133,8 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void closeEvent(QCloseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
+    void dragEnterEvent(QDragEnterEvent *e);
+    void dropEvent(QDropEvent *event);
 };
 
 #endif // MAINWINDOW_H

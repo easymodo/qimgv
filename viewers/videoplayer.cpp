@@ -13,6 +13,7 @@ VideoPlayer::VideoPlayer ( QWidget *parent ) :
      videoItem->setFlag ( QGraphicsItem::ItemIsMovable, true );
      this->setMouseTracking ( true );
      this->setFocusPolicy ( Qt::NoFocus );
+     this->setAcceptDrops( false );
      this->setScene ( scene );
      this->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
      this->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );

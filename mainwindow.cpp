@@ -11,6 +11,7 @@ MainWindow::MainWindow() :
      resize ( 1100, 700 );
      setMinimumSize ( QSize ( 400,300 ) );
      this->setMouseTracking ( true );
+     this->setAcceptDrops( true );
      init();
      readSettingsInitial();
      setWindowTitle ( QCoreApplication::applicationName() +
@@ -614,6 +615,29 @@ void MainWindow::triggerMenuBar()
      settings->setMenuBarHidden ( this->menuBar()->isHidden() );
 }
 
+void MainWindow::dragEnterEvent(QDragEnterEvent *e)
+{
+    if (e->mimeData()->hasUrls()) {
+        e->acceptProposedAction();
+    }
+}
+
+void MainWindow::dropEvent(QDropEvent* event)
+{
+    const QMimeData* mimeData = event->mimeData();
+    // check for our needed mime type, here a file or a list of files
+    if (mimeData->hasUrls()) {
+        QStringList pathList;
+        QList<QUrl> urlList = mimeData->urls();
+        // extract the local paths of the files
+        for (int i = 0; i < urlList.size() && i < 32; ++i) {
+            pathList.append(urlList.at(i).toLocalFile());
+        }
+        // try to open first file in the list
+        open(pathList.first());
+    }
+}
+
 bool MainWindow::event ( QEvent *event )
 {
      return ( actionManager->processEvent ( event ) ) ?true:QMainWindow::event ( event );
@@ -675,7 +699,6 @@ void MainWindow::restoreWindowGeometry()
 
 MainWindow::~MainWindow()
 {
-
 }
 
 
