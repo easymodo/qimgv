@@ -300,25 +300,19 @@ QString ActionManager::modifierKeys(QEvent *event){
     QWheelEvent *wheelEvent = dynamic_cast<QWheelEvent *>(event);
     QString mods;
     QMapIterator<QString, Qt::KeyboardModifier> i(actionManager->modMap);
-    if(keyEvent) {
-        while(i.hasNext()) {
-            i.next();
+
+    while(i.hasNext())
+    {
+        i.next();
+        if(keyEvent){
             if(keyEvent->modifiers().testFlag(i.value())){
                 mods.append(i.key());
             }
-        }
-        i.toFront();
-    } else if(wheelEvent) {
-        while(i.hasNext()) {
-            i.next();
+        } else if (wheelEvent){
             if(wheelEvent->modifiers().testFlag(i.value())){
                 mods.append(i.key());
             }
-        }
-        i.toFront();
-    } else if(mouseEvent) {
-        while(i.hasNext()) {
-            i.next();
+        } else if (mouseEvent) {
             if(mouseEvent->modifiers().testFlag(i.value())){
                 mods.append(i.key());
             }
