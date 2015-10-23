@@ -9,6 +9,7 @@ VideoPlayer::VideoPlayer(QWidget *parent) :
     mediaPlayer.setVideoOutput(videoItem);
 
     scene->addItem(videoItem);
+    this->setRenderHint(QPainter::SmoothPixmapTransform);
     videoItem->setFlag(QGraphicsItem::ItemIsMovable, true);
     this->setMouseTracking(true);
     this->setFocusPolicy(Qt::NoFocus);
