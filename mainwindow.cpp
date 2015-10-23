@@ -9,6 +9,9 @@ MainWindow::MainWindow() :
     borderlessEnabled(false) {
     resize(1100, 700);
     setMinimumSize(QSize(400, 300));
+#ifdef __linux__
+    setWindowIcon(QIcon(":/images/res/icons/16.png"));
+#endif
     this->setMouseTracking(true);
     this->setAcceptDrops(true);
     init();
