@@ -327,9 +327,9 @@ bool ActionManager::processEvent(QEvent *event) {
     if(keyEvent) {
         return actionManager->processKeyEvent(keyEvent);
     } else if(wheelEvent) {
-        actionManager->processWheelEvent(wheelEvent);
+        return actionManager->processWheelEvent(wheelEvent);
     } else if(mouseEvent) {
-        actionManager->processMouseEvent(mouseEvent);
+        return actionManager->processMouseEvent(mouseEvent);
     }
     return false;
 }
