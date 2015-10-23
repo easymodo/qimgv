@@ -188,7 +188,7 @@ const QStringList ActionManager::keys() {
         i.next();
         list << i.value();
     }
-    list << "XButton1" << "XButton2" << "LMB" << "RMB" << "MiddleButton";
+    list << "XButton1" << "XButton2" << "LMB" << "RMB" << "MiddleButton" << "WheelUp" << "WheelDown";;
     return list;
 }
 
