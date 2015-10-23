@@ -14,6 +14,7 @@ ActionManager *ActionManager::getInstance() {
         actionManager = new ActionManager();
         createActionList();
         initKeyMap();
+        initModMap();
         initShortcuts();
     }
     return actionManager;
@@ -147,6 +148,14 @@ void ActionManager::initKeyMap() {
 #endif
 }
 
+// can add Win/Mac/X11 specific modifiers
+void ActionManager::initModMap() {
+    actionManager->modMap.clear();
+    actionManager->modMap.insert("Shift+", Qt::ShiftModifier);
+    actionManager->modMap.insert("Ctrl+", Qt::ControlModifier);
+    actionManager->modMap.insert("Alt+", Qt::AltModifier);
+}
+
 // fills actionManager->keyMap with defaults
 // todo: check on windows
 void ActionManager::initShortcuts() {
@@ -226,23 +235,13 @@ void ActionManager::resetDefaults() {
 
 bool ActionManager::processWheelEvent(QWheelEvent *event) {
     QString keys;
-    QString mods;
 
     if(event->angleDelta().ry() < 0) {
         keys = "WheelUp";
     } else if(event->angleDelta().ry() > 0) {
         keys = "WheelDown";
     }
-    if(event->modifiers().testFlag(Qt::ControlModifier)) {
-        mods.append("Ctrl+");
-    }
-    if(event->modifiers().testFlag(Qt::AltModifier)) {
-        mods.append("Alt+");
-    }
-    if(event->modifiers().testFlag(Qt::ShiftModifier)) {
-        mods.append("Shift+");
-    }
-    keys.prepend(mods);
+    keys.prepend(actionManager->modifierKeys(event));
     return actionManager->startAction(keys);
 }
 
@@ -266,6 +265,9 @@ bool ActionManager::processMouseEvent(QMouseEvent *event) {
     if(event->button() == Qt::MiddleButton) {
         keys = "MiddleButton";
     }
+
+    keys.prepend(actionManager->modifierKeys(event));
+
     if(event->type() == QEvent::MouseButtonDblClick) {
         // use regular click if there is no action for doubleclick
         if(actionManager->startAction(keys + "_DoubleClick")) {
@@ -285,21 +287,44 @@ bool ActionManager::processKeyEvent(QKeyEvent *event) {
         QString keys;
         keys = actionManager->keyMap[event->nativeScanCode()];
         if(!keys.isEmpty()) {
-            QString mods;
-            if(event->modifiers().testFlag(Qt::ControlModifier)) {
-                mods.append("Ctrl+");
-            }
-            if(event->modifiers().testFlag(Qt::AltModifier)) {
-                mods.append("Alt+");
-            }
-            if(event->modifiers().testFlag(Qt::ShiftModifier)) {
-                mods.append("Shift+");
-            }
-            keys.prepend(mods);
+            keys.prepend(actionManager->modifierKeys(event));
             return actionManager->startAction(keys);
         }
     }
     return false;
+}
+
+QString ActionManager::modifierKeys(QEvent *event){
+    QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>(event);
+    QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>(event);
+    QWheelEvent *wheelEvent = dynamic_cast<QWheelEvent *>(event);
+    QString mods;
+    QMapIterator<QString, Qt::KeyboardModifier> i(actionManager->modMap);
+    if(keyEvent) {
+        while(i.hasNext()) {
+            i.next();
+            if(keyEvent->modifiers().testFlag(i.value())){
+                mods.append(i.key());
+            }
+        }
+        i.toFront();
+    } else if(wheelEvent) {
+        while(i.hasNext()) {
+            i.next();
+            if(wheelEvent->modifiers().testFlag(i.value())){
+                mods.append(i.key());
+            }
+        }
+        i.toFront();
+    } else if(mouseEvent) {
+        while(i.hasNext()) {
+            i.next();
+            if(mouseEvent->modifiers().testFlag(i.value())){
+                mods.append(i.key());
+            }
+        }
+    }
+    return mods;
 }
 
 QString ActionManager::actionForScanCode(int code) {
