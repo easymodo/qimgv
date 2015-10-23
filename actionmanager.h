@@ -30,11 +30,14 @@ private:
     explicit ActionManager(QObject *parent = 0);
     QMap<QString, QString> shortcuts;
     QMap<int, QString> keyMap;
+    QMap<QString, Qt::KeyboardModifier> modMap;
     static void createActionList();
     static void initKeyMap();
+    static void initModMap();
     static void initShortcuts();
     QStringList validActions;
 
+    QString modifierKeys(QEvent *event);
     bool processWheelEvent(QWheelEvent *event);
     bool processMouseEvent(QMouseEvent *event);
     bool processKeyEvent(QKeyEvent *event);
