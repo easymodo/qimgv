@@ -38,5 +38,4 @@ target_link_libraries(qimgv Qt5::Widgets Qt5::Concurrent overlays imagelib sourc
      
 qt5_use_modules (qimgv Core Widgets Concurrent)
 
-#install(FILES qimgv DESTINATION /bin/)
-
+install(PROGRAMS qimgv DESTINATION /bin)
