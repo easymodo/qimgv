@@ -267,13 +267,11 @@ bool ActionManager::processMouseEvent(QMouseEvent *event) {
         keys = "MiddleButton";
     }
     if(event->type() == QEvent::MouseButtonDblClick) {
-        if(event->button() == Qt::LeftButton || event->button() == Qt::RightButton) {
-            // use regular click if there is no action for doubleclick
-            if(actionManager->startAction(keys + "_DoubleClick")) {
-                return true;
-            } else {
-                return actionManager->startAction(keys);
-            }
+        // use regular click if there is no action for doubleclick
+        if(actionManager->startAction(keys + "_DoubleClick")) {
+            return true;
+        } else {
+            return actionManager->startAction(keys);
         }
     }
     if(event->type() == QEvent::MouseButtonPress) {
