@@ -157,7 +157,6 @@ void ActionManager::initModMap() {
 }
 
 // fills actionManager->keyMap with defaults
-// todo: check on windows
 void ActionManager::initShortcuts() {
     settings->readShortcuts();
     if(actionManager->shortcuts.isEmpty()) {

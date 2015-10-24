@@ -83,35 +83,36 @@ class ImageCache : public QObject
 public:
     ImageCache();
     ~ImageCache();
-    void lock();
-    void unlock();
-    Image *imageAt(int pos);
+
+    // clears cache; then loads supplied file list
+    // should be called on every directory change/sort
     void init(QString dir, QStringList list);
-    int length() const;
     void unloadAll();
-    QFuture<void> *future;
     void unloadAt(int pos);
+    Image *imageAt(int pos);
+    Thumbnail *thumbnailAt(int pos) const;
+    int length() const;
+    QString currentDirectory();
     bool isLoaded(int pos);
     int currentlyLoadedCount();
-
-    void insert(Image *img, int pos);
-    void insertThumbnail(Thumbnail *thumb, int pos);
-signals:
-    void initialized(int count);
-
-public slots:
-    Thumbnail *thumbnailAt(int pos) const;
-    QString currentDirectory();
+    void setImage(Image *img, int pos);
+    void setThumbnail(Thumbnail *thumb, int pos);
 
 private:
     QList<CacheObject*> *cachedImages;
     uint maxCacheSize;
     QString dir;
     QMutex mutex;
+
+    void lock();
+    void unlock();
     void readSettings();
 
 private slots:
     void applySettings();
+
+signals:
+    void initialized(int count);
 };
 
 #endif // IMAGECACHE_H

@@ -33,7 +33,7 @@ void LoadHelper::doLoad() {
     delete factory;
 
     img->moveToThread(mainThread);
-    cache->insert(img, targetLocal);
+    cache->setImage(img, targetLocal);
 
     emit finished(targetLocal);
 }

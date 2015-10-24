@@ -1,5 +1,7 @@
 #include "newloader.h"
 
+// ######## WARNING: spaghetti code ##########
+
 NewLoader::NewLoader(DirectoryManager *_dm) :
     reduceRam(false),
     current(NULL),
@@ -48,10 +50,11 @@ void NewLoader::openBlocking(QString path) {
 }
 
 void NewLoader::open(int pos) {
-    dm->setCurrentPos(pos);
-    emit loadStarted();
-    doLoad(dm->currentFilePos());
-    freeAuto();
+    if(dm->setCurrentPos(pos)) {
+        emit loadStarted();
+        doLoad(dm->currentFilePos());
+        freeAuto();
+    }
 }
 
 void NewLoader::doLoad(int pos) {
@@ -97,9 +100,8 @@ void NewLoader::loadPrev() {
 void NewLoader::onLoadFinished(int loaded) {
     startPreload();
     if(loaded == loadTarget && current != cache->imageAt(loaded)) {
-        current = cache->imageAt(loaded);
-        //qDebug() << "loadFinished: setting new current to " << loaded;
         emit loadFinished(cache->imageAt(loaded), loaded);
+        current = cache->imageAt(loaded);
     } else if(isRevelant(loaded)) {
         //qDebug() << "loadfinished image is revelant, keeping.." << loaded;
     } else {
@@ -136,9 +138,7 @@ void NewLoader::freeAuto() {
         if(!isRevelant(i) && cache->isLoaded(i)) {
             bool flag = false;
             if(cache->imageAt(i) == current) {
-                emit currentImageUnloading();
                 flag = true;
-
             }
             //qDebug() <<"!!unloading: " << i;
             cache->unloadAt(i);
@@ -149,9 +149,6 @@ void NewLoader::freeAuto() {
 }
 
 void NewLoader::freeAll() {
-    if(current) {
-        emit currentImageUnloading();
-    }
     cache->unloadAll();
     current = NULL;
 }
@@ -160,7 +157,6 @@ void NewLoader::freeAt(int toUnload) {
     if(!isRevelant(toUnload)) {
         //qDebug() << "!!!deleting" << toUnload << "  "<< cache->imageAt(toUnload);
         if(current == cache->imageAt(toUnload)) {
-            emit currentImageUnloading();
             current = NULL;
         }
         cache->unloadAt(toUnload);
@@ -182,7 +178,7 @@ const ImageCache *NewLoader::getCache() {
 
 void NewLoader::setCache(ImageCache *_cache) {
     this->cache = _cache;
-    cache->init(dm->currentDirectory(), dm->getFileList());
+    cache->init(dm->currentDirectory(), dm->fileList());
     worker = new LoadHelper(cache, this->thread());
     worker->moveToThread(loadThread);
     connect(this, SIGNAL(startLoad()), worker, SLOT(doLoad()));
@@ -201,12 +197,12 @@ void NewLoader::setCache(ImageCache *_cache) {
 
 void NewLoader::reinitCache() {
     if(cache->currentDirectory() != dm->currentDirectory()) {
-        cache->init(dm->currentDirectory(), dm->getFileList());
+        cache->init(dm->currentDirectory(), dm->fileList());
     }
 }
 
 void NewLoader::reinitCacheForced() {
-    cache->init(dm->currentDirectory(), dm->getFileList());
+    cache->init(dm->currentDirectory(), dm->fileList());
 }
 
 // for position in directory

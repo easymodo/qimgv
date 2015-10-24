@@ -25,7 +25,7 @@ void Thumbnailer::run() {
     delete tempImage;
     delete factory;
 
-    cache->insertThumbnail(th, target);
+    cache->setThumbnail(th, target);
     emit thumbnailReady(target);
 }
 

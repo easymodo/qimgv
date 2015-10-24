@@ -1,8 +1,5 @@
 #include "fileinfo.h"
 
-FileInfo::FileInfo() : type(NONE), extension(NULL) {
-}
-
 FileInfo::FileInfo(QString path, QObject *parent) : QObject(parent), type(NONE), extension(NULL) {
     setFile(path);
 }
@@ -10,15 +7,9 @@ FileInfo::FileInfo(QString path, QObject *parent) : QObject(parent), type(NONE),
 FileInfo::~FileInfo() {
 }
 
-void FileInfo::setFile(QString path) {
-    fileInfo.setFile(path);
-    if(!fileInfo.isFile()) {
-        qDebug() << "Cannot open: " << path;
-        return;
-    }
-    lastModified = fileInfo.lastModified();
-    guessType();
-}
+// ##############################################################
+// ####################### PUBLIC METHODS #######################
+// ##############################################################
 
 QString FileInfo::getDirectoryPath() {
     return fileInfo.absolutePath();
@@ -33,8 +24,33 @@ QString FileInfo::getFileName() {
 }
 
 // in KB
-float FileInfo::getFileSize() {
+int FileInfo::getFileSize() {
     return truncf(fileInfo.size()/1024);
+}
+
+fileType FileInfo::getType() {
+    if(type == NONE) {
+        guessType();
+    }
+    return type;
+}
+
+const char *FileInfo::getExtension() {
+    return extension;
+}
+
+// ##############################################################
+// ####################### PRIVATE METHODS ######################
+// ##############################################################
+
+void FileInfo::setFile(QString path) {
+    fileInfo.setFile(path);
+    if(!fileInfo.isFile()) {
+        qDebug() << "Cannot open: " << path;
+        return;
+    }
+    lastModified = fileInfo.lastModified();
+    guessType();
 }
 
 void FileInfo::guessType() {
@@ -42,7 +58,7 @@ void FileInfo::guessType() {
     QMimeType mimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
     QString mimeName = mimeType.name();
 
-    if(mimeName == "video/webm") {    // case sensitivity?
+    if(mimeName == "video/webm") {
         extension = "webm";
         type = fileType::VIDEO;
     } else if(mimeName == "image/jpeg") {
@@ -60,15 +76,4 @@ void FileInfo::guessType() {
     } else {
         type = STATIC;
     }
-}
-
-fileType FileInfo::getType() {
-    if(type == NONE) {
-        guessType();
-    }
-    return type;
-}
-
-const char *FileInfo::getExtension() {
-    return extension;
 }

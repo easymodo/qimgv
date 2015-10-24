@@ -8,30 +8,14 @@ Core::Core() :
     currentVideo(NULL) {
 }
 
-const ImageCache *Core::getCache() {
-    return imageLoader->getCache();
-}
+// ##############################################################
+// ####################### PUBLIC METHODS #######################
+// ##############################################################
 
-void Core::initVariables() {
-    int time = clock();
-    cache = new ImageCache();
-    dirManager = new DirectoryManager();
-    imageLoader = new NewLoader(dirManager);
-}
-
-void Core::connectSlots() {
-    connect(imageLoader, SIGNAL(loadStarted()),
-            this, SLOT(onLoadStarted()));
-    connect(imageLoader, SIGNAL(loadFinished(Image *, int)),
-            this, SLOT(onLoadFinished(Image *, int)));
-    connect(this, SIGNAL(thumbnailRequested(int)),
-            imageLoader, SLOT(generateThumbnailFor(int)));
-    connect(imageLoader, SIGNAL(thumbnailReady(int, Thumbnail *)),
-            this, SIGNAL(thumbnailReady(int, Thumbnail *)));
-    connect(cache, SIGNAL(initialized(int)), this, SIGNAL(cacheInitialized(int)), Qt::DirectConnection);
-    connect(dirManager, SIGNAL(directorySortingChanged()), imageLoader, SLOT(reinitCacheForced()));
-    connect(imageLoader, SIGNAL(currentImageUnloading()),
-            this, SLOT(releaseCurrentImage()));
+void Core::init() {
+    initVariables();
+    connectSlots();
+    imageLoader->setCache(cache);
 }
 
 QString Core::getCurrentFilePath() {
@@ -42,18 +26,9 @@ QString Core::getCurrentFilePath() {
     return filePath;
 }
 
-void Core::init() {
-    initVariables();
-    connectSlots();
-    imageLoader->setCache(cache);
-}
-
-void Core::onLoadStarted() {
-    //if(imageLoader->current) imageLoader->current->lock();
-    stopAnimation();
-    updateInfoString();
-    //if(imageLoader->current) imageLoader->current->unlock();
-}
+// ##############################################################
+// ####################### PUBLIC SLOTS #########################
+// ##############################################################
 
 void Core::updateInfoString() {
     QString infoString = "";
@@ -70,32 +45,66 @@ void Core::updateInfoString() {
                           QString::number(imageLoader->current->height()) +
                           "  ");
         infoString.append(QString::number(imageLoader->current->getInfo()->getFileSize()) + " KB)");
-    } else {
-        infoString.append(" ...");
     }
 
     //infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
-
     emit infoStringChanged(infoString);
 }
 
-void Core::rotateImage(int grad) {
-    if(imageLoader->current != NULL) {
-        imageLoader->current->rotate(grad);
-        updateInfoString();
-        emit imageAltered(imageLoader->current->getPixmap());
+void Core::loadImage(QString path) {
+    if(!path.isEmpty() && dirManager->isImage(path)) {
+        imageLoader->open(path);
+    } else {
+        qDebug() << "ERROR: invalid file selected.";
     }
 }
 
-void Core::crop(QRect newRect) {
-    if(imageLoader->current) {
-        ImageStatic *staticImage;
-        if((staticImage = dynamic_cast<ImageStatic *>(imageLoader->current)) != NULL) {
-            staticImage->crop(newRect);
-            updateInfoString();
-        }
+void Core::loadImageBlocking(QString path) {
+    if(!path.isEmpty() && dirManager->isImage(path)) {
+        imageLoader->openBlocking(path);
+    } else {
+        qDebug() << "ERROR: invalid file selected.";
     }
-    emit imageAltered(imageLoader->current->getPixmap());
+}
+
+void Core::loadImageByPos(int pos) {
+    imageLoader->open(pos);
+}
+
+void Core::slotNextImage() {
+    if(dirManager->containsImages()) {
+        imageLoader->loadNext();
+    }
+}
+
+void Core::slotPrevImage() {
+    if(dirManager->containsImages()) {
+        imageLoader->loadPrev();
+    }
+}
+
+void Core::saveImage() {
+    if(imageLoader->current) {
+        imageLoader->current->save();
+    }
+}
+
+void Core::saveImage(QString path) {
+    if(imageLoader->current) {
+        imageLoader->current->save(path);
+    }
+}
+
+void Core::setCurrentDir(QString path) {
+    dirManager->setCurrentDir(path);
+}
+
+void Core::rotateImage(int degrees) {
+    if(imageLoader->current != NULL) {
+        imageLoader->current->rotate(degrees);
+        updateInfoString();
+        emit imageAltered(imageLoader->current->getPixmap());
+    }
 }
 
 void Core::setWallpaper(QRect wpRect) {
@@ -112,82 +121,6 @@ void Core::setWallpaper(QRect wpRect) {
             }
         }
     }
-}
-
-void Core::releaseCurrentImage() {
-    if(imageLoader->current == currentImageAnimated != NULL) {
-        stopAnimation();
-        stopVideo();
-    }
-}
-
-void Core::saveImage(QString path) {
-    if(imageLoader->current) {
-        imageLoader->current->save(path);
-    }
-}
-
-void Core::saveImage() {
-    if(imageLoader->current) {
-        imageLoader->current->save();
-    }
-}
-
-void Core::setCurrentDir(QString path) {
-    dirManager->setCurrentDir(path);
-}
-
-void Core::slotNextImage() {
-    if(dirManager->containsFiles()) {
-        imageLoader->loadNext();
-    }
-}
-
-void Core::slotPrevImage() {
-    if(dirManager->containsFiles()) {
-        imageLoader->loadPrev();
-    }
-}
-
-void Core::loadImage(QString path) {
-    if(!path.isEmpty() && dirManager->isValidFile(path)) {
-        imageLoader->open(path);
-    } else {
-        qDebug() << "ERROR: invalid file selected.";
-    }
-}
-
-void Core::loadImageBlocking(QString path) {
-    if(!path.isEmpty() && dirManager->isValidFile(path)) {
-        imageLoader->openBlocking(path);
-    } else {
-        qDebug() << "ERROR: invalid file selected.";
-    }
-}
-
-void Core::loadImageByPos(int pos) {
-    imageLoader->open(pos);
-}
-
-void Core::onLoadFinished(Image *img, int pos) {
-    mutex.lock();
-    emit signalUnsetImage();
-    if(currentVideo) {
-        emit stopVideo();
-    }
-
-    if((currentImageAnimated = dynamic_cast<ImageAnimated *>(imageLoader->current)) != NULL) {
-        startAnimation();
-    }
-    if((currentVideo = dynamic_cast<Video *>(imageLoader->current)) != NULL) {
-        emit videoChanged(currentVideo->filePath());
-    }
-    if(!currentVideo && imageLoader->current) {    //static image
-        emit signalSetImage(imageLoader->current->getPixmap());
-    }
-    emit imageChanged(pos);
-    updateInfoString();
-    mutex.unlock();
 }
 
 void Core::rescaleForZoom(QSize newSize) {
@@ -214,7 +147,7 @@ void Core::rescaleForZoom(QSize newSize) {
 }
 
 void Core::startAnimation() {
-    if(imageLoader->current && currentImageAnimated) {
+    if(currentImageAnimated) {
         currentImageAnimated->animationStart();
         connect(currentImageAnimated, SIGNAL(frameChanged(QPixmap *)),
                 this, SIGNAL(frameChanged(QPixmap *)), Qt::UniqueConnection);
@@ -222,10 +155,76 @@ void Core::startAnimation() {
 }
 
 void Core::stopAnimation() {
-    if(imageLoader->current && currentImageAnimated) {
-        currentImageAnimated->animationStop();
-        disconnect(currentImageAnimated, SIGNAL(frameChanged(QPixmap *)),
-                   this, SIGNAL(frameChanged(QPixmap *)));
+    if(imageLoader->current) {
+        if((currentImageAnimated = dynamic_cast<ImageAnimated *>(imageLoader->current)) != NULL) {
+            currentImageAnimated->animationStop();
+            disconnect(currentImageAnimated, SIGNAL(frameChanged(QPixmap *)),
+                       this, SIGNAL(frameChanged(QPixmap *)));
+        }
+        if((currentVideo = dynamic_cast<Video *>(imageLoader->current)) != NULL) {
+            emit videoChanged(currentVideo->filePath());
+        }
     }
 }
 
+// ##############################################################
+// ####################### PRIVATE METHODS ######################
+// ##############################################################
+
+void Core::initVariables() {
+    cache = new ImageCache();
+    dirManager = new DirectoryManager();
+    imageLoader = new NewLoader(dirManager);
+}
+
+void Core::connectSlots() {
+    connect(imageLoader, SIGNAL(loadStarted()),
+            this, SLOT(onLoadStarted()));
+    connect(imageLoader, SIGNAL(loadFinished(Image *, int)),
+            this, SLOT(onLoadFinished(Image *, int)));
+    connect(this, SIGNAL(thumbnailRequested(int)),
+            imageLoader, SLOT(generateThumbnailFor(int)));
+    connect(imageLoader, SIGNAL(thumbnailReady(int, Thumbnail *)),
+            this, SIGNAL(thumbnailReady(int, Thumbnail *)));
+    connect(cache, SIGNAL(initialized(int)), this, SIGNAL(cacheInitialized(int)), Qt::DirectConnection);
+    connect(dirManager, SIGNAL(directorySortingChanged()), imageLoader, SLOT(reinitCacheForced()));
+}
+
+// ##############################################################
+// ####################### PRIVATE SLOTS ########################
+// ##############################################################
+
+void Core::onLoadStarted() {
+    updateInfoString();
+}
+
+void Core::onLoadFinished(Image *img, int pos) {
+    mutex.lock();
+    emit signalUnsetImage();
+
+    stopAnimation();
+
+    if((currentImageAnimated = dynamic_cast<ImageAnimated *>(img)) != NULL) {
+        startAnimation();
+    }
+    if((currentVideo = dynamic_cast<Video *>(img)) != NULL) {
+        emit videoChanged(currentVideo->filePath());
+    }
+    if(!currentVideo && img) {    //static image
+        emit signalSetImage(img->getPixmap());
+    }
+    emit imageChanged(pos);
+    updateInfoString();
+    mutex.unlock();
+}
+
+void Core::crop(QRect newRect) {
+    if(imageLoader->current) {
+        ImageStatic *staticImage;
+        if((staticImage = dynamic_cast<ImageStatic *>(imageLoader->current)) != NULL) {
+            staticImage->crop(newRect);
+            updateInfoString();
+        }
+    }
+    emit imageAltered(imageLoader->current->getPixmap());
+}

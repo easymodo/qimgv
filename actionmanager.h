@@ -18,7 +18,6 @@ public:
     bool processEvent(QEvent*);
     void addShortcut(QString keys, QString action);
     void resetDefaults();
-
     QString actionForScanCode(int code);
     QString actionForShortcut(QString keys);
     const QStringList& actionList();
@@ -26,6 +25,7 @@ public:
     void removeShortcut(QString keys);
     const QStringList keys();
     void removeAll();
+
 private:
     explicit ActionManager(QObject *parent = 0);
     QMap<QString, QString> shortcuts;
@@ -36,12 +36,12 @@ private:
     static void initModMap();
     static void initShortcuts();
     QStringList validActions;
-
     QString modifierKeys(QEvent *event);
     bool processWheelEvent(QWheelEvent *event);
     bool processMouseEvent(QMouseEvent *event);
     bool processKeyEvent(QKeyEvent *event);
     bool startAction(QString action);
+
 signals:
     void open();
     void save();
@@ -62,7 +62,6 @@ signals:
     void rotateRight();
     void exit();
 
-public slots:
 };
 
 extern ActionManager *actionManager;

@@ -51,7 +51,6 @@ signals:
     void thumbnailReady(int, Thumbnail*);
     void startLoad();
     void startPreload();
-    void currentImageUnloading();
 
 private slots:
     bool setLoadTarget(int);

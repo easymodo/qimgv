@@ -16,26 +16,31 @@ enum fileType { NONE, STATIC, GIF, VIDEO };
 class FileInfo : public QObject
 {
 public:
-    FileInfo();
     FileInfo(QString path, QObject *parent = 0);
     ~FileInfo();
     
-    /* size in MB*/
-    float getFileSize();
-
     QString getDirectoryPath();
     QString getFilePath();
     QString getFileName();
+
+    // in KB
+    int getFileSize();
     fileType getType();
+
+    // file extension (guessed from mime-type)
     const char* getExtension();
 
 private:
-    void setFile(QString path);
     QFileInfo fileInfo;
     QDateTime lastModified;
-    void guessType();
     fileType type;
     const char* extension;
+
+    void setFile(QString path);
+
+    // guesses file type from its contents
+    // and sets extension
+    void guessType();
 };
 
 #endif // FILEINFO_H

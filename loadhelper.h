@@ -11,12 +11,8 @@ class LoadHelper : public QObject
     Q_OBJECT
 public:
     explicit LoadHelper(ImageCache *_cache, QThread *mainThread);
-
-
     void setTarget(int pos, QString);
     int target();
-signals:
-    void finished(int);
 
 public slots:
     void doLoad();
@@ -27,6 +23,9 @@ private:
     QString path;
     QMutex mutex;
     QThread *mainThread;
+
+signals:
+    void finished(int);
 
 };
 

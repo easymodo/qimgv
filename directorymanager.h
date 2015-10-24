@@ -21,49 +21,58 @@ class DirectoryManager : public QObject
     Q_OBJECT
 public:
     DirectoryManager();
-    void setFile(QString path);
-    void setCurrentDir(QString);
+
     QDir currentDir;
+    int currentPos;
     QStringList fileNameList;
     QStringList mimeFilters, extensionFilters;
-    int currentPos;
-    QStringList getFileList();
-    bool existsInCurrentDir(QString file);
-    QString currentFileName();
+
+    void readSettings();
+
+    // changes current file position
+    // changes current directory if needed
+    void setFile(QString path);
+
+    // ignored if the same dir is already opened
+    void setCurrentDir(QString);
+
+    // returns true on success
+    bool setCurrentPos(unsigned int pos);
+    QStringList fileList();
     QString currentDirectory();
+    QString currentFileName();
+    QString currentFilePath();
+    QString nextFilePath();
+    QString prevFilePath();
+    QString filePathAt(int pos);
     int currentFilePos();
     int nextPos();
     int prevPos();
-    int lastPos();
+    int fileCount();
     int peekNext(int offset);
     int peekPrev(int offset);
-    void setCurrentPos(int pos);
-    bool isValidFile(QString filePath);
-    bool containsFiles();
-    void readSettings();
-
-    QString nextFilePath();
-    QString prevFilePath();
-    QString currentFilePath();
-    QString filePathAt(int pos);
+    bool existsInCurrentDir(QString file);
+    bool isImage(QString filePath);
+    bool containsImages();
 
 public slots:
     void applySettingsChanges();
 
+private:
+    QString startDir;
+    bool infiniteScrolling;
+    QMimeDatabase mimeDb;
+    bool quickFormatDetection;
+
+    void changePath(QString path);
+    FileInfo* loadInfo(QString path);
+    void generateFileList();
+    void generateFileListQuick();
+    void generateFileListDeep();
+
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();
-
-private:
-    void changePath(QString path);
-    FileInfo* loadInfo(QString path);
-    QString startDir;
-    bool infiniteScrolling;
-    void generateFileList();
-    QMimeDatabase mimeDb;
-    bool quickFormatDetection;
-    void generateFileListQuick();
-    void generateFileListDeep();
 };
 
 #endif // DIRECTORYMANAGER_H

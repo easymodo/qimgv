@@ -7,11 +7,17 @@ ImageCache::ImageCache() {
             this, SLOT(applySettings()));
 }
 
-// call when changing directory
+ImageCache::~ImageCache() {
+    delete cachedImages;
+}
+
+// ##############################################################
+// ####################### PUBLIC METHODS #######################
+// ##############################################################
+
 void ImageCache::init(QString directory, QStringList list) {
-    dir = directory;
-    // also should free memory
     lock();
+    dir = directory;
     cachedImages->clear();
     for(int i = 0; i < list.length(); i++) {
         cachedImages->append(new CacheObject(list.at(i)));
@@ -20,19 +26,6 @@ void ImageCache::init(QString directory, QStringList list) {
     emit initialized(length());
 }
 
-QString ImageCache::currentDirectory() {
-    return dir;
-}
-
-void ImageCache::insert(Image *img, int pos) {
-    cachedImages->at(pos)->setImage(img);
-}
-
-void ImageCache::insertThumbnail(Thumbnail *thumb, int pos) {
-    cachedImages->at(pos)->setThumbnail(thumb);
-}
-
-// TO DELETE
 void ImageCache::unloadAll() {
     lock();
     for(int i = 0; i < cachedImages->length(); i++) {
@@ -41,17 +34,10 @@ void ImageCache::unloadAll() {
     unlock();
 }
 
-// TO DELETE
 void ImageCache::unloadAt(int pos) {
     lock();
-    //int time = clock();
     cachedImages->at(pos)->unload();
-    //qDebug() << "cache unload: " << clock() - time;
     unlock();
-}
-
-bool ImageCache::isLoaded(int pos) {
-    return cachedImages->at(pos)->isLoaded();
 }
 
 Image *ImageCache::imageAt(int pos) {
@@ -60,6 +46,19 @@ Image *ImageCache::imageAt(int pos) {
 
 Thumbnail *ImageCache::thumbnailAt(int pos) const {
     return cachedImages->at(pos)->getThumbnail();
+}
+
+int ImageCache::length() const {
+    return cachedImages->length();
+}
+
+
+QString ImageCache::currentDirectory() {
+    return dir;
+}
+
+bool ImageCache::isLoaded(int pos) {
+    return cachedImages->at(pos)->isLoaded();
 }
 
 int ImageCache::currentlyLoadedCount() {
@@ -74,20 +73,20 @@ int ImageCache::currentlyLoadedCount() {
     return x;
 }
 
-
-int ImageCache::length() const {
-    return cachedImages->length();
+void ImageCache::setImage(Image *img, int pos) {
+    cachedImages->at(pos)->setImage(img);
 }
 
-void ImageCache::readSettings() {
-    lock();
-    //maxCacheSize = globalSettings->s.value("cacheSize").toInt();
-    unlock();
+void ImageCache::setThumbnail(Thumbnail *thumb, int pos) {
+    cachedImages->at(pos)->setThumbnail(thumb);
 }
 
-void ImageCache::applySettings() {
-    readSettings();
-}
+
+
+
+// ##############################################################
+// ###################### PRIVATE METHODS #######################
+// ##############################################################
 
 void ImageCache::lock() {
     mutex.lock();
@@ -97,6 +96,16 @@ void ImageCache::unlock() {
     mutex.unlock();
 }
 
-ImageCache::~ImageCache() {
+void ImageCache::readSettings() {
+    lock();
+    //maxCacheSize = globalSettings->s.value("cacheSize").toInt();
+    unlock();
+}
 
+// ##############################################################
+// ###################### PRIVATE SLOTS #########################
+// ##############################################################
+
+void ImageCache::applySettings() {
+    readSettings();
 }

@@ -18,6 +18,7 @@ ImageAnimated::ImageAnimated(FileInfo *_info) {
 }
 
 ImageAnimated::~ImageAnimated() {
+    this->animationStop();
     timer->deleteLater();
     delete movie;
     delete info;
@@ -127,6 +128,7 @@ void ImageAnimated::animationStop() {
     if(isLoaded() && timer && timer->isActive()) {
         timer->stop();
         disconnect(timer, SIGNAL(timeout()), this, SLOT(nextFrame()));
+        movie->jumpToFrame(0);
     }
 }
 

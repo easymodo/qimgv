@@ -18,26 +18,66 @@ class Core : public QObject
     Q_OBJECT
 public:
     explicit Core();
-    void open(QString);
-    const ImageCache* getCache();
+    void init();
+
+    // full file path
+    // returns empty string if no file open
     QString getCurrentFilePath();
 
+public slots:
+    void updateInfoString();
+
+    // loads image in second thread
+    void loadImage(QString);
+
+    // loads image in main thread
+    void loadImageBlocking(QString);
+
+    // invalid position will be ignored
+    void loadImageByPos(int pos);
+    void slotNextImage();
+    void slotPrevImage();
+
+    // owerwrite image
+    void saveImage();
+
+    // save under specified name
+    void saveImage(QString path);
+
+    // changes directory; will reload cache & thumbnails
+    // ignored if already in the same dir
+    void setCurrentDir(QString);
+    void rotateImage(int degrees);
+
+    // TODO: screen and fit mode selection
+    // crops/resizes current image to fill current screen
+    // then sets it as wallpaper
+    void setWallpaper(QRect wpRect);
+
+    // TODO: move to another thread
+    // makes a scaled copy of current image
+    // and emits imageAltered(QPixmap*)
+    void rescaleForZoom(QSize newSize);
+    void startAnimation();
+    void stopAnimation();
+
 private:
-    void initVariables();
-    void connectSlots();
     NewLoader *imageLoader;
     DirectoryManager *dirManager;
-
     ImageAnimated* currentImageAnimated;
     Video* currentVideo;
     QMutex mutex;
     ImageCache *cache;
 
+    void initVariables();
+    void connectSlots();
+
 private slots:
     void onLoadStarted();
+
+    // displays image and starts animation/video playback
     void onLoadFinished(Image *img, int pos);
     void crop(QRect newRect);
-    void releaseCurrentImage();
 
 signals:
     void signalUnsetImage();
@@ -54,24 +94,6 @@ signals:
     void startVideo();
     void stopVideo();
     void videoChanged(QString);
-
-public slots:
-    void init();
-    void updateInfoString();
-    void loadImage(QString);
-    void loadImageBlocking(QString);
-    void slotNextImage();
-    void slotPrevImage();
-    void setCurrentDir(QString);
-    void rotateImage(int);
-
-    void saveImage(QString path);
-    void saveImage();
-    void loadImageByPos(int pos);
-    void rescaleForZoom(QSize newSize);
-    void startAnimation();
-    void stopAnimation();
-    void setWallpaper(QRect wpRect);
 };
 
 #endif // CORE_H
