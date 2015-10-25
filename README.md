@@ -4,12 +4,18 @@ qimgv
 Simple image viewer written in Qt.
 
 Key features:
-	- Simple GUI
-	- fullscreen/windowed/borderless modes
-	- Fast
-	- Easy to use
-	- Fully configurable
-	- Supports webm playback
+
+	Simple GUI.
+
+	Fullscreen/windowed/borderless modes.
+
+	Fast.
+
+	Easy to use.
+
+	Fully configurable.
+
+	Supports webm playback.
 
 DEFAULT CONTROLS
 
@@ -36,7 +42,7 @@ DEFAULT CONTROLS
     
     Crop image: X key, then select area with mouse and press enter.
 	
-	Set wallpaper: Ctrl+W, then select area with mouse and press enter.
+	Set wallpaper: Ctrl+W. Similar to "fill" option in windows (keep aspect ratio, fill entire screen).
     
     Save changes to file: Ctrl+S.
 	
@@ -44,9 +50,14 @@ DEFAULT CONTROLS
 
 INSTALLATION
 
+Windows:
+
     There are windows binaries (look in releases).
     
-    For linux, you'll have to build it yourself for now.
-    Both cmake and qmake are supported.
+Linux:
+
+    Arch: yaourt -S qimgv-git
+    
+    Others: coming soon(tm).
 
 ![alt tag](http://i.imgur.com/rPlhoWp.jpg)
