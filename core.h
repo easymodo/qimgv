@@ -64,6 +64,7 @@ public slots:
 private:
     NewLoader *imageLoader;
     DirectoryManager *dirManager;
+    int currentImagePos;
     ImageAnimated* currentImageAnimated;
     Video* currentVideo;
     QMutex mutex;
@@ -71,6 +72,7 @@ private:
 
     void initVariables();
     void connectSlots();
+    Image* currentImage();
 
 private slots:
     void onLoadStarted();

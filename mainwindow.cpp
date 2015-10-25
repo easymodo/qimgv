@@ -620,10 +620,10 @@ void MainWindow::slotAbout() {
                           QCoreApplication::applicationVersion());
     QString message;
     message = "qimgv is a simple image viewer written in qt.";
-    message.append("<br>This program is licensed under GNU GPL Version 3");
-    message.append("<br>Website: <a href='https://github.com/easymodo/qimgv'>github.com/easymodo/qimgv</a>");
-    message.append("<br><br>Main developer: <br>&nbsp;Easymodo (easymodofrf@gmail.com)");
-    message.append("<br>Developers:<br>&nbsp;Sevoan");
+    message.append("<br>This program is licensed under GNU GPL Version 3.");
+    message.append("<br><br>Website: <a href='https://github.com/easymodo/qimgv'>github.com/easymodo/qimgv</a>");
+    message.append("<br><br>Main developer: <br>Easymodo (easymodofrf@gmail.com)");
+    message.append("<br><br><a href='https://github.com/easymodo/qimgv/graphs/contributors'>Contributors</a>");
     message.append("<br><br> This is a pre-release software.");
     message.append("<br> Expect bugs.");
     msgBox.setTextFormat(Qt::RichText);

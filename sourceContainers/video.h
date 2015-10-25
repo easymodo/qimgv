@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QPixmap>
 #include <QProcess>
+#include <QFile>
 
 class Video : public Image
 {

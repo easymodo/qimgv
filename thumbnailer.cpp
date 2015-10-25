@@ -19,7 +19,8 @@ void Thumbnailer::run() {
     }
     if(th->image->size() == QSize(0, 0)) {
         delete th->image;
-        th->image = new QPixmap(":/images/res/error_no_image_100px.png");
+        th->image = new QPixmap(settings->thumbnailSize(), settings->thumbnailSize());
+        th->image->fill(QColor(0,0,0,0));
     }
     th->name = tempImage->getInfo()->getFileName();
     delete tempImage;

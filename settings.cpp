@@ -4,8 +4,8 @@ Settings *settings = NULL;
 
 Settings::Settings(QObject *parent) :
     QObject(parent) {
-    tempDirectory = new QTemporaryDir(QDir::tempPath() + "/qimgv_tmpXXXXXX");
-    tempDirectory->setAutoRemove(true);
+    tempDirectory = new QDir(QDir::tempPath() + "/qimgv");
+    tempDirectory->mkpath(QDir::tempPath() + "/qimgv");
 }
 
 Settings::~Settings() {
@@ -46,7 +46,19 @@ QString Settings::tempDir() {
 }
 
 QString Settings::ffmpegExecutable() {
-    return settings->s.value("ffmpegExe", "").toString();
+    QString ffmpegPath = settings->s.value("ffmpegExe", "").toString();
+    if(!QFile::exists(ffmpegPath)) {
+        #ifdef _WIN32
+        ffmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg.exe";
+        #elif defined __linux__
+        ffmpegPath = "/usr/bin/ffmpeg";
+        #endif
+        if(!QFile::exists(ffmpegPath)) {
+            ffmpegPath = "";
+        }
+
+    }
+    return ffmpegPath;
 }
 
 void Settings::setFfmpegExecutable(QString path) {

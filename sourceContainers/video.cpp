@@ -60,6 +60,8 @@ QPixmap *Video::generateThumbnail() {
     target.moveCenter(tmp->rect().center());
     *thumbnail = tmp->copy(target);
     delete tmp;
+    QFile tmpFile(filePath);
+    tmpFile.remove();
     return thumbnail;
 }
 

@@ -5,7 +5,8 @@ Core::Core() :
     imageLoader(NULL),
     dirManager(NULL),
     currentImageAnimated(NULL),
-    currentVideo(NULL) {
+    currentVideo(NULL),
+    currentImagePos(0) {
 }
 
 // ##############################################################
@@ -20,8 +21,8 @@ void Core::init() {
 
 QString Core::getCurrentFilePath() {
     QString filePath = "";
-    if(imageLoader->current) {
-        filePath = imageLoader->current->getPath();
+    if(currentImage()) {
+        filePath = currentImage()->getPath();
     }
     return filePath;
 }
@@ -31,20 +32,21 @@ QString Core::getCurrentFilePath() {
 // ##############################################################
 
 void Core::updateInfoString() {
+    Image* img = currentImage();
     QString infoString = "";
     infoString.append(" [ " +
                       QString::number(dirManager->currentPos + 1) +
                       "/" +
                       QString::number(dirManager->fileNameList.length()) +
                       " ]   ");
-    if(imageLoader->current) {
-        infoString.append(imageLoader->current->getInfo()->getFileName() + "  ");
+    if(img) {
+        infoString.append(img->getInfo()->getFileName() + "  ");
         infoString.append("(" +
-                          QString::number(imageLoader->current->width()) +
+                          QString::number(img->width()) +
                           "x" +
-                          QString::number(imageLoader->current->height()) +
+                          QString::number(img->height()) +
                           "  ");
-        infoString.append(QString::number(imageLoader->current->getInfo()->getFileSize()) + " KB)");
+        infoString.append(QString::number(img->getInfo()->getFileSize()) + " KB)");
     }
 
     //infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
@@ -84,14 +86,14 @@ void Core::slotPrevImage() {
 }
 
 void Core::saveImage() {
-    if(imageLoader->current) {
-        imageLoader->current->save();
+    if(currentImage()) {
+        currentImage()->save();
     }
 }
 
 void Core::saveImage(QString path) {
-    if(imageLoader->current) {
-        imageLoader->current->save(path);
+    if(currentImage()) {
+        currentImage()->save(path);
     }
 }
 
@@ -100,17 +102,17 @@ void Core::setCurrentDir(QString path) {
 }
 
 void Core::rotateImage(int degrees) {
-    if(imageLoader->current != NULL) {
-        imageLoader->current->rotate(degrees);
+    if(currentImage() != NULL) {
+        currentImage()->rotate(degrees);
         updateInfoString();
-        emit imageAltered(imageLoader->current->getPixmap());
+        emit imageAltered(currentImage()->getPixmap());
     }
 }
 
 void Core::setWallpaper(QRect wpRect) {
-    if(imageLoader->current) {
+    if(currentImage()) {
         ImageStatic *staticImage;
-        if((staticImage = dynamic_cast<ImageStatic *>(imageLoader->current)) != NULL) {
+        if((staticImage = dynamic_cast<ImageStatic *>(currentImage())) != NULL) {
             QImage *cropped = NULL;
             QRect screenRes = QApplication::desktop()->screenGeometry();
             if(cropped = staticImage->cropped(wpRect, screenRes, true)) {
@@ -124,22 +126,22 @@ void Core::setWallpaper(QRect wpRect) {
 }
 
 void Core::rescaleForZoom(QSize newSize) {
-    if(imageLoader->current && imageLoader->current->isLoaded()) {
+    if(currentImage() && currentImage()->isLoaded()) {
         ImageLib imgLib;
-        float sourceSize = (float) imageLoader->current->width() *
-                           imageLoader->current->height() / 1000000;
+        float sourceSize = (float) currentImage()->width() *
+                           currentImage()->height() / 1000000;
         float size = (float) newSize.width() *
                      newSize.height() / 1000000;
         QPixmap *pixmap;
         float currentScale = (float) sourceSize / size;
         if(currentScale == 1.0) {
-            pixmap = imageLoader->current->getPixmap();
+            pixmap = currentImage()->getPixmap();
         } else {
             pixmap = new QPixmap(newSize);
             if(settings->useFastScale()) {
-                //imgLib.fastScale(pixmap, imageLoader->current->getPixmap(), newSize, true);
+                //imgLib.fastScale(pixmap, currentImage()->getPixmap(), newSize, true);
             } else {
-                imgLib.bilinearScale(pixmap, imageLoader->current->getPixmap(), newSize, true);
+                imgLib.bilinearScale(pixmap, currentImage()->getPixmap(), newSize, true);
             }
         }
         emit scalingFinished(pixmap);
@@ -155,13 +157,13 @@ void Core::startAnimation() {
 }
 
 void Core::stopAnimation() {
-    if(imageLoader->current) {
-        if((currentImageAnimated = dynamic_cast<ImageAnimated *>(imageLoader->current)) != NULL) {
+    if(currentImage()) {
+        if((currentImageAnimated = dynamic_cast<ImageAnimated *>(currentImage())) != NULL) {
             currentImageAnimated->animationStop();
             disconnect(currentImageAnimated, SIGNAL(frameChanged(QPixmap *)),
                        this, SIGNAL(frameChanged(QPixmap *)));
         }
-        if((currentVideo = dynamic_cast<Video *>(imageLoader->current)) != NULL) {
+        if((currentVideo = dynamic_cast<Video *>(currentImage())) != NULL) {
             emit videoChanged(currentVideo->filePath());
         }
     }
@@ -190,6 +192,10 @@ void Core::connectSlots() {
     connect(dirManager, SIGNAL(directorySortingChanged()), imageLoader, SLOT(reinitCacheForced()));
 }
 
+Image* Core::currentImage() {
+    return cache->imageAt(currentImagePos);
+}
+
 // ##############################################################
 // ####################### PRIVATE SLOTS ########################
 // ##############################################################
@@ -203,6 +209,7 @@ void Core::onLoadFinished(Image *img, int pos) {
     emit signalUnsetImage();
 
     stopAnimation();
+    currentImagePos = pos;
 
     if((currentImageAnimated = dynamic_cast<ImageAnimated *>(img)) != NULL) {
         startAnimation();
@@ -219,12 +226,12 @@ void Core::onLoadFinished(Image *img, int pos) {
 }
 
 void Core::crop(QRect newRect) {
-    if(imageLoader->current) {
+    if(currentImage()) {
         ImageStatic *staticImage;
-        if((staticImage = dynamic_cast<ImageStatic *>(imageLoader->current)) != NULL) {
+        if((staticImage = dynamic_cast<ImageStatic *>(currentImage())) != NULL) {
             staticImage->crop(newRect);
             updateInfoString();
         }
     }
-    emit imageAltered(imageLoader->current->getPixmap());
+    emit imageAltered(currentImage()->getPixmap());
 }

@@ -55,7 +55,6 @@ public:
         thumbnail = _thumbnail;
     }
     Image* image() {
-        if(!img) qDebug() << "returning null 2";
         return img;
     }
 private:
@@ -89,7 +88,7 @@ public:
     void init(QString dir, QStringList list);
     void unloadAll();
     void unloadAt(int pos);
-    Image *imageAt(int pos);
+    Image *imageAt(unsigned int pos);
     Thumbnail *thumbnailAt(int pos) const;
     int length() const;
     QString currentDirectory();

@@ -40,7 +40,8 @@ void ImageCache::unloadAt(int pos) {
     unlock();
 }
 
-Image *ImageCache::imageAt(int pos) {
+Image *ImageCache::imageAt(unsigned int pos) {
+    if(pos > cachedImages->length() && !cachedImages->isEmpty()) return NULL;
     return cachedImages->at(pos)->image();
 }
 

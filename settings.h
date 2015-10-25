@@ -8,7 +8,7 @@
 #include <QImageReader>
 #include <QStringList>
 #include <QColor>
-#include <QTemporaryDir>
+#include <QDir>
 #include <QKeySequence>
 #include <QMap>
 #include "actionmanager.h"
@@ -77,7 +77,7 @@ private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 135;
     QSettings s;
-    QTemporaryDir *tempDirectory;
+    QDir *tempDirectory;
 
 signals:
     void settingsChanged();
