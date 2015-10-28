@@ -38,4 +38,24 @@ target_link_libraries(qimgv Qt5::Widgets Qt5::Concurrent overlays imagelib sourc
      
 qt5_use_modules (qimgv Core Widgets Concurrent)
 
-install(PROGRAMS qimgv DESTINATION /bin)
+# binary
+install(PROGRAMS qimgv DESTINATION bin/)
+# .desktop
+install(FILES distrib/qimgv.desktop 
+	DESTINATION share/applications)
+# icons
+install(FILES distrib/hicolor/16x16/apps/qimgv.png
+	DESTINATION share/icons/hicolor/16x16/apps)
+install(FILES distrib/hicolor/24x24/apps/qimgv.png
+	DESTINATION share/icons/hicolor/24x24/apps)
+install(FILES distrib/hicolor/32x32/apps/qimgv.png
+	DESTINATION share/icons/hicolor/32x32/apps)
+install(FILES distrib/hicolor/48x48/apps/qimgv.png
+	DESTINATION share/icons/hicolor/48x48/apps)
+install(FILES distrib/hicolor/64x64/apps/qimgv.png
+	DESTINATION share/icons/hicolor/64x64/apps)
+install(FILES distrib/hicolor/128x128/apps/qimgv.png
+	DESTINATION share/icons/hicolor/128x128/apps)
+install(FILES distrib/hicolor/256x256/apps/qimgv.png
+	DESTINATION share/icons/hicolor/256x256/apps)
+
