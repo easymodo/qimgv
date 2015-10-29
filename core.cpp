@@ -164,7 +164,7 @@ void Core::stopAnimation() {
                        this, SIGNAL(frameChanged(QPixmap *)));
         }
         if((currentVideo = dynamic_cast<Video *>(currentImage())) != NULL) {
-            emit videoChanged(currentVideo->filePath());
+            emit stopVideo();
         }
     }
 }
