@@ -102,7 +102,7 @@ void NewLoader::onLoadFinished(int loaded) {
     if(loaded == loadTarget && current != cache->imageAt(loaded)) {
         emit loadFinished(cache->imageAt(loaded), loaded);
         current = cache->imageAt(loaded);
-    } else if(isRevelant(loaded)) {
+    } else if(isRelevant(loaded)) {
         //qDebug() << "loadfinished image is revelant, keeping.." << loaded;
     } else {
         cache->unloadAt(loaded);
@@ -110,7 +110,7 @@ void NewLoader::onLoadFinished(int loaded) {
     }
 }
 
-bool NewLoader::isRevelant(int pos) {
+bool NewLoader::isRelevant(int pos) {
     return !(pos < loadTarget - 1 || pos > loadTarget + 1);
 }
 
@@ -125,7 +125,7 @@ void NewLoader::onLoadTimeout() {
 
 void NewLoader::onPreloadTimeout() {
     mutex.lock();
-    if(isRevelant(preloadTarget)) {
+    if(isRelevant(preloadTarget)) {
         worker->setTarget(preloadTarget, dm->filePathAt(preloadTarget));
         //qDebug()<< "PRELOAD " << worker->target();
         emit startLoad();
@@ -135,7 +135,7 @@ void NewLoader::onPreloadTimeout() {
 
 void NewLoader::freeAuto() {
     for(int i = 0; i < cache->length(); i++) {
-        if(!isRevelant(i) && cache->isLoaded(i)) {
+        if(!isRelevant(i) && cache->isLoaded(i)) {
             bool flag = false;
             if(cache->imageAt(i) == current) {
                 flag = true;
@@ -154,7 +154,7 @@ void NewLoader::freeAll() {
 }
 
 void NewLoader::freeAt(int toUnload) {
-    if(!isRevelant(toUnload)) {
+    if(!isRelevant(toUnload)) {
         //qDebug() << "!!!deleting" << toUnload << "  "<< cache->imageAt(toUnload);
         if(current == cache->imageAt(toUnload)) {
             current = NULL;
