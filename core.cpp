@@ -105,7 +105,9 @@ void Core::rotateImage(int degrees) {
     if(currentImage() != NULL) {
         currentImage()->rotate(degrees);
         updateInfoString();
+        if (currentImage()->getPixmap() != NULL){
         emit imageAltered(currentImage()->getPixmap());
+        }
     }
 }
 
