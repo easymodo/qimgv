@@ -55,16 +55,16 @@ QMenuBar::item:pressed {
     background-color: #202020;
 }
 
-[accessibleName="thumbnailGraphicsView"] {
+[accessibleName="thumbnailWidget"] {
     background-color: #202020;
 }
 
-ThumbnailScrollArea {
-    background-color: #20EE20;
+[accessibleName="thumbnailView"] {
+    background-color: #202020;
 }
 
-ThumbnailLabels {
-    background-color: #2020EE;
+ThumbnailLabel {
+    background-color: #202020;
 }
 
 QScrollBar:horizontal {

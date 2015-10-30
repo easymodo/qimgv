@@ -1,25 +1,21 @@
 #ifndef THUMBNAILSTRIP_H
 #define THUMBNAILSTRIP_H
 
-#include <QWidget>
 #include <QLabel>
 #include <QBoxLayout>
-#include <QPushButton>
-#include <QGraphicsScene>
-#include <QGraphicsItem>
-#include <QGraphicsWidget>
-#include <QGraphicsLinearLayout>
+#include <QScrollArea>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QScrollBar>
 #include <QTimer>
 #include <QTimeLine>
 #include <QPropertyAnimation>
-#include "../customWidgets/customscene.h"
 #include "../customWidgets/clickablelabel.h"
+#include "../customWidgets/clickablewidget.h"
 #include "../sourceContainers/thumbnail.h"
 #include "thumbnaillabel.h"
 #include "thumbnailview.h"
+#include <time.h>
 
 class ThumbnailStrip : public QWidget
 {
@@ -31,16 +27,16 @@ public:
 private:
     QList<ThumbnailLabel*> thumbnailLabels;
     void addItem();
-    QGraphicsLinearLayout *viewLayout;
-    QBoxLayout *layout, *buttonsLayout;
+    //QGraphicsLinearLayout *viewLayout;
+    QBoxLayout *layout, *buttonsLayout, *viewLayout;
     QWidget *buttonsWidget;
     ClickableLabel *openButton, *saveButton, *settingsButton;
-    QGraphicsWidget *widget;
+    ClickableWidget *widget;
     ThumbnailView *thumbView;
-    CustomScene* scene;
+    //CustomScene* scene;
     QTimeLine *timeLine;
 
-    const qreal OPACITY_INACTIVE = 0.75;
+    const qreal OPACITY_INACTIVE = 0.85;
     const qreal OPACITY_SELECTED = 1.0;
     const int ANIMATION_SPEED_INSTANT = 0;
     const int ANIMATION_SPEED_FAST = 100;
@@ -60,7 +56,7 @@ private:
     QRectF preloadArea, visibleRegion;
     QTimer loadTimer;
     bool childVisibleEntirely(int pos);
-    QRectF itemsBoundingRect();
+    //QRectF itemsBoundingRect();
     QScrollBar *scrollBar;
     PanelPosition position;
 
@@ -86,9 +82,8 @@ protected:
     void leaveEvent(QEvent *event);
 
 private slots:
-    void sceneClicked(QPointF pos);
+    void viewPressed(QPoint pos);
     void updateVisibleRegion();
-    void translateX(int dx);
     void readSettings();
 };
 
