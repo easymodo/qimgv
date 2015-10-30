@@ -80,9 +80,9 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     connect(widget, SIGNAL(pressed(QPoint)), this, SLOT(viewPressed(QPoint)));
     connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
-    this->show();
+
     readSettings();
-   // this->hide();
+    this->hide();
 }
 
 void ThumbnailStrip::readSettings() {
