@@ -1,7 +1,10 @@
 #ifndef THUMBNAILSTRIP_H
 #define THUMBNAILSTRIP_H
 
-#include <QGraphicsView>
+#include <QWidget>
+#include <QLabel>
+#include <QBoxLayout>
+#include <QPushButton>
 #include <QGraphicsScene>
 #include <QGraphicsItem>
 #include <QGraphicsWidget>
@@ -13,10 +16,12 @@
 #include <QTimeLine>
 #include <QPropertyAnimation>
 #include "../customWidgets/customscene.h"
+#include "../customWidgets/clickablelabel.h"
 #include "../sourceContainers/thumbnail.h"
 #include "thumbnaillabel.h"
+#include "thumbnailview.h"
 
-class ThumbnailStrip : public QGraphicsView
+class ThumbnailStrip : public QWidget
 {
     Q_OBJECT
 public:
@@ -26,8 +31,12 @@ public:
 private:
     QList<ThumbnailLabel*> thumbnailLabels;
     void addItem();
-    QGraphicsLinearLayout *layout;
+    QGraphicsLinearLayout *viewLayout;
+    QBoxLayout *layout, *buttonsLayout;
+    QWidget *buttonsWidget;
+    ClickableLabel *openButton, *saveButton, *settingsButton;
     QGraphicsWidget *widget;
+    ThumbnailView *thumbView;
     CustomScene* scene;
     QTimeLine *timeLine;
 
@@ -39,7 +48,7 @@ private:
 
     const int SCROLL_UPDATE_RATE = 8;
     const float SCROLL_SPEED_MULTIPLIER = 3.1;
-    const int SCROLL_ANIMATION_SPEED = 80;
+    const int SCROLL_ANIMATION_SPEED = 100;
     const int SCROLL_STEP = 200;
     const uint LOAD_DELAY = 20;
     const int OFFSCREEN_PRELOAD_AREA = 1900;
@@ -55,10 +64,13 @@ private:
     QScrollBar *scrollBar;
     PanelPosition position;
 
-    void requestThumbnailLoad(int pos);
+    void requestThumbnail(int pos);
 signals:
     void thumbnailRequested(int pos);
     void thumbnailClicked(int pos);
+    void openClicked();
+    void saveClicked();
+    void settingsClicked();
 
 public slots:
     void populate(int count);
@@ -74,7 +86,6 @@ protected:
     void leaveEvent(QEvent *event);
 
 private slots:
-    void centerOnSmooth(const QPointF &pos);
     void sceneClicked(QPointF pos);
     void updateVisibleRegion();
     void translateX(int dx);

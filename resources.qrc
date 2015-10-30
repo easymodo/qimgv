@@ -10,6 +10,9 @@
         <file>res/icons/128.png</file>
         <file>res/icons/256.png</file>
         <file>res/icons/48.png</file>
+        <file>res/icons/open.png</file>
+        <file>res/icons/save.png</file>
+        <file>res/icons/settings.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file>res/style.qss</file>

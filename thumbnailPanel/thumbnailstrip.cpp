@@ -1,40 +1,90 @@
 #include "thumbnailstrip.h"
 
 ThumbnailStrip::ThumbnailStrip(QWidget *parent)
-    : QGraphicsView(parent),
+    : QWidget(parent),
       panelSize(122),
-      current(-1) {
-    scrollBar = this->horizontalScrollBar();
-    horizontalScrollBar()->setAttribute(Qt::WA_NoMousePropagation, true);
-    verticalScrollBar()->setAttribute(Qt::WA_NoMousePropagation, true);
-    this->setAttribute(Qt::WA_NoMousePropagation, true);
-    this->setFocusPolicy(Qt::NoFocus);
+      current(-1),
+      thumbView(NULL)
+{
+    // setup scene & view
+    thumbView = new ThumbnailView();
     widget = new QGraphicsWidget();
     scene = new CustomScene();
-    layout = new QGraphicsLinearLayout();
-    timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
-    timeLine->setCurveShape(QTimeLine::EaseInOutCurve);
-    widget->setLayout(layout);
-    layout->setSpacing(0);
+
     scene->addItem(widget);
+    widget->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+    widget->setMinimumHeight(300);
 
-    this->setScene(scene);
+    thumbView->setScene(scene);
+    thumbView->setFrameShape(QFrame::NoFrame);
 
-    this->setFrameShape(QFrame::NoFrame);
+    viewLayout = new QGraphicsLinearLayout();
+    viewLayout->addStretch(1);
+    viewLayout->setSpacing(0);
+    widget->setLayout(viewLayout);
 
-    readSettings();
-    this->hide();
+    scrollBar = thumbView->horizontalScrollBar();
 
+    // BUTTONS
+    buttonsWidget = new QWidget();
+    buttonsWidget->setAccessibleName("panelButtonsWidget");
+
+    openButton = new ClickableLabel();
+    openButton->setAccessibleName("panelButton");
+    openButton->setPixmap(QPixmap(":/images/res/icons/open.png"));
+
+    saveButton = new ClickableLabel();
+    saveButton->setAccessibleName("panelButton");
+    saveButton->setPixmap(QPixmap(":/images/res/icons/save.png"));
+
+    settingsButton = new ClickableLabel();
+    settingsButton->setAccessibleName("panelButton");
+    settingsButton->setPixmap(QPixmap(":/images/res/icons/settings.png"));
+
+    buttonsLayout = new QBoxLayout(QBoxLayout::LeftToRight);
+    buttonsLayout->setSpacing(0);
+    buttonsLayout->setContentsMargins(0,0,0,0);
+    buttonsLayout->addWidget(openButton);
+    buttonsLayout->addWidget(saveButton);
+    buttonsLayout->addWidget(settingsButton);
+    buttonsLayout->addStretch(0);
+
+    buttonsWidget->setLayout(buttonsLayout);
+
+    // main layout
+    layout = new QBoxLayout(QBoxLayout::TopToBottom);
+    layout->setSpacing(0);
+    layout->setContentsMargins(0,0,0,0);
+    layout->addWidget(buttonsWidget);
+    layout->addWidget(thumbView);
+
+    this->setLayout(layout);
+
+    // other extremely important things
+    thumbView->setAccessibleName("thumbnailGraphicsView");
     loadTimer.setSingleShot(true);
+    timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, thumbView);
+    timeLine->setCurveShape(QTimeLine::EaseInCurve);
 
-    connect(scene, SIGNAL(sceneClick(QPointF)),
-            this, SLOT(sceneClicked(QPointF)));
+    thumbView->horizontalScrollBar()->setAttribute(Qt::WA_NoMousePropagation, true);
+    thumbView->verticalScrollBar()->setAttribute(Qt::WA_NoMousePropagation, true);
+    this->setAttribute(Qt::WA_NoMousePropagation, true);
+    this->setFocusPolicy(Qt::NoFocus);
+    thumbView->setFocusPolicy(Qt::NoFocus);
+    //this->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
+    //thumbView->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum));
 
-    connect(&loadTimer, SIGNAL(timeout()),
-            this, SLOT(loadVisibleThumbnails()));
+    // actions
+    connect(openButton, SIGNAL(clicked()), this, SIGNAL(openClicked()));
+    connect(saveButton, SIGNAL(clicked()), this, SIGNAL(saveClicked()));
+    connect(settingsButton, SIGNAL(clicked()), this, SIGNAL(settingsClicked()));
 
-    connect(settings, SIGNAL(settingsChanged()),
-            this, SLOT(readSettings()));
+    connect(scene, SIGNAL(sceneClick(QPointF)), this, SLOT(sceneClicked(QPointF)));
+    connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
+    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+    this->show();
+    readSettings();
+   // this->hide();
 }
 
 void ThumbnailStrip::readSettings() {
@@ -52,28 +102,60 @@ void ThumbnailStrip::readSettings() {
     disconnect(scrollBar, SIGNAL(sliderMoved(int)),
                this, SLOT(loadVisibleThumbnailsDelayed()));
     if(position == LEFT || position == RIGHT) {
-        horizontalScrollBar()->setDisabled(true);
-        this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        scrollBar = this->verticalScrollBar();
-        layout->setOrientation(Qt::Vertical);
-        layout->setContentsMargins(0, 2, 0, 2);
-
+        thumbView->horizontalScrollBar()->setDisabled(true);
+        thumbView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        thumbView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        scrollBar = thumbView->verticalScrollBar();
+        viewLayout->setOrientation(Qt::Vertical);
+        viewLayout->setContentsMargins(0, 2, 0, 2);
+        buttonsLayout->setDirection(QBoxLayout::LeftToRight);
+        layout->setDirection(QBoxLayout::BottomToTop);
     } else {
-        this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        this->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        scrollBar = this->horizontalScrollBar();
-        layout->setOrientation(Qt::Horizontal);
-        layout->setContentsMargins(2, 0, 2, 0);
+        thumbView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        thumbView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        scrollBar = thumbView->horizontalScrollBar();
+        viewLayout->setOrientation(Qt::Horizontal);
+        viewLayout->setContentsMargins(2, 0, 2, 0);
+        buttonsLayout->setDirection(QBoxLayout::TopToBottom);
+        layout->setDirection(QBoxLayout::RightToLeft);
     }
-    connect(timeLine, SIGNAL(frameChanged(int)), scrollBar, SLOT(setValue(int)), Qt::UniqueConnection);
+
     connect(scrollBar, SIGNAL(valueChanged(int)),
             this, SLOT(loadVisibleThumbnailsDelayed()), Qt::UniqueConnection);
     connect(scrollBar, SIGNAL(sliderMoved(int)),
             this, SLOT(loadVisibleThumbnailsDelayed()), Qt::UniqueConnection);
-    layout->invalidate();
-    layout->activate();
-    scene->setSceneRect(layout->geometry());
+    connect(timeLine, SIGNAL(frameChanged(int)),
+            scrollBar, SLOT(setValue(int)), Qt::UniqueConnection);
+    viewLayout->invalidate();
+    viewLayout->activate();
+    //scene->setSceneRect(scene->itemsBoundingRect());
+    //scene->setSceneRect(viewLayout->geometry());
+    qDebug() << "readSettings: scenerect = " << scene->sceneRect();
+}
+
+void ThumbnailStrip::populate(int count) {
+    // this will fail if list items != layout items
+    // shouldnt happen though
+    for(int i = viewLayout->count() - 1; i >= 0; --i) {
+        viewLayout->removeAt(0);
+        delete thumbnailLabels.takeAt(0);
+    }
+    qDebug() << viewLayout->geometry();
+    thumbnailLabels.clear();
+
+    for(int i = 0; i < count; i++) {
+        addItem();
+    }
+
+    viewLayout->invalidate();
+    viewLayout->activate();
+    viewLayout->setGeometry(viewLayout->geometry().translated(0,-5));
+    viewLayout->setContentsMargins(0,0,0,0);
+    qDebug() << "layout geom." << viewLayout->geometry();
+    scene->setSceneRect(viewLayout->geometry());
+    //scene->addRect(0,0, scene->width(), scene->height(),QPen(QColor(Qt::green)),QBrush(Qt::SolidPattern));
+    qDebug() << "VIEW:::" << thumbView->rect();
+    qDebug() << "SCENE:::" << scene->sceneRect();
 }
 
 void ThumbnailStrip::fillPanel(int count) {
@@ -81,6 +163,14 @@ void ThumbnailStrip::fillPanel(int count) {
     loadTimer.stop();
     populate(count);
     loadVisibleThumbnailsDelayed();
+}
+
+void ThumbnailStrip::addItem() {
+    ThumbnailLabel *thumbLabel = new ThumbnailLabel();
+    thumbLabel->setOpacityAnimated(0.0, ANIMATION_SPEED_INSTANT);
+    thumbnailLabels.append(thumbLabel);
+    viewLayout->addItem(thumbLabel);
+    requestThumbnail(thumbnailLabels.length() - 1);
 }
 
 void ThumbnailStrip::selectThumbnail(int pos) {
@@ -92,40 +182,13 @@ void ThumbnailStrip::selectThumbnail(int pos) {
     thumbnailLabels.at(pos)->setOpacityAnimated(OPACITY_SELECTED, ANIMATION_SPEED_FAST);
     current = pos;
     if(!childVisibleEntirely(pos)) {
-        centerOn(thumbnailLabels.at(pos)->scenePos());
+        thumbView->centerOn(thumbnailLabels.at(pos)->scenePos());
     }
     loadVisibleThumbnails();
 }
 
-void ThumbnailStrip::centerOnSmooth(const QPointF &pos) {
-    Q_UNUSED(pos)
-
-    timeLine->setFrameRange(0, -1000);
-    timeLine->setUpdateInterval(16);
-    timeLine->start();
-    //centerOn(pos);
-}
-
 void ThumbnailStrip::translateX(int dx) {
-    translate((qreal) dx / 10, 0);
-}
-
-void ThumbnailStrip::populate(int count) {
-    // this will fail if list items != layout items
-    // shouldnt happen though
-    for(int i = layout->count() - 1; i >= 0; --i) {
-        layout->removeAt(0);
-        delete thumbnailLabels.takeAt(0);
-    }
-    thumbnailLabels.clear();
-
-    for(int i = 0; i < count; i++) {
-        addItem();
-    }
-
-    layout->invalidate();
-    layout->activate();
-    scene->setSceneRect(layout->geometry());
+    thumbView->translate((qreal) dx / 10, 0);
 }
 
 // in theory faster than scene's version
@@ -150,23 +213,15 @@ void ThumbnailStrip::loadVisibleThumbnails() {
     updateVisibleRegion();
 
     for(int i = 0; i < thumbnailLabels.count(); i++) {
-        requestThumbnailLoad(i);
+        requestThumbnail(i);
     }
 }
 
-void ThumbnailStrip::requestThumbnailLoad(int pos) {
+void ThumbnailStrip::requestThumbnail(int pos) {
     if(thumbnailLabels.at(pos)->state == EMPTY  && childVisible(pos)) {
         thumbnailLabels.at(pos)->state = LOADING;
         emit thumbnailRequested(pos);
     }
-}
-
-void ThumbnailStrip::addItem() {
-    ThumbnailLabel *thumbLabel = new ThumbnailLabel();
-    thumbLabel->setOpacityAnimated(0.0, ANIMATION_SPEED_INSTANT);
-    thumbnailLabels.append(thumbLabel);
-    layout->addItem(thumbLabel);
-    requestThumbnailLoad(thumbnailLabels.length() - 1);
 }
 
 void ThumbnailStrip::setThumbnail(int pos, Thumbnail *thumb) {
@@ -178,9 +233,9 @@ void ThumbnailStrip::setThumbnail(int pos, Thumbnail *thumb) {
 }
 
 void ThumbnailStrip::updateVisibleRegion() {
-    QRect viewport_rect(0, 0, width(), height());
-    preloadArea = visibleRegion = mapToScene(viewport_rect).boundingRect();
-    if(layout->orientation() == Qt::Vertical) {
+    QRect viewport_rect(0, 0, thumbView->width(), thumbView->height());
+    preloadArea = visibleRegion = thumbView->mapToScene(viewport_rect).boundingRect();
+    if(viewLayout->orientation() == Qt::Vertical) {
         preloadArea.adjust(0, -OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA);
     } else {
         preloadArea.adjust(-OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA, 0);
@@ -206,7 +261,7 @@ bool ThumbnailStrip::childVisibleEntirely(int pos) {
 }
 
 void ThumbnailStrip::sceneClicked(QPointF pos) {
-    ThumbnailLabel *item = (ThumbnailLabel *) scene->itemAt(pos, QGraphicsView::transform());
+    ThumbnailLabel *item = (ThumbnailLabel *) scene->itemAt(pos, thumbView->transform());
     int itemPos = thumbnailLabels.indexOf(item);
     if(itemPos != -1) {
         emit thumbnailClicked(itemPos);
@@ -214,13 +269,13 @@ void ThumbnailStrip::sceneClicked(QPointF pos) {
 }
 
 void ThumbnailStrip::wheelEvent(QWheelEvent *event) {
+    qDebug() << thumbView->geometry();
     event->accept();
     if(timeLine->state() == QTimeLine::Running) {
         timeLine->stop();
         timeLine->setFrameRange(scrollBar->value(),
                                 timeLine->endFrame() -
                                 event->angleDelta().ry() * SCROLL_SPEED_MULTIPLIER);
-        //scrollBar->setValue(timeLine->endFrame());
     } else {
         timeLine->setFrameRange(scrollBar->value(),
                                 scrollBar->value() -
