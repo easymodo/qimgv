@@ -103,10 +103,10 @@ void NewLoader::onLoadFinished(int loaded) {
         emit loadFinished(cache->imageAt(loaded), loaded);
         current = cache->imageAt(loaded);
     } else if(isRelevant(loaded)) {
-        //qDebug() << "loadfinished image is revelant, keeping.." << loaded;
+        //qDebug() << "loadfinished image is relevant, keeping.." << loaded;
     } else {
         cache->unloadAt(loaded);
-        //qDebug() << "load finished but not revelant ("<< loaded <<"). deleting..";
+        //qDebug() << "load finished but not relevant ("<< loaded <<"). deleting..";
     }
 }
 

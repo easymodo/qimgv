@@ -40,6 +40,7 @@ private:
     QString path;
     QGraphicsScene *scene;
     QGraphicsVideoItem *videoItem;
+    int retries;
 
 protected:
     virtual void mouseMoveEvent(QMouseEvent *event);

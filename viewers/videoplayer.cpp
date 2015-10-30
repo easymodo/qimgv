@@ -7,6 +7,7 @@ VideoPlayer::VideoPlayer(QWidget *parent) :
     scene = new QGraphicsScene;
     videoItem = new QGraphicsVideoItem();
     mediaPlayer.setVideoOutput(videoItem);
+    retries = 1;
 
     scene->addItem(videoItem);
     this->setRenderHint(QPainter::SmoothPixmapTransform);
@@ -92,8 +93,13 @@ void VideoPlayer::handlePlayerStateChange(QMediaPlayer::State state) {
     Q_UNUSED(state)
 }
 
+// Try reloading video if it fails
 void VideoPlayer::handleError() {
     qDebug() << "VideoPlayer: Error - " + mediaPlayer.errorString();
+    while (retries>0){
+    play(path);
+    retries--;
+    }
 }
 
 void VideoPlayer::mouseMoveEvent(QMouseEvent *event) {
