@@ -44,7 +44,7 @@ private:
     QTimer *loadTimer, *preloadTimer;
 
     void freeAll();
-    bool isRevelant(int pos);
+    bool isRelevant(int pos);
 signals:
     void loadStarted();
     void loadFinished(Image*, int pos);

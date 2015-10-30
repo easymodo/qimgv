@@ -105,7 +105,9 @@ void Core::rotateImage(int degrees) {
     if(currentImage() != NULL) {
         currentImage()->rotate(degrees);
         updateInfoString();
+        if (currentImage()->getPixmap() != NULL){
         emit imageAltered(currentImage()->getPixmap());
+        }
     }
 }
 
@@ -164,7 +166,7 @@ void Core::stopAnimation() {
                        this, SIGNAL(frameChanged(QPixmap *)));
         }
         if((currentVideo = dynamic_cast<Video *>(currentImage())) != NULL) {
-            emit videoChanged(currentVideo->filePath());
+            emit stopVideo();
         }
     }
 }
