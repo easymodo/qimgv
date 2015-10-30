@@ -154,7 +154,7 @@ void ThumbnailStrip::fillPanel(int count) {
 
 void ThumbnailStrip::addItem() {
     ThumbnailLabel *thumbLabel = new ThumbnailLabel();
-    thumbLabel->setOpacity(OPACITY_INACTIVE);
+    thumbLabel->setOpacity(0.0f);
     thumbnailLabels.append(thumbLabel);
     viewLayout->addWidget(thumbLabel);
     requestThumbnail(thumbnailLabels.length() - 1);
@@ -163,10 +163,10 @@ void ThumbnailStrip::addItem() {
 void ThumbnailStrip::selectThumbnail(int pos) {
     if(current != -1) {
         thumbnailLabels.at(current)->setHighlighted(false);
-        thumbnailLabels.at(current)->setOpacity(OPACITY_INACTIVE);
+        thumbnailLabels.at(current)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_INSTANT);
     }
     thumbnailLabels.at(pos)->setHighlighted(true);
-    thumbnailLabels.at(pos)->setOpacity(OPACITY_SELECTED);
+    thumbnailLabels.at(pos)->setOpacityAnimated(OPACITY_SELECTED, ANIMATION_SPEED_INSTANT);
     current = pos;
     if(!childVisibleEntirely(pos)) {
         thumbView->ensureWidgetVisible(thumbnailLabels.at(pos), 350, 350);
@@ -182,7 +182,6 @@ void ThumbnailStrip::loadVisibleThumbnailsDelayed() {
 void ThumbnailStrip::loadVisibleThumbnails() {
     loadTimer.stop();
     updateVisibleRegion();
-
     for(int i = 0; i < thumbnailLabels.count(); i++) {
         requestThumbnail(i);
     }
@@ -199,17 +198,17 @@ void ThumbnailStrip::setThumbnail(int pos, Thumbnail *thumb) {
     thumbnailLabels.at(pos)->setThumbnail(thumb);
     thumbnailLabels.at(pos)->state = LOADED;
     if(pos != current) {
-        thumbnailLabels.at(pos)->setOpacity(OPACITY_INACTIVE);
+        thumbnailLabels.at(pos)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_NORMAL);
     }
 }
 
 void ThumbnailStrip::updateVisibleRegion() {
-    QRect viewport_rect(0, 0, thumbView->width(), thumbView->height());
-    preloadArea = visibleRegion = widget->visibleRegion().rects().at(0);
     if(viewLayout->direction() == QBoxLayout::LeftToRight) {
-        preloadArea.adjust(-OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA, 0);
+        visibleRegion = thumbView->rect().translated(scrollBar->value(), 0);
+        preloadArea = visibleRegion.adjusted(-OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA, 0);
     } else {
-        preloadArea.adjust(0, -OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA);
+        visibleRegion = thumbView->rect().translated(0, scrollBar->value());
+        preloadArea = visibleRegion.adjusted(0, -OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA);
     }
 }
 
@@ -221,8 +220,8 @@ bool ThumbnailStrip::childVisible(int pos) {
 }
 
 bool ThumbnailStrip::childVisibleEntirely(int pos) {
-    if(widget->visibleRegion().contains(viewLayout->itemAt(pos)->geometry().topLeft()) &&
-       widget->visibleRegion().contains(viewLayout->itemAt(pos)->geometry().bottomRight())) {
+    if(visibleRegion.contains(viewLayout->itemAt(pos)->geometry().topLeft()) &&
+       visibleRegion.contains(viewLayout->itemAt(pos)->geometry().bottomRight())) {
         return true;
     }
     return false;

@@ -13,7 +13,7 @@ ThumbnailLabel::ThumbnailLabel(QWidget *parent) :
     borderH(5),
     thumbnailSize(120),
     thumbnail(NULL),
-    opacity(1.0f)
+    currentOpacity(1.0f)
 {
     this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
    // this->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
@@ -106,15 +106,31 @@ bool ThumbnailLabel::isHighlighted() {
 }
 
 void ThumbnailLabel::setOpacity(qreal amount) {
-    if(amount != opacity) {
-        opacity = amount;
+    if(amount != currentOpacity) {
+        currentOpacity = amount;
         update();
     }
 }
 
+qreal ThumbnailLabel::opacity() {
+    return currentOpacity;
+}
+
+void ThumbnailLabel::setOpacityAnimated(qreal amount, int speed) {
+    if(amount != opacity()) {
+        QPropertyAnimation *anim = new QPropertyAnimation(this, "currentOpacity");
+        anim->setEasingCurve(QEasingCurve::InQuad);
+        anim->setDuration(speed);
+        anim->setStartValue(this->opacity());
+        anim->setEndValue(amount);
+        anim->start(QAbstractAnimation::DeleteWhenStopped);
+    }
+}
+
+
 void ThumbnailLabel::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
-    painter.setOpacity(opacity);
+    painter.setOpacity(currentOpacity);
     if(thumbnail) {
         if(thumbnail->image) {
             painter.drawPixmap(borderW, borderH, *thumbnail->image);

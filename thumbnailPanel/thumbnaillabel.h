@@ -15,7 +15,7 @@ enum loadState { EMPTY, LOADING, LOADED };
 class ThumbnailLabel : public QLabel
 {
     Q_OBJECT
-  //  Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
+    Q_PROPERTY(qreal currentOpacity READ opacity WRITE setOpacity)
 
 public:
     ThumbnailLabel(QWidget *parent = 0);
@@ -32,8 +32,10 @@ public:
     void setHighlighted(bool x);
     bool isHighlighted();
     void setOpacity(qreal amount);
+    qreal opacity();
     void readSettings();
     void applySettings();
+    void setOpacityAnimated(qreal amount, int speed);
 
 private:
     Qt::Orientation orientation;
@@ -42,7 +44,7 @@ private:
     bool showLabel, showName;
 
     Thumbnail *thumbnail;
-    qreal opacity;
+    qreal currentOpacity;
     bool highlighted;
     int borderW, borderH, thumbnailSize;
     QString infoString;
