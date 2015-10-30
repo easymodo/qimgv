@@ -103,6 +103,9 @@ void MainWindow::init() {
     connect(core, SIGNAL(videoChanged(QString)),
             this, SLOT(openVideo(QString)), Qt::UniqueConnection);
 
+    connect(core, SIGNAL(stopVideo()),
+            this, SLOT(disableVideoPlayer()));
+
     core->init();
 
     //##############################################################
