@@ -6,6 +6,7 @@ Video::Video(QString _path) {
     path = _path;
     loaded = true;
     info = new FileInfo(_path, this);
+    resolution = QSize(0,0);
 }
 
 Video::Video(FileInfo *_info) {
@@ -85,6 +86,33 @@ QPixmap *Video::thumbnailStub() {
     return thumbnail;
 }
 
+void Video::updateResolution() {
+    QString ffmpegExe = settings->ffmpegExecutable();
+    if(ffmpegExe.isEmpty()) {
+        return;
+    }
+
+    QString command = "\"" + ffmpegExe + "\"" + " -i " + "\"" + filePath() + "\"";
+    QProcess process;
+    process.start(command);
+    process.waitForFinished(100);
+    QByteArray out = process.readAllStandardError();
+    process.close();
+
+    QRegExp expResolution("[0-9]+x[0-9]+");
+    QRegExp expWidth("[0-9]+\\B");
+    QRegExp expHeight("\\B+[0-9]+$");
+    expResolution.indexIn(out);
+    QString res = expResolution.cap();
+    expWidth.indexIn(res);
+    expHeight.indexIn(res);
+    QString wt = expWidth.cap();
+    QString ht = expHeight.cap();
+
+    resolution = QSize(wt.toInt(), ht.toInt());
+    qDebug() << wt + "x" + ht;
+}
+
 QPixmap *Video::getPixmap() {
     qDebug() << "Something bad happened in Video::getPixmap().";
     //TODO: find out some easy way to get frames from video source
@@ -92,15 +120,24 @@ QPixmap *Video::getPixmap() {
 }
 
 int Video::height() {
-    return 0;
+    if (resolution.height()==0){
+        return size().height();
+    }
+    return resolution.height();
 }
 
 int Video::width() {
-    return 0;
+    if (resolution.width()==0){
+        return size().width();
+    }
+    return resolution.width();
 }
 
 QSize Video::size() {
-    return QSize(0, 0);
+    if (resolution==QSize(0,0)){
+        updateResolution();
+    }
+    return resolution;
 }
 
 QString Video::filePath() {

@@ -35,6 +35,7 @@ public slots:
 
 private:
     QPixmap *thumbnailStub();
+    void updateResolution();
 };
 
 #endif // VIDEO_H
