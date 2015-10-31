@@ -40,8 +40,14 @@ void ImageAnimated::load() {
 }
 
 void ImageAnimated::save(QString destinationPath) {
-    Q_UNUSED(destinationPath)
-    //TODO
+    QFile file(path);
+    if(file.exists()) {
+        if (!file.copy(destinationPath)) {
+            qDebug() << "Unable to save file.";
+        }
+    } else {
+        qDebug() << "Unable to save file. Perhaps the source file was deleted?";
+    }
 }
 
 void ImageAnimated::save() {

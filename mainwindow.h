@@ -73,10 +73,10 @@ private slots:
     void slotFitWidth();
     void slotFitNormal();
     void switchFitMode();
-    void slotSetInfoString(QString info);
     void slotRotateLeft();
     void slotRotateRight();
     void slotSaveDialog();
+
 
     void slotShowControls(bool);
     void slotShowInfo(bool x);
