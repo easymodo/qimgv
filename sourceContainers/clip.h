@@ -20,7 +20,6 @@ public:
     int height();
     int width();
     QSize size();
-
     void rotate(qreal angle);
     void setFrame(QRect newFrame);
 
@@ -32,9 +31,9 @@ public:
 private:
     QString path;
     const char* extension;
-    QRect frame;
-    QTransform transform;
-    int grad;
+    QRect frame;            // frame is the visible portion of the source video
+    QTransform transform;   // tells videoplayer how to rotate(& potentially scale)
+    int grad;               // saved to give to ffmpeg
     uint srcWidth;
     uint srcHeight;
 

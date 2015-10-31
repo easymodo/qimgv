@@ -87,11 +87,11 @@ void VideoPlayer::handleMediaStatusChange(QMediaPlayer::MediaStatus status) {
 
 //fits && centers video in window
 void VideoPlayer::adjustVideoSize() {
-    QSize size = videoItem->nativeSize().toSize();
+    QSize size = clip->size();
     if(size.width() > this->width() || size.height() > this->height()) {
         size = size.scaled(this->width(), this->height(), Qt::KeepAspectRatio);
     } else {
-        size = videoItem->nativeSize().toSize();
+        size = clip->size();
     }
     videoItem->setSize(size);
     scene->setSceneRect(scene->itemsBoundingRect());

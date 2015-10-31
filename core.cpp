@@ -219,13 +219,14 @@ void Core::onLoadFinished(Image *img, int pos) {
 
     if((currentImageAnimated = dynamic_cast<ImageAnimated *>(img)) != NULL) {
         startAnimation();
-    }
-    else if((currentVideo = dynamic_cast<Video *>(img)) != NULL) {
+    }    
+    if((currentVideo = dynamic_cast<Video *>(img)) != NULL) {
         emit videoChanged(currentVideo->getClip());
     }
-    else if(!currentVideo && img) {    //static image
+    if(!currentVideo && img) {    //static image
         emit signalSetImage(img->getPixmap());
     }
+
     emit imageChanged(pos);
     updateInfoString();
     mutex.unlock();

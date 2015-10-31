@@ -15,7 +15,7 @@ void Clip::load(const QString &fileName, const char* format) {
     if(ffmpegExe.isEmpty()) {
         return;
     }
-
+    // Get resolution from ffmpeg (so we don't have to ask videoplayer)
     QString command = "\"" + ffmpegExe + "\"" + " -i " + "\"" + fileName + "\"";
     QProcess process;
     process.start(command);

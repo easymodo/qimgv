@@ -127,9 +127,13 @@ QSize Video::size() {
 }
 
 void Video::rotate(int grad) {
-   clip->rotate(grad);
+    if (isLoaded()) {
+        clip->rotate(grad);
+    }
 }
 
 void Video::crop(QRect newRect) {
-   clip->setFrame(newRect);
+    if (isLoaded()) {
+        clip->setFrame(newRect);
+    }
 }
