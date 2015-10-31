@@ -2,22 +2,20 @@
 
 ThumbnailLabel::ThumbnailLabel(QWidget *parent) :
     QLabel(parent),
+    state(EMPTY),
     orientation(Qt::Horizontal),
     hovered(false),
     loaded(false),
     showLabel(false),
     showName(true),
-    state(EMPTY),
+    thumbnail(NULL),
     highlighted(false),
     borderW(3),
     borderH(5),
     thumbnailSize(120),
-    thumbnail(NULL),
     currentOpacity(1.0f)
 {
     this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-   // this->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
-   // setGraphicsItem(this);
     highlightColor = new QColor();
     highlightColorBorder = new QColor(20, 26, 17);    //unused for now
     outlineColor = new QColor(Qt::black);
@@ -64,7 +62,6 @@ void ThumbnailLabel::readSettings() {
     shadowGradient->setFinalStop(shadowRect.bottomLeft());
     shadowGradient->setColorAt(0, QColor(0, 0, 0, 100));
     shadowGradient->setColorAt(1, QColor(0, 0, 0, 0));
-//    this->setOffset(QPointF(borderW, borderH));
 }
 
 void ThumbnailLabel::applySettings() {
@@ -92,11 +89,6 @@ void ThumbnailLabel::setHighlighted(bool x) {
     bool toRepaint = (highlighted == x);
     highlighted = x;
     if(toRepaint) {
-        if(x) {
-            labelColor->setAlpha(255);
-        } else {
-            labelColor->setAlpha(230);
-        }
         this->update();
     }
 }
@@ -129,18 +121,16 @@ void ThumbnailLabel::setOpacityAnimated(qreal amount, int speed) {
 
 
 void ThumbnailLabel::paintEvent(QPaintEvent *event) {
+    Q_UNUSED(event)
+
     QPainter painter(this);
-    painter.setOpacity(currentOpacity);
     if(thumbnail) {
         if(thumbnail->image) {
+            painter.setOpacity(currentOpacity);
             painter.drawPixmap(borderW, borderH, *thumbnail->image);
         }
 
-        //colored bar and shadow on the top
-        if(isHighlighted()) {
-            painter.fillRect(highlightRect, *highlightColor);
-            //painter->fillRect(shadowRect, *shadowGradient);
-        }
+        painter.setOpacity(0.9f);
 
         //setup font
         painter.setFont(font);
@@ -152,6 +142,7 @@ void ThumbnailLabel::paintEvent(QPaintEvent *event) {
         painter.setPen(QColor(255, 255, 255, 255));
         painter.drawText(nameRect.adjusted(2, 1, 0, 0), thumbnail->name);
 
+        painter.setOpacity(1.0f);
         //typeLabel
         if(showLabel) {
             painter.fillRect(labelRect, *labelColor);
@@ -160,6 +151,12 @@ void ThumbnailLabel::paintEvent(QPaintEvent *event) {
             painter.drawText(labelTextPos + QPointF(1, 1), thumbnail->label);
             painter.setPen(QColor(255, 255, 255, 255));
             painter.drawText(labelTextPos, thumbnail->label);
+        }
+
+        //colored bar and shadow on the top
+        if(isHighlighted()) {
+            painter.fillRect(highlightRect, *highlightColor);
+            //painter->fillRect(shadowRect, *shadowGradient);
         }
     }
 }

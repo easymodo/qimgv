@@ -36,16 +36,15 @@ private:
     //CustomScene* scene;
     QTimeLine *timeLine;
 
-    const qreal OPACITY_INACTIVE = 0.85;
+    const qreal OPACITY_INACTIVE = 0.75;
     const qreal OPACITY_SELECTED = 1.0;
     const int ANIMATION_SPEED_INSTANT = 0;
-    const int ANIMATION_SPEED_FAST = 100;
-    const int ANIMATION_SPEED_NORMAL = 220;
+    const int ANIMATION_SPEED_FAST = 80;
+    const int ANIMATION_SPEED_NORMAL = 150;
 
     const int SCROLL_UPDATE_RATE = 8;
     const float SCROLL_SPEED_MULTIPLIER = 3.1;
     const int SCROLL_ANIMATION_SPEED = 100;
-    const int SCROLL_STEP = 200;
     const uint LOAD_DELAY = 20;
     const int OFFSCREEN_PRELOAD_AREA = 1900;
 

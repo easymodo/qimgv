@@ -36,7 +36,6 @@ SOURCES += main.cpp\
     thumbnailPanel/thumbnaillabel.cpp \
     sourceContainers/image.cpp \
     sourceContainers/imageanimated.cpp \
-    customWidgets/customscene.cpp \
     customWidgets/clickablelabel.cpp \
     sourceContainers/thumbnail.cpp \
     viewers/videoplayer.cpp \
@@ -71,7 +70,6 @@ HEADERS  += mainwindow.h \
     thumbnailPanel/thumbnaillabel.h \
     sourceContainers/image.h \
     sourceContainers/imageanimated.h \
-    customWidgets/customscene.h \
     customWidgets/clickablelabel.h \
     sourceContainers/thumbnail.h \
     viewers/videoplayer.h \

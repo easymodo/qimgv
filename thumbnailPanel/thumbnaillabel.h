@@ -21,14 +21,10 @@ public:
     ThumbnailLabel(QWidget *parent = 0);
     ~ThumbnailLabel();
 
-  //  void setGeometry(const QRect &rect);// Q_DECL_OVERRIDE;
-  //  QRectF boundingRect() const;// Q_DECL_OVERRIDE;
-
     bool isLoaded();
     loadState state;
     void setThumbnail(Thumbnail *_thumbnail);
 
-    //void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setHighlighted(bool x);
     bool isHighlighted();
     void setOpacity(qreal amount);
@@ -57,10 +53,8 @@ private:
     void updateLabelWidth();
 protected:
     virtual void paintEvent(QPaintEvent* event);
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;// Q_DECL_OVERRIDE;
+    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
 
- //void enterEvent(QEvent *event);
- //void leaveEvent(QEvent *event);
 };
 
 #endif // THUMBNAILLABEL_H
