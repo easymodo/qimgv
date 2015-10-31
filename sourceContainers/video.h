@@ -2,6 +2,7 @@
 #define VIDEO_H
 
 #include "image.h"
+#include "clip.h"
 #include <QImage>
 #include <QPixmap>
 #include <QProcess>
@@ -35,7 +36,7 @@ public slots:
 
 private:
     QPixmap *thumbnailStub();
-    void updateResolution();
+    Clip *clip;
 };
 
 #endif // VIDEO_H

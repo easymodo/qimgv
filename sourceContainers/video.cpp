@@ -4,9 +4,8 @@
 //use this one
 Video::Video(QString _path) {
     path = _path;
-    loaded = true;
+    loaded = false;
     info = new FileInfo(_path, this);
-    resolution = QSize(0,0);
 }
 
 Video::Video(FileInfo *_info) {
@@ -17,16 +16,35 @@ Video::Video(FileInfo *_info) {
 
 Video::~Video() {
     delete info;
+    delete clip;
 }
 
 void Video::load() {
+    QMutexLocker locker(&mutex);
+    if(!info) {
+        info = new FileInfo(path);
+    }
+    if(isLoaded()) {
+        return;
+    }
+    clip = new Clip(path, info->getExtension());
+    loaded = true;
 }
 
 void Video::save(QString destinationPath) {
-    Q_UNUSED(destinationPath)
+    if(isLoaded()) {
+        lock();
+        clip->save(destinationPath, getExtension(destinationPath), 100);
+        unlock();
+    }
 }
 
 void Video::save() {
+    if(isLoaded()) {
+        lock();
+        clip->save(path, info->getExtension(), 100);
+        unlock();
+    }
 }
 
 QPixmap *Video::generateThumbnail() {
@@ -86,33 +104,6 @@ QPixmap *Video::thumbnailStub() {
     return thumbnail;
 }
 
-void Video::updateResolution() {
-    QString ffmpegExe = settings->ffmpegExecutable();
-    if(ffmpegExe.isEmpty()) {
-        return;
-    }
-
-    QString command = "\"" + ffmpegExe + "\"" + " -i " + "\"" + filePath() + "\"";
-    QProcess process;
-    process.start(command);
-    process.waitForFinished(100);
-    QByteArray out = process.readAllStandardError();
-    process.close();
-
-    QRegExp expResolution("[0-9]+x[0-9]+");
-    QRegExp expWidth("[0-9]+\\B");
-    QRegExp expHeight("\\B+[0-9]+$");
-    expResolution.indexIn(out);
-    QString res = expResolution.cap();
-    expWidth.indexIn(res);
-    expHeight.indexIn(res);
-    QString wt = expWidth.cap();
-    QString ht = expHeight.cap();
-
-    resolution = QSize(wt.toInt(), ht.toInt());
-    qDebug() << wt + "x" + ht;
-}
-
 QPixmap *Video::getPixmap() {
     qDebug() << "Something bad happened in Video::getPixmap().";
     //TODO: find out some easy way to get frames from video source
@@ -120,24 +111,15 @@ QPixmap *Video::getPixmap() {
 }
 
 int Video::height() {
-    if (resolution.height()==0){
-        return size().height();
-    }
-    return resolution.height();
+    return isLoaded() ? clip->height() : 0;
 }
 
 int Video::width() {
-    if (resolution.width()==0){
-        return size().width();
-    }
-    return resolution.width();
+    return isLoaded() ? clip->width() : 0;
 }
 
 QSize Video::size() {
-    if (resolution==QSize(0,0)){
-        updateResolution();
-    }
-    return resolution;
+    return isLoaded() ? clip->size() : QSize(0, 0);
 }
 
 QString Video::filePath() {

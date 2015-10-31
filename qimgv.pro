@@ -48,7 +48,8 @@ SOURCES += main.cpp\
     lib/stuff.cpp \
     wallpapersetter.cpp \
     actionmanager.cpp \
-    customWidgets/settingsshortcutwidget.cpp
+    customWidgets/settingsshortcutwidget.cpp \
+    sourceContainers/clip.cpp
 
 HEADERS  += mainwindow.h \
     overlays/infooverlay.h \
@@ -81,7 +82,8 @@ HEADERS  += mainwindow.h \
     wallpapersetter.h \
     lib/stuff.h \
     actionmanager.h \
-    customWidgets/settingsshortcutwidget.h
+    customWidgets/settingsshortcutwidget.h \
+    sourceContainers/clip.h
 
 FORMS    += \
     settingsdialog.ui
