@@ -13,8 +13,8 @@ public:
     ImageAnimated(FileInfo *_info);
     ~ImageAnimated();
 
-    QPixmap* getPixmap();
-    const QImage *getImage();
+    QPixmap *getPixmap();
+    const QImage* getImage();
     void load();
     void unload();
     int height();

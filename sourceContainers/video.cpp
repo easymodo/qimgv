@@ -110,6 +110,10 @@ QPixmap *Video::getPixmap() {
     return NULL;
 }
 
+Clip *Video::getClip() {
+    return clip;
+}
+
 int Video::height() {
     return isLoaded() ? clip->height() : 0;
 }
@@ -122,20 +126,10 @@ QSize Video::size() {
     return isLoaded() ? clip->size() : QSize(0, 0);
 }
 
-QString Video::filePath() {
-    return info->getFilePath();
-}
-
-QImage *Video::rotated(int grad) {
-    Q_UNUSED(grad)
-}
-
 void Video::rotate(int grad) {
-    Q_UNUSED(grad)
-
+   clip->rotate(grad);
 }
 
 void Video::crop(QRect newRect) {
-    Q_UNUSED(newRect)
-
+   clip->setFrame(newRect);
 }

@@ -47,12 +47,16 @@ void Clip::save(const QString &fileName, const char* format, int quality) {
     // TODO: Use ffmpeg functions clip and rotate to save video
 }
 
-int Clip::width() {
-    return frame.width();
+QString Clip::getPath() {
+    return path;
 }
 
 int Clip::height() {
     return frame.height();
+}
+
+int Clip::width() {
+    return frame.width();
 }
 
 QSize Clip::size() {
@@ -62,4 +66,8 @@ QSize Clip::size() {
 void Clip::rotate(qreal angle) {
     grad += angle;
     transform.rotate(angle);
+}
+
+void Clip::setFrame(QRect newFrame) {
+    frame = newFrame;
 }

@@ -95,7 +95,7 @@ signals:
     void imageChanged(int);
     void startVideo();
     void stopVideo();
-    void videoChanged(QString);
+    void videoChanged(Clip*);
 };
 
 #endif // CORE_H

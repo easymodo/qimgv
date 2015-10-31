@@ -19,7 +19,9 @@ public:
     int height();
     int width();
     QSize size();
+
     void rotate(qreal angle);
+    void setFrame(QRect newFrame);
 
     // functions intended to be used by videoplayer
     QString getPath();

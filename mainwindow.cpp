@@ -100,8 +100,8 @@ void MainWindow::init() {
     connect(core, SIGNAL(cacheInitialized(int)),
             panel, SLOT(fillPanel(int)), Qt::DirectConnection);
 
-    connect(core, SIGNAL(videoChanged(QString)),
-            this, SLOT(openVideo(QString)), Qt::UniqueConnection);
+    connect(core, SIGNAL(videoChanged(Clip *)),
+            this, SLOT(openVideo(Clip *)), Qt::UniqueConnection);
 
     connect(core, SIGNAL(stopVideo()),
             this, SLOT(disableVideoPlayer()));
@@ -239,9 +239,9 @@ void MainWindow::disableVideoPlayer() {
     videoPlayer->hide();
 }
 
-void MainWindow::openVideo(QString path) {
+void MainWindow::openVideo(Clip *clip) {
     enableVideoPlayer();
-    videoPlayer->play(path);
+    videoPlayer->play(clip->getPath());
 }
 
 void MainWindow::openImage(QPixmap *pixmap) {

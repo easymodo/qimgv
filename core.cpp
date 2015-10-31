@@ -217,7 +217,7 @@ void Core::onLoadFinished(Image *img, int pos) {
         startAnimation();
     }
     if((currentVideo = dynamic_cast<Video *>(img)) != NULL) {
-        emit videoChanged(currentVideo->filePath());
+        emit videoChanged(currentVideo->getClip());
     }
     if(!currentVideo && img) {    //static image
         emit signalSetImage(img->getPixmap());

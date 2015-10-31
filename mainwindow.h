@@ -80,7 +80,7 @@ private slots:
 
     void slotShowControls(bool);
     void slotShowInfo(bool x);
-    void openVideo(QString path);
+    void openVideo(Clip *clip);
     void openImage(QPixmap *pixmap);
     void showSettings();
 

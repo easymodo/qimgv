@@ -17,14 +17,13 @@ public:
     ~Video();
 
     QPixmap* getPixmap();
+    Clip* getClip();
     void load();
     void unload();
     int height();
     int width();
     QSize size();
-    QString filePath();
 
-    QImage *rotated(int grad);
     void rotate(int grad);
     QPixmap* generateThumbnail();
 
