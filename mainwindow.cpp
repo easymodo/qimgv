@@ -131,6 +131,11 @@ void MainWindow::init() {
     connect(actionManager, SIGNAL(save()), this, SLOT(slotSaveDialog()));
     connect(actionManager, SIGNAL(exit()), this, SLOT(close()));
 
+    // panel buttons
+    connect(panel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()));
+    connect(panel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()));
+    connect(panel, SIGNAL(settingsClicked()), this, SLOT(showSettings()));
+
     createActions();
     createMenus();
 }
@@ -267,8 +272,8 @@ void MainWindow::readSettings() {
     } else {
         slotFitAll();
     }
-    calculatePanelTriggerArea();
     emit resized(size());
+    calculatePanelTriggerArea();
 }
 
 void MainWindow::slotOpenDialog() {
@@ -538,16 +543,16 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 void MainWindow::calculatePanelTriggerArea() {
     switch(panelPosition) {
         case LEFT:
-            panelArea.setRect(0, 0, 80, height());
+            panelArea.setRect(0, 0, panel->width() - 1, height());
             break;
         case RIGHT:
-            panelArea.setRect(width() - 80, 0, width(), height());
+            panelArea.setRect(width() - panel->width() + 1, 0, width(), height());
             break;
         case BOTTOM:
-            panelArea.setRect(0, height() - 80, width() - 180, height());
+            panelArea.setRect(0, height() - panel->height() + 1, width() - 180, height());
             break;
         case TOP:
-            panelArea.setRect(0, 0, width(), 80);
+            panelArea.setRect(0, 0, width(), panel->height() - 1);
             if(isFullScreen()) {
                 panelArea.setRight(width() - 250);
             }

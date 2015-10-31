@@ -1,8 +1,7 @@
 #ifndef THUMBNAILLABEL_H
 #define THUMBNAILLABEL_H
 
-#include <QGraphicsLayoutItem>
-#include <QGraphicsPixmapItem>
+#include <QLabel>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QDebug>
@@ -13,35 +12,35 @@
 
 enum loadState { EMPTY, LOADING, LOADED };
 
-class ThumbnailLabel : public QObject, public QGraphicsLayoutItem, public QGraphicsPixmapItem
+class ThumbnailLabel : public QLabel
 {
     Q_OBJECT
-    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
+    Q_PROPERTY(qreal currentOpacity READ opacity WRITE setOpacity)
 
 public:
-    ThumbnailLabel(QGraphicsPixmapItem *parent = 0);
+    ThumbnailLabel(QWidget *parent = 0);
     ~ThumbnailLabel();
-
-    void setGeometry(const QRectF &rect) Q_DECL_OVERRIDE;
-    QRectF boundingRect() const Q_DECL_OVERRIDE;
 
     bool isLoaded();
     loadState state;
     void setThumbnail(Thumbnail *_thumbnail);
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setHighlighted(bool x);
     bool isHighlighted();
-    void setOpacityAnimated(qreal amount, int speed);
+    void setOpacity(qreal amount);
+    qreal opacity();
     void readSettings();
     void applySettings();
+    void setOpacityAnimated(qreal amount, int speed);
 
 private:
     Qt::Orientation orientation;
     const int SHADOW_HEIGHT = 10;
     bool hovered, loaded;
     bool showLabel, showName;
+
     Thumbnail *thumbnail;
+    qreal currentOpacity;
     bool highlighted;
     int borderW, borderH, thumbnailSize;
     QString infoString;
@@ -53,10 +52,9 @@ private:
 
     void updateLabelWidth();
 protected:
- QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const Q_DECL_OVERRIDE;
+    virtual void paintEvent(QPaintEvent* event);
+    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
 
- //void enterEvent(QEvent *event);
- //void leaveEvent(QEvent *event);
 };
 
 #endif // THUMBNAILLABEL_H

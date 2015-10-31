@@ -1,22 +1,23 @@
 #ifndef THUMBNAILSTRIP_H
 #define THUMBNAILSTRIP_H
 
-#include <QGraphicsView>
-#include <QGraphicsScene>
-#include <QGraphicsItem>
-#include <QGraphicsWidget>
-#include <QGraphicsLinearLayout>
+#include <QLabel>
+#include <QBoxLayout>
+#include <QScrollArea>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QScrollBar>
 #include <QTimer>
 #include <QTimeLine>
 #include <QPropertyAnimation>
-#include "../customWidgets/customscene.h"
+#include "../customWidgets/clickablelabel.h"
+#include "../customWidgets/clickablewidget.h"
 #include "../sourceContainers/thumbnail.h"
 #include "thumbnaillabel.h"
+#include "thumbnailview.h"
+#include <time.h>
 
-class ThumbnailStrip : public QGraphicsView
+class ThumbnailStrip : public QWidget
 {
     Q_OBJECT
 public:
@@ -26,21 +27,24 @@ public:
 private:
     QList<ThumbnailLabel*> thumbnailLabels;
     void addItem();
-    QGraphicsLinearLayout *layout;
-    QGraphicsWidget *widget;
-    CustomScene* scene;
+    //QGraphicsLinearLayout *viewLayout;
+    QBoxLayout *layout, *buttonsLayout, *viewLayout;
+    QWidget *buttonsWidget;
+    ClickableLabel *openButton, *saveButton, *settingsButton;
+    ClickableWidget *widget;
+    ThumbnailView *thumbView;
+    //CustomScene* scene;
     QTimeLine *timeLine;
 
     const qreal OPACITY_INACTIVE = 0.75;
     const qreal OPACITY_SELECTED = 1.0;
     const int ANIMATION_SPEED_INSTANT = 0;
-    const int ANIMATION_SPEED_FAST = 100;
-    const int ANIMATION_SPEED_NORMAL = 220;
+    const int ANIMATION_SPEED_FAST = 80;
+    const int ANIMATION_SPEED_NORMAL = 150;
 
     const int SCROLL_UPDATE_RATE = 8;
     const float SCROLL_SPEED_MULTIPLIER = 3.1;
-    const int SCROLL_ANIMATION_SPEED = 80;
-    const int SCROLL_STEP = 200;
+    const int SCROLL_ANIMATION_SPEED = 100;
     const uint LOAD_DELAY = 20;
     const int OFFSCREEN_PRELOAD_AREA = 1900;
 
@@ -51,14 +55,17 @@ private:
     QRectF preloadArea, visibleRegion;
     QTimer loadTimer;
     bool childVisibleEntirely(int pos);
-    QRectF itemsBoundingRect();
+    //QRectF itemsBoundingRect();
     QScrollBar *scrollBar;
     PanelPosition position;
 
-    void requestThumbnailLoad(int pos);
+    void requestThumbnail(int pos);
 signals:
     void thumbnailRequested(int pos);
     void thumbnailClicked(int pos);
+    void openClicked();
+    void saveClicked();
+    void settingsClicked();
 
 public slots:
     void populate(int count);
@@ -74,10 +81,8 @@ protected:
     void leaveEvent(QEvent *event);
 
 private slots:
-    void centerOnSmooth(const QPointF &pos);
-    void sceneClicked(QPointF pos);
+    void viewPressed(QPoint pos);
     void updateVisibleRegion();
-    void translateX(int dx);
     void readSettings();
 };
 

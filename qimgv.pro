@@ -36,7 +36,6 @@ SOURCES += main.cpp\
     thumbnailPanel/thumbnaillabel.cpp \
     sourceContainers/image.cpp \
     sourceContainers/imageanimated.cpp \
-    customWidgets/customscene.cpp \
     customWidgets/clickablelabel.cpp \
     sourceContainers/thumbnail.cpp \
     viewers/videoplayer.cpp \
@@ -49,7 +48,9 @@ SOURCES += main.cpp\
     wallpapersetter.cpp \
     actionmanager.cpp \
     customWidgets/settingsshortcutwidget.cpp \
-    sourceContainers/clip.cpp
+    sourceContainers/clip.cpp \
+    thumbnailPanel/thumbnailview.cpp \
+    customWidgets/clickablewidget.cpp
 
 HEADERS  += mainwindow.h \
     overlays/infooverlay.h \
@@ -70,7 +71,6 @@ HEADERS  += mainwindow.h \
     thumbnailPanel/thumbnaillabel.h \
     sourceContainers/image.h \
     sourceContainers/imageanimated.h \
-    customWidgets/customscene.h \
     customWidgets/clickablelabel.h \
     sourceContainers/thumbnail.h \
     viewers/videoplayer.h \
@@ -83,7 +83,9 @@ HEADERS  += mainwindow.h \
     lib/stuff.h \
     actionmanager.h \
     customWidgets/settingsshortcutwidget.h \
-    sourceContainers/clip.h
+    sourceContainers/clip.h \
+    thumbnailPanel/thumbnailview.h \
+    customWidgets/clickablewidget.h
 
 FORMS    += \
     settingsdialog.ui

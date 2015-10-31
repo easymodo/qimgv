@@ -39,15 +39,31 @@ QMenuBar::item:pressed {
     background: #222222;
 }
 
-ThumbnailStrip {
+[accessibleName="panelButton"] {
+    color: #E5E5E5;
+    background-color: #202020;
+
+    padding: 3px 3px 3px 3px;
+}
+
+[accessibleName="panelButton"]:hover {
+    color: #F5F5F5;
+    background-color: #303030;
+}
+
+[accessibleName="panelButtonsWidget"] {
     background-color: #202020;
 }
 
-ThumbnailScrollArea {
+[accessibleName="thumbnailWidget"] {
     background-color: #202020;
 }
 
-ThumbnailLabels {
+[accessibleName="thumbnailView"] {
+    background-color: #202020;
+}
+
+ThumbnailLabel {
     background-color: #202020;
 }
 

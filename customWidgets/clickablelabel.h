@@ -7,7 +7,10 @@
 class ClickableLabel : public QLabel {
     Q_OBJECT
 public:
+    ClickableLabel();
     ClickableLabel(QWidget *parent);
+    ClickableLabel(const QString &text);
+    ClickableLabel(const QString &text, QWidget *parent);
 
 signals:
     void clicked();
