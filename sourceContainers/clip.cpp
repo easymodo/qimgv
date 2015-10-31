@@ -1,11 +1,13 @@
 #include "clip.h"
 
+Clip::Clip() {
+}
+
 Clip::Clip(const QString &fileName, const char* format) {
     load(fileName, format);
 }
 
 Clip::~Clip() {
-
 }
 
 void Clip::load(const QString &fileName, const char* format) {
@@ -49,6 +51,10 @@ void Clip::save(const QString &fileName, const char* format, int quality) {
 
 QString Clip::getPath() {
     return path;
+}
+
+QTransform Clip::getTransform() {
+    return transform;
 }
 
 int Clip::height() {

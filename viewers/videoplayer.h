@@ -11,6 +11,7 @@
 #include <QMouseEvent>
 #include <qvideosurfaceformat.h>
 #include <QDebug>
+#include "sourceContainers/clip.h"
 #include "../settings.h"
 
 class VideoPlayer : public QGraphicsView
@@ -24,7 +25,8 @@ signals:
     void parentResized(QSize);
 
 public slots:
-    void play(QString _path);
+    void displayVideo(Clip *clip);
+    void play();
     void replay();
     void stop();
     void readSettings();
@@ -34,10 +36,11 @@ private slots:
     void handleMediaStatusChange(QMediaPlayer::MediaStatus status);
     void handlePlayerStateChange(QMediaPlayer::State status);
     void adjustVideoSize();
+    void transformVideo();
 
 private:
+    Clip *clip;
     QMediaPlayer mediaPlayer;
-    QString path;
     QGraphicsScene *scene;
     QGraphicsVideoItem *videoItem;
     int retries;

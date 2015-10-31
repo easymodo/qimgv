@@ -1,9 +1,8 @@
 #include "videoplayer.h"
 
-VideoPlayer::VideoPlayer(QWidget *parent) :
-    QGraphicsView(parent),
-    mediaPlayer(0, QMediaPlayer::VideoSurface),
-    path("") {
+VideoPlayer::VideoPlayer(QWidget *parent) : QGraphicsView(parent),
+    mediaPlayer(0, QMediaPlayer::VideoSurface) {
+    clip = new Clip();
     scene = new QGraphicsScene;
     videoItem = new QGraphicsVideoItem();
     mediaPlayer.setVideoOutput(videoItem);
@@ -35,11 +34,20 @@ VideoPlayer::VideoPlayer(QWidget *parent) :
 }
 
 VideoPlayer::~VideoPlayer() {
+    delete clip;
 }
 
-void VideoPlayer::play(QString _path) {
+// display & initialize
+void VideoPlayer::displayVideo(Clip *_clip) {
+    delete clip;
+    clip = new Clip(*_clip);
+    transformVideo();
+    play();
+}
+
+void VideoPlayer::play() {
     stop();
-    path = _path;
+    QString path = clip->getPath();
     if(!path.isEmpty()) {
         mediaPlayer.setMedia(QUrl::fromLocalFile(path));
         switch(mediaPlayer.state()) {
@@ -56,7 +64,7 @@ void VideoPlayer::play(QString _path) {
 }
 
 void VideoPlayer::replay() {
-    play(path);
+    play();
 }
 
 void VideoPlayer::stop() {
@@ -71,7 +79,7 @@ void VideoPlayer::readSettings() {
 
 void VideoPlayer::handleMediaStatusChange(QMediaPlayer::MediaStatus status) {
     if(status == QMediaPlayer::EndOfMedia) {
-        play(path);
+        play();
     } else if(status == QMediaPlayer::BufferedMedia) {
         adjustVideoSize();
     }
@@ -89,6 +97,10 @@ void VideoPlayer::adjustVideoSize() {
     scene->setSceneRect(scene->itemsBoundingRect());
 }
 
+void VideoPlayer::transformVideo() {
+    videoItem->setTransform(clip->getTransform());
+}
+
 void VideoPlayer::handlePlayerStateChange(QMediaPlayer::State state) {
     Q_UNUSED(state)
 }
@@ -97,7 +109,7 @@ void VideoPlayer::handlePlayerStateChange(QMediaPlayer::State state) {
 void VideoPlayer::handleError() {
     qDebug() << "VideoPlayer: Error - " + mediaPlayer.errorString();
     while (retries>0){
-    play(path);
+    play();
     retries--;
     }
 }

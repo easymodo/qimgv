@@ -9,6 +9,7 @@
 
 class Clip {
 public:
+    Clip();
     Clip(const QString &fileName, const char* format);
     ~Clip();
 

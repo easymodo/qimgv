@@ -87,6 +87,7 @@ signals:
     void infoStringChanged(QString);
     void slowLoading();
     void imageAltered(QPixmap*);
+    void videoAltered(Clip*);
     void scalingFinished(QPixmap*);
     void frameChanged(QPixmap*);
     void thumbnailRequested(int);

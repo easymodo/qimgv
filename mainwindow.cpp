@@ -162,6 +162,9 @@ void MainWindow::enableImageViewer() {
         connect(core, SIGNAL(imageAltered(QPixmap *)),
                 imageViewer, SLOT(displayImage(QPixmap *)), Qt::UniqueConnection);
 
+        connect(core, SIGNAL(videoAltered(Clip *)),
+                videoPlayer, SLOT(displayVideo(Clip *)), Qt::UniqueConnection);
+
         connect(imageViewer, SIGNAL(cropSelected(QRect)),
                 core, SLOT(crop(QRect)), Qt::UniqueConnection);
 
@@ -241,7 +244,7 @@ void MainWindow::disableVideoPlayer() {
 
 void MainWindow::openVideo(Clip *clip) {
     enableVideoPlayer();
-    videoPlayer->play(clip->getPath());
+    videoPlayer->displayVideo(clip);
 }
 
 void MainWindow::openImage(QPixmap *pixmap) {

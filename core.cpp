@@ -104,10 +104,14 @@ void Core::setCurrentDir(QString path) {
 void Core::rotateImage(int degrees) {
     if(currentImage() != NULL) {
         currentImage()->rotate(degrees);
-        updateInfoString();
-        if (currentImage()->getPixmap() != NULL){
-        emit imageAltered(currentImage()->getPixmap());
+        ImageStatic *staticImage;
+        if((staticImage = dynamic_cast<ImageStatic *>(currentImage())) != NULL) {
+            emit imageAltered(currentImage()->getPixmap());
         }
+        else if ((currentVideo = dynamic_cast<Video *>(currentImage())) != NULL) {
+            emit videoAltered(currentVideo->getClip());
+        }
+        updateInfoString();
     }
 }
 
@@ -216,10 +220,10 @@ void Core::onLoadFinished(Image *img, int pos) {
     if((currentImageAnimated = dynamic_cast<ImageAnimated *>(img)) != NULL) {
         startAnimation();
     }
-    if((currentVideo = dynamic_cast<Video *>(img)) != NULL) {
+    else if((currentVideo = dynamic_cast<Video *>(img)) != NULL) {
         emit videoChanged(currentVideo->getClip());
     }
-    if(!currentVideo && img) {    //static image
+    else if(!currentVideo && img) {    //static image
         emit signalSetImage(img->getPixmap());
     }
     emit imageChanged(pos);
@@ -233,7 +237,13 @@ void Core::crop(QRect newRect) {
         if((staticImage = dynamic_cast<ImageStatic *>(currentImage())) != NULL) {
             staticImage->crop(newRect);
             updateInfoString();
+            emit imageAltered(currentImage()->getPixmap());
+        }
+        else if ((currentVideo = dynamic_cast<Video *>(currentImage())) != NULL) {
+            currentVideo->crop(newRect);
+            updateInfoString();
+            emit videoAltered(currentVideo->getClip());
         }
     }
-    emit imageAltered(currentImage()->getPixmap());
+
 }
