@@ -42,7 +42,8 @@ void ActionManager::createActionList() {
                                 << "exit";
 }
 
-//TODO: update keymap for ps/2 keyboards
+// layout-independent key codes
+// TODO: save for macbook and add key codes from OS X
 void ActionManager::initKeyMap() {
     actionManager->keyMap.clear();
 #ifdef _WIN32

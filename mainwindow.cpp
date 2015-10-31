@@ -108,9 +108,7 @@ void MainWindow::init() {
 
     core->init();
 
-    //##############################################################
-    //######################### Shortcuts ##########################
-    //##############################################################
+    // Shortcuts
 
     connect(actionManager, SIGNAL(nextImage()), core, SLOT(slotNextImage()));
     connect(actionManager, SIGNAL(prevImage()), core, SLOT(slotPrevImage()));
@@ -239,6 +237,10 @@ void MainWindow::disableVideoPlayer() {
     videoPlayer->hide();
 }
 
+void MainWindow::open(QString path) {
+    core->loadImageBlocking(path);
+}
+
 void MainWindow::openVideo(QString path) {
     enableVideoPlayer();
     videoPlayer->play(path);
@@ -247,10 +249,6 @@ void MainWindow::openVideo(QString path) {
 void MainWindow::openImage(QPixmap *pixmap) {
     enableImageViewer();
     imageViewer->displayImage(pixmap);
-}
-
-void MainWindow::open(QString path) {
-    core->loadImageBlocking(path);
 }
 
 void MainWindow::readSettingsInitial() {
@@ -276,24 +274,108 @@ void MainWindow::readSettings() {
     calculatePanelTriggerArea();
 }
 
-void MainWindow::slotOpenDialog() {
-    QFileDialog dialog;
-    QStringList imageFilter;
-    imageFilter.append(settings->supportedFormatsString());
-    imageFilter.append("All Files (*)");
-    QString lastDir = settings->lastDirectory();
-    dialog.setDirectory(lastDir);
-    dialog.setNameFilters(imageFilter);
-    dialog.setWindowTitle("Open image");
-    //dialog.setParent(this);
-    dialog.setWindowModality(Qt::ApplicationModal);
-    connect(&dialog, SIGNAL(fileSelected(QString)), this, SIGNAL(fileOpened(QString)));
-    dialog.exec();
+void MainWindow::calculatePanelTriggerArea() {
+    switch(panelPosition) {
+        case LEFT:
+            panelArea.setRect(0, 0, panel->width() - 1, height());
+            break;
+        case RIGHT:
+            panelArea.setRect(width() - panel->width() + 1, 0, width(), height());
+            break;
+        case BOTTOM:
+            panelArea.setRect(0, height() - panel->height() + 1, width() - 180, height());
+            break;
+        case TOP:
+            panelArea.setRect(0, 0, width(), panel->height() - 1);
+            if(isFullScreen()) {
+                panelArea.setRight(width() - 250);
+            }
+            break;
+    }
 }
 
-void MainWindow::showSettings() {
-    SettingsDialog settingsDialog;
-    settingsDialog.exec();
+void MainWindow::updateOverlays() {
+    controlsOverlay->updateSize(this->centralWidget()->size());
+    infoOverlay->updateWidth(this->centralWidget()->width());
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event) {
+    Q_UNUSED(event)
+    if(panel) {
+        calculatePanelTriggerArea();
+        emit resized(size());
+    }
+    updateOverlays();
+}
+
+//#############################################################
+//######################### EVENTS ############################
+//#############################################################
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event) {
+    if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
+        if(panelArea.contains(event->pos()) && panel) {
+            panel->show();
+        }
+        event->ignore();
+    }
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *e) {
+    if(e->mimeData()->hasUrls()) {
+        e->acceptProposedAction();
+    }
+}
+
+void MainWindow::dropEvent(QDropEvent *event) {
+    const QMimeData *mimeData = event->mimeData();
+    // check for our needed mime type, here a file or a list of files
+    if(mimeData->hasUrls()) {
+        QStringList pathList;
+        QList<QUrl> urlList = mimeData->urls();
+        // extract the local paths of the files
+        for(int i = 0; i < urlList.size() && i < 32; ++i) {
+            pathList.append(urlList.at(i).toLocalFile());
+        }
+        // try to open first file in the list
+        open(pathList.first());
+    }
+}
+
+bool MainWindow::event(QEvent *event) {
+    return (actionManager->processEvent(event)) ? true : QMainWindow::event(event);
+}
+
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    this->hide();
+    if(QThreadPool::globalInstance()->activeThreadCount()) {
+        QThreadPool::globalInstance()->waitForDone();
+    }
+    if(!isMaximized() && !isFullScreen()) {
+        saveWindowGeometry();
+    }
+    QMainWindow::closeEvent(event);
+}
+
+void MainWindow::saveWindowGeometry() {
+    settings->setWindowGeometry(this->saveGeometry());
+}
+
+void MainWindow::restoreWindowGeometry() {
+    this->restoreGeometry(settings->windowGeometry());
+}
+
+MainWindow::~MainWindow() {
+}
+
+//#############################################################
+//######################## OTHERS #############################
+//#############################################################
+
+void MainWindow::setInfoString(QString text) {
+    infoOverlay->setText(text);
+    setWindowTitle(text);
 }
 
 void MainWindow::slotShowControls(bool x) {
@@ -304,9 +386,31 @@ void MainWindow::slotShowInfo(bool x) {
     x ? infoOverlay->show() : infoOverlay->hide();
 }
 
-void MainWindow::setInfoString(QString text) {
-    infoOverlay->setText(text);
-    setWindowTitle(text);
+void MainWindow::triggerMenuBar() {
+    if(this->menuBar()->isHidden()) {
+        this->menuBar()->show();
+    } else {
+        this->menuBar()->hide();
+    }
+    settings->setMenuBarHidden(this->menuBar()->isHidden());
+}
+
+void MainWindow::showMenuBar() {
+    if(!settings->menuBarHidden()) {
+        menuBar()->show();
+    }
+}
+
+//#############################################################
+//###################### ACTION SLOTS #########################
+//#############################################################
+
+void MainWindow::switchFitMode() {
+    if(modeFitAll->isChecked()) {
+        this->slotFitNormal();
+    } else {
+        this->slotFitAll();
+    }
 }
 
 void MainWindow::slotFitAll() {
@@ -329,6 +433,121 @@ void MainWindow::slotFitNormal() {
     modeFitNormal->setChecked(true);
     emit signalFitNormal();
 }
+
+void MainWindow::slotTriggerFullscreen() {
+    this->fullscreenEnabledAct->trigger();
+}
+
+void MainWindow::slotFullscreen() {
+    if(fullscreenEnabledAct->isChecked()) {
+        saveWindowGeometry();
+        this->menuBar()->hide();
+        if(borderlessEnabled) {
+            this->setWindowFlags(Qt::FramelessWindowHint);
+            this->showMaximized();
+        } else {
+            this->showFullScreen();
+        }
+        emit signalFullscreenEnabled(true);
+    } else {
+        showMenuBar();
+        this->setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint);
+        this->show();
+        restoreWindowGeometry();
+        if(this->windowState() & Qt::WindowMaximized) {
+            this->showMaximized();
+        }
+        this->activateWindow();
+        this->raise();
+        emit signalFullscreenEnabled(false);
+    }
+}
+
+void MainWindow::slotMinimize() {
+    this->setWindowState(Qt::WindowMinimized);
+}
+
+void MainWindow::slotRotateLeft() {
+    core->rotateImage(-90);
+}
+
+void MainWindow::slotRotateRight() {
+    core->rotateImage(90);
+}
+
+void MainWindow::slotCrop() {
+    this->slotFitAll();
+    imageViewer->crop();
+}
+
+void MainWindow::slotSelectWallpaper() {
+    this->slotFitAll();
+    imageViewer->selectWallpaper();
+}
+
+void MainWindow::slotSaveDialog() {
+    const QString imagesFilter = settings->supportedFormatsString();
+    QString fileName = core->getCurrentFilePath();
+    fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+                                            fileName,
+                                            imagesFilter);
+    emit fileSaved(fileName);
+}
+
+void MainWindow::slotOpenDialog() {
+    QFileDialog dialog;
+    QStringList imageFilter;
+    imageFilter.append(settings->supportedFormatsString());
+    imageFilter.append("All Files (*)");
+    QString lastDir = settings->lastDirectory();
+    dialog.setDirectory(lastDir);
+    dialog.setNameFilters(imageFilter);
+    dialog.setWindowTitle("Open image");
+    //dialog.setParent(this);
+    dialog.setWindowModality(Qt::ApplicationModal);
+    connect(&dialog, SIGNAL(fileSelected(QString)), this, SIGNAL(fileOpened(QString)));
+    dialog.exec();
+}
+
+void MainWindow::showSettings() {
+    SettingsDialog settingsDialog;
+    settingsDialog.exec();
+}
+
+void MainWindow::slotAbout() {
+    QMessageBox msgBox;
+    msgBox.setIconPixmap(QPixmap(":/images/res/icons/pepper.png"));
+    QSpacerItem *horizontalSpacer =
+        new QSpacerItem(250,
+                        0,
+                        QSizePolicy::Minimum,
+                        QSizePolicy::Expanding);
+    msgBox.setWindowTitle("About " +
+                          QCoreApplication::applicationName() +
+                          " " +
+                          QCoreApplication::applicationVersion());
+    QString message;
+    message = "qimgv is a simple image viewer written in qt.";
+    message.append("<br>This program is licensed under GNU GPL Version 3.");
+    message.append("<br><br>Website: <a href='https://github.com/easymodo/qimgv'>github.com/easymodo/qimgv</a>");
+    message.append("<br><br>Main developer: <br>Easymodo (easymodofrf@gmail.com)");
+    message.append("<br><br><a href='https://github.com/easymodo/qimgv/graphs/contributors'>Contributors</a>");
+    message.append("<br><br> This is a pre-release software.");
+    message.append("<br> Expect bugs.");
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setText(message);
+    QGridLayout *layout = (QGridLayout *) msgBox.layout();
+    layout->addItem(horizontalSpacer,
+                    layout->rowCount(),
+                    0,
+                    1,
+                    layout->columnCount());
+    msgBox.exec();
+}
+
+//#############################################################
+//#################### MENU BAR & ACTIONS #####################
+//#############################################################
 
 void MainWindow::createActions() {
     openAct = new QAction(tr("&Open..."), this);
@@ -455,218 +674,5 @@ void MainWindow::createMenus() {
     menuBar()->addMenu(navigationMenu);
     menuBar()->addMenu(helpMenu);
 }
-
-void MainWindow::slotTriggerFullscreen() {
-    this->fullscreenEnabledAct->trigger();
-}
-
-void MainWindow::slotCrop() {
-    this->slotFitAll();
-    imageViewer->crop();
-}
-
-void MainWindow::slotSelectWallpaper() {
-    this->slotFitAll();
-    imageViewer->selectWallpaper();
-}
-
-void MainWindow::slotFullscreen() {
-    if(fullscreenEnabledAct->isChecked()) {
-        saveWindowGeometry();
-        this->menuBar()->hide();
-        if(borderlessEnabled) {
-            this->setWindowFlags(Qt::FramelessWindowHint);
-            this->showMaximized();
-        } else {
-            this->showFullScreen();
-        }
-        emit signalFullscreenEnabled(true);
-    } else {
-        showMenuBar();
-        this->setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint);
-        this->show();
-        restoreWindowGeometry();
-        if(this->windowState() & Qt::WindowMaximized) {
-            this->showMaximized();
-        }
-        this->activateWindow();
-        this->raise();
-        emit signalFullscreenEnabled(false);
-    }
-}
-
-void MainWindow::slotMinimize() {
-    this->setWindowState(Qt::WindowMinimized);
-}
-
-void MainWindow::switchFitMode() {
-    if(modeFitAll->isChecked()) {
-        this->slotFitNormal();
-    } else {
-        this->slotFitAll();
-    }
-}
-
-void MainWindow::slotSetInfoString(QString info) {
-    infoOverlay->setText(info);
-    info.append(" - ");
-    info.append(QCoreApplication::applicationName());
-    setWindowTitle(info);
-}
-
-void MainWindow::slotRotateLeft() {
-    core->rotateImage(-90);
-}
-
-void MainWindow::slotRotateRight() {
-    core->rotateImage(90);
-}
-
-void MainWindow::slotSaveDialog() {
-    const QString imagesFilter = settings->supportedFormatsString();
-    QString fileName = core->getCurrentFilePath();
-    fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
-                                            fileName,
-                                            imagesFilter);
-    emit fileSaved(fileName);
-}
-
-void MainWindow::resizeEvent(QResizeEvent *event) {
-    Q_UNUSED(event)
-    if(panel) {
-        calculatePanelTriggerArea();
-        emit resized(size());
-    }
-    updateOverlays();
-}
-
-void MainWindow::calculatePanelTriggerArea() {
-    switch(panelPosition) {
-        case LEFT:
-            panelArea.setRect(0, 0, panel->width() - 1, height());
-            break;
-        case RIGHT:
-            panelArea.setRect(width() - panel->width() + 1, 0, width(), height());
-            break;
-        case BOTTOM:
-            panelArea.setRect(0, height() - panel->height() + 1, width() - 180, height());
-            break;
-        case TOP:
-            panelArea.setRect(0, 0, width(), panel->height() - 1);
-            if(isFullScreen()) {
-                panelArea.setRight(width() - 250);
-            }
-            break;
-    }
-}
-
-void MainWindow::updateOverlays() {
-    controlsOverlay->updateSize(this->centralWidget()->size());
-    infoOverlay->updateWidth(this->centralWidget()->width());
-}
-
-void MainWindow::mouseMoveEvent(QMouseEvent *event) {
-    if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
-        if(panelArea.contains(event->pos()) && panel) {
-            panel->show();
-        }
-        event->ignore();
-    }
-}
-
-void MainWindow::showMenuBar() {
-    if(!settings->menuBarHidden()) {
-        menuBar()->show();
-    }
-}
-
-void MainWindow::triggerMenuBar() {
-    if(this->menuBar()->isHidden()) {
-        this->menuBar()->show();
-    } else {
-        this->menuBar()->hide();
-    }
-    settings->setMenuBarHidden(this->menuBar()->isHidden());
-}
-
-void MainWindow::dragEnterEvent(QDragEnterEvent *e) {
-    if(e->mimeData()->hasUrls()) {
-        e->acceptProposedAction();
-    }
-}
-
-void MainWindow::dropEvent(QDropEvent *event) {
-    const QMimeData *mimeData = event->mimeData();
-    // check for our needed mime type, here a file or a list of files
-    if(mimeData->hasUrls()) {
-        QStringList pathList;
-        QList<QUrl> urlList = mimeData->urls();
-        // extract the local paths of the files
-        for(int i = 0; i < urlList.size() && i < 32; ++i) {
-            pathList.append(urlList.at(i).toLocalFile());
-        }
-        // try to open first file in the list
-        open(pathList.first());
-    }
-}
-
-bool MainWindow::event(QEvent *event) {
-    return (actionManager->processEvent(event)) ? true : QMainWindow::event(event);
-}
-
-void MainWindow::slotAbout() {
-    QMessageBox msgBox;
-    msgBox.setIconPixmap(QPixmap(":/images/res/icons/pepper.png"));
-    QSpacerItem *horizontalSpacer =
-        new QSpacerItem(250,
-                        0,
-                        QSizePolicy::Minimum,
-                        QSizePolicy::Expanding);
-    msgBox.setWindowTitle("About " +
-                          QCoreApplication::applicationName() +
-                          " " +
-                          QCoreApplication::applicationVersion());
-    QString message;
-    message = "qimgv is a simple image viewer written in qt.";
-    message.append("<br>This program is licensed under GNU GPL Version 3.");
-    message.append("<br><br>Website: <a href='https://github.com/easymodo/qimgv'>github.com/easymodo/qimgv</a>");
-    message.append("<br><br>Main developer: <br>Easymodo (easymodofrf@gmail.com)");
-    message.append("<br><br><a href='https://github.com/easymodo/qimgv/graphs/contributors'>Contributors</a>");
-    message.append("<br><br> This is a pre-release software.");
-    message.append("<br> Expect bugs.");
-    msgBox.setTextFormat(Qt::RichText);
-    msgBox.setText(message);
-    QGridLayout *layout = (QGridLayout *) msgBox.layout();
-    layout->addItem(horizontalSpacer,
-                    layout->rowCount(),
-                    0,
-                    1,
-                    layout->columnCount());
-    msgBox.exec();
-}
-
-void MainWindow::closeEvent(QCloseEvent *event) {
-    this->hide();
-    if(QThreadPool::globalInstance()->activeThreadCount()) {
-        QThreadPool::globalInstance()->waitForDone();
-    }
-    if(!isMaximized() && !isFullScreen()) {
-        saveWindowGeometry();
-    }
-    QMainWindow::closeEvent(event);
-}
-
-void MainWindow::saveWindowGeometry() {
-    settings->setWindowGeometry(this->saveGeometry());
-}
-
-void MainWindow::restoreWindowGeometry() {
-    this->restoreGeometry(settings->windowGeometry());
-}
-
-MainWindow::~MainWindow() {
-}
-
-
 
 
