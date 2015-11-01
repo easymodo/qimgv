@@ -9,9 +9,6 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     thumbView = new ThumbnailView();
     widget = new ClickableWidget();
 
-    widget->setMinimumHeight(1600);
-    widget->setMinimumWidth(200);
-
     thumbView->setWidget(widget);
     thumbView->setFrameShape(QFrame::NoFrame);
 
@@ -58,6 +55,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     this->setLayout(layout);
 
     // other extremely important things
+
     thumbView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     widget->setAccessibleName("thumbnailWidget");
@@ -203,6 +201,11 @@ void ThumbnailStrip::setThumbnail(int pos, Thumbnail *thumb) {
 }
 
 void ThumbnailStrip::updateVisibleRegion() {
+    // make scrollbar update while hidden
+    thumbView->setWidgetResizable(true);
+    layout->invalidate();
+    layout->activate();
+
     if(viewLayout->direction() == QBoxLayout::LeftToRight) {
         visibleRegion = thumbView->rect().translated(scrollBar->value(), 0);
         preloadArea = visibleRegion.adjusted(-OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA, 0);

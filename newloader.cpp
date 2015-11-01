@@ -9,6 +9,7 @@ NewLoader::NewLoader(DirectoryManager *_dm) :
     dm = _dm;
     loadThread = new QThread(this);
     readSettings();
+   //QPixmapCache::setCacheLimit(20480);
     QThreadPool::globalInstance()->setMaxThreadCount(4);
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));

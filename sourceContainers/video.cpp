@@ -59,29 +59,36 @@ QPixmap *Video::generateThumbnail() {
                       " -r 1 -f image2 " + "\"" + filePath + "\"";
     QProcess process;
     process.start(command);
-    process.waitForFinished();
+    bool success = process.waitForFinished(2000);
     process.close();
-
-    int size = settings->thumbnailSize();
-    QPixmap *thumbnail = new QPixmap(size, size);
-    QPixmap *tmp;
-    tmp = new QPixmap(filePath, "JPG");
-    *tmp = tmp->scaled(size * 2,
-                       size * 2,
+    if(success) {
+        int size = settings->thumbnailSize();
+        QPixmap *thumbnail = new QPixmap(size, size);
+        QPixmap *tmp;
+        tmp = new QPixmap(filePath, "JPG");
+        *tmp = tmp->scaled(size * 2,
+                           size * 2,
+                           Qt::KeepAspectRatioByExpanding,
+                           Qt::FastTransformation)
+               .scaled(size,
+                       size,
                        Qt::KeepAspectRatioByExpanding,
-                       Qt::FastTransformation)
-           .scaled(size,
-                   size,
-                   Qt::KeepAspectRatioByExpanding,
-                   Qt::SmoothTransformation);
+                       Qt::SmoothTransformation);
 
-    QRect target(0, 0, size, size);
-    target.moveCenter(tmp->rect().center());
-    *thumbnail = tmp->copy(target);
-    delete tmp;
-    QFile tmpFile(filePath);
-    tmpFile.remove();
-    return thumbnail;
+        QRect target(0, 0, size, size);
+        target.moveCenter(tmp->rect().center());
+        *thumbnail = tmp->copy(target);
+        delete tmp;
+        QFile tmpFile(filePath);
+        tmpFile.remove();
+        return thumbnail;
+    } else {
+        QFile tmpFile(filePath);
+        if(tmpFile.exists()) {
+            tmpFile.remove();
+        }
+        return thumbnailStub();
+    }
 }
 
 QPixmap *Video::thumbnailStub() {

@@ -62,7 +62,9 @@ QString Settings::ffmpegExecutable() {
 }
 
 void Settings::setFfmpegExecutable(QString path) {
-    settings->s.setValue("ffmpegExe", path);
+    if(QFile::exists(path)) {
+        settings->s.setValue("ffmpegExe", path);
+    }
 }
 
 // returns list of regexps
