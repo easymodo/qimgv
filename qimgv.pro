@@ -52,6 +52,7 @@ SOURCES += main.cpp\
     wallpapersetter.cpp \
     actionmanager.cpp \
     customWidgets/settingsshortcutwidget.cpp \
+    sourceContainers/clip.cpp \
     thumbnailPanel/thumbnailview.cpp \
     customWidgets/clickablewidget.cpp
 
@@ -86,6 +87,7 @@ HEADERS  += mainwindow.h \
     lib/stuff.h \
     actionmanager.h \
     customWidgets/settingsshortcutwidget.h \
+    sourceContainers/clip.h \
     thumbnailPanel/thumbnailview.h \
     customWidgets/clickablewidget.h
 

@@ -13,7 +13,7 @@ public:
     ImageStatic(FileInfo *_info);
     ~ImageStatic();
 
-    QPixmap* getPixmap();
+    QPixmap *getPixmap();
     const QImage* getImage();
     void load();
     int height();
@@ -22,7 +22,7 @@ public:
 
     QImage *rotated(int grad);
     void rotate(int grad);
-    QPixmap* generateThumbnail();
+    QPixmap *generateThumbnail();
     QImage *cropped(QRect newRect, QRect targetRes, bool upscaled);
 
 public slots:

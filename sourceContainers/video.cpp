@@ -4,7 +4,7 @@
 //use this one
 Video::Video(QString _path) {
     path = _path;
-    loaded = true;
+    loaded = false;
     info = new FileInfo(_path, this);
 }
 
@@ -16,16 +16,35 @@ Video::Video(FileInfo *_info) {
 
 Video::~Video() {
     delete info;
+    delete clip;
 }
 
 void Video::load() {
+    QMutexLocker locker(&mutex);
+    if(!info) {
+        info = new FileInfo(path);
+    }
+    if(isLoaded()) {
+        return;
+    }
+    clip = new Clip(path, info->getExtension());
+    loaded = true;
 }
 
 void Video::save(QString destinationPath) {
-    Q_UNUSED(destinationPath)
+    if(isLoaded()) {
+        lock();
+        clip->save(destinationPath, getExtension(destinationPath), 100);
+        unlock();
+    }
 }
 
 void Video::save() {
+    if(isLoaded()) {
+        lock();
+        clip->save(path, info->getExtension(), 100);
+        unlock();
+    }
 }
 
 QPixmap *Video::generateThumbnail() {
@@ -91,32 +110,30 @@ QPixmap *Video::getPixmap() {
     return NULL;
 }
 
+Clip *Video::getClip() {
+    return clip;
+}
+
 int Video::height() {
-    return 0;
+    return isLoaded() ? clip->height() : 0;
 }
 
 int Video::width() {
-    return 0;
+    return isLoaded() ? clip->width() : 0;
 }
 
 QSize Video::size() {
-    return QSize(0, 0);
-}
-
-QString Video::filePath() {
-    return info->getFilePath();
-}
-
-QImage *Video::rotated(int grad) {
-    Q_UNUSED(grad)
+    return isLoaded() ? clip->size() : QSize(0, 0);
 }
 
 void Video::rotate(int grad) {
-    Q_UNUSED(grad)
-
+    if (isLoaded()) {
+        clip->rotate(grad);
+    }
 }
 
 void Video::crop(QRect newRect) {
-    Q_UNUSED(newRect)
-
+    if (isLoaded()) {
+        clip->setFrame(newRect);
+    }
 }

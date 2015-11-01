@@ -550,7 +550,7 @@
         </rect>
        </property>
        <property name="toolTip">
-        <string>When preloader used, ram usege may exceed this setting.</string>
+        <string>When preloader is enabled, ram usage may exceed this setting.</string>
        </property>
        <property name="text">
         <string>Cache size, MB:</string>
@@ -569,7 +569,7 @@
         </rect>
        </property>
        <property name="toolTip">
-        <string>Checking this will make the program keep in memory only currently displayed image (except the preloaded one).</string>
+        <string>Checking this will make the program keep in memory only the currently displayed image (except the preloaded image).</string>
        </property>
        <property name="text">
         <string>Reduce RAM usage</string>

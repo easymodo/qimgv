@@ -28,8 +28,9 @@ ImageStatic::~ImageStatic() {
 //load image data from disk
 void ImageStatic::load() {
     QMutexLocker locker(&mutex);
-    if(!info)
+    if(!info) {
         info = new FileInfo(path);
+    }
     if(isLoaded()) {
         return;
     }

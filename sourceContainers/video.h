@@ -2,6 +2,7 @@
 #define VIDEO_H
 
 #include "image.h"
+#include "clip.h"
 #include <QImage>
 #include <QPixmap>
 #include <QProcess>
@@ -16,14 +17,13 @@ public:
     ~Video();
 
     QPixmap* getPixmap();
+    Clip* getClip();    // getPixmap's video equivalent
     void load();
     void unload();
     int height();
     int width();
     QSize size();
-    QString filePath();
 
-    QImage *rotated(int grad);
     void rotate(int grad);
     QPixmap* generateThumbnail();
 
@@ -35,6 +35,7 @@ public slots:
 
 private:
     QPixmap *thumbnailStub();
+    Clip *clip;
 };
 
 #endif // VIDEO_H

@@ -26,12 +26,13 @@ ImageAnimated::~ImageAnimated() {
 
 //load image data from disk
 void ImageAnimated::load() {
-    QMutexLocker mutexLocker(&mutex);
+    QMutexLocker locker(&mutex);
     if(isLoaded()) {
         return;
     }
-    if(!info)
+    if(!info) {
         info = new FileInfo(path, this);
+    }
     movie->setFormat("GIF");
     movie->setFileName(path);
     movie->jumpToFrame(0);

@@ -8,3 +8,10 @@
 .dir*
 *.orig
 
+debug/
+release/
+*.debug
+*.release
+*.user
+ui_settingsdialog.h
+Makefile

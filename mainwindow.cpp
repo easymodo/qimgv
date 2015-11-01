@@ -100,8 +100,8 @@ void MainWindow::init() {
     connect(core, SIGNAL(cacheInitialized(int)),
             panel, SLOT(fillPanel(int)), Qt::DirectConnection);
 
-    connect(core, SIGNAL(videoChanged(QString)),
-            this, SLOT(openVideo(QString)), Qt::UniqueConnection);
+    connect(core, SIGNAL(videoChanged(Clip *)),
+            this, SLOT(openVideo(Clip *)), Qt::UniqueConnection);
 
     connect(core, SIGNAL(stopVideo()),
             this, SLOT(disableVideoPlayer()));
@@ -159,6 +159,9 @@ void MainWindow::enableImageViewer() {
         // reload after image edits
         connect(core, SIGNAL(imageAltered(QPixmap *)),
                 imageViewer, SLOT(displayImage(QPixmap *)), Qt::UniqueConnection);
+
+        connect(core, SIGNAL(videoAltered(Clip *)),
+                videoPlayer, SLOT(displayVideo(Clip *)), Qt::UniqueConnection);
 
         connect(imageViewer, SIGNAL(cropSelected(QRect)),
                 core, SLOT(crop(QRect)), Qt::UniqueConnection);
@@ -237,13 +240,13 @@ void MainWindow::disableVideoPlayer() {
     videoPlayer->hide();
 }
 
-void MainWindow::open(QString path) {
-    core->loadImageBlocking(path);
+void MainWindow::openVideo(Clip *clip) {
+    enableVideoPlayer();
+    videoPlayer->displayVideo(clip);
 }
 
-void MainWindow::openVideo(QString path) {
-    enableVideoPlayer();
-    videoPlayer->play(path);
+void MainWindow::open(QString path) {
+    core->loadImageBlocking(path);
 }
 
 void MainWindow::openImage(QPixmap *pixmap) {
