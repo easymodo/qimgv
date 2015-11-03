@@ -47,7 +47,7 @@ void ThumbnailLabel::readSettings() {
     }
     this->setFixedSize(thumbnailSize+borderW*2, thumbnailSize+borderH*2);
     nameRect.setTopLeft(QPointF(borderW, borderH));
-    nameRect.setBottomRight(QPointF(borderW + thumbnailSize, borderH + 17));
+    nameRect.setBottomRight(QPointF(borderW + thumbnailSize, borderH + 19));
     nameRect.setWidth(thumbnailSize);
     labelRect = QRectF(QPointF(borderW + thumbnailSize - 25, borderH),
                        QPointF(borderW + thumbnailSize, borderH + nameRect.height()));
@@ -138,15 +138,15 @@ void ThumbnailLabel::paintEvent(QPaintEvent *event) {
         //nameLabel
         painter.fillRect(nameRect, *nameColor);
         painter.setPen(QColor(10, 10, 10, 200));
-        painter.drawText(nameRect.adjusted(3, 2, 0, 0), thumbnail->name);
+        painter.drawText(nameRect.adjusted(4, 3, 0, 0), thumbnail->name);
         painter.setPen(QColor(255, 255, 255, 255));
-        painter.drawText(nameRect.adjusted(2, 1, 0, 0), thumbnail->name);
+        painter.drawText(nameRect.adjusted(3, 2, 0, 0), thumbnail->name);
 
         painter.setOpacity(1.0f);
         //typeLabel
         if(showLabel) {
             painter.fillRect(labelRect, *labelColor);
-            QPointF labelTextPos = labelRect.bottomLeft() + QPointF(2, -5);
+            QPointF labelTextPos = labelRect.bottomLeft() + QPointF(2, -6);
             painter.setPen(QColor(10, 10, 10, 200));
             painter.drawText(labelTextPos + QPointF(1, 1), thumbnail->label);
             painter.setPen(QColor(255, 255, 255, 255));
