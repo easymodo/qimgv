@@ -27,10 +27,13 @@ private:
     void readSettings();
     void fillShortcuts();
     Ui::SettingsDialog *ui;
-    static constexpr int thumbSizeSmall = 120,
-              thumbSizeMedium = 135,
-              thumbSizeLarge = 170,
-              thumbSizeVeryLarge = 200;
+    enum Constants {
+        thumbSizeSmall = 120,
+        thumbSizeMedium = 135,
+        thumbSizeLarge = 170,
+        thumbSizeVeryLarge = 200
+    };
+
 
     int thumbSizeCustom;
     QStringList shortcutKeys;

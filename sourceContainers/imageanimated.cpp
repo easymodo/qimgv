@@ -93,7 +93,7 @@ QPixmap *ImageAnimated::generateThumbnail() {
 QPixmap *ImageAnimated::getPixmap() {
     QPixmap *pix = new QPixmap();
     if(isLoaded()) {
-        *pix = movie->currentPixmap();
+        *pix = movie->currentPixmap().transformed(transform, Qt::SmoothTransformation);
     }
     return pix;
 }
@@ -101,7 +101,7 @@ QPixmap *ImageAnimated::getPixmap() {
 const QImage *ImageAnimated::getImage() {
     QImage *img = new QImage();
     if(isLoaded()) {
-        *img = movie->currentImage();
+        *img = movie->currentImage().transformed(transform, Qt::SmoothTransformation);
     }
     const QImage *cPtr = img;
     return cPtr;
@@ -143,7 +143,8 @@ void ImageAnimated::nextFrame() {
     if(!movie->jumpToNextFrame()) {
         movie->jumpToFrame(0);
     }
-    QPixmap *newFrame = new QPixmap(movie->currentPixmap());
+    QPixmap *newFrame = new QPixmap();
+    *newFrame = movie->currentPixmap().transformed(transform, Qt::SmoothTransformation);
     startAnimationTimer();
     emit frameChanged(newFrame);
 }
@@ -155,10 +156,10 @@ void ImageAnimated::startAnimationTimer() {
 }
 
 void ImageAnimated::rotate(int grad) {
-    Q_UNUSED(grad)
     mutex.lock();
     if(isLoaded()) {
         //TODO
+        transform.rotate(grad);
     }
     mutex.unlock();
 }

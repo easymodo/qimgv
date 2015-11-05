@@ -39,6 +39,7 @@ private slots:
 private:
     QMovie *movie;
     QTimer *timer;
+    QTransform transform;
     void startAnimationTimer();
 };
 

@@ -30,7 +30,7 @@ public:
     void setOpacity(float opacity);
     float opacity() const;
 
-    bool enableVisibility(bool);
+    void enableVisibility(bool);
     
     void setLocation(Location l);
     Location location() const;

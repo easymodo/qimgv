@@ -4,6 +4,8 @@ VideoPlayer::VideoPlayer(QWidget *parent) : QGraphicsView(parent),
     mediaPlayer(0, QMediaPlayer::VideoSurface) {
     clip = new Clip();
     scene = new QGraphicsScene;
+    textMessage = new QGraphicsSimpleTextItem();
+    textMessage->setPen(QPen(QColor(Qt::white)));
     videoItem = new QGraphicsVideoItem();
     mediaPlayer.setVideoOutput(videoItem);
     retries = 1;
@@ -50,13 +52,20 @@ void VideoPlayer::play() {
     QString path = clip->getPath();
     if(!path.isEmpty()) {
         mediaPlayer.setMedia(QUrl::fromLocalFile(path));
-        switch(mediaPlayer.state()) {
-            case QMediaPlayer::PlayingState:
-                mediaPlayer.pause();
-                break;
-            default:
-                mediaPlayer.play();
-                break;
+        if(!mediaPlayer.isVideoAvailable()) {
+            textMessage->setText("No video decoder found.");
+            scene->addItem(textMessage);
+            setSceneRect(textMessage->boundingRect());
+        } else {
+            scene->removeItem(textMessage);
+            switch(mediaPlayer.state()) {
+                case QMediaPlayer::PlayingState:
+                    mediaPlayer.pause();
+                    break;
+                default:
+                    mediaPlayer.play();
+                    break;
+            }
         }
     } else {
         qDebug() << "VideoPlayer: empty path.";

@@ -32,8 +32,6 @@ int main(int argc, char *argv[]) {
     }
     if(a.arguments().length() > 1) {
         QString fileName = a.arguments().at(1);
-        fileName.replace("\\\\", "/");
-        fileName.replace("\\", "/");
         mw.open(fileName);
     }
     mw.show();

@@ -4,6 +4,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsVideoItem>
+#include <QGraphicsSimpleTextItem>
 #include <QGraphicsWidget>
 #include <QWidget>
 #include <qmediaplayer.h>
@@ -43,6 +44,7 @@ private:
     QMediaPlayer mediaPlayer;
     QGraphicsScene *scene;
     QGraphicsVideoItem *videoItem;
+    QGraphicsSimpleTextItem *textMessage;
     int retries;
 
 protected:

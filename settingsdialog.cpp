@@ -67,16 +67,16 @@ void SettingsDialog::readSettings() {
     // maybe use slider instead of combobox?
     int size = settings->thumbnailSize();
     switch(size) {
-        case thumbSizeSmall:
+        case SettingsDialog::thumbSizeSmall:
             ui->thumbSizeComboBox->setCurrentIndex(0);
             break;
-        case thumbSizeMedium:
+        case SettingsDialog::thumbSizeMedium:
             ui->thumbSizeComboBox->setCurrentIndex(1);
             break;
-        case thumbSizeLarge:
+        case SettingsDialog::thumbSizeLarge:
             ui->thumbSizeComboBox->setCurrentIndex(2);
             break;
-        case thumbSizeVeryLarge:
+        case SettingsDialog::thumbSizeVeryLarge:
             ui->thumbSizeComboBox->setCurrentIndex(3);
             break;
         default:

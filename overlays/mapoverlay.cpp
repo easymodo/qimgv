@@ -108,7 +108,7 @@ float MapOverlay::opacity() const {
     return d->opacity;
 }
 
-bool MapOverlay::enableVisibility(bool mode) {
+void MapOverlay::enableVisibility(bool mode) {
     visibilityEnabled = mode;
 }
 
