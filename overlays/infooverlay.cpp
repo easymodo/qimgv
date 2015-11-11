@@ -1,14 +1,15 @@
 #include "infooverlay.h"
 
-textOverlay::textOverlay(QWidget *parent) : QWidget(parent) {
+textOverlay::textOverlay(QWidget *parent) : QWidget(parent), textLength(0) {
     setPalette(Qt::transparent);
     setAttribute(Qt::WA_TransparentForMouseEvents);
     currentText = "No file opened.";
     font.setPixelSize(13);
-    drawRect.setTopLeft(QPoint(4, 2));
+    drawRect.setTopLeft(QPoint(2, 1));
     drawRect.setBottomRight(QPoint(950, 19));
     textColor = new QColor(255, 255, 255, 255);
     textShadowColor = new QColor(0, 0, 0, 150);
+    fm = new QFontMetrics(font);
     this->setFixedHeight(20);
     this->hide();
     //updateWidth();
@@ -19,6 +20,7 @@ void textOverlay::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
 
     QPainter painter(this);
+    painter.fillRect(QRect(0,0,textLength+8,22), QBrush(QColor(0, 0, 0, 100), Qt::SolidPattern));
     painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(QPen(*textShadowColor));
@@ -29,6 +31,7 @@ void textOverlay::paintEvent(QPaintEvent *event) {
 
 void textOverlay::setText(QString text) {
     currentText = text;
+    textLength = fm->width(currentText);
     this->update();
 }
 

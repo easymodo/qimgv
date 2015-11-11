@@ -122,7 +122,7 @@ void Core::setWallpaper(QRect wpRect) {
             QImage *cropped = NULL;
             QRect screenRes = QApplication::desktop()->screenGeometry();
             if(cropped = staticImage->cropped(wpRect, screenRes, true)) {
-                QString savePath = QDir::homePath() + "/" + ".wallpaper.jpg";
+                QString savePath = QDir::homePath() + "/" + ".wallpaper.png";
                 cropped->save(savePath, getExtension(savePath), 100);
                 WallpaperSetter::setWallpaper(savePath);
                 delete cropped;

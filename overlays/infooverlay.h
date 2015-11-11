@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QPainter>
 #include <QPen>
+#include <QFontMetrics>
 #include <QDebug>
 
 class textOverlay : public QWidget
@@ -18,6 +19,8 @@ private:
     QFont font;
     QRect drawRect;
     QColor *textColor, *textShadowColor;
+    int textLength;
+    QFontMetrics *fm;
 
 public slots:
     void updatePosition();
