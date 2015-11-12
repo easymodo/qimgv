@@ -52,12 +52,12 @@ void VideoPlayer::play() {
     QString path = clip->getPath();
     if(!path.isEmpty()) {
         mediaPlayer.setMedia(QUrl::fromLocalFile(path));
-        if(!mediaPlayer.isVideoAvailable()) {
+        /*if(!mediaPlayer.isVideoAvailable()) {
             textMessage->setText("No video decoder found.");
             scene->addItem(textMessage);
             setSceneRect(textMessage->boundingRect());
         } else {
-            scene->removeItem(textMessage);
+            scene->removeItem(textMessage); */
             switch(mediaPlayer.state()) {
                 case QMediaPlayer::PlayingState:
                     mediaPlayer.pause();
@@ -66,7 +66,7 @@ void VideoPlayer::play() {
                     mediaPlayer.play();
                     break;
             }
-        }
+      //  }
     } else {
         qDebug() << "VideoPlayer: empty path.";
     }
