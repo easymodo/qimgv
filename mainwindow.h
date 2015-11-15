@@ -39,6 +39,8 @@ public slots:
     void readSettings();
     void enableImageViewer();
     void enableVideoPlayer();
+    void enablePanel();
+    void disablePanel();
     void disableImageViewer();
     void disableVideoPlayer();
     void slotCrop();

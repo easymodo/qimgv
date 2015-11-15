@@ -23,6 +23,7 @@ public:
     // full file path
     // returns empty string if no file open
     QString getCurrentFilePath();
+    int imageCount();
 
 public slots:
     void updateInfoString();

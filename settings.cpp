@@ -247,6 +247,14 @@ void Settings::setShowThumbnailLabels(bool mode) {
     settings->s.setValue("showThumbnailLabels", mode);
 }
 
+bool Settings::panelEnabled() {
+    return settings->s.value("panelEnabled", true).toBool();
+}
+
+bool Settings::setPanelEnabled(bool mode) {
+    settings->s.setValue("panelEnabled", mode);
+}
+
 PanelPosition Settings::panelPosition() {
     QString posString = settings->s.value("panelPosition", "bottom").toString();
     if(posString == "top") {

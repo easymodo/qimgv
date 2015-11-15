@@ -27,6 +27,13 @@ QString Core::getCurrentFilePath() {
     return filePath;
 }
 
+int Core::imageCount() {
+    if(!dirManager)
+        return 0;
+
+    return dirManager->fileCount();
+}
+
 // ##############################################################
 // ####################### PUBLIC SLOTS #########################
 // ##############################################################

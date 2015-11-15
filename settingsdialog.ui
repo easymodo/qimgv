@@ -59,7 +59,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideNone</enum>
@@ -359,6 +359,19 @@
              </property>
              <property name="text">
               <string>Play sounds</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enablePanelCheckBox">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Enable thumbnail panel</string>
              </property>
             </widget>
            </item>
@@ -848,6 +861,13 @@
          </property>
          <property name="checked">
           <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="showMenuBarCheckBox">
+         <property name="text">
+          <string>Show menu bar</string>
          </property>
         </widget>
        </item>

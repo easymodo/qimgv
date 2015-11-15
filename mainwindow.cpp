@@ -15,7 +15,6 @@ MainWindow::MainWindow() :
     this->setMouseTracking(true);
     this->setAcceptDrops(true);
     init();
-    readSettingsInitial();
     setWindowTitle(QCoreApplication::applicationName() +
                    " " +
                    QCoreApplication::applicationVersion());
@@ -42,17 +41,12 @@ void MainWindow::init() {
     central->setLayout(layout);
     this->setCentralWidget(central);
 
-    panel = new ThumbnailStrip(this);
-    panel->parentResized(size());
-
     core = new Core();
 
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
 
     enableImageViewer();
-
-    connect(this, SIGNAL(resized(QSize)), panel, SLOT(parentResized(QSize)));
 
     connect(this, SIGNAL(signalNextImage()),
             core, SLOT(slotNextImage()));
@@ -81,32 +75,13 @@ void MainWindow::init() {
     connect(controlsOverlay, SIGNAL(minimizeClicked()),
             this, SLOT(slotMinimize()));
 
-    // when loaded
-    connect(core, SIGNAL(imageChanged(int)),
-            panel, SLOT(selectThumbnail(int)));
 
-    connect(this, SIGNAL(fileSaved(QString)),
-            core, SLOT(saveImage(QString)));
-
-    connect(panel, SIGNAL(thumbnailClicked(int)),
-            core, SLOT(loadImageByPos(int)));
-
-    connect(panel, SIGNAL(thumbnailRequested(int)),
-            core, SIGNAL(thumbnailRequested(int)));
-
-    connect(core, SIGNAL(thumbnailReady(int, Thumbnail *)),
-            panel, SLOT(setThumbnail(int, Thumbnail *)));
-
-    connect(core, SIGNAL(cacheInitialized(int)),
-            panel, SLOT(fillPanel(int)), Qt::DirectConnection);
 
     connect(core, SIGNAL(videoChanged(Clip *)),
             this, SLOT(openVideo(Clip *)), Qt::UniqueConnection);
 
     connect(core, SIGNAL(stopVideo()),
             this, SLOT(disableVideoPlayer()));
-
-    core->init();
 
     // Shortcuts
 
@@ -129,13 +104,68 @@ void MainWindow::init() {
     connect(actionManager, SIGNAL(save()), this, SLOT(slotSaveDialog()));
     connect(actionManager, SIGNAL(exit()), this, SLOT(close()));
 
-    // panel buttons
-    connect(panel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()));
-    connect(panel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()));
-    connect(panel, SIGNAL(settingsClicked()), this, SLOT(showSettings()));
+    connect(this, SIGNAL(fileSaved(QString)), core, SLOT(saveImage(QString)));
 
     createActions();
     createMenus();
+
+    readSettingsInitial();
+
+    core->init();
+}
+
+void MainWindow::enablePanel() {
+    if(!panel) {
+        panel = new ThumbnailStrip(this);
+        panel->parentResized(size());
+    }
+
+    connect(this, SIGNAL(resized(QSize)), panel, SLOT(parentResized(QSize)));
+
+    connect(core, SIGNAL(imageChanged(int)),
+            panel, SLOT(selectThumbnail(int)), Qt::UniqueConnection);
+
+    connect(panel, SIGNAL(thumbnailClicked(int)),
+            core, SLOT(loadImageByPos(int)), Qt::UniqueConnection);
+
+    connect(panel, SIGNAL(thumbnailRequested(int)),
+            core, SIGNAL(thumbnailRequested(int)), Qt::UniqueConnection);
+
+    connect(core, SIGNAL(thumbnailReady(int, Thumbnail *)),
+            panel, SLOT(setThumbnail(int, Thumbnail *)), Qt::UniqueConnection);
+
+    connect(core, SIGNAL(cacheInitialized(int)),
+            panel, SLOT(fillPanel(int)), static_cast<Qt::ConnectionType>(Qt::DirectConnection | Qt::UniqueConnection));
+
+    connect(panel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()), Qt::UniqueConnection);
+    connect(panel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()), Qt::UniqueConnection);
+    connect(panel, SIGNAL(settingsClicked()), this, SLOT(showSettings()), Qt::UniqueConnection);
+
+    panel->fillPanel(core->imageCount());
+}
+
+void MainWindow::disablePanel() {
+    if(!panel) {
+        return;
+    }
+    disconnect(core, SIGNAL(imageChanged(int)),
+            panel, SLOT(selectThumbnail(int)));
+
+    disconnect(panel, SIGNAL(thumbnailClicked(int)),
+            core, SLOT(loadImageByPos(int)));
+
+    disconnect(panel, SIGNAL(thumbnailRequested(int)),
+            core, SIGNAL(thumbnailRequested(int)));
+
+    disconnect(core, SIGNAL(thumbnailReady(int, Thumbnail *)),
+            panel, SLOT(setThumbnail(int, Thumbnail *)));
+
+    disconnect(core, SIGNAL(cacheInitialized(int)),
+            panel, SLOT(fillPanel(int)));
+
+    disconnect(panel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()));
+    disconnect(panel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()));
+    disconnect(panel, SIGNAL(settingsClicked()), this, SLOT(showSettings()));
 }
 
 void MainWindow::enableImageViewer() {
@@ -274,10 +304,15 @@ void MainWindow::readSettings() {
         slotFitAll();
     }
     emit resized(size());
+    settings->panelEnabled()?enablePanel():disablePanel();
     calculatePanelTriggerArea();
 }
 
 void MainWindow::calculatePanelTriggerArea() {
+    if(!settings->panelEnabled()) {
+        panelArea.setRect(0,0,0,0);
+        return;
+    }
     switch(panelPosition) {
         case LEFT:
             panelArea.setRect(0, 0, panel->width() - 1, height());

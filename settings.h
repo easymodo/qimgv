@@ -73,6 +73,8 @@ public:
     QStringList supportedFormats();
     void readShortcuts();
     void saveShortcuts();
+    bool panelEnabled();
+    bool setPanelEnabled(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 135;
