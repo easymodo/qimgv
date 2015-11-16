@@ -18,7 +18,11 @@ ImageCache::~ImageCache() {
 void ImageCache::init(QString directory, QStringList list) {
     lock();
     dir = directory;
-    cachedImages->clear();
+    while(!cachedImages->isEmpty()) {
+        delete cachedImages->takeFirst();
+    }
+    delete cachedImages;
+    cachedImages = new QList<CacheObject *>();
     for(int i = 0; i < list.length(); i++) {
         cachedImages->append(new CacheObject(list.at(i)));
     }

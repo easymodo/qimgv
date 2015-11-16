@@ -18,7 +18,10 @@ public:
     }
 
     ~CacheObject() {
-        img->safeDeleteSelf();
+        if(img)
+            img->safeDeleteSelf();
+        delete thumbnail;
+        delete info;
     }
     Thumbnail* getThumbnail() {
         if(!thumbnail) {

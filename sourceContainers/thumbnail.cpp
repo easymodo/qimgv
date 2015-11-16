@@ -4,3 +4,6 @@ Thumbnail::Thumbnail() {
 
 }
 
+Thumbnail::~Thumbnail() {
+    delete image;
+}

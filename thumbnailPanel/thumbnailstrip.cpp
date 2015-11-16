@@ -6,6 +6,8 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
       current(-1),
       thumbView(NULL)
 {
+    thumbnailLabels = new QList<ThumbnailLabel*>();
+
     thumbView = new ThumbnailView();
     widget = new ClickableWidget();
 
@@ -88,8 +90,8 @@ void ThumbnailStrip::readSettings() {
     panelSize = settings->thumbnailSize() + 22;
     scrollBar->setValue(0);
 
-    for(int i = 0; i < thumbnailLabels.count(); i++) {
-        thumbnailLabels.at(i)->applySettings();
+    for(int i = 0; i < thumbnailLabels->count(); i++) {
+        thumbnailLabels->at(i)->applySettings();
     }
 
     disconnect(timeLine, SIGNAL(frameChanged(int)), scrollBar, SLOT(setValue(int)));
@@ -127,13 +129,16 @@ void ThumbnailStrip::readSettings() {
 
 void ThumbnailStrip::populate(int count) {
     widget->hide();
-    for(int i = thumbnailLabels.count() - 1; i >= 0; --i) {
+    for(int i = thumbnailLabels->count() - 1; i >= 0; --i) {
         delete viewLayout->takeAt(0);
-        delete thumbnailLabels.takeAt(0);
+        delete thumbnailLabels->takeAt(0);
     }
     // remove stretch
     viewLayout->takeAt(0);
-    thumbnailLabels.clear();
+    //recreate list
+    delete thumbnailLabels;
+    thumbnailLabels = new QList<ThumbnailLabel*>();
+
 
     for(int i = 0; i < count; i++) {
         addItem();
@@ -153,21 +158,21 @@ void ThumbnailStrip::fillPanel(int count) {
 void ThumbnailStrip::addItem() {
     ThumbnailLabel *thumbLabel = new ThumbnailLabel();
     thumbLabel->setOpacity(0.0f);
-    thumbnailLabels.append(thumbLabel);
+    thumbnailLabels->append(thumbLabel);
     viewLayout->addWidget(thumbLabel);
-    requestThumbnail(thumbnailLabels.length() - 1);
+    requestThumbnail(thumbnailLabels->length() - 1);
 }
 
 void ThumbnailStrip::selectThumbnail(int pos) {
     if(current != -1) {
-        thumbnailLabels.at(current)->setHighlighted(false);
-        thumbnailLabels.at(current)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_INSTANT);
+        thumbnailLabels->at(current)->setHighlighted(false);
+        thumbnailLabels->at(current)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_INSTANT);
     }
-    thumbnailLabels.at(pos)->setHighlighted(true);
-    thumbnailLabels.at(pos)->setOpacityAnimated(OPACITY_SELECTED, ANIMATION_SPEED_INSTANT);
+    thumbnailLabels->at(pos)->setHighlighted(true);
+    thumbnailLabels->at(pos)->setOpacityAnimated(OPACITY_SELECTED, ANIMATION_SPEED_INSTANT);
     current = pos;
     if(!childVisibleEntirely(pos)) {
-        thumbView->ensureWidgetVisible(thumbnailLabels.at(pos), 350, 350);
+        thumbView->ensureWidgetVisible(thumbnailLabels->at(pos), 350, 350);
     }
     loadVisibleThumbnails();
 }
@@ -180,23 +185,23 @@ void ThumbnailStrip::loadVisibleThumbnailsDelayed() {
 void ThumbnailStrip::loadVisibleThumbnails() {
     loadTimer.stop();
     updateVisibleRegion();
-    for(int i = 0; i < thumbnailLabels.count(); i++) {
+    for(int i = 0; i < thumbnailLabels->count(); i++) {
         requestThumbnail(i);
     }
 }
 
 void ThumbnailStrip::requestThumbnail(int pos) {
-    if(thumbnailLabels.at(pos)->state == EMPTY  && childVisible(pos)) {
-        thumbnailLabels.at(pos)->state = LOADING;
+    if(thumbnailLabels->at(pos)->state == EMPTY  && childVisible(pos)) {
+        thumbnailLabels->at(pos)->state = LOADING;
         emit thumbnailRequested(pos);
     }
 }
 
 void ThumbnailStrip::setThumbnail(int pos, Thumbnail *thumb) {
-    thumbnailLabels.at(pos)->setThumbnail(thumb);
-    thumbnailLabels.at(pos)->state = LOADED;
+    thumbnailLabels->at(pos)->setThumbnail(thumb);
+    thumbnailLabels->at(pos)->state = LOADED;
     if(pos != current) {
-        thumbnailLabels.at(pos)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_NORMAL);
+        thumbnailLabels->at(pos)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_NORMAL);
     }
 }
 

@@ -25,7 +25,7 @@ public:
     ~ThumbnailStrip();
 
 private:
-    QList<ThumbnailLabel*> thumbnailLabels;
+    QList<ThumbnailLabel*> *thumbnailLabels;
     void addItem();
     //QGraphicsLinearLayout *viewLayout;
     QBoxLayout *layout, *buttonsLayout, *viewLayout;
