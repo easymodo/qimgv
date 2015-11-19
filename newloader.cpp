@@ -62,7 +62,7 @@ void NewLoader::doLoad(int pos) {
     setLoadTarget(pos);
     if(!cache->isLoaded(pos)) {
         preloadTimer->stop();
-        loadTimer->start(loadTimer->isActive() ? 20 : 0);
+        loadTimer->start(loadTimer->isActive() ? LOAD_DELAY : 0);
     } else {
         emit onLoadFinished(pos);
     }

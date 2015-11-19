@@ -34,7 +34,6 @@ int main(int argc, char *argv[]) {
         QString fileName = a.arguments().at(1);
         mw.open(fileName);
     }
-    mw.open("C:/Users/mitcher/Pictures/test1/1444116473477.png");
     mw.show();
     return a.exec();
 }
