@@ -46,7 +46,7 @@ private:
     void freeAll();
     bool isRelevant(int pos);
 
-    const int LOAD_DELAY = 10;
+    const int LOAD_DELAY = 0;
 signals:
     void loadStarted();
     void loadFinished(Image*, int pos);

@@ -4,6 +4,10 @@
 #include <QObject>
 #include <QMimeDatabase>
 #include <QDir>
+#include <QCollator>
+#include <algorithm>
+#include <vector>
+#include <QElapsedTimer>
 #include <QUrl>
 #include <QFile>
 #include <QString>
@@ -14,7 +18,6 @@
 #include <QImageReader>
 #include "fileinfo.h"
 #include "settings.h"
-#include <time.h>
 
 class DirectoryManager : public QObject
 {
@@ -70,6 +73,8 @@ private:
     void generateFileListQuick();
     void generateFileListDeep();
 
+    int naturalCompare(const QString &_a, const QString &_b, Qt::CaseSensitivity caseSensitivity);
+    void naturalSort();
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();
