@@ -14,20 +14,12 @@
 
 class CacheObject {
 public:
-    CacheObject(QString _path) : img(NULL), thumbnail(NULL), info(NULL), path(_path) {
+    CacheObject(QString _path) : img(NULL), path(_path) {
     }
 
     ~CacheObject() {
         if(img)
             img->safeDeleteSelf();
-        delete thumbnail;
-        delete info;
-    }
-    Thumbnail* getThumbnail() {
-        if(!thumbnail) {
-            qDebug() << "!returning empty thumbnail";
-        }
-        return const_cast<Thumbnail*>(thumbnail);
     }
     FileInfo* getInfo() {
         if(img)
@@ -44,18 +36,10 @@ public:
         if(img) {
             img->safeDeleteSelf();
             img = NULL;
-            info = NULL;
         }
     }
     void setImage(Image* _img) {
         img = _img;
-        info = img->getInfo();
-    }
-    void setThumbnail(Thumbnail* _thumbnail) {
-        if(thumbnail && _thumbnail) {
-            delete thumbnail;
-        }
-        thumbnail = _thumbnail;
     }
     Image* image() {
         return img;
@@ -72,8 +56,6 @@ private:
         return img;
     }
     Image *img;
-    Thumbnail *thumbnail;
-    FileInfo *info;
     QString path;
     QMutex mutex;
 };
@@ -92,13 +74,11 @@ public:
     void unloadAll();
     void unloadAt(int pos);
     Image *imageAt(unsigned int pos);
-    Thumbnail *thumbnailAt(int pos) const;
     int length() const;
     QString currentDirectory();
     bool isLoaded(int pos);
     int currentlyLoadedCount();
     void setImage(Image *img, int pos);
-    void setThumbnail(Thumbnail *thumb, int pos);
 
 private:
     QList<CacheObject*> *cachedImages;

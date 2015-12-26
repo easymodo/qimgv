@@ -63,7 +63,6 @@ private slots:
     void doPreload();
     void onLoadFinished(int);
     void onLoadTimeout();
-    void onThumbnailReady(int);
     void onPreloadTimeout();
     void freeAuto();
 };

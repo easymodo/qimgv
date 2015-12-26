@@ -16,14 +16,13 @@ DirectoryManager::DirectoryManager() :
 // ##############################################################
 
 void DirectoryManager::readSettings() {
-    infiniteScrolling = settings->infiniteScrolling();
     startDir = settings->lastDirectory();
     if(startDir.isEmpty()) {
         startDir = currentDir.homePath();
     }
     mimeFilters = settings->supportedMimeTypes();
     extensionFilters = settings->supportedFormats();
-    generateFileList();
+    applySettingsChanges();
 }
 
 void DirectoryManager::setFile(QString path) {
@@ -179,6 +178,7 @@ void DirectoryManager::applySettingsChanges() {
             break;
     }
     if(currentDir.sorting() != flags) {
+        currentDir.setSorting(flags);
         generateFileList();
         emit directorySortingChanged(); //for now, sorting dir will cause full cache reload TODO
     }
@@ -209,19 +209,24 @@ FileInfo *DirectoryManager::loadInfo(QString path) {
 void DirectoryManager::generateFileList() {
     switch(settings->sortingMode()) {
         case 1:
+            qDebug() << "1";
             quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
             naturalSort();
+            for(int k = 0; k < (fileNameList.size()/2); k++) fileNameList.swap(k, fileNameList.size() - (1 + k));
             //currentDir.setSorting(QDir::Name | QDir::Reversed | QDir::IgnoreCase);
             break;
         case 2:
+            qDebug() << "2";
             currentDir.setSorting(QDir::Time);
             quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
             break;
         case 3:
+            qDebug() << "3";
             currentDir.setSorting(QDir::Time | QDir::Reversed);
             quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
             break;
         default:
+            qDebug() << "0";
             quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
             naturalSort();
             //currentDir.setSorting(QDir::Name | QDir::IgnoreCase);

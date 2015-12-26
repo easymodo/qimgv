@@ -78,7 +78,7 @@ void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail) {
 }
 
 void ThumbnailLabel::updateLabelWidth() {
-    if(showLabel) {
+    if(showLabel && thumbnail) {
         int labelWidth = fm->width(thumbnail->label);
         labelRect.setWidth(labelWidth + 4);
         labelRect.moveRight(nameRect.right());
@@ -177,6 +177,6 @@ QSizeF ThumbnailLabel::sizeHint(Qt::SizeHint which, const QSizeF &constraint) co
 }
 
 ThumbnailLabel::~ThumbnailLabel() {
-
+    delete thumbnail;
 }
 

@@ -7,6 +7,7 @@ Thumbnailer::Thumbnailer(ImageCache *_cache, QString _path, int _target) :
 }
 
 void Thumbnailer::run() {
+    //TODO: check cache first before creating image here
     ImageFactory *factory = new ImageFactory();
     Image *tempImage = factory->createImage(path);
     Thumbnail *th = new Thumbnail();
@@ -26,7 +27,5 @@ void Thumbnailer::run() {
     delete tempImage;
     delete factory;
 
-    cache->setThumbnail(th, target);
-    emit thumbnailReady(target);
+    emit thumbnailReady(target, th);
 }
-

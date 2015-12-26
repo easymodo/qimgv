@@ -46,7 +46,7 @@ private:
     const float SCROLL_SPEED_MULTIPLIER = 3.1;
     const int SCROLL_ANIMATION_SPEED = 100;
     const uint LOAD_DELAY = 20;
-    const int OFFSCREEN_PRELOAD_AREA = 1900;
+    const int OFFSCREEN_PRELOAD_AREA = 1500;
 
     int panelSize;
     int itemCount, current, thumbnailSize;

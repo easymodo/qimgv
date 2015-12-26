@@ -19,10 +19,8 @@ void ImageCache::init(QString directory, QStringList list) {
     lock();
     dir = directory;
     while(!cachedImages->isEmpty()) {
-        delete cachedImages->takeFirst();
+        delete cachedImages->takeAt(0);
     }
-    delete cachedImages;
-    cachedImages = new QList<CacheObject *>();
     for(int i = 0; i < list.length(); i++) {
         cachedImages->append(new CacheObject(list.at(i)));
     }
@@ -47,10 +45,6 @@ void ImageCache::unloadAt(int pos) {
 Image *ImageCache::imageAt(unsigned int pos) {
     if(pos > cachedImages->length() && !cachedImages->isEmpty()) return NULL;
     return cachedImages->at(pos)->image();
-}
-
-Thumbnail *ImageCache::thumbnailAt(int pos) const {
-    return cachedImages->at(pos)->getThumbnail();
 }
 
 int ImageCache::length() const {
@@ -81,12 +75,6 @@ int ImageCache::currentlyLoadedCount() {
 void ImageCache::setImage(Image *img, int pos) {
     cachedImages->at(pos)->setImage(img);
 }
-
-void ImageCache::setThumbnail(Thumbnail *thumb, int pos) {
-    cachedImages->at(pos)->setThumbnail(thumb);
-}
-
-
 
 
 // ##############################################################

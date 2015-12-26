@@ -47,7 +47,15 @@ void Core::updateInfoString() {
                       QString::number(dirManager->fileNameList.length()) +
                       " ]   ");
     if(img) {
-        infoString.append(img->getInfo()->getFileName() + "  ");
+        QString name, fullName = img->getInfo()->getFileName();
+        if(fullName.size()>100) {
+            name = fullName.left(100);
+            name.append(" (...) ");
+            name.append(fullName.right(15));
+        } else {
+            name = fullName;
+        }
+        infoString.append(name + "  ");
         infoString.append("(" +
                           QString::number(img->width()) +
                           "x" +

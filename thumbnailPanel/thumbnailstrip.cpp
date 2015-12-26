@@ -139,7 +139,6 @@ void ThumbnailStrip::populate(int count) {
     delete thumbnailLabels;
     thumbnailLabels = new QList<ThumbnailLabel*>();
 
-
     for(int i = 0; i < count; i++) {
         addItem();
     }
@@ -160,7 +159,6 @@ void ThumbnailStrip::addItem() {
     thumbLabel->setOpacity(0.0f);
     thumbnailLabels->append(thumbLabel);
     viewLayout->addWidget(thumbLabel);
-    requestThumbnail(thumbnailLabels->length() - 1);
 }
 
 void ThumbnailStrip::selectThumbnail(int pos) {

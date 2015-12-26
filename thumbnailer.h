@@ -19,7 +19,7 @@ public:
 private:
     ImageCache* cache;
 signals:
-    void thumbnailReady(int);
+    void thumbnailReady(int, Thumbnail*);
 };
 
 #endif // THUMBNAILER_H

@@ -209,14 +209,11 @@ void NewLoader::reinitCacheForced() {
 // for position in directory
 void NewLoader::generateThumbnailFor(int pos) {
     Thumbnailer *thWorker = new Thumbnailer(cache, dm->filePathAt(pos), pos);
-    connect(thWorker, SIGNAL(thumbnailReady(int)), this, SLOT(onThumbnailReady(int)));
+    connect(thWorker, SIGNAL(thumbnailReady(int,Thumbnail*)),
+            this, SIGNAL(thumbnailReady(int,Thumbnail*)));
     thWorker->setAutoDelete(true);
     QThreadPool::globalInstance()->start(thWorker);
     //QtConcurrent::run(this, &NewLoader::generateThumbnailThread, pos);
-}
-
-void NewLoader::onThumbnailReady(int pos) {
-    emit thumbnailReady(pos, cache->thumbnailAt(pos));
 }
 
 void NewLoader::readSettings() {
