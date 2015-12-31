@@ -12,7 +12,7 @@
 #include <QMouseEvent>
 #include <qvideosurfaceformat.h>
 #include <QDebug>
-#include "sourceContainers/clip.h"
+#include "../sourceContainers/clip.h"
 #include "../settings.h"
 
 class VideoPlayer : public QGraphicsView
