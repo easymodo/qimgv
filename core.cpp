@@ -48,10 +48,10 @@ void Core::updateInfoString() {
                       " ]   ");
     if(img) {
         QString name, fullName = img->getInfo()->getFileName();
-        if(fullName.size()>100) {
-            name = fullName.left(100);
+        if(fullName.size()>95) {
+            name = fullName.left(95);
             name.append(" (...) ");
-            name.append(fullName.right(15));
+            name.append(fullName.right(12));
         } else {
             name = fullName;
         }

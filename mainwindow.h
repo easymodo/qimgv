@@ -96,6 +96,7 @@ private:
     QBoxLayout *layout;
     PanelPosition panelPosition;
     QRect panelArea;
+    QPoint lastMouseMovePos;
     void init();
     void createActions();
     void createMenus();

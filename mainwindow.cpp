@@ -352,11 +352,15 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
-        if(panelArea.contains(event->pos()) && panel) {
+        if(panelArea.contains(event->pos()) &&
+           panel &&
+           !panelArea.contains(lastMouseMovePos))
+        {
             panel->show();
         }
         event->ignore();
     }
+    lastMouseMovePos = event->pos();
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e) {
