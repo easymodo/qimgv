@@ -171,8 +171,8 @@ void MapOverlay::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
 
     QPainter painter(this);
-    QBrush outerBrush(QColor(80, 80, 80, 130), Qt::SolidPattern);
-    QBrush innerBrush(QColor(230, 230, 230, 150), Qt::SolidPattern);
+    QBrush outerBrush(QColor(60, 60, 60, 130), Qt::SolidPattern);
+    QBrush innerBrush(QColor(230, 230, 230, 200), Qt::SolidPattern);
 
     painter.setOpacity(d->opacity);
 

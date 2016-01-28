@@ -20,7 +20,7 @@ void textOverlay::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
 
     QPainter painter(this);
-    painter.fillRect(QRect(0,0,textLength+8,22), QBrush(QColor(0, 0, 0, 100), Qt::SolidPattern));
+    painter.fillRect(QRect(0,0,textLength+8,22), QBrush(QColor(0, 0, 0, 80), Qt::SolidPattern));
     painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(QPen(*textShadowColor));

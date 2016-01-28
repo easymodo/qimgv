@@ -82,6 +82,10 @@ void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail) {
         loaded = true;
         showLabel = settings->showThumbnailLabels() && !thumbnail->label.isEmpty();
         updateLabelWidth();
+        float widthFactor = fm->width(thumbnail->name) / (float)(thumbnailSize - 6);
+        if(widthFactor > 1) {
+            thumbnail->name.truncate(thumbnail->name.length()/widthFactor);
+        }
     }
 }
 
