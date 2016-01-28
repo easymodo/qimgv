@@ -41,7 +41,7 @@ void DirectoryManager::setCurrentDir(QString path) {
 }
 
 bool DirectoryManager::setCurrentPos(unsigned int pos) {
-    if(containsImages() && pos <= fileCount()) {
+    if(containsImages() && pos < fileCount()) {
         currentPos = pos;
         settings->setLastFilePosition(currentPos);
         return true;
@@ -108,7 +108,7 @@ int DirectoryManager::prevPos() {
 }
 
 int DirectoryManager::fileCount() {
-    return fileNameList.length() - 1;
+    return fileNameList.length();
 }
 
 int DirectoryManager::peekNext(int offset) {
@@ -209,24 +209,20 @@ FileInfo *DirectoryManager::loadInfo(QString path) {
 void DirectoryManager::generateFileList() {
     switch(settings->sortingMode()) {
         case 1:
-            qDebug() << "1";
             quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
             naturalSort();
             for(int k = 0; k < (fileNameList.size()/2); k++) fileNameList.swap(k, fileNameList.size() - (1 + k));
             //currentDir.setSorting(QDir::Name | QDir::Reversed | QDir::IgnoreCase);
             break;
         case 2:
-            qDebug() << "2";
             currentDir.setSorting(QDir::Time);
             quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
             break;
         case 3:
-            qDebug() << "3";
             currentDir.setSorting(QDir::Time | QDir::Reversed);
             quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
             break;
         default:
-            qDebug() << "0";
             quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
             naturalSort();
             //currentDir.setSorting(QDir::Name | QDir::IgnoreCase);

@@ -30,7 +30,6 @@ QString Core::getCurrentFilePath() {
 int Core::imageCount() {
     if(!dirManager)
         return 0;
-
     return dirManager->fileCount();
 }
 
