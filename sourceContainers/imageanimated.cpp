@@ -70,7 +70,7 @@ QPixmap *ImageAnimated::generateThumbnail() {
                        Qt::SmoothTransformation);
     } else {
         tmp = new QPixmap();
-        mutex.lock();
+        lock();
         *tmp = movie->currentPixmap()
                .scaled(size * 2,
                        size * 2,
@@ -80,7 +80,7 @@ QPixmap *ImageAnimated::generateThumbnail() {
                        size,
                        Qt::KeepAspectRatioByExpanding,
                        Qt::SmoothTransformation);
-        mutex.unlock();
+        unlock();
     }
     QRect target(0, 0, size, size);
     target.moveCenter(tmp->rect().center());

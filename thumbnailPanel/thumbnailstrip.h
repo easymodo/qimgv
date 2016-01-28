@@ -24,13 +24,14 @@ public:
     explicit ThumbnailStrip(QWidget *parent = 0);
     ~ThumbnailStrip();
 
+    void updatePanelPosition();
 private:
     QList<ThumbnailLabel*> *thumbnailLabels;
     void addItem();
     //QGraphicsLinearLayout *viewLayout;
     QBoxLayout *layout, *buttonsLayout, *viewLayout;
     QWidget *buttonsWidget;
-    ClickableLabel *openButton, *saveButton, *settingsButton;
+    ClickableLabel *openButton, *saveButton, *settingsButton, *exitButton;
     ClickableWidget *widget;
     ThumbnailView *thumbView;
     //CustomScene* scene;
@@ -58,6 +59,7 @@ private:
     //QRectF itemsBoundingRect();
     QScrollBar *scrollBar;
     PanelPosition position;
+    QSize parentSz;
 
     void requestThumbnail(int pos);
 signals:
@@ -66,6 +68,8 @@ signals:
     void openClicked();
     void saveClicked();
     void settingsClicked();
+    void exitClicked();
+    void panelSizeChanged();
 
 public slots:
     void populate(int count);

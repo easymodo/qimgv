@@ -32,12 +32,18 @@ ThumbnailLabel::ThumbnailLabel(QWidget *parent) :
 // call manually from thumbnailStrip
 void ThumbnailLabel::readSettings() {
     thumbnailSize = settings->thumbnailSize();
-    if(settings->panelPosition() == LEFT || settings->panelPosition() == RIGHT) {
+    if(settings->panelPosition() == LEFT) {
         orientation = Qt::Vertical;
         borderW = 5;
         borderH = 3;
         highlightRect.setTopLeft(QPointF(thumbnailSize + borderW, borderH));
         highlightRect.setBottomRight(QPointF(borderW * 2 + thumbnailSize, thumbnailSize + borderH));
+    } else if(settings->panelPosition() == RIGHT) {
+            orientation = Qt::Vertical;
+            borderW = 5;
+            borderH = 3;
+            highlightRect.setTopLeft(QPointF(0, borderH));
+            highlightRect.setBottomRight(QPointF(borderW, thumbnailSize + borderH));
     } else {
         orientation = Qt::Horizontal;
         borderW = 3;
@@ -70,11 +76,13 @@ void ThumbnailLabel::applySettings() {
 }
 
 void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail) {
-    thumbnail = _thumbnail;
-    this->setPixmap(*_thumbnail->image);
-    loaded = true;
-    showLabel = settings->showThumbnailLabels() && !thumbnail->label.isEmpty();
-    updateLabelWidth();
+    if(_thumbnail) {
+        thumbnail = _thumbnail;
+        this->setPixmap(*_thumbnail->image);
+        loaded = true;
+        showLabel = settings->showThumbnailLabels() && !thumbnail->label.isEmpty();
+        updateLabelWidth();
+    }
 }
 
 void ThumbnailLabel::updateLabelWidth() {
@@ -178,5 +186,11 @@ QSizeF ThumbnailLabel::sizeHint(Qt::SizeHint which, const QSizeF &constraint) co
 
 ThumbnailLabel::~ThumbnailLabel() {
     delete thumbnail;
+    delete highlightColor;
+    delete outlineColor;
+    delete highlightColorBorder;
+    delete nameColor;
+    delete labelColor;
+    delete fm;
 }
 

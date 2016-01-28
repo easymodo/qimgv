@@ -10,7 +10,7 @@ MainWindow::MainWindow() :
     resize(1100, 700);
     setMinimumSize(QSize(400, 300));
 #ifdef __linux__
-    setWindowIcon(QIcon(":/images/res/icons/16.png"));
+    setWindowIcon(QIcon(":/images/res/icons/22.png"));
 #endif
     this->setMouseTracking(true);
     this->setAcceptDrops(true);
@@ -117,7 +117,6 @@ void MainWindow::init() {
 void MainWindow::enablePanel() {
     if(!panel) {
         panel = new ThumbnailStrip(this);
-        panel->parentResized(size());
     }
 
     connect(this, SIGNAL(resized(QSize)), panel, SLOT(parentResized(QSize)));
@@ -137,9 +136,15 @@ void MainWindow::enablePanel() {
     connect(core, SIGNAL(cacheInitialized(int)),
             panel, SLOT(fillPanel(int)), static_cast<Qt::ConnectionType>(Qt::DirectConnection | Qt::UniqueConnection));
 
+    connect(panel, SIGNAL(panelSizeChanged()),
+               this, SLOT(calculatePanelTriggerArea()), Qt::UniqueConnection);
+
     connect(panel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()), Qt::UniqueConnection);
     connect(panel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()), Qt::UniqueConnection);
     connect(panel, SIGNAL(settingsClicked()), this, SLOT(showSettings()), Qt::UniqueConnection);
+    connect(panel, SIGNAL(exitClicked()), this, SLOT(close()), Qt::UniqueConnection);
+
+    panel->parentResized(size());
 
     panel->fillPanel(core->imageCount());
 }
@@ -163,9 +168,14 @@ void MainWindow::disablePanel() {
     disconnect(core, SIGNAL(cacheInitialized(int)),
             panel, SLOT(fillPanel(int)));
 
+    disconnect(panel, SIGNAL(panelSizeChanged()),
+               this, SLOT(calculatePanelTriggerArea()));
+
     disconnect(panel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()));
     disconnect(panel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()));
     disconnect(panel, SIGNAL(settingsClicked()), this, SLOT(showSettings()));
+    disconnect(panel, SIGNAL(exitClicked()), this, SLOT(close()));
+
 }
 
 void MainWindow::enableImageViewer() {
@@ -325,9 +335,6 @@ void MainWindow::calculatePanelTriggerArea() {
             break;
         case TOP:
             panelArea.setRect(0, 0, width(), panel->height() - 1);
-            if(isFullScreen()) {
-                panelArea.setRight(width() - 250);
-            }
             break;
     }
 }
@@ -340,7 +347,6 @@ void MainWindow::updateOverlays() {
 void MainWindow::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
     if(panel) {
-        calculatePanelTriggerArea();
         emit resized(size());
     }
     updateOverlays();

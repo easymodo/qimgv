@@ -87,6 +87,8 @@ private slots:
     void showSettings();
 
     void slotSelectWallpaper();
+    void calculatePanelTriggerArea();
+
 private:
     Core *core;
     textOverlay *infoOverlay, *messageOverlay;
@@ -129,7 +131,6 @@ private:
     QMenu *helpMenu;
 
     void readSettingsInitial();
-    void calculatePanelTriggerArea();
     bool borderlessEnabled;
 protected:
     bool event(QEvent *event);

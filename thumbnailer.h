@@ -12,12 +12,14 @@ class Thumbnailer : public QObject, public QRunnable
     Q_OBJECT
 public:
     Thumbnailer(ImageCache* _cache, QString _path, int _target);
+    ~Thumbnailer();
 
     void run();
     QString path;
     int target;
 private:
     ImageCache* cache;
+    ImageFactory *factory;
 signals:
     void thumbnailReady(int, Thumbnail*);
 };

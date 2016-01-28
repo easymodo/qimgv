@@ -6,6 +6,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
       current(-1),
       thumbView(NULL)
 {
+    parentSz = parent->size();
     thumbnailLabels = new QList<ThumbnailLabel*>();
 
     thumbView = new ThumbnailView();
@@ -37,6 +38,10 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     settingsButton->setAccessibleName("panelButton");
     settingsButton->setPixmap(QPixmap(":/images/res/icons/settings.png"));
 
+    exitButton = new ClickableLabel();
+    exitButton->setAccessibleName("panelButton");
+    exitButton->setPixmap(QPixmap(":/images/res/icons/window-close.png"));
+
     buttonsLayout = new QBoxLayout(QBoxLayout::LeftToRight);
     buttonsLayout->setSpacing(0);
     buttonsLayout->setContentsMargins(0,0,0,0);
@@ -44,6 +49,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     buttonsLayout->addWidget(saveButton);
     buttonsLayout->addWidget(settingsButton);
     buttonsLayout->addStretch(0);
+    buttonsLayout->addWidget(exitButton);
 
     buttonsWidget->setLayout(buttonsLayout);
 
@@ -76,6 +82,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     connect(openButton, SIGNAL(clicked()), this, SIGNAL(openClicked()));
     connect(saveButton, SIGNAL(clicked()), this, SIGNAL(saveClicked()));
     connect(settingsButton, SIGNAL(clicked()), this, SIGNAL(settingsClicked()));
+    connect(exitButton, SIGNAL(clicked()), this, SIGNAL(exitClicked()));
 
     connect(widget, SIGNAL(pressed(QPoint)), this, SLOT(viewPressed(QPoint)));
     connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
@@ -89,6 +96,7 @@ void ThumbnailStrip::readSettings() {
     position = settings->panelPosition();
     panelSize = settings->thumbnailSize() + 22;
     scrollBar->setValue(0);
+    updatePanelPosition();
 
     for(int i = 0; i < thumbnailLabels->count(); i++) {
         thumbnailLabels->at(i)->applySettings();
@@ -99,6 +107,7 @@ void ThumbnailStrip::readSettings() {
                this, SLOT(loadVisibleThumbnailsDelayed()));
     disconnect(scrollBar, SIGNAL(sliderMoved(int)),
                this, SLOT(loadVisibleThumbnailsDelayed()));
+    exitButton->hide();
     if(position == LEFT || position == RIGHT) {
         thumbView->horizontalScrollBar()->setDisabled(true);
         thumbView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -107,14 +116,22 @@ void ThumbnailStrip::readSettings() {
         viewLayout->setDirection(QBoxLayout::TopToBottom);
         viewLayout->setContentsMargins(0, 2, 0, 2);
         buttonsLayout->setDirection(QBoxLayout::LeftToRight);
-        layout->setDirection(QBoxLayout::BottomToTop);
+        if(position == LEFT) {
+            layout->setDirection(QBoxLayout::BottomToTop);
+        } else {
+            layout->setDirection(QBoxLayout::TopToBottom);
+            exitButton->show();
+        }
     } else {
         thumbView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         thumbView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         scrollBar = thumbView->horizontalScrollBar();
         viewLayout->setDirection(QBoxLayout::LeftToRight);
         viewLayout->setContentsMargins(2, 0, 2, 0);
-        buttonsLayout->setDirection(QBoxLayout::TopToBottom);
+        if(position == TOP) {
+            exitButton->show();
+        }
+        buttonsLayout->setDirection(QBoxLayout::BottomToTop);
         layout->setDirection(QBoxLayout::RightToLeft);
     }
 
@@ -264,6 +281,13 @@ void ThumbnailStrip::wheelEvent(QWheelEvent *event) {
 }
 
 void ThumbnailStrip::parentResized(QSize parentSz) {
+    this->parentSz = parentSz;
+    updatePanelPosition();
+    loadVisibleThumbnailsDelayed();
+}
+
+void ThumbnailStrip::updatePanelPosition() {
+    QRect oldRect = this->rect();
     if(position == BOTTOM) {
         this->setGeometry(QRect(QPoint(0, parentSz.height() - panelSize + 1),
                                 QPoint(parentSz.width(), parentSz.height())));
@@ -277,7 +301,8 @@ void ThumbnailStrip::parentResized(QSize parentSz) {
         this->setGeometry(QRect(QPoint(0, 0),
                                 QPoint(parentSz.width(), panelSize)));
     }
-    loadVisibleThumbnailsDelayed();
+    if(oldRect != this->rect())
+        emit panelSizeChanged();
 }
 
 void ThumbnailStrip::leaveEvent(QEvent *event) {

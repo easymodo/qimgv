@@ -13,6 +13,7 @@
         <file>res/icons/open.png</file>
         <file>res/icons/save.png</file>
         <file>res/icons/settings.png</file>
+        <file>res/icons/window-close.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file>res/style.qss</file>

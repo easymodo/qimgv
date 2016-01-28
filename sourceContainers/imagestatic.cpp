@@ -133,8 +133,8 @@ QImage *ImageStatic::rotated(int grad) {
 void ImageStatic::rotate(int grad) {
     if(isLoaded()) {
         QImage *img = rotated(grad);
-        delete image;
         lock();
+        delete image;
         image = img;
         unlock();
     }
@@ -153,8 +153,8 @@ void ImageStatic::crop(QRect newRect) {
 
 QImage *ImageStatic::cropped(QRect newRect, QRect targetRes, bool upscaled) {
     if(isLoaded()) {
-        lock();
         QImage *cropped = new QImage(targetRes.size(), image->format());
+        lock();
         if(upscaled) {
             QImage temp = image->copy(newRect);
             *cropped = temp.scaled(targetRes.size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);

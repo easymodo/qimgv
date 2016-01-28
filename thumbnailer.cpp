@@ -3,14 +3,22 @@
 Thumbnailer::Thumbnailer(ImageCache *_cache, QString _path, int _target) :
     path(_path),
     target(_target),
-    cache(_cache) {
+    cache(_cache)
+{
+    factory = new ImageFactory();
 }
 
 void Thumbnailer::run() {
-    //TODO: check cache first before creating image here
-    ImageFactory *factory = new ImageFactory();
-    Image *tempImage = factory->createImage(path);
+    Image *tempImage;
     Thumbnail *th = new Thumbnail();
+    bool cached = false;
+    if(cache->isLoaded(target)) {
+        tempImage = cache->imageAt(target);
+        //tempImage->lock();
+        cached = true;
+    } else {
+        tempImage = factory->createImage(path);
+    }
 
     th->image = tempImage->generateThumbnail();
     if(tempImage->getType() == GIF) {
@@ -24,8 +32,15 @@ void Thumbnailer::run() {
         th->image->fill(QColor(0,0,0,0));
     }
     th->name = tempImage->getInfo()->getFileName();
-    delete tempImage;
-    delete factory;
 
+    if(cached) {
+       // tempImage->unlock();
+    } else {
+        delete tempImage;
+    }
     emit thumbnailReady(target, th);
+}
+
+Thumbnailer::~Thumbnailer() {
+    delete factory;
 }
