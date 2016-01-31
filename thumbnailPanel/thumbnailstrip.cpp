@@ -266,18 +266,22 @@ void ThumbnailStrip::viewPressed(QPoint pos) {
 
 void ThumbnailStrip::wheelEvent(QWheelEvent *event) {
     event->accept();
-    if(timeLine->state() == QTimeLine::Running) {
-        timeLine->stop();
-        timeLine->setFrameRange(scrollBar->value(),
-                                timeLine->endFrame() -
-                                event->angleDelta().ry() * SCROLL_SPEED_MULTIPLIER);
-    } else {
-        timeLine->setFrameRange(scrollBar->value(),
-                                scrollBar->value() -
-                                event->angleDelta().ry() * SCROLL_SPEED_MULTIPLIER);
+    if(event->pixelDelta().y() != 0)  { // pixel scrolling
+        scrollBar->setValue(scrollBar->value() - event->pixelDelta().y());
+    } else { // scrolling by fixed intervals
+        if(timeLine->state() == QTimeLine::Running) {
+            timeLine->stop();
+            timeLine->setFrameRange(scrollBar->value(),
+                                    timeLine->endFrame() -
+                                    event->angleDelta().ry() * SCROLL_SPEED_MULTIPLIER);
+        } else {
+            timeLine->setFrameRange(scrollBar->value(),
+                                    scrollBar->value() -
+                                    event->angleDelta().ry() * SCROLL_SPEED_MULTIPLIER);
+        }
+        timeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
+        timeLine->start();
     }
-    timeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
-    timeLine->start();
 }
 
 void ThumbnailStrip::parentResized(QSize parentSz) {
