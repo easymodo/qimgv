@@ -207,7 +207,7 @@ void Settings::setBackgroundColor(QColor color) {
 }
 
 QColor Settings::accentColor() {
-    return settings->s.value("accentColor", QColor(0, 182, 91)).value<QColor>();
+    return settings->s.value("accentColor", QColor(180, 105, 17)).value<QColor>();
 }
 
 void Settings::setAccentColor(QColor color) {
@@ -256,7 +256,7 @@ bool Settings::setPanelEnabled(bool mode) {
 }
 
 PanelPosition Settings::panelPosition() {
-    QString posString = settings->s.value("panelPosition", "bottom").toString();
+    QString posString = settings->s.value("panelPosition", "top").toString();
     if(posString == "top") {
         return PanelPosition::TOP;
     } else if(posString == "left") {

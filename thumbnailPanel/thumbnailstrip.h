@@ -21,20 +21,18 @@ class ThumbnailStrip : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ThumbnailStrip(QWidget *parent = 0);
+    explicit ThumbnailStrip(QWidget *parent);
     ~ThumbnailStrip();
 
     void updatePanelPosition();
 private:
     QList<ThumbnailLabel*> *thumbnailLabels;
     void addItem();
-    //QGraphicsLinearLayout *viewLayout;
     QBoxLayout *layout, *buttonsLayout, *viewLayout;
     QWidget *buttonsWidget;
     ClickableLabel *openButton, *saveButton, *settingsButton, *exitButton;
     ClickableWidget *widget;
     ThumbnailView *thumbView;
-    //CustomScene* scene;
     QTimeLine *timeLine;
 
     const qreal OPACITY_INACTIVE = 0.75;
@@ -56,10 +54,10 @@ private:
     QRectF preloadArea, visibleRegion;
     QTimer loadTimer;
     bool childVisibleEntirely(int pos);
-    //QRectF itemsBoundingRect();
     QScrollBar *scrollBar;
     PanelPosition position;
     QSize parentSz;
+    bool parentFullscreen;
 
     void requestThumbnail(int pos);
 signals:
@@ -79,6 +77,7 @@ public slots:
     void setThumbnail(int, Thumbnail*);
     void fillPanel(int);
     void selectThumbnail(int pos);
+    void enableWindowControls(bool);
 
 protected:
     void wheelEvent(QWheelEvent *event);

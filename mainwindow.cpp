@@ -139,6 +139,9 @@ void MainWindow::enablePanel() {
     connect(panel, SIGNAL(panelSizeChanged()),
                this, SLOT(calculatePanelTriggerArea()), Qt::UniqueConnection);
 
+    connect(this, SIGNAL(signalFullscreenEnabled(bool)),
+            panel, SLOT(enableWindowControls(bool)), Qt::UniqueConnection);
+
     connect(panel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()), Qt::UniqueConnection);
     connect(panel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()), Qt::UniqueConnection);
     connect(panel, SIGNAL(settingsClicked()), this, SLOT(showSettings()), Qt::UniqueConnection);
@@ -170,6 +173,9 @@ void MainWindow::disablePanel() {
 
     disconnect(panel, SIGNAL(panelSizeChanged()),
                this, SLOT(calculatePanelTriggerArea()));
+
+    disconnect(this, SIGNAL(signalFullscreenEnabled(bool)),
+            panel, SLOT(enableWindowControls(bool)));
 
     disconnect(panel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()));
     disconnect(panel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()));

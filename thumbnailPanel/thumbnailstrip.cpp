@@ -4,7 +4,8 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     : QWidget(parent),
       panelSize(122),
       current(-1),
-      thumbView(NULL)
+      thumbView(NULL),
+      parentFullscreen(false)
 {
     parentSz = parent->size();
     thumbnailLabels = new QList<ThumbnailLabel*>();
@@ -116,24 +117,21 @@ void ThumbnailStrip::readSettings() {
         viewLayout->setDirection(QBoxLayout::TopToBottom);
         viewLayout->setContentsMargins(0, 2, 0, 2);
         buttonsLayout->setDirection(QBoxLayout::LeftToRight);
-        if(position == LEFT) {
+        if(position == LEFT)
             layout->setDirection(QBoxLayout::BottomToTop);
-        } else {
+        else
             layout->setDirection(QBoxLayout::TopToBottom);
-            exitButton->show();
-        }
     } else {
         thumbView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         thumbView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         scrollBar = thumbView->horizontalScrollBar();
         viewLayout->setDirection(QBoxLayout::LeftToRight);
         viewLayout->setContentsMargins(2, 0, 2, 0);
-        if(position == TOP) {
-            exitButton->show();
-        }
         buttonsLayout->setDirection(QBoxLayout::BottomToTop);
         layout->setDirection(QBoxLayout::RightToLeft);
     }
+
+    enableWindowControls(parentFullscreen);
 
     connect(scrollBar, SIGNAL(valueChanged(int)),
             this, SLOT(loadVisibleThumbnailsDelayed()), Qt::UniqueConnection);
@@ -248,6 +246,15 @@ bool ThumbnailStrip::childVisibleEntirely(int pos) {
         return true;
     }
     return false;
+}
+
+// shows/hides exit button on the panel
+void ThumbnailStrip::enableWindowControls(bool enabled) {
+    if(enabled && (position == RIGHT || position == TOP))
+        exitButton->show();
+    else
+        exitButton->hide();
+    parentFullscreen = enabled;
 }
 
 void ThumbnailStrip::viewPressed(QPoint pos) {
