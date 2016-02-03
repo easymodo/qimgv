@@ -75,6 +75,9 @@ public:
     void saveShortcuts();
     bool panelEnabled();
     bool setPanelEnabled(bool mode);
+    int lastDisplay();
+    int setLastDisplay(int display);
+
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 135;

@@ -6,7 +6,9 @@ MainWindow::MainWindow() :
     panel(NULL),
     currentViewer(0),
     layout(NULL),
-    borderlessEnabled(false) {
+    borderlessEnabled(false),
+    desktopWidget(NULL)
+{
     resize(1100, 700);
     setMinimumSize(QSize(400, 300));
 #ifdef __linux__
@@ -21,6 +23,8 @@ MainWindow::MainWindow() :
 }
 
 void MainWindow::init() {
+    desktopWidget = QApplication::desktop();
+
     imageViewer = new ImageViewer(this);
     imageViewer->hide();
     videoPlayer = new VideoPlayer(this);
@@ -409,7 +413,14 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     if(!isMaximized() && !isFullScreen()) {
         saveWindowGeometry();
     }
+    saveDisplay();
     QMainWindow::closeEvent(event);
+}
+
+void MainWindow::saveDisplay() {
+    if(settings->fullscreenMode() || isFullScreen()) {
+        settings->setLastDisplay(desktopWidget->screenNumber(this));
+    }
 }
 
 void MainWindow::saveWindowGeometry() {
@@ -418,6 +429,21 @@ void MainWindow::saveWindowGeometry() {
 
 void MainWindow::restoreWindowGeometry() {
     this->restoreGeometry(settings->windowGeometry());
+    adjustWindowPosLastScreen();
+}
+
+void MainWindow::adjustWindowPosLastScreen() {
+    this->move(lastScreenGeometry().x(), lastScreenGeometry().y());
+}
+
+QRect MainWindow::lastScreenGeometry() {
+    QRect screenGeometry;
+    int display = settings->lastDisplay();
+    if(desktopWidget->screenCount() <= display) {
+        display = 0;
+    }
+    screenGeometry = desktopWidget->screenGeometry(display);
+    return screenGeometry;
 }
 
 MainWindow::~MainWindow() {
@@ -497,9 +523,13 @@ void MainWindow::slotFullscreen() {
         saveWindowGeometry();
         this->menuBar()->hide();
         if(borderlessEnabled) {
+            adjustWindowPosLastScreen();
             this->setWindowFlags(Qt::FramelessWindowHint);
             this->showMaximized();
         } else {
+            int display = settings->lastDisplay();
+            if(desktopWidget->screenCount() > display)
+                setGeometry(desktopWidget->screenGeometry(display));
             this->showFullScreen();
         }
         emit signalFullscreenEnabled(true);

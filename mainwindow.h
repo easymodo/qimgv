@@ -132,6 +132,11 @@ private:
 
     void readSettingsInitial();
     bool borderlessEnabled;
+    QDesktopWidget *desktopWidget;
+
+    void adjustWindowPosLastScreen();
+    QRect lastScreenGeometry();
+    void saveDisplay();
 protected:
     bool event(QEvent *event);
     void resizeEvent(QResizeEvent *event);
