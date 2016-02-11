@@ -60,6 +60,7 @@ private:
     bool parentFullscreen;
 
     void requestThumbnail(int pos);
+    void focusOn(int pos);
 signals:
     void thumbnailRequested(int pos);
     void thumbnailClicked(int pos);

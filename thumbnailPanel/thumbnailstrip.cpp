@@ -185,11 +185,14 @@ void ThumbnailStrip::selectThumbnail(int pos) {
     thumbnailLabels->at(pos)->setHighlighted(true);
     thumbnailLabels->at(pos)->setOpacityAnimated(OPACITY_SELECTED, ANIMATION_SPEED_INSTANT);
     current = pos;
+    loadVisibleThumbnails();
+    focusOn(pos);
+}
+
+void ThumbnailStrip::focusOn(int pos) {
     if(!childVisibleEntirely(pos)) {
-        qApp->processEvents();
         thumbView->ensureWidgetVisible(thumbnailLabels->at(pos), 350, 350);
     }
-    loadVisibleThumbnails();
 }
 
 void ThumbnailStrip::loadVisibleThumbnailsDelayed() {
