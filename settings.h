@@ -80,7 +80,7 @@ public:
 
 private:
     explicit Settings(QObject *parent = 0);
-    const int thumbnailSizeDefault = 135;
+    const int thumbnailSizeDefault = 160;
     QSettings s;
     QDir *tempDirectory;
 

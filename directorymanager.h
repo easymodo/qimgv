@@ -73,8 +73,6 @@ private:
     void generateFileListQuick();
     void generateFileListDeep();
 
-    int naturalCompare(const QString &_a, const QString &_b, Qt::CaseSensitivity caseSensitivity);
-    void naturalSort();
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();

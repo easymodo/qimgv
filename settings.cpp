@@ -36,7 +36,7 @@ void Settings::validate() {
             qDebug() << "Settings: error reading thumbnail size (int conversion failed).";
             qDebug() << "Settings: setting default size.";
             ok = true;
-            settings->s.setValue("thumbnailSize", 135);
+            settings->s.setValue("thumbnailSize", 160);
         }
     }
 }

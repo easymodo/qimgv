@@ -48,7 +48,7 @@ private:
     const int OFFSCREEN_PRELOAD_AREA = 1500;
 
     int panelSize;
-    int itemCount, current, thumbnailSize;
+    int itemCount, current, thumbnailSize, margin;
     bool childVisible(int pos);
     ThumbnailStrip *strip;
     QRectF preloadArea, visibleRegion;

@@ -4,6 +4,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     : QWidget(parent),
       panelSize(122),
       current(-1),
+      margin(2),
       thumbView(NULL),
       parentFullscreen(false)
 {
@@ -115,7 +116,7 @@ void ThumbnailStrip::readSettings() {
         thumbView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         scrollBar = thumbView->verticalScrollBar();
         viewLayout->setDirection(QBoxLayout::TopToBottom);
-        viewLayout->setContentsMargins(0, 2, 0, 2);
+        viewLayout->setContentsMargins(0, margin, 0, margin);
         buttonsLayout->setDirection(QBoxLayout::LeftToRight);
         if(position == LEFT)
             layout->setDirection(QBoxLayout::BottomToTop);
@@ -126,7 +127,7 @@ void ThumbnailStrip::readSettings() {
         thumbView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         scrollBar = thumbView->horizontalScrollBar();
         viewLayout->setDirection(QBoxLayout::LeftToRight);
-        viewLayout->setContentsMargins(2, 0, 2, 0);
+        viewLayout->setContentsMargins(margin, 0, margin, 0);
         buttonsLayout->setDirection(QBoxLayout::BottomToTop);
         layout->setDirection(QBoxLayout::RightToLeft);
     }
@@ -177,7 +178,7 @@ void ThumbnailStrip::addItem() {
 }
 
 void ThumbnailStrip::selectThumbnail(int pos) {
-    if(current != -1) {
+    if(current >=0 && current < thumbnailLabels->count()) {
         thumbnailLabels->at(current)->setHighlighted(false);
         thumbnailLabels->at(current)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_INSTANT);
     }
@@ -185,6 +186,7 @@ void ThumbnailStrip::selectThumbnail(int pos) {
     thumbnailLabels->at(pos)->setOpacityAnimated(OPACITY_SELECTED, ANIMATION_SPEED_INSTANT);
     current = pos;
     if(!childVisibleEntirely(pos)) {
+        qApp->processEvents();
         thumbView->ensureWidgetVisible(thumbnailLabels->at(pos), 350, 350);
     }
     loadVisibleThumbnails();
