@@ -11,6 +11,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->bgColorLabel->setAutoFillBackground(true);
     ui->accentColorLabel->setAutoFillBackground(true);
     shortcutKeys = actionManager->keys();
+    ui->versionLabel->setText(QApplication::applicationVersion());
     connect(this, SIGNAL(settingsChanged()),
             settings, SLOT(sendChangeNotification()));
     readSettings();

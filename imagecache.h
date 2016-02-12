@@ -73,7 +73,7 @@ public:
     void init(QString dir, QStringList list);
     void unloadAll();
     void unloadAt(int pos);
-    Image *imageAt(unsigned int pos);
+    Image *imageAt(int pos);
     int length() const;
     QString currentDirectory();
     bool isLoaded(int pos);

@@ -95,6 +95,7 @@ private:
     ControlsOverlay *controlsOverlay;
     ThumbnailStrip *panel;
     int currentViewer; // 0 = none; 1 = imageViewer; 2 = VideoPlayer;
+    int currentDisplay;
     QBoxLayout *layout;
     PanelPosition panelPosition;
     QRect panelArea;

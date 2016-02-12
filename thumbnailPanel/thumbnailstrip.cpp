@@ -144,30 +144,34 @@ void ThumbnailStrip::readSettings() {
 }
 
 void ThumbnailStrip::populate(int count) {
-    widget->hide();
-    for(int i = thumbnailLabels->count() - 1; i >= 0; --i) {
-        delete viewLayout->takeAt(0);
-        delete thumbnailLabels->takeAt(0);
-    }
-    // remove stretch
-    viewLayout->takeAt(0);
-    //recreate list
-    delete thumbnailLabels;
-    thumbnailLabels = new QList<ThumbnailLabel*>();
+    if(count >= 0 ) {
+        widget->hide();
+        for(int i = thumbnailLabels->count() - 1; i >= 0; --i) {
+            delete viewLayout->takeAt(0);
+            delete thumbnailLabels->takeAt(0);
+        }
+        // remove stretch
+        viewLayout->takeAt(0);
+        //recreate list
+        delete thumbnailLabels;
+        thumbnailLabels = new QList<ThumbnailLabel*>();
 
-    for(int i = 0; i < count; i++) {
-        addItem();
+        for(int i = 0; i < count; i++) {
+            addItem();
+        }
+        viewLayout->addStretch(1);
+        widget->setFixedSize(viewLayout->sizeHint());
+        widget->show();
     }
-    viewLayout->addStretch(1);
-    widget->setFixedSize(viewLayout->sizeHint());
-    widget->show();
 }
 
 void ThumbnailStrip::fillPanel(int count) {
-    current = -1;
-    loadTimer.stop();
-    populate(count);
-    loadVisibleThumbnailsDelayed();
+    if(count >= 0 ) {
+        current = -1;
+        loadTimer.stop();
+        populate(count);
+        loadVisibleThumbnailsDelayed();
+    }
 }
 
 void ThumbnailStrip::addItem() {
@@ -178,19 +182,21 @@ void ThumbnailStrip::addItem() {
 }
 
 void ThumbnailStrip::selectThumbnail(int pos) {
-    if(current >=0 && current < thumbnailLabels->count()) {
+    if(current >= 0 && current < thumbnailLabels->count()) {
         thumbnailLabels->at(current)->setHighlighted(false);
         thumbnailLabels->at(current)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_INSTANT);
     }
-    thumbnailLabels->at(pos)->setHighlighted(true);
-    thumbnailLabels->at(pos)->setOpacityAnimated(OPACITY_SELECTED, ANIMATION_SPEED_INSTANT);
+    if(pos >= 0 && pos < thumbnailLabels->count()) {
+        thumbnailLabels->at(pos)->setHighlighted(true);
+        thumbnailLabels->at(pos)->setOpacityAnimated(OPACITY_SELECTED, ANIMATION_SPEED_INSTANT);
+    }
     current = pos;
     loadVisibleThumbnails();
     focusOn(pos);
 }
 
 void ThumbnailStrip::focusOn(int pos) {
-    if(!childVisibleEntirely(pos)) {
+    if(pos >= 0 && pos < thumbnailLabels->count() && !childVisibleEntirely(pos)) {
         thumbView->ensureWidgetVisible(thumbnailLabels->at(pos), 350, 350);
     }
 }
@@ -209,9 +215,11 @@ void ThumbnailStrip::loadVisibleThumbnails() {
 }
 
 void ThumbnailStrip::requestThumbnail(int pos) {
-    if(thumbnailLabels->at(pos)->state == EMPTY  && childVisible(pos)) {
-        thumbnailLabels->at(pos)->state = LOADING;
-        emit thumbnailRequested(pos);
+    if(pos >= 0 && pos < thumbnailLabels->count()) {
+        if(thumbnailLabels->at(pos)->state == EMPTY  && childVisible(pos)) {
+            thumbnailLabels->at(pos)->state = LOADING;
+            emit thumbnailRequested(pos);
+        }
     }
 }
 
@@ -239,15 +247,19 @@ void ThumbnailStrip::updateVisibleRegion() {
 }
 
 bool ThumbnailStrip::childVisible(int pos) {
-    if(preloadArea.intersects(viewLayout->itemAt(pos)->geometry())) {
+    if(pos >= 0 && pos < thumbnailLabels->count() &&
+       preloadArea.intersects(viewLayout->itemAt(pos)->geometry()))
+    {
         return true;
     }
     return false;
 }
 
 bool ThumbnailStrip::childVisibleEntirely(int pos) {
-    if(visibleRegion.contains(viewLayout->itemAt(pos)->geometry().topLeft()) &&
-       visibleRegion.contains(viewLayout->itemAt(pos)->geometry().bottomRight())) {
+    if(pos >= 0 && pos < thumbnailLabels->count() &&
+       visibleRegion.contains(viewLayout->itemAt(pos)->geometry().topLeft()) &&
+       visibleRegion.contains(viewLayout->itemAt(pos)->geometry().bottomRight()))
+    {
         return true;
     }
     return false;

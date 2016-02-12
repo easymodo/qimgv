@@ -40,7 +40,7 @@ public:
     void setCurrentDir(QString);
 
     // returns true on success
-    bool setCurrentPos(unsigned int pos);
+    bool setCurrentPos(int pos);
     QStringList fileList();
     QString currentDirectory();
     QString currentFileName();

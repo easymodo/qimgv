@@ -316,11 +316,11 @@ void Settings::setImageFitMode(int mode) {
     settings->s.setValue("defaultFitMode", mode);
 }
 
-QByteArray Settings::windowGeometry() {
-    return settings->s.value("windowGeometry").toByteArray();
+QRect Settings::windowGeometry() {
+    return settings->s.value("windowGeometry").toRect();
 }
 
-void Settings::setWindowGeometry(QByteArray geometry) {
+void Settings::setWindowGeometry(QRect geometry) {
     settings->s.setValue("windowGeometry", geometry);
 }
 

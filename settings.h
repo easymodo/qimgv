@@ -50,8 +50,8 @@ public:
     void setMenuBarHidden(bool mode);
     int imageFitMode();
     void setImageFitMode(int mode);
-    QByteArray windowGeometry();
-    void setWindowGeometry(QByteArray geometry);
+    QRect windowGeometry();
+    void setWindowGeometry(QRect geometry);
     bool reduceRamUsage();
     void setReduceRamUsage(bool mode);
     bool playVideos();

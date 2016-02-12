@@ -60,4 +60,4 @@ Linux:
     
     Others: coming soon(tm).
 
-![alt tag](http://i.imgur.com/rPlhoWp.jpg)
+![alt tag](http://i.imgur.com/ixWdRiy.jpg)

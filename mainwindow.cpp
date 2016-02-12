@@ -5,6 +5,7 @@ MainWindow::MainWindow() :
     videoPlayer(NULL),
     panel(NULL),
     currentViewer(0),
+    currentDisplay(0),
     layout(NULL),
     borderlessEnabled(false),
     desktopWidget(NULL)
@@ -306,6 +307,7 @@ void MainWindow::openImage(QPixmap *pixmap) {
 
 void MainWindow::readSettingsInitial() {
     readSettings();
+    currentDisplay = settings->lastDisplay();
     if(!settings->fullscreenMode()) {
         restoreWindowGeometry();
     }
@@ -407,6 +409,9 @@ bool MainWindow::event(QEvent *event) {
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     this->hide();
+    qDebug() << this->rect();
+    qDebug() << this->window()->rect();
+    qDebug() << this->x() << " " << this->y();
     if(QThreadPool::globalInstance()->activeThreadCount()) {
         QThreadPool::globalInstance()->waitForDone();
     }
@@ -424,26 +429,15 @@ void MainWindow::saveDisplay() {
 }
 
 void MainWindow::saveWindowGeometry() {
-    settings->setWindowGeometry(this->saveGeometry());
+    settings->setWindowGeometry(QRect( x(), y(), width(), height()));
+    qDebug() << "saving geometry " << QRect( x(), y(), width(), height());
 }
 
 void MainWindow::restoreWindowGeometry() {
-    this->restoreGeometry(settings->windowGeometry());
-    adjustWindowPosLastScreen();
-}
-
-void MainWindow::adjustWindowPosLastScreen() {
-    this->move(lastScreenGeometry().x(), lastScreenGeometry().y());
-}
-
-QRect MainWindow::lastScreenGeometry() {
-    QRect screenGeometry;
-    int display = settings->lastDisplay();
-    if(desktopWidget->screenCount() <= display) {
-        display = 0;
-    }
-    screenGeometry = desktopWidget->screenGeometry(display);
-    return screenGeometry;
+    QRect geometry = settings->windowGeometry();
+    qDebug() << "restoring geometry " << geometry;
+    this->resize(geometry.size());
+    this->move(geometry.x(), geometry.y());
 }
 
 MainWindow::~MainWindow() {
@@ -520,23 +514,33 @@ void MainWindow::slotTriggerFullscreen() {
 
 void MainWindow::slotFullscreen() {
     if(fullscreenEnabledAct->isChecked()) {
-        saveWindowGeometry();
         this->menuBar()->hide();
+        // do not save immediately on application start
+        if(!this->isHidden())
+            saveWindowGeometry();
+
+        this->hide();
+        //move to target screen
+        int display = settings->lastDisplay();
+        if(desktopWidget->screenCount() > display &&
+           display != desktopWidget->screenNumber(this))
+        {
+            this->move(desktopWidget->screenGeometry(display).x(),
+                       desktopWidget->screenGeometry(display).y());
+        }
+
         if(borderlessEnabled) {
-            adjustWindowPosLastScreen();
             this->setWindowFlags(Qt::FramelessWindowHint);
             this->showMaximized();
         } else {
-            int display = settings->lastDisplay();
-            if(desktopWidget->screenCount() > display)
-                setGeometry(desktopWidget->screenGeometry(display));
             this->showFullScreen();
         }
         emit signalFullscreenEnabled(true);
+
     } else {
         showMenuBar();
         this->setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint);
-        this->show();
+        this->showNormal();
         restoreWindowGeometry();
         if(this->windowState() & Qt::WindowMaximized) {
             this->showMaximized();

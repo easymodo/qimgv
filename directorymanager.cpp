@@ -40,13 +40,13 @@ void DirectoryManager::setCurrentDir(QString path) {
     } else changePath(path);
 }
 
-bool DirectoryManager::setCurrentPos(unsigned int pos) {
-    if(containsImages() && pos < fileCount()) {
+bool DirectoryManager::setCurrentPos(int pos) {
+    if(pos >= 0 && pos < fileNameList.length()) {
         currentPos = pos;
         settings->setLastFilePosition(currentPos);
         return true;
     }
-    qDebug() << "DirManager: invalid file position specified (" << pos << ")";
+    qDebug() << "DirManager::setCurrentPos : invalid file position specified (" << pos << ")";
     return false;
 }
 
@@ -85,12 +85,13 @@ QString DirectoryManager::prevFilePath() {
 }
 
 QString DirectoryManager::filePathAt(int pos) {
-    if(pos < 0 || pos > fileNameList.length() - 1) {
-        qDebug() << "dirManager: requested index out of range";
+    if(pos >= 0 && pos < fileNameList.length()) {
+        QString path = currentDir.absolutePath() + "/" + fileNameList.at(pos);
+        return path;
+    } else {
+        qDebug() << "dirManager::filePathAt : requested index out of range";
         return "";
     }
-    QString path = currentDir.absolutePath() + "/" + fileNameList.at(pos);
-    return path;
 }
 
 int DirectoryManager::currentFilePos() {

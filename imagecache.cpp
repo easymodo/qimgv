@@ -37,15 +37,18 @@ void ImageCache::unloadAll() {
 }
 
 void ImageCache::unloadAt(int pos) {
-    lock();
-    cachedImages->at(pos)->unload();
-    unlock();
+    if(pos >= 0 && pos < cachedImages->length()) {
+        lock();
+        cachedImages->at(pos)->unload();
+        unlock();
+    }
 }
 
-Image *ImageCache::imageAt(unsigned int pos) {
-    if(pos >= cachedImages->length() && !cachedImages->isEmpty())
+Image *ImageCache::imageAt(int pos) {
+    if(pos >= 0 && pos < cachedImages->length())
+        return cachedImages->at(pos)->image();
+    else
         return NULL;
-    return cachedImages->at(pos)->image();
 }
 
 int ImageCache::length() const {
@@ -58,9 +61,10 @@ QString ImageCache::currentDirectory() {
 }
 
 bool ImageCache::isLoaded(int pos) {
-    if(pos >=cachedImages->length())
+    if(pos >= 0 && pos < cachedImages->length())
+        return cachedImages->at(pos)->isLoaded();
+    else
         return false;
-    return cachedImages->at(pos)->isLoaded();
 }
 
 int ImageCache::currentlyLoadedCount() {
@@ -76,9 +80,8 @@ int ImageCache::currentlyLoadedCount() {
 }
 
 void ImageCache::setImage(Image *img, int pos) {
-    if(pos >= cachedImages->length())
-        return;
-    cachedImages->at(pos)->setImage(img);
+    if(pos >= 0 && pos < cachedImages->length())
+        cachedImages->at(pos)->setImage(img);
 }
 
 
