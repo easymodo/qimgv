@@ -409,9 +409,6 @@ bool MainWindow::event(QEvent *event) {
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     this->hide();
-    qDebug() << this->rect();
-    qDebug() << this->window()->rect();
-    qDebug() << this->x() << " " << this->y();
     if(QThreadPool::globalInstance()->activeThreadCount()) {
         QThreadPool::globalInstance()->waitForDone();
     }
@@ -429,13 +426,16 @@ void MainWindow::saveDisplay() {
 }
 
 void MainWindow::saveWindowGeometry() {
-    settings->setWindowGeometry(QRect( x(), y(), width(), height()));
-    qDebug() << "saving geometry " << QRect( x(), y(), width(), height());
+#ifdef __linux__
+    settings->setWindowGeometry(geometry());
+#else
+    settings->setWindowGeometry(QRect(pos(), size()));
+#endif
+    qDebug() << "geometry saved: " << settings->windowGeometry();
 }
 
 void MainWindow::restoreWindowGeometry() {
     QRect geometry = settings->windowGeometry();
-    qDebug() << "restoring geometry " << geometry;
     this->resize(geometry.size());
     this->move(geometry.x(), geometry.y());
 }
@@ -519,7 +519,7 @@ void MainWindow::slotFullscreen() {
         if(!this->isHidden())
             saveWindowGeometry();
 
-        this->hide();
+        //this->hide();
         //move to target screen
         int display = settings->lastDisplay();
         if(desktopWidget->screenCount() > display &&
@@ -530,8 +530,9 @@ void MainWindow::slotFullscreen() {
         }
 
         if(borderlessEnabled) {
+            // there is some stupid bullshit with this mode under X11
             this->setWindowFlags(Qt::FramelessWindowHint);
-            this->showMaximized();
+            this->showMaximized();;
         } else {
             this->showFullScreen();
         }
@@ -542,9 +543,6 @@ void MainWindow::slotFullscreen() {
         this->setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint);
         this->showNormal();
         restoreWindowGeometry();
-        if(this->windowState() & Qt::WindowMaximized) {
-            this->showMaximized();
-        }
         this->activateWindow();
         this->raise();
         emit signalFullscreenEnabled(false);
