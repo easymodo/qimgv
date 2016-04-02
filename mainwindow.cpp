@@ -348,7 +348,7 @@ void MainWindow::calculatePanelTriggerArea() {
         case TOP:
             panelArea.setRect(0, 0, width(), panel->height() - 1);
             break;
-    }
+        }
 }
 
 void MainWindow::updateOverlays() {

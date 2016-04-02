@@ -10,8 +10,8 @@ ThumbnailLabel::ThumbnailLabel(QWidget *parent) :
     showName(true),
     thumbnail(NULL),
     highlighted(false),
-    borderW(3),
-    borderH(5),
+    borderW(1),
+    borderH(4),
     thumbnailSize(120),
     currentOpacity(1.0f)
 {
@@ -34,20 +34,20 @@ void ThumbnailLabel::readSettings() {
     thumbnailSize = settings->thumbnailSize();
     if(settings->panelPosition() == LEFT) {
         orientation = Qt::Vertical;
-        borderW = 5;
-        borderH = 3;
+        borderW = 4;
+        borderH = 1;
         highlightRect.setTopLeft(QPointF(thumbnailSize + borderW, borderH));
         highlightRect.setBottomRight(QPointF(borderW * 2 + thumbnailSize, thumbnailSize + borderH));
     } else if(settings->panelPosition() == RIGHT) {
             orientation = Qt::Vertical;
-            borderW = 5;
-            borderH = 3;
+            borderW = 4;
+            borderH = 1;
             highlightRect.setTopLeft(QPointF(0, borderH));
             highlightRect.setBottomRight(QPointF(borderW, thumbnailSize + borderH));
     } else {
         orientation = Qt::Horizontal;
-        borderW = 3;
-        borderH = 5;
+        borderW = 1;
+        borderH = 4;
         highlightRect.setTopLeft(QPointF(borderW, 0));
         highlightRect.setBottomRight(QPointF(borderW + thumbnailSize, borderH));
     }
