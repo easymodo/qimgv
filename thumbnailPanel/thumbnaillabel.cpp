@@ -11,7 +11,7 @@ ThumbnailLabel::ThumbnailLabel(QWidget *parent) :
     thumbnail(NULL),
     highlighted(false),
     borderW(1),
-    borderH(4),
+    borderH(5),
     thumbnailSize(120),
     currentOpacity(1.0f)
 {

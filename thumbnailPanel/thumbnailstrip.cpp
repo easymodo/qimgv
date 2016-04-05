@@ -96,7 +96,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
 
 void ThumbnailStrip::readSettings() {
     position = settings->panelPosition();
-    panelSize = settings->thumbnailSize() + 20;
+    panelSize = settings->thumbnailSize() + 21;
     scrollBar->setValue(0);
     updatePanelPosition();
 

@@ -9,7 +9,7 @@ CropOverlay::CropOverlay(QWidget *parent) : QWidget(parent),
     clear(true),
     moving(false),
     scale(1.0f),
-    handleSize(5),
+    handleSize(7),
     drawBuffer(NULL),
     dragMode(NO_DRAG) {
     font.setPixelSize(12);
@@ -17,13 +17,13 @@ CropOverlay::CropOverlay(QWidget *parent) : QWidget(parent),
     setButtonText("SELECT");
 
     prepareDrawElements();
-    brushInactiveTint.setColor(QColor(0, 10, 0, 210));    // transparent black
+    brushInactiveTint.setColor(QColor(0, 10, 0, 230));
     brushInactiveTint.setStyle(Qt::Dense4Pattern);
-    brushDarkGray.setColor(QColor(120, 120, 120, 210));    // transparent black
+    brushDarkGray.setColor(QColor(120, 120, 120, 230));
     brushDarkGray.setStyle(Qt::SolidPattern);
-    brushGray.setColor(QColor(150, 150, 150, 255));    // gray
+    brushGray.setColor(QColor(150, 150, 150, 255));
     brushGray.setStyle(Qt::SolidPattern);
-    brushLightGray.setColor(QColor(220, 220, 220, 210));    // transparent green
+    brushLightGray.setColor(QColor(220, 220, 220, 230));
     brushLightGray.setStyle(Qt::SolidPattern);
     selectionOutlinePen.setColor(Qt::black);
     selectionOutlinePen.setStyle(Qt::SolidLine);
@@ -129,7 +129,7 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
             drawLabel(info, selectionRect.topRight() + QPoint(1, 0), brushDarkGray, &painter);
         } else {
             drawLabel(info, selectionRect.topLeft() + QPoint(handleSize * 2, handleSize * 2), brushLightGray, &painter);
-            drawHandles(brushDarkGray, &painter);
+            drawHandles(brushGray, &painter);
         }
 
         drawLabel(buttonText, buttonRect, brushLightGray, &painter);

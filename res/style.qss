@@ -68,7 +68,7 @@ ThumbnailLabel {
 }
 
 QScrollBar:horizontal {
-    height: 12px;
+    height: 14px;
     background-color: #202020;
 }
 
@@ -97,7 +97,7 @@ QScrollBar::sub-line:horizontal {
 }
 
 QScrollBar:vertical {
-    width: 12px;
+    width: 14px;
     background-color: #202020;
 }
 
