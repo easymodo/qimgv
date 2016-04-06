@@ -197,8 +197,11 @@ void SettingsDialog::bgColorDialog() {
     newColor = colorDialog->getColor(bgLabelPalette.color(QPalette::Window),
                                      this,
                                      "Background color.");
-    bgLabelPalette.setColor(QPalette::Window, newColor);
-    ui->bgColorLabel->setPalette(bgLabelPalette);
+    if(newColor.isValid()) {
+        bgLabelPalette.setColor(QPalette::Window, newColor);
+        ui->bgColorLabel->setPalette(bgLabelPalette);
+    }
+    delete colorDialog;
 }
 
 void SettingsDialog::accentColorDialog() {
@@ -207,8 +210,11 @@ void SettingsDialog::accentColorDialog() {
     newColor = colorDialog->getColor(accentLabelPalette.color(QPalette::Window),
                                      this,
                                      "Accent color.");
-    accentLabelPalette.setColor(QPalette::Window, newColor);
-    ui->accentColorLabel->setPalette(accentLabelPalette);
+    if(newColor.isValid()) {
+        accentLabelPalette.setColor(QPalette::Window, newColor);
+        ui->accentColorLabel->setPalette(accentLabelPalette);
+    }
+    delete colorDialog;
 }
 
 SettingsDialog::~SettingsDialog() {
