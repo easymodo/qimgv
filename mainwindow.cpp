@@ -426,12 +426,7 @@ void MainWindow::saveDisplay() {
 }
 
 void MainWindow::saveWindowGeometry() {
-#ifdef __linux__
-    settings->setWindowGeometry(geometry());
-#else
     settings->setWindowGeometry(QRect(pos(), size()));
-#endif
-    qDebug() << "geometry saved: " << settings->windowGeometry();
 }
 
 void MainWindow::restoreWindowGeometry() {
