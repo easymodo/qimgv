@@ -74,6 +74,7 @@ void FileInfo::guessType() {
         extension = "bmp";
         type = STATIC;
     } else {
+        extension = ((QString)fileInfo.fileName().split('.').last()).toStdString().c_str();
         type = STATIC;
     }
 }

@@ -145,6 +145,15 @@ bool DirectoryManager::existsInCurrentDir(QString file) {
 bool DirectoryManager::isImage(QString filePath) {
     QFile file(filePath);
     if(file.exists()) {
+        /* workaround
+         * webp is detected as "audio/x-riff"
+         * a bug in qt?
+         */
+        if(QString::compare(filePath.split('.').last(), "webp", Qt::CaseInsensitive) == 0) {
+            return true;
+        }
+        /* end */
+
         QMimeType type = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchContent);
         if(mimeFilters.contains(type.name())) {
             return true;

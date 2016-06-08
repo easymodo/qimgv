@@ -106,6 +106,7 @@ QStringList Settings::supportedMimeTypes() {
     for(int i = 0; i < mimeTypes.count(); i++) {
         filters << QString(mimeTypes.at(i));
     }
+    qDebug() << filters;
     return filters;
 }
 
