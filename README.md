@@ -51,8 +51,7 @@ DEFAULT CONTROLS
 INSTALLATION
 
 Windows:
-
-    There are windows binaries (look in releases).
+    [> HERE <](https://github.com/easymodo/qimgv/releases)
     
 Linux:
 
