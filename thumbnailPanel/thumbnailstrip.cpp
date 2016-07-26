@@ -86,7 +86,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     connect(settingsButton, SIGNAL(clicked()), this, SIGNAL(settingsClicked()));
     connect(exitButton, SIGNAL(clicked()), this, SIGNAL(exitClicked()));
 
-    connect(widget, SIGNAL(pressed(QPoint)), this, SLOT(viewPressed(QPoint)));
+    connect(widget, SIGNAL(pressedLeft(QPoint)), this, SLOT(viewPressed(QPoint)));
     connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 

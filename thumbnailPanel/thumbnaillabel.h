@@ -52,6 +52,8 @@ private:
 
     void updateLabelWidth();
 protected:
+    void enterEvent(QEvent *event);
+    void leaveEvent(QEvent *event);
     virtual void paintEvent(QPaintEvent* event);
     QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
 

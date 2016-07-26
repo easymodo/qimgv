@@ -17,6 +17,7 @@ public:
     ~Video();
 
     QPixmap* getPixmap();
+    const QImage* getImage();
     Clip* getClip();    // getPixmap's video equivalent
     void load();
     void unload();

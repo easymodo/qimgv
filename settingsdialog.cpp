@@ -48,7 +48,7 @@ void SettingsDialog::readSettings() {
 
     // ##### UI #####
     //not implemented
-    ui->scalingQualityComboBox->setDisabled(true);
+    //ui->scalingQualityComboBox->setDisabled(true);
 
     ui->fullscreenTaskbarShownCheckBox->setChecked(settings->fullscreenTaskbarShown());
     ui->fullscreenCheckBox->setChecked(settings->fullscreenMode());

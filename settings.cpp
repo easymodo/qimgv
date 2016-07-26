@@ -149,7 +149,7 @@ void Settings::setSortingMode(int mode) {
 }
 
 bool Settings::useFastScale() {
-    return settings->s.value("useFastScale", "false").toBool();
+    return settings->s.value("useFastScale", "true").toBool();
 }
 
 void Settings::setUseFastScale(bool mode) {

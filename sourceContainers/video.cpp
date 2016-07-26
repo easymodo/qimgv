@@ -112,7 +112,13 @@ QPixmap *Video::thumbnailStub() {
 }
 
 QPixmap *Video::getPixmap() {
-    qDebug() << "Something bad happened in Video::getPixmap().";
+    qDebug() << "SOMETHING HAPPENED.";
+    //TODO: find out some easy way to get frames from video source
+    return NULL;
+}
+
+const QImage *Video::getImage() {
+    qDebug() << "SOMETHING HAPPENED.";
     //TODO: find out some easy way to get frames from video source
     return NULL;
 }

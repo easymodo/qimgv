@@ -158,10 +158,10 @@ void Core::rescaleForZoom(QSize newSize) {
             pixmap = currentImage()->getPixmap();
         } else {
             pixmap = new QPixmap(newSize);
-            if(settings->useFastScale()) {
-                //imgLib.fastScale(pixmap, currentImage()->getPixmap(), newSize, true);
-            } else {
+            if(settings->useFastScale() || currentScale < 1.0) {
                 imgLib.bilinearScale(pixmap, currentImage()->getPixmap(), newSize, true);
+            } else {
+                imgLib.bicubicScale(pixmap, currentImage()->getImage(), newSize.width(), newSize.height());
             }
         }
         emit scalingFinished(pixmap);

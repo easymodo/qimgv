@@ -12,6 +12,9 @@ public:
 
 signals:
     void pressed(QPoint);
+    void pressedLeft(QPoint);
+    void pressedRight(QPoint);
+    void pressedMiddle(QPoint);
 
 protected:
     void mousePressEvent(QMouseEvent *event);

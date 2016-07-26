@@ -19,6 +19,7 @@ class Image : public QObject
     Q_OBJECT
 public:
     virtual QPixmap* getPixmap() = 0;
+    virtual const QImage* getImage() = 0;
     fileType getType();
     virtual void load() = 0;
     QString getPath();

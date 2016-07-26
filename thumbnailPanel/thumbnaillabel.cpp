@@ -138,7 +138,10 @@ void ThumbnailLabel::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     if(thumbnail) {
         if(thumbnail->image) {
-            painter.setOpacity(currentOpacity);
+            if(hovered)
+                painter.setOpacity(1.0f);
+            else
+                painter.setOpacity(currentOpacity);
             painter.drawPixmap(borderW, borderH, *thumbnail->image);
         }
 
@@ -186,6 +189,18 @@ QSizeF ThumbnailLabel::sizeHint(Qt::SizeHint which, const QSizeF &constraint) co
             break;
     }
     return constraint;
+}
+
+void ThumbnailLabel::enterEvent(QEvent *event) {
+    hovered = true;
+    update();
+    event->ignore();
+}
+
+void ThumbnailLabel::leaveEvent(QEvent *event) {
+    hovered = false;
+    update();
+    event->ignore();
 }
 
 ThumbnailLabel::~ThumbnailLabel() {
