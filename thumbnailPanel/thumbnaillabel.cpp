@@ -28,6 +28,7 @@ ThumbnailLabel::ThumbnailLabel(QWidget *parent) :
     font.setPixelSize(11);
     font.setBold(true);
     fm = new QFontMetrics(font);
+    setAttribute(Qt::WA_TranslucentBackground, true);
 }
 
 // call manually from thumbnailStrip

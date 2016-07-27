@@ -41,35 +41,35 @@ QMenuBar::item:pressed {
 
 [accessibleName="panelButton"] {
     color: #E5E5E5;
-    background-color: #202020;
+    background-color: #2C2C2C;
 
     padding: 3px 3px 3px 3px;
 }
 
 [accessibleName="panelButton"]:hover {
     color: #F5F5F5;
-    background-color: #303030;
+    background-color: #3C3C3C;
 }
 
 [accessibleName="panelButtonsWidget"] {
-    background-color: #202020;
+    background-color: #2C2C2C;
 }
 
 [accessibleName="thumbnailWidget"] {
-    background-color: #202020;
+    background-color: #2C2C2C;
 }
 
 [accessibleName="thumbnailView"] {
-    background-color: #202020;
+    background-color: #2C2C2C;
 }
 
 ThumbnailLabel {
-    background-color: #202020;
+    background-color: #2C2C2C;
 }
 
 QScrollBar:horizontal {
     height: 14px;
-    background-color: #202020;
+    background-color: #2C2C2C;
 }
 
 QScrollBar::handle:horizontal {
@@ -98,7 +98,7 @@ QScrollBar::sub-line:horizontal {
 
 QScrollBar:vertical {
     width: 14px;
-    background-color: #202020;
+    background-color: #2C2C2C;
 }
 
 QScrollBar::handle:vertical {
