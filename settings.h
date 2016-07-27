@@ -46,8 +46,6 @@ public:
     void setAccentColor(QColor color);
     bool fullscreenMode();
     void setFullscreenMode(bool mode);
-    bool menuBarHidden();
-    void setMenuBarHidden(bool mode);
     int imageFitMode();
     void setImageFitMode(int mode);
     QRect windowGeometry();
@@ -80,7 +78,7 @@ public:
 
 private:
     explicit Settings(QObject *parent = 0);
-    const int thumbnailSizeDefault = 160;
+    const int thumbnailSizeDefault = 190;
     QSettings s;
     QDir *tempDirectory;
 

@@ -201,7 +201,7 @@ void Settings::setUsePreloader(bool mode) {
 }
 
 QColor Settings::backgroundColor() {
-    return settings->s.value("bgColor", QColor(14, 14, 14)).value<QColor>();
+    return settings->s.value("bgColor", QColor(20, 20, 20)).value<QColor>();
 }
 
 void Settings::setBackgroundColor(QColor color) {
@@ -209,7 +209,7 @@ void Settings::setBackgroundColor(QColor color) {
 }
 
 QColor Settings::accentColor() {
-    return settings->s.value("accentColor", QColor(44, 180, 13)).value<QColor>();
+    return settings->s.value("accentColor", QColor(137, 197, 24)).value<QColor>();
 }
 
 void Settings::setAccentColor(QColor color) {
@@ -222,14 +222,6 @@ bool Settings::fullscreenMode() {
 
 void Settings::setFullscreenMode(bool mode) {
     settings->s.setValue("openInFullscreen", mode);
-}
-
-bool Settings::menuBarHidden() {
-    return settings->s.value("hideMenuBar", true).toBool();
-}
-
-void Settings::setMenuBarHidden(bool mode) {
-    settings->s.setValue("hideMenuBar", mode);
 }
 
 // maximized borderless window instead of fullscreen

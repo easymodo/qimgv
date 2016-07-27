@@ -24,7 +24,6 @@ void SettingsDialog::readSettings() {
     ui->infiniteScrollingCheckBox->setChecked(settings->infiniteScrolling());
     ui->playVideosCheckBox->setChecked(settings->playVideos());
     ui->playSoundsCheckBox->setChecked(settings->playVideoSounds());
-    ui->showMenuBarCheckBox->setChecked(!settings->menuBarHidden());
     ui->enablePanelCheckBox->setChecked(settings->panelEnabled());
 
     ui->ffmpegLineEdit->setText(settings->ffmpegExecutable());
@@ -48,7 +47,7 @@ void SettingsDialog::readSettings() {
 
     // ##### UI #####
     //not implemented
-    //ui->scalingQualityComboBox->setDisabled(true);
+    ui->scalingQualityComboBox->setDisabled(true);
 
     ui->fullscreenTaskbarShownCheckBox->setChecked(settings->fullscreenTaskbarShown());
     ui->fullscreenCheckBox->setChecked(settings->fullscreenMode());
@@ -108,7 +107,6 @@ void SettingsDialog::applySettings() {
     settings->setPlayVideos(ui->playVideosCheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
     settings->setFullscreenTaskbarShown(ui->fullscreenTaskbarShownCheckBox->isChecked());
-    settings->setMenuBarHidden(!ui->showMenuBarCheckBox->isChecked());
     settings->setPanelEnabled(ui->enablePanelCheckBox->isChecked());
 
     settings->setFfmpegExecutable(ui->ffmpegLineEdit->text());

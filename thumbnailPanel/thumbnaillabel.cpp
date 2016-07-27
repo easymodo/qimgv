@@ -26,6 +26,7 @@ ThumbnailLabel::ThumbnailLabel(QWidget *parent) :
     readSettings();
 
     font.setPixelSize(11);
+    font.setBold(true);
     fm = new QFontMetrics(font);
 }
 
@@ -53,7 +54,7 @@ void ThumbnailLabel::readSettings() {
     }
     this->setFixedSize(thumbnailSize+borderW*2, thumbnailSize+borderH*2);
     nameRect.setTopLeft(QPointF(borderW, borderH));
-    nameRect.setBottomRight(QPointF(borderW + thumbnailSize, borderH + 19));
+    nameRect.setBottomRight(QPointF(borderW + thumbnailSize, borderH + 20));
     nameRect.setWidth(thumbnailSize);
     labelRect = QRectF(QPointF(borderW + thumbnailSize - 25, borderH),
                        QPointF(borderW + thumbnailSize, borderH + nameRect.height()));
@@ -82,7 +83,7 @@ void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail) {
         loaded = true;
         showLabel = settings->showThumbnailLabels() && !thumbnail->label.isEmpty();
         updateLabelWidth();
-        float widthFactor = fm->width(thumbnail->name) / (float)(thumbnailSize - 6);
+        float widthFactor = fm->width(thumbnail->name) / (float)(thumbnailSize - 13);
         if(widthFactor > 1) {
             thumbnail->name.truncate(thumbnail->name.length()/widthFactor);
         }
@@ -92,7 +93,7 @@ void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail) {
 void ThumbnailLabel::updateLabelWidth() {
     if(showLabel && thumbnail) {
         int labelWidth = fm->width(thumbnail->label);
-        labelRect.setWidth(labelWidth + 4);
+        labelRect.setWidth(labelWidth + 6);
         labelRect.moveRight(nameRect.right());
     }
 }
@@ -153,24 +154,26 @@ void ThumbnailLabel::paintEvent(QPaintEvent *event) {
         //nameLabel
         painter.fillRect(nameRect, *nameColor);
         painter.setPen(QColor(10, 10, 10, 200));
-        painter.drawText(nameRect.adjusted(4, 3, 0, 0), thumbnail->name);
+        painter.drawText(nameRect.adjusted(5, 3, 0, 0), thumbnail->name);
         painter.setPen(QColor(255, 255, 255, 255));
-        painter.drawText(nameRect.adjusted(3, 2, 0, 0), thumbnail->name);
+        painter.drawText(nameRect.adjusted(4, 2, 0, 0), thumbnail->name);
 
         painter.setOpacity(1.0f);
         //typeLabel
         if(showLabel) {
             painter.fillRect(labelRect, *labelColor);
-            QPointF labelTextPos = labelRect.bottomLeft() + QPointF(2, -6);
-            painter.setPen(QColor(10, 10, 10, 200));
-            painter.drawText(labelTextPos + QPointF(1, 1), thumbnail->label);
-            painter.setPen(QColor(255, 255, 255, 255));
+            QPointF labelTextPos = labelRect.bottomLeft() + QPointF(3, -6);
+            //painter.setPen(QColor(10, 10, 10, 200));
+            //painter.drawText(labelTextPos + QPointF(1, 1), thumbnail->label);
+            painter.setPen(QColor(10, 10, 10, 255));
             painter.drawText(labelTextPos, thumbnail->label);
         }
 
         //colored bar and shadow on the top
         if(isHighlighted()) {
             painter.fillRect(highlightRect, *highlightColor);
+            painter.setPen(*highlightColor);
+            painter.drawRect(rect().adjusted(borderW,borderH,-borderW-1,-borderH-1));
             //painter->fillRect(shadowRect, *shadowGradient);
         }
     }
