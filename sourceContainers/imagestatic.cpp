@@ -41,7 +41,7 @@ void ImageStatic::load() {
 void ImageStatic::save(QString destinationPath) {
     if(isLoaded()) {
         lock();
-        image->save(destinationPath, getExtension(destinationPath), 100);
+        image->save(destinationPath);
         unlock();
     }
 }
@@ -49,7 +49,7 @@ void ImageStatic::save(QString destinationPath) {
 void ImageStatic::save() {
     if(isLoaded()) {
         lock();
-        image->save(path, info->getExtension(), 100);
+        image->save(path);
         unlock();
     }
 }

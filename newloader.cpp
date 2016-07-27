@@ -5,7 +5,9 @@
 NewLoader::NewLoader(DirectoryManager *_dm) :
     reduceRam(false),
     current(NULL),
-    preloadTarget(0) {
+    preloadTarget(0),
+    loadTarget(-1)
+{
     dm = _dm;
     loadThread = new QThread(this);
     readSettings();

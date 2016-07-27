@@ -41,11 +41,8 @@ void Clip::load(const QString &fileName, const char* format) {
     frame = QRect(0,0,srcWidth, srcHeight);
 }
 
-void Clip::save(const QString &fileName, const char* format, int quality) {
+void Clip::save(const QString &fileName) {
     Q_UNUSED(fileName)
-    Q_UNUSED(format)
-    Q_UNUSED(quality)
-
     // TODO: Use ffmpeg functions clip and rotate to save video
 }
 

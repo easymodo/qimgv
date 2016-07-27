@@ -97,9 +97,9 @@ void MainWindow::init() {
     connect(actionManager, SIGNAL(fitNormal()), this, SLOT(slotFitNormal()));
     connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
     connect(actionManager, SIGNAL(toggleFullscreen()), this, SLOT(slotTriggerFullscreen()));
-    connect(actionManager, SIGNAL(toggleMenuBar()), this, SLOT(triggerMenuBar()));
     connect(actionManager, SIGNAL(zoomIn()), imageViewer, SLOT(slotZoomIn()));
     connect(actionManager, SIGNAL(zoomOut()), imageViewer, SLOT(slotZoomOut()));
+    connect(actionManager, SIGNAL(resize()), this, SLOT(slotResizeDialog()));
     connect(actionManager, SIGNAL(rotateLeft()), this, SLOT(slotRotateLeft()));
     connect(actionManager, SIGNAL(rotateRight()), this, SLOT(slotRotateRight()));
     connect(actionManager, SIGNAL(openSettings()), this, SLOT(showSettings()));
@@ -110,9 +110,6 @@ void MainWindow::init() {
     connect(actionManager, SIGNAL(exit()), this, SLOT(close()));
 
     connect(this, SIGNAL(fileSaved(QString)), core, SLOT(saveImage(QString)));
-
-    createActions();
-    createMenus();
 
     readSettingsInitial();
 
@@ -315,9 +312,9 @@ void MainWindow::readSettingsInitial() {
 
 void MainWindow::readSettings() {
     borderlessEnabled = settings->fullscreenTaskbarShown();
-    menuBar()->setHidden(settings->menuBarHidden());
     panelPosition = settings->panelPosition();
-    int fitMode = settings->imageFitMode();
+    fullscreen = settings->fullscreenMode();
+    fitMode = settings->imageFitMode();
     if(fitMode == 1) {
         slotFitWidth();
     } else if(fitMode == 2) {
@@ -426,7 +423,11 @@ void MainWindow::saveDisplay() {
 }
 
 void MainWindow::saveWindowGeometry() {
-    settings->setWindowGeometry(QRect(pos(), size()));
+    #ifdef __linux__
+        settings->setWindowGeometry(geometry());
+    #else
+         settings->setWindowGeometry(QRect(pos(), size()));
+    #endif
 }
 
 void MainWindow::restoreWindowGeometry() {
@@ -455,27 +456,12 @@ void MainWindow::slotShowInfo(bool x) {
     x ? infoOverlay->show() : infoOverlay->hide();
 }
 
-void MainWindow::triggerMenuBar() {
-    if(this->menuBar()->isHidden()) {
-        this->menuBar()->show();
-    } else {
-        this->menuBar()->hide();
-    }
-    settings->setMenuBarHidden(this->menuBar()->isHidden());
-}
-
-void MainWindow::showMenuBar() {
-    if(!settings->menuBarHidden()) {
-        menuBar()->show();
-    }
-}
-
 //#############################################################
 //###################### ACTION SLOTS #########################
 //#############################################################
 
 void MainWindow::switchFitMode() {
-    if(modeFitAll->isChecked()) {
+    if(fitMode == 0) {
         this->slotFitNormal();
     } else {
         this->slotFitAll();
@@ -483,33 +469,22 @@ void MainWindow::switchFitMode() {
 }
 
 void MainWindow::slotFitAll() {
-    modeFitWidth->setChecked(false);
-    modeFitNormal->setChecked(false);
-    modeFitAll->setChecked(true);
+    fitMode = 0;
     emit signalFitAll();
 }
 
 void MainWindow::slotFitWidth() {
-    modeFitAll->setChecked(false);
-    modeFitNormal->setChecked(false);
-    modeFitWidth->setChecked(true);
+    fitMode = 1;
     emit signalFitWidth();
 }
 
 void MainWindow::slotFitNormal() {
-    modeFitAll->setChecked(false);
-    modeFitWidth->setChecked(false);
-    modeFitNormal->setChecked(true);
+    fitMode = 2;
     emit signalFitNormal();
 }
 
 void MainWindow::slotTriggerFullscreen() {
-    this->fullscreenEnabledAct->trigger();
-}
-
-void MainWindow::slotFullscreen() {
-    if(fullscreenEnabledAct->isChecked()) {
-        this->menuBar()->hide();
+    if(fullscreen) {
         // do not save immediately on application start
         if(!this->isHidden())
             saveWindowGeometry();
@@ -534,7 +509,6 @@ void MainWindow::slotFullscreen() {
         emit signalFullscreenEnabled(true);
 
     } else {
-        showMenuBar();
         this->setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint);
         this->showNormal();
         restoreWindowGeometry();
@@ -542,11 +516,22 @@ void MainWindow::slotFullscreen() {
         this->raise();
         emit signalFullscreenEnabled(false);
     }
+    fullscreen = fullscreen?false:true;
 }
 
 void MainWindow::slotMinimize() {
     this->setWindowState(Qt::WindowMinimized);
 }
+
+void MainWindow::slotResize(QSize newSize) {
+    qDebug() << "resize!" << newSize;
+}
+
+void MainWindow::slotResizeDialog() {
+    ResizeDialog resizeDialog(this);
+    connect(&resizeDialog, SIGNAL(sizeSelected(QSize)), this, SLOT(slotResize(QSize)));
+    resizeDialog.exec();
+ }
 
 void MainWindow::slotRotateLeft() {
     core->rotateImage(-90);
@@ -594,166 +579,3 @@ void MainWindow::showSettings() {
     SettingsDialog settingsDialog;
     settingsDialog.exec();
 }
-
-void MainWindow::slotAbout() {
-    QMessageBox msgBox;
-    msgBox.setIconPixmap(QPixmap(":/images/res/icons/pepper.png"));
-    QSpacerItem *horizontalSpacer =
-        new QSpacerItem(250,
-                        0,
-                        QSizePolicy::Minimum,
-                        QSizePolicy::Expanding);
-    msgBox.setWindowTitle("About " +
-                          QCoreApplication::applicationName() +
-                          " " +
-                          QCoreApplication::applicationVersion());
-    QString message;
-    message = "qimgv is a simple image viewer written in qt.";
-    message.append("<br>This program is licensed under GNU GPL Version 3.");
-    message.append("<br><br>Website: <a href='https://github.com/easymodo/qimgv'>github.com/easymodo/qimgv</a>");
-    message.append("<br><br>Main developer: <br>Easymodo (easymodofrf@gmail.com)");
-    message.append("<br><br><a href='https://github.com/easymodo/qimgv/graphs/contributors'>Contributors</a>");
-    message.append("<br><br> This is a pre-release software.");
-    message.append("<br> Expect bugs.");
-    msgBox.setTextFormat(Qt::RichText);
-    msgBox.setText(message);
-    QGridLayout *layout = (QGridLayout *) msgBox.layout();
-    layout->addItem(horizontalSpacer,
-                    layout->rowCount(),
-                    0,
-                    1,
-                    layout->columnCount());
-    msgBox.exec();
-}
-
-//#############################################################
-//#################### MENU BAR & ACTIONS #####################
-//#############################################################
-
-void MainWindow::createActions() {
-    openAct = new QAction(tr("&Open..."), this);
-    this->addAction(openAct);
-    connect(openAct, SIGNAL(triggered()), this, SLOT(slotOpenDialog()));
-
-    saveAct = new QAction(tr("Save"), this);
-    this->addAction(saveAct);
-    connect(saveAct, SIGNAL(triggered()), this, SLOT(slotSaveDialog()));
-
-    settingsAct = new QAction(tr("&Preferences"), this);
-    this->addAction(settingsAct);
-    connect(settingsAct, SIGNAL(triggered()), this, SLOT(showSettings()));
-
-    exitAct = new QAction(tr("E&xit"), this);
-    this->addAction(exitAct);
-    connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
-
-    rotateLeftAct = new QAction(tr("Rotate L&eft"), this);
-    this->addAction(rotateLeftAct);
-    connect(rotateLeftAct, SIGNAL(triggered()), this, SLOT(slotRotateLeft()));
-
-    cropAct = new QAction(tr("C&rop"), this);
-    this->addAction(cropAct);
-    connect(cropAct, SIGNAL(triggered()), this, SLOT(slotCrop()));
-
-    selectWallpaperAct = new QAction(tr("Set wallpaper"), this);
-    this->addAction(selectWallpaperAct);
-    connect(selectWallpaperAct, SIGNAL(triggered()), this, SLOT(slotSelectWallpaper()));
-
-    rotateRightAct = new QAction(tr("Rotate R&ight"), this);
-    this->addAction(rotateRightAct);
-    connect(rotateRightAct, SIGNAL(triggered()), this, SLOT(slotRotateRight()));
-
-    nextAct = new QAction(tr("N&ext"), this);
-    nextAct->setEnabled(true);
-    this->addAction(nextAct);
-    connect(nextAct, SIGNAL(triggered()), core, SLOT(slotNextImage()));
-
-    prevAct = new QAction(tr("P&rev"), this);
-    this->addAction(prevAct);
-    connect(prevAct, SIGNAL(triggered()), core, SLOT(slotPrevImage()));
-
-    zoomInAct = new QAction(tr("Zoom &In (10%)"), this);
-    this->addAction(zoomInAct);
-    connect(zoomInAct, SIGNAL(triggered()), imageViewer, SLOT(slotZoomIn()));
-
-    zoomOutAct = new QAction(tr("Zoom &Out (10%)"), this);
-    this->addAction(zoomOutAct);
-    connect(zoomOutAct, SIGNAL(triggered()), imageViewer, SLOT(slotZoomOut()));
-
-    modeFitNormal = new QAction(tr("&Normal Size"), this);
-    modeFitNormal->setEnabled(false);
-    modeFitNormal->setCheckable(true);
-    this->addAction(modeFitNormal);
-    connect(modeFitNormal, SIGNAL(triggered()), this, SLOT(slotFitNormal()));
-
-    modeFitAll = new QAction(tr("Fit all"), this);
-    modeFitAll->setEnabled(false);
-    modeFitAll->setCheckable(true);
-    this->addAction(modeFitAll);
-    connect(modeFitAll, SIGNAL(triggered()), this, SLOT(slotFitAll()));
-
-    modeFitWidth = new QAction(tr("Fit &width"), this);
-    modeFitWidth->setEnabled(false);
-    modeFitWidth->setCheckable(true);
-    this->addAction(modeFitWidth);
-    connect(modeFitWidth, SIGNAL(triggered()), this, SLOT(slotFitWidth()));
-
-    fullscreenEnabledAct = new QAction(tr("&Fullscreen"), this);
-    fullscreenEnabledAct->setEnabled(true);
-    fullscreenEnabledAct->setCheckable(true);
-    this->addAction(fullscreenEnabledAct);
-    connect(fullscreenEnabledAct, SIGNAL(triggered()),
-            this, SLOT(slotFullscreen()));
-
-    aboutAct = new QAction(tr("&About"), this);
-    connect(aboutAct, SIGNAL(triggered()), this, SLOT(slotAbout()));
-
-    aboutQtAct = new QAction(tr("About &Qt"), this);
-    connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-
-    modeFitNormal->setEnabled(true);
-    modeFitAll->setEnabled(true);
-    modeFitWidth->setEnabled(true);
-}
-
-void MainWindow::createMenus() {
-    fileMenu = new QMenu(tr("&File"), this);
-    fileMenu->addAction(openAct);
-    fileMenu->addAction(saveAct);
-    fileMenu->addAction(settingsAct);
-    fileMenu->addSeparator();
-    fileMenu->addAction(exitAct);
-
-    editMenu = new QMenu(tr("&Edit"), this);
-    editMenu->addAction(cropAct);
-    editMenu->addSeparator();
-    editMenu->addAction(rotateLeftAct);
-    editMenu->addAction(rotateRightAct);
-    editMenu->addSeparator();
-    editMenu->addAction(selectWallpaperAct);
-
-    viewMenu = new QMenu(tr("&View"), this);
-    viewMenu->addAction(fullscreenEnabledAct);
-    viewMenu->addAction(zoomInAct);
-    viewMenu->addAction(zoomOutAct);
-    viewMenu->addSeparator();
-    viewMenu->addAction(modeFitNormal);
-    viewMenu->addAction(modeFitAll);
-    viewMenu->addAction(modeFitWidth);
-
-    navigationMenu = new QMenu(tr("&Navigate"), this);
-    navigationMenu->addAction(nextAct);
-    navigationMenu->addAction(prevAct);
-
-    helpMenu = new QMenu(tr("&Help"), this);
-    helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQtAct);
-
-    menuBar()->addMenu(fileMenu);
-    menuBar()->addMenu(editMenu);
-    menuBar()->addMenu(viewMenu);
-    menuBar()->addMenu(navigationMenu);
-    menuBar()->addMenu(helpMenu);
-}
-
-

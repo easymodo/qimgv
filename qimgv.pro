@@ -56,7 +56,8 @@ SOURCES += main.cpp\
         customWidgets/settingsshortcutwidget.cpp \
         sourceContainers/clip.cpp \
         thumbnailPanel/thumbnailview.cpp \
-        customWidgets/clickablewidget.cpp
+        customWidgets/clickablewidget.cpp \
+    resizedialog.cpp
 
 HEADERS += mainwindow.h \
         overlays/infooverlay.h \
@@ -91,7 +92,8 @@ HEADERS += mainwindow.h \
         customWidgets/settingsshortcutwidget.h \
         sourceContainers/clip.h \
         thumbnailPanel/thumbnailview.h \
-        customWidgets/clickablewidget.h
+        customWidgets/clickablewidget.h \
+    resizedialog.h
 
 FORMS += \
       settingsdialog.ui

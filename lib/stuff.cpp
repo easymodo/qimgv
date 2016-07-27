@@ -12,14 +12,3 @@ int probeOS() {
     return 3;
 #endif
 }
-
-
-const char *getExtension(QString path) {
-    QStringList lst;
-    QString ext = path;
-    do {
-        lst = ext.split(".");
-        ext = lst.last();
-    } while(lst.count() > 1);
-    return ext.toStdString().c_str();
-}

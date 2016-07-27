@@ -106,7 +106,7 @@ QStringList Settings::supportedMimeTypes() {
     for(int i = 0; i < mimeTypes.count(); i++) {
         filters << QString(mimeTypes.at(i));
     }
-    qDebug() << filters;
+    //qDebug() << filters;
     return filters;
 }
 
@@ -126,11 +126,12 @@ void Settings::setPlayVideoSounds(bool mode) {
     settings->s.setValue("playVideoSounds", mode);
 }
 
-/* 0: By name (default)
+/*
+ * 0: By name (default)
  * 1: By name reversed
  * 2: By date
  * 3: By date reversed
-*/
+ */
 int Settings::sortingMode() {
     bool ok = true;
     int mode = settings->s.value("sortingMode", "0").toInt(&ok);
@@ -296,7 +297,8 @@ void Settings::setPanelPosition(PanelPosition pos) {
     settings->s.setValue("panelPosition", posString);
 }
 
-/* 0: all
+/*
+ * 0: all
  * 1: fit width
  * 2: orginal size
  */

@@ -30,6 +30,7 @@ void ActionManager::createActionList() {
                                 << "fitNormal"
                                 << "toggleFitMode"
                                 << "toggleMenuBar"
+                                << "resize"
                                 << "rotateRight"
                                 << "rotateLeft"
                                 << "zoomIn"
@@ -218,6 +219,7 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("W", "fitWidth");
     actionManager->addShortcut("N", "fitNormal");
     actionManager->addShortcut("Ctrl+M", "toggleMenuBar");
+    actionManager->addShortcut("R", "resize"); // TODO: better defaults
     actionManager->addShortcut("Ctrl+R", "rotateRight");
     actionManager->addShortcut("Ctrl+L", "rotateLeft");
     actionManager->addShortcut("Ctrl+WheelDown", "zoomIn");

@@ -10,6 +10,7 @@
 #include "overlays/infooverlay.h"
 #include "overlays/controlsoverlay.h"
 #include "settingsdialog.h"
+#include "resizedialog.h"
 #include "viewers/imageviewer.h"
 #include "viewers/videoplayer.h"
 #include "settings.h"
@@ -18,7 +19,6 @@
 #include <time.h>
 
 QT_BEGIN_NAMESPACE
-    class QAction;
     class QLabel;
     class QMenu;
     class QScrollArea;
@@ -31,10 +31,8 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public slots:
-    void slotFullscreen();
     void slotTriggerFullscreen();
     void slotMinimize();
-    void slotAbout();
     void setInfoString(QString);
     void readSettings();
     void enableImageViewer();
@@ -65,16 +63,16 @@ public:
     VideoPlayer *videoPlayer;
 
     void open(QString path);
-    void showMenuBar();
     void updateOverlays();
 
 private slots:
-    void triggerMenuBar();
     void slotOpenDialog();
     void slotFitAll();
     void slotFitWidth();
     void slotFitNormal();
     void switchFitMode();
+    void slotResize(QSize);
+    void slotResizeDialog();
     void slotRotateLeft();
     void slotRotateRight();
     void slotSaveDialog();
@@ -87,7 +85,7 @@ private slots:
     void showSettings();
 
     void slotSelectWallpaper();
-    void calculatePanelTriggerArea();
+    void calculatePanelTriggerArea();    
 
 private:
     Core *core;
@@ -96,40 +94,15 @@ private:
     ThumbnailStrip *panel;
     int currentViewer; // 0 = none; 1 = imageViewer; 2 = VideoPlayer;
     int currentDisplay;
+    int fitMode;
+    bool fullscreen; // separate flag because "borderless fullscreen" is actually a maximized window
     QBoxLayout *layout;
     PanelPosition panelPosition;
     QRect panelArea;
     QPoint lastMouseMovePos;
     void init();
-    void createActions();
-    void createMenus();
     void saveWindowGeometry();
     void restoreWindowGeometry();
-    
-    QAction *openAct;
-    QAction *saveAct;
-    QAction *settingsAct;
-    QAction *rotateLeftAct;
-    QAction *rotateRightAct;
-    QAction *cropAct;
-    QAction *selectWallpaperAct;
-    QAction *nextAct;
-    QAction *prevAct;
-    QAction *exitAct;
-    QAction *zoomInAct;
-    QAction *zoomOutAct;
-    QAction *modeFitNormal;
-    QAction *modeFitAll;
-    QAction *modeFitWidth;
-    QAction *fullscreenEnabledAct;
-    QAction *aboutAct;
-    QAction *aboutQtAct;
-
-    QMenu *fileMenu;
-    QMenu *editMenu;
-    QMenu *viewMenu;
-    QMenu *navigationMenu;
-    QMenu *helpMenu;
 
     void readSettingsInitial();
     bool borderlessEnabled;

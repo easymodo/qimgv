@@ -16,7 +16,7 @@ public:
     // functions which mimic those found in other underlying
     // image types such as QImage
     void load(const QString &fileName, const char* format);
-    void save(const QString &fileName, const char* format, int quality);
+    void save(const QString &fileName);
     int height();
     int width();
     QSize size();

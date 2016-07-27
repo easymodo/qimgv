@@ -58,6 +58,7 @@ signals:
     void toggleFullscreen();
     void zoomIn();
     void zoomOut();
+    void resize();
     void rotateLeft();
     void rotateRight();
     void exit();

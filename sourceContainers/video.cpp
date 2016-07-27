@@ -34,7 +34,7 @@ void Video::load() {
 void Video::save(QString destinationPath) {
     if(isLoaded()) {
         lock();
-        clip->save(destinationPath, getExtension(destinationPath), 100);
+        clip->save(destinationPath);
         unlock();
     }
 }
@@ -42,7 +42,7 @@ void Video::save(QString destinationPath) {
 void Video::save() {
     if(isLoaded()) {
         lock();
-        clip->save(path, info->getExtension(), 100);
+        clip->save(path);
         unlock();
     }
 }
