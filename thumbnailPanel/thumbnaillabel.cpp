@@ -155,27 +155,30 @@ void ThumbnailLabel::paintEvent(QPaintEvent *event) {
         //nameLabel
         painter.fillRect(nameRect, *nameColor);
         painter.setPen(QColor(10, 10, 10, 200));
-        painter.drawText(nameRect.adjusted(5, 3, 0, 0), thumbnail->name);
+        painter.drawText(nameRect.adjusted(5, 4, 0, 0), thumbnail->name);
         painter.setPen(QColor(255, 255, 255, 255));
-        painter.drawText(nameRect.adjusted(4, 2, 0, 0), thumbnail->name);
+        painter.drawText(nameRect.adjusted(4, 3, 0, 0), thumbnail->name);
 
         painter.setOpacity(1.0f);
-        //typeLabel
-        if(showLabel) {
-            painter.fillRect(labelRect, *labelColor);
-            QPointF labelTextPos = labelRect.bottomLeft() + QPointF(3, -6);
-            //painter.setPen(QColor(10, 10, 10, 200));
-            //painter.drawText(labelTextPos + QPointF(1, 1), thumbnail->label);
-            painter.setPen(QColor(10, 10, 10, 255));
-            painter.drawText(labelTextPos, thumbnail->label);
-        }
 
         //colored bar and shadow on the top
         if(isHighlighted()) {
-            painter.fillRect(highlightRect, *highlightColor);
+            painter.setPen(*nameColor);
+            painter.setPen(QColor(10, 10, 10, 150));
+            painter.drawRect(rect().adjusted(borderW+1, 0, -borderW-2, -borderH-2));
+
             painter.setPen(*highlightColor);
             painter.drawRect(rect().adjusted(borderW,borderH,-borderW-1,-borderH-1));
-            //painter->fillRect(shadowRect, *shadowGradient);
+
+            painter.fillRect(highlightRect, *highlightColor);
+        }
+
+        // Label after filename (such as [gif] etc)
+        if(showLabel) {
+            painter.fillRect(labelRect, *labelColor);
+            QPointF labelTextPos = labelRect.bottomLeft() + QPointF(3, -6);
+            painter.setPen(QColor(10, 10, 10, 255));
+            painter.drawText(labelTextPos, thumbnail->label);
         }
     }
 }
