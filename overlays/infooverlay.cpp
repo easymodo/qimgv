@@ -4,11 +4,12 @@ textOverlay::textOverlay(QWidget *parent) : QWidget(parent), textLength(0) {
     setPalette(Qt::transparent);
     setAttribute(Qt::WA_TransparentForMouseEvents);
     currentText = "No file opened.";
-    font.setPixelSize(13);
-    drawRect.setTopLeft(QPoint(2, 1));
+    font.setPixelSize(11);
+    font.setBold(true);
+    drawRect.setTopLeft(QPoint(2, 2));
     drawRect.setBottomRight(QPoint(950, 19));
-    textColor = new QColor(255, 255, 255, 255);
-    textShadowColor = new QColor(0, 0, 0, 150);
+    textColor = new QColor(220, 220, 220, 255);
+    textShadowColor = new QColor(0, 0, 0, 160);
     fm = new QFontMetrics(font);
     this->setFixedHeight(20);
     this->hide();
