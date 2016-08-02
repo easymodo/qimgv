@@ -2,6 +2,7 @@
 #define IMAGEVIEWER_H
 
 #include <QWidget>
+#include <QDesktopWidget>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QImageReader>
@@ -82,12 +83,14 @@ private:
 
     bool isDisplayingFlag;
     bool errorFlag;
+    bool mouseWrapping;
 
     float currentScale;
     float maxScale; // zoom OUT
     float minScale; // zoom IN
     float scaleStep;
     QPointF fixedZoomPoint;
+    QSize desktopSize;
 
     ImageFitMode imageFitMode;
     void initOverlays();
@@ -109,6 +112,8 @@ private:
     void fixAlignHorizontal();
     void fixAlignVertical();
 
+    void mouseDrag(QMouseEvent *event);
+    void mouseZoom(QMouseEvent *event);
 };
 
 #endif // IMAGEVIEWER_H

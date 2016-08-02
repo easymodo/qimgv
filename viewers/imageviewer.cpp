@@ -3,6 +3,7 @@
 ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     isDisplayingFlag(false),
     errorFlag(false),
+    mouseWrapping(true),
     currentScale(1.0),
     maxScale(1.0),
     minScale(4.0),
@@ -25,6 +26,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     connect(cursorTimer, SIGNAL(timeout()),
             this, SLOT(hideCursor()),
             Qt::UniqueConnection);
+    desktopSize = QApplication::desktop()->size();
 }
 
 ImageViewer::~ImageViewer() {
@@ -224,42 +226,9 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
         return;
     }
     if(event->buttons() & Qt::LeftButton) {
-        if(drawingRect.size().width() > this->width() ||
-                drawingRect.size().height() > this->height()) {
-            mouseMoveStartPos -= event->pos();
-            int left = drawingRect.x() - mouseMoveStartPos.x();
-            int top = drawingRect.y() - mouseMoveStartPos.y();
-            int right = left + drawingRect.width();
-            int bottom = top + drawingRect.height();
-            if(left <= 0 && right > size().width())
-                drawingRect.moveLeft(left);
-            if(top <= 0 && bottom > size().height())
-                drawingRect.moveTop(top);
-            mouseMoveStartPos = event->pos();
-            updateMap();
-            update();
-        }
+        mouseDrag(event);
     } else if(event->buttons() & Qt::RightButton) {
-        float step = (maxScale - minScale) / -500.0;
-        int currentPos = event->pos().y();
-        int moveDistance = mouseMoveStartPos.y() - currentPos;
-        float newScale = currentScale + step * (moveDistance);
-        mouseMoveStartPos = event->pos();
-
-        if(moveDistance < 0 && currentScale <= maxScale) {
-            return;
-        } else if(moveDistance > 0 && newScale > minScale) {    // already at max zoom
-            newScale = minScale;
-        } else if(moveDistance < 0 && newScale < maxScale - FLT_EPSILON) {  // a min zoom
-            newScale = maxScale;
-            slotFitAll();
-        } else {
-            imageFitMode = FREE;
-            scaleAround(fixedZoomPoint, newScale);
-            resizeTimer->stop();
-            resizeTimer->start(65);
-        }
-        update();
+        mouseZoom(event);
     } else {
         setCursor(QCursor(Qt::ArrowCursor));
         cursorTimer->start(2000);
@@ -282,6 +251,94 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
     }
     mapOverlay->enableVisibility(false);
     updateMap();
+}
+
+// Okular-like cursor drag behavior
+void ImageViewer::mouseDrag(QMouseEvent *event) {
+    if( drawingRect.size().width() > this->width() ||
+        drawingRect.size().height() > this->height() )
+    {
+        bool wrapped = false;
+        QPoint newPos = cursor().pos(); //global
+        QPoint delta = mouseMoveStartPos - event->pos(); // relative
+
+        if(abs(delta.x()) < desktopSize.width() / 2) {
+            int left = drawingRect.x() - delta.x();
+            int right = left + drawingRect.width();
+            if(left <= 0 && right > width()) {
+                // wrap mouse along the X axis
+                if(delta.x() && left != drawingRect.left()) {
+                    if(cursor().pos().x() >= desktopSize.width() - 1) {
+                        newPos.setX(2);
+                        cursor().setPos(newPos);
+                        wrapped = true;
+                    } else if(cursor().pos().x() <= 0) {
+                        newPos.setX(desktopSize.width() - 2);
+                        cursor().setPos(newPos);
+                        wrapped = true;
+                    }
+                }
+                // move image
+                drawingRect.moveLeft(left);
+            }
+        } else {
+            return;
+        }
+
+        if(abs(delta.y()) < desktopSize.height() / 2) {
+            int top = drawingRect.y() - delta.y();
+            int bottom = top + drawingRect.height();
+            if(top <= 0 && bottom > height()) {
+                // wrap mouse along the Y axis
+                if(delta.y() && top != drawingRect.top()) {
+                    if(cursor().pos().y() >= desktopSize.height() - 1) {
+                        newPos.setY(2);
+                        cursor().setPos(newPos);
+                        wrapped = true;
+                    } else if(cursor().pos().y() <= 0) {
+                        newPos.setY(desktopSize.height() - 2);
+                        cursor().setPos(newPos);
+                        wrapped = true;
+                    }
+                }
+                // move image
+                drawingRect.moveTop(top);
+            }
+
+        } else
+            return;
+
+        if(wrapped)
+            mouseMoveStartPos = mapFromGlobal(newPos);
+        else
+            mouseMoveStartPos = event->pos();
+
+        updateMap();
+        update();
+    }
+}
+
+void ImageViewer::mouseZoom(QMouseEvent *event) {
+    float step = (maxScale - minScale) / -500.0;
+    int currentPos = event->pos().y();
+    int moveDistance = mouseMoveStartPos.y() - currentPos;
+    float newScale = currentScale + step * (moveDistance);
+    mouseMoveStartPos = event->pos();
+
+    if(moveDistance < 0 && currentScale <= maxScale) {
+        return;
+    } else if(moveDistance > 0 && newScale > minScale) { // already at max zoom
+        newScale = minScale;
+    } else if(moveDistance < 0 && newScale < maxScale - FLT_EPSILON) { // at min zoom
+        newScale = maxScale;
+        slotFitAll();
+    } else {
+        imageFitMode = FREE;
+        scaleAround(fixedZoomPoint, newScale);
+        resizeTimer->stop();
+        resizeTimer->start(65);
+    }
+    update();
 }
 
 void ImageViewer::fitWidth() {
