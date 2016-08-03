@@ -25,6 +25,8 @@ void SettingsDialog::readSettings() {
     ui->playVideosCheckBox->setChecked(settings->playVideos());
     ui->playSoundsCheckBox->setChecked(settings->playVideoSounds());
     ui->enablePanelCheckBox->setChecked(settings->panelEnabled());
+    ui->mouseWrappingCheckBox->setChecked(settings->mouseWrapping());
+    ui->thumbnailBorderCheckBox->setChecked(settings->drawThumbnailSelectionBorder());
 
     ui->ffmpegLineEdit->setText(settings->ffmpegExecutable());
 
@@ -108,6 +110,8 @@ void SettingsDialog::applySettings() {
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
     settings->setFullscreenTaskbarShown(ui->fullscreenTaskbarShownCheckBox->isChecked());
     settings->setPanelEnabled(ui->enablePanelCheckBox->isChecked());
+    settings->setMouseWrapping(ui->mouseWrappingCheckBox->isChecked());
+    settings->setDrawThumbnailSelectionBorder(ui->thumbnailBorderCheckBox->isChecked());
 
     settings->setFfmpegExecutable(ui->ffmpegLineEdit->text());
 

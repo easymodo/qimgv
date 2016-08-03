@@ -364,3 +364,19 @@ void Settings::saveShortcuts() {
     settings->s.setValue("shortcuts", out);
     settings->s.endGroup();
 }
+
+bool Settings::mouseWrapping() {
+    return settings->s.value("mouseWrapping", false).toBool();
+}
+
+void Settings::setMouseWrapping(bool mode) {
+    settings->s.setValue("mouseWrapping", mode);
+}
+
+bool Settings::drawThumbnailSelectionBorder() {
+    return settings->s.value("thumbnailSelectionBorder", true).toBool();
+}
+
+void Settings::setDrawThumbnailSelectionBorder(bool mode) {
+    settings->s.setValue("thumbnailSelectionBorder", mode);
+}

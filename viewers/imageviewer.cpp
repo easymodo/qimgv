@@ -3,7 +3,7 @@
 ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     isDisplayingFlag(false),
     errorFlag(false),
-    mouseWrapping(true),
+    mouseWrapping(false),
     currentScale(1.0),
     maxScale(1.0),
     minScale(4.0),
@@ -122,6 +122,7 @@ void ImageViewer::selectWallpaper() {
 }
 
 void ImageViewer::readSettings() {
+    mouseWrapping = settings->mouseWrapping();
     this->bgColor = settings->backgroundColor();
     this->repaint();
 }
@@ -226,7 +227,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
         return;
     }
     if(event->buttons() & Qt::LeftButton) {
-        mouseDrag(event);
+        mouseWrapping?mouseDragWrapping(event):mouseDrag(event);
     } else if(event->buttons() & Qt::RightButton) {
         mouseZoom(event);
     } else {
@@ -254,25 +255,26 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 // Okular-like cursor drag behavior
-void ImageViewer::mouseDrag(QMouseEvent *event) {
+// TODO: fix multiscreen
+void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
     if( drawingRect.size().width() > this->width() ||
         drawingRect.size().height() > this->height() )
     {
         bool wrapped = false;
-        QPoint newPos = cursor().pos(); //global
+        QPoint newPos = mapToGlobal(event->pos()); //global
         QPoint delta = mouseMoveStartPos - event->pos(); // relative
 
-        if(abs(delta.x()) < desktopSize.width() / 2) {
+        if(delta.x() && abs(delta.x()) < desktopSize.width() / 2) {
             int left = drawingRect.x() - delta.x();
             int right = left + drawingRect.width();
             if(left <= 0 && right > width()) {
                 // wrap mouse along the X axis
-                if(delta.x() && left != drawingRect.left()) {
-                    if(cursor().pos().x() >= desktopSize.width() - 1) {
+                if(left+1 <= 0 && right-1 > width()) {
+                    if(newPos.x() >= desktopSize.width() - 1) {
                         newPos.setX(2);
                         cursor().setPos(newPos);
                         wrapped = true;
-                    } else if(cursor().pos().x() <= 0) {
+                    } else if(newPos.x() <= 0) {
                         newPos.setX(desktopSize.width() - 2);
                         cursor().setPos(newPos);
                         wrapped = true;
@@ -281,21 +283,19 @@ void ImageViewer::mouseDrag(QMouseEvent *event) {
                 // move image
                 drawingRect.moveLeft(left);
             }
-        } else {
-            return;
         }
 
-        if(abs(delta.y()) < desktopSize.height() / 2) {
+        if(delta.y() && abs(delta.y()) < desktopSize.height() / 2) {
             int top = drawingRect.y() - delta.y();
             int bottom = top + drawingRect.height();
             if(top <= 0 && bottom > height()) {
                 // wrap mouse along the Y axis
-                if(delta.y() && top != drawingRect.top()) {
-                    if(cursor().pos().y() >= desktopSize.height() - 1) {
+                if(top+1 <= 0 && bottom-1 > height()) {
+                    if(newPos.y() >= desktopSize.height() - 1) {
                         newPos.setY(2);
                         cursor().setPos(newPos);
                         wrapped = true;
-                    } else if(cursor().pos().y() <= 0) {
+                    } else if(newPos.y() <= 0) {
                         newPos.setY(desktopSize.height() - 2);
                         cursor().setPos(newPos);
                         wrapped = true;
@@ -305,14 +305,32 @@ void ImageViewer::mouseDrag(QMouseEvent *event) {
                 drawingRect.moveTop(top);
             }
 
-        } else
-            return;
+        }
 
         if(wrapped)
             mouseMoveStartPos = mapFromGlobal(newPos);
         else
             mouseMoveStartPos = event->pos();
 
+        updateMap();
+        update();
+    }
+}
+
+// default drag behavior
+void ImageViewer::mouseDrag(QMouseEvent *event) {
+    if(drawingRect.size().width() > this->width() ||
+            drawingRect.size().height() > this->height()) {
+        mouseMoveStartPos -= event->pos();
+        int left = drawingRect.x() - mouseMoveStartPos.x();
+        int top = drawingRect.y() - mouseMoveStartPos.y();
+        int right = left + drawingRect.width();
+        int bottom = top + drawingRect.height();
+        if(left <= 0 && right > size().width())
+            drawingRect.moveLeft(left);
+        if(top <= 0 && bottom > size().height())
+            drawingRect.moveTop(top);
+        mouseMoveStartPos = event->pos();
         updateMap();
         update();
     }

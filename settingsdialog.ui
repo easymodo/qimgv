@@ -12,8 +12,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>648</width>
+    <height>410</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -156,6 +156,9 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Someday this will work. Or not.</string>
+               </property>
                <item>
                 <property name="text">
                  <string>Better quality</string>
@@ -283,7 +286,7 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>Maximized borderless window instead of fullscreen mode. This may be buggy.</string>
+              <string>Maximized borderless window instead of fullscreen mode. Tested only on windows &amp; plasma 5, so it may be buggy.</string>
              </property>
              <property name="text">
               <string>Show taskbar in fullscreen</string>
@@ -304,6 +307,9 @@
                <height>20</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>Start from beginning when reaching end of directory.</string>
+             </property>
              <property name="text">
               <string>Infinite scrolling</string>
              </property>
@@ -322,6 +328,9 @@
                <width>0</width>
                <height>20</height>
               </size>
+             </property>
+             <property name="toolTip">
+              <string>This may not work in case qt cant find appropriate codecs.</string>
              </property>
              <property name="text">
               <string>Webm support (experimental)</string>
@@ -342,6 +351,9 @@
                <height>20</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>Enable sounds for webm.</string>
+             </property>
              <property name="text">
               <string>Play sounds</string>
              </property>
@@ -355,8 +367,21 @@
                <height>20</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>Disable Thumbnail panel altogether. Should speed up start times.</string>
+             </property>
              <property name="text">
               <string>Enable thumbnail panel</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="mouseWrappingCheckBox">
+             <property name="toolTip">
+              <string>Wrap mouse when dragging image. Similar to how it's done in KDE's Okular. Currently buggy with multiple screens.</string>
+             </property>
+             <property name="text">
+              <string>Enable mouse wrapping (single screen)</string>
              </property>
             </widget>
            </item>
@@ -821,6 +846,16 @@
          </property>
          <property name="checked">
           <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="thumbnailBorderCheckBox">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Draw border around selected thumbnail</string>
          </property>
         </widget>
        </item>

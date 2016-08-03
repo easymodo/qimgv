@@ -8,10 +8,11 @@ ThumbnailLabel::ThumbnailLabel(QWidget *parent) :
     loaded(false),
     showLabel(false),
     showName(true),
+    drawSelectionBorder(false),
     thumbnail(NULL),
     highlighted(false),
     borderW(1),
-    borderH(5),
+    borderH(4),
     thumbnailSize(120),
     currentOpacity(1.0f)
 {
@@ -34,6 +35,7 @@ ThumbnailLabel::ThumbnailLabel(QWidget *parent) :
 // call manually from thumbnailStrip
 void ThumbnailLabel::readSettings() {
     thumbnailSize = settings->thumbnailSize();
+    drawSelectionBorder = settings->drawThumbnailSelectionBorder();
     if(settings->panelPosition() == LEFT) {
         orientation = Qt::Vertical;
         borderW = 4;
@@ -163,13 +165,12 @@ void ThumbnailLabel::paintEvent(QPaintEvent *event) {
 
         //colored bar and shadow on the top
         if(isHighlighted()) {
-            painter.setPen(*nameColor);
-            painter.setPen(QColor(10, 10, 10, 150));
-            painter.drawRect(rect().adjusted(borderW+1, 0, -borderW-2, -borderH-2));
-
-            painter.setPen(*highlightColor);
-            painter.drawRect(rect().adjusted(borderW,borderH,-borderW-1,-borderH-1));
-
+            if(drawSelectionBorder) {
+                painter.setPen(QColor(10, 10, 10, 150));
+                painter.drawRect(rect().adjusted(borderW+1, 0, -borderW-2, -borderH-2));
+                painter.setPen(*highlightColor);
+                painter.drawRect(rect().adjusted(borderW,borderH,-borderW-1,-borderH-1));
+            }
             painter.fillRect(highlightRect, *highlightColor);
         }
 

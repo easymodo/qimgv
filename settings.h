@@ -75,6 +75,10 @@ public:
     bool setPanelEnabled(bool mode);
     int lastDisplay();
     int setLastDisplay(int display);
+    bool mouseWrapping();
+    void setMouseWrapping(bool mode);
+    bool drawThumbnailSelectionBorder();
+    void setDrawThumbnailSelectionBorder(bool mode);
 
 private:
     explicit Settings(QObject *parent = 0);

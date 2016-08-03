@@ -112,6 +112,7 @@ private:
     void fixAlignHorizontal();
     void fixAlignVertical();
 
+    void mouseDragWrapping(QMouseEvent *event);
     void mouseDrag(QMouseEvent *event);
     void mouseZoom(QMouseEvent *event);
 };

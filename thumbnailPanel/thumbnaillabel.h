@@ -38,6 +38,7 @@ private:
     const int SHADOW_HEIGHT = 10;
     bool hovered, loaded;
     bool showLabel, showName;
+    bool drawSelectionBorder;
 
     Thumbnail *thumbnail;
     qreal currentOpacity;
