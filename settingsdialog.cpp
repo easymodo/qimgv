@@ -7,7 +7,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle("Preferences - qimgv " +
                          QCoreApplication::applicationVersion());
-    setWindowIcon(QIcon(":/images/res/pepper32.png"));
+    //setWindowIcon(QIcon(":/images/res/pepper32.png"));
     ui->bgColorLabel->setAutoFillBackground(true);
     ui->accentColorLabel->setAutoFillBackground(true);
     shortcutKeys = actionManager->keys();
