@@ -12,8 +12,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>648</width>
-    <height>410</height>
+    <width>628</width>
+    <height>405</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -80,6 +80,179 @@
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
+            <widget class="QCheckBox" name="fullscreenCheckBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Open in fullscreen</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="fullscreenTaskbarShownCheckBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Maximized borderless window instead of fullscreen mode. Tested only on windows &amp; plasma 5, so it may be buggy.</string>
+             </property>
+             <property name="text">
+              <string>Show taskbar in fullscreen</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="Line" name="line">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enablePanelCheckBox">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Disable Thumbnail panel altogether. Should speed up start times.</string>
+             </property>
+             <property name="text">
+              <string>Enable thumbnail panel</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="infiniteScrollingCheckBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Start from beginning when reaching end of directory.</string>
+             </property>
+             <property name="text">
+              <string>Infinite scrolling</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="mouseWrappingCheckBox">
+             <property name="toolTip">
+              <string>Wrap mouse when dragging image. Similar to how it's done in KDE's Okular. Currently buggy with multiple screens.</string>
+             </property>
+             <property name="text">
+              <string>Enable mouse wrapping (single screen)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="Line" name="line_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="playVideosCheckBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>This may not work in case qt cant find appropriate codecs.</string>
+             </property>
+             <property name="text">
+              <string>Webm support (experimental)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="playSoundsCheckBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Enable sounds for webm.</string>
+             </property>
+             <property name="text">
+              <string>Play sounds</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Preferred</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>5</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <property name="leftMargin">
+            <number>10</number>
+           </property>
+           <property name="rightMargin">
+            <number>10</number>
+           </property>
+           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
               <widget class="QLabel" name="fitModeLabel">
@@ -121,52 +294,6 @@
                <item>
                 <property name="text">
                  <string>NORMAL</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <item>
-              <widget class="QLabel" name="scalingQualityLabel">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Scaling quality: </string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="scalingQualityComboBox">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>100</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>Someday this will work. Or not.</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>Better quality</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Better speed</string>
                 </property>
                </item>
               </widget>
@@ -227,163 +354,50 @@
             </layout>
            </item>
            <item>
-            <spacer name="verticalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::MinimumExpanding</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>5</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout_4">
-           <property name="leftMargin">
-            <number>10</number>
-           </property>
-           <property name="rightMargin">
-            <number>10</number>
-           </property>
-           <item>
-            <widget class="QCheckBox" name="fullscreenCheckBox">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Open in fullscreen</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="fullscreenTaskbarShownCheckBox">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>Maximized borderless window instead of fullscreen mode. Tested only on windows &amp; plasma 5, so it may be buggy.</string>
-             </property>
-             <property name="text">
-              <string>Show taskbar in fullscreen</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="infiniteScrollingCheckBox">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>Start from beginning when reaching end of directory.</string>
-             </property>
-             <property name="text">
-              <string>Infinite scrolling</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="playVideosCheckBox">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>This may not work in case qt cant find appropriate codecs.</string>
-             </property>
-             <property name="text">
-              <string>Webm support (experimental)</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="playSoundsCheckBox">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>Enable sounds for webm.</string>
-             </property>
-             <property name="text">
-              <string>Play sounds</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="enablePanelCheckBox">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>Disable Thumbnail panel altogether. Should speed up start times.</string>
-             </property>
-             <property name="text">
-              <string>Enable thumbnail panel</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="mouseWrappingCheckBox">
-             <property name="toolTip">
-              <string>Wrap mouse when dragging image. Similar to how it's done in KDE's Okular. Currently buggy with multiple screens.</string>
-             </property>
-             <property name="text">
-              <string>Enable mouse wrapping (single screen)</string>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <item>
+              <widget class="QLabel" name="scalingQualityLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Scaling quality: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="scalingQualityComboBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>Someday this will work. Or not.</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Better quality</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Better speed</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item>
             <spacer name="verticalSpacer_4">
@@ -391,7 +405,7 @@
               <enum>Qt::Vertical</enum>
              </property>
              <property name="sizeType">
-              <enum>QSizePolicy::Preferred</enum>
+              <enum>QSizePolicy::MinimumExpanding</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -464,115 +478,6 @@
         </spacer>
        </item>
       </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <attribute name="title">
-       <string>Loader</string>
-      </attribute>
-      <widget class="QSlider" name="cacheSlider">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>160</x>
-         <y>80</y>
-         <width>151</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="minimum">
-        <number>32</number>
-       </property>
-       <property name="maximum">
-        <number>512</number>
-       </property>
-       <property name="singleStep">
-        <number>2</number>
-       </property>
-       <property name="value">
-        <number>64</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="preloaderCheckBox">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>20</y>
-         <width>201</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>Preloads next image in directory for faster scrolling.</string>
-       </property>
-       <property name="text">
-        <string>Enable preloader</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="cacheLabel2">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>120</x>
-         <y>80</y>
-         <width>31</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-      <widget class="QLabel" name="cacheLabel1">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>80</y>
-         <width>141</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>When preloader is enabled, ram usage may exceed this setting.</string>
-       </property>
-       <property name="text">
-        <string>Cache size, MB:</string>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="reduceRamCheckBox">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>50</y>
-         <width>201</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>Checking this will make the program keep in memory only the currently displayed image (except the preloaded image).</string>
-       </property>
-       <property name="text">
-        <string>Reduce RAM usage</string>
-       </property>
-      </widget>
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
@@ -840,7 +745,26 @@
         </layout>
        </item>
        <item>
+        <widget class="Line" name="line_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QCheckBox" name="thumbnailLabelsCheckBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>300</width>
+           <height>20</height>
+          </size>
+         </property>
          <property name="text">
           <string>Show thumbnail labels</string>
          </property>
@@ -913,13 +837,13 @@
               </property>
               <property name="minimumSize">
                <size>
-                <width>100</width>
+                <width>130</width>
                 <height>30</height>
                </size>
               </property>
               <item>
                <property name="text">
-                <string>Zoom</string>
+                <string>Hold to zoom</string>
                </property>
               </item>
               <item>
@@ -946,6 +870,13 @@
              </spacer>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -1015,7 +946,7 @@
                </size>
               </property>
               <property name="text">
-               <string>Defaults</string>
+               <string>Reset to defaults</string>
               </property>
              </widget>
             </item>
@@ -1218,13 +1149,9 @@ p, li { white-space: pre-wrap; }
   <tabstop>fitModeComboBox</tabstop>
   <tabstop>scalingQualityComboBox</tabstop>
   <tabstop>sortingComboBox</tabstop>
-  <tabstop>fullscreenCheckBox</tabstop>
   <tabstop>OK</tabstop>
   <tabstop>pushButton</tabstop>
   <tabstop>Cancel</tabstop>
-  <tabstop>preloaderCheckBox</tabstop>
-  <tabstop>reduceRamCheckBox</tabstop>
-  <tabstop>cacheSlider</tabstop>
   <tabstop>thumbSizeComboBox</tabstop>
  </tabstops>
  <resources>
@@ -1276,22 +1203,6 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>137</x>
      <y>303</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>cacheSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>cacheLabel2</receiver>
-   <slot>setNum(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>273</x>
-     <y>115</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>161</x>
-     <y>131</y>
     </hint>
    </hints>
   </connection>

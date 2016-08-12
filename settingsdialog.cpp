@@ -31,12 +31,12 @@ void SettingsDialog::readSettings() {
     ui->ffmpegLineEdit->setText(settings->ffmpegExecutable());
 
     // ##### loader #####
-    ui->preloaderCheckBox->setChecked(settings->usePreloader());
-    ui->reduceRamCheckBox->setChecked(settings->reduceRamUsage());
+    //ui->preloaderCheckBox->setChecked(settings->usePreloader());
+    //ui->reduceRamCheckBox->setChecked(settings->reduceRamUsage());
 
     // ##### cache #####
     //ui->cacheSlider->setValue(globalSettings->s.value("cacheSize",64).toInt());
-    ui->cacheLabel2->setNum(ui->cacheSlider->value());
+    //ui->cacheLabel2->setNum(ui->cacheSlider->value());
 
     // ##### scaling #####
 
@@ -101,11 +101,11 @@ void SettingsDialog::applySettings() {
     //globalSettings->s.setValue("cacheSize", ui->cacheSlider->value());
     settings->setInfiniteScrolling(ui->infiniteScrollingCheckBox->isChecked());
     settings->setShowThumbnailLabels(ui->thumbnailLabelsCheckBox->isChecked());
-    settings->setUsePreloader(ui->preloaderCheckBox->isChecked());
+    //settings->setUsePreloader(ui->preloaderCheckBox->isChecked());
     settings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
     settings->setImageFitMode(ui->fitModeComboBox->currentIndex());
     settings->setSortingMode(ui->sortingComboBox->currentIndex());
-    settings->setReduceRamUsage(ui->reduceRamCheckBox->isChecked());
+    //settings->setReduceRamUsage(ui->reduceRamCheckBox->isChecked());
     settings->setPlayVideos(ui->playVideosCheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
     settings->setFullscreenTaskbarShown(ui->fullscreenTaskbarShownCheckBox->isChecked());

@@ -104,7 +104,8 @@ void ThumbnailStrip::readSettings() {
         thumbnailLabels->at(i)->applySettings();
     }
 
-    disconnect(timeLine, SIGNAL(frameChanged(int)), scrollBar, SLOT(setValue(int)));
+    disconnect(timeLine, SIGNAL(frameChanged(int)),
+               scrollBar, SLOT(setValue(int)));
     disconnect(scrollBar, SIGNAL(valueChanged(int)),
                this, SLOT(loadVisibleThumbnailsDelayed()));
     disconnect(scrollBar, SIGNAL(sliderMoved(int)),
