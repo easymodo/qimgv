@@ -57,6 +57,7 @@ void FileInfo::guessType() {
     QMimeDatabase mimeDb;
     QMimeType mimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
     QString mimeName = mimeType.name();
+    qDebug() << mimeName;
 
     if(mimeName == "video/webm") {
         extension = "webm";
@@ -70,12 +71,19 @@ void FileInfo::guessType() {
     } else if(mimeName == "image/gif") {
         extension = "gif";
         type = ANIMATED;
+    // webp is incorrectly(?) detected as audio/x-riff on my windows pc
     } else if(mimeName == "audio/x-riff") {
         // in case we encounter an actual audio/x-riff
         if(QString::compare(filePath().split('.').last(), "webp", Qt::CaseInsensitive) == 0) {
             extension = "webp";
             type = ANIMATED;
+            qDebug() << "here!";
         }
+    // TODO: parse header to find out if it supports animation.
+    // treat all webp as animated for now.
+    } else if(mimeName == "image/webp") {
+        extension = "webp";
+        type = ANIMATED;
     } else if(mimeName == "image/bmp") {
         extension = "bmp";
         type = STATIC;
@@ -83,4 +91,6 @@ void FileInfo::guessType() {
         extension = ((QString)fileInfo.fileName().split('.').last()).toStdString().c_str();
         type = STATIC;
     }
+
+    qDebug() << extension << type;
 }
