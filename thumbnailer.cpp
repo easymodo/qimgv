@@ -21,9 +21,9 @@ void Thumbnailer::run() {
     }
 
     th->image = tempImage->generateThumbnail();
-    if(tempImage->getType() == GIF) {
-        th->label = "[gif]";
-    } else if(tempImage->getType() == VIDEO) {
+    if(tempImage->type() == ANIMATED) {
+        th->label = "[" + QString::fromLatin1(tempImage->fileInfo->fileExtension()) + "]";
+    } else if(tempImage->type() == VIDEO) {
         th->label = "[webm]";
     }
     if(th->image->size() == QSize(0, 0)) {
@@ -31,7 +31,7 @@ void Thumbnailer::run() {
         th->image = new QPixmap(settings->thumbnailSize(), settings->thumbnailSize());
         th->image->fill(QColor(0,0,0,0));
     }
-    th->name = tempImage->getInfo()->getFileName();
+    th->name = tempImage->info()->fileName();
 
     if(cached) {
        // tempImage->unlock();

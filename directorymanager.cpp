@@ -27,8 +27,8 @@ void DirectoryManager::readSettings() {
 
 void DirectoryManager::setFile(QString path) {
     FileInfo *info = loadInfo(path);
-    setCurrentDir(info->getDirectoryPath());
-    currentPos = fileNameList.indexOf(info->getFileName());
+    setCurrentDir(info->directoryPath());
+    currentPos = fileNameList.indexOf(info->fileName());
     settings->setLastFilePosition(currentPos);
 }
 
@@ -147,7 +147,7 @@ bool DirectoryManager::isImage(QString filePath) {
     if(file.exists()) {
         /* workaround
          * webp is detected as "audio/x-riff"
-         * a bug in qt?
+         * TODO: parse file header for this case
          */
         if(QString::compare(filePath.split('.').last(), "webp", Qt::CaseInsensitive) == 0) {
             return true;

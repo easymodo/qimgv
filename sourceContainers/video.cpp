@@ -5,29 +5,29 @@
 Video::Video(QString _path) {
     path = _path;
     loaded = false;
-    info = new FileInfo(_path, this);
+    fileInfo = new FileInfo(_path, this);
 }
 
 Video::Video(FileInfo *_info) {
     loaded = true;
-    info = _info;
-    path = info->getFilePath();
+    fileInfo = _info;
+    path = fileInfo->filePath();
 }
 
 Video::~Video() {
-    delete info;
+    delete fileInfo;
     delete clip;
 }
 
 void Video::load() {
     QMutexLocker locker(&mutex);
-    if(!info) {
-        info = new FileInfo(path);
+    if(!fileInfo) {
+        fileInfo = new FileInfo(path);
     }
     if(isLoaded()) {
         return;
     }
-    clip = new Clip(path, info->getExtension());
+    clip = new Clip(path, fileInfo->fileExtension());
     loaded = true;
 }
 
@@ -53,9 +53,9 @@ QPixmap *Video::generateThumbnail() {
         return thumbnailStub();
     }
 
-    QString filePath = settings->tempDir() + "tmp_" + info->getFileName();
+    QString filePath = settings->tempDir() + "tmp_" + fileInfo->fileName();
 
-    QString command = "\"" + ffmpegExe + "\"" + " -i " + "\"" + info->getFilePath() + "\"" +
+    QString command = "\"" + ffmpegExe + "\"" + " -i " + "\"" + fileInfo->filePath() + "\"" +
                       " -r 1 -f image2 " + "\"" + filePath + "\"";
     QProcess process;
     process.start(command);

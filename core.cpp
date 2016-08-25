@@ -46,7 +46,7 @@ void Core::updateInfoString() {
                       QString::number(dirManager->fileNameList.length()) +
                       " ]   ");
     if(img) {
-        QString name, fullName = img->getInfo()->getFileName();
+        QString name, fullName = img->info()->fileName();
         if(fullName.size()>95) {
             name = fullName.left(95);
             name.append(" (...) ");
@@ -60,7 +60,7 @@ void Core::updateInfoString() {
                           "x" +
                           QString::number(img->height()) +
                           "  ");
-        infoString.append(QString::number(img->getInfo()->getFileSize()) + " KB)");
+        infoString.append(QString::number(img->info()->fileSize()) + " KB)");
     }
 
     //infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));

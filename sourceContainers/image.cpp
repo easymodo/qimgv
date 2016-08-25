@@ -22,14 +22,14 @@ bool Image::isLoaded() {
     return loaded;
 }
 
-fileType Image::getType() {
-    return info->getType();
+fileType Image::type() {
+    return fileInfo->getType();
 }
 
-FileInfo *Image::getInfo() {
-    return info;
+FileInfo *Image::info() {
+    return fileInfo;
 }
 
 void Image::attachInfo(FileInfo *_info) {
-    info = _info;
+    fileInfo = _info;
 }

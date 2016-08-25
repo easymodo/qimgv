@@ -5,7 +5,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     errorFlag(false),
     mouseWrapping(false),
     currentScale(1.0),
-    maxScale(1.0),
+    maxScale(2.0),
     minScale(4.0),
     scaleStep(0.16),
     imageFitMode(NORMAL) {

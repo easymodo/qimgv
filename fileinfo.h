@@ -11,7 +11,7 @@
 #include <cmath>
 #include "lib/stuff.h"
 
-enum fileType { NONE, STATIC, GIF, VIDEO };
+enum fileType { NONE, STATIC, ANIMATED, VIDEO };
 
 class FileInfo : public QObject
 {
@@ -19,16 +19,17 @@ public:
     FileInfo(QString path, QObject *parent = 0);
     ~FileInfo();
     
-    QString getDirectoryPath();
-    QString getFilePath();
-    QString getFileName();
+    QString directoryPath();
+    QString filePath();
+    QString fileName();
 
     // in KB
-    int getFileSize();
+    int fileSize();
     fileType getType();
+   // const char* extension();
 
     // file extension (guessed from mime-type)
-    const char* getExtension();
+    const char* fileExtension();
 
 private:
     QFileInfo fileInfo;

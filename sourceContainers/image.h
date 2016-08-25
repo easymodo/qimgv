@@ -20,7 +20,7 @@ class Image : public QObject
 public:
     virtual QPixmap* getPixmap() = 0;
     virtual const QImage* getImage() = 0;
-    fileType getType();
+    fileType type();
     virtual void load() = 0;
     QString getPath();
     virtual int height() = 0;
@@ -29,7 +29,7 @@ public:
     bool isLoaded();
     virtual QPixmap* generateThumbnail() = 0;
     void attachInfo(FileInfo*);
-    FileInfo* getInfo();
+    FileInfo* info();
     void safeDeleteSelf();
 
     virtual void crop(QRect newRect) = 0;
@@ -37,13 +37,13 @@ public:
 
     virtual void lock();
     virtual void unlock();
+    FileInfo* fileInfo;
 
 protected:
     bool loaded;
     QString path;
     QSize resolution;
     QMutex mutex;
-    FileInfo* info;
 
 signals:
 

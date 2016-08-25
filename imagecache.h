@@ -23,7 +23,7 @@ public:
     }
     FileInfo* getInfo() {
         if(img)
-            return img->getInfo();
+            return img->info();
     }
     bool isLoaded() {
         if(img==NULL) {

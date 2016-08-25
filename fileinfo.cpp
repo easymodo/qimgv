@@ -11,20 +11,20 @@ FileInfo::~FileInfo() {
 // ####################### PUBLIC METHODS #######################
 // ##############################################################
 
-QString FileInfo::getDirectoryPath() {
+QString FileInfo::directoryPath() {
     return fileInfo.absolutePath();
 }
 
-QString FileInfo::getFilePath() {
+QString FileInfo::filePath() {
     return fileInfo.absoluteFilePath();
 }
 
-QString FileInfo::getFileName() {
+QString FileInfo::fileName() {
     return fileInfo.fileName();
 }
 
 // in KB
-int FileInfo::getFileSize() {
+int FileInfo::fileSize() {
     return truncf(fileInfo.size()/1024);
 }
 
@@ -35,7 +35,7 @@ fileType FileInfo::getType() {
     return type;
 }
 
-const char *FileInfo::getExtension() {
+const char *FileInfo::fileExtension() {
     return extension;
 }
 
@@ -69,7 +69,13 @@ void FileInfo::guessType() {
         type = STATIC;
     } else if(mimeName == "image/gif") {
         extension = "gif";
-        type = GIF;
+        type = ANIMATED;
+    } else if(mimeName == "audio/x-riff") {
+        // in case we encounter an actual audio/x-riff
+        if(QString::compare(filePath().split('.').last(), "webp", Qt::CaseInsensitive) == 0) {
+            extension = "webp";
+            type = ANIMATED;
+        }
     } else if(mimeName == "image/bmp") {
         extension = "bmp";
         type = STATIC;

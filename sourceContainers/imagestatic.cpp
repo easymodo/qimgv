@@ -6,7 +6,7 @@ ImageStatic::ImageStatic(QString _path) {
     path = _path;
     loaded = false;
     image = NULL;
-    info = new FileInfo(path, this);
+    fileInfo = new FileInfo(path, this);
     sem = new QSemaphore(1);
     unloadRequested = false;
 }
@@ -14,27 +14,27 @@ ImageStatic::ImageStatic(QString _path) {
 ImageStatic::ImageStatic(FileInfo *_info) {
     loaded = false;
     image = NULL;
-    info = _info;
-    path = info->getFilePath();
+    fileInfo = _info;
+    path = fileInfo->filePath();
     sem = new QSemaphore(1);
     unloadRequested = false;
 }
 
 ImageStatic::~ImageStatic() {
     delete image;
-    delete info;
+    delete fileInfo;
 }
 
 //load image data from disk
 void ImageStatic::load() {
     QMutexLocker locker(&mutex);
-    if(!info) {
-        info = new FileInfo(path);
+    if(!fileInfo) {
+        fileInfo = new FileInfo(path);
     }
     if(isLoaded()) {
         return;
     }
-    image = new QImage(path, info->getExtension());
+    image = new QImage(path, fileInfo->fileExtension());
     loaded = true;
 }
 
@@ -59,7 +59,7 @@ QPixmap *ImageStatic::generateThumbnail() {
     QPixmap *thumbnail = new QPixmap(size, size);
     QPixmap *tmp;
     if(!isLoaded()) {
-        tmp = new QPixmap(path, info->getExtension());
+        tmp = new QPixmap(path, fileInfo->fileExtension());
         *tmp = tmp->scaled(size * 2,
                            size * 2,
                            Qt::KeepAspectRatioByExpanding,
