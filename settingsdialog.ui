@@ -752,6 +752,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="squareThumbnailsCheckBox">
+         <property name="text">
+          <string>Square thumbnails</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QCheckBox" name="thumbnailLabelsCheckBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">

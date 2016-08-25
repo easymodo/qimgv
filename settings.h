@@ -77,6 +77,8 @@ public:
     int setLastDisplay(int display);
     bool mouseWrapping();
     void setMouseWrapping(bool mode);
+    bool squareThumbnails();
+    void setSquareThumbnails(bool mode);
     bool drawThumbnailSelectionBorder();
     void setDrawThumbnailSelectionBorder(bool mode);
 

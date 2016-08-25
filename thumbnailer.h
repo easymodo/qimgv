@@ -11,12 +11,13 @@ class Thumbnailer : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    Thumbnailer(ImageCache* _cache, QString _path, int _target);
+    Thumbnailer(ImageCache* _cache, QString _path, int _target, bool _squared);
     ~Thumbnailer();
 
     void run();
     QString path;
     int target;
+    bool squared;
 private:
     ImageCache* cache;
     ImageFactory *factory;

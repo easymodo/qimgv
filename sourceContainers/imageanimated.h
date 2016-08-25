@@ -20,7 +20,7 @@ public:
     int height();
     int width();
     QSize size();
-    QPixmap* generateThumbnail();
+    QPixmap* generateThumbnail(bool squared);
 
     void rotate(int grad);
     void crop(QRect newRect);

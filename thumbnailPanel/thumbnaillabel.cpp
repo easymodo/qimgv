@@ -146,7 +146,9 @@ void ThumbnailLabel::paintEvent(QPaintEvent *event) {
                 painter.setOpacity(1.0f);
             else
                 painter.setOpacity(currentOpacity);
-            painter.drawPixmap(borderW, borderH, *thumbnail->image);
+            painter.drawPixmap((this->width() - thumbnail->image->width()) / 2,
+                               (this->height() - thumbnail->image->height()) / 2,
+                               *thumbnail->image);
         }
 
         painter.setOpacity(0.9f);

@@ -373,6 +373,14 @@ void Settings::setMouseWrapping(bool mode) {
     settings->s.setValue("mouseWrapping", mode);
 }
 
+bool Settings::squareThumbnails() {
+    return settings->s.value("squareThumbnails", false).toBool();
+}
+
+void Settings::setSquareThumbnails(bool mode) {
+    settings->s.setValue("squareThumbnails", mode);
+}
+
 bool Settings::drawThumbnailSelectionBorder() {
     return settings->s.value("thumbnailSelectionBorder", true).toBool();
 }

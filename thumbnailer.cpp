@@ -1,9 +1,10 @@
 #include "thumbnailer.h"
 
-Thumbnailer::Thumbnailer(ImageCache *_cache, QString _path, int _target) :
+Thumbnailer::Thumbnailer(ImageCache *_cache, QString _path, int _target, bool _squared) :
     path(_path),
     target(_target),
-    cache(_cache)
+    cache(_cache),
+    squared(_squared)
 {
     factory = new ImageFactory();
 }
@@ -20,7 +21,7 @@ void Thumbnailer::run() {
         tempImage = factory->createImage(path);
     }
 
-    th->image = tempImage->generateThumbnail();
+    th->image = tempImage->generateThumbnail(squared);
     if(tempImage->type() == ANIMATED) {
         th->label = "[" + QString::fromLatin1(tempImage->fileInfo->fileExtension()) + "]";
     } else if(tempImage->type() == VIDEO) {

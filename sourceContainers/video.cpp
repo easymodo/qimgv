@@ -47,7 +47,7 @@ void Video::save() {
     }
 }
 
-QPixmap *Video::generateThumbnail() {
+QPixmap *Video::generateThumbnail(bool squared) {
     QString ffmpegExe = settings->ffmpegExecutable();
     if(ffmpegExe.isEmpty()) {
         return thumbnailStub();
@@ -62,26 +62,33 @@ QPixmap *Video::generateThumbnail() {
     bool success = process.waitForFinished(2000);
     process.close();
     if(success) {
+        Qt::AspectRatioMode method = squared?(Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
         int size = settings->thumbnailSize();
         QPixmap *thumbnail = new QPixmap(size, size);
         QPixmap *tmp;
         tmp = new QPixmap(filePath, "JPG");
         *tmp = tmp->scaled(size * 2,
                            size * 2,
-                           Qt::KeepAspectRatioByExpanding,
+                           method,
                            Qt::FastTransformation)
                .scaled(size,
                        size,
-                       Qt::KeepAspectRatioByExpanding,
+                       method,
                        Qt::SmoothTransformation);
 
-        QRect target(0, 0, size, size);
-        target.moveCenter(tmp->rect().center());
-        *thumbnail = tmp->copy(target);
-        delete tmp;
         QFile tmpFile(filePath);
         tmpFile.remove();
-        return thumbnail;
+
+        if(squared) {
+            QRect target(0, 0, size, size);
+            target.moveCenter(tmp->rect().center());
+            QPixmap *thumbnail = new QPixmap(size, size);
+            *thumbnail = tmp->copy(target);
+            delete tmp;
+            return thumbnail;
+        } else {
+            return tmp;
+        }
     } else {
         QFile tmpFile(filePath);
         if(tmpFile.exists()) {

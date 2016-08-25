@@ -57,7 +57,6 @@ void FileInfo::guessType() {
     QMimeDatabase mimeDb;
     QMimeType mimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
     QString mimeName = mimeType.name();
-    qDebug() << mimeName;
 
     if(mimeName == "video/webm") {
         extension = "webm";
@@ -77,7 +76,6 @@ void FileInfo::guessType() {
         if(QString::compare(filePath().split('.').last(), "webp", Qt::CaseInsensitive) == 0) {
             extension = "webp";
             type = ANIMATED;
-            qDebug() << "here!";
         }
     // TODO: parse header to find out if it supports animation.
     // treat all webp as animated for now.
@@ -92,5 +90,4 @@ void FileInfo::guessType() {
         type = STATIC;
     }
 
-    qDebug() << extension << type;
 }

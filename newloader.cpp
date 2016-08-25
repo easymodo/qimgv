@@ -210,7 +210,7 @@ void NewLoader::reinitCacheForced() {
 
 // for position in directory
 void NewLoader::generateThumbnailFor(int pos) {
-    Thumbnailer *thWorker = new Thumbnailer(cache, dm->filePathAt(pos), pos);
+    Thumbnailer *thWorker = new Thumbnailer(cache, dm->filePathAt(pos), pos, settings->squareThumbnails());
     connect(thWorker, SIGNAL(thumbnailReady(int,Thumbnail*)),
             this, SIGNAL(thumbnailReady(int,Thumbnail*)));
     thWorker->setAutoDelete(true);

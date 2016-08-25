@@ -54,19 +54,19 @@ void ImageStatic::save() {
     }
 }
 
-QPixmap *ImageStatic::generateThumbnail() {
+QPixmap *ImageStatic::generateThumbnail(bool squared) {
+    Qt::AspectRatioMode method = squared?(Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
     int size = settings->thumbnailSize();
-    QPixmap *thumbnail = new QPixmap(size, size);
     QPixmap *tmp;
     if(!isLoaded()) {
         tmp = new QPixmap(path, fileInfo->fileExtension());
         *tmp = tmp->scaled(size * 2,
                            size * 2,
-                           Qt::KeepAspectRatioByExpanding,
+                           method,
                            Qt::FastTransformation)
                .scaled(size,
                        size,
-                       Qt::KeepAspectRatioByExpanding,
+                       method,
                        Qt::SmoothTransformation);
     } else {
         tmp = new QPixmap();
@@ -75,20 +75,25 @@ QPixmap *ImageStatic::generateThumbnail() {
             *tmp = QPixmap::fromImage(
                        image->scaled(size * 2,
                                      size * 2,
-                                     Qt::KeepAspectRatioByExpanding,
+                                     method,
                                      Qt::FastTransformation)
                        .scaled(size,
                                size,
-                               Qt::KeepAspectRatioByExpanding,
+                               method,
                                Qt::SmoothTransformation));
             unlock();
         }
     }
-    QRect target(0, 0, size, size);
-    target.moveCenter(tmp->rect().center());
-    *thumbnail = tmp->copy(target);
-    delete tmp;
-    return thumbnail;
+    if(squared) {
+        QRect target(0, 0, size, size);
+        target.moveCenter(tmp->rect().center());
+        QPixmap *thumbnail = new QPixmap(size, size);
+        *thumbnail = tmp->copy(target);
+        delete tmp;
+        return thumbnail;
+    } else {
+        return tmp;
+    }
 }
 
 QPixmap *ImageStatic::getPixmap() {
