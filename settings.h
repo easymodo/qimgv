@@ -14,10 +14,8 @@
 #include "actionmanager.h"
 
 enum PanelPosition {
-    BOTTOM,
     TOP,
-    LEFT,
-    RIGHT
+    BOTTOM
 };
 
 class Settings : public QObject
@@ -58,7 +56,7 @@ public:
     void setPlayVideoSounds(bool mode);
     QString tempDir();
     QString ffmpegExecutable();
-    void setFfmpegExecutable(QString path);
+    void setFFmpegExecutable(QString path);
     bool showThumbnailLabels();
     void setShowThumbnailLabels(bool mode);
     PanelPosition panelPosition();
@@ -81,6 +79,8 @@ public:
     void setSquareThumbnails(bool mode);
     bool drawThumbnailSelectionBorder();
     void setDrawThumbnailSelectionBorder(bool mode);
+    bool checkboardPattern();
+    void setCheckboardPattern(bool mode);
 
 private:
     explicit Settings(QObject *parent = 0);

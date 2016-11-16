@@ -3,7 +3,8 @@
 void Image::safeDeleteSelf() {
     mutex.lock(); // ensure we are not used
     mutex.unlock();
-    delete this;
+    this->deleteLater();
+    //delete this;
 }
 
 void Image::lock() {

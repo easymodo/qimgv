@@ -41,6 +41,8 @@ private:
     bool processMouseEvent(QMouseEvent *event);
     bool processKeyEvent(QKeyEvent *event);
     bool startAction(QString action);
+    void lock();
+    void unlock();
 
 signals:
     void open();
@@ -62,6 +64,7 @@ signals:
     void rotateLeft();
     void rotateRight();
     void exit();
+    void removeFile();
 
 };
 

@@ -61,7 +61,7 @@ QString Settings::ffmpegExecutable() {
     return ffmpegPath;
 }
 
-void Settings::setFfmpegExecutable(QString path) {
+void Settings::setFFmpegExecutable(QString path) {
     if(QFile::exists(path)) {
         settings->s.setValue("ffmpegExe", path);
     }
@@ -201,7 +201,7 @@ void Settings::setUsePreloader(bool mode) {
 }
 
 QColor Settings::backgroundColor() {
-    return settings->s.value("bgColor", QColor(20, 20, 20)).value<QColor>();
+    return settings->s.value("bgColor", QColor(4,4,6)).value<QColor>();
 }
 
 void Settings::setBackgroundColor(QColor color) {
@@ -209,7 +209,7 @@ void Settings::setBackgroundColor(QColor color) {
 }
 
 QColor Settings::accentColor() {
-    return settings->s.value("accentColor", QColor(137, 197, 24)).value<QColor>();
+    return settings->s.value("accentColor", QColor(82, 148, 226)).value<QColor>();
 }
 
 void Settings::setAccentColor(QColor color) {
@@ -222,15 +222,6 @@ bool Settings::fullscreenMode() {
 
 void Settings::setFullscreenMode(bool mode) {
     settings->s.setValue("openInFullscreen", mode);
-}
-
-// maximized borderless window instead of fullscreen
-bool Settings::fullscreenTaskbarShown() {
-    return settings->s.value("fullscreenTaskbarShown", false).toBool();
-}
-
-void Settings::setFullscreenTaskbarShown(bool mode) {
-    settings->s.setValue("fullscreenTaskbarShown", mode);
 }
 
 bool Settings::showThumbnailLabels() {
@@ -261,10 +252,6 @@ PanelPosition Settings::panelPosition() {
     QString posString = settings->s.value("panelPosition", "top").toString();
     if(posString == "top") {
         return PanelPosition::TOP;
-    } else if(posString == "left") {
-        return PanelPosition::LEFT;
-    } else if(posString == "right") {
-        return PanelPosition::RIGHT;
     } else {
         return PanelPosition::BOTTOM;
     }
@@ -273,11 +260,6 @@ PanelPosition Settings::panelPosition() {
 void Settings::setPanelPosition(PanelPosition pos) {
     QString posString;
     switch(pos) {
-        case LEFT:
-            posString = "left";
-            break;
-        case RIGHT:
-            posString = "right";
             break;
         case TOP:
             posString = "top";
@@ -374,7 +356,7 @@ void Settings::setMouseWrapping(bool mode) {
 }
 
 bool Settings::squareThumbnails() {
-    return settings->s.value("squareThumbnails", false).toBool();
+    return settings->s.value("squareThumbnails", true).toBool();
 }
 
 void Settings::setSquareThumbnails(bool mode) {
@@ -382,9 +364,17 @@ void Settings::setSquareThumbnails(bool mode) {
 }
 
 bool Settings::drawThumbnailSelectionBorder() {
-    return settings->s.value("thumbnailSelectionBorder", true).toBool();
+    return settings->s.value("thumbnailSelectionBorder", false).toBool();
 }
 
 void Settings::setDrawThumbnailSelectionBorder(bool mode) {
     settings->s.setValue("thumbnailSelectionBorder", mode);
+}
+
+bool Settings::checkboardPattern() {
+    return settings->s.value("checkboardPattern", true).toBool();
+}
+
+void Settings::setCheckboardPattern(bool mode) {
+    settings->s.setValue("checkboardPattern", mode);
 }

@@ -39,6 +39,7 @@ void ActionManager::createActionList() {
                                 << "save"
                                 << "setWallpaper"
                                 << "crop"
+                                << "removeFile"
                                 << "openSettings"
                                 << "exit";
 }
@@ -93,6 +94,10 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(68, "F10");
     actionManager->keyMap.insert(87, "F11");
     actionManager->keyMap.insert(88, "F12");
+    actionManager->keyMap.insert(339, "delete");
+    actionManager->keyMap.insert(1, "escape");
+    actionManager->keyMap.insert(329, "pageUp");
+    actionManager->keyMap.insert(337, "pageDown");
 #elif defined __linux__
     actionManager->keyMap.insert(24, "Q");
     actionManager->keyMap.insert(25, "W");
@@ -147,6 +152,10 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(76, "F10");
     actionManager->keyMap.insert(95, "F11");
     actionManager->keyMap.insert(96, "F12");
+    actionManager->keyMap.insert(119, "delete");
+    actionManager->keyMap.insert(9, "escape");
+    actionManager->keyMap.insert(112, "pageUp");
+    actionManager->keyMap.insert(117, "pageDown");
 #endif
 }
 
@@ -233,10 +242,21 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("Ctrl+P", "openSettings");
     actionManager->addShortcut("Alt+X", "exit");
     actionManager->addShortcut("Ctrl+Q", "exit");
+    actionManager->addShortcut("delete", "removeFile");
 }
 
 bool ActionManager::processWheelEvent(QWheelEvent *event) {
     QString keys;
+    // test this:
+    // ignore event if source is touchpad
+    // prevents scrolling through 9999 images in a single swipe
+    // this function was intended for mouse wheel anyway
+    if(event->source() != Qt::MouseEventNotSynthesized ||
+       event->pixelDelta().y() != 0 ||
+       event->angleDelta().ry() == -1)
+    {
+        return false;
+    }
 
     if(event->angleDelta().ry() < 0) {
         keys = "WheelUp";

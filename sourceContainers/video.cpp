@@ -22,7 +22,7 @@ Video::~Video() {
 void Video::load() {
     QMutexLocker locker(&mutex);
     if(!fileInfo) {
-        fileInfo = new FileInfo(path);
+        fileInfo = new FileInfo(path, this);
     }
     if(isLoaded()) {
         return;

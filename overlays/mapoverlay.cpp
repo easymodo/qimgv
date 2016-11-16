@@ -9,9 +9,8 @@ public:
     void moveInnerWidget(float x, float y);
     void moveMainImage(float xDist, float yDist);
 
-    QPen innerPen, outerPen, outlinePen;
+    QPen outlinePen;
     float xSpeedDiff, ySpeedDiff;
-    QPen penInner, penOuter;
     QRectF outerRect, innerRect;
     QRectF windowRect, drawingRect;
     MapOverlay *q;
@@ -27,9 +26,6 @@ public:
 MapOverlay::MapOverlayPrivate::MapOverlayPrivate(MapOverlay *qq)
     : q(qq), size(140), opacity(0.0f), innerOffset(-1), margin(20) {
     outlinePen.setColor(QColor(40, 40, 40, 255));
-    innerPen.setColor(QColor(100, 100, 100, 180));
-    outerPen.setColor(QColor(80, 80, 80, 150));
-
     location = MapOverlay::RightBottom;
 }
 
@@ -176,10 +172,8 @@ void MapOverlay::paintEvent(QPaintEvent *event) {
 
     painter.setOpacity(d->opacity);
 
-    painter.setPen(d->innerPen);
     painter.fillRect(d->innerRect, innerBrush);
 
-    painter.setPen(d->outerPen);
     painter.fillRect(d->outerRect, outerBrush);
 
     painter.setPen(d->outlinePen);

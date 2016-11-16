@@ -1,10 +1,11 @@
 #include "thumbnailer.h"
 
-Thumbnailer::Thumbnailer(ImageCache *_cache, QString _path, int _target, bool _squared) :
+Thumbnailer::Thumbnailer(ImageCache *_cache, QString _path, int _target, bool _squared, long _thumbnailId) :
     path(_path),
     target(_target),
     cache(_cache),
-    squared(_squared)
+    squared(_squared),
+    thumbnailId(_thumbnailId)
 {
     factory = new ImageFactory();
 }
@@ -33,13 +34,12 @@ void Thumbnailer::run() {
         th->image->fill(QColor(0,0,0,0));
     }
     th->name = tempImage->info()->fileName();
-
     if(cached) {
        // tempImage->unlock();
     } else {
         delete tempImage;
     }
-    emit thumbnailReady(target, th);
+    emit thumbnailReady(thumbnailId, th);
 }
 
 Thumbnailer::~Thumbnailer() {

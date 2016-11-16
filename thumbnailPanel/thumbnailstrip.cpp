@@ -1,28 +1,25 @@
 #include "thumbnailstrip.h"
 
+// this is temporarily broken
+
 ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     : QWidget(parent),
       panelSize(122),
       current(-1),
       margin(2),
-      thumbView(NULL),
-      parentFullscreen(false)
+      thumbnailFrame(NULL),
+      parentFullscreen(false),
+      idCounter(0)
 {
     parentSz = parent->size();
     thumbnailLabels = new QList<ThumbnailLabel*>();
 
-    thumbView = new ThumbnailView();
-    widget = new ClickableWidget();
-
-    thumbView->setWidget(widget);
-    thumbView->setFrameShape(QFrame::NoFrame);
-
-    viewLayout = new QBoxLayout(QBoxLayout::LeftToRight);
-    viewLayout->setSpacing(0);
-    widget->setLayout(viewLayout);
-    widget->setStyleSheet("background-color: #202020;"); // doesnt work from qss for some reason
-
-    scrollBar = thumbView->horizontalScrollBar();
+    thumbnailFrame = new ThumbnailFrame();
+    scene = new QGraphicsScene(this); // move scene to view class?
+    QBrush* brush = new QBrush(QColor(31,34,42)); //#1f222a
+    scene->setBackgroundBrush(*brush);
+    thumbnailFrame->view()->setScene(scene);
+    thumbnailFrame->setFrameShape(QFrame::NoFrame);
 
     // BUTTONS
     buttonsWidget = new QWidget();
@@ -60,25 +57,20 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     layout->setSpacing(0);
     layout->setContentsMargins(0,0,0,0);
     layout->addWidget(buttonsWidget);
-    layout->addWidget(thumbView);
+    layout->addWidget(thumbnailFrame);
 
     this->setLayout(layout);
 
     // other extremely important things
-
-    thumbView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-    widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    widget->setAccessibleName("thumbnailWidget");
-    thumbView->setAccessibleName("thumbnailView");
+    thumbnailFrame->setAccessibleName("thumbnailView");
     loadTimer.setSingleShot(true);
-    timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, thumbView);
+    timeLine = new QTimeLine(10, thumbnailFrame);
     timeLine->setCurveShape(QTimeLine::EaseInCurve);
-
-    thumbView->horizontalScrollBar()->setAttribute(Qt::WA_NoMousePropagation, true);
-    thumbView->verticalScrollBar()->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
-    thumbView->setFocusPolicy(Qt::NoFocus);
+
+    connect(thumbnailFrame,SIGNAL(thumbnailClicked(int)),
+            this, SLOT(thumbnailClicked(int)));
 
     // actions
     connect(openButton, SIGNAL(clicked()), this, SIGNAL(openClicked()));
@@ -86,8 +78,8 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     connect(settingsButton, SIGNAL(clicked()), this, SIGNAL(settingsClicked()));
     connect(exitButton, SIGNAL(clicked()), this, SIGNAL(exitClicked()));
 
-    connect(widget, SIGNAL(pressedLeft(QPoint)), this, SLOT(viewPressed(QPoint)));
     connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
+    connect(thumbnailFrame, SIGNAL(scrolled()), this, SLOT(loadVisibleThumbnailsDelayed()));
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 
     readSettings();
@@ -95,64 +87,33 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
 }
 
 void ThumbnailStrip::readSettings() {
+    thumbnailSize = settings->thumbnailSize();
     position = settings->panelPosition();
-    panelSize = settings->thumbnailSize() + 21;
-    scrollBar->setValue(0);
+    panelSize = settings->thumbnailSize() + 22;
     updatePanelPosition();
 
     for(int i = 0; i < thumbnailLabels->count(); i++) {
-        thumbnailLabels->at(i)->applySettings();
+        if(thumbnailLabels->at(i)->getThumbnailSize() != thumbnailSize) {
+            // force thumbnail recreate
+            thumbnailLabels->at(i)->state = loadState::EMPTY;
+        }
+        thumbnailLabels->at(i)->readSettings();
     }
 
-    disconnect(timeLine, SIGNAL(frameChanged(int)),
-               scrollBar, SLOT(setValue(int)));
-    disconnect(scrollBar, SIGNAL(valueChanged(int)),
-               this, SLOT(loadVisibleThumbnailsDelayed()));
-    disconnect(scrollBar, SIGNAL(sliderMoved(int)),
-               this, SLOT(loadVisibleThumbnailsDelayed()));
-    exitButton->hide();
-    if(position == LEFT || position == RIGHT) {
-        thumbView->horizontalScrollBar()->setDisabled(true);
-        thumbView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        thumbView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        scrollBar = thumbView->verticalScrollBar();
-        viewLayout->setDirection(QBoxLayout::TopToBottom);
-        viewLayout->setContentsMargins(0, margin, 0, margin);
-        buttonsLayout->setDirection(QBoxLayout::LeftToRight);
-        if(position == LEFT)
-            layout->setDirection(QBoxLayout::BottomToTop);
-        else
-            layout->setDirection(QBoxLayout::TopToBottom);
-    } else {
-        thumbView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        thumbView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        scrollBar = thumbView->horizontalScrollBar();
-        viewLayout->setDirection(QBoxLayout::LeftToRight);
-        viewLayout->setContentsMargins(margin, 0, margin, 0);
-        buttonsLayout->setDirection(QBoxLayout::BottomToTop);
-        layout->setDirection(QBoxLayout::RightToLeft);
-    }
+    updateThumbnailPositions(0, thumbnailLabels->count() - 1);
 
-    enableWindowControls(parentFullscreen);
-
-    connect(scrollBar, SIGNAL(valueChanged(int)),
-            this, SLOT(loadVisibleThumbnailsDelayed()), Qt::UniqueConnection);
-    connect(scrollBar, SIGNAL(sliderMoved(int)),
-            this, SLOT(loadVisibleThumbnailsDelayed()), Qt::UniqueConnection);
-    connect(timeLine, SIGNAL(frameChanged(int)),
-            scrollBar, SLOT(setValue(int)), Qt::UniqueConnection);
-    widget->setFixedSize(viewLayout->sizeHint());
+    buttonsLayout->setDirection(QBoxLayout::BottomToTop);
+    layout->setDirection(QBoxLayout::RightToLeft);
+    //loadVisibleThumbnails();
 }
 
 void ThumbnailStrip::populate(int count) {
     if(count >= 0 ) {
-        widget->hide();
         for(int i = thumbnailLabels->count() - 1; i >= 0; --i) {
-            delete viewLayout->takeAt(0);
             delete thumbnailLabels->takeAt(0);
         }
-        // remove stretch
-        viewLayout->takeAt(0);
+        scene->clear();
+        thumbnailFrame->view()->resetViewport();
         //recreate list
         delete thumbnailLabels;
         thumbnailLabels = new QList<ThumbnailLabel*>();
@@ -160,46 +121,82 @@ void ThumbnailStrip::populate(int count) {
         for(int i = 0; i < count; i++) {
             addItem();
         }
-        viewLayout->addStretch(1);
-        widget->setFixedSize(viewLayout->sizeHint());
-        widget->show();
     }
 }
 
 void ThumbnailStrip::fillPanel(int count) {
+    qDebug() << count;
     if(count >= 0 ) {
         current = -1;
         loadTimer.stop();
         populate(count);
-        loadVisibleThumbnailsDelayed();
+        // shrink scene to contents
+        scene->setSceneRect(scene->itemsBoundingRect());
+        loadVisibleThumbnails();
     }
 }
 
 void ThumbnailStrip::addItem() {
+    addItemAt(thumbnailLabels->count());
+}
+
+void ThumbnailStrip::addItemAt(int pos) {
+    lock();
     ThumbnailLabel *thumbLabel = new ThumbnailLabel();
-    thumbLabel->setOpacity(0.0f);
-    thumbnailLabels->append(thumbLabel);
-    viewLayout->addWidget(thumbLabel);
+    thumbLabel->setOpacity(0);
+    thumbnailLabels->insert(pos, thumbLabel);
+    thumbLabel->setLabelNum(pos);
+    scene->addItem(thumbLabel);
+
+    // set the id
+    posIdHash.insert(pos, idCounter);
+    posIdHashReverse.insert(idCounter, pos);
+    idCounter++;
+
+    // set position for new & move existing items right
+    updateThumbnailPositions(pos, thumbnailLabels->count() - 1);
+    unlock();
+}
+
+void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
+    if(start > end || !checkRange(start) || !checkRange(end)) {
+        qDebug() << "ThumbnailStrip::updateThumbnailPositions() - arguments out of range";
+        return;
+    }
+    // assume all thumbnails are the same size
+    int thumbWidth = thumbnailLabels->at(start)->boundingRect().width();
+    ThumbnailLabel *tmp;
+    for(int i = start; i <= end; i++) {
+        tmp = thumbnailLabels->at(i);
+        tmp->setPos(i * thumbWidth, 0);
+    }
+    // shrink scene to contents
+    scene->setSceneRect(scene->itemsBoundingRect());
 }
 
 void ThumbnailStrip::selectThumbnail(int pos) {
-    if(current >= 0 && current < thumbnailLabels->count()) {
-        thumbnailLabels->at(current)->setHighlighted(false);
-        thumbnailLabels->at(current)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_INSTANT);
+    // this code fires twice on click. fix later
+    // also wont highlight new label after removing file
+    if(current != pos) {
+        thumbnailFrame->view()->ensureVisible(thumbnailLabels->at(pos)->sceneBoundingRect(),
+                                              thumbnailSize / 2,
+                                              0);
+        if(checkRange(current)) {
+            thumbnailLabels->at(current)->setHighlighted(false);
+            thumbnailLabels->at(current)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_FAST);
+        }
+        if(checkRange(pos)) {
+            thumbnailLabels->at(pos)->setHighlighted(true);
+            thumbnailLabels->at(pos)->setOpacity(OPACITY_SELECTED);
+            current = pos;
+        }
     }
-    if(pos >= 0 && pos < thumbnailLabels->count()) {
-        thumbnailLabels->at(pos)->setHighlighted(true);
-        thumbnailLabels->at(pos)->setOpacityAnimated(OPACITY_SELECTED, ANIMATION_SPEED_INSTANT);
-    }
-    current = pos;
     loadVisibleThumbnails();
-    focusOn(pos);
 }
 
-void ThumbnailStrip::focusOn(int pos) {
-    if(pos >= 0 && pos < thumbnailLabels->count() && !childVisibleEntirely(pos)) {
-        thumbView->ensureWidgetVisible(thumbnailLabels->at(pos), 350, 350);
-    }
+void ThumbnailStrip::thumbnailClicked(int pos) {
+    selectThumbnail(pos);
+    emit openImage(pos);
 }
 
 void ThumbnailStrip::loadVisibleThumbnailsDelayed() {
@@ -208,105 +205,93 @@ void ThumbnailStrip::loadVisibleThumbnailsDelayed() {
 }
 
 void ThumbnailStrip::loadVisibleThumbnails() {
+    QRectF visibleRect = thumbnailFrame->view()->mapToScene(
+                thumbnailFrame->view()->viewport()->geometry()).boundingRect();
+    // grow rectangle to cover nearby offscreen items
+    visibleRect.adjust(-OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA, 0);
+
+    QList<QGraphicsItem *>items = scene->items(visibleRect,
+                                               Qt::IntersectsItemShape,
+                                               Qt::DescendingOrder
+                                               );
+    ThumbnailLabel* labelCurrent;
     loadTimer.stop();
-    updateVisibleRegion();
-    for(int i = 0; i < thumbnailLabels->count(); i++) {
-        requestThumbnail(i);
+    for(int i = 0; i < items.count(); i++) {
+        labelCurrent = qgraphicsitem_cast<ThumbnailLabel*>(items.at(i));
+
+        requestThumbnail(labelCurrent->labelNum());
     }
 }
 
 void ThumbnailStrip::requestThumbnail(int pos) {
-    if(pos >= 0 && pos < thumbnailLabels->count()) {
-        if(thumbnailLabels->at(pos)->state == EMPTY  && childVisible(pos)) {
-            thumbnailLabels->at(pos)->state = LOADING;
-            emit thumbnailRequested(pos);
-        }
+    if(checkRange(pos) && thumbnailLabels->at(pos)->state == EMPTY) {
+            thumbnailLabels->at(pos)->state = LOADING; //TODO: this maybe is the problem.
+            emit thumbnailRequested(pos, posIdHash.value(pos));
     }
 }
 
-void ThumbnailStrip::setThumbnail(int pos, Thumbnail *thumb) {
+bool ThumbnailStrip::checkRange(int pos) {
+    if(pos >= 0 && pos < thumbnailLabels->count())
+        return true;
+    else
+        return false;
+}
+
+void ThumbnailStrip::lock() {
+    mutex.lock();
+}
+
+void ThumbnailStrip::unlock() {
+    mutex.unlock();
+}
+
+void ThumbnailStrip::setThumbnail(long thumbnailId, Thumbnail *thumb) {
+    lock();
+    int pos = posIdHashReverse.value(thumbnailId);
+    if(checkRange(pos)) {
     thumbnailLabels->at(pos)->setThumbnail(thumb);
     thumbnailLabels->at(pos)->state = LOADED;
     if(pos != current) {
         thumbnailLabels->at(pos)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_NORMAL);
     }
-}
-
-void ThumbnailStrip::updateVisibleRegion() {
-    // make scrollbar update while hidden
-    thumbView->setWidgetResizable(true);
-    layout->invalidate();
-    layout->activate();
-
-    if(viewLayout->direction() == QBoxLayout::LeftToRight) {
-        visibleRegion = thumbView->rect().translated(scrollBar->value(), 0);
-        preloadArea = visibleRegion.adjusted(-OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA, 0);
-    } else {
-        visibleRegion = thumbView->rect().translated(0, scrollBar->value());
-        preloadArea = visibleRegion.adjusted(0, -OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA);
     }
-}
-
-bool ThumbnailStrip::childVisible(int pos) {
-    if(pos >= 0 && pos < thumbnailLabels->count() &&
-       preloadArea.intersects(viewLayout->itemAt(pos)->geometry()))
-    {
-        return true;
-    }
-    return false;
-}
-
-bool ThumbnailStrip::childVisibleEntirely(int pos) {
-    if(pos >= 0 && pos < thumbnailLabels->count() &&
-       visibleRegion.contains(viewLayout->itemAt(pos)->geometry().topLeft()) &&
-       visibleRegion.contains(viewLayout->itemAt(pos)->geometry().bottomRight()))
-    {
-        return true;
-    }
-    return false;
+    unlock();
 }
 
 // shows/hides exit button on the panel
-void ThumbnailStrip::enableWindowControls(bool enabled) {
-    if(enabled && (position == RIGHT || position == TOP))
+void ThumbnailStrip::setWindowControlsEnabled(bool enabled) {
+    if(enabled && position == TOP)
         exitButton->show();
     else
         exitButton->hide();
     parentFullscreen = enabled;
 }
 
-void ThumbnailStrip::viewPressed(QPoint pos) {
-    int itemPos = -1;
-    // todo: quick search
-    for (int i=0; i<viewLayout->count(); i++) {
-        if(viewLayout->itemAt(i)->geometry().contains(pos)) {
-            itemPos = i;
+void ThumbnailStrip::removeItemAt(int pos) {
+    lock();
+    if(checkRange(pos)) {
+        ThumbnailLabel *thumb = thumbnailLabels->takeAt(pos);
+        scene->removeItem(thumb);
+        long thumbnailId = posIdHash.value(pos);
+        posIdHash.remove(pos);
+        posIdHashReverse.remove(thumbnailId);
+        // move items left
+        ThumbnailLabel *tmp;
+        for(int i = pos; i < thumbnailLabels->count(); i++) {
+            tmp = thumbnailLabels->at(i);
+            tmp->moveBy(-tmp->boundingRect().width(), 0);
+            tmp->setLabelNum(i);
+            // update hash (keep thumbnailId, set new position)
+            thumbnailId = posIdHash.value(i+1);
+            posIdHash.remove(i+1);
+            posIdHash.insert(i, thumbnailId);
+            posIdHashReverse.remove(thumbnailId);
+            posIdHashReverse.insert(thumbnailId, tmp->labelNum());
         }
+        // shrink scene to contents
+        scene->setSceneRect(scene->itemsBoundingRect());
     }
-    if(itemPos != -1) {
-        selectThumbnail(itemPos);
-        emit thumbnailClicked(itemPos);
-    }
-}
-
-void ThumbnailStrip::wheelEvent(QWheelEvent *event) {
-    event->accept();
-    if(event->pixelDelta().y() != 0)  { // pixel scrolling
-        scrollBar->setValue(scrollBar->value() - event->pixelDelta().y());
-    } else { // scrolling by fixed intervals
-        if(timeLine->state() == QTimeLine::Running) {
-            timeLine->stop();
-            timeLine->setFrameRange(scrollBar->value(),
-                                    timeLine->endFrame() -
-                                    event->angleDelta().ry() * SCROLL_SPEED_MULTIPLIER);
-        } else {
-            timeLine->setFrameRange(scrollBar->value(),
-                                    scrollBar->value() -
-                                    event->angleDelta().ry() * SCROLL_SPEED_MULTIPLIER);
-        }
-        timeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
-        timeLine->start();
-    }
+    unlock();
 }
 
 void ThumbnailStrip::parentResized(QSize parentSz) {
@@ -317,18 +302,12 @@ void ThumbnailStrip::parentResized(QSize parentSz) {
 
 void ThumbnailStrip::updatePanelPosition() {
     QRect oldRect = this->rect();
-    if(position == BOTTOM) {
-        this->setGeometry(QRect(QPoint(0, parentSz.height() - panelSize + 1),
-                                QPoint(parentSz.width(), parentSz.height())));
-    } else if(position == LEFT) {
-        this->setGeometry(QRect(QPoint(0, 0),
-                                QPoint(panelSize, parentSz.height())));
-    } else if(position == RIGHT) {
-        this->setGeometry(QRect(QPoint(parentSz.width() - panelSize, 0),
-                                QPoint(parentSz.width(), parentSz.height())));
-    } else if(position == TOP) {
+    if(position == TOP) {
         this->setGeometry(QRect(QPoint(0, 0),
                                 QPoint(parentSz.width(), panelSize)));
+    } else {
+        this->setGeometry(QRect(QPoint(0, parentSz.height() - panelSize + 1),
+                                QPoint(parentSz.width(), parentSz.height())));
     }
     if(oldRect != this->rect())
         emit panelSizeChanged();

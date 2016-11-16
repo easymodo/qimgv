@@ -27,13 +27,10 @@ void LoadHelper::doLoad() {
         emit finished(targetLocal);
         return;
     }
-    //qDebug() << "LOADHELPER: loading! "<< targetLocal;
     ImageFactory *factory = new ImageFactory();
     Image *img = factory->createImage(pathLocal);
     delete factory;
-
     img->moveToThread(mainThread);
     cache->setImage(img, targetLocal);
-
     emit finished(targetLocal);
 }

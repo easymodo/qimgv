@@ -57,7 +57,8 @@ SOURCES += main.cpp\
         sourceContainers/clip.cpp \
         thumbnailPanel/thumbnailview.cpp \
         customWidgets/clickablewidget.cpp \
-    resizedialog.cpp
+    resizedialog.cpp \
+    filesystemWatchers/watcherwindows.cpp
 
 HEADERS += mainwindow.h \
         overlays/infooverlay.h \
@@ -93,7 +94,8 @@ HEADERS += mainwindow.h \
         sourceContainers/clip.h \
         thumbnailPanel/thumbnailview.h \
         customWidgets/clickablewidget.h \
-    resizedialog.h
+    resizedialog.h \
+    filesystemWatchers/watcherwindows.h
 
 FORMS += \
       settingsdialog.ui

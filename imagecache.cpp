@@ -1,10 +1,12 @@
 #include "imagecache.h"
 
-ImageCache::ImageCache() {
+ImageCache::ImageCache(DirectoryManager*_dm) : dm(_dm) {
     cachedImages = new QList<CacheObject *>();
     applySettings();
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(applySettings()));
+
+    connect(dm, SIGNAL(directorySortingChanged()), this, SLOT(init()));
 }
 
 ImageCache::~ImageCache() {
@@ -15,17 +17,25 @@ ImageCache::~ImageCache() {
 // ####################### PUBLIC METHODS #######################
 // ##############################################################
 
-void ImageCache::init(QString directory, QStringList list) {
+void ImageCache::init() {
     lock();
-    dir = directory;
+    dir = dm->currentDirectory();
     while(!cachedImages->isEmpty()) {
         delete cachedImages->takeAt(0);
     }
-    for(int i = 0; i < list.length(); i++) {
-        cachedImages->append(new CacheObject(list.at(i)));
+    for(int i = 0; i < dm->fileCount(); i++) {
+        cachedImages->append(new CacheObject(dm->filePathAt(i)));
     }
     unlock();
     emit initialized(length());
+}
+
+void ImageCache::removeAt(int pos) {
+    lock();
+    CacheObject *img = cachedImages->takeAt(pos);
+    delete img;
+    unlock();
+    emit itemRemoved(pos);
 }
 
 void ImageCache::unloadAll() {
@@ -37,7 +47,7 @@ void ImageCache::unloadAll() {
 }
 
 void ImageCache::unloadAt(int pos) {
-    if(pos >= 0 && pos < cachedImages->length()) {
+    if(checkRange(pos)) {
         lock();
         cachedImages->at(pos)->unload();
         unlock();
@@ -45,7 +55,7 @@ void ImageCache::unloadAt(int pos) {
 }
 
 Image *ImageCache::imageAt(int pos) {
-    if(pos >= 0 && pos < cachedImages->length())
+    if(checkRange(pos))
         return cachedImages->at(pos)->image();
     else
         return NULL;
@@ -61,29 +71,40 @@ QString ImageCache::currentDirectory() {
 }
 
 bool ImageCache::isLoaded(int pos) {
-    if(pos >= 0 && pos < cachedImages->length())
-        return cachedImages->at(pos)->isLoaded();
-    else
+    CacheObject *img;
+    lock();
+    if(checkRange(pos)) {
+        img = cachedImages->at(pos);
+        // something bad happened and we have wrong file at pos
+        // unload & set correct path
+        if(img->filePath() != dm->filePathAt(pos)) {
+            img->unload();
+            img->setPath(dm->filePathAt(pos));
+        }
+        unlock();
+        return img->isLoaded();
+    }
+    else {
+        unlock();
         return false;
+    }
 }
 
 int ImageCache::currentlyLoadedCount() {
     int x = 0;
-    lock();
     for(int i = 0; i < cachedImages->length(); i++) {
         if(isLoaded(i)) {
             x++;
         }
-    }
-    unlock();
+    }   
     return x;
 }
 
 void ImageCache::setImage(Image *img, int pos) {
-    if(pos >= 0 && pos < cachedImages->length())
+    if(checkRange(pos)) {
         cachedImages->at(pos)->setImage(img);
+    }
 }
-
 
 // ##############################################################
 // ###################### PRIVATE METHODS #######################
@@ -101,6 +122,13 @@ void ImageCache::readSettings() {
     lock();
     //maxCacheSize = globalSettings->s.value("cacheSize").toInt();
     unlock();
+}
+
+bool ImageCache::checkRange(int pos) {
+    if(pos >= 0 && pos < cachedImages->length())
+        return true;
+    else
+        return false;
 }
 
 // ##############################################################

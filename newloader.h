@@ -29,14 +29,12 @@ public:
     Image *current;
 
 public slots:
-    void reinitCacheForced();
-    void generateThumbnailFor(int pos);
+    void generateThumbnailFor(int pos, long thumbnailId);
 
 private:
     DirectoryManager *dm;
     ImageCache *cache;
     QMutex mutex, mutex2;
-    bool reduceRam;
     void freeAt(int);
     int loadTarget, preloadTarget, time;
     LoadHelper *worker;
@@ -50,7 +48,7 @@ private:
 signals:
     void loadStarted();
     void loadFinished(Image*, int pos);
-    void thumbnailReady(int, Thumbnail*);
+    void thumbnailReady(long, Thumbnail*);
     void startLoad();
     void startPreload();
 

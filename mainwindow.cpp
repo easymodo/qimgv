@@ -7,7 +7,6 @@ MainWindow::MainWindow() :
     currentViewer(0),
     currentDisplay(0),
     layout(NULL),
-    borderlessEnabled(false),
     desktopWidget(NULL)
 {
     resize(1100, 700);
@@ -71,14 +70,6 @@ void MainWindow::init() {
     connect(controlsOverlay, SIGNAL(exitClicked()),
             this, SLOT(close()));
 
-    connect(controlsOverlay, SIGNAL(exitFullscreenClicked()),
-            this, SLOT(slotTriggerFullscreen()));
-
-    connect(controlsOverlay, SIGNAL(minimizeClicked()),
-            this, SLOT(slotMinimize()));
-
-
-
     connect(core, SIGNAL(videoChanged(Clip *)),
             this, SLOT(openVideo(Clip *)), Qt::UniqueConnection);
 
@@ -93,7 +84,7 @@ void MainWindow::init() {
     connect(actionManager, SIGNAL(fitWidth()), this, SLOT(slotFitWidth()));
     connect(actionManager, SIGNAL(fitNormal()), this, SLOT(slotFitNormal()));
     connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
-    connect(actionManager, SIGNAL(toggleFullscreen()), this, SLOT(slotTriggerFullscreen()));
+    connect(actionManager, SIGNAL(toggleFullscreen()), this, SLOT(triggerFullscreen()));
     connect(actionManager, SIGNAL(zoomIn()), imageViewer, SLOT(slotZoomIn()));
     connect(actionManager, SIGNAL(zoomOut()), imageViewer, SLOT(slotZoomOut()));
     connect(actionManager, SIGNAL(resize()), this, SLOT(slotResizeDialog()));
@@ -105,6 +96,7 @@ void MainWindow::init() {
     connect(actionManager, SIGNAL(open()), this, SLOT(slotOpenDialog()));
     connect(actionManager, SIGNAL(save()), this, SLOT(slotSaveDialog()));
     connect(actionManager, SIGNAL(exit()), this, SLOT(close()));
+    connect(actionManager, SIGNAL(removeFile()), core, SLOT(removeFile()));
 
     connect(this, SIGNAL(fileSaved(QString)), core, SLOT(saveImage(QString)));
 
@@ -123,14 +115,17 @@ void MainWindow::enablePanel() {
     connect(core, SIGNAL(imageChanged(int)),
             panel, SLOT(selectThumbnail(int)), Qt::UniqueConnection);
 
-    connect(panel, SIGNAL(thumbnailClicked(int)),
+    connect(core, SIGNAL(itemRemoved(int)),
+            panel, SLOT(removeItemAt(int)), Qt::UniqueConnection);
+
+    connect(panel, SIGNAL(openImage(int)),
             core, SLOT(loadImageByPos(int)), Qt::UniqueConnection);
 
-    connect(panel, SIGNAL(thumbnailRequested(int)),
-            core, SIGNAL(thumbnailRequested(int)), Qt::UniqueConnection);
+    connect(panel, SIGNAL(thumbnailRequested(int, long)),
+            core, SIGNAL(thumbnailRequested(int, long)), Qt::UniqueConnection);
 
-    connect(core, SIGNAL(thumbnailReady(int, Thumbnail *)),
-            panel, SLOT(setThumbnail(int, Thumbnail *)), Qt::UniqueConnection);
+    connect(core, SIGNAL(thumbnailReady(long, Thumbnail *)),
+            panel, SLOT(setThumbnail(long, Thumbnail *)), Qt::UniqueConnection);
 
     connect(core, SIGNAL(cacheInitialized(int)),
             panel, SLOT(fillPanel(int)), static_cast<Qt::ConnectionType>(Qt::DirectConnection | Qt::UniqueConnection));
@@ -139,8 +134,7 @@ void MainWindow::enablePanel() {
                this, SLOT(calculatePanelTriggerArea()), Qt::UniqueConnection);
 
     connect(this, SIGNAL(signalFullscreenEnabled(bool)),
-            panel, SLOT(enableWindowControls(bool)), Qt::UniqueConnection);
-
+            panel, SLOT(setWindowControlsEnabled(bool)), Qt::UniqueConnection);
     connect(panel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()), Qt::UniqueConnection);
     connect(panel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()), Qt::UniqueConnection);
     connect(panel, SIGNAL(settingsClicked()), this, SLOT(showSettings()), Qt::UniqueConnection);
@@ -148,7 +142,7 @@ void MainWindow::enablePanel() {
 
     panel->parentResized(size());
 
-    panel->fillPanel(core->imageCount());
+    //panel->fillPanel(core->imageCount());
 }
 
 void MainWindow::disablePanel() {
@@ -158,14 +152,17 @@ void MainWindow::disablePanel() {
     disconnect(core, SIGNAL(imageChanged(int)),
             panel, SLOT(selectThumbnail(int)));
 
+    disconnect(core, SIGNAL(itemRemoved(int)),
+            panel, SLOT(removeItemAt(int)));
+
     disconnect(panel, SIGNAL(thumbnailClicked(int)),
             core, SLOT(loadImageByPos(int)));
 
-    disconnect(panel, SIGNAL(thumbnailRequested(int)),
-            core, SIGNAL(thumbnailRequested(int)));
+    disconnect(panel, SIGNAL(thumbnailRequested(int, long)),
+            core, SIGNAL(thumbnailRequested(int, long)));
 
-    disconnect(core, SIGNAL(thumbnailReady(int, Thumbnail *)),
-            panel, SLOT(setThumbnail(int, Thumbnail *)));
+    disconnect(core, SIGNAL(thumbnailReady(long, Thumbnail*)),
+            panel, SLOT(setThumbnail(long, Thumbnail*)));
 
     disconnect(core, SIGNAL(cacheInitialized(int)),
             panel, SLOT(fillPanel(int)));
@@ -174,7 +171,7 @@ void MainWindow::disablePanel() {
                this, SLOT(calculatePanelTriggerArea()));
 
     disconnect(this, SIGNAL(signalFullscreenEnabled(bool)),
-            panel, SLOT(enableWindowControls(bool)));
+            panel, SLOT(setWindowControlsEnabled(bool)));
 
     disconnect(panel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()));
     disconnect(panel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()));
@@ -304,13 +301,14 @@ void MainWindow::readSettingsInitial() {
     currentDisplay = settings->lastDisplay();
     if(!settings->fullscreenMode()) {
         restoreWindowGeometry();
+    } else if(!isFullScreen()) {
+        this->triggerFullscreen();
     }
 }
 
 void MainWindow::readSettings() {
-    borderlessEnabled = settings->fullscreenTaskbarShown();
     panelPosition = settings->panelPosition();
-    fullscreen = settings->fullscreenMode();
+    settings->panelEnabled()?enablePanel():disablePanel();
     fitMode = settings->imageFitMode();
     if(fitMode == 1) {
         slotFitWidth();
@@ -320,7 +318,6 @@ void MainWindow::readSettings() {
         slotFitAll();
     }
     emit resized(size());
-    settings->panelEnabled()?enablePanel():disablePanel();
     calculatePanelTriggerArea();
 }
 
@@ -330,23 +327,17 @@ void MainWindow::calculatePanelTriggerArea() {
         return;
     }
     switch(panelPosition) {
-        case LEFT:
-            panelArea.setRect(0, 0, panel->width() - 1, height());
-            break;
-        case RIGHT:
-            panelArea.setRect(width() - panel->width() + 1, 0, width(), height());
-            break;
         case BOTTOM:
             panelArea.setRect(0, height() - panel->height() + 1, width() - 180, height());
             break;
         case TOP:
             panelArea.setRect(0, 0, width(), panel->height() - 1);
             break;
-        }
+    }
 }
 
 void MainWindow::updateOverlays() {
-    controlsOverlay->updateSize(this->centralWidget()->size());
+    controlsOverlay->updatePosition(this->centralWidget()->size());
     infoOverlay->updateWidth(this->centralWidget()->width());
 }
 
@@ -447,7 +438,10 @@ void MainWindow::setInfoString(QString text) {
 }
 
 void MainWindow::slotShowControls(bool x) {
-    x ? controlsOverlay->show() : controlsOverlay->hide();
+    if(x && (panelPosition == BOTTOM || !settings->panelEnabled()) )
+        controlsOverlay->show();
+    else
+        controlsOverlay->hide();
 }
 
 void MainWindow::slotShowInfo(bool x) {
@@ -481,13 +475,11 @@ void MainWindow::slotFitNormal() {
     emit signalFitNormal();
 }
 
-void MainWindow::slotTriggerFullscreen() {
-    if(fullscreen) {
+void MainWindow::triggerFullscreen() {
+    if(!this->isFullScreen()) {
         // do not save immediately on application start
         if(!this->isHidden())
             saveWindowGeometry();
-
-        //this->hide();
         //move to target screen
         int display = settings->lastDisplay();
         if(desktopWidget->screenCount() > display &&
@@ -496,25 +488,16 @@ void MainWindow::slotTriggerFullscreen() {
             this->move(desktopWidget->screenGeometry(display).x(),
                        desktopWidget->screenGeometry(display).y());
         }
-
-        if(borderlessEnabled) {
-            // there is some stupid bullshit with this mode under X11
-            this->setWindowFlags(Qt::FramelessWindowHint);
-            this->showMaximized();;
-        } else {
-            this->showFullScreen();
-        }
+        this->showFullScreen();
         emit signalFullscreenEnabled(true);
 
     } else {
-        this->setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint);
         this->showNormal();
         restoreWindowGeometry();
         this->activateWindow();
         this->raise();
         emit signalFullscreenEnabled(false);
     }
-    fullscreen = fullscreen?false:true;
 }
 
 void MainWindow::slotMinimize() {
@@ -522,7 +505,6 @@ void MainWindow::slotMinimize() {
 }
 
 void MainWindow::slotResize(QSize newSize) {
-    qDebug() << "resize!" << newSize;
 }
 
 void MainWindow::slotResizeDialog() {

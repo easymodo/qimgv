@@ -28,6 +28,7 @@ void SettingsDialog::readSettings() {
     ui->mouseWrappingCheckBox->setChecked(settings->mouseWrapping());
     ui->squareThumbnailsCheckBox->setChecked(settings->squareThumbnails());
     ui->thumbnailBorderCheckBox->setChecked(settings->drawThumbnailSelectionBorder());
+    ui->checkboardPatternCheckBox->setChecked(settings->checkboardPattern());
 
     ui->ffmpegLineEdit->setText(settings->ffmpegExecutable());
 
@@ -52,7 +53,6 @@ void SettingsDialog::readSettings() {
     //not implemented
     ui->scalingQualityComboBox->setDisabled(true);
 
-    ui->fullscreenTaskbarShownCheckBox->setChecked(settings->fullscreenTaskbarShown());
     ui->fullscreenCheckBox->setChecked(settings->fullscreenMode());
     ui->thumbnailLabelsCheckBox->setChecked(settings->showThumbnailLabels());
 
@@ -109,13 +109,13 @@ void SettingsDialog::applySettings() {
     //settings->setReduceRamUsage(ui->reduceRamCheckBox->isChecked());
     settings->setPlayVideos(ui->playVideosCheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
-    settings->setFullscreenTaskbarShown(ui->fullscreenTaskbarShownCheckBox->isChecked());
     settings->setPanelEnabled(ui->enablePanelCheckBox->isChecked());
     settings->setMouseWrapping(ui->mouseWrappingCheckBox->isChecked());
     settings->setSquareThumbnails(ui->squareThumbnailsCheckBox->isChecked());
     settings->setDrawThumbnailSelectionBorder(ui->thumbnailBorderCheckBox->isChecked());
+    settings->setCheckboardPattern(ui->checkboardPatternCheckBox->isChecked());
 
-    settings->setFfmpegExecutable(ui->ffmpegLineEdit->text());
+    settings->setFFmpegExecutable(ui->ffmpegLineEdit->text());
 
     bool useFastScale = ui->scalingQualityComboBox->currentIndex() == 1;
     settings->setUseFastScale(useFastScale);

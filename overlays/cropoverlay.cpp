@@ -17,8 +17,8 @@ CropOverlay::CropOverlay(QWidget *parent) : QWidget(parent),
     setButtonText("SELECT");
 
     prepareDrawElements();
-    brushInactiveTint.setColor(QColor(0, 10, 0, 230));
-    brushInactiveTint.setStyle(Qt::Dense4Pattern);
+    brushInactiveTint.setColor(QColor(50, 50, 50, 200));
+    brushInactiveTint.setStyle(Qt::SolidPattern);
     brushDarkGray.setColor(QColor(120, 120, 120, 230));
     brushDarkGray.setStyle(Qt::SolidPattern);
     brushGray.setColor(QColor(150, 150, 150, 255));

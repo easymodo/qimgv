@@ -31,7 +31,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public slots:
-    void slotTriggerFullscreen();
+    void triggerFullscreen();
     void slotMinimize();
     void setInfoString(QString);
     void readSettings();
@@ -76,8 +76,6 @@ private slots:
     void slotRotateLeft();
     void slotRotateRight();
     void slotSaveDialog();
-
-
     void slotShowControls(bool);
     void slotShowInfo(bool x);
     void openVideo(Clip *clip);
@@ -95,7 +93,7 @@ private:
     int currentViewer; // 0 = none; 1 = imageViewer; 2 = VideoPlayer;
     int currentDisplay;
     int fitMode;
-    bool fullscreen; // separate flag because "borderless fullscreen" is actually a maximized window
+    //bool fullscreen; // separate flag because "borderless fullscreen" is actually a maximized window
     QBoxLayout *layout;
     PanelPosition panelPosition;
     QRect panelArea;
@@ -105,7 +103,6 @@ private:
     void restoreWindowGeometry();
 
     void readSettingsInitial();
-    bool borderlessEnabled;
     QDesktopWidget *desktopWidget;
 
     void adjustWindowPosLastScreen();

@@ -1,85 +1,52 @@
-QMenu {
-    color: #F5F5F5;
-    background-color: #222222;
-    border: 1px solid black;
-}
-
-QMenu::item {
-    background-color: transparent;
-    padding: 6px 16px;
-    border-style: solid;
-    border-width: 1px 0px 1px 0px;
-}
-
-QMenu::item:selected {
-    background-color: #1A1A1A;
-    border-color: #161616;
-}
-
-QMenuBar {
-    color: #F5F5F5;
-    background-color: #000000;
-}
-
-QMenuBar::item {
-    spacing: 0px;
-    padding: 2px 7px 5px 7px;
-    margin: 0px 0px;
-    background: transparent;
-    border-style: solid;
-    border-width: 3px 0px 0px 0px;
-}
-
-QMenuBar::item:selected {
-
-    background: #111111;
-}
-
-QMenuBar::item:pressed {
-    background: #222222;
-}
-
 [accessibleName="panelButton"] {
-    color: #E5E5E5;
-    background-color: #2C2C2C;
-
+    background-color: #1f222a;
     padding: 3px 3px 3px 3px;
 }
 
 [accessibleName="panelButton"]:hover {
-    color: #F5F5F5;
-    background-color: #3C3C3C;
+    background-color: #404552;
+}
+
+[accessibleName="panelButtonTransparent"] {
+    padding: 3px 3px 3px 3px;
+}
+
+[accessibleName="panelButtonTransparent"]:hover {
+    background-color: #2b2e39;
 }
 
 [accessibleName="panelButtonsWidget"] {
-    background-color: #2C2C2C;
+    background-color: #1f222a;
 }
 
 [accessibleName="thumbnailWidget"] {
-    background-color: #2C2C2C;
+    background-color: #1f222a;
 }
 
 [accessibleName="thumbnailView"] {
-    background-color: #2C2C2C;
+    background-color: #1f222a;
 }
 
 ThumbnailLabel {
-    background-color: #2C2C2C;
+    background-color: #1f222a;
 }
 
 QScrollBar:horizontal {
-    height: 14px;
-    background-color: #2C2C2C;
+    height: 15px;
+    background-color: #1f222a;
 }
 
 QScrollBar::handle:horizontal {
-    background: #909090;
+    background: #565d6e;
     min-width: 60px;
 }
 
 QScrollBar::handle:horizontal:hover {
-    background: #B0B0B0;
+    background: #656e82;
+}
 
+QGraphicsView {
+    background: #383c4a;
 }
 
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
@@ -96,35 +63,11 @@ QScrollBar::sub-line:horizontal {
     height: 0px;
 }
 
-QScrollBar:vertical {
-    width: 14px;
-    background-color: #2C2C2C;
-}
-
-QScrollBar::handle:vertical {
-    background: #909090;
-    min-height: 60px;
-}
-
-QScrollBar::handle:vertical:hover {
-    background: #B0B0B0;
-}
-
-QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
-    background: none;
-}
-
-QScrollBar::add-line:vertical {
-    width: 0px;
-    height: 0px;
-}
-
-QScrollBar::sub-line:vertical {
-    width: 0px;
-    height: 0px;
-}
-
 QComboBox {
     padding-left: 4px;
     padding-right: 3px;
+}
+
+QGraphicsView {
+    border-style: none;
 }

@@ -50,6 +50,10 @@ public slots:
     void setCurrentDir(QString);
     void rotateImage(int degrees);
 
+    // removes current file and loads next
+    // if there is no next file then loads previous
+    void removeFile();
+
     // TODO: screen and fit mode selection
     // crops/resizes current image to fill current screen
     // then sets it as wallpaper
@@ -91,13 +95,14 @@ signals:
     void videoAltered(Clip*);
     void scalingFinished(QPixmap*);
     void frameChanged(QPixmap*);
-    void thumbnailRequested(int);
-    void thumbnailReady(int, Thumbnail*);
+    void thumbnailRequested(int, long);
+    void thumbnailReady(long, Thumbnail*);
     void cacheInitialized(int);
     void imageChanged(int);
     void startVideo();
     void stopVideo();
     void videoChanged(Clip*);
+    void itemRemoved(int);
 };
 
 #endif // CORE_H

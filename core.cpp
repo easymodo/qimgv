@@ -43,7 +43,7 @@ void Core::updateInfoString() {
     infoString.append(" [ " +
                       QString::number(dirManager->currentPos + 1) +
                       "/" +
-                      QString::number(dirManager->fileNameList.length()) +
+                      QString::number(dirManager->fileCount()) +
                       " ]   ");
     if(img) {
         QString name, fullName = img->info()->fileName();
@@ -63,7 +63,7 @@ void Core::updateInfoString() {
         infoString.append(QString::number(img->info()->fileSize()) + " KB)");
     }
 
-    //infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
+    infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
     emit infoStringChanged(infoString);
 }
 
@@ -129,6 +129,13 @@ void Core::rotateImage(int degrees) {
     }
 }
 
+void Core::removeFile() {
+    int currentPos = dirManager->currentFilePos();
+    if(dirManager->removeAt(currentPos)) {
+        loadImageByPos(dirManager->currentFilePos());
+    }
+}
+
 void Core::setWallpaper(QRect wpRect) {
     if(currentImage()) {
         ImageStatic *staticImage;
@@ -161,7 +168,8 @@ void Core::rescaleForZoom(QSize newSize) {
             if(settings->useFastScale() || currentScale < 1.0) {
                 imgLib.bilinearScale(pixmap, currentImage()->getPixmap(), newSize, true);
             } else {
-                imgLib.bicubicScale(pixmap, currentImage()->getImage(), newSize.width(), newSize.height());
+                imgLib.bilinearScale(pixmap, currentImage()->getPixmap(), newSize, true);
+                //imgLib.bicubicScale(pixmap, currentImage()->getImage(), newSize.width(), newSize.height());
             }
         }
         emit scalingFinished(pixmap);
@@ -194,8 +202,8 @@ void Core::stopAnimation() {
 // ##############################################################
 
 void Core::initVariables() {
-    cache = new ImageCache();
     dirManager = new DirectoryManager();
+    cache = new ImageCache(dirManager);
     imageLoader = new NewLoader(dirManager);
 }
 
@@ -204,12 +212,13 @@ void Core::connectSlots() {
             this, SLOT(onLoadStarted()));
     connect(imageLoader, SIGNAL(loadFinished(Image *, int)),
             this, SLOT(onLoadFinished(Image *, int)));
-    connect(this, SIGNAL(thumbnailRequested(int)),
-            imageLoader, SLOT(generateThumbnailFor(int)));
-    connect(imageLoader, SIGNAL(thumbnailReady(int, Thumbnail *)),
-            this, SIGNAL(thumbnailReady(int, Thumbnail *)));
+    connect(this, SIGNAL(thumbnailRequested(int, long)),
+            imageLoader, SLOT(generateThumbnailFor(int, long)));
+    connect(imageLoader, SIGNAL(thumbnailReady(long, Thumbnail *)),
+            this, SIGNAL(thumbnailReady(long, Thumbnail *)));
     connect(cache, SIGNAL(initialized(int)), this, SIGNAL(cacheInitialized(int)), Qt::DirectConnection);
-    connect(dirManager, SIGNAL(directorySortingChanged()), imageLoader, SLOT(reinitCacheForced()));
+    connect(dirManager, SIGNAL(fileRemoved(int)), cache, SLOT(removeAt(int)), Qt::DirectConnection);
+    connect(cache, SIGNAL(itemRemoved(int)), this, SIGNAL(itemRemoved(int)), Qt::DirectConnection);
 }
 
 Image* Core::currentImage() {

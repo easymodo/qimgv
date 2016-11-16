@@ -18,6 +18,7 @@
 #include <QImageReader>
 #include "fileinfo.h"
 #include "settings.h"
+#include <filesystemWatchers/watcherwindows.h>
 
 class DirectoryManager : public QObject
 {
@@ -48,6 +49,7 @@ public:
     QString nextFilePath();
     QString prevFilePath();
     QString filePathAt(int pos);
+    bool removeAt(int pos);
     int currentFilePos();
     int nextPos();
     int prevPos();
@@ -61,7 +63,12 @@ public:
 public slots:
     void applySettingsChanges();
 
+private slots:
+    void fileChanged(const QString file);
+    void directoryContentsChanged(QString dirPath);
+
 private:
+    WatcherWindows watcher;
     QString startDir;
     bool infiniteScrolling;
     QMimeDatabase mimeDb;
@@ -73,9 +80,12 @@ private:
     void generateFileListQuick();
     void generateFileListDeep();
 
+    bool checkRange(int pos);
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();
+    void fileRemoved(int);
+    void fileChangedAt(int);
 };
 
 #endif // DIRECTORYMANAGER_H

@@ -28,7 +28,7 @@ inline float cubicInterpolate(float A, float B, float C, float D, float t, float
 inline const uchar* getPixel(const uchar* bits, int width, int height, int x, int y, int channels) {
     return bits + (x<0?0:(x>=width?width-1:x))*channels + (y<0?0:(y>=height?height-1:y))*channels*width;
 }
-
+/*
 void ImageLib::bicubicScale(QPixmap *outPixmap, const QImage* in, int destWidth, int destHeight) {
     QImage *out = new QImage(destWidth,destHeight,in->format());
 
@@ -83,3 +83,4 @@ void ImageLib::bicubicScale(QPixmap *outPixmap, const QImage* in, int destWidth,
 }
 
 
+*/

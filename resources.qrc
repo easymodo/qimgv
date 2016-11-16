@@ -7,6 +7,8 @@
         <file>res/icons/settings.png</file>
         <file>res/icons/window-close.png</file>
         <file>res/icons/48.png</file>
+        <file>res/icons/window-close-transparent.png</file>
+        <file>res/logo_dev.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file>res/style.qss</file>

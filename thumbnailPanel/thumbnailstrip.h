@@ -7,8 +7,10 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QScrollBar>
+#include <QMutex>
 #include <QTimer>
 #include <QTimeLine>
+#include <QGraphicsScene>
 #include <QPropertyAnimation>
 #include "../customWidgets/clickablelabel.h"
 #include "../customWidgets/clickablewidget.h"
@@ -27,43 +29,47 @@ public:
     void updatePanelPosition();
 private:
     QList<ThumbnailLabel*> *thumbnailLabels;
+    QHash<int, long> posIdHash;
+    QHash<long, int> posIdHashReverse;
     void addItem();
     QBoxLayout *layout, *buttonsLayout, *viewLayout;
     QWidget *buttonsWidget;
     ClickableLabel *openButton, *saveButton, *settingsButton, *exitButton;
     ClickableWidget *widget;
-    ThumbnailView *thumbView;
+    ThumbnailFrame *thumbnailFrame;
     QTimeLine *timeLine;
 
-    const qreal OPACITY_INACTIVE = 0.82;
+    const qreal OPACITY_INACTIVE = 0.83;
     const qreal OPACITY_SELECTED = 1.0;
     const int ANIMATION_SPEED_INSTANT = 0;
     const int ANIMATION_SPEED_FAST = 80;
     const int ANIMATION_SPEED_NORMAL = 150;
 
-    const int SCROLL_UPDATE_RATE = 8;
-    const float SCROLL_SPEED_MULTIPLIER = 3.1;
-    const int SCROLL_ANIMATION_SPEED = 85;
+
     const uint LOAD_DELAY = 20;
-    const int OFFSCREEN_PRELOAD_AREA = 1500;
+    const int OFFSCREEN_PRELOAD_AREA = 1700;
 
     int panelSize;
     int itemCount, current, thumbnailSize, margin;
-    bool childVisible(int pos);
     ThumbnailStrip *strip;
     QRectF preloadArea, visibleRegion;
     QTimer loadTimer;
-    bool childVisibleEntirely(int pos);
     QScrollBar *scrollBar;
     PanelPosition position;
     QSize parentSz;
     bool parentFullscreen;
+    QMutex mutex;
 
     void requestThumbnail(int pos);
-    void focusOn(int pos);
+    QGraphicsScene *scene;
+    bool checkRange(int pos);
+    long idCounter;
+    void lock();
+    void unlock();
+    void updateThumbnailPositions(int start, int end);
 signals:
-    void thumbnailRequested(int pos);
-    void thumbnailClicked(int pos);
+    void thumbnailRequested(int pos, long thumbnailId);
+    void openImage(int pos);
     void openClicked();
     void saveClicked();
     void settingsClicked();
@@ -71,22 +77,22 @@ signals:
     void panelSizeChanged();
 
 public slots:
+    void thumbnailClicked(int pos);
     void populate(int count);
     void parentResized(QSize parentSize);
     void loadVisibleThumbnails();
     void loadVisibleThumbnailsDelayed();
-    void setThumbnail(int, Thumbnail*);
+    void setThumbnail(long, Thumbnail*);
     void fillPanel(int);
     void selectThumbnail(int pos);
-    void enableWindowControls(bool);
+    void setWindowControlsEnabled(bool);
+    void removeItemAt(int pos);
+    void addItemAt(int pos);
 
 protected:
-    void wheelEvent(QWheelEvent *event);
     void leaveEvent(QEvent *event);
 
 private slots:
-    void viewPressed(QPoint pos);
-    void updateVisibleRegion();
     void readSettings();
 };
 

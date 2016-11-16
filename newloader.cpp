@@ -3,7 +3,6 @@
 // ######## WARNING: spaghetti code ##########
 
 NewLoader::NewLoader(DirectoryManager *_dm) :
-    reduceRam(false),
     current(NULL),
     preloadTarget(0),
     loadTarget(-1)
@@ -55,6 +54,7 @@ void NewLoader::openBlocking(QString path) {
 void NewLoader::open(int pos) {
     if(dm->setCurrentPos(pos)) {
         emit loadStarted();
+        worker->setTarget(-1, "");
         doLoad(dm->currentFilePos());
         freeAuto();
     }
@@ -101,10 +101,10 @@ void NewLoader::loadPrev() {
 }
 
 void NewLoader::onLoadFinished(int loaded) {
-    startPreload();
-    if(loaded == loadTarget && current != cache->imageAt(loaded)) {
+    if(loaded == loadTarget) {
         emit loadFinished(cache->imageAt(loaded), loaded);
         current = cache->imageAt(loaded);
+        startPreload();
     } else if(isRelevant(loaded)) {
         //qDebug() << "loadfinished image is relevant, keeping.." << loaded;
     } else {
@@ -181,38 +181,42 @@ const ImageCache *NewLoader::getCache() {
 
 void NewLoader::setCache(ImageCache *_cache) {
     this->cache = _cache;
-    cache->init(dm->currentDirectory(), dm->fileList());
+    cache->init();
     worker = new LoadHelper(cache, this->thread());
     worker->moveToThread(loadThread);
-    connect(this, SIGNAL(startLoad()), worker, SLOT(doLoad()));
-    connect(worker, SIGNAL(finished(int)), this, SLOT(onLoadFinished(int)));
+    connect(this, SIGNAL(startLoad()),
+            worker, SLOT(doLoad())), Qt::UniqueConnection;
+    connect(worker, SIGNAL(finished(int)),
+            this, SLOT(onLoadFinished(int)), Qt::UniqueConnection);
 
     loadTimer = new QTimer(this);
     loadTimer->setSingleShot(true);
-    connect(loadTimer, SIGNAL(timeout()), this, SLOT(onLoadTimeout()));
+    connect(loadTimer, SIGNAL(timeout()),
+            this, SLOT(onLoadTimeout()), Qt::UniqueConnection);
     preloadTimer = new QTimer(this);
     preloadTimer->setSingleShot(true);
     if(settings->usePreloader()) {
-        connect(preloadTimer, SIGNAL(timeout()), this, SLOT(onPreloadTimeout()));
+        connect(preloadTimer, SIGNAL(timeout()),
+                this, SLOT(onPreloadTimeout()), Qt::UniqueConnection);
     }
     loadThread->start();
 }
 
 void NewLoader::reinitCache() {
     if(cache->currentDirectory() != dm->currentDirectory()) {
-        cache->init(dm->currentDirectory(), dm->fileList());
+        cache->init();
     }
 }
 
-void NewLoader::reinitCacheForced() {
-    cache->init(dm->currentDirectory(), dm->fileList());
-}
-
 // for position in directory
-void NewLoader::generateThumbnailFor(int pos) {
-    Thumbnailer *thWorker = new Thumbnailer(cache, dm->filePathAt(pos), pos, settings->squareThumbnails());
-    connect(thWorker, SIGNAL(thumbnailReady(int,Thumbnail*)),
-            this, SIGNAL(thumbnailReady(int,Thumbnail*)));
+void NewLoader::generateThumbnailFor(int pos, long thumbnailId) {
+    Thumbnailer *thWorker = new Thumbnailer(cache,
+                                            dm->filePathAt(pos),
+                                            pos,
+                                            settings->squareThumbnails(),
+                                            thumbnailId);
+    connect(thWorker, SIGNAL(thumbnailReady(long, Thumbnail*)),
+            this, SIGNAL(thumbnailReady(long, Thumbnail*)));
     thWorker->setAutoDelete(true);
     QThreadPool::globalInstance()->start(thWorker);
     //QtConcurrent::run(this, &NewLoader::generateThumbnailThread, pos);
@@ -221,12 +225,11 @@ void NewLoader::generateThumbnailFor(int pos) {
 void NewLoader::readSettings() {
     if(settings->usePreloader()) {
         connect(this, SIGNAL(startPreload()),
-                this, SLOT(doPreload()));
+                this, SLOT(doPreload()), Qt::UniqueConnection);
     } else {
         disconnect(this, SIGNAL(startPreload()),
                    this, SLOT(doPreload()));
     }
-    reduceRam = settings->reduceRamUsage();
 }
 
 void NewLoader::lock() {

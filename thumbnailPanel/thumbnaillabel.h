@@ -1,24 +1,24 @@
 #ifndef THUMBNAILLABEL_H
 #define THUMBNAILLABEL_H
 
-#include <QLabel>
+#include <QGraphicsItem>
 #include <QMouseEvent>
 #include <QPainter>
-#include <QDebug>
-#include <QLinearGradient>
+#include <QGraphicsSceneHoverEvent>
 #include <QPropertyAnimation>
+#include <ctime>
 #include "../sourceContainers/thumbnail.h"
 #include "../settings.h"
 
 enum loadState { EMPTY, LOADING, LOADED };
 
-class ThumbnailLabel : public QLabel
+class ThumbnailLabel : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal currentOpacity READ opacity WRITE setOpacity)
 
 public:
-    ThumbnailLabel(QWidget *parent = 0);
+    ThumbnailLabel();
     ~ThumbnailLabel();
 
     bool isLoaded();
@@ -30,13 +30,20 @@ public:
     void setOpacity(qreal amount);
     qreal opacity();
     void readSettings();
-    void applySettings();
     void setOpacityAnimated(qreal amount, int speed);
 
+    QRectF boundingRect() const Q_DECL_OVERRIDE;
+    void setLabelNum(int num);
+    int labelNum();
+
+    int width();
+    int height();
+    int getThumbnailSize();
 private:
+    int labelNumber;
     Qt::Orientation orientation;
     const int SHADOW_HEIGHT = 10;
-    bool hovered, loaded;
+    bool loaded;
     bool showLabel, showName;
     bool drawSelectionBorder;
 
@@ -45,17 +52,16 @@ private:
     bool highlighted;
     int borderW, borderH, thumbnailSize;
     QString infoString;
-    QLinearGradient *shadowGradient;
     QRectF highlightRect, shadowRect, labelRect, nameRect;
-    QColor *highlightColor, *outlineColor, *highlightColorBorder, *nameColor, *labelColor;
+    QColor *highlightColor, *outlineColor, *nameColor, *labelColor;
     QFont font;
     QFontMetrics *fm;
-
     void updateLabelWidth();
+
 protected:
-    void enterEvent(QEvent *event);
-    void leaveEvent(QEvent *event);
-    virtual void paintEvent(QPaintEvent* event);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) Q_DECL_OVERRIDE;
     QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
 
 };

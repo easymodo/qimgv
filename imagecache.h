@@ -7,6 +7,7 @@
 #include "sourceContainers/thumbnail.h"
 #include "lib/imagelib.h"
 #include "settings.h"
+#include "directorymanager.h"
 #include <QList>
 #include <QtConcurrent>
 #include <QMutex>
@@ -20,6 +21,12 @@ public:
     ~CacheObject() {
         if(img)
             img->safeDeleteSelf();
+    }
+    void setPath(QString _path) {
+        path = _path;
+    }
+    QString filePath() {
+        return path;
     }
     FileInfo* getInfo() {
         if(img)
@@ -40,6 +47,7 @@ public:
     }
     void setImage(Image* _img) {
         img = _img;
+        path = img->fileInfo->filePath();
     }
     Image* image() {
         return img;
@@ -65,12 +73,10 @@ class ImageCache : public QObject
 {
     Q_OBJECT
 public:
-    ImageCache();
+    ImageCache(DirectoryManager *_dm);
     ~ImageCache();
 
-    // clears cache; then loads supplied file list
-    // should be called on every directory change/sort
-    void init(QString dir, QStringList list);
+    DirectoryManager *dm;
     void unloadAll();
     void unloadAt(int pos);
     Image *imageAt(int pos);
@@ -89,12 +95,18 @@ private:
     void lock();
     void unlock();
     void readSettings();
+    bool checkRange(int pos);
 
 private slots:
     void applySettings();
 
+public slots:
+    void init();
+    void removeAt(int);
+
 signals:
     void initialized(int count);
+    void itemRemoved(int);
 };
 
 #endif // IMAGECACHE_H

@@ -20,8 +20,10 @@ ImageAnimated::ImageAnimated(FileInfo *_info) {
 ImageAnimated::~ImageAnimated() {
     this->animationStop();
     timer->deleteLater();
-    delete movie;
-    delete fileInfo;
+    if(movie)
+        delete movie;
+    if(fileInfo)
+        delete fileInfo;
 }
 
 //load image data from disk
