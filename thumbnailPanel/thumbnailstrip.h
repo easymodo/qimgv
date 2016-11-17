@@ -67,6 +67,7 @@ private:
     void lock();
     void unlock();
     void updateThumbnailPositions(int start, int end);
+    void shrinkScene();
 signals:
     void thumbnailRequested(int pos, long thumbnailId);
     void openImage(int pos);

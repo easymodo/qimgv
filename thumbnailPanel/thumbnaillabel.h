@@ -41,8 +41,6 @@ public:
     int getThumbnailSize();
 private:
     int labelNumber;
-    Qt::Orientation orientation;
-    const int SHADOW_HEIGHT = 10;
     bool loaded;
     bool showLabel, showName;
     bool drawSelectionBorder;
@@ -52,7 +50,7 @@ private:
     bool highlighted;
     int borderW, borderH, thumbnailSize;
     QString infoString;
-    QRectF highlightRect, shadowRect, labelRect, nameRect;
+    QRectF highlightRect, labelRect, nameRect;
     QColor *highlightColor, *outlineColor, *nameColor, *labelColor;
     QFont font;
     QFontMetrics *fm;

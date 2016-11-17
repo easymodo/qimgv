@@ -12,7 +12,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     imageFitMode(NORMAL) {
     initOverlays();
     image = new QPixmap();
-    image->load(":/images/res/logo.png");
+    image->load(":/images/res/logo_dev.png");
     drawingRect = image->rect();
     this->setMouseTracking(true);
     resizeTimer = new QTimer(this);

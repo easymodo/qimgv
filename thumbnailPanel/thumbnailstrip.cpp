@@ -113,6 +113,7 @@ void ThumbnailStrip::populate(int count) {
             delete thumbnailLabels->takeAt(0);
         }
         scene->clear();
+        shrinkScene();
         thumbnailFrame->view()->resetViewport();
         //recreate list
         delete thumbnailLabels;
@@ -125,13 +126,10 @@ void ThumbnailStrip::populate(int count) {
 }
 
 void ThumbnailStrip::fillPanel(int count) {
-    qDebug() << count;
     if(count >= 0 ) {
         current = -1;
         loadTimer.stop();
         populate(count);
-        // shrink scene to contents
-        scene->setSceneRect(scene->itemsBoundingRect());
         loadVisibleThumbnails();
     }
 }
@@ -170,7 +168,10 @@ void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
         tmp = thumbnailLabels->at(i);
         tmp->setPos(i * thumbWidth, 0);
     }
-    // shrink scene to contents
+}
+
+// shrink scene to contents. use after deleting items
+void ThumbnailStrip::shrinkScene() {
     scene->setSceneRect(scene->itemsBoundingRect());
 }
 
@@ -288,8 +289,7 @@ void ThumbnailStrip::removeItemAt(int pos) {
             posIdHashReverse.remove(thumbnailId);
             posIdHashReverse.insert(thumbnailId, tmp->labelNum());
         }
-        // shrink scene to contents
-        scene->setSceneRect(scene->itemsBoundingRect());
+        shrinkScene();
     }
     unlock();
 }

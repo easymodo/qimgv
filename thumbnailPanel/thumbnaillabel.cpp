@@ -3,7 +3,6 @@
 ThumbnailLabel::ThumbnailLabel() :
     state(EMPTY),
     labelNumber(0),
-    orientation(Qt::Horizontal),
     loaded(false),
     showLabel(false),
     showName(true),
@@ -33,17 +32,17 @@ ThumbnailLabel::ThumbnailLabel() :
 void ThumbnailLabel::readSettings() {
     thumbnailSize = settings->thumbnailSize();
     drawSelectionBorder = settings->drawThumbnailSelectionBorder();
-    orientation = Qt::Horizontal;
     highlightRect.setTopLeft(QPointF(borderW, 0));
     highlightRect.setBottomRight(QPointF(borderW + thumbnailSize, borderH));
     nameRect.setTopLeft(QPointF(borderW, borderH));
-    nameRect.setBottomRight(QPointF(borderW + thumbnailSize, borderH + 21));
+    nameRect.setBottomRight(QPointF(borderW + thumbnailSize,
+                                    borderH + 21));
     nameRect.setWidth(thumbnailSize);
-    labelRect = QRectF(QPointF(borderW + thumbnailSize - 25, borderH),
-                       QPointF(borderW + thumbnailSize, borderH + nameRect.height()));
+    labelRect = QRectF(QPointF(borderW + thumbnailSize - 25,
+                               borderH),
+                       QPointF(borderW + thumbnailSize,
+                               borderH + nameRect.height()));
     updateLabelWidth();
-    shadowRect.setTopLeft(QPointF(borderW, borderH));
-    shadowRect.setBottomRight(QPointF(borderW + thumbnailSize, borderH + nameRect.height()));
     highlightColor->setRgb(settings->accentColor().rgb());
     labelColor->setRgb(settings->accentColor().rgb());
     update();
