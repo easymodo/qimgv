@@ -40,7 +40,7 @@ int Core::imageCount() {
 void Core::updateInfoString() {
     Image* img = currentImage();
     QString infoString = "";
-    infoString.append(" [ " +
+    infoString.append("[ " +
                       QString::number(dirManager->currentPos + 1) +
                       "/" +
                       QString::number(dirManager->fileCount()) +

@@ -17,7 +17,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     thumbnailFrame = new ThumbnailFrame();
     scene = new QGraphicsScene(this); // move scene to view class?
     QBrush* brush = new QBrush(QColor(31,34,42)); //#1f222a
-    scene->setBackgroundBrush(*brush);
+    //scene->setBackgroundBrush(*brush);
     thumbnailFrame->view()->setScene(scene);
     thumbnailFrame->setFrameShape(QFrame::NoFrame);
 

@@ -27,6 +27,10 @@
     background-color: #1f222a;
 }
 
+QGraphicsView {
+    background-color: #f00;
+}
+
 ThumbnailLabel {
     background-color: #1f222a;
 }

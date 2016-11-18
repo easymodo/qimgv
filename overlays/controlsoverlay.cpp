@@ -14,6 +14,5 @@ void ControlsOverlay::updatePosition(QSize containerSz) {
     this->setGeometry(containerSz.width() - pixmap()->width() - 5,
                       0,
                       pixmap()->width() + 5,
-                      pixmap()->height() + 6
-                      );
+                      pixmap()->height() + 6);
 }

@@ -54,7 +54,7 @@ void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail) {
         loaded = true;
         showLabel = settings->showThumbnailLabels() && !thumbnail->label.isEmpty();
         updateLabelWidth();
-        float widthFactor = fm->width(thumbnail->name) / (float)(thumbnailSize - 13);
+        float widthFactor = fm->width(thumbnail->name) / (float)(thumbnailSize - 15);
         if(widthFactor > 1) {
             thumbnail->name.truncate(thumbnail->name.length() / widthFactor);
         }
@@ -154,9 +154,11 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setOpacity(1.0f);
 
         painter->setPen(QColor(10, 10, 10, 200));
-        painter->drawText(nameRect.adjusted(5, 4, 0, 0), thumbnail->name);
+        QRectF shadowR = nameRect.adjusted(5, 4, -4, 0);
+        QRectF textR = nameRect.adjusted(4, 3, -5, 0);
+        painter->drawText(shadowR, Qt::TextSingleLine, thumbnail->name, &shadowR);
         painter->setPen(QColor(240, 240, 255, 255));
-        painter->drawText(nameRect.adjusted(4, 3, 0, 0), thumbnail->name);
+        painter->drawText(textR, Qt::TextSingleLine, thumbnail->name, &textR);
 
         // draw colored bar if selected
         if(isHighlighted()) {

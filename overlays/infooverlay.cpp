@@ -6,22 +6,20 @@ textOverlay::textOverlay(QWidget *parent) : QWidget(parent), textLength(0) {
     currentText = "No file opened.";
     font.setPixelSize(11);
     font.setBold(true);
-    drawRect.setTopLeft(QPoint(2, 2));
+    drawRect.setTopLeft(QPoint(7, 2));
     drawRect.setBottomRight(QPoint(950, 19));
     textColor = new QColor(255, 255, 255, 255);
     textShadowColor = new QColor(0, 0, 0, 200);
     fm = new QFontMetrics(font);
     this->setFixedHeight(20);
     this->hide();
-    //updateWidth();
-    //updatePosition();
 }
 
 void textOverlay::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
 
     QPainter painter(this);
-    painter.fillRect(QRect(0,0,textLength+8,22), QBrush(QColor(0, 0, 0, 80), Qt::SolidPattern));
+    painter.fillRect(QRect(0,0,textLength+13,22), QBrush(QColor(0, 0, 0, 80), Qt::SolidPattern));
     painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(QPen(*textShadowColor));
