@@ -10,7 +10,8 @@
         <file>res/icons/window-close-transparent.png</file>
         <file>res/logo_dev.png</file>
     </qresource>
-    <qresource prefix="/styles">
-        <file>res/style.qss</file>
+    <qresource prefix="/qss">
+        <file>res/styles/dark.qss</file>
+        <file>res/styles/darkblue.qss</file>
     </qresource>
 </RCC>

@@ -12,6 +12,7 @@
 #include <QTimeLine>
 #include <QGraphicsScene>
 #include <QPropertyAnimation>
+#include <QPainter>
 #include "../customWidgets/clickablelabel.h"
 #include "../customWidgets/clickablewidget.h"
 #include "../sourceContainers/thumbnail.h"
@@ -92,6 +93,7 @@ public slots:
 
 protected:
     void leaveEvent(QEvent *event);
+    virtual void paintEvent(QPaintEvent* event);
 
 private slots:
     void readSettings();

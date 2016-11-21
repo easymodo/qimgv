@@ -1,10 +1,10 @@
 [accessibleName="panelButton"] {
-    background-color: #1f222a;
+    background-color: #2C2C2C;
     padding: 3px 3px 3px 3px;
 }
 
 [accessibleName="panelButton"]:hover {
-    background-color: #404552;
+    background-color: #3C3C3C;
 }
 
 [accessibleName="panelButtonTransparent"] {
@@ -16,41 +16,30 @@
 }
 
 [accessibleName="panelButtonsWidget"] {
-    background-color: #1f222a;
+    background-color: #2C2C2C;
 }
 
-[accessibleName="thumbnailWidget"] {
-    background-color: #1f222a;
-}
-
-[accessibleName="thumbnailView"] {
-    background-color: #1f222a;
-}
-
-QGraphicsView {
-    background-color: #f00;
+GraphicsView {
+    background-color: #2C2C2C;
+    border-style: none;
 }
 
 ThumbnailLabel {
-    background-color: #1f222a;
+    background-color: #2C2C2C;
 }
 
 QScrollBar:horizontal {
-    height: 15px;
-    background-color: #1f222a;
+    height: 14px;
+    background-color: #2C2C2C;
 }
 
 QScrollBar::handle:horizontal {
-    background: #565d6e;
+    background: #909090;
     min-width: 60px;
 }
 
 QScrollBar::handle:horizontal:hover {
-    background: #656e82;
-}
-
-QGraphicsView {
-    background: #383c4a;
+    background: #B0B0B0;
 }
 
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
@@ -70,8 +59,4 @@ QScrollBar::sub-line:horizontal {
 QComboBox {
     padding-left: 4px;
     padding-right: 3px;
-}
-
-QGraphicsView {
-    border-style: none;
 }

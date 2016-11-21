@@ -1,7 +1,5 @@
 #include "thumbnailstrip.h"
 
-// this is temporarily broken
-
 ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     : QWidget(parent),
       panelSize(122),
@@ -16,8 +14,6 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
 
     thumbnailFrame = new ThumbnailFrame();
     scene = new QGraphicsScene(this); // move scene to view class?
-    QBrush* brush = new QBrush(QColor(31,34,42)); //#1f222a
-    //scene->setBackgroundBrush(*brush);
     thumbnailFrame->view()->setScene(scene);
     thumbnailFrame->setFrameShape(QFrame::NoFrame);
 
@@ -40,7 +36,6 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     exitButton = new ClickableLabel();
     exitButton->setAccessibleName("panelButton");
     exitButton->setPixmap(QPixmap(":/images/res/icons/window-close.png"));
-
     buttonsLayout = new QBoxLayout(QBoxLayout::LeftToRight);
     buttonsLayout->setSpacing(0);
     buttonsLayout->setContentsMargins(0,0,0,0);
@@ -89,6 +84,8 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
 void ThumbnailStrip::readSettings() {
     thumbnailSize = settings->thumbnailSize();
     position = settings->panelPosition();
+    if(position == PanelPosition::TOP)
+        layout->setContentsMargins(0,0,0,1);
     panelSize = settings->thumbnailSize() + 22;
     updatePanelPosition();
 
@@ -316,6 +313,15 @@ void ThumbnailStrip::updatePanelPosition() {
 void ThumbnailStrip::leaveEvent(QEvent *event) {
     Q_UNUSED(event)
     hide();
+}
+
+void ThumbnailStrip::paintEvent(QPaintEvent *event) {
+    QWidget::paintEvent(event);
+    if(position == PanelPosition::TOP) {
+        QPainter p(this);
+        p.setPen(QColor(QColor(110, 110, 110)));
+        p.drawLine(rect().bottomLeft(), rect().bottomRight());
+    }
 }
 
 ThumbnailStrip::~ThumbnailStrip() {
