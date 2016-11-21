@@ -29,6 +29,7 @@ void SettingsDialog::readSettings() {
     ui->squareThumbnailsCheckBox->setChecked(settings->squareThumbnails());
     ui->thumbnailBorderCheckBox->setChecked(settings->drawThumbnailSelectionBorder());
     ui->checkboardPatternCheckBox->setChecked(settings->checkboardPattern());
+    ui->forceSmoothScrollCheckBox->setChecked(settings->forceSmoothScroll());
 
     ui->ffmpegLineEdit->setText(settings->ffmpegExecutable());
 
@@ -114,6 +115,7 @@ void SettingsDialog::applySettings() {
     settings->setSquareThumbnails(ui->squareThumbnailsCheckBox->isChecked());
     settings->setDrawThumbnailSelectionBorder(ui->thumbnailBorderCheckBox->isChecked());
     settings->setCheckboardPattern(ui->checkboardPatternCheckBox->isChecked());
+    settings->setForceSmoothScroll(ui->forceSmoothScrollCheckBox->isChecked());
 
     settings->setFFmpegExecutable(ui->ffmpegLineEdit->text());
 

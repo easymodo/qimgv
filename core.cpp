@@ -63,7 +63,7 @@ void Core::updateInfoString() {
         infoString.append(QString::number(img->info()->fileSize()) + " KB)");
     }
 
-    infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
+    //infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
     emit infoStringChanged(infoString);
 }
 

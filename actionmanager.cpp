@@ -251,12 +251,14 @@ bool ActionManager::processWheelEvent(QWheelEvent *event) {
     // ignore event if source is touchpad
     // prevents scrolling through 9999 images in a single swipe
     // this function was intended for mouse wheel anyway
+    /*
     if(event->source() != Qt::MouseEventNotSynthesized ||
        event->pixelDelta().y() != 0 ||
        event->angleDelta().ry() == -1)
     {
         return false;
     }
+    */
 
     if(event->angleDelta().ry() < 0) {
         keys = "WheelUp";

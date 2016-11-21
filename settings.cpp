@@ -378,3 +378,11 @@ bool Settings::checkboardPattern() {
 void Settings::setCheckboardPattern(bool mode) {
     settings->s.setValue("checkboardPattern", mode);
 }
+
+bool Settings::forceSmoothScroll() {
+    return settings->s.value("forceSmoothScroll", true).toBool();
+}
+
+void Settings::setForceSmoothScroll(bool mode) {
+    settings->s.setValue("forceSmoothScroll", mode);
+}

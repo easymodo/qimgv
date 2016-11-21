@@ -1,7 +1,7 @@
 #include "thumbnailview.h"
 
 GraphicsView::GraphicsView(ThumbnailFrame *v)
-    : QGraphicsView(), frame(v)
+    : QGraphicsView(), frame(v), forceSmoothScroll(true)
 {
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -11,6 +11,7 @@ GraphicsView::GraphicsView(ThumbnailFrame *v)
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
     timeLine->setCurveShape(QTimeLine::EaseInCurve);
+    readSettings();
     connect(timeLine, SIGNAL(frameChanged(int)),
             this, SLOT(doScroll(int)), Qt::UniqueConnection);
     // on scrolling animation finish
@@ -18,15 +19,20 @@ GraphicsView::GraphicsView(ThumbnailFrame *v)
     // on manual scrollbar drag
     connect(scrollBar, SIGNAL(sliderMoved(int)), this, SIGNAL(scrolled()));
     connect(this, SIGNAL(scrolled()), frame, SIGNAL(scrolled()));
+    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
 void GraphicsView::wheelEvent(QWheelEvent *event) {
     event->accept();
     viewportCenter = mapToScene(viewport()->rect().center());
-    if(event->pixelDelta().y() != 0)  { // pixel scrolling
+    // on some systems pixelDelta() returns non-zero values with mouse wheel
+    // that's why smoothScroll flag workaround
+    if(!forceSmoothScroll && event->pixelDelta().y() != 0)  {
+        // pixel scrolling (precise)
         doScroll(viewportCenter.x() - event->pixelDelta().y());
         emit scrolled();
-    } else { // scrolling by fixed intervals
+    } else {
+        // smooth scrolling by fixed intervals
         if(timeLine->state() == QTimeLine::Running) {
             timeLine->stop();
             timeLine->setFrameRange(viewportCenter.x(),
@@ -46,6 +52,10 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
 
 void GraphicsView::doScroll(int dx) {
     centerOn(dx, viewportCenter.y());
+}
+
+void GraphicsView::readSettings() {
+    forceSmoothScroll = settings->forceSmoothScroll();
 }
 
 void GraphicsView::mousePressEvent(QMouseEvent *event) {

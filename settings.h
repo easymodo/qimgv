@@ -81,6 +81,8 @@ public:
     void setDrawThumbnailSelectionBorder(bool mode);
     bool checkboardPattern();
     void setCheckboardPattern(bool mode);
+    bool forceSmoothScroll();
+    void setForceSmoothScroll(bool mode);
 
 private:
     explicit Settings(QObject *parent = 0);

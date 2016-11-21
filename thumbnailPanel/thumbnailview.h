@@ -29,6 +29,7 @@ private:
     ThumbnailFrame *frame;
     QTimeLine *timeLine;
     QPointF viewportCenter;
+    bool forceSmoothScroll;
 
     const int SCROLL_UPDATE_RATE = 8;
     const float SCROLL_SPEED_MULTIPLIER = 3.4;
@@ -36,6 +37,7 @@ private:
 
 private slots:
     void doScroll(int);
+    void readSettings();
 
 signals:
     void scrolled();
