@@ -27,6 +27,7 @@ public:
 
     void setHighlighted(bool x);
     bool isHighlighted();
+    bool isHovered();
     void setOpacity(qreal amount);
     qreal opacity();
     void readSettings();
@@ -47,11 +48,11 @@ private:
 
     Thumbnail *thumbnail;
     qreal currentOpacity;
-    bool highlighted;
+    bool highlighted, hovered;
     int borderW, borderH, thumbnailSize;
     QString infoString;
     QRectF highlightRect, labelRect, nameRect;
-    QColor *highlightColor, *outlineColor, *nameColor, *labelColor;
+    QColor *highlightColor, *hoverHighlightColor, *outlineColor, *nameColor, *labelColor;
     QFont font;
     QFontMetrics *fm;
     void updateLabelWidth();

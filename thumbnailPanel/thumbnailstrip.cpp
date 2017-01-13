@@ -319,7 +319,7 @@ void ThumbnailStrip::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
     if(position == PanelPosition::TOP) {
         QPainter p(this);
-        p.setPen(QColor(QColor(110, 110, 110)));
+        p.setPen(QColor(QColor(110, 110, 130)));
         p.drawLine(rect().bottomLeft(), rect().bottomRight());
     }
 }

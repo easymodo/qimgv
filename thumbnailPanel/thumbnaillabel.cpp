@@ -9,12 +9,14 @@ ThumbnailLabel::ThumbnailLabel() :
     drawSelectionBorder(false),
     thumbnail(NULL),
     highlighted(false),
+    hovered(false),
     borderW(1),
     borderH(4),
     thumbnailSize(120),
     currentOpacity(1.0f)
 {
     highlightColor = new QColor();
+    hoverHighlightColor = new QColor();
     outlineColor = new QColor(Qt::black);
     nameColor = new QColor(10, 10, 10, 230);
     labelColor = new QColor();
@@ -44,6 +46,9 @@ void ThumbnailLabel::readSettings() {
                                borderH + nameRect.height()));
     updateLabelWidth();
     highlightColor->setRgb(settings->accentColor().rgb());
+    hoverHighlightColor->setRed(highlightColor->red()/2);
+    hoverHighlightColor->setGreen(highlightColor->green()/2);
+    hoverHighlightColor->setBlue(highlightColor->blue()/2);
     labelColor->setRgb(settings->accentColor().rgb());
     update();
 }
@@ -80,6 +85,10 @@ void ThumbnailLabel::setHighlighted(bool x) {
 
 bool ThumbnailLabel::isHighlighted() {
     return highlighted;
+}
+
+bool ThumbnailLabel::isHovered() {
+    return hovered;
 }
 
 void ThumbnailLabel::setOpacity(qreal amount) {
@@ -169,6 +178,14 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
                 painter->drawRect(boundingRect().adjusted(borderW,borderH,-borderW-1,-borderH-1));
             }
             painter->fillRect(highlightRect, *highlightColor);
+        } else if(isHovered()) { // lazy copy-paste, whatever
+            if(drawSelectionBorder) {
+                painter->setPen(QColor(10, 10, 10, 150));
+                painter->drawRect(boundingRect().adjusted(borderW+1, 0, -borderW-2, -borderH-2));
+                painter->setPen(*hoverHighlightColor);
+                painter->drawRect(boundingRect().adjusted(borderW,borderH,-borderW-1,-borderH-1));
+            }
+            painter->fillRect(highlightRect, *hoverHighlightColor);
         }
 
         // Label after filename (such as [gif] etc)
@@ -197,12 +214,15 @@ QSizeF ThumbnailLabel::sizeHint(Qt::SizeHint which, const QSizeF &constraint) co
 }
 
 void ThumbnailLabel::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
+    hovered = true;
     setOpacity(1.0f);
     event->ignore();
 }
 
 void ThumbnailLabel::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-    this->setOpacityAnimated(0.83, 70);
+    hovered = false;
+    setOpacity(0.86f);
+    //this->setOpacityAnimated(0.83, 70);
     event->ignore();
 }
 
