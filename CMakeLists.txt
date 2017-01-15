@@ -23,7 +23,7 @@ add_subdirectory(thumbnailPanel)
 add_subdirectory(sourceContainers)
 add_subdirectory(viewers)
 add_subdirectory(customWidgets)
-add_subdirectory(filesystemwatchers)
+add_subdirectory(filesystemWatchers)
 
 FILE (GLOB SRC *.cpp)
 list (REMOVE_ITEM SRC moc_*.cpp)
