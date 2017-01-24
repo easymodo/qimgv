@@ -26,6 +26,7 @@ void ImageCache::init() {
     for(int i = 0; i < dm->fileCount(); i++) {
         cachedImages->append(new CacheObject(dm->filePathAt(i)));
     }
+    qDebug() << "cache init:" << dir << ", " << length() << " items;";
     unlock();
     emit initialized(length());
 }

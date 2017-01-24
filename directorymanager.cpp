@@ -21,10 +21,10 @@ DirectoryManager::DirectoryManager() :
 // ##############################################################
 
 void DirectoryManager::readSettings() {
-    startDir = settings->lastDirectory();
-    if(startDir.isEmpty()) {
-        startDir = currentDir.homePath();
-    }
+    //startDir = settings->lastDirectory();
+    //if(startDir.isEmpty()) {
+    //    startDir = currentDir.homePath();
+    //}
     mimeFilters = settings->supportedMimeTypes();
     extensionFilters = settings->supportedFormats();
     applySettingsChanges();

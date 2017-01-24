@@ -31,6 +31,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public slots:
+    void open(QString path);
     void triggerFullscreen();
     void slotMinimize();
     void setInfoString(QString);
@@ -61,8 +62,6 @@ public:
     ~MainWindow();    
     ImageViewer *imageViewer;
     VideoPlayer *videoPlayer;
-
-    void open(QString path);
     void updateOverlays();
 
 private slots:

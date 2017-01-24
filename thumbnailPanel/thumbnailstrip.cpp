@@ -110,8 +110,6 @@ void ThumbnailStrip::populate(int count) {
             delete thumbnailLabels->takeAt(0);
         }
         scene->clear();
-        shrinkScene();
-        thumbnailFrame->view()->resetViewport();
         //recreate list
         delete thumbnailLabels;
         thumbnailLabels = new QList<ThumbnailLabel*>();
@@ -119,6 +117,8 @@ void ThumbnailStrip::populate(int count) {
         for(int i = 0; i < count; i++) {
             addItem();
         }
+        shrinkScene();
+        thumbnailFrame->view()->resetViewport();
     }
 }
 
@@ -216,7 +216,6 @@ void ThumbnailStrip::loadVisibleThumbnails() {
     loadTimer.stop();
     for(int i = 0; i < items.count(); i++) {
         labelCurrent = qgraphicsitem_cast<ThumbnailLabel*>(items.at(i));
-
         requestThumbnail(labelCurrent->labelNum());
     }
 }

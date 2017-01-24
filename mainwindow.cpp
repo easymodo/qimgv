@@ -101,7 +101,6 @@ void MainWindow::init() {
     connect(this, SIGNAL(fileSaved(QString)), core, SLOT(saveImage(QString)));
 
     readSettingsInitial();
-
     core->init();
 }
 
@@ -551,7 +550,7 @@ void MainWindow::slotOpenDialog() {
     dialog.setWindowTitle("Open image");
     //dialog.setParent(this);
     dialog.setWindowModality(Qt::ApplicationModal);
-    connect(&dialog, SIGNAL(fileSelected(QString)), this, SIGNAL(fileOpened(QString)));
+    connect(&dialog, SIGNAL(fileSelected(QString)), this, SLOT(open(QString)));//this, SIGNAL(fileOpened(QString))); // FIX: use MainWindow::open(QString) instead
     dialog.exec();
 }
 
