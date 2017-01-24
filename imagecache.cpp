@@ -18,17 +18,18 @@ ImageCache::~ImageCache() {
 // ##############################################################
 
 void ImageCache::init() {
-    lock();
-    dir = dm->currentDirectory();
-    while(!cachedImages->isEmpty()) {
-        delete cachedImages->takeAt(0);
+    if(!dm->currentDirectory().isEmpty()) {
+        lock();
+        dir = dm->currentDirectory();
+        while(!cachedImages->isEmpty()) {
+            delete cachedImages->takeAt(0);
+        }
+        for(int i = 0; i < dm->fileCount(); i++) {
+            cachedImages->append(new CacheObject(dm->filePathAt(i)));
+        }
+        unlock();
+        emit initialized(length());
     }
-    for(int i = 0; i < dm->fileCount(); i++) {
-        cachedImages->append(new CacheObject(dm->filePathAt(i)));
-    }
-    qDebug() << "cache init:" << dir << ", " << length() << " items;";
-    unlock();
-    emit initialized(length());
 }
 
 void ImageCache::removeAt(int pos) {
