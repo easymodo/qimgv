@@ -200,8 +200,8 @@ void ImageViewer::drawCheckboardPattern() {
     if(image && image->hasAlphaChannel()) {
         QPainter painter(image);
         painter.setCompositionMode(QPainter::CompositionMode_DestinationOver);
-        QColor dark(100,100,100,255);
-        QColor light(140,140,140,255);
+        QColor dark(90,90,90,255);
+        QColor light(130,130,130,255);
         int xCount, yCount;
         xCount = image->width() / checkboardPatternSize;
         yCount = image->height() / checkboardPatternSize;

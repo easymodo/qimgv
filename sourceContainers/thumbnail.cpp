@@ -1,7 +1,6 @@
 #include "thumbnail.h"
 
-Thumbnail::Thumbnail() {
-
+Thumbnail::Thumbnail() : label("") {
 }
 
 Thumbnail::~Thumbnail() {

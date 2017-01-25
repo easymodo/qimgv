@@ -11,7 +11,7 @@ ThumbnailLabel::ThumbnailLabel() :
     highlighted(false),
     hovered(false),
     borderW(1),
-    borderH(4),
+    borderH(3),
     thumbnailSize(120),
     currentOpacity(1.0f)
 {
@@ -23,9 +23,12 @@ ThumbnailLabel::ThumbnailLabel() :
 
     readSettings();
 
-    font.setPixelSize(11);
+    font.setPixelSize(10);
     font.setBold(true);
+    fontsmall.setPixelSize(9);
+    fontsmall.setBold(true);
     fm = new QFontMetrics(font);
+    fmsmall = new QFontMetrics(fontsmall);
 
     setAcceptHoverEvents(true);
 }
@@ -38,7 +41,7 @@ void ThumbnailLabel::readSettings() {
     highlightRect.setBottomRight(QPointF(borderW + thumbnailSize, borderH));
     nameRect.setTopLeft(QPointF(borderW, borderH));
     nameRect.setBottomRight(QPointF(borderW + thumbnailSize,
-                                    borderH + 21));
+                                    borderH + 19));
     nameRect.setWidth(thumbnailSize);
     labelRect = QRectF(QPointF(borderW + thumbnailSize - 25,
                                borderH),
@@ -59,7 +62,7 @@ void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail) {
         loaded = true;
         showLabel = settings->showThumbnailLabels() && !thumbnail->label.isEmpty();
         updateLabelWidth();
-        float widthFactor = fm->width(thumbnail->name) / (float)(thumbnailSize - 15);
+        float widthFactor = fm->width(thumbnail->name) / (float)(thumbnailSize - labelRect.width() - 10);
         if(widthFactor > 1) {
             thumbnail->name.truncate(thumbnail->name.length() / widthFactor);
         }
@@ -69,7 +72,7 @@ void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail) {
 
 void ThumbnailLabel::updateLabelWidth() {
     if(showLabel && thumbnail) {
-        int labelWidth = fm->width(thumbnail->label);
+        int labelWidth = fmsmall->width(thumbnail->label);
         labelRect.setWidth(labelWidth + 6);
         labelRect.moveRight(nameRect.right());
     }
@@ -166,7 +169,7 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         QRectF shadowR = nameRect.adjusted(5, 4, -4, 0);
         QRectF textR = nameRect.adjusted(4, 3, -5, 0);
         painter->drawText(shadowR, Qt::TextSingleLine, thumbnail->name, &shadowR);
-        painter->setPen(QColor(240, 240, 255, 255));
+        painter->setPen(QColor(250, 250, 255, 255));
         painter->drawText(textR, Qt::TextSingleLine, thumbnail->name, &textR);
 
         // draw colored bar if selected
@@ -190,9 +193,11 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
         // Label after filename (such as [gif] etc)
         if(showLabel) {
-            painter->fillRect(labelRect, *labelColor);
+            painter->setFont(fontsmall);
+           // painter->fillRect(labelRect, *labelColor);
             QPointF labelTextPos = labelRect.bottomLeft() + QPointF(3, -6);
             painter->setPen(QColor(10, 10, 10, 255));
+            painter->setPen(QColor(200, 200, 220, 255));
             painter->drawText(labelTextPos, thumbnail->label);
         }
     }

@@ -53,8 +53,8 @@ private:
     QString infoString;
     QRectF highlightRect, labelRect, nameRect;
     QColor *highlightColor, *hoverHighlightColor, *outlineColor, *nameColor, *labelColor;
-    QFont font;
-    QFontMetrics *fm;
+    QFont font, fontsmall;
+    QFontMetrics *fm, *fmsmall;
     void updateLabelWidth();
 
 protected:

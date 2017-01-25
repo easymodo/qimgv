@@ -23,17 +23,20 @@ void Thumbnailer::run() {
     }
 
     th->image = tempImage->generateThumbnail(squared);
-    if(tempImage->type() == ANIMATED) {
-        th->label = "[" + QString::fromLatin1(tempImage->fileInfo->fileExtension()) + "]";
-    } else if(tempImage->type() == VIDEO) {
-        th->label = "[webm]";
-    }
     if(th->image->size() == QSize(0, 0)) {
         delete th->image;
         th->image = new QPixmap(settings->thumbnailSize(), settings->thumbnailSize());
         th->image->fill(QColor(0,0,0,0));
     }
     th->name = tempImage->info()->fileName();
+    th->label.append(QString::number(tempImage->width()));
+    th->label.append("x");
+    th->label.append(QString::number(tempImage->height()));
+    if(tempImage->type() == ANIMATED) {
+        th->label.append(" [a]");
+    } else if(tempImage->type() == VIDEO) {
+        th->label.append(" [v]");
+    }
     if(cached) {
        // tempImage->unlock();
     } else {

@@ -82,7 +82,7 @@ private:
     CropOverlay *cropOverlay;
 
     bool isDisplayingFlag, errorFlag, mouseWrapping, checkboardPatternEnabled;
-    const int checkboardPatternSize = 20;
+    const int checkboardPatternSize = 14;
 
     float currentScale;
     float maxScale; // zoom OUT
