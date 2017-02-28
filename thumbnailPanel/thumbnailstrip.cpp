@@ -59,8 +59,29 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     // other extremely important things
     thumbnailFrame->setAccessibleName("thumbnailView");
     loadTimer.setSingleShot(true);
-    timeLine = new QTimeLine(10, thumbnailFrame);
-    timeLine->setCurveShape(QTimeLine::EaseInCurve);
+
+    //fade & slide hover effect
+    // TODO: bottom panel position
+    fadeEffect = new QGraphicsOpacityEffect(this);
+    this->setGraphicsEffect(fadeEffect);
+    fadeAnimation = new QPropertyAnimation(fadeEffect, "opacity");
+    fadeAnimation->setDuration(230);
+    fadeAnimation->setStartValue(1);
+    fadeAnimation->setEndValue(0);
+    fadeAnimation->setEasingCurve(QEasingCurve::OutQuart);
+    /////////
+    slideAnimation = new QPropertyAnimation(this, "pos");
+    slideAnimation->setDuration(300);
+    slideAnimation->setStartValue(QPoint(0,0));
+    slideAnimation->setEndValue(QPoint(0, -60));
+    slideAnimation->setEasingCurve(QEasingCurve::OutQuart);
+
+    animGroup = new QParallelAnimationGroup;
+    animGroup->addAnimation(fadeAnimation);
+    animGroup->addAnimation(slideAnimation);
+    connect(animGroup, SIGNAL(finished()), this, SLOT(hide()), Qt::UniqueConnection);
+    ////////////////////////////////////////////////////////
+
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
 
@@ -222,7 +243,7 @@ void ThumbnailStrip::loadVisibleThumbnails() {
 
 void ThumbnailStrip::requestThumbnail(int pos) {
     if(checkRange(pos) && thumbnailLabels->at(pos)->state == EMPTY) {
-            thumbnailLabels->at(pos)->state = LOADING; //TODO: this maybe is the problem.
+            thumbnailLabels->at(pos)->state = LOADING;
             emit thumbnailRequested(pos, posIdHash.value(pos));
     }
 }
@@ -309,9 +330,16 @@ void ThumbnailStrip::updatePanelPosition() {
         emit panelSizeChanged();
 }
 
+void ThumbnailStrip::show() {
+    animGroup->stop();
+    fadeEffect->setOpacity(1);
+    setProperty("pos", QPoint(0,0));
+    QWidget::show();
+}
+
 void ThumbnailStrip::leaveEvent(QEvent *event) {
     Q_UNUSED(event)
-    hide();
+    animGroup->start(QPropertyAnimation::KeepWhenStopped);
 }
 
 void ThumbnailStrip::paintEvent(QPaintEvent *event) {

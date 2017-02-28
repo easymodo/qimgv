@@ -7,7 +7,7 @@ GraphicsView::GraphicsView(ThumbnailFrame *v)
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     scrollBar = this->horizontalScrollBar();
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // temporary
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // TODO: fix vertical alignment
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
     timeLine->setCurveShape(QTimeLine::EaseInCurve);

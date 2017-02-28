@@ -30,7 +30,7 @@ ThumbnailLabel {
 
 QScrollBar:horizontal {
     height: 14px;
-    background-color: #2C2C2C;
+    background-color: transparent;
 }
 
 QScrollBar::handle:horizontal {

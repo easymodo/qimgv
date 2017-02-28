@@ -11,7 +11,8 @@
 #include <QTimer>
 #include <QTimeLine>
 #include <QGraphicsScene>
-#include <QPropertyAnimation>
+#include <QGraphicsOpacityEffect>
+#include <QParallelAnimationGroup>
 #include <QPainter>
 #include "../customWidgets/clickablelabel.h"
 #include "../customWidgets/clickablewidget.h"
@@ -38,7 +39,9 @@ private:
     ClickableLabel *openButton, *saveButton, *settingsButton, *exitButton;
     ClickableWidget *widget;
     ThumbnailFrame *thumbnailFrame;
-    QTimeLine *timeLine;
+    QGraphicsOpacityEffect *fadeEffect;
+    QPropertyAnimation *fadeAnimation, *slideAnimation;
+    QParallelAnimationGroup *animGroup;
 
     const qreal OPACITY_INACTIVE = 0.83;
     const qreal OPACITY_SELECTED = 1.0;
@@ -90,6 +93,7 @@ public slots:
     void setWindowControlsEnabled(bool);
     void removeItemAt(int pos);
     void addItemAt(int pos);
+    void show();
 
 protected:
     void leaveEvent(QEvent *event);

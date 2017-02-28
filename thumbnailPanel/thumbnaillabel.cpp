@@ -18,14 +18,14 @@ ThumbnailLabel::ThumbnailLabel() :
     highlightColor = new QColor();
     hoverHighlightColor = new QColor();
     outlineColor = new QColor(Qt::black);
-    nameColor = new QColor(10, 10, 10, 230);
+    nameColor = new QColor(10, 10, 10, 255);
     labelColor = new QColor();
 
     readSettings();
 
-    font.setPixelSize(10);
+    font.setPixelSize(11);
     font.setBold(true);
-    fontsmall.setPixelSize(9);
+    fontsmall.setPixelSize(10);
     fontsmall.setBold(true);
     fm = new QFontMetrics(font);
     fmsmall = new QFontMetrics(fontsmall);
@@ -41,7 +41,7 @@ void ThumbnailLabel::readSettings() {
     highlightRect.setBottomRight(QPointF(borderW + thumbnailSize, borderH));
     nameRect.setTopLeft(QPointF(borderW, borderH));
     nameRect.setBottomRight(QPointF(borderW + thumbnailSize,
-                                    borderH + 19));
+                                    borderH + 20));
     nameRect.setWidth(thumbnailSize);
     labelRect = QRectF(QPointF(borderW + thumbnailSize - 25,
                                borderH),
@@ -197,7 +197,7 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
            // painter->fillRect(labelRect, *labelColor);
             QPointF labelTextPos = labelRect.bottomLeft() + QPointF(3, -6);
             painter->setPen(QColor(10, 10, 10, 255));
-            painter->setPen(QColor(200, 200, 220, 255));
+            painter->setPen(QColor(160, 160, 170, 255));
             painter->drawText(labelTextPos, thumbnail->label);
         }
     }

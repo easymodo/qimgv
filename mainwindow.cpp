@@ -17,6 +17,7 @@ MainWindow::MainWindow() :
     setWindowTitle(QCoreApplication::applicationName() +
                    " " +
                    QCoreApplication::applicationVersion());
+    qDebug() << "SCREEN DPI: " << QGuiApplication::primaryScreen()->logicalDotsPerInch();
 }
 
 void MainWindow::init() {
