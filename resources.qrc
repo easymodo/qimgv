@@ -9,6 +9,9 @@
         <file>res/icons/48.png</file>
         <file>res/icons/window-close-transparent.png</file>
         <file>res/logo_dev.png</file>
+        <file>res/icons/128.png</file>
+        <file>res/icons/rotate-right.png</file>
+        <file>res/icons/rotate-left.png</file>
     </qresource>
     <qresource prefix="/qss">
         <file>res/styles/dark.qss</file>

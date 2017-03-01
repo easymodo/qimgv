@@ -110,11 +110,12 @@ void MainWindow::enablePanel() {
     if(!thumbnailPanel) {
         thumbnailPanel = new ThumbnailStrip();
         if(!panel) {
-            panel = new SlideVPanel(thumbnailPanel, this);
+            panel = new SlideHPanel(thumbnailPanel, this);
+            panel->setPosition(panelPosition);
         }
     }
 
-    connect(this, SIGNAL(resized(QSize)), panel, SLOT(parentResized(QSize)));
+    connect(this, SIGNAL(resized(QSize)), panel, SLOT(parentResized(QSize)), Qt::UniqueConnection);
 
     connect(core, SIGNAL(imageChanged(int)),
             thumbnailPanel, SLOT(selectThumbnail(int)), Qt::UniqueConnection);
@@ -146,7 +147,14 @@ void MainWindow::enablePanel() {
 
     panel->parentResized(size());
 
-    //panel->fillPanel(core->imageCount());
+    //side panel test
+    toolbox = new ToolBox();
+    sidePanel = new SlideVPanel(toolbox, this);
+    sidePanel->setPosition(panelPosition);
+    sidePanel->parentResized(size());
+    connect(this, SIGNAL(resized(QSize)), sidePanel, SLOT(parentResized(QSize)), Qt::UniqueConnection);
+    connect(toolbox, SIGNAL(rotateLeftClicked()), this, SLOT(slotRotateLeft()), Qt::UniqueConnection);
+    connect(toolbox, SIGNAL(rotateRightClicked()), this, SLOT(slotRotateRight()), Qt::UniqueConnection);
 }
 
 void MainWindow::disablePanel() {
@@ -328,14 +336,20 @@ void MainWindow::readSettings() {
 void MainWindow::calculatePanelTriggerArea() {
     if(!settings->panelEnabled()) {
         panelArea.setRect(0,0,0,0);
+        sidePanelArea.setRect(0,0,0,0);
         return;
     }
+    //TODO: separate enum for side panel
     switch(panelPosition) {
         case BOTTOM:
             panelArea.setRect(0, height() - panel->height() + 1, width() - 180, height());
+            sidePanelArea.setRect(0, height()/2 - toolbox->height()/2,
+                                  30, toolbox->height()); // left
             break;
         case TOP:
             panelArea.setRect(0, 0, width(), panel->height() - 1);
+            sidePanelArea.setRect(width() - 30, height()/2 - toolbox->height()/2,
+                                  width(), toolbox->height()); // right
             break;
     }
 }
@@ -359,11 +373,13 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
-        if(panelArea.contains(event->pos()) &&
-           panel &&
-           !panelArea.contains(lastMouseMovePos))
+        if(panelArea.contains(event->pos()) && panel && !panelArea.contains(lastMouseMovePos))
         {
             panel->show();
+        }
+        if(sidePanelArea.contains(event->pos()) && sidePanel && !sidePanelArea.contains(lastMouseMovePos))
+        {
+            sidePanel->show();
         }
         event->ignore();
     }

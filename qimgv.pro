@@ -59,7 +59,10 @@ SOURCES += main.cpp\
         customWidgets/clickablewidget.cpp \
     resizedialog.cpp \
     filesystemWatchers/watcherwindows.cpp \
-    customWidgets/slidevpanel.cpp
+    customWidgets/slidevpanel.cpp \
+    customWidgets/slidehpanel.cpp \
+    customWidgets/slidepanel.cpp \
+    customWidgets/toolbox.cpp
 
 HEADERS += mainwindow.h \
         overlays/infooverlay.h \
@@ -97,7 +100,10 @@ HEADERS += mainwindow.h \
         customWidgets/clickablewidget.h \
     resizedialog.h \
     filesystemWatchers/watcherwindows.h \
-    customWidgets/slidevpanel.h
+    customWidgets/slidevpanel.h \
+    customWidgets/slidehpanel.h \
+    customWidgets/slidepanel.h \
+    customWidgets/toolbox.h
 
 FORMS += \
       settingsdialog.ui

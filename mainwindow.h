@@ -17,6 +17,8 @@
 #include "actionmanager.h"
 #include "thumbnailPanel/thumbnailstrip.h"
 #include "customWidgets/slidevpanel.h"
+#include "customWidgets/slidehpanel.h"
+#include "customWidgets/toolbox.h"
 #include <time.h>
 
 QT_BEGIN_NAMESPACE
@@ -83,21 +85,24 @@ private slots:
     void showSettings();
 
     void slotSelectWallpaper();
-    void calculatePanelTriggerArea();    
+    void calculatePanelTriggerArea();
 
 private:
     Core *core;
     textOverlay *infoOverlay, *messageOverlay;
     ControlsOverlay *controlsOverlay;
-    SlideVPanel *panel;
+    SlideHPanel *panel;
+    SlideVPanel *sidePanel;
     ThumbnailStrip *thumbnailPanel;
+    ClickableLabel *testButton;
+    ToolBox *toolbox;
     int currentViewer; // 0 = none; 1 = imageViewer; 2 = VideoPlayer;
     int currentDisplay;
     int fitMode;
     //bool fullscreen; // separate flag because "borderless fullscreen" is actually a maximized window
     QBoxLayout *layout;
     PanelPosition panelPosition;
-    QRect panelArea;
+    QRect panelArea, sidePanelArea;
     QPoint lastMouseMovePos;
     void init();
     void saveWindowGeometry();
@@ -109,6 +114,7 @@ private:
     void adjustWindowPosLastScreen();
     QRect lastScreenGeometry();
     void saveDisplay();
+
 protected:
     bool event(QEvent *event);
     void resizeEvent(QResizeEvent *event);
