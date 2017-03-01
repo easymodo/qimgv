@@ -155,6 +155,10 @@ void MainWindow::enablePanel() {
     connect(this, SIGNAL(resized(QSize)), sidePanel, SLOT(parentResized(QSize)), Qt::UniqueConnection);
     connect(toolbox, SIGNAL(rotateLeftClicked()), this, SLOT(slotRotateLeft()), Qt::UniqueConnection);
     connect(toolbox, SIGNAL(rotateRightClicked()), this, SLOT(slotRotateRight()), Qt::UniqueConnection);
+    connect(toolbox, SIGNAL(zoomFitClicked()), this, SLOT(slotFitAll()), Qt::UniqueConnection);
+    connect(toolbox, SIGNAL(zoomOriginalClicked()), this, SLOT(slotFitNormal()), Qt::UniqueConnection);
+    connect(toolbox, SIGNAL(zoomInClicked()), imageViewer, SLOT(slotZoomIn()), Qt::UniqueConnection);
+    connect(toolbox, SIGNAL(zoomOutClicked()), imageViewer, SLOT(slotZoomOut()), Qt::UniqueConnection);
 }
 
 void MainWindow::disablePanel() {

@@ -12,6 +12,10 @@
         <file>res/icons/128.png</file>
         <file>res/icons/rotate-right.png</file>
         <file>res/icons/rotate-left.png</file>
+        <file>res/icons/zoom-fit.png</file>
+        <file>res/icons/zoom-in.png</file>
+        <file>res/icons/zoom-original.png</file>
+        <file>res/icons/zoom-out.png</file>
     </qresource>
     <qresource prefix="/qss">
         <file>res/styles/dark.qss</file>
