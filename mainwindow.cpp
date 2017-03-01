@@ -7,7 +7,8 @@ MainWindow::MainWindow() :
     currentViewer(0),
     currentDisplay(0),
     layout(NULL),
-    desktopWidget(NULL)
+    desktopWidget(NULL),
+    thumbnailPanel(NULL)
 {
     resize(1100, 700);
     setMinimumSize(QSize(400, 300));
@@ -17,7 +18,7 @@ MainWindow::MainWindow() :
     setWindowTitle(QCoreApplication::applicationName() +
                    " " +
                    QCoreApplication::applicationVersion());
-    qDebug() << "SCREEN DPI: " << QGuiApplication::primaryScreen()->logicalDotsPerInch();
+    //qDebug() << "SCREEN DPI: " << QGuiApplication::primaryScreen()->logicalDotsPerInch();
 }
 
 void MainWindow::init() {
@@ -106,39 +107,42 @@ void MainWindow::init() {
 }
 
 void MainWindow::enablePanel() {
-    if(!panel) {
-        panel = new ThumbnailStrip(this);
+    if(!thumbnailPanel) {
+        thumbnailPanel = new ThumbnailStrip();
+        if(!panel) {
+            panel = new SlideVPanel(thumbnailPanel, this);
+        }
     }
 
     connect(this, SIGNAL(resized(QSize)), panel, SLOT(parentResized(QSize)));
 
     connect(core, SIGNAL(imageChanged(int)),
-            panel, SLOT(selectThumbnail(int)), Qt::UniqueConnection);
+            thumbnailPanel, SLOT(selectThumbnail(int)), Qt::UniqueConnection);
 
     connect(core, SIGNAL(itemRemoved(int)),
-            panel, SLOT(removeItemAt(int)), Qt::UniqueConnection);
+            thumbnailPanel, SLOT(removeItemAt(int)), Qt::UniqueConnection);
 
-    connect(panel, SIGNAL(openImage(int)),
+    connect(thumbnailPanel, SIGNAL(openImage(int)),
             core, SLOT(loadImageByPos(int)), Qt::UniqueConnection);
 
-    connect(panel, SIGNAL(thumbnailRequested(int, long)),
+    connect(thumbnailPanel, SIGNAL(thumbnailRequested(int, long)),
             core, SIGNAL(thumbnailRequested(int, long)), Qt::UniqueConnection);
 
     connect(core, SIGNAL(thumbnailReady(long, Thumbnail *)),
-            panel, SLOT(setThumbnail(long, Thumbnail *)), Qt::UniqueConnection);
+            thumbnailPanel, SLOT(setThumbnail(long, Thumbnail *)), Qt::UniqueConnection);
 
     connect(core, SIGNAL(cacheInitialized(int)),
-            panel, SLOT(fillPanel(int)), static_cast<Qt::ConnectionType>(Qt::DirectConnection | Qt::UniqueConnection));
+            thumbnailPanel, SLOT(fillPanel(int)), static_cast<Qt::ConnectionType>(Qt::DirectConnection | Qt::UniqueConnection));
 
     connect(panel, SIGNAL(panelSizeChanged()),
                this, SLOT(calculatePanelTriggerArea()), Qt::UniqueConnection);
 
     connect(this, SIGNAL(signalFullscreenEnabled(bool)),
-            panel, SLOT(setWindowControlsEnabled(bool)), Qt::UniqueConnection);
-    connect(panel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()), Qt::UniqueConnection);
-    connect(panel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()), Qt::UniqueConnection);
-    connect(panel, SIGNAL(settingsClicked()), this, SLOT(showSettings()), Qt::UniqueConnection);
-    connect(panel, SIGNAL(exitClicked()), this, SLOT(close()), Qt::UniqueConnection);
+            thumbnailPanel, SLOT(setWindowControlsEnabled(bool)), Qt::UniqueConnection);
+    connect(thumbnailPanel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()), Qt::UniqueConnection);
+    connect(thumbnailPanel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()), Qt::UniqueConnection);
+    connect(thumbnailPanel, SIGNAL(settingsClicked()), this, SLOT(showSettings()), Qt::UniqueConnection);
+    connect(thumbnailPanel, SIGNAL(exitClicked()), this, SLOT(close()), Qt::UniqueConnection);
 
     panel->parentResized(size());
 
@@ -150,33 +154,33 @@ void MainWindow::disablePanel() {
         return;
     }
     disconnect(core, SIGNAL(imageChanged(int)),
-            panel, SLOT(selectThumbnail(int)));
+            thumbnailPanel, SLOT(selectThumbnail(int)));
 
     disconnect(core, SIGNAL(itemRemoved(int)),
-            panel, SLOT(removeItemAt(int)));
+            thumbnailPanel, SLOT(removeItemAt(int)));
 
-    disconnect(panel, SIGNAL(thumbnailClicked(int)),
+    disconnect(thumbnailPanel, SIGNAL(thumbnailClicked(int)),
             core, SLOT(loadImageByPos(int)));
 
-    disconnect(panel, SIGNAL(thumbnailRequested(int, long)),
+    disconnect(thumbnailPanel, SIGNAL(thumbnailRequested(int, long)),
             core, SIGNAL(thumbnailRequested(int, long)));
 
     disconnect(core, SIGNAL(thumbnailReady(long, Thumbnail*)),
-            panel, SLOT(setThumbnail(long, Thumbnail*)));
+            thumbnailPanel, SLOT(setThumbnail(long, Thumbnail*)));
 
     disconnect(core, SIGNAL(cacheInitialized(int)),
-            panel, SLOT(fillPanel(int)));
+            thumbnailPanel, SLOT(fillPanel(int)));
 
     disconnect(panel, SIGNAL(panelSizeChanged()),
                this, SLOT(calculatePanelTriggerArea()));
 
     disconnect(this, SIGNAL(signalFullscreenEnabled(bool)),
-            panel, SLOT(setWindowControlsEnabled(bool)));
+            thumbnailPanel, SLOT(setWindowControlsEnabled(bool)));
 
-    disconnect(panel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()));
-    disconnect(panel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()));
-    disconnect(panel, SIGNAL(settingsClicked()), this, SLOT(showSettings()));
-    disconnect(panel, SIGNAL(exitClicked()), this, SLOT(close()));
+    disconnect(thumbnailPanel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()));
+    disconnect(thumbnailPanel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()));
+    disconnect(thumbnailPanel, SIGNAL(settingsClicked()), this, SLOT(showSettings()));
+    disconnect(thumbnailPanel, SIGNAL(exitClicked()), this, SLOT(close()));
 
 }
 

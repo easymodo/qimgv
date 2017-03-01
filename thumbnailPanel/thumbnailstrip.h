@@ -9,10 +9,6 @@
 #include <QScrollBar>
 #include <QMutex>
 #include <QTimer>
-#include <QTimeLine>
-#include <QGraphicsScene>
-#include <QGraphicsOpacityEffect>
-#include <QParallelAnimationGroup>
 #include <QPainter>
 #include "../customWidgets/clickablelabel.h"
 #include "../customWidgets/clickablewidget.h"
@@ -25,10 +21,9 @@ class ThumbnailStrip : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ThumbnailStrip(QWidget *parent);
+    explicit ThumbnailStrip();
     ~ThumbnailStrip();
 
-    void updatePanelPosition();
 private:
     QList<ThumbnailLabel*> *thumbnailLabels;
     QHash<int, long> posIdHash;
@@ -39,9 +34,6 @@ private:
     ClickableLabel *openButton, *saveButton, *settingsButton, *exitButton;
     ClickableWidget *widget;
     ThumbnailFrame *thumbnailFrame;
-    QGraphicsOpacityEffect *fadeEffect;
-    QPropertyAnimation *fadeAnimation, *slideAnimation;
-    QParallelAnimationGroup *animGroup;
 
     const qreal OPACITY_INACTIVE = 0.83;
     const qreal OPACITY_SELECTED = 1.0;
@@ -60,7 +52,6 @@ private:
     QTimer loadTimer;
     QScrollBar *scrollBar;
     PanelPosition position;
-    QSize parentSz;
     bool parentFullscreen;
     QMutex mutex;
 
@@ -79,12 +70,10 @@ signals:
     void saveClicked();
     void settingsClicked();
     void exitClicked();
-    void panelSizeChanged();
 
 public slots:
     void thumbnailClicked(int pos);
     void populate(int count);
-    void parentResized(QSize parentSize);
     void loadVisibleThumbnails();
     void loadVisibleThumbnailsDelayed();
     void setThumbnail(long, Thumbnail*);
@@ -93,11 +82,12 @@ public slots:
     void setWindowControlsEnabled(bool);
     void removeItemAt(int pos);
     void addItemAt(int pos);
-    void show();
+    void parentResized(QSize parentSz);
 
 protected:
-    void leaveEvent(QEvent *event);
     virtual void paintEvent(QPaintEvent* event);
+    virtual void resizeEvent(QResizeEvent *event);
+
 
 private slots:
     void readSettings();

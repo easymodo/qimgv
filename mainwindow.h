@@ -16,6 +16,7 @@
 #include "settings.h"
 #include "actionmanager.h"
 #include "thumbnailPanel/thumbnailstrip.h"
+#include "customWidgets/slidevpanel.h"
 #include <time.h>
 
 QT_BEGIN_NAMESPACE
@@ -88,7 +89,8 @@ private:
     Core *core;
     textOverlay *infoOverlay, *messageOverlay;
     ControlsOverlay *controlsOverlay;
-    ThumbnailStrip *panel;
+    SlideVPanel *panel;
+    ThumbnailStrip *thumbnailPanel;
     int currentViewer; // 0 = none; 1 = imageViewer; 2 = VideoPlayer;
     int currentDisplay;
     int fitMode;

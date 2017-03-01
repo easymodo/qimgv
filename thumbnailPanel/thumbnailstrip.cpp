@@ -1,15 +1,13 @@
 #include "thumbnailstrip.h"
 
-ThumbnailStrip::ThumbnailStrip(QWidget *parent)
-    : QWidget(parent),
-      panelSize(122),
+ThumbnailStrip::ThumbnailStrip()
+    : panelSize(122),
       current(-1),
       margin(2),
       thumbnailFrame(NULL),
       parentFullscreen(false),
       idCounter(0)
 {
-    parentSz = parent->size();
     thumbnailLabels = new QList<ThumbnailLabel*>();
 
     thumbnailFrame = new ThumbnailFrame();
@@ -60,28 +58,6 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     thumbnailFrame->setAccessibleName("thumbnailView");
     loadTimer.setSingleShot(true);
 
-    //fade & slide hover effect
-    // TODO: bottom panel position
-    fadeEffect = new QGraphicsOpacityEffect(this);
-    this->setGraphicsEffect(fadeEffect);
-    fadeAnimation = new QPropertyAnimation(fadeEffect, "opacity");
-    fadeAnimation->setDuration(230);
-    fadeAnimation->setStartValue(1);
-    fadeAnimation->setEndValue(0);
-    fadeAnimation->setEasingCurve(QEasingCurve::OutQuart);
-    /////////
-    slideAnimation = new QPropertyAnimation(this, "pos");
-    slideAnimation->setDuration(300);
-    slideAnimation->setStartValue(QPoint(0,0));
-    slideAnimation->setEndValue(QPoint(0, -60));
-    slideAnimation->setEasingCurve(QEasingCurve::OutQuart);
-
-    animGroup = new QParallelAnimationGroup;
-    animGroup->addAnimation(fadeAnimation);
-    animGroup->addAnimation(slideAnimation);
-    connect(animGroup, SIGNAL(finished()), this, SLOT(hide()), Qt::UniqueConnection);
-    ////////////////////////////////////////////////////////
-
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
 
@@ -99,7 +75,6 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 
     readSettings();
-    this->hide();
 }
 
 void ThumbnailStrip::readSettings() {
@@ -108,7 +83,8 @@ void ThumbnailStrip::readSettings() {
     if(position == PanelPosition::TOP)
         layout->setContentsMargins(0,0,0,1);
     panelSize = settings->thumbnailSize() + 22;
-    updatePanelPosition();
+    this->setGeometry(QRect(QPoint(0, 0),
+                      QPoint(width(), panelSize)));
 
     for(int i = 0; i < thumbnailLabels->count(); i++) {
         if(thumbnailLabels->at(i)->getThumbnailSize() != thumbnailSize) {
@@ -172,6 +148,11 @@ void ThumbnailStrip::addItemAt(int pos) {
     // set position for new & move existing items right
     updateThumbnailPositions(pos, thumbnailLabels->count() - 1);
     unlock();
+}
+
+void ThumbnailStrip::parentResized(QSize parentSz) {
+    resize(parentSz.width(), height());
+    loadVisibleThumbnailsDelayed();
 }
 
 void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
@@ -267,11 +248,11 @@ void ThumbnailStrip::setThumbnail(long thumbnailId, Thumbnail *thumb) {
     lock();
     int pos = posIdHashReverse.value(thumbnailId);
     if(checkRange(pos)) {
-    thumbnailLabels->at(pos)->setThumbnail(thumb);
-    thumbnailLabels->at(pos)->state = LOADED;
-    if(pos != current) {
-        thumbnailLabels->at(pos)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_NORMAL);
-    }
+        thumbnailLabels->at(pos)->setThumbnail(thumb);
+        thumbnailLabels->at(pos)->state = LOADED;
+        if(pos != current) {
+            thumbnailLabels->at(pos)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_NORMAL);
+        }
     }
     unlock();
 }
@@ -311,37 +292,6 @@ void ThumbnailStrip::removeItemAt(int pos) {
     unlock();
 }
 
-void ThumbnailStrip::parentResized(QSize parentSz) {
-    this->parentSz = parentSz;
-    updatePanelPosition();
-    loadVisibleThumbnailsDelayed();
-}
-
-void ThumbnailStrip::updatePanelPosition() {
-    QRect oldRect = this->rect();
-    if(position == TOP) {
-        this->setGeometry(QRect(QPoint(0, 0),
-                                QPoint(parentSz.width(), panelSize)));
-    } else {
-        this->setGeometry(QRect(QPoint(0, parentSz.height() - panelSize + 1),
-                                QPoint(parentSz.width(), parentSz.height())));
-    }
-    if(oldRect != this->rect())
-        emit panelSizeChanged();
-}
-
-void ThumbnailStrip::show() {
-    animGroup->stop();
-    fadeEffect->setOpacity(1);
-    setProperty("pos", QPoint(0,0));
-    QWidget::show();
-}
-
-void ThumbnailStrip::leaveEvent(QEvent *event) {
-    Q_UNUSED(event)
-    animGroup->start(QPropertyAnimation::KeepWhenStopped);
-}
-
 void ThumbnailStrip::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
     if(position == PanelPosition::TOP) {
@@ -349,6 +299,11 @@ void ThumbnailStrip::paintEvent(QPaintEvent *event) {
         p.setPen(QColor(QColor(110, 110, 110)));
         p.drawLine(rect().bottomLeft(), rect().bottomRight());
     }
+}
+
+void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
+    Q_UNUSED(event)
+    loadVisibleThumbnailsDelayed();
 }
 
 ThumbnailStrip::~ThumbnailStrip() {
