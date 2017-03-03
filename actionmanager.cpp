@@ -242,6 +242,7 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("Ctrl+P", "openSettings");
     actionManager->addShortcut("Alt+X", "exit");
     actionManager->addShortcut("Ctrl+Q", "exit");
+    actionManager->addShortcut("escape", "exit");
     actionManager->addShortcut("delete", "removeFile");
 }
 
