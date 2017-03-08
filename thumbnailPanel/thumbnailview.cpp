@@ -10,7 +10,9 @@ GraphicsView::GraphicsView(ThumbnailFrame *v)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // TODO: fix vertical alignment
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
-    timeLine->setCurveShape(QTimeLine::EaseInCurve);
+    //timeLine->setCurveShape(QTimeLine::EaseInCurve);
+    timeLine->setEasingCurve(QEasingCurve::OutCubic);
+    //timeLine->setEasingCurve(QEasingCurve::OutQuart);
     readSettings();
     connect(timeLine, SIGNAL(frameChanged(int)),
             this, SLOT(doScroll(int)), Qt::UniqueConnection);

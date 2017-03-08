@@ -33,7 +33,7 @@ private:
 
     const int SCROLL_UPDATE_RATE = 8;
     const float SCROLL_SPEED_MULTIPLIER = 3.4;
-    const int SCROLL_ANIMATION_SPEED = 95;
+    const int SCROLL_ANIMATION_SPEED = 180;
 
 private slots:
     void doScroll(int);
