@@ -36,6 +36,7 @@ void ImageAnimated::load() {
         fileInfo = new FileInfo(path, this);
     }
     movie->setFileName(path);
+    movie->setFormat(fileInfo->fileExtension());
     movie->jumpToFrame(0);
     loaded = true;
 }
