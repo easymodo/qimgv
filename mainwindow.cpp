@@ -18,7 +18,6 @@ MainWindow::MainWindow() :
     setWindowTitle(QCoreApplication::applicationName() +
                    " " +
                    QCoreApplication::applicationVersion());
-    //qDebug() << "SCREEN DPI: " << QGuiApplication::primaryScreen()->logicalDotsPerInch();
 }
 
 void MainWindow::init() {
@@ -424,7 +423,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     if(QThreadPool::globalInstance()->activeThreadCount()) {
         QThreadPool::globalInstance()->waitForDone();
     }
-    if(!isMaximized() && !isFullScreen()) {
+    if(!isFullScreen()) {
         saveWindowGeometry();
     }
     saveDisplay();
@@ -432,9 +431,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::saveDisplay() {
-    if(settings->fullscreenMode() || isFullScreen()) {
-        settings->setLastDisplay(desktopWidget->screenNumber(this));
-    }
+    settings->setLastDisplay(desktopWidget->screenNumber(this));
 }
 
 void MainWindow::saveWindowGeometry() {
@@ -504,9 +501,11 @@ void MainWindow::slotFitNormal() {
 
 void MainWindow::triggerFullscreen() {
     if(!this->isFullScreen()) {
-        // do not save immediately on application start
+        //do not save immediately on application start
         if(!this->isHidden())
             saveWindowGeometry();
+        //hide window before move to prevent flicker
+        this->hide();
         //move to target screen
         int display = settings->lastDisplay();
         if(desktopWidget->screenCount() > display &&

@@ -1,5 +1,5 @@
 [accessibleName="panelButton"] {
-    background-color: #2C2C2C;
+    background-color: #262626;
     padding: 3px 3px 3px 3px;
 }
 
@@ -16,16 +16,16 @@
 }
 
 [accessibleName="panelButtonsWidget"] {
-    background-color: #2C2C2C;
+    background-color: #262626;
 }
 
 GraphicsView {
-    background-color: #2C2C2C;
+    background-color: #262626;
     border-style: none;
 }
 
 ThumbnailLabel {
-    background-color: #2C2C2C;
+    background-color: #262626;
 }
 
 QScrollBar:horizontal {
