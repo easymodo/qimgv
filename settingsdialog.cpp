@@ -28,7 +28,7 @@ void SettingsDialog::readSettings() {
     ui->mouseWrappingCheckBox->setChecked(settings->mouseWrapping());
     ui->squareThumbnailsCheckBox->setChecked(settings->squareThumbnails());
     ui->thumbnailBorderCheckBox->setChecked(settings->drawThumbnailSelectionBorder());
-    ui->checkboardPatternCheckBox->setChecked(settings->checkboardPattern());
+    ui->transparencyGridCheckBox->setChecked(settings->transparencyGrid());
     ui->forceSmoothScrollCheckBox->setChecked(settings->forceSmoothScroll());
 
     ui->ffmpegLineEdit->setText(settings->ffmpegExecutable());
@@ -114,7 +114,7 @@ void SettingsDialog::applySettings() {
     settings->setMouseWrapping(ui->mouseWrappingCheckBox->isChecked());
     settings->setSquareThumbnails(ui->squareThumbnailsCheckBox->isChecked());
     settings->setDrawThumbnailSelectionBorder(ui->thumbnailBorderCheckBox->isChecked());
-    settings->setCheckboardPattern(ui->checkboardPatternCheckBox->isChecked());
+    settings->setTransparencyGrid(ui->transparencyGridCheckBox->isChecked());
     settings->setForceSmoothScroll(ui->forceSmoothScrollCheckBox->isChecked());
 
     settings->setFFmpegExecutable(ui->ffmpegLineEdit->text());

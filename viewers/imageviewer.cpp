@@ -4,7 +4,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     isDisplayingFlag(false),
     errorFlag(false),
     mouseWrapping(false),
-    checkboardPatternEnabled(false),
+    transparencyGridEnabled(false),
     currentScale(1.0),
     maxScale(2.0),
     minScale(4.0),
@@ -78,8 +78,8 @@ void ImageViewer::displayImage(QPixmap *_image) {
 
     mapOverlay->updatePosition();
     updateMap();
-    //if(settings->s.drawCheckboardPattern())
-        drawCheckboardPattern();
+    if(settings->transparencyGrid())
+        drawTransparencyGrid();
     update();
 
     connect(resizeTimer, SIGNAL(timeout()),
@@ -92,8 +92,8 @@ void ImageViewer::displayImage(QPixmap *_image) {
 void ImageViewer::updateImage(QPixmap *scaled) {
     delete image;
     image = scaled;
-    if(checkboardPatternEnabled)
-        drawCheckboardPattern();
+    if(transparencyGridEnabled)
+        drawTransparencyGrid();
     update();
 }
 
@@ -126,8 +126,7 @@ void ImageViewer::selectWallpaper() {
 }
 
 void ImageViewer::readSettings() {
-    checkboardPatternEnabled = settings->checkboardPattern();
-    mouseWrapping = settings->mouseWrapping();
+    transparencyGridEnabled = settings->transparencyGrid();
     this->bgColor = settings->backgroundColor();
     this->repaint();
 }
@@ -169,7 +168,7 @@ void ImageViewer::setScale(float scale) {
     } else if(scale <= maxScale + FLT_EPSILON) {
         currentScale = maxScale;
         if(imageFitMode == FREE)
-            imageFitMode = ALL; // TODO: update gui checkbox
+            imageFitMode = ALL;
     } else {
         currentScale = scale;
     }
@@ -196,26 +195,26 @@ void ImageViewer::resizeImage() {
     }
 }
 
-void ImageViewer::drawCheckboardPattern() {
+void ImageViewer::drawTransparencyGrid() {
     if(image && image->hasAlphaChannel()) {
         QPainter painter(image);
         painter.setCompositionMode(QPainter::CompositionMode_DestinationOver);
         QColor dark(90,90,90,255);
-        QColor light(130,130,130,255);
+        QColor light(125,125,125,255);
         int xCount, yCount;
-        xCount = image->width() / checkboardPatternSize;
-        yCount = image->height() / checkboardPatternSize;
-        QRect checkers(0, 0, checkboardPatternSize, checkboardPatternSize);
+        xCount = image->width() / transparencyGridSize;
+        yCount = image->height() / transparencyGridSize;
+        QRect square(0, 0, transparencyGridSize, transparencyGridSize);
         bool evenOdd;
         for(int i = 0; i <= yCount; i++) {
             evenOdd = (i % 2);
             for(int j = 0; j <= xCount; j++) {
                 if(j % 2 == evenOdd)
-                    painter.fillRect(checkers, light);
-                checkers.translate(checkboardPatternSize, 0);
+                    painter.fillRect(square, light);
+                square.translate(transparencyGridSize, 0);
             }
-            checkers.translate(0, checkboardPatternSize);
-            checkers.moveLeft(0);
+            square.translate(0, transparencyGridSize);
+            square.moveLeft(0);
         }
         painter.fillRect(image->rect(), dark);
     }

@@ -371,12 +371,12 @@ void Settings::setDrawThumbnailSelectionBorder(bool mode) {
     settings->s.setValue("thumbnailSelectionBorder", mode);
 }
 
-bool Settings::checkboardPattern() {
-    return settings->s.value("checkboardPattern", true).toBool();
+bool Settings::transparencyGrid() {
+    return settings->s.value("drawTransparencyGrid", true).toBool();
 }
 
-void Settings::setCheckboardPattern(bool mode) {
-    settings->s.setValue("checkboardPattern", mode);
+void Settings::setTransparencyGrid(bool mode) {
+    settings->s.setValue("drawTransparencyGrid", mode);
 }
 
 bool Settings::forceSmoothScroll() {

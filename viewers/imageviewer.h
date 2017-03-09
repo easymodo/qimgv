@@ -81,8 +81,8 @@ private:
     MapOverlay *mapOverlay;
     CropOverlay *cropOverlay;
 
-    bool isDisplayingFlag, errorFlag, mouseWrapping, checkboardPatternEnabled;
-    const int checkboardPatternSize = 14;
+    bool isDisplayingFlag, errorFlag, mouseWrapping, transparencyGridEnabled;
+    const int transparencyGridSize = 14;
 
     float currentScale;
     float maxScale; // zoom OUT
@@ -114,7 +114,7 @@ private:
     void mouseDragWrapping(QMouseEvent *event);
     void mouseDrag(QMouseEvent *event);
     void mouseZoom(QMouseEvent *event);
-    void drawCheckboardPattern();
+    void drawTransparencyGrid();
 };
 
 #endif // IMAGEVIEWER_H

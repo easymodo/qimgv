@@ -79,8 +79,8 @@ public:
     void setSquareThumbnails(bool mode);
     bool drawThumbnailSelectionBorder();
     void setDrawThumbnailSelectionBorder(bool mode);
-    bool checkboardPattern();
-    void setCheckboardPattern(bool mode);
+    bool transparencyGrid();
+    void setTransparencyGrid(bool mode);
     bool forceSmoothScroll();
     void setForceSmoothScroll(bool mode);
 
