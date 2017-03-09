@@ -13,12 +13,13 @@ public:
     explicit ToolBox(QWidget *parent = 0);
 
 private:
-    ClickableLabel *rotateLeft, *rotateRight, *zoomFit, *zoomOriginal, *zoomIn, *zoomOut;
+    ClickableLabel *rotateLeft, *rotateRight, *zoomFit, *zoomWidth, *zoomOriginal, *zoomIn, *zoomOut;
     QBoxLayout *buttonsLayout;
 signals:
     void rotateLeftClicked();
     void rotateRightClicked();
     void zoomFitClicked();
+    void zoomWidthClicked();
     void zoomOriginalClicked();
     void zoomInClicked();
     void zoomOutClicked();
