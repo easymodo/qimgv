@@ -97,6 +97,14 @@ void ImageViewer::updateImage(QPixmap *scaled) {
     update();
 }
 
+void ImageViewer::scrollUp() {
+    scroll(0, -300);
+}
+
+void ImageViewer::scrollDown() {
+    scroll(0, 300);
+}
+
 void ImageViewer::crop() {
     disconnect(cropOverlay, SIGNAL(selected(QRect)),
                this, SIGNAL(wallpaperSelected(QRect)));
@@ -111,6 +119,8 @@ void ImageViewer::crop() {
     }
 }
 
+// quality spaghetti
+// what is this even doing here
 void ImageViewer::selectWallpaper() {
     disconnect(cropOverlay, SIGNAL(selected(QRect)),
                this, SIGNAL(cropSelected(QRect)));
@@ -351,17 +361,8 @@ void ImageViewer::mouseDrag(QMouseEvent *event) {
     if(drawingRect.size().width() > this->width() ||
             drawingRect.size().height() > this->height()) {
         mouseMoveStartPos -= event->pos();
-        int left = drawingRect.x() - mouseMoveStartPos.x();
-        int top = drawingRect.y() - mouseMoveStartPos.y();
-        int right = left + drawingRect.width();
-        int bottom = top + drawingRect.height();
-        if(left <= 0 && right > size().width())
-            drawingRect.moveLeft(left);
-        if(top <= 0 && bottom > size().height())
-            drawingRect.moveTop(top);
+        scroll(mouseMoveStartPos.x(), mouseMoveStartPos.y());
         mouseMoveStartPos = event->pos();
-        updateMap();
-        update();
     }
 }
 
@@ -391,11 +392,16 @@ void ImageViewer::mouseZoom(QMouseEvent *event) {
 void ImageViewer::fitWidth() {
     if(isDisplaying()) {
         float scale = (float) width() / sourceSize.width();
-        setScale(scale);
-        centerImage();
-        if(drawingRect.height() > height())
-            drawingRect.moveTop(0);
-        update();
+        if(scale > 1.0) {
+            fitNormal();
+        }
+        else {
+            setScale(scale);
+            centerImage();
+            if(drawingRect.height() > height())
+                drawingRect.moveTop(0);
+            update();
+        }
     } else if(errorFlag) {
         fitNormal();
     } else {
@@ -429,6 +435,8 @@ void ImageViewer::fitNormal() {
     }
     setScale(1.0);
     centerImage();
+    if(drawingRect.height() > height())
+        drawingRect.moveTop(0);
     update();
 }
 
@@ -527,6 +535,47 @@ void ImageViewer::fixAlignVertical() {
         drawingRect.moveBottom(height());
     }
 }
+
+void ImageViewer::scroll(int dx, int dy) {
+    if(drawingRect.size().width() > this->width()) {
+        scrollX(dx);
+    }
+    if(drawingRect.size().height() > this->height())
+    {
+        scrollY(dy);
+    }
+    updateMap();
+    update();
+}
+
+void ImageViewer::scrollX(int dx) {
+    if(dx) {
+        int left = drawingRect.x() - dx;
+        int right = left + drawingRect.width();
+        if(left > 0)
+            left = 0;
+        else if (right <= width())
+            left = width() - drawingRect.width();
+        if(left <= 0) {
+            drawingRect.moveLeft(left);
+        }
+    }
+}
+
+void ImageViewer::scrollY(int dy) {
+    if(dy) {
+        int top = drawingRect.y() - dy;
+        int bottom = top + drawingRect.height();
+        if(top > 0)
+            top = 0;
+        else if (bottom <= height())
+            top = height() - drawingRect.height();
+        if(top <= 0) {
+            drawingRect.moveTop(top);
+        }
+    }
+}
+
 
 // scales image around point, so point's position
 // relative to window remains unchanged

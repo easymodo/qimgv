@@ -60,6 +60,8 @@ public slots:
     void readSettings();
     void hideCursor();
     void updateImage(QPixmap *scaled);
+    void scrollUp();
+    void scrollDown();
 
     void selectWallpaper();
 protected:
@@ -110,6 +112,9 @@ private:
     void alignImage();
     void fixAlignHorizontal();
     void fixAlignVertical();
+    void scroll(int dx, int dy);
+    void scrollX(int dx);
+    void scrollY(int dy);
 
     void mouseDragWrapping(QMouseEvent *event);
     void mouseDrag(QMouseEvent *event);

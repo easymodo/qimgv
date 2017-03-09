@@ -58,6 +58,8 @@ signals:
     void toggleFitMode();
     void toggleMenuBar();
     void toggleFullscreen();
+    void scrollUp();
+    void scrollDown();
     void zoomIn();
     void zoomOut();
     void resize();

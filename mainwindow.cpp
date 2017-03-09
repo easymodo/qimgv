@@ -89,6 +89,8 @@ void MainWindow::init() {
     connect(actionManager, SIGNAL(toggleFullscreen()), this, SLOT(triggerFullscreen()));
     connect(actionManager, SIGNAL(zoomIn()), imageViewer, SLOT(slotZoomIn()));
     connect(actionManager, SIGNAL(zoomOut()), imageViewer, SLOT(slotZoomOut()));
+    connect(actionManager, SIGNAL(scrollUp()), imageViewer, SLOT(scrollUp()));
+    connect(actionManager, SIGNAL(scrollDown()), imageViewer, SLOT(scrollDown()));
     connect(actionManager, SIGNAL(resize()), this, SLOT(slotResizeDialog()));
     connect(actionManager, SIGNAL(rotateLeft()), this, SLOT(slotRotateLeft()));
     connect(actionManager, SIGNAL(rotateRight()), this, SLOT(slotRotateRight()));
