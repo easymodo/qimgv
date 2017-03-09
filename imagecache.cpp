@@ -77,12 +77,6 @@ bool ImageCache::isLoaded(int pos) {
     lock();
     if(checkRange(pos)) {
         img = cachedImages->at(pos);
-        // something bad happened and we have wrong file at pos
-        // unload & set correct path
-        if(img->filePath() != dm->filePathAt(pos)) {
-            img->unload();
-            img->setPath(dm->filePathAt(pos));
-        }
         unlock();
         return img->isLoaded();
     }
