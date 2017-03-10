@@ -4,10 +4,15 @@ SlideHPanel::SlideHPanel(QWidget *w, QWidget *parent)
     : SlidePanel(w, parent)
 {
     position = TOP;
+    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
 SlideHPanel::~SlideHPanel() {
 
+}
+
+void SlideHPanel::readSettings() {
+    setPosition(settings->panelPosition());
 }
 
 void SlideHPanel::updatePanelPosition() {

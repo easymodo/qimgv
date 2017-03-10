@@ -240,6 +240,14 @@ bool Settings::setPanelEnabled(bool mode) {
     settings->s.setValue("panelEnabled", mode);
 }
 
+bool Settings::sidePanelEnabled() {
+    return settings->s.value("sidePanelEnabled", false).toBool();
+}
+
+bool Settings::setSidePanelEnabled(bool mode) {
+    settings->s.setValue("sidePanelEnabled", mode);
+}
+
 int Settings::lastDisplay() {
     return settings->s.value("lastDisplay", 0).toInt();
 }

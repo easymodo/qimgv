@@ -122,6 +122,19 @@
             </widget>
            </item>
            <item>
+            <widget class="QCheckBox" name="enableSidePanelCheckBox">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Enable side panel</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QCheckBox" name="infiniteScrollingCheckBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">

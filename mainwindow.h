@@ -43,6 +43,8 @@ public slots:
     void enableVideoPlayer();
     void enablePanel();
     void disablePanel();
+    void enableSidePanel();
+    void disableSidePanel();
     void disableImageViewer();
     void disableVideoPlayer();
     void slotCrop();

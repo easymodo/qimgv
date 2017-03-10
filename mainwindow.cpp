@@ -4,6 +4,8 @@ MainWindow::MainWindow() :
     imageViewer(NULL),
     videoPlayer(NULL),
     panel(NULL),
+    sidePanel(NULL),
+    toolbox(NULL),
     currentViewer(0),
     currentDisplay(0),
     layout(NULL),
@@ -139,6 +141,7 @@ void MainWindow::enablePanel() {
     connect(panel, SIGNAL(panelSizeChanged()),
                this, SLOT(calculatePanelTriggerArea()), Qt::UniqueConnection);
 
+    // TODO: fix this to apply on settings change
     connect(this, SIGNAL(signalFullscreenEnabled(bool)),
             thumbnailPanel, SLOT(setWindowControlsEnabled(bool)), Qt::UniqueConnection);
     connect(thumbnailPanel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()), Qt::UniqueConnection);
@@ -147,20 +150,6 @@ void MainWindow::enablePanel() {
     connect(thumbnailPanel, SIGNAL(exitClicked()), this, SLOT(close()), Qt::UniqueConnection);
 
     panel->parentResized(size());
-
-    //side panel test
-    toolbox = new ToolBox();
-    sidePanel = new SlideVPanel(toolbox, this);
-    sidePanel->setPosition(sidePanelPosition);
-    sidePanel->parentResized(size());
-    connect(this, SIGNAL(resized(QSize)), sidePanel, SLOT(parentResized(QSize)), Qt::UniqueConnection);
-    connect(toolbox, SIGNAL(rotateLeftClicked()), this, SLOT(slotRotateLeft()), Qt::UniqueConnection);
-    connect(toolbox, SIGNAL(rotateRightClicked()), this, SLOT(slotRotateRight()), Qt::UniqueConnection);
-    connect(toolbox, SIGNAL(zoomFitClicked()), this, SLOT(slotFitAll()), Qt::UniqueConnection);
-    connect(toolbox, SIGNAL(zoomWidthClicked()), this, SLOT(slotFitWidth()), Qt::UniqueConnection);
-    connect(toolbox, SIGNAL(zoomOriginalClicked()), this, SLOT(slotFitNormal()), Qt::UniqueConnection);
-    connect(toolbox, SIGNAL(zoomInClicked()), imageViewer, SLOT(slotZoomIn()), Qt::UniqueConnection);
-    connect(toolbox, SIGNAL(zoomOutClicked()), imageViewer, SLOT(slotZoomOut()), Qt::UniqueConnection);
 }
 
 void MainWindow::disablePanel() {
@@ -196,6 +185,31 @@ void MainWindow::disablePanel() {
     disconnect(thumbnailPanel, SIGNAL(settingsClicked()), this, SLOT(showSettings()));
     disconnect(thumbnailPanel, SIGNAL(exitClicked()), this, SLOT(close()));
 
+}
+
+void MainWindow::enableSidePanel() {
+    if(!toolbox) {
+        toolbox = new ToolBox();
+        if(!sidePanel) {
+            sidePanel = new SlideVPanel(toolbox, this);
+            sidePanel->setPosition(sidePanelPosition);
+        }
+    }
+    sidePanel->parentResized(size());
+    connect(this, SIGNAL(resized(QSize)), sidePanel, SLOT(parentResized(QSize)), Qt::UniqueConnection);
+    connect(toolbox, SIGNAL(rotateLeftClicked()), this, SLOT(slotRotateLeft()), Qt::UniqueConnection);
+    connect(toolbox, SIGNAL(rotateRightClicked()), this, SLOT(slotRotateRight()), Qt::UniqueConnection);
+    connect(toolbox, SIGNAL(zoomFitClicked()), this, SLOT(slotFitAll()), Qt::UniqueConnection);
+    connect(toolbox, SIGNAL(zoomWidthClicked()), this, SLOT(slotFitWidth()), Qt::UniqueConnection);
+    connect(toolbox, SIGNAL(zoomOriginalClicked()), this, SLOT(slotFitNormal()), Qt::UniqueConnection);
+    connect(toolbox, SIGNAL(zoomInClicked()), imageViewer, SLOT(slotZoomIn()), Qt::UniqueConnection);
+    connect(toolbox, SIGNAL(zoomOutClicked()), imageViewer, SLOT(slotZoomOut()), Qt::UniqueConnection);
+}
+
+void MainWindow::disableSidePanel() {
+    if(!sidePanel)
+        return;
+    disconnect(this, SIGNAL(resized(QSize)), sidePanel, SLOT(parentResized(QSize)));
 }
 
 void MainWindow::enableImageViewer() {
@@ -328,6 +342,7 @@ void MainWindow::readSettings() {
     panelPosition = settings->panelPosition();
     sidePanelPosition = settings->sidePanelPosition();
     settings->panelEnabled()?enablePanel():disablePanel();
+    settings->sidePanelEnabled()?enableSidePanel():disableSidePanel();
     fitMode = settings->imageFitMode();
     if(fitMode == 1) {
         slotFitWidth();
@@ -343,19 +358,24 @@ void MainWindow::readSettings() {
 void MainWindow::calculatePanelTriggerArea() {
     if(!settings->panelEnabled()) {
         panelArea.setRect(0,0,0,0);
-        sidePanelArea.setRect(0,0,0,0);
-        return;
     }
-    if(panelPosition == TOP)
-        panelArea.setRect(0, 0, width(), panel->height() - 1);
-    if(panelPosition == BOTTOM)
-        panelArea.setRect(0, height() - panel->height() + 1, width() - 180, height());
-    if(sidePanelPosition == LEFT)
-        sidePanelArea.setRect(0, height()/2 - toolbox->height()/2,
-                              30, toolbox->height()); // left
-    if(sidePanelPosition == RIGHT)
-        sidePanelArea.setRect(width() - 30, height()/2 - toolbox->height()/2,
-                              width(), toolbox->height()); // right
+    else {
+        if(panelPosition == TOP)
+            panelArea.setRect(0, 0, width(), panel->height() - 1);
+        if(panelPosition == BOTTOM)
+            panelArea.setRect(0, height() - panel->height() + 1, width() - 180, height());
+    }
+    if(!settings->sidePanelEnabled()) {
+        sidePanelArea.setRect(0,0,0,0);
+    }
+    else {
+        if(sidePanelPosition == LEFT)
+            sidePanelArea.setRect(0, height()/2 - toolbox->height()/2,
+                                  30, toolbox->height()); // left
+        if(sidePanelPosition == RIGHT)
+            sidePanelArea.setRect(width() - 30, height()/2 - toolbox->height()/2,
+                                  width(), toolbox->height()); // right
+    }
 }
 
 void MainWindow::updateOverlays() {

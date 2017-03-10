@@ -4,10 +4,14 @@ SlideVPanel::SlideVPanel(QWidget *w, QWidget *parent)
     : SlidePanel(w, parent)
 {
     position = RIGHT;
+    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
 SlideVPanel::~SlideVPanel() {
+}
 
+void SlideVPanel::readSettings() {
+    setPosition(settings->sidePanelPosition());
 }
 
 void SlideVPanel::updatePanelPosition() {
@@ -18,14 +22,12 @@ void SlideVPanel::updatePanelPosition() {
         initialPosition = geometry().topLeft();
         slideAnimation->setStartValue(initialPosition);
         slideAnimation->setEndValue(QPoint(initialPosition.x() + 20, initialPosition.y()));
-        qDebug() << this->geometry();
     } else {
         // LEFT
         setGeometry(0, parentSz.height()/2 - height()/2, width(), height());
         initialPosition = geometry().topLeft();
         slideAnimation->setStartValue(initialPosition);
         slideAnimation->setEndValue(QPoint(initialPosition.x() - 20, initialPosition.y()));
-        qDebug() << this->geometry();
     }
 
     if(oldRect != this->rect())

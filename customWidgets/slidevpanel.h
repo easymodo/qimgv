@@ -20,6 +20,8 @@ public slots:
 
 protected:
     virtual void paintEvent(QPaintEvent* event);
+private slots:
+    void readSettings();
 };
 
 #endif // SLIDEVPANEL_H

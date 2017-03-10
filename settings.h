@@ -91,6 +91,8 @@ public:
 
     PanelVPosition sidePanelPosition();
     void setSidePanelPosition(PanelVPosition pos);
+    bool sidePanelEnabled();
+    bool setSidePanelEnabled(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 190;

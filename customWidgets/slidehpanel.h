@@ -17,6 +17,8 @@ private:
 
 public slots:
     void parentResized(QSize parentSize);
+private slots:
+    void readSettings();
 };
 
 #endif // SLIDEHPANEL_H

@@ -25,6 +25,7 @@ void SettingsDialog::readSettings() {
     ui->playVideosCheckBox->setChecked(settings->playVideos());
     ui->playSoundsCheckBox->setChecked(settings->playVideoSounds());
     ui->enablePanelCheckBox->setChecked(settings->panelEnabled());
+    ui->enableSidePanelCheckBox->setChecked(settings->sidePanelEnabled());
     ui->mouseWrappingCheckBox->setChecked(settings->mouseWrapping());
     ui->squareThumbnailsCheckBox->setChecked(settings->squareThumbnails());
     ui->thumbnailBorderCheckBox->setChecked(settings->drawThumbnailSelectionBorder());
@@ -112,6 +113,7 @@ void SettingsDialog::applySettings() {
     settings->setPlayVideos(ui->playVideosCheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
     settings->setPanelEnabled(ui->enablePanelCheckBox->isChecked());
+    settings->setSidePanelEnabled(ui->enableSidePanelCheckBox->isChecked());
     settings->setMouseWrapping(ui->mouseWrappingCheckBox->isChecked());
     settings->setSquareThumbnails(ui->squareThumbnailsCheckBox->isChecked());
     settings->setDrawThumbnailSelectionBorder(ui->thumbnailBorderCheckBox->isChecked());
