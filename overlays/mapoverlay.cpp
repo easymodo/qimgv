@@ -78,8 +78,8 @@ MapOverlay::MapOverlay(QWidget *parent) : QWidget(parent),
     d(new MapOverlayPrivate(this)) {
     this->setMouseTracking(true);
     d->opacityAnimation = new QPropertyAnimation(this, "opacity");
-    //d->opacityAnimation->setEasingCurve(QEasingCurve::InQuint);
-    d->opacityAnimation->setDuration(70);
+    d->opacityAnimation->setEasingCurve(QEasingCurve::OutSine);
+    d->opacityAnimation->setDuration(150);
 
     d->transitionAnimation = new QPropertyAnimation(this, "y");
     d->transitionAnimation->setDuration(200);
