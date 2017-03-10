@@ -20,7 +20,6 @@ public:
     explicit SlidePanel(QWidget *w, QWidget *parent = 0);
     ~SlidePanel();
     virtual void updatePanelPosition() = 0;
-    void setPosition(PanelPosition);
 
 private:
     void setWidget(QWidget* w);
@@ -38,7 +37,6 @@ protected:
     QPropertyAnimation *fadeAnimation, *slideAnimation;
     QParallelAnimationGroup *animGroup;
     int panelSize;
-    PanelPosition position;
     QSize parentSz;
     bool parentFullscreen;
     QWidget *mWidget;

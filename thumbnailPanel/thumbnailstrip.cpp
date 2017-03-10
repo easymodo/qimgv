@@ -80,7 +80,7 @@ ThumbnailStrip::ThumbnailStrip()
 void ThumbnailStrip::readSettings() {
     thumbnailSize = settings->thumbnailSize();
     position = settings->panelPosition();
-    if(position == PanelPosition::TOP)
+    if(position == PanelHPosition::TOP)
         layout->setContentsMargins(0,0,0,1);
     panelSize = settings->thumbnailSize() + 22;
     this->setGeometry(QRect(QPoint(0, 0),
@@ -294,7 +294,7 @@ void ThumbnailStrip::removeItemAt(int pos) {
 
 void ThumbnailStrip::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
-    if(position == PanelPosition::TOP) {
+    if(position == PanelHPosition::TOP) {
         QPainter p(this);
         p.setPen(QColor(QColor(90, 90, 90)));
         p.drawLine(rect().bottomLeft(), rect().bottomRight());

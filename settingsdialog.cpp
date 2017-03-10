@@ -58,6 +58,7 @@ void SettingsDialog::readSettings() {
     ui->thumbnailLabelsCheckBox->setChecked(settings->showThumbnailLabels());
 
     ui->panelPositionComboBox->setCurrentIndex(settings->panelPosition());
+    ui->sidePanelPositionComboBox->setCurrentIndex(settings->sidePanelPosition());
 
     //bg color
     QColor bgColor = settings->backgroundColor();
@@ -122,7 +123,8 @@ void SettingsDialog::applySettings() {
     bool useFastScale = ui->scalingQualityComboBox->currentIndex() == 1;
     settings->setUseFastScale(useFastScale);
 
-    settings->setPanelPosition((PanelPosition) ui->panelPositionComboBox->currentIndex());
+    settings->setPanelPosition((PanelHPosition) ui->panelPositionComboBox->currentIndex());
+    settings->setSidePanelPosition((PanelVPosition) ui->sidePanelPositionComboBox->currentIndex());
 
     settings->setBackgroundColor(bgLabelPalette.color(QPalette::Window));
     settings->setAccentColor(accentLabelPalette.color(QPalette::Window));

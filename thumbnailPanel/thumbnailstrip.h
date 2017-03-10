@@ -51,7 +51,7 @@ private:
     QRectF preloadArea, visibleRegion;
     QTimer loadTimer;
     QScrollBar *scrollBar;
-    PanelPosition position;
+    PanelHPosition position;
     bool parentFullscreen;
     QMutex mutex;
 

@@ -151,7 +151,7 @@ void MainWindow::enablePanel() {
     //side panel test
     toolbox = new ToolBox();
     sidePanel = new SlideVPanel(toolbox, this);
-    sidePanel->setPosition(panelPosition);
+    sidePanel->setPosition(sidePanelPosition);
     sidePanel->parentResized(size());
     connect(this, SIGNAL(resized(QSize)), sidePanel, SLOT(parentResized(QSize)), Qt::UniqueConnection);
     connect(toolbox, SIGNAL(rotateLeftClicked()), this, SLOT(slotRotateLeft()), Qt::UniqueConnection);
@@ -326,6 +326,7 @@ void MainWindow::readSettingsInitial() {
 
 void MainWindow::readSettings() {
     panelPosition = settings->panelPosition();
+    sidePanelPosition = settings->sidePanelPosition();
     settings->panelEnabled()?enablePanel():disablePanel();
     fitMode = settings->imageFitMode();
     if(fitMode == 1) {
@@ -345,19 +346,16 @@ void MainWindow::calculatePanelTriggerArea() {
         sidePanelArea.setRect(0,0,0,0);
         return;
     }
-    //TODO: separate enum for side panel
-    switch(panelPosition) {
-        case BOTTOM:
-            panelArea.setRect(0, height() - panel->height() + 1, width() - 180, height());
-            sidePanelArea.setRect(0, height()/2 - toolbox->height()/2,
-                                  30, toolbox->height()); // left
-            break;
-        case TOP:
-            panelArea.setRect(0, 0, width(), panel->height() - 1);
-            sidePanelArea.setRect(width() - 30, height()/2 - toolbox->height()/2,
-                                  width(), toolbox->height()); // right
-            break;
-    }
+    if(panelPosition == TOP)
+        panelArea.setRect(0, 0, width(), panel->height() - 1);
+    if(panelPosition == BOTTOM)
+        panelArea.setRect(0, height() - panel->height() + 1, width() - 180, height());
+    if(sidePanelPosition == LEFT)
+        sidePanelArea.setRect(0, height()/2 - toolbox->height()/2,
+                              30, toolbox->height()); // left
+    if(sidePanelPosition == RIGHT)
+        sidePanelArea.setRect(width() - 30, height()/2 - toolbox->height()/2,
+                              width(), toolbox->height()); // right
 }
 
 void MainWindow::updateOverlays() {

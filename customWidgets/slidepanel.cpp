@@ -40,11 +40,6 @@ SlidePanel::~SlidePanel() {
 
 }
 
-void SlidePanel::setPosition(PanelPosition p) {
-    position = p;
-    updatePanelPosition();
-}
-
 void SlidePanel::setWidget(QWidget *w) {
     if(!w) {
         qDebug() << "Error: SlidePanel::setWidget - null argument";

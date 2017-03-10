@@ -13,9 +13,14 @@
 #include <QMap>
 #include "actionmanager.h"
 
-enum PanelPosition {
+enum PanelHPosition {
     TOP,
     BOTTOM
+};
+
+enum PanelVPosition {
+    LEFT,
+    RIGHT
 };
 
 class Settings : public QObject
@@ -59,8 +64,8 @@ public:
     void setFFmpegExecutable(QString path);
     bool showThumbnailLabels();
     void setShowThumbnailLabels(bool mode);
-    PanelPosition panelPosition();
-    void setPanelPosition(PanelPosition);
+    PanelHPosition panelPosition();
+    void setPanelPosition(PanelHPosition);
     ~Settings();
     bool infiniteScrolling();
     void setInfiniteScrolling(bool mode);
@@ -84,6 +89,8 @@ public:
     bool forceSmoothScroll();
     void setForceSmoothScroll(bool mode);
 
+    PanelVPosition sidePanelPosition();
+    void setSidePanelPosition(PanelVPosition pos);
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 190;

@@ -101,7 +101,8 @@ private:
     int fitMode;
     //bool fullscreen; // separate flag because "borderless fullscreen" is actually a maximized window
     QBoxLayout *layout;
-    PanelPosition panelPosition;
+    PanelHPosition panelPosition;
+    PanelVPosition sidePanelPosition;
     QRect panelArea, sidePanelArea;
     QPoint lastMouseMovePos;
     void init();

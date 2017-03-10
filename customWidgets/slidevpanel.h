@@ -10,6 +10,10 @@ public:
     explicit SlideVPanel(QWidget *w, QWidget *parent = 0);
     ~SlideVPanel();
     void updatePanelPosition();
+    void setPosition(PanelVPosition);
+
+private:
+    PanelVPosition position;
 
 public slots:
     void parentResized(QSize parentSize);

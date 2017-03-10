@@ -30,6 +30,11 @@ void SlideHPanel::updatePanelPosition() {
         emit panelSizeChanged();
 }
 
+void SlideHPanel::setPosition(PanelHPosition p) {
+    position = p;
+    updatePanelPosition();
+}
+
 void SlideHPanel::parentResized(QSize parentSz) {
     this->parentSz = parentSz;
     updatePanelPosition();
