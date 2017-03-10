@@ -111,7 +111,7 @@ QStringList Settings::supportedMimeTypes() {
 }
 
 bool Settings::playVideos() {
-    return settings->s.value("playVideos", true).toBool();
+    return settings->s.value("playVideos", false).toBool();
 }
 
 void Settings::setPlayVideos(bool mode) {
