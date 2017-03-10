@@ -2,7 +2,7 @@
 
 ResizeDialog::ResizeDialog(QWidget *parent) : QDialog(parent) {
     setWindowModality(Qt::ApplicationModal);
-    setWindowTitle("Resize image");
+    setWindowTitle("Resize image (mockup)");
     //setWindowIcon(QIcon(":/images/res/pepper32.png"));
 
     //set up layout

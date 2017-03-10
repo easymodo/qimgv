@@ -230,7 +230,7 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("W", "fitWidth");
     actionManager->addShortcut("N", "fitNormal");
     actionManager->addShortcut("Ctrl+M", "toggleMenuBar");
-    actionManager->addShortcut("R", "resize"); // TODO: better defaults
+    //actionManager->addShortcut("R", "resize"); // TODO: better defaults
     actionManager->addShortcut("Ctrl+R", "rotateRight");
     actionManager->addShortcut("Ctrl+L", "rotateLeft");
     actionManager->addShortcut("Ctrl+WheelDown", "zoomIn");
@@ -247,7 +247,7 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("Alt+X", "exit");
     actionManager->addShortcut("Ctrl+Q", "exit");
     actionManager->addShortcut("escape", "exit");
-    actionManager->addShortcut("delete", "removeFile");
+    //actionManager->addShortcut("delete", "removeFile");
 }
 
 bool ActionManager::processWheelEvent(QWheelEvent *event) {
