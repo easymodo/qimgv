@@ -136,6 +136,7 @@ void ImageViewer::selectWallpaper() {
 }
 
 void ImageViewer::readSettings() {
+    mouseWrapping = settings->mouseWrapping();
     transparencyGridEnabled = settings->transparencyGrid();
     this->bgColor = settings->backgroundColor();
     this->repaint();
