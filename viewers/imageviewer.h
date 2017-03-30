@@ -84,7 +84,7 @@ private:
     CropOverlay *cropOverlay;
 
     bool isDisplayingFlag, errorFlag, mouseWrapping, transparencyGridEnabled;
-    const int transparencyGridSize = 14;
+    const int transparencyGridSize = 10;
 
     float currentScale;
     float maxScale; // zoom OUT
