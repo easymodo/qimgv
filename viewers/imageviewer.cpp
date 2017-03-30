@@ -211,7 +211,7 @@ void ImageViewer::drawTransparencyGrid() {
         QPainter painter(image);
         painter.setCompositionMode(QPainter::CompositionMode_DestinationOver);
         QColor dark(90,90,90,255);
-        QColor light(125,125,125,255);
+        QColor light(140,140,140,255);
         int xCount, yCount;
         xCount = image->width() / transparencyGridSize;
         yCount = image->height() / transparencyGridSize;
