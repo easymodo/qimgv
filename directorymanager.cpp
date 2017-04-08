@@ -38,11 +38,11 @@ void DirectoryManager::setFile(QString path) {
 }
 
 void DirectoryManager::setCurrentDir(QString path) {
-    if(currentDir.exists()) {
+    if(!path.isEmpty() && currentDir.exists()) {
         if(currentDir.path() != path) {
             changePath(path);
         }
-    } else changePath(path); // ? wut
+    }
 }
 
 bool DirectoryManager::setCurrentPos(int pos) {
