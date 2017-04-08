@@ -211,7 +211,7 @@ void Core::initVariables() {
 }
 
 void Core::connectSlots() {
-    connect(loadingTimer, SIGNAL(timeout()), this, SIGNAL(loadingTimeout()));
+    connect(loadingTimer, SIGNAL(timeout()), this, SLOT(onLoadingTimeout()));
     connect(imageLoader, SIGNAL(loadStarted()),
             this, SLOT(onLoadStarted()));
     connect(imageLoader, SIGNAL(loadFinished(Image *, int)),
@@ -227,6 +227,11 @@ void Core::connectSlots() {
 
 Image* Core::currentImage() {
     return cache->imageAt(currentImagePos);
+}
+
+void Core::onLoadingTimeout() {
+    stopAnimation();
+    emit loadingTimeout();
 }
 
 // ##############################################################

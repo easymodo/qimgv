@@ -83,6 +83,7 @@ private:
 
 private slots:
     void onLoadStarted();
+    void onLoadingTimeout();
 
     // displays image and starts animation/video playback
     void onLoadFinished(Image *img, int pos);
