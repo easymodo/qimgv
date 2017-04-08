@@ -538,8 +538,6 @@ void MainWindow::triggerFullscreen() {
         //do not save immediately on application start
         if(!this->isHidden())
             saveWindowGeometry();
-        //hide window before move to prevent flicker
-        this->hide();
         //move to target screen
         if(desktopWidget->screenCount() > currentDisplay &&
            currentDisplay != desktopWidget->screenNumber(this))
