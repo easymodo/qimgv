@@ -17,6 +17,8 @@
         <file>res/icons/zoom-original.png</file>
         <file>res/icons/zoom-out.png</file>
         <file>res/icons/zoom-width.png</file>
+        <file>res/loading.gif</file>
+        <file>res/loading_static.png</file>
     </qresource>
     <qresource prefix="/qss">
         <file>res/styles/dark.qss</file>

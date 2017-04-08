@@ -202,12 +202,16 @@ void Core::stopAnimation() {
 // ##############################################################
 
 void Core::initVariables() {
+    loadingTimer = new QTimer();
+    loadingTimer->setSingleShot(true);
+    loadingTimer->setInterval(250); // TODO: test on slower pc & adjust timeout
     dirManager = new DirectoryManager();
     cache = new ImageCache(dirManager);
     imageLoader = new NewLoader(dirManager);
 }
 
 void Core::connectSlots() {
+    connect(loadingTimer, SIGNAL(timeout()), this, SIGNAL(loadingTimeout()));
     connect(imageLoader, SIGNAL(loadStarted()),
             this, SLOT(onLoadStarted()));
     connect(imageLoader, SIGNAL(loadFinished(Image *, int)),
@@ -231,12 +235,13 @@ Image* Core::currentImage() {
 
 void Core::onLoadStarted() {
     updateInfoString();
+    loadingTimer->start();
 }
 
 void Core::onLoadFinished(Image *img, int pos) {
     mutex.lock();
     emit signalUnsetImage();
-
+    loadingTimer->stop();
     stopAnimation();
     currentImagePos = pos;
 

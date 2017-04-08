@@ -221,6 +221,9 @@ void MainWindow::enableImageViewer() {
 
         imageViewer->show();
 
+        connect(core, SIGNAL(loadingTimeout()),
+                imageViewer, SLOT(showLoadingMessage()), Qt::UniqueConnection);
+
         connect(imageViewer, SIGNAL(scalingRequested(QSize)),
                 core, SLOT(rescaleForZoom(QSize)), Qt::UniqueConnection);
 
@@ -268,6 +271,9 @@ void MainWindow::enableImageViewer() {
 
 void MainWindow::disableImageViewer() {
     layout->removeWidget(imageViewer);
+
+    disconnect(core, SIGNAL(loadingTimeout()),
+            imageViewer, SLOT(showLoadingMessage()));
 
     disconnect(imageViewer, SIGNAL(scalingRequested(QSize)),
                core, SLOT(rescaleForZoom(QSize)));

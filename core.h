@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QDesktopWidget>
 #include <QFileDialog>
+#include <QTimer>
 #include "directorymanager.h"
 #include "newloader.h"
 #include "settings.h"
@@ -74,6 +75,7 @@ private:
     Video* currentVideo;
     QMutex mutex;
     ImageCache *cache;
+    QTimer *loadingTimer;
 
     void initVariables();
     void connectSlots();
@@ -103,6 +105,7 @@ signals:
     void stopVideo();
     void videoChanged(Clip*);
     void itemRemoved(int);
+    void loadingTimeout();
 };
 
 #endif // CORE_H

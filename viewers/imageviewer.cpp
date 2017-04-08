@@ -50,8 +50,22 @@ bool ImageViewer::imageIsScaled() const {
     return scale() != 1.0;
 }
 
+void ImageViewer::showLoadingMessage() {
+    resizeTimer->stop();
+    delete image;
+    image = new QPixmap();
+    image->load(":/images/res/loading_static.png");
+    drawingRect = image->rect();
+    sourceSize  = image->size();
+    isDisplayingFlag = true;
+    fitDefault();
+    isDisplayingFlag = false; // 10/10 coding
+    update();
+}
+
 // display & initialize
 void ImageViewer::displayImage(QPixmap *_image) {
+    isDisplayingFlag = false;
     delete image;
     resizeTimer->stop();
     sourceSize  = _image->size();

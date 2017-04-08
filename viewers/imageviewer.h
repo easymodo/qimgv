@@ -62,8 +62,9 @@ public slots:
     void updateImage(QPixmap *scaled);
     void scrollUp();
     void scrollDown();
-
     void selectWallpaper();
+    void showLoadingMessage();
+
 protected:
     virtual void paintEvent(QPaintEvent* event);
     virtual void mousePressEvent(QMouseEvent *event);
