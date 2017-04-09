@@ -15,7 +15,20 @@ NewLoader::NewLoader(DirectoryManager *_dm) :
 
 // TODO
 void NewLoader::openBlocking(int pos) {
-    open(pos);
+    emit loadStarted();
+    currentIndex = pos;
+    freeAuto();
+    if(tasks.contains(pos)) {
+        return;
+    }
+    if(cache->isLoaded(pos)) {
+        emit loadFinished(cache->imageAt(pos), pos);
+        return;
+    }
+    LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(pos), pos, thread());
+    connect(runnable, SIGNAL(finished(Image*,int)), this, SLOT(onLoadFinished(Image*,int)), Qt::UniqueConnection);
+    tasks.append(pos);
+    runnable->run();
 }
 
 void NewLoader::open(int pos) {
