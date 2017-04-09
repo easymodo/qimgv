@@ -62,7 +62,8 @@ SOURCES += main.cpp\
     customWidgets/slidevpanel.cpp \
     customWidgets/slidehpanel.cpp \
     customWidgets/slidepanel.cpp \
-    customWidgets/toolbox.cpp
+    customWidgets/toolbox.cpp \
+    loaderrunnable.cpp
 
 HEADERS += mainwindow.h \
         overlays/infooverlay.h \
@@ -103,7 +104,8 @@ HEADERS += mainwindow.h \
     customWidgets/slidevpanel.h \
     customWidgets/slidehpanel.h \
     customWidgets/slidepanel.h \
-    customWidgets/toolbox.h
+    customWidgets/toolbox.h \
+    loaderrunnable.h
 
 FORMS += \
       settingsdialog.ui

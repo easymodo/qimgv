@@ -7,6 +7,7 @@ Core::Core() :
     currentImageAnimated(NULL),
     currentVideo(NULL),
     mCurrentIndex(0),
+    mPreviousIndex(0),
     mImageCount(0),
     infiniteScrolling(false)
 {
@@ -67,8 +68,6 @@ void Core::updateInfoString() {
                           "  ");
         infoString.append(QString::number(img->info()->fileSize()) + " KB)");
     }
-
-    infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
     emit infoStringChanged(infoString);
 }
 
@@ -99,6 +98,7 @@ void Core::loadImage(QString filePath, bool blocking) {
         if(cache->currentDirectory() != dirManager->currentDirectory()) {
             this->initCache();
         }
+        stopAnimation();
         if(blocking)
             imageLoader->openBlocking(mCurrentIndex);
         else
@@ -117,14 +117,18 @@ void Core::loadImageBlocking(QString filePath) {
 }
 
 void Core::loadImageByPos(int pos) {
-    if(pos >=0 && pos < dirManager->fileCount())
+    if(pos >=0 && pos < dirManager->fileCount()) {
+        mCurrentIndex = pos;
+        stopAnimation();
         imageLoader->open(pos);
+    }
     else
         qDebug() << "Core::loadImageByPos - argument out of range.";
 }
 
 void Core::slotNextImage() {
     if(dirManager->containsImages()) {
+        stopAnimation();
         int nextPos = mCurrentIndex + 1;
         if(nextPos >= dirManager->fileCount()) {
             if(infiniteScrolling)
@@ -132,6 +136,7 @@ void Core::slotNextImage() {
             else
                 return;
         }
+        mCurrentIndex = nextPos;
         imageLoader->open(nextPos);
         if(dirManager->checkRange(nextPos + 1))
             imageLoader->preload(nextPos + 1);
@@ -140,6 +145,7 @@ void Core::slotNextImage() {
 
 void Core::slotPrevImage() {
     if(dirManager->containsImages()) {
+        stopAnimation();
         int nextPos = mCurrentIndex - 1;
         if(nextPos < 0) {
             if(infiniteScrolling)
@@ -147,6 +153,7 @@ void Core::slotPrevImage() {
             else
                 return;
         }
+        mCurrentIndex = nextPos;
         imageLoader->open(nextPos);
         if(dirManager->checkRange(nextPos - 1))
             imageLoader->preload(nextPos - 1);
@@ -238,15 +245,23 @@ void Core::startAnimation() {
 }
 
 void Core::stopAnimation() {
-    if(currentImage()) {
-        if((currentImageAnimated = dynamic_cast<ImageAnimated *>(currentImage())) != NULL) {
-            currentImageAnimated->animationStop();
-            disconnect(currentImageAnimated, SIGNAL(frameChanged(QPixmap *)),
-                       this, SIGNAL(frameChanged(QPixmap *)));
-        }
-        if((currentVideo = dynamic_cast<Video *>(currentImage())) != NULL) {
-            emit stopVideo();
-        }
+    /*
+    if(currentImageAnimated) {
+        currentImageAnimated->animationStop();
+        // TODO: fix mess with null pointers here
+        disconnect(currentImageAnimated, SIGNAL(frameChanged(QPixmap *)),
+                   this, SIGNAL(frameChanged(QPixmap *)));
+    }
+    */
+
+    if((currentImageAnimated = dynamic_cast<ImageAnimated *>(cache->imageAt(mPreviousIndex))) != NULL) {
+        currentImageAnimated->animationStop();
+        disconnect(currentImageAnimated, SIGNAL(frameChanged(QPixmap *)),
+                   this, SIGNAL(frameChanged(QPixmap *)));
+    }
+
+    if(currentVideo) {
+        emit stopVideo();
     }
 }
 
@@ -300,10 +315,10 @@ void Core::onLoadFinished(Image *img, int pos) {
     mutex.lock();
     emit signalUnsetImage();
     loadingTimer->stop();
-    stopAnimation();
-    mCurrentIndex = pos;
-
-    if((currentImageAnimated = dynamic_cast<ImageAnimated *>(img)) != NULL) {
+    currentImageAnimated = NULL;
+    currentVideo = NULL;
+    mPreviousIndex = pos;
+    if((currentImageAnimated = dynamic_cast<ImageAnimated *>(cache->imageAt(pos))) != NULL) {
         startAnimation();
     }    
     if((currentVideo = dynamic_cast<Video *>(img)) != NULL) {

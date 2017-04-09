@@ -72,7 +72,7 @@ public slots:
 private:
     NewLoader *imageLoader;
     DirectoryManager *dirManager;
-    int mCurrentIndex, mImageCount;
+    int mCurrentIndex, mPreviousIndex, mImageCount;
     bool infiniteScrolling;
     ImageAnimated* currentImageAnimated;
     Video* currentVideo;

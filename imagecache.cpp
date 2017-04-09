@@ -19,42 +19,47 @@ ImageCache::~ImageCache() {
 // ##############################################################
 
 void ImageCache::init(QString _dir, QStringList *fileNameList) {
-    //if(!dm->currentDirectory().isEmpty()) {
-        lock();
-        dir = _dir;
-        while(!cachedImages->isEmpty()) {
-            delete cachedImages->takeAt(0);
-        }
-        for(int i = 0; i < fileNameList->count(); i++) {
-            cachedImages->append(new CacheObject(fileNameList->at(i)));
-        }
-        unlock();
-        emit initialized(length());
-    //}
+    lock();
+    dir = _dir;
+    while(!cachedImages->isEmpty()) {
+        delete cachedImages->takeAt(0);
+    }
+    for(int i = 0; i < fileNameList->count(); i++) {
+        cachedImages->append(new CacheObject(fileNameList->at(i)));
+    }
+    loadedIndexes.clear();
+    unlock();
+    emit initialized(length());
 }
 
+// todo: do a shift in loadedIndexes
 void ImageCache::removeAt(int pos) {
     lock();
     CacheObject *img = cachedImages->takeAt(pos);
     delete img;
+    loadedIndexes.removeAt(loadedIndexes.indexOf(pos));
     unlock();
     emit itemRemoved(pos);
 }
 
 void ImageCache::unloadAll() {
     lock();
+    //qDebug() << "CACHE: Clear all ";
     for(int i = 0; i < cachedImages->length(); i++) {
         cachedImages->at(i)->unload();
     }
+    loadedIndexes.clear();
     unlock();
 }
 
 void ImageCache::unloadAt(int pos) {
+    lock();
     if(checkRange(pos)) {
-        lock();
+        //qDebug() << "CACHE: Unload " << pos;
         cachedImages->at(pos)->unload();
-        unlock();
+        loadedIndexes.removeAt(loadedIndexes.indexOf(pos));
     }
+    unlock();
 }
 
 Image *ImageCache::imageAt(int pos) {
@@ -74,10 +79,9 @@ QString ImageCache::currentDirectory() {
 }
 
 bool ImageCache::isLoaded(int pos) {
-    CacheObject *img;
     lock();
     if(checkRange(pos)) {
-        img = cachedImages->at(pos);
+        CacheObject *img = cachedImages->at(pos);
         unlock();
         return img->isLoaded();
     }
@@ -87,20 +91,33 @@ bool ImageCache::isLoaded(int pos) {
     }
 }
 
-int ImageCache::currentlyLoadedCount() {
+QString ImageCache::currentlyLoadedCount() {
+    lock();
+    QString str = "[ ";
     int x = 0;
-    for(int i = 0; i < cachedImages->length(); i++) {
-        if(isLoaded(i)) {
-            x++;
-        }
+    for(int i = 0; i < loadedIndexes.length(); i++) {
+        str.append(" " + QString::number(loadedIndexes.at(i)));
     }   
-    return x;
+    str.append("  ]");
+    unlock();
+    return str;
+}
+
+const QList<int>* ImageCache::currentlyLoadedList() {
+    return &loadedIndexes;
 }
 
 void ImageCache::setImage(Image *img, int pos) {
+    lock();
     if(checkRange(pos)) {
-        cachedImages->at(pos)->setImage(img);
+        if(!cachedImages->at(pos)->isLoaded()) {
+            cachedImages->at(pos)->setImage(img);
+            loadedIndexes.append(pos);
+        } else {
+            qDebug() << "CACHE: Warning, trying to set already loaded image. Ignoring. Index was: " << pos;
+        }
     }
+    unlock();
 }
 
 // ##############################################################

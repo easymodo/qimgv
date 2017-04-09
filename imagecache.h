@@ -81,14 +81,17 @@ public:
     int length() const;
     QString currentDirectory();
     bool isLoaded(int pos);
-    int currentlyLoadedCount();
+    QString currentlyLoadedCount();
     void setImage(Image *img, int pos);
 
+    const QList<int> *currentlyLoadedList();
 private:
     QList<CacheObject*> *cachedImages;
     uint maxCacheSize;
     QString dir;
     QMutex mutex;
+    // for quick access
+    QList<int> loadedIndexes;
 
     void lock();
     void unlock();

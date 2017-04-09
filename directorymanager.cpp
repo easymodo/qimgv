@@ -80,7 +80,6 @@ bool DirectoryManager::checkRange(int pos) {
     if(pos >= 0 && pos < mFileNameList.length()) {
         return true;
     } else {
-        qDebug() << "dirManager::checkRange : requested index out of range";
         return false;
     }
 }
