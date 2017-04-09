@@ -27,8 +27,7 @@ public:
     DirectoryManager();
 
     QDir currentDir;
-    int currentPos;
-    QStringList fileNameList;
+    QStringList mFileNameList;
     QStringList mimeFilters, extensionFilters;
 
     void readSettings();
@@ -38,27 +37,21 @@ public:
     void setFile(QString path);
 
     // ignored if the same dir is already opened
-    void setCurrentDir(QString);
+    void setDirectory(QString);
 
-    // returns true on success
-    bool setCurrentPos(int pos);
+    // returns position in file list
+    // -1 if not found
+    int indexOf(QString);
+
     QStringList fileList();
     QString currentDirectory();
-    QString currentFileName();
-    QString currentFilePath();
-    QString nextFilePath();
-    QString prevFilePath();
     QString filePathAt(int pos);
     bool removeAt(int pos);
-    int currentFilePos();
-    int nextPos();
-    int prevPos();
     int fileCount();
-    int peekNext(int offset);
-    int peekPrev(int offset);
     bool existsInCurrentDir(QString file);
     bool isImage(QString filePath);
     bool containsImages();
+    bool checkRange(int pos);
 
 public slots:
     void applySettingsChanges();
@@ -74,13 +67,11 @@ private:
     QMimeDatabase mimeDb;
     bool quickFormatDetection;
 
-    void changePath(QString path);
     FileInfo* loadInfo(QString path);
     void generateFileList();
     void generateFileListQuick();
     void generateFileListDeep();
 
-    bool checkRange(int pos);
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();

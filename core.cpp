@@ -6,7 +6,10 @@ Core::Core() :
     dirManager(NULL),
     currentImageAnimated(NULL),
     currentVideo(NULL),
-    currentImagePos(0) {
+    mCurrentIndex(0),
+    mImageCount(0),
+    infiniteScrolling(false)
+{
 }
 
 // ##############################################################
@@ -17,6 +20,8 @@ void Core::init() {
     initVariables();
     connectSlots();
     imageLoader->setCache(cache);
+    readSettings();
+    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
 QString Core::getCurrentFilePath() {
@@ -41,7 +46,7 @@ void Core::updateInfoString() {
     Image* img = currentImage();
     QString infoString = "";
     infoString.append("[ " +
-                      QString::number(dirManager->currentPos + 1) +
+                      QString::number(mCurrentIndex + 1) +
                       "/" +
                       QString::number(dirManager->fileCount()) +
                       " ]   ");
@@ -63,39 +68,88 @@ void Core::updateInfoString() {
         infoString.append(QString::number(img->info()->fileSize()) + " KB)");
     }
 
-    //infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
+    infoString.append(" >>" + QString::number(cache->currentlyLoadedCount()));
     emit infoStringChanged(infoString);
 }
 
-void Core::loadImage(QString path) {
-    if(!path.isEmpty() && dirManager->isImage(path)) {
-        imageLoader->open(path);
+
+void Core::initCache() {
+        // construct file path list
+        QStringList filePaths;
+        for(int i = 0; i < dirManager->fileCount(); i++) {
+            filePaths << dirManager->filePathAt(i);
+        }
+        cache->init(dirManager->currentDirectory(), &filePaths);
+}
+
+void Core::loadImage(QString filePath, bool blocking) {
+    if(dirManager->isImage(filePath)) {
+        FileInfo *info = new FileInfo(filePath);
+        int index = dirManager->indexOf(info->fileName());
+        if(index == -1) {
+            dirManager->setDirectory(info->directoryPath());
+            index = dirManager->indexOf(info->fileName());
+            if(index == -1) {
+                qDebug() << "Core: could not open file. This is a bug.";
+                return;
+            }
+        }
+        mCurrentIndex = index;
+        mImageCount = dirManager->fileCount();
+        if(cache->currentDirectory() != dirManager->currentDirectory()) {
+            this->initCache();
+        }
+        if(blocking)
+            imageLoader->openBlocking(mCurrentIndex);
+        else
+            imageLoader->open(mCurrentIndex);
     } else {
-        qDebug() << "ERROR: invalid file selected.";
+        qDebug() << "Core: invalid/missing file.";
     }
 }
 
-void Core::loadImageBlocking(QString path) {
-    if(!path.isEmpty() && dirManager->isImage(path)) {
-        imageLoader->openBlocking(path);
-    } else {
-        qDebug() << "ERROR: invalid file selected.";
-    }
+void Core::loadImage(QString filePath) {
+    loadImage(filePath, false);
+}
+
+void Core::loadImageBlocking(QString filePath) {
+    loadImage(filePath, true);
 }
 
 void Core::loadImageByPos(int pos) {
-    imageLoader->open(pos);
+    if(pos >=0 && pos < dirManager->fileCount())
+        imageLoader->open(pos);
+    else
+        qDebug() << "Core::loadImageByPos - argument out of range.";
 }
 
 void Core::slotNextImage() {
     if(dirManager->containsImages()) {
-        imageLoader->loadNext();
+        int nextPos = mCurrentIndex + 1;
+        if(nextPos >= dirManager->fileCount()) {
+            if(infiniteScrolling)
+                nextPos = 0;
+            else
+                return;
+        }
+        imageLoader->open(nextPos);
+        if(dirManager->checkRange(nextPos + 1))
+            imageLoader->preload(nextPos + 1);
     }
 }
 
 void Core::slotPrevImage() {
     if(dirManager->containsImages()) {
-        imageLoader->loadPrev();
+        int nextPos = mCurrentIndex - 1;
+        if(nextPos < 0) {
+            if(infiniteScrolling)
+                nextPos = dirManager->fileCount() - 1;
+            else
+                return;
+        }
+        imageLoader->open(nextPos);
+        if(dirManager->checkRange(nextPos - 1))
+            imageLoader->preload(nextPos - 1);
     }
 }
 
@@ -112,7 +166,7 @@ void Core::saveImage(QString path) {
 }
 
 void Core::setCurrentDir(QString path) {
-    dirManager->setCurrentDir(path);
+    dirManager->setDirectory(path);
 }
 
 void Core::rotateImage(int degrees) {
@@ -130,9 +184,8 @@ void Core::rotateImage(int degrees) {
 }
 
 void Core::removeFile() {
-    int currentPos = dirManager->currentFilePos();
-    if(dirManager->removeAt(currentPos)) {
-        loadImageByPos(dirManager->currentFilePos());
+    if(dirManager->removeAt(mCurrentIndex)) {
+        loadImageByPos(0);
     }
 }
 
@@ -206,7 +259,7 @@ void Core::initVariables() {
     loadingTimer->setSingleShot(true);
     loadingTimer->setInterval(250); // TODO: test on slower pc & adjust timeout
     dirManager = new DirectoryManager();
-    cache = new ImageCache(dirManager);
+    cache = new ImageCache();
     imageLoader = new NewLoader(dirManager);
 }
 
@@ -226,7 +279,7 @@ void Core::connectSlots() {
 }
 
 Image* Core::currentImage() {
-    return cache->imageAt(currentImagePos);
+    return cache->imageAt(mCurrentIndex);
 }
 
 void Core::onLoadingTimeout() {
@@ -248,7 +301,7 @@ void Core::onLoadFinished(Image *img, int pos) {
     emit signalUnsetImage();
     loadingTimer->stop();
     stopAnimation();
-    currentImagePos = pos;
+    mCurrentIndex = pos;
 
     if((currentImageAnimated = dynamic_cast<ImageAnimated *>(img)) != NULL) {
         startAnimation();
@@ -280,4 +333,8 @@ void Core::crop(QRect newRect) {
         }
     }
 
+}
+
+void Core::readSettings() {
+    infiniteScrolling = settings->infiniteScrolling();
 }

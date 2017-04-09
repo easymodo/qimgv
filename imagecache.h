@@ -7,7 +7,6 @@
 #include "sourceContainers/thumbnail.h"
 #include "lib/imagelib.h"
 #include "settings.h"
-#include "directorymanager.h"
 #include <QList>
 #include <QtConcurrent>
 #include <QMutex>
@@ -73,10 +72,9 @@ class ImageCache : public QObject
 {
     Q_OBJECT
 public:
-    ImageCache(DirectoryManager *_dm);
+    ImageCache();
     ~ImageCache();
 
-    DirectoryManager *dm;
     void unloadAll();
     void unloadAt(int pos);
     Image *imageAt(int pos);
@@ -101,7 +99,7 @@ private slots:
     void applySettings();
 
 public slots:
-    void init();
+    void init(QString _dir, QStringList *fileNameList);
     void removeAt(int);
 
 signals:

@@ -16,48 +16,25 @@ NewLoader::NewLoader(DirectoryManager *_dm) :
             this, SLOT(readSettings()));
 }
 
-void NewLoader::open(QString path) {
-    if(!dm->existsInCurrentDir(path)) {
-        freeAll();
-        preloadTarget = 0;
-        loadTarget = 0;
-        dm->setFile(path);
-        reinitCache();
-    } else {
-        freeAuto();
-        dm->setFile(path);
-    }
-    emit loadStarted();
-    doLoad(dm->currentFilePos());
-}
-
-void NewLoader::openBlocking(QString path) {
+void NewLoader::openBlocking(int pos) {
     freeAuto();
-    if(!dm->existsInCurrentDir(path)) {
-        dm->setFile(path);
-        reinitCache();
-    } else {
-        dm->setFile(path);
-    }
     emit loadStarted();
     //ugly shit
-    int target = dm->currentFilePos();
+    int target = pos;
     setLoadTarget(target);
     LoadHelper *localWorker = new LoadHelper(cache, thread());
-    worker->setTarget(target, dm->currentFilePath());
-    localWorker->setTarget(target, dm->currentFilePath());
+    worker->setTarget(target, dm->filePathAt(pos));
+    localWorker->setTarget(target, dm->filePathAt(pos));
     localWorker->doLoad();
     onLoadFinished(target);
     delete localWorker;
 }
 
 void NewLoader::open(int pos) {
-    if(dm->setCurrentPos(pos)) {
-        emit loadStarted();
-        worker->setTarget(-1, "");
-        doLoad(dm->currentFilePos());
-        freeAuto();
-    }
+    emit loadStarted();
+    worker->setTarget(-1, ""); // dafuq is this?
+    doLoad(pos);
+    freeAuto();
 }
 
 void NewLoader::doLoad(int pos) {
@@ -70,33 +47,14 @@ void NewLoader::doLoad(int pos) {
     }
 }
 
+void NewLoader::preload(int pos) {
+    preloadTarget = pos;
+    emit startPreload();
+}
+
 void NewLoader::doPreload() {
     if(!cache->isLoaded(preloadTarget)) {
         preloadTimer->start(200);
-    }
-}
-
-void NewLoader::loadNext() {
-    QMutexLocker locker(&mutex);
-    if(dm->peekNext(1) != dm->currentFilePos()) {
-        if(setLoadTarget(dm->nextPos())) {
-            emit loadStarted();
-            preloadTarget = dm->peekNext(1);
-            doLoad(loadTarget);
-            freeAuto();
-        }
-    }
-}
-
-void NewLoader::loadPrev() {
-    QMutexLocker locker(&mutex);
-    if(dm->peekPrev(1) != dm->currentFilePos()) {
-        if(setLoadTarget(dm->prevPos())) {
-            emit loadStarted();
-            preloadTarget = dm->peekPrev(1);
-            doLoad(loadTarget);
-            freeAuto();
-        }
     }
 }
 
@@ -104,12 +62,9 @@ void NewLoader::onLoadFinished(int loaded) {
     if(loaded == loadTarget) {
         emit loadFinished(cache->imageAt(loaded), loaded);
         current = cache->imageAt(loaded);
-        startPreload();
-    } else if(isRelevant(loaded)) {
-        //qDebug() << "loadfinished image is relevant, keeping.." << loaded;
+        emit startPreload();
     } else {
         cache->unloadAt(loaded);
-        //qDebug() << "load finished but not relevant ("<< loaded <<"). deleting..";
     }
 }
 
@@ -130,7 +85,6 @@ void NewLoader::onPreloadTimeout() {
     mutex.lock();
     if(isRelevant(preloadTarget)) {
         worker->setTarget(preloadTarget, dm->filePathAt(preloadTarget));
-        //qDebug()<< "PRELOAD " << worker->target();
         emit startLoad();
     }
     mutex.unlock();
@@ -143,7 +97,6 @@ void NewLoader::freeAuto() {
             if(cache->imageAt(i) == current) {
                 flag = true;
             }
-            //qDebug() <<"!!unloading: " << i;
             cache->unloadAt(i);
             if(flag)
                 current = NULL;
@@ -158,12 +111,10 @@ void NewLoader::freeAll() {
 
 void NewLoader::freeAt(int toUnload) {
     if(!isRelevant(toUnload)) {
-        //qDebug() << "!!!deleting" << toUnload << "  "<< cache->imageAt(toUnload);
         if(current == cache->imageAt(toUnload)) {
             current = NULL;
         }
         cache->unloadAt(toUnload);
-        //qDebug() << "image freed: "<< toUnload;
     }
 }
 
@@ -181,7 +132,6 @@ const ImageCache *NewLoader::getCache() {
 
 void NewLoader::setCache(ImageCache *_cache) {
     this->cache = _cache;
-    cache->init();
     worker = new LoadHelper(cache, this->thread());
     worker->moveToThread(loadThread);
     connect(this, SIGNAL(startLoad()),
@@ -200,12 +150,6 @@ void NewLoader::setCache(ImageCache *_cache) {
                 this, SLOT(onPreloadTimeout()), Qt::UniqueConnection);
     }
     loadThread->start();
-}
-
-void NewLoader::reinitCache() {
-    if(cache->currentDirectory() != dm->currentDirectory()) {
-        cache->init();
-    }
 }
 
 // for position in directory

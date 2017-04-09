@@ -1,12 +1,13 @@
 #include "imagecache.h"
 
-ImageCache::ImageCache(DirectoryManager*_dm) : dm(_dm) {
+ImageCache::ImageCache() {
     cachedImages = new QList<CacheObject *>();
     applySettings();
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(applySettings()));
 
-    connect(dm, SIGNAL(directorySortingChanged()), this, SLOT(init()));
+    // TODO: move this
+    //connect(dm, SIGNAL(directorySortingChanged()), this, SLOT(init()));
 }
 
 ImageCache::~ImageCache() {
@@ -17,19 +18,19 @@ ImageCache::~ImageCache() {
 // ####################### PUBLIC METHODS #######################
 // ##############################################################
 
-void ImageCache::init() {
-    if(!dm->currentDirectory().isEmpty()) {
+void ImageCache::init(QString _dir, QStringList *fileNameList) {
+    //if(!dm->currentDirectory().isEmpty()) {
         lock();
-        dir = dm->currentDirectory();
+        dir = _dir;
         while(!cachedImages->isEmpty()) {
             delete cachedImages->takeAt(0);
         }
-        for(int i = 0; i < dm->fileCount(); i++) {
-            cachedImages->append(new CacheObject(dm->filePathAt(i)));
+        for(int i = 0; i < fileNameList->count(); i++) {
+            cachedImages->append(new CacheObject(fileNameList->at(i)));
         }
         unlock();
         emit initialized(length());
-    }
+    //}
 }
 
 void ImageCache::removeAt(int pos) {

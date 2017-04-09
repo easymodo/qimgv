@@ -29,6 +29,8 @@ public:
 public slots:
     void updateInfoString();
 
+    void loadImage(QString filePath, bool blocking);
+
     // loads image in second thread
     void loadImage(QString);
 
@@ -70,7 +72,8 @@ public slots:
 private:
     NewLoader *imageLoader;
     DirectoryManager *dirManager;
-    int currentImagePos;
+    int mCurrentIndex, mImageCount;
+    bool infiniteScrolling;
     ImageAnimated* currentImageAnimated;
     Video* currentVideo;
     QMutex mutex;
@@ -81,6 +84,7 @@ private:
     void connectSlots();
     Image* currentImage();
 
+    void initCache();
 private slots:
     void onLoadStarted();
     void onLoadingTimeout();
@@ -88,6 +92,7 @@ private slots:
     // displays image and starts animation/video playback
     void onLoadFinished(Image *img, int pos);
     void crop(QRect newRect);
+    void readSettings();
 
 signals:
     void signalUnsetImage();

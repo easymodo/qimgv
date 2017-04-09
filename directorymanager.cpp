@@ -1,19 +1,16 @@
 #include "directorymanager.h"
 
 DirectoryManager::DirectoryManager() :
-    currentPos(-1),
-    startDir(""),
     infiniteScrolling(false),
     quickFormatDetection(true)
 {
     readSettings();
-    setCurrentDir(startDir);
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(applySettingsChanges()));
-    connect(&watcher, SIGNAL(fileChanged(const QString)),
-            this, SLOT(fileChanged(const QString)));
-    connect(&watcher, SIGNAL(directoryChanged(QString)),
-            this, SLOT(directoryContentsChanged(QString)));
+    //connect(&watcher, SIGNAL(fileChanged(const QString)),
+    //        this, SLOT(fileChanged(const QString)));
+    //connect(&watcher, SIGNAL(directoryChanged(QString)),
+    //        this, SLOT(directoryContentsChanged(QString)));
 }
 
 // ##############################################################
@@ -21,45 +18,41 @@ DirectoryManager::DirectoryManager() :
 // ##############################################################
 
 void DirectoryManager::readSettings() {
-    //startDir = settings->lastDirectory();
-    //if(startDir.isEmpty()) {
-    //    startDir = currentDir.homePath();
-    //}
     mimeFilters = settings->supportedMimeTypes();
     extensionFilters = settings->supportedFormats();
     applySettingsChanges();
 }
 
 void DirectoryManager::setFile(QString path) {
+    /*
     FileInfo *info = loadInfo(path);
-    setCurrentDir(info->directoryPath());
-    currentPos = fileNameList.indexOf(info->fileName());
-    settings->setLastFilePosition(currentPos);
+    setDirectory(info->directoryPath());
+    currentPos = mFileNameList.indexOf(info->fileName());
+    */
+    //settings->setLastFilePosition(currentPos);
 }
 
-void DirectoryManager::setCurrentDir(QString path) {
+void DirectoryManager::setDirectory(QString path) {
     if(!path.isEmpty() && currentDir.exists()) {
         if(currentDir.path() != path) {
-            changePath(path);
+            currentDir.setPath(path);
+            generateFileList();
+            watcher.setDir(path);
+            emit directoryChanged(path);
         }
     }
 }
 
-bool DirectoryManager::setCurrentPos(int pos) {
-    if(checkRange(pos)) {
-        currentPos = pos;
-        // this setting is not used atm
-        // settings->setLastFilePosition(currentPos);
-        return true;
-    }
-    else return false;
+int DirectoryManager::indexOf(QString filePath) {
+    int fuck = mFileNameList.indexOf(filePath);
+    return fuck;
 }
 
 // full paths array
 QStringList DirectoryManager::fileList() {
-    QStringList files = fileNameList;
+    QStringList files = mFileNameList;
     QString dirPath = currentDir.absolutePath() + "/";
-    for(int i = 0; i < fileNameList.length(); i++) {
+    for(int i = 0; i < mFileNameList.length(); i++) {
         files.replace(i, dirPath + files.at(i));
     }
     return files;
@@ -69,39 +62,13 @@ QString DirectoryManager::currentDirectory() {
     return currentDir.absolutePath();
 }
 
-QString DirectoryManager::currentFileName() {
-    return fileNameList.at(currentPos);
-}
-
-QString DirectoryManager::currentFilePath() {
-    QString path = currentDir.absolutePath() + "/" + fileNameList.at(currentFilePos());
-    return path;
-}
-
-//returns next file's path. does not change current pos
-QString DirectoryManager::nextFilePath() {
-    QString path = currentDir.absolutePath() + "/" + fileNameList.at(peekNext(1));
-    return path;
-}
-
-QString DirectoryManager::prevFilePath() {
-    QString path = currentDir.absolutePath() + "/" + fileNameList.at(peekPrev(1));
-    return path;
-}
-
 QString DirectoryManager::filePathAt(int pos) {
-    return checkRange(pos)?currentDir.absolutePath() + "/" + fileNameList.at(pos) : "";
+    return checkRange(pos)?currentDir.absolutePath() + "/" + mFileNameList.at(pos) : "";
 }
 
 bool DirectoryManager::removeAt(int pos) {
     if(checkRange(pos)) {
-        if(pos < currentPos) {
-            currentPos--;
-        }
-        else if(pos == currentPos && pos == fileCount() - 1) {
-            currentPos--;
-        }
-        fileNameList.removeAt(pos);
+        mFileNameList.removeAt(pos);
         emit fileRemoved(pos); // to cache & thumbnail - remove
         return true;
         //return currentDir.remove(currentFileName());
@@ -110,7 +77,7 @@ bool DirectoryManager::removeAt(int pos) {
 }
 
 bool DirectoryManager::checkRange(int pos) {
-    if(pos >= 0 && pos < fileNameList.length()) {
+    if(pos >= 0 && pos < mFileNameList.length()) {
         return true;
     } else {
         qDebug() << "dirManager::checkRange : requested index out of range";
@@ -118,52 +85,12 @@ bool DirectoryManager::checkRange(int pos) {
     }
 }
 
-int DirectoryManager::currentFilePos() {
-    return currentPos;
-}
-
-int DirectoryManager::nextPos() {
-    currentPos = peekNext(1);
-    return currentPos;
-}
-
-int DirectoryManager::prevPos() {
-    currentPos = peekPrev(1);
-    return currentPos;
-}
-
 int DirectoryManager::fileCount() {
-    return fileNameList.length();
-}
-
-int DirectoryManager::peekNext(int offset) {
-    int pos = currentPos + offset;
-    if(pos < 0) {
-        pos = 0;
-    } else if(pos >= fileNameList.length()) {
-        if(infiniteScrolling) {
-            pos = 0;
-        } else {
-            pos = fileNameList.length() - 1;
-        }
-    }
-    return pos;
-}
-
-int DirectoryManager::peekPrev(int offset) {
-    int pos = currentPos - offset;
-    if(pos < 0) {
-        if(infiniteScrolling) {
-            pos = fileNameList.length() - 1;
-        } else {
-            pos = 0;
-        }
-    }
-    return pos;
+    return mFileNameList.length();
 }
 
 bool DirectoryManager::existsInCurrentDir(QString file) {
-    return fileNameList.contains(file, Qt::CaseInsensitive);
+    return mFileNameList.contains(file, Qt::CaseInsensitive);
 }
 
 bool DirectoryManager::isImage(QString filePath) {
@@ -187,7 +114,7 @@ bool DirectoryManager::isImage(QString filePath) {
 }
 
 bool DirectoryManager::containsImages() {
-    return !fileNameList.empty();
+    return !mFileNameList.empty();
 }
 
 // ##############################################################
@@ -230,21 +157,6 @@ void DirectoryManager::directoryContentsChanged(QString dirPath) {
 // ###################### PRIVATE METHODS #######################
 // ##############################################################
 
-void DirectoryManager::changePath(QString path) {
-    QString prevPath = currentDir.path();
-    currentDir.setPath(path);
-    if(currentDir.isReadable()) {
-        settings->setLastDirectory(path);
-    } else {
-        qDebug() << "DirManager: Invalid directory specified. Removing setting.";
-        settings->setLastDirectory("");
-    }
-    generateFileList();
-    currentPos = -1;
-    watcher.setDir(path);
-    emit directoryChanged(path);
-}
-
 FileInfo *DirectoryManager::loadInfo(QString path) {
     FileInfo *info = new FileInfo(path);
     return info;
@@ -277,20 +189,20 @@ void DirectoryManager::generateFileList() {
 // For example an .exe wont open, but a gif with .jpg extension will still play.
 void DirectoryManager::generateFileListQuick() {
     currentDir.setNameFilters(extensionFilters);
-    fileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
+    mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
 }
 
 // Filter by mime type. Basically opens every file in a folder
 // and checks what's inside. Very slow.
 void DirectoryManager::generateFileListDeep() {
     currentDir.setNameFilters(QStringList("*"));
-    fileNameList.clear();
+    mFileNameList.clear();
     QStringList unfiltered = currentDir.entryList(QDir::Files | QDir::Hidden);
 
     for(int i = 0; i < unfiltered.count(); i++) {
         QString filePath = currentDir.absolutePath() + "/" + unfiltered.at(i);
         if(isImage(filePath)) {
-            fileNameList.append(unfiltered.at(i));
+            mFileNameList.append(unfiltered.at(i));
         }
     }
 }

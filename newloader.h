@@ -18,15 +18,12 @@ class NewLoader : public QObject
     Q_OBJECT
 public:
     explicit NewLoader(DirectoryManager *);
-    void open(QString path);
     void open(int pos);
-    void loadNext();
-    void loadPrev();
     const ImageCache* getCache();
     void setCache(ImageCache*);
-    void openBlocking(QString path);
-    void reinitCache();
+    void openBlocking(int pos);
     Image *current;
+    void preload(int pos);
 
 public slots:
     void generateThumbnailFor(int pos, long thumbnailId);
