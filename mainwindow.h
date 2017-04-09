@@ -85,9 +85,9 @@ private slots:
     void openVideo(Clip *clip);
     void openImage(QPixmap *pixmap);
     void showSettings();
-
     void slotSelectWallpaper();
     void calculatePanelTriggerArea();
+    void updateCurrentDisplay();
 
 private:
     Core *core;
@@ -101,6 +101,7 @@ private:
     int currentViewer; // 0 = none; 1 = imageViewer; 2 = VideoPlayer;
     int currentDisplay;
     int fitMode;
+    int lastEvent;
     //bool fullscreen; // separate flag because "borderless fullscreen" is actually a maximized window
     QBoxLayout *layout;
     PanelHPosition panelPosition;
@@ -117,6 +118,7 @@ private:
     void adjustWindowPosLastScreen();
     QRect lastScreenGeometry();
     void saveDisplay();
+    QTimer windowMoveTimer;
 
 protected:
     bool event(QEvent *event);

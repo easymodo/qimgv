@@ -44,6 +44,8 @@ void MainWindow::init() {
     layout->setContentsMargins(0, 0, 0, 0);
     central->setLayout(layout);
     this->setCentralWidget(central);
+    windowMoveTimer.setSingleShot(true);
+    windowMoveTimer.setInterval(150);
 
     core = new Core();
 
@@ -104,6 +106,8 @@ void MainWindow::init() {
     connect(actionManager, SIGNAL(removeFile()), core, SLOT(removeFile()));
 
     connect(this, SIGNAL(fileSaved(QString)), core, SLOT(saveImage(QString)));
+
+    connect(&windowMoveTimer, SIGNAL(timeout()), this, SLOT(updateCurrentDisplay()));
 
     readSettingsInitial();
     core->init();
@@ -337,9 +341,8 @@ void MainWindow::openImage(QPixmap *pixmap) {
 void MainWindow::readSettingsInitial() {
     readSettings();
     currentDisplay = settings->lastDisplay();
-    if(!settings->fullscreenMode()) {
-        restoreWindowGeometry();
-    } else if(!isFullScreen()) {
+    restoreWindowGeometry();
+    if(settings->fullscreenMode() && !isFullScreen()) {
         this->triggerFullscreen();
     }
 }
@@ -438,9 +441,11 @@ void MainWindow::dropEvent(QDropEvent *event) {
 }
 
 bool MainWindow::event(QEvent *event) {
+    if(event->type() == QEvent::Move) {
+        windowMoveTimer.start();
+    }
     return (actionManager->processEvent(event)) ? true : QMainWindow::event(event);
 }
-
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     this->hide();
@@ -471,6 +476,11 @@ void MainWindow::restoreWindowGeometry() {
     QRect geometry = settings->windowGeometry();
     this->resize(geometry.size());
     this->move(geometry.x(), geometry.y());
+    updateCurrentDisplay();
+}
+
+void MainWindow::updateCurrentDisplay() {
+    currentDisplay = desktopWidget->screenNumber(this);
 }
 
 MainWindow::~MainWindow() {
@@ -531,12 +541,11 @@ void MainWindow::triggerFullscreen() {
         //hide window before move to prevent flicker
         this->hide();
         //move to target screen
-        int display = settings->lastDisplay();
-        if(desktopWidget->screenCount() > display &&
-           display != desktopWidget->screenNumber(this))
+        if(desktopWidget->screenCount() > currentDisplay &&
+           currentDisplay != desktopWidget->screenNumber(this))
         {
-            this->move(desktopWidget->screenGeometry(display).x(),
-                       desktopWidget->screenGeometry(display).y());
+            this->move(desktopWidget->screenGeometry(currentDisplay).x(),
+                       desktopWidget->screenGeometry(currentDisplay).y());
         }
         this->showFullScreen();
         emit signalFullscreenEnabled(true);
