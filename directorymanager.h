@@ -25,33 +25,20 @@ class DirectoryManager : public QObject
     Q_OBJECT
 public:
     DirectoryManager();
-
-    QDir currentDir;
-    QStringList mFileNameList;
-    QStringList mimeFilters, extensionFilters;
-
-    void readSettings();
-
-    // changes current file position
-    // changes current directory if needed
-    void setFile(QString path);
-
     // ignored if the same dir is already opened
     void setDirectory(QString);
-
     // returns position in file list
     // -1 if not found
-    int indexOf(QString);
-
-    QStringList fileList();
-    QString currentDirectory();
-    QString filePathAt(int pos);
+    int indexOf(QString) const;
+    QStringList fileList() const;
+    QString currentDirectory() const;
+    QString filePathAt(int pos) const;
     bool removeAt(int pos);
-    int fileCount();
-    bool existsInCurrentDir(QString file);
-    bool isImage(QString filePath);
-    bool containsImages();
-    bool checkRange(int pos);
+    int fileCount() const;
+    bool existsInCurrentDir(QString file) const;
+    bool isImage(QString filePath) const;
+    bool containsImages() const;
+    bool checkRange(int pos) const;
 
 public slots:
     void applySettingsChanges();
@@ -61,9 +48,12 @@ private slots:
     void directoryContentsChanged(QString dirPath);
 
 private:
+    QDir currentDir;
+    QStringList mFileNameList;
+    QStringList mimeFilters, extensionFilters;
+
+    void readSettings();
     WatcherWindows watcher;
-    QString startDir;
-    bool infiniteScrolling;
     QMimeDatabase mimeDb;
     bool quickFormatDetection;
 

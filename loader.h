@@ -1,16 +1,11 @@
 #ifndef NEWLOADER_H
 #define NEWLOADER_H
 
-#include <QObject>
 #include "directorymanager.h"
-#include "imagecache.h"
+#include "cache.h"
 #include "settings.h"
-#include "sourceContainers/imagestatic.h"
 #include <QtConcurrent>
-#include <time.h>
 #include <QMutex>
-#include <QVector>
-#include "loadhelper.h"
 #include "loaderrunnable.h"
 #include "thumbnailer.h"
 
@@ -18,35 +13,31 @@ class NewLoader : public QObject
 {
     Q_OBJECT
 public:
-    explicit NewLoader(DirectoryManager *);
-    void open(int pos);
+    explicit NewLoader(const DirectoryManager *);
+    void open(int index);
     const ImageCache* getCache();
     void setCache(ImageCache*);
-    void openBlocking(int pos);
-    void preload(int pos);
+    void openBlocking(int index);
+    void preload(int index);
 
 public slots:
-    void generateThumbnailFor(int pos, long thumbnailId);
+    void generateThumbnailFor(int index, long thumbnailId);
 
 private:
-    DirectoryManager *dm;
+    const DirectoryManager *dm;
     ImageCache *cache;
     QMutex mutex, mutex2;
     void freeAt(int);
     int currentIndex, preloadTarget, time;
-    LoadHelper *worker;
     //QThread *loadThread;
     QTimer *loadTimer, *preloadTimer;
     // for quick access to loaded indexes
-
-    void freeAll();
-    bool isRelevant(int pos);
+    bool isRelevant(int index);
     QList<int> tasks;
 
-    const int LOAD_DELAY = 0;
 signals:
     void loadStarted();
-    void loadFinished(Image*, int pos);
+    void loadFinished(Image*, int index);
     void thumbnailReady(long, Thumbnail*);
     void startLoad();
     void startPreload();

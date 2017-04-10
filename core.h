@@ -7,12 +7,11 @@
 #include <QFileDialog>
 #include <QTimer>
 #include "directorymanager.h"
-#include "newloader.h"
+#include "loader.h"
 #include "settings.h"
 #include "sourceContainers/imageanimated.h"
 #include "wallpapersetter.h"
 #include "lib/stuff.h"
-#include <time.h>
 
 class Core : public QObject
 {
@@ -38,7 +37,7 @@ public slots:
     void loadImageBlocking(QString);
 
     // invalid position will be ignored
-    void loadImageByPos(int pos);
+    void openByIndex(int index);
     void slotNextImage();
     void slotPrevImage();
 
@@ -84,13 +83,13 @@ private:
     void connectSlots();
     Image* currentImage();
 
-    void initCache();
 private slots:
+    void initCache();
     void onLoadStarted();
     void onLoadingTimeout();
 
     // displays image and starts animation/video playback
-    void onLoadFinished(Image *img, int pos);
+    void onLoadFinished(Image *img, int index);
     void crop(QRect newRect);
     void readSettings();
 

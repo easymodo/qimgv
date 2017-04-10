@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QMutex>
-#include "imagecache.h"
+#include "cache.h"
 #include "imagefactory.h"
 
 class LoadHelper : public QObject

@@ -1,13 +1,10 @@
-#include "imagecache.h"
+#include "cache.h"
 
 ImageCache::ImageCache() {
     cachedImages = new QList<CacheObject *>();
     applySettings();
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(applySettings()));
-
-    // TODO: move this
-    //connect(dm, SIGNAL(directorySortingChanged()), this, SLOT(init()));
 }
 
 ImageCache::~ImageCache() {
@@ -103,8 +100,8 @@ QString ImageCache::currentlyLoadedCount() {
     return str;
 }
 
-const QList<int>* ImageCache::currentlyLoadedList() {
-    return &loadedIndexes;
+const QList<int> ImageCache::currentlyLoadedList() {
+    return loadedIndexes;
 }
 
 void ImageCache::setImage(Image *img, int pos) {
@@ -114,7 +111,7 @@ void ImageCache::setImage(Image *img, int pos) {
             cachedImages->at(pos)->setImage(img);
             loadedIndexes.append(pos);
         } else {
-            qDebug() << "CACHE: Warning, trying to set already loaded image. Ignoring. Index was: " << pos;
+            qDebug() << "CACHE: Warning, trying to set already loaded image. Index was: " << pos <<". This is a bug in loader!";
         }
     }
     unlock();

@@ -84,7 +84,7 @@ public:
     QString currentlyLoadedCount();
     void setImage(Image *img, int pos);
 
-    const QList<int> *currentlyLoadedList();
+    const QList<int> currentlyLoadedList();
 private:
     QList<CacheObject*> *cachedImages;
     uint maxCacheSize;

@@ -1,7 +1,6 @@
 #include "directorymanager.h"
 
 DirectoryManager::DirectoryManager() :
-    infiniteScrolling(false),
     quickFormatDetection(true)
 {
     readSettings();
@@ -23,15 +22,6 @@ void DirectoryManager::readSettings() {
     applySettingsChanges();
 }
 
-void DirectoryManager::setFile(QString path) {
-    /*
-    FileInfo *info = loadInfo(path);
-    setDirectory(info->directoryPath());
-    currentPos = mFileNameList.indexOf(info->fileName());
-    */
-    //settings->setLastFilePosition(currentPos);
-}
-
 void DirectoryManager::setDirectory(QString path) {
     if(!path.isEmpty() && currentDir.exists()) {
         if(currentDir.path() != path) {
@@ -43,13 +33,13 @@ void DirectoryManager::setDirectory(QString path) {
     }
 }
 
-int DirectoryManager::indexOf(QString filePath) {
+int DirectoryManager::indexOf(QString filePath) const {
     int fuck = mFileNameList.indexOf(filePath);
     return fuck;
 }
 
 // full paths array
-QStringList DirectoryManager::fileList() {
+QStringList DirectoryManager::fileList() const {
     QStringList files = mFileNameList;
     QString dirPath = currentDir.absolutePath() + "/";
     for(int i = 0; i < mFileNameList.length(); i++) {
@@ -58,11 +48,11 @@ QStringList DirectoryManager::fileList() {
     return files;
 }
 
-QString DirectoryManager::currentDirectory() {
+QString DirectoryManager::currentDirectory() const {
     return currentDir.absolutePath();
 }
 
-QString DirectoryManager::filePathAt(int pos) {
+QString DirectoryManager::filePathAt(int pos) const {
     return checkRange(pos)?currentDir.absolutePath() + "/" + mFileNameList.at(pos) : "";
 }
 
@@ -71,12 +61,11 @@ bool DirectoryManager::removeAt(int pos) {
         mFileNameList.removeAt(pos);
         emit fileRemoved(pos); // to cache & thumbnail - remove
         return true;
-        //return currentDir.remove(currentFileName());
     }
     else return false;
 }
 
-bool DirectoryManager::checkRange(int pos) {
+bool DirectoryManager::checkRange(int pos) const {
     if(pos >= 0 && pos < mFileNameList.length()) {
         return true;
     } else {
@@ -84,15 +73,15 @@ bool DirectoryManager::checkRange(int pos) {
     }
 }
 
-int DirectoryManager::fileCount() {
+int DirectoryManager::fileCount() const {
     return mFileNameList.length();
 }
 
-bool DirectoryManager::existsInCurrentDir(QString file) {
+bool DirectoryManager::existsInCurrentDir(QString file) const {
     return mFileNameList.contains(file, Qt::CaseInsensitive);
 }
 
-bool DirectoryManager::isImage(QString filePath) {
+bool DirectoryManager::isImage(QString filePath) const {
     QFile file(filePath);
     if(file.exists()) {
         /* workaround
@@ -112,7 +101,7 @@ bool DirectoryManager::isImage(QString filePath) {
     return false;
 }
 
-bool DirectoryManager::containsImages() {
+bool DirectoryManager::containsImages() const {
     return !mFileNameList.empty();
 }
 
@@ -121,7 +110,6 @@ bool DirectoryManager::containsImages() {
 // ##############################################################
 
 void DirectoryManager::applySettingsChanges() {
-    infiniteScrolling = settings->infiniteScrolling();
     QDir::SortFlags flags;
     switch(settings->sortingMode()) {
         case 1:

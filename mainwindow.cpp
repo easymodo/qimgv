@@ -131,7 +131,7 @@ void MainWindow::enablePanel() {
             thumbnailPanel, SLOT(removeItemAt(int)), Qt::UniqueConnection);
 
     connect(thumbnailPanel, SIGNAL(openImage(int)),
-            core, SLOT(loadImageByPos(int)), Qt::UniqueConnection);
+            core, SLOT(openByIndex(int)), Qt::UniqueConnection);
 
     connect(thumbnailPanel, SIGNAL(thumbnailRequested(int, long)),
             core, SIGNAL(thumbnailRequested(int, long)), Qt::UniqueConnection);
@@ -167,7 +167,7 @@ void MainWindow::disablePanel() {
             thumbnailPanel, SLOT(removeItemAt(int)));
 
     disconnect(thumbnailPanel, SIGNAL(thumbnailClicked(int)),
-            core, SLOT(loadImageByPos(int)));
+            core, SLOT(openByIndex(int)));
 
     disconnect(thumbnailPanel, SIGNAL(thumbnailRequested(int, long)),
             core, SIGNAL(thumbnailRequested(int, long)));

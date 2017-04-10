@@ -1,55 +1,54 @@
-#include "newloader.h"
+#include "loader.h"
 
 // ######## WARNING: spaghetti code ##########
 
-NewLoader::NewLoader(DirectoryManager *_dm) :
+NewLoader::NewLoader(const DirectoryManager *_dm) :
     preloadTarget(0),
     currentIndex(-1)
 {
     dm = _dm;
     readSettings();
-    QThreadPool::globalInstance()->setMaxThreadCount(4);
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
 }
 
 // TODO
-void NewLoader::openBlocking(int pos) {
+void NewLoader::openBlocking(int index) {
     emit loadStarted();
-    currentIndex = pos;
+    currentIndex = index;
     freeAuto();
-    if(tasks.contains(pos)) {
+    if(tasks.contains(index)) {
         return;
     }
-    if(cache->isLoaded(pos)) {
-        emit loadFinished(cache->imageAt(pos), pos);
+    if(cache->isLoaded(index)) {
+        emit loadFinished(cache->imageAt(index), index);
         return;
     }
-    LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(pos), pos, thread());
+    LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(index), index, thread());
     connect(runnable, SIGNAL(finished(Image*,int)), this, SLOT(onLoadFinished(Image*,int)), Qt::UniqueConnection);
-    tasks.append(pos);
+    tasks.append(index);
     runnable->run();
 }
 
-void NewLoader::open(int pos) {
+void NewLoader::open(int index) {
     emit loadStarted();
-    currentIndex = pos;
+    currentIndex = index;
     freeAuto();
-    if(tasks.contains(pos)) {
+    if(tasks.contains(index)) {
         return;
     }
-    if(cache->isLoaded(pos)) {
-        emit loadFinished(cache->imageAt(pos), pos);
+    if(cache->isLoaded(index)) {
+        emit loadFinished(cache->imageAt(index), index);
         return;
     }
-    LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(pos), pos, thread());
+    LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(index), index, thread());
     connect(runnable, SIGNAL(finished(Image*,int)), this, SLOT(onLoadFinished(Image*,int)), Qt::UniqueConnection);
-    tasks.append(pos);
+    tasks.append(index);
     QThreadPool::globalInstance()->start(runnable);
 }
 
-void NewLoader::preload(int pos) {
-    preloadTarget = pos;
+void NewLoader::preload(int index) {
+    preloadTarget = index;
     preloadTimer->start();
 }
 
@@ -65,6 +64,7 @@ void NewLoader::doPreload() {
     }
 }
 
+// TODO: what if cache was reinitialized during loading?
 void NewLoader::onLoadFinished(Image *image, int index) {
     lock();
     tasks.removeAt(tasks.indexOf(index));
@@ -81,24 +81,20 @@ void NewLoader::onLoadFinished(Image *image, int index) {
     unlock();
 }
 
-bool NewLoader::isRelevant(int pos) {
-    return !(pos < currentIndex - 1 || pos > currentIndex + 1);
+bool NewLoader::isRelevant(int index) {
+    return !(index < currentIndex - 1 || index > currentIndex + 1);
 }
 
 void NewLoader::freeAuto() {
     lock();
-    const QList<int>* loadedList = cache->currentlyLoadedList();
-    for(int i = 0; i < loadedList->length(); i++) {
-        if(!isRelevant(loadedList->at(i))) {
-            cache->unloadAt(loadedList->at(i));
+    const QList<int> loadedList = cache->currentlyLoadedList();
+    for(int i = 0; i < loadedList.length(); i++) {
+        if(!isRelevant(loadedList.at(i))) {
+            cache->unloadAt(loadedList.at(i));
         }
     }
-    //qDebug()  << cache->currentlyLoadedList();
+    //qDebug()  << loadedList;
     unlock();
-}
-
-void NewLoader::freeAll() {
-    cache->unloadAll();
 }
 
 bool NewLoader::setLoadTarget(int _target) {
@@ -124,10 +120,10 @@ void NewLoader::setCache(ImageCache *_cache) {
 }
 
 // for position in directory
-void NewLoader::generateThumbnailFor(int pos, long thumbnailId) {
+void NewLoader::generateThumbnailFor(int index, long thumbnailId) {
     Thumbnailer *thWorker = new Thumbnailer(cache,
-                                            dm->filePathAt(pos),
-                                            pos,
+                                            dm->filePathAt(index),
+                                            index,
                                             settings->squareThumbnails(),
                                             thumbnailId);
     connect(thWorker, SIGNAL(thumbnailReady(long, Thumbnail*)),
