@@ -15,6 +15,7 @@ public:
 
     QPixmap *getPixmap();
     const QImage* getImage();
+    QMovie* getMovie();
     void load();
     void unload();
     int height();
@@ -27,20 +28,20 @@ public:
 public slots:
     void save();
     void save(QString destinationPath);
-    void animationStart();
-    void animationStop();
+    //void animationStart();
+    //void animationStop();
 
 signals:
     void frameChanged(QPixmap*);
 
 private slots:
-    void nextFrame();
+    //void nextFrame();
 
 private:
     QMovie *movie;
     QTimer *timer;
     QTransform transform;
-    void startAnimationTimer();
+    //void startAnimationTimer();
 };
 
 #endif // IMAGEANIMATED_H

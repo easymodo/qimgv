@@ -18,7 +18,7 @@ ImageAnimated::ImageAnimated(FileInfo *_info) {
 }
 
 ImageAnimated::~ImageAnimated() {
-    this->animationStop();
+    //this->animationStop();
     timer->deleteLater();
     if(movie)
         delete movie;
@@ -114,6 +114,14 @@ const QImage *ImageAnimated::getImage() {
     return cPtr;
 }
 
+QMovie *ImageAnimated::getMovie() {
+    QMovie *_movie = new QMovie();
+    _movie->setFileName(path);
+    _movie->setFormat(fileInfo->fileExtension());
+    _movie->jumpToFrame(0);
+    return _movie;
+}
+
 int ImageAnimated::height() {
     if(isLoaded()) {
         return movie->currentImage().height();
@@ -128,7 +136,7 @@ int ImageAnimated::width() {
 QSize ImageAnimated::size() {
     return isLoaded() ? movie->currentImage().size() : QSize(0, 0);
 }
-
+/*
 void ImageAnimated::animationStart() {
     if(isLoaded()) {
         animationStop();
@@ -161,6 +169,7 @@ void ImageAnimated::startAnimationTimer() {
         timer->start(movie->nextFrameDelay());
     }
 }
+*/
 
 void ImageAnimated::rotate(int grad) {
     mutex.lock();

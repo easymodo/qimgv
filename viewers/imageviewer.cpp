@@ -1,6 +1,9 @@
 #include "imageviewer.h"
 
+// TODO: de-spaghettify this
+
 ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
+    animation(NULL),
     isDisplayingFlag(false),
     errorFlag(false),
     mouseWrapping(false),
@@ -9,7 +12,8 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     maxScale(2.0),
     minScale(4.0),
     scaleStep(0.16),
-    imageFitMode(NORMAL) {
+    imageFitMode(NORMAL)
+{
     initOverlays();
     image = new QPixmap();
     image->load(":/images/res/logo.png");
@@ -17,6 +21,8 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     this->setMouseTracking(true);
     resizeTimer = new QTimer(this);
     resizeTimer->setSingleShot(true);
+    animationTimer = new QTimer(this);
+    animationTimer->setSingleShot(true);
     cursorTimer = new QTimer(this);
     readSettings();
     connect(settings, SIGNAL(settingsChanged()),
@@ -51,55 +57,118 @@ bool ImageViewer::imageIsScaled() const {
 }
 
 void ImageViewer::showLoadingMessage() {
-    resizeTimer->stop();
-    delete image;
-    image = new QPixmap();
-    image->load(":/images/res/loading_static.png");
+    closeImage();
+    image = new QPixmap(":/images/res/loading_static.png");
     drawingRect = image->rect();
     sourceSize  = image->size();
-    isDisplayingFlag = true;
+    isDisplayingFlag = false;
     fitDefault();
-    isDisplayingFlag = false; // 10/10 coding
     update();
+}
+
+void ImageViewer::startAnimation() {
+    if(animation) {
+        stopAnimation();
+        connect(animationTimer, SIGNAL(timeout()), this, SLOT(nextFrame()));
+        startAnimationTimer();
+    }
+}
+
+void ImageViewer::stopAnimation() {
+    if(animation) {
+        animationTimer->stop();
+        disconnect(animationTimer, SIGNAL(timeout()), this, SLOT(nextFrame()));
+        animation->jumpToFrame(0);
+    }
+}
+void ImageViewer::nextFrame() {
+    if(animation) {
+        if(!animation->jumpToNextFrame()) {
+            animation->jumpToFrame(0);
+        }
+        QPixmap *newFrame = new QPixmap();
+        *newFrame = animation->currentPixmap().transformed(transform, Qt::SmoothTransformation);
+        startAnimationTimer();
+        updateImage(newFrame);
+    }
+}
+
+void ImageViewer::startAnimationTimer() {
+    if(animationTimer && animation) {
+        animationTimer->start(animation->nextFrameDelay());
+    }
+}
+
+void ImageViewer::displayAnimation(QMovie *_animation) {
+    if(_animation && _animation->isValid()) {
+        closeImage();
+        animation = _animation;
+        animation->jumpToFrame(0);
+        readjust(animation->currentPixmap().size(),
+                 animation->currentPixmap().rect());
+        image = new QPixmap();
+        *image = animation->currentPixmap().transformed(transform, Qt::SmoothTransformation);
+        if(settings->transparencyGrid())
+            drawTransparencyGrid();
+        update();
+        startAnimation();
+    }
 }
 
 // display & initialize
 void ImageViewer::displayImage(QPixmap *_image) {
+    closeImage();
+    if(_image) {
+        image = _image;
+        readjust(image->size(), image->rect());
+        if(settings->transparencyGrid())
+            drawTransparencyGrid();
+        update();
+        connect(resizeTimer, SIGNAL(timeout()),
+                this, SLOT(resizeImage()), Qt::UniqueConnection);
+        resizeTimer->start(0);
+    }
+}
+
+void ImageViewer::closeImage() {
     isDisplayingFlag = false;
-    delete image;
-    resizeTimer->stop();
-    sourceSize  = _image->size();
-    drawingRect =  _image->rect();
-
     errorFlag = false;
+    resizeTimer->stop();
+    disconnect(resizeTimer, SIGNAL(timeout()),
+            this, SLOT(resizeImage()));
+    if(animation) {
+        stopAnimation();
+        delete animation;
+        animation = NULL;
+    }
+    if(image) {
+        delete image;
+        image = NULL;
+    }
+    mapOverlay->setEnabled(false);
+}
+
+void ImageViewer::adjustOverlays() {
+    cropOverlay->setRealSize(sourceSize);
+    cropOverlay->setImageArea(drawingRect, currentScale);
+    cropOverlay->hide();
+    mapOverlay->updatePosition();
+    updateMap();
+}
+
+// apply new image dimensions, fit mode, and readjust overlays
+void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     isDisplayingFlag = true;
-    image = _image;
-
     mapOverlay->setEnabled(true);
-
-
+    sourceSize  = _sourceSize;
+    drawingRect =  _drawingRect;
     updateMaxScale();
     updateMinScale();
-
     currentScale = 1.0;
     if(imageFitMode == FREE)
         imageFitMode = ALL;
     fitDefault();
-
-    cropOverlay->setRealSize(sourceSize);
-    cropOverlay->setImageArea(drawingRect, currentScale);
-    cropOverlay->hide();
-
-    mapOverlay->updatePosition();
-    updateMap();
-    if(settings->transparencyGrid())
-        drawTransparencyGrid();
-    update();
-
-    connect(resizeTimer, SIGNAL(timeout()),
-            this, SLOT(resizeImage()), Qt::UniqueConnection);
-    resizeTimer->start(0);
-    // cursorTimer->start(2000);
+    adjustOverlays();
 }
 
 // takes scaled image
@@ -211,9 +280,8 @@ void ImageViewer::setScale(float scale) {
 // ##################################################
 
 void ImageViewer::resizeImage() {
-    if(!isDisplaying()) {
+    if(!isDisplaying())
         return;
-    }
     resizeTimer->stop();
     if(image->size() != drawingRect.size()) {
         emit scalingRequested(drawingRect.size());
@@ -253,14 +321,14 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.fillRect(rect(), QBrush(bgColor));
     //painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
-    painter.drawPixmap(drawingRect, *image, image->rect());
+    if(image)
+        painter.drawPixmap(drawingRect, *image, image->rect());
 }
 
 void ImageViewer::mousePressEvent(QMouseEvent *event) {
     QWidget::mousePressEvent(event);
-    if(!isDisplaying()) {
+    if(!isDisplaying())
         return;
-    }
     mapOverlay->enableVisibility(true);
     cursorTimer->stop();
     setCursor(QCursor(Qt::ArrowCursor));
@@ -277,9 +345,8 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
 void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     QWidget::mouseMoveEvent(event);
     cursorTimer->stop();
-    if(!isDisplaying()) {
+    if(!isDisplaying())
         return;
-    }
     if(event->buttons() & Qt::LeftButton) {
         mouseWrapping?mouseDragWrapping(event):mouseDrag(event);
     } else if(event->buttons() & Qt::RightButton) {
@@ -317,7 +384,6 @@ void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
         bool wrapped = false;
         QPoint newPos = mapToGlobal(event->pos()); //global
         QPoint delta = mouseMoveStartPos - event->pos(); // relative
-
         if(delta.x() && abs(delta.x()) < desktopSize.width() / 2) {
             int left = drawingRect.x() - delta.x();
             int right = left + drawingRect.width();
@@ -338,7 +404,6 @@ void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
                 drawingRect.moveLeft(left);
             }
         }
-
         if(delta.y() && abs(delta.y()) < desktopSize.height() / 2) {
             int top = drawingRect.y() - delta.y();
             int bottom = top + drawingRect.height();
@@ -358,14 +423,11 @@ void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
                 // move image
                 drawingRect.moveTop(top);
             }
-
         }
-
         if(wrapped)
             mouseMoveStartPos = mapFromGlobal(newPos);
         else
             mouseMoveStartPos = event->pos();
-
         updateMap();
         update();
     }

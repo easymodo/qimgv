@@ -236,30 +236,8 @@ void Core::rescaleForZoom(QSize newSize) {
     }
 }
 
-void Core::startAnimation() {
-    if(currentImageAnimated) {
-        currentImageAnimated->animationStart();
-        connect(currentImageAnimated, SIGNAL(frameChanged(QPixmap *)),
-                this, SIGNAL(frameChanged(QPixmap *)), Qt::UniqueConnection);
-    }
-}
-
 void Core::stopAnimation() {
-    /*
-    if(currentImageAnimated) {
-        currentImageAnimated->animationStop();
-        // TODO: fix mess with null pointers here
-        disconnect(currentImageAnimated, SIGNAL(frameChanged(QPixmap *)),
-                   this, SIGNAL(frameChanged(QPixmap *)));
-    }
-    */
-
-    if((currentImageAnimated = dynamic_cast<ImageAnimated *>(cache->imageAt(mPreviousIndex))) != NULL) {
-        currentImageAnimated->animationStop();
-        disconnect(currentImageAnimated, SIGNAL(frameChanged(QPixmap *)),
-                   this, SIGNAL(frameChanged(QPixmap *)));
-    }
-
+    emit signalStopAnimation();
     if(currentVideo) {
         emit stopVideo();
     }
@@ -272,7 +250,7 @@ void Core::stopAnimation() {
 void Core::initVariables() {
     loadingTimer = new QTimer();
     loadingTimer->setSingleShot(true);
-    loadingTimer->setInterval(250); // TODO: test on slower pc & adjust timeout
+    loadingTimer->setInterval(500); // TODO: test on slower pc & adjust timeout
     dirManager = new DirectoryManager();
     cache = new ImageCache();
     imageLoader = new NewLoader(dirManager);
@@ -320,12 +298,12 @@ void Core::onLoadFinished(Image *img, int index) {
     currentVideo = NULL;
     mPreviousIndex = index;
     if((currentImageAnimated = dynamic_cast<ImageAnimated *>(cache->imageAt(index))) != NULL) {
-        startAnimation();
+        emit signalSetAnimation(currentImageAnimated->getMovie());
     }    
     if((currentVideo = dynamic_cast<Video *>(img)) != NULL) {
         emit videoChanged(currentVideo->getClip());
     }
-    if(!currentVideo && img) {    //static image
+    if(!currentVideo && !currentImageAnimated && img) {    //static image
         emit signalSetImage(img->getPixmap());
     }
 
@@ -348,7 +326,6 @@ void Core::crop(QRect newRect) {
             emit videoAltered(currentVideo->getClip());
         }
     }
-
 }
 
 void Core::readSettings() {

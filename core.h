@@ -65,7 +65,6 @@ public slots:
     // makes a scaled copy of current image
     // and emits imageAltered(QPixmap*)
     void rescaleForZoom(QSize newSize);
-    void startAnimation();
     void stopAnimation();
 
 private:
@@ -111,6 +110,8 @@ signals:
     void videoChanged(Clip*);
     void itemRemoved(int);
     void loadingTimeout();
+    void signalStopAnimation();
+    void signalSetAnimation(QMovie*);
 };
 
 #endif // CORE_H

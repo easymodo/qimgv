@@ -45,7 +45,6 @@ SOURCES += main.cpp\
     sourceContainers/thumbnail.cpp \
     viewers/videoplayer.cpp \
     sourceContainers/video.cpp \
-    loadhelper.cpp \
     imagefactory.cpp \
     thumbnailer.cpp \
     lib/stuff.cpp \
@@ -87,7 +86,6 @@ HEADERS += mainwindow.h \
     sourceContainers/thumbnail.h \
     viewers/videoplayer.h \
     sourceContainers/video.h \
-    loadhelper.h \
     imagefactory.h \
     thumbnailer.h \
     wallpapersetter.h \

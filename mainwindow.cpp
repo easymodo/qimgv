@@ -234,6 +234,12 @@ void MainWindow::enableImageViewer() {
         connect(core, SIGNAL(scalingFinished(QPixmap *)),
                 imageViewer, SLOT(updateImage(QPixmap *)), Qt::UniqueConnection);
 
+        connect(core, SIGNAL(signalSetAnimation(QMovie*)),
+                imageViewer, SLOT(displayAnimation(QMovie*)), Qt::UniqueConnection);
+
+        connect(core, SIGNAL(signalStopAnimation()),
+                imageViewer, SLOT(stopAnimation()), Qt::UniqueConnection);
+
         connect(core, SIGNAL(frameChanged(QPixmap *)),
                 imageViewer, SLOT(updateImage(QPixmap *)),
                 static_cast<Qt::ConnectionType>(Qt::DirectConnection | Qt::UniqueConnection));
@@ -281,6 +287,12 @@ void MainWindow::disableImageViewer() {
 
     disconnect(imageViewer, SIGNAL(scalingRequested(QSize)),
                core, SLOT(rescaleForZoom(QSize)));
+
+    disconnect(core, SIGNAL(signalSetAnimation(QMovie*)),
+            imageViewer, SLOT(displayAnimation(QMovie*)));
+
+    disconnect(core, SIGNAL(signalStopAnimation()),
+            imageViewer, SLOT(stopAnimation()));
 
     disconnect(imageViewer, SIGNAL(cropSelected(QRect)),
                core, SLOT(crop(QRect)));

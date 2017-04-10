@@ -6,6 +6,7 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QImageReader>
+#include <QMovie>
 #include <QColor>
 #include <QPalette>
 #include <QTimer>
@@ -64,6 +65,9 @@ public slots:
     void scrollDown();
     void selectWallpaper();
     void showLoadingMessage();
+    void startAnimation();
+    void stopAnimation();
+    void displayAnimation(QMovie *_animation);
 
 protected:
     virtual void paintEvent(QPaintEvent* event);
@@ -72,15 +76,18 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void resizeEvent(QResizeEvent* event);
 
+private slots:
+    void nextFrame();
+
 private:
     QPixmap *image;
-    QTimer *resizeTimer, *cursorTimer;
+    QMovie *animation;
+    QTransform transform;
+    QTimer *resizeTimer, *cursorTimer, *animationTimer;
     QRect drawingRect;
     QPoint mouseMoveStartPos;
     QSize sourceSize;
-
     QColor bgColor;
-
     MapOverlay *mapOverlay;
     CropOverlay *cropOverlay;
 
@@ -107,8 +114,6 @@ private:
     void updateMap();
     float scale() const;
     bool imageIsScaled() const;
-    void stopAnimation();
-    void startAnimation();
     void updateMinScale();
     void alignImage();
     void fixAlignHorizontal();
@@ -121,6 +126,10 @@ private:
     void mouseDrag(QMouseEvent *event);
     void mouseZoom(QMouseEvent *event);
     void drawTransparencyGrid();
+    void startAnimationTimer();
+    void closeImage();
+    void adjustOverlays();
+    void readjust(QSize _sourceSize, QRect _drawingRect);
 };
 
 #endif // IMAGEVIEWER_H
