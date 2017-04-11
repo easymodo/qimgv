@@ -10,8 +10,8 @@ ThumbnailLabel::ThumbnailLabel() :
     thumbnail(NULL),
     highlighted(false),
     hovered(false),
-    borderW(1),
-    borderH(3),
+    marginX(1),
+    highlightHeight(3),
     thumbnailSize(120),
     currentOpacity(1.0f)
 {
@@ -37,16 +37,16 @@ ThumbnailLabel::ThumbnailLabel() :
 void ThumbnailLabel::readSettings() {
     thumbnailSize = settings->thumbnailSize();
     drawSelectionBorder = settings->drawThumbnailSelectionBorder();
-    highlightRect.setTopLeft(QPointF(borderW, 0));
-    highlightRect.setBottomRight(QPointF(borderW + thumbnailSize, borderH));
-    nameRect.setTopLeft(QPointF(borderW, borderH));
-    nameRect.setBottomRight(QPointF(borderW + thumbnailSize,
-                                    borderH + 20));
+    highlightRect.setTopLeft(QPointF(marginX, 0));
+    highlightRect.setBottomRight(QPointF(marginX + thumbnailSize, highlightHeight));
+    nameRect.setTopLeft(QPointF(marginX, highlightHeight));
+    nameRect.setBottomRight(QPointF(marginX + thumbnailSize,
+                                    highlightHeight + 20));
     nameRect.setWidth(thumbnailSize);
-    labelRect = QRectF(QPointF(borderW + thumbnailSize - 25,
-                               borderH),
-                       QPointF(borderW + thumbnailSize,
-                               borderH + nameRect.height()));
+    labelRect = QRectF(QPointF(marginX + thumbnailSize - 25,
+                               highlightHeight),
+                       QPointF(marginX + thumbnailSize,
+                               highlightHeight + nameRect.height()));
     updateLabelWidth();
     highlightColor->setRgb(settings->accentColor().rgb());
     hoverHighlightColor->setRed(highlightColor->red()/2);
@@ -118,7 +118,7 @@ void ThumbnailLabel::setOpacityAnimated(qreal amount, int speed) {
 
 QRectF ThumbnailLabel::boundingRect() const
 {
-    return QRectF(0, 0, thumbnailSize+borderW*2, thumbnailSize+borderH*2);
+    return QRectF(0, 0, thumbnailSize+marginX*2, thumbnailSize+highlightHeight);
 }
 
 int ThumbnailLabel::width() {
@@ -150,9 +150,7 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     if(thumbnail) {
         if(thumbnail->image) {
             painter->setOpacity(currentOpacity);
-            painter->drawPixmap((width() - thumbnail->image->width()) / 2,
-                                (height() - thumbnail->image->height()) / 2,
-                                *thumbnail->image);
+            painter->drawPixmap(marginX, highlightHeight, *thumbnail->image);
         }
 
         painter->setOpacity(0.9f);
@@ -176,17 +174,17 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         if(isHighlighted()) {
             if(drawSelectionBorder) {
                 painter->setPen(QColor(10, 10, 10, 150));
-                painter->drawRect(boundingRect().adjusted(borderW+1, 0, -borderW-2, -borderH-2));
+                painter->drawRect(boundingRect().adjusted(marginX+1, 0, -marginX-2, -highlightHeight-2));
                 painter->setPen(*highlightColor);
-                painter->drawRect(boundingRect().adjusted(borderW,borderH,-borderW-1,-borderH-1));
+                painter->drawRect(boundingRect().adjusted(marginX,highlightHeight,-marginX-1,-highlightHeight-1));
             }
             painter->fillRect(highlightRect, *highlightColor);
         } else if(isHovered()) { // lazy copy-paste, whatever
             if(drawSelectionBorder) {
                 painter->setPen(QColor(10, 10, 10, 150));
-                painter->drawRect(boundingRect().adjusted(borderW+1, 0, -borderW-2, -borderH-2));
+                painter->drawRect(boundingRect().adjusted(marginX+1, 0, -marginX-2, -highlightHeight-2));
                 painter->setPen(*hoverHighlightColor);
-                painter->drawRect(boundingRect().adjusted(borderW,borderH,-borderW-1,-borderH-1));
+                painter->drawRect(boundingRect().adjusted(marginX,highlightHeight,-marginX-1,-highlightHeight-1));
             }
             painter->fillRect(highlightRect, *hoverHighlightColor);
         }
@@ -208,10 +206,10 @@ QSizeF ThumbnailLabel::sizeHint(Qt::SizeHint which, const QSizeF &constraint) co
         case Qt::MinimumSize:
         case Qt::PreferredSize:
             return QSize(thumbnailSize, thumbnailSize)
-                   + QSize(borderW * 2, borderH * 2);
+                   + QSize(marginX * 2, highlightHeight);
         case Qt::MaximumSize:
             return QSize(thumbnailSize, thumbnailSize)
-                   + QSize(borderW * 2, borderH * 2);
+                   + QSize(marginX * 2, highlightHeight);
         default:
             break;
     }

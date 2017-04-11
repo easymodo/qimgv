@@ -49,7 +49,7 @@ private:
     Thumbnail *thumbnail;
     qreal currentOpacity;
     bool highlighted, hovered;
-    int borderW, borderH, thumbnailSize;
+    int marginX, highlightHeight, thumbnailSize;
     QString infoString;
     QRectF highlightRect, labelRect, nameRect;
     QColor *highlightColor, *hoverHighlightColor, *outlineColor, *nameColor, *labelColor;
