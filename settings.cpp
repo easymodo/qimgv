@@ -325,7 +325,10 @@ void Settings::setImageFitMode(int mode) {
 }
 
 QRect Settings::windowGeometry() {
-    return settings->s.value("windowGeometry").toRect();
+    QRect savedRect = settings->s.value("windowGeometry").toRect();
+    if(savedRect.size().isEmpty())
+        savedRect.setRect(100, 100, 900, 600);
+    return savedRect;
 }
 
 void Settings::setWindowGeometry(QRect geometry) {
