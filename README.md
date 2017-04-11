@@ -54,12 +54,12 @@ Default controls:
 
 INSTALLATION
 
-Windows:
+**Windows:**
 
-    [Get it here](https://github.com/easymodo/qimgv/releases)
-    
-Linux:
+  [Grab the latest release here](https://github.com/easymodo/qimgv/releases).
+        
+**Linux:**
 
-    Arch: yaourt -S qimgv-git
+  Arch: Get it from AUR ( *qimgv-git* )
     
-    Others: coming soon(tm).
+  Others: coming soon(tm).
