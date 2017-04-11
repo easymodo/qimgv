@@ -87,7 +87,7 @@ void ImageViewer::nextFrame() {
             animation->jumpToFrame(0);
         }
         QPixmap *newFrame = new QPixmap();
-        *newFrame = animation->currentPixmap().transformed(transform, Qt::SmoothTransformation);
+        *newFrame = animation->currentPixmap();
         startAnimationTimer();
         updateImage(newFrame);
     }

@@ -115,15 +115,15 @@ void NewLoader::setCache(ImageCache *_cache) {
 
 // for position in directory
 void NewLoader::generateThumbnailFor(int index, long thumbnailId) {
-    Thumbnailer *thWorker = new Thumbnailer(cache,
+    Thumbnailer *thumbnailerRunnable = new Thumbnailer(cache,
                                             dm->filePathAt(index),
                                             index,
                                             settings->squareThumbnails(),
                                             thumbnailId);
-    connect(thWorker, SIGNAL(thumbnailReady(long, Thumbnail*)),
+    connect(thumbnailerRunnable, SIGNAL(thumbnailReady(long, Thumbnail*)),
             this, SIGNAL(thumbnailReady(long, Thumbnail*)));
-    thWorker->setAutoDelete(true);
-    QThreadPool::globalInstance()->start(thWorker);
+    thumbnailerRunnable->setAutoDelete(true);
+    QThreadPool::globalInstance()->start(thumbnailerRunnable);
 }
 
 void NewLoader::readSettings() {
