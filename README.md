@@ -1,62 +1,65 @@
 qimgv
 =====
+Simple cross-platform image viewer written in Qt.
 
-Simple image viewer written in Qt.
+![alt tag](https://i.imgur.com/kvZFbys.png)
 
 Key features:
 
-	Simple GUI.
+	Simple UI
 
-	Fullscreen/windowed/borderless modes.
+	Fast
 
-	Fast.
+	Easy to use
 
-	Easy to use.
+	Fully configurable
 
-	Fully configurable.
+	Experimental webm support
 
-	Supports webm playback.
+Default controls:
 
-DEFAULT CONTROLS
-
-	Settings: Ctrl+P.
+	Settings: Ctrl + P.
 	
-	Open file: Ctrl+O.
+	Open file: Ctrl + O.
   
-    Scrolling through images: Left/Right Arrows, mouse wheel or side mouse buttons.
-    
-    Zooming: Up/Down Arrows or hold RMB and move the mouse up/down.
-    
-    Switching to fullscreen: double click, F key or F11.
-    
-    Show/hide top menu bar: Ctrl+M.
-    
-    Fit modes
-    - by width:     W key
-    - entire image: A key
-    - 1:1 mode:		N key.
-    
-    Move mouse to bottom to show thumbnail panel.
-    
-    Rotate image: L/R keys.
-    
-    Crop image: X key, then select area with mouse and press enter.
+	Scrolling through images: Left/Right Arrows, mouse wheel or side mouse buttons.
 	
-	Set wallpaper: Ctrl+W. Similar to "fill" option in windows (keep aspect ratio, fill entire screen).
-    
-    Save changes to file: Ctrl+S.
+	Zooming: hold RMB and move the mouse.
 	
-	Exit program: Alt+X or Ctrl+Q.
+	Zooming(alternate): Ctrl + Up / Down
+	
+	Rotate: Ctrl + R / L
+    
+	Crop image: X key, then select area with mouse and press enter
+	
+	Set wallpaper: Ctrl+W. Similar to "fill" option in windows (keep aspect ratio, fill entire screen)
+    
+	Switching to fullscreen: double click / F key / F11
+	
+	Note: controls are adjustable in settings
+    
+	Scaling Modes:
+  
+		- fit entire image: A key
+    
+		- fit by width: W key
+		
+		- 1:1 mode: N key
+    
+	Move mouse to top for thumbnail panel
+    
+	Save file: Ctrl+S
+	
+	Exit program: Alt+X / Ctrl+Q / ESC
 
 INSTALLATION
 
 Windows:
-    [> HERE <](https://github.com/easymodo/qimgv/releases)
+
+    [Get it here](https://github.com/easymodo/qimgv/releases)
     
 Linux:
 
     Arch: yaourt -S qimgv-git
     
     Others: coming soon(tm).
-
-![alt tag](http://i.imgur.com/ixWdRiy.jpg)
