@@ -28,20 +28,12 @@ public:
 public slots:
     void save();
     void save(QString destinationPath);
-    //void animationStart();
-    //void animationStop();
 
 signals:
     void frameChanged(QPixmap*);
 
-private slots:
-    //void nextFrame();
-
 private:
-    QMovie *movie;
-    QTimer *timer;
-    QTransform transform;
-    //void startAnimationTimer();
+    QSize mSize;
 };
 
 #endif // IMAGEANIMATED_H
