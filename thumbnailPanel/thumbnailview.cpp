@@ -7,13 +7,13 @@ GraphicsView::GraphicsView(ThumbnailFrame *v)
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     scrollBar = this->horizontalScrollBar();
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // TODO: fix vertical alignment
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
     timeLine->setEasingCurve(QEasingCurve::OutCubic);
     readSettings();
     connect(timeLine, SIGNAL(frameChanged(int)),
-            this, SLOT(doScroll(int)), Qt::UniqueConnection);
+            this, SLOT(centerOnX(int)), Qt::UniqueConnection);
     // on scrolling animation finish
     connect(timeLine, SIGNAL(finished()), this, SIGNAL(scrolled()));
     // on manual scrollbar drag
@@ -29,7 +29,7 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
     // that's why smoothScroll flag workaround
     if(!forceSmoothScroll && event->pixelDelta().y() != 0)  {
         // pixel scrolling (precise)
-        doScroll(viewportCenter.x() - event->pixelDelta().y());
+        centerOnX(viewportCenter.x() - event->pixelDelta().y());
         emit scrolled();
     } else {
         // smooth scrolling by fixed intervals
@@ -50,7 +50,7 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
     }
 }
 
-void GraphicsView::doScroll(int dx) {
+void GraphicsView::centerOnX(int dx) {
     centerOn(dx, viewportCenter.y());
 }
 
@@ -72,8 +72,6 @@ void GraphicsView::resetViewport() {
     scrollBar->setValue(0);
 }
 
-
-
 ThumbnailFrame::ThumbnailFrame(QWidget *parent)
     : QFrame(parent)
 {
@@ -85,13 +83,11 @@ ThumbnailFrame::ThumbnailFrame(QWidget *parent)
     setLayout(layout);
 }
 
-GraphicsView *ThumbnailFrame::view() const
-{
+GraphicsView *ThumbnailFrame::view() const {
     return graphicsView;
 }
 
-void ThumbnailFrame::addItem(QGraphicsItem *item)
-{
+void ThumbnailFrame::addItem(QGraphicsItem *item) {
     graphicsView->scene()->addItem(item);
 }
 

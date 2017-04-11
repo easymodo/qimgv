@@ -36,7 +36,7 @@ private:
     const int SCROLL_ANIMATION_SPEED = 180;
 
 private slots:
-    void doScroll(int);
+    void centerOnX(int);
     void readSettings();
 
 signals:

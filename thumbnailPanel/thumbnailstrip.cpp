@@ -82,7 +82,7 @@ void ThumbnailStrip::readSettings() {
     position = settings->panelPosition();
     if(position == PanelHPosition::TOP)
         layout->setContentsMargins(0,0,0,1);
-    panelSize = settings->thumbnailSize() + 22;
+    panelSize = settings->thumbnailSize() + 23;
     this->setGeometry(QRect(QPoint(0, 0),
                       QPoint(width(), panelSize)));
 
