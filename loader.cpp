@@ -1,18 +1,18 @@
 #include "loader.h"
 
-// ######## WARNING: spaghetti code ##########
-
 NewLoader::NewLoader(const DirectoryManager *_dm) :
     preloadTarget(0),
-    currentIndex(-1)
+    currentIndex(-1),
+    unloadMargin(1)
 {
     dm = _dm;
+    preloadTimer = new QTimer(this);
+    preloadTimer->setSingleShot(true);
     readSettings();
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
 }
 
-// TODO
 void NewLoader::openBlocking(int index) {
     emit loadStarted();
     currentIndex = index;
@@ -78,11 +78,12 @@ void NewLoader::onLoadFinished(Image *image, int index) {
     } else {
         delete image;
     }
+    //qDebug()<< cache->currentlyLoadedList();
     unlock();
 }
 
 bool NewLoader::isRelevant(int index) {
-    return !(index < currentIndex - 1 || index > currentIndex + 1);
+    return !(index < currentIndex - unloadMargin || index > currentIndex + unloadMargin);
 }
 
 void NewLoader::freeAuto() {
@@ -93,7 +94,6 @@ void NewLoader::freeAuto() {
             cache->unloadAt(loadedList.at(i));
         }
     }
-    //qDebug()  << loadedList;
     unlock();
 }
 
@@ -111,12 +111,6 @@ const ImageCache *NewLoader::getCache() {
 
 void NewLoader::setCache(ImageCache *_cache) {
     this->cache = _cache;
-    preloadTimer = new QTimer(this);
-    preloadTimer->setSingleShot(true);
-    if(settings->usePreloader()) {
-        connect(preloadTimer, SIGNAL(timeout()),
-                this, SLOT(doPreload()), Qt::UniqueConnection);
-    }
 }
 
 // for position in directory
@@ -133,13 +127,18 @@ void NewLoader::generateThumbnailFor(int index, long thumbnailId) {
 }
 
 void NewLoader::readSettings() {
+    lock();
     if(settings->usePreloader()) {
-        connect(this, SIGNAL(startPreload()),
+        unloadMargin = 1;
+        connect(preloadTimer, SIGNAL(timeout()),
                 this, SLOT(doPreload()), Qt::UniqueConnection);
-    } else {
-        disconnect(this, SIGNAL(startPreload()),
+    }
+    else {
+        unloadMargin = 0;
+        disconnect(preloadTimer, SIGNAL(timeout()),
                    this, SLOT(doPreload()));
     }
+    unlock();
 }
 
 void NewLoader::lock() {

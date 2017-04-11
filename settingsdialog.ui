@@ -1055,6 +1055,16 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="usePreloaderCheckBox">
+         <property name="toolTip">
+          <string>Preload the next/previous image. Results in a much faster image switching (especially matters with bigge files).</string>
+         </property>
+         <property name="text">
+          <string>Use preloader</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer_6">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

@@ -31,6 +31,8 @@ void SettingsDialog::readSettings() {
     ui->thumbnailBorderCheckBox->setChecked(settings->drawThumbnailSelectionBorder());
     ui->transparencyGridCheckBox->setChecked(settings->transparencyGrid());
     ui->forceSmoothScrollCheckBox->setChecked(settings->forceSmoothScroll());
+    //ui->reduceRamUsageCheckBox->setChecked(settings->reduceRamUsage());
+    ui->usePreloaderCheckBox->setChecked(settings->usePreloader());
 
     ui->ffmpegLineEdit->setText(settings->ffmpegExecutable());
 
@@ -102,14 +104,11 @@ void SettingsDialog::readSettings() {
 }
 
 void SettingsDialog::applySettings() {
-    //globalSettings->s.setValue("cacheSize", ui->cacheSlider->value());
     settings->setInfiniteScrolling(ui->infiniteScrollingCheckBox->isChecked());
     settings->setShowThumbnailLabels(ui->thumbnailLabelsCheckBox->isChecked());
-    //settings->setUsePreloader(ui->preloaderCheckBox->isChecked());
     settings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
     settings->setImageFitMode(ui->fitModeComboBox->currentIndex());
     settings->setSortingMode(ui->sortingComboBox->currentIndex());
-    //settings->setReduceRamUsage(ui->reduceRamCheckBox->isChecked());
     settings->setPlayVideos(ui->playVideosCheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
     settings->setPanelEnabled(ui->enablePanelCheckBox->isChecked());
@@ -119,6 +118,8 @@ void SettingsDialog::applySettings() {
     settings->setDrawThumbnailSelectionBorder(ui->thumbnailBorderCheckBox->isChecked());
     settings->setTransparencyGrid(ui->transparencyGridCheckBox->isChecked());
     settings->setForceSmoothScroll(ui->forceSmoothScrollCheckBox->isChecked());
+    //settings->setReduceRamUsage(ui->reduceRamUsageCheckBox->isChecked());
+    settings->setUsePreloader(ui->usePreloaderCheckBox->isChecked());
 
     settings->setFFmpegExecutable(ui->ffmpegLineEdit->text());
 

@@ -28,8 +28,7 @@ private:
     ImageCache *cache;
     QMutex mutex, mutex2;
     void freeAt(int);
-    int currentIndex, preloadTarget, time;
-    //QThread *loadThread;
+    int currentIndex, preloadTarget, time, unloadMargin;
     QTimer *loadTimer, *preloadTimer;
     // for quick access to loaded indexes
     bool isRelevant(int index);
@@ -39,8 +38,6 @@ signals:
     void loadStarted();
     void loadFinished(Image*, int index);
     void thumbnailReady(long, Thumbnail*);
-    void startLoad();
-    void startPreload();
 
 private slots:
     bool setLoadTarget(int);
