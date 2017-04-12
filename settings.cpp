@@ -201,7 +201,7 @@ void Settings::setUsePreloader(bool mode) {
 }
 
 QColor Settings::backgroundColor() {
-    return settings->s.value("bgColor", QColor(16,16,16)).value<QColor>();
+    return settings->s.value("bgColor", QColor(24, 24, 22)).value<QColor>();
 }
 
 void Settings::setBackgroundColor(QColor color) {
@@ -209,7 +209,7 @@ void Settings::setBackgroundColor(QColor color) {
 }
 
 QColor Settings::accentColor() {
-    return settings->s.value("accentColor", QColor(137, 197, 24)).value<QColor>();
+    return settings->s.value("accentColor", QColor(104, 159, 56)).value<QColor>();
 }
 
 void Settings::setAccentColor(QColor color) {

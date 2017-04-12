@@ -4,7 +4,7 @@
 }
 
 [accessibleName="panelButton"]:hover {
-    background-color: #3C3C3C;
+    background-color: #424242;
 }
 
 [accessibleName="panelButtonTransparent"] {
@@ -29,18 +29,18 @@ ThumbnailLabel {
 }
 
 QScrollBar:horizontal {
-    height: 14px;
+    height: 13px;
     background-color: transparent;
     margin: 0px;
 }
 
 QScrollBar::handle:horizontal {
-    background: #909090;
+    background: #9E9E9E;
     min-width: 60px;
 }
 
 QScrollBar::handle:horizontal:hover {
-    background: #B0B0B0;
+    background: #BDBDBD;
 }
 
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
