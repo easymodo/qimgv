@@ -24,8 +24,8 @@ public:
 };
 
 MapOverlay::MapOverlayPrivate::MapOverlayPrivate(MapOverlay *qq)
-    : q(qq), size(140), opacity(0.0f), innerOffset(-1), margin(20) {
-    outlinePen.setColor(QColor(40, 40, 40, 255));
+    : q(qq), size(120), opacity(0.0f), innerOffset(-1), margin(20) {
+    outlinePen.setColor(QColor(180, 180, 180, 255));
     location = MapOverlay::RightBottom;
 }
 
@@ -167,14 +167,14 @@ void MapOverlay::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
 
     QPainter painter(this);
-    QBrush outerBrush(QColor(60, 60, 60, 130), Qt::SolidPattern);
-    QBrush innerBrush(QColor(230, 230, 230, 200), Qt::SolidPattern);
+    QBrush outerBrush(QColor(40, 40, 40, 160), Qt::SolidPattern);
+    QBrush innerBrush(QColor(180, 180, 180, 255), Qt::SolidPattern);
 
     painter.setOpacity(d->opacity);
 
+    painter.fillRect(d->outerRect, outerBrush);
     painter.fillRect(d->innerRect, innerBrush);
 
-    painter.fillRect(d->outerRect, outerBrush);
 
     painter.setPen(d->outlinePen);
     painter.drawRect(d->outerRect);
