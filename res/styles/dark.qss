@@ -36,6 +36,9 @@ QScrollBar:horizontal {
 
 QScrollBar::handle:horizontal {
     background: #9E9E9E;
+    border-top: 1px solid #BDBDBD;
+    border-left: 1px solid #BDBDBD;
+    border-right: 1px solid #787878;
     min-width: 60px;
 }
 
