@@ -128,7 +128,6 @@ void Core::openByIndex(int index) {
 
 void Core::slotNextImage() {
     if(dirManager->containsImages()) {
-        stopAnimation();
         int index = mCurrentIndex + 1;
         if(index >= dirManager->fileCount()) {
             if(infiniteScrolling)
@@ -136,6 +135,7 @@ void Core::slotNextImage() {
             else
                 return;
         }
+        stopAnimation();
         mCurrentIndex = index;
         imageLoader->open(index);
         if(dirManager->checkRange(index + 1))
@@ -145,7 +145,6 @@ void Core::slotNextImage() {
 
 void Core::slotPrevImage() {
     if(dirManager->containsImages()) {
-        stopAnimation();
         int index = mCurrentIndex - 1;
         if(index < 0) {
             if(infiniteScrolling)
@@ -153,6 +152,7 @@ void Core::slotPrevImage() {
             else
                 return;
         }
+        stopAnimation();
         mCurrentIndex = index;
         imageLoader->open(index);
         if(dirManager->checkRange(index - 1))
