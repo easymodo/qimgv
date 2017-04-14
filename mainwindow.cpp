@@ -64,7 +64,7 @@ void MainWindow::init() {
             core, SLOT(loadImage(QString)));
 
     connect(this, SIGNAL(signalFullscreenEnabled(bool)),
-            this, SLOT(slotShowControls(bool)));
+            this, SLOT(slotShowControlsOverlay(bool)));
 
     connect(this, SIGNAL(signalFullscreenEnabled(bool)),
             this, SLOT(slotShowInfo(bool)));
@@ -147,7 +147,7 @@ void MainWindow::enablePanel() {
 
     // TODO: fix this to apply on settings change
     connect(this, SIGNAL(signalFullscreenEnabled(bool)),
-            thumbnailPanel, SLOT(setWindowControlsEnabled(bool)), Qt::UniqueConnection);
+            thumbnailPanel, SLOT(setFullscreenEnabled(bool)), Qt::UniqueConnection);
     connect(thumbnailPanel, SIGNAL(openClicked()), this, SLOT(slotOpenDialog()), Qt::UniqueConnection);
     connect(thumbnailPanel, SIGNAL(saveClicked()), this, SLOT(slotSaveDialog()), Qt::UniqueConnection);
     connect(thumbnailPanel, SIGNAL(settingsClicked()), this, SLOT(showSettings()), Qt::UniqueConnection);
@@ -364,6 +364,7 @@ void MainWindow::readSettings() {
     sidePanelPosition = settings->sidePanelPosition();
     settings->panelEnabled()?enablePanel():disablePanel();
     settings->sidePanelEnabled()?enableSidePanel():disableSidePanel();
+    slotShowControlsOverlay(this->isFullScreen());
     fitMode = settings->imageFitMode();
     if(fitMode == 1) {
         slotFitWidth();
@@ -507,8 +508,8 @@ void MainWindow::setInfoString(QString text) {
     setWindowTitle(text);
 }
 
-void MainWindow::slotShowControls(bool x) {
-    if(x && (panelPosition == BOTTOM || !settings->panelEnabled()) )
+void MainWindow::slotShowControlsOverlay(bool mode) {
+    if(mode && (panelPosition == BOTTOM || !settings->panelEnabled()))
         controlsOverlay->show();
     else
         controlsOverlay->hide();

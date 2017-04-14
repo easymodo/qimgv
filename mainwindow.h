@@ -80,7 +80,7 @@ private slots:
     void slotRotateLeft();
     void slotRotateRight();
     void slotSaveDialog();
-    void slotShowControls(bool);
+    void slotShowControlsOverlay(bool);
     void slotShowInfo(bool x);
     void openVideo(Clip *clip);
     void openImage(QPixmap *pixmap);

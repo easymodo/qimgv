@@ -3,7 +3,7 @@
 ThumbnailStrip::ThumbnailStrip()
     : panelSize(122),
       current(-1),
-      margin(2),
+      bottomMargin(10),
       thumbnailFrame(NULL),
       parentFullscreen(false),
       idCounter(0)
@@ -80,9 +80,16 @@ ThumbnailStrip::ThumbnailStrip()
 void ThumbnailStrip::readSettings() {
     thumbnailSize = settings->thumbnailSize();
     position = settings->panelPosition();
-    if(position == PanelHPosition::TOP)
-        layout->setContentsMargins(0,0,0,2);
-    panelSize = settings->thumbnailSize() + 24;
+    if(position == PanelHPosition::TOP) {
+        // add small invisible area on the bottom
+        // this makes scrollbar easier to hit with a mouse
+        // otherwise you can accidentally hide panel via leaveEvent. annoying
+        layout->setContentsMargins(0,0,0,2 + bottomMargin);
+        panelSize = settings->thumbnailSize() + 24 + bottomMargin;
+    } else {
+        layout->setContentsMargins(0,2,0,0);
+        panelSize = settings->thumbnailSize() + 24;
+    }
     this->setGeometry(QRect(QPoint(0, 0),
                       QPoint(width(), panelSize)));
 
@@ -98,6 +105,7 @@ void ThumbnailStrip::readSettings() {
 
     buttonsLayout->setDirection(QBoxLayout::BottomToTop);
     layout->setDirection(QBoxLayout::RightToLeft);
+    setWindowControlsVisibility(parentFullscreen);
     //loadVisibleThumbnails();
 }
 
@@ -157,7 +165,7 @@ void ThumbnailStrip::parentResized(QSize parentSz) {
 
 void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
     if(start > end || !checkRange(start) || !checkRange(end)) {
-        qDebug() << "ThumbnailStrip::updateThumbnailPositions() - arguments out of range";
+        //qDebug() << "ThumbnailStrip::updateThumbnailPositions() - arguments out of range";
         return;
     }
     // assume all thumbnails are the same size
@@ -257,13 +265,17 @@ void ThumbnailStrip::setThumbnail(long thumbnailId, Thumbnail *thumb) {
     unlock();
 }
 
-// shows/hides exit button on the panel
-void ThumbnailStrip::setWindowControlsEnabled(bool enabled) {
-    if(enabled && position == TOP)
+// adjust things depending if we are in fullscreen
+void ThumbnailStrip::setFullscreenEnabled(bool mode) {
+    parentFullscreen = mode;
+    setWindowControlsVisibility(mode);
+}
+
+void ThumbnailStrip::setWindowControlsVisibility(bool mode) {
+    if(mode && position == TOP)
         exitButton->show();
     else
         exitButton->hide();
-    parentFullscreen = enabled;
 }
 
 void ThumbnailStrip::removeItemAt(int pos) {
@@ -294,12 +306,16 @@ void ThumbnailStrip::removeItemAt(int pos) {
 
 void ThumbnailStrip::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
+    QPainter p(this);
     if(position == PanelHPosition::TOP) {
-        QPainter p(this);
         p.setPen(QColor(QColor(120, 120, 120)));
-        p.drawLine(rect().bottomLeft()-QPoint(0,1), rect().bottomRight()-QPoint(0,1));
+        p.drawLine(rect().bottomLeft() - QPoint(0, 1 + bottomMargin), rect().bottomRight()-QPoint(0, 1  + bottomMargin));
         p.setPen(QColor(QColor(40, 40, 40)));
-        p.drawLine(rect().bottomLeft(), rect().bottomRight());
+        p.drawLine(rect().bottomLeft() - QPoint(0, bottomMargin), rect().bottomRight()-QPoint(0, bottomMargin));
+    } else {
+        p.setPen(QColor(QColor(40, 40, 40)));
+        p.drawLine(rect().topLeft(), rect().topRight());
+        p.drawLine(rect().topLeft() + QPoint(0,1), rect().topRight() + QPoint(0,1));
     }
 }
 

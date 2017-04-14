@@ -46,7 +46,8 @@ private:
     const int OFFSCREEN_PRELOAD_AREA = 1700;
 
     int panelSize;
-    int itemCount, current, thumbnailSize, margin;
+    int itemCount, current, thumbnailSize;
+    int  bottomMargin; // invisible margin, used when panel is on top
     ThumbnailStrip *strip;
     QRectF preloadArea, visibleRegion;
     QTimer loadTimer;
@@ -63,6 +64,7 @@ private:
     void unlock();
     void updateThumbnailPositions(int start, int end);
     void shrinkScene();
+    void setWindowControlsVisibility(bool mode);
 signals:
     void thumbnailRequested(int pos, long thumbnailId);
     void openImage(int pos);
@@ -79,7 +81,7 @@ public slots:
     void setThumbnail(long, Thumbnail*);
     void fillPanel(int);
     void selectThumbnail(int pos);
-    void setWindowControlsEnabled(bool);
+    void setFullscreenEnabled(bool);
     void removeItemAt(int pos);
     void addItemAt(int pos);
     void parentResized(QSize parentSz);

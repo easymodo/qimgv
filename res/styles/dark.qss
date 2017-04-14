@@ -12,7 +12,7 @@
 }
 
 [accessibleName="panelButtonTransparent"]:hover {
-    background-color: #2b2e39;
+    background-color: #424242;
 }
 
 [accessibleName="panelButtonsWidget"] {
