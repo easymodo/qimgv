@@ -8,7 +8,7 @@ LoaderRunnable::LoaderRunnable(QString _path, int _index, QThread *_mainThread)
 void LoaderRunnable::run() {
     //qDebug() << "runnable: " << path << "  > " << index << "thread: " << QThread::currentThread() << mainThread;
     ImageFactory *factory = new ImageFactory();
-    qDebug() << index;
+    //qDebug() << index;
     Image *image = factory->createImage(path);
     delete factory;
     image->moveToThread(mainThread);
