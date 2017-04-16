@@ -150,7 +150,9 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     if(thumbnail) {
         if(thumbnail->image) {
             painter->setOpacity(currentOpacity);
-            painter->drawPixmap(marginX, highlightHeight, *thumbnail->image);
+            painter->drawPixmap((width() - thumbnail->image->width()) / 2,
+                                highlightHeight + (height() - thumbnail->image->height() - highlightHeight) / 2,
+                                *thumbnail->image);
         }
 
         painter->setOpacity(0.95f);
