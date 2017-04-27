@@ -28,7 +28,6 @@ signals:
 public slots:
     void displayVideo(Clip *clip);
     void play();
-    void replay();
     void stop();
     void readSettings();
 

@@ -166,8 +166,8 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setOpacity(1.0f);
 
         painter->setPen(QColor(10, 10, 10, 200));
-        QRectF shadowR = nameRect.adjusted(5, 4, -4, 0);
-        QRectF textR = nameRect.adjusted(4, 3, -5, 0);
+        QRectF shadowR = nameRect.adjusted(5, 6, -4, 0);
+        QRectF textR = nameRect.adjusted(4, 5, -5, 0);
         painter->drawText(shadowR, Qt::TextSingleLine, thumbnail->name, &shadowR);
         painter->setPen(QColor(250, 250, 255, 255));
         painter->drawText(textR, Qt::TextSingleLine, thumbnail->name, &textR);

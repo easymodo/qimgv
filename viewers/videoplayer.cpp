@@ -72,10 +72,6 @@ void VideoPlayer::play() {
     }
 }
 
-void VideoPlayer::replay() {
-    play();
-}
-
 void VideoPlayer::stop() {
     mediaPlayer.stop();
 }
@@ -88,7 +84,8 @@ void VideoPlayer::readSettings() {
 
 void VideoPlayer::handleMediaStatusChange(QMediaPlayer::MediaStatus status) {
     if(status == QMediaPlayer::EndOfMedia) {
-        play();
+        stop();
+        //play();
     } else if(status == QMediaPlayer::BufferedMedia) {
         adjustVideoSize();
     }
@@ -112,6 +109,8 @@ void VideoPlayer::transformVideo() {
 
 void VideoPlayer::handlePlayerStateChange(QMediaPlayer::State state) {
     Q_UNUSED(state)
+    if(state == QMediaPlayer::StoppedState)
+        play();
 }
 
 // Try reloading video if it fails
