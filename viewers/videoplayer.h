@@ -6,6 +6,7 @@
 #include <QGraphicsVideoItem>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsWidget>
+#include <QMediaPlaylist>
 #include <QWidget>
 #include <qmediaplayer.h>
 #include <qvideowidget.h>
@@ -41,10 +42,10 @@ private slots:
 private:
     Clip *clip;
     QMediaPlayer mediaPlayer;
+    QMediaPlaylist mediaPlaylist;
     QGraphicsScene *scene;
     QGraphicsVideoItem *videoItem;
     QGraphicsSimpleTextItem *textMessage;
-    int retries;
 
 protected:
     virtual void mouseMoveEvent(QMouseEvent *event);

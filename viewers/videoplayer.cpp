@@ -1,5 +1,7 @@
 #include "videoplayer.h"
 
+// todo: just use mpv. QMediaPlayer can't into gapless loops.
+// todo: test switching webm -> gif. seems buggy
 VideoPlayer::VideoPlayer(QWidget *parent) : QGraphicsView(parent),
     mediaPlayer(0, QMediaPlayer::VideoSurface) {
     clip = new Clip();
@@ -8,18 +10,18 @@ VideoPlayer::VideoPlayer(QWidget *parent) : QGraphicsView(parent),
     textMessage->setPen(QPen(QColor(Qt::white)));
     videoItem = new QGraphicsVideoItem();
     mediaPlayer.setVideoOutput(videoItem);
-    retries = 1;
+    mediaPlaylist.setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+    mediaPlayer.setPlaylist(&mediaPlaylist);
 
     scene->addItem(videoItem);
     this->setRenderHint(QPainter::SmoothPixmapTransform);
-    videoItem->setFlag(QGraphicsItem::ItemIsMovable, true);
+    videoItem->setFlag(QGraphicsItem::ItemIsMovable, false);
     this->setMouseTracking(true);
     this->setFocusPolicy(Qt::NoFocus);
     this->setAcceptDrops(false);
     this->setScene(scene);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    //this->setAttribute(Qt::WA_TransparentForMouseEvents);
     this->setFrameShape(QFrame::NoFrame);
 
     readSettings();
@@ -48,25 +50,19 @@ void VideoPlayer::displayVideo(Clip *_clip) {
 }
 
 void VideoPlayer::play() {
-    stop();
+    stop();    
     QString path = clip->getPath();
     if(!path.isEmpty()) {
-        mediaPlayer.setMedia(QUrl::fromLocalFile(path));
-        /*if(!mediaPlayer.isVideoAvailable()) {
-            textMessage->setText("No video decoder found.");
-            scene->addItem(textMessage);
-            setSceneRect(textMessage->boundingRect());
-        } else {
-            scene->removeItem(textMessage); */
-            switch(mediaPlayer.state()) {
-                case QMediaPlayer::PlayingState:
-                    mediaPlayer.pause();
-                    break;
-                default:
-                    mediaPlayer.play();
-                    break;
-            }
-      //  }
+        mediaPlaylist.clear();
+        mediaPlaylist.addMedia(QUrl::fromLocalFile(path));
+        switch(mediaPlayer.state()) {
+            case QMediaPlayer::PlayingState:
+                mediaPlayer.pause();
+                break;
+            default:
+                mediaPlayer.play();
+                break;
+        }
     } else {
         qDebug() << "VideoPlayer: empty path.";
     }
@@ -83,10 +79,7 @@ void VideoPlayer::readSettings() {
 }
 
 void VideoPlayer::handleMediaStatusChange(QMediaPlayer::MediaStatus status) {
-    if(status == QMediaPlayer::EndOfMedia) {
-        stop();
-        //play();
-    } else if(status == QMediaPlayer::BufferedMedia) {
+    if(status == QMediaPlayer::BufferedMedia) {
         adjustVideoSize();
     }
 }
@@ -109,17 +102,11 @@ void VideoPlayer::transformVideo() {
 
 void VideoPlayer::handlePlayerStateChange(QMediaPlayer::State state) {
     Q_UNUSED(state)
-    if(state == QMediaPlayer::StoppedState)
-        play();
 }
 
 // Try reloading video if it fails
 void VideoPlayer::handleError() {
     qDebug() << "VideoPlayer: Error - " + mediaPlayer.errorString();
-    while (retries>0){
-    play();
-    retries--;
-    }
 }
 
 void VideoPlayer::mouseMoveEvent(QMouseEvent *event) {

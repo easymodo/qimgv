@@ -12,8 +12,8 @@ MainWindow::MainWindow() :
     desktopWidget(NULL),
     thumbnailPanel(NULL)
 {
-    resize(1100, 700);
     setMinimumSize(QSize(400, 300));
+    resize(1100, 700);
     this->setMouseTracking(true);
     this->setAcceptDrops(true);
     init();
@@ -407,9 +407,7 @@ void MainWindow::updateOverlays() {
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
-    if(panel) {
-        emit resized(size());
-    }
+    emit resized(size());
     updateOverlays();
 }
 
