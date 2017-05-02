@@ -2,7 +2,7 @@
 
 MainWindow::MainWindow() :
     imageViewer(NULL),
-    videoPlayer(NULL),
+    //videoPlayer(NULL),
     panel(NULL),
     sidePanel(NULL),
     toolbox(NULL),
@@ -27,8 +27,8 @@ void MainWindow::init() {
 
     imageViewer = new ImageViewer(this);
     imageViewer->hide();
-    videoPlayer = new VideoPlayer(this);
-    videoPlayer->hide();
+    //videoPlayer = new VideoPlayer(this);
+    //videoPlayer->hide();
 
     QWidget *central = new QWidget();
     controlsOverlay = new ControlsOverlay(imageViewer);
@@ -247,9 +247,6 @@ void MainWindow::enableImageViewer() {
         connect(core, SIGNAL(imageAltered(QPixmap *)),
                 imageViewer, SLOT(displayImage(QPixmap *)), Qt::UniqueConnection);
 
-        connect(core, SIGNAL(videoAltered(Clip *)),
-                videoPlayer, SLOT(displayVideo(Clip *)), Qt::UniqueConnection);
-
         connect(imageViewer, SIGNAL(cropSelected(QRect)),
                 core, SLOT(crop(QRect)), Qt::UniqueConnection);
 
@@ -315,6 +312,7 @@ void MainWindow::disableImageViewer() {
 
 void MainWindow::enableVideoPlayer() {
     if(currentViewer != 2) {
+    /*
         connect(this, SIGNAL(resized(QSize)),
                 videoPlayer, SIGNAL(parentResized(QSize)), Qt::UniqueConnection);
         disableImageViewer();
@@ -324,21 +322,23 @@ void MainWindow::enableVideoPlayer() {
         currentViewer = 2;
         videoPlayer->show();
         updateOverlays();
+     */
     }
 }
 
 void MainWindow::disableVideoPlayer() {
-    layout->removeWidget(videoPlayer);
+/*    layout->removeWidget(videoPlayer);
     videoPlayer->stop();
     disconnect(this, SIGNAL(resized(QSize)),
                videoPlayer, SIGNAL(parentResized(QSize)));
     currentViewer = 0;
     videoPlayer->hide();
+*/
 }
 
 void MainWindow::openVideo(Clip *clip) {
-    enableVideoPlayer();
-    videoPlayer->displayVideo(clip);
+//    enableVideoPlayer();
+//    videoPlayer->displayVideo(clip);
 }
 
 void MainWindow::open(QString path) {

@@ -66,7 +66,7 @@ public:
     MainWindow();
     ~MainWindow();    
     ImageViewer *imageViewer;
-    VideoPlayer *videoPlayer;
+    //VideoPlayer *videoPlayer;
     void updateOverlays();
 
 private slots:

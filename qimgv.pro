@@ -6,7 +6,7 @@
 
 QT       += core gui widgets concurrent
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia multimediawidgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 msvc: LIBS += -luser32
 

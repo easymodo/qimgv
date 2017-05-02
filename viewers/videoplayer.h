@@ -1,6 +1,6 @@
 #ifndef VIDEOPLAYER_H
 #define VIDEOPLAYER_H
-
+/*
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsVideoItem>
@@ -54,4 +54,5 @@ protected:
     virtual void wheelEvent(QWheelEvent *event);
 };
 
+*/
 #endif // VIDEOPLAYER_H

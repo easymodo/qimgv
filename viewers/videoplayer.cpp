@@ -1,5 +1,5 @@
 #include "videoplayer.h"
-
+/*
 // todo: just use mpv. QMediaPlayer can't into gapless loops.
 // todo: test switching webm -> gif. seems buggy
 VideoPlayer::VideoPlayer(QWidget *parent) : QGraphicsView(parent),
@@ -126,3 +126,4 @@ void VideoPlayer::mouseReleaseEvent(QMouseEvent *event) {
 void VideoPlayer::wheelEvent(QWheelEvent *event) {
     event->ignore();
 }
+*/
