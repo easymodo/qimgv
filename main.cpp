@@ -13,8 +13,10 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationName("greenpepper software");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
-    QCoreApplication::setApplicationVersion("0.49.1");
+    QCoreApplication::setApplicationVersion("0.50dev");
 
+    // needed for mpv
+    std::setlocale(LC_NUMERIC, "C");
 
     settings = Settings::getInstance();
     actionManager = ActionManager::getInstance();
@@ -33,5 +35,6 @@ int main(int argc, char *argv[]) {
         mw.open(fileName);
     }
     mw.show();
+    //return 0;
     return a.exec();
 }

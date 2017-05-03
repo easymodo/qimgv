@@ -19,6 +19,10 @@
     background-color: #262626;
 }
 
+[accessibleName="mpvContainer"] {
+    background-color: #262626;
+}
+
 GraphicsView {
     background-color: #262626;
     border-style: none;

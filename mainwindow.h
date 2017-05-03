@@ -13,6 +13,7 @@
 #include "resizedialog.h"
 #include "viewers/imageviewer.h"
 #include "viewers/videoplayer.h"
+#include "viewers/videoplayergl.h"
 #include "settings.h"
 #include "actionmanager.h"
 #include "thumbnailPanel/thumbnailstrip.h"
@@ -66,7 +67,7 @@ public:
     MainWindow();
     ~MainWindow();    
     ImageViewer *imageViewer;
-    //VideoPlayer *videoPlayer;
+    VideoPlayerGL *videoPlayer;
     void updateOverlays();
 
 private slots:

@@ -1,58 +1,35 @@
 #ifndef VIDEOPLAYER_H
 #define VIDEOPLAYER_H
-/*
-#include <QGraphicsView>
-#include <QGraphicsScene>
-#include <QGraphicsVideoItem>
-#include <QGraphicsSimpleTextItem>
-#include <QGraphicsWidget>
-#include <QMediaPlaylist>
-#include <QWidget>
-#include <qmediaplayer.h>
-#include <qvideowidget.h>
-#include <QMouseEvent>
-#include <qvideosurfaceformat.h>
-#include <QDebug>
-#include "../sourceContainers/clip.h"
-#include "../settings.h"
 
-class VideoPlayer : public QGraphicsView
-{
+#include <QtWidgets>
+#include <QVBoxLayout>
+#include <mpv/qthelper.hpp>
+#include "../sourceContainers/clip.h"
+
+class VideoPlayer : public QWidget {
     Q_OBJECT
 public:
+
     VideoPlayer(QWidget *parent = 0);
     ~VideoPlayer();
 
-signals:
-    void parentResized(QSize);
+private:
+    mpv_handle *mpv;
+    QWidget *mpvContainer;
+    QVBoxLayout *layout;
+    void handle_mpv_event(mpv_event *event);
+    Clip *mClip;
 
 public slots:
-    void displayVideo(Clip *clip);
-    void play();
-    void stop();
-    void readSettings();
+    void on_file_open(Clip *clip);
+    void on_file_close();
 
 private slots:
-    void handleError();
-    void handleMediaStatusChange(QMediaPlayer::MediaStatus status);
-    void handlePlayerStateChange(QMediaPlayer::State status);
-    void adjustVideoSize();
-    void transformVideo();
+    void on_new_window();
+    void on_mpv_events();
 
-private:
-    Clip *clip;
-    QMediaPlayer mediaPlayer;
-    QMediaPlaylist mediaPlaylist;
-    QGraphicsScene *scene;
-    QGraphicsVideoItem *videoItem;
-    QGraphicsSimpleTextItem *textMessage;
-
-protected:
-    virtual void mouseMoveEvent(QMouseEvent *event);
-    virtual void mousePressEvent(QMouseEvent *event);
-    virtual void mouseReleaseEvent(QMouseEvent *event);
-    virtual void wheelEvent(QWheelEvent *event);
+signals:
+    void mpv_events();
 };
 
-*/
 #endif // VIDEOPLAYER_H

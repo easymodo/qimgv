@@ -21,6 +21,12 @@ QMAKE_CXXFLAGS_RELEASE -= -O1
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
+unix {
+    QT_CONFIG -= no-pkg-config
+    CONFIG += link_pkgconfig
+    PKGCONFIG += mpv
+}
+
 SOURCES += main.cpp\
     mainwindow.cpp \
     overlays/infooverlay.cpp \
@@ -62,7 +68,9 @@ SOURCES += main.cpp\
     customWidgets/toolbox.cpp \
     loaderrunnable.cpp \
     loader.cpp \
-    cache.cpp
+    cache.cpp \
+    viewers/videoplayergl.cpp \
+    viewers/mpvwidget.cpp
 
 HEADERS += mainwindow.h \
     overlays/infooverlay.h \
@@ -103,7 +111,9 @@ HEADERS += mainwindow.h \
     customWidgets/toolbox.h \
     loaderrunnable.h \
     loader.h \
-    cache.h
+    cache.h \
+    viewers/videoplayergl.h \
+    viewers/mpvwidget.h
 
 FORMS += \
     settingsdialog.ui

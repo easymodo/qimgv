@@ -2,7 +2,7 @@
 
 MainWindow::MainWindow() :
     imageViewer(NULL),
-    //videoPlayer(NULL),
+    videoPlayer(NULL),
     panel(NULL),
     sidePanel(NULL),
     toolbox(NULL),
@@ -27,8 +27,8 @@ void MainWindow::init() {
 
     imageViewer = new ImageViewer(this);
     imageViewer->hide();
-    //videoPlayer = new VideoPlayer(this);
-    //videoPlayer->hide();
+    videoPlayer = new VideoPlayerGL(this);
+    videoPlayer->hide();
 
     QWidget *central = new QWidget();
     controlsOverlay = new ControlsOverlay(imageViewer);
@@ -312,9 +312,6 @@ void MainWindow::disableImageViewer() {
 
 void MainWindow::enableVideoPlayer() {
     if(currentViewer != 2) {
-    /*
-        connect(this, SIGNAL(resized(QSize)),
-                videoPlayer, SIGNAL(parentResized(QSize)), Qt::UniqueConnection);
         disableImageViewer();
         controlsOverlay->setParent(videoPlayer);
         infoOverlay->setParent(videoPlayer);
@@ -322,23 +319,22 @@ void MainWindow::enableVideoPlayer() {
         currentViewer = 2;
         videoPlayer->show();
         updateOverlays();
-     */
+
     }
 }
 
 void MainWindow::disableVideoPlayer() {
-/*    layout->removeWidget(videoPlayer);
-    videoPlayer->stop();
-    disconnect(this, SIGNAL(resized(QSize)),
-               videoPlayer, SIGNAL(parentResized(QSize)));
+    layout->removeWidget(videoPlayer);
+    videoPlayer->setPaused(true);
     currentViewer = 0;
     videoPlayer->hide();
-*/
 }
 
 void MainWindow::openVideo(Clip *clip) {
-//    enableVideoPlayer();
-//    videoPlayer->displayVideo(clip);
+    // mpv stuff breaks if mainwindow is hidden
+    show();
+    enableVideoPlayer();
+    videoPlayer->openMedia(clip);
 }
 
 void MainWindow::open(QString path) {
