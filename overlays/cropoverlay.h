@@ -46,7 +46,7 @@ private:
     int handleSize;
     QImage *drawBuffer;
     mouseDragMode dragMode;
-    QPen selectionOutlinePen;
+    QPen selectionOutlinePen, labelOutlinePen;
     QFont font;
     QFontMetrics *fm;
     QString buttonText;

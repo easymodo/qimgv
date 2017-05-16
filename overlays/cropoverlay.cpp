@@ -11,8 +11,11 @@ CropOverlay::CropOverlay(QWidget *parent) : QWidget(parent),
     scale(1.0f),
     handleSize(7),
     drawBuffer(NULL),
-    dragMode(NO_DRAG) {
+    dragMode(NO_DRAG)
+{
+    //setAttribute(Qt::WA_TranslucentBackground);
     font.setPixelSize(12);
+    font.setBold(true);
     fm = new QFontMetrics(font);
     setButtonText("SELECT");
 
@@ -27,6 +30,10 @@ CropOverlay::CropOverlay(QWidget *parent) : QWidget(parent),
     brushLightGray.setStyle(Qt::SolidPattern);
     selectionOutlinePen.setColor(Qt::black);
     selectionOutlinePen.setStyle(Qt::SolidLine);
+    labelOutlinePen.setColor(QColor(60, 60, 60, 230));
+    labelOutlinePen.setStyle(Qt::SolidLine);
+    labelOutlinePen.setWidth(2);
+
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->hide();
 }
@@ -102,24 +109,31 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
         QPainter painter(this);
         painter.setPen(Qt::NoPen);
         painter.setBrush(brushInactiveTint);
-        painter.drawRect(this->rect());
+        painter.drawRect(imageArea);
         drawLabel(buttonText, buttonRect, brushLightGray, &painter);
         return;
 
     } else {
         delete drawBuffer;
-        drawBuffer = new QImage(this->size(), QImage::Format_ARGB32_Premultiplied);
+        drawBuffer = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
 
         QPainter painter(drawBuffer);
 
+        // clear to avoid corrupted background
+        painter.setCompositionMode(QPainter::CompositionMode_Clear);
+        painter.setBrush(brushInactiveTint); // any brush is ok
+        painter.drawRect(rect());
+
+        // draw tint over the image
+        painter.setCompositionMode(QPainter::CompositionMode_Source);
         painter.setPen(Qt::NoPen);
         painter.setBrush(brushInactiveTint);
-        painter.drawRect(this->rect());
+        painter.drawRect(imageArea);
 
-        //selection outline
+        // selection outline
         drawSelection(&painter);
 
-        //size label
+        // corner label with selection size
         QRect r = mapSelection();
         QString info;
         info.append(QString::number(r.width()));
@@ -133,6 +147,7 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
         }
 
         drawLabel(buttonText, buttonRect, brushLightGray, &painter);
+
         // draw result on screen
         QPainter(this).drawImage(QPoint(0, 0), *drawBuffer);
     }
@@ -143,10 +158,6 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
 void CropOverlay::drawSelection(QPainter *painter) {
     painter->save();
     painter->setCompositionMode(QPainter::CompositionMode_Source);
-    // draw selection
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(brushInactiveTint);
-    painter->drawRect(imageArea);
     painter->setPen(selectionOutlinePen);
     painter->setBrush(QBrush(QColor(0, 0, 0, 0)));
     painter->drawRect(selectionRect.marginsAdded(QMargins(1, 1, 0, 0)));
@@ -173,9 +184,9 @@ void CropOverlay::drawLabel(QString text, QPoint pos, QBrush &brush, QPainter *p
 
     int marginH = 2;
     int marginW = 4;
-    QRect labelRect(pos.x(), pos.y(),
+    QRect labelRect(pos.x(), pos.y() - 1,
                     textWidth + marginW * 2, textHeight + marginH * 2);
-    painter->setPen(selectionOutlinePen);
+    painter->setPen(labelOutlinePen);
     painter->setBrush(brush);
     painter->drawRect(labelRect);
 
@@ -194,14 +205,14 @@ void CropOverlay::drawLabel(QString text, QRect rect, QBrush &brush, QPainter *p
     int textWidth = fm->width(text);
     int textHeight = fm->height();
 
-    painter->setPen(selectionOutlinePen);
+    painter->setPen(labelOutlinePen);
     painter->setBrush(brush);
     painter->drawRect(rect);
 
     painter->setFont(font);
     painter->setRenderHint(QPainter::Antialiasing);
     painter->drawText(QRect(rect.topLeft().x() + textMarginW,
-                            rect.topLeft().y() + textMarginH,
+                            rect.topLeft().y() + textMarginH + 1,
                             textWidth, textHeight),
                       text);
     painter->restore();

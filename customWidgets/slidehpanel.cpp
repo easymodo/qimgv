@@ -22,13 +22,13 @@ void SlideHPanel::updatePanelPosition() {
                                 QPoint(parentSz.width(), mWidget->height() - 1)));
         initialPosition = geometry().topLeft();
         slideAnimation->setStartValue(initialPosition);
-        slideAnimation->setEndValue(QPoint(0, -60));
+        slideAnimation->setEndValue(QPoint(0, -30));
     } else {
         this->setGeometry(QRect(QPoint(0, parentSz.height() - mWidget->height() + 1),
                                 QPoint(parentSz.width(), parentSz.height())));
         initialPosition = QPoint(0, parentSz.height() - height());
         slideAnimation->setStartValue(initialPosition);
-        slideAnimation->setEndValue(QPoint(0, parentSz.height() - height() + 60));
+        slideAnimation->setEndValue(QPoint(0, parentSz.height() - height() + 30));
     }
 
     if(oldRect != this->rect())
