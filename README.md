@@ -62,4 +62,4 @@ INSTALLATION
 
   Arch: Get it from AUR ( *qimgv-git* )
     
-  Others: coming soon(tm).
+  Others distros: run *build.sh* in project directory (make sure you have qt5 and cmake installed)
