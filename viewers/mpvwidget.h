@@ -5,6 +5,10 @@
 #include <mpv/client.h>
 #include <mpv/opengl_cb.h>
 #include <mpv/qthelper.hpp>
+#include <QDebug>
+#include <ctime>
+#include <QSurfaceFormat>
+#include <QTimer>
 
 class MpvWidget Q_DECL_FINAL: public QOpenGLWidget
 {
@@ -16,6 +20,8 @@ public:
     void setProperty(const QString& name, const QVariant& value);
     QVariant getProperty(const QString& name) const;
     QSize sizeHint() const { return QSize(480, 270);}
+    void setMuted(bool mode);
+    void setRepeat(bool mode);
 Q_SIGNALS:
     void durationChanged(int value);
     void positionChanged(int value);

@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QWidget>
 #include "../sourceContainers/clip.h"
+#include "../settings.h"
 
 class MpvWidget;
 
@@ -16,6 +17,8 @@ public Q_SLOTS:
     void seek(int pos);
     void pauseResume();
     void setPaused(bool mode);
+    void setMuted(bool);
+    void readSettings();
 
 private:
     MpvWidget *m_mpv;

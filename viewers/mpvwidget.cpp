@@ -24,6 +24,7 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
 
     //mpv_set_option_string(mpv, "terminal", "yes");
     //mpv_set_option_string(mpv, "msg-level", "all=v");
+
     if (mpv_initialize(mpv) < 0)
         throw std::runtime_error("could not initialize mpv context");
 
@@ -31,7 +32,10 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
     mpv::qt::set_option_variant(mpv, "vo", "opengl-cb");
 
     // Loop video
-    mpv::qt::set_option_variant(mpv, "loop-file", "inf");
+    setRepeat(true);
+
+    // Unmute
+    setMuted(false);
 
     mpv_gl = (mpv_opengl_cb_context *)mpv_get_sub_api(mpv, MPV_SUB_API_OPENGL_CB);
     if (!mpv_gl)
@@ -131,6 +135,20 @@ void MpvWidget::maybeUpdate() {
     } else {
         update();
     }
+}
+
+void MpvWidget::setMuted(bool mode) {
+    if(mode)
+        mpv::qt::set_option_variant(mpv, "mute", "yes");
+    else
+        mpv::qt::set_option_variant(mpv, "mute", "no");
+}
+
+void MpvWidget::setRepeat(bool mode) {
+    if(mode)
+        mpv::qt::set_option_variant(mpv, "loop-file", "inf");
+    else
+        mpv::qt::set_option_variant(mpv, "loop-file", "no");
 }
 
 void MpvWidget::on_update(void *ctx) {

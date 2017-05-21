@@ -14,6 +14,9 @@ VideoPlayerGL::VideoPlayerGL(QWidget *parent) : QWidget(parent) {
     vl->setContentsMargins(0,0,0,0);
     vl->addWidget(m_mpv);
     setLayout(vl);
+
+    readSettings();
+    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
 bool VideoPlayerGL::openMedia(Clip *clip) {
@@ -38,5 +41,14 @@ void VideoPlayerGL::pauseResume() {
 }
 
 void VideoPlayerGL::setPaused(bool mode) {
+    // TODO: ??????????? thats from QObject
     m_mpv->setProperty("pause", mode);
+}
+
+void VideoPlayerGL::setMuted(bool mode) {
+    m_mpv->setMuted(mode);
+}
+
+void VideoPlayerGL::readSettings() {
+    setMuted(!settings->playVideoSounds());
 }

@@ -49,7 +49,6 @@ SOURCES += main.cpp\
     sourceContainers/imageanimated.cpp \
     customWidgets/clickablelabel.cpp \
     sourceContainers/thumbnail.cpp \
-    viewers/videoplayer.cpp \
     sourceContainers/video.cpp \
     imagefactory.cpp \
     thumbnailer.cpp \
@@ -92,7 +91,6 @@ HEADERS += mainwindow.h \
     sourceContainers/imageanimated.h \
     customWidgets/clickablelabel.h \
     sourceContainers/thumbnail.h \
-    viewers/videoplayer.h \
     sourceContainers/video.h \
     imagefactory.h \
     thumbnailer.h \
