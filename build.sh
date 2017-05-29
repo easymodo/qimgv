@@ -4,14 +4,11 @@
 mkdir build
 
 cd build
+echo "Cleaning up build directory..."
+make clean
 
 cmake -DCMAKE_INSTALL_PREFIX=/usr/ ..
 make -j4
-echo "Running sudo make install"
-sudo make install
-
-echo "Cleaning up build directory..."
-make clean
 cd ..
-echo "Done."
-echo "Installation finished! Enjoy."
+echo "build finished."
+./install.sh
