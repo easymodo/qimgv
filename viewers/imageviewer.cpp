@@ -12,7 +12,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     maxScale(2.0),
     minScale(4.0),
     scaleStep(0.16),
-    imageFitMode(NORMAL)
+    imageFitMode(ORIGINAL)
 {
     initOverlays();
     image = new QPixmap();
@@ -219,10 +219,27 @@ void ImageViewer::selectWallpaper() {
 }
 
 void ImageViewer::readSettings() {
+    setFitMode(settings->imageFitMode());
     mouseWrapping = settings->mouseWrapping();
     transparencyGridEnabled = settings->transparencyGrid();
     this->bgColor = settings->backgroundColor();
     this->repaint();
+}
+
+void ImageViewer::setFitMode(ImageFitMode mode) {
+    switch(mode) {
+        case ImageFitMode::ALL:
+            setFitAll();
+            break;
+        case ImageFitMode::WIDTH:
+            setFitWidth();
+            break;
+        case ImageFitMode::ORIGINAL:
+            setFitOriginal();
+            break;
+        default:
+            break;
+    }
 }
 
 void ImageViewer::updateMaxScale() {
@@ -456,7 +473,7 @@ void ImageViewer::mouseZoom(QMouseEvent *event) {
         newScale = minScale;
     } else if(moveDistance < 0 && newScale < maxScale - FLT_EPSILON) { // at min zoom
         newScale = maxScale;
-        slotFitAll();
+        setFitAll();
     } else {
         imageFitMode = FREE;
         scaleAround(fixedZoomPoint, newScale);
@@ -519,7 +536,7 @@ void ImageViewer::fitNormal() {
 
 void ImageViewer::fitDefault() {
     switch(imageFitMode) {
-        case NORMAL:
+        case ORIGINAL:
             fitNormal();
             break;
         case WIDTH:
@@ -538,21 +555,21 @@ void ImageViewer::updateMap() {
     mapOverlay->updateMap(drawingRect);
 }
 
-void ImageViewer::slotFitNormal() {
-    imageFitMode = NORMAL;
+void ImageViewer::setFitOriginal() {
+    imageFitMode = ORIGINAL;
     fitDefault();
     updateMap();
     resizeTimer->start(0);
 }
 
-void ImageViewer::slotFitWidth() {
+void ImageViewer::setFitWidth() {
     imageFitMode = WIDTH;
     fitDefault();
     updateMap();
     resizeTimer->start(0);
 }
 
-void ImageViewer::slotFitAll() {
+void ImageViewer::setFitAll() {
     imageFitMode = ALL;
     fitDefault();
     updateMap();
@@ -562,7 +579,7 @@ void ImageViewer::slotFitAll() {
 void ImageViewer::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
     updateMaxScale();
-    if(imageFitMode == FREE || imageFitMode == NORMAL) {
+    if(imageFitMode == FREE || imageFitMode == ORIGINAL) {
         alignImage();
     } else {
         fitDefault();

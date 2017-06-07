@@ -7,18 +7,18 @@ class SlideHPanel : public SlidePanel
 {
     Q_OBJECT
 public:
-    explicit SlideHPanel(QWidget *w, QWidget *parent = 0);
+    explicit SlideHPanel(QWidget *parent);
     ~SlideHPanel();
-    void updatePanelPosition();
     void setPosition(PanelHPosition);
+    void containerResized(QSize parentSz);
+    QSize triggerSize();
+    void setPanelHeight(int);
 
-private:
+protected:
     PanelHPosition position;
-
-public slots:
-    void parentResized(QSize parentSize);
-private slots:
-    void readSettings();
+    int invisibleMargin;
+    int panelHeight;
+    void recalculateGeometry();
 };
 
 #endif // SLIDEHPANEL_H

@@ -26,6 +26,8 @@ public:
     const QStringList keys();
     void removeAll();
 
+public slots:
+    bool invokeAction(QString actionName);
 private:
     explicit ActionManager(QObject *parent = 0);
     QMap<QString, QString> shortcuts;
@@ -40,7 +42,7 @@ private:
     bool processWheelEvent(QWheelEvent *event);
     bool processMouseEvent(QMouseEvent *event);
     bool processKeyEvent(QKeyEvent *event);
-    bool startAction(QString action);
+    bool invokeActionForShortcut(QString action);
     void lock();
     void unlock();
 

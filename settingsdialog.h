@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QFileDialog>
 #include <QColorDialog>
+#include <QThreadPool>
 #include <QDebug>
 #include "customWidgets/clickablelabel.h"
 #include "customWidgets/settingsshortcutwidget.h"

@@ -11,7 +11,7 @@ class textOverlay : public QWidget
 {
     Q_OBJECT
 public:
-    textOverlay(QWidget *parent);
+    textOverlay(QWidget *parent = 0);
     void setText(QString text);
     void updateWidth(int maxWidth);
 

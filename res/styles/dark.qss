@@ -1,9 +1,9 @@
-[accessibleName="panelButton"] {
+[accessibleName="iconButton"] {
     background-color: #262626;
-    padding: 3px 3px 3px 3px;
+    padding: 5px 5px 5px 5px;
 }
 
-[accessibleName="panelButton"]:hover {
+[accessibleName="iconButton"]:hover {
     background-color: #424242;
 }
 
@@ -23,22 +23,22 @@
     background-color: #262626;
 }
 
-GraphicsView {
+.GraphicsView {
     background-color: #262626;
     border-style: none;
 }
 
-ThumbnailLabel {
+.ThumbnailLabel {
     background-color: #262626;
 }
 
-QScrollBar:horizontal {
+.QScrollBar:horizontal {
     height: 13px;
     background-color: transparent;
     margin: 0px;
 }
 
-QScrollBar::handle:horizontal {
+.QScrollBar::handle:horizontal {
     background: #9E9E9E;
     border-top: 1px solid #ADADAD;
     border-left: 1px solid #ADADAD;
@@ -46,25 +46,25 @@ QScrollBar::handle:horizontal {
     min-width: 60px;
 }
 
-QScrollBar::handle:horizontal:hover {
+.QScrollBar::handle:horizontal:hover {
     background: #BDBDBD;
 }
 
-QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+.QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
     background: none;
 }
 
-QScrollBar::add-line:horizontal {
+.QScrollBar::add-line:horizontal {
     width: 0px;
     height: 0px;
 }
 
-QScrollBar::sub-line:horizontal {
+.QScrollBar::sub-line:horizontal {
     width: 0px;
     height: 0px;
 }
 
-QComboBox {
+.QComboBox {
     padding-left: 4px;
     padding-right: 3px;
 }

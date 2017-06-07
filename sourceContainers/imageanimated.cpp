@@ -52,9 +52,8 @@ void ImageAnimated::save() {
     //TODO
 }
 
-QPixmap *ImageAnimated::generateThumbnail(bool squared) {
+QPixmap *ImageAnimated::generateThumbnail(int size, bool squared) {
     Qt::AspectRatioMode method = squared?(Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
-    int size = settings->thumbnailSize();
     QPixmap *tmp;
     tmp = new QPixmap(path, fileInfo->fileExtension());
     *tmp = tmp->scaled(size * 2,

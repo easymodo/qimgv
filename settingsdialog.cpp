@@ -24,7 +24,7 @@ void SettingsDialog::readSettings() {
     ui->infiniteScrollingCheckBox->setChecked(settings->infiniteScrolling());
     ui->playVideosCheckBox->setChecked(settings->playVideos());
     ui->playSoundsCheckBox->setChecked(settings->playVideoSounds());
-    ui->enablePanelCheckBox->setChecked(settings->panelEnabled());
+    ui->enablePanelCheckBox->setChecked(settings->mainPanelEnabled());
     ui->enableSidePanelCheckBox->setChecked(settings->sidePanelEnabled());
     ui->mouseWrappingCheckBox->setChecked(settings->mouseWrapping());
     ui->squareThumbnailsCheckBox->setChecked(settings->squareThumbnails());
@@ -75,7 +75,7 @@ void SettingsDialog::readSettings() {
 
     // thumbnail size
     // maybe use slider instead of combobox?
-    int size = settings->thumbnailSize();
+    int size = settings->mainPanelSize();
     switch(size) {
         case SettingsDialog::thumbSizeSmall:
             ui->thumbSizeComboBox->setCurrentIndex(0);
@@ -104,10 +104,15 @@ void SettingsDialog::readSettings() {
 }
 
 void SettingsDialog::applySettings() {
+    // wait for all background stuff to finish
+    if(QThreadPool::globalInstance()->activeThreadCount()) {
+        QThreadPool::globalInstance()->waitForDone();
+    }
+
     settings->setInfiniteScrolling(ui->infiniteScrollingCheckBox->isChecked());
     settings->setShowThumbnailLabels(ui->thumbnailLabelsCheckBox->isChecked());
     settings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
-    settings->setImageFitMode(ui->fitModeComboBox->currentIndex());
+    settings->setImageFitMode((ImageFitMode)ui->fitModeComboBox->currentIndex());
     settings->setSortingMode(ui->sortingComboBox->currentIndex());
     settings->setPlayVideos(ui->playVideosCheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());

@@ -6,6 +6,7 @@ ControlsOverlay::ControlsOverlay(QWidget *parent) :
     setPalette(Qt::transparent);
     setAccessibleName("panelButtonTransparent");
     setPixmap(QPixmap(":/images/res/icons/window-close-transparent.png"));
+    this->setGeometry(0,0, pixmap()->width(), pixmap()->height());
     this->setContentsMargins(0,0,0,0);
     connect(this, SIGNAL(clicked()), this, SIGNAL(exitClicked()));
 }

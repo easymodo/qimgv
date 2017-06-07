@@ -8,37 +8,34 @@
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
 #include <QPainter>
-#include <QBoxLayout>
+#include <QGridLayout>
 #include <QPushButton>
-#include "../settings.h"
+#include "settings.h"
 #include <QDebug>
 
-class SlidePanel : public QWidget
-{
+class SlidePanel : public QWidget {
     Q_OBJECT
 public:
-    explicit SlidePanel(QWidget *w, QWidget *parent = 0);
+    explicit SlidePanel(QWidget *parent);
     ~SlidePanel();
-    virtual void updatePanelPosition() = 0;
-
-private:
+    bool hasWidget();
     void setWidget(QWidget* w);
-    QBoxLayout *layout;
-
-signals:
-    void panelSizeChanged();
+    virtual void containerResized(QSize parentSz) = 0;
+    // useful if we want to change mouse hover area size
+    virtual QSize triggerSize() = 0;
 
 public slots:
-    virtual void parentResized(QSize parentSize) = 0;
     void show();
 
 protected:
+    QGridLayout layout;
+    virtual void recalculateGeometry() = 0;
     QGraphicsOpacityEffect *fadeEffect;
     QPropertyAnimation *fadeAnimation, *slideAnimation;
     QParallelAnimationGroup *animGroup;
+    QSize preferredWidgetSize;
     int panelSize;
     QSize parentSz;
-    bool parentFullscreen;
     QWidget *mWidget;
     QPoint initialPosition;
     void leaveEvent(QEvent *event);

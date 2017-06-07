@@ -27,7 +27,7 @@ public:
     virtual int width() = 0;
     virtual QSize size() = 0;
     bool isLoaded();
-    virtual QPixmap* generateThumbnail(bool) = 0;
+    virtual QPixmap* generateThumbnail(int, bool) = 0;
     void attachInfo(FileInfo*);
     FileInfo* info();
     void safeDeleteSelf();

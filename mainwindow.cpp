@@ -25,9 +25,9 @@ MainWindow::MainWindow() :
 void MainWindow::init() {
     desktopWidget = QApplication::desktop();
 
-    imageViewer = new ImageViewer(this);
+    imageViewer = new ImageViewer();
     imageViewer->hide();
-    videoPlayer = new VideoPlayerGL(this);
+    videoPlayer = new VideoPlayerGL();
     videoPlayer->hide();
 
     QWidget *central = new QWidget();
@@ -117,8 +117,8 @@ void MainWindow::enablePanel() {
     if(!thumbnailPanel) {
         thumbnailPanel = new ThumbnailStrip();
         if(!panel) {
-            panel = new SlideHPanel(thumbnailPanel, this);
-            panel->setPosition(panelPosition);
+            //panel = new SlideHPanel(thumbnailPanel, this);
+            //panel->setPosition(panelPosition);
         }
     }
 
@@ -153,7 +153,7 @@ void MainWindow::enablePanel() {
     connect(thumbnailPanel, SIGNAL(settingsClicked()), this, SLOT(showSettings()), Qt::UniqueConnection);
     connect(thumbnailPanel, SIGNAL(exitClicked()), this, SLOT(close()), Qt::UniqueConnection);
 
-    panel->parentResized(size());
+    //panel->parentResized(size());
 }
 
 void MainWindow::disablePanel() {
@@ -195,11 +195,11 @@ void MainWindow::enableSidePanel() {
     if(!toolbox) {
         toolbox = new ToolBox();
         if(!sidePanel) {
-            sidePanel = new SlideVPanel(toolbox, this);
+            //sidePanel = new SlideVPanel(toolbox, this);
             sidePanel->setPosition(sidePanelPosition);
         }
     }
-    sidePanel->parentResized(size());
+    //sidePanel->parentResized(size());
     connect(this, SIGNAL(resized(QSize)), sidePanel, SLOT(parentResized(QSize)), Qt::UniqueConnection);
     connect(toolbox, SIGNAL(rotateLeftClicked()), this, SLOT(slotRotateLeft()), Qt::UniqueConnection);
     connect(toolbox, SIGNAL(rotateRightClicked()), this, SLOT(slotRotateRight()), Qt::UniqueConnection);
@@ -358,7 +358,7 @@ void MainWindow::readSettingsInitial() {
 void MainWindow::readSettings() {
     panelPosition = settings->panelPosition();
     sidePanelPosition = settings->sidePanelPosition();
-    settings->panelEnabled()?enablePanel():disablePanel();
+    settings->mainPanelEnabled()?enablePanel():disablePanel();
     settings->sidePanelEnabled()?enableSidePanel():disableSidePanel();
     slotShowControlsOverlay(this->isFullScreen());
     fitMode = settings->imageFitMode();
@@ -374,7 +374,7 @@ void MainWindow::readSettings() {
 }
 
 void MainWindow::calculatePanelTriggerArea() {
-    if(!settings->panelEnabled()) {
+    if(!settings->mainPanelEnabled()) {
         panelArea.setRect(0,0,0,0);
     }
     else {
@@ -503,7 +503,7 @@ void MainWindow::setInfoString(QString text) {
 }
 
 void MainWindow::slotShowControlsOverlay(bool mode) {
-    if(mode && (panelPosition == BOTTOM || !settings->panelEnabled()))
+    if(mode && (panelPosition == BOTTOM || !settings->mainPanelEnabled()))
         controlsOverlay->show();
     else
         controlsOverlay->hide();

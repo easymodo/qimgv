@@ -11,6 +11,7 @@ public:
     ~Thumbnail();
     QString name, label;
     QPixmap *image;
+    int size;
 };
 
 #endif // THUMBNAIL_H

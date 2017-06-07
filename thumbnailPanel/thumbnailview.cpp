@@ -8,7 +8,10 @@ GraphicsView::GraphicsView(ThumbnailFrame *v)
     scrollBar = this->horizontalScrollBar();
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    //setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    //setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    //setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
     timeLine->setEasingCurve(QEasingCurve::OutCubic);
     readSettings();

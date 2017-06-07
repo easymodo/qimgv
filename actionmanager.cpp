@@ -271,7 +271,7 @@ bool ActionManager::processWheelEvent(QWheelEvent *event) {
         keys = "WheelDown";
     }
     keys.prepend(actionManager->modifierKeys(event));
-    return actionManager->startAction(keys);
+    return actionManager->invokeActionForShortcut(keys);
 }
 
 // Detects mouse button clicks only
@@ -299,14 +299,14 @@ bool ActionManager::processMouseEvent(QMouseEvent *event) {
 
     if(event->type() == QEvent::MouseButtonDblClick) {
         // use regular click if there is no action for doubleclick
-        if(actionManager->startAction(keys + "_DoubleClick")) {
+        if(actionManager->invokeActionForShortcut(keys + "_DoubleClick")) {
             return true;
         } else {
-            return actionManager->startAction(keys);
+            return actionManager->invokeActionForShortcut(keys);
         }
     }
     if(event->type() == QEvent::MouseButtonPress) {
-        return actionManager->startAction(keys);
+        return actionManager->invokeActionForShortcut(keys);
     }
     return false;
 }
@@ -317,7 +317,7 @@ bool ActionManager::processKeyEvent(QKeyEvent *event) {
         keys = actionManager->keyMap[event->nativeScanCode()];
         if(!keys.isEmpty()) {
             keys.prepend(actionManager->modifierKeys(event));
-            return actionManager->startAction(keys);
+            return actionManager->invokeActionForShortcut(keys);
         }
     }
     return false;
@@ -358,7 +358,7 @@ QString ActionManager::actionForShortcut(QString keys) {
     return actionManager->shortcuts[keys];
 }
 
-bool ActionManager::startAction(QString shortcut) {
+bool ActionManager::invokeActionForShortcut(QString shortcut) {
     if(shortcuts.contains(shortcut)) {
         QMetaObject::invokeMethod(this,
                                   actionManager->shortcuts[shortcut].toLatin1().constData(),
@@ -366,6 +366,18 @@ bool ActionManager::startAction(QString shortcut) {
         return true;
     }
     return false;
+}
+
+// TODO: use some sort of enum instead of action string? this looks kinda retarded now
+bool ActionManager::invokeAction(QString actionName) {
+    if(actionList().contains(actionName)) {
+        qDebug() << "invokeAction: " << actionName;
+        QMetaObject::invokeMethod(this,
+                                  actionName.toLatin1().constData(),
+                                  Qt::DirectConnection);
+    } else {
+        qDebug() << "invalid action: " << actionName;
+    }
 }
 
 bool ActionManager::processEvent(QEvent *event) {

@@ -10,12 +10,11 @@
 #include <QMutex>
 #include <QTimer>
 #include <QPainter>
-#include "../customWidgets/clickablelabel.h"
-#include "../customWidgets/clickablewidget.h"
 #include "../sourceContainers/thumbnail.h"
 #include "thumbnaillabel.h"
 #include "thumbnailview.h"
 #include <time.h>
+#include <QResizeEvent>
 
 class ThumbnailStrip : public QWidget
 {
@@ -28,11 +27,8 @@ private:
     QList<ThumbnailLabel*> *thumbnailLabels;
     QHash<int, long> posIdHash;
     QHash<long, int> posIdHashReverse;
-    void addItem();
-    QBoxLayout *layout, *buttonsLayout, *viewLayout;
-    QWidget *buttonsWidget;
-    ClickableLabel *openButton, *saveButton, *settingsButton, *exitButton;
-    ClickableWidget *widget;
+    void addThumbnailLabel();
+    QBoxLayout *layout, *viewLayout;
     ThumbnailFrame *thumbnailFrame;
 
     const qreal OPACITY_INACTIVE = 0.83;
@@ -47,13 +43,11 @@ private:
 
     int panelSize;
     int itemCount, current, thumbnailSize;
-    int  bottomMargin; // invisible margin, used when panel is on top
     ThumbnailStrip *strip;
     QRectF preloadArea, visibleRegion;
     QTimer loadTimer;
     QScrollBar *scrollBar;
     PanelHPosition position;
-    bool parentFullscreen;
     QMutex mutex;
 
     void requestThumbnail(int pos);
@@ -63,36 +57,26 @@ private:
     void lock();
     void unlock();
     void updateThumbnailPositions(int start, int end);
-    void shrinkScene();
-    void setWindowControlsVisibility(bool mode);
+    void updateSceneSize();
+    void setThumbnailSize(int);
+    void updateThumbnailSize();
 signals:
-    void thumbnailRequested(int pos, long thumbnailId);
-    void openImage(int pos);
-    void openClicked();
-    void saveClicked();
-    void settingsClicked();
-    void exitClicked();
+    void thumbnailRequested(int pos, int size);
+    void thumbnailClicked(int pos);
 
 public slots:
-    void thumbnailClicked(int pos);
+    void onThumbnailClick(int pos);
     void populate(int count);
     void loadVisibleThumbnails();
     void loadVisibleThumbnailsDelayed();
-    void setThumbnail(long, Thumbnail*);
+    void setThumbnail(int, Thumbnail*);
     void fillPanel(int);
-    void selectThumbnail(int pos);
-    void setFullscreenEnabled(bool);
+    void highlightThumbnail(int pos);
     void removeItemAt(int pos);
     void addItemAt(int pos);
-    void parentResized(QSize parentSz);
 
 protected:
-    virtual void paintEvent(QPaintEvent* event);
     virtual void resizeEvent(QResizeEvent *event);
-
-
-private slots:
-    void readSettings();
 };
 
 #endif // THUMBNAILSTRIP_H

@@ -11,6 +11,7 @@ class ToolBox : public QWidget
     Q_OBJECT
 public:
     explicit ToolBox(QWidget *parent = 0);
+    void readSettings();
 
 private:
     ClickableLabel *rotateLeft, *rotateRight, *zoomFit, *zoomWidth, *zoomOriginal, *zoomIn, *zoomOut;
@@ -25,6 +26,9 @@ signals:
     void zoomOutClicked();
 
 public slots:
+
+protected:
+    QSize sizeHint();
 };
 
 #endif // TOOLBOX_H

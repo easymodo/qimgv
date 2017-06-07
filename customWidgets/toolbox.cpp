@@ -53,3 +53,12 @@ ToolBox::ToolBox(QWidget *parent) : QWidget(parent) {
     connect(zoomIn, SIGNAL(clicked()), this, SIGNAL(zoomInClicked()));
     connect(zoomOut, SIGNAL(clicked()), this, SIGNAL(zoomOutClicked()));
 }
+
+void ToolBox::readSettings() {
+
+}
+
+QSize ToolBox::sizeHint() {
+    // TODO
+    return size();
+}

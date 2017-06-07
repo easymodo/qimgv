@@ -179,7 +179,7 @@ void Settings::setLastFilePosition(unsigned int pos) {
     settings->s.setValue("lastFilePosition", pos);
 }
 
-unsigned int Settings::thumbnailSize() {
+unsigned int Settings::mainPanelSize() {
     bool ok = true;
     unsigned int size = settings->s.value("thumbnailSize", thumbnailSizeDefault).toInt(&ok);
     if(!ok) {
@@ -232,7 +232,7 @@ void Settings::setShowThumbnailLabels(bool mode) {
     settings->s.setValue("showThumbnailLabels", mode);
 }
 
-bool Settings::panelEnabled() {
+bool Settings::mainPanelEnabled() {
     return settings->s.value("panelEnabled", true).toBool();
 }
 
@@ -307,21 +307,22 @@ void Settings::setSidePanelPosition(PanelVPosition pos) {
  * 1: fit width
  * 2: orginal size
  */
-int Settings::imageFitMode() {
+ImageFitMode Settings::imageFitMode() {
     int mode = settings->s.value("defaultFitMode", 0).toInt();
     if(mode < 0 || mode > 2) {
         qDebug() << "Settings: Invalid fit mode ( " + QString::number(mode) + " ). Resetting to default.";
         mode = 0;
     }
-    return mode;
+    return (ImageFitMode)mode;
 }
 
-void Settings::setImageFitMode(int mode) {
-    if(mode < 0 || mode > 2) {
-        qDebug() << "Settings: Invalid fit mode ( " + QString::number(mode) + " ). Resetting to default.";
-        mode = 0;
+void Settings::setImageFitMode(ImageFitMode mode) {
+    int modeInteger = (int)mode;
+    if(modeInteger < 0 || modeInteger > 2) {
+        qDebug() << "Settings: Invalid fit mode ( " + QString::number(modeInteger) + " ). Resetting to default.";
+        modeInteger = 0;
     }
-    settings->s.setValue("defaultFitMode", mode);
+    settings->s.setValue("defaultFitMode", modeInteger);
 }
 
 QRect Settings::windowGeometry() {

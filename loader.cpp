@@ -1,9 +1,10 @@
 #include "loader.h"
 
-NewLoader::NewLoader(const DirectoryManager *_dm) :
+NewLoader::NewLoader(const DirectoryManager *_dm, ImageCache *_cache) :
     preloadTarget(0),
     currentIndex(-1),
-    unloadMargin(1)
+    unloadMargin(1),
+    cache(_cache)
 {
     dm = _dm;
     preloadTimer = new QTimer(this);
@@ -114,16 +115,20 @@ void NewLoader::setCache(ImageCache *_cache) {
 }
 
 // for position in directory
-void NewLoader::generateThumbnailFor(int index, long thumbnailId) {
-    Thumbnailer *thumbnailerRunnable = new Thumbnailer(cache,
-                                            dm->filePathAt(index),
-                                            index,
-                                            settings->squareThumbnails(),
-                                            thumbnailId);
-    connect(thumbnailerRunnable, SIGNAL(thumbnailReady(long, Thumbnail*)),
-            this, SIGNAL(thumbnailReady(long, Thumbnail*)));
-    thumbnailerRunnable->setAutoDelete(true);
-    QThreadPool::globalInstance()->start(thumbnailerRunnable);
+void NewLoader::generateThumbnailFor(int index, int size) {
+    if(size > 0) {
+        Thumbnailer *thumbnailerRunnable = new Thumbnailer(cache,
+                                                dm->filePathAt(index),
+                                                index,
+                                                size,
+                                                settings->squareThumbnails());
+        connect(thumbnailerRunnable, SIGNAL(thumbnailReady(int, Thumbnail*)),
+                this, SIGNAL(thumbnailReady(int, Thumbnail*)));
+        thumbnailerRunnable->setAutoDelete(true);
+        QThreadPool::globalInstance()->start(thumbnailerRunnable);
+    } else {
+        qDebug() << "Loader: incorrect thumbnail size, ignoring request.";
+    }
 }
 
 void NewLoader::readSettings() {

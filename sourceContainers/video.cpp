@@ -47,7 +47,7 @@ void Video::save() {
     }
 }
 
-QPixmap *Video::generateThumbnail(bool squared) {
+QPixmap *Video::generateThumbnail(int size, bool squared) {
     QString ffmpegExe = settings->ffmpegExecutable();
     if(ffmpegExe.isEmpty()) {
         return thumbnailStub();
@@ -63,7 +63,6 @@ QPixmap *Video::generateThumbnail(bool squared) {
     process.close();
     if(success) {
         Qt::AspectRatioMode method = squared?(Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
-        int size = settings->thumbnailSize();
         QPixmap *thumbnail = new QPixmap(size, size);
         QPixmap *tmp;
         tmp = new QPixmap(filePath, "JPG");
@@ -99,7 +98,7 @@ QPixmap *Video::generateThumbnail(bool squared) {
 }
 
 QPixmap *Video::thumbnailStub() {
-    int size = settings->thumbnailSize();
+    int size = settings->mainPanelSize();
     QImage *img = new QImage(size, size, QImage::Format_ARGB32_Premultiplied);
     QPainter painter(img);
     painter.setCompositionMode(QPainter::CompositionMode_Source);

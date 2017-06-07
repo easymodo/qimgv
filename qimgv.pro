@@ -69,7 +69,12 @@ SOURCES += main.cpp\
     loader.cpp \
     cache.cpp \
     viewers/videoplayergl.cpp \
-    viewers/mpvwidget.cpp
+    viewers/mpvwidget.cpp \
+    core2.cpp \
+    mainwindow2.cpp \
+    viewerwidget.cpp \
+    customWidgets/mainpanel.cpp \
+    customWidgets/iconbutton.cpp
 
 HEADERS += mainwindow.h \
     overlays/infooverlay.h \
@@ -111,7 +116,12 @@ HEADERS += mainwindow.h \
     loader.h \
     cache.h \
     viewers/videoplayergl.h \
-    viewers/mpvwidget.h
+    viewers/mpvwidget.h \
+    core2.h \
+    mainwindow2.h \
+    viewerwidget.h \
+    customWidgets/mainpanel.h \
+    customWidgets/iconbutton.h
 
 FORMS += \
     settingsdialog.ui

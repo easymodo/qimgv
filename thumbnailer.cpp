@@ -1,11 +1,11 @@
 #include "thumbnailer.h"
 
-Thumbnailer::Thumbnailer(ImageCache *_cache, QString _path, int _target, bool _squared, long _thumbnailId) :
+Thumbnailer::Thumbnailer(ImageCache *_cache, QString _path, int _target, int _size, bool _squared) :
     path(_path),
     target(_target),
+    size(_size),
     cache(_cache),
-    squared(_squared),
-    thumbnailId(_thumbnailId)
+    squared(_squared)
 {
     factory = new ImageFactory();
 }
@@ -22,12 +22,15 @@ void Thumbnailer::run() {
         tempImage = factory->createImage(path);
     }
 
-    th->image = tempImage->generateThumbnail(squared);
+    th->image = tempImage->generateThumbnail(size, squared);
     if(th->image->size() == QSize(0, 0)) {
+        // TODO: wat, why would even it be zero size?
+        // anyway, maybe show some error icon instead?
         delete th->image;
-        th->image = new QPixmap(settings->thumbnailSize(), settings->thumbnailSize());
+        th->image = new QPixmap(size, size);
         th->image->fill(QColor(0,0,0,0));
     }
+    th->size = size;
     th->name = tempImage->info()->fileName();
     th->label.append(QString::number(tempImage->width()));
     th->label.append("x");
@@ -42,7 +45,7 @@ void Thumbnailer::run() {
     } else {
         delete tempImage;
     }
-    emit thumbnailReady(thumbnailId, th);
+    emit thumbnailReady(target, th);
 }
 
 Thumbnailer::~Thumbnailer() {

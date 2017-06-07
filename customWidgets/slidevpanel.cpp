@@ -1,49 +1,44 @@
 #include "slidevpanel.h"
 
-SlideVPanel::SlideVPanel(QWidget *w, QWidget *parent)
-    : SlidePanel(w, parent)
+SlideVPanel::SlideVPanel(QWidget *w)
+    : SlidePanel(w)
 {
     position = RIGHT;
-    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+    layout.setContentsMargins(0,0,0,0);
+    recalculateGeometry();
 }
 
 SlideVPanel::~SlideVPanel() {
 }
 
-void SlideVPanel::readSettings() {
-    setPosition(settings->sidePanelPosition());
+void SlideVPanel::containerResized(QSize parentSz) {
+    this->parentSz = parentSz;
+    recalculateGeometry();
+    // TODO: expand flag. leaving like this for now
+    //mWidget->resize(this->width(), mWidget->height());
 }
 
-void SlideVPanel::updatePanelPosition() {
-    QRect oldRect = this->rect();
-    if(position == RIGHT) { // TODO: expand enum to use left/right
-        // RIGHT
+QSize SlideVPanel::triggerSize() {
+    return this->size();
+}
+
+void SlideVPanel::setPosition(PanelVPosition p) {
+    position = p;
+    recalculateGeometry();
+}
+
+void SlideVPanel::recalculateGeometry() {
+    if(position == RIGHT) {
         setGeometry(parentSz.width() - width(), parentSz.height()/2 - height()/2, width(), height());
         initialPosition = geometry().topLeft();
         slideAnimation->setStartValue(initialPosition);
         slideAnimation->setEndValue(QPoint(initialPosition.x() + 20, initialPosition.y()));
     } else {
-        // LEFT
         setGeometry(0, parentSz.height()/2 - height()/2, width(), height());
         initialPosition = geometry().topLeft();
         slideAnimation->setStartValue(initialPosition);
         slideAnimation->setEndValue(QPoint(initialPosition.x() - 20, initialPosition.y()));
     }
-
-    if(oldRect != this->rect())
-        emit panelSizeChanged();
-}
-
-void SlideVPanel::setPosition(PanelVPosition p) {
-    position = p;
-    updatePanelPosition();
-}
-
-void SlideVPanel::parentResized(QSize parentSz) {
-    this->parentSz = parentSz;
-    updatePanelPosition();
-    // TODO: expand flag. leaving like this for now
-    //mWidget->resize(this->width(), mWidget->height());
 }
 
 void SlideVPanel::paintEvent(QPaintEvent *event) {

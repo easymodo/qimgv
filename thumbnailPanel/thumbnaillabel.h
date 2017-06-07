@@ -40,6 +40,7 @@ public:
     int width();
     int height();
     int getThumbnailSize();
+    void setThumbnailSize(int size);
 private:
     int labelNumber;
     bool loaded;
@@ -55,6 +56,7 @@ private:
     QColor *highlightColor, *hoverHighlightColor, *outlineColor, *nameColor, *labelColor;
     QFont font, fontsmall;
     QFontMetrics *fm, *fmsmall;
+    QPixmap *loadingIcon;
     void updateLabelWidth();
 
 protected:

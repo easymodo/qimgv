@@ -54,9 +54,8 @@ void ImageStatic::save() {
     }
 }
 
-QPixmap *ImageStatic::generateThumbnail(bool squared) {
+QPixmap *ImageStatic::generateThumbnail(int size, bool squared) {
     Qt::AspectRatioMode method = squared?(Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
-    int size = settings->thumbnailSize();
     QPixmap *tmp;
     if(!isLoaded()) {
         tmp = new QPixmap(path, fileInfo->fileExtension());

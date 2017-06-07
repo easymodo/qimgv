@@ -5,7 +5,6 @@
         <file>res/icons/open.png</file>
         <file>res/icons/save.png</file>
         <file>res/icons/settings.png</file>
-        <file>res/icons/window-close.png</file>
         <file>res/icons/48.png</file>
         <file>res/icons/window-close-transparent.png</file>
         <file>res/icons/rotate-right.png</file>
@@ -16,6 +15,9 @@
         <file>res/icons/zoom-out.png</file>
         <file>res/icons/zoom-width.png</file>
         <file>res/loading_static.png</file>
+        <file>res/icons/loading72.png</file>
+        <file>res/icons/exit-fullscreen.png</file>
+        <file>res/icons/close.png</file>
     </qresource>
     <qresource prefix="/qss">
         <file>res/styles/dark.qss</file>

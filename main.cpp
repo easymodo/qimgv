@@ -1,5 +1,4 @@
-#include "core.h"
-#include "mainwindow.h"
+#include "core2.h"
 #include <QApplication>
 #include "settings.h"
 #include "actionmanager.h"
@@ -29,12 +28,20 @@ int main(int argc, char *argv[]) {
         qApp->setStyleSheet(StyleSheet);
     }
 
+    Core2 core;
+    if(a.arguments().length() > 1) {
+        QString fileName = a.arguments().at(1);
+        core.loadImageBlocking(fileName);
+    }
+    core.showGui();
+    /*
     MainWindow mw;
     if(a.arguments().length() > 1) {
         QString fileName = a.arguments().at(1);
         mw.open(fileName);
     }
     mw.show();
-    //return 0;
+    */
+
     return a.exec();
 }

@@ -3,25 +3,19 @@
 
 #include "slidepanel.h"
 
-class SlideVPanel : public SlidePanel
-{
+class SlideVPanel : public SlidePanel {
     Q_OBJECT
 public:
-    explicit SlideVPanel(QWidget *w, QWidget *parent = 0);
+    explicit SlideVPanel(QWidget *w);
     ~SlideVPanel();
-    void updatePanelPosition();
     void setPosition(PanelVPosition);
-
-private:
-    PanelVPosition position;
-
-public slots:
-    void parentResized(QSize parentSize);
+    void containerResized(QSize parentSz);
+    QSize triggerSize();
 
 protected:
+    PanelVPosition position;
     virtual void paintEvent(QPaintEvent* event);
-private slots:
-    void readSettings();
+    void recalculateGeometry();
 };
 
 #endif // SLIDEVPANEL_H

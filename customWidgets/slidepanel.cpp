@@ -1,17 +1,23 @@
+/*
+ * Base class for auto-hiding panels.
+ * Insert widget you want to show with setWidget(QWidget).
+ * Use containerResized(QSize) to notify panel of parent resize
+ * so it will readjust it's geometry accordingly.
+ */
+
 #include "slidepanel.h"
 
-SlidePanel::SlidePanel(QWidget *w, QWidget *parent)
+SlidePanel::SlidePanel(QWidget *parent)
     : QWidget(parent),
+      preferredWidgetSize(100,100),
       panelSize(50),
-      parentFullscreen(false),
       mWidget(NULL)
 {
-    parentSz = parent->size();
-    layout = new QBoxLayout(QBoxLayout::TopToBottom);
-    layout->setSpacing(0);
-    layout->setContentsMargins(0,0,0,0);
-    setWidget(w);
-    this->setLayout(layout);
+    parentSz = QSize(0,0); // TODO: remove this
+    layout.setSpacing(0);
+    layout.setContentsMargins(0,0,0,0);
+    this->setLayout(&layout);
+
     //fade & slide hover effect
     fadeEffect = new QGraphicsOpacityEffect(this);
     this->setGraphicsEffect(fadeEffect);
@@ -37,22 +43,20 @@ SlidePanel::SlidePanel(QWidget *w, QWidget *parent)
 }
 
 SlidePanel::~SlidePanel() {
-
 }
 
 void SlidePanel::setWidget(QWidget *w) {
-    if(!w) {
-        qDebug() << "Error: SlidePanel::setWidget - null argument";
+    if(!w)
         return;
-    }
-    if(mWidget) {
-        layout->removeWidget(mWidget);
-    }
+    if(hasWidget())
+        layout.removeWidget(mWidget);
     mWidget = w;
-    this->resize(mWidget->size());
-    this->setGeometry(mWidget->geometry());
     mWidget->setParent(this);
-    layout->addWidget(mWidget);
+    layout.addWidget(mWidget, 0, 0);
+}
+
+bool SlidePanel::hasWidget() {
+    return (mWidget != NULL);
 }
 
 void SlidePanel::leaveEvent(QEvent *event) {
@@ -61,8 +65,12 @@ void SlidePanel::leaveEvent(QEvent *event) {
 }
 
 void SlidePanel::show() {
-    animGroup->stop();
-    fadeEffect->setOpacity(1);
-    setProperty("pos", initialPosition);
-    QWidget::show();
+    if(hasWidget()) {
+        animGroup->stop();
+        fadeEffect->setOpacity(1);
+        setProperty("pos", initialPosition);
+        QWidget::show();
+    } else {
+        qDebug() << "Warning: Trying to show panel containing no widget!";
+    }
 }

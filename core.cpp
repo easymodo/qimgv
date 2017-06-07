@@ -253,7 +253,7 @@ void Core::initVariables() {
     loadingTimer->setInterval(500); // TODO: test on slower pc & adjust timeout
     dirManager = new DirectoryManager();
     cache = new ImageCache();
-    imageLoader = new NewLoader(dirManager);
+    imageLoader = new NewLoader(dirManager, cache);
 }
 
 void Core::connectSlots() {

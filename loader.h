@@ -13,7 +13,7 @@ class NewLoader : public QObject
 {
     Q_OBJECT
 public:
-    explicit NewLoader(const DirectoryManager *);
+    explicit NewLoader(const DirectoryManager *, ImageCache *);
     void open(int index);
     const ImageCache* getCache();
     void setCache(ImageCache*);
@@ -21,7 +21,7 @@ public:
     void preload(int index);
 
 public slots:
-    void generateThumbnailFor(int index, long thumbnailId);
+    void generateThumbnailFor(int index, int size);
 
 private:
     const DirectoryManager *dm;
@@ -37,7 +37,7 @@ private:
 signals:
     void loadStarted();
     void loadFinished(Image*, int index);
-    void thumbnailReady(long, Thumbnail*);
+    void thumbnailReady(int, Thumbnail*);
 
 private slots:
     bool setLoadTarget(int);

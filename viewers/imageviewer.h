@@ -25,20 +25,12 @@
 
 #define FLT_EPSILON 1.19209290E-07F
 
-enum ImageFitMode
-{
-    NORMAL,
-    WIDTH,
-    ALL,
-    FREE
-};
-
 class ImageViewer : public QWidget
 {
     Q_OBJECT
 
 public:
-    ImageViewer(QWidget* parent);
+    ImageViewer(QWidget* parent = 0);
     ~ImageViewer();
     bool isDisplaying() const;
 
@@ -51,9 +43,9 @@ signals:
 
 public slots:
     void displayImage(QPixmap* _image);
-    void slotFitNormal();
-    void slotFitWidth();
-    void slotFitAll();
+    void setFitOriginal();
+    void setFitWidth();
+    void setFitAll();
     void slotZoomIn();
     void slotZoomOut();
     void resizeImage();
@@ -102,6 +94,7 @@ private:
     QSize desktopSize;
 
     ImageFitMode imageFitMode;
+    void setFitMode(ImageFitMode mode);
     void initOverlays();
     void setScale(float scale);
     void updateMaxScale();

@@ -13,6 +13,13 @@
 #include <QMap>
 #include "actionmanager.h"
 
+enum ImageFitMode {
+    ALL,
+    WIDTH,
+    ORIGINAL,
+    FREE
+};
+
 enum PanelHPosition {
     TOP,
     BOTTOM
@@ -39,7 +46,7 @@ public:
     void setLastDirectory(QString path);
     unsigned int lastFilePosition();
     void setLastFilePosition(unsigned int pos);
-    unsigned int thumbnailSize();
+    unsigned int mainPanelSize();
     void setThumbnailSize(unsigned int size);
     bool usePreloader();
     void setUsePreloader(bool mode);
@@ -49,8 +56,8 @@ public:
     void setAccentColor(QColor color);
     bool fullscreenMode();
     void setFullscreenMode(bool mode);
-    int imageFitMode();
-    void setImageFitMode(int mode);
+    ImageFitMode imageFitMode();
+    void setImageFitMode(ImageFitMode mode);
     QRect windowGeometry();
     void setWindowGeometry(QRect geometry);
     bool reduceRamUsage();
@@ -74,7 +81,7 @@ public:
     QStringList supportedFormats();
     void readShortcuts();
     void saveShortcuts();
-    bool panelEnabled();
+    bool mainPanelEnabled();
     bool setPanelEnabled(bool mode);
     int lastDisplay();
     int setLastDisplay(int display);

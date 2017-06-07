@@ -26,7 +26,7 @@ public:
     QSize size();
 
     void rotate(int grad);
-    QPixmap* generateThumbnail(bool squared);
+    QPixmap* generateThumbnail(int size, bool squared);
 
 public slots:
     void crop(QRect newRect);
