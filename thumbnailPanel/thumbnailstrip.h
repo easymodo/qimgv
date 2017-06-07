@@ -31,18 +31,17 @@ private:
     QBoxLayout *layout, *viewLayout;
     ThumbnailFrame *thumbnailFrame;
 
-    const qreal OPACITY_INACTIVE = 0.83;
+    const qreal OPACITY_INACTIVE = 0.67;
     const qreal OPACITY_SELECTED = 1.0;
     const int ANIMATION_SPEED_INSTANT = 0;
     const int ANIMATION_SPEED_FAST = 80;
     const int ANIMATION_SPEED_NORMAL = 150;
 
-
     const uint LOAD_DELAY = 20;
     const int OFFSCREEN_PRELOAD_AREA = 1700;
 
     int panelSize;
-    int itemCount, current, thumbnailSize;
+    int itemCount, current, thumbnailSize, thumbnailInterval;
     ThumbnailStrip *strip;
     QRectF preloadArea, visibleRegion;
     QTimer loadTimer;

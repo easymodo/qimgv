@@ -19,7 +19,7 @@ MainPanel::MainPanel(QWidget *parent) : SlideHPanel(parent) {
     buttonsLayout.addWidget(&settingsButton);
     buttonsLayout.addWidget(&openButton);
     buttonsLayout.addStretch(0);
-    buttonsLayout.addWidget(&exitFullscreenButton);
+    //buttonsLayout.addWidget(&exitFullscreenButton);
     buttonsLayout.addWidget(&exitButton);
 
     buttonsWidget.setLayout(&buttonsLayout);
@@ -55,7 +55,7 @@ void MainPanel::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
     QPainter p(this);
     if(position == PanelHPosition::TOP) {
-        p.setPen(QColor(QColor(120, 120, 120)));
+        p.setPen(QColor(QColor(110, 110, 110)));
         p.drawLine(rect().bottomLeft() - QPoint(0, invisibleMargin - 1), rect().bottomRight() - QPoint(0, invisibleMargin - 1));
         p.setPen(QColor(QColor(40, 40, 40)));
         p.drawLine(rect().bottomLeft() - QPoint(0, invisibleMargin - 2), rect().bottomRight() - QPoint(0, invisibleMargin - 2));

@@ -4,6 +4,7 @@ ThumbnailStrip::ThumbnailStrip()
     : panelSize(122),
       current(-1),
       thumbnailSize(0),
+      thumbnailInterval(4),
       thumbnailFrame(NULL),
       idCounter(0)
 {
@@ -90,7 +91,7 @@ void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
         return;
     }
     // assume all thumbnails are the same size
-    int thumbWidth = thumbnailLabels->at(start)->boundingRect().width();
+    int thumbWidth = thumbnailLabels->at(start)->boundingRect().width() + thumbnailInterval;
     ThumbnailLabel *tmp;
     for(int i = start; i <= end; i++) {
         tmp = thumbnailLabels->at(i);
@@ -221,7 +222,6 @@ void ThumbnailStrip::removeItemAt(int pos) {
 void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
     QWidget::resizeEvent(event);
-    qDebug() << "resizeEvent: " << event->size();
     if(event->oldSize().height() != height())
         updateThumbnailSize();
     if(event->oldSize().width() < width())
@@ -231,7 +231,7 @@ void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
 // update size based on widget's size
 // reposition thumbnails within scene if needed
 void ThumbnailStrip::updateThumbnailSize() {
-    setThumbnailSize(this->height() - 24);
+    setThumbnailSize(this->height() - 26);
 }
 
 ThumbnailStrip::~ThumbnailStrip() {

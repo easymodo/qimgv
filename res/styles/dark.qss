@@ -1,6 +1,6 @@
 [accessibleName="iconButton"] {
     background-color: #262626;
-    padding: 5px 5px 5px 5px;
+    padding: 4px 4px 4px 4px;
 }
 
 [accessibleName="iconButton"]:hover {
@@ -33,21 +33,21 @@
 }
 
 .QScrollBar:horizontal {
-    height: 13px;
+    height: 15px;
     background-color: transparent;
     margin: 0px;
 }
 
 .QScrollBar::handle:horizontal {
-    background: #9E9E9E;
-    border-top: 1px solid #ADADAD;
-    border-left: 1px solid #ADADAD;
-    border-right: 1px solid #787878;
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #424242, stop: 1 #323232);
+    border-top: 1px solid #6e6e6e;
+    border-left: 1px solid #6e6e6e;
+    border-right: 1px solid #6e6e6e;
     min-width: 60px;
 }
 
 .QScrollBar::handle:horizontal:hover {
-    background: #BDBDBD;
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #4B4B4B, stop: 1 #383838);
 }
 
 .QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
