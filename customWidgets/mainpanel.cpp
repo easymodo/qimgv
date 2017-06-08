@@ -27,11 +27,6 @@ MainPanel::MainPanel(QWidget *parent) : SlideHPanel(parent) {
 
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
-    // button actions
-    connect(&openButton, SIGNAL(clicked()), this, SIGNAL(openClicked()));
-    connect(&exitFullscreenButton, SIGNAL(clicked()), this, SIGNAL(exitFullscreenClicked()));
-    connect(&settingsButton, SIGNAL(clicked()), this, SIGNAL(settingsClicked()));
-    connect(&exitButton, SIGNAL(clicked()), this, SIGNAL(exitClicked()));
 }
 
 void MainPanel::setPosition(PanelHPosition newPosition) {
@@ -40,7 +35,7 @@ void MainPanel::setPosition(PanelHPosition newPosition) {
         layout.setContentsMargins(0,0,0,invisibleMargin);
     }
     else {
-        layout.setContentsMargins(0,2,0,0);
+        layout.setContentsMargins(0,4,0,0);
     }
     recalculateGeometry();
 }
@@ -63,5 +58,7 @@ void MainPanel::paintEvent(QPaintEvent *event) {
         p.setPen(QColor(QColor(40, 40, 40)));
         p.drawLine(rect().topLeft(), rect().topRight());
         p.drawLine(rect().topLeft() + QPoint(0,1), rect().topRight() + QPoint(0,1));
+        p.drawLine(rect().topLeft() + QPoint(0,2), rect().topRight() + QPoint(0,2));
+        p.drawLine(rect().topLeft() + QPoint(0,3), rect().topRight() + QPoint(0,3)); // lol
     }
 }

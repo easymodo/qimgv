@@ -102,7 +102,7 @@ public:
     bool setSidePanelEnabled(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
-    const int thumbnailSizeDefault = 190;
+    const int thumbnailSizeDefault = 210;
     QSettings s;
     QDir *tempDirectory;
 

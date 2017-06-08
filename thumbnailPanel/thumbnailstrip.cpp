@@ -3,7 +3,7 @@
 ThumbnailStrip::ThumbnailStrip()
     : panelSize(122),
       current(-1),
-      thumbnailSize(0),
+      thumbnailSize(100),
       thumbnailInterval(4),
       thumbnailFrame(NULL),
       idCounter(0)
@@ -81,7 +81,7 @@ void ThumbnailStrip::addItemAt(int pos) {
     idCounter++;
 
     // set position for new & move existing items right
-    //updateThumbnailPositions(pos, thumbnailLabels->count() - 1);
+    updateThumbnailPositions(pos, thumbnailLabels->count() - 1);
     unlock();
 }
 
@@ -151,7 +151,7 @@ void ThumbnailStrip::loadVisibleThumbnails() {
 }
 
 void ThumbnailStrip::requestThumbnail(int pos) {
-    if(checkRange(pos) && thumbnailSize > 0 && thumbnailLabels->at(pos)->state == EMPTY) {
+    if(checkRange(pos) && thumbnailLabels->at(pos)->state == EMPTY) {
             thumbnailLabels->at(pos)->state = LOADING;
             emit thumbnailRequested(pos, thumbnailSize);
     }
@@ -189,10 +189,8 @@ void ThumbnailStrip::setThumbnail(int pos, Thumbnail *thumb) {
 }
 
 void ThumbnailStrip::setThumbnailSize(int newSize) {
-    if(thumbnailSize != newSize && newSize >= 0) {
+    if(newSize >= 20) {
         thumbnailSize = newSize;
-        if( thumbnailSize % 2 )
-            --thumbnailSize;
         for(int i=0; i<thumbnailLabels->count(); i++) {
             thumbnailLabels->at(i)->setThumbnailSize(newSize);
         }
@@ -218,6 +216,7 @@ void ThumbnailStrip::removeItemAt(int pos) {
     unlock();
 }
 
+// resizes thumbnailSize to fit new widget size
 // TODO: find some way to make this trigger while hidden
 void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
@@ -231,7 +230,12 @@ void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
 // update size based on widget's size
 // reposition thumbnails within scene if needed
 void ThumbnailStrip::updateThumbnailSize() {
-    setThumbnailSize(this->height() - 26);
+    int newSize = this->height() - 26;
+    if( newSize % 2 )
+        --newSize;
+    if(newSize != thumbnailSize) {
+        setThumbnailSize(newSize);
+    }
 }
 
 ThumbnailStrip::~ThumbnailStrip() {

@@ -50,13 +50,14 @@ private:
     Thumbnail *thumbnail;
     qreal currentOpacity;
     bool highlighted, hovered;
-    int marginX, highlightHeight, thumbnailSize;
+    int borderSize, thumbnailSize;
     QString infoString;
     QRectF highlightRect, labelRect, nameRect;
     QColor *highlightColor, *hoverHighlightColor, *outlineColor, *nameColor, *labelColor;
     QFont font, fontsmall;
     QFontMetrics *fm, *fmsmall;
     QPixmap *loadingIcon;
+    QPropertyAnimation *opacityAnimation;
     void updateLabelWidth();
 
 protected:

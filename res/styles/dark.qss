@@ -1,6 +1,6 @@
 [accessibleName="iconButton"] {
     background-color: #262626;
-    padding: 4px 4px 4px 4px;
+    padding: 5px 5px 5px 5px;
 }
 
 [accessibleName="iconButton"]:hover {

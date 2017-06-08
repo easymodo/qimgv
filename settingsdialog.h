@@ -29,9 +29,9 @@ private:
     void fillShortcuts();
     Ui::SettingsDialog *ui;
     enum Constants {
-        thumbSizeSmall = 130,
-        thumbSizeMedium = 160,
-        thumbSizeLarge = 190,
+        thumbSizeSmall = 170,
+        thumbSizeMedium = 210,
+        thumbSizeLarge = 230,
         thumbSizeVeryLarge = 250
     };
 

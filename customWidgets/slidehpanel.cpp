@@ -48,7 +48,6 @@ void SlideHPanel::setPosition(PanelHPosition p) {
 }
 
 void SlideHPanel::recalculateGeometry() {
-    qDebug() << "recalc: " << panelHeight;
     if(position == TOP) {
         this->setGeometry(QRect(QPoint(0, 0),
                                 QPoint(parentSz.width(), panelHeight - 1 + invisibleMargin)));
