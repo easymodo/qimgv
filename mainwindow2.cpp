@@ -20,6 +20,14 @@ MainWindow2::MainWindow2(ViewerWidget *viewerWidget, QWidget *parent)
     this->setAcceptDrops(true);
 
     setViewerWidget(viewerWidget);
+    //setWindowOpacity(0.5f);
+    //setAttribute(Qt::WA_NoSystemBackground);
+    setAttribute(Qt::WA_TranslucentBackground);
+    //QPalette pal = palette();
+    //    pal.setBrush(QPalette::Window, QColor(0, 120, 170, 128) );
+    //    setPalette(pal);
+    //    setAutoFillBackground(true);
+
     createPanels();
 
     controlsOverlay.setParent(this);

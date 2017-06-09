@@ -1,10 +1,15 @@
 [accessibleName="iconButton"] {
-    background-color: #262626;
+    background-color: #1B1B1B;
     padding: 5px 5px 5px 5px;
+    margin: 0px 0px 0px 0px;
 }
 
 [accessibleName="iconButton"]:hover {
-    background-color: #424242;
+    background-color: #2F2F2F;
+    border-top: 1px solid #383838;
+    border-left: 1px solid #383838;
+    border-right: 1px solid #383838;
+    border-bottom: 1px solid #383838;
 }
 
 [accessibleName="panelButtonTransparent"] {
@@ -16,20 +21,20 @@
 }
 
 [accessibleName="panelButtonsWidget"] {
-    background-color: #262626;
+    background-color: #1B1B1B;
 }
 
 [accessibleName="mpvContainer"] {
-    background-color: #262626;
+    background-color: #1B1B1B;
 }
 
 .GraphicsView {
-    background-color: #262626;
+    background-color: #1B1B1B;
     border-style: none;
 }
 
 .ThumbnailLabel {
-    background-color: #262626;
+    background-color: #1B1B1B;
 }
 
 .QScrollBar:horizontal {

@@ -17,3 +17,17 @@ Image *ImageFactory::createImage(QString path) {
     delete info;
     return img;
 }
+
+Image *ImageFactory::createImage(FileInfo *info) {
+    Image *img;
+    if(info->getType() == ANIMATED) {
+        img = new ImageAnimated(info->filePath());
+    } else if(info->getType() == VIDEO) {
+        img = new Video(info->filePath());
+    } else {
+        img = new ImageStatic(info->filePath());
+    }
+    img->load();
+    delete info;
+    return img;
+}

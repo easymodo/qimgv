@@ -336,7 +336,7 @@ void ImageViewer::drawTransparencyGrid() {
 void ImageViewer::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QPainter painter(this);
-    painter.fillRect(rect(), QBrush(bgColor));
+    //painter.fillRect(rect(), QBrush(bgColor));
     //painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(image)
         painter.drawPixmap(drawingRect, *image, image->rect());

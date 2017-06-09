@@ -13,6 +13,7 @@ public:
     ImageFactory();
 
     Image* createImage(QString);
+    Image* createImage(FileInfo*);
 };
 
 #endif // IMAGEFACTORY_H

@@ -31,6 +31,10 @@ public slots:
     bool showAnimation(QMovie *movie);
     bool showVideo(Clip *clip);
     void stopPlayback();
+
+protected:
+    virtual void paintEvent(QPaintEvent* event);
+
 };
 
 #endif // VIEWERWIDGET_H

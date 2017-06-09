@@ -3,37 +3,35 @@
 ThumbnailStrip::ThumbnailStrip()
     : panelSize(122),
       current(-1),
-      thumbnailSize(100),
+      thumbnailSize(184),
       thumbnailInterval(4),
-      thumbnailFrame(NULL),
       idCounter(0)
 {
     thumbnailLabels = new QList<ThumbnailLabel*>();
 
-    thumbnailFrame = new ThumbnailFrame();
     scene = new QGraphicsScene(this); // move scene to view class?
-    thumbnailFrame->view()->setScene(scene);
-    thumbnailFrame->setFrameShape(QFrame::NoFrame);
+    thumbnailFrame.view()->setScene(scene);
+    thumbnailFrame.setFrameShape(QFrame::NoFrame);
 
     // main layout
     layout = new QBoxLayout(QBoxLayout::LeftToRight);
     layout->setSpacing(0);
     layout->setContentsMargins(0,0,0,0);
-    layout->addWidget(thumbnailFrame);
+    layout->addWidget(&thumbnailFrame);
 
     this->setLayout(layout);
 
     // other extremely important things
-    thumbnailFrame->setAccessibleName("thumbnailView");
+    thumbnailFrame.setAccessibleName("thumbnailView");
     loadTimer.setSingleShot(true);
 
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
 
-    connect(thumbnailFrame, SIGNAL(thumbnailClicked(int)),
+    connect(&thumbnailFrame, SIGNAL(thumbnailClicked(int)),
             this, SLOT(onThumbnailClick(int)));
     connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
-    connect(thumbnailFrame, SIGNAL(scrolled()), this, SLOT(loadVisibleThumbnailsDelayed()));
+    connect(&thumbnailFrame, SIGNAL(scrolled()), this, SLOT(loadVisibleThumbnailsDelayed()));
 }
 
 void ThumbnailStrip::populate(int count) {
@@ -50,7 +48,7 @@ void ThumbnailStrip::populate(int count) {
             addThumbnailLabel();
         }
         setThumbnailSize(thumbnailSize);
-        thumbnailFrame->view()->resetViewport();
+        thumbnailFrame.view()->resetViewport();
     }
 }
 
@@ -108,7 +106,7 @@ void ThumbnailStrip::highlightThumbnail(int pos) {
     // this code fires twice on click. fix later
     // also wont highlight new label after removing file
     if(current != pos) {
-        thumbnailFrame->view()->ensureVisible(thumbnailLabels->at(pos)->sceneBoundingRect(),
+        thumbnailFrame.view()->ensureVisible(thumbnailLabels->at(pos)->sceneBoundingRect(),
                                               thumbnailSize / 2,
                                               0);
         if(checkRange(current)) {
@@ -135,8 +133,8 @@ void ThumbnailStrip::loadVisibleThumbnailsDelayed() {
 }
 
 void ThumbnailStrip::loadVisibleThumbnails() {
-    QRectF visibleRect = thumbnailFrame->view()->mapToScene(
-                thumbnailFrame->view()->viewport()->geometry()).boundingRect();
+    QRectF visibleRect = thumbnailFrame.view()->mapToScene(
+                thumbnailFrame.view()->viewport()->geometry()).boundingRect();
     // grow rectangle to cover nearby offscreen items
     visibleRect.adjust(-OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA, 0);
     QList<QGraphicsItem *>items = scene->items(visibleRect,
@@ -144,6 +142,11 @@ void ThumbnailStrip::loadVisibleThumbnails() {
                                                Qt::DescendingOrder);
     ThumbnailLabel* labelCurrent;
     loadTimer.stop();
+    /*
+    for(int i = 0; i < thumbnailLabels->count(); i++) {
+        requestThumbnail(thumbnailLabels->at(i)->labelNum());
+    }
+    */
     for(int i = 0; i < items.count(); i++) {
         labelCurrent = qgraphicsitem_cast<ThumbnailLabel*>(items.at(i));
         requestThumbnail(labelCurrent->labelNum());
@@ -152,8 +155,9 @@ void ThumbnailStrip::loadVisibleThumbnails() {
 
 void ThumbnailStrip::requestThumbnail(int pos) {
     if(checkRange(pos) && thumbnailLabels->at(pos)->state == EMPTY) {
-            thumbnailLabels->at(pos)->state = LOADING;
-            emit thumbnailRequested(pos, thumbnailSize);
+        //qDebug() << "#### req: " << pos;
+        thumbnailLabels->at(pos)->state = LOADING;
+        emit thumbnailRequested(pos, thumbnailSize);
     }
 }
 
@@ -235,6 +239,7 @@ void ThumbnailStrip::updateThumbnailSize() {
         --newSize;
     if(newSize != thumbnailSize) {
         setThumbnailSize(newSize);
+        qDebug() << newSize;
     }
 }
 

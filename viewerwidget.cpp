@@ -100,3 +100,9 @@ void ViewerWidget::stopPlayback() {
     if(currentWidget == 2)
         videoPlayer->setPaused(true);
 }
+
+void ViewerWidget::paintEvent(QPaintEvent *event) {
+    QPainter p(this);
+    p.setBrush(QBrush(QColor(12, 12, 12, 255)));
+    p.fillRect(this->rect(), p.brush());
+}

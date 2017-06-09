@@ -74,7 +74,8 @@ SOURCES += main.cpp\
     mainwindow2.cpp \
     viewerwidget.cpp \
     customWidgets/mainpanel.cpp \
-    customWidgets/iconbutton.cpp
+    customWidgets/iconbutton.cpp \
+    thumbnailcache.cpp
 
 HEADERS += mainwindow.h \
     overlays/infooverlay.h \
@@ -121,7 +122,8 @@ HEADERS += mainwindow.h \
     mainwindow2.h \
     viewerwidget.h \
     customWidgets/mainpanel.h \
-    customWidgets/iconbutton.h
+    customWidgets/iconbutton.h \
+    thumbnailcache.h
 
 FORMS += \
     settingsdialog.ui

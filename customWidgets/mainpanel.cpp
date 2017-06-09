@@ -15,7 +15,7 @@ MainPanel::MainPanel(QWidget *parent) : SlideHPanel(parent) {
 
     buttonsLayout.setDirection(QBoxLayout::BottomToTop);
     buttonsLayout.setSpacing(0);
-    buttonsLayout.setContentsMargins(0,0,0,0);
+    buttonsLayout.setContentsMargins(5,0,0,0);
     buttonsLayout.addWidget(&settingsButton);
     buttonsLayout.addWidget(&openButton);
     buttonsLayout.addStretch(0);

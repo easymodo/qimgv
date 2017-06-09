@@ -7,6 +7,7 @@
 #include <QtConcurrent>
 #include <QMutex>
 #include "loaderrunnable.h"
+#include "thumbnailcache.h"
 #include "thumbnailer.h"
 
 class NewLoader : public QObject
@@ -26,6 +27,7 @@ public slots:
 private:
     const DirectoryManager *dm;
     ImageCache *cache;
+    ThumbnailCache *thumbnailCache;
     QMutex mutex, mutex2;
     void freeAt(int);
     int currentIndex, preloadTarget, time, unloadMargin;

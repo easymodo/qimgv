@@ -4,12 +4,12 @@ Settings *settings = NULL;
 
 Settings::Settings(QObject *parent) :
     QObject(parent) {
-    tempDirectory = new QDir(QDir::tempPath() + "/qimgv");
-    tempDirectory->mkpath(QDir::tempPath() + "/qimgv");
+    cacheDirectory = new QDir(QDir::homePath() + "/.cache/thumbnails/qimgv");
+    cacheDirectory->mkpath(cacheDirectory->absolutePath());
 }
 
 Settings::~Settings() {
-    delete tempDirectory;
+    delete cacheDirectory;
 }
 
 Settings *Settings::getInstance() {
@@ -41,8 +41,8 @@ void Settings::validate() {
     }
 }
 
-QString Settings::tempDir() {
-    return tempDirectory->path() + "/";
+QString Settings::cacheDir() {
+    return cacheDirectory->path() + "/";
 }
 
 QString Settings::ffmpegExecutable() {

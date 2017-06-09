@@ -66,7 +66,7 @@ public:
     void setPlayVideos(bool mode);
     bool playVideoSounds();
     void setPlayVideoSounds(bool mode);
-    QString tempDir();
+    QString cacheDir();
     QString ffmpegExecutable();
     void setFFmpegExecutable(QString path);
     bool showThumbnailLabels();
@@ -104,7 +104,7 @@ private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 210;
     QSettings s;
-    QDir *tempDirectory;
+    QDir *cacheDirectory;
 
 signals:
     void settingsChanged();

@@ -28,9 +28,13 @@ GraphicsView::GraphicsView(ThumbnailFrame *v)
 void GraphicsView::wheelEvent(QWheelEvent *event) {
     event->accept();
     viewportCenter = mapToScene(viewport()->rect().center());
-    // on some systems pixelDelta() returns non-zero values with mouse wheel
+    // pixelDelta() with libinput returns non-zero values with mouse wheel
     // that's why smoothScroll flag workaround
-    if(!forceSmoothScroll && event->pixelDelta().y() != 0)  {
+    int pixelDelta = event->pixelDelta().y();
+    if(!forceSmoothScroll && pixelDelta != 0)  {
+        // ignore if we reached boundaries
+        if( (pixelDelta > 0 && scrollBar->value() == 0) || (pixelDelta < 0 && scrollBar->value() == scrollBar->maximum()) )
+            return;
         // pixel scrolling (precise)
         centerOnX(viewportCenter.x() - event->pixelDelta().y());
         emit scrolled();

@@ -23,7 +23,7 @@ void DirectoryManager::readSettings() {
 }
 
 void DirectoryManager::setDirectory(QString path) {
-    if(!path.isEmpty() && currentDir.exists()) {
+    if(!path.isEmpty() && /* TODO: ???-> */ currentDir.exists()) {
         if(currentDir.path() != path) {
             currentDir.setPath(path);
             generateFileList();
@@ -143,11 +143,6 @@ void DirectoryManager::directoryContentsChanged(QString dirPath) {
 // ##############################################################
 // ###################### PRIVATE METHODS #######################
 // ##############################################################
-
-FileInfo *DirectoryManager::loadInfo(QString path) {
-    FileInfo *info = new FileInfo(path);
-    return info;
-}
 
 void DirectoryManager::generateFileList() {
     switch(settings->sortingMode()) {

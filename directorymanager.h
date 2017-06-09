@@ -57,7 +57,6 @@ private:
     QMimeDatabase mimeDb;
     bool quickFormatDetection;
 
-    FileInfo* loadInfo(QString path);
     void generateFileList();
     void generateFileListQuick();
     void generateFileListDeep();

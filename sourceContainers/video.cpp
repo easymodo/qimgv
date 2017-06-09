@@ -53,7 +53,7 @@ QPixmap *Video::generateThumbnail(int size, bool squared) {
         return thumbnailStub();
     }
 
-    QString filePath = settings->tempDir() + "tmp_" + fileInfo->fileName();
+    QString filePath = settings->cacheDir() + "tmp_" + fileInfo->fileName();
 
     QString command = "\"" + ffmpegExe + "\"" + " -i " + "\"" + fileInfo->filePath() + "\"" +
                       " -r 1 -f image2 " + "\"" + filePath + "\"";

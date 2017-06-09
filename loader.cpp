@@ -4,9 +4,13 @@ NewLoader::NewLoader(const DirectoryManager *_dm, ImageCache *_cache) :
     preloadTarget(0),
     currentIndex(-1),
     unloadMargin(1),
-    cache(_cache)
+    cache(_cache),
+    dm(_dm)
 {
     dm = _dm;
+    thumbnailCache = new ThumbnailCache();
+
+
     preloadTimer = new QTimer(this);
     preloadTimer->setSingleShot(true);
     readSettings();
@@ -117,7 +121,7 @@ void NewLoader::setCache(ImageCache *_cache) {
 // for position in directory
 void NewLoader::generateThumbnailFor(int index, int size) {
     if(size > 0) {
-        Thumbnailer *thumbnailerRunnable = new Thumbnailer(cache,
+        Thumbnailer *thumbnailerRunnable = new Thumbnailer(thumbnailCache,
                                                 dm->filePathAt(index),
                                                 index,
                                                 size,

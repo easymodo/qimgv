@@ -29,7 +29,7 @@ private:
     QHash<long, int> posIdHashReverse;
     void addThumbnailLabel();
     QBoxLayout *layout, *viewLayout;
-    ThumbnailFrame *thumbnailFrame;
+    ThumbnailFrame thumbnailFrame;
 
     const qreal OPACITY_INACTIVE = 0.67;
     const qreal OPACITY_SELECTED = 1.0;
