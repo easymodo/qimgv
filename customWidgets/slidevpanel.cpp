@@ -4,7 +4,7 @@ SlideVPanel::SlideVPanel(QWidget *w)
     : SlidePanel(w)
 {
     position = RIGHT;
-    layout.setContentsMargins(0,0,0,0);
+    mLayout.setContentsMargins(0,0,0,0);
     recalculateGeometry();
 }
 

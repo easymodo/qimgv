@@ -8,9 +8,6 @@ GraphicsView::GraphicsView(ThumbnailFrame *v)
     scrollBar = this->horizontalScrollBar();
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    //setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-    //setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-    //setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
     timeLine->setEasingCurve(QEasingCurve::OutCubic);
@@ -29,8 +26,10 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
     event->accept();
     viewportCenter = mapToScene(viewport()->rect().center());
     // pixelDelta() with libinput returns non-zero values with mouse wheel
+    // so there's no way to distinguish between wheel scroll and touchpad scroll (at least not that i know of)
     // that's why smoothScroll flag workaround
     int pixelDelta = event->pixelDelta().y();
+    int angleDelta = event->angleDelta().ry();
     if(!forceSmoothScroll && pixelDelta != 0)  {
         // ignore if we reached boundaries
         if( (pixelDelta > 0 && scrollBar->value() == 0) || (pixelDelta < 0 && scrollBar->value() == scrollBar->maximum()) )
@@ -39,17 +38,20 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
         centerOnX(viewportCenter.x() - event->pixelDelta().y());
         emit scrolled();
     } else {
+        // also ignore if we reached boundaries
+        if( (angleDelta > 0 && scrollBar->value() == 0) || (angleDelta < 0 && scrollBar->value() == scrollBar->maximum()) )
+            return;
         // smooth scrolling by fixed intervals
         if(timeLine->state() == QTimeLine::Running) {
             timeLine->stop();
             timeLine->setFrameRange(viewportCenter.x(),
                                     timeLine->endFrame() -
-                                    event->angleDelta().ry() *
+                                    angleDelta *
                                     SCROLL_SPEED_MULTIPLIER);
         } else {
             timeLine->setFrameRange(viewportCenter.x(),
                                     viewportCenter.x() -
-                                    event->angleDelta().ry() *
+                                    angleDelta *
                                     SCROLL_SPEED_MULTIPLIER);
         }
         timeLine->setUpdateInterval(SCROLL_UPDATE_RATE);

@@ -28,7 +28,7 @@ public slots:
     void show();
 
 protected:
-    QGridLayout layout;
+    QGridLayout mLayout;
     virtual void recalculateGeometry() = 0;
     QGraphicsOpacityEffect *fadeEffect;
     QPropertyAnimation *fadeAnimation, *slideAnimation;

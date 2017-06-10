@@ -15,23 +15,18 @@ enum loadState { EMPTY, LOADING, LOADED };
 class ThumbnailLabel : public QObject, public QGraphicsItem
 {
     Q_OBJECT
-    Q_PROPERTY(qreal currentOpacity READ opacity WRITE setOpacity)
+    Q_PROPERTY(qreal currentOpacity READ propertyOpacity WRITE propertySetOpacity)
 
 public:
     ThumbnailLabel();
     ~ThumbnailLabel();
 
-    bool isLoaded();
     loadState state;
     void setThumbnail(Thumbnail *_thumbnail);
 
-    void setHighlighted(bool x);
+    void setHighlighted(bool x, bool smooth);
     bool isHighlighted();
-    bool isHovered();
-    void setOpacity(qreal amount);
-    qreal opacity();
-    void readSettings();
-    void setOpacityAnimated(qreal amount, int speed);
+    void setOpacity(qreal amount, bool smooth);
 
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     void setLabelNum(int num);
@@ -41,24 +36,33 @@ public:
     int height();
     int getThumbnailSize();
     void setThumbnailSize(int size);
-private:
-    int labelNumber;
-    bool loaded;
-    bool showLabel, showName;
-    bool drawSelectionBorder;
 
+private:
     Thumbnail *thumbnail;
+    int labelNumber;
+    bool showLabel;
     qreal currentOpacity;
     bool highlighted, hovered;
-    int borderSize, thumbnailSize;
+    int thumbnailSize, highlightBarHeight, marginX;
     QString infoString;
-    QRectF highlightRect, labelRect, nameRect;
-    QColor *highlightColor, *hoverHighlightColor, *outlineColor, *nameColor, *labelColor;
-    QFont font, fontsmall;
-    QFontMetrics *fm, *fmsmall;
+    QRectF highlightBarRect, labelRect, nameRect, nameTextRect;
+    QColor highlightColor, hoverHighlightColor, outlineColor, nameColor, labelColor;
+    QFont font, fontSmall;
+    QFontMetrics *fm, *fmSmall;
     QPixmap *loadingIcon;
     QPropertyAnimation *opacityAnimation;
     void updateLabelWidth();
+    void setHovered(bool);
+    bool isHovered();
+
+    void propertySetOpacity(qreal amount);
+    qreal propertyOpacity();
+
+    const qreal inactiveOpacity = 0.80f;
+    const int opacityAnimationSpeed = 80;
+
+private slots:
+    void readSettings();
 
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);

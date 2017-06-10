@@ -14,9 +14,9 @@ SlidePanel::SlidePanel(QWidget *parent)
       mWidget(NULL)
 {
     parentSz = QSize(0,0); // TODO: remove this
-    layout.setSpacing(0);
-    layout.setContentsMargins(0,0,0,0);
-    this->setLayout(&layout);
+    mLayout.setSpacing(0);
+    mLayout.setContentsMargins(0,0,0,0);
+    this->setLayout(&mLayout);
 
     //fade & slide hover effect
     fadeEffect = new QGraphicsOpacityEffect(this);
@@ -49,10 +49,10 @@ void SlidePanel::setWidget(QWidget *w) {
     if(!w)
         return;
     if(hasWidget())
-        layout.removeWidget(mWidget);
+        mLayout.removeWidget(mWidget);
     mWidget = w;
     mWidget->setParent(this);
-    layout.addWidget(mWidget, 0, 0);
+    mLayout.addWidget(mWidget, 0, 0);
 }
 
 bool SlidePanel::hasWidget() {

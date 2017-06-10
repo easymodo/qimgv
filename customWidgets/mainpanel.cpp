@@ -15,7 +15,7 @@ MainPanel::MainPanel(QWidget *parent) : SlideHPanel(parent) {
 
     buttonsLayout.setDirection(QBoxLayout::BottomToTop);
     buttonsLayout.setSpacing(0);
-    buttonsLayout.setContentsMargins(5,0,0,0);
+    buttonsLayout.setContentsMargins(3,0,0,0);
     buttonsLayout.addWidget(&settingsButton);
     buttonsLayout.addWidget(&openButton);
     buttonsLayout.addStretch(0);
@@ -23,7 +23,7 @@ MainPanel::MainPanel(QWidget *parent) : SlideHPanel(parent) {
     buttonsLayout.addWidget(&exitButton);
 
     buttonsWidget.setLayout(&buttonsLayout);
-    layout.addWidget(&buttonsWidget, 0, 1);
+    mLayout.addWidget(&buttonsWidget, 0, 1);
 
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
@@ -32,12 +32,16 @@ MainPanel::MainPanel(QWidget *parent) : SlideHPanel(parent) {
 void MainPanel::setPosition(PanelHPosition newPosition) {
     position = newPosition;
     if(position == TOP) {
-        layout.setContentsMargins(0,0,0,invisibleMargin);
+        mLayout.setContentsMargins(0,0,0,invisibleMargin);
     }
     else {
-        layout.setContentsMargins(0,4,0,0);
+        mLayout.setContentsMargins(0,4,0,0);
     }
     recalculateGeometry();
+}
+
+void MainPanel::setWidget(QWidget *w) {
+    SlidePanel::setWidget(w);
 }
 
 void MainPanel::readSettings() {

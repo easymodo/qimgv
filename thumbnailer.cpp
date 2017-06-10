@@ -20,6 +20,7 @@ void Thumbnailer::run() {
 
     th->image = thumbnailCache->readThumbnail(thumbnailHash);
     if(th->image) {
+        //qDebug() << "cached: " << clock() - time;
         delete fileInfo;
     } else {
         factory = new ImageFactory();
@@ -39,6 +40,7 @@ void Thumbnailer::run() {
             th->image = new QPixmap(size, size);
             th->image->fill(QColor(0,0,0,0));
         }
+        //qDebug() << "full load: " << clock() - time;
     }
 
     //qDebug() << "########### thumbnail " << target << " loaded in: " << clock() - time << "     thread:  " << this->thread();

@@ -31,8 +31,6 @@ private:
     QBoxLayout *layout, *viewLayout;
     ThumbnailFrame thumbnailFrame;
 
-    const qreal OPACITY_INACTIVE = 0.67;
-    const qreal OPACITY_SELECTED = 1.0;
     const int ANIMATION_SPEED_INSTANT = 0;
     const int ANIMATION_SPEED_FAST = 80;
     const int ANIMATION_SPEED_NORMAL = 150;
@@ -76,6 +74,7 @@ public slots:
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);
+    virtual void showEvent(QShowEvent *event);
 };
 
 #endif // THUMBNAILSTRIP_H

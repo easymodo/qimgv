@@ -3,8 +3,8 @@
 ThumbnailStrip::ThumbnailStrip()
     : panelSize(122),
       current(-1),
-      thumbnailSize(184),
-      thumbnailInterval(4),
+      thumbnailSize(100),
+      thumbnailInterval(0),
       idCounter(0)
 {
     thumbnailLabels = new QList<ThumbnailLabel*>();
@@ -68,7 +68,6 @@ void ThumbnailStrip::addThumbnailLabel() {
 void ThumbnailStrip::addItemAt(int pos) {
     lock();
     ThumbnailLabel *thumbLabel = new ThumbnailLabel();
-    thumbLabel->setOpacity(0);
     thumbnailLabels->insert(pos, thumbLabel);
     thumbLabel->setLabelNum(pos);
     scene->addItem(thumbLabel);
@@ -109,13 +108,13 @@ void ThumbnailStrip::highlightThumbnail(int pos) {
         thumbnailFrame.view()->ensureVisible(thumbnailLabels->at(pos)->sceneBoundingRect(),
                                               thumbnailSize / 2,
                                               0);
+        // disable highlighting on previous thumbnail
         if(checkRange(current)) {
-            thumbnailLabels->at(current)->setHighlighted(false);
-            thumbnailLabels->at(current)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_FAST);
+            thumbnailLabels->at(current)->setHighlighted(false, true);
         }
+        // highlight the new one
         if(checkRange(pos)) {
-            thumbnailLabels->at(pos)->setHighlighted(true);
-            thumbnailLabels->at(pos)->setOpacity(OPACITY_SELECTED);
+            thumbnailLabels->at(pos)->setHighlighted(true, false);
             current = pos;
         }
     }
@@ -133,29 +132,30 @@ void ThumbnailStrip::loadVisibleThumbnailsDelayed() {
 }
 
 void ThumbnailStrip::loadVisibleThumbnails() {
-    QRectF visibleRect = thumbnailFrame.view()->mapToScene(
-                thumbnailFrame.view()->viewport()->geometry()).boundingRect();
-    // grow rectangle to cover nearby offscreen items
-    visibleRect.adjust(-OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA, 0);
-    QList<QGraphicsItem *>items = scene->items(visibleRect,
-                                               Qt::IntersectsItemShape,
-                                               Qt::DescendingOrder);
-    ThumbnailLabel* labelCurrent;
     loadTimer.stop();
-    /*
-    for(int i = 0; i < thumbnailLabels->count(); i++) {
-        requestThumbnail(thumbnailLabels->at(i)->labelNum());
-    }
-    */
-    for(int i = 0; i < items.count(); i++) {
-        labelCurrent = qgraphicsitem_cast<ThumbnailLabel*>(items.at(i));
-        requestThumbnail(labelCurrent->labelNum());
+    if(isVisible()) {
+        QRectF visibleRect = thumbnailFrame.view()->mapToScene(
+                    thumbnailFrame.view()->viewport()->geometry()).boundingRect();
+        // grow rectangle to cover nearby offscreen items
+        visibleRect.adjust(-OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA, 0);
+        QList<QGraphicsItem *>items = scene->items(visibleRect,
+                                                   Qt::IntersectsItemShape,
+                                                   Qt::DescendingOrder);
+        ThumbnailLabel* labelCurrent;
+        /* testing code
+        for(int i = 0; i < thumbnailLabels->count(); i++) {
+            requestThumbnail(thumbnailLabels->at(i)->labelNum());
+        }
+        */
+        for(int i = 0; i < items.count(); i++) {
+            labelCurrent = qgraphicsitem_cast<ThumbnailLabel*>(items.at(i));
+            requestThumbnail(labelCurrent->labelNum());
+        }
     }
 }
 
 void ThumbnailStrip::requestThumbnail(int pos) {
     if(checkRange(pos) && thumbnailLabels->at(pos)->state == EMPTY) {
-        //qDebug() << "#### req: " << pos;
         thumbnailLabels->at(pos)->state = LOADING;
         emit thumbnailRequested(pos, thumbnailSize);
     }
@@ -182,9 +182,11 @@ void ThumbnailStrip::setThumbnail(int pos, Thumbnail *thumb) {
     if(thumb && thumb->size == thumbnailSize && checkRange(pos)) {
         thumbnailLabels->at(pos)->setThumbnail(thumb);
         thumbnailLabels->at(pos)->state = LOADED;
+        /*
         if(pos != current) {
             thumbnailLabels->at(pos)->setOpacityAnimated(OPACITY_INACTIVE, ANIMATION_SPEED_NORMAL);
         }
+        */
     } else {
         // dispose of thumbnail if it is unneeded
         delete thumb;
@@ -231,6 +233,11 @@ void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
         loadVisibleThumbnailsDelayed();
 }
 
+void ThumbnailStrip::showEvent(QShowEvent *event) {
+    QWidget::showEvent(event);
+    loadVisibleThumbnails();
+}
+
 // update size based on widget's size
 // reposition thumbnails within scene if needed
 void ThumbnailStrip::updateThumbnailSize() {
@@ -239,7 +246,6 @@ void ThumbnailStrip::updateThumbnailSize() {
         --newSize;
     if(newSize != thumbnailSize) {
         setThumbnailSize(newSize);
-        qDebug() << newSize;
     }
 }
 

@@ -10,6 +10,7 @@ class MainPanel : public SlideHPanel {
 public:
     MainPanel(QWidget *parent);
     void setPosition(PanelHPosition);
+    void setWidget(QWidget* w);
 
 private slots:
     void readSettings();
