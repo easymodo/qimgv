@@ -105,12 +105,10 @@ void ThumbnailStrip::highlightThumbnail(int pos) {
     // this code fires twice on click. fix later
     // also wont highlight new label after removing file
     if(current != pos) {
-        thumbnailFrame.view()->ensureVisible(thumbnailLabels->at(pos)->sceneBoundingRect(),
-                                              thumbnailSize / 2,
-                                              0);
+        ensureThumbnailVisible(pos);
         // disable highlighting on previous thumbnail
         if(checkRange(current)) {
-            thumbnailLabels->at(current)->setHighlighted(false, true);
+            thumbnailLabels->at(current)->setHighlighted(false, false);
         }
         // highlight the new one
         if(checkRange(pos)) {
@@ -119,6 +117,13 @@ void ThumbnailStrip::highlightThumbnail(int pos) {
         }
     }
     loadVisibleThumbnails();
+}
+
+void ThumbnailStrip::ensureThumbnailVisible(int pos) {
+    if(checkRange(pos))
+        thumbnailFrame.view()->ensureVisible(thumbnailLabels->at(pos)->sceneBoundingRect(),
+                                             thumbnailSize / 2,
+                                             0);
 }
 
 void ThumbnailStrip::onThumbnailClick(int pos) {
@@ -202,6 +207,7 @@ void ThumbnailStrip::setThumbnailSize(int newSize) {
         }
         updateThumbnailPositions(0, thumbnailLabels->count() - 1);
         updateSceneSize();
+        ensureThumbnailVisible(current);
     }
 }
 

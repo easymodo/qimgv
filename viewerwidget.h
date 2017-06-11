@@ -34,6 +34,7 @@ public slots:
 
 protected:
     virtual void paintEvent(QPaintEvent* event);
+    void mouseMoveEvent(QMouseEvent *event);
 
 };
 

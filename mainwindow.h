@@ -92,7 +92,7 @@ private slots:
 
 private:
     Core *core;
-    textOverlay *infoOverlay, *messageOverlay;
+    InfoOverlay *infoOverlay, *messageOverlay;
     ControlsOverlay *controlsOverlay;
     SlideHPanel *panel;
     SlideVPanel *sidePanel;

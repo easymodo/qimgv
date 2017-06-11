@@ -9,7 +9,8 @@ ViewerWidget::ViewerWidget(ImageViewer *imageViewer, VideoPlayerGL *videoPlayer,
     : QWidget(parent),
       currentWidget(0)
 {
-    setAttribute(Qt::WA_TransparentForMouseEvents);
+    this->setMouseTracking(true);
+    //setAttribute(Qt::WA_TransparentForMouseEvents);
     layout.setContentsMargins(0, 0, 0, 0);
     this->setLayout(&layout);
     setImageViewer(imageViewer);
@@ -105,4 +106,8 @@ void ViewerWidget::paintEvent(QPaintEvent *event) {
     QPainter p(this);
     p.setBrush(QBrush(QColor(12, 12, 12, 255)));
     p.fillRect(this->rect(), p.brush());
+}
+
+void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
+    event->ignore();
 }

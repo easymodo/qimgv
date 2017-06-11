@@ -10,8 +10,7 @@ public:
     explicit SlideHPanel(QWidget *parent);
     ~SlideHPanel();
     void setPosition(PanelHPosition);
-    void containerResized(QSize parentSz);
-    QSize triggerSize();
+    QRect triggerRect();
     void setPanelHeight(int);
 
 protected:
@@ -19,6 +18,7 @@ protected:
     int invisibleMargin;
     int panelHeight;
     void recalculateGeometry();
+    virtual void updateTriggerRect();
 };
 
 #endif // SLIDEHPANEL_H

@@ -1,6 +1,6 @@
 /*
  * This panel will use sizeHint().height() from the widget it contains.
- * Width will match parent's assuming you called containerResized(QSize).
+ * Width will match containerSize()Size.width()
  * TODO: implement "expand" switch.
  */
 
@@ -12,6 +12,7 @@ SlideHPanel::SlideHPanel(QWidget *parent)
     position = TOP;
     invisibleMargin = 12;
     panelHeight = 100;
+    slideAmount = 30;
     mLayout.setContentsMargins(0,0,0,0);
     recalculateGeometry();
 }
@@ -20,19 +21,8 @@ SlideHPanel::~SlideHPanel() {
 
 }
 
-void SlideHPanel::containerResized(QSize parentSz) {
-    this->parentSz = parentSz;
-    recalculateGeometry();
-    // expand widget to full width
-    //if(mWidget)
-    //    mWidget->resize(parentSz.width(), mWidget->height());
-}
-
-QSize SlideHPanel::triggerSize() {
-    if(position == TOP)
-        return QSize(width(), height() - invisibleMargin);
-    else
-        return size();
+QRect SlideHPanel::triggerRect() {
+    return mTriggerRect;
 }
 
 void SlideHPanel::setPanelHeight(int newHeight) {
@@ -50,15 +40,26 @@ void SlideHPanel::setPosition(PanelHPosition p) {
 void SlideHPanel::recalculateGeometry() {
     if(position == TOP) {
         this->setGeometry(QRect(QPoint(0, 0),
-                                QPoint(parentSz.width(), panelHeight - 1 + invisibleMargin)));
+                                QPoint(containerSize().width() - 1, panelHeight - 1 + invisibleMargin)));
         initialPosition = geometry().topLeft();
         slideAnimation->setStartValue(initialPosition);
-        slideAnimation->setEndValue(QPoint(0, - 30));
+        slideAnimation->setEndValue(initialPosition - QPoint(0, slideAmount));
     } else {
-        this->setGeometry(QRect(QPoint(0, parentSz.height() - panelHeight + 1),
-                                QPoint(parentSz.width(), parentSz.height())));
-        initialPosition = QPoint(0, parentSz.height() - height());
+        this->setGeometry(QRect(QPoint(0, containerSize().height() - panelHeight + 1),
+                                QPoint(containerSize().width(), containerSize().height()) - QPoint(0,1) ));
+        initialPosition = geometry().topLeft(); //QPoint(0, containerSize().height() - height());
         slideAnimation->setStartValue(initialPosition);
-        slideAnimation->setEndValue(QPoint(0, parentSz.height() - height() + 30));
+        slideAnimation->setEndValue(QPoint(0, containerSize().height() - height() + slideAmount));
+    }
+    updateTriggerRect();
+}
+
+void SlideHPanel::updateTriggerRect() {
+    if(position == TOP) {
+        mTriggerRect = geometry().adjusted(0, 0, 0, 0);
+    }
+    else {
+        // adjust so it wont interfere with MapOverlay in bottom right corner
+        mTriggerRect = geometry().adjusted(0, 0, -180, 0);
     }
 }

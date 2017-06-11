@@ -29,7 +29,6 @@ ThumbnailLabel::ThumbnailLabel() :
 
     setAcceptHoverEvents(true);
     readSettings();
-    setThumbnailSize(100);
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
@@ -85,8 +84,9 @@ void ThumbnailLabel::setHighlighted(bool mode, bool smooth) {
         if(highlighted) {
             if(opacityAnimation->state() == QAbstractAnimation::Running)
                 opacityAnimation->stop();
-                setOpacity(1.0f, smooth);
+            setOpacity(1.0f, smooth);
         } else if(!isHovered()) {
+            if(!mode)
             setOpacity(inactiveOpacity, smooth);
         }
     }
@@ -217,7 +217,7 @@ void ThumbnailLabel::setHovered(bool mode) {
         if(mode) {
             setOpacity(1.0f, false);
         } else {
-            setOpacity(inactiveOpacity, false);
+            setOpacity(inactiveOpacity, true);
         }
     }
 }

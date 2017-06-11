@@ -279,5 +279,5 @@ void Core2::updateInfoString() {
                           "  ");
         infoString.append(QString::number(img->info()->fileSize()) + " KB)");
     }
-    mw->setWindowTitle(infoString);
+    mw->setInfoString(infoString);
 }

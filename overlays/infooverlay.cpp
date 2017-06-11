@@ -1,46 +1,45 @@
 #include "infooverlay.h"
 
-textOverlay::textOverlay(QWidget *parent) : QWidget(parent), textLength(0) {
+InfoOverlay::InfoOverlay(QWidget *parent) : OverlayWidget(parent)
+{
     setPalette(Qt::transparent);
     setAttribute(Qt::WA_TransparentForMouseEvents);
-    currentText = "No file opened.";
     font.setPixelSize(11);
     font.setBold(true);
-    drawRect.setTopLeft(QPoint(7, 2));
-    drawRect.setBottomRight(QPoint(950, 19));
-    textColor = new QColor(255, 255, 255, 255);
-    textShadowColor = new QColor(0, 0, 0, 200);
+    textMarginX = 8;
+    textMarginY = 4;
+    textColor.setRgb(255, 255, 255, 255);
+    textShadowColor.setRgb(0, 0, 0, 200);
+    bgColor.setRgb(0, 0, 0, 90);
     fm = new QFontMetrics(font);
-    this->setFixedHeight(20);
-    this->hide();
+    setText("No file opened.");
+    hide();
 }
 
-void textOverlay::paintEvent(QPaintEvent *event) {
+void InfoOverlay::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
 
-    QPainter painter(this);
-    painter.fillRect(QRect(0,0,textLength+13,22), QBrush(QColor(0, 0, 0, 80), Qt::SolidPattern));
-    painter.setFont(font);
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.setPen(QPen(*textShadowColor));
-    painter.drawText(drawRect.adjusted(1, 1, 1, 1), currentText);
-    painter.setPen(QPen(*textColor));
-    painter.drawText(drawRect, currentText);
+    if(!text.isEmpty()) {
+        QPainter painter(this);
+        painter.fillRect(geometry(), QBrush(bgColor));
+        painter.setFont(font);
+        painter.setPen(QPen(textShadowColor));
+        painter.drawText(textRect.adjusted(1,1,1,1), Qt::TextSingleLine, text);
+        painter.setPen(QPen(textColor));
+        painter.drawText(textRect, Qt::TextSingleLine, text);
+    }
 }
 
-void textOverlay::setText(QString text) {
-    currentText = text;
-    textLength = fm->width(currentText);
-    this->update();
-}
-
-void textOverlay::updateWidth(int maxWidth) {
-    this->setMinimumWidth(maxWidth - 60);
-}
-
-void textOverlay::updatePosition() {
-    QRect newPos = rect();
-    newPos.moveTop(0);
-    setGeometry(newPos);
+void InfoOverlay::setText(QString text) {
+    this->text = text;
+    recalculateGeometry();
     update();
+}
+
+void InfoOverlay::recalculateGeometry() {
+    QRect newRect = QRect(0, 0, fm->width(text) + textMarginX * 2, fm->height() + textMarginY * 2);
+    if(newRect.width() > containerSize().width() - 150)
+        newRect.setWidth(containerSize().width() - 150);
+    textRect = newRect.adjusted(textMarginX, textMarginY, -textMarginX, -textMarginY);
+    setGeometry(newRect);
 }

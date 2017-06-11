@@ -33,7 +33,7 @@ void MainWindow::init() {
     QWidget *central = new QWidget();
     controlsOverlay = new ControlsOverlay(imageViewer);
     controlsOverlay->hide();
-    infoOverlay = new textOverlay(imageViewer);
+    infoOverlay = new InfoOverlay(imageViewer);
 
     layout = new QVBoxLayout;
     central->setAttribute(Qt::WA_MouseTracking);
@@ -397,8 +397,8 @@ void MainWindow::calculatePanelTriggerArea() {
 }
 
 void MainWindow::updateOverlays() {
-    controlsOverlay->updatePosition(this->centralWidget()->size());
-    infoOverlay->updateWidth(this->centralWidget()->width());
+    //controlsOverlay->updatePosition(this->centralWidget()->size());
+    //infoOverlay->updateWidth(this->centralWidget()->width());
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {

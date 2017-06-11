@@ -1,19 +1,19 @@
 /*
  * Base class for auto-hiding panels.
- * Insert widget you want to show with setWidget(QWidget).
- * Use containerResized(QSize) to notify panel of parent resize
- * so it will readjust it's geometry accordingly.
+ * Insert widget you want to show with setWidget().
+ * Use setContainerSize() to notify panel of parent resize.
  */
 
 #include "slidepanel.h"
 
 SlidePanel::SlidePanel(QWidget *parent)
-    : QWidget(parent),
+    : OverlayWidget(parent),
       preferredWidgetSize(100,100),
       panelSize(50),
-      mWidget(NULL)
+      slideAmount(30),
+      mWidget(NULL),
+      animated(true)
 {
-    parentSz = QSize(0,0); // TODO: remove this
     mLayout.setSpacing(0);
     mLayout.setContentsMargins(0,0,0,0);
     this->setLayout(&mLayout);
@@ -27,15 +27,17 @@ SlidePanel::SlidePanel(QWidget *parent)
     fadeAnimation->setEndValue(0);
     fadeAnimation->setEasingCurve(QEasingCurve::OutQuart);
     slideAnimation = new QPropertyAnimation(this, "pos");
-    slideAnimation->setDuration(300);
+    slideAnimation->setDuration(230);
     slideAnimation->setStartValue(QPoint(0,0));
-    slideAnimation->setEndValue(QPoint(0, -60));
+    slideAnimation->setEndValue(QPoint(0, -slideAmount));
     slideAnimation->setEasingCurve(QEasingCurve::OutQuart);
 
     animGroup = new QParallelAnimationGroup;
     animGroup->addAnimation(fadeAnimation);
     animGroup->addAnimation(slideAnimation);
     connect(animGroup, SIGNAL(finished()), this, SLOT(hide()), Qt::UniqueConnection);
+    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+    readSettings();
 
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
@@ -61,6 +63,9 @@ bool SlidePanel::hasWidget() {
 
 void SlidePanel::leaveEvent(QEvent *event) {
     Q_UNUSED(event)
+    // Workaround. For some reason this triggers at (0,0).
+    if(QCursor::pos() == QPoint(0,0))
+        return;
     animGroup->start(QPropertyAnimation::KeepWhenStopped);
 }
 
@@ -73,4 +78,8 @@ void SlidePanel::show() {
     } else {
         qDebug() << "Warning: Trying to show panel containing no widget!";
     }
+}
+
+void SlidePanel::readSettings() {
+    //animated = settings->panelAnimated();
 }

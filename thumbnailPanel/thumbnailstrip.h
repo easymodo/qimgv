@@ -57,6 +57,7 @@ private:
     void updateSceneSize();
     void setThumbnailSize(int);
     void updateThumbnailSize();
+    void ensureThumbnailVisible(int pos);
 signals:
     void thumbnailRequested(int pos, int size);
     void thumbnailClicked(int pos);

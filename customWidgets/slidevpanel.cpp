@@ -3,6 +3,7 @@
 SlideVPanel::SlideVPanel(QWidget *w)
     : SlidePanel(w)
 {
+    slideAmount = 20;
     position = RIGHT;
     mLayout.setContentsMargins(0,0,0,0);
     recalculateGeometry();
@@ -11,15 +12,8 @@ SlideVPanel::SlideVPanel(QWidget *w)
 SlideVPanel::~SlideVPanel() {
 }
 
-void SlideVPanel::containerResized(QSize parentSz) {
-    this->parentSz = parentSz;
-    recalculateGeometry();
-    // TODO: expand flag. leaving like this for now
-    //mWidget->resize(this->width(), mWidget->height());
-}
-
-QSize SlideVPanel::triggerSize() {
-    return this->size();
+QRect SlideVPanel::triggerRect() {
+    return mTriggerRect;
 }
 
 void SlideVPanel::setPosition(PanelVPosition p) {
@@ -27,25 +21,33 @@ void SlideVPanel::setPosition(PanelVPosition p) {
     recalculateGeometry();
 }
 
+// TODO: this may be incorrect.
 void SlideVPanel::recalculateGeometry() {
     if(position == RIGHT) {
-        setGeometry(parentSz.width() - width(), parentSz.height()/2 - height()/2, width(), height());
+        setGeometry(containerSize().width() - width(), containerSize().height()/2 - height()/2, width(), height());
         initialPosition = geometry().topLeft();
         slideAnimation->setStartValue(initialPosition);
         slideAnimation->setEndValue(QPoint(initialPosition.x() + 20, initialPosition.y()));
     } else {
-        setGeometry(0, parentSz.height()/2 - height()/2, width(), height());
+        setGeometry(0, containerSize().height()/2 - height()/2, width(), height());
         initialPosition = geometry().topLeft();
         slideAnimation->setStartValue(initialPosition);
         slideAnimation->setEndValue(QPoint(initialPosition.x() - 20, initialPosition.y()));
     }
+    updateTriggerRect();
+}
+
+void SlideVPanel::updateTriggerRect() {
+    mTriggerRect = geometry();
 }
 
 void SlideVPanel::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
-    if(position == PanelHPosition::TOP) {
+    /*
+    if(position == PanelVPosition::LEFT) {
         QPainter p(this);
         p.setPen(QColor(QColor(40, 255, 40)));
         p.drawRect(rect());
     }
+    */
 }

@@ -1,18 +1,27 @@
 #include "iconbutton.h"
 
 IconButton::IconButton() {
+    this->setFixedSize(30, 30);
+    this->setContentsMargins(0,0,0,0);
     this->setAccessibleName("iconButton");
 }
 
 IconButton::IconButton(QString _actionName, QString _iconPath) {
-    IconButton();
+    this->setFixedSize(30, 30);
+    this->setContentsMargins(0,0,0,0);
+    this->setAccessibleName("iconButton");
     this->setPixmap(QPixmap(_iconPath));
+    setAction(_actionName);
 }
 
 IconButton::IconButton(QString _actionName, QString _iconPath, QWidget *parent)
     :  QLabel(parent)
 {
-    IconButton(_actionName, _iconPath);
+    this->setFixedSize(30, 30);
+    this->setContentsMargins(0,0,0,0);
+    this->setAccessibleName("iconButton");
+    this->setPixmap(QPixmap(_iconPath));
+    setAction(_actionName);
 }
 
 void IconButton::setAction(QString _actionName) {

@@ -6,9 +6,11 @@ GraphicsView::GraphicsView(ThumbnailFrame *v)
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     scrollBar = this->horizontalScrollBar();
+    scrollBar->setContextMenuPolicy(Qt::NoContextMenu);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    //setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
     timeLine->setEasingCurve(QEasingCurve::OutCubic);
     readSettings();
@@ -68,11 +70,13 @@ void GraphicsView::readSettings() {
 }
 
 void GraphicsView::mousePressEvent(QMouseEvent *event) {
-    ThumbnailLabel *item = qgraphicsitem_cast<ThumbnailLabel*>(itemAt(event->pos()));
-    if(item) {
-        frame->acceptThumbnailClick(item->labelNum());
+    if(event->button() == Qt::LeftButton) {
+        ThumbnailLabel *item = qgraphicsitem_cast<ThumbnailLabel*>(itemAt(event->pos()));
+        if(item) {
+            frame->acceptThumbnailClick(item->labelNum());
+        }
+        QGraphicsView::mousePressEvent(event);
     }
-    QGraphicsView::mousePressEvent(event);
 }
 
 void GraphicsView::resetViewport() {

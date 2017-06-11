@@ -1,33 +1,30 @@
 #ifndef INFOOVERLAY_H
 #define INFOOVERLAY_H
 
-#include <QWidget>
+#include "../customWidgets/overlaywidget.h"
 #include <QPainter>
 #include <QPen>
 #include <QFontMetrics>
 #include <QDebug>
 
-class textOverlay : public QWidget
+class InfoOverlay : public OverlayWidget
 {
     Q_OBJECT
 public:
-    textOverlay(QWidget *parent = 0);
+    InfoOverlay(QWidget *parent);
     void setText(QString text);
-    void updateWidth(int maxWidth);
 
 private:
     QFont font;
-    QRect drawRect;
-    QColor *textColor, *textShadowColor;
-    int textLength;
+    QRect textRect;
+    QColor textColor, textShadowColor, bgColor;
+    int textMarginX, textMarginY;
     QFontMetrics *fm;
 
-public slots:
-    void updatePosition();
-
 protected:
+    virtual void recalculateGeometry();
     void paintEvent(QPaintEvent *event);
-    QString currentText;
+    QString text;
 };
 
 #endif // INFOOVERLAY_H

@@ -1,7 +1,5 @@
 [accessibleName="iconButton"] {
-    background-color: #202020;
     padding: 5px 5px 5px 5px;
-    margin-right: 1px;
 }
 
 [accessibleName="iconButton"]:hover {
@@ -49,6 +47,7 @@
     border-left: 1px solid #6e6e6e;
     border-right: 1px solid #6e6e6e;
     min-width: 60px;
+    border-radius: 1px;
 }
 
 .QScrollBar::handle:horizontal:hover {

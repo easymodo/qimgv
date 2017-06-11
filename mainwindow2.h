@@ -36,23 +36,20 @@ private:
     MainPanel *mainPanel;
     SlideVPanel *sidePanel;
 
-    ControlsOverlay controlsOverlay;
-    textOverlay infoOverlay;
+    ControlsOverlay *controlsOverlay;
+    InfoOverlay *infoOverlay;
 
     PanelHPosition panelPosition;
     PanelVPosition sidePanelPosition;
-    QRect panelArea, sidePanelArea;
     QPoint lastMouseMovePos;
 
     void saveWindowGeometry();
     void restoreWindowGeometry();
     void saveCurrentDisplay();
 
-    void updatePanelTriggerAreas();
+    void setupOverlays();
     void updateOverlayGeometry();
 
-    void createPanels();
-    void updatePanelGeometry();
 private slots:
     void updateCurrentDisplay();
     void readSettings();
@@ -76,6 +73,7 @@ public slots:
     void showOpenDialog();
     void showSettings();
     void triggerFullscreen();
+    void setInfoString(QString);
 };
 
 #endif // MAINWINDOW2_H

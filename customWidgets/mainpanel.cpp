@@ -35,7 +35,7 @@ void MainPanel::setPosition(PanelHPosition newPosition) {
         mLayout.setContentsMargins(0,0,0,invisibleMargin);
     }
     else {
-        mLayout.setContentsMargins(0,4,0,0);
+        mLayout.setContentsMargins(0,3,0,0);
     }
     recalculateGeometry();
 }
@@ -63,6 +63,5 @@ void MainPanel::paintEvent(QPaintEvent *event) {
         p.drawLine(rect().topLeft(), rect().topRight());
         p.drawLine(rect().topLeft() + QPoint(0,1), rect().topRight() + QPoint(0,1));
         p.drawLine(rect().topLeft() + QPoint(0,2), rect().topRight() + QPoint(0,2));
-        p.drawLine(rect().topLeft() + QPoint(0,3), rect().topRight() + QPoint(0,3)); // lol
     }
 }

@@ -9,13 +9,13 @@ public:
     explicit SlideVPanel(QWidget *w);
     ~SlideVPanel();
     void setPosition(PanelVPosition);
-    void containerResized(QSize parentSz);
-    QSize triggerSize();
+    QRect triggerRect();
 
 protected:
     PanelVPosition position;
     virtual void paintEvent(QPaintEvent* event);
     void recalculateGeometry();
+    virtual void updateTriggerRect();
 };
 
 #endif // SLIDEVPANEL_H

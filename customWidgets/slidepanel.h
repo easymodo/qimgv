@@ -9,36 +9,40 @@
 #include <QPropertyAnimation>
 #include <QPainter>
 #include <QGridLayout>
-#include <QPushButton>
+#include "overlaywidget.h"
 #include "settings.h"
 #include <QDebug>
 
-class SlidePanel : public QWidget {
+class SlidePanel : public OverlayWidget {
     Q_OBJECT
 public:
     explicit SlidePanel(QWidget *parent);
     ~SlidePanel();
     bool hasWidget();
     void setWidget(QWidget* w);
-    virtual void containerResized(QSize parentSz) = 0;
-    // useful if we want to change mouse hover area size
-    virtual QSize triggerSize() = 0;
+    // Use visibleGeometry instead of geometry() here.
+    // If this is called mid-animation then geometry() will be all wrong.
+    virtual QRect triggerRect() = 0;
 
 public slots:
     void show();
 
+private slots:
+    void readSettings();
+
 protected:
     QGridLayout mLayout;
-    virtual void recalculateGeometry() = 0;
     QGraphicsOpacityEffect *fadeEffect;
     QPropertyAnimation *fadeAnimation, *slideAnimation;
     QParallelAnimationGroup *animGroup;
     QSize preferredWidgetSize;
-    int panelSize;
-    QSize parentSz;
+    int panelSize, slideAmount;
     QWidget *mWidget;
     QPoint initialPosition;
+    QRect mTriggerRect;
+    virtual void updateTriggerRect() = 0;
     void leaveEvent(QEvent *event);
+    bool animated;
 };
 
 #endif // SLIDEPANEL_H

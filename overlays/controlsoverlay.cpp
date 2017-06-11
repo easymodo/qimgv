@@ -1,19 +1,33 @@
 #include "controlsoverlay.h"
 
 ControlsOverlay::ControlsOverlay(QWidget *parent) :
-    ClickableLabel(parent)
+    OverlayWidget(parent)
 {
-    setPalette(Qt::transparent);
-    setAccessibleName("panelButtonTransparent");
-    setPixmap(QPixmap(":/images/res/icons/window-close-transparent.png"));
-    this->setGeometry(0,0, pixmap()->width(), pixmap()->height());
+    settingsButton = new IconButton("openSettings", ":/images/res/icons/settings.png");
+    closeButton = new IconButton("exit", ":/images/res/icons/close.png");
+    layout.setContentsMargins(0,0,0,0);
     this->setContentsMargins(0,0,0,0);
-    connect(this, SIGNAL(clicked()), this, SIGNAL(exitClicked()));
+    layout.setSpacing(0);
+    layout.addWidget(settingsButton);
+    layout.addWidget(closeButton);
+    setLayout(&layout);
+    fitToContents();
 }
 
-void ControlsOverlay::updatePosition(QSize containerSz) {
-    this->setGeometry(containerSz.width() - pixmap()->width() - 5,
-                      0,
-                      pixmap()->width() + 5,
-                      pixmap()->height() + 6);
+QSize ControlsOverlay::contentsSize() {
+    QSize newSize(0, 0);
+    for(int i=0; i<layout.count(); i++) {
+        newSize.setWidth(newSize.width() + layout.itemAt(i)->widget()->width());
+        newSize.setHeight(layout.itemAt(i)->widget()->height());
+    }
+    return newSize;
+}
+
+void ControlsOverlay::fitToContents() {
+    this->setFixedSize(contentsSize());
+    recalculateGeometry();
+}
+
+void ControlsOverlay::recalculateGeometry() {
+    setGeometry(containerSize().width() - width(), 0, width(), height());
 }

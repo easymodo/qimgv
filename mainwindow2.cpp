@@ -9,6 +9,7 @@ MainWindow2::MainWindow2(ViewerWidget *viewerWidget, QWidget *parent)
       mainPanel(NULL),
       sidePanel(NULL)
 {
+    this->setMinimumSize(300, 300);
     layout.setContentsMargins(0,0,0,0);
     this->setLayout(&layout);
     this->setGeometry(200,130,1300,800);
@@ -19,23 +20,14 @@ MainWindow2::MainWindow2(ViewerWidget *viewerWidget, QWidget *parent)
     this->setMouseTracking(true);
     this->setAcceptDrops(true);
 
-    setViewerWidget(viewerWidget);
-    //setWindowOpacity(0.5f);
-    //setAttribute(Qt::WA_NoSystemBackground);
     setAttribute(Qt::WA_TranslucentBackground);
-    //QPalette pal = palette();
-    //    pal.setBrush(QPalette::Window, QColor(0, 120, 170, 128) );
-    //    setPalette(pal);
-    //    setAutoFillBackground(true);
-
-    createPanels();
-
-    controlsOverlay.setParent(this);
-    infoOverlay.setParent(this);
-
     desktopWidget = QApplication::desktop();
     windowMoveTimer.setSingleShot(true);
     windowMoveTimer.setInterval(150);
+
+    setViewerWidget(viewerWidget);
+
+    setupOverlays();
 
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 
@@ -47,8 +39,6 @@ MainWindow2::MainWindow2(ViewerWidget *viewerWidget, QWidget *parent)
     connect(this, SIGNAL(fullscreenStatusChanged(bool)),
             this, SLOT(setInfoOverlayEnabled(bool)));
 
-    connect(&controlsOverlay, SIGNAL(clicked()), this, SLOT(close()));
-
     readSettings();
     currentDisplay = settings->lastDisplay();
     restoreWindowGeometry();
@@ -57,7 +47,12 @@ MainWindow2::MainWindow2(ViewerWidget *viewerWidget, QWidget *parent)
     }
 }
 
-void MainWindow2::createPanels() {
+// floating panels, info bars etc
+// everything that does not go into main layout
+void MainWindow2::setupOverlays() {
+    // this order is used while drawing
+    infoOverlay = new InfoOverlay(this);
+    controlsOverlay = new ControlsOverlay(this);
     mainPanel = new MainPanel(this);
     sidePanel = new SlideVPanel(this);
 }
@@ -111,11 +106,11 @@ void MainWindow2::saveCurrentDisplay() {
 
 void MainWindow2::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
-        if(mainPanelEnabled && panelArea.contains(event->pos()) && !panelArea.contains(lastMouseMovePos))
+        if(mainPanelEnabled && mainPanel->triggerRect().contains(event->pos()) && !mainPanel->triggerRect().contains(lastMouseMovePos))
         {
             mainPanel->show();
         }
-        if(sidePanelEnabled && sidePanelArea.contains(event->pos()) && !sidePanelArea.contains(lastMouseMovePos))
+        if(sidePanelEnabled && sidePanel->triggerRect().contains(event->pos()) && !sidePanel->triggerRect().contains(lastMouseMovePos))
         {
             sidePanel->show();
         }
@@ -170,8 +165,6 @@ void MainWindow2::dropEvent(QDropEvent *event) {
 
 void MainWindow2::resizeEvent(QResizeEvent *event) {
     updateOverlayGeometry();
-    updatePanelGeometry();
-    updatePanelTriggerAreas();
 }
 
 void MainWindow2::showSaveDialog() {
@@ -227,6 +220,11 @@ void MainWindow2::triggerFullscreen() {
     }
 }
 
+void MainWindow2::setInfoString(QString text) {
+    infoOverlay->setText(text);
+    setWindowTitle(text + " - qimgv");
+}
+
 void MainWindow2::readSettings() {
     panelPosition = settings->panelPosition();
     sidePanelPosition = settings->sidePanelPosition();
@@ -235,54 +233,24 @@ void MainWindow2::readSettings() {
 
     setControlsOverlayEnabled(this->isFullScreen());
     setInfoOverlayEnabled(this->isFullScreen());
-
-    updatePanelTriggerAreas();
 }
 
-void MainWindow2::updatePanelGeometry() {
-    mainPanel->containerResized(size());
-}
-
-void MainWindow2::updatePanelTriggerAreas() {
-    if(!mainPanelEnabled) {
-        panelArea.setRect(0,0,0,0);
-    } else {
-        if(panelPosition == TOP)
-            panelArea.setRect(0, 0, mainPanel->triggerSize().width(), mainPanel->triggerSize().height());
-        if(panelPosition == BOTTOM)
-            panelArea.setRect(0, height() - mainPanel->triggerSize().height(), width() - 180, height());
-    }
-    if(!sidePanelEnabled) {
-        sidePanelArea.setRect(0,0,0,0);
-    }
-    // UNFINISHED
-    sidePanelArea.setRect(0,0,0,0);
-    /*else {
-        if(sidePanelPosition == LEFT)
-            sidePanelArea.setRect(0, height()/2 - toolbox->height()/2,
-                                  30, toolbox->height()); // left
-        if(sidePanelPosition == RIGHT)
-            sidePanelArea.setRect(width() - 30, height()/2 - toolbox->height()/2,
-                                  width(), toolbox->height()); // right
-    }
-    */
+void MainWindow2::updateOverlayGeometry() {
+    controlsOverlay->setContainerSize(size());
+    infoOverlay->setContainerSize(size());
+    mainPanel->setContainerSize(size());
 }
 
 void MainWindow2::setControlsOverlayEnabled(bool mode) {
     if(mode && (panelPosition == BOTTOM || !settings->mainPanelEnabled()))
-        controlsOverlay.show();
+        controlsOverlay->show();
     else
-        controlsOverlay.hide();
+        controlsOverlay->hide();
 }
 
 void MainWindow2::setInfoOverlayEnabled(bool mode) {
     if(mode)
-        infoOverlay.show();
+        infoOverlay->show();
     else
-        infoOverlay.hide();
-}
-
-void MainWindow2::updateOverlayGeometry() {
-    controlsOverlay.updatePosition(this->size());
-    infoOverlay.updateWidth(this->width());
+        infoOverlay->hide();
 }

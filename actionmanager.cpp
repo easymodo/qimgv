@@ -371,7 +371,6 @@ bool ActionManager::invokeActionForShortcut(QString shortcut) {
 // TODO: use some sort of enum instead of action string? this looks kinda retarded now
 bool ActionManager::invokeAction(QString actionName) {
     if(actionList().contains(actionName)) {
-        qDebug() << "invokeAction: " << actionName;
         QMetaObject::invokeMethod(this,
                                   actionName.toLatin1().constData(),
                                   Qt::DirectConnection);
