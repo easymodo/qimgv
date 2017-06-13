@@ -21,8 +21,10 @@ ImageStatic::ImageStatic(FileInfo *_info) {
 }
 
 ImageStatic::~ImageStatic() {
+    lock();
     delete image;
     delete fileInfo;
+    unlock();
 }
 
 //load image data from disk
@@ -34,7 +36,8 @@ void ImageStatic::load() {
     if(isLoaded()) {
         return;
     }
-    image = new QImage(path, fileInfo->fileExtension());
+    image = new QImage();
+    image->load(path, fileInfo->fileExtension());
     loaded = true;
 }
 

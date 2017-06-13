@@ -30,7 +30,7 @@ public:
     virtual QPixmap* generateThumbnail(int, bool) = 0;
     void attachInfo(FileInfo*);
     FileInfo* info();
-    void safeDeleteSelf();
+    void safeDelete();
 
     virtual void crop(QRect newRect) = 0;
     virtual void rotate(int grad) = 0;

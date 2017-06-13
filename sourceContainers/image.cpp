@@ -1,10 +1,9 @@
 #include "image.h"
 
-void Image::safeDeleteSelf() {
+void Image::safeDelete() {
     mutex.lock(); // ensure we are not used
     mutex.unlock();
-    this->deleteLater();
-    //delete this;
+    deleteLater();
 }
 
 void Image::lock() {

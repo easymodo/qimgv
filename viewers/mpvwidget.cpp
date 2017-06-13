@@ -1,3 +1,5 @@
+/*
+
 #include "mpvwidget.h"
 #include <stdexcept>
 #include <QtGui/QOpenGLContext>
@@ -154,3 +156,5 @@ void MpvWidget::setRepeat(bool mode) {
 void MpvWidget::on_update(void *ctx) {
     QMetaObject::invokeMethod((MpvWidget*)ctx, "maybeUpdate");
 }
+
+*/

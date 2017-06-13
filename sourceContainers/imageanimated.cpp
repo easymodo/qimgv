@@ -20,8 +20,10 @@ ImageAnimated::ImageAnimated(FileInfo *_info) {
 }
 
 ImageAnimated::~ImageAnimated() {
+    lock();
     if(fileInfo)
         delete fileInfo;
+    unlock();
 }
 
 void ImageAnimated::load() {

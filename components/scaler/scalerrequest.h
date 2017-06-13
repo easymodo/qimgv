@@ -2,12 +2,14 @@
 #define SCALERREQUEST_H
 
 #include <QPixmap>
+#include "../../sourceContainers/image.h"
 
 class ScalerRequest
 {
 public:
-    ScalerRequest(const QImage *img, QSize sz, QString str) : image(img), size(sz), string(str) {}
-    const QImage *image;
+    ScalerRequest() { }
+    ScalerRequest(Image *img, QSize sz, QString str) : image(img), size(sz), string(str) {}
+    Image *image;
     QSize size;
     QString string;
 };

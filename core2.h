@@ -82,7 +82,7 @@ private slots:
     void rotateLeft();
     void rotateRight();
     void scalingRequest(QSize);
-    void onScalingFinished(QPixmap* scaled, ScalerRequest *req);
+    void onScalingFinished(QPixmap* scaled, ScalerRequest req);
 };
 
 #endif // CORE2_H

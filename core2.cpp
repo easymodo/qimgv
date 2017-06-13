@@ -20,6 +20,7 @@ Core2::Core2()
       mImageCount(0),
       infiniteScrolling(false)
 {
+    qRegisterMetaType<ScalerRequest>("ScalerRequest");
     initGui();
     initComponents();
     connectComponents();
@@ -82,7 +83,7 @@ void Core2::connectComponents() {
     connect(thumbnailPanelWidget, SIGNAL(thumbnailClicked(int)), this, SLOT(openByIndex(int)));
     connect(this, SIGNAL(imageIndexChanged(int)), thumbnailPanelWidget, SLOT(highlightThumbnail(int)));
     connect(imageViewer, SIGNAL(scalingRequested(QSize)), this, SLOT(scalingRequest(QSize)));
-    connect(scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest*)), this, SLOT(onScalingFinished(QPixmap*,ScalerRequest*)));
+    connect(scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest)), this, SLOT(onScalingFinished(QPixmap*,ScalerRequest)));
 }
 
 void Core2::initActions() {
@@ -127,17 +128,17 @@ void Core2::rotateRight() {
 /// ///////////////////////////////////////////////////////
 void Core2::scalingRequest(QSize size) {
     if(currentImage()) {
-        scaler->requestScaled(new ScalerRequest(currentImage()->getImage(), size, QString::number(size.width())));
+        scaler->requestScaled(ScalerRequest(currentImage(), size, QString::number(size.width())));
     }
 }
 
-void Core2::onScalingFinished(QPixmap *scaled, ScalerRequest *req) {
+void Core2::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
     if(currentImage()) {
+        //delete scaled;
         imageViewer->updateImage(scaled);
     } else {
         delete scaled;
     }
-    delete req;
 }
 
 void Core2::rotateByDegrees(int degrees) {

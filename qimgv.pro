@@ -21,14 +21,13 @@ QMAKE_CXXFLAGS_RELEASE -= -O1
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
-unix {
-    QT_CONFIG -= no-pkg-config
-    CONFIG += link_pkgconfig
-    PKGCONFIG += mpv
-}
+#unix {
+#    QT_CONFIG -= no-pkg-config
+#    CONFIG += link_pkgconfig
+#    PKGCONFIG += mpv
+#
 
 SOURCES += main.cpp\
-    mainwindow.cpp \
     overlays/infooverlay.cpp \
     fileinfo.cpp \
     overlays/controlsoverlay.cpp \
@@ -80,8 +79,7 @@ SOURCES += main.cpp\
     components/scaler/scaler.cpp \
     components/scaler/scalerrunnable.cpp
 
-HEADERS += mainwindow.h \
-    overlays/infooverlay.h \
+HEADERS += overlays/infooverlay.h \
     fileinfo.h \
     overlays/controlsoverlay.h \
     sourceContainers/imagestatic.h \

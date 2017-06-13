@@ -19,7 +19,8 @@ public:
 
     ~CacheObject() {
         if(img)
-            img->safeDeleteSelf();
+            delete img;
+            //img->safeDelete();
     }
     void setPath(QString _path) {
         path = _path;
@@ -40,7 +41,8 @@ public:
     }
     void unload() {
         if(img) {
-            img->safeDeleteSelf();
+            delete img;
+            //img->safeDelete();
             img = NULL;
         }
     }

@@ -6,6 +6,7 @@
 #include <QMutex>
 #include "scalerrequest.h"
 #include "scalerrunnable.h"
+#include <malloc.h>
 
 class Scaler : public QObject
 {
@@ -14,20 +15,23 @@ public:
     explicit Scaler(QObject *parent = nullptr);
 
 signals:
-    void scalingFinished(QPixmap* result, ScalerRequest *request);
+    void scalingFinished(QPixmap* result, ScalerRequest request);
 
 public slots:
-    void requestScaled(ScalerRequest *req);
+    void requestScaled(ScalerRequest req);
 
 private slots:
-    void onTaskFinish(QImage* scaled, ScalerRequest *req);
+    void onTaskFinish(QImage* scaled, ScalerRequest req);
 
 private:
     ScalerRunnable runnable;
-    ScalerRequest *currentRequest, *nextRequest;
+
+    bool buffered, running;
+    clock_t currentRequestTimestamp;
+    ScalerRequest bufferedRequest;
     QMutex requestMutex;
 
-    void startRequest(ScalerRequest *req);
+    void startRequest(ScalerRequest req);
 };
 
 #endif // SCALER_H

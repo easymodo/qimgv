@@ -1,6 +1,7 @@
 #ifndef PLAYERWINDOW_H
 #define PLAYERWINDOW_H
 
+/*
 #include <QtWidgets/QOpenGLWidget>
 #include <mpv/client.h>
 #include <mpv/opengl_cb.h>
@@ -40,6 +41,6 @@ private:
     mpv_opengl_cb_context *mpv_gl;
 };
 
-
+*/
 
 #endif // PLAYERWINDOW_H
