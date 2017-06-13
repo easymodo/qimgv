@@ -226,9 +226,9 @@ void Core::rescaleForZoom(QSize newSize) {
         } else {
             pixmap = new QPixmap(newSize);
             if(settings->useFastScale() || currentScale < 1.0) {
-                imgLib.bilinearScale(pixmap, currentImage()->getPixmap(), newSize, true);
+            //    imgLib.bilinearScale(pixmap, currentImage()->getPixmap(), newSize, true);
             } else {
-                imgLib.bilinearScale(pixmap, currentImage()->getPixmap(), newSize, true);
+            //    imgLib.bilinearScale(pixmap, currentImage()->getPixmap(), newSize, true);
                 //imgLib.bicubicScale(pixmap, currentImage()->getImage(), newSize.width(), newSize.height());
             }
         }

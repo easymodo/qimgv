@@ -478,7 +478,8 @@ void ImageViewer::mouseZoom(QMouseEvent *event) {
         imageFitMode = FREE;
         scaleAround(fixedZoomPoint, newScale);
         resizeTimer->stop();
-        resizeTimer->start(65);
+        //resizeTimer->start(65);
+        resizeTimer->start(0);
     }
     update();
 }

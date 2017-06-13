@@ -10,6 +10,7 @@
 #include <QTimer>
 #include "directorymanager.h"
 #include "loader.h"
+#include "components/scaler/scaler.h"
 #include "settings.h"
 #include <QMutex>
 
@@ -65,6 +66,7 @@ private:
     NewLoader *imageLoader;
     DirectoryManager *dirManager;
     ImageCache *cache;
+    Scaler *scaler;
 
     void rotateByDegrees(int degrees);
 
@@ -79,6 +81,8 @@ private slots:
     void stopPlayback();
     void rotateLeft();
     void rotateRight();
+    void scalingRequest(QSize);
+    void onScalingFinished(QPixmap* scaled, ScalerRequest *req);
 };
 
 #endif // CORE2_H

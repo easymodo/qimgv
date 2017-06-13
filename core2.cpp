@@ -11,6 +11,8 @@ Core2::Core2()
     : QObject(),
       imageLoader(NULL),
       dirManager(NULL),
+      cache(NULL),
+      scaler(NULL),
       currentImageAnimated(NULL),
       currentVideo(NULL),
       mCurrentIndex(0),
@@ -55,6 +57,7 @@ void Core2::initComponents() {
     dirManager = new DirectoryManager();
     cache = new ImageCache();
     imageLoader = new NewLoader(dirManager, cache);
+    scaler = new Scaler();
 }
 
 void Core2::connectComponents() {
@@ -78,6 +81,8 @@ void Core2::connectComponents() {
             thumbnailPanelWidget, SLOT(setThumbnail(int, Thumbnail*)));
     connect(thumbnailPanelWidget, SIGNAL(thumbnailClicked(int)), this, SLOT(openByIndex(int)));
     connect(this, SIGNAL(imageIndexChanged(int)), thumbnailPanelWidget, SLOT(highlightThumbnail(int)));
+    connect(imageViewer, SIGNAL(scalingRequested(QSize)), this, SLOT(scalingRequest(QSize)));
+    connect(scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest*)), this, SLOT(onScalingFinished(QPixmap*,ScalerRequest*)));
 }
 
 void Core2::initActions() {
@@ -114,6 +119,25 @@ void Core2::rotateLeft() {
 
 void Core2::rotateRight() {
     rotateByDegrees(90);
+}
+
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////
+void Core2::scalingRequest(QSize size) {
+    if(currentImage()) {
+        scaler->requestScaled(new ScalerRequest(currentImage()->getImage(), size, QString::number(size.width())));
+    }
+}
+
+void Core2::onScalingFinished(QPixmap *scaled, ScalerRequest *req) {
+    if(currentImage()) {
+        imageViewer->updateImage(scaled);
+    } else {
+        delete scaled;
+    }
+    delete req;
 }
 
 void Core2::rotateByDegrees(int degrees) {
