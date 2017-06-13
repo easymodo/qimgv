@@ -49,13 +49,11 @@ void Scaler::onTaskFinish(QImage *scaled, ScalerRequest *req) {
     currentRequest = NULL;
     // no new requests came, cool, return this one
     if(!nextRequest) {
-        qDebug() << "returning result: " << req->string;
         QPixmap *pixmap = new QPixmap();
         *pixmap = QPixmap::fromImage(*scaled);
         delete scaled;
         emit scalingFinished(pixmap, req);
     } else {
-        qDebug() << "deleting result: " << req->string;
         // new requests came. delete the result. run the next one
         delete scaled;
         delete req;
