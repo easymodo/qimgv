@@ -102,7 +102,7 @@ QPixmap *Video::thumbnailStub() {
     QImage *img = new QImage(size, size, QImage::Format_ARGB32_Premultiplied);
     QPainter painter(img);
     painter.setCompositionMode(QPainter::CompositionMode_Source);
-    QPixmap videoIcon(":/images/res/video_thumb.png");
+    QPixmap videoIcon(":/res/video_thumb.png");
 
     QBrush brush(QColor(0, 0, 0, 50));
 

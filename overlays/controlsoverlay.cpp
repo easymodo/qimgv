@@ -3,8 +3,8 @@
 ControlsOverlay::ControlsOverlay(QWidget *parent) :
     OverlayWidget(parent)
 {
-    settingsButton = new IconButton("openSettings", ":/images/res/icons/settings.png");
-    closeButton = new IconButton("exit", ":/images/res/icons/close.png");
+    settingsButton = new IconButton("openSettings", ":/res/icons/settings.png");
+    closeButton = new IconButton("exit", ":/res/icons/close.png");
     layout.setContentsMargins(0,0,0,0);
     this->setContentsMargins(0,0,0,0);
     layout.setSpacing(0);

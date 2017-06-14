@@ -11,7 +11,7 @@ ThumbnailLabel::ThumbnailLabel() :
     highlightBarHeight(3),
     marginX(1)
 {
-    loadingIcon = new QPixmap(":/images/res/icons/loading72.png");
+    loadingIcon = new QPixmap(":/res/icons/loading72.png");
     outlineColor.setRgb(0,0,0,0);
     nameColor.setRgb(20, 20, 20, 255);
 

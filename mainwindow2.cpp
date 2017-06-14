@@ -227,23 +227,23 @@ void MainWindow2::setInfoString(QString text) {
 }
 
 void MainWindow2::showMessageDirectoryEnd() {
-    overlayMessage->showMessage("end|", MESSAGE_RIGHT, 1000);
+    overlayMessage->showMessage("", Message::POSITION_RIGHT, Message::ICON_RIGHT_EDGE, 1000);
 }
 
 void MainWindow2::showMessageDirectoryStart() {
-    overlayMessage->showMessage("|start", MESSAGE_LEFT, 1000);
+    overlayMessage->showMessage("", Message::POSITION_LEFT, Message::ICON_LEFT_EDGE, 1000);
 }
 
 void MainWindow2::showMessageFitAll() {
-    overlayMessage->showMessage("Fit All", MESSAGE_BOTTOM, 1200);
+    overlayMessage->showMessage("Fit All", Message::POSITION_BOTTOM, Message::NO_ICON, 1200);
 }
 
 void MainWindow2::showMessageFitWidth() {
-    overlayMessage->showMessage("Fit Width", MESSAGE_BOTTOM, 1200);
+    overlayMessage->showMessage("Fit Width", Message::POSITION_BOTTOM, Message::NO_ICON, 1200);
 }
 
 void MainWindow2::showMessageFitOriginal() {
-    overlayMessage->showMessage("Fit 1:1", MESSAGE_BOTTOM, 1200);
+    overlayMessage->showMessage("Fit 1:1", Message::POSITION_BOTTOM, Message::NO_ICON, 1200);
 }
 
 void MainWindow2::readSettings() {

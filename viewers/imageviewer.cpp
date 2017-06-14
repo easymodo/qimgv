@@ -16,7 +16,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
 {
     initOverlays();
     image = new QPixmap();
-    image->load(":/images/res/logo.png");
+    image->load(":/res/logo.png");
     drawingRect = image->rect();
     this->setMouseTracking(true);
     resizeTimer = new QTimer(this);
@@ -58,7 +58,7 @@ bool ImageViewer::imageIsScaled() const {
 
 void ImageViewer::showLoadingMessage() {
     closeImage();
-    image = new QPixmap(":/images/res/loading_static.png");
+    image = new QPixmap(":/res/loading_static.png");
     drawingRect = image->rect();
     sourceSize  = image->size();
     isDisplayingFlag = false;

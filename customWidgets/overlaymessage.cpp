@@ -1,15 +1,22 @@
 #include "overlaymessage.h"
 
 OverlayMessage::OverlayMessage(QWidget *parent) : InfoOverlay(parent) {
+    position = Message::POSITION_LEFT;
+    icon = Message::ICON_LEFT_EDGE;
+    currentIcon = NULL;
     currentOpacity = 1.0f;
     duration = 1200;
-    position = MESSAGE_LEFT;
     textMarginX = 10;
     textMarginY = 6;
     bgColor.setRgb(20,20,20, 255);
-    borderColor.setRgb(30,30,30, 255);
+    borderColor.setRgb(230,230,230, 255);
+    //borderColor.setRgb(30,30,30, 255);
     textColor.setRgb(235, 235, 235, 255);
     setFontSize(17);
+    ///////////////// icons
+    iconLeftEdge.load(":/res/icons/message/left_edge32.png");
+    iconRightEdge.load(":/res/icons/message/right_edge32.png");
+    setIcon(Message::NO_ICON);
 ////////////////////////////////////////////////////////////////////////////////
     //effectColor.setRgb(255, 124, 0);
     //effectColor.setRgb(227, 132, 0);
@@ -40,23 +47,28 @@ OverlayMessage::OverlayMessage(QWidget *parent) : InfoOverlay(parent) {
 ////////////////////////////////////////////////////////////////////////////////
 }
 
-void OverlayMessage::showMessage(QString _text, MessagePosition _position, int _duration) {
+void OverlayMessage::showMessage(QString _text, Message::Position _position, Message::Icon _icon, int _duration) {
     position = _position;
     duration = _duration;
+    setIcon(_icon);
     setText(_text);
     show();
 }
 
 void OverlayMessage::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
+    QPainter painter(this);
+    //painter.setRenderHint(QPainter::Antialiasing);
+    painter.setOpacity(currentOpacity);
+    QPainterPath path;
+    path.addRoundedRect(rect(), 5, 5);
+    painter.fillPath(path, bgColor);
+    //painter.setCompositionMode(QPainter::CompositionMode_Source);
+
+    if(icon != Message::NO_ICON && currentIcon)
+        painter.drawPixmap(iconRect, *currentIcon);
+
     if(!text.isEmpty()) {
-        QPainter painter(this);
-        painter.setOpacity(currentOpacity);
-        QRect rect = QRect(0,0, width(), height());
-        painter.fillRect(rect.adjusted(2,2,-2,-2), QBrush(bgColor));
-        painter.setPen(QPen(borderColor));
-        painter.drawRect(rect.adjusted(0,0,-1,-1));
-        painter.drawRect(rect.adjusted(1,1,-2,-2));
         painter.setFont(font);
         painter.setPen(QPen(textShadowColor));
         painter.drawText(textRect.adjusted(1,1,1,1), Qt::TextSingleLine, text);
@@ -75,40 +87,54 @@ void OverlayMessage::setOpacity(float _opacity) {
 }
 
 void OverlayMessage::recalculateGeometry() {
-    QRect newRect = QRect(QPoint(0, 0), QSize(fm->width(text) + textMarginX * 2, fm->height() + textMarginY * 2));
-    textRect = newRect.adjusted(textMarginX, textMarginY, -textMarginX, -textMarginY);
+    int padding = 6;
+    QRect newRect;
+    if(icon == Message::NO_ICON) {
+        newRect = QRect(QPoint(0, 0), QSize(fm->width(text) + textMarginX * 2, fm->height() + textMarginY * 2));
+        textRect = newRect.adjusted(textMarginX, textMarginY, -textMarginX, -textMarginY);
+    } else {
+        // we assume that fm->height() < iconSize
+        iconRect = QRect(QPoint(padding, padding), QSize(iconSize, iconSize));
+        // text will be on the right side
+        textRect = QRect(0,0, fm->width(text) + textMarginX * 2, fm->height());
+        if(text.isEmpty())
+            newRect = QRect(QPoint(0, 0), QSize(iconSize + padding * 2, iconSize + padding * 2));
+        else
+            newRect = QRect(QPoint(0, 0), QSize(iconSize + padding * 2 + textRect.width(), iconSize + padding * 2));
+        textRect.moveCenter(newRect.center() + QPoint(iconSize + textMarginX + padding, 0) / 2);
+    }
 
     QPoint pos(0, 0);
     switch (position) {
-    case MESSAGE_LEFT:
+    case Message::POSITION_LEFT:
         pos.setX(marginX);
         pos.setY( (containerSize().height() - newRect.height()) / 2);
         break;
-    case MESSAGE_RIGHT:
+    case Message::POSITION_RIGHT:
         pos.setX(containerSize().width() - newRect.width() - marginX);
         pos.setY( (containerSize().height() - newRect.height()) / 2);
         break;
-    case MESSAGE_BOTTOM:
+    case Message::POSITION_BOTTOM:
         pos.setX( (containerSize().width() - newRect.width()) / 2);
         pos.setY(containerSize().height() - newRect.height() - marginY);
         break;
-    case MESSAGE_TOP:
+    case Message::POSITION_TOP:
         pos.setX( (containerSize().width() - newRect.width()) / 2);
         pos.setY(marginY);
         break;
-    case MESSAGE_TOPLEFT:
+    case Message::POSITION_TOPLEFT:
         pos.setX(marginX);
         pos.setY(marginY);
         break;
-    case MESSAGE_TOPRIGHT:
+    case Message::POSITION_TOPRIGHT:
         pos.setX(containerSize().width() - newRect.width() - marginX);
         pos.setY(marginY);
         break;
-    case MESSAGE_BOTTOMLEFT:
+    case Message::POSITION_BOTTOMLEFT:
         pos.setX(marginX);
         pos.setY(containerSize().height() - newRect.height() - marginY);
         break;
-    case MESSAGE_BOTTOMRIGHT:
+    case Message::POSITION_BOTTOMRIGHT:
         pos.setX(containerSize().width() - newRect.width() - marginX);
         pos.setY(containerSize().height() - newRect.height() - marginY);
         break;
@@ -116,6 +142,15 @@ void OverlayMessage::recalculateGeometry() {
     // apply position
     newRect.moveTopLeft(pos);
     setGeometry(newRect);
+}
+
+void OverlayMessage::setIcon(Message::Icon _icon) {
+    icon = _icon;
+    switch (icon) {
+        case Message::NO_ICON: break;
+        case Message::ICON_LEFT_EDGE: currentIcon = &iconLeftEdge; break;
+        case Message::ICON_RIGHT_EDGE: currentIcon = &iconRightEdge; break;
+    }
 }
 
 void OverlayMessage::mousePressEvent(QMouseEvent *event) {

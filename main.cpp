@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 
     atexit(saveSettings);
 
-    QFile file(":/qss/res/styles/dark.qss");
+    QFile file(":/res/styles/dark.qss");
     if(file.open(QFile::ReadOnly)) {
         QString StyleSheet = QLatin1String(file.readAll());
         qApp->setStyleSheet(StyleSheet);

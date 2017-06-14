@@ -4,13 +4,13 @@ MainPanel::MainPanel(QWidget *parent) : SlideHPanel(parent) {
     // buttons stuff
     buttonsWidget.setAccessibleName("panelButtonsWidget");
 
-    openButton.setPixmap(QPixmap(":/images/res/icons/open.png"));
+    openButton.setPixmap(QPixmap(":/res/icons/open.png"));
     openButton.setAction("open");
-    settingsButton.setPixmap(QPixmap(":/images/res/icons/settings.png"));
+    settingsButton.setPixmap(QPixmap(":/res/icons/settings.png"));
     settingsButton.setAction("openSettings");
-    exitFullscreenButton.setPixmap(QPixmap(":/images/res/icons/exit-fullscreen.png"));
+    exitFullscreenButton.setPixmap(QPixmap(":/res/icons/exit-fullscreen.png"));
     exitFullscreenButton.setAction("toggleFullscreen");
-    exitButton.setPixmap(QPixmap(":/images/res/icons/close.png"));
+    exitButton.setPixmap(QPixmap(":/res/icons/close.png"));
     exitButton.setAction("exit");
 
     buttonsLayout.setDirection(QBoxLayout::BottomToTop);

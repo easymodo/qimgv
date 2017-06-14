@@ -5,31 +5,31 @@ ToolBox::ToolBox(QWidget *parent) : QWidget(parent) {
 
     rotateRight = new ClickableLabel();
     rotateRight->setAccessibleName("panelButton");
-    rotateRight->setPixmap(QPixmap(":/images/res/icons/rotate-right.png"));
+    rotateRight->setPixmap(QPixmap(":/res/icons/rotate-right.png"));
     rotateRight->setFixedSize(48,48);
     rotateLeft = new ClickableLabel();
     rotateLeft->setAccessibleName("panelButton");
-    rotateLeft->setPixmap(QPixmap(":/images/res/icons/rotate-left.png"));
+    rotateLeft->setPixmap(QPixmap(":/res/icons/rotate-left.png"));
     rotateLeft->setFixedSize(48,48);
     zoomFit = new ClickableLabel();
     zoomFit->setAccessibleName("panelButton");
-    zoomFit->setPixmap(QPixmap(":/images/res/icons/zoom-fit.png"));
+    zoomFit->setPixmap(QPixmap(":/res/icons/zoom-fit.png"));
     zoomFit->setFixedSize(48,48);
     zoomWidth = new ClickableLabel();
     zoomWidth->setAccessibleName("panelButton");
-    zoomWidth->setPixmap(QPixmap(":/images/res/icons/zoom-width.png"));
+    zoomWidth->setPixmap(QPixmap(":/res/icons/zoom-width.png"));
     zoomWidth->setFixedSize(48,48);
     zoomOriginal = new ClickableLabel();
     zoomOriginal->setAccessibleName("panelButton");
-    zoomOriginal->setPixmap(QPixmap(":/images/res/icons/zoom-original.png"));
+    zoomOriginal->setPixmap(QPixmap(":/res/icons/zoom-original.png"));
     zoomOriginal->setFixedSize(48,48);
     zoomIn = new ClickableLabel();
     zoomIn->setAccessibleName("panelButton");
-    zoomIn->setPixmap(QPixmap(":/images/res/icons/zoom-in.png"));
+    zoomIn->setPixmap(QPixmap(":/res/icons/zoom-in.png"));
     zoomIn->setFixedSize(48,48);
     zoomOut = new ClickableLabel();
     zoomOut->setAccessibleName("panelButton");
-    zoomOut->setPixmap(QPixmap(":/images/res/icons/zoom-out.png"));
+    zoomOut->setPixmap(QPixmap(":/res/icons/zoom-out.png"));
     zoomOut->setFixedSize(48,48);
 
     buttonsLayout = new QBoxLayout(QBoxLayout::TopToBottom);
