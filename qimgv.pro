@@ -77,7 +77,8 @@ SOURCES += main.cpp\
     thumbnailcache.cpp \
     customWidgets/overlaywidget.cpp \
     components/scaler/scaler.cpp \
-    components/scaler/scalerrunnable.cpp
+    components/scaler/scalerrunnable.cpp \
+    customWidgets/overlaymessage.cpp
 
 HEADERS += overlays/infooverlay.h \
     fileinfo.h \
@@ -128,7 +129,8 @@ HEADERS += overlays/infooverlay.h \
     customWidgets/overlaywidget.h \
     components/scaler/scaler.h \
     components/scaler/scalerrequest.h \
-    components/scaler/scalerrunnable.h
+    components/scaler/scalerrunnable.h \
+    customWidgets/overlaymessage.h
 
 FORMS += \
     settingsdialog.ui

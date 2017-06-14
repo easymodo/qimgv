@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QTimeLine>
-#include <QGraphicsScene>
 #include <QGraphicsOpacityEffect>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
@@ -27,22 +26,17 @@ public:
 public slots:
     void show();
 
-private slots:
-    void readSettings();
-
 protected:
     QGridLayout mLayout;
     QGraphicsOpacityEffect *fadeEffect;
     QPropertyAnimation *fadeAnimation, *slideAnimation;
     QParallelAnimationGroup *animGroup;
-    QSize preferredWidgetSize;
     int panelSize, slideAmount;
     QWidget *mWidget;
     QPoint initialPosition;
     QRect mTriggerRect;
     virtual void updateTriggerRect() = 0;
     void leaveEvent(QEvent *event);
-    bool animated;
 };
 
 #endif // SLIDEPANEL_H

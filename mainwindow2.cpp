@@ -9,7 +9,7 @@ MainWindow2::MainWindow2(ViewerWidget *viewerWidget, QWidget *parent)
       mainPanel(NULL),
       sidePanel(NULL)
 {
-    this->setMinimumSize(300, 300);
+    this->setMinimumSize(100, 100);
     layout.setContentsMargins(0,0,0,0);
     this->setLayout(&layout);
     this->setGeometry(200,130,1300,800);
@@ -53,6 +53,7 @@ void MainWindow2::setupOverlays() {
     // this order is used while drawing
     infoOverlay = new InfoOverlay(this);
     controlsOverlay = new ControlsOverlay(this);
+    overlayMessage = new OverlayMessage(this);
     mainPanel = new MainPanel(this);
     sidePanel = new SlideVPanel(this);
 }
@@ -225,6 +226,26 @@ void MainWindow2::setInfoString(QString text) {
     setWindowTitle(text + " - qimgv");
 }
 
+void MainWindow2::showMessageDirectoryEnd() {
+    overlayMessage->showMessage("end|", MESSAGE_RIGHT, 800);
+}
+
+void MainWindow2::showMessageDirectoryStart() {
+    overlayMessage->showMessage("|start", MESSAGE_LEFT, 800);
+}
+
+void MainWindow2::showMessageFitAll() {
+    overlayMessage->showMessage("Fit All", MESSAGE_BOTTOM, 1200);
+}
+
+void MainWindow2::showMessageFitWidth() {
+    overlayMessage->showMessage("Fit Width", MESSAGE_BOTTOM, 1200);
+}
+
+void MainWindow2::showMessageFitOriginal() {
+    overlayMessage->showMessage("Fit 1:1", MESSAGE_BOTTOM, 1200);
+}
+
 void MainWindow2::readSettings() {
     panelPosition = settings->panelPosition();
     sidePanelPosition = settings->sidePanelPosition();
@@ -238,6 +259,7 @@ void MainWindow2::readSettings() {
 void MainWindow2::updateOverlayGeometry() {
     controlsOverlay->setContainerSize(size());
     infoOverlay->setContainerSize(size());
+    overlayMessage->setContainerSize(size());
     mainPanel->setContainerSize(size());
 }
 

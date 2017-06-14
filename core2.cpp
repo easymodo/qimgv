@@ -92,6 +92,11 @@ void Core2::initActions() {
     connect(actionManager, SIGNAL(fitAll()), imageViewer, SLOT(setFitAll()));
     connect(actionManager, SIGNAL(fitWidth()), imageViewer, SLOT(setFitWidth()));
     connect(actionManager, SIGNAL(fitNormal()), imageViewer, SLOT(setFitOriginal()));
+
+    connect(actionManager, SIGNAL(fitAll()), mw, SLOT(showMessageFitAll()));
+    connect(actionManager, SIGNAL(fitWidth()), mw, SLOT(showMessageFitWidth()));
+    connect(actionManager, SIGNAL(fitNormal()), mw, SLOT(showMessageFitOriginal()));
+
     //connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
     connect(actionManager, SIGNAL(toggleFullscreen()), mw, SLOT(triggerFullscreen()));
     connect(actionManager, SIGNAL(zoomIn()), imageViewer, SLOT(slotZoomIn()));
@@ -217,10 +222,13 @@ void Core2::slotNextImage() {
     if(dirManager->containsImages()) {
         int index = mCurrentIndex + 1;
         if(index >= dirManager->fileCount()) {
-            if(infiniteScrolling)
+            if(infiniteScrolling) {
                 index = 0;
-            else
+            }
+            else {
+                mw->showMessageDirectoryEnd();
                 return;
+            }
         }
         //stopPlayback();
         mCurrentIndex = index;
@@ -234,10 +242,13 @@ void Core2::slotPrevImage() {
     if(dirManager->containsImages()) {
         int index = mCurrentIndex - 1;
         if(index < 0) {
-            if(infiniteScrolling)
+            if(infiniteScrolling) {
                 index = dirManager->fileCount() - 1;
-            else
+            }
+            else {
+                mw->showMessageDirectoryStart();
                 return;
+            }
         }
         //stopAnimation();
         mCurrentIndex = index;

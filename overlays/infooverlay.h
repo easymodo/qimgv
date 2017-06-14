@@ -14,17 +14,20 @@ public:
     InfoOverlay(QWidget *parent);
     void setText(QString text);
 
+    void setFontSize(int sz);
+
 private:
-    QFont font;
-    QRect textRect;
-    QColor textColor, textShadowColor, bgColor;
-    int textMarginX, textMarginY;
-    QFontMetrics *fm;
 
 protected:
     virtual void recalculateGeometry();
     void paintEvent(QPaintEvent *event);
     QString text;
+
+    QFont font;
+    QRect textRect;
+    QColor textColor, textShadowColor, bgColor;
+    int textMarginX, textMarginY;
+    QFontMetrics *fm;
 };
 
 #endif // INFOOVERLAY_H

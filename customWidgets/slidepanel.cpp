@@ -8,11 +8,9 @@
 
 SlidePanel::SlidePanel(QWidget *parent)
     : OverlayWidget(parent),
-      preferredWidgetSize(100,100),
       panelSize(50),
       slideAmount(30),
-      mWidget(NULL),
-      animated(true)
+      mWidget(NULL)
 {
     mLayout.setSpacing(0);
     mLayout.setContentsMargins(0,0,0,0);
@@ -36,8 +34,6 @@ SlidePanel::SlidePanel(QWidget *parent)
     animGroup->addAnimation(fadeAnimation);
     animGroup->addAnimation(slideAnimation);
     connect(animGroup, SIGNAL(finished()), this, SLOT(hide()), Qt::UniqueConnection);
-    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
-    readSettings();
 
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
@@ -78,8 +74,4 @@ void SlidePanel::show() {
     } else {
         qDebug() << "Warning: Trying to show panel containing no widget!";
     }
-}
-
-void SlidePanel::readSettings() {
-    //animated = settings->panelAnimated();
 }

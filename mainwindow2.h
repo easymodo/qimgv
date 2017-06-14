@@ -11,6 +11,7 @@
 #include "settingsdialog.h"
 #include "overlays/controlsoverlay.h"
 #include "overlays/infooverlay.h"
+#include "customWidgets/overlaymessage.h"
 #include "thumbnailPanel/thumbnailstrip.h"
 #include "customWidgets/mainpanel.h"
 #include "customWidgets/slidevpanel.h"
@@ -38,6 +39,7 @@ private:
 
     ControlsOverlay *controlsOverlay;
     InfoOverlay *infoOverlay;
+    OverlayMessage *overlayMessage;
 
     PanelHPosition panelPosition;
     PanelVPosition sidePanelPosition;
@@ -74,6 +76,11 @@ public slots:
     void showSettings();
     void triggerFullscreen();
     void setInfoString(QString);
+    void showMessageDirectoryEnd();
+    void showMessageDirectoryStart();
+    void showMessageFitAll();
+    void showMessageFitWidth();
+    void showMessageFitOriginal();
 };
 
 #endif // MAINWINDOW2_H
