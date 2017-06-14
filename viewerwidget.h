@@ -23,6 +23,10 @@ private:
     void enableVideoPlayer();
 
     int currentWidget; // 1 - imageViewer; 2 - videoplayer; others - none
+    QColor bgColor;
+
+private slots:
+    void readSettings();
 
 signals:
 

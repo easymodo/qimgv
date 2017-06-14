@@ -10,13 +10,14 @@ ViewerWidget::ViewerWidget(ImageViewer *imageViewer, VideoPlayerGL *videoPlayer,
       currentWidget(0)
 {
     this->setMouseTracking(true);
-    //setAttribute(Qt::WA_TransparentForMouseEvents);
     layout.setContentsMargins(0, 0, 0, 0);
     this->setLayout(&layout);
     setImageViewer(imageViewer);
     setVideoPlayer(videoPlayer);
-
     enableImageViewer();
+
+    readSettings();
+    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
 void ViewerWidget::setImageViewer(ImageViewer *imageViewer) {
@@ -67,6 +68,11 @@ void ViewerWidget::enableVideoPlayer() {
     }
 }
 
+void ViewerWidget::readSettings() {
+    bgColor = settings->backgroundColor();
+    update();
+}
+
 
 bool ViewerWidget::showImage(QPixmap *pixmap) {
     if(!pixmap)
@@ -104,7 +110,7 @@ void ViewerWidget::stopPlayback() {
 
 void ViewerWidget::paintEvent(QPaintEvent *event) {
     QPainter p(this);
-    p.setBrush(QBrush(QColor(12, 12, 12, 255)));
+    p.setBrush(QBrush(bgColor));
     p.fillRect(this->rect(), p.brush());
 }
 
