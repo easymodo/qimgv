@@ -227,11 +227,11 @@ void MainWindow2::setInfoString(QString text) {
 }
 
 void MainWindow2::showMessageDirectoryEnd() {
-    overlayMessage->showMessage("end|", MESSAGE_RIGHT, 800);
+    overlayMessage->showMessage("end|", MESSAGE_RIGHT, 1000);
 }
 
 void MainWindow2::showMessageDirectoryStart() {
-    overlayMessage->showMessage("|start", MESSAGE_LEFT, 800);
+    overlayMessage->showMessage("|start", MESSAGE_LEFT, 1000);
 }
 
 void MainWindow2::showMessageFitAll() {

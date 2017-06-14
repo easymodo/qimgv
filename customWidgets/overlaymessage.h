@@ -49,8 +49,8 @@ protected:
     qreal effectStrength, currentOpacity;
     int duration;
 
-    const int marginX = 25;
-    const int marginY = 40;
+    const int marginX = 20;
+    const int marginY = 30;
 };
 
 #endif // OVERLAYMESSAGE_H

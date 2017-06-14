@@ -6,12 +6,14 @@ OverlayMessage::OverlayMessage(QWidget *parent) : InfoOverlay(parent) {
     position = MESSAGE_LEFT;
     textMarginX = 10;
     textMarginY = 6;
-    bgColor.setRgb(30,30,30, 255);
-    borderColor.setRgb(0,0,0, 255);
-    setFontSize(18);
+    bgColor.setRgb(20,20,20, 255);
+    borderColor.setRgb(30,30,30, 255);
+    textColor.setRgb(235, 235, 235, 255);
+    setFontSize(17);
 ////////////////////////////////////////////////////////////////////////////////
     //effectColor.setRgb(255, 124, 0);
-    effectColor.setRgb(227, 132, 0);
+    //effectColor.setRgb(227, 132, 0);
+    effectColor.setRgb(110,110,110);
     effectStrength = 0.0f;
     colorizeEffect = new QGraphicsColorizeEffect(this);
     colorizeEffect->setColor(effectColor);
@@ -28,7 +30,7 @@ OverlayMessage::OverlayMessage(QWidget *parent) : InfoOverlay(parent) {
     fadeAnimation->setDuration(duration);
     fadeAnimation->setStartValue(1.0f);
     fadeAnimation->setEndValue(0.0f);
-    fadeAnimation->setEasingCurve(QEasingCurve::Linear);
+    fadeAnimation->setEasingCurve(QEasingCurve::InQuad);
 
     animGroup = new QParallelAnimationGroup;
     animGroup->addAnimation(colorizeAnimation);
@@ -51,9 +53,10 @@ void OverlayMessage::paintEvent(QPaintEvent *event) {
         QPainter painter(this);
         painter.setOpacity(currentOpacity);
         QRect rect = QRect(0,0, width(), height());
-        painter.fillRect(rect.adjusted(1,1,-1,-1), QBrush(bgColor));
+        painter.fillRect(rect.adjusted(2,2,-2,-2), QBrush(bgColor));
         painter.setPen(QPen(borderColor));
         painter.drawRect(rect.adjusted(0,0,-1,-1));
+        painter.drawRect(rect.adjusted(1,1,-2,-2));
         painter.setFont(font);
         painter.setPen(QPen(textShadowColor));
         painter.drawText(textRect.adjusted(1,1,1,1), Qt::TextSingleLine, text);
