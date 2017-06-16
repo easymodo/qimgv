@@ -217,7 +217,7 @@ void ThumbnailLabel::setHovered(bool mode) {
         if(mode) {
             setOpacity(1.0f, false);
         } else {
-            setOpacity(inactiveOpacity, true);
+            setOpacity(inactiveOpacity, false);
         }
     }
 }

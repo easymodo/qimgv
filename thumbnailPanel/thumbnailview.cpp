@@ -13,6 +13,7 @@ GraphicsView::GraphicsView(ThumbnailFrame *v)
     //setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
     timeLine->setEasingCurve(QEasingCurve::OutCubic);
+    timeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
     readSettings();
     connect(timeLine, SIGNAL(frameChanged(int)),
             this, SLOT(centerOnX(int)), Qt::UniqueConnection);
@@ -56,7 +57,6 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
                                     angleDelta *
                                     SCROLL_SPEED_MULTIPLIER);
         }
-        timeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
         timeLine->start();
     }
 }

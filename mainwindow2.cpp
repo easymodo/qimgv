@@ -12,7 +12,6 @@ MainWindow2::MainWindow2(ViewerWidget *viewerWidget, QWidget *parent)
     this->setMinimumSize(100, 100);
     layout.setContentsMargins(0,0,0,0);
     this->setLayout(&layout);
-    this->setGeometry(200,130,1300,800);
 
     setWindowTitle(QCoreApplication::applicationName() + " " +
                    QCoreApplication::applicationVersion());
