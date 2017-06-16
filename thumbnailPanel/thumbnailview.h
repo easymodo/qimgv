@@ -32,7 +32,7 @@ private:
     bool forceSmoothScroll;
 
     const int SCROLL_UPDATE_RATE = 16;
-    const float SCROLL_SPEED_MULTIPLIER = 3.4;
+    const float SCROLL_SPEED_MULTIPLIER = 3.6;
     const int SCROLL_ANIMATION_SPEED = 180;
 
 private slots:

@@ -5,16 +5,22 @@ GraphicsView::GraphicsView(ThumbnailFrame *v)
 {
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
+
+    // viewport stuff
+    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    //setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+
+    // scrolling
     scrollBar = this->horizontalScrollBar();
     scrollBar->setContextMenuPolicy(Qt::NoContextMenu);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-    //setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
     timeLine->setEasingCurve(QEasingCurve::OutCubic);
     timeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
+
     readSettings();
+
     connect(timeLine, SIGNAL(frameChanged(int)),
             this, SLOT(centerOnX(int)), Qt::UniqueConnection);
     // on scrolling animation finish

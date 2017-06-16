@@ -8,12 +8,10 @@
 #include <QProcess>
 #include <QFile>
 
-class Video : public Image
-{
-    Q_OBJECT
+class Video : public Image {
 public:
     Video(QString _path);
-    Video(FileInfo *_info);
+    Video(ImageInfo *_info);
     ~Video();
 
     QPixmap* getPixmap();
@@ -26,7 +24,6 @@ public:
     QSize size();
 
     void rotate(int grad);
-    QPixmap* generateThumbnail(int size, bool squared);
 
 public slots:
     void crop(QRect newRect);
@@ -35,7 +32,6 @@ public slots:
 
 
 private:
-    QPixmap *thumbnailStub();
     Clip *clip;
 };
 

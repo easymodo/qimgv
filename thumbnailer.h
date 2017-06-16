@@ -8,6 +8,7 @@
 #include "cache.h"
 #include <imagefactory.h>
 #include <ctime>
+#include "settings.h"
 
 class Thumbnailer : public QObject, public QRunnable
 {
@@ -26,6 +27,8 @@ private:
     ImageFactory *factory;
 
     QString generateIdString();
+    QPixmap* createThumbnailImage(Image *img, int size, bool square);
+    QPixmap *videoThumbnailStub();
 signals:
     void thumbnailReady(int, Thumbnail*);
 };

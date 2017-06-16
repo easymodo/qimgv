@@ -5,12 +5,10 @@
 #include <QImage>
 #include <QSemaphore>
 
-class ImageStatic : public Image
-{
-    Q_OBJECT
+class ImageStatic : public Image {
 public:
     ImageStatic(QString _path);
-    ImageStatic(FileInfo *_info);
+    ImageStatic(ImageInfo *_info);
     ~ImageStatic();
 
     QPixmap *getPixmap();
@@ -22,7 +20,6 @@ public:
 
     QImage *rotated(int grad);
     void rotate(int grad);
-    QPixmap *generateThumbnail(int size, bool squared);
     QImage *cropped(QRect newRect, QRect targetRes, bool upscaled);
 
 public slots:

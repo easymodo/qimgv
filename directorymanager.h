@@ -16,7 +16,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QImageReader>
-#include "fileinfo.h"
+#include "imageinfo.h"
 #include "settings.h"
 #include "filesystemWatchers/watcherwindows.h"
 

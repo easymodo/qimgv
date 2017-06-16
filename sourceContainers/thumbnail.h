@@ -4,8 +4,7 @@
 #include <QString>
 #include <QPixmap>
 
-class Thumbnail
-{
+class Thumbnail {
 public:
     Thumbnail();
     ~Thumbnail();

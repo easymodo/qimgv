@@ -1,9 +1,11 @@
 #include "image.h"
 
-void Image::safeDelete() {
-    mutex.lock(); // ensure we are not used
-    mutex.unlock();
-    deleteLater();
+Image::Image() : imageInfo(NULL) {
+}
+
+Image::~Image() {
+    if(imageInfo)
+        delete imageInfo;
 }
 
 void Image::lock() {
@@ -22,14 +24,10 @@ bool Image::isLoaded() {
     return loaded;
 }
 
-fileType Image::type() {
-    return fileInfo->getType();
+ImageType Image::type() {
+    return imageInfo->imageType();
 }
 
-FileInfo *Image::info() {
-    return fileInfo;
-}
-
-void Image::attachInfo(FileInfo *_info) {
-    fileInfo = _info;
+ImageInfo *Image::info() {
+    return imageInfo;
 }

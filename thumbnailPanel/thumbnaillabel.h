@@ -58,7 +58,7 @@ private:
     void propertySetOpacity(qreal amount);
     qreal propertyOpacity();
 
-    const qreal inactiveOpacity = 0.80f;
+    const qreal inactiveOpacity = 0.83f;
     const int opacityAnimationSpeed = 80;
 
 private slots:

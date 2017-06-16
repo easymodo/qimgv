@@ -11,6 +11,9 @@ ThumbnailLabel::ThumbnailLabel() :
     highlightBarHeight(3),
     marginX(1)
 {
+    setAcceptHoverEvents(true);
+    //this->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+
     loadingIcon = new QPixmap(":/res/icons/loading72.png");
     outlineColor.setRgb(0,0,0,0);
     nameColor.setRgb(20, 20, 20, 255);
@@ -27,7 +30,6 @@ ThumbnailLabel::ThumbnailLabel() :
     opacityAnimation->setDuration(opacityAnimationSpeed);
     currentOpacity = inactiveOpacity;
 
-    setAcceptHoverEvents(true);
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
@@ -87,7 +89,7 @@ void ThumbnailLabel::setHighlighted(bool mode, bool smooth) {
             setOpacity(1.0f, smooth);
         } else if(!isHovered()) {
             if(!mode)
-            setOpacity(inactiveOpacity, smooth);
+                setOpacity(inactiveOpacity, smooth);
         }
     }
 }
@@ -153,7 +155,7 @@ int ThumbnailLabel::labelNum() {
 
 void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(widget)
-
+    Q_UNUSED(option)
     painter->setOpacity(1.0f);
     if(isHighlighted()) {
         painter->fillRect(highlightBarRect, highlightColor);

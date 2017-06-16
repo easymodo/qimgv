@@ -6,38 +6,35 @@ ImageStatic::ImageStatic(QString _path) {
     path = _path;
     loaded = false;
     image = NULL;
-    fileInfo = new FileInfo(path, this);
-    sem = new QSemaphore(1);
+    imageInfo = new ImageInfo(path);
     unloadRequested = false;
 }
 
-ImageStatic::ImageStatic(FileInfo *_info) {
+ImageStatic::ImageStatic(ImageInfo *_info) {
     loaded = false;
     image = NULL;
-    fileInfo = _info;
-    path = fileInfo->filePath();
-    sem = new QSemaphore(1);
+    imageInfo = _info;
+    path = imageInfo->filePath();
     unloadRequested = false;
 }
 
 ImageStatic::~ImageStatic() {
     lock();
     delete image;
-    delete fileInfo;
     unlock();
 }
 
 //load image data from disk
 void ImageStatic::load() {
     QMutexLocker locker(&mutex);
-    if(!fileInfo) {
-        fileInfo = new FileInfo(path, this);
+    if(!imageInfo) {
+        imageInfo = new ImageInfo(path);
     }
     if(isLoaded()) {
         return;
     }
     image = new QImage();
-    image->load(path, fileInfo->fileExtension());
+    image->load(path, imageInfo->extension());
     loaded = true;
 }
 
@@ -54,47 +51,6 @@ void ImageStatic::save() {
         lock();
         image->save(path);
         unlock();
-    }
-}
-
-QPixmap *ImageStatic::generateThumbnail(int size, bool squared) {
-    Qt::AspectRatioMode method = squared?(Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
-    QPixmap *tmp;
-    if(!isLoaded()) {
-        tmp = new QPixmap(path, fileInfo->fileExtension());
-        *tmp = tmp->scaled(size * 2,
-                           size * 2,
-                           method,
-                           Qt::FastTransformation)
-               .scaled(size,
-                       size,
-                       method,
-                       Qt::SmoothTransformation);
-    } else {
-        tmp = new QPixmap();
-        if(!image->isNull()) {
-            lock();
-            *tmp = QPixmap::fromImage(
-                       image->scaled(size * 2,
-                                     size * 2,
-                                     method,
-                                     Qt::FastTransformation)
-                       .scaled(size,
-                               size,
-                               method,
-                               Qt::SmoothTransformation));
-            unlock();
-        }
-    }
-    if(squared) {
-        QRect target(0, 0, size, size);
-        target.moveCenter(tmp->rect().center());
-        QPixmap *thumbnail = new QPixmap(size, size);
-        *thumbnail = tmp->copy(target);
-        delete tmp;
-        return thumbnail;
-    } else {
-        return tmp;
     }
 }
 

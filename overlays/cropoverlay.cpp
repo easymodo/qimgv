@@ -413,7 +413,7 @@ QRect CropOverlay::mapSelection() {
 }
 
 void CropOverlay::keyPressEvent(QKeyEvent *event) {
-    if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return && !clear) {
+    if( (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) && !clear) {
         emit selected(mapSelection());
         this->hide();
     } else if(event->key() == Qt::Key_Escape) {

@@ -29,7 +29,6 @@ QMAKE_CXXFLAGS_RELEASE *= -O3
 
 SOURCES += main.cpp\
     overlays/infooverlay.cpp \
-    fileinfo.cpp \
     overlays/controlsoverlay.cpp \
     sourceContainers/imagestatic.cpp \
     core.cpp \
@@ -78,10 +77,10 @@ SOURCES += main.cpp\
     customWidgets/overlaywidget.cpp \
     components/scaler/scaler.cpp \
     components/scaler/scalerrunnable.cpp \
-    customWidgets/overlaymessage.cpp
+    customWidgets/overlaymessage.cpp \
+    imageinfo.cpp
 
 HEADERS += overlays/infooverlay.h \
-    fileinfo.h \
     overlays/controlsoverlay.h \
     sourceContainers/imagestatic.h \
     core.h \
@@ -130,7 +129,8 @@ HEADERS += overlays/infooverlay.h \
     components/scaler/scaler.h \
     components/scaler/scalerrequest.h \
     components/scaler/scalerrunnable.h \
-    customWidgets/overlaymessage.h
+    customWidgets/overlaymessage.h \
+    imageinfo.h
 
 FORMS += \
     settingsdialog.ui

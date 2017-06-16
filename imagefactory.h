@@ -2,7 +2,7 @@
 #define IMAGEFACTORY_H
 
 #include "lib/imagelib.h"
-#include "fileinfo.h"
+#include "imageinfo.h"
 #include "sourceContainers/image.h"
 #include "sourceContainers/imageanimated.h"
 #include "sourceContainers/imagestatic.h"
@@ -13,7 +13,7 @@ public:
     ImageFactory();
 
     Image* createImage(QString);
-    Image* createImage(FileInfo*);
+    Image* createImage(ImageInfo*);
 };
 
 #endif // IMAGEFACTORY_H

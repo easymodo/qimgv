@@ -8,21 +8,19 @@ ImageAnimated::ImageAnimated(QString _path) {
     loaded = false;
     mSize.setWidth(0);
     mSize.setHeight(0);
-    fileInfo = new FileInfo(path, this);
+    imageInfo = new ImageInfo(path);
 }
 
-ImageAnimated::ImageAnimated(FileInfo *_info) {
+ImageAnimated::ImageAnimated(ImageInfo *_info) {
     loaded = false;
-    fileInfo = _info;
+    imageInfo = _info;
     mSize.setWidth(0);
     mSize.setHeight(0);
-    path = fileInfo->filePath();
+    path = imageInfo->filePath();
 }
 
 ImageAnimated::~ImageAnimated() {
     lock();
-    if(fileInfo)
-        delete fileInfo;
     unlock();
 }
 
@@ -31,10 +29,10 @@ void ImageAnimated::load() {
     if(isLoaded()) {
         return;
     }
-    if(!fileInfo) {
-        fileInfo = new FileInfo(path, this);
+    if(!imageInfo) {
+        imageInfo = new ImageInfo(path);
     }
-    QPixmap pixmap(path, fileInfo->fileExtension());
+    QPixmap pixmap(path, imageInfo->extension());
     mSize = pixmap.size();
     loaded = true;
 }
@@ -54,33 +52,9 @@ void ImageAnimated::save() {
     //TODO
 }
 
-QPixmap *ImageAnimated::generateThumbnail(int size, bool squared) {
-    Qt::AspectRatioMode method = squared?(Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
-    QPixmap *tmp;
-    tmp = new QPixmap(path, fileInfo->fileExtension());
-    *tmp = tmp->scaled(size * 2,
-                       size * 2,
-                       method,
-                       Qt::FastTransformation)
-               .scaled(size,
-                       size,
-                       method,
-                       Qt::SmoothTransformation);
-    if(squared) {
-        QRect target(0, 0, size, size);
-        target.moveCenter(tmp->rect().center());
-        QPixmap *thumbnail = new QPixmap(size, size);
-        *thumbnail = tmp->copy(target);
-        delete tmp;
-        return thumbnail;
-    } else {
-        return tmp;
-    }
-}
-
 // in case of gif returns current frame
 QPixmap *ImageAnimated::getPixmap() {
-    QPixmap *pix = new QPixmap(path, fileInfo->fileExtension());
+    QPixmap *pix = new QPixmap(path, imageInfo->extension());
     return pix;
 }
 
@@ -93,7 +67,7 @@ const QImage *ImageAnimated::getImage() {
 QMovie *ImageAnimated::getMovie() {
     QMovie *_movie = new QMovie();
     _movie->setFileName(path);
-    _movie->setFormat(fileInfo->fileExtension());
+    _movie->setFormat(imageInfo->extension());
     _movie->jumpToFrame(0);
     return _movie;
 }
@@ -111,7 +85,9 @@ QSize ImageAnimated::size() {
 }
 
 void ImageAnimated::rotate(int grad) {
+    Q_UNUSED(grad)
 }
 
 void ImageAnimated::crop(QRect newRect) {
+    Q_UNUSED(newRect)
 }

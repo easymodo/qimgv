@@ -82,9 +82,9 @@ public:
     void readShortcuts();
     void saveShortcuts();
     bool mainPanelEnabled();
-    bool setPanelEnabled(bool mode);
+    void setPanelEnabled(bool mode);
     int lastDisplay();
-    int setLastDisplay(int display);
+    void setLastDisplay(int display);
     bool mouseWrapping();
     void setMouseWrapping(bool mode);
     bool squareThumbnails();
@@ -99,7 +99,7 @@ public:
     PanelVPosition sidePanelPosition();
     void setSidePanelPosition(PanelVPosition pos);
     bool sidePanelEnabled();
-    bool setSidePanelEnabled(bool mode);
+    void setSidePanelEnabled(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
     const int thumbnailSizeDefault = 210;

@@ -175,7 +175,7 @@ void Core2::stopPlayback() {
 
 void Core2::loadImage(QString filePath, bool blocking) {
     if(dirManager->isImage(filePath)) {
-        FileInfo *info = new FileInfo(filePath);
+        ImageInfo *info = new ImageInfo(filePath);
         int index = dirManager->indexOf(info->fileName());
         if(index == -1) {
             dirManager->setDirectory(info->directoryPath());

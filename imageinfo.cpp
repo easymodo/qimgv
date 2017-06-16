@@ -1,93 +1,89 @@
-#include "fileinfo.h"
+#include "imageinfo.h"
 
-FileInfo::FileInfo(QString path, QObject *parent) : QObject(parent), type(NONE), extension(NULL) {
-    setFile(path);
+ImageInfo::ImageInfo(QString path) : mImageType(NONE), mExtension(NULL) {
+    fileInfo.setFile(path);
+    if(!fileInfo.isFile()) {
+        qDebug() << "FileInfo: cannot open: " << path;
+        return;
+    }
+    lastModified = fileInfo.lastModified();
+    detectType();
 }
 
-FileInfo::~FileInfo() {
+ImageInfo::~ImageInfo() {
 }
 
 // ##############################################################
 // ####################### PUBLIC METHODS #######################
 // ##############################################################
 
-QString FileInfo::directoryPath() {
+QString ImageInfo::directoryPath() {
     return fileInfo.absolutePath();
 }
 
-QString FileInfo::filePath() {
+QString ImageInfo::filePath() {
     return fileInfo.absoluteFilePath();
 }
 
-QString FileInfo::fileName() {
+QString ImageInfo::fileName() {
     return fileInfo.fileName();
 }
 
 // in KB
-int FileInfo::fileSize() {
+int ImageInfo::fileSize() {
     return truncf(fileInfo.size()/1024);
 }
 
-fileType FileInfo::getType() {
-    if(type == NONE) {
-        guessType();
+ImageType ImageInfo::imageType() {
+    if(mImageType == NONE) {
+        detectType();
     }
-    return type;
+    return mImageType;
 }
 
-const char *FileInfo::fileExtension() {
-    return extension;
+const char *ImageInfo::extension() {
+    return mExtension;
 }
 
 // ##############################################################
 // ####################### PRIVATE METHODS ######################
 // ##############################################################
 
-void FileInfo::setFile(QString path) {
-    fileInfo.setFile(path);
-    if(!fileInfo.isFile()) {
-        qDebug() << "Cannot open: " << path;
-        return;
-    }
-    lastModified = fileInfo.lastModified();
-    guessType();
-}
-
-void FileInfo::guessType() {
+// detect correct file extension
+void ImageInfo::detectType() {
     QMimeDatabase mimeDb;
     QMimeType mimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
     QString mimeName = mimeType.name();
 
     if(mimeName == "video/webm") {
-        extension = "webm";
-        type = fileType::VIDEO;
+        mExtension = "webm";
+        mImageType = ImageType::VIDEO;
     } else if(mimeName == "image/jpeg") {
-        extension = "jpg";
-        type = STATIC;
+        mExtension = "jpg";
+        mImageType = STATIC;
     } else if(mimeName == "image/png") {
-        extension = "png";
-        type = STATIC;
+        mExtension = "png";
+        mImageType = STATIC;
     } else if(mimeName == "image/gif") {
-        extension = "gif";
-        type = ANIMATED;
+        mExtension = "gif";
+        mImageType = ANIMATED;
     // webp is incorrectly(?) detected as audio/x-riff on my windows pc
     } else if(mimeName == "audio/x-riff") {
         // in case we encounter an actual audio/x-riff
-        if(QString::compare(filePath().split('.').last(), "webp", Qt::CaseInsensitive) == 0) {
-            extension = "webp";
-            type = ANIMATED;
+        if(QString::compare(fileInfo.completeSuffix(), "webp", Qt::CaseInsensitive) == 0) {
+            mExtension = "webp";
+            mImageType = ANIMATED;
         }
     // TODO: parse header to find out if it supports animation.
     // treat all webp as animated for now.
     } else if(mimeName == "image/webp") {
-        extension = "webp";
-        type = ANIMATED;
+        mExtension = "webp";
+        mImageType = ANIMATED;
     } else if(mimeName == "image/bmp") {
-        extension = "bmp";
-        type = STATIC;
+        mExtension = "bmp";
+        mImageType = STATIC;
     } else {
-        extension = ((QString)fileInfo.fileName().split('.').last()).toStdString().c_str();
-        type = STATIC;
+        mExtension = fileInfo.completeSuffix().toStdString().c_str();
+        mImageType = STATIC;
     }
-
 }

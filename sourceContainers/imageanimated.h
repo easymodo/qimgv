@@ -5,12 +5,10 @@
 #include <QMovie>
 #include <QTimer>
 
-class ImageAnimated : public Image
-{
-    Q_OBJECT
+class ImageAnimated : public Image {
 public:
     ImageAnimated(QString _path);
-    ImageAnimated(FileInfo *_info);
+    ImageAnimated(ImageInfo *_info);
     ~ImageAnimated();
 
     QPixmap *getPixmap();
@@ -21,7 +19,6 @@ public:
     int height();
     int width();
     QSize size();
-    QPixmap* generateThumbnail(int size, bool squared);
 
     void rotate(int grad);
     void crop(QRect newRect);

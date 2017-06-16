@@ -1,5 +1,5 @@
-#ifndef FILEINFO_H
-#define FILEINFO_H
+#ifndef IMAGEINFO_H
+#define IMAGEINFO_H
 
 #include <QString>
 #include <QSize>
@@ -11,13 +11,12 @@
 #include <cmath>
 #include "lib/stuff.h"
 
-enum fileType { NONE, STATIC, ANIMATED, VIDEO };
+enum ImageType { NONE, STATIC, ANIMATED, VIDEO };
 
-class FileInfo : public QObject
-{
+class ImageInfo {
 public:
-    FileInfo(QString path, QObject *parent = 0);
-    ~FileInfo();
+    ImageInfo(QString path);
+    ~ImageInfo();
     
     QString directoryPath();
     QString filePath();
@@ -25,23 +24,20 @@ public:
 
     // in KB
     int fileSize();
-    fileType getType();
-   // const char* extension();
+    ImageType imageType();
 
     // file extension (guessed from mime-type)
-    const char* fileExtension();
+    const char* extension();
 
 private:
     QFileInfo fileInfo;
     QDateTime lastModified;
-    fileType type;
-    const char* extension;
-
-    void setFile(QString path);
+    ImageType mImageType;
+    const char* mExtension;
 
     // guesses file type from its contents
     // and sets extension
-    void guessType();
+    void detectType();
 };
 
-#endif // FILEINFO_H
+#endif // IMAGEINFO_H

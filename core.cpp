@@ -83,7 +83,7 @@ void Core::initCache() {
 
 void Core::loadImage(QString filePath, bool blocking) {
     if(dirManager->isImage(filePath)) {
-        FileInfo *info = new FileInfo(filePath);
+        ImageInfo *info = new ImageInfo(filePath);
         int index = dirManager->indexOf(info->fileName());
         if(index == -1) {
             dirManager->setDirectory(info->directoryPath());
@@ -202,7 +202,7 @@ void Core::setWallpaper(QRect wpRect) {
         if((staticImage = dynamic_cast<ImageStatic *>(currentImage())) != NULL) {
             QImage *cropped = NULL;
             QRect screenRes = QApplication::desktop()->screenGeometry();
-            if(cropped = staticImage->cropped(wpRect, screenRes, true)) {
+            if( (cropped = staticImage->cropped(wpRect, screenRes, true)) ) {
                 QString savePath = QDir::homePath() + "/" + ".wallpaper.png";
                 cropped->save(savePath);
                 WallpaperSetter::setWallpaper(savePath);

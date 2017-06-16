@@ -10,7 +10,6 @@ NewLoader::NewLoader(const DirectoryManager *_dm, ImageCache *_cache) :
     dm = _dm;
     thumbnailCache = new ThumbnailCache();
 
-
     preloadTimer = new QTimer(this);
     preloadTimer->setSingleShot(true);
     readSettings();
@@ -29,7 +28,7 @@ void NewLoader::openBlocking(int index) {
         emit loadFinished(cache->imageAt(index), index);
         return;
     }
-    LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(index), index, thread());
+    LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(index), index);
     connect(runnable, SIGNAL(finished(Image*,int)), this, SLOT(onLoadFinished(Image*,int)), Qt::UniqueConnection);
     tasks.append(index);
     runnable->run();
@@ -46,7 +45,7 @@ void NewLoader::open(int index) {
         emit loadFinished(cache->imageAt(index), index);
         return;
     }
-    LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(index), index, thread());
+    LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(index), index);
     connect(runnable, SIGNAL(finished(Image*,int)), this, SLOT(onLoadFinished(Image*,int)), Qt::UniqueConnection);
     tasks.append(index);
     QThreadPool::globalInstance()->start(runnable);
@@ -62,7 +61,7 @@ void NewLoader::doPreload() {
         if(tasks.contains(preloadTarget)) {
             return;
         }
-        LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(preloadTarget), preloadTarget, thread());
+        LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(preloadTarget), preloadTarget);
         connect(runnable, SIGNAL(finished(Image*,int)), this, SLOT(onLoadFinished(Image*,int)), Qt::UniqueConnection);
         tasks.append(preloadTarget);
         QThreadPool::globalInstance()->start(runnable);
@@ -83,7 +82,6 @@ void NewLoader::onLoadFinished(Image *image, int index) {
     } else {
         delete image;
     }
-    //qDebug()<< cache->currentlyLoadedList();
     unlock();
 }
 

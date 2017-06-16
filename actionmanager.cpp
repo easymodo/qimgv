@@ -374,8 +374,10 @@ bool ActionManager::invokeAction(QString actionName) {
         QMetaObject::invokeMethod(this,
                                   actionName.toLatin1().constData(),
                                   Qt::DirectConnection);
+        return true;
     } else {
         qDebug() << "invalid action: " << actionName;
+        return false;
     }
 }
 

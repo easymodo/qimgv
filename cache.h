@@ -20,7 +20,6 @@ public:
     ~CacheObject() {
         if(img)
             delete img;
-            //img->safeDelete();
     }
     void setPath(QString _path) {
         path = _path;
@@ -28,7 +27,7 @@ public:
     QString filePath() {
         return path;
     }
-    FileInfo* getInfo() {
+    ImageInfo* getInfo() {
         if(img)
             return img->info();
     }
@@ -48,7 +47,7 @@ public:
     }
     void setImage(Image* _img) {
         img = _img;
-        path = img->fileInfo->filePath();
+        path = img->imageInfo->filePath();
     }
     Image* image() {
         return img;
