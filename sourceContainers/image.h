@@ -12,7 +12,7 @@
 #include <QPixmap>
 #include <QPixmapCache>
 #include <QThread>
-#include <QMutex>
+#include <QSemaphore>
 
 class Image {
 public:
@@ -43,7 +43,7 @@ protected:
     bool loaded;
     QString path;
     QSize resolution;
-    QMutex mutex;
+    QSemaphore *sem;
 };
 
 #endif // IMAGE_H

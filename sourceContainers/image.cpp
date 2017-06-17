@@ -1,19 +1,21 @@
 #include "image.h"
 
 Image::Image() : imageInfo(NULL) {
+    sem = new QSemaphore(1);
 }
 
 Image::~Image() {
     if(imageInfo)
         delete imageInfo;
+    delete sem;
 }
 
 void Image::lock() {
-    mutex.lock();
+    sem->acquire();
 }
 
 void Image::unlock() {
-    mutex.unlock();
+    sem->release();
 }
 
 QString Image::getPath() {

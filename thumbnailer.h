@@ -9,6 +9,7 @@
 #include <imagefactory.h>
 #include <ctime>
 #include "settings.h"
+#include <malloc.h>
 
 class Thumbnailer : public QObject, public QRunnable
 {
@@ -24,11 +25,10 @@ public:
 
 private:
     ThumbnailCache* thumbnailCache;
-    ImageFactory *factory;
 
     QString generateIdString();
-    QPixmap* createThumbnailImage(Image *img, int size, bool square);
-    QPixmap *videoThumbnailStub();
+    QImage* createThumbnailImage(ImageInfo *img, int size, bool squared);
+    QImage* videoThumbnailStub();
 signals:
     void thumbnailReady(int, Thumbnail*);
 };

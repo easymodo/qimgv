@@ -9,7 +9,6 @@ void ScalerRunnable::setRequest(ScalerRequest r) {
 
 void ScalerRunnable::run() {
     // lock the source image so it wont get deleted by main thread during scaling
-    req.image->lock();
     ImageLib imgLib;
     QImage *scaled = new QImage();
     imgLib.bilinearScale(scaled, req.image->getImage(), req.size, true);

@@ -11,36 +11,36 @@ Thumbnailer::Thumbnailer(ThumbnailCache* _thumbnailCache, QString _path, int _ta
 }
 
 void Thumbnailer::run() {
-    ImageInfo *fileInfo = new ImageInfo(path);
+    ImageInfo imgInfo(path);
     Thumbnail *th = new Thumbnail();
     th->size = size;
-    th->name = fileInfo->fileName();
+    th->name = imgInfo.fileName();
     QString thumbnailHash = generateIdString();
 
     th->image = thumbnailCache->readThumbnail(thumbnailHash);
-    if(th->image) {
-        delete fileInfo;
-    } else {
-        factory = new ImageFactory();
-        Image* tempImage = factory->createImage(fileInfo);
+    if(!th->image) {
+        //factory = new ImageFactory();
+        //Image* tempImage = factory->createImage(fileInfo);
         // !!!!! TODO: load in constructor right away. Fix cache if needed.
-        tempImage->load();
-        th->image = createThumbnailImage(tempImage, size, squared);
+        //tempImage->load();
+        QImage *result = createThumbnailImage(&imgInfo, size, squared);
+        th->image = new QPixmap(result->size());
+        *th->image = QPixmap::fromImage(*result);
+        delete result;
+        //malloc_trim(0);
+        // save thumbnail if it makes sense
+        //if(tempImage->width() > size || tempImage->height() > size)
+        //    thumbnailCache->saveThumbnail(th->image, thumbnailHash);
 
-        // save thumbnail if it is makes sense
-        if(tempImage->width() > size || tempImage->height() > size)
-            thumbnailCache->saveThumbnail(th->image, thumbnailHash);
-
-        delete factory;
-        delete tempImage;
-        if(th->image->size() == QSize(0, 0)) {
+        //delete factory;
+        //delete tempImage;
+        //if(th->image->size() == QSize(0, 0)) {
             // TODO: wat, why would even it be zero size?
-            delete th->image;
-            th->image = new QPixmap(size, size);
-            th->image->fill(QColor(0,0,0,0));
-        }
+          //  delete th->image;
+          //  th->image = new QImage(size, size);
+          //  th->image->fill(QColor(0,0,0,0));
+        //}
     }
-
     //qDebug() << "########### thumbnail " << target << " loaded in: " << clock() - time << "     thread:  " << this->thread();
     // TODO: implement this info in FileInfo class
     //th->label.append(QString::number(tempImage->width()));
@@ -64,28 +64,28 @@ QString Thumbnailer::generateIdString() {
     return queryStr;
 }
 
-QPixmap* Thumbnailer::createThumbnailImage(Image *img, int size, bool square) {
-    ImageType type = img->type();
-    Qt::AspectRatioMode method = square?(Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
-    QPixmap *full, *scaled, *squared;
-    if(square) {
-        squared = new QPixmap(size, size);
+QImage* Thumbnailer::createThumbnailImage(ImageInfo *imgInfo, int size, bool squared) {
+    ImageType type = imgInfo->imageType();
+    Qt::AspectRatioMode method = squared?(Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
+    QImage *full, *scaled, *cropped;
+    if(squared) {
+        cropped = new QImage();
     }
-    scaled = new QPixmap(size, size);
+    scaled = new QImage();
     if(type == VIDEO) {
         QString ffmpegExe = settings->ffmpegExecutable();
         if(ffmpegExe.isEmpty()) {
             full = videoThumbnailStub();
         } else {
-            QString filePath = settings->cacheDir() + "tmp_" + img->info()->fileName();
-            QString command = "\"" + ffmpegExe + "\"" + " -i " + "\"" + img->info()->filePath() + "\"" +
+            QString filePath = settings->cacheDir() + "tmp_" + imgInfo->fileName();
+            QString command = "\"" + ffmpegExe + "\"" + " -i " + "\"" + imgInfo->filePath() + "\"" +
                               " -r 1 -f image2 " + "\"" + filePath + "\"";
             QProcess process;
             process.start(command);
             bool success = process.waitForFinished(2000);
             process.close();
             if(success) {
-                full = new QPixmap(filePath, "JPG");
+                full = new QImage(filePath, "JPG");
             } else {
                 QFile tmpFile(filePath);
                 if(tmpFile.exists()) {
@@ -95,7 +95,7 @@ QPixmap* Thumbnailer::createThumbnailImage(Image *img, int size, bool square) {
             }
         }
     } else {
-        full = new QPixmap(img->info()->filePath(), img->info()->extension());
+        full = new QImage(imgInfo->filePath(), imgInfo->extension());
     }
     *scaled = full->scaled(size * 2,
                        size * 2,
@@ -109,7 +109,6 @@ QPixmap* Thumbnailer::createThumbnailImage(Image *img, int size, bool square) {
     if(squared) {
         QRect target(0, 0, size, size);
         target.moveCenter(scaled->rect().center());
-        QPixmap *cropped = new QPixmap(size, size);
         *cropped = scaled->copy(target);
         delete scaled;
         return cropped;
@@ -119,23 +118,21 @@ QPixmap* Thumbnailer::createThumbnailImage(Image *img, int size, bool square) {
 }
 
 // wtf is happening in this method?
-QPixmap* Thumbnailer::videoThumbnailStub() {
+QImage* Thumbnailer::videoThumbnailStub() {
     int size = settings->mainPanelSize();
-    QImage *img = new QImage(size, size, QImage::Format_ARGB32_Premultiplied);
-    QPainter painter(img);
+    QImage *thumbnail = new QImage(size, size, QImage::Format_ARGB32_Premultiplied);
+    QPainter painter(thumbnail);
     painter.setCompositionMode(QPainter::CompositionMode_Source);
-    QPixmap videoIcon(":/res/video_thumb.png");
+    QImage videoIcon(":/res/video_thumb.png");
 
     QBrush brush(QColor(0, 0, 0, 50));
 
-    painter.fillRect(img->rect(), brush);
+    painter.fillRect(thumbnail->rect(), brush);
     painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
     QPoint topLeft((size - videoIcon.width()) / 2, (size - videoIcon.height()) / 2);
-    painter.drawPixmap(topLeft, videoIcon);
+    painter.drawImage(topLeft, videoIcon);
 
-    QPixmap *thumbnail = new QPixmap();
-    *thumbnail = QPixmap::fromImage(*img).copy();
     return thumbnail;
 }
 

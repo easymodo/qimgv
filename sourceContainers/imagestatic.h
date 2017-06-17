@@ -29,7 +29,6 @@ public slots:
 
 private:
     QImage *image;
-    QSemaphore *sem;
     bool unloadRequested;
 };
 

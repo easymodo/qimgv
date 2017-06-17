@@ -9,7 +9,6 @@ NewLoader::NewLoader(const DirectoryManager *_dm, ImageCache *_cache) :
 {
     dm = _dm;
     thumbnailCache = new ThumbnailCache();
-
     preloadTimer = new QTimer(this);
     preloadTimer->setSingleShot(true);
     readSettings();

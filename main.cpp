@@ -34,14 +34,6 @@ int main(int argc, char *argv[]) {
         core.loadImageBlocking(fileName);
     }
     core.showGui();
-    /*
-    MainWindow mw;
-    if(a.arguments().length() > 1) {
-        QString fileName = a.arguments().at(1);
-        mw.open(fileName);
-    }
-    mw.show();
-    */
 
     return a.exec();
 }

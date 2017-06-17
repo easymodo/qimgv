@@ -16,10 +16,13 @@ Scaler::Scaler(QObject *parent) : QObject(parent), currentRequestTimestamp(0), b
 
 void Scaler::requestScaled(ScalerRequest req) {
     requestMutex.lock();
+    req.image->lock();
     if(!running) {
         startRequest(req);
     } else {
         // something is running. buffer the request
+        if(buffered)
+            bufferedRequest.image->unlock();
         buffered = true;
         bufferedRequest = req;
     }
@@ -42,7 +45,6 @@ void Scaler::onTaskFinish(QImage *scaled, ScalerRequest req) {
         buffered = false;
         startRequest(bufferedRequest);
     }
-
     requestMutex.unlock();
 }
 

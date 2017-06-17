@@ -146,14 +146,13 @@ void ThumbnailStrip::loadVisibleThumbnails() {
         QList<QGraphicsItem *>items = scene->items(visibleRect,
                                                    Qt::IntersectsItemShape,
                                                    Qt::DescendingOrder);
-        ThumbnailLabel* labelCurrent;
         /* testing code
         for(int i = 0; i < thumbnailLabels->count(); i++) {
             requestThumbnail(thumbnailLabels->at(i)->labelNum());
         }
         */
         for(int i = 0; i < items.count(); i++) {
-            labelCurrent = qgraphicsitem_cast<ThumbnailLabel*>(items.at(i));
+            ThumbnailLabel* labelCurrent = qgraphicsitem_cast<ThumbnailLabel*>(items.at(i));
             requestThumbnail(labelCurrent->labelNum());
         }
     }

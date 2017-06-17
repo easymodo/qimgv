@@ -20,13 +20,12 @@ ImageAnimated::ImageAnimated(ImageInfo *_info) {
 }
 
 ImageAnimated::~ImageAnimated() {
-    lock();
-    unlock();
 }
 
 void ImageAnimated::load() {
-    QMutexLocker locker(&mutex);
+    lock();
     if(isLoaded()) {
+        unlock();
         return;
     }
     if(!imageInfo) {
@@ -35,6 +34,7 @@ void ImageAnimated::load() {
     QPixmap pixmap(path, imageInfo->extension());
     mSize = pixmap.size();
     loaded = true;
+    unlock();
 }
 
 void ImageAnimated::save(QString destinationPath) {

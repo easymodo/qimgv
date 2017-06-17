@@ -19,23 +19,23 @@ ImageStatic::ImageStatic(ImageInfo *_info) {
 }
 
 ImageStatic::~ImageStatic() {
-    lock();
     delete image;
-    unlock();
 }
 
 //load image data from disk
 void ImageStatic::load() {
-    QMutexLocker locker(&mutex);
+    lock();
     if(!imageInfo) {
         imageInfo = new ImageInfo(path);
     }
     if(isLoaded()) {
+        unlock();
         return;
     }
     image = new QImage();
     image->load(path, imageInfo->extension());
     loaded = true;
+    unlock();
 }
 
 void ImageStatic::save(QString destinationPath) {

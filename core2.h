@@ -13,6 +13,7 @@
 #include "components/scaler/scaler.h"
 #include "settings.h"
 #include <QMutex>
+#include <malloc.h>
 
 class Core2 : public QObject {
     Q_OBJECT

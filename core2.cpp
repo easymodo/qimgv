@@ -20,6 +20,11 @@ Core2::Core2()
       mImageCount(0),
       infiniteScrolling(false)
 {
+#ifdef __linux__
+    // default value of 128k causes memory fragmentation issues
+    // finding this took 3 days of my life
+    mallopt(M_MMAP_THRESHOLD, 64000);
+#endif
     qRegisterMetaType<ScalerRequest>("ScalerRequest");
     initGui();
     initComponents();
@@ -127,13 +132,9 @@ void Core2::rotateRight() {
     rotateByDegrees(90);
 }
 
-///////////////////////////////////////////////////////
-///////////////////////////////////////////////////////
-/// ///////////////////////////////////////////////////////
-/// ///////////////////////////////////////////////////////
 void Core2::scalingRequest(QSize size) {
     if(currentImage()) {
-        scaler->requestScaled(ScalerRequest(currentImage(), size, QString::number(size.width())));
+        scaler->requestScaled(ScalerRequest(currentImage(), size, currentImage()->getPath()));
     }
 }
 

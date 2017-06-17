@@ -33,6 +33,8 @@ GraphicsView::GraphicsView(ThumbnailFrame *v)
 
 void GraphicsView::wheelEvent(QWheelEvent *event) {
     event->accept();
+    //emit scrolled();
+
     viewportCenter = mapToScene(viewport()->rect().center());
     // pixelDelta() with libinput returns non-zero values with mouse wheel
     // so there's no way to distinguish between wheel scroll and touchpad scroll (at least not that i know of)

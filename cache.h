@@ -40,8 +40,8 @@ public:
     }
     void unload() {
         if(img) {
+            img->lock();
             delete img;
-            //img->safeDelete();
             img = NULL;
         }
     }
@@ -60,7 +60,8 @@ private:
         if(!img) {
             init();
         }
-        if(!img) qDebug() << "returning null 1";
+        if(!img)
+            qDebug() << "returning null 1";
         return img;
     }
     Image *img;

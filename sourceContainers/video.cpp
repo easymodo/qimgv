@@ -20,15 +20,17 @@ Video::~Video() {
 }
 
 void Video::load() {
-    QMutexLocker locker(&mutex);
+    lock();
     if(!imageInfo) {
         imageInfo = new ImageInfo(path);
     }
     if(isLoaded()) {
+        unlock();
         return;
     }
     clip = new Clip(path, imageInfo->extension());
     loaded = true;
+    unlock();
 }
 
 void Video::save(QString destinationPath) {
