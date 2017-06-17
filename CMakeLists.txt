@@ -1,9 +1,15 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 project(qimgv)
 
+set(CMAKE_BUILD_TYPE RELEASE)
+
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+SET(BASEPATH "${CMAKE_SOURCE_DIR}")
+INCLUDE_DIRECTORIES("${BASEPATH}")
 
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
@@ -15,25 +21,30 @@ add_definitions(${Qt5Widgets_DEFINITIONS} ${Qt5Concurrent_DEFINITIONS})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS} -std=c++11")
 
 #add_subdirectory(tests)
-add_subdirectory(overlays)
-add_subdirectory(lib)
-add_subdirectory(thumbnailPanel)
-add_subdirectory(sourceContainers)
-add_subdirectory(viewers)
-add_subdirectory(customWidgets)
-add_subdirectory(filesystemWatchers)
+add_subdirectory(components/actionmanager)
+add_subdirectory(components/cache)
+add_subdirectory(components/directorymanager)
+add_subdirectory(components/loader)
+add_subdirectory(components/scaler)
+add_subdirectory(components/thumbnailer)
+add_subdirectory(gui)
+add_subdirectory(gui/customwidgets)
+add_subdirectory(gui/overlays)
+add_subdirectory(gui/panels/mainpanel)
+add_subdirectory(gui/panels/sidepanel)
+add_subdirectory(gui/viewers)
+add_subdirectory(sourcecontainers)
+add_subdirectory(utils)
 
 FILE (GLOB SRC *.cpp)
 list (REMOVE_ITEM SRC moc_*.cpp)
 list (REMOVE_ITEM SRC *_automoc.cpp)
 
-QT5_WRAP_UI (GUI settingsdialog.ui)
-
 QT5_ADD_RESOURCES(RES resources.qrc)
 
-add_executable(qimgv ${SRC} ${RES} ${GUI})
+add_executable(qimgv ${SRC} ${RES})
 
-target_link_libraries(qimgv Qt5::Widgets Qt5::Concurrent mpv overlays imagelib sourcecontainers viewers customwidgets thumbnailpanel filesystemWatchers)
+target_link_libraries(qimgv actionmanager cache directorymanager loader scaler thumbnailer gui customwidgets overlays mainpanel sidepanel viewers sourcecontainers utils)
      
 qt5_use_modules (qimgv Core Widgets Concurrent)
 

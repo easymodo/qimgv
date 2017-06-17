@@ -1,7 +1,7 @@
-#include "core2.h"
 #include <QApplication>
 #include "settings.h"
-#include "actionmanager.h"
+#include "components/actionmanager/actionmanager.h"
+#include "core.h"
 
 void saveSettings() {
     delete settings;
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
         qApp->setStyleSheet(StyleSheet);
     }
 
-    Core2 core;
+    Core core;
     if(a.arguments().length() > 1) {
         QString fileName = a.arguments().at(1);
         core.loadImageBlocking(fileName);

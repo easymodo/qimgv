@@ -1,0 +1,5 @@
+file(GLOB SOURCES *.cpp)
+list (REMOVE_ITEM SOURCES moc_*.cpp)
+list (REMOVE_ITEM SOURCES *_automoc.cpp)
+add_library(overlays STATIC ${SOURCES})
+target_link_libraries(overlays Qt5::Widgets customwidgets)

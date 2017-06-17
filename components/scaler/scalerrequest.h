@@ -2,7 +2,7 @@
 #define SCALERREQUEST_H
 
 #include <QPixmap>
-#include "../../sourceContainers/image.h"
+#include "sourcecontainers/image.h"
 
 class ScalerRequest
 {

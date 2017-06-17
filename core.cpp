@@ -1,47 +1,295 @@
+/*
+ * This is sort-of a main controller of application.
+ * It creates and initializes all components, then sets up gui and actions.
+ * Most of communication between components go through here.
+ *
+ */
+
 #include "core.h"
 
-Core::Core() :
-    QObject(),
-    imageLoader(NULL),
-    dirManager(NULL),
-    currentImageAnimated(NULL),
-    currentVideo(NULL),
-    mCurrentIndex(0),
-    mPreviousIndex(0),
-    mImageCount(0),
-    infiniteScrolling(false)
+Core::Core()
+    : QObject(),
+      imageLoader(NULL),
+      dirManager(NULL),
+      cache(NULL),
+      scaler(NULL),
+      currentImageAnimated(NULL),
+      currentVideo(NULL),
+      mCurrentIndex(0),
+      mPreviousIndex(0),
+      mImageCount(0),
+      infiniteScrolling(false)
 {
-}
-
-// ##############################################################
-// ####################### PUBLIC METHODS #######################
-// ##############################################################
-
-void Core::init() {
-    initVariables();
-    connectSlots();
-    imageLoader->setCache(cache);
+#ifdef __linux__
+    // default value of 128k causes memory fragmentation issues
+    // finding this took 3 days of my life
+    mallopt(M_MMAP_THRESHOLD, 64000);
+#endif
+    qRegisterMetaType<ScalerRequest>("ScalerRequest");
+    initGui();
+    initComponents();
+    connectComponents();
+    initActions();
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
-QString Core::getCurrentFilePath() {
-    QString filePath = "";
+void Core::readSettings() {
+    infiniteScrolling = settings->infiniteScrolling();
+    fitMode = settings->imageFitMode();
+
+}
+
+void Core::showGui() {
+    if(mw && !mw->isVisible())
+        mw->show();
+}
+
+// create MainWindow and all widgets
+void Core::initGui() {
+    imageViewer = new ImageViewer();
+    videoPlayer = new VideoPlayerGL();
+    viewerWidget = new ViewerWidget(imageViewer, videoPlayer);
+    mw = new MainWindow(viewerWidget);
+    thumbnailPanelWidget = new ThumbnailStrip();
+    mw->setPanelWidget(thumbnailPanelWidget);
+    mw->hide();
+}
+
+void Core::initComponents() {
+    loadingTimer = new QTimer();
+    loadingTimer->setSingleShot(true);
+    loadingTimer->setInterval(500); // TODO: test on slower pc & adjust timeout
+    dirManager = new DirectoryManager();
+    cache = new ImageCache();
+    imageLoader = new NewLoader(dirManager, cache);
+    scaler = new Scaler();
+}
+
+void Core::connectComponents() {
+    connect(loadingTimer, SIGNAL(timeout()), this, SLOT(onLoadingTimeout()));
+    connect(imageLoader, SIGNAL(loadStarted()),
+            this, SLOT(onLoadStarted()));
+    connect(imageLoader, SIGNAL(loadFinished(Image *, int)),
+            this, SLOT(onLoadFinished(Image *, int)));
+    //connect(cache, SIGNAL(initialized(int)), this, SIGNAL(cacheInitialized(int)), Qt::DirectConnection);
+    //connect(dirManager, SIGNAL(fileRemoved(int)), cache, SLOT(removeAt(int)), Qt::DirectConnection);
+    //connect(cache, SIGNAL(itemRemoved(int)), this, SIGNAL(itemRemoved(int)), Qt::DirectConnection);
+    connect(dirManager, SIGNAL(directorySortingChanged()), this, SLOT(initCache()));
+
+    connect(mw, SIGNAL(opened(QString)), this, SLOT(loadImageBlocking(QString)));
+
+    // thumbnails stuff
+    connect(cache, SIGNAL(initialized(int)), thumbnailPanelWidget, SLOT(fillPanel(int)));
+    connect(thumbnailPanelWidget, SIGNAL(thumbnailRequested(int, int)),
+            imageLoader, SLOT(generateThumbnailFor(int, int)), Qt::UniqueConnection);
+    connect(imageLoader, SIGNAL(thumbnailReady(int, Thumbnail*)),
+            thumbnailPanelWidget, SLOT(setThumbnail(int, Thumbnail*)));
+    connect(thumbnailPanelWidget, SIGNAL(thumbnailClicked(int)), this, SLOT(openByIndex(int)));
+    connect(this, SIGNAL(imageIndexChanged(int)), thumbnailPanelWidget, SLOT(highlightThumbnail(int)));
+    connect(imageViewer, SIGNAL(scalingRequested(QSize)), this, SLOT(scalingRequest(QSize)));
+    connect(scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest)), this, SLOT(onScalingFinished(QPixmap*,ScalerRequest)));
+}
+
+void Core::initActions() {
+    connect(actionManager, SIGNAL(nextImage()), this, SLOT(slotNextImage()));
+    connect(actionManager, SIGNAL(prevImage()), this, SLOT(slotPrevImage()));
+    connect(actionManager, SIGNAL(fitAll()), imageViewer, SLOT(setFitAll()));
+    connect(actionManager, SIGNAL(fitWidth()), imageViewer, SLOT(setFitWidth()));
+    connect(actionManager, SIGNAL(fitNormal()), imageViewer, SLOT(setFitOriginal()));
+
+    connect(actionManager, SIGNAL(fitAll()), mw, SLOT(showMessageFitAll()));
+    connect(actionManager, SIGNAL(fitWidth()), mw, SLOT(showMessageFitWidth()));
+    connect(actionManager, SIGNAL(fitNormal()), mw, SLOT(showMessageFitOriginal()));
+
+    //connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
+    connect(actionManager, SIGNAL(toggleFullscreen()), mw, SLOT(triggerFullscreen()));
+    connect(actionManager, SIGNAL(zoomIn()), imageViewer, SLOT(slotZoomIn()));
+    connect(actionManager, SIGNAL(zoomOut()), imageViewer, SLOT(slotZoomOut()));
+    connect(actionManager, SIGNAL(scrollUp()), imageViewer, SLOT(scrollUp()));
+    connect(actionManager, SIGNAL(scrollDown()), imageViewer, SLOT(scrollDown()));
+    //connect(actionManager, SIGNAL(resize()), this, SLOT(slotResizeDialog()));
+    connect(actionManager, SIGNAL(rotateLeft()), this, SLOT(rotateLeft()));
+    connect(actionManager, SIGNAL(rotateRight()), this, SLOT(rotateRight()));
+    connect(actionManager, SIGNAL(openSettings()), mw, SLOT(showSettings()));
+    //connect(actionManager, SIGNAL(crop()), this, SLOT(slotCrop()));
+    //connect(actionManager, SIGNAL(setWallpaper()), this, SLOT(slotSelectWallpaper()));
+    connect(actionManager, SIGNAL(open()), mw, SLOT(showOpenDialog()));
+    connect(actionManager, SIGNAL(save()), mw, SLOT(showSaveDialog()));
+    connect(actionManager, SIGNAL(exit()), mw, SLOT(close()));
+    //connect(actionManager, SIGNAL(removeFile()), core, SLOT(removeFile()));
+}
+
+Image *Core::currentImage() {
+    return cache->imageAt(mCurrentIndex);
+}
+
+void Core::rotateLeft() {
+    rotateByDegrees(-90);
+}
+
+void Core::rotateRight() {
+    rotateByDegrees(90);
+}
+
+void Core::scalingRequest(QSize size) {
     if(currentImage()) {
-        filePath = currentImage()->getPath();
+        scaler->requestScaled(ScalerRequest(currentImage(), size, currentImage()->getPath()));
     }
-    return filePath;
 }
 
-int Core::imageCount() {
-    if(!dirManager)
-        return 0;
-    return dirManager->fileCount();
+void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
+    if(currentImage()) {
+        //delete scaled;
+        imageViewer->updateImage(scaled);
+    } else {
+        delete scaled;
+    }
 }
 
-// ##############################################################
-// ####################### PUBLIC SLOTS #########################
-// ##############################################################
+void Core::rotateByDegrees(int degrees) {
+    if(currentImage() != NULL) {
+        currentImage()->rotate(degrees);
+        ImageStatic *staticImage;
+        if((staticImage = dynamic_cast<ImageStatic *>(currentImage())) != NULL) {
+            viewerWidget->showImage(currentImage()->getPixmap());
+        }
+        else if ((currentVideo = dynamic_cast<Video *>(currentImage())) != NULL) {
+            //emit videoAltered(currentVideo->getClip());
+        }
+        updateInfoString();
+    }
+}
+
+void Core::initCache() {
+        // construct file path list
+        QStringList filePaths;
+        for(int i = 0; i < dirManager->fileCount(); i++) {
+            filePaths << dirManager->filePathAt(i);
+        }
+        cache->init(dirManager->currentDirectory(), &filePaths);
+}
+
+void Core::stopPlayback() {
+    viewerWidget->stopPlayback();
+}
+
+void Core::loadImage(QString filePath, bool blocking) {
+    if(dirManager->isImage(filePath)) {
+        ImageInfo *info = new ImageInfo(filePath);
+        int index = dirManager->indexOf(info->fileName());
+        if(index == -1) {
+            dirManager->setDirectory(info->directoryPath());
+            index = dirManager->indexOf(info->fileName());
+            if(index == -1) {
+                qDebug() << "Core: could not open file. This is a bug.";
+                return;
+            }
+        }
+        mCurrentIndex = index;
+        mImageCount = dirManager->fileCount();
+        if(cache->currentDirectory() != dirManager->currentDirectory()) {
+            this->initCache();
+        }
+        //stopPlayback();
+        if(blocking)
+            imageLoader->openBlocking(mCurrentIndex);
+        else
+            imageLoader->open(mCurrentIndex);
+    } else {
+        qDebug() << "Core: invalid/missing file.";
+    }
+}
+
+void Core::loadImage(QString filePath) {
+    loadImage(filePath, false);
+}
+
+void Core::loadImageBlocking(QString filePath) {
+    loadImage(filePath, true);
+}
+
+void Core::openByIndex(int index) {
+    if(index >=0 && index < dirManager->fileCount()) {
+        mCurrentIndex = index;
+        //stopPlayback();
+        imageLoader->open(index);
+    }
+    else
+        qDebug() << "Core::loadImageByIndex - argument out of range.";
+}
+
+void Core::slotNextImage() {
+    if(dirManager->containsImages()) {
+        int index = mCurrentIndex + 1;
+        if(index >= dirManager->fileCount()) {
+            if(infiniteScrolling) {
+                index = 0;
+            }
+            else {
+                mw->showMessageDirectoryEnd();
+                return;
+            }
+        }
+        //stopPlayback();
+        mCurrentIndex = index;
+        imageLoader->open(index);
+        if(dirManager->checkRange(index + 1))
+            imageLoader->preload(index + 1);
+    }
+}
+
+void Core::slotPrevImage() {
+    if(dirManager->containsImages()) {
+        int index = mCurrentIndex - 1;
+        if(index < 0) {
+            if(infiniteScrolling) {
+                index = dirManager->fileCount() - 1;
+            }
+            else {
+                mw->showMessageDirectoryStart();
+                return;
+            }
+        }
+        //stopAnimation();
+        mCurrentIndex = index;
+        imageLoader->open(index);
+        if(dirManager->checkRange(index - 1))
+            imageLoader->preload(index - 1);
+    }
+}
+
+void Core::onLoadStarted() {
+    updateInfoString();
+    loadingTimer->start();
+}
+
+void Core::onLoadingTimeout() {
+    // TODO: show loading message over MainWindow
+}
+
+void Core::onLoadFinished(Image *img, int index) {
+    mutex.lock();
+    //emit signalUnsetImage();
+    loadingTimer->stop();
+    currentImageAnimated = NULL;
+    currentVideo = NULL;
+    mPreviousIndex = index;
+    if(img) {
+        if((currentImageAnimated = dynamic_cast<ImageAnimated *>(img)) != NULL) {
+            viewerWidget->showAnimation(currentImageAnimated->getMovie());
+        } else if((currentVideo = dynamic_cast<Video *>(img)) != NULL) {
+            showGui(); // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
+            viewerWidget->showVideo(currentVideo->getClip());
+        } else {
+            // static image
+            viewerWidget->showImage(img->getPixmap());
+        }
+        emit imageIndexChanged(index);
+        updateInfoString();
+    }
+    mutex.unlock();
+}
 
 void Core::updateInfoString() {
     Image* img = currentImage();
@@ -68,266 +316,5 @@ void Core::updateInfoString() {
                           "  ");
         infoString.append(QString::number(img->info()->fileSize()) + " KB)");
     }
-    emit infoStringChanged(infoString);
-}
-
-
-void Core::initCache() {
-        // construct file path list
-        QStringList filePaths;
-        for(int i = 0; i < dirManager->fileCount(); i++) {
-            filePaths << dirManager->filePathAt(i);
-        }
-        cache->init(dirManager->currentDirectory(), &filePaths);
-}
-
-void Core::loadImage(QString filePath, bool blocking) {
-    if(dirManager->isImage(filePath)) {
-        ImageInfo *info = new ImageInfo(filePath);
-        int index = dirManager->indexOf(info->fileName());
-        if(index == -1) {
-            dirManager->setDirectory(info->directoryPath());
-            index = dirManager->indexOf(info->fileName());
-            if(index == -1) {
-                qDebug() << "Core: could not open file. This is a bug.";
-                return;
-            }
-        }
-        mCurrentIndex = index;
-        mImageCount = dirManager->fileCount();
-        if(cache->currentDirectory() != dirManager->currentDirectory()) {
-            this->initCache();
-        }
-        stopAnimation();
-        if(blocking)
-            imageLoader->openBlocking(mCurrentIndex);
-        else
-            imageLoader->open(mCurrentIndex);
-    } else {
-        qDebug() << "Core: invalid/missing file.";
-    }
-}
-
-void Core::loadImage(QString filePath) {
-    loadImage(filePath, false);
-}
-
-void Core::loadImageBlocking(QString filePath) {
-    loadImage(filePath, true);
-}
-
-void Core::openByIndex(int index) {
-    if(index >=0 && index < dirManager->fileCount()) {
-        mCurrentIndex = index;
-        stopAnimation();
-        imageLoader->open(index);
-    }
-    else
-        qDebug() << "Core::loadImageByIndex - argument out of range.";
-}
-
-void Core::slotNextImage() {
-    if(dirManager->containsImages()) {
-        int index = mCurrentIndex + 1;
-        if(index >= dirManager->fileCount()) {
-            if(infiniteScrolling)
-                index = 0;
-            else
-                return;
-        }
-        stopAnimation();
-        mCurrentIndex = index;
-        imageLoader->open(index);
-        if(dirManager->checkRange(index + 1))
-            imageLoader->preload(index + 1);
-    }
-}
-
-void Core::slotPrevImage() {
-    if(dirManager->containsImages()) {
-        int index = mCurrentIndex - 1;
-        if(index < 0) {
-            if(infiniteScrolling)
-                index = dirManager->fileCount() - 1;
-            else
-                return;
-        }
-        stopAnimation();
-        mCurrentIndex = index;
-        imageLoader->open(index);
-        if(dirManager->checkRange(index - 1))
-            imageLoader->preload(index - 1);
-    }
-}
-
-void Core::saveImage() {
-    if(currentImage()) {
-        currentImage()->save();
-    }
-}
-
-void Core::saveImage(QString path) {
-    if(currentImage()) {
-        currentImage()->save(path);
-    }
-}
-
-void Core::setCurrentDir(QString path) {
-    dirManager->setDirectory(path);
-}
-
-void Core::rotateImage(int degrees) {
-    if(currentImage() != NULL) {
-        currentImage()->rotate(degrees);
-        ImageStatic *staticImage;
-        if((staticImage = dynamic_cast<ImageStatic *>(currentImage())) != NULL) {
-            emit imageAltered(currentImage()->getPixmap());
-        }
-        else if ((currentVideo = dynamic_cast<Video *>(currentImage())) != NULL) {
-            emit videoAltered(currentVideo->getClip());
-        }
-        updateInfoString();
-    }
-}
-
-void Core::removeFile() {
-    if(dirManager->removeAt(mCurrentIndex)) {
-        openByIndex(0);
-    }
-}
-
-void Core::setWallpaper(QRect wpRect) {
-    if(currentImage()) {
-        ImageStatic *staticImage;
-        if((staticImage = dynamic_cast<ImageStatic *>(currentImage())) != NULL) {
-            QImage *cropped = NULL;
-            QRect screenRes = QApplication::desktop()->screenGeometry();
-            if( (cropped = staticImage->cropped(wpRect, screenRes, true)) ) {
-                QString savePath = QDir::homePath() + "/" + ".wallpaper.png";
-                cropped->save(savePath);
-                WallpaperSetter::setWallpaper(savePath);
-                delete cropped;
-            }
-        }
-    }
-}
-
-void Core::rescaleForZoom(QSize newSize) {
-    if(currentImage() && currentImage()->isLoaded()) {
-        ImageLib imgLib;
-        float sourceSize = (float) currentImage()->width() *
-                           currentImage()->height() / 1000000;
-        float size = (float) newSize.width() *
-                     newSize.height() / 1000000;
-        QPixmap *pixmap;
-        float currentScale = (float) sourceSize / size;
-        if(currentScale == 1.0) {
-            pixmap = currentImage()->getPixmap();
-        } else {
-            pixmap = new QPixmap(newSize);
-            if(settings->useFastScale() || currentScale < 1.0) {
-            //    imgLib.bilinearScale(pixmap, currentImage()->getPixmap(), newSize, true);
-            } else {
-            //    imgLib.bilinearScale(pixmap, currentImage()->getPixmap(), newSize, true);
-                //imgLib.bicubicScale(pixmap, currentImage()->getImage(), newSize.width(), newSize.height());
-            }
-        }
-        emit scalingFinished(pixmap);
-    }
-}
-
-void Core::stopAnimation() {
-    emit signalStopAnimation();
-    if(currentVideo) {
-        emit stopVideo();
-    }
-}
-
-// ##############################################################
-// ####################### PRIVATE METHODS ######################
-// ##############################################################
-
-void Core::initVariables() {
-    loadingTimer = new QTimer();
-    loadingTimer->setSingleShot(true);
-    loadingTimer->setInterval(500); // TODO: test on slower pc & adjust timeout
-    dirManager = new DirectoryManager();
-    cache = new ImageCache();
-    imageLoader = new NewLoader(dirManager, cache);
-}
-
-void Core::connectSlots() {
-    connect(loadingTimer, SIGNAL(timeout()), this, SLOT(onLoadingTimeout()));
-    connect(imageLoader, SIGNAL(loadStarted()),
-            this, SLOT(onLoadStarted()));
-    connect(imageLoader, SIGNAL(loadFinished(Image *, int)),
-            this, SLOT(onLoadFinished(Image *, int)));
-    connect(this, SIGNAL(thumbnailRequested(int, long)),
-            imageLoader, SLOT(generateThumbnailFor(int, long)));
-    connect(imageLoader, SIGNAL(thumbnailReady(long, Thumbnail *)),
-            this, SIGNAL(thumbnailReady(long, Thumbnail *)));
-    connect(cache, SIGNAL(initialized(int)), this, SIGNAL(cacheInitialized(int)), Qt::DirectConnection);
-    connect(dirManager, SIGNAL(fileRemoved(int)), cache, SLOT(removeAt(int)), Qt::DirectConnection);
-    connect(cache, SIGNAL(itemRemoved(int)), this, SIGNAL(itemRemoved(int)), Qt::DirectConnection);
-    connect(dirManager, SIGNAL(directorySortingChanged()), this, SLOT(initCache()));
-}
-
-Image* Core::currentImage() {
-    return cache->imageAt(mCurrentIndex);
-}
-
-void Core::onLoadingTimeout() {
-    stopAnimation();
-    emit loadingTimeout();
-}
-
-// ##############################################################
-// ####################### PRIVATE SLOTS ########################
-// ##############################################################
-
-void Core::onLoadStarted() {
-    updateInfoString();
-    loadingTimer->start();
-}
-
-void Core::onLoadFinished(Image *img, int index) {
-    mutex.lock();
-    emit signalUnsetImage();
-    loadingTimer->stop();
-    currentImageAnimated = NULL;
-    currentVideo = NULL;
-    mPreviousIndex = index;
-    if((currentImageAnimated = dynamic_cast<ImageAnimated *>(cache->imageAt(index))) != NULL) {
-        emit signalSetAnimation(currentImageAnimated->getMovie());
-    }    
-    if((currentVideo = dynamic_cast<Video *>(img)) != NULL) {
-        emit videoChanged(currentVideo->getClip());
-    }
-    if(!currentVideo && !currentImageAnimated && img) {    //static image
-        emit signalSetImage(img->getPixmap());
-    }
-
-    emit imageChanged(index);
-    updateInfoString();
-    mutex.unlock();
-}
-
-void Core::crop(QRect newRect) {
-    if(currentImage()) {
-        ImageStatic *staticImage;
-        if((staticImage = dynamic_cast<ImageStatic *>(currentImage())) != NULL) {
-            staticImage->crop(newRect);
-            updateInfoString();
-            emit imageAltered(currentImage()->getPixmap());
-        }
-        else if ((currentVideo = dynamic_cast<Video *>(currentImage())) != NULL) {
-            currentVideo->crop(newRect);
-            updateInfoString();
-            emit videoAltered(currentVideo->getClip());
-        }
-    }
-}
-
-void Core::readSettings() {
-    infiniteScrolling = settings->infiniteScrolling();
+    mw->setInfoString(infoString);
 }

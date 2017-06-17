@@ -11,7 +11,7 @@
 #include <QDir>
 #include <QKeySequence>
 #include <QMap>
-#include "actionmanager.h"
+#include "components/actionmanager/actionmanager.h"
 
 enum ImageFitMode {
     ALL,

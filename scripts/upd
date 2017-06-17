@@ -1,0 +1,3 @@
+#!/bin/bash
+#quick binary update
+sudo cp ../../build-qimgv-Desktop-Release/qimgv /usr/bin/qimgv

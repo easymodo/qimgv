@@ -27,113 +27,113 @@ QMAKE_CXXFLAGS_RELEASE *= -O3
 #    PKGCONFIG += mpv
 #
 
-SOURCES += main.cpp\
-    overlays/infooverlay.cpp \
-    overlays/controlsoverlay.cpp \
-    sourceContainers/imagestatic.cpp \
+SOURCES += \
+    main.cpp \
     core.cpp \
-    directorymanager.cpp \
-    opendialog.cpp \
-    viewers/imageviewer.cpp \
-    sleep.cpp \
-    settings.cpp \
-    settingsdialog.cpp \
-    lib/imagelib.cpp \
-    overlays/mapoverlay.cpp \
-    overlays/cropoverlay.cpp \
-    thumbnailPanel/thumbnailstrip.cpp \
-    thumbnailPanel/thumbnaillabel.cpp \
-    sourceContainers/image.cpp \
-    sourceContainers/imageanimated.cpp \
-    customWidgets/clickablelabel.cpp \
-    sourceContainers/thumbnail.cpp \
-    sourceContainers/video.cpp \
-    imagefactory.cpp \
-    thumbnailer.cpp \
-    lib/stuff.cpp \
-    wallpapersetter.cpp \
-    actionmanager.cpp \
-    customWidgets/settingsshortcutwidget.cpp \
-    sourceContainers/clip.cpp \
-    thumbnailPanel/thumbnailview.cpp \
-    customWidgets/clickablewidget.cpp \
-    resizedialog.cpp \
-    filesystemWatchers/watcherwindows.cpp \
-    customWidgets/slidevpanel.cpp \
-    customWidgets/slidehpanel.cpp \
-    customWidgets/slidepanel.cpp \
-    customWidgets/toolbox.cpp \
-    loaderrunnable.cpp \
-    loader.cpp \
-    cache.cpp \
-    viewers/videoplayergl.cpp \
-    viewers/mpvwidget.cpp \
-    core2.cpp \
-    mainwindow2.cpp \
-    viewerwidget.cpp \
-    customWidgets/mainpanel.cpp \
-    customWidgets/iconbutton.cpp \
-    thumbnailcache.cpp \
-    customWidgets/overlaywidget.cpp \
+    components/actionmanager/actionmanager.cpp \
+    components/cache/cache.cpp \
+    components/cache/thumbnailcache.cpp \
+    components/directorymanager/directorymanager.cpp \
+    components/directorymanager/watcherwindows.cpp \
+    components/loader/loader.cpp \
+    components/loader/loaderrunnable.cpp \
     components/scaler/scaler.cpp \
     components/scaler/scalerrunnable.cpp \
-    customWidgets/overlaymessage.cpp \
-    imageinfo.cpp
+    components/thumbnailer/thumbnailer.cpp \
+    gui/mainwindow.cpp \
+    gui/opendialog.cpp \
+    gui/settingsdialog.cpp \
+    gui/resizedialog.cpp \
+    gui/customwidgets/clickablelabel.cpp \
+    gui/customwidgets/clickablewidget.cpp \
+    gui/customwidgets/iconbutton.cpp \
+    gui/customwidgets/overlaywidget.cpp \
+    gui/customwidgets/settingsshortcutwidget.cpp \
+    gui/customwidgets/slidehpanel.cpp \
+    gui/customwidgets/slidepanel.cpp \
+    gui/customwidgets/slidevpanel.cpp \
+    gui/overlays/controlsoverlay.cpp \
+    gui/overlays/cropoverlay.cpp \
+    gui/overlays/floatingmessage.cpp \
+    gui/overlays/infooverlay.cpp \
+    gui/overlays/mapoverlay.cpp \
+    gui/panels/mainpanel/mainpanel.cpp \
+    gui/panels/mainpanel/thumbnaillabel.cpp \
+    gui/panels/mainpanel/thumbnailstrip.cpp \
+    gui/panels/mainpanel/thumbnailview.cpp \
+    gui/panels/sidepanel/toolbox.cpp \
+    gui/viewers/imageviewer.cpp \
+    gui/viewers/mpvwidget.cpp \
+    gui/viewers/videoplayergl.cpp \
+    gui/viewers/viewerwidget.cpp \
+    sourcecontainers/clip.cpp \
+    sourcecontainers/image.cpp \
+    sourcecontainers/imageanimated.cpp \
+    sourcecontainers/imageinfo.cpp \
+    sourcecontainers/imagestatic.cpp \
+    sourcecontainers/thumbnail.cpp \
+    sourcecontainers/video.cpp \
+    utils/imagefactory.cpp \
+    utils/imagelib.cpp \
+    utils/sleep.cpp \
+    utils/stuff.cpp \
+    utils/wallpapersetter.cpp \
+    settings.cpp
 
-HEADERS += overlays/infooverlay.h \
-    overlays/controlsoverlay.h \
-    sourceContainers/imagestatic.h \
+HEADERS += \
     core.h \
-    directorymanager.h \
-    opendialog.h \
-    viewers/imageviewer.h \
-    settings.h \
-    settingsdialog.h \
-    lib/imagelib.h \
-    overlays/mapoverlay.h \
-    overlays/cropoverlay.h \
-    thumbnailPanel/thumbnailstrip.h \
-    thumbnailPanel/thumbnaillabel.h \
-    sourceContainers/image.h \
-    sourceContainers/imageanimated.h \
-    customWidgets/clickablelabel.h \
-    sourceContainers/thumbnail.h \
-    sourceContainers/video.h \
-    imagefactory.h \
-    thumbnailer.h \
-    wallpapersetter.h \
-    lib/stuff.h \
-    actionmanager.h \
-    customWidgets/settingsshortcutwidget.h \
-    sourceContainers/clip.h \
-    thumbnailPanel/thumbnailview.h \
-    customWidgets/clickablewidget.h \
-    resizedialog.h \
-    filesystemWatchers/watcherwindows.h \
-    customWidgets/slidevpanel.h \
-    customWidgets/slidehpanel.h \
-    customWidgets/slidepanel.h \
-    customWidgets/toolbox.h \
-    loaderrunnable.h \
-    loader.h \
-    cache.h \
-    viewers/videoplayergl.h \
-    viewers/mpvwidget.h \
-    core2.h \
-    mainwindow2.h \
-    viewerwidget.h \
-    customWidgets/mainpanel.h \
-    customWidgets/iconbutton.h \
-    thumbnailcache.h \
-    customWidgets/overlaywidget.h \
+    components/actionmanager/actionmanager.h \
+    components/cache/cache.h \
+    components/cache/thumbnailcache.h \
+    components/directorymanager/directorymanager.h \
+    components/directorymanager/watcherwindows.h \
+    components/loader/loader.h \
+    components/loader/loaderrunnable.h \
     components/scaler/scaler.h \
     components/scaler/scalerrequest.h \
     components/scaler/scalerrunnable.h \
-    customWidgets/overlaymessage.h \
-    imageinfo.h
+    components/thumbnailer/thumbnailer.h \
+    gui/mainwindow.h \
+    gui/opendialog.h \
+    gui/settingsdialog.h \
+    gui/resizedialog.h \
+    gui/customwidgets/clickablelabel.h \
+    gui/customwidgets/clickablewidget.h \
+    gui/customwidgets/iconbutton.h \
+    gui/customwidgets/overlaywidget.h \
+    gui/customwidgets/settingsshortcutwidget.h \
+    gui/customwidgets/slidehpanel.h \
+    gui/customwidgets/slidepanel.h \
+    gui/customwidgets/slidevpanel.h \
+    gui/overlays/controlsoverlay.h \
+    gui/overlays/cropoverlay.h \
+    gui/overlays/floatingmessage.h \
+    gui/overlays/infooverlay.h \
+    gui/overlays/mapoverlay.h \
+    gui/panels/mainpanel/mainpanel.h \
+    gui/panels/mainpanel/thumbnaillabel.h \
+    gui/panels/mainpanel/thumbnailstrip.h \
+    gui/panels/mainpanel/thumbnailview.h \
+    gui/panels/sidepanel/toolbox.h \
+    gui/viewers/imageviewer.h \
+    gui/viewers/mpvwidget.h \
+    gui/viewers/videoplayergl.h \
+    gui/viewers/viewerwidget.h \
+    sourcecontainers/clip.h \
+    sourcecontainers/image.h \
+    sourcecontainers/imageanimated.h \
+    sourcecontainers/imageinfo.h \
+    sourcecontainers/imagestatic.h \
+    sourcecontainers/thumbnail.h \
+    sourcecontainers/video.h \
+    utils/imagefactory.h \
+    utils/imagelib.h \
+    utils/stuff.h \
+    utils/wallpapersetter.h \
+    settings.h
 
 FORMS += \
-    settingsdialog.ui
+    gui/settingsdialog.ui
 
 RESOURCES += \
     resources.qrc

@@ -4,9 +4,9 @@
 #include <QObject>
 #include <QRunnable>
 #include <QThread>
-#include "scalerrequest.h"
-#include "../../lib/imagelib.h"
 #include <QDebug>
+#include "scalerrequest.h"
+#include "utils/imagelib.h"
 
 class ScalerRunnable : public QObject, public QRunnable
 {

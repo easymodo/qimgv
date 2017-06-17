@@ -4,9 +4,9 @@
 #include <QObject>
 #include <QtConcurrent>
 #include <QMutex>
+#include <malloc.h>
 #include "scalerrequest.h"
 #include "scalerrunnable.h"
-#include <malloc.h>
 
 class Scaler : public QObject
 {

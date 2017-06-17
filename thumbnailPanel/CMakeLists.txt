@@ -1,5 +1,0 @@
-file(GLOB SOURCES *.cpp)
-list (REMOVE_ITEM SOURCES moc_*.cpp)
-list (REMOVE_ITEM SOURCES *_automoc.cpp)
-add_library(thumbnailpanel STATIC ${SOURCES})
-target_link_libraries(thumbnailpanel Qt5::Widgets Qt5::Concurrent)

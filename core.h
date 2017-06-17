@@ -2,28 +2,24 @@
 #define CORE_H
 
 #include <QObject>
-#include <QWidget>
-#include <QDesktopWidget>
-#include <QFileDialog>
+#include <QDebug>
 #include <QTimer>
-#include "directorymanager.h"
-#include "loader.h"
+#include <QMutex>
+#include <malloc.h>
 #include "settings.h"
-#include "sourceContainers/imageanimated.h"
-#include "wallpapersetter.h"
-#include "lib/stuff.h"
+#include "components/directorymanager/directorymanager.h"
+#include "components/loader/loader.h"
+#include "components/scaler/scaler.h"
+#include "gui/mainwindow.h"
+#include "gui/viewers/viewerwidget.h"
+#include "gui/viewers/imageviewer.h"
+#include "gui/viewers/videoplayergl.h"
 
-class Core : public QObject
-{
+class Core : public QObject {
     Q_OBJECT
 public:
-    explicit Core();
-    void init();
-
-    // full file path
-    // returns empty string if no file open
-    QString getCurrentFilePath();
-    int imageCount();
+    Core();
+    void showGui();
 
 public slots:
     void updateInfoString();
@@ -38,82 +34,56 @@ public slots:
 
     // invalid position will be ignored
     void openByIndex(int index);
-    void slotNextImage();
-    void slotPrevImage();
-
-    // owerwrite image
-    void saveImage();
-
-    // save under specified name
-    void saveImage(QString path);
-
-    // changes directory; will reload cache & thumbnails
-    // ignored if already in the same dir
-    void setCurrentDir(QString);
-    void rotateImage(int degrees);
-
-    // removes current file and loads next
-    // if there is no next file then loads previous
-    void removeFile();
-
-    // TODO: screen and fit mode selection
-    // crops/resizes current image to fill current screen
-    // then sets it as wallpaper
-    void setWallpaper(QRect wpRect);
-
-    // TODO: move to another thread
-    // makes a scaled copy of current image
-    // and emits imageAltered(QPixmap*)
-    void rescaleForZoom(QSize newSize);
-    void stopAnimation();
-
-private:
-    NewLoader *imageLoader;
-    DirectoryManager *dirManager;
-    int mCurrentIndex, mPreviousIndex, mImageCount;
-    bool infiniteScrolling;
-    ImageAnimated* currentImageAnimated;
-    Video* currentVideo;
-    QMutex mutex;
-    ImageCache *cache;
-    QTimer *loadingTimer;
-
-    void initVariables();
-    void connectSlots();
-    Image* currentImage();
-
-private slots:
-    void initCache();
-    void onLoadStarted();
-    void onLoadingTimeout();
-
-    // displays image and starts animation/video playback
-    void onLoadFinished(Image *img, int index);
-    void crop(QRect newRect);
-    void readSettings();
 
 signals:
-    void signalUnsetImage();
-    void signalSetImage(QPixmap*);
-    void infoStringChanged(QString);
-    void slowLoading();
-    void imageAltered(QPixmap*);
-    void videoAltered(Clip*);
-    void scalingFinished(QPixmap*);
-    void frameChanged(QPixmap*);
-    void thumbnailRequested(int, long);
-    void thumbnailReady(long, Thumbnail*);
-    void cacheInitialized(int);
-    void imageChanged(int);
-    void startVideo();
-    void stopVideo();
-    void videoChanged(Clip*);
-    void itemRemoved(int);
-    void loadingTimeout();
-    void signalStopAnimation();
-    void signalSetAnimation(QMovie*);
+    void imageIndexChanged(int);
+
+private:
+    void initGui();
+    void initComponents();
+    void connectComponents();
+    void initActions();
+
+    Image* currentImage();
+
+    // ui stuff
+    MainWindow *mw;
+    ViewerWidget *viewerWidget;
+    ImageViewer *imageViewer;
+    VideoPlayerGL *videoPlayer;
+    ThumbnailStrip *thumbnailPanelWidget;
+
+    QMutex mutex;
+    QTimer *loadingTimer; // this is for loading message delay. TODO: replace with something better
+
+    int mCurrentIndex, mPreviousIndex, mImageCount, fitMode;
+    bool infiniteScrolling;
+
+    // re-think this?
+    ImageAnimated* currentImageAnimated;
+    Video* currentVideo;
+
+    // components
+    NewLoader *imageLoader;
+    DirectoryManager *dirManager;
+    ImageCache *cache;
+    Scaler *scaler;
+
+    void rotateByDegrees(int degrees);
+
+private slots:
+    void readSettings();
+    void slotNextImage();
+    void slotPrevImage();
+    void onLoadFinished(Image *img, int index);
+    void onLoadStarted();
+    void onLoadingTimeout();
+    void initCache();
+    void stopPlayback();
+    void rotateLeft();
+    void rotateRight();
+    void scalingRequest(QSize);
+    void onScalingFinished(QPixmap* scaled, ScalerRequest req);
 };
 
 #endif // CORE_H
-
-
