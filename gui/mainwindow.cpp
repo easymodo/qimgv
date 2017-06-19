@@ -41,9 +41,6 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
     readSettings();
     currentDisplay = settings->lastDisplay();
     restoreWindowGeometry();
-    if(settings->fullscreenMode() && !isFullScreen()) {
-        this->triggerFullscreen();
-    }
 }
 
 // floating panels, info bars etc
@@ -165,6 +162,15 @@ void MainWindow::dropEvent(QDropEvent *event) {
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
     updateOverlayGeometry();
+}
+
+void MainWindow::show() {
+    if(!this->isVisible()) {
+        QWidget::show();
+        if(settings->fullscreenMode() && !isFullScreen()) {
+            this->triggerFullscreen();
+        }
+    }
 }
 
 void MainWindow::showSaveDialog() {
