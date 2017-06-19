@@ -82,7 +82,8 @@ void ThumbnailLabel::enableLabel() {
     nameTextRect = nameRect.adjusted(4, heightTextMargin, -4, -heightTextMargin);
     labelTextRect.setWidth(fmSmall->width(thumbnail->label));
     labelTextRect.setHeight(fmSmall->height());
-    labelTextRect.moveBottomRight(nameTextRect.bottomRight());
+    labelTextRect.moveCenter(nameRect.center());
+    labelTextRect.moveRight(nameTextRect.right());
     nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
 }
 
