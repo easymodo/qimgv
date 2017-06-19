@@ -12,7 +12,7 @@ SlideHPanel::SlideHPanel(QWidget *parent)
     position = TOP;
     invisibleMargin = 12;
     panelHeight = 100;
-    slideAmount = 30;
+    slideAmount = 40;
     mLayout.setContentsMargins(0,0,0,0);
     recalculateGeometry();
 }

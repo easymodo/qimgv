@@ -35,8 +35,8 @@ private:
     const int ANIMATION_SPEED_FAST = 80;
     const int ANIMATION_SPEED_NORMAL = 150;
 
-    const uint LOAD_DELAY = 20;
-    const int OFFSCREEN_PRELOAD_AREA = 1700;
+    const uint LOAD_DELAY = 40;
+    const int OFFSCREEN_PRELOAD_AREA = 2500;
 
     int panelSize;
     int itemCount, current, thumbnailSize, thumbnailInterval;

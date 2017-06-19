@@ -31,7 +31,7 @@ ThumbnailStrip::ThumbnailStrip()
     connect(&thumbnailFrame, SIGNAL(thumbnailClicked(int)),
             this, SLOT(onThumbnailClick(int)));
     connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
-    connect(&thumbnailFrame, SIGNAL(scrolled()), this, SLOT(loadVisibleThumbnailsDelayed()));
+    connect(&thumbnailFrame, SIGNAL(scrolled()), this, SLOT(loadVisibleThumbnails()));
 }
 
 void ThumbnailStrip::populate(int count) {
@@ -240,13 +240,13 @@ void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
 
 void ThumbnailStrip::showEvent(QShowEvent *event) {
     QWidget::showEvent(event);
-    loadVisibleThumbnails();
+    //loadVisibleThumbnails();
 }
 
 // update size based on widget's size
 // reposition thumbnails within scene if needed
 void ThumbnailStrip::updateThumbnailSize() {
-    int newSize = this->height() - 26;
+    int newSize = this->height() - 24;
     if( newSize % 2 )
         --newSize;
     if(newSize != thumbnailSize) {

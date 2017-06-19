@@ -7,6 +7,7 @@
 #include <QWheelEvent>
 #include <QScrollBar>
 #include <QTimeLine>
+#include <QTimer>
 #include <QDebug>
 #include "thumbnaillabel.h"
 
@@ -28,13 +29,16 @@ private:
     QScrollBar *scrollBar;
     ThumbnailFrame *frame;
     QTimeLine *timeLine;
+    QTimer scrollTimer;
     QPointF viewportCenter;
     bool forceSmoothScroll;
 
-    const int SCROLL_UPDATE_RATE = 16;
+    const int SCROLL_UPDATE_RATE = 8; // 16 feels too laggy
     const float SCROLL_SPEED_MULTIPLIER = 3.6;
     const int SCROLL_ANIMATION_SPEED = 180;
 
+    bool atSceneStart();
+    bool atSceneEnd();
 private slots:
     void centerOnX(int);
     void readSettings();

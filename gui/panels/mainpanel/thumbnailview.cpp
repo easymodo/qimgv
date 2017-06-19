@@ -18,23 +18,24 @@ GraphicsView::GraphicsView(ThumbnailFrame *v)
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
     timeLine->setEasingCurve(QEasingCurve::OutCubic);
     timeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
+    scrollTimer.setSingleShot(true);
+    scrollTimer.setInterval(40);
 
     readSettings();
+    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 
     connect(timeLine, SIGNAL(frameChanged(int)),
             this, SLOT(centerOnX(int)), Qt::UniqueConnection);
     // on scrolling animation finish
     connect(timeLine, SIGNAL(finished()), this, SIGNAL(scrolled()));
     // on manual scrollbar drag
-    connect(scrollBar, SIGNAL(sliderMoved(int)), this, SIGNAL(scrolled()));
+    connect(scrollBar, SIGNAL(sliderMoved(int)), &scrollTimer, SLOT(start()));
+    connect(&scrollTimer, SIGNAL(timeout()), this, SIGNAL(scrolled()));
     connect(this, SIGNAL(scrolled()), frame, SIGNAL(scrolled()));
-    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
 void GraphicsView::wheelEvent(QWheelEvent *event) {
     event->accept();
-    //emit scrolled();
-
     viewportCenter = mapToScene(viewport()->rect().center());
     // pixelDelta() with libinput returns non-zero values with mouse wheel
     // so there's no way to distinguish between wheel scroll and touchpad scroll (at least not that i know of)
@@ -43,14 +44,15 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
     int angleDelta = event->angleDelta().ry();
     if(!forceSmoothScroll && pixelDelta != 0)  {
         // ignore if we reached boundaries
-        if( (pixelDelta > 0 && scrollBar->value() == 0) || (pixelDelta < 0 && scrollBar->value() == scrollBar->maximum()) )
+        if( (pixelDelta > 0 && atSceneStart()) || (pixelDelta < 0 && atSceneEnd()) )
             return;
         // pixel scrolling (precise)
         centerOnX(viewportCenter.x() - event->pixelDelta().y());
-        emit scrolled();
+        scrollTimer.start();
+        //blockMoveEvents = true;
     } else {
         // also ignore if we reached boundaries
-        if( (angleDelta > 0 && scrollBar->value() == 0) || (angleDelta < 0 && scrollBar->value() == scrollBar->maximum()) )
+        if( (angleDelta > 0 && atSceneStart()) || (angleDelta < 0 && atSceneEnd()) )
             return;
         // smooth scrolling by fixed intervals
         if(timeLine->state() == QTimeLine::Running) {
@@ -58,7 +60,7 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
             timeLine->setFrameRange(viewportCenter.x(),
                                     timeLine->endFrame() -
                                     angleDelta *
-                                    SCROLL_SPEED_MULTIPLIER);
+                                    SCROLL_SPEED_MULTIPLIER*1.2f);
         } else {
             timeLine->setFrameRange(viewportCenter.x(),
                                     viewportCenter.x() -
@@ -67,6 +69,19 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
         }
         timeLine->start();
     }
+}
+
+bool GraphicsView::atSceneStart() {
+    if(viewportTransform().dx() == 0)
+        return true;
+    return false;
+}
+
+bool GraphicsView::atSceneEnd() {
+    if(viewportTransform().dx() == viewport()->width() - sceneRect().width())
+        return true;
+    return false;
+
 }
 
 void GraphicsView::centerOnX(int dx) {

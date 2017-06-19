@@ -25,7 +25,7 @@ SlidePanel::SlidePanel(QWidget *parent)
     fadeAnimation->setEndValue(0);
     fadeAnimation->setEasingCurve(QEasingCurve::OutQuart);
     slideAnimation = new QPropertyAnimation(this, "pos");
-    slideAnimation->setDuration(230);
+    slideAnimation->setDuration(300);
     slideAnimation->setStartValue(QPoint(0,0));
     slideAnimation->setEndValue(QPoint(0, -slideAmount));
     slideAnimation->setEasingCurve(QEasingCurve::OutQuart);
