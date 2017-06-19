@@ -16,43 +16,28 @@ void ThumbnailerRunnable::run() {
     th->size = size;
     th->name = imgInfo.fileName();
     QString thumbnailHash = generateIdString();
-
-    th->image = thumbnailCache->readThumbnail(thumbnailHash);
-    if(!th->image) {
-        //factory = new ImageFactory();
-        //Image* tempImage = factory->createImage(fileInfo);
-        // !!!!! TODO: load in constructor right away. Fix cache if needed.
-        //tempImage->load();
-        QImage *result = createThumbnailImage(&imgInfo, size, squared);
-        th->image = new QPixmap(result->size());
-        *th->image = QPixmap::fromImage(*result);
-        delete result;
-        //malloc_trim(0);
+    QImage *thumbImage = thumbnailCache->readThumbnail(thumbnailHash);
+    if(!thumbImage) {
+        thumbImage = createThumbnailImage(&imgInfo, size, squared);
+        // put in image info
+        thumbImage->setText("originalWidth", QString::number(originalSize.width()));
+        thumbImage->setText("originalHeight", QString::number(originalSize.height()));
+        if(imgInfo.imageType() == ANIMATED) {
+            thumbImage->setText("label", " [a]");
+        } else if(imgInfo.imageType() == VIDEO) {
+            thumbImage->setText("label", " [v]");
+        }
         // save thumbnail if it makes sense
-        //if(tempImage->width() > size || tempImage->height() > size)
-        //    thumbnailCache->saveThumbnail(th->image, thumbnailHash);
-
-        //delete factory;
-        //delete tempImage;
-        //if(th->image->size() == QSize(0, 0)) {
-            // TODO: wat, why would even it be zero size?
-          //  delete th->image;
-          //  th->image = new QImage(size, size);
-          //  th->image->fill(QColor(0,0,0,0));
-        //}
+        if(originalSize.width() > size || originalSize.height() > size)
+            thumbnailCache->saveThumbnail(thumbImage, thumbnailHash);
     }
-    //qDebug() << "########### thumbnail " << target << " loaded in: " << clock() - time << "     thread:  " << this->thread();
-    // TODO: implement this info in FileInfo class
-    //th->label.append(QString::number(tempImage->width()));
-    //th->label.append("x");
-    //th->label.append(QString::number(tempImage->height()));
-    /*
-    if(tempImage->type() == ANIMATED) {
-        th->label.append(" [a]");
-    } else if(tempImage->type() == VIDEO) {
-        th->label.append(" [v]");
-    }
-    */
+    th->image = new QPixmap(thumbImage->size());
+    *th->image = QPixmap::fromImage(*thumbImage);
+    // put info into Thumbnail object
+    th->label = thumbImage->text("originalWidth") + "x" +
+                thumbImage->text("originalWidth") +
+                thumbImage->text("label");
+    delete thumbImage;
     emit thumbnailReady(target, th);
 }
 
@@ -66,12 +51,12 @@ QString ThumbnailerRunnable::generateIdString() {
 
 QImage* ThumbnailerRunnable::createThumbnailImage(ImageInfo *imgInfo, int size, bool squared) {
     ImageType type = imgInfo->imageType();
-    Qt::AspectRatioMode method = squared?(Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
-    QImage *full, *scaled, *cropped;
-    if(squared) {
-        cropped = new QImage();
-    }
+    Qt::AspectRatioMode method = squared?
+                (Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
+    QImage *full, *scaled;
     scaled = new QImage();
+    ////////////////////////////////////////////////////////////////////////////
+    ///////////////////////// TODO: fix this section
     if(type == VIDEO) {
         QString ffmpegExe = settings->ffmpegExecutable();
         if(ffmpegExe.isEmpty()) {
@@ -94,21 +79,24 @@ QImage* ThumbnailerRunnable::createThumbnailImage(ImageInfo *imgInfo, int size, 
                 return videoThumbnailStub();
             }
         }
+    ////////////////////////////////////////////////////////////////////////////
     } else {
         full = new QImage(imgInfo->filePath(), imgInfo->extension());
     }
     *scaled = full->scaled(size * 2,
-                       size * 2,
-                       method,
-                       Qt::FastTransformation)
-               .scaled(size,
-                       size,
-                       method,
-                       Qt::SmoothTransformation);
+                           size * 2,
+                           method,
+                           Qt::FastTransformation)
+                   .scaled(size,
+                           size,
+                           method,
+                           Qt::SmoothTransformation);
+    originalSize = full->size();
     delete full;
     if(squared) {
         QRect target(0, 0, size, size);
         target.moveCenter(scaled->rect().center());
+        QImage *cropped = new QImage();
         *cropped = scaled->copy(target);
         delete scaled;
         return cropped;

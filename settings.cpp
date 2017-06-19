@@ -2,9 +2,8 @@
 
 Settings *settings = NULL;
 
-Settings::Settings(QObject *parent) :
-    QObject(parent) {
-    cacheDirectory = new QDir(QDir::homePath() + "/.cache/thumbnails/qimgv");
+Settings::Settings(QObject *parent) : QObject(parent) {
+    cacheDirectory = new QDir(QDir::homePath() + "/.cache/qimgv/thumbnails");
     cacheDirectory->mkpath(cacheDirectory->absolutePath());
 }
 
@@ -25,7 +24,7 @@ void Settings::validate() {
         bool ok = true;
         if(settings->s.value("lastDir") == "") {
             settings->s.setValue("lastDir",
-                                 QApplication::applicationDirPath());
+                                 QDir::homePath());
         }
         // minimum cache size
         if(settings->s.value("cacheSize").toInt() < 32) {

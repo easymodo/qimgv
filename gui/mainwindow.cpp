@@ -19,7 +19,7 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
     this->setMouseTracking(true);
     this->setAcceptDrops(true);
 
-    setAttribute(Qt::WA_TranslucentBackground);
+    //setAttribute(Qt::WA_TranslucentBackground);
     desktopWidget = QApplication::desktop();
     windowMoveTimer.setSingleShot(true);
     windowMoveTimer.setInterval(150);
