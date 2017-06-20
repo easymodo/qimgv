@@ -53,7 +53,11 @@ QString DirectoryManager::currentDirectory() const {
 }
 
 QString DirectoryManager::filePathAt(int pos) const {
-    return checkRange(pos)?currentDir.absolutePath() + "/" + mFileNameList.at(pos) : "";
+    return checkRange(pos) ? currentDir.absolutePath() + "/" + mFileNameList.at(pos) : "";
+}
+
+QString DirectoryManager::fileNameAt(int pos) const {
+    return checkRange(pos) ? mFileNameList.at(pos) : "";
 }
 
 bool DirectoryManager::removeAt(int pos) {
@@ -70,6 +74,12 @@ bool DirectoryManager::checkRange(int pos) const {
         return true;
     } else {
         return false;
+    }
+}
+
+bool DirectoryManager::copyTo(QString destDirectory, int index) {
+    if(checkRange(index)) {
+        return QFile::copy(filePathAt(index), destDirectory + "/" + fileNameAt(index));
     }
 }
 

@@ -39,7 +39,9 @@ public:
     bool isImage(QString filePath) const;
     bool containsImages() const;
     bool checkRange(int pos) const;
+    bool copyTo(QString destDirectory, int index);
 
+    QString fileNameAt(int pos) const;
 public slots:
     void applySettingsChanges();
 

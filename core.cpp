@@ -72,8 +72,8 @@ void Core::connectComponents() {
             this, SLOT(onLoadStarted()));
     connect(imageLoader, SIGNAL(loadFinished(Image *, int)),
             this, SLOT(onLoadFinished(Image *, int)));
-    //connect(dirManager, SIGNAL(fileRemoved(int)), cache, SLOT(removeAt(int)), Qt::DirectConnection);
-    //connect(cache, SIGNAL(itemRemoved(int)), this, SIGNAL(itemRemoved(int)), Qt::DirectConnection);
+    connect(dirManager, SIGNAL(fileRemoved(int)), cache, SLOT(removeAt(int)), Qt::DirectConnection);
+    connect(cache, SIGNAL(itemRemoved(int)), thumbnailPanelWidget, SLOT(removeItemAt(int)), Qt::DirectConnection);
     connect(dirManager, SIGNAL(directorySortingChanged()), this, SLOT(initCache()));
 
     connect(mw, SIGNAL(opened(QString)), this, SLOT(loadImageBlocking(QString)));
@@ -116,7 +116,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(open()), mw, SLOT(showOpenDialog()));
     connect(actionManager, SIGNAL(save()), mw, SLOT(showSaveDialog()));
     connect(actionManager, SIGNAL(exit()), mw, SLOT(close()));
-    //connect(actionManager, SIGNAL(removeFile()), core, SLOT(removeFile()));
+    connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFile()));
 }
 
 Image *Core::currentImage() {
@@ -129,6 +129,24 @@ void Core::rotateLeft() {
 
 void Core::rotateRight() {
     rotateByDegrees(90);
+}
+
+void Core::removeFile() {
+    if(currentImage()) {
+        if(dirManager->removeAt(mCurrentIndex)) {
+            openByIndex(0);
+        } else {
+            qDebug() << "Error deleting file.";
+        }
+    }
+}
+
+void Core::moveFile(QString destDirectory) {
+    if(dirManager->copyTo(destDirectory, mCurrentIndex)) {
+        removeFile();
+    } else {
+        qDebug() << "Error moving file to " << destDirectory;
+    }
 }
 
 // switch between 1:1 and Fit All
@@ -216,7 +234,7 @@ void Core::loadImageBlocking(QString filePath) {
 }
 
 void Core::openByIndex(int index) {
-    if(index >=0 && index < dirManager->fileCount()) {
+    if(index >= 0 && index < dirManager->fileCount()) {
         mCurrentIndex = index;
         //stopPlayback();
         imageLoader->open(index);

@@ -85,6 +85,8 @@ private slots:
     void switchFitMode();
     void scalingRequest(QSize);
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
+    void removeFile();
+    void moveFile(QString destDirectory);
 };
 
 #endif // CORE_H

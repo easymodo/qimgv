@@ -16,8 +16,10 @@ public:
     }
 
     ~CacheObject() {
-        if(img)
+        if(img) {
+            img->lock();
             delete img;
+        }
     }
     void setPath(QString _path) {
         path = _path;

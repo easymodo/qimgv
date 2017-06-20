@@ -33,8 +33,8 @@ void ImageCache::init(QString _dir, QStringList *fileNameList) {
 void ImageCache::removeAt(int pos) {
     lock();
     CacheObject *img = cachedImages->takeAt(pos);
-    delete img;
     loadedIndexes.removeAt(loadedIndexes.indexOf(pos));
+    delete img;
     unlock();
     emit itemRemoved(pos);
 }
