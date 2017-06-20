@@ -29,7 +29,6 @@ void ActionManager::createActionList() {
                                 << "fitWidth"
                                 << "fitNormal"
                                 << "toggleFitMode"
-                                << "toggleMenuBar"
                                 << "resize"
                                 << "rotateRight"
                                 << "rotateLeft"
@@ -42,6 +41,7 @@ void ActionManager::createActionList() {
                                 << "setWallpaper"
                                 << "crop"
                                 << "removeFile"
+                                << "copyFile"
                                 << "openSettings"
                                 << "exit";
 }
@@ -229,7 +229,6 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("A", "fitAll");
     actionManager->addShortcut("W", "fitWidth");
     actionManager->addShortcut("N", "fitNormal");
-    actionManager->addShortcut("Ctrl+M", "toggleMenuBar");
     //actionManager->addShortcut("R", "resize"); // TODO: better defaults
     actionManager->addShortcut("Ctrl+R", "rotateRight");
     actionManager->addShortcut("Ctrl+L", "rotateLeft");
@@ -247,7 +246,8 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("Alt+X", "exit");
     actionManager->addShortcut("Ctrl+Q", "exit");
     actionManager->addShortcut("escape", "exit");
-    //actionManager->addShortcut("delete", "removeFile");
+    actionManager->addShortcut("delete", "removeFile");
+    actionManager->addShortcut("C", "copyFile");
 }
 
 bool ActionManager::processWheelEvent(QWheelEvent *event) {

@@ -9,7 +9,7 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
       mainPanel(NULL),
       sidePanel(NULL)
 {
-    this->setMinimumSize(100, 100);
+    this->setMinimumSize(400, 300);
     layout.setContentsMargins(0,0,0,0);
     this->setLayout(&layout);
 
@@ -51,6 +51,9 @@ void MainWindow::setupOverlays() {
     // this order is used while drawing
     infoOverlay = new InfoOverlay(this);
     controlsOverlay = new ControlsOverlay(this);
+    copyDialog = new CopyDialog(this);
+    connect(copyDialog, SIGNAL(copyRequested(QString)),
+            this, SIGNAL(copyRequested(QString)));
     floatingMessage = new FloatingMessage(this);
     mainPanel = new MainPanel(this);
     sidePanel = new SlideVPanel(this);
@@ -138,6 +141,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
         saveWindowGeometry();
     }
     saveCurrentDisplay();
+    copyDialog->saveSettings();
     QWidget::closeEvent(event);
 }
 
@@ -236,6 +240,10 @@ void MainWindow::showWindowed() {
     emit fullscreenStatusChanged(false);
 }
 
+void MainWindow::triggerCopyDialog() {
+    copyDialog->isHidden()?copyDialog->show():copyDialog->hide();
+}
+
 void MainWindow::setInfoString(QString text) {
     infoOverlay->setText(text);
     setWindowTitle(text + " - qimgv");
@@ -277,6 +285,7 @@ void MainWindow::updateOverlayGeometry() {
     infoOverlay->setContainerSize(size());
     floatingMessage->setContainerSize(size());
     mainPanel->setContainerSize(size());
+    copyDialog->setContainerSize(size());
 }
 
 void MainWindow::setControlsOverlayEnabled(bool mode) {

@@ -1,3 +1,40 @@
+[accessibleName="PathSelectorLabel"] {
+    padding: 2px 5px 2px 5px;
+    background-color: #303030;
+    color: #CCCCCC;
+    border: 1px solid;
+    border-color: #424242;
+    border-radius: 1px;
+}
+
+[accessibleName="PathSelectorLabel"]:hover {
+    border-color: #606060;
+}
+
+[accessibleName="PathSelectorButton"] {
+    background-color: #404040;
+    color: #CCCCCC;
+    border: 1px solid #505050;
+    border-radius: 2px;
+    margin: 0px;
+    min-width: 50px;
+    min-height: 33px;
+    max-width: 50px;
+    max-height: 33px;
+}
+
+[accessibleName="PathSelectorButton"]:hover {
+    background-color: #505050;
+    border-color: #606060;
+    color: #CCCCCC;
+}
+
+[accessibleName="PathSelectorButton"]:focus {
+    background-color: #606060;
+    border-color: #626262;
+    color: #AAAAAA;
+}
+
 [accessibleName="iconButton"] {
     padding: 5px 5px 5px 5px;
 }

@@ -58,7 +58,6 @@ signals:
     void fitWidth();
     void fitNormal();
     void toggleFitMode();
-    void toggleMenuBar();
     void toggleFullscreen();
     void scrollUp();
     void scrollDown();
@@ -69,6 +68,7 @@ signals:
     void rotateRight();
     void exit();
     void removeFile();
+    void copyFile();
 
 };
 

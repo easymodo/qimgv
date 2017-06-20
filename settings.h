@@ -102,6 +102,8 @@ public:
     void setSidePanelEnabled(bool mode);
     bool useThumbnailCache();
     void setUseThumbnailCache(bool mode);
+    QStringList savedPaths();
+    void setSavedPaths(QStringList paths);
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;

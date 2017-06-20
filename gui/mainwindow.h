@@ -13,6 +13,7 @@
 #include "gui/panels/mainpanel/thumbnailstrip.h"
 #include "gui/panels/mainpanel/mainpanel.h"
 #include "gui/panels/sidepanel/toolbox.h"
+#include "gui/copydialog.h"
 #include "gui/customwidgets/slidevpanel.h"
 #include "components/actionmanager/actionmanager.h"
 #include "settings.h"
@@ -37,6 +38,8 @@ private:
     bool mainPanelEnabled, sidePanelEnabled;
     MainPanel *mainPanel;
     SlideVPanel *sidePanel;
+
+    CopyDialog *copyDialog;
 
     ControlsOverlay *controlsOverlay;
     InfoOverlay *infoOverlay;
@@ -71,6 +74,7 @@ protected:
 signals:
     void opened(QString);
     void fullscreenStatusChanged(bool);
+    void copyRequested(QString);
 
 public slots:
     void showDefault();
@@ -86,6 +90,7 @@ public slots:
     void showMessageFitOriginal();
     void showFullScreen();
     void showWindowed();
+    void triggerCopyDialog();
 };
 
 #endif // MainWindow_H

@@ -428,3 +428,11 @@ bool Settings::useThumbnailCache() {
 void Settings::setUseThumbnailCache(bool mode) {
     settings->s.setValue("thumbnailCache", mode);
 }
+
+QStringList Settings::savedPaths() {
+    return settings->s.value("savedPaths").toStringList();
+}
+
+void Settings::setSavedPaths(QStringList paths) {
+    settings->s.setValue("savedPaths", paths);
+}

@@ -77,6 +77,7 @@ void Core::connectComponents() {
     connect(dirManager, SIGNAL(directorySortingChanged()), this, SLOT(initCache()));
 
     connect(mw, SIGNAL(opened(QString)), this, SLOT(loadImageBlocking(QString)));
+    connect(mw, SIGNAL(copyRequested(QString)), this, SLOT(copyFile(QString)));
 
     // thumbnails stuff
     connect(cache, SIGNAL(initialized(int)), thumbnailPanelWidget, SLOT(fillPanel(int)));
@@ -117,6 +118,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(save()), mw, SLOT(showSaveDialog()));
     connect(actionManager, SIGNAL(exit()), mw, SLOT(close()));
     connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFile()));
+    connect(actionManager, SIGNAL(copyFile()), mw, SLOT(triggerCopyDialog()));
 }
 
 Image *Core::currentImage() {
@@ -147,6 +149,11 @@ void Core::moveFile(QString destDirectory) {
     } else {
         qDebug() << "Error moving file to " << destDirectory;
     }
+}
+
+void Core::copyFile(QString destDirectory) {
+    if(!dirManager->copyTo(destDirectory, mCurrentIndex))
+        qDebug() << "Error copying file to " << destDirectory;
 }
 
 // switch between 1:1 and Fit All

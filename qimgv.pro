@@ -78,7 +78,9 @@ SOURCES += \
     utils/sleep.cpp \
     utils/stuff.cpp \
     utils/wallpapersetter.cpp \
-    settings.cpp
+    settings.cpp \
+    gui/copydialog.cpp \
+    gui/customwidgets/pathselectorwidget.cpp
 
 HEADERS += \
     core.h \
@@ -130,7 +132,9 @@ HEADERS += \
     utils/imagelib.h \
     utils/stuff.h \
     utils/wallpapersetter.h \
-    settings.h
+    settings.h \
+    gui/copydialog.h \
+    gui/customwidgets/pathselectorwidget.h
 
 FORMS += \
     gui/settingsdialog.ui
