@@ -4,7 +4,6 @@
 #include <QRunnable>
 #include <QThread>
 #include <QCryptographicHash>
-#include <malloc.h>
 #include <ctime>
 #include "sourcecontainers/thumbnail.h"
 #include "components/cache/thumbnailcache.h"
@@ -23,7 +22,7 @@ public:
 
 private:
     QString generateIdString();
-    QImage* createThumbnailImage(ImageInfo *img, int size, bool squared);
+    QImage* createScaledThumbnail(ImageInfo *img, int size, bool squared);
     QImage* videoThumbnailStub();
     QString path;
     int target, size;

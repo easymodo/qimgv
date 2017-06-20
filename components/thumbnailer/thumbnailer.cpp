@@ -7,7 +7,6 @@ ThumbnailerRunnable::ThumbnailerRunnable(ThumbnailCache* _thumbnailCache, QStrin
     thumbnailCache(_thumbnailCache),
     squared(_squared)
 {
-
 }
 
 void ThumbnailerRunnable::run() {
@@ -18,7 +17,7 @@ void ThumbnailerRunnable::run() {
     QString thumbnailHash = generateIdString();
     QImage *thumbImage = thumbnailCache->readThumbnail(thumbnailHash);
     if(!thumbImage) {
-        thumbImage = createThumbnailImage(&imgInfo, size, squared);
+        thumbImage = createScaledThumbnail(&imgInfo, size, squared);
         // put in image info
         thumbImage->setText("originalWidth", QString::number(originalSize.width()));
         thumbImage->setText("originalHeight", QString::number(originalSize.height()));
@@ -49,60 +48,29 @@ QString ThumbnailerRunnable::generateIdString() {
     return queryStr;
 }
 
-QImage* ThumbnailerRunnable::createThumbnailImage(ImageInfo *imgInfo, int size, bool squared) {
-    ImageType type = imgInfo->imageType();
+QImage* ThumbnailerRunnable::createScaledThumbnail(ImageInfo *imgInfo, int size, bool squared) {
+    QImageReader reader;
+    if(imgInfo->imageType() == VIDEO) {
+     // todo
+    } else {
+        reader.setFileName(imgInfo->filePath());
+    }
     Qt::AspectRatioMode method = squared?
                 (Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
-    QImage *full, *scaled;
-    scaled = new QImage();
-    ////////////////////////////////////////////////////////////////////////////
-    ///////////////////////// TODO: fix this section
-    if(type == VIDEO) {
-        QString ffmpegExe = settings->ffmpegExecutable();
-        if(ffmpegExe.isEmpty()) {
-            full = videoThumbnailStub();
-        } else {
-            QString filePath = settings->cacheDir() + "tmp_" + imgInfo->fileName();
-            QString command = "\"" + ffmpegExe + "\"" + " -i " + "\"" + imgInfo->filePath() + "\"" +
-                              " -r 1 -f image2 " + "\"" + filePath + "\"";
-            QProcess process;
-            process.start(command);
-            bool success = process.waitForFinished(2000);
-            process.close();
-            if(success) {
-                full = new QImage(filePath, "JPG");
-            } else {
-                QFile tmpFile(filePath);
-                if(tmpFile.exists()) {
-                    tmpFile.remove();
-                }
-                return videoThumbnailStub();
-            }
-        }
-    ////////////////////////////////////////////////////////////////////////////
-    } else {
-        full = new QImage(imgInfo->filePath(), imgInfo->extension());
-    }
-    *scaled = full->scaled(size * 2,
-                           size * 2,
-                           method,
-                           Qt::FastTransformation)
-                   .scaled(size,
-                           size,
-                           method,
-                           Qt::SmoothTransformation);
-    originalSize = full->size();
-    delete full;
+    QSize scaledSize = reader.size().scaled(size, size, method);
+    reader.setScaledSize(scaledSize);
     if(squared) {
-        QRect target(0, 0, size, size);
-        target.moveCenter(scaled->rect().center());
-        QImage *cropped = new QImage();
-        *cropped = scaled->copy(target);
-        delete scaled;
-        return cropped;
-    } else {
-        return scaled;
+        QRect clip(0, 0, size, size);
+        QRect scaledRect(QPoint(0,0), scaledSize);
+        clip.moveCenter(scaledRect.center());
+        reader.setScaledClipRect(clip);
     }
+    if(!reader.supportsOption(QImageIOHandler::Size))
+        qDebug() << imgInfo->fileName() << " - ImageFormat does not support Size option.";
+    else
+        originalSize = reader.size();
+    QImage *scaled = new QImage(reader.read());
+    return scaled;
 }
 
 // wtf is happening in this method?
