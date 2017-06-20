@@ -42,7 +42,7 @@ void Core::readSettings() {
 
 void Core::showGui() {
     if(mw && !mw->isVisible())
-        mw->show();
+        mw->showDefault();
 }
 
 // create MainWindow and all widgets

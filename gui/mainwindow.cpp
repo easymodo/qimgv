@@ -19,7 +19,6 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
     this->setMouseTracking(true);
     this->setAcceptDrops(true);
 
-    //setAttribute(Qt::WA_TranslucentBackground);
     desktopWidget = QApplication::desktop();
     windowMoveTimer.setSingleShot(true);
     windowMoveTimer.setInterval(150);
@@ -167,12 +166,12 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
     updateOverlayGeometry();
 }
 
-void MainWindow::show() {
+void MainWindow::showDefault() {
     if(!this->isVisible()) {
-        QWidget::show();
-        if(settings->fullscreenMode() && !isFullScreen()) {
-            this->triggerFullscreen();
-        }
+        if(settings->fullscreenMode())
+            showFullScreen();
+        else
+            showWindowed();
     }
 }
 
@@ -206,27 +205,35 @@ void MainWindow::showSettings() {
 }
 
 void MainWindow::triggerFullscreen() {
-    if(!this->isFullScreen()) {
-        //do not save immediately on application start
-        if(!this->isHidden())
-            saveWindowGeometry();
-        //move to target screen
-        if(desktopWidget->screenCount() > currentDisplay &&
-           currentDisplay != desktopWidget->screenNumber(this))
-        {
-            this->move(desktopWidget->screenGeometry(currentDisplay).x(),
-                       desktopWidget->screenGeometry(currentDisplay).y());
-        }
-        this->showFullScreen();
-        emit fullscreenStatusChanged(true);
-
+    if(!isFullScreen()) {
+        showFullScreen();
     } else {
-        this->showNormal();
-        restoreWindowGeometry();
-        this->activateWindow();
-        this->raise();
-        emit fullscreenStatusChanged(false);
+        showWindowed();
     }
+}
+
+void MainWindow::showFullScreen() {
+    //do not save immediately on application start
+    if(!isHidden())
+        saveWindowGeometry();
+    //move to target screen
+    if(desktopWidget->screenCount() > currentDisplay &&
+       currentDisplay != desktopWidget->screenNumber(this))
+    {
+        this->move(desktopWidget->screenGeometry(currentDisplay).x(),
+                   desktopWidget->screenGeometry(currentDisplay).y());
+    }
+    QWidget::showFullScreen();
+    emit fullscreenStatusChanged(true);
+}
+
+void MainWindow::showWindowed() {
+    QWidget::show();
+    QWidget::showNormal();
+    restoreWindowGeometry();
+    QWidget::activateWindow();
+    QWidget::raise();
+    emit fullscreenStatusChanged(false);
 }
 
 void MainWindow::setInfoString(QString text) {

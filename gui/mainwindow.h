@@ -73,7 +73,7 @@ signals:
     void fullscreenStatusChanged(bool);
 
 public slots:
-    void show();
+    void showDefault();
     void showSaveDialog();
     void showOpenDialog();
     void showSettings();
@@ -84,6 +84,8 @@ public slots:
     void showMessageFitAll();
     void showMessageFitWidth();
     void showMessageFitOriginal();
+    void showFullScreen();
+    void showWindowed();
 };
 
 #endif // MainWindow_H
