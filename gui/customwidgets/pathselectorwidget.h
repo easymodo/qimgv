@@ -14,12 +14,11 @@ class PathSelectorWidget : public QWidget
     Q_OBJECT
 public:
     explicit PathSelectorWidget(QWidget *parent = nullptr);
-    void setNumber(int _number);
-    int number();
+    void setButtonText(QString text);
     QString path();
 
 signals:
-    void selected(QString, int);
+    void selected(QString);
 
 public slots:
     void setPath(QString _path);
@@ -31,7 +30,6 @@ private:
     ClickableLabel pathLabel;
     QPushButton button;
     QHBoxLayout mLayout;
-    int mNumber;
     QString mPath;
 };
 

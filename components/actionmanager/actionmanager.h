@@ -25,6 +25,7 @@ public:
     void removeShortcut(QString keys);
     const QStringList keys();
     void removeAll();
+    QString keyForNativeScancode(int scanCode);
 
 public slots:
     bool invokeAction(QString actionName);

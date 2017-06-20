@@ -136,6 +136,7 @@ void Core::rotateRight() {
 void Core::removeFile() {
     if(currentImage()) {
         if(dirManager->removeAt(mCurrentIndex)) {
+            mw->showMessage("File removed.");
             openByIndex(0);
         } else {
             qDebug() << "Error deleting file.";
@@ -146,14 +147,20 @@ void Core::removeFile() {
 void Core::moveFile(QString destDirectory) {
     if(dirManager->copyTo(destDirectory, mCurrentIndex)) {
         removeFile();
+        mw->showMessage("File moved to: " + destDirectory);
     } else {
-        qDebug() << "Error moving file to " << destDirectory;
+        mw->showMessage("Error moving file to: " + destDirectory);
+        qDebug() << "Error moving file to: " << destDirectory;
     }
 }
 
 void Core::copyFile(QString destDirectory) {
-    if(!dirManager->copyTo(destDirectory, mCurrentIndex))
-        qDebug() << "Error copying file to " << destDirectory;
+    if(!dirManager->copyTo(destDirectory, mCurrentIndex)) {
+        mw->showMessage("Error copying file to: " + destDirectory);
+        qDebug() << "Error copying file to: " << destDirectory;
+    } else {
+        mw->showMessage("File copied to: " + destDirectory);
+    }
 }
 
 // switch between 1:1 and Fit All

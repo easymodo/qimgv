@@ -269,6 +269,10 @@ void MainWindow::showMessageFitOriginal() {
     floatingMessage->showMessage("Fit 1:1", Message::POSITION_BOTTOM, Message::NO_ICON, 1200);
 }
 
+void MainWindow::showMessage(QString text) {
+    floatingMessage->showMessage(text, Message::POSITION_BOTTOM, Message::NO_ICON, 2000);
+}
+
 void MainWindow::readSettings() {
     panelPosition = settings->panelPosition();
     sidePanelPosition = settings->sidePanelPosition();

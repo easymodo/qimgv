@@ -11,19 +11,16 @@ PathSelectorWidget::PathSelectorWidget(QWidget *parent) : QWidget(parent) {
     button.setAutoDefault(true);
     pathLabel.setAccessibleName("PathSelectorLabel");
     button.setAccessibleName("PathSelectorButton");
+    this->setFocusPolicy(Qt::NoFocus);
+    button.setFocusPolicy(Qt::NoFocus);
     mLayout.addWidget(&pathLabel);
     mLayout.addWidget(&button);
     connect(&pathLabel, SIGNAL(clicked()), this, SLOT(showDirectoryChooser()));
     connect(&button, SIGNAL(clicked()), this, SLOT(pathSelected()));
 }
 
-void PathSelectorWidget::setNumber(int _number) {
-    mNumber = _number;
-    button.setText(" ( " + QString::number(mNumber) + " ) ");
-}
-
-int PathSelectorWidget::number() {
-    return mNumber;
+void PathSelectorWidget::setButtonText(QString text) {
+    button.setText(text);
 }
 
 void PathSelectorWidget::setPath(QString _path) {
@@ -36,7 +33,7 @@ QString PathSelectorWidget::path() {
 }
 
 void PathSelectorWidget::pathSelected() {
-    emit selected(mPath, mNumber);
+    emit selected(mPath);
 }
 
 void PathSelectorWidget::showDirectoryChooser() {

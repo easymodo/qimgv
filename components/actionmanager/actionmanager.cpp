@@ -158,6 +158,17 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(9, "escape");
     actionManager->keyMap.insert(112, "pageUp");
     actionManager->keyMap.insert(117, "pageDown");
+    actionManager->keyMap.insert(49, "~");
+    actionManager->keyMap.insert(10, "1");
+    actionManager->keyMap.insert(11, "2");
+    actionManager->keyMap.insert(12, "3");
+    actionManager->keyMap.insert(13, "4");
+    actionManager->keyMap.insert(14, "5");
+    actionManager->keyMap.insert(15, "6");
+    actionManager->keyMap.insert(16, "7");
+    actionManager->keyMap.insert(17, "8");
+    actionManager->keyMap.insert(18, "9");
+    actionManager->keyMap.insert(19, "0");
 #endif
 }
 
@@ -210,6 +221,14 @@ const QMap<QString, QString> &ActionManager::allShortcuts() {
 
 void ActionManager::removeAll() {
     shortcuts.clear();
+}
+
+QString ActionManager::keyForNativeScancode(int scanCode) {
+    if(keyMap.contains(scanCode)) {
+        return keyMap[scanCode];
+    } else {
+        return "";
+    }
 }
 
 void ActionManager::resetDefaults() {

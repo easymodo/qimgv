@@ -91,6 +91,7 @@ public slots:
     void showFullScreen();
     void showWindowed();
     void triggerCopyDialog();
+    void showMessage(QString text);
 };
 
 #endif // MainWindow_H
