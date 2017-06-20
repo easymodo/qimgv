@@ -420,3 +420,11 @@ bool Settings::forceSmoothScroll() {
 void Settings::setForceSmoothScroll(bool mode) {
     settings->s.setValue("forceSmoothScroll", mode);
 }
+
+bool Settings::useThumbnailCache() {
+    return settings->s.value("thumbnailCache", true).toBool();
+}
+
+void Settings::setUseThumbnailCache(bool mode) {
+    settings->s.setValue("thumbnailCache", mode);
+}

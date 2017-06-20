@@ -33,6 +33,7 @@ void SettingsDialog::readSettings() {
     ui->forceSmoothScrollCheckBox->setChecked(settings->forceSmoothScroll());
     //ui->reduceRamUsageCheckBox->setChecked(settings->reduceRamUsage());
     ui->usePreloaderCheckBox->setChecked(settings->usePreloader());
+    ui->useThumbnailCacheCheckBox->setChecked(settings->useThumbnailCache());
 
     ui->ffmpegLineEdit->setText(settings->ffmpegExecutable());
 
@@ -125,6 +126,7 @@ void SettingsDialog::applySettings() {
     settings->setForceSmoothScroll(ui->forceSmoothScrollCheckBox->isChecked());
     //settings->setReduceRamUsage(ui->reduceRamUsageCheckBox->isChecked());
     settings->setUsePreloader(ui->usePreloaderCheckBox->isChecked());
+    settings->setUseThumbnailCache(ui->useThumbnailCacheCheckBox->isChecked());
 
     settings->setFFmpegExecutable(ui->ffmpegLineEdit->text());
 

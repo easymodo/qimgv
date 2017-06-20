@@ -15,7 +15,9 @@ void ThumbnailerRunnable::run() {
     th->size = size;
     th->name = imgInfo.fileName();
     QString thumbnailHash = generateIdString();
-    QImage *thumbImage = thumbnailCache->readThumbnail(thumbnailHash);
+    QImage *thumbImage = NULL;
+    if(settings->useThumbnailCache())
+        thumbImage = thumbnailCache->readThumbnail(thumbnailHash);
     if(!thumbImage) {
         thumbImage = createScaledThumbnail(&imgInfo, size, squared);
         // put in image info
@@ -26,9 +28,11 @@ void ThumbnailerRunnable::run() {
         } else if(imgInfo.imageType() == VIDEO) {
             thumbImage->setText("label", " [v]");
         }
+        if(settings->useThumbnailCache()) {
         // save thumbnail if it makes sense
-        //if(originalSize.width() > size || originalSize.height() > size)
-        //    thumbnailCache->saveThumbnail(thumbImage, thumbnailHash);
+        if(originalSize.width() > size || originalSize.height() > size)
+            thumbnailCache->saveThumbnail(thumbImage, thumbnailHash);
+        }
     }
     th->image = new QPixmap(thumbImage->size());
     *th->image = QPixmap::fromImage(*thumbImage);
