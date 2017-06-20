@@ -39,14 +39,17 @@ void SlideHPanel::setPosition(PanelHPosition p) {
 
 void SlideHPanel::recalculateGeometry() {
     if(position == PANEL_TOP) {
-        this->setGeometry(QRect(QPoint(0, 0),
-                                QPoint(containerSize().width() - 1, panelHeight - 1 + invisibleMargin)));
+        saveStaticGeometry(QRect(QPoint(0, 0),
+                                 QPoint(containerSize().width() - 1,
+                                        panelHeight - 1 + invisibleMargin)));
+        this->setGeometry(staticGeometry());
         initialPosition = geometry().topLeft();
         slideAnimation->setStartValue(initialPosition);
         slideAnimation->setEndValue(initialPosition - QPoint(0, slideAmount));
     } else {
-        this->setGeometry(QRect(QPoint(0, containerSize().height() - panelHeight + 1),
+        saveStaticGeometry(QRect(QPoint(0, containerSize().height() - panelHeight + 1),
                                 QPoint(containerSize().width(), containerSize().height()) - QPoint(0,1) ));
+        this->setGeometry(staticGeometry());
         initialPosition = geometry().topLeft(); //QPoint(0, containerSize().height() - height());
         slideAnimation->setStartValue(initialPosition);
         slideAnimation->setEndValue(QPoint(0, containerSize().height() - height() + slideAmount));
@@ -56,10 +59,10 @@ void SlideHPanel::recalculateGeometry() {
 
 void SlideHPanel::updateTriggerRect() {
     if(position == PANEL_TOP) {
-        mTriggerRect = geometry().adjusted(0, 0, 0, 0);
+        mTriggerRect = staticGeometry();
     }
     else {
         // adjust so it wont interfere with MapOverlay in bottom right corner
-        mTriggerRect = geometry().adjusted(0, 0, -180, 0);
+        mTriggerRect = staticGeometry().adjusted(0, 0, -180, 0);
     }
 }

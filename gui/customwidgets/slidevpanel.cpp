@@ -24,12 +24,14 @@ void SlideVPanel::setPosition(PanelVPosition p) {
 // TODO: this may be incorrect.
 void SlideVPanel::recalculateGeometry() {
     if(position == PANEL_RIGHT) {
-        setGeometry(containerSize().width() - width(), containerSize().height()/2 - height()/2, width(), height());
+        saveStaticGeometry(QRect(containerSize().width() - width(), containerSize().height()/2 - height()/2, width(), height()));
+        setGeometry(staticGeometry());
         initialPosition = geometry().topLeft();
         slideAnimation->setStartValue(initialPosition);
         slideAnimation->setEndValue(QPoint(initialPosition.x() + 20, initialPosition.y()));
     } else {
-        setGeometry(0, containerSize().height()/2 - height()/2, width(), height());
+        saveStaticGeometry(QRect(0, containerSize().height()/2 - height()/2, width(), height()));
+        setGeometry(staticGeometry());
         initialPosition = geometry().topLeft();
         slideAnimation->setStartValue(initialPosition);
         slideAnimation->setEndValue(QPoint(initialPosition.x() - 20, initialPosition.y()));
@@ -38,7 +40,7 @@ void SlideVPanel::recalculateGeometry() {
 }
 
 void SlideVPanel::updateTriggerRect() {
-    mTriggerRect = geometry();
+    mTriggerRect = staticGeometry();
 }
 
 void SlideVPanel::paintEvent(QPaintEvent *event) {

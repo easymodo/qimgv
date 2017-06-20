@@ -26,6 +26,9 @@ public:
 public slots:
     void show();
 
+private slots:
+    void onAnimationFinish();
+
 protected:
     QGridLayout mLayout;
     QGraphicsOpacityEffect *fadeEffect;
@@ -36,7 +39,12 @@ protected:
     QPoint initialPosition;
     QRect mTriggerRect;
     virtual void updateTriggerRect() = 0;
-    void leaveEvent(QEvent *event);
+    void leaveEvent(QEvent *event);    
+    void saveStaticGeometry(QRect geometry);
+    QRect staticGeometry();
+
+private:
+    QRect mStaticGeometry;
 };
 
 #endif // SLIDEPANEL_H

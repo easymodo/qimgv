@@ -33,11 +33,12 @@ SlidePanel::SlidePanel(QWidget *parent)
     animGroup = new QParallelAnimationGroup;
     animGroup->addAnimation(fadeAnimation);
     animGroup->addAnimation(slideAnimation);
-    connect(animGroup, SIGNAL(finished()), this, SLOT(hide()), Qt::UniqueConnection);
+    connect(animGroup, SIGNAL(finished()),
+            this, SLOT(onAnimationFinish()), Qt::UniqueConnection);
 
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
-    this->hide();
+    QWidget::hide();
 }
 
 SlidePanel::~SlidePanel() {
@@ -74,4 +75,19 @@ void SlidePanel::show() {
     } else {
         qDebug() << "Warning: Trying to show panel containing no widget!";
     }
+}
+
+// save current geometry so it is accessible during "pos" animation
+void SlidePanel::saveStaticGeometry(QRect geometry) {
+    mStaticGeometry = geometry;
+}
+
+QRect SlidePanel::staticGeometry() {
+    return mStaticGeometry;
+}
+
+void SlidePanel::onAnimationFinish() {
+    QWidget::hide();
+    fadeEffect->setOpacity(1);
+    setProperty("pos", initialPosition);
 }
