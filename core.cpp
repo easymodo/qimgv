@@ -146,9 +146,7 @@ void Core::scalingRequest(QSize size) {
 }
 
 void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
-    if(currentImage()) {
-        // TODO: check if image wasnt changed during scaling
-        //delete scaled;
+    if(currentImage() /* TODO: a better fix > */ && currentImage()->getPath() == req.string) {
         imageViewer->updateImage(scaled);
     } else {
         delete scaled;

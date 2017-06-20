@@ -157,7 +157,7 @@ void Settings::setUseFastScale(bool mode) {
 }
 
 QString Settings::lastDirectory() {
-    return settings->s.value("lastDir", "").toString();
+    return settings->s.value("lastDir", QDir::homePath()).toString();
 }
 
 void Settings::setLastDirectory(QString path) {
