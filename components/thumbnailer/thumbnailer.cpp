@@ -27,8 +27,8 @@ void ThumbnailerRunnable::run() {
             thumbImage->setText("label", " [v]");
         }
         // save thumbnail if it makes sense
-        if(originalSize.width() > size || originalSize.height() > size)
-            thumbnailCache->saveThumbnail(thumbImage, thumbnailHash);
+        //if(originalSize.width() > size || originalSize.height() > size)
+        //    thumbnailCache->saveThumbnail(thumbImage, thumbnailHash);
     }
     th->image = new QPixmap(thumbImage->size());
     *th->image = QPixmap::fromImage(*thumbImage);
@@ -55,6 +55,7 @@ QImage* ThumbnailerRunnable::createScaledThumbnail(ImageInfo *imgInfo, int size,
     } else {
         reader.setFileName(imgInfo->filePath());
     }
+    reader.setFormat(imgInfo->extension());
     Qt::AspectRatioMode method = squared?
                 (Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
     QSize scaledSize = reader.size().scaled(size, size, method);
