@@ -141,15 +141,15 @@ void SettingsDialog::applySettings() {
 
     int index = ui->thumbSizeComboBox->currentIndex();
     if(index == 0) {
-        settings->setThumbnailSize(thumbSizeSmall);
+        settings->setMainPanelSize(thumbSizeSmall);
     } else if(index == 1) {
-        settings->setThumbnailSize(thumbSizeMedium);
+        settings->setMainPanelSize(thumbSizeMedium);
     } else if(index == 2) {
-        settings->setThumbnailSize(thumbSizeLarge);
+        settings->setMainPanelSize(thumbSizeLarge);
     } else if(index == 3) {
-        settings->setThumbnailSize(thumbSizeVeryLarge);
+        settings->setMainPanelSize(thumbSizeVeryLarge);
     } else if(index == 4) {
-        settings->setThumbnailSize(thumbSizeCustom);
+        settings->setMainPanelSize(thumbSizeCustom);
     }
 
     applyShortcuts();

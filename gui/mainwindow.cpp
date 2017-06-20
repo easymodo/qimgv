@@ -36,6 +36,9 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
             this, SLOT(setControlsOverlayEnabled(bool)));
 
     connect(this, SIGNAL(fullscreenStatusChanged(bool)),
+            this, SLOT(triggerPanelButtons()));
+
+    connect(this, SIGNAL(fullscreenStatusChanged(bool)),
             this, SLOT(setInfoOverlayEnabled(bool)));
 
     readSettings();
@@ -259,6 +262,7 @@ void MainWindow::readSettings() {
 
     setControlsOverlayEnabled(this->isFullScreen());
     setInfoOverlayEnabled(this->isFullScreen());
+    triggerPanelButtons();
 }
 
 void MainWindow::updateOverlayGeometry() {
@@ -273,6 +277,15 @@ void MainWindow::setControlsOverlayEnabled(bool mode) {
         controlsOverlay->show();
     else
         controlsOverlay->hide();
+}
+
+// switch some panel buttons on/off depending on
+// fullscreen status and other settings
+void MainWindow::triggerPanelButtons() {
+    if(mainPanelEnabled && panelPosition == PANEL_TOP && isFullScreen())
+        mainPanel->setWindowButtonsEnabled(true);
+    else
+        mainPanel->setWindowButtonsEnabled(false);
 }
 
 void MainWindow::setInfoOverlayEnabled(bool mode) {

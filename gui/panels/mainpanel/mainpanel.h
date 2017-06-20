@@ -11,6 +11,7 @@ public:
     MainPanel(QWidget *parent);
     void setPosition(PanelHPosition);
     void setWidget(QWidget* w);
+    void setWindowButtonsEnabled(bool mode);
 
 private slots:
     void readSettings();

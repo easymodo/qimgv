@@ -240,7 +240,7 @@ void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
 
 void ThumbnailStrip::showEvent(QShowEvent *event) {
     QWidget::showEvent(event);
-    //loadVisibleThumbnails();
+    loadVisibleThumbnails();
 }
 
 // update size based on widget's size

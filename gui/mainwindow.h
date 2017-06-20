@@ -57,7 +57,8 @@ private slots:
     void updateCurrentDisplay();
     void readSettings();
     void setControlsOverlayEnabled(bool mode);
-    void setInfoOverlayEnabled(bool mode);
+    void setInfoOverlayEnabled(bool mode);    
+    void triggerPanelButtons();
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);

@@ -35,7 +35,7 @@ void Settings::validate() {
             qDebug() << "Settings: error reading thumbnail size (int conversion failed).";
             qDebug() << "Settings: setting default size.";
             ok = true;
-            settings->s.setValue("thumbnailSize", 160);
+            settings->s.setValue("mainPanelSize", 160);
         }
     }
 }
@@ -180,15 +180,15 @@ void Settings::setLastFilePosition(unsigned int pos) {
 
 unsigned int Settings::mainPanelSize() {
     bool ok = true;
-    unsigned int size = settings->s.value("thumbnailSize", thumbnailSizeDefault).toInt(&ok);
+    unsigned int size = settings->s.value("mainPanelSize", mainPanelSizeDefault).toInt(&ok);
     if(!ok) {
-        size = thumbnailSizeDefault;
+        size = mainPanelSizeDefault;
     }
     return size;
 }
 
-void Settings::setThumbnailSize(unsigned int size) {
-    settings->s.setValue("thumbnailSize", size);
+void Settings::setMainPanelSize(unsigned int size) {
+    settings->s.setValue("mainPanelSize", size);
 }
 
 bool Settings::usePreloader() {
@@ -200,7 +200,7 @@ void Settings::setUsePreloader(bool mode) {
 }
 
 QColor Settings::backgroundColor() {
-    return settings->s.value("bgColor", QColor(24, 24, 22)).value<QColor>();
+    return settings->s.value("bgColor", QColor(27, 27, 27)).value<QColor>();
 }
 
 void Settings::setBackgroundColor(QColor color) {

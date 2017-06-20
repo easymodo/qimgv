@@ -44,6 +44,11 @@ void MainPanel::setWidget(QWidget *w) {
     SlidePanel::setWidget(w);
 }
 
+void MainPanel::setWindowButtonsEnabled(bool mode) {
+    exitButton.setHidden(!mode);
+    //exitFullscreenButton.setHidden(!mode);
+}
+
 void MainPanel::readSettings() {
     panelHeight = settings->mainPanelSize();
     setPosition(settings->panelPosition());

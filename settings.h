@@ -47,7 +47,7 @@ public:
     unsigned int lastFilePosition();
     void setLastFilePosition(unsigned int pos);
     unsigned int mainPanelSize();
-    void setThumbnailSize(unsigned int size);
+    void setMainPanelSize(unsigned int size);
     bool usePreloader();
     void setUsePreloader(bool mode);
     QColor backgroundColor();
@@ -104,7 +104,7 @@ public:
     void setUseThumbnailCache(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
-    const int thumbnailSizeDefault = 210;
+    const int mainPanelSizeDefault = 210;
     QSettings s;
     QDir *cacheDirectory;
 
