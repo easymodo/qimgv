@@ -108,6 +108,14 @@ void ViewerWidget::stopPlayback() {
         videoPlayer->setPaused(true);
 }
 
+void ViewerWidget::setFitMode(ImageFitMode mode) {
+    imageViewer->setFitMode(mode);
+}
+
+ImageFitMode ViewerWidget::fitMode() {
+    return imageViewer->fitMode();
+}
+
 void ViewerWidget::paintEvent(QPaintEvent *event) {
     QPainter p(this);
     p.setBrush(QBrush(bgColor));

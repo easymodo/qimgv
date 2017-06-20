@@ -9,7 +9,7 @@
 SlideHPanel::SlideHPanel(QWidget *parent)
     : SlidePanel(parent)
 {
-    position = TOP;
+    position = PANEL_TOP;
     invisibleMargin = 12;
     panelHeight = 100;
     slideAmount = 40;
@@ -38,7 +38,7 @@ void SlideHPanel::setPosition(PanelHPosition p) {
 }
 
 void SlideHPanel::recalculateGeometry() {
-    if(position == TOP) {
+    if(position == PANEL_TOP) {
         this->setGeometry(QRect(QPoint(0, 0),
                                 QPoint(containerSize().width() - 1, panelHeight - 1 + invisibleMargin)));
         initialPosition = geometry().topLeft();
@@ -55,7 +55,7 @@ void SlideHPanel::recalculateGeometry() {
 }
 
 void SlideHPanel::updateTriggerRect() {
-    if(position == TOP) {
+    if(position == PANEL_TOP) {
         mTriggerRect = geometry().adjusted(0, 0, 0, 0);
     }
     else {

@@ -82,6 +82,7 @@ private slots:
     void stopPlayback();
     void rotateLeft();
     void rotateRight();
+    void switchFitMode();
     void scalingRequest(QSize);
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
 };

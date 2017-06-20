@@ -12,7 +12,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     maxScale(2.0),
     minScale(4.0),
     scaleStep(0.16),
-    imageFitMode(ORIGINAL)
+    imageFitMode(FIT_ORIGINAL)
 {
     initOverlays();
     image = new QPixmap();
@@ -165,8 +165,8 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     updateMaxScale();
     updateMinScale();
     currentScale = 1.0;
-    if(imageFitMode == FREE)
-        imageFitMode = ALL;
+    if(imageFitMode == FIT_FREE)
+        imageFitMode = FIT_ALL;
     fitDefault();
     adjustOverlays();
 }
@@ -228,13 +228,13 @@ void ImageViewer::readSettings() {
 
 void ImageViewer::setFitMode(ImageFitMode mode) {
     switch(mode) {
-        case ImageFitMode::ALL:
+        case ImageFitMode::FIT_ALL:
             setFitAll();
             break;
-        case ImageFitMode::WIDTH:
+        case ImageFitMode::FIT_WIDTH:
             setFitWidth();
             break;
-        case ImageFitMode::ORIGINAL:
+        case ImageFitMode::FIT_ORIGINAL:
             setFitOriginal();
             break;
         default:
@@ -278,8 +278,8 @@ void ImageViewer::setScale(float scale) {
         currentScale = minScale;
     } else if(scale <= maxScale + FLT_EPSILON) {
         currentScale = maxScale;
-        if(imageFitMode == FREE)
-            imageFitMode = ALL;
+        if(imageFitMode == FIT_FREE)
+            imageFitMode = FIT_ALL;
     } else {
         currentScale = scale;
     }
@@ -382,7 +382,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
     mouseMoveStartPos = event->pos();
     fixedZoomPoint = event->pos();
     this->setCursor(QCursor(Qt::ArrowCursor));
-    if(event->button() == Qt::RightButton && imageFitMode != ALL) {
+    if(event->button() == Qt::RightButton && imageFitMode != FIT_ALL) {
         //resizeTimer->start(0);
         //fitDefault();
         //updateMap();
@@ -475,7 +475,7 @@ void ImageViewer::mouseZoom(QMouseEvent *event) {
         newScale = maxScale;
         setFitAll();
     } else {
-        imageFitMode = FREE;
+        imageFitMode = FIT_FREE;
         scaleAround(fixedZoomPoint, newScale);
         resizeTimer->stop();
         resizeTimer->start(30);
@@ -536,13 +536,13 @@ void ImageViewer::fitNormal() {
 
 void ImageViewer::fitDefault() {
     switch(imageFitMode) {
-        case ORIGINAL:
+        case FIT_ORIGINAL:
             fitNormal();
             break;
-        case WIDTH:
+        case FIT_WIDTH:
             fitWidth();
             break;
-        case ALL:
+        case FIT_ALL:
             fitAll();
             break;
         default: /* FREE etc */
@@ -556,21 +556,21 @@ void ImageViewer::updateMap() {
 }
 
 void ImageViewer::setFitOriginal() {
-    imageFitMode = ORIGINAL;
+    imageFitMode = FIT_ORIGINAL;
     fitDefault();
     updateMap();
     resizeTimer->start(0);
 }
 
 void ImageViewer::setFitWidth() {
-    imageFitMode = WIDTH;
+    imageFitMode = FIT_WIDTH;
     fitDefault();
     updateMap();
     resizeTimer->start(0);
 }
 
 void ImageViewer::setFitAll() {
-    imageFitMode = ALL;
+    imageFitMode = FIT_ALL;
     fitDefault();
     updateMap();
     resizeTimer->start(0);
@@ -579,7 +579,7 @@ void ImageViewer::setFitAll() {
 void ImageViewer::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
     updateMaxScale();
-    if(imageFitMode == FREE || imageFitMode == ORIGINAL) {
+    if(imageFitMode == FIT_FREE || imageFitMode == FIT_ORIGINAL) {
         alignImage();
     } else {
         fitDefault();
@@ -703,7 +703,7 @@ void ImageViewer::slotZoomIn() {
     if(newScale > minScale) {
         newScale = minScale;
     }
-    imageFitMode = FREE;
+    imageFitMode = FIT_FREE;
     scaleAround(rect().center(), newScale);
     updateMap();
     update();
@@ -720,7 +720,7 @@ void ImageViewer::slotZoomOut() {
     if(newScale < maxScale - FLT_EPSILON) {
         newScale = maxScale;
     }
-    imageFitMode = FREE;
+    imageFitMode = FIT_FREE;
     scaleAround(rect().center(), newScale);
     updateMap();
     update();
@@ -729,6 +729,10 @@ void ImageViewer::slotZoomOut() {
 
 bool ImageViewer::isDisplaying() const {
     return isDisplayingFlag;
+}
+
+ImageFitMode ImageViewer::fitMode() {
+    return imageFitMode;
 }
 
 void ImageViewer::hideCursor() {

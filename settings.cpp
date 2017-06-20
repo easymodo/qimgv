@@ -258,9 +258,9 @@ void Settings::setLastDisplay(int display) {
 PanelHPosition Settings::panelPosition() {
     QString posString = settings->s.value("panelPosition", "top").toString();
     if(posString == "top") {
-        return PanelHPosition::TOP;
+        return PanelHPosition::PANEL_TOP;
     } else {
-        return PanelHPosition::BOTTOM;
+        return PanelHPosition::PANEL_BOTTOM;
     }
 }
 
@@ -268,10 +268,10 @@ void Settings::setPanelPosition(PanelHPosition pos) {
     QString posString;
     switch(pos) {
             break;
-        case TOP:
+        case PANEL_TOP:
             posString = "top";
             break;
-        case BOTTOM:
+        case PANEL_BOTTOM:
             posString = "bottom";
             break;
     }
@@ -281,9 +281,9 @@ void Settings::setPanelPosition(PanelHPosition pos) {
 PanelVPosition Settings::sidePanelPosition() {
     QString posString = settings->s.value("sidePanelPosition", "right").toString();
     if(posString == "right") {
-        return PanelVPosition::RIGHT;
+        return PanelVPosition::PANEL_RIGHT;
     } else {
-        return PanelVPosition::LEFT;
+        return PanelVPosition::PANEL_LEFT;
     }
 }
 
@@ -291,10 +291,10 @@ void Settings::setSidePanelPosition(PanelVPosition pos) {
     QString posString;
     switch(pos) {
             break;
-        case RIGHT:
+        case PANEL_RIGHT:
             posString = "right";
             break;
-        case LEFT:
+        case PANEL_LEFT:
             posString = "left";
             break;
     }

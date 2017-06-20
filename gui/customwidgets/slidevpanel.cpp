@@ -4,7 +4,7 @@ SlideVPanel::SlideVPanel(QWidget *w)
     : SlidePanel(w)
 {
     slideAmount = 20;
-    position = RIGHT;
+    position = PANEL_RIGHT;
     mLayout.setContentsMargins(0,0,0,0);
     recalculateGeometry();
 }
@@ -23,7 +23,7 @@ void SlideVPanel::setPosition(PanelVPosition p) {
 
 // TODO: this may be incorrect.
 void SlideVPanel::recalculateGeometry() {
-    if(position == RIGHT) {
+    if(position == PANEL_RIGHT) {
         setGeometry(containerSize().width() - width(), containerSize().height()/2 - height()/2, width(), height());
         initialPosition = geometry().topLeft();
         slideAnimation->setStartValue(initialPosition);

@@ -35,6 +35,8 @@ public slots:
     bool showAnimation(QMovie *movie);
     bool showVideo(Clip *clip);
     void stopPlayback();
+    void setFitMode(ImageFitMode mode);
+    ImageFitMode fitMode();
 
 protected:
     virtual void paintEvent(QPaintEvent* event);

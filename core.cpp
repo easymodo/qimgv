@@ -72,7 +72,6 @@ void Core::connectComponents() {
             this, SLOT(onLoadStarted()));
     connect(imageLoader, SIGNAL(loadFinished(Image *, int)),
             this, SLOT(onLoadFinished(Image *, int)));
-    //connect(cache, SIGNAL(initialized(int)), this, SIGNAL(cacheInitialized(int)), Qt::DirectConnection);
     //connect(dirManager, SIGNAL(fileRemoved(int)), cache, SLOT(removeAt(int)), Qt::DirectConnection);
     //connect(cache, SIGNAL(itemRemoved(int)), this, SIGNAL(itemRemoved(int)), Qt::DirectConnection);
     connect(dirManager, SIGNAL(directorySortingChanged()), this, SLOT(initCache()));
@@ -102,7 +101,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(fitWidth()), mw, SLOT(showMessageFitWidth()));
     connect(actionManager, SIGNAL(fitNormal()), mw, SLOT(showMessageFitOriginal()));
 
-    //connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
+    connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
     connect(actionManager, SIGNAL(toggleFullscreen()), mw, SLOT(triggerFullscreen()));
     connect(actionManager, SIGNAL(zoomIn()), imageViewer, SLOT(slotZoomIn()));
     connect(actionManager, SIGNAL(zoomOut()), imageViewer, SLOT(slotZoomOut()));
@@ -132,6 +131,14 @@ void Core::rotateRight() {
     rotateByDegrees(90);
 }
 
+// switch between 1:1 and Fit All
+void Core::switchFitMode() {
+    if(viewerWidget->fitMode() == FIT_ALL)
+        viewerWidget->setFitMode(FIT_ORIGINAL);
+    else
+        viewerWidget->setFitMode(FIT_ALL);
+}
+
 void Core::scalingRequest(QSize size) {
     if(currentImage()) {
         scaler->requestScaled(ScalerRequest(currentImage(), size, currentImage()->getPath()));
@@ -140,6 +147,7 @@ void Core::scalingRequest(QSize size) {
 
 void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
     if(currentImage()) {
+        // TODO: check if image wasnt changed during scaling
         //delete scaled;
         imageViewer->updateImage(scaled);
     } else {

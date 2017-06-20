@@ -31,7 +31,7 @@ MainPanel::MainPanel(QWidget *parent) : SlideHPanel(parent) {
 
 void MainPanel::setPosition(PanelHPosition newPosition) {
     position = newPosition;
-    if(position == TOP) {
+    if(position == PANEL_TOP) {
         mLayout.setContentsMargins(0,0,0,invisibleMargin);
     }
     else {
@@ -53,7 +53,7 @@ void MainPanel::readSettings() {
 void MainPanel::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
     QPainter p(this);
-    if(position == PanelHPosition::TOP) {
+    if(position == PanelHPosition::PANEL_TOP) {
         p.setPen(QColor(QColor(110, 110, 110)));
         p.drawLine(rect().bottomLeft() - QPoint(0, invisibleMargin - 1), rect().bottomRight() - QPoint(0, invisibleMargin - 1));
         p.setPen(QColor(QColor(40, 40, 40)));

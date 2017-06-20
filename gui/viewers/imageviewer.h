@@ -30,6 +30,7 @@ public:
     ImageViewer(QWidget* parent = 0);
     ~ImageViewer();
     bool isDisplaying() const;
+    ImageFitMode fitMode();
 
 signals:
     void imageChanged();
@@ -40,6 +41,7 @@ signals:
 
 public slots:
     void displayImage(QPixmap* _image);
+    void setFitMode(ImageFitMode mode);
     void setFitOriginal();
     void setFitWidth();
     void setFitAll();
@@ -91,7 +93,6 @@ private:
     QSize desktopSize;
 
     ImageFitMode imageFitMode;
-    void setFitMode(ImageFitMode mode);
     void initOverlays();
     void setScale(float scale);
     void updateMaxScale();

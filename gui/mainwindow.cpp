@@ -269,7 +269,7 @@ void MainWindow::updateOverlayGeometry() {
 }
 
 void MainWindow::setControlsOverlayEnabled(bool mode) {
-    if(mode && (panelPosition == BOTTOM || !settings->mainPanelEnabled()))
+    if(mode && (panelPosition == PANEL_BOTTOM || !settings->mainPanelEnabled()))
         controlsOverlay->show();
     else
         controlsOverlay->hide();

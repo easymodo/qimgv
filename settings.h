@@ -14,20 +14,20 @@
 #include "components/actionmanager/actionmanager.h"
 
 enum ImageFitMode {
-    ALL,
-    WIDTH,
-    ORIGINAL,
-    FREE
+    FIT_ALL,
+    FIT_WIDTH,
+    FIT_ORIGINAL,
+    FIT_FREE
 };
 
 enum PanelHPosition {
-    TOP,
-    BOTTOM
+    PANEL_TOP,
+    PANEL_BOTTOM
 };
 
 enum PanelVPosition {
-    LEFT,
-    RIGHT
+    PANEL_LEFT,
+    PANEL_RIGHT
 };
 
 class Settings : public QObject
