@@ -213,6 +213,8 @@ void ThumbnailStrip::setThumbnailSize(int newSize) {
 void ThumbnailStrip::removeItemAt(int pos) {
     lock();
     if(checkRange(pos)) {
+        if(pos == current)
+            current = -1;
         ThumbnailLabel *thumb = thumbnailLabels->takeAt(pos);
         scene->removeItem(thumb);
         // move items left

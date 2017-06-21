@@ -42,6 +42,7 @@ void ActionManager::createActionList() {
                                 << "crop"
                                 << "removeFile"
                                 << "copyFile"
+                                << "moveFile"
                                 << "openSettings"
                                 << "exit";
 }
@@ -265,8 +266,9 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("Alt+X", "exit");
     actionManager->addShortcut("Ctrl+Q", "exit");
     actionManager->addShortcut("escape", "exit");
-    actionManager->addShortcut("delete", "removeFile");
+    //actionManager->addShortcut("delete", "removeFile");
     actionManager->addShortcut("C", "copyFile");
+    actionManager->addShortcut("M", "moveFile");
 }
 
 bool ActionManager::processWheelEvent(QWheelEvent *event) {

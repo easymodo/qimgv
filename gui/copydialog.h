@@ -11,18 +11,25 @@
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"
 
+enum CopyDialogMode {
+    DIALOG_COPY,
+    DIALOG_MOVE
+};
+
 class CopyDialog : public OverlayWidget {
     Q_OBJECT
 public:
     CopyDialog(QWidget *parent);
     ~CopyDialog();
-    void saveSettings();
+    void saveSettings();    
+    void setMode(CopyDialogMode _mode);
 
 public slots:
     void show();
     void hide();
 signals:
     void copyRequested(QString);
+    void moveRequested(QString);
 
 protected:
     void recalculateGeometry();
@@ -30,8 +37,8 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
 private slots:
-    void requestCopy(QString path);
-    void requestCopy(int fieldNumber);
+    void requestFileOperation(QString path);
+    void requestFileOperation(int fieldNumber);
     void readSettings();
 
 private:
@@ -40,11 +47,13 @@ private:
     void createShortcuts();
     QGridLayout mLayout;
     QPen borderPen;
-    QColor bgColor;
+    QColor bgColor, borderColor;
     QList<PathSelectorWidget*> pathWidgets;
     int maxPathCount;
     QStringList paths;
     QMap<QString, int> shortcuts;
+    QLabel headerLabel;
+    CopyDialogMode mode;
 };
 
 #endif // COPYDIALOG_H

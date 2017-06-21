@@ -62,11 +62,16 @@ QString DirectoryManager::fileNameAt(int pos) const {
 
 bool DirectoryManager::removeAt(int pos) {
     if(checkRange(pos)) {
-        mFileNameList.removeAt(pos);
-        emit fileRemoved(pos); // to cache & thumbnail - remove
-        return true;
+        QString path = filePathAt(pos);
+        QFile file(path);
+        if(file.remove()) {
+            mFileNameList.removeAt(pos);
+            emit fileRemoved(pos); // to cache & thumbnail - remove
+            return true;
+        }
+        qDebug() << "wat";
     }
-    else return false;
+    return false;
 }
 
 bool DirectoryManager::checkRange(int pos) const {

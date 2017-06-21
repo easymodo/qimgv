@@ -1,18 +1,17 @@
 #include "pathselectorwidget.h"
 
 PathSelectorWidget::PathSelectorWidget(QWidget *parent) : QWidget(parent) {
-    this->setMinimumSize(200, 35);
-    setFixedHeight(35);
+    setMinimumSize(200, 40);
+    setFixedHeight(40);
+    setFocusPolicy(Qt::NoFocus);
     mLayout.setContentsMargins(0,0,0,0);
     mLayout.setSpacing(10);
     setLayout(&mLayout);
-    //pathLabel.setFrameStyle(QFrame::Box);
     button.setText(" >> ");
-    button.setAutoDefault(true);
     pathLabel.setAccessibleName("PathSelectorLabel");
+    pathLabel.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     button.setAccessibleName("PathSelectorButton");
-    this->setFocusPolicy(Qt::NoFocus);
-    button.setFocusPolicy(Qt::NoFocus);
+    button.setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
     mLayout.addWidget(&pathLabel);
     mLayout.addWidget(&button);
     connect(&pathLabel, SIGNAL(clicked()), this, SLOT(showDirectoryChooser()));

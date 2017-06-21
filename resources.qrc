@@ -18,5 +18,7 @@
         <file>res/icons/buttons/zoom-width48.png</file>
         <file>res/icons/app/48.png</file>
         <file>res/icons/loading72.png</file>
+        <file>res/images/movedialogheader.png</file>
+        <file>res/images/copydialogheader.png</file>
     </qresource>
 </RCC>

@@ -78,6 +78,7 @@ void Core::connectComponents() {
 
     connect(mw, SIGNAL(opened(QString)), this, SLOT(loadImageBlocking(QString)));
     connect(mw, SIGNAL(copyRequested(QString)), this, SLOT(copyFile(QString)));
+    connect(mw, SIGNAL(moveRequested(QString)), this, SLOT(moveFile(QString)));
 
     // thumbnails stuff
     connect(cache, SIGNAL(initialized(int)), thumbnailPanelWidget, SLOT(fillPanel(int)));
@@ -119,6 +120,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(exit()), mw, SLOT(close()));
     connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFile()));
     connect(actionManager, SIGNAL(copyFile()), mw, SLOT(triggerCopyDialog()));
+    connect(actionManager, SIGNAL(moveFile()), mw, SLOT(triggerMoveDialog()));
 }
 
 Image *Core::currentImage() {
@@ -137,7 +139,10 @@ void Core::removeFile() {
     if(currentImage()) {
         if(dirManager->removeAt(mCurrentIndex)) {
             mw->showMessage("File removed.");
-            openByIndex(0);
+            if(mCurrentIndex > 0)
+                openByIndex(--mCurrentIndex);
+            else
+                openByIndex(0);
         } else {
             qDebug() << "Error deleting file.";
         }

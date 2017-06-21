@@ -2,17 +2,27 @@
 
 CopyDialog::CopyDialog(QWidget *parent) : OverlayWidget(parent) {
     hide();
-    this->setFixedSize(500,500);
-    this->setContentsMargins(30,20,30,20);
+    this->setFixedSize(350,480);
+    this->setContentsMargins(0,10,0,10);
 
-    mLayout.setSpacing(12);
+    mLayout.setSpacing(0);
     mLayout.setContentsMargins(0,0,0,0);
     setLayout(&mLayout);
 
+    headerLabel.setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    headerLabel.setMargin(0);
+    headerLabel.setContentsMargins(0,0,0,5);
+    headerLabel.setPixmap(QPixmap(":/res/images/copydialogheader.png"));
+
     // drawing stuff
-    borderPen.setWidth(7);
+    bgColor.setRgb(34,34,34);
+    borderColor.setRgb(64,64,64);
+    borderPen.setWidth(3);
+    borderPen.setColor(borderColor);
 
     maxPathCount = 9;
+    mode = DIALOG_COPY;
+
     createShortcuts();
     readSettings();
 }
@@ -30,16 +40,25 @@ void CopyDialog::hide() {
 CopyDialog::~CopyDialog() {
 }
 
+void CopyDialog::setMode(CopyDialogMode _mode) {
+    mode = _mode;
+    if(mode == DIALOG_COPY)
+        headerLabel.setPixmap(QPixmap(":/res/images/copydialogheader.png"));
+    else
+        headerLabel.setPixmap(QPixmap(":/res/images/movedialogheader.png"));
+}
+
 void CopyDialog::createPathWidgets() {
+    mLayout.addWidget(&headerLabel);
     int count = paths.length()>maxPathCount?maxPathCount:paths.length();
     for(int i = 0; i < count; i++) {
         PathSelectorWidget *pathWidget = new PathSelectorWidget(this);
         pathWidget->setPath(paths.at(i));
         pathWidget->setButtonText( "{ " + shortcuts.key(i) + " }");
         connect(pathWidget, SIGNAL(selected(QString)),
-                this, SLOT(requestCopy(QString)));
+                this, SLOT(requestFileOperation(QString)));
         pathWidgets.append(pathWidget);
-        mLayout.addWidget(pathWidget, i, 0);
+        mLayout.addWidget(pathWidget, i+1, 0);
     }
 }
 
@@ -48,17 +67,21 @@ void CopyDialog::createShortcuts() {
         shortcuts.insert(QString::number(i + 1), i);
 }
 
-void CopyDialog::requestCopy(QString path) {
-    emit copyRequested(path);
+void CopyDialog::requestFileOperation(QString path) {
+    if(mode == DIALOG_COPY)
+        emit copyRequested(path);
+    else
+        emit moveRequested(path);
 }
 
-void CopyDialog::requestCopy(int fieldNumber) {
-    emit copyRequested(pathWidgets.at(fieldNumber)->path());
+void CopyDialog::requestFileOperation(int fieldNumber) {
+    if(mode == DIALOG_COPY)
+        emit copyRequested(pathWidgets.at(fieldNumber)->path());
+    else
+        emit moveRequested(pathWidgets.at(fieldNumber)->path());
 }
 
 void CopyDialog::readSettings() {
-    borderPen.setColor(settings->accentColor());
-    bgColor = settings->backgroundColor();
     paths = settings->savedPaths();
     if(paths.count() < maxPathCount)
         createDefaultPaths();
@@ -102,7 +125,7 @@ void CopyDialog::keyPressEvent(QKeyEvent *event) {
     QString key = actionManager->keyForNativeScancode(event->nativeScanCode());
     if(shortcuts.contains(key)) {
         event->accept();
-        requestCopy(shortcuts[key]);
+        requestFileOperation(shortcuts[key]);
     } else {
         event->ignore();
     }

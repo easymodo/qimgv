@@ -70,6 +70,7 @@ signals:
     void exit();
     void removeFile();
     void copyFile();
+    void moveFile();
 
 };
 

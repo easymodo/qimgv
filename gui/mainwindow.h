@@ -75,6 +75,7 @@ signals:
     void opened(QString);
     void fullscreenStatusChanged(bool);
     void copyRequested(QString);
+    void moveRequested(QString);
 
 public slots:
     void showDefault();
@@ -92,6 +93,7 @@ public slots:
     void showWindowed();
     void triggerCopyDialog();
     void showMessage(QString text);
+    void triggerMoveDialog();
 };
 
 #endif // MainWindow_H

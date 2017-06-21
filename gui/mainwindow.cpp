@@ -54,6 +54,8 @@ void MainWindow::setupOverlays() {
     copyDialog = new CopyDialog(this);
     connect(copyDialog, SIGNAL(copyRequested(QString)),
             this, SIGNAL(copyRequested(QString)));
+    connect(copyDialog, SIGNAL(moveRequested(QString)),
+            this, SIGNAL(moveRequested(QString)));
     floatingMessage = new FloatingMessage(this);
     mainPanel = new MainPanel(this);
     sidePanel = new SlideVPanel(this);
@@ -241,6 +243,12 @@ void MainWindow::showWindowed() {
 }
 
 void MainWindow::triggerCopyDialog() {
+    copyDialog->setMode(DIALOG_COPY);
+    copyDialog->isHidden()?copyDialog->show():copyDialog->hide();
+}
+
+void MainWindow::triggerMoveDialog() {
+    copyDialog->setMode(DIALOG_MOVE);
     copyDialog->isHidden()?copyDialog->show():copyDialog->hide();
 }
 
