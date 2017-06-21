@@ -139,8 +139,8 @@ void Core::removeFile() {
     if(currentImage()) {
         if(dirManager->removeAt(mCurrentIndex)) {
             mw->showMessage("File removed.");
-            if(!openByIndex(mCurrentIndex))
-                openByIndex(--mCurrentIndex);
+            if(!openByIndexBlocking(mCurrentIndex))
+                openByIndexBlocking(--mCurrentIndex);
         } else {
             qDebug() << "Error deleting file.";
         }
@@ -255,6 +255,16 @@ bool Core::openByIndex(int index) {
         mCurrentIndex = index;
         //stopPlayback();
         imageLoader->open(index);
+        return true;
+    }
+    return false;
+}
+
+bool Core::openByIndexBlocking(int index) {
+    if(index >= 0 && index < dirManager->fileCount()) {
+        mCurrentIndex = index;
+        //stopPlayback();
+        imageLoader->openBlocking(mCurrentIndex);
         return true;
     }
     return false;

@@ -34,6 +34,7 @@ public slots:
 
     // invalid position will be ignored
     bool openByIndex(int index);
+    bool openByIndexBlocking(int index);
 
 signals:
     void imageIndexChanged(int);

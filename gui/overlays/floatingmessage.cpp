@@ -20,7 +20,7 @@ FloatingMessage::FloatingMessage(QWidget *parent) : InfoOverlay(parent) {
 ////////////////////////////////////////////////////////////////////////////////
     //effectColor.setRgb(255, 124, 0);
     //effectColor.setRgb(227, 132, 0);
-    effectColor.setRgb(110,110,110);
+    effectColor.setRgb(90,90,90);
     effectStrength = 0.0f;
     colorizeEffect = new QGraphicsColorizeEffect(this);
     colorizeEffect->setColor(effectColor);
@@ -61,7 +61,7 @@ void FloatingMessage::paintEvent(QPaintEvent *event) {
     //painter.setRenderHint(QPainter::Antialiasing);
     painter.setOpacity(currentOpacity);
     QPainterPath path;
-    path.addRoundedRect(rect(), 5, 5);
+    path.addRoundedRect(rect(), 3, 3);
     painter.fillPath(path, bgColor);
     //painter.setCompositionMode(QPainter::CompositionMode_Source);
 
