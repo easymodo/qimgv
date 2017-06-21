@@ -243,13 +243,21 @@ void MainWindow::showWindowed() {
 }
 
 void MainWindow::triggerCopyDialog() {
-    copyDialog->setMode(DIALOG_COPY);
-    copyDialog->isHidden()?copyDialog->show():copyDialog->hide();
+    if(copyDialog->dialogMode() == DIALOG_COPY) {
+        copyDialog->isHidden()?copyDialog->show():copyDialog->hide();
+    } else {
+        copyDialog->setDialogMode(DIALOG_COPY);
+        copyDialog->show();
+    }
 }
 
 void MainWindow::triggerMoveDialog() {
-    copyDialog->setMode(DIALOG_MOVE);
-    copyDialog->isHidden()?copyDialog->show():copyDialog->hide();
+    if(copyDialog->dialogMode() == DIALOG_MOVE) {
+        copyDialog->isHidden()?copyDialog->show():copyDialog->hide();
+    } else {
+        copyDialog->setDialogMode(DIALOG_MOVE);
+        copyDialog->show();
+    }
 }
 
 void MainWindow::setInfoString(QString text) {

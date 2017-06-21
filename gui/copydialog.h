@@ -22,7 +22,8 @@ public:
     CopyDialog(QWidget *parent);
     ~CopyDialog();
     void saveSettings();    
-    void setMode(CopyDialogMode _mode);
+    void setDialogMode(CopyDialogMode _mode);
+    CopyDialogMode dialogMode();
 
 public slots:
     void show();
@@ -49,7 +50,7 @@ private:
     QPen borderPen;
     QColor bgColor, borderColor;
     QList<PathSelectorWidget*> pathWidgets;
-    int maxPathCount;
+    const int maxPathCount = 9;
     QStringList paths;
     QMap<QString, int> shortcuts;
     QLabel headerLabel;

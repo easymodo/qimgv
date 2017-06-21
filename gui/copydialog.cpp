@@ -2,26 +2,25 @@
 
 CopyDialog::CopyDialog(QWidget *parent) : OverlayWidget(parent) {
     hide();
-    this->setFixedSize(350,480);
-    this->setContentsMargins(0,10,0,10);
+    this->setFixedSize(300,450);
+    this->setContentsMargins(20,20,20,20);
 
-    mLayout.setSpacing(0);
+    mLayout.setSpacing(5);
     mLayout.setContentsMargins(0,0,0,0);
     setLayout(&mLayout);
 
     headerLabel.setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     headerLabel.setMargin(0);
-    headerLabel.setContentsMargins(0,0,0,5);
+    headerLabel.setContentsMargins(0,0,0,6);
     headerLabel.setPixmap(QPixmap(":/res/images/copydialogheader.png"));
+    mode = DIALOG_COPY;
 
     // drawing stuff
-    bgColor.setRgb(34,34,34);
-    borderColor.setRgb(64,64,64);
+    bgColor.setRgb(33,33,33);
+    borderColor.setRgb(60,60,60);
     borderPen.setWidth(3);
     borderPen.setColor(borderColor);
 
-    maxPathCount = 9;
-    mode = DIALOG_COPY;
 
     createShortcuts();
     readSettings();
@@ -40,12 +39,16 @@ void CopyDialog::hide() {
 CopyDialog::~CopyDialog() {
 }
 
-void CopyDialog::setMode(CopyDialogMode _mode) {
+void CopyDialog::setDialogMode(CopyDialogMode _mode) {
     mode = _mode;
     if(mode == DIALOG_COPY)
         headerLabel.setPixmap(QPixmap(":/res/images/copydialogheader.png"));
     else
         headerLabel.setPixmap(QPixmap(":/res/images/movedialogheader.png"));
+}
+
+CopyDialogMode CopyDialog::dialogMode() {
+    return mode;
 }
 
 void CopyDialog::createPathWidgets() {
@@ -54,7 +57,7 @@ void CopyDialog::createPathWidgets() {
     for(int i = 0; i < count; i++) {
         PathSelectorWidget *pathWidget = new PathSelectorWidget(this);
         pathWidget->setPath(paths.at(i));
-        pathWidget->setButtonText( "{ " + shortcuts.key(i) + " }");
+        pathWidget->setButtonText(shortcuts.key(i));
         connect(pathWidget, SIGNAL(selected(QString)),
                 this, SLOT(requestFileOperation(QString)));
         pathWidgets.append(pathWidget);

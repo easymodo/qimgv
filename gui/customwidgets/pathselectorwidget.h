@@ -31,6 +31,7 @@ private:
     ClickableLabel button;
     QHBoxLayout mLayout;
     QString mPath;
+    QFont font;
 };
 
 #endif // PATHSELECTORWIDGET_H

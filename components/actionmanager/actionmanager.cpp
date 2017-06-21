@@ -101,6 +101,17 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(1, "escape");
     actionManager->keyMap.insert(329, "pageUp");
     actionManager->keyMap.insert(337, "pageDown");
+    actionManager->keyMap.insert(41, "~");
+    actionManager->keyMap.insert(2, "1");
+    actionManager->keyMap.insert(3, "2");
+    actionManager->keyMap.insert(4, "3");
+    actionManager->keyMap.insert(5, "4");
+    actionManager->keyMap.insert(6, "5");
+    actionManager->keyMap.insert(7, "6");
+    actionManager->keyMap.insert(8, "7");
+    actionManager->keyMap.insert(9, "8");
+    actionManager->keyMap.insert(10, "9");
+    actionManager->keyMap.insert(11, "0");
 #elif defined __linux__
     actionManager->keyMap.insert(24, "Q");
     actionManager->keyMap.insert(25, "W");
