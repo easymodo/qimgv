@@ -33,7 +33,7 @@ public slots:
     void loadImageBlocking(QString);
 
     // invalid position will be ignored
-    void openByIndex(int index);
+    bool openByIndex(int index);
 
 signals:
     void imageIndexChanged(int);

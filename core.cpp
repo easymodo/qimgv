@@ -139,10 +139,8 @@ void Core::removeFile() {
     if(currentImage()) {
         if(dirManager->removeAt(mCurrentIndex)) {
             mw->showMessage("File removed.");
-            if(mCurrentIndex > 0)
+            if(!openByIndex(mCurrentIndex))
                 openByIndex(--mCurrentIndex);
-            else
-                openByIndex(0);
         } else {
             qDebug() << "Error deleting file.";
         }
@@ -252,14 +250,14 @@ void Core::loadImageBlocking(QString filePath) {
     loadImage(filePath, true);
 }
 
-void Core::openByIndex(int index) {
+bool Core::openByIndex(int index) {
     if(index >= 0 && index < dirManager->fileCount()) {
         mCurrentIndex = index;
         //stopPlayback();
         imageLoader->open(index);
+        return true;
     }
-    else
-        qDebug() << "Core::loadImageByIndex - argument out of range.";
+    return false;
 }
 
 void Core::slotNextImage() {
