@@ -218,7 +218,9 @@ void Core::stopPlayback() {
 void Core::loadImage(QString filePath, bool blocking) {
     if(dirManager->isImage(filePath)) {
         ImageInfo *info = new ImageInfo(filePath);
+        // try to get image's index
         int index = dirManager->indexOf(info->fileName());
+        // image does not exist in directory; means directory was changed
         if(index == -1) {
             dirManager->setDirectory(info->directoryPath());
             index = dirManager->indexOf(info->fileName());
@@ -237,8 +239,23 @@ void Core::loadImage(QString filePath, bool blocking) {
             imageLoader->openBlocking(mCurrentIndex);
         else
             imageLoader->open(mCurrentIndex);
+    } else if(dirManager->isDirectory(filePath)) {
+        // we got a directory, not a file
+        dirManager->setDirectory(filePath);
+        mCurrentIndex = 0;
+        if(dirManager->containsImages()) {
+            // open the first one
+            mImageCount = dirManager->fileCount();
+            if(cache->currentDirectory() != dirManager->currentDirectory()) {
+                this->initCache();
+            }
+            this->openByIndexBlocking(0);
+        } else { // we got an empty directory
+            //viewerWidget->unset(); // TODO
+            mw->showMessage("Directory does not contain images.");
+        }
     } else {
-        qDebug() << "Core: invalid/missing file.";
+        mw->showMessage("Invalid/missing file.");
     }
 }
 

@@ -96,6 +96,11 @@ bool DirectoryManager::existsInCurrentDir(QString file) const {
     return mFileNameList.contains(file, Qt::CaseInsensitive);
 }
 
+bool DirectoryManager::isDirectory(QString path) const {
+    QDir tmp(path);
+    return (tmp.isReadable() && !tmp.isEmpty());
+}
+
 bool DirectoryManager::isImage(QString filePath) const {
     QFile file(filePath);
     if(file.exists()) {

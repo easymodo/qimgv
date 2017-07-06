@@ -42,6 +42,7 @@ public:
     bool copyTo(QString destDirectory, int index);
 
     QString fileNameAt(int pos) const;
+    bool isDirectory(QString path) const;
 public slots:
     void applySettingsChanges();
 
