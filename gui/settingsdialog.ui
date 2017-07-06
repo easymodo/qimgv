@@ -123,6 +123,9 @@
            </item>
            <item>
             <widget class="QCheckBox" name="enableSidePanelCheckBox">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -176,7 +179,7 @@
            <item>
             <widget class="QCheckBox" name="playVideosCheckBox">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -201,7 +204,7 @@
            <item>
             <widget class="QCheckBox" name="playSoundsCheckBox">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -420,6 +423,9 @@
         <layout class="QHBoxLayout" name="horizontalLayout_7">
          <item>
           <widget class="QLabel" name="ffmpegLabel">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -432,10 +438,17 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="ffmpegLineEdit"/>
+          <widget class="QLineEdit" name="ffmpegLineEdit">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="pushButton_5">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -835,16 +848,6 @@
          </property>
          <property name="checked">
           <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="thumbnailBorderCheckBox">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Draw border around selected thumbnail</string>
          </property>
         </widget>
        </item>

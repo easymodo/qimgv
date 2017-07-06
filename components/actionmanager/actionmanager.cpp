@@ -271,15 +271,15 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("Down", "scrollDown");
     actionManager->addShortcut("Ctrl+O", "open");
     actionManager->addShortcut("Ctrl+S", "save");
-    actionManager->addShortcut("Ctrl+W", "setWallpaper");
-    actionManager->addShortcut("X", "crop");
+    //actionManager->addShortcut("Ctrl+W", "setWallpaper");
+    //actionManager->addShortcut("X", "crop");
     actionManager->addShortcut("Ctrl+P", "openSettings");
     actionManager->addShortcut("Alt+X", "exit");
     actionManager->addShortcut("Ctrl+Q", "exit");
     actionManager->addShortcut("escape", "exit");
     //actionManager->addShortcut("delete", "removeFile");
     actionManager->addShortcut("C", "copyFile");
-    actionManager->addShortcut("M", "moveFile");
+    //actionManager->addShortcut("M", "moveFile");
 }
 
 bool ActionManager::processWheelEvent(QWheelEvent *event) {

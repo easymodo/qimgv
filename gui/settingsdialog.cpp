@@ -28,7 +28,6 @@ void SettingsDialog::readSettings() {
     ui->enableSidePanelCheckBox->setChecked(settings->sidePanelEnabled());
     ui->mouseWrappingCheckBox->setChecked(settings->mouseWrapping());
     ui->squareThumbnailsCheckBox->setChecked(settings->squareThumbnails());
-    ui->thumbnailBorderCheckBox->setChecked(settings->drawThumbnailSelectionBorder());
     ui->transparencyGridCheckBox->setChecked(settings->transparencyGrid());
     ui->forceSmoothScrollCheckBox->setChecked(settings->forceSmoothScroll());
     //ui->reduceRamUsageCheckBox->setChecked(settings->reduceRamUsage());
@@ -121,7 +120,6 @@ void SettingsDialog::applySettings() {
     settings->setSidePanelEnabled(ui->enableSidePanelCheckBox->isChecked());
     settings->setMouseWrapping(ui->mouseWrappingCheckBox->isChecked());
     settings->setSquareThumbnails(ui->squareThumbnailsCheckBox->isChecked());
-    settings->setDrawThumbnailSelectionBorder(ui->thumbnailBorderCheckBox->isChecked());
     settings->setTransparencyGrid(ui->transparencyGridCheckBox->isChecked());
     settings->setForceSmoothScroll(ui->forceSmoothScrollCheckBox->isChecked());
     //settings->setReduceRamUsage(ui->reduceRamUsageCheckBox->isChecked());

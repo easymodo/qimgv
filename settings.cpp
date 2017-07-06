@@ -397,14 +397,6 @@ void Settings::setSquareThumbnails(bool mode) {
     settings->s.setValue("squareThumbnails", mode);
 }
 
-bool Settings::drawThumbnailSelectionBorder() {
-    return settings->s.value("thumbnailSelectionBorder", false).toBool();
-}
-
-void Settings::setDrawThumbnailSelectionBorder(bool mode) {
-    settings->s.setValue("thumbnailSelectionBorder", mode);
-}
-
 bool Settings::transparencyGrid() {
     return settings->s.value("drawTransparencyGrid", true).toBool();
 }
