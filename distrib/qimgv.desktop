@@ -8,6 +8,5 @@ Icon=qimgv
 Terminal=false
 Type=Application
 Categories=Qt;Graphics;Viewer;
-MimeType=inode/directory;video/webm;image/jpeg;image/gif;image/png;image/bmp;
+MimeType=video/webm;image/jpeg;image/gif;image/png;image/bmp;image/webp;
 Keywords=image;view;qimgv;picture;gif;jpeg;webm;
-InitialPreference=8
