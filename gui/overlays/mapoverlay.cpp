@@ -171,14 +171,13 @@ void MapOverlay::paintEvent(QPaintEvent *event) {
     QBrush innerBrush(QColor(180, 180, 180, 255), Qt::SolidPattern);
 
     painter.setOpacity(d->opacity);
+    painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
     painter.fillRect(d->outerRect, outerBrush);
     painter.fillRect(d->innerRect, innerBrush);
 
-
     painter.setPen(d->outlinePen);
     painter.drawRect(d->outerRect);
-    painter.drawRect(d->innerRect);
 }
 
 void MapOverlay::updatePosition() {
