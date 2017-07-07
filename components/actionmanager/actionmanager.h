@@ -7,6 +7,7 @@
 #include <QWheelEvent>
 #include <QMap>
 #include <QDebug>
+#include <QStringList>
 #include "settings.h"
 
 class ActionManager : public QObject

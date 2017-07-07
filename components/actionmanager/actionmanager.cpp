@@ -45,6 +45,7 @@ void ActionManager::createActionList() {
                                 << "moveFile"
                                 << "openSettings"
                                 << "exit";
+    actionManager->validActions.sort();
 }
 
 // layout-independent key codes
