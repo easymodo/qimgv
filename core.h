@@ -15,6 +15,12 @@
 #include "gui/viewers/imageviewer.h"
 #include "gui/viewers/videoplayergl.h"
 
+struct State {
+    State() : currentIndex(0), hasActiveImage(false), isWaitingForLoader(false) {}
+    int currentIndex;
+    bool hasActiveImage, isWaitingForLoader;
+};
+
 class Core : public QObject {
     Q_OBJECT
 public:
@@ -45,8 +51,6 @@ private:
     void connectComponents();
     void initActions();
 
-    Image* currentImage();
-
     // ui stuff
     MainWindow *mw;
     ViewerWidget *viewerWidget;
@@ -54,24 +58,23 @@ private:
     VideoPlayerGL *videoPlayer;
     ThumbnailStrip *thumbnailPanelWidget;
 
-    QMutex mutex;
+
+    State state;
+    QMutex mutex; // do i need this??
     QTimer *loadingTimer; // this is for loading message delay. TODO: replace with something better
 
-    int mCurrentIndex, mPreviousIndex, mImageCount, fitMode;
     bool infiniteScrolling;
-
-    // re-think this?
-    ImageAnimated* currentImageAnimated;
-    Video* currentVideo;
 
     // components
     NewLoader *imageLoader;
     DirectoryManager *dirManager;
-    ImageCache *cache;
+    Cache2 *cache;
     Scaler *scaler;
 
     void rotateByDegrees(int degrees);
 
+    void reset();
+    bool setDirectory(QString newPath);
 private slots:
     void readSettings();
     void slotNextImage();
@@ -79,7 +82,7 @@ private slots:
     void onLoadFinished(Image *img, int index);
     void onLoadStarted();
     void onLoadingTimeout();
-    void initCache();
+    void clearCache();
     void stopPlayback();
     void rotateLeft();
     void rotateRight();

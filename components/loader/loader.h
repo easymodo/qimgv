@@ -5,7 +5,7 @@
 #include <QMutex>
 #include "settings.h"
 #include "components/directorymanager/directorymanager.h"
-#include "components/cache/cache.h"
+#include "components/cache/cache2.h"
 #include "components/cache/thumbnailcache.h"
 #include "components/thumbnailer/thumbnailer.h"
 #include "loaderrunnable.h"
@@ -14,10 +14,10 @@ class NewLoader : public QObject
 {
     Q_OBJECT
 public:
-    explicit NewLoader(const DirectoryManager *, ImageCache *);
+    explicit NewLoader(const DirectoryManager *, Cache2 *);
     void open(int index);
-    const ImageCache* getCache();
-    void setCache(ImageCache*);
+    const Cache2* getCache();
+    void setCache(Cache2*);
     void openBlocking(int index);
     void preload(int index);
 
@@ -26,7 +26,7 @@ public slots:
 
 private:
     const DirectoryManager *dm;
-    ImageCache *cache;
+    Cache2 *cache;
     ThumbnailCache *thumbnailCache;
     QMutex mutex, mutex2;
     void freeAt(int);

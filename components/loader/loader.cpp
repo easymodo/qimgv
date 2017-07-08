@@ -1,6 +1,6 @@
 #include "loader.h"
 
-NewLoader::NewLoader(const DirectoryManager *_dm, ImageCache *_cache) :
+NewLoader::NewLoader(const DirectoryManager *_dm, Cache2 *_cache) :
     preloadTarget(0),
     currentIndex(-1),
     unloadMargin(1),
@@ -23,12 +23,13 @@ void NewLoader::openBlocking(int index) {
     if(tasks.contains(index)) {
         return;
     }
-    if(cache->isLoaded(index)) {
-        emit loadFinished(cache->imageAt(index), index);
+    if(cache->contains(dm->fileNameAt(index))) {
+        emit loadFinished(cache->get(dm->fileNameAt(index)), index);
         return;
     }
     LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(index), index);
     connect(runnable, SIGNAL(finished(Image*,int)), this, SLOT(onLoadFinished(Image*,int)), Qt::UniqueConnection);
+    runnable->setAutoDelete(true);
     tasks.append(index);
     runnable->run();
 }
@@ -40,12 +41,13 @@ void NewLoader::open(int index) {
     if(tasks.contains(index)) {
         return;
     }
-    if(cache->isLoaded(index)) {
-        emit loadFinished(cache->imageAt(index), index);
+    if(cache->contains(dm->fileNameAt(index))) {
+        emit loadFinished(cache->get(dm->fileNameAt(index)), index);
         return;
     }
     LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(index), index);
     connect(runnable, SIGNAL(finished(Image*,int)), this, SLOT(onLoadFinished(Image*,int)), Qt::UniqueConnection);
+    runnable->setAutoDelete(true);
     tasks.append(index);
     QThreadPool::globalInstance()->start(runnable);
 }
@@ -56,32 +58,38 @@ void NewLoader::preload(int index) {
 }
 
 void NewLoader::doPreload() {
-    if(!cache->isLoaded(preloadTarget)) {
-        if(tasks.contains(preloadTarget)) {
-            return;
+    cache->lock();
+    if(!cache->contains(dm->fileNameAt(preloadTarget))) {
+        if(!tasks.contains(preloadTarget)) {
+            LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(preloadTarget), preloadTarget);
+            connect(runnable, SIGNAL(finished(Image*,int)), this, SLOT(onLoadFinished(Image*,int)), Qt::UniqueConnection);
+            tasks.append(preloadTarget);
+            QThreadPool::globalInstance()->start(runnable);
         }
-        LoaderRunnable *runnable = new LoaderRunnable(dm->filePathAt(preloadTarget), preloadTarget);
-        connect(runnable, SIGNAL(finished(Image*,int)), this, SLOT(onLoadFinished(Image*,int)), Qt::UniqueConnection);
-        tasks.append(preloadTarget);
-        QThreadPool::globalInstance()->start(runnable);
     }
+    cache->unlock();
 }
 
-// TODO: what if cache was reinitialized during loading?
+// todo: simplify
 void NewLoader::onLoadFinished(Image *image, int index) {
-    lock();
+    cache->lock();
     tasks.removeAt(tasks.indexOf(index));
     if(isRelevant(index)) {
-        if(!cache->isLoaded(index))
-            cache->setImage(image, index);
+        QString nameKey = dm->fileNameAt(index);
+        if(!cache->contains(nameKey))
+            cache->insert(nameKey, image);
         else
             delete image;
-        if(index == currentIndex)
-            emit loadFinished(cache->imageAt(index), index);
+        cache->unlock();
+        if(index == currentIndex) {
+            //cache->release(nameKey); // this one?
+            emit loadFinished(cache->get(nameKey), index);
+        }
     } else {
+        cache->unlock();
         delete image;
     }
-    unlock();
+
 }
 
 bool NewLoader::isRelevant(int index) {
@@ -89,14 +97,25 @@ bool NewLoader::isRelevant(int index) {
 }
 
 void NewLoader::freeAuto() {
-    lock();
+    cache->lock();
+    const QList<QString> loadedKeys = cache->keys();
+    for(int i = 0; i < loadedKeys.length(); i++) {
+        int index = dm->indexOf(loadedKeys.at(i));
+        if(!isRelevant(index)) {
+            cache->remove(loadedKeys.at(i));
+        }
+    }
+    cache->unlock();
+    /*
+    cache->lock();
     const QList<int> loadedList = cache->currentlyLoadedList();
     for(int i = 0; i < loadedList.length(); i++) {
         if(!isRelevant(loadedList.at(i))) {
             cache->unloadAt(loadedList.at(i));
         }
     }
-    unlock();
+    cache->unlock();
+    */
 }
 
 bool NewLoader::setLoadTarget(int _target) {
@@ -107,11 +126,11 @@ bool NewLoader::setLoadTarget(int _target) {
     return true;
 }
 
-const ImageCache *NewLoader::getCache() {
+const Cache2 *NewLoader::getCache() {
     return cache;
 }
 
-void NewLoader::setCache(ImageCache *_cache) {
+void NewLoader::setCache(Cache2 *_cache) {
     this->cache = _cache;
 }
 
@@ -134,7 +153,6 @@ void NewLoader::generateThumbnailFor(int index, int size) {
 }
 
 void NewLoader::readSettings() {
-    lock();
     if(settings->usePreloader()) {
         unloadMargin = 1;
         connect(preloadTimer, SIGNAL(timeout()),
@@ -145,7 +163,6 @@ void NewLoader::readSettings() {
         disconnect(preloadTimer, SIGNAL(timeout()),
                    this, SLOT(doPreload()));
     }
-    unlock();
 }
 
 void NewLoader::lock() {

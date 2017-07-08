@@ -33,9 +33,9 @@ void DirectoryManager::setDirectory(QString path) {
     }
 }
 
-int DirectoryManager::indexOf(QString filePath) const {
-    int fuck = mFileNameList.indexOf(filePath);
-    return fuck;
+int DirectoryManager::indexOf(QString fileName) const {
+    int index = mFileNameList.indexOf(fileName);
+    return index;
 }
 
 // full paths array
@@ -64,12 +64,13 @@ bool DirectoryManager::removeAt(int pos) {
     if(checkRange(pos)) {
         QString path = filePathAt(pos);
         QFile file(path);
-        if(file.remove()) {
+        /*if(file.remove()) {
             mFileNameList.removeAt(pos);
-            emit fileRemoved(pos); // to cache & thumbnail - remove
             return true;
         }
-        qDebug() << "wat";
+        */
+        mFileNameList.removeAt(pos); // tmp
+        return true; // tmp
     }
     return false;
 }
@@ -98,7 +99,7 @@ bool DirectoryManager::existsInCurrentDir(QString file) const {
 
 bool DirectoryManager::isDirectory(QString path) const {
     QDir tmp(path);
-    return (tmp.isReadable() && !tmp.isEmpty());
+    return (tmp.isReadable());
 }
 
 bool DirectoryManager::isImage(QString filePath) const {

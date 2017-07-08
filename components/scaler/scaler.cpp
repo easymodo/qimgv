@@ -8,29 +8,28 @@
  *    start the last task that came and ignore the middle ones.
  */
 
-Scaler::Scaler(QObject *parent) : QObject(parent), currentRequestTimestamp(0), buffered(false), running(false)
+Scaler::Scaler(Cache2 *_cache, QObject *parent) : cache(_cache), QObject(parent), currentRequestTimestamp(0), buffered(false), running(false)
 {
-    runnable.setAutoDelete(false);
-    connect(&runnable, SIGNAL(finished(QImage*,ScalerRequest)), this, SLOT(onTaskFinish(QImage*,ScalerRequest)), Qt::QueuedConnection);
+    runnable = new ScalerRunnable(cache);
+    runnable->setAutoDelete(false);
+    connect(runnable, SIGNAL(finished(QImage*,ScalerRequest)), this, SLOT(onTaskFinish(QImage*,ScalerRequest)), Qt::QueuedConnection);
 }
 
 void Scaler::requestScaled(ScalerRequest req) {
-    requestMutex.lock();
-    req.image->lock();
+    cache->reserve(req.image->info()->fileName());
     if(!running) {
         startRequest(req);
     } else {
         // something is running. buffer the request
-        if(buffered)
-            bufferedRequest.image->unlock();
+        if(buffered) {
+            cache->release(bufferedRequest.image->info()->fileName());
+        }
         buffered = true;
         bufferedRequest = req;
     }
-    requestMutex.unlock();
 }
 
 void Scaler::onTaskFinish(QImage *scaled, ScalerRequest req) {
-    requestMutex.lock();
     // clear it; no task is running
     running = false;
     if(!buffered) {
@@ -45,11 +44,10 @@ void Scaler::onTaskFinish(QImage *scaled, ScalerRequest req) {
         buffered = false;
         startRequest(bufferedRequest);
     }
-    requestMutex.unlock();
 }
 
 void Scaler::startRequest(ScalerRequest req) {
     running = true;
-    runnable.setRequest(req);
-    QThreadPool::globalInstance()->start(&runnable);
+    runnable->setRequest(req);
+    QThreadPool::globalInstance()->start(runnable);
 }

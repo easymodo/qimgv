@@ -12,8 +12,8 @@ class ImageFactory {
 public:
     ImageFactory();
 
-    Image* createImage(QString);
-    Image* createImage(ImageInfo*);
+    static Image* createImage(QString) ;
+    static Image* createImage(ImageInfo*);
 };
 
 #endif // IMAGEFACTORY_H

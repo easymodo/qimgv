@@ -80,7 +80,9 @@ SOURCES += \
     utils/wallpapersetter.cpp \
     settings.cpp \
     gui/copydialog.cpp \
-    gui/customwidgets/pathselectorwidget.cpp
+    gui/customwidgets/pathselectorwidget.cpp \
+    components/cache/cache2.cpp \
+    components/cache/cacheitem.cpp
 
 HEADERS += \
     core.h \
@@ -134,7 +136,9 @@ HEADERS += \
     utils/wallpapersetter.h \
     settings.h \
     gui/copydialog.h \
-    gui/customwidgets/pathselectorwidget.h
+    gui/customwidgets/pathselectorwidget.h \
+    components/cache/cache2.h \
+    components/cache/cacheitem.h
 
 FORMS += \
     gui/settingsdialog.ui
