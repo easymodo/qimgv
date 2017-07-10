@@ -3,12 +3,16 @@
 Settings *settings = NULL;
 
 Settings::Settings(QObject *parent) : QObject(parent) {
+    tempDirectory = new QDir(QDir::homePath() + "/.cache/qimgv");
+    tempDirectory->mkpath(tempDirectory->absolutePath());
+
     cacheDirectory = new QDir(QDir::homePath() + "/.cache/qimgv/thumbnails");
     cacheDirectory->mkpath(cacheDirectory->absolutePath());
 }
 
 Settings::~Settings() {
     delete cacheDirectory;
+    delete tempDirectory;
 }
 
 Settings *Settings::getInstance() {
@@ -44,25 +48,29 @@ QString Settings::cacheDir() {
     return cacheDirectory->path() + "/";
 }
 
-QString Settings::ffmpegExecutable() {
-    QString ffmpegPath = settings->s.value("ffmpegExe", "").toString();
-    if(!QFile::exists(ffmpegPath)) {
+QString Settings::tempDir() {
+    return tempDirectory->path() + "/";
+}
+
+QString Settings::mpvBinary() {
+    QString mpvPath = settings->s.value("mpvBinary", "").toString();
+    if(!QFile::exists(mpvPath)) {
         #ifdef _WIN32
-        ffmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg.exe";
+        mpvPath = QCoreApplication::applicationDirPath() + "/mpv.exe";
         #elif defined __linux__
-        ffmpegPath = "/usr/bin/ffmpeg";
+        mpvPath = "/usr/bin/mpv";
         #endif
-        if(!QFile::exists(ffmpegPath)) {
-            ffmpegPath = "";
+        if(!QFile::exists(mpvPath)) {
+            mpvPath = "";
         }
 
     }
-    return ffmpegPath;
+    return mpvPath;
 }
 
-void Settings::setFFmpegExecutable(QString path) {
+void Settings::setMpvBinary(QString path) {
     if(QFile::exists(path)) {
-        settings->s.setValue("ffmpegExe", path);
+        settings->s.setValue("mpvBinary", path);
     }
 }
 
@@ -110,7 +118,7 @@ QStringList Settings::supportedMimeTypes() {
 }
 
 bool Settings::playVideos() {
-    return settings->s.value("playVideos", false).toBool();
+    return settings->s.value("playVideos", true).toBool();
 }
 
 void Settings::setPlayVideos(bool mode) {

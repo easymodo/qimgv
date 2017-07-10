@@ -11,7 +11,7 @@ Clip::~Clip() {
 }
 
 void Clip::load(const QString &fileName, const char* format) {
-    QString ffmpegExe = settings->ffmpegExecutable();
+    QString ffmpegExe = settings->mpvBinary();
     if(ffmpegExe.isEmpty()) {
         return;
     }

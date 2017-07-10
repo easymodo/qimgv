@@ -29,6 +29,10 @@ QString ImageInfo::fileName() {
     return fileInfo.fileName();
 }
 
+QString ImageInfo::baseName() {
+    return fileInfo.baseName();
+}
+
 // in KB
 int ImageInfo::fileSize() {
     return truncf(fileInfo.size()/1024);

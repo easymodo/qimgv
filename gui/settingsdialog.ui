@@ -179,7 +179,7 @@
            <item>
             <widget class="QCheckBox" name="playVideosCheckBox">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -204,7 +204,7 @@
            <item>
             <widget class="QCheckBox" name="playSoundsCheckBox">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -422,9 +422,9 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_7">
          <item>
-          <widget class="QLabel" name="ffmpegLabel">
+          <widget class="QLabel" name="mpvLabel">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="minimumSize">
             <size>
@@ -433,21 +433,21 @@
             </size>
            </property>
            <property name="text">
-            <string>FFmpeg executable:</string>
+            <string>Mpv binary:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="ffmpegLineEdit">
+          <widget class="QLineEdit" name="mpvLineEdit">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="pushButton_5">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1412,7 +1412,7 @@ p, li { white-space: pre-wrap; }
    <sender>pushButton_5</sender>
    <signal>clicked()</signal>
    <receiver>SettingsDialog</receiver>
-   <slot>selectFFMPEG()</slot>
+   <slot>selectMpvPath()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>535</x>
@@ -1433,6 +1433,6 @@ p, li { white-space: pre-wrap; }
   <slot>removeShortcut()</slot>
   <slot>addShortcut()</slot>
   <slot>resetShortcuts()</slot>
-  <slot>selectFFMPEG()</slot>
+  <slot>selectMpvPath()</slot>
  </slots>
 </ui>

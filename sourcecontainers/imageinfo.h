@@ -21,6 +21,7 @@ public:
     QString directoryPath();
     QString filePath();
     QString fileName();
+    QString baseName();
 
     // in KB
     int fileSize();

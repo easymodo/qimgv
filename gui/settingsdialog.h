@@ -49,7 +49,7 @@ private slots:
     void removeShortcut();
     void addShortcut();
     void resetShortcuts();
-    void selectFFMPEG();
+    void selectMpvPath();
 signals:
     void settingsChanged();
 };

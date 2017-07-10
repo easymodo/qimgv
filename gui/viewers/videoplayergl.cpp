@@ -6,7 +6,7 @@
 #include <QFileDialog>
 
 VideoPlayerGL::VideoPlayerGL(QWidget *parent) : QWidget(parent) {
-/*    setAttribute(Qt::WA_TransparentForMouseEvents, true);
+    setAttribute(Qt::WA_TransparentForMouseEvents, true);
     setFocusPolicy(Qt::NoFocus);
 
     m_mpv = new MpvWidget(this);
@@ -17,12 +17,10 @@ VideoPlayerGL::VideoPlayerGL(QWidget *parent) : QWidget(parent) {
 
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
-
-    */
 }
 
 bool VideoPlayerGL::openMedia(Clip *clip) {
-    /*if(clip) {
+    if(clip) {
         QString file = clip->getPath();
         if (file.isEmpty())
             return false;
@@ -31,27 +29,26 @@ bool VideoPlayerGL::openMedia(Clip *clip) {
         return true;
     }
     return false;
-    */
 }
 
 void VideoPlayerGL::seek(int pos) {
-//    m_mpv->command(QVariantList() << "seek" << pos << "absolute");
+    m_mpv->command(QVariantList() << "seek" << pos << "absolute");
 }
 
 void VideoPlayerGL::pauseResume() {
-//    const bool paused = m_mpv->getProperty("pause").toBool();
-//    setPaused(!paused);
+    const bool paused = m_mpv->getProperty("pause").toBool();
+    setPaused(!paused);
 }
 
 void VideoPlayerGL::setPaused(bool mode) {
     // TODO: ??????????? thats from QObject
-//    m_mpv->setProperty("pause", mode);
+    m_mpv->setProperty("pause", mode);
 }
 
 void VideoPlayerGL::setMuted(bool mode) {
-//    m_mpv->setMuted(mode);
+    m_mpv->setMuted(mode);
 }
 
 void VideoPlayerGL::readSettings() {
-//    setMuted(!settings->playVideoSounds());
+    setMuted(!settings->playVideoSounds());
 }

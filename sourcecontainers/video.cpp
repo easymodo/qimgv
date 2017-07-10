@@ -15,7 +15,6 @@ Video::Video(ImageInfo *_info) {
 }
 
 Video::~Video() {
-    delete imageInfo;
     delete clip;
 }
 

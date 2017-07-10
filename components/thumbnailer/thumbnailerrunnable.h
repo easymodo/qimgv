@@ -2,6 +2,7 @@
 #define THUMBNAILERRUNNABLE_H
 
 #include <QRunnable>
+#include <QProcess>
 #include <QThread>
 #include <QCryptographicHash>
 #include <ctime>
@@ -23,7 +24,6 @@ public:
 private:
     QString generateIdString();
     QImage* createScaledThumbnail(ImageInfo *img, int size, bool squared);
-    QImage* videoThumbnailStub();
     QString path;
     int target, size;
     bool squared;

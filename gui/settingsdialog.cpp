@@ -30,22 +30,12 @@ void SettingsDialog::readSettings() {
     ui->squareThumbnailsCheckBox->setChecked(settings->squareThumbnails());
     ui->transparencyGridCheckBox->setChecked(settings->transparencyGrid());
     ui->forceSmoothScrollCheckBox->setChecked(settings->forceSmoothScroll());
-    //ui->reduceRamUsageCheckBox->setChecked(settings->reduceRamUsage());
     ui->usePreloaderCheckBox->setChecked(settings->usePreloader());
     ui->useThumbnailCacheCheckBox->setChecked(settings->useThumbnailCache());
 
-    ui->ffmpegLineEdit->setText(settings->ffmpegExecutable());
-
-    // ##### loader #####
-    //ui->preloaderCheckBox->setChecked(settings->usePreloader());
-    //ui->reduceRamCheckBox->setChecked(settings->reduceRamUsage());
-
-    // ##### cache #####
-    //ui->cacheSlider->setValue(globalSettings->s.value("cacheSize",64).toInt());
-    //ui->cacheLabel2->setNum(ui->cacheSlider->value());
+    ui->mpvLineEdit->setText(settings->mpvBinary());
 
     // ##### scaling #####
-
     setting = settings->useFastScale();
     ui->scalingQualityComboBox->setCurrentIndex(setting ? 1 : 0);
 
@@ -126,7 +116,7 @@ void SettingsDialog::applySettings() {
     settings->setUsePreloader(ui->usePreloaderCheckBox->isChecked());
     settings->setUseThumbnailCache(ui->useThumbnailCacheCheckBox->isChecked());
 
-    settings->setFFmpegExecutable(ui->ffmpegLineEdit->text());
+    settings->setMpvBinary(ui->mpvLineEdit->text());
 
     bool useFastScale = ui->scalingQualityComboBox->currentIndex() == 1;
     settings->setUseFastScale(useFastScale);
@@ -198,12 +188,12 @@ void SettingsDialog::resetShortcuts() {
     fillShortcuts();
 }
 
-void SettingsDialog::selectFFMPEG() {
+void SettingsDialog::selectMpvPath() {
     QFileDialog dialog;
     QString file;
-    file = dialog.getOpenFileName(this, "Navigate to ffmpeg.exe", "", "ffmpeg.exe");
+    file = dialog.getOpenFileName(this, "Navigate to mpv binary", "", "mpv*");
     if(!file.isEmpty()) {
-        ui->ffmpegLineEdit->setText(file);
+        ui->mpvLineEdit->setText(file);
     }
 }
 

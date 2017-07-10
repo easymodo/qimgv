@@ -27,11 +27,11 @@ void ThumbnailerRunnable::run() {
         } else if(imgInfo.imageType() == VIDEO) {
             thumbImage->setText("label", " [v]");
         }
-        //if(settings->useThumbnailCache()) {
+        if(settings->useThumbnailCache()) {
         // save thumbnail if it makes sense
-        //if(originalSize.width() > size || originalSize.height() > size)
-        //    thumbnailCache->saveThumbnail(thumbImage, thumbnailHash);
-        //}
+            if(originalSize.width() > size || originalSize.height() > size)
+                thumbnailCache->saveThumbnail(thumbImage, thumbnailHash);
+        }
     }
     th->image = new QPixmap(thumbImage->size());
     *th->image = QPixmap::fromImage(*thumbImage);
@@ -53,11 +53,21 @@ QString ThumbnailerRunnable::generateIdString() {
 
 QImage* ThumbnailerRunnable::createScaledThumbnail(ImageInfo *imgInfo, int size, bool squared) {
     QImageReader reader;
+    QString filePath;
     if(imgInfo->imageType() == VIDEO) {
-     // todo
+        QString mpv = settings->mpvBinary();
+        if(!mpv.isEmpty()) {
+            filePath = settings->tempDir() + imgInfo->baseName() + ".png";
+            QString command = "\"" + mpv + "\"" + " --start=30% --frames=1 --aid=no --sid=no --no-config --load-scripts=no --no-terminal --o=\"" + filePath + "\" \"" + imgInfo->filePath() + "\"";
+            QProcess process;
+            process.start(command);
+            bool success = process.waitForFinished(3000);
+            process.close();
+        }
     } else {
-        reader.setFileName(imgInfo->filePath());
+        filePath = imgInfo->filePath();
     }
+    reader.setFileName(filePath);
     reader.setFormat(imgInfo->extension());
     Qt::AspectRatioMode method = squared?
                 (Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
@@ -74,26 +84,12 @@ QImage* ThumbnailerRunnable::createScaledThumbnail(ImageInfo *imgInfo, int size,
     else
         originalSize = reader.size();
     QImage *scaled = new QImage(reader.read());
+    // remove temporary file in video case
+    if(imgInfo->imageType() == VIDEO) {
+        QFile tmpFile(filePath);
+        tmpFile.remove();
+    }
     return scaled;
-}
-
-// wtf is happening in this method?
-QImage* ThumbnailerRunnable::videoThumbnailStub() {
-    int size = settings->mainPanelSize();
-    QImage *thumbnail = new QImage(size, size, QImage::Format_ARGB32_Premultiplied);
-    QPainter painter(thumbnail);
-    painter.setCompositionMode(QPainter::CompositionMode_Source);
-    QImage videoIcon(":/res/icons/video_thumb.png");
-
-    QBrush brush(QColor(0, 0, 0, 50));
-
-    painter.fillRect(thumbnail->rect(), brush);
-    painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-
-    QPoint topLeft((size - videoIcon.width()) / 2, (size - videoIcon.height()) / 2);
-    painter.drawImage(topLeft, videoIcon);
-
-    return thumbnail;
 }
 
 ThumbnailerRunnable::~ThumbnailerRunnable() {

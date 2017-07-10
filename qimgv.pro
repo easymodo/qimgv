@@ -21,11 +21,11 @@ QMAKE_CXXFLAGS_RELEASE -= -O1
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
-#unix {
-#    QT_CONFIG -= no-pkg-config
-#    CONFIG += link_pkgconfig
-#    PKGCONFIG += mpv
-#
+unix {
+    QT_CONFIG -= no-pkg-config
+    CONFIG += link_pkgconfig
+    PKGCONFIG += mpv
+}
 
 SOURCES += \
     main.cpp \

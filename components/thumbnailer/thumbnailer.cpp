@@ -5,7 +5,6 @@ Thumbnailer::Thumbnailer(DirectoryManager *_dm) : dm(_dm) {
 }
 
 void Thumbnailer::generateThumbnailFor(QList<int> indexes, int size) {
-    //QThreadPool::globalInstance()->clear();
     for(int i = 0; i < indexes.count(); i++) {
         startThumbnailerThread(indexes[i], size);
     }

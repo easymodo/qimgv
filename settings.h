@@ -67,8 +67,8 @@ public:
     bool playVideoSounds();
     void setPlayVideoSounds(bool mode);
     QString cacheDir();
-    QString ffmpegExecutable();
-    void setFFmpegExecutable(QString path);
+    QString mpvBinary();
+    void setMpvBinary(QString path);
     bool showThumbnailLabels();
     void setShowThumbnailLabels(bool mode);
     PanelHPosition panelPosition();
@@ -104,11 +104,12 @@ public:
     void setUseThumbnailCache(bool mode);
     QStringList savedPaths();
     void setSavedPaths(QStringList paths);
+    QString tempDir();
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;
     QSettings s;
-    QDir *cacheDirectory;
+    QDir *tempDirectory, *cacheDirectory;
 
 signals:
     void settingsChanged();

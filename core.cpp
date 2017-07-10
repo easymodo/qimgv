@@ -424,6 +424,7 @@ void Core::displayImage(Image *img) {
     }
 }
 
+// TODO: this looks ugly
 void Core::updateInfoString() {
     QString infoString = "";
     infoString.append("[ " +
