@@ -20,7 +20,6 @@ add_definitions(${Qt5Widgets_DEFINITIONS} ${Qt5Concurrent_DEFINITIONS})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS} -std=c++11")
 
-#add_subdirectory(tests)
 add_subdirectory(components/actionmanager)
 add_subdirectory(components/cache)
 add_subdirectory(components/directorymanager)
@@ -44,7 +43,7 @@ QT5_ADD_RESOURCES(RES resources.qrc)
 
 add_executable(qimgv ${SRC} ${RES})
 
-target_link_libraries(qimgv actionmanager cache directorymanager loader scaler thumbnailer gui customwidgets overlays mainpanel sidepanel viewers sourcecontainers utils)
+target_link_libraries(qimgv mpv actionmanager cache directorymanager loader scaler thumbnailer gui customwidgets overlays mainpanel sidepanel viewers utils sourcecontainers)
      
 qt5_use_modules (qimgv Core Widgets Concurrent)
 
