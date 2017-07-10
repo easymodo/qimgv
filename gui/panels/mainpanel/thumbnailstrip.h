@@ -47,7 +47,6 @@ private:
     PanelHPosition position;
     QMutex mutex;
 
-    void requestThumbnail(int pos);
     QGraphicsScene *scene;
     bool checkRange(int pos);
     long idCounter;
@@ -59,7 +58,7 @@ private:
     void updateThumbnailSize();
     void ensureThumbnailVisible(int pos);
 signals:
-    void thumbnailRequested(int pos, int size);
+    void thumbnailRequested(QList<int>, int);
     void thumbnailClicked(int pos);
 
 public slots:

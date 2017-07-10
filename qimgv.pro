@@ -81,8 +81,8 @@ SOURCES += \
     settings.cpp \
     gui/copydialog.cpp \
     gui/customwidgets/pathselectorwidget.cpp \
-    components/cache/cache2.cpp \
-    components/cache/cacheitem.cpp
+    components/cache/cacheitem.cpp \
+    components/thumbnailer/thumbnailerrunnable.cpp
 
 HEADERS += \
     core.h \
@@ -137,8 +137,8 @@ HEADERS += \
     settings.h \
     gui/copydialog.h \
     gui/customwidgets/pathselectorwidget.h \
-    components/cache/cache2.h \
-    components/cache/cacheitem.h
+    components/cache/cacheitem.h \
+    components/thumbnailer/thumbnailerrunnable.h
 
 FORMS += \
     gui/settingsdialog.ui

@@ -5,7 +5,7 @@
 #include <QRunnable>
 #include <QThread>
 #include <QDebug>
-#include "components/cache/cache2.h"
+#include "components/cache/cache.h"
 #include "scalerrequest.h"
 #include "utils/imagelib.h"
 
@@ -13,7 +13,7 @@ class ScalerRunnable : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    explicit ScalerRunnable(Cache2 *_cache);
+    explicit ScalerRunnable(Cache *_cache);
     void setRequest(ScalerRequest r);
     void run();
 signals:
@@ -21,7 +21,7 @@ signals:
 
 private:
     ScalerRequest req;
-    Cache2 *cache;
+    Cache *cache;
 };
 
 #endif // SCALERRUNNABLE_H

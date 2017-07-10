@@ -8,7 +8,7 @@
  *    start the last task that came and ignore the middle ones.
  */
 
-Scaler::Scaler(Cache2 *_cache, QObject *parent) : cache(_cache), QObject(parent), currentRequestTimestamp(0), buffered(false), running(false)
+Scaler::Scaler(Cache *_cache, QObject *parent) : cache(_cache), QObject(parent), currentRequestTimestamp(0), buffered(false), running(false)
 {
     runnable = new ScalerRunnable(cache);
     runnable->setAutoDelete(false);
@@ -21,7 +21,7 @@ void Scaler::requestScaled(ScalerRequest req) {
         startRequest(req);
     } else {
         // something is running. buffer the request
-        if(buffered) {
+        if(buffered && bufferedRequest.image != req.image) {
             cache->release(bufferedRequest.image->info()->fileName());
         }
         buffered = true;

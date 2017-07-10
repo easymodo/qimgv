@@ -143,25 +143,20 @@ void ThumbnailStrip::loadVisibleThumbnails() {
                     thumbnailFrame.view()->viewport()->geometry()).boundingRect();
         // grow rectangle to cover nearby offscreen items
         visibleRect.adjust(-OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA, 0);
-        QList<QGraphicsItem *>items = scene->items(visibleRect,
+        QList<QGraphicsItem *>visibleItems = scene->items(visibleRect,
                                                    Qt::IntersectsItemShape,
                                                    Qt::DescendingOrder);
-        /* testing code
-        for(int i = 0; i < thumbnailLabels->count(); i++) {
-            requestThumbnail(thumbnailLabels->at(i)->labelNum());
+        QList<int> loadList;
+        for(int i = 0; i < visibleItems.count(); i++) {
+            ThumbnailLabel* label = qgraphicsitem_cast<ThumbnailLabel*>(visibleItems.at(i));
+            if(label->state == EMPTY) {
+                label->state = LOADING;
+                loadList.append(label->labelNum());
+            }
         }
-        */
-        for(int i = 0; i < items.count(); i++) {
-            ThumbnailLabel* labelCurrent = qgraphicsitem_cast<ThumbnailLabel*>(items.at(i));
-            requestThumbnail(labelCurrent->labelNum());
+        if(loadList.count()) {
+            emit thumbnailRequested(loadList, thumbnailSize);
         }
-    }
-}
-
-void ThumbnailStrip::requestThumbnail(int pos) {
-    if(checkRange(pos) && thumbnailLabels->at(pos)->state == EMPTY) {
-        thumbnailLabels->at(pos)->state = LOADING;
-        emit thumbnailRequested(pos, thumbnailSize);
     }
 }
 

@@ -9,10 +9,11 @@
 
 Core::Core()
     : QObject(),
-      imageLoader(NULL),
+      loader(NULL),
       dirManager(NULL),
       cache(NULL),
       scaler(NULL),
+      thumbnailer(NULL),
       infiniteScrolling(false)
 {
 #ifdef __linux__
@@ -54,32 +55,27 @@ void Core::initComponents() {
     loadingTimer->setSingleShot(true);
     loadingTimer->setInterval(500); // TODO: test on slower pc & adjust timeout
     dirManager = new DirectoryManager();
-    cache = new Cache2();
-    imageLoader = new NewLoader(dirManager, cache);
+    cache = new Cache();
+    loader = new Loader();
     scaler = new Scaler(cache);
+    thumbnailer = new Thumbnailer(dirManager);
 }
 
 void Core::connectComponents() {
     connect(loadingTimer, SIGNAL(timeout()), this, SLOT(onLoadingTimeout()));
-    connect(imageLoader, SIGNAL(loadStarted()),
-            this, SLOT(onLoadStarted()));
-    connect(imageLoader, SIGNAL(loadFinished(Image *, int)),
-            this, SLOT(onLoadFinished(Image *, int)));
-    //connect(dirManager, SIGNAL(fileRemoved(int)), cache, SLOT(removeAt(int)), Qt::DirectConnection);
-    //connect(cache, SIGNAL(itemRemoved(int)), thumbnailPanelWidget, SLOT(removeItemAt(int)), Qt::DirectConnection);
-    //connect(dirManager, SIGNAL(directorySortingChanged()), this, SLOT(clearCache()));
+    connect(loader, SIGNAL(loadFinished(Image *)),
+            this, SLOT(onLoadFinished(Image *)));
 
-    connect(mw, SIGNAL(opened(QString)), this, SLOT(loadImageBlocking(QString)));
+    connect(mw, SIGNAL(opened(QString)), this, SLOT(loadByPathBlocking(QString)));
     connect(mw, SIGNAL(copyRequested(QString)), this, SLOT(copyFile(QString)));
     connect(mw, SIGNAL(moveRequested(QString)), this, SLOT(moveFile(QString)));
 
     // thumbnails stuff
-    //connect(cache, SIGNAL(initialized(int)), thumbnailPanelWidget, SLOT(fillPanel(int)));
-    connect(thumbnailPanelWidget, SIGNAL(thumbnailRequested(int, int)),
-            imageLoader, SLOT(generateThumbnailFor(int, int)), Qt::UniqueConnection);
-    connect(imageLoader, SIGNAL(thumbnailReady(int, Thumbnail*)),
-            thumbnailPanelWidget, SLOT(setThumbnail(int, Thumbnail*)));
-    connect(thumbnailPanelWidget, SIGNAL(thumbnailClicked(int)), this, SLOT(openByIndex(int)));
+    connect(thumbnailPanelWidget, SIGNAL(thumbnailRequested(QList<int>, int)),
+            thumbnailer, SLOT(generateThumbnailFor(QList<int>, int)), Qt::UniqueConnection);
+    connect(thumbnailer, SIGNAL(thumbnailReady(Thumbnail*)),
+            this, SLOT(forwardThumbnail(Thumbnail*)));
+    connect(thumbnailPanelWidget, SIGNAL(thumbnailClicked(int)), this, SLOT(loadByIndex(int)));
     connect(this, SIGNAL(imageIndexChanged(int)), thumbnailPanelWidget, SLOT(highlightThumbnail(int)));
     connect(imageViewer, SIGNAL(scalingRequested(QSize)), this, SLOT(scalingRequest(QSize)));
     connect(scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest)), this, SLOT(onScalingFinished(QPixmap*,ScalerRequest)));
@@ -129,8 +125,8 @@ void Core::removeFile() {
         if(dirManager->removeAt(state.currentIndex)) {
             thumbnailPanelWidget->removeItemAt(state.currentIndex);
             mw->showMessage("File removed.");
-            if(!openByIndexBlocking(state.currentIndex))
-                openByIndexBlocking(--state.currentIndex);
+            if(!loadByIndexBlocking(state.currentIndex))
+                loadByIndexBlocking(--state.currentIndex);
         } else {
             qDebug() << "Error removing file.";
         }
@@ -165,7 +161,7 @@ void Core::switchFitMode() {
 }
 
 void Core::scalingRequest(QSize size) {
-    if(state.hasActiveImage) {
+    if(state.hasActiveImage && !state.isWaitingForLoader) {
         cache->lock();
         Image *forScale = cache->get(dirManager->fileNameAt(state.currentIndex));
         if(forScale) {
@@ -184,6 +180,15 @@ void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
     }
 }
 
+void Core::forwardThumbnail(Thumbnail *thumbnail) {
+    int index = dirManager->indexOf(thumbnail->name);
+    if(index >= 0) {
+        thumbnailPanelWidget->setThumbnail(index, thumbnail);
+    } else {
+        delete thumbnail;
+    }
+}
+
 void Core::rotateByDegrees(int degrees) {
     /*
     if(state.currentIndex >= 0) {
@@ -198,6 +203,16 @@ void Core::rotateByDegrees(int degrees) {
         updateInfoString();
     }
     */
+}
+
+void Core::trimCache() {
+    QList<QString> list;
+    list << dirManager->fileNameAt(state.currentIndex - 1);
+    list << dirManager->fileNameAt(state.currentIndex);
+    list << dirManager->fileNameAt(state.currentIndex + 1);
+    cache->lock();
+    cache->trimTo(list);
+    cache->unlock();
 }
 
 void Core::clearCache() {
@@ -220,7 +235,7 @@ void Core::reset() {
 }
 
 bool Core::setDirectory(QString newPath) {
-    if(!dirManager->containsImages() || dirManager->currentDirectory() != newPath) {
+    if(!dirManager->hasImages() || dirManager->currentDirectory() != newPath) {
         this->reset();
         dirManager->setDirectory(newPath);
         thumbnailPanelWidget->fillPanel(dirManager->fileCount());
@@ -229,61 +244,86 @@ bool Core::setDirectory(QString newPath) {
     return false;
 }
 
-void Core::loadImage(QString filePath, bool blocking) {
-    ImageInfo *info = new ImageInfo(filePath);
-    if(dirManager->isImage(filePath)) {
-        // new directory
-        setDirectory(info->directoryPath());
-        // try to get image's index
-        state.currentIndex = dirManager->indexOf(info->fileName());
-        if(blocking)
-            imageLoader->openBlocking(state.currentIndex);
-        else
-            imageLoader->open(state.currentIndex);
-    } else if(dirManager->isDirectory(filePath)) {
-        this->reset();
-        // new directory
-        setDirectory(info->directoryPath());
-        if(dirManager->containsImages()) {
-            // open the first image
-            this->openByIndexBlocking(0);
-        } else {
-            // we got an empty directory; show an error
-            mw->showMessage("Directory does not contain images.");
-        }
+void Core::loadDirectory(QString path) {
+    ImageInfo *info = new ImageInfo(path);
+    this->reset();
+    // new directory
+    setDirectory(info->directoryPath());
+    if(dirManager->hasImages()) {
+        // open the first image
+        this->loadByIndexBlocking(0);
+    } else {
+        // we got an empty directory; show an error
+        mw->showMessage("Directory does not contain images.");
+    }
+}
+
+void Core::loadImage(QString path, bool blocking) {
+    ImageInfo *info = new ImageInfo(path);
+    // new directory
+    setDirectory(info->directoryPath());
+    state.currentIndex = dirManager->indexOf(info->fileName());
+    onLoadStarted();
+    QString nameKey = dirManager->fileNameAt(state.currentIndex);
+    // First check if image is already cached. If it is, just display it.
+    if(cache->contains(nameKey))
+        displayImage(cache->get(nameKey));
+    else if(blocking)
+        loader->openBlocking(path);
+    else
+        loader->open(path);
+}
+
+void Core::loadByPath(QString path, bool blocking) {
+    if(dirManager->isImage(path)) {
+        loadImage(path, blocking);
+    } else if(dirManager->isDirectory(path)) {
+        loadDirectory(path);
     } else {
         mw->showMessage("Invalid/missing file.");
     }
 }
 
-void Core::loadImage(QString filePath) {
-    loadImage(filePath, false);
+void Core::loadByPath(QString filePath) {
+    loadByPath(filePath, false);
 }
 
-void Core::loadImageBlocking(QString filePath) {
-    loadImage(filePath, true);
+void Core::loadByPathBlocking(QString filePath) {
+    loadByPath(filePath, true);
 }
 
-bool Core::openByIndex(int index) {
+bool Core::loadByIndex(int index) {
     if(index >= 0 && index < dirManager->fileCount()) {
         state.currentIndex = index;
-        imageLoader->open(index);
+        onLoadStarted();
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        // First check if image is already cached. If it is, just display it.
+        if(cache->contains(nameKey))
+            displayImage(cache->get(nameKey));
+        else
+            loader->open(dirManager->filePathAt(state.currentIndex));
         return true;
     }
     return false;
 }
 
-bool Core::openByIndexBlocking(int index) {
+bool Core::loadByIndexBlocking(int index) {
     if(index >= 0 && index < dirManager->fileCount()) {
         state.currentIndex = index;
-        imageLoader->openBlocking(state.currentIndex);
+        onLoadStarted();
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        // First check if image is already cached. If it is, just display it.
+        if(cache->contains(nameKey))
+            displayImage(cache->get(nameKey));
+        else
+            loader->open(dirManager->filePathAt(state.currentIndex));
         return true;
     }
     return false;
 }
 
 void Core::slotNextImage() {
-    if(dirManager->containsImages()) {
+    if(dirManager->hasImages()) {
         int index = state.currentIndex + 1;
         if(index >= dirManager->fileCount()) {
             if(infiniteScrolling) {
@@ -294,14 +334,19 @@ void Core::slotNextImage() {
             }
         }
         state.currentIndex = index;
-        imageLoader->open(index);
-        if(dirManager->checkRange(index + 1))
-            imageLoader->preload(index + 1);
+        onLoadStarted();
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        // First check if image is already cached. If it is, just display it.
+        if(cache->contains(nameKey))
+            displayImage(cache->get(nameKey));
+        else
+            loader->open(dirManager->filePathAt(state.currentIndex));
+        preload(index + 1);
     }
 }
 
 void Core::slotPrevImage() {
-    if(dirManager->containsImages()) {
+    if(dirManager->hasImages()) {
         int index = state.currentIndex - 1;
         if(index < 0) {
             if(infiniteScrolling) {
@@ -313,23 +358,54 @@ void Core::slotPrevImage() {
             }
         }
         state.currentIndex = index;
-        imageLoader->open(index);
-        if(dirManager->checkRange(index - 1))
-            imageLoader->preload(index - 1);
+        onLoadStarted();
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        // First check if image is already cached. If it is, just display it.
+        if(cache->contains(nameKey))
+            displayImage(cache->get(nameKey));
+        else
+            loader->open(dirManager->filePathAt(state.currentIndex));
+        preload(index - 1);
     }
+}
+
+void Core::preload(int index) {
+    if(settings->usePreloader() && dirManager->checkRange(index) && !cache->contains(dirManager->fileNameAt(index)))
+        loader->open(dirManager->filePathAt(index));
 }
 
 void Core::onLoadStarted() {
     state.isWaitingForLoader = true;
     updateInfoString();
     loadingTimer->start();
+    trimCache();
 }
 
 void Core::onLoadingTimeout() {
     // TODO: show loading message over MainWindow
 }
 
-void Core::onLoadFinished(Image *img, int index) {
+
+
+void Core::onLoadFinished(Image *img) {
+    int index = dirManager->indexOf(img->info()->fileName());
+    bool isRelevant = !(index < state.currentIndex - 1 || index > state.currentIndex + 1);
+    QString nameKey = dirManager->fileNameAt(index);
+
+    if(isRelevant) {
+        if(!cache->insert(nameKey, img)) {
+            delete img;
+            img = cache->get(nameKey);
+        }
+    } else {
+        delete img;
+    }
+    if(index == state.currentIndex) {
+        displayImage(img);
+    }
+}
+
+void Core::displayImage(Image *img) {
     loadingTimer->stop();
     state.isWaitingForLoader = false;
     state.hasActiveImage = true;
@@ -345,7 +421,7 @@ void Core::onLoadFinished(Image *img, int index) {
             showGui(); // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
             viewerWidget->showVideo(video->getClip());
         }
-        emit imageIndexChanged(index);
+        emit imageIndexChanged(state.currentIndex);
         updateInfoString();
     }
 }

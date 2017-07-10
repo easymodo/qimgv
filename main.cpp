@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     Core core;
     if(a.arguments().length() > 1) {
         QString fileName = a.arguments().at(1);
-        core.loadImageBlocking(fileName);
+        core.loadByPathBlocking(fileName);
     }
     core.showGui();
 

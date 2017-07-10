@@ -93,8 +93,8 @@ int DirectoryManager::fileCount() const {
     return mFileNameList.length();
 }
 
-bool DirectoryManager::existsInCurrentDir(QString file) const {
-    return mFileNameList.contains(file, Qt::CaseInsensitive);
+bool DirectoryManager::existsInCurrentDir(QString fileName) const {
+    return mFileNameList.contains(fileName, Qt::CaseInsensitive);
 }
 
 bool DirectoryManager::isDirectory(QString path) const {
@@ -122,8 +122,12 @@ bool DirectoryManager::isImage(QString filePath) const {
     return false;
 }
 
-bool DirectoryManager::containsImages() const {
+bool DirectoryManager::hasImages() const {
     return !mFileNameList.empty();
+}
+
+bool DirectoryManager::contains(QString fileName) const {
+    return mFileNameList.contains(fileName);
 }
 
 // ##############################################################

@@ -27,3 +27,7 @@ void CacheItem::lock() {
 void CacheItem::unlock() {
     sem->release(1);
 }
+
+int CacheItem::lockStatus() {
+    return sem->available();
+}

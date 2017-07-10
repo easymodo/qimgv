@@ -1,37 +1,27 @@
-#ifndef THUMBNAILERRUNNABLE_H
-#define THUMBNAILERRUNNABLE_H
+#ifndef THUMBNAILER_H
+#define THUMBNAILER_H
 
-#include <QRunnable>
-#include <QThread>
-#include <QCryptographicHash>
-#include <ctime>
-#include "sourcecontainers/thumbnail.h"
+#include <QtConcurrent>
+#include "components/directorymanager/directorymanager.h"
+#include "components/thumbnailer/thumbnailerrunnable.h"
 #include "components/cache/thumbnailcache.h"
-#include "utils/imagefactory.h"
-#include "settings.h"
 
-#include <QImageWriter>
-
-class ThumbnailerRunnable : public QObject, public QRunnable
+class Thumbnailer : public QObject
 {
     Q_OBJECT
 public:
-    ThumbnailerRunnable(ThumbnailCache* _cache, QString _path, int _target, int _size, bool _squared);
-    ~ThumbnailerRunnable();
-    void run();
+    explicit Thumbnailer(DirectoryManager *_dm);
+
+public slots:
+    void generateThumbnailFor(QList<int> indexes, int size);
 
 private:
-    QString generateIdString();
-    QImage* createScaledThumbnail(ImageInfo *img, int size, bool squared);
-    QImage* videoThumbnailStub();
-    QString path;
-    int target, size;
-    bool squared;
-    ThumbnailCache* thumbnailCache;
-    QSize originalSize;
+    ThumbnailCache *thumbnailCache;
+    void startThumbnailerThread(int index, int size);
+    DirectoryManager *dm;
 
 signals:
-    void thumbnailReady(int, Thumbnail*);
+    void thumbnailReady(Thumbnail*);
 };
 
-#endif // THUMBNAILERRUNNABLE_H
+#endif // THUMBNAILER_H

@@ -1,115 +1,37 @@
-#ifndef IMAGECACHE_H
-#define IMAGECACHE_H
+#ifndef CACHE_H
+#define CACHE_H
 
-#include <QList>
-#include <QMutex>
-#include "sourcecontainers/imagestatic.h"
-#include "sourcecontainers/imageanimated.h"
-#include "sourcecontainers/video.h"
-#include "sourcecontainers/thumbnail.h"
-#include "utils/imagelib.h"
-#include "settings.h"
+#include <QDebug>
+#include <QMap>
+#include <QSemaphore>
+#include <QMutexLocker>
+#include "sourcecontainers/image.h"
+#include "components/cache/cacheitem.h"
+#include "utils/imagefactory.h"
 
-class CacheObject {
+class Cache {
 public:
-    CacheObject(QString _path) : img(NULL), path(_path) {
-    }
+    explicit Cache();
+    bool contains(QString name);
+    void remove(QString name);
+    void clear();
 
-    ~CacheObject() {
-        if(img) {
-            img->lock();
-            delete img;
-        }
-    }
-    void setPath(QString _path) {
-        path = _path;
-    }
-    QString filePath() {
-        return path;
-    }
-    ImageInfo* getInfo() {
-        if(img)
-            return img->info();
-    }
-    bool isLoaded() {
-        if(img==NULL) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-    void unload() {
-        if(img) {
-            img->lock();
-            delete img;
-            img = NULL;
-        }
-    }
-    void setImage(Image* _img) {
-        img = _img;
-        path = img->imageInfo->filePath();
-    }
-    Image* image() {
-        return img;
-    }
-private:
-    void init() {
-
-    }
-    Image* getImg() {
-        if(!img) {
-            init();
-        }
-        if(!img)
-            qDebug() << "returning null 1";
-        return img;
-    }
-    Image *img;
-    QString path;
-    QMutex mutex;
-};
-
-
-class ImageCache : public QObject
-{
-    Q_OBJECT
-public:
-    ImageCache();
-    ~ImageCache();
-
-    void unloadAll();
-    void unloadAt(int pos);
-    Image *imageAt(int pos);
-    int length() const;
-    QString currentDirectory();
-    bool isLoaded(int pos);
-    QString currentlyLoadedCount();
-    void setImage(Image *img, int pos);
-
-    const QList<int> currentlyLoadedList();
-private:
-    QList<CacheObject*> *cachedImages;
-    uint maxCacheSize;
-    QString dir;
-    QMutex mutex;
-    // for quick access
-    QList<int> loadedIndexes;
-
+    bool insert(QString name, Image *img);
     void lock();
     void unlock();
-    void readSettings();
-    bool checkRange(int pos);
+    void trimTo(QStringList list);
 
-private slots:
-    void applySettings();
+    Image* get(QString name);
+    bool release(QString name);
+    bool reserve(QString name);
+    const QList<QString> keys();
+signals:
 
 public slots:
-    void init(QString _dir, QStringList *fileNameList);
-    void removeAt(int);
 
-signals:
-    void initialized(int count);
-    void itemRemoved(int);
+private:
+    QSemaphore *sem;
+    QMap<QString, CacheItem*> images;
 };
 
-#endif // IMAGECACHE_H
+#endif // CACHE_H

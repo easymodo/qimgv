@@ -1,151 +1,85 @@
 #include "cache.h"
 
-ImageCache::ImageCache() {
-    cachedImages = new QList<CacheObject *>();
-    applySettings();
-    connect(settings, SIGNAL(settingsChanged()),
-            this, SLOT(applySettings()));
+ Cache::Cache() {
+    sem = new QSemaphore(1);
 }
 
-ImageCache::~ImageCache() {
-    delete cachedImages;
+void Cache::lock() {
+    sem->acquire();
 }
 
-// ##############################################################
-// ####################### PUBLIC METHODS #######################
-// ##############################################################
+void Cache::unlock() {
+    sem->release();
+}
 
-void ImageCache::init(QString _dir, QStringList *fileNameList) {
-    lock();
-    dir = _dir;
-    while(!cachedImages->isEmpty()) {
-        delete cachedImages->takeAt(0);
+bool Cache::contains(QString name) {
+    return images.contains(name);
+}
+
+bool Cache::insert(QString name, Image* img) {
+    if(images.contains(name)) {
+        return false;
+    } else {
+        images.insert(name, new CacheItem(img));
+        return true;
     }
-    for(int i = 0; i < fileNameList->count(); i++) {
-        cachedImages->append(new CacheObject(fileNameList->at(i)));
+}
+
+void Cache::remove(QString name) {
+    if(images.contains(name)) {
+        images[name]->lock();
+        auto *item = images.take(name);
+        delete item;
     }
-    loadedIndexes.clear();
-    unlock();
-    emit initialized(length());
 }
 
-// todo: do a shift in loadedIndexes
-void ImageCache::removeAt(int pos) {
-    lock();
-    CacheObject *img = cachedImages->takeAt(pos);
-    loadedIndexes.removeAt(loadedIndexes.indexOf(pos));
-    delete img;
-    unlock();
-    emit itemRemoved(pos);
-}
-
-void ImageCache::unloadAll() {
-    lock();
-    //qDebug() << "CACHE: Clear all ";
-    for(int i = 0; i < cachedImages->length(); i++) {
-        cachedImages->at(i)->unload();
+void Cache::clear() {
+    for(auto name : images.keys()) {
+        images[name]->lock();
+        auto item = images.take(name);
+        delete item;
     }
-    loadedIndexes.clear();
-    unlock();
 }
 
-void ImageCache::unloadAt(int pos) {
-    lock();
-    if(checkRange(pos)) {
-        //qDebug() << "CACHE: Unload " << pos;
-        cachedImages->at(pos)->unload();
-        loadedIndexes.removeAt(loadedIndexes.indexOf(pos));
-    }
-    unlock();
-}
-
-Image *ImageCache::imageAt(int pos) {
-    if(checkRange(pos))
-        return cachedImages->at(pos)->image();
-    else
+Image* Cache::get(QString name) {
+    if(images.contains(name)) {
+        CacheItem *item = images.value(name);
+        return item->getContents();
+    } else {
+        qDebug() << "Cache::get() - !!! returning NULL for " << name << ". There is a bug in logic somewhere!";
         return NULL;
-}
-
-int ImageCache::length() const {
-    return cachedImages->length();
-}
-
-
-QString ImageCache::currentDirectory() {
-    return dir;
-}
-
-bool ImageCache::isLoaded(int pos) {
-    lock();
-    if(checkRange(pos)) {
-        CacheObject *img = cachedImages->at(pos);
-        unlock();
-        return img->isLoaded();
     }
-    else {
-        unlock();
+}
+
+bool Cache::reserve(QString name) {
+    if(images.contains(name)) {
+        images[name]->lock();
+        return true;
+    } else {
         return false;
     }
 }
 
-QString ImageCache::currentlyLoadedCount() {
-    lock();
-    QString str = "[ ";
-    int x = 0;
-    for(int i = 0; i < loadedIndexes.length(); i++) {
-        str.append(" " + QString::number(loadedIndexes.at(i)));
-    }   
-    str.append("  ]");
-    unlock();
-    return str;
+bool Cache::release(QString name) {
+    if(images.contains(name)) {
+        images[name]->unlock();
+        return true;
+    } else {
+        return false;
+    }
 }
 
-const QList<int> ImageCache::currentlyLoadedList() {
-    return loadedIndexes;
-}
-
-void ImageCache::setImage(Image *img, int pos) {
-    lock();
-    if(checkRange(pos)) {
-        if(!cachedImages->at(pos)->isLoaded()) {
-            cachedImages->at(pos)->setImage(img);
-            loadedIndexes.append(pos);
-        } else {
-            qDebug() << "CACHE: Warning, trying to set already loaded image. Index was: " << pos <<". This is a bug in loader!";
+// removes all items except the ones in list
+void Cache::trimTo(QStringList nameList) {
+    for(auto name : images.keys()) {
+        if(!nameList.contains(name)) {
+            images[name]->lock();
+            auto *item = images.take(name);
+            delete item;
         }
     }
-    unlock();
 }
 
-// ##############################################################
-// ###################### PRIVATE METHODS #######################
-// ##############################################################
-
-void ImageCache::lock() {
-    mutex.lock();
-}
-
-void ImageCache::unlock() {
-    mutex.unlock();
-}
-
-void ImageCache::readSettings() {
-    lock();
-    //maxCacheSize = globalSettings->s.value("cacheSize").toInt();
-    unlock();
-}
-
-bool ImageCache::checkRange(int pos) {
-    if(pos >= 0 && pos < cachedImages->length())
-        return true;
-    else
-        return false;
-}
-
-// ##############################################################
-// ###################### PRIVATE SLOTS #########################
-// ##############################################################
-
-void ImageCache::applySettings() {
-    readSettings();
+const QList<QString> Cache::keys() {
+    return images.keys();
 }

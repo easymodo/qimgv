@@ -137,6 +137,7 @@ bool MainWindow::event(QEvent *event) {
 void MainWindow::closeEvent(QCloseEvent *event) {
     this->hide();
     if(QThreadPool::globalInstance()->activeThreadCount()) {
+        QThreadPool::globalInstance()->clear();
         QThreadPool::globalInstance()->waitForDone();
     }
     if(!isFullScreen()) {

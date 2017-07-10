@@ -10,6 +10,7 @@
 #include "components/directorymanager/directorymanager.h"
 #include "components/loader/loader.h"
 #include "components/scaler/scaler.h"
+#include "components/thumbnailer/thumbnailer.h"
 #include "gui/mainwindow.h"
 #include "gui/viewers/viewerwidget.h"
 #include "gui/viewers/imageviewer.h"
@@ -30,17 +31,17 @@ public:
 public slots:
     void updateInfoString();
 
-    void loadImage(QString filePath, bool blocking);
+    void loadByPath(QString filePath, bool blocking);
 
     // loads image in second thread
-    void loadImage(QString);
+    void loadByPath(QString);
 
     // loads image in main thread
-    void loadImageBlocking(QString);
+    void loadByPathBlocking(QString);
 
     // invalid position will be ignored
-    bool openByIndex(int index);
-    bool openByIndexBlocking(int index);
+    bool loadByIndex(int index);
+    bool loadByIndexBlocking(int index);
 
 signals:
     void imageIndexChanged(int);
@@ -66,20 +67,26 @@ private:
     bool infiniteScrolling;
 
     // components
-    NewLoader *imageLoader;
+    Loader *loader;
     DirectoryManager *dirManager;
-    Cache2 *cache;
+    Cache *cache;
     Scaler *scaler;
+    Thumbnailer *thumbnailer;
 
     void rotateByDegrees(int degrees);
 
     void reset();
     bool setDirectory(QString newPath);
+    void displayImage(Image *img);
+    void loadDirectory(QString);
+    void loadImage(QString path, bool blocking);
+    void trimCache();
+    void preload(int index);
 private slots:
     void readSettings();
     void slotNextImage();
     void slotPrevImage();
-    void onLoadFinished(Image *img, int index);
+    void onLoadFinished(Image *img);
     void onLoadStarted();
     void onLoadingTimeout();
     void clearCache();
@@ -89,6 +96,7 @@ private slots:
     void switchFitMode();
     void scalingRequest(QSize);
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
+    void forwardThumbnail(Thumbnail*);
     void removeFile();
     void moveFile(QString destDirectory);
     void copyFile(QString destDirectory);

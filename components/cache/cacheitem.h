@@ -15,6 +15,7 @@ public:
     void lock();
     void unlock();
 
+    int lockStatus();
 private:
     Image *contents;
     QSemaphore *sem;

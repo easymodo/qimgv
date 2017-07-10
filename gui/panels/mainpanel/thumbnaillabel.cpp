@@ -195,6 +195,13 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
             painter->drawText(labelTextRect, Qt::TextSingleLine, thumbnail->label);
         }
     }
+    QPointF center = boundingRect().center();
+    painter->fillRect(QRectF(center - QPointF(15,30), center + QPointF(30,15)), nameColor);
+    QFont tempFont;
+    tempFont.setBold(true);
+    tempFont.setPixelSize(20);
+    painter->setFont(tempFont);
+    painter->drawText(center, QString::number(labelNumber));
 }
 
 QSizeF ThumbnailLabel::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {

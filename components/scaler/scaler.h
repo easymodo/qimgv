@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QtConcurrent>
 #include <QMutex>
-#include "components/cache/cache2.h"
+#include "components/cache/cache.h"
 #include "scalerrequest.h"
 #include "scalerrunnable.h"
 
@@ -12,7 +12,7 @@ class Scaler : public QObject
 {
     Q_OBJECT
 public:
-    explicit Scaler(Cache2 *_cache, QObject *parent = nullptr);
+    explicit Scaler(Cache *_cache, QObject *parent = nullptr);
 
 signals:
     void scalingFinished(QPixmap* result, ScalerRequest request);
@@ -31,7 +31,7 @@ private:
     ScalerRequest bufferedRequest;
     QMutex requestMutex;
 
-    Cache2 *cache;
+    Cache *cache;
 
     void startRequest(ScalerRequest req);
 };

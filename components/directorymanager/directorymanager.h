@@ -29,15 +29,16 @@ public:
     void setDirectory(QString);
     // returns position in file list
     // -1 if not found
-    int indexOf(QString) const;
+    int indexOf(QString fileName) const;
     QStringList fileList() const;
     QString currentDirectory() const;
     QString filePathAt(int pos) const;
     bool removeAt(int pos);
     int fileCount() const;
-    bool existsInCurrentDir(QString file) const;
+    bool existsInCurrentDir(QString fileName) const;
     bool isImage(QString filePath) const;
-    bool containsImages() const;
+    bool hasImages() const;
+    bool contains(QString fileName) const;
     bool checkRange(int pos) const;
     bool copyTo(QString destDirectory, int index);
 

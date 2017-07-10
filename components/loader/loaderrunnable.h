@@ -9,13 +9,12 @@ class LoaderRunnable: public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    LoaderRunnable(QString _path, int _index);
+    LoaderRunnable(QString _path);
     void run();
 private:
-    int index;
     QString path;
 signals:
-    void finished(Image*, int);
+    void finished(Image*);
 };
 
 #endif // LOADERRUNNABLE_H
