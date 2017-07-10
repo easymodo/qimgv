@@ -162,13 +162,11 @@ void Core::switchFitMode() {
 
 void Core::scalingRequest(QSize size) {
     if(state.hasActiveImage && !state.isWaitingForLoader) {
-        cache->lock();
         Image *forScale = cache->get(dirManager->fileNameAt(state.currentIndex));
         if(forScale) {
             QString path = dirManager->filePathAt(state.currentIndex);
             scaler->requestScaled(ScalerRequest(forScale, size, path));
         }
-        cache->unlock();
     }
 }
 
@@ -269,9 +267,9 @@ void Core::loadImage(QString path, bool blocking) {
     if(cache->contains(nameKey))
         displayImage(cache->get(nameKey));
     else if(blocking)
-        loader->openBlocking(path);
+        loader->loadBlocking(path);
     else
-        loader->open(path);
+        loader->loadExclusive(path);
 }
 
 void Core::loadByPath(QString path, bool blocking) {
@@ -301,7 +299,7 @@ bool Core::loadByIndex(int index) {
         if(cache->contains(nameKey))
             displayImage(cache->get(nameKey));
         else
-            loader->open(dirManager->filePathAt(state.currentIndex));
+            loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         return true;
     }
     return false;
@@ -316,7 +314,7 @@ bool Core::loadByIndexBlocking(int index) {
         if(cache->contains(nameKey))
             displayImage(cache->get(nameKey));
         else
-            loader->open(dirManager->filePathAt(state.currentIndex));
+            loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         return true;
     }
     return false;
@@ -340,7 +338,7 @@ void Core::slotNextImage() {
         if(cache->contains(nameKey))
             displayImage(cache->get(nameKey));
         else
-            loader->open(dirManager->filePathAt(state.currentIndex));
+            loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         preload(index + 1);
     }
 }
@@ -364,14 +362,14 @@ void Core::slotPrevImage() {
         if(cache->contains(nameKey))
             displayImage(cache->get(nameKey));
         else
-            loader->open(dirManager->filePathAt(state.currentIndex));
+            loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         preload(index - 1);
     }
 }
 
 void Core::preload(int index) {
     if(settings->usePreloader() && dirManager->checkRange(index) && !cache->contains(dirManager->fileNameAt(index)))
-        loader->open(dirManager->filePathAt(index));
+        loader->load(dirManager->filePathAt(index));
 }
 
 void Core::onLoadStarted() {

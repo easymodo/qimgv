@@ -31,8 +31,6 @@ public:
     virtual void crop(QRect newRect) = 0;
     virtual void rotate(int grad) = 0;
 
-    virtual void lock();
-    virtual void unlock();
     ImageInfo* imageInfo;
 
     virtual void save() = 0;
@@ -42,7 +40,6 @@ protected:
     bool loaded;
     QString path;
     QSize resolution;
-    QSemaphore *sem;
 };
 
 #endif // IMAGE_H

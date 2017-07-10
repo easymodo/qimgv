@@ -20,32 +20,25 @@ Video::~Video() {
 }
 
 void Video::load() {
-    lock();
     if(!imageInfo) {
         imageInfo = new ImageInfo(path);
     }
     if(isLoaded()) {
-        unlock();
         return;
     }
     clip = new Clip(path, imageInfo->extension());
     loaded = true;
-    unlock();
 }
 
 void Video::save(QString destinationPath) {
     if(isLoaded()) {
-        lock();
         clip->save(destinationPath);
-        unlock();
     }
 }
 
 void Video::save() {
     if(isLoaded()) {
-        lock();
         clip->save(path);
-        unlock();
     }
 }
 

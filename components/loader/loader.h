@@ -1,6 +1,7 @@
 #ifndef NEWLOADER_H
 #define NEWLOADER_H
 
+#include <QThreadPool>
 #include <QtConcurrent>
 #include "components/cache/thumbnailcache.h"
 #include "loaderrunnable.h"
@@ -10,11 +11,13 @@ class Loader : public QObject
     Q_OBJECT
 public:
     explicit Loader();
-    void open(QString path);
-    void openBlocking(QString path);
+    void loadBlocking(QString path);
+    void loadExclusive(QString path);
+    void load(QString path);
 
 private:
-    QList<QString> tasks;
+    QList<QString> bufferedTasks;
+    QThreadPool *pool;
 
 signals:
     void loadFinished(Image*);

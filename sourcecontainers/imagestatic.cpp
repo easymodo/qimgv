@@ -24,42 +24,33 @@ ImageStatic::~ImageStatic() {
 
 //load image data from disk
 void ImageStatic::load() {
-    lock();
     if(!imageInfo) {
         imageInfo = new ImageInfo(path);
     }
     if(isLoaded()) {
-        unlock();
         return;
     }
     image = new QImage();
     image->load(path, imageInfo->extension());
     loaded = true;
-    unlock();
 }
 
 void ImageStatic::save(QString destinationPath) {
     if(isLoaded()) {
-        lock();
         image->save(destinationPath);
-        unlock();
     }
 }
 
 void ImageStatic::save() {
     if(isLoaded()) {
-        lock();
         image->save(path);
-        unlock();
     }
 }
 
 QPixmap *ImageStatic::getPixmap() {
     QPixmap *pix = new QPixmap();
     if(isLoaded()) {
-        lock();
         pix->convertFromImage(*image);
-        unlock();
     }
     return pix;
 }
@@ -82,12 +73,10 @@ QSize ImageStatic::size() {
 
 QImage *ImageStatic::rotated(int grad) {
     if(isLoaded()) {
-        lock();
         QImage *img = new QImage();
         QTransform transform;
         transform.rotate(grad);
         *img = image->transformed(transform, Qt::SmoothTransformation);
-        unlock();
         return img;
     }
     return NULL;
@@ -96,28 +85,23 @@ QImage *ImageStatic::rotated(int grad) {
 void ImageStatic::rotate(int grad) {
     if(isLoaded()) {
         QImage *img = rotated(grad);
-        lock();
         delete image;
         image = img;
-        unlock();
     }
 }
 
 void ImageStatic::crop(QRect newRect) {
     if(isLoaded()) {
-        lock();
         QImage *tmp = new QImage(newRect.size(), image->format());
         *tmp = image->copy(newRect);
         delete image;
         image = tmp;
-        unlock();
     }
 }
 
 QImage *ImageStatic::cropped(QRect newRect, QRect targetRes, bool upscaled) {
     if(isLoaded()) {
         QImage *cropped = new QImage(targetRes.size(), image->format());
-        lock();
         if(upscaled) {
             QImage temp = image->copy(newRect);
             *cropped = temp.scaled(targetRes.size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
@@ -128,7 +112,6 @@ QImage *ImageStatic::cropped(QRect newRect, QRect targetRes, bool upscaled) {
             newRect.moveCenter(image->rect().center());
             *cropped = image->copy(newRect);
         }
-        unlock();
         return cropped;
     }
     return NULL;
