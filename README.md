@@ -2,6 +2,9 @@ qimgv
 =====
 Simple cross-platform image viewer written in Qt.
 
+Your can watch the development status [here](https://trello.com/b/9MNMhHHB/qimgv).
+
+
 ![alt tag](https://i.imgur.com/kvZFbys.png)
 
 Key features:
@@ -62,4 +65,4 @@ INSTALLATION
 
   Arch: Get it from AUR ( *qimgv-git* )
     
-  Others distros: run *build.sh* in project directory (make sure you have qt5 and cmake installed)
+  Others distros: run *build.sh* from scripts directory (make sure you have qt5 and cmake installed)
