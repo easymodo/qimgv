@@ -43,7 +43,7 @@ QT5_ADD_RESOURCES(RES resources.qrc)
 
 add_executable(qimgv ${SRC} ${RES})
 
-target_link_libraries(qimgv mpv actionmanager cache directorymanager loader scaler thumbnailer gui customwidgets overlays mainpanel sidepanel viewers utils sourcecontainers)
+target_link_libraries(qimgv actionmanager cache directorymanager loader scaler thumbnailer gui customwidgets overlays mainpanel sidepanel viewers utils sourcecontainers mpv)
      
 qt5_use_modules (qimgv Core Widgets Concurrent)
 
