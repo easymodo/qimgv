@@ -27,6 +27,10 @@ unix {
     PKGCONFIG += mpv
 }
 
+win32:LIBS += -L$$PWD/mpv-dev/lib/ -llibmpv
+win32:INCLUDEPATH += $$PWD/mpv-dev/include
+win32:DEPENDPATH += $$PWD/mpv-dev
+
 SOURCES += \
     main.cpp \
     core.cpp \
