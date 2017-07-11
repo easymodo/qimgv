@@ -106,7 +106,7 @@ void Core::initActions() {
     //connect(actionManager, SIGNAL(setWallpaper()), this, SLOT(slotSelectWallpaper()));
     connect(actionManager, SIGNAL(open()), mw, SLOT(showOpenDialog()));
     connect(actionManager, SIGNAL(save()), mw, SLOT(showSaveDialog()));
-    connect(actionManager, SIGNAL(exit()), this, SLOT(exit()));
+    connect(actionManager, SIGNAL(exit()), this, SLOT(close()));
     connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFile()));
     connect(actionManager, SIGNAL(copyFile()), mw, SLOT(triggerCopyDialog()));
     connect(actionManager, SIGNAL(moveFile()), mw, SLOT(triggerMoveDialog()));
@@ -125,9 +125,8 @@ void Core::closeBackgroundTasks() {
     loader->clearTasks();
 }
 
-void Core::exit() {
+void Core::close() {
     mw->close();
-    qDebug() << "shutdown core.";
     closeBackgroundTasks();
 }
 

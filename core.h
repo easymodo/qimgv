@@ -94,7 +94,7 @@ private slots:
     void rotateLeft();
     void rotateRight();
     void closeBackgroundTasks();
-    void exit();
+    void close();
     void switchFitMode();
     void scalingRequest(QSize);
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);

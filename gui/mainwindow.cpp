@@ -134,14 +134,20 @@ bool MainWindow::event(QEvent *event) {
     return (actionManager->processEvent(event)) ? true : QWidget::event(event);
 }
 
-void MainWindow::closeEvent(QCloseEvent *event) {
+void MainWindow::close() {
     this->hide();
     if(!isFullScreen()) {
         saveWindowGeometry();
     }
     saveCurrentDisplay();
     copyDialog->saveSettings();
-    QWidget::closeEvent(event);
+    QWidget::close();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    // catch the close event when user presses X on the window itself
+    event->accept();
+    actionManager->invokeAction("exit");
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e) {

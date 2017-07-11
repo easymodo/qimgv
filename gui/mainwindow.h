@@ -94,6 +94,7 @@ public slots:
     void triggerCopyDialog();
     void showMessage(QString text);
     void triggerMoveDialog();
+    void close();
 };
 
 #endif // MainWindow_H
