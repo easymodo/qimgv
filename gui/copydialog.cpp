@@ -16,9 +16,9 @@ CopyDialog::CopyDialog(QWidget *parent) : OverlayWidget(parent) {
     mode = DIALOG_COPY;
 
     // drawing stuff
-    bgColor.setRgb(33,33,33);
-    borderColor.setRgb(60,60,60);
-    borderPen.setWidth(3);
+    bgColor.setRgb(36,36,36);
+    borderColor.setRgb(52,52,52);
+    borderPen.setWidth(2);
     borderPen.setColor(borderColor);
 
 
@@ -110,8 +110,6 @@ void CopyDialog::recalculateGeometry() {
     QPoint pos(0, 0);
     pos.setX(25);
     pos.setY(containerSize().height() - height() - 25);
-    //pos.setX( (containerSize().width() - width()) / 2);
-    //pos.setY(containerSize().height() - height() - 25);
     // apply position
     setGeometry(QRect(pos, size()));
 }
@@ -121,7 +119,7 @@ void CopyDialog::paintEvent(QPaintEvent *event) {
     QPainter p(this);
     p.fillRect(rect(), bgColor);
     p.setPen(borderPen);
-    p.drawRect(rect().adjusted(0,0,-1,-1));
+    p.drawRect(rect().adjusted(2,2,-2,-2));
 }
 
 void CopyDialog::keyPressEvent(QKeyEvent *event) {
