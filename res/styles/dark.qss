@@ -1,14 +1,15 @@
 [accessibleName="PathSelectorLabel"] {
-    background-color: #252525;
-    color: #555555;
-    border: 2px solid #343434;
+    background-color: #2C2C2C;
+    color: #646464;
+    border: 2px solid #2C2C2C;
     border-radius: 4px;
     padding: 4px 4px 4px 4px;
 }
 
 [accessibleName="PathSelectorLabel"]:hover {
-    border-color: #444444;
-    color: #606060;
+    background-color: #323232;
+    color: #646464;
+    border: 2px solid #323232;
 }
 
 [accessibleName="PathSelectorButton"] {
@@ -20,8 +21,8 @@
 }
 
 [accessibleName="PathSelectorButton"]:hover {
-    border-color: #444444;
-    color: #505050;
+    border-color: #424242;
+    color: #424242;
 }
 
 [accessibleName="iconButton"] {
