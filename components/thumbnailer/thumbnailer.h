@@ -17,8 +17,13 @@ public slots:
 
 private:
     ThumbnailCache *thumbnailCache;
-    void startThumbnailerThread(int index, int size);
+    void startThumbnailerThread(QString filePath, int size);
     DirectoryManager *dm;
+    QStringList runningTasks;
+
+private slots:
+    void onTaskStart(QString path);
+    void onTaskEnd(Thumbnail*, QString path);
 
 signals:
     void thumbnailReady(Thumbnail*);

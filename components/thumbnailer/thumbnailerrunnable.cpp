@@ -9,6 +9,7 @@ ThumbnailerRunnable::ThumbnailerRunnable(ThumbnailCache* _thumbnailCache, QStrin
 }
 
 void ThumbnailerRunnable::run() {
+    emit taskStart(path);
     ImageInfo imgInfo(path);
     Thumbnail *th = new Thumbnail();
     th->size = size;
@@ -40,7 +41,7 @@ void ThumbnailerRunnable::run() {
                 thumbImage->text("originalWidth") +
                 thumbImage->text("label");
     delete thumbImage;
-    emit thumbnailReady(th);
+    emit taskEnd(th, path);
 }
 
 QString ThumbnailerRunnable::generateIdString() {

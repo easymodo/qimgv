@@ -25,13 +25,14 @@ private:
     QString generateIdString();
     QImage* createScaledThumbnail(ImageInfo *img, int size, bool squared);
     QString path;
-    int target, size;
+    int size;
     bool squared;
     ThumbnailCache* thumbnailCache;
     QSize originalSize;
 
 signals:
-    void thumbnailReady(Thumbnail*);
+    void taskStart(QString);
+    void taskEnd(Thumbnail*, QString);
 };
 
 #endif // THUMBNAILERRUNNABLE_H

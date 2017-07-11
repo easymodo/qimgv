@@ -49,7 +49,6 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
         // pixel scrolling (precise)
         centerOnX(viewportCenter.x() - event->pixelDelta().y());
         scrollTimer.start();
-        //blockMoveEvents = true;
     } else {
         // also ignore if we reached boundaries
         if( (angleDelta > 0 && atSceneStart()) || (angleDelta < 0 && atSceneEnd()) )

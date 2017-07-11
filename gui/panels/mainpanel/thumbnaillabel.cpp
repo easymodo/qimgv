@@ -60,10 +60,11 @@ void ThumbnailLabel::setThumbnailSize(int size) {
 
 void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail) {
     if(_thumbnail) {
-        thumbnail = _thumbnail;
-        if(showLabel && !thumbnail->label.isEmpty()) {
-
+        if(thumbnail) {
+            qDebug() << "duplicate request";
+            delete thumbnail;
         }
+        thumbnail = _thumbnail;
         setupLabel();
         update();
     }

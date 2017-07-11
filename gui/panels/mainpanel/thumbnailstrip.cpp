@@ -145,12 +145,11 @@ void ThumbnailStrip::loadVisibleThumbnails() {
         visibleRect.adjust(-OFFSCREEN_PRELOAD_AREA, 0, OFFSCREEN_PRELOAD_AREA, 0);
         QList<QGraphicsItem *>visibleItems = scene->items(visibleRect,
                                                    Qt::IntersectsItemShape,
-                                                   Qt::DescendingOrder);
+                                                   Qt::AscendingOrder);
         QList<int> loadList;
         for(int i = 0; i < visibleItems.count(); i++) {
             ThumbnailLabel* label = qgraphicsitem_cast<ThumbnailLabel*>(visibleItems.at(i));
             if(label->state == EMPTY) {
-                label->state = LOADING;
                 loadList.append(label->labelNum());
             }
         }
