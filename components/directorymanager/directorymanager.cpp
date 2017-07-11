@@ -95,8 +95,8 @@ bool DirectoryManager::existsInCurrentDir(QString fileName) const {
 }
 
 bool DirectoryManager::isDirectory(QString path) const {
-    QDir tmp(path);
-    return (tmp.isReadable());
+    QFileInfo fileInfo(path);
+    return (fileInfo.isDir() && fileInfo.isReadable());
 }
 
 bool DirectoryManager::isImage(QString filePath) const {

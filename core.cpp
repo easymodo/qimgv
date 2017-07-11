@@ -243,16 +243,15 @@ bool Core::setDirectory(QString newPath) {
 }
 
 void Core::loadDirectory(QString path) {
-    ImageInfo *info = new ImageInfo(path);
     this->reset();
     // new directory
-    setDirectory(info->directoryPath());
+    setDirectory(path);
     if(dirManager->hasImages()) {
         // open the first image
         this->loadByIndexBlocking(0);
     } else {
         // we got an empty directory; show an error
-        mw->showMessage("Directory does not contain images.");
+        mw->showMessage("Directory does not contain supported files.");
     }
 }
 
@@ -273,12 +272,15 @@ void Core::loadImage(QString path, bool blocking) {
 }
 
 void Core::loadByPath(QString path, bool blocking) {
-    if(dirManager->isImage(path)) {
-        loadImage(path, blocking);
-    } else if(dirManager->isDirectory(path)) {
-        loadDirectory(path);
+    QUrl url(path);
+    QString decodedPath = url.path();
+    if(dirManager->isImage(decodedPath)) {
+        loadImage(decodedPath, blocking);
+    } else if(dirManager->isDirectory(decodedPath)) {
+        loadDirectory(decodedPath);
     } else {
-        mw->showMessage("Invalid/missing file.");
+        mw->showMessage("File does not exist or is not supported.");
+        qDebug() << "Could not open path: " << decodedPath;
     }
 }
 
