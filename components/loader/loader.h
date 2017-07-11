@@ -15,6 +15,7 @@ public:
     void loadExclusive(QString path);
     void load(QString path);
 
+    void clearTasks();
 private:
     QList<QString> bufferedTasks;
     QThreadPool *pool;

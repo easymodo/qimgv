@@ -2,10 +2,16 @@
 
 Thumbnailer::Thumbnailer(DirectoryManager *_dm) : dm(_dm) {
     thumbnailCache = new ThumbnailCache();
+    pool = new QThreadPool(this);
+}
+
+void Thumbnailer::clearTasks() {
+    pool->clear();
+    pool->waitForDone();
 }
 
 void Thumbnailer::generateThumbnailFor(QList<int> indexes, int size) {
-    QThreadPool::globalInstance()->clear();
+    pool->clear();
     for(int i = 0; i < indexes.count(); i++) {
         QString filePath = dm->filePathAt(indexes[i]);
         if(!runningTasks.contains(filePath)) {
@@ -25,7 +31,7 @@ void Thumbnailer::startThumbnailerThread(QString filePath, int size) {
     connect(thumbnailerRunnable, SIGNAL(taskEnd(Thumbnail*, QString)),
             this, SLOT(onTaskEnd(Thumbnail*, QString)));
     thumbnailerRunnable->setAutoDelete(true);
-    QThreadPool::globalInstance()->start(thumbnailerRunnable);
+    pool->start(thumbnailerRunnable);
 }
 
 void Thumbnailer::onTaskStart(QString path) {

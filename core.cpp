@@ -106,7 +106,7 @@ void Core::initActions() {
     //connect(actionManager, SIGNAL(setWallpaper()), this, SLOT(slotSelectWallpaper()));
     connect(actionManager, SIGNAL(open()), mw, SLOT(showOpenDialog()));
     connect(actionManager, SIGNAL(save()), mw, SLOT(showSaveDialog()));
-    connect(actionManager, SIGNAL(exit()), mw, SLOT(close()));
+    connect(actionManager, SIGNAL(exit()), this, SLOT(exit()));
     connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFile()));
     connect(actionManager, SIGNAL(copyFile()), mw, SLOT(triggerCopyDialog()));
     connect(actionManager, SIGNAL(moveFile()), mw, SLOT(triggerMoveDialog()));
@@ -118,6 +118,17 @@ void Core::rotateLeft() {
 
 void Core::rotateRight() {
     rotateByDegrees(90);
+}
+
+void Core::closeBackgroundTasks() {
+    thumbnailer->clearTasks();
+    loader->clearTasks();
+}
+
+void Core::exit() {
+    mw->close();
+    qDebug() << "shutdown core.";
+    closeBackgroundTasks();
 }
 
 void Core::removeFile() {

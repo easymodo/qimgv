@@ -5,6 +5,11 @@ Loader::Loader() {
     pool->setMaxThreadCount(2);
 }
 
+void Loader::clearTasks() {
+    pool->clear();
+    pool->waitForDone();
+}
+
 void Loader::loadBlocking(QString path) {
     if(bufferedTasks.contains(path)) {
         return;
