@@ -3,6 +3,11 @@
 Thumbnailer::Thumbnailer(DirectoryManager *_dm) : dm(_dm) {
     thumbnailCache = new ThumbnailCache();
     pool = new QThreadPool(this);
+    int threads = settings->thumbnailerThreadCount();
+    int globalThreads = QThreadPool::globalInstance()->maxThreadCount();
+    if(threads > globalThreads)
+        threads = globalThreads;
+    pool->setMaxThreadCount(threads);
 }
 
 void Thumbnailer::clearTasks() {

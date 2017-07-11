@@ -105,6 +105,8 @@ public:
     QStringList savedPaths();
     void setSavedPaths(QStringList paths);
     QString tempDir();
+    int thumbnailerThreadCount();
+    void setThumbnailerThreadCount(int count);
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;

@@ -6,6 +6,7 @@
 #include "components/directorymanager/directorymanager.h"
 #include "components/thumbnailer/thumbnailerrunnable.h"
 #include "components/cache/thumbnailcache.h"
+#include "settings.h"
 
 class Thumbnailer : public QObject
 {

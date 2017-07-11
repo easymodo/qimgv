@@ -436,3 +436,14 @@ QStringList Settings::savedPaths() {
 void Settings::setSavedPaths(QStringList paths) {
     settings->s.setValue("savedPaths", paths);
 }
+
+int Settings::thumbnailerThreadCount() {
+    int count = settings->s.value("thumbnailerThreads", 2).toInt();
+    if(count <= 0)
+        count = 2;
+    return count;
+}
+
+void Settings::setThumbnailerThreadCount(int count) {
+    settings->s.setValue("thumbnailerThreads", count);
+}
