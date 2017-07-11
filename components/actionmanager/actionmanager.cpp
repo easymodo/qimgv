@@ -44,6 +44,7 @@ void ActionManager::createActionList() {
                                 << "copyFile"
                                 << "moveFile"
                                 << "openSettings"
+                                << "closeFullScreenOrExit"
                                 << "exit";
     actionManager->validActions.sort();
 }
@@ -277,7 +278,7 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("Ctrl+P", "openSettings");
     actionManager->addShortcut("Alt+X", "exit");
     actionManager->addShortcut("Ctrl+Q", "exit");
-    actionManager->addShortcut("escape", "exit");
+    actionManager->addShortcut("escape", "closeFullScreenOrExit");
     actionManager->addShortcut("delete", "removeFile");
     actionManager->addShortcut("C", "copyFile");
     actionManager->addShortcut("M", "moveFile");

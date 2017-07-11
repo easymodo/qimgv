@@ -213,7 +213,7 @@ void MainWindow::showSettings() {
     settingsDialog.exec();
 }
 
-void MainWindow::triggerFullscreen() {
+void MainWindow::triggerFullScreen() {
     if(!isFullScreen()) {
         showFullScreen();
     } else {
@@ -260,6 +260,15 @@ void MainWindow::triggerMoveDialog() {
     } else {
         copyDialog->setDialogMode(DIALOG_MOVE);
         copyDialog->show();
+    }
+}
+
+// quit fullscreen or exit the program
+void MainWindow::closeFullScreenOrExit() {
+    if(this->isFullScreen()) {
+        this->showNormal();
+    } else {
+        actionManager->invokeAction("exit");
     }
 }
 

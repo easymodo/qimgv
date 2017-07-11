@@ -93,7 +93,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(fitNormal()), mw, SLOT(showMessageFitOriginal()));
 
     connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
-    connect(actionManager, SIGNAL(toggleFullscreen()), mw, SLOT(triggerFullscreen()));
+    connect(actionManager, SIGNAL(toggleFullscreen()), mw, SLOT(triggerFullScreen()));
     connect(actionManager, SIGNAL(zoomIn()), imageViewer, SLOT(slotZoomIn()));
     connect(actionManager, SIGNAL(zoomOut()), imageViewer, SLOT(slotZoomOut()));
     connect(actionManager, SIGNAL(scrollUp()), imageViewer, SLOT(scrollUp()));
@@ -107,6 +107,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(open()), mw, SLOT(showOpenDialog()));
     connect(actionManager, SIGNAL(save()), mw, SLOT(showSaveDialog()));
     connect(actionManager, SIGNAL(exit()), this, SLOT(close()));
+    connect(actionManager, SIGNAL(closeFullScreenOrExit()), mw, SLOT(closeFullScreenOrExit()));
     connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFile()));
     connect(actionManager, SIGNAL(copyFile()), mw, SLOT(triggerCopyDialog()));
     connect(actionManager, SIGNAL(moveFile()), mw, SLOT(triggerMoveDialog()));

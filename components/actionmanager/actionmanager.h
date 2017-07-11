@@ -72,6 +72,7 @@ signals:
     void removeFile();
     void copyFile();
     void moveFile();
+    void closeFullScreenOrExit();
 
 };
 

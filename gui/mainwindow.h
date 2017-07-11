@@ -82,7 +82,7 @@ public slots:
     void showSaveDialog();
     void showOpenDialog();
     void showSettings();
-    void triggerFullscreen();
+    void triggerFullScreen();
     void setInfoString(QString);
     void showMessageDirectoryEnd();
     void showMessageDirectoryStart();
@@ -94,6 +94,7 @@ public slots:
     void triggerCopyDialog();
     void showMessage(QString text);
     void triggerMoveDialog();
+    void closeFullScreenOrExit();
     void close();
 };
 
