@@ -107,6 +107,8 @@ public:
     QString tempDir();
     int thumbnailerThreadCount();
     void setThumbnailerThreadCount(int count);
+    bool smoothUpscaling();
+    void setSmoothUpscaling(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;

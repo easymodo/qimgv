@@ -4,7 +4,7 @@ ImageLib::ImageLib() {
 
 }
 
-void ImageLib::bilinearScale(QImage *dest, const QImage *source, QSize destSize, bool smooth) {
+void ImageLib::scale(QImage *dest, const QImage *source, QSize destSize, bool smooth) {
     Qt::TransformationMode mode = smooth ? Qt::SmoothTransformation : Qt::FastTransformation;
     *dest = source->scaled(destSize.width(), destSize.height(), Qt::IgnoreAspectRatio, mode);
 }

@@ -64,10 +64,10 @@ bool DirectoryManager::removeAt(int pos) {
     if(checkRange(pos)) {
         QString path = filePathAt(pos);
         QFile file(path);
-        if(file.remove()) {
+        //if(file.remove()) {
             mFileNameList.removeAt(pos);
             return true;
-        }
+        //}
     }
     return false;
 }

@@ -8,9 +8,12 @@ void ScalerRunnable::setRequest(ScalerRequest r) {
 }
 
 void ScalerRunnable::run() {
+    emit started(req);
     ImageLib imgLib;
     QImage *scaled = new QImage();
-    imgLib.bilinearScale(scaled, req.image->getImage(), req.size, true);
-    cache->release(req.image->info()->fileName());
+    if(req.size.width() > req.image->width() && !settings->smoothUpscaling())
+        imgLib.scale(scaled, req.image->getImage(), req.size, false);
+    else
+        imgLib.scale(scaled, req.image->getImage(), req.size, true);
     emit finished(scaled, req);
 }

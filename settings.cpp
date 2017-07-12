@@ -447,3 +447,11 @@ int Settings::thumbnailerThreadCount() {
 void Settings::setThumbnailerThreadCount(int count) {
     settings->s.setValue("thumbnailerThreads", count);
 }
+
+bool Settings::smoothUpscaling() {
+    return settings->s.value("smoothUpscaling", true).toBool();
+}
+
+void Settings::setSmoothUpscaling(bool mode) {
+    settings->s.setValue("smoothUpscaling", mode);
+}

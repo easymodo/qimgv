@@ -47,7 +47,7 @@ public slots:
     void setFitAll();
     void slotZoomIn();
     void slotZoomOut();
-    void resizeImage();
+    void requestScaling();
     void crop();
     void readSettings();
     void hideCursor();
@@ -74,7 +74,7 @@ private:
     QPixmap *image;
     QMovie *animation;
     QTransform transform;
-    QTimer *resizeTimer, *cursorTimer, *animationTimer;
+    QTimer *cursorTimer, *animationTimer;
     QRect drawingRect;
     QPoint mouseMoveStartPos;
     QSize sourceSize;

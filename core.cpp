@@ -173,11 +173,13 @@ void Core::switchFitMode() {
 
 void Core::scalingRequest(QSize size) {
     if(state.hasActiveImage && !state.isWaitingForLoader) {
+        cache->lock();
         Image *forScale = cache->get(dirManager->fileNameAt(state.currentIndex));
         if(forScale) {
             QString path = dirManager->filePathAt(state.currentIndex);
             scaler->requestScaled(ScalerRequest(forScale, size, path));
         }
+        cache->unlock();
     }
 }
 

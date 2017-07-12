@@ -8,6 +8,7 @@
 #include "components/cache/cache.h"
 #include "scalerrequest.h"
 #include "utils/imagelib.h"
+#include "settings.h"
 
 class ScalerRunnable : public QObject, public QRunnable
 {
@@ -17,6 +18,7 @@ public:
     void setRequest(ScalerRequest r);
     void run();
 signals:
+    void started(ScalerRequest);
     void finished(QImage*, ScalerRequest);
 
 private:
