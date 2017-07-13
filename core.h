@@ -86,6 +86,8 @@ private slots:
     void readSettings();
     void slotNextImage();
     void slotPrevImage();
+    void jumpToFirst();
+    void jumpToLast();
     void onLoadFinished(Image *img);
     void onLoadStarted();
     void onLoadingTimeout();
