@@ -38,7 +38,7 @@ void ThumbnailerRunnable::run() {
     *th->image = QPixmap::fromImage(*thumbImage);
     // put info into Thumbnail object
     th->label = thumbImage->text("originalWidth") + "x" +
-                thumbImage->text("originalWidth") +
+                thumbImage->text("originalHeight") +
                 thumbImage->text("label");
     delete thumbImage;
     emit taskEnd(th, path);
