@@ -73,6 +73,8 @@ signals:
     void copyFile();
     void moveFile();
     void closeFullScreenOrExit();
+    void jumpToFirst();
+    void jumpToLast();
 
 };
 

@@ -111,6 +111,8 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFile()));
     connect(actionManager, SIGNAL(copyFile()), mw, SLOT(triggerCopyDialog()));
     connect(actionManager, SIGNAL(moveFile()), mw, SLOT(triggerMoveDialog()));
+    connect(actionManager, SIGNAL(jumpToFirst()), this, SLOT(jumpToFirst()));
+    connect(actionManager, SIGNAL(jumpToLast()), this, SLOT(jumpToLast()));
 }
 
 void Core::rotateLeft() {
@@ -379,6 +381,18 @@ void Core::slotPrevImage() {
         else
             loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         preload(index - 1);
+    }
+}
+
+void Core::jumpToFirst() {
+    if(dirManager->hasImages()) {
+        this->loadByIndex(0);
+    }
+}
+
+void Core::jumpToLast() {
+    if(dirManager->hasImages()) {
+        this->loadByIndex(dirManager->fileCount() - 1);
     }
 }
 

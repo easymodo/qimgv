@@ -266,7 +266,7 @@ void MainWindow::triggerMoveDialog() {
 // quit fullscreen or exit the program
 void MainWindow::closeFullScreenOrExit() {
     if(this->isFullScreen()) {
-        this->showNormal();
+        this->showWindowed();
     } else {
         actionManager->invokeAction("exit");
     }

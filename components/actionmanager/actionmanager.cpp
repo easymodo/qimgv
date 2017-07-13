@@ -43,6 +43,8 @@ void ActionManager::createActionList() {
                                 << "removeFile"
                                 << "copyFile"
                                 << "moveFile"
+                                << "jumpToFirst"
+                                << "jumpToLast"
                                 << "openSettings"
                                 << "closeFullScreenOrExit"
                                 << "exit";
@@ -183,6 +185,8 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(17, "8");
     actionManager->keyMap.insert(18, "9");
     actionManager->keyMap.insert(19, "0");
+    actionManager->keyMap.insert(110, "home"); // todo: add windows codes as well
+    actionManager->keyMap.insert(115, "end");  //
 #endif
 }
 
@@ -282,6 +286,8 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("delete", "removeFile");
     actionManager->addShortcut("C", "copyFile");
     actionManager->addShortcut("M", "moveFile");
+    actionManager->addShortcut("home", "jumpToFirst");
+    actionManager->addShortcut("end", "jumpToLast");
 }
 
 bool ActionManager::processWheelEvent(QWheelEvent *event) {
