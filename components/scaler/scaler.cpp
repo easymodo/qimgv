@@ -19,7 +19,7 @@ Scaler::Scaler(Cache *_cache, QObject *parent)
     pool->setMaxThreadCount(1);
     runnable = new ScalerRunnable(cache);
     runnable->setAutoDelete(false);
-    connect(this, SIGNAL(startBufferedRequest()), this, SLOT(slotStartBufferedRequest()), Qt::QueuedConnection);
+    connect(this, SIGNAL(startBufferedRequest()), this, SLOT(slotStartBufferedRequest()), Qt::DirectConnection);
     connect(runnable, SIGNAL(started(ScalerRequest)),
             this, SLOT(onTaskStart(ScalerRequest)), Qt::DirectConnection);
     connect(runnable, SIGNAL(finished(QImage*,ScalerRequest)),
@@ -74,10 +74,11 @@ void Scaler::onTaskFinish(QImage *scaled, ScalerRequest req) {
     if(buffered) {
         delete scaled;
         emit startBufferedRequest();
+        mutex.unlock();
     } else {
+        mutex.unlock();
         emit acceptScalingResult(scaled, req);
     }
-    mutex.unlock();
 }
 
 void Scaler::slotStartBufferedRequest() {
@@ -88,7 +89,6 @@ void Scaler::slotForwardScaledResult(QImage *image, ScalerRequest req) {
     QPixmap *pixmap = new QPixmap();
     *pixmap = QPixmap::fromImage(*image);
     delete image;
-    //qDebug() << "accepting scaled result: " << pixmap->size();
     emit scalingFinished(pixmap, req);
 }
 

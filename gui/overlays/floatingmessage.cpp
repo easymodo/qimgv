@@ -9,8 +9,7 @@ FloatingMessage::FloatingMessage(QWidget *parent) : InfoOverlay(parent) {
     textMarginX = 10;
     textMarginY = 6;
     bgColor.setRgb(20,20,20, 255);
-    borderColor.setRgb(230,230,230, 255);
-    //borderColor.setRgb(30,30,30, 255);
+    borderColor.setRgb(100,100,100, 255);
     textColor.setRgb(235, 235, 235, 255);
     setFontSize(17);
     ///////////////// icons
@@ -60,9 +59,11 @@ void FloatingMessage::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     //painter.setRenderHint(QPainter::Antialiasing);
     painter.setOpacity(currentOpacity);
-    QPainterPath path;
+    QPainterPath path, path2;
     path.addRoundedRect(rect(), 3, 3);
-    painter.fillPath(path, bgColor);
+    path2.addRoundedRect(rect().adjusted(1,1,-1,-1), 3, 3);
+    painter.fillPath(path, borderColor);
+    painter.fillPath(path2, bgColor);
     //painter.setCompositionMode(QPainter::CompositionMode_Source);
 
     if(icon != Message::NO_ICON && currentIcon)
