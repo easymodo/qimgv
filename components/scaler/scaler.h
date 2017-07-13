@@ -2,7 +2,9 @@
 #define SCALER_H
 
 #include <QObject>
+#include <QThreadPool>
 #include <QtConcurrent>
+#include <QThread>
 #include <QMutex>
 #include "components/cache/cache.h"
 #include "scalerrequest.h"
@@ -16,24 +18,30 @@ public:
 
 signals:
     void scalingFinished(QPixmap* result, ScalerRequest request);
+    void acceptScalingResult(QImage *image, ScalerRequest req);
+    void startBufferedRequest();
 
 public slots:
     void requestScaled(ScalerRequest req);
 
 private slots:
+    void onTaskStart(ScalerRequest req);
     void onTaskFinish(QImage* scaled, ScalerRequest req);
+    void slotStartBufferedRequest();
+    void slotForwardScaledResult(QImage *image, ScalerRequest req);
 
 private:
+    QThreadPool *pool;
     ScalerRunnable *runnable;
-
     bool buffered, running;
     clock_t currentRequestTimestamp;
-    ScalerRequest bufferedRequest;
-    QMutex requestMutex;
+    ScalerRequest bufferedRequest, startedRequest;
 
     Cache *cache;
 
     void startRequest(ScalerRequest req);
+
+    QMutex mutex;
 };
 
 #endif // SCALER_H

@@ -32,6 +32,7 @@ void SettingsDialog::readSettings() {
     ui->forceSmoothScrollCheckBox->setChecked(settings->forceSmoothScroll());
     ui->usePreloaderCheckBox->setChecked(settings->usePreloader());
     ui->useThumbnailCacheCheckBox->setChecked(settings->useThumbnailCache());
+    ui->smoothUpscalingCheckBox->setChecked(settings->smoothUpscaling());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -115,6 +116,7 @@ void SettingsDialog::applySettings() {
     //settings->setReduceRamUsage(ui->reduceRamUsageCheckBox->isChecked());
     settings->setUsePreloader(ui->usePreloaderCheckBox->isChecked());
     settings->setUseThumbnailCache(ui->useThumbnailCacheCheckBox->isChecked());
+    settings->setSmoothUpscaling(ui->smoothUpscalingCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 

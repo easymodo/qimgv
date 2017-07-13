@@ -364,7 +364,7 @@
                 </size>
                </property>
                <property name="text">
-                <string>Scaling quality: </string>
+                <string>Scaling algorithm: </string>
                </property>
               </widget>
              </item>
@@ -387,17 +387,24 @@
                </property>
                <item>
                 <property name="text">
-                 <string>Better quality</string>
+                 <string>Bilinear</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>Better speed</string>
+                 <string>Nearest neighbor</string>
                 </property>
                </item>
               </widget>
              </item>
             </layout>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="smoothUpscalingCheckBox">
+             <property name="text">
+              <string>Smooth upscaling</string>
+             </property>
+            </widget>
            </item>
            <item>
             <spacer name="verticalSpacer_4">
@@ -1116,7 +1123,7 @@
               <string/>
              </property>
              <property name="pixmap">
-              <pixmap resource="../resources.qrc">:/res/icons/app/48.png</pixmap>
+              <pixmap>:/res/icons/app/48.png</pixmap>
              </property>
             </widget>
            </item>

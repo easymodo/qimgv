@@ -19,17 +19,12 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     image->load(":/res/images/logo.png");
     drawingRect = image->rect();
     this->setMouseTracking(true);
-    resizeTimer = new QTimer(this);
-    resizeTimer->setSingleShot(true);
     animationTimer = new QTimer(this);
     animationTimer->setSingleShot(true);
     cursorTimer = new QTimer(this);
     readSettings();
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
-    connect(resizeTimer, SIGNAL(timeout()),
-            this, SLOT(resizeImage()),
-            Qt::UniqueConnection);
     connect(cursorTimer, SIGNAL(timeout()),
             this, SLOT(hideCursor()),
             Qt::UniqueConnection);
@@ -124,18 +119,13 @@ void ImageViewer::displayImage(QPixmap *_image) {
         if(settings->transparencyGrid())
             drawTransparencyGrid();
         update();
-        connect(resizeTimer, SIGNAL(timeout()),
-                this, SLOT(resizeImage()), Qt::UniqueConnection);
-        resizeTimer->start(0);
+        requestScaling();
     }
 }
 
 void ImageViewer::closeImage() {
     isDisplayingFlag = false;
     errorFlag = false;
-    resizeTimer->stop();
-    disconnect(resizeTimer, SIGNAL(timeout()),
-            this, SLOT(resizeImage()));
     if(animation) {
         stopAnimation();
         delete animation;
@@ -296,10 +286,9 @@ void ImageViewer::setScale(float scale) {
 // ###################  RESIZE  #####################
 // ##################################################
 
-void ImageViewer::resizeImage() {
+void ImageViewer::requestScaling() {
     if(!isDisplaying())
         return;
-    resizeTimer->stop();
     if(image->size() != drawingRect.size()) {
         emit scalingRequested(drawingRect.size());
     }
@@ -383,7 +372,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
     fixedZoomPoint = event->pos();
     this->setCursor(QCursor(Qt::ArrowCursor));
     if(event->button() == Qt::RightButton && imageFitMode != FIT_ALL) {
-        //resizeTimer->start(0);
+        //requestScaling();
         //fitDefault();
         //updateMap();
         //update();
@@ -468,17 +457,22 @@ void ImageViewer::mouseZoom(QMouseEvent *event) {
     mouseMoveStartPos = event->pos();
 
     if(moveDistance < 0 && currentScale <= maxScale) {
+        //qDebug()<< "ignoring";
         return;
     } else if(moveDistance > 0 && newScale > minScale) { // already at max zoom
+        //qDebug()<< "already at max zoom";
         newScale = minScale;
     } else if(moveDistance < 0 && newScale < maxScale - FLT_EPSILON) { // at min zoom
+        //qDebug()<< "already at min zoom";
         newScale = maxScale;
         setFitAll();
     } else {
+        //qDebug()<< "fit free";
         imageFitMode = FIT_FREE;
         scaleAround(fixedZoomPoint, newScale);
-        resizeTimer->stop();
-        resizeTimer->start(30);
+        //resizeTimer->stop();
+        //resizeTimer->start(30);
+        requestScaling();
     }
     update();
 }
@@ -559,21 +553,24 @@ void ImageViewer::setFitOriginal() {
     imageFitMode = FIT_ORIGINAL;
     fitDefault();
     updateMap();
-    resizeTimer->start(0);
+    //resizeTimer->start(0);
+    requestScaling();
 }
 
 void ImageViewer::setFitWidth() {
     imageFitMode = FIT_WIDTH;
     fitDefault();
     updateMap();
-    resizeTimer->start(0);
+    //resizeTimer->start(0);
+    requestScaling();
 }
 
 void ImageViewer::setFitAll() {
     imageFitMode = FIT_ALL;
     fitDefault();
     updateMap();
-    resizeTimer->start(0);
+    //resizeTimer->start(0);
+    requestScaling();
 }
 
 void ImageViewer::resizeEvent(QResizeEvent *event) {
@@ -589,7 +586,8 @@ void ImageViewer::resizeEvent(QResizeEvent *event) {
     cropOverlay->hide();
     updateMap();
     update();
-    resizeTimer->start(130);
+    //resizeTimer->start(130);
+    requestScaling();
 }
 
 // centers image inside window rectangle
@@ -707,7 +705,8 @@ void ImageViewer::slotZoomIn() {
     scaleAround(rect().center(), newScale);
     updateMap();
     update();
-    resizeTimer->start(90);
+    //resizeTimer->start(90);
+    requestScaling();
 }
 
 void ImageViewer::slotZoomOut() {
@@ -724,7 +723,8 @@ void ImageViewer::slotZoomOut() {
     scaleAround(rect().center(), newScale);
     updateMap();
     update();
-    resizeTimer->start(90);
+    //resizeTimer->start(90);
+    requestScaling();
 }
 
 bool ImageViewer::isDisplaying() const {
