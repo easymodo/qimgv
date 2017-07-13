@@ -53,8 +53,7 @@ protected:
     void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *event);
 
-    QPropertyAnimation *colorizeAnimation, *fadeAnimation;
-    QGraphicsColorizeEffect *colorizeEffect;
+    QPropertyAnimation *fadeAnimation;
     QParallelAnimationGroup *animGroup;
 
     QColor effectColor, borderColor;

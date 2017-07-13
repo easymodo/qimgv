@@ -8,7 +8,7 @@ FloatingMessage::FloatingMessage(QWidget *parent) : InfoOverlay(parent) {
     duration = 1200;
     textMarginX = 10;
     textMarginY = 6;
-    bgColor.setRgb(20,20,20, 255);
+    bgColor.setRgb(55,55,55, 255);
     borderColor.setRgb(100,100,100, 255);
     textColor.setRgb(235, 235, 235, 255);
     setFontSize(17);
@@ -16,21 +16,6 @@ FloatingMessage::FloatingMessage(QWidget *parent) : InfoOverlay(parent) {
     iconLeftEdge.load(":/res/icons/message/left_edge32.png");
     iconRightEdge.load(":/res/icons/message/right_edge32.png");
     setIcon(Message::NO_ICON);
-////////////////////////////////////////////////////////////////////////////////
-    //effectColor.setRgb(255, 124, 0);
-    //effectColor.setRgb(227, 132, 0);
-    effectColor.setRgb(90,90,90);
-    effectStrength = 0.0f;
-    colorizeEffect = new QGraphicsColorizeEffect(this);
-    colorizeEffect->setColor(effectColor);
-    colorizeEffect->setStrength(effectStrength);
-    setGraphicsEffect(colorizeEffect);
-
-    colorizeAnimation = new QPropertyAnimation(colorizeEffect, "strength");
-    colorizeAnimation->setEasingCurve(QEasingCurve::OutQuad);
-    colorizeAnimation->setDuration(duration);
-    colorizeAnimation->setStartValue(1.0f);
-    colorizeAnimation->setEndValue(0.0f);
 
     fadeAnimation = new QPropertyAnimation(this, "opacity");
     fadeAnimation->setDuration(duration);
@@ -39,11 +24,9 @@ FloatingMessage::FloatingMessage(QWidget *parent) : InfoOverlay(parent) {
     fadeAnimation->setEasingCurve(QEasingCurve::InQuad);
 
     animGroup = new QParallelAnimationGroup;
-    animGroup->addAnimation(colorizeAnimation);
     animGroup->addAnimation(fadeAnimation);
 
     connect(animGroup, SIGNAL(finished()), this, SLOT(hide()), Qt::UniqueConnection);
-////////////////////////////////////////////////////////////////////////////////
 }
 
 void FloatingMessage::showMessage(QString _text, Message::Position _position, Message::Icon _icon, int _duration) {
@@ -57,14 +40,12 @@ void FloatingMessage::showMessage(QString _text, Message::Position _position, Me
 void FloatingMessage::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QPainter painter(this);
-    //painter.setRenderHint(QPainter::Antialiasing);
     painter.setOpacity(currentOpacity);
     QPainterPath path, path2;
     path.addRoundedRect(rect(), 3, 3);
     path2.addRoundedRect(rect().adjusted(1,1,-1,-1), 3, 3);
     painter.fillPath(path, borderColor);
     painter.fillPath(path2, bgColor);
-    //painter.setCompositionMode(QPainter::CompositionMode_Source);
 
     if(icon != Message::NO_ICON && currentIcon)
         painter.drawPixmap(iconRect, *currentIcon);
@@ -161,7 +142,6 @@ void FloatingMessage::mousePressEvent(QMouseEvent *event) {
 void FloatingMessage::show() {
     animGroup->stop();
     QWidget::show();
-    colorizeAnimation->setDuration(duration);
     fadeAnimation->setDuration(duration);
     animGroup->start(QPropertyAnimation::KeepWhenStopped);
 }

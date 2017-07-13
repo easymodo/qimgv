@@ -18,9 +18,6 @@ CopyDialog::CopyDialog(QWidget *parent) : OverlayWidget(parent) {
     // drawing stuff
     bgColor.setRgb(36,36,36);
     borderColor.setRgb(52,52,52);
-    borderPen.setWidth(2);
-    borderPen.setColor(borderColor);
-
 
     createShortcuts();
     readSettings();
@@ -117,9 +114,11 @@ void CopyDialog::recalculateGeometry() {
 void CopyDialog::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
     QPainter p(this);
-    p.fillRect(rect(), bgColor);
-    p.setPen(borderPen);
-    p.drawRect(rect().adjusted(2,2,-2,-2));
+    QPainterPath path, path2;
+    path.addRoundedRect(rect(), 3, 3);
+    path2.addRoundedRect(rect().adjusted(2,2,-2,-2), 3, 3);
+    p.fillPath(path, borderColor);
+    p.fillPath(path2, bgColor);
 }
 
 void CopyDialog::keyPressEvent(QKeyEvent *event) {
