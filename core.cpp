@@ -292,15 +292,16 @@ void Core::loadImage(QString path, bool blocking) {
 }
 
 void Core::loadByPath(QString path, bool blocking) {
-    QUrl url(path);
-    QString decodedPath = url.path();
-    if(dirManager->isImage(decodedPath)) {
-        loadImage(decodedPath, blocking);
-    } else if(dirManager->isDirectory(decodedPath)) {
-        loadDirectory(decodedPath);
+    if(path.startsWith("file://", Qt::CaseInsensitive)) {
+        path.remove(0, 7);
+    }
+    if(dirManager->isImage(path)) {
+        loadImage(path, blocking);
+    } else if(dirManager->isDirectory(path)) {
+        loadDirectory(path);
     } else {
         mw->showMessage("File does not exist or is not supported.");
-        qDebug() << "Could not open path: " << decodedPath;
+        qDebug() << "Could not open path: " << path;
     }
 }
 
