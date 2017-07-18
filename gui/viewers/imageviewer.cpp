@@ -364,7 +364,6 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
 
 void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     QWidget::mouseMoveEvent(event);
-    showCursor();
     if(!isDisplaying())
         return;
     if(event->buttons() & Qt::LeftButton) {
@@ -372,6 +371,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     } else if(event->buttons() & Qt::RightButton) {
         mouseZoom(event);
     } else {
+        showCursor();
         cursorTimer->start(2000);
     }
 }
