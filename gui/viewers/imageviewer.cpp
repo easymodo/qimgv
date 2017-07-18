@@ -3,6 +3,7 @@
 // TODO: de-spaghettify this
 
 ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
+    image(NULL),
     animation(NULL),
     isDisplayingFlag(false),
     errorFlag(false),
@@ -15,9 +16,8 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     imageFitMode(FIT_ORIGINAL)
 {
     initOverlays();
-    image = new QPixmap();
-    image->load(":/res/images/logo.png");
-    drawingRect = image->rect();
+    logo = new QPixmap();
+    logo->load(":/res/images/logo.png");
     this->setMouseTracking(true);
     animationTimer = new QTimer(this);
     animationTimer->setSingleShot(true);
@@ -52,7 +52,7 @@ bool ImageViewer::imageIsScaled() const {
 }
 
 void ImageViewer::showLoadingMessage() {
-    closeImage();
+    reset();
     image = new QPixmap(":/res/images/loading_static.png");
     drawingRect = image->rect();
     sourceSize  = image->size();
@@ -96,7 +96,7 @@ void ImageViewer::startAnimationTimer() {
 
 void ImageViewer::displayAnimation(QMovie *_animation) {
     if(_animation && _animation->isValid()) {
-        closeImage();
+        reset();
         animation = _animation;
         animation->jumpToFrame(0);
         readjust(animation->currentPixmap().size(),
@@ -112,7 +112,7 @@ void ImageViewer::displayAnimation(QMovie *_animation) {
 
 // display & initialize
 void ImageViewer::displayImage(QPixmap *_image) {
-    closeImage();
+    reset();
     if(_image) {
         image = _image;
         readjust(image->size(), image->rect());
@@ -123,7 +123,8 @@ void ImageViewer::displayImage(QPixmap *_image) {
     }
 }
 
-void ImageViewer::closeImage() {
+// reset state, remove image & stop animation
+void ImageViewer::reset() {
     isDisplayingFlag = false;
     errorFlag = false;
     if(animation) {
@@ -136,6 +137,13 @@ void ImageViewer::closeImage() {
         image = NULL;
     }
     mapOverlay->setEnabled(false);
+}
+
+// unsetImage, then update and show cursor
+void ImageViewer::closeImage() {
+    reset();
+    update();
+    showCursor();
 }
 
 void ImageViewer::adjustOverlays() {
@@ -328,8 +336,13 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
     //painter.fillRect(rect(), QBrush(bgColor));
     //if(animation)
     //    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
-    if(image)
+    if(image) {
         painter.drawPixmap(drawingRect, *image, image->rect());
+    } else {
+        QRect logoRect(0,0,logo->width(), logo->height());
+        logoRect.moveCenter(rect().center());
+        painter.drawPixmap(logoRect, *logo, logo->rect());
+    }
 }
 
 void ImageViewer::mousePressEvent(QMouseEvent *event) {
@@ -351,7 +364,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
 
 void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     QWidget::mouseMoveEvent(event);
-    cursorTimer->stop();
+    showCursor();
     if(!isDisplaying())
         return;
     if(event->buttons() & Qt::LeftButton) {
@@ -359,7 +372,6 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     } else if(event->buttons() & Qt::RightButton) {
         mouseZoom(event);
     } else {
-        setCursor(QCursor(Qt::ArrowCursor));
         cursorTimer->start(2000);
     }
 }
@@ -739,4 +751,9 @@ ImageFitMode ImageViewer::fitMode() {
 void ImageViewer::hideCursor() {
     cursorTimer->stop();
     setCursor(QCursor(Qt::BlankCursor));
+}
+
+void ImageViewer::showCursor() {
+    cursorTimer->stop();
+    setCursor(QCursor(Qt::ArrowCursor));
 }

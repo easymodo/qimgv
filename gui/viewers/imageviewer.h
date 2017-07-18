@@ -51,6 +51,7 @@ public slots:
     void crop();
     void readSettings();
     void hideCursor();
+    void showCursor();
     void updateImage(QPixmap *scaled);
     void scrollUp();
     void scrollDown();
@@ -59,6 +60,7 @@ public slots:
     void startAnimation();
     void stopAnimation();
     void displayAnimation(QMovie *_animation);
+    void closeImage();
 
 protected:
     virtual void paintEvent(QPaintEvent* event);
@@ -71,7 +73,7 @@ private slots:
     void nextFrame();
 
 private:
-    QPixmap *image;
+    QPixmap *image, *logo;
     QMovie *animation;
     QTransform transform;
     QTimer *cursorTimer, *animationTimer;
@@ -118,9 +120,9 @@ private:
     void mouseZoom(QMouseEvent *event);
     void drawTransparencyGrid();
     void startAnimationTimer();
-    void closeImage();
     void adjustOverlays();
     void readjust(QSize _sourceSize, QRect _drawingRect);
+    void reset();
 };
 
 #endif // IMAGEVIEWER_H

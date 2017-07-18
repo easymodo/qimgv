@@ -136,10 +136,15 @@ void Core::close() {
 void Core::removeFile() {
     if(state.hasActiveImage) {
         if(dirManager->removeAt(state.currentIndex)) {
-            thumbnailPanelWidget->removeItemAt(state.currentIndex);
             mw->showMessage("File removed.");
-            if(!loadByIndexBlocking(state.currentIndex))
-                loadByIndexBlocking(--state.currentIndex);
+            thumbnailPanelWidget->removeItemAt(state.currentIndex);
+            if(!dirManager->fileCount()) {
+                imageViewer->closeImage();
+                mw->setInfoString("No file opened.");
+            } else {
+                if(!loadByIndexBlocking(state.currentIndex))
+                    loadByIndexBlocking(--state.currentIndex);
+            }
         } else {
             qDebug() << "Error removing file.";
         }
@@ -444,6 +449,7 @@ void Core::displayImage(Image *img) {
             auto animated = dynamic_cast<ImageAnimated *>(img);
             viewerWidget->showAnimation(animated->getMovie());
         } else if(type == VIDEO) {
+            imageViewer->closeImage();
             auto video = dynamic_cast<Video *>(img);
             showGui(); // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
             viewerWidget->showVideo(video->getClip());
