@@ -289,7 +289,7 @@ void ImageViewer::setScale(float scale) {
 void ImageViewer::requestScaling() {
     if(!isDisplaying())
         return;
-    if(image->size() != drawingRect.size()) {
+    if(image->size() != drawingRect.size() && !animation) {
         emit scalingRequested(drawingRect.size());
     }
 }
@@ -326,7 +326,8 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QPainter painter(this);
     //painter.fillRect(rect(), QBrush(bgColor));
-    //painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    //if(animation)
+    //    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(image)
         painter.drawPixmap(drawingRect, *image, image->rect());
 }
