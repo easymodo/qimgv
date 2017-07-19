@@ -1,6 +1,7 @@
 #include "imageviewer.h"
 
 // TODO: de-spaghettify this
+// how this garbage is even working
 
 ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     image(NULL),
@@ -171,6 +172,10 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
 
 // takes scaled image
 void ImageViewer::updateImage(QPixmap *scaled) {
+    if(!animation && scaled->size() != drawingRect.size()) {
+        delete scaled;
+        return;
+    }
     delete image;
     image = scaled;
     if(transparencyGridEnabled)
