@@ -5,7 +5,7 @@ Simple cross-platform image viewer written in Qt.
 Your can watch the development status [here](https://trello.com/b/9MNMhHHB/qimgv).
 
 
-![alt tag](https://i.imgur.com/kvZFbys.png)
+![alt tag](https://i.imgur.com/B8veKnJ.png)
 
 Key features:
 
@@ -17,7 +17,7 @@ Key features:
 
 	Fully configurable
 
-	Experimental webm support
+	Experimental webm support via mpv
 
 Default controls:
 
@@ -29,13 +29,13 @@ Default controls:
 	
 	Zooming: hold RMB and move the mouse.
 	
-	Zooming(alternate): Ctrl + Up / Down
+	Zooming(alt.): Ctrl + Up / Down
 	
-	Rotate: Ctrl + R / L
+	Rotate: Ctrl + R / L ( will be done in v0.6 )
     
-	Crop image: X key, then select area with mouse and press enter
+	Crop image: X key, then select area with mouse and press enter ( will be done in v0.6 )
 	
-	Set wallpaper: Ctrl+W. Similar to "fill" option in windows (keep aspect ratio, fill entire screen)
+	Set wallpaper: Ctrl+W. Similar to "fill" option in windows (keep aspect ratio, fill entire screen) ( will be done in v0.6 )
     
 	Switching to fullscreen: double click / F key / F11
 	
@@ -48,7 +48,13 @@ Default controls:
 		- fit by width: W key
 		
 		- 1:1 mode: N key
-    
+		
+	Quick copy panel: C key
+	
+	Quick move panel: M key
+		
+    Remove file: DEL key
+		
 	Move mouse to top for thumbnail panel
     
 	Save file: Ctrl+S

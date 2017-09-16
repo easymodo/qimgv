@@ -755,7 +755,9 @@ ImageFitMode ImageViewer::fitMode() {
 
 void ImageViewer::hideCursor() {
     cursorTimer->stop();
-    setCursor(QCursor(Qt::BlankCursor));
+    if(this->underMouse()) {
+        setCursor(QCursor(Qt::BlankCursor));
+    }
 }
 
 void ImageViewer::showCursor() {
