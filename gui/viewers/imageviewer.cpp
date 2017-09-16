@@ -40,26 +40,10 @@ void ImageViewer::initOverlays() {
     mapOverlay->setEnabled(false);
     connect(mapOverlay, &MapOverlay::positionChanged, [ = ](float x, float y) {
         drawingRect.moveTo(x, y);
-        alignImage();
+        centerImage();
         update();
         updateMap();
     });
-
-    cropOverlay = new CropOverlay(this);
-}
-
-bool ImageViewer::imageIsScaled() const {
-    return scale() != 1.0;
-}
-
-void ImageViewer::showLoadingMessage() {
-    reset();
-    image = new QPixmap(":/res/images/loading_static.png");
-    drawingRect = image->rect();
-    sourceSize  = image->size();
-    isDisplayingFlag = false;
-    fitDefault();
-    update();
 }
 
 void ImageViewer::startAnimation() {
@@ -148,9 +132,6 @@ void ImageViewer::closeImage() {
 }
 
 void ImageViewer::adjustOverlays() {
-    cropOverlay->setRealSize(sourceSize);
-    cropOverlay->setImageArea(drawingRect, currentScale);
-    cropOverlay->hide();
     mapOverlay->updatePosition();
     updateMap();
 }
@@ -166,7 +147,7 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     currentScale = 1.0;
     if(imageFitMode == FIT_FREE)
         imageFitMode = FIT_ALL;
-    fitDefault();
+    applyFitMode();
     adjustOverlays();
 }
 
@@ -191,58 +172,12 @@ void ImageViewer::scrollDown() {
     scroll(0, 300);
 }
 
-void ImageViewer::crop() {
-    disconnect(cropOverlay, SIGNAL(selected(QRect)),
-               this, SIGNAL(wallpaperSelected(QRect)));
-    connect(cropOverlay, SIGNAL(selected(QRect)),
-            this, SIGNAL(cropSelected(QRect)), Qt::UniqueConnection);
-    if(cropOverlay->isHidden() && isDisplaying()) {
-        cursorTimer->stop();
-        cropOverlay->setButtonText("CROP");
-        cropOverlay->display();
-    } else {
-        cropOverlay->hide();
-    }
-}
-
-// quality spaghetti
-// what is this even doing here
-void ImageViewer::selectWallpaper() {
-    disconnect(cropOverlay, SIGNAL(selected(QRect)),
-               this, SIGNAL(cropSelected(QRect)));
-    connect(cropOverlay, SIGNAL(selected(QRect)),
-            this, SIGNAL(wallpaperSelected(QRect)), Qt::UniqueConnection);
-    if(cropOverlay->isHidden() && isDisplaying()) {
-        cursorTimer->stop();
-        cropOverlay->setButtonText("SET WALLPAPER");
-        cropOverlay->display();
-    } else {
-        cropOverlay->hide();
-    }
-}
-
 void ImageViewer::readSettings() {
     setFitMode(settings->imageFitMode());
     mouseWrapping = settings->mouseWrapping();
     transparencyGridEnabled = settings->transparencyGrid();
     this->bgColor = settings->backgroundColor();
     this->repaint();
-}
-
-void ImageViewer::setFitMode(ImageFitMode mode) {
-    switch(mode) {
-        case ImageFitMode::FIT_ALL:
-            setFitAll();
-            break;
-        case ImageFitMode::FIT_WIDTH:
-            setFitWidth();
-            break;
-        case ImageFitMode::FIT_ORIGINAL:
-            setFitOriginal();
-            break;
-        default:
-            break;
-    }
 }
 
 void ImageViewer::updateMaxScale() {
@@ -290,9 +225,7 @@ void ImageViewer::setScale(float scale) {
     float w = scale * sourceSize.width();
     drawingRect.setHeight(h);
     drawingRect.setWidth(w);
-
     mapOverlay->updateMap(drawingRect);
-    cropOverlay->setImageArea(drawingRect, currentScale);
 }
 
 // ##################################################
@@ -338,7 +271,6 @@ void ImageViewer::drawTransparencyGrid() {
 void ImageViewer::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QPainter painter(this);
-    //painter.fillRect(rect(), QBrush(bgColor));
     //if(animation)
     //    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(image) {
@@ -488,8 +420,6 @@ void ImageViewer::mouseZoom(QMouseEvent *event) {
         //qDebug()<< "fit free";
         imageFitMode = FIT_FREE;
         scaleAround(fixedZoomPoint, newScale);
-        //resizeTimer->stop();
-        //resizeTimer->start(30);
         requestScaling();
     }
     update();
@@ -546,7 +476,14 @@ void ImageViewer::fitNormal() {
     update();
 }
 
-void ImageViewer::fitDefault() {
+void ImageViewer::setFitMode(ImageFitMode newMode) {
+    imageFitMode = newMode;
+    applyFitMode();
+    updateMap();
+    requestScaling();
+}
+
+void ImageViewer::applyFitMode() {
     switch(imageFitMode) {
         case FIT_ORIGINAL:
             fitNormal();
@@ -560,7 +497,6 @@ void ImageViewer::fitDefault() {
         default: /* FREE etc */
             break;
     }
-    cropOverlay->setImageArea(drawingRect, currentScale);
 }
 
 void ImageViewer::updateMap() {
@@ -568,67 +504,48 @@ void ImageViewer::updateMap() {
 }
 
 void ImageViewer::setFitOriginal() {
-    imageFitMode = FIT_ORIGINAL;
-    fitDefault();
-    updateMap();
-    //resizeTimer->start(0);
-    requestScaling();
+    setFitMode(FIT_ORIGINAL);
 }
 
 void ImageViewer::setFitWidth() {
-    imageFitMode = FIT_WIDTH;
-    fitDefault();
-    updateMap();
-    //resizeTimer->start(0);
-    requestScaling();
+    setFitMode(FIT_WIDTH);
 }
 
 void ImageViewer::setFitAll() {
-    imageFitMode = FIT_ALL;
-    fitDefault();
-    updateMap();
-    //resizeTimer->start(0);
-    requestScaling();
+    setFitMode(FIT_ALL);
 }
 
 void ImageViewer::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
     updateMaxScale();
     if(imageFitMode == FIT_FREE || imageFitMode == FIT_ORIGINAL) {
-        alignImage();
+        centerImage();
     } else {
-        fitDefault();
+        applyFitMode();
     }
     emit resized(size());
     mapOverlay->updatePosition();
-    cropOverlay->hide();
     updateMap();
     update();
-    //resizeTimer->start(130);
     requestScaling();
 }
 
-// centers image inside window rectangle
+// center image inside window
+// align image's corner to window corner if needed
 void ImageViewer::centerImage() {
-    drawingRect.moveCenter(rect().center());
-}
-
-// centers image inside window
-// aligns image corner to window corner if needed
-void ImageViewer::alignImage() {
     if(drawingRect.height() <= height()) {
         drawingRect.moveTop((height() - drawingRect.height()) / 2);
     } else {
-        fixAlignVertical();
+        snapEdgeVertical();
     }
     if(drawingRect.width() <= width()) {
         drawingRect.moveLeft((width() - drawingRect.width()) / 2);
     } else {
-        fixAlignHorizontal();
+        snapEdgeHorizontal();
     }
 }
 
-void ImageViewer::fixAlignHorizontal() {
+void ImageViewer::snapEdgeHorizontal() {
     if(drawingRect.x() > 0 && drawingRect.right() > width()) {
         drawingRect.moveLeft(0);
     }
@@ -637,7 +554,7 @@ void ImageViewer::fixAlignHorizontal() {
     }
 }
 
-void ImageViewer::fixAlignVertical() {
+void ImageViewer::snapEdgeVertical() {
     if(drawingRect.y() > 0 && drawingRect.bottom() > height()) {
         drawingRect.moveTop(0);
     }
@@ -646,18 +563,19 @@ void ImageViewer::fixAlignVertical() {
     }
 }
 
+// scroll viewport and do update()
 void ImageViewer::scroll(int dx, int dy) {
     if(drawingRect.size().width() > this->width()) {
         scrollX(dx);
     }
-    if(drawingRect.size().height() > this->height())
-    {
+    if(drawingRect.size().height() > this->height()) {
         scrollY(dy);
     }
     updateMap();
     update();
 }
 
+// scroll viewport
 void ImageViewer::scrollX(int dx) {
     if(dx) {
         int left = drawingRect.x() - dx;
@@ -672,6 +590,7 @@ void ImageViewer::scrollX(int dx) {
     }
 }
 
+// scroll viewport
 void ImageViewer::scrollY(int dy) {
     if(dy) {
         int top = drawingRect.y() - dy;
@@ -704,8 +623,7 @@ void ImageViewer::scaleAround(QPointF p, float newScale) {
     drawingRect.moveTop(oldY - (newPy - oldPy));
 
     setScale(newScale);
-    //centerImage();
-    alignImage();
+    centerImage();
 }
 
 void ImageViewer::slotZoomIn() {

@@ -16,7 +16,6 @@
 #include <time.h>
 #include "sourcecontainers/imagestatic.h"
 #include "gui/overlays/mapoverlay.h"
-#include "gui/overlays/cropoverlay.h"
 #include "utils/imagelib.h"
 #include "settings.h"
 
@@ -34,7 +33,6 @@ public:
 
 signals:
     void imageChanged();
-    void cropSelected(QRect);
     void wallpaperSelected(QRect);
     void resized(QSize);
     void scalingRequested(QSize);
@@ -48,15 +46,12 @@ public slots:
     void slotZoomIn();
     void slotZoomOut();
     void requestScaling();
-    void crop();
     void readSettings();
     void hideCursor();
     void showCursor();
     void updateImage(QPixmap *scaled);
     void scrollUp();
     void scrollDown();
-    void selectWallpaper();
-    void showLoadingMessage();
     void startAnimation();
     void stopAnimation();
     void displayAnimation(QMovie *_animation);
@@ -82,7 +77,6 @@ private:
     QSize sourceSize;
     QColor bgColor;
     MapOverlay *mapOverlay;
-    CropOverlay *cropOverlay;
 
     bool isDisplayingFlag, errorFlag, mouseWrapping, transparencyGridEnabled;
     const int transparencyGridSize = 10;
@@ -99,18 +93,15 @@ private:
     void setScale(float scale);
     void updateMaxScale();
     void scaleAround(QPointF p, float oldScale);
-    void fitDefault();
     void fitNormal();
     void fitWidth();
     void fitAll();
-    void centerImage();
     void updateMap();
     float scale() const;
-    bool imageIsScaled() const;
     void updateMinScale();
-    void alignImage();
-    void fixAlignHorizontal();
-    void fixAlignVertical();
+    void centerImage();
+    void snapEdgeHorizontal();
+    void snapEdgeVertical();
     void scroll(int dx, int dy);
     void scrollX(int dx);
     void scrollY(int dy);
@@ -123,6 +114,7 @@ private:
     void adjustOverlays();
     void readjust(QSize _sourceSize, QRect _drawingRect);
     void reset();
+    void applyFitMode();
 };
 
 #endif // IMAGEVIEWER_H
