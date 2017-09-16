@@ -94,8 +94,10 @@ void Core::initActions() {
 
     connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
     connect(actionManager, SIGNAL(toggleFullscreen()), mw, SLOT(triggerFullScreen()));
-    connect(actionManager, SIGNAL(zoomIn()), imageViewer, SLOT(slotZoomIn()));
-    connect(actionManager, SIGNAL(zoomOut()), imageViewer, SLOT(slotZoomOut()));
+    connect(actionManager, SIGNAL(zoomIn()), imageViewer, SLOT(zoomIn()));
+    connect(actionManager, SIGNAL(zoomOut()), imageViewer, SLOT(zoomOut()));
+    connect(actionManager, SIGNAL(zoomInCursor()), imageViewer, SLOT(zoomInCursor()));
+    connect(actionManager, SIGNAL(zoomOutCursor()), imageViewer, SLOT(zoomOutCursor()));
     connect(actionManager, SIGNAL(scrollUp()), imageViewer, SLOT(scrollUp()));
     connect(actionManager, SIGNAL(scrollDown()), imageViewer, SLOT(scrollDown()));
     //connect(actionManager, SIGNAL(resize()), this, SLOT(slotResizeDialog()));

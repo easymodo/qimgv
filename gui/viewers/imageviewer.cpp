@@ -1,18 +1,16 @@
 #include "imageviewer.h"
 
-// TODO: de-spaghettify this
-// how this garbage is even working
+// TODO: split into ImageViewerPrivate
 
 ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     image(NULL),
     animation(NULL),
     isDisplayingFlag(false),
-    errorFlag(false),
     mouseWrapping(false),
     transparencyGridEnabled(false),
     currentScale(1.0),
-    maxScale(2.0),
-    minScale(4.0),
+    minScale(2.0),
+    maxScale(4.0),
     scaleStep(0.16),
     imageFitMode(FIT_ORIGINAL)
 {
@@ -111,7 +109,6 @@ void ImageViewer::displayImage(QPixmap *_image) {
 // reset state, remove image & stop animation
 void ImageViewer::reset() {
     isDisplayingFlag = false;
-    errorFlag = false;
     if(animation) {
         stopAnimation();
         delete animation;
@@ -142,8 +139,8 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     mapOverlay->setEnabled(true);
     sourceSize  = _sourceSize;
     drawingRect =  _drawingRect;
-    updateMaxScale();
     updateMinScale();
+    updateMaxScale();
     currentScale = 1.0;
     if(imageFitMode == FIT_FREE)
         imageFitMode = FIT_ALL;
@@ -180,30 +177,30 @@ void ImageViewer::readSettings() {
     this->repaint();
 }
 
-void ImageViewer::updateMaxScale() {
+void ImageViewer::updateMinScale() {
     if(isDisplaying()) {
         if(sourceSize.width() < width() &&
                 sourceSize.height() < height()) {
-            maxScale = 1;
+            minScale = 1;
             return;
         }
         float newMaxScaleX = (float) width() / sourceSize.width();
         float newMaxScaleY = (float) height() / sourceSize.height();
         if(newMaxScaleX < newMaxScaleY) {
-            maxScale = newMaxScaleX;
+            minScale = newMaxScaleX;
         } else {
-            maxScale = newMaxScaleY;
+            minScale = newMaxScaleY;
         }
     }
 }
 
-void ImageViewer::updateMinScale() {
-    minScale = 3.0;
+void ImageViewer::updateMaxScale() {
+    maxScale = 2.0;
     float imgSize = sourceSize.width() * sourceSize.height() / 1000000;
     float maxSize =
-        minScale * sourceSize.width() * sourceSize.height() / 1000000;
+        maxScale * sourceSize.width() * sourceSize.height() / 1000000;
     if(maxSize > 25) {
-        minScale = sqrt(25 / imgSize);
+        maxScale = sqrt(25 / imgSize);
     }
 }
 
@@ -211,20 +208,22 @@ float ImageViewer::scale() const {
     return currentScale;
 }
 
+// Scales drawingRect.
+// drawingRect.topLeft() remains unchanged
 void ImageViewer::setScale(float scale) {
-    if(scale > minScale) {
-        currentScale = minScale;
-    } else if(scale <= maxScale + FLT_EPSILON) {
+    if(scale > maxScale) {
         currentScale = maxScale;
+    } else if(scale <= minScale + FLT_EPSILON) {
+        currentScale = minScale;
         if(imageFitMode == FIT_FREE)
             imageFitMode = FIT_ALL;
     } else {
         currentScale = scale;
     }
-    float h = scale * sourceSize.height();
     float w = scale * sourceSize.width();
-    drawingRect.setHeight(h);
+    float h = scale * sourceSize.height();
     drawingRect.setWidth(w);
+    drawingRect.setHeight(h);
     mapOverlay->updateMap(drawingRect);
 }
 
@@ -275,6 +274,11 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
     //    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(image) {
         painter.drawPixmap(drawingRect, *image, image->rect());
+        /*QPen pen(Qt::red);
+        pen.setWidth(4);
+        painter.setPen(pen);
+        painter.drawPoint(fixedZoomMousePos);
+        */
     } else {
         QRect logoRect(0,0,logo->width(), logo->height());
         logoRect.moveCenter(rect().center());
@@ -295,7 +299,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
     }
     if(event->button() == Qt::RightButton) {
         this->setCursor(QCursor(Qt::SizeVerCursor));
-        fixedZoomPoint = event->pos();
+        setZoomPoint(event->pos());
     }
 }
 
@@ -319,7 +323,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
         return;
     }
     mouseMoveStartPos = event->pos();
-    fixedZoomPoint = event->pos();
+    zoomDrawRectPoint = event->pos();
     this->setCursor(QCursor(Qt::ArrowCursor));
     if(event->button() == Qt::RightButton && imageFitMode != FIT_ALL) {
         //requestScaling();
@@ -400,26 +404,21 @@ void ImageViewer::mouseDrag(QMouseEvent *event) {
 }
 
 void ImageViewer::mouseZoom(QMouseEvent *event) {
-    float step = (maxScale - minScale) / -500.0;
+    float step = 0.004; //(minScale - maxScale) / -500.0;
     int currentPos = event->pos().y();
     int moveDistance = mouseMoveStartPos.y() - currentPos;
-    float newScale = currentScale + step * (moveDistance);
+    float newScale = currentScale + step * moveDistance;
     mouseMoveStartPos = event->pos();
-
-    if(moveDistance < 0 && currentScale <= maxScale) {
-        //qDebug()<< "ignoring";
+    if(moveDistance < 0 && currentScale <= minScale) {
         return;
-    } else if(moveDistance > 0 && newScale > minScale) { // already at max zoom
-        //qDebug()<< "already at max zoom";
-        newScale = minScale;
-    } else if(moveDistance < 0 && newScale < maxScale - FLT_EPSILON) { // at min zoom
-        //qDebug()<< "already at min zoom";
+    } else if(moveDistance > 0 && newScale > maxScale) { // already at max zoom
         newScale = maxScale;
+    } else if(moveDistance < 0 && newScale < minScale - FLT_EPSILON) { // at min zoom
+        newScale = minScale;
         setFitAll();
     } else {
-        //qDebug()<< "fit free";
         imageFitMode = FIT_FREE;
-        scaleAround(fixedZoomPoint, newScale);
+        scaleAroundZoomPoint(newScale);
         requestScaling();
     }
     update();
@@ -430,16 +429,13 @@ void ImageViewer::fitWidth() {
         float scale = (float) width() / sourceSize.width();
         if(scale > 1.0) {
             fitNormal();
-        }
-        else {
+        } else {
             setScale(scale);
             centerImage();
             if(drawingRect.height() > height())
                 drawingRect.moveTop(0);
             update();
         }
-    } else if(errorFlag) {
-        fitNormal();
     } else {
         centerImage();
     }
@@ -454,12 +450,10 @@ void ImageViewer::fitAll() {
             fitNormal();
             return;
         } else { // doesnt fit
-            setScale(maxScale);
+            setScale(minScale);
             centerImage();
             update();
         }
-    } else if(errorFlag) {
-        fitNormal();
     } else {
         centerImage();
     }
@@ -517,7 +511,7 @@ void ImageViewer::setFitAll() {
 
 void ImageViewer::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
-    updateMaxScale();
+    updateMinScale();
     if(imageFitMode == FIT_FREE || imageFitMode == FIT_ORIGINAL) {
         centerImage();
     } else {
@@ -530,7 +524,7 @@ void ImageViewer::resizeEvent(QResizeEvent *event) {
     requestScaling();
 }
 
-// center image inside window
+// center image if it is smaller than parent
 // align image's corner to window corner if needed
 void ImageViewer::centerImage() {
     if(drawingRect.height() <= height()) {
@@ -605,61 +599,84 @@ void ImageViewer::scrollY(int dy) {
     }
 }
 
+void ImageViewer::setZoomPoint(QPoint pos) {
+    zoomPoint = pos;
+    zoomDrawRectPoint.setX((float) (zoomPoint.x() - drawingRect.x())
+                                / drawingRect.width());
+    zoomDrawRectPoint.setY((float) (zoomPoint.y() - drawingRect.y())
+                                / drawingRect.height());
+}
 
-// scales image around point, so point's position
-// relative to window remains unchanged
-// literally shit. just center for now
-void ImageViewer::scaleAround(QPointF p, float newScale) {
-    float oldX = drawingRect.x();
-    float xPos = (float)(p.x() - oldX) / (drawingRect.width());
-    float oldPx = (float) xPos * drawingRect.width();
-    float oldY = drawingRect.y();
-    float yPos = (float)(p.y() - oldY) / drawingRect.height();
-    float oldPy = (float) yPos * drawingRect.height();
+// scale image around zoom point,
+// so that point's position relative to window remains unchanged
+void ImageViewer::scaleAroundZoomPoint(float newScale) {
     setScale(newScale);
-    float newPx = (float) xPos * drawingRect.width();
-    drawingRect.moveLeft(oldX - (newPx - oldPx));
-    float newPy = (float) yPos * drawingRect.height();
-    drawingRect.moveTop(oldY - (newPy - oldPy));
-
-    setScale(newScale);
+    float mappedX = drawingRect.width() * zoomDrawRectPoint.x() + drawingRect.left();
+    float mappedY = drawingRect.height() * zoomDrawRectPoint.y() + drawingRect.top();
+    int diffX = mappedX - zoomPoint.x();
+    int diffY = mappedY - zoomPoint.y();
+    drawingRect.moveLeft(drawingRect.left() - diffX);
+    drawingRect.moveTop(drawingRect.top() - diffY);
     centerImage();
 }
 
-void ImageViewer::slotZoomIn() {
+void ImageViewer::zoomIn() {
+    setZoomPoint(rect().center());
+    doZoomIn();
+}
+
+void ImageViewer::zoomOut() {
+    setZoomPoint(rect().center());
+    doZoomOut();
+}
+
+void ImageViewer::zoomInCursor() {
+    if(underMouse()) {
+        setZoomPoint(mapFromGlobal(cursor().pos()));
+        doZoomIn();
+    } else {
+        zoomIn();
+    }
+}
+
+void ImageViewer::zoomOutCursor() {
+    if(underMouse()) {
+        setZoomPoint(mapFromGlobal(cursor().pos()));
+        doZoomOut();
+    } else {
+        zoomOut();
+    }
+}
+
+void ImageViewer::doZoomIn() {
     if(!isDisplaying()) {
         return;
     }
     float newScale = scale() + scaleStep;
-    if(newScale == currentScale) {    //skip if minScale
+    if(newScale == currentScale) //skip if minScale
         return;
-    }
-    if(newScale > minScale) {
-        newScale = minScale;
-    }
+    if(newScale > maxScale)
+        newScale = maxScale;
     imageFitMode = FIT_FREE;
-    scaleAround(rect().center(), newScale);
+    scaleAroundZoomPoint(newScale);
     updateMap();
     update();
-    //resizeTimer->start(90);
     requestScaling();
 }
 
-void ImageViewer::slotZoomOut() {
+void ImageViewer::doZoomOut() {
     if(!isDisplaying()) {
         return;
     }
     float newScale = scale() - scaleStep;
-    if(newScale == currentScale)    //skip if maxScale
+    if(newScale == currentScale) //skip if maxScale
         return;
-    if(newScale < maxScale - FLT_EPSILON) {
-        newScale = maxScale;
-    }
+    if(newScale < minScale - FLT_EPSILON)
+        newScale = minScale;
     imageFitMode = FIT_FREE;
-    scaleAround(rect().center(), newScale);
+    scaleAroundZoomPoint(newScale);
     updateMap();
     update();
-    //resizeTimer->start(90);
     requestScaling();
 }
 

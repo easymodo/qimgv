@@ -65,6 +65,8 @@ signals:
     void scrollDown();
     void zoomIn();
     void zoomOut();
+    void zoomInCursor();
+    void zoomOutCursor();
     void resize();
     void rotateLeft();
     void rotateRight();

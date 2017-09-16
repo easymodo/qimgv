@@ -11,12 +11,9 @@
 #include <QPalette>
 #include <QTimer>
 #include <QDebug>
-#include <QErrorMessage>
-#include <vector>
 #include <time.h>
-#include "sourcecontainers/imagestatic.h"
 #include "gui/overlays/mapoverlay.h"
-#include "utils/imagelib.h"
+#include <cmath>
 #include "settings.h"
 
 #define FLT_EPSILON 1.19209290E-07F
@@ -43,8 +40,10 @@ public slots:
     void setFitOriginal();
     void setFitWidth();
     void setFitAll();
-    void slotZoomIn();
-    void slotZoomOut();
+    void zoomIn();
+    void zoomOut();
+    void zoomInCursor();
+    void zoomOutCursor();
     void requestScaling();
     void readSettings();
     void hideCursor();
@@ -78,27 +77,28 @@ private:
     QColor bgColor;
     MapOverlay *mapOverlay;
 
-    bool isDisplayingFlag, errorFlag, mouseWrapping, transparencyGridEnabled;
+    bool isDisplayingFlag, mouseWrapping, transparencyGridEnabled;
     const int transparencyGridSize = 10;
 
     float currentScale;
-    float maxScale; // zoom OUT
-    float minScale; // zoom IN
+    float minScale; // zoom OUT
+    float maxScale; // zoom IN
     float scaleStep;
-    QPointF fixedZoomPoint;
+    QPoint zoomPoint;
+    QPointF zoomDrawRectPoint; // [0-1, 0-1]
     QSize desktopSize;
 
     ImageFitMode imageFitMode;
     void initOverlays();
     void setScale(float scale);
-    void updateMaxScale();
-    void scaleAround(QPointF p, float oldScale);
+    void updateMinScale();
+    void scaleAroundZoomPoint(float oldScale);
     void fitNormal();
     void fitWidth();
     void fitAll();
     void updateMap();
     float scale() const;
-    void updateMinScale();
+    void updateMaxScale();
     void centerImage();
     void snapEdgeHorizontal();
     void snapEdgeVertical();
@@ -115,6 +115,9 @@ private:
     void readjust(QSize _sourceSize, QRect _drawingRect);
     void reset();
     void applyFitMode();
+    void setZoomPoint(QPoint pos);
+    void doZoomIn();
+    void doZoomOut();
 };
 
 #endif // IMAGEVIEWER_H

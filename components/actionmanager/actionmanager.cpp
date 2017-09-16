@@ -36,6 +36,8 @@ void ActionManager::createActionList() {
                                 << "scrollDown"
                                 << "zoomIn"
                                 << "zoomOut"
+                                << "zoomInCursor"
+                                << "zoomOutCursor"
                                 << "open"
                                 << "save"
                                 << "setWallpaper"
@@ -269,8 +271,8 @@ void ActionManager::resetDefaults() {
     //actionManager->addShortcut("R", "resize"); // TODO: better defaults
     actionManager->addShortcut("Ctrl+R", "rotateRight");
     actionManager->addShortcut("Ctrl+L", "rotateLeft");
-    actionManager->addShortcut("Ctrl+WheelDown", "zoomIn");
-    actionManager->addShortcut("Ctrl+WheelUp", "zoomOut");
+    actionManager->addShortcut("Ctrl+WheelDown", "zoomInCursor");
+    actionManager->addShortcut("Ctrl+WheelUp", "zoomOutCursor");
     actionManager->addShortcut("Ctrl+Up", "zoomIn");
     actionManager->addShortcut("Ctrl+Down", "zoomOut");
     actionManager->addShortcut("Up", "scrollUp");
