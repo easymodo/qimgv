@@ -10,6 +10,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     checkboardGridEnabled(false),
     expandImage(false),
     currentScale(1.0),
+    fitWindowScale(0.125),
     minScale(0.125),
     maxScale(maxScaleLimit),
     scaleStep(0.10),
@@ -187,19 +188,29 @@ void ImageViewer::setExpandImage(bool mode) {
     applyFitMode();
 }
 
+// scale at which current image fills the window
+void ImageViewer::updateFitWindowScale() {
+    float newMinScaleX = (float) width() / sourceSize.width();
+    float newMinScaleY = (float) height() / sourceSize.height();
+    if(newMinScaleX < newMinScaleY) {
+        fitWindowScale = newMinScaleX;
+    } else {
+        fitWindowScale = newMinScaleY;
+    }
+}
+
+bool ImageViewer::sourceImageFits() {
+    return sourceSize.width() < width() && sourceSize.height() < height();
+}
+
 // limit min scale to window size
 void ImageViewer::updateMinScale() {
     if(isDisplaying) {
-        if(!expandImage && sourceSize.width() < width() && sourceSize.height() < height()) {
+        updateFitWindowScale();
+        if(sourceImageFits()) {
             minScale = 1;
-            return;
-        }
-        float newMinScaleX = (float) width() / sourceSize.width();
-        float newMinScaleY = (float) height() / sourceSize.height();
-        if(newMinScaleX < newMinScaleY) {
-            minScale = newMinScaleX;
         } else {
-            minScale = newMinScaleY;
+            minScale = fitWindowScale;
         }
     }
 }
@@ -226,8 +237,9 @@ void ImageViewer::setScale(float scale) {
         currentScale = maxScale;
     } else if(scale <= minScale + FLT_EPSILON) {
         currentScale = minScale;
-        if(imageFitMode == FIT_FREE)
+        if(imageFitMode == FIT_FREE && currentScale == fitWindowScale) {
             imageFitMode = FIT_ALL;
+        }
     } else {
         currentScale = scale;
     }
@@ -424,8 +436,12 @@ void ImageViewer::mouseZoom(QMouseEvent *event) {
     } else if(moveDistance > 0 && newScale > maxScale) { // already at max zoom
         newScale = maxScale;
     } else if(moveDistance < 0 && newScale < minScale - FLT_EPSILON) { // at min zoom
-        newScale = minScale;
-        setFitAll();
+        if(sourceImageFits() && expandImage) {
+            fitNormal();
+        } else {
+            newScale = minScale;
+            setFitAll();
+        }
     } else {
         imageFitMode = FIT_FREE;
         scaleAroundZoomPoint(newScale);
@@ -460,7 +476,7 @@ void ImageViewer::fitAll() {
             fitNormal();
             return;
         } else { // doesnt fit
-            setScale(minScale);
+            setScale(expandImage?fitWindowScale:minScale);
             centerImage();
             update();
         }

@@ -80,6 +80,7 @@ private:
     float maxResolutionLimit = 75.0; // in megapixels
 
     float currentScale;
+    float fitWindowScale;
     float minScale;
     float maxScale;
     float scaleStep;
@@ -116,6 +117,8 @@ private:
     void setZoomPoint(QPoint pos);
     void doZoomIn();
     void doZoomOut();
+    void updateFitWindowScale();
+    bool sourceImageFits();
 };
 
 #endif // IMAGEVIEWER_H
