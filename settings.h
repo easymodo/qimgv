@@ -113,6 +113,8 @@ public:
     void setMaxZoomedResolution(int value);
     int maximumZoom();
     void setMaximumZoom(int value);
+    void setExpandImage(bool mode);
+    bool expandImage();
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;

@@ -471,3 +471,15 @@ int Settings::maximumZoom() {
 void Settings::setMaximumZoom(int value) {
     settings->s.setValue("maximumZoom", value);
 }
+
+bool Settings::expandImage() {
+    return settings->s.value("expandImage", true).toBool();
+}
+
+void Settings::setExpandImage(bool mode) {
+    settings->s.setValue("expandImage", mode);
+}
+
+
+
+

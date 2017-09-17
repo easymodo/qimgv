@@ -307,6 +307,23 @@
             </layout>
            </item>
            <item>
+            <widget class="QCheckBox" name="expandImageCheckBox">
+             <property name="toolTip">
+              <string>Modes [ FitAll ] and [ FitWidth ] will expand smaller images to fill the window.</string>
+             </property>
+             <property name="text">
+              <string>Expand smaller images</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="Line" name="line_6">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>
               <widget class="QLabel" name="sortingLabel">
@@ -1174,10 +1191,8 @@
         </spacer>
        </item>
       </layout>
-      <zorder>scalingQualityLabel</zorder>
       <zorder>verticalSpacer_7</zorder>
       <zorder>line_5</zorder>
-      <zorder>horizontalLayoutWidget</zorder>
       <zorder>frame</zorder>
       <zorder>frame_2</zorder>
      </widget>

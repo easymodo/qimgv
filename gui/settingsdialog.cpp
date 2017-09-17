@@ -17,9 +17,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 }
 
 void SettingsDialog::readSettings() {
-
     bool setting;
-
     ui->infiniteScrollingCheckBox->setChecked(settings->infiniteScrolling());
     ui->playVideosCheckBox->setChecked(settings->playVideos());
     ui->playSoundsCheckBox->setChecked(settings->playVideoSounds());
@@ -32,6 +30,7 @@ void SettingsDialog::readSettings() {
     ui->usePreloaderCheckBox->setChecked(settings->usePreloader());
     ui->useThumbnailCacheCheckBox->setChecked(settings->useThumbnailCache());
     ui->smoothUpscalingCheckBox->setChecked(settings->smoothUpscaling());
+    ui->expandImageCheckBox->setChecked(settings->expandImage());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -44,8 +43,8 @@ void SettingsDialog::readSettings() {
     onMaxZoomResolutionSliderChanged(settings->maxZoomedResolution());
 
     // ##### fit mode #####
-    int tmp = settings->imageFitMode();
-    ui->fitModeComboBox->setCurrentIndex(tmp);
+    int fitMode = settings->imageFitMode();
+    ui->fitModeComboBox->setCurrentIndex(fitMode);
 
     // ##### UI #####
     //not implemented
@@ -116,10 +115,10 @@ void SettingsDialog::applySettings() {
     settings->setSquareThumbnails(ui->squareThumbnailsCheckBox->isChecked());
     settings->setTransparencyGrid(ui->transparencyGridCheckBox->isChecked());
     settings->setForceSmoothScroll(ui->forceSmoothScrollCheckBox->isChecked());
-    //settings->setReduceRamUsage(ui->reduceRamUsageCheckBox->isChecked());
     settings->setUsePreloader(ui->usePreloaderCheckBox->isChecked());
     settings->setUseThumbnailCache(ui->useThumbnailCacheCheckBox->isChecked());
     settings->setSmoothUpscaling(ui->smoothUpscalingCheckBox->isChecked());
+    settings->setExpandImage(ui->expandImageCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 

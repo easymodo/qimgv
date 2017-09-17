@@ -49,6 +49,7 @@ public slots:
     void displayAnimation(QMovie *_animation);
     void closeImage();
 
+    void setExpandImage(bool mode);
 protected:
     virtual void paintEvent(QPaintEvent* event);
     virtual void mousePressEvent(QMouseEvent *event);
@@ -70,10 +71,9 @@ private:
     QRect drawingRect;
     QPoint mouseMoveStartPos;
     QSize sourceSize;
-    QColor bgColor;
     MapOverlay *mapOverlay;
 
-    bool isDisplaying, mouseWrapping, checkboardGridEnabled;
+    bool isDisplaying, mouseWrapping, checkboardGridEnabled, expandImage;
 
     const int CHECKBOARD_GRID_SIZE = 10;
     float maxScaleLimit = 4.0;

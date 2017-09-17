@@ -8,6 +8,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     isDisplaying(false),
     mouseWrapping(false),
     checkboardGridEnabled(false),
+    expandImage(false),
     currentScale(1.0),
     minScale(0.125),
     maxScale(maxScaleLimit),
@@ -170,19 +171,26 @@ void ImageViewer::scrollDown() {
 }
 
 void ImageViewer::readSettings() {
+    expandImage = settings->expandImage();
     maxResolutionLimit = (float)settings->maxZoomedResolution();
     maxScaleLimit = (float)settings->maximumZoom();
+    updateMinScale();
+    updateMaxScale();
     setFitMode(settings->imageFitMode());
     mouseWrapping = settings->mouseWrapping();
     checkboardGridEnabled = settings->transparencyGrid();
-    this->bgColor = settings->backgroundColor();
-    this->repaint();
+}
+
+void ImageViewer::setExpandImage(bool mode) {
+    expandImage = mode;
+    updateMinScale();
+    applyFitMode();
 }
 
 // limit min scale to window size
 void ImageViewer::updateMinScale() {
     if(isDisplaying) {
-        if(sourceSize.width() < width() && sourceSize.height() < height()) {
+        if(!expandImage && sourceSize.width() < width() && sourceSize.height() < height()) {
             minScale = 1;
             return;
         }
@@ -429,7 +437,7 @@ void ImageViewer::mouseZoom(QMouseEvent *event) {
 void ImageViewer::fitWidth() {
     if(isDisplaying) {
         float scale = (float) width() / sourceSize.width();
-        if(scale > 1.0) {
+        if(!expandImage && scale > 1.0) {
             fitNormal();
         } else {
             setScale(scale);
@@ -448,7 +456,7 @@ void ImageViewer::fitAll() {
         bool h = sourceSize.height() <= height();
         bool w = sourceSize.width() <= width();
         // source image fits entirely
-        if(h && w) {
+        if(h && w && !expandImage) {
             fitNormal();
             return;
         } else { // doesnt fit
