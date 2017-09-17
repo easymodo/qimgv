@@ -25,13 +25,9 @@ class ImageViewer : public QWidget
 public:
     ImageViewer(QWidget* parent = 0);
     ~ImageViewer();
-    bool isDisplaying() const;
     ImageFitMode fitMode();
 
 signals:
-    void imageChanged();
-    void wallpaperSelected(QRect);
-    void resized(QSize);
     void scalingRequested(QSize);
 
 public slots:
@@ -44,11 +40,8 @@ public slots:
     void zoomOut();
     void zoomInCursor();
     void zoomOutCursor();
-    void requestScaling();
     void readSettings();
-    void hideCursor();
-    void showCursor();
-    void updateImage(QPixmap *scaled);
+    void updateFrame(QPixmap *newFrame);
     void scrollUp();
     void scrollDown();
     void startAnimation();
@@ -65,6 +58,9 @@ protected:
 
 private slots:
     void nextFrame();
+    void requestScaling();
+    void hideCursor();
+    void showCursor();
 
 private:
     QPixmap *image, *logo;
@@ -77,12 +73,15 @@ private:
     QColor bgColor;
     MapOverlay *mapOverlay;
 
-    bool isDisplayingFlag, mouseWrapping, transparencyGridEnabled;
-    const int transparencyGridSize = 10;
+    bool isDisplaying, mouseWrapping, checkboardGridEnabled;
+
+    const int CHECKBOARD_GRID_SIZE = 10;
+    float maxScaleLimit = 4.0;
+    float maxResolutionLimit = 75.0; // in megapixels
 
     float currentScale;
-    float minScale; // zoom OUT
-    float maxScale; // zoom IN
+    float minScale;
+    float maxScale;
     float scaleStep;
     QPoint zoomPoint;
     QPointF zoomDrawRectPoint; // [0-1, 0-1]
@@ -97,7 +96,6 @@ private:
     void fitWidth();
     void fitAll();
     void updateMap();
-    float scale() const;
     void updateMaxScale();
     void centerImage();
     void snapEdgeHorizontal();

@@ -194,7 +194,7 @@ void Core::scalingRequest(QSize size) {
 
 void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
     if(state.hasActiveImage /* TODO: a better fix > */ && dirManager->filePathAt(state.currentIndex) == req.string) {
-        imageViewer->updateImage(scaled);
+        imageViewer->updateFrame(scaled);
     } else {
         delete scaled;
     }

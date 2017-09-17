@@ -7,7 +7,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle("Preferences - qimgv " +
                          QCoreApplication::applicationVersion());
-    //setWindowIcon(QIcon(":/res/pepper32.png"));
     ui->bgColorLabel->setAutoFillBackground(true);
     ui->accentColorLabel->setAutoFillBackground(true);
     shortcutKeys = actionManager->keys();
@@ -39,6 +38,10 @@ void SettingsDialog::readSettings() {
     // ##### scaling #####
     setting = settings->useFastScale();
     ui->scalingQualityComboBox->setCurrentIndex(setting ? 1 : 0);
+    ui->maxZoomSlider->setValue(settings->maximumZoom());
+    onMaxZoomSliderChanged(settings->maximumZoom());
+    ui->maxZoomResSlider->setValue(settings->maxZoomedResolution());
+    onMaxZoomResolutionSliderChanged(settings->maxZoomedResolution());
 
     // ##### fit mode #####
     int tmp = settings->imageFitMode();
@@ -142,6 +145,9 @@ void SettingsDialog::applySettings() {
         settings->setMainPanelSize(thumbSizeCustom);
     }
 
+    settings->setMaximumZoom(ui->maxZoomSlider->value());
+    settings->setMaxZoomedResolution(ui->maxZoomResSlider->value());
+
     applyShortcuts();
     settings->saveShortcuts();
     emit settingsChanged();
@@ -223,6 +229,15 @@ void SettingsDialog::accentColorDialog() {
         ui->accentColorLabel->setPalette(accentLabelPalette);
     }
     delete colorDialog;
+}
+
+void SettingsDialog::onMaxZoomSliderChanged(int value) {
+    ui->maxZoomLabel->setText(QString::number(value) + "x");
+}
+
+void SettingsDialog::onMaxZoomResolutionSliderChanged(int value) {
+    ui->maxZoomResLabel->setText(QString::number(value) + " Mpx");
+    ui->maxZoomResInfoLabel->setText("<small><i>Estimated memory usage: ~" + QString::number(value * 4) + "MB @ 32bpp</i></small>");
 }
 
 SettingsDialog::~SettingsDialog() {

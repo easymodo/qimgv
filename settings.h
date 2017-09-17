@@ -109,6 +109,10 @@ public:
     void setThumbnailerThreadCount(int count);
     bool smoothUpscaling();
     void setSmoothUpscaling(bool mode);
+    int maxZoomedResolution();
+    void setMaxZoomedResolution(int value);
+    int maximumZoom();
+    void setMaximumZoom(int value);
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;

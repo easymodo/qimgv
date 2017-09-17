@@ -50,6 +50,8 @@ private slots:
     void addShortcut();
     void resetShortcuts();
     void selectMpvPath();
+    void onMaxZoomSliderChanged(int value);
+    void onMaxZoomResolutionSliderChanged(int value);
 signals:
     void settingsChanged();
 };

@@ -5,13 +5,13 @@
 ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     image(NULL),
     animation(NULL),
-    isDisplayingFlag(false),
+    isDisplaying(false),
     mouseWrapping(false),
-    transparencyGridEnabled(false),
+    checkboardGridEnabled(false),
     currentScale(1.0),
-    minScale(2.0),
-    maxScale(4.0),
-    scaleStep(0.16),
+    minScale(0.125),
+    maxScale(maxScaleLimit),
+    scaleStep(0.10),
     imageFitMode(FIT_ORIGINAL)
 {
     initOverlays();
@@ -67,7 +67,7 @@ void ImageViewer::nextFrame() {
         QPixmap *newFrame = new QPixmap();
         *newFrame = animation->currentPixmap();
         startAnimationTimer();
-        updateImage(newFrame);
+        updateFrame(newFrame);
     }
 }
 
@@ -108,7 +108,7 @@ void ImageViewer::displayImage(QPixmap *_image) {
 
 // reset state, remove image & stop animation
 void ImageViewer::reset() {
-    isDisplayingFlag = false;
+    isDisplaying = false;
     if(animation) {
         stopAnimation();
         delete animation;
@@ -135,7 +135,7 @@ void ImageViewer::adjustOverlays() {
 
 // apply new image dimensions, fit mode, and readjust overlays
 void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
-    isDisplayingFlag = true;
+    isDisplaying = true;
     mapOverlay->setEnabled(true);
     sourceSize  = _sourceSize;
     drawingRect =  _drawingRect;
@@ -149,14 +149,14 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
 }
 
 // takes scaled image
-void ImageViewer::updateImage(QPixmap *scaled) {
-    if(!animation && scaled->size() != drawingRect.size()) {
-        delete scaled;
+void ImageViewer::updateFrame(QPixmap *newFrame) {
+    if(!animation && newFrame->size() != drawingRect.size()) {
+        delete newFrame;
         return;
     }
     delete image;
-    image = scaled;
-    if(transparencyGridEnabled)
+    image = newFrame;
+    if(checkboardGridEnabled)
         drawTransparencyGrid();
     update();
 }
@@ -170,42 +170,45 @@ void ImageViewer::scrollDown() {
 }
 
 void ImageViewer::readSettings() {
+    maxResolutionLimit = (float)settings->maxZoomedResolution();
+    maxScaleLimit = (float)settings->maximumZoom();
     setFitMode(settings->imageFitMode());
     mouseWrapping = settings->mouseWrapping();
-    transparencyGridEnabled = settings->transparencyGrid();
+    checkboardGridEnabled = settings->transparencyGrid();
     this->bgColor = settings->backgroundColor();
     this->repaint();
 }
 
+// limit min scale to window size
 void ImageViewer::updateMinScale() {
-    if(isDisplaying()) {
-        if(sourceSize.width() < width() &&
-                sourceSize.height() < height()) {
+    if(isDisplaying) {
+        if(sourceSize.width() < width() && sourceSize.height() < height()) {
             minScale = 1;
             return;
         }
-        float newMaxScaleX = (float) width() / sourceSize.width();
-        float newMaxScaleY = (float) height() / sourceSize.height();
-        if(newMaxScaleX < newMaxScaleY) {
-            minScale = newMaxScaleX;
+        float newMinScaleX = (float) width() / sourceSize.width();
+        float newMinScaleY = (float) height() / sourceSize.height();
+        if(newMinScaleX < newMinScaleY) {
+            minScale = newMinScaleX;
         } else {
-            minScale = newMaxScaleY;
+            minScale = newMinScaleY;
         }
     }
 }
 
+// limit maxScale to MAX_SCALE_LIMIT
+// then further limit to not exceed MAX_RESOLUTION
+// so we dont go full retard on memory consumption
 void ImageViewer::updateMaxScale() {
-    maxScale = 2.0;
-    float imgSize = sourceSize.width() * sourceSize.height() / 1000000;
-    float maxSize =
-        maxScale * sourceSize.width() * sourceSize.height() / 1000000;
-    if(maxSize > 25) {
-        maxScale = sqrt(25 / imgSize);
+    maxScale = maxScaleLimit;
+    float srcRes = (float)sourceSize.width() *
+                          sourceSize.height() / 1000000;
+    float maxRes = (float)maxScale * maxScale *
+                          sourceSize.width() *
+                          sourceSize.height() / 1000000;
+    if(maxRes > maxResolutionLimit) {
+        maxScale = (float)(sqrt(maxResolutionLimit) / sqrt(srcRes));
     }
-}
-
-float ImageViewer::scale() const {
-    return currentScale;
 }
 
 // Scales drawingRect.
@@ -232,7 +235,7 @@ void ImageViewer::setScale(float scale) {
 // ##################################################
 
 void ImageViewer::requestScaling() {
-    if(!isDisplaying())
+    if(!isDisplaying)
         return;
     if(image->size() != drawingRect.size() && !animation) {
         emit scalingRequested(drawingRect.size());
@@ -246,18 +249,18 @@ void ImageViewer::drawTransparencyGrid() {
         QColor dark(90,90,90,255);
         QColor light(140,140,140,255);
         int xCount, yCount;
-        xCount = image->width() / transparencyGridSize;
-        yCount = image->height() / transparencyGridSize;
-        QRect square(0, 0, transparencyGridSize, transparencyGridSize);
+        xCount = image->width() / CHECKBOARD_GRID_SIZE;
+        yCount = image->height() / CHECKBOARD_GRID_SIZE;
+        QRect square(0, 0, CHECKBOARD_GRID_SIZE, CHECKBOARD_GRID_SIZE);
         bool evenOdd;
         for(int i = 0; i <= yCount; i++) {
             evenOdd = (i % 2);
             for(int j = 0; j <= xCount; j++) {
                 if(j % 2 == evenOdd)
                     painter.fillRect(square, light);
-                square.translate(transparencyGridSize, 0);
+                square.translate(CHECKBOARD_GRID_SIZE, 0);
             }
-            square.translate(0, transparencyGridSize);
+            square.translate(0, CHECKBOARD_GRID_SIZE);
             square.moveLeft(0);
         }
         painter.fillRect(image->rect(), dark);
@@ -274,10 +277,11 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
     //    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(image) {
         painter.drawPixmap(drawingRect, *image, image->rect());
+        //zoomPoint for testing
         /*QPen pen(Qt::red);
         pen.setWidth(4);
         painter.setPen(pen);
-        painter.drawPoint(fixedZoomMousePos);
+        painter.drawPoint(zoomPoint);
         */
     } else {
         QRect logoRect(0,0,logo->width(), logo->height());
@@ -288,7 +292,7 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
 
 void ImageViewer::mousePressEvent(QMouseEvent *event) {
     QWidget::mousePressEvent(event);
-    if(!isDisplaying())
+    if(!isDisplaying)
         return;
     mapOverlay->enableVisibility(true);
     cursorTimer->stop();
@@ -305,7 +309,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
 
 void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     QWidget::mouseMoveEvent(event);
-    if(!isDisplaying())
+    if(!isDisplaying)
         return;
     if(event->buttons() & Qt::LeftButton) {
         mouseWrapping?mouseDragWrapping(event):mouseDrag(event);
@@ -319,11 +323,9 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
 
 void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
     QWidget::mouseReleaseEvent(event);
-    if(!isDisplaying()) {
+    if(!isDisplaying) {
         return;
     }
-    mouseMoveStartPos = event->pos();
-    zoomDrawRectPoint = event->pos();
     this->setCursor(QCursor(Qt::ArrowCursor));
     if(event->button() == Qt::RightButton && imageFitMode != FIT_ALL) {
         //requestScaling();
@@ -425,7 +427,7 @@ void ImageViewer::mouseZoom(QMouseEvent *event) {
 }
 
 void ImageViewer::fitWidth() {
-    if(isDisplaying()) {
+    if(isDisplaying) {
         float scale = (float) width() / sourceSize.width();
         if(scale > 1.0) {
             fitNormal();
@@ -442,7 +444,7 @@ void ImageViewer::fitWidth() {
 }
 
 void ImageViewer::fitAll() {
-    if(isDisplaying()) {
+    if(isDisplaying) {
         bool h = sourceSize.height() <= height();
         bool w = sourceSize.width() <= width();
         // source image fits entirely
@@ -460,7 +462,7 @@ void ImageViewer::fitAll() {
 }
 
 void ImageViewer::fitNormal() {
-    if(!isDisplaying()) {
+    if(!isDisplaying) {
         return;
     }
     setScale(1.0);
@@ -517,7 +519,6 @@ void ImageViewer::resizeEvent(QResizeEvent *event) {
     } else {
         applyFitMode();
     }
-    emit resized(size());
     mapOverlay->updatePosition();
     updateMap();
     update();
@@ -620,16 +621,19 @@ void ImageViewer::scaleAroundZoomPoint(float newScale) {
     centerImage();
 }
 
+// zoom in around viewport center
 void ImageViewer::zoomIn() {
     setZoomPoint(rect().center());
     doZoomIn();
 }
 
+// zoom out around viewport center
 void ImageViewer::zoomOut() {
     setZoomPoint(rect().center());
     doZoomOut();
 }
 
+// zoom in around cursor
 void ImageViewer::zoomInCursor() {
     if(underMouse()) {
         setZoomPoint(mapFromGlobal(cursor().pos()));
@@ -639,6 +643,7 @@ void ImageViewer::zoomInCursor() {
     }
 }
 
+// zoom out around cursor
 void ImageViewer::zoomOutCursor() {
     if(underMouse()) {
         setZoomPoint(mapFromGlobal(cursor().pos()));
@@ -649,10 +654,10 @@ void ImageViewer::zoomOutCursor() {
 }
 
 void ImageViewer::doZoomIn() {
-    if(!isDisplaying()) {
+    if(!isDisplaying) {
         return;
     }
-    float newScale = scale() + scaleStep;
+    float newScale = currentScale + scaleStep;
     if(newScale == currentScale) //skip if minScale
         return;
     if(newScale > maxScale)
@@ -665,10 +670,10 @@ void ImageViewer::doZoomIn() {
 }
 
 void ImageViewer::doZoomOut() {
-    if(!isDisplaying()) {
+    if(!isDisplaying) {
         return;
     }
-    float newScale = scale() - scaleStep;
+    float newScale = currentScale - scaleStep;
     if(newScale == currentScale) //skip if maxScale
         return;
     if(newScale < minScale - FLT_EPSILON)
@@ -678,10 +683,6 @@ void ImageViewer::doZoomOut() {
     updateMap();
     update();
     requestScaling();
-}
-
-bool ImageViewer::isDisplaying() const {
-    return isDisplayingFlag;
 }
 
 ImageFitMode ImageViewer::fitMode() {

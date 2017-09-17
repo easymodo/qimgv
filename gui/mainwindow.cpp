@@ -274,7 +274,7 @@ void MainWindow::closeFullScreenOrExit() {
 
 void MainWindow::setInfoString(QString text) {
     infoOverlay->setText(text);
-    setWindowTitle(text + " - qimgv");
+    setWindowTitle(text);
 }
 
 void MainWindow::showMessageDirectoryEnd() {

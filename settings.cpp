@@ -455,3 +455,19 @@ bool Settings::smoothUpscaling() {
 void Settings::setSmoothUpscaling(bool mode) {
     settings->s.setValue("smoothUpscaling", mode);
 }
+
+int Settings::maxZoomedResolution() {
+    return settings->s.value("maximumZoomResolution", 75).toInt();
+}
+
+void Settings::setMaxZoomedResolution(int value) {
+    settings->s.setValue("maximumZoomResolution", value);
+}
+
+int Settings::maximumZoom() {
+    return settings->s.value("maximumZoom", 4).toInt();
+}
+
+void Settings::setMaximumZoom(int value) {
+    settings->s.setValue("maximumZoom", value);
+}
