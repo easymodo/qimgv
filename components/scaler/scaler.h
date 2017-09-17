@@ -41,7 +41,7 @@ private:
 
     void startRequest(ScalerRequest req);
 
-    QMutex mutex;
+    QSemaphore *sem;
 };
 
 #endif // SCALER_H

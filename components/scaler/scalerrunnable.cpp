@@ -15,5 +15,6 @@ void ScalerRunnable::run() {
         imgLib.scale(scaled, req.image->getImage(), req.size, false);
     else
         imgLib.scale(scaled, req.image->getImage(), req.size, true);
+    //qDebug() << "runnable: done - " << req.image->info()->fileName();
     emit finished(scaled, req);
 }

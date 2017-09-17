@@ -278,23 +278,23 @@ void MainWindow::setInfoString(QString text) {
 }
 
 void MainWindow::showMessageDirectoryEnd() {
-    floatingMessage->showMessage("", Message::POSITION_RIGHT, Message::ICON_RIGHT_EDGE, 1000);
+    floatingMessage->showMessage("", Message::POSITION_RIGHT, Message::ICON_RIGHT_EDGE, 500);
 }
 
 void MainWindow::showMessageDirectoryStart() {
-    floatingMessage->showMessage("", Message::POSITION_LEFT, Message::ICON_LEFT_EDGE, 1000);
+    floatingMessage->showMessage("", Message::POSITION_LEFT, Message::ICON_LEFT_EDGE, 500);
 }
 
 void MainWindow::showMessageFitAll() {
-    floatingMessage->showMessage("Fit All", Message::POSITION_BOTTOM, Message::NO_ICON, 1200);
+    floatingMessage->showMessage("Fit All", Message::POSITION_BOTTOM, Message::NO_ICON, 1000);
 }
 
 void MainWindow::showMessageFitWidth() {
-    floatingMessage->showMessage("Fit Width", Message::POSITION_BOTTOM, Message::NO_ICON, 1200);
+    floatingMessage->showMessage("Fit Width", Message::POSITION_BOTTOM, Message::NO_ICON, 1000);
 }
 
 void MainWindow::showMessageFitOriginal() {
-    floatingMessage->showMessage("Fit 1:1", Message::POSITION_BOTTOM, Message::NO_ICON, 1200);
+    floatingMessage->showMessage("Fit 1:1", Message::POSITION_BOTTOM, Message::NO_ICON, 1000);
 }
 
 void MainWindow::showMessage(QString text) {

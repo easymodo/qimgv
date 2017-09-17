@@ -73,7 +73,9 @@ bool Cache::release(QString name) {
 void Cache::trimTo(QStringList nameList) {
     for(auto name : images.keys()) {
         if(!nameList.contains(name)) {
+            //qDebug() << "CACHE-RM: locking.. " << name;
             images[name]->lock();
+            //qDebug() << "CACHE-RM: LOCKED: " << name;
             auto *item = images.take(name);
             delete item;
         }
