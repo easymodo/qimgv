@@ -426,7 +426,7 @@ void ImageViewer::mouseDrag(QMouseEvent *event) {
 }
 
 void ImageViewer::mouseZoom(QMouseEvent *event) {
-    float step = 0.004; //(minScale - maxScale) / -500.0;
+    float step = 0.005;
     int currentPos = event->pos().y();
     int moveDistance = mouseMoveStartPos.y() - currentPos;
     float newScale = currentScale + step * moveDistance;
