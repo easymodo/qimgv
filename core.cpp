@@ -250,6 +250,7 @@ void Core::reset() {
     state.hasActiveImage = false;
     state.isWaitingForLoader = false;
     state.currentIndex = 0;
+    state.displayingFileName = "";
     //viewerWidget->unset();
     this->clearCache();
 }
@@ -420,10 +421,8 @@ void Core::onLoadingTimeout() {
     // TODO: show loading message over MainWindow
 }
 
-
-
 void Core::onLoadFinished(Image *img) {
-    int index = dirManager->indexOf(img->info()->fileName());
+    int index = dirManager->indexOf(img->name());
     bool isRelevant = !(index < state.currentIndex - 1 || index > state.currentIndex + 1);
     QString nameKey = dirManager->fileNameAt(index);
 
@@ -444,7 +443,7 @@ void Core::displayImage(Image *img) {
     loadingTimer->stop();
     state.isWaitingForLoader = false;
     state.hasActiveImage = true;
-    if(img) {
+    if(img && img->name() != state.displayingFileName) {
         ImageType type = img->info()->imageType();
         if(type == STATIC) {
             viewerWidget->showImage(img->getPixmap());
@@ -457,6 +456,7 @@ void Core::displayImage(Image *img) {
             showGui(); // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
             viewerWidget->showVideo(video->getClip());
         }
+        state.displayingFileName = img->name();
         emit imageIndexChanged(state.currentIndex);
         updateInfoString();
     }
@@ -472,7 +472,7 @@ void Core::updateInfoString() {
                       " ]   ");
     if(!state.isWaitingForLoader) {
         Image* img = cache->get(dirManager->fileNameAt(state.currentIndex));
-        QString name, fullName = img->info()->fileName();
+        QString name, fullName = img->name();
         if(fullName.size()>95) {
             name = fullName.left(95);
             name.append(" (...) ");

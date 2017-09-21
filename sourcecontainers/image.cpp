@@ -20,6 +20,10 @@ ImageType Image::type() {
     return imageInfo->imageType();
 }
 
+QString Image::name() {
+    return imageInfo->fileName();
+}
+
 ImageInfo *Image::info() {
     return imageInfo;
 }

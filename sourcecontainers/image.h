@@ -36,6 +36,7 @@ public:
     virtual void save() = 0;
     virtual void save(QString destinationPath) = 0;
 
+    QString name();
 protected:
     bool loaded;
     QString path;

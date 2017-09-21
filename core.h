@@ -19,6 +19,8 @@
 struct State {
     State() : currentIndex(0), hasActiveImage(false), isWaitingForLoader(false) {}
     int currentIndex;
+    // TODO: come up with something better?
+    QString displayingFileName;
     bool hasActiveImage, isWaitingForLoader;
 };
 

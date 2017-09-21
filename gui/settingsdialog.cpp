@@ -31,6 +31,7 @@ void SettingsDialog::readSettings() {
     ui->useThumbnailCacheCheckBox->setChecked(settings->useThumbnailCache());
     ui->smoothUpscalingCheckBox->setChecked(settings->smoothUpscaling());
     ui->expandImageCheckBox->setChecked(settings->expandImage());
+    ui->fadeEffectCheckBox->setChecked(settings->fadeEffect());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -119,6 +120,7 @@ void SettingsDialog::applySettings() {
     settings->setUseThumbnailCache(ui->useThumbnailCacheCheckBox->isChecked());
     settings->setSmoothUpscaling(ui->smoothUpscalingCheckBox->isChecked());
     settings->setExpandImage(ui->expandImageCheckBox->isChecked());
+    settings->setFadeEffect(ui->fadeEffectCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 

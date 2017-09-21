@@ -480,6 +480,12 @@ void Settings::setExpandImage(bool mode) {
     settings->s.setValue("expandImage", mode);
 }
 
+bool Settings::fadeEffect() {
+    return settings->s.value("fadeEffect", true).toBool();
+}
 
+void Settings::setFadeEffect(bool mode) {
+    settings->s.setValue("fadeEffect", mode);
+}
 
 

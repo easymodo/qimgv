@@ -9,6 +9,8 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     mouseWrapping(false),
     checkboardGridEnabled(false),
     expandImage(false),
+    fadeEffectEnabled(false),
+    currentOpacity(1.0),
     currentScale(1.0),
     fitWindowScale(0.125),
     minScale(0.125),
@@ -23,6 +25,11 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     animationTimer = new QTimer(this);
     animationTimer->setSingleShot(true);
     cursorTimer = new QTimer(this);
+    opacityAnimation = new QPropertyAnimation(this, "opacity");
+    opacityAnimation->setEasingCurve(QEasingCurve::OutSine);
+    opacityAnimation->setDuration(FADE_DURATION);
+    opacityAnimation->setStartValue(0.6f);
+    opacityAnimation->setEndValue(1.0f);
     readSettings();
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
@@ -90,7 +97,7 @@ void ImageViewer::displayAnimation(QMovie *_animation) {
         *image = animation->currentPixmap().transformed(transform, Qt::SmoothTransformation);
         if(settings->transparencyGrid())
             drawTransparencyGrid();
-        update();
+        fadeEffectEnabled?opacityAnimation->start():update();
         startAnimation();
     }
 }
@@ -103,7 +110,7 @@ void ImageViewer::displayImage(QPixmap *_image) {
         readjust(image->size(), image->rect());
         if(settings->transparencyGrid())
             drawTransparencyGrid();
-        update();
+        fadeEffectEnabled?opacityAnimation->start():update();
         requestScaling();
     }
 }
@@ -111,6 +118,7 @@ void ImageViewer::displayImage(QPixmap *_image) {
 // reset state, remove image & stop animation
 void ImageViewer::reset() {
     isDisplaying = false;
+    opacityAnimation->stop();
     if(animation) {
         stopAnimation();
         delete animation;
@@ -173,6 +181,7 @@ void ImageViewer::scrollDown() {
 
 void ImageViewer::readSettings() {
     expandImage = settings->expandImage();
+    fadeEffectEnabled = settings->fadeEffect();
     maxResolutionLimit = (float)settings->maxZoomedResolution();
     maxScaleLimit = (float)settings->maximumZoom();
     updateMinScale();
@@ -293,6 +302,7 @@ void ImageViewer::drawTransparencyGrid() {
 void ImageViewer::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QPainter painter(this);
+    painter.setOpacity(currentOpacity);
     //if(animation)
     //    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(image) {
@@ -723,4 +733,13 @@ void ImageViewer::hideCursor() {
 void ImageViewer::showCursor() {
     cursorTimer->stop();
     setCursor(QCursor(Qt::ArrowCursor));
+}
+
+float ImageViewer::opacity() const {
+    return currentOpacity;
+}
+
+void ImageViewer::setOpacity(float opacity) {
+    currentOpacity = opacity;
+    update();
 }

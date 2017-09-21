@@ -115,6 +115,9 @@ public:
     void setMaximumZoom(int value);
     void setExpandImage(bool mode);
     bool expandImage();
+    void setFadeEffect(bool mode);
+    bool fadeEffect();
+
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;

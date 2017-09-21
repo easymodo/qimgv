@@ -10,6 +10,7 @@
 #include <QColor>
 #include <QPalette>
 #include <QTimer>
+#include <QPropertyAnimation>
 #include <QDebug>
 #include <time.h>
 #include "gui/overlays/mapoverlay.h"
@@ -21,7 +22,7 @@
 class ImageViewer : public QWidget
 {
     Q_OBJECT
-
+    Q_PROPERTY (float opacity READ opacity WRITE setOpacity)
 public:
     ImageViewer(QWidget* parent = 0);
     ~ImageViewer();
@@ -73,11 +74,15 @@ private:
     QSize sourceSize;
     MapOverlay *mapOverlay;
 
-    bool isDisplaying, mouseWrapping, checkboardGridEnabled, expandImage;
+    QPropertyAnimation *opacityAnimation;
+
+    bool isDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, fadeEffectEnabled;
 
     const int CHECKBOARD_GRID_SIZE = 10;
+    const int FADE_DURATION = 140;
     float maxScaleLimit = 4.0;
     float maxResolutionLimit = 75.0; // in megapixels
+    float currentOpacity;
 
     float currentScale;
     float fitWindowScale;
@@ -119,6 +124,9 @@ private:
     void doZoomOut();
     void updateFitWindowScale();
     bool sourceImageFits();
+
+    void setOpacity(float opacity);
+    float opacity() const;
 };
 
 #endif // IMAGEVIEWER_H
