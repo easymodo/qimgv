@@ -28,7 +28,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     opacityAnimation = new QPropertyAnimation(this, "opacity");
     opacityAnimation->setEasingCurve(QEasingCurve::OutSine);
     opacityAnimation->setDuration(FADE_DURATION);
-    opacityAnimation->setStartValue(0.6f);
+    opacityAnimation->setStartValue(0.72f);
     opacityAnimation->setEndValue(1.0f);
     readSettings();
     connect(settings, SIGNAL(settingsChanged()),
