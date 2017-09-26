@@ -21,16 +21,6 @@ QMAKE_CXXFLAGS_RELEASE -= -O1
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
-unix {
-    QT_CONFIG -= no-pkg-config
-    CONFIG += link_pkgconfig
-    PKGCONFIG += mpv
-}
-
-win32:LIBS += -L$$PWD/mpv-dev/lib/ -llibmpv
-win32:INCLUDEPATH += $$PWD/mpv-dev/include
-win32:DEPENDPATH += $$PWD/mpv-dev
-
 SOURCES += \
     main.cpp \
     core.cpp \
@@ -38,7 +28,9 @@ SOURCES += \
     components/cache/cache.cpp \
     components/cache/thumbnailcache.cpp \
     components/directorymanager/directorymanager.cpp \
-    components/directorymanager/watcherwindows.cpp \
+    \
+    components/directorymanager/watchers/directorywatcher.cpp \
+    \
     components/loader/loader.cpp \
     components/loader/loaderrunnable.cpp \
     components/scaler/scaler.cpp \
@@ -86,7 +78,11 @@ SOURCES += \
     gui/copydialog.cpp \
     gui/customwidgets/pathselectorwidget.cpp \
     components/cache/cacheitem.cpp \
-    components/thumbnailer/thumbnailerrunnable.cpp
+    components/thumbnailer/thumbnailerrunnable.cpp \
+    components/directorymanager/watchers/watcherevent.cpp \
+    components/directorymanager/watchers/dummywatcher.cpp \
+    components/directorymanager/watchers/watcherworker.cpp
+
 
 HEADERS += \
     core.h \
@@ -94,7 +90,11 @@ HEADERS += \
     components/cache/cache.h \
     components/cache/thumbnailcache.h \
     components/directorymanager/directorymanager.h \
-    components/directorymanager/watcherwindows.h \
+    \
+    components/directorymanager/watchers/private/directorywatcher_p.h \
+    components/directorymanager/watchers/directorywatcher.h \
+    components/directorymanager/watchers/watcherevent.h \
+    \
     components/loader/loader.h \
     components/loader/loaderrunnable.h \
     components/scaler/scaler.h \
@@ -142,10 +142,44 @@ HEADERS += \
     gui/copydialog.h \
     gui/customwidgets/pathselectorwidget.h \
     components/cache/cacheitem.h \
-    components/thumbnailer/thumbnailerrunnable.h
+    components/thumbnailer/thumbnailerrunnable.h \
+    components/directorymanager/watchers/dummywatcher.h \
+    components/directorymanager/watchers/watcherworker.h \
+    components/directorymanager/watchers/linux/linuxwatcher.h \
+    components/directorymanager/watchers/linux/linuxworker.h
 
 FORMS += \
     gui/settingsdialog.ui
 
 RESOURCES += \
     resources.qrc
+
+unix {
+    QT_CONFIG -= no-pkg-config
+    CONFIG += link_pkgconfig
+    PKGCONFIG += mpv
+
+    SOURCES += \
+        components/directorymanager/watchers/linux/linuxworker.cpp \
+        components/directorymanager/watchers/linux/linuxwatcher.cpp \
+        components/directorymanager/watchers/linux/linuxfsevent.cpp
+
+    HEADERS += \
+        components/directorymanager/watchers/private/linuxdirectorywatcher_p.h \
+        components/directorymanager/watchers/linux/linuxfsevent.h
+}
+
+windows {
+    SOURCES += \
+        components/directorymanager/watchers/windows/windowsdirectorywatcher.cpp \
+        components/directorymanager/watchers/windows/windowswatcherworker.cpp
+
+    HEADERS += \
+        components/directorymanager/watchers/private/windowsdirectorywatcher_p.h \
+        components/directorymanager/watchers/windows/windowsdirectorywatcher.h \
+        components/directorymanager/watchers/windows/windowswatcherbackgroundworker.h
+}
+
+win32:LIBS += -L$$PWD/mpv-dev/lib/ -llibmpv
+win32:INCLUDEPATH += $$PWD/mpv-dev/include
+win32:DEPENDPATH += $$PWD/mpv-dev
