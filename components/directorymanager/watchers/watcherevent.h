@@ -8,9 +8,11 @@ public:
     enum Type {
         None,
         MovedFrom,
-        MovedTo
+        MovedTo,
+        Modify
     };
 
+    WatcherEvent(const QString &name,int timerId, Type type = None);
     WatcherEvent(const QString& name, uint cookie, int timerId, Type type = None);
     ~WatcherEvent();
 
