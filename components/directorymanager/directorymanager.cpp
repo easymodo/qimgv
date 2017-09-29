@@ -1,4 +1,7 @@
 #include "directorymanager.h"
+#include "watchers/directorywatcher.h"
+
+#include <QThread>
 
 DirectoryManager::DirectoryManager() :
     quickFormatDetection(true)
@@ -6,10 +9,6 @@ DirectoryManager::DirectoryManager() :
     readSettings();
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(applySettingsChanges()));
-    //connect(&watcher, SIGNAL(fileChanged(const QString)),
-    //        this, SLOT(fileChanged(const QString)));
-    //connect(&watcher, SIGNAL(directoryChanged(QString)),
-    //        this, SLOT(directoryContentsChanged(QString)));
 }
 
 // ##############################################################
@@ -23,19 +22,47 @@ void DirectoryManager::readSettings() {
 }
 
 void DirectoryManager::setDirectory(QString path) {
+    DirectoryWatcher* watcher = DirectoryWatcher::newInstance();
+    watcher->setFileFilters(extensionFilters);
+    watcher->setWatchPath(path);
+    watcher->observe();
+
+    connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
+        qDebug() << "observing started";
+    });
+
+    connect(watcher, &DirectoryWatcher::observingStopped, this, [watcher] () {
+        qDebug() << "observing stopped";
+    });
+
+    connect(watcher, &DirectoryWatcher::fileCreated, this, [] (const QString& filename) {
+        qDebug() << "file created" << filename;
+    });
+
+    connect(watcher, &DirectoryWatcher::fileDeleted, this, [] (const QString& filename) {
+        qDebug() << "file deleted" << filename;
+    });
+
+    connect(watcher, &DirectoryWatcher::fileModified, this, [] (const QString& filename) {
+        qDebug() << "file modified" << filename;
+    });
+
+    connect(watcher, &DirectoryWatcher::fileRenamed, this, [watcher] (const QString& file1, const QString& file2) {
+        qDebug() << "file renamed from" << file1 << "to" << file2;
+    });
+
     if(!path.isEmpty() && /* TODO: ???-> */ currentDir.exists()) {
         if(currentDir.path() != path) {
             currentDir.setPath(path);
             generateFileList();
-            watcher.setDir(path);
+//            watcher.setDir(path);
             emit directoryChanged(path);
         }
     }
 }
 
 int DirectoryManager::indexOf(QString fileName) const {
-    int index = mFileNameList.indexOf(fileName);
-    return index;
+    return mFileNameList.indexOf(fileName);
 }
 
 // full paths array
@@ -48,7 +75,7 @@ QStringList DirectoryManager::fileList() const {
     return files;
 }
 
-QString DirectoryManager::currentDirectory() const {
+QString DirectoryManager::currentDirectoryPath() const {
     return currentDir.absolutePath();
 }
 
@@ -64,6 +91,7 @@ bool DirectoryManager::removeAt(int pos) {
     if(checkRange(pos)) {
         QString path = filePathAt(pos);
         QFile file(path);
+        // TODO: just call this method. Watcher will detect changes automatically
         if(file.remove()) {
             mFileNameList.removeAt(pos);
             return true;
@@ -73,17 +101,14 @@ bool DirectoryManager::removeAt(int pos) {
 }
 
 bool DirectoryManager::checkRange(int pos) const {
-    if(pos >= 0 && pos < mFileNameList.length()) {
-        return true;
-    } else {
-        return false;
-    }
+    return pos >= 0 && pos < mFileNameList.length();
 }
 
 bool DirectoryManager::copyTo(QString destDirectory, int index) {
     if(checkRange(index)) {
         return QFile::copy(filePathAt(index), destDirectory + "/" + fileNameAt(index));
     }
+    return false;
 }
 
 int DirectoryManager::fileCount() const {

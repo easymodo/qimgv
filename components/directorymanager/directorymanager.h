@@ -18,7 +18,7 @@
 #include <QImageReader>
 #include "settings.h"
 #include "sourcecontainers/imageinfo.h"
-#include "watcherwindows.h"
+//#include "watcherwindows.h"
 
 class DirectoryManager : public QObject
 {
@@ -31,7 +31,7 @@ public:
     // -1 if not found
     int indexOf(QString fileName) const;
     QStringList fileList() const;
-    QString currentDirectory() const;
+    QString currentDirectoryPath() const;
     QString filePathAt(int pos) const;
     bool removeAt(int pos);
     int fileCount() const;
@@ -57,7 +57,7 @@ private:
     QStringList mimeFilters, extensionFilters;
 
     void readSettings();
-    WatcherWindows watcher;
+//    WatcherWindows watcher;
     QMimeDatabase mimeDb;
     bool quickFormatDetection;
 
