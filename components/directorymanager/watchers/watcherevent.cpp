@@ -1,6 +1,13 @@
 #include <QDebug>
 #include "watcherevent.h"
 
+WatcherEvent::WatcherEvent(const QString &name, int timerId, WatcherEvent::Type type) :
+    mName(name),
+    mTimerId(timerId),
+    mType(type)
+{
+}
+
 WatcherEvent::WatcherEvent(const QString& name, uint cookie, int timerId, Type type) :
     mName(name),
     mCookie(cookie),
@@ -9,46 +16,37 @@ WatcherEvent::WatcherEvent(const QString& name, uint cookie, int timerId, Type t
 {
 }
 
-WatcherEvent::~WatcherEvent()
-{
+WatcherEvent::~WatcherEvent() {
 }
 
-QString WatcherEvent::name() const
-{
+QString WatcherEvent::name() const {
     return mName;
 }
 
-void WatcherEvent::setName(const QString &name)
-{
+void WatcherEvent::setName(const QString &name) {
     mName = name;
 }
 
-WatcherEvent::Type WatcherEvent::type() const
-{
+WatcherEvent::Type WatcherEvent::type() const {
     return mType;
 }
 
-void WatcherEvent::setType(WatcherEvent::Type type)
-{
+void WatcherEvent::setType(WatcherEvent::Type type) {
     mType = type;
 }
 
-int WatcherEvent::timerId() const
-{
+int WatcherEvent::timerId() const {
     return mTimerId;
 }
 
-void WatcherEvent::setTimerId(int timerId)
-{
+void WatcherEvent::setTimerId(int timerId) {
     mTimerId = timerId;
 }
 
-uint WatcherEvent::cookie() const
-{
+uint WatcherEvent::cookie() const {
     return mCookie;
 }
 
-void WatcherEvent::setCookie(uint cookie)
-{
+void WatcherEvent::setCookie(uint cookie) {
     mCookie = cookie;
 }

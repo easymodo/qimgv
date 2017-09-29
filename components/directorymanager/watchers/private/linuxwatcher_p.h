@@ -16,12 +16,19 @@ class LinuxWatcherPrivate : public DirectoryWatcherPrivate
 public:
     explicit LinuxWatcherPrivate(LinuxWatcher* qq = 0);
 
-    int indexOfMoveEvent(uint cookie) const;
+    int indexOfWatcherEvent(uint cookie) const;
+    int indexOfWatcherEvent(const QString& name) const;
+
+    void handleModifyEvent(const QString& name);
+    void handleDeleteEvent(const QString& name);
+    void handleCreateEvent(const QString& name);
+    void handleMovedFromEvent(const QString& name, uint cookie);
+    void handleMovedToEvent(const QString& name, uint cookie);
 
     int watcher;
     int watchObject;
 
-    QVector<QSharedPointer<WatcherEvent>> moveEvents;
+    QVector<QSharedPointer<WatcherEvent>> watcherEvents;
 
 protected:
     virtual void timerEvent(QTimerEvent* timerEvent) override;

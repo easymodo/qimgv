@@ -144,9 +144,7 @@ HEADERS += \
     components/cache/cacheitem.h \
     components/thumbnailer/thumbnailerrunnable.h \
     components/directorymanager/watchers/dummywatcher.h \
-    components/directorymanager/watchers/watcherworker.h \
-    components/directorymanager/watchers/linux/linuxwatcher.h \
-    components/directorymanager/watchers/linux/linuxworker.h
+    components/directorymanager/watchers/watcherworker.h
 
 FORMS += \
     gui/settingsdialog.ui
@@ -165,8 +163,10 @@ unix {
         components/directorymanager/watchers/linux/linuxfsevent.cpp
 
     HEADERS += \
-        components/directorymanager/watchers/private/linuxdirectorywatcher_p.h \
-        components/directorymanager/watchers/linux/linuxfsevent.h
+        components/directorymanager/watchers/linux/linuxfsevent.h \
+        components/directorymanager/watchers/linux/linuxwatcher.h \
+        components/directorymanager/watchers/linux/linuxworker.h \
+        components/directorymanager/watchers/private/linuxwatcher_p.h
 }
 
 windows {
