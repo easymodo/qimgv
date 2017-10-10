@@ -22,7 +22,6 @@ void SettingsDialog::readSettings() {
     ui->playVideosCheckBox->setChecked(settings->playVideos());
     ui->playSoundsCheckBox->setChecked(settings->playVideoSounds());
     ui->enablePanelCheckBox->setChecked(settings->mainPanelEnabled());
-    ui->enableSidePanelCheckBox->setChecked(settings->sidePanelEnabled());
     ui->mouseWrappingCheckBox->setChecked(settings->mouseWrapping());
     ui->squareThumbnailsCheckBox->setChecked(settings->squareThumbnails());
     ui->transparencyGridCheckBox->setChecked(settings->transparencyGrid());
@@ -31,7 +30,6 @@ void SettingsDialog::readSettings() {
     ui->useThumbnailCacheCheckBox->setChecked(settings->useThumbnailCache());
     ui->smoothUpscalingCheckBox->setChecked(settings->smoothUpscaling());
     ui->expandImageCheckBox->setChecked(settings->expandImage());
-    ui->fadeEffectCheckBox->setChecked(settings->fadeEffect());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -55,7 +53,6 @@ void SettingsDialog::readSettings() {
     ui->thumbnailLabelsCheckBox->setChecked(settings->showThumbnailLabels());
 
     ui->panelPositionComboBox->setCurrentIndex(settings->panelPosition());
-    ui->sidePanelPositionComboBox->setCurrentIndex(settings->sidePanelPosition());
 
     //bg color
     QColor bgColor = settings->backgroundColor();
@@ -105,7 +102,6 @@ void SettingsDialog::applySettings() {
     settings->setPlayVideos(ui->playVideosCheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
     settings->setPanelEnabled(ui->enablePanelCheckBox->isChecked());
-    settings->setSidePanelEnabled(ui->enableSidePanelCheckBox->isChecked());
     settings->setMouseWrapping(ui->mouseWrappingCheckBox->isChecked());
     settings->setSquareThumbnails(ui->squareThumbnailsCheckBox->isChecked());
     settings->setTransparencyGrid(ui->transparencyGridCheckBox->isChecked());
@@ -114,7 +110,6 @@ void SettingsDialog::applySettings() {
     settings->setUseThumbnailCache(ui->useThumbnailCacheCheckBox->isChecked());
     settings->setSmoothUpscaling(ui->smoothUpscalingCheckBox->isChecked());
     settings->setExpandImage(ui->expandImageCheckBox->isChecked());
-    settings->setFadeEffect(ui->fadeEffectCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 
@@ -122,7 +117,6 @@ void SettingsDialog::applySettings() {
     settings->setUseFastScale(useFastScale);
 
     settings->setPanelPosition((PanelHPosition) ui->panelPositionComboBox->currentIndex());
-    settings->setSidePanelPosition((PanelVPosition) ui->sidePanelPositionComboBox->currentIndex());
 
     settings->setBackgroundColor(bgLabelPalette.color(QPalette::Window));
     settings->setAccentColor(accentLabelPalette.color(QPalette::Window));

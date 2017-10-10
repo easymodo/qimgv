@@ -224,14 +224,6 @@ void Settings::setPanelEnabled(bool mode) {
     settings->s.setValue("panelEnabled", mode);
 }
 
-bool Settings::sidePanelEnabled() {
-    return settings->s.value("sidePanelEnabled", false).toBool();
-}
-
-void Settings::setSidePanelEnabled(bool mode) {
-    settings->s.setValue("sidePanelEnabled", mode);
-}
-
 int Settings::lastDisplay() {
     return settings->s.value("lastDisplay", 0).toInt();
 }
@@ -261,29 +253,6 @@ void Settings::setPanelPosition(PanelHPosition pos) {
             break;
     }
     settings->s.setValue("panelPosition", posString);
-}
-
-PanelVPosition Settings::sidePanelPosition() {
-    QString posString = settings->s.value("sidePanelPosition", "right").toString();
-    if(posString == "right") {
-        return PanelVPosition::PANEL_RIGHT;
-    } else {
-        return PanelVPosition::PANEL_LEFT;
-    }
-}
-
-void Settings::setSidePanelPosition(PanelVPosition pos) {
-    QString posString;
-    switch(pos) {
-            break;
-        case PANEL_RIGHT:
-            posString = "right";
-            break;
-        case PANEL_LEFT:
-            posString = "left";
-            break;
-    }
-    settings->s.setValue("sidePanelPosition", posString);
 }
 
 /*
@@ -456,13 +425,3 @@ bool Settings::expandImage() {
 void Settings::setExpandImage(bool mode) {
     settings->s.setValue("expandImage", mode);
 }
-
-bool Settings::fadeEffect() {
-    return settings->s.value("fadeEffect", false).toBool();
-}
-
-void Settings::setFadeEffect(bool mode) {
-    settings->s.setValue("fadeEffect", mode);
-}
-
-

@@ -12,7 +12,6 @@
 #include "gui/overlays/floatingmessage.h"
 #include "gui/panels/mainpanel/thumbnailstrip.h"
 #include "gui/panels/mainpanel/mainpanel.h"
-#include "gui/panels/sidepanel/toolbox.h"
 #include "gui/copydialog.h"
 #include "gui/customwidgets/slidevpanel.h"
 #include "components/actionmanager/actionmanager.h"
@@ -35,9 +34,8 @@ private:
     int currentDisplay;
     QDesktopWidget *desktopWidget;
 
-    bool mainPanelEnabled, sidePanelEnabled;
+    bool mainPanelEnabled;
     MainPanel *mainPanel;
-    SlideVPanel *sidePanel;
 
     CopyDialog *copyDialog;
 
@@ -46,7 +44,6 @@ private:
     FloatingMessage *floatingMessage;
 
     PanelHPosition panelPosition;
-    PanelVPosition sidePanelPosition;
     QPoint lastMouseMovePos;
 
     void saveWindowGeometry();

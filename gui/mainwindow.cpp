@@ -5,9 +5,7 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
       currentDisplay(0),
       desktopWidget(NULL),
       mainPanelEnabled(false),
-      sidePanelEnabled(false),
-      mainPanel(NULL),
-      sidePanel(NULL)
+      mainPanel(NULL)
 {
     this->setMinimumSize(400, 300);
     layout.setContentsMargins(0,0,0,0);
@@ -58,7 +56,6 @@ void MainWindow::setupOverlays() {
             this, SIGNAL(moveRequested(QString)));
     floatingMessage = new FloatingMessage(this);
     mainPanel = new MainPanel(this);
-    sidePanel = new SlideVPanel(this);
 }
 
 void MainWindow::setPanelWidget(QWidget *panelWidget) {
@@ -113,10 +110,6 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event) {
         if(mainPanelEnabled && mainPanel->triggerRect().contains(event->pos()) && !mainPanel->triggerRect().contains(lastMouseMovePos))
         {
             mainPanel->show();
-        }
-        if(sidePanelEnabled && sidePanel->triggerRect().contains(event->pos()) && !sidePanel->triggerRect().contains(lastMouseMovePos))
-        {
-            sidePanel->show();
         }
         event->ignore();
     }
@@ -303,10 +296,7 @@ void MainWindow::showMessage(QString text) {
 
 void MainWindow::readSettings() {
     panelPosition = settings->panelPosition();
-    sidePanelPosition = settings->sidePanelPosition();
     mainPanelEnabled = settings->mainPanelEnabled();
-    sidePanelEnabled = settings->sidePanelEnabled();
-
     setControlsOverlayEnabled(this->isFullScreen());
     setInfoOverlayEnabled(this->isFullScreen());
     triggerPanelButtons();

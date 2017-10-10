@@ -93,11 +93,6 @@ public:
     void setTransparencyGrid(bool mode);
     bool forceSmoothScroll();
     void setForceSmoothScroll(bool mode);
-
-    PanelVPosition sidePanelPosition();
-    void setSidePanelPosition(PanelVPosition pos);
-    bool sidePanelEnabled();
-    void setSidePanelEnabled(bool mode);
     bool useThumbnailCache();
     void setUseThumbnailCache(bool mode);
     QStringList savedPaths();
@@ -113,8 +108,6 @@ public:
     void setMaximumZoom(int value);
     void setExpandImage(bool mode);
     bool expandImage();
-    void setFadeEffect(bool mode);
-    bool fadeEffect();
 
 private:
     explicit Settings(QObject *parent = 0);
