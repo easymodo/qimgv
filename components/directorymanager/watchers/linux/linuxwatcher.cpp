@@ -135,7 +135,7 @@ void LinuxWatcherPrivate::timerEvent(QTimerEvent *timerEvent) {
     // Loop through waiting move events
     int lastIndex = watcherEvents.size() - 1;
     for (int i = lastIndex; i >= 0; --i) {
-        QSharedPointer<WatcherEvent> watcherEvent = watcherEvents.takeAt(i);
+        auto watcherEvent = watcherEvents.at(i);
 
         if (watcherEvent->timerId() == timerEvent->timerId()) {
             int type = watcherEvent->type();
@@ -145,6 +145,8 @@ void LinuxWatcherPrivate::timerEvent(QTimerEvent *timerEvent) {
             } else if (type == WatcherEvent::Modify) {
                 emit q->fileModified(watcherEvent->name());
             }
+
+            watcherEvents.removeAt(i);
             break;
         }
     }
