@@ -27,22 +27,22 @@ public:
     DirectoryManager();
     // ignored if the same dir is already opened
     void setDirectory(QString);
-    // returns position in file list
+    // returns indexition in file list
     // -1 if not found
     int indexOf(QString fileName) const;
     QStringList fileList() const;
     QString currentDirectoryPath() const;
-    QString filePathAt(int pos) const;
-    bool removeAt(int pos);
+    QString filePathAt(int index) const;
+    bool removeAt(int index);
     int fileCount() const;
     bool existsInCurrentDir(QString fileName) const;
     bool isImage(QString filePath) const;
     bool hasImages() const;
     bool contains(QString fileName) const;
-    bool checkRange(int pos) const;
+    bool checkRange(int index) const;
     bool copyTo(QString destDirectory, int index);
 
-    QString fileNameAt(int pos) const;
+    QString fileNameAt(int index) const;
     bool isDirectory(QString path) const;
 public slots:
     void applySettingsChanges();
@@ -65,10 +65,12 @@ private:
     void generateFileListQuick();
     void generateFileListDeep();
 
+    void onFileRemovedExternal(QString);
+
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();
-    void fileRemoved(int);
+    void fileRemovedAt(int);
     void fileChangedAt(int);
 };
 

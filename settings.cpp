@@ -481,7 +481,7 @@ void Settings::setExpandImage(bool mode) {
 }
 
 bool Settings::fadeEffect() {
-    return settings->s.value("fadeEffect", true).toBool();
+    return settings->s.value("fadeEffect", false).toBool();
 }
 
 void Settings::setFadeEffect(bool mode) {

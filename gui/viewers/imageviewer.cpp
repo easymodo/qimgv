@@ -303,8 +303,8 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QPainter painter(this);
     painter.setOpacity(currentOpacity);
-    //if(animation)
-    //    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    if(animation)
+        painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(image) {
         painter.drawPixmap(drawingRect, *image, image->rect());
         //zoomPoint for testing

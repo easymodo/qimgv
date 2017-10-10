@@ -39,8 +39,10 @@ void DirectoryManager::setDirectory(QString path) {
         qDebug() << "file created" << filename;
     });
 
-    connect(watcher, &DirectoryWatcher::fileDeleted, this, [] (const QString& filename) {
+    // BUG: on removing multiple files this is called only once (for the first file)
+    connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
         qDebug() << "file deleted" << filename;
+        onFileRemovedExternal(filename);
     });
 
     connect(watcher, &DirectoryWatcher::fileModified, this, [] (const QString& filename) {
@@ -79,29 +81,30 @@ QString DirectoryManager::currentDirectoryPath() const {
     return currentDir.absolutePath();
 }
 
-QString DirectoryManager::filePathAt(int pos) const {
-    return checkRange(pos) ? currentDir.absolutePath() + "/" + mFileNameList.at(pos) : "";
+QString DirectoryManager::filePathAt(int index) const {
+    return checkRange(index) ? currentDir.absolutePath() + "/" + mFileNameList.at(index) : "";
 }
 
-QString DirectoryManager::fileNameAt(int pos) const {
-    return checkRange(pos) ? mFileNameList.at(pos) : "";
+QString DirectoryManager::fileNameAt(int index) const {
+    return checkRange(index) ? mFileNameList.at(index) : "";
 }
 
-bool DirectoryManager::removeAt(int pos) {
-    if(checkRange(pos)) {
-        QString path = filePathAt(pos);
+bool DirectoryManager::removeAt(int index) {
+    if(checkRange(index)) {
+        QString path = filePathAt(index);
         QFile file(path);
         // TODO: just call this method. Watcher will detect changes automatically
         if(file.remove()) {
-            mFileNameList.removeAt(pos);
+            mFileNameList.removeAt(index);
+            emit fileRemovedAt(index);
             return true;
         }
     }
     return false;
 }
 
-bool DirectoryManager::checkRange(int pos) const {
-    return pos >= 0 && pos < mFileNameList.length();
+bool DirectoryManager::checkRange(int index) const {
+    return index >= 0 && index < mFileNameList.length();
 }
 
 bool DirectoryManager::copyTo(QString destDirectory, int index) {
@@ -233,5 +236,13 @@ void DirectoryManager::generateFileListDeep() {
         if(isImage(filePath)) {
             mFileNameList.append(unfiltered.at(i));
         }
+    }
+}
+
+void DirectoryManager::onFileRemovedExternal(QString fileName) {
+    if(mFileNameList.contains(fileName)) {
+        int index = mFileNameList.indexOf(fileName);
+        mFileNameList.removeOne(fileName);
+        emit fileRemovedAt(index);
     }
 }

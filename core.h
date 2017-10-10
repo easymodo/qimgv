@@ -106,6 +106,8 @@ private slots:
     void removeFile();
     void moveFile(QString destDirectory);
     void copyFile(QString destDirectory);
+    void removeFile(int index);
+    void onFileRemoved(int index);
 };
 
 #endif // CORE_H

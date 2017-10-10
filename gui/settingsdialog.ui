@@ -606,7 +606,7 @@
                <property name="minimumSize">
                 <size>
                  <width>100</width>
-                 <height>0</height>
+                 <height>30</height>
                 </size>
                </property>
                <item>
@@ -661,7 +661,7 @@
                <property name="minimumSize">
                 <size>
                  <width>100</width>
-                 <height>0</height>
+                 <height>30</height>
                 </size>
                </property>
                <item>
@@ -710,7 +710,7 @@
                <property name="minimumSize">
                 <size>
                  <width>100</width>
-                 <height>0</height>
+                 <height>30</height>
                 </size>
                </property>
                <item>
@@ -765,47 +765,107 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="squareThumbnailsCheckBox">
-         <property name="text">
-          <string>Square thumbnails</string>
+        <layout class="QHBoxLayout" name="horizontalLayout_20">
+         <property name="bottomMargin">
+          <number>10</number>
          </property>
-        </widget>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_15">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QCheckBox" name="squareThumbnailsCheckBox">
+             <property name="text">
+              <string>Square thumbnails</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="thumbnailLabelsCheckBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Show thumbnail labels</string>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="transparencyGridCheckBox">
+             <property name="text">
+              <string>Draw transparency grid</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_9">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_16">
+           <item>
+            <widget class="QCheckBox" name="fadeEffectCheckBox">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Fade transition effect</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_10">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
        <item>
-        <widget class="QCheckBox" name="thumbnailLabelsCheckBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <spacer name="verticalSpacer_8">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-         <property name="minimumSize">
+         <property name="sizeHint" stdset="0">
           <size>
-           <width>300</width>
-           <height>20</height>
+           <width>20</width>
+           <height>40</height>
           </size>
          </property>
-         <property name="text">
-          <string>Show thumbnail labels</string>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="transparencyGridCheckBox">
-         <property name="text">
-          <string>Draw transparency grid</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="fadeEffectCheckBox">
-         <property name="text">
-          <string>Fade transition effect</string>
-         </property>
-        </widget>
+        </spacer>
        </item>
        <item>
         <spacer name="verticalSpacer_2">
@@ -834,6 +894,9 @@
          </property>
          <item>
           <widget class="QCheckBox" name="smoothUpscalingCheckBox">
+           <property name="toolTip">
+            <string>When unchecked, nearest neighbor algorithm will be used for upscaling.</string>
+           </property>
            <property name="text">
             <string>Smooth upscaling</string>
            </property>
@@ -1396,7 +1459,7 @@
        <item>
         <widget class="QCheckBox" name="usePreloaderCheckBox">
          <property name="toolTip">
-          <string>Preload the next/previous image. Results in a much faster image switching (especially matters with bigge files).</string>
+          <string>Preload the next/previous image. Results in a much faster image switching (at the expense of wasting more RAM).</string>
          </property>
          <property name="text">
           <string>Use preloader</string>
@@ -1405,6 +1468,9 @@
        </item>
        <item>
         <widget class="QCheckBox" name="useThumbnailCacheCheckBox">
+         <property name="toolTip">
+          <string>Cache is stored at ~.cache/qimgv/</string>
+         </property>
          <property name="text">
           <string>Use thumbnail cache</string>
          </property>

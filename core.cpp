@@ -79,6 +79,8 @@ void Core::connectComponents() {
     connect(this, SIGNAL(imageIndexChanged(int)), thumbnailPanelWidget, SLOT(highlightThumbnail(int)));
     connect(imageViewer, SIGNAL(scalingRequested(QSize)), this, SLOT(scalingRequest(QSize)));
     connect(scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest)), this, SLOT(onScalingFinished(QPixmap*,ScalerRequest)));
+
+    connect(dirManager, SIGNAL(fileRemovedAt(int)), this, SLOT(onFileRemoved(int)));
 }
 
 void Core::initActions() {
@@ -135,20 +137,32 @@ void Core::close() {
     closeBackgroundTasks();
 }
 
+// removes file at specified index within current directory
+void Core::removeFile(int index) {
+    if(index < 0 || index >= dirManager->fileCount())
+        return;
+    QString fileName = dirManager->fileNameAt(index);
+    if(dirManager->removeAt(index)) {
+        mw->showMessage("File removed: " + fileName);
+    }
+}
+
+// removes current file
 void Core::removeFile() {
-    if(state.hasActiveImage) {
-        if(dirManager->removeAt(state.currentIndex)) {
-            mw->showMessage("File removed.");
-            thumbnailPanelWidget->removeItemAt(state.currentIndex);
-            if(!dirManager->fileCount()) {
-                imageViewer->closeImage();
-                mw->setInfoString("No file opened.");
-            } else {
-                if(!loadByIndexBlocking(state.currentIndex))
-                    loadByIndexBlocking(--state.currentIndex);
-            }
+    if(state.hasActiveImage)
+        removeFile(state.currentIndex);
+}
+
+void Core::onFileRemoved(int index) {
+    thumbnailPanelWidget->removeItemAt(index);
+    // removing current file. try switching to another
+    if(state.currentIndex == index) {
+        if(!dirManager->fileCount()) {
+            imageViewer->closeImage();
+            mw->setInfoString("No file opened.");
         } else {
-            qDebug() << "Error removing file.";
+            if(!loadByIndexBlocking(state.currentIndex))
+                loadByIndexBlocking(--state.currentIndex);
         }
     }
 }
@@ -425,7 +439,6 @@ void Core::onLoadFinished(Image *img) {
     int index = dirManager->indexOf(img->name());
     bool isRelevant = !(index < state.currentIndex - 1 || index > state.currentIndex + 1);
     QString nameKey = dirManager->fileNameAt(index);
-
     if(isRelevant) {
         if(!cache->insert(nameKey, img)) {
             delete img;
@@ -453,7 +466,9 @@ void Core::displayImage(Image *img) {
         } else if(type == VIDEO) {
             imageViewer->closeImage();
             auto video = dynamic_cast<Video *>(img);
-            showGui(); // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
+            // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
+            // affects only initial startup (e.g. we open webm from file manager)
+            showGui();
             viewerWidget->showVideo(video->getClip());
         }
         state.displayingFileName = img->name();
