@@ -89,11 +89,6 @@ void SettingsDialog::readSettings() {
             thumbSizeCustom = size;
             break;
     }
-
-    // sorting mode
-    int mode = settings->sortingMode();
-    ui->sortingComboBox->setCurrentIndex(mode);
-
     fillShortcuts();
 }
 
@@ -107,7 +102,6 @@ void SettingsDialog::applySettings() {
     settings->setShowThumbnailLabels(ui->thumbnailLabelsCheckBox->isChecked());
     settings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
     settings->setImageFitMode((ImageFitMode)ui->fitModeComboBox->currentIndex());
-    settings->setSortingMode(ui->sortingComboBox->currentIndex());
     settings->setPlayVideos(ui->playVideosCheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
     settings->setPanelEnabled(ui->enablePanelCheckBox->isChecked());

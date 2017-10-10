@@ -3,12 +3,10 @@
 
 #include <QThread>
 
-DirectoryManager::DirectoryManager() :
-    quickFormatDetection(true)
+DirectoryManager::DirectoryManager() : quickFormatDetection(true)
 {
+    currentDir.setSorting(QDir::NoSort);
     readSettings();
-    connect(settings, SIGNAL(settingsChanged()),
-            this, SLOT(applySettingsChanges()));
 }
 
 // ##############################################################
@@ -18,7 +16,6 @@ DirectoryManager::DirectoryManager() :
 void DirectoryManager::readSettings() {
     mimeFilters = settings->supportedMimeTypes();
     extensionFilters = settings->supportedFormats();
-    applySettingsChanges();
 }
 
 void DirectoryManager::setDirectory(QString path) {
@@ -93,7 +90,6 @@ bool DirectoryManager::removeAt(int index) {
     if(checkRange(index)) {
         QString path = filePathAt(index);
         QFile file(path);
-        // TODO: just call this method. Watcher will detect changes automatically
         if(file.remove()) {
             mFileNameList.removeAt(index);
             emit fileRemovedAt(index);
@@ -138,7 +134,6 @@ bool DirectoryManager::isImage(QString filePath) const {
             return true;
         }
         /* end */
-
         QMimeType type = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchContent);
         if(mimeFilters.contains(type.name())) {
             return true;
@@ -159,29 +154,6 @@ bool DirectoryManager::contains(QString fileName) const {
 // #######################  PUBLIC SLOTS  #######################
 // ##############################################################
 
-void DirectoryManager::applySettingsChanges() {
-    QDir::SortFlags flags;
-    switch(settings->sortingMode()) {
-        case 1:
-            flags = QDir::SortFlags(QDir::Name | QDir::Reversed | QDir::IgnoreCase);
-            break;
-        case 2:
-            flags = QDir::SortFlags(QDir::Time);
-            break;
-        case 3:
-            flags = QDir::SortFlags(QDir::Time | QDir::Reversed);
-            break;
-        default:
-            flags = QDir::SortFlags(QDir::Name | QDir::IgnoreCase);
-            break;
-    }
-    if(currentDir.sorting() != flags) {
-        currentDir.setSorting(flags);
-        generateFileList();
-        emit directorySortingChanged(); //for now, sorting dir will cause full cache reload TODO
-    }
-}
-
 void DirectoryManager::fileChanged(const QString file) {
     qDebug() << "file changed: " << file;
 }
@@ -195,24 +167,8 @@ void DirectoryManager::directoryContentsChanged(QString dirPath) {
 // ##############################################################
 
 void DirectoryManager::generateFileList() {
-    switch(settings->sortingMode()) {
-        case 1:
-            currentDir.setSorting(QDir::Name | QDir::Reversed | QDir::IgnoreCase);
-            quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
-            break;
-        case 2:
-            currentDir.setSorting(QDir::Time);
-            quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
-            break;
-        case 3:
-            currentDir.setSorting(QDir::Time | QDir::Reversed);
-            quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
-            break;
-        default:
-            currentDir.setSorting(QDir::Name | QDir::IgnoreCase);
-            quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
-            break;
-    }
+    quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
+    sortFileList();
 }
 
 // Filter by file extension, fast.
@@ -222,6 +178,12 @@ void DirectoryManager::generateFileList() {
 void DirectoryManager::generateFileListQuick() {
     currentDir.setNameFilters(extensionFilters);
     mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
+}
+
+void DirectoryManager::sortFileList() {
+    QCollator collator;
+    collator.setNumericMode(true);
+    std::sort(mFileNameList.begin(), mFileNameList.end(), collator);
 }
 
 // Filter by mime type. Basically opens every file in a folder

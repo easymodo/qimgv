@@ -41,11 +41,8 @@ public:
     bool contains(QString fileName) const;
     bool checkRange(int index) const;
     bool copyTo(QString destDirectory, int index);
-
     QString fileNameAt(int index) const;
     bool isDirectory(QString path) const;
-public slots:
-    void applySettingsChanges();
 
 private slots:
     void fileChanged(const QString file);
@@ -67,6 +64,7 @@ private:
 
     void onFileRemovedExternal(QString);
 
+    void sortFileList();
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();

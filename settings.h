@@ -38,8 +38,6 @@ public:
     static void validate();
     QStringList supportedMimeTypes();
     QString supportedFormatsString();
-    int sortingMode();
-    void setSortingMode(int);
     bool useFastScale();
     void setUseFastScale(bool mode);
     QString lastDirectory();
