@@ -36,7 +36,6 @@ void DirectoryManager::setDirectory(QString path) {
         qDebug() << "file created" << filename;
     });
 
-    // BUG: on removing multiple files this is called only once (for the first file)
     connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
         qDebug() << "file deleted" << filename;
         onFileRemovedExternal(filename);

@@ -233,8 +233,8 @@ void MainWindow::showWindowed() {
     QWidget::show();
     QWidget::showNormal();
     restoreWindowGeometry();
-    QWidget::activateWindow();
-    QWidget::raise();
+    //QWidget::activateWindow();
+    //QWidget::raise();
     emit fullscreenStatusChanged(false);
 }
 
