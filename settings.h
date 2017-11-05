@@ -109,6 +109,8 @@ public:
     void setExpandImage(bool mode);
     bool expandImage();
 
+    int scalingFilter();
+    void setScalingFilter(int mode);
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;

@@ -10,14 +10,12 @@ void ScalerRunnable::setRequest(ScalerRequest r) {
 void ScalerRunnable::run() {
     emit started(req);
     ImageLib imgLib;
-    QImage *scaled = new QImage(req.size, req.image->getImage()->format());
-    imgLib.scalehq(scaled, req.image->getImage(), req.size);
-    /*
+    QImage *scaled = NULL;
     if(req.size.width() > req.image->width() && !settings->smoothUpscaling())
-        imgLib.scale(scaled, req.image->getImage(), req.size, false);
+        scaled = imgLib.scale(req.image->getImage(), req.size, 0);
+    else if((float)req.size.width()*req.size.height() / 1000000 > 23.0) // todo: test on different pc & tune value
+        scaled = imgLib.scale(req.image->getImage(), req.size, 1);
     else
-        imgLib.scale(scaled, req.image->getImage(), req.size, true);
-    //qDebug() << "runnable: done - " << req.image->name();
-    */
+        scaled = imgLib.scale(req.image->getImage(), req.size, settings->scalingFilter());
     emit finished(scaled, req);
 }

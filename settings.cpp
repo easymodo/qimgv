@@ -425,3 +425,20 @@ bool Settings::expandImage() {
 void Settings::setExpandImage(bool mode) {
     settings->s.setValue("expandImage", mode);
 }
+
+/* 0: nearest
+ * 1: bilinear
+ * 2: bicubic
+ * 3: catmull-rom
+ * 4: lanczos3
+ */
+int Settings::scalingFilter() {
+    int mode = settings->s.value("scalingFilter", 3).toInt();
+    if(mode < 0 || mode > 4)
+        mode = 3;
+    return mode;
+}
+
+void Settings::setScalingFilter(int mode) {
+    settings->s.setValue("scalingFilter", mode);
+}

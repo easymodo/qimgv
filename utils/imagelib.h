@@ -10,9 +10,9 @@
 class ImageLib {
 public:
     ImageLib();
-    void scale(QImage *dest, const QImage *source, QSize destSize, bool smooth);
-    void scalehq(QImage *dest, const QImage *source, QSize destSize);
-//    void bicubicScale(QPixmap *outPixmap, const QImage *in, int destWidth, int destHeight);
+    QImage *scale(const QImage *source, QSize destSize, int method);
+    QImage *scale_Qt(const QImage *source, QSize destSize, bool smooth);
+    QImage *scale_FreeImage(const QImage *source, QSize destSize, FREE_IMAGE_FILTER filter);
 };
 
 #endif // IMAGELIB_H

@@ -46,8 +46,7 @@ void SettingsDialog::readSettings() {
     ui->fitModeComboBox->setCurrentIndex(fitMode);
 
     // ##### UI #####
-    //not implemented
-    ui->scalingQualityComboBox->setDisabled(true);
+    ui->scalingQualityComboBox->setCurrentIndex(settings->scalingFilter());
 
     ui->fullscreenCheckBox->setChecked(settings->fullscreenMode());
     ui->thumbnailLabelsCheckBox->setChecked(settings->showThumbnailLabels());
@@ -113,8 +112,7 @@ void SettingsDialog::applySettings() {
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 
-    bool useFastScale = ui->scalingQualityComboBox->currentIndex() == 1;
-    settings->setUseFastScale(useFastScale);
+    settings->setScalingFilter(ui->scalingQualityComboBox->currentIndex());
 
     settings->setPanelPosition((PanelHPosition) ui->panelPositionComboBox->currentIndex());
 
