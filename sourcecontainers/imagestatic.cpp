@@ -32,6 +32,28 @@ void ImageStatic::load() {
     }
     image = new QImage();
     image->load(path, imageInfo->extension());
+    int format = image->format();
+    int depth = image->depth();
+    if(format != 4 && format != 5 && format != 24) {
+        QImage *image2 = new QImage();
+        switch (depth) {
+            case 8:
+                *image2 = image->convertToFormat(QImage::Format_Grayscale8);
+                delete image;
+                image = image2;
+                break;
+            case 24:
+                *image2 = image->convertToFormat(QImage::Format_RGB32);
+                delete image;
+                image = image2;
+                break;
+            case 32:
+                *image2 = image->convertToFormat(QImage::Format_ARGB32);
+                delete image;
+                image = image2;
+                break;
+        }
+    }
     loaded = true;
 }
 

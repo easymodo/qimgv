@@ -65,11 +65,13 @@ private:
     void onFileRemovedExternal(QString);
 
     void sortFileList();
+    void onFileChangedExternal(QString fileName);
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();
     void fileRemovedAt(int);
     void fileChangedAt(int);
+    void fileAddedAt(int);
 };
 
 #endif // DIRECTORYMANAGER_H

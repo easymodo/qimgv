@@ -10,11 +10,14 @@ void ScalerRunnable::setRequest(ScalerRequest r) {
 void ScalerRunnable::run() {
     emit started(req);
     ImageLib imgLib;
-    QImage *scaled = new QImage();
+    QImage *scaled = new QImage(req.size, req.image->getImage()->format());
+    imgLib.scalehq(scaled, req.image->getImage(), req.size);
+    /*
     if(req.size.width() > req.image->width() && !settings->smoothUpscaling())
         imgLib.scale(scaled, req.image->getImage(), req.size, false);
     else
         imgLib.scale(scaled, req.image->getImage(), req.size, true);
     //qDebug() << "runnable: done - " << req.image->name();
+    */
     emit finished(scaled, req);
 }

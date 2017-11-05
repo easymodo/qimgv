@@ -10,6 +10,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 msvc: LIBS += -luser32
 
+LIBS += -lfreeimageplus
+
 TARGET = qimgv
 TEMPLATE = app
 RC_FILE = qimgv.rc

@@ -53,7 +53,7 @@ private:
     void lock();
     void unlock();
     void updateThumbnailPositions(int start, int end);
-    void updateSceneSize();
+    void updateSceneRect();
     void setThumbnailSize(int);
     void updateThumbnailSize();
     void ensureThumbnailVisible(int pos);

@@ -32,8 +32,9 @@ void DirectoryManager::setDirectory(QString path) {
         qDebug() << "observing stopped";
     });
 
-    connect(watcher, &DirectoryWatcher::fileCreated, this, [] (const QString& filename) {
+    connect(watcher, &DirectoryWatcher::fileCreated, this, [this] (const QString& filename) {
         qDebug() << "file created" << filename;
+        onFileChangedExternal(filename);
     });
 
     connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
@@ -41,8 +42,9 @@ void DirectoryManager::setDirectory(QString path) {
         onFileRemovedExternal(filename);
     });
 
-    connect(watcher, &DirectoryWatcher::fileModified, this, [] (const QString& filename) {
+    connect(watcher, &DirectoryWatcher::fileModified, this, [this] (const QString& filename) {
         qDebug() << "file modified" << filename;
+        onFileChangedExternal(filename);
     });
 
     connect(watcher, &DirectoryWatcher::fileRenamed, this, [watcher] (const QString& file1, const QString& file2) {
@@ -207,3 +209,29 @@ void DirectoryManager::onFileRemovedExternal(QString fileName) {
         emit fileRemovedAt(index);
     }
 }
+
+void DirectoryManager::onFileChangedExternal(QString fileName) {
+    if(mFileNameList.contains(fileName)) { // file changed
+        qDebug() << "fileChange: " << fileName;
+    } else { // file added
+        qDebug() << "fileAdd: " << fileName;
+        mFileNameList.append(fileName);
+        sortFileList();
+        int index = mFileNameList.indexOf(fileName);
+        emit fileAddedAt(index);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -65,26 +65,39 @@ void ThumbnailStrip::addThumbnailLabel() {
     addItemAt(thumbnailLabels->count());
 }
 
+// TODO: fix this bullshit
 void ThumbnailStrip::addItemAt(int pos) {
     lock();
-    ThumbnailLabel *thumbLabel = new ThumbnailLabel();
-    thumbnailLabels->insert(pos, thumbLabel);
-    thumbLabel->setLabelNum(pos);
-    scene->addItem(thumbLabel);
-
-    // set the id
-    posIdHash.insert(pos, idCounter);
-    posIdHashReverse.insert(idCounter, pos);
-    idCounter++;
-
-    // set position for new & move existing items right
-    updateThumbnailPositions(pos, thumbnailLabels->count() - 1);
+    qDebug() << "addAt:: " << pos;
+    if(pos >= 0 && pos <= thumbnailLabels->count()) {
+        if(pos == current)
+            current++;
+        ThumbnailLabel *thumbLabel = new ThumbnailLabel();
+        thumbnailLabels->insert(pos, thumbLabel);
+        scene->addItem(thumbLabel);
+        //thumbLabel->setPos(thumbLabel->boundingRect().width()*pos, 0);
+        qDebug() << thumbLabel->pos();
+        ThumbnailLabel *tmp;
+        for(int i = pos; i < thumbnailLabels->count(); i++) {
+            tmp = thumbnailLabels->at(i);
+            tmp->setLabelNum(i);
+        }
+        updateThumbnailPositions(pos, thumbnailLabels->count()-1);
+        qDebug() << scene->sceneRect();
+        updateSceneRect();
+        qDebug() << scene->sceneRect();
+    }
     unlock();
+    // set position for new & move existing items right
+    //updateThumbnailPositions(pos, thumbnailLabels->count() - 1);
 }
+
+
+
 
 void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
     if(start > end || !checkRange(start) || !checkRange(end)) {
-        //qDebug() << "ThumbnailStrip::updateThumbnailPositions() - arguments out of range";
+        qDebug() << "ThumbnailStrip::updateThumbnailPositions() - arguments out of range";
         return;
     }
     // assume all thumbnails are the same size
@@ -97,7 +110,7 @@ void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
 }
 
 // fit scene to it's contents size
-void ThumbnailStrip::updateSceneSize() {
+void ThumbnailStrip::updateSceneRect() {
     scene->setSceneRect(scene->itemsBoundingRect());
 }
 
@@ -199,7 +212,7 @@ void ThumbnailStrip::setThumbnailSize(int newSize) {
             thumbnailLabels->at(i)->setThumbnailSize(newSize);
         }
         updateThumbnailPositions(0, thumbnailLabels->count() - 1);
-        updateSceneSize();
+        updateSceneRect();
         ensureThumbnailVisible(current);
     }
 }
@@ -218,7 +231,7 @@ void ThumbnailStrip::removeItemAt(int pos) {
             tmp->moveBy(-tmp->boundingRect().width(), 0);
             tmp->setLabelNum(i);
         }
-        updateSceneSize();
+        updateSceneRect();
     }
     unlock();
 }

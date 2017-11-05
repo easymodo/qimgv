@@ -75,12 +75,18 @@ void Core::connectComponents() {
             thumbnailer, SLOT(generateThumbnailFor(QList<int>, int)), Qt::UniqueConnection);
     connect(thumbnailer, SIGNAL(thumbnailReady(Thumbnail*)),
             this, SLOT(forwardThumbnail(Thumbnail*)));
-    connect(thumbnailPanelWidget, SIGNAL(thumbnailClicked(int)), this, SLOT(loadByIndex(int)));
-    connect(this, SIGNAL(imageIndexChanged(int)), thumbnailPanelWidget, SLOT(highlightThumbnail(int)));
-    connect(imageViewer, SIGNAL(scalingRequested(QSize)), this, SLOT(scalingRequest(QSize)));
-    connect(scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest)), this, SLOT(onScalingFinished(QPixmap*,ScalerRequest)));
-
+    connect(thumbnailPanelWidget, SIGNAL(thumbnailClicked(int)),
+            this, SLOT(loadByIndex(int)));
+    connect(this, SIGNAL(imageIndexChanged(int)),
+            thumbnailPanelWidget, SLOT(highlightThumbnail(int)));
+    // scaling
+    connect(imageViewer, SIGNAL(scalingRequested(QSize)),
+            this, SLOT(scalingRequest(QSize)));
+    connect(scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest)),
+            this, SLOT(onScalingFinished(QPixmap*,ScalerRequest)));
+    // filesystem changes
     connect(dirManager, SIGNAL(fileRemovedAt(int)), this, SLOT(onFileRemoved(int)));
+    connect(dirManager, SIGNAL(fileAddedAt(int)), this, SLOT(onFileAdded(int)));
 }
 
 void Core::initActions() {
@@ -165,6 +171,10 @@ void Core::onFileRemoved(int index) {
                 loadByIndexBlocking(--state.currentIndex);
         }
     }
+}
+
+void Core::onFileAdded(int index) {
+    thumbnailPanelWidget->addItemAt(index);
 }
 
 void Core::moveFile(QString destDirectory) {

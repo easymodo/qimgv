@@ -108,6 +108,7 @@ private slots:
     void copyFile(QString destDirectory);
     void removeFile(int index);
     void onFileRemoved(int index);
+    void onFileAdded(int index);
 };
 
 #endif // CORE_H
