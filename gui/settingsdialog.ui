@@ -757,7 +757,7 @@
      </widget>
      <widget class="QWidget" name="tab_6">
       <attribute name="title">
-       <string>Zooming</string>
+       <string>Scaling</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_11">
        <item>
@@ -788,6 +788,9 @@
                <height>30</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Nearest: &lt;/span&gt;No smoothing.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Bilinear: &lt;/span&gt;Worst quality. Several times faster than bicubic and other filters.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Bicubic: &lt;/span&gt;Produces smooth result but may lose some details.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Catmull-Rom: &lt;/span&gt;Produces sharper image. This is the default.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Lanczos3:&lt;/span&gt; In theory produces the best results, but also the slowest.&lt;/p&gt;&lt;p&gt;_________________&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Note: On high zoom levels the scaler will fall back to bilinear filter. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
              <property name="text">
               <string>Scaling algorithm: </string>
              </property>
@@ -806,12 +809,18 @@
              </property>
              <property name="minimumSize">
               <size>
-               <width>100</width>
+               <width>180</width>
                <height>30</height>
               </size>
              </property>
              <property name="toolTip">
-              <string>Someday this will work. Or not.</string>
+              <string/>
+             </property>
+             <property name="toolTipDuration">
+              <number>-1</number>
+             </property>
+             <property name="currentIndex">
+              <number>3</number>
              </property>
              <item>
               <property name="text">
@@ -877,7 +886,7 @@
                </size>
               </property>
               <property name="text">
-               <string>Max zoom:</string>
+               <string>Max zoom level:</string>
               </property>
              </widget>
             </item>
