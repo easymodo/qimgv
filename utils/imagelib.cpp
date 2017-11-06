@@ -36,7 +36,6 @@ QImage* ImageLib::scale_Qt(const QImage *source, QSize destSize, bool smooth) {
 }
 
 QImage* ImageLib::scale_FreeImage(const QImage *source, QSize destSize, FREE_IMAGE_FILTER filter) {
-    //qDebug() << "### src fmt: " << source->format() << "depth:" << source->depth() << "pitch:" << source->bytesPerLine();
     FIBITMAP *fiOrig = FreeImage_ConvertFromRawBitsEx(false, (BYTE*)source->bits(),
                                                       FIT_BITMAP,
                                                       source->width(),
@@ -49,13 +48,9 @@ QImage* ImageLib::scale_FreeImage(const QImage *source, QSize destSize, FREE_IMA
     QImage *dest = new QImage(destSize, source->format());
     FIBITMAP *fiScaled = FreeImage_Rescale(fiOrig, dest->width(), dest->height(), filter);
     FreeImage_Unload(fiOrig);
-    int Width = FreeImage_GetWidth(fiScaled);
-    int Pitch = FreeImage_GetPitch(fiScaled);
-    int Height = FreeImage_GetHeight(fiScaled);
-    int BPP = FreeImage_GetBPP(fiScaled);
-    //qDebug() << FreeImage_GetPitch(fiScaled) << FreeImage_GetWidth(fiScaled) << FreeImage_GetBPP(fiScaled);
-    //qDebug() << dest->bytesPerLine() << dest->width() << dest->depth();
-    memcpy( dest->bits(), FreeImage_GetBits(fiScaled), Pitch * Height ); // broken with QImage::Format_Grayscale8
+    int pitch = FreeImage_GetPitch(fiScaled);
+    int height = FreeImage_GetHeight(fiScaled);
+    memcpy( dest->bits(), FreeImage_GetBits(fiScaled), pitch * height );
     FreeImage_Unload(fiScaled);
     return dest;
 }
