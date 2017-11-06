@@ -68,7 +68,6 @@ void ThumbnailStrip::addThumbnailLabel() {
 // TODO: fix this bullshit
 void ThumbnailStrip::addItemAt(int pos) {
     lock();
-    qDebug() << "addAt:: " << pos;
     if(pos >= 0 && pos <= thumbnailLabels->count()) {
         if(pos == current)
             current++;
@@ -76,16 +75,13 @@ void ThumbnailStrip::addItemAt(int pos) {
         thumbnailLabels->insert(pos, thumbLabel);
         scene->addItem(thumbLabel);
         //thumbLabel->setPos(thumbLabel->boundingRect().width()*pos, 0);
-        qDebug() << thumbLabel->pos();
         ThumbnailLabel *tmp;
         for(int i = pos; i < thumbnailLabels->count(); i++) {
             tmp = thumbnailLabels->at(i);
             tmp->setLabelNum(i);
         }
         updateThumbnailPositions(pos, thumbnailLabels->count()-1);
-        qDebug() << scene->sceneRect();
         updateSceneRect();
-        qDebug() << scene->sceneRect();
     }
     unlock();
     // set position for new & move existing items right
