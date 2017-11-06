@@ -5,7 +5,8 @@
 #ifdef __linux__
 #include "linux/linuxwatcher.h"
 #elif _WIN32
-#include "windows/windowsdirectorywatcher.h"
+#include "dummywatcher.h"
+//#include "windows/windowsdirectorywatcher.h"
 #elif __unix__
 // TODO: implement this
 #include "dummywatcher.h"
@@ -51,7 +52,8 @@ DirectoryWatcher *DirectoryWatcher::newInstance()
 #ifdef __linux__
         watcher = new LinuxWatcher();
 #elif _WIN32
-        watcher = new WindowsDirectoryWatcher();
+        //watcher = new WindowsDirectoryWatcher();
+        watcher = new DummyWatcher();
 #elif __unix__
         watcher = new DummyWatcher();
 #elif __APPLE__

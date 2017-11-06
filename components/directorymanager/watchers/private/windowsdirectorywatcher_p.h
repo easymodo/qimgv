@@ -4,7 +4,7 @@
 #include <windows.h>
 
 #include "directorywatcher_p.h"
-#include "watchers/windows/windowswatcher.h"
+#include "../windows/windowsdirectorywatcher.h"
 
 #include <QObject>
 #include <windows.h>

@@ -10,8 +10,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 msvc: LIBS += -luser32
 
-LIBS += -lfreeimageplus
-
 TARGET = qimgv
 TEMPLATE = app
 RC_FILE = qimgv.rc
@@ -159,6 +157,8 @@ unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += mpv
 
+    LIBS += -lfreeimageplus
+
     SOURCES += \
         components/directorymanager/watchers/linux/linuxworker.cpp \
         components/directorymanager/watchers/linux/linuxwatcher.cpp \
@@ -172,16 +172,16 @@ unix {
 }
 
 windows {
-    SOURCES += \
-        components/directorymanager/watchers/windows/windowsdirectorywatcher.cpp \
-        components/directorymanager/watchers/windows/windowswatcherworker.cpp
+#    SOURCES += \
+#        components/directorymanager/watchers/windows/windowsdirectorywatcher.cpp \
+#        components/directorymanager/watchers/windows/windowswatcherworker.cpp
 
-    HEADERS += \
-        components/directorymanager/watchers/private/windowsdirectorywatcher_p.h \
-        components/directorymanager/watchers/windows/windowsdirectorywatcher.h \
-        components/directorymanager/watchers/windows/windowswatcherbackgroundworker.h
+#    HEADERS += \
+#        components/directorymanager/watchers/private/windowsdirectorywatcher_p.h \
+#        components/directorymanager/watchers/windows/windowsdirectorywatcher.h \
+#        components/directorymanager/watchers/windows/windowswatcherbackgroundworker.h
 }
 
-win32:LIBS += -L$$PWD/mpv-dev/lib/ -llibmpv
-win32:INCLUDEPATH += $$PWD/mpv-dev/include
-win32:DEPENDPATH += $$PWD/mpv-dev
+win32:LIBS += -L$$PWD/mpv-dev/lib/ -llibmpv -L$$PWD/FreeImage/lib/ -lfreeimage -lfreeimageplus
+win32:INCLUDEPATH += $$PWD/mpv-dev/include $$PWD/FreeImage/include
+win32:DEPENDPATH += $$PWD/mpv-dev $$PWD/FreeImage
