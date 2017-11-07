@@ -32,11 +32,19 @@ void ImageStatic::load() {
     }
     image = new QImage();
     image->load(path, imageInfo->extension());
-    int format = image->format();
+    QImage::Format format = image->format();
     int depth = image->depth();
-    if(format != 4 && format != 5 && format != 24) {
+    // Convert to Grayscale8 / RGB32 / ARGB32
+    // Allows fast conversion to FreeImage formats later on
+    if(format == QImage::Format_Indexed8) {
+        QImage *image2 = new QImage();
+        *image2 = image->convertToFormat(QImage::Format_RGB32);
+        delete image;
+        image = image2;
+    } else if(format != QImage::Format_RGB32 && format != QImage::Format_ARGB32 && format != QImage::Format_Grayscale8) {
         QImage *image2 = new QImage();
         switch (depth) {
+            case 1:
             case 8:
                 *image2 = image->convertToFormat(QImage::Format_Grayscale8);
                 delete image;
@@ -48,6 +56,11 @@ void ImageStatic::load() {
                 image = image2;
                 break;
             case 32:
+                *image2 = image->convertToFormat(QImage::Format_ARGB32);
+                delete image;
+                image = image2;
+                break;
+            default: // shouldn't happen
                 *image2 = image->convertToFormat(QImage::Format_ARGB32);
                 delete image;
                 image = image2;
