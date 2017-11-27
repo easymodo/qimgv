@@ -92,6 +92,7 @@ void ImageViewer::displayAnimation(QMovie *_animation) {
             drawTransparencyGrid();
         //update();
         startAnimation();
+        hideCursorTimed(false);
     }
 }
 
@@ -105,6 +106,7 @@ void ImageViewer::displayImage(QPixmap *_image) {
             drawTransparencyGrid();
         update();
         requestScaling();
+        hideCursorTimed(false);
     }
 }
 
@@ -315,7 +317,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
     if(!isDisplaying)
         return;
     mapOverlay->enableVisibility(true);
-    cursorTimer->stop();
+    showCursor();
     setCursor(QCursor(Qt::ArrowCursor));
     mouseMoveStartPos = event->pos();
     if(event->button() == Qt::LeftButton) {
@@ -337,7 +339,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
         mouseZoom(event);
     } else {
         showCursor();
-        cursorTimer->start(2000);
+        hideCursorTimed(true);
     }
 }
 
@@ -346,6 +348,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
     if(!isDisplaying) {
         return;
     }
+    hideCursorTimed(false);
     this->setCursor(QCursor(Qt::ArrowCursor));
     if(event->button() == Qt::RightButton && imageFitMode != FIT_ALL) {
         //requestScaling();
@@ -622,6 +625,11 @@ void ImageViewer::scrollY(int dy) {
             drawingRect.moveTop(top);
         }
     }
+}
+
+void ImageViewer::hideCursorTimed(bool restartTimer) {
+    if(restartTimer || !cursorTimer->isActive())
+        cursorTimer->start(CURSOR_HIDE_TIMEOUT_MS);
 }
 
 void ImageViewer::setZoomPoint(QPoint pos) {

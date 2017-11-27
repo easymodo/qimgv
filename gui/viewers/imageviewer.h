@@ -76,6 +76,7 @@ private:
 
     const int CHECKBOARD_GRID_SIZE = 10;
     const int FADE_DURATION = 140;
+    const int CURSOR_HIDE_TIMEOUT_MS = 1500;
     float maxScaleLimit = 4.0;
     float maxResolutionLimit = 75.0; // in megapixels
 
@@ -104,6 +105,7 @@ private:
     void scroll(int dx, int dy);
     void scrollX(int dx);
     void scrollY(int dy);
+    void hideCursorTimed(bool restartTimer);
 
     void mouseDragWrapping(QMouseEvent *event);
     void mouseDrag(QMouseEvent *event);
