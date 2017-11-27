@@ -442,3 +442,11 @@ int Settings::scalingFilter() {
 void Settings::setScalingFilter(int mode) {
     settings->s.setValue("scalingFilter", mode);
 }
+
+bool Settings::smoothAnimatedImages() {
+    return settings->s.value("smoothAnimatedImages", true).toBool();
+}
+
+void Settings::setSmoothAnimatedImages(bool mode) {
+    settings->s.setValue("smoothAnimatedImages", mode);
+}

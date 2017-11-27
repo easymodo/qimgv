@@ -108,9 +108,11 @@ public:
     void setMaximumZoom(int value);
     void setExpandImage(bool mode);
     bool expandImage();
-
     int scalingFilter();
     void setScalingFilter(int mode);
+    bool smoothAnimatedImages();
+    void setSmoothAnimatedImages(bool mode);
+
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;

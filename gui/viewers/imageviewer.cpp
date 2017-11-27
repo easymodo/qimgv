@@ -9,6 +9,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     mouseWrapping(false),
     checkboardGridEnabled(false),
     expandImage(false),
+    smoothAnimatedImages(true),
     currentScale(1.0),
     fitWindowScale(0.125),
     minScale(0.125),
@@ -174,6 +175,7 @@ void ImageViewer::scrollDown() {
 }
 
 void ImageViewer::readSettings() {
+    smoothAnimatedImages = settings->smoothAnimatedImages();
     expandImage = settings->expandImage();
     maxResolutionLimit = (float)settings->maxZoomedResolution();
     maxScaleLimit = (float)settings->maximumZoom();
@@ -295,8 +297,8 @@ void ImageViewer::drawTransparencyGrid() {
 void ImageViewer::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QPainter painter(this);
-    //if(animation)
-    //    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    if(animation && smoothAnimatedImages)
+        painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(image) {
         painter.drawPixmap(drawingRect, *image, image->rect());
         //zoomPoint for testing

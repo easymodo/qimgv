@@ -72,7 +72,7 @@ private:
     QSize sourceSize;
     MapOverlay *mapOverlay;
 
-    bool isDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, fadeEffectEnabled;
+    bool isDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;
 
     const int CHECKBOARD_GRID_SIZE = 10;
     const int FADE_DURATION = 140;
