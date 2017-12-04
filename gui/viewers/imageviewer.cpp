@@ -69,13 +69,16 @@ void ImageViewer::nextFrame() {
         }
         QPixmap *newFrame = new QPixmap();
         *newFrame = animation->currentPixmap();
-        startAnimationTimer();
+        if(animation->frameCount() > 1) {
+            startAnimationTimer();
+        }
         updateFrame(newFrame);
     }
 }
 
 void ImageViewer::startAnimationTimer() {
     if(animationTimer && animation) {
+        qDebug() << animation->frameCount() << animation->nextFrameDelay();
         animationTimer->start(animation->nextFrameDelay());
     }
 }
