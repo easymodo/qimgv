@@ -78,7 +78,6 @@ void ImageViewer::nextFrame() {
 
 void ImageViewer::startAnimationTimer() {
     if(animationTimer && animation) {
-        qDebug() << animation->frameCount() << animation->nextFrameDelay();
         animationTimer->start(animation->nextFrameDelay());
     }
 }

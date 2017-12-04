@@ -78,7 +78,11 @@
 }
 
 .QScrollBar::handle:horizontal:hover {
-    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #575757, stop: 1 #474747);
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #525252, stop: 1 #424242);
+    border-top: 1px solid #727272;
+    border-left: 1px solid #727272;
+    border-right: 1px solid #727272;
+
 }
 
 .QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {

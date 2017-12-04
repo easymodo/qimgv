@@ -273,17 +273,17 @@
                </property>
                <item>
                 <property name="text">
-                 <string>ALL</string>
+                 <string>Fit window</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>WIDTH</string>
+                 <string>Fit width</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>ORIGINAL</string>
+                 <string>1:1</string>
                 </property>
                </item>
               </widget>
@@ -293,7 +293,7 @@
            <item>
             <widget class="QCheckBox" name="expandImageCheckBox">
              <property name="toolTip">
-              <string>Modes [ FitAll ] and [ FitWidth ] will expand smaller images to fill the window.</string>
+              <string>Expand smaller images to fill the window (except for 1:1 fit mode).</string>
              </property>
              <property name="text">
               <string>Expand smaller images</string>
