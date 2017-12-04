@@ -1,4 +1,4 @@
-#include "private/directorywatcher_p.h"
+#include "directorywatcher_p.h"
 
 #include <QRegExp>
 

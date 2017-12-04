@@ -91,7 +91,7 @@ HEADERS += \
     components/cache/thumbnailcache.h \
     components/directorymanager/directorymanager.h \
     \
-    components/directorymanager/watchers/private/directorywatcher_p.h \
+    components/directorymanager/watchers/directorywatcher_p.h \
     components/directorymanager/watchers/directorywatcher.h \
     components/directorymanager/watchers/watcherevent.h \
     \
@@ -166,7 +166,7 @@ unix {
         components/directorymanager/watchers/linux/linuxfsevent.h \
         components/directorymanager/watchers/linux/linuxwatcher.h \
         components/directorymanager/watchers/linux/linuxworker.h \
-        components/directorymanager/watchers/private/linuxwatcher_p.h
+        components/directorymanager/watchers/linux/linuxwatcher_p.h
 }
 
 windows {
@@ -175,7 +175,7 @@ windows {
 #        components/directorymanager/watchers/windows/windowswatcherworker.cpp
 
 #    HEADERS += \
-#        components/directorymanager/watchers/private/windowsdirectorywatcher_p.h \
+#        components/directorymanager/watchers/windows/windowsdirectorywatcher_p.h \
 #        components/directorymanager/watchers/windows/windowsdirectorywatcher.h \
 #        components/directorymanager/watchers/windows/windowswatcherbackgroundworker.h
 }

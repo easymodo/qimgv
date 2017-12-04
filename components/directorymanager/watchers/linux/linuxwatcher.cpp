@@ -2,7 +2,7 @@
 
 #include <sys/inotify.h>
 
-#include "../private/linuxwatcher_p.h"
+#include "linuxwatcher_p.h"
 #include "linuxworker.h"
 
 #define TAG                 "[LinuxDirectoryWatcher]"

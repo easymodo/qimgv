@@ -1,5 +1,5 @@
 #include "dummywatcher.h"
-#include "private/directorywatcher_p.h"
+#include "directorywatcher_p.h"
 #include <QDebug>
 
 #define TAG         "[DummyWatcher]"
@@ -7,7 +7,7 @@
 
 class DummyWatcherWorker : public WatcherWorker {
   public:
-    DummyWatcherWorker() {};
+    DummyWatcherWorker() {}
     virtual void run() override {
         qDebug() << TAG << MESSAGE;
     }
