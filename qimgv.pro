@@ -157,8 +157,6 @@ unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += mpv
 
-    LIBS += -lfreeimageplus
-
     SOURCES += \
         components/directorymanager/watchers/linux/linuxworker.cpp \
         components/directorymanager/watchers/linux/linuxwatcher.cpp \
@@ -182,6 +180,9 @@ windows {
 #        components/directorymanager/watchers/windows/windowswatcherbackgroundworker.h
 }
 
-win32:LIBS += -L$$PWD/mpv-dev/lib/ -llibmpv -L$$PWD/FreeImage/lib/ -lfreeimage -lfreeimageplus
-win32:INCLUDEPATH += $$PWD/mpv-dev/include $$PWD/FreeImage/include
-win32:DEPENDPATH += $$PWD/mpv-dev $$PWD/FreeImage
+win32:LIBS += -L$$PWD/mpv-dev/lib/ -llibmpv
+win32:INCLUDEPATH += $$PWD/mpv-dev/include
+win32:DEPENDPATH += $$PWD/mpv-dev
+
+DISTFILES += \
+    README.md

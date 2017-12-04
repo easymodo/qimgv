@@ -466,7 +466,7 @@ void Core::displayImage(Image *img) {
     loadingTimer->stop();
     state.isWaitingForLoader = false;
     state.hasActiveImage = true;
-    if(img && img->name() != state.displayingFileName) {
+    if(img) {  // && img->name() != state.displayingFileName) {
         ImageType type = img->info()->imageType();
         if(type == STATIC) {
             viewerWidget->showImage(img->getPixmap());
@@ -484,6 +484,8 @@ void Core::displayImage(Image *img) {
         state.displayingFileName = img->name();
         emit imageIndexChanged(state.currentIndex);
         updateInfoString();
+    } else {
+        qDebug() << "Core::displayImage() - null image";
     }
 }
 

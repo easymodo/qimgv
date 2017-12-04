@@ -21,7 +21,7 @@ void Loader::loadBlocking(QString path) {
     runnable->run();
 }
 
-// clears all buffered tasks before opening
+// clears all buffered tasks before loading
 void Loader::loadExclusive(QString path) {
     bufferedTasks.clear();
     pool->clear();

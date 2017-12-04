@@ -76,7 +76,6 @@ private:
     Thumbnailer *thumbnailer;
 
     void rotateByDegrees(int degrees);
-
     void reset();
     bool setDirectory(QString newPath);
     void displayImage(Image *img);
@@ -84,6 +83,7 @@ private:
     void loadImage(QString path, bool blocking);
     void trimCache();
     void preload(int index);
+
 private slots:
     void readSettings();
     void slotNextImage();

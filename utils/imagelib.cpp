@@ -6,9 +6,6 @@ ImageLib::ImageLib() {
 
 /* 0: nearest
  * 1: bilinear
- * 2: bicubic
- * 3: catmull-rom
- * 4: lanczos3
  */
 
 QImage* ImageLib::scale(const QImage *source, QSize destSize, int method) {
@@ -17,14 +14,15 @@ QImage* ImageLib::scale(const QImage *source, QSize destSize, int method) {
             return scale_Qt(source, destSize, false);
         case 1:
             return scale_Qt(source, destSize, true);
-        case 2:
+        /*case 2:
             return scale_FreeImage(source, destSize, FILTER_BICUBIC);
         case 3:
             return scale_FreeImage(source, destSize, FILTER_CATMULLROM);
         case 4:
             return scale_FreeImage(source, destSize, FILTER_LANCZOS3);
+            */
         default:
-            return scale_FreeImage(source, destSize, FILTER_CATMULLROM);
+            return scale_Qt(source, destSize, true);
     }
 }
 
@@ -35,6 +33,7 @@ QImage* ImageLib::scale_Qt(const QImage *source, QSize destSize, bool smooth) {
     return dest;
 }
 
+/*
 QImage* ImageLib::scale_FreeImage(const QImage *source, QSize destSize, FREE_IMAGE_FILTER filter) {
     FIBITMAP *fiOrig = FreeImage_ConvertFromRawBitsEx(false, (BYTE*)source->bits(),
                                                       FIT_BITMAP,
@@ -54,3 +53,4 @@ QImage* ImageLib::scale_FreeImage(const QImage *source, QSize destSize, FREE_IMA
     FreeImage_Unload(fiScaled);
     return dest;
 }
+*/
