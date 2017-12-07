@@ -50,7 +50,6 @@ void SettingsDialog::readSettings() {
     ui->scalingQualityComboBox->setCurrentIndex(settings->scalingFilter());
 
     ui->fullscreenCheckBox->setChecked(settings->fullscreenMode());
-    ui->thumbnailLabelsCheckBox->setChecked(settings->showThumbnailLabels());
 
     ui->panelPositionComboBox->setCurrentIndex(settings->panelPosition());
 
@@ -96,7 +95,6 @@ void SettingsDialog::applySettings() {
     }
 
     settings->setInfiniteScrolling(ui->infiniteScrollingCheckBox->isChecked());
-    settings->setShowThumbnailLabels(ui->thumbnailLabelsCheckBox->isChecked());
     settings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
     settings->setImageFitMode((ImageFitMode)ui->fitModeComboBox->currentIndex());
     settings->setPlayVideos(ui->playVideosCheckBox->isChecked());

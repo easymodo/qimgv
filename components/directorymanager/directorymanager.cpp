@@ -23,7 +23,6 @@ void DirectoryManager::setDirectory(QString path) {
     watcher->setFileFilters(extensionFilters);
     watcher->setWatchPath(path);
     watcher->observe();
-
     connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
         qDebug() << "observing started";
     });
@@ -178,6 +177,7 @@ void DirectoryManager::generateFileList() {
 // For example an .exe wont open, but a gif with .jpg extension will still play.
 void DirectoryManager::generateFileListQuick() {
     currentDir.setNameFilters(extensionFilters);
+    currentDir.setSorting(QDir::NoSort);
     mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
 }
 

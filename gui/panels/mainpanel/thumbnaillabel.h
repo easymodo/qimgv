@@ -39,15 +39,14 @@ public:
 private:
     Thumbnail *thumbnail;
     int labelNumber;
-    bool showLabel;
     qreal currentOpacity;
     bool highlighted, hovered;
     int thumbnailSize, highlightBarHeight, marginX;
     QRectF highlightBarRect, nameRect, nameTextRect, labelTextRect;
-    QColor highlightColor, hoverHighlightColor, nameColor;
+    QColor highlightColor, nameColor;
     QFont font, fontSmall;
     QFontMetrics *fm, *fmSmall;
-    QPixmap *loadingIcon;
+    //QPixmap *loadingIcon;
     QPropertyAnimation *opacityAnimation;
     void setHovered(bool);
     bool isHovered();
@@ -57,10 +56,8 @@ private:
 
     const qreal inactiveOpacity = 0.86f;
     const int opacityAnimationSpeed = 80;
-
     void setupLabel();
-    void enableLabel();
-    void disableLabel();
+
 private slots:
     void readSettings();
 

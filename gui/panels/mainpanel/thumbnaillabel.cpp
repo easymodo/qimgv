@@ -3,7 +3,6 @@
 ThumbnailLabel::ThumbnailLabel() :
     state(EMPTY),
     labelNumber(0),
-    showLabel(false),
     thumbnail(NULL),
     highlighted(false),
     hovered(false),
@@ -13,7 +12,7 @@ ThumbnailLabel::ThumbnailLabel() :
 {
     setAcceptHoverEvents(true);
     //this->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    loadingIcon = new QPixmap(":/res/icons/loading72.png");
+    //loadingIcon = new QPixmap(":/res/icons/loading72.png");
     nameColor.setRgb(20, 20, 20, 255);
 
     font.setPixelSize(11);
@@ -34,12 +33,7 @@ ThumbnailLabel::ThumbnailLabel() :
 
 void ThumbnailLabel::readSettings() {
     highlightColor.setRgb(settings->accentColor().rgb());
-    hoverHighlightColor.setRed(highlightColor.red()/2);
-    hoverHighlightColor.setGreen(highlightColor.green()/2);
-    hoverHighlightColor.setBlue(highlightColor.blue()/2);
-    showLabel = settings->showThumbnailLabels();
     setupLabel();
-    update();
 }
 
 void ThumbnailLabel::setThumbnailSize(int size) {
@@ -70,26 +64,15 @@ void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail) {
 }
 
 void ThumbnailLabel::setupLabel() {
-    if(showLabel && thumbnail && !thumbnail->label.isEmpty()) {
-        enableLabel();
-    } else {
-        disableLabel();
+    if(thumbnail && !thumbnail->label.isEmpty()) {
+        int heightTextMargin = (nameRect.height() - fm->height()) / 2;
+        nameTextRect = nameRect.adjusted(4, heightTextMargin, -4, -heightTextMargin);
+        labelTextRect.setWidth(fmSmall->width(thumbnail->label));
+        labelTextRect.setHeight(fmSmall->height());
+        labelTextRect.moveCenter(nameRect.center());
+        labelTextRect.moveRight(nameTextRect.right());
+        nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
     }
-}
-
-void ThumbnailLabel::enableLabel() {
-    int heightTextMargin = (nameRect.height() - fm->height()) / 2;
-    nameTextRect = nameRect.adjusted(4, heightTextMargin, -4, -heightTextMargin);
-    labelTextRect.setWidth(fmSmall->width(thumbnail->label));
-    labelTextRect.setHeight(fmSmall->height());
-    labelTextRect.moveCenter(nameRect.center());
-    labelTextRect.moveRight(nameTextRect.right());
-    nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
-}
-
-void ThumbnailLabel::disableLabel() {
-    int heightTextMargin = (nameRect.height() - fm->height()) / 2;
-    nameTextRect = nameRect.adjusted(4, heightTextMargin, -4, -heightTextMargin);
 }
 
 void ThumbnailLabel::setHighlighted(bool mode, bool smooth) {
@@ -168,13 +151,15 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     if(isHighlighted()) {
         painter->fillRect(highlightBarRect, highlightColor);
     } else if (isHovered()) {
-        painter->fillRect(highlightBarRect, hoverHighlightColor);
+        painter->setOpacity(0.5f);
+        painter->fillRect(highlightBarRect, highlightColor);
+        painter->setOpacity(1.0f);
     }
 
     if(!thumbnail) {
-        painter->drawPixmap((width() - loadingIcon->width()) / 2,
-                            (height() - loadingIcon->height() - highlightBarHeight) / 2 + highlightBarHeight,
-                            *loadingIcon);
+        //painter->drawPixmap((width() - loadingIcon->width()) / 2,
+        //                    (height() - loadingIcon->height() - highlightBarHeight) / 2 + highlightBarHeight,
+        //                    *loadingIcon);
     } else {
         painter->setOpacity(currentOpacity);
         painter->drawPixmap((width() - thumbnail->image->width()) / 2,
@@ -189,11 +174,9 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setPen(QColor(245, 245, 245, 255));
         painter->drawText(nameTextRect, Qt::TextSingleLine, thumbnail->name);
         // label with additional info
-        if(showLabel) {
-            painter->setFont(fontSmall);
-            painter->setPen(QColor(160, 160, 160, 255));
-            painter->drawText(labelTextRect, Qt::TextSingleLine, thumbnail->label);
-        }
+        painter->setFont(fontSmall);
+        painter->setPen(QColor(160, 160, 160, 255));
+        painter->drawText(labelTextRect, Qt::TextSingleLine, thumbnail->label);
     }
 }
 
@@ -236,7 +219,7 @@ bool ThumbnailLabel::isHovered() {
 }
 
 ThumbnailLabel::~ThumbnailLabel() {
-    delete loadingIcon;
+    //delete loadingIcon;
     delete opacityAnimation;
     delete thumbnail;
     delete fm;

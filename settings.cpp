@@ -208,14 +208,6 @@ void Settings::setFullscreenMode(bool mode) {
     settings->s.setValue("openInFullscreen", mode);
 }
 
-bool Settings::showThumbnailLabels() {
-    return settings->s.value("showThumbnailLabels", true).toBool();
-}
-
-void Settings::setShowThumbnailLabels(bool mode) {
-    settings->s.setValue("showThumbnailLabels", mode);
-}
-
 bool Settings::mainPanelEnabled() {
     return settings->s.value("panelEnabled", true).toBool();
 }

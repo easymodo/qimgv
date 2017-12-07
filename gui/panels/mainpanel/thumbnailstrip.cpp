@@ -81,7 +81,8 @@ void ThumbnailStrip::addItemAt(int pos) {
             tmp->setLabelNum(i);
         }
         updateThumbnailPositions(pos, thumbnailLabels->count()-1);
-        updateSceneRect();
+        // do i need this here?
+        //updateSceneRect();
     }
     unlock();
     // set position for new & move existing items right
