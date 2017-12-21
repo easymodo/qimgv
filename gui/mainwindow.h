@@ -83,7 +83,7 @@ public slots:
     void setInfoString(QString);
     void showMessageDirectoryEnd();
     void showMessageDirectoryStart();
-    void showMessageFitAll();
+    void showMessageFitWindow();
     void showMessageFitWidth();
     void showMessageFitOriginal();
     void showFullScreen();

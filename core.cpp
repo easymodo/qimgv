@@ -92,11 +92,11 @@ void Core::connectComponents() {
 void Core::initActions() {
     connect(actionManager, SIGNAL(nextImage()), this, SLOT(slotNextImage()));
     connect(actionManager, SIGNAL(prevImage()), this, SLOT(slotPrevImage()));
-    connect(actionManager, SIGNAL(fitAll()), imageViewer, SLOT(setFitAll()));
+    connect(actionManager, SIGNAL(fitWindow()), imageViewer, SLOT(setFitWindow()));
     connect(actionManager, SIGNAL(fitWidth()), imageViewer, SLOT(setFitWidth()));
     connect(actionManager, SIGNAL(fitNormal()), imageViewer, SLOT(setFitOriginal()));
 
-    connect(actionManager, SIGNAL(fitAll()), mw, SLOT(showMessageFitAll()));
+    connect(actionManager, SIGNAL(fitWindow()), mw, SLOT(showMessageFitWindow()));
     connect(actionManager, SIGNAL(fitWidth()), mw, SLOT(showMessageFitWidth()));
     connect(actionManager, SIGNAL(fitNormal()), mw, SLOT(showMessageFitOriginal()));
 
@@ -198,10 +198,10 @@ void Core::copyFile(QString destDirectory) {
 
 // switch between 1:1 and Fit All
 void Core::switchFitMode() {
-    if(viewerWidget->fitMode() == FIT_ALL)
+    if(viewerWidget->fitMode() == FIT_WINDOW)
         viewerWidget->setFitMode(FIT_ORIGINAL);
     else
-        viewerWidget->setFitMode(FIT_ALL);
+        viewerWidget->setFitMode(FIT_WINDOW);
 }
 
 void Core::scalingRequest(QSize size) {
@@ -420,12 +420,14 @@ void Core::slotPrevImage() {
 void Core::jumpToFirst() {
     if(dirManager->hasImages()) {
         this->loadByIndex(0);
+        mw->showMessageDirectoryStart();
     }
 }
 
 void Core::jumpToLast() {
     if(dirManager->hasImages()) {
         this->loadByIndex(dirManager->fileCount() - 1);
+        mw->showMessageDirectoryEnd();
     }
 }
 
@@ -485,7 +487,7 @@ void Core::displayImage(Image *img) {
         emit imageIndexChanged(state.currentIndex);
         updateInfoString();
     } else {
-        qDebug() << "Core::displayImage() - null image";
+        mw->showMessage("Error: could not load image.");
     }
 }
 

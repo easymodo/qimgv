@@ -278,8 +278,8 @@ void MainWindow::showMessageDirectoryStart() {
     floatingMessage->showMessage("", Message::POSITION_LEFT, Message::ICON_LEFT_EDGE, 500);
 }
 
-void MainWindow::showMessageFitAll() {
-    floatingMessage->showMessage("Fit All", Message::POSITION_BOTTOM, Message::NO_ICON, 1000);
+void MainWindow::showMessageFitWindow() {
+    floatingMessage->showMessage("Fit Window", Message::POSITION_BOTTOM, Message::NO_ICON, 1000);
 }
 
 void MainWindow::showMessageFitWidth() {

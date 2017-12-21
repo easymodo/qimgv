@@ -248,7 +248,7 @@ void Settings::setPanelPosition(PanelHPosition pos) {
 }
 
 /*
- * 0: all
+ * 0: fit window
  * 1: fit width
  * 2: orginal size
  */

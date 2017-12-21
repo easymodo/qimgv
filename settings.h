@@ -14,7 +14,7 @@
 #include "components/actionmanager/actionmanager.h"
 
 enum ImageFitMode {
-    FIT_ALL,
+    FIT_WINDOW,
     FIT_WIDTH,
     FIT_ORIGINAL,
     FIT_FREE

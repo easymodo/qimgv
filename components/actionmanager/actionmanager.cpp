@@ -25,7 +25,7 @@ void ActionManager::createActionList() {
     actionManager->validActions << "nextImage"
                                 << "prevImage"
                                 << "toggleFullscreen"
-                                << "fitAll"
+                                << "fitWindow"
                                 << "fitWidth"
                                 << "fitNormal"
                                 << "toggleFitMode"
@@ -265,7 +265,7 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("RMB_DoubleClick", "toggleFitMode");
     actionManager->addShortcut("MiddleButton", "toggleFitMode");
     actionManager->addShortcut("Space", "toggleFitMode");
-    actionManager->addShortcut("1", "fitAll");
+    actionManager->addShortcut("1", "fitWindow");
     actionManager->addShortcut("2", "fitWidth");
     actionManager->addShortcut("3", "fitNormal");
     //actionManager->addShortcut("R", "resize"); // TODO: better defaults

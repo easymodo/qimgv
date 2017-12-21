@@ -56,7 +56,7 @@ signals:
     void setWallpaper();
     void nextImage();
     void prevImage();
-    void fitAll();
+    void fitWindow();
     void fitWidth();
     void fitNormal();
     void toggleFitMode();

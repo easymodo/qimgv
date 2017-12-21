@@ -150,7 +150,7 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     updateMaxScale();
     currentScale = 1.0;
     if(imageFitMode == FIT_FREE)
-        imageFitMode = FIT_ALL;
+        imageFitMode = FIT_WINDOW;
     applyFitMode();
     adjustOverlays();
 }
@@ -244,7 +244,7 @@ void ImageViewer::setScale(float scale) {
     } else if(scale <= minScale + FLT_EPSILON) {
         currentScale = minScale;
         if(imageFitMode == FIT_FREE && currentScale == fitWindowScale) {
-            imageFitMode = FIT_ALL;
+            imageFitMode = FIT_WINDOW;
         }
     } else {
         currentScale = scale;
@@ -354,7 +354,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
     }
     hideCursorTimed(false);
     this->setCursor(QCursor(Qt::ArrowCursor));
-    if(event->button() == Qt::RightButton && imageFitMode != FIT_ALL) {
+    if(event->button() == Qt::RightButton && imageFitMode != FIT_WINDOW) {
         //requestScaling();
         //fitDefault();
         //updateMap();
@@ -447,7 +447,7 @@ void ImageViewer::mouseZoom(QMouseEvent *event) {
             fitNormal();
         } else {
             newScale = minScale;
-            setFitAll();
+            setFitWindow();
         }
     } else {
         imageFitMode = FIT_FREE;
@@ -474,7 +474,7 @@ void ImageViewer::fitWidth() {
     }
 }
 
-void ImageViewer::fitAll() {
+void ImageViewer::fitWindow() {
     if(isDisplaying) {
         bool h = sourceSize.height() <= height();
         bool w = sourceSize.width() <= width();
@@ -518,8 +518,8 @@ void ImageViewer::applyFitMode() {
         case FIT_WIDTH:
             fitWidth();
             break;
-        case FIT_ALL:
-            fitAll();
+        case FIT_WINDOW:
+            fitWindow();
             break;
         default: /* FREE etc */
             break;
@@ -538,8 +538,8 @@ void ImageViewer::setFitWidth() {
     setFitMode(FIT_WIDTH);
 }
 
-void ImageViewer::setFitAll() {
-    setFitMode(FIT_ALL);
+void ImageViewer::setFitWindow() {
+    setFitMode(FIT_WINDOW);
 }
 
 void ImageViewer::resizeEvent(QResizeEvent *event) {

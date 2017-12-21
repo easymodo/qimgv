@@ -34,7 +34,7 @@ public slots:
     void setFitMode(ImageFitMode mode);
     void setFitOriginal();
     void setFitWidth();
-    void setFitAll();
+    void setFitWindow();
     void zoomIn();
     void zoomOut();
     void zoomInCursor();
@@ -96,7 +96,7 @@ private:
     void scaleAroundZoomPoint(float oldScale);
     void fitNormal();
     void fitWidth();
-    void fitAll();
+    void fitWindow();
     void updateMap();
     void updateMaxScale();
     void centerImage();
