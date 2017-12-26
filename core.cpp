@@ -41,9 +41,8 @@ void Core::showGui() {
 
 // create MainWindow and all widgets
 void Core::initGui() {
-    imageViewer = new ImageViewer();
-    videoPlayer = new VideoPlayerGL();
-    viewerWidget = new ViewerWidget(imageViewer, videoPlayer);
+    viewerWidget = new ViewerWidget();
+    imageViewer = viewerWidget->getImageViewer();
     mw = new MainWindow(viewerWidget);
     thumbnailPanelWidget = new ThumbnailStrip();
     mw->setPanelWidget(thumbnailPanelWidget);

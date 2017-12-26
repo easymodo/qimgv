@@ -6,23 +6,31 @@
 #include "gui/viewers/imageviewer.h"
 #include "gui/viewers/videoplayergl.h"
 
+enum CurrentWidget {
+    IMAGEVIEWER,
+    VIDEOPLAYER,
+    UNSET
+};
+
 class ViewerWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ViewerWidget(ImageViewer *imageViewer, VideoPlayerGL *videoPlayer, QWidget *parent = 0);
+    explicit ViewerWidget(QWidget *parent = 0);
+    ImageViewer* getImageViewer();
+    VideoPlayerGL* getVideoPlayer();
 
 private:
     QHBoxLayout layout;
     ImageViewer *imageViewer;
     VideoPlayerGL *videoPlayer;
-    void setImageViewer(ImageViewer *imageViewer);
-    void setVideoPlayer(VideoPlayerGL *videoPlayer);
+    void initImageViewer();
+    void initVideoPlayer();
 
     void enableImageViewer();
     void enableVideoPlayer();
 
-    int currentWidget; // 1 - imageViewer; 2 - videoplayer; others - none
+    CurrentWidget currentWidget;
     QColor bgColor;
 
 private slots:

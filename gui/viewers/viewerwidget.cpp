@@ -5,66 +5,80 @@
 
 #include "viewerwidget.h"
 
-ViewerWidget::ViewerWidget(ImageViewer *imageViewer, VideoPlayerGL *videoPlayer, QWidget *parent)
+ViewerWidget::ViewerWidget(QWidget *parent)
     : QWidget(parent),
-      currentWidget(0)
+      imageViewer(NULL),
+      videoPlayer(NULL),
+      currentWidget(UNSET)
 {
     this->setMouseTracking(true);
     layout.setContentsMargins(0, 0, 0, 0);
     this->setLayout(&layout);
-    setImageViewer(imageViewer);
-    setVideoPlayer(videoPlayer);
     enableImageViewer();
-
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
-void ViewerWidget::setImageViewer(ImageViewer *imageViewer) {
-    if(imageViewer) {
-        this->imageViewer = imageViewer;
+ImageViewer *ViewerWidget::getImageViewer() {
+    if(!imageViewer) {
+        initImageViewer();
+    }
+    return imageViewer;
+}
+
+VideoPlayerGL *ViewerWidget::getVideoPlayer() {
+    if(!videoPlayer) {
+        initVideoPlayer();
+    }
+    return videoPlayer;
+}
+
+void ViewerWidget::initImageViewer() {
+    if(!imageViewer) {
+        imageViewer = new ImageViewer();
         imageViewer->setParent(this);
         imageViewer->hide();
-    } else {
-        qDebug() << "ViewerWidget: imageViewer is null";
     }
 }
 
-void ViewerWidget::setVideoPlayer(VideoPlayerGL *videoPlayer) {
-    if(videoPlayer) {
-        this->videoPlayer = videoPlayer;
+void ViewerWidget::initVideoPlayer() {
+    if(!videoPlayer) {
+        videoPlayer = new VideoPlayerGL();
         videoPlayer->setParent(this);
         videoPlayer->hide();
-    } else {
-        qDebug() << "ViewerWidget: videoPlayer is null";
     }
 }
 
 // hide videoPlayer, show imageViewer
 void ViewerWidget::enableImageViewer() {
-    if(currentWidget != 1) {
-        if(currentWidget == 2) {
+    if(currentWidget != IMAGEVIEWER) {
+        if(currentWidget == VIDEOPLAYER) {
             videoPlayer->setPaused(true);
             videoPlayer->hide();
             layout.removeWidget(videoPlayer);
         }
+        if(!imageViewer) {
+            initImageViewer();
+        }
         layout.addWidget(imageViewer);
         imageViewer->show();
-        currentWidget = 1;
+        currentWidget = IMAGEVIEWER;
     }
 }
 
 // hide imageViewer, show videoPlayer
 void ViewerWidget::enableVideoPlayer() {
-    if(currentWidget != 2) {
-        if(currentWidget == 1) {
+    if(currentWidget != VIDEOPLAYER) {
+        if(currentWidget == IMAGEVIEWER) {
             imageViewer->stopAnimation();
             imageViewer->hide();
             layout.removeWidget(imageViewer);
         }
+        if(!videoPlayer)
+            initVideoPlayer();
         layout.addWidget(videoPlayer);
         videoPlayer->show();
-        currentWidget = 2;
+        currentWidget = VIDEOPLAYER;
     }
 }
 
@@ -102,9 +116,9 @@ bool ViewerWidget::showVideo(Clip *clip) {
 }
 
 void ViewerWidget::stopPlayback() {
-    if(currentWidget == 1)
+    if(currentWidget == IMAGEVIEWER)
         imageViewer->stopAnimation();
-    if(currentWidget == 2)
+    if(currentWidget == VIDEOPLAYER)
         videoPlayer->setPaused(true);
 }
 
