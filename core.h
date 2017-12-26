@@ -58,7 +58,6 @@ private:
     MainWindow *mw;
     ViewerWidget *viewerWidget;
     ImageViewer *imageViewer;
-    VideoPlayerGL *videoPlayer;
     ThumbnailStrip *thumbnailPanelWidget;
 
 
