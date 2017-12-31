@@ -74,7 +74,8 @@
     border-left: 1px solid #6e6e6e;
     border-right: 1px solid #6e6e6e;
     min-width: 60px;
-    border-radius: 1px;
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
 }
 
 .QScrollBar::handle:horizontal:hover {
