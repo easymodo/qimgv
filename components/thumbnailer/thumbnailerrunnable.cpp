@@ -36,10 +36,15 @@ void ThumbnailerRunnable::run() {
     }
     th->image = new QPixmap(thumbImage->size());
     *th->image = QPixmap::fromImage(*thumbImage);
-    // put info into Thumbnail object
-    th->label = thumbImage->text("originalWidth") + "x" +
-                thumbImage->text("originalHeight") +
-                thumbImage->text("label");
+
+    if(th->image->width() == 0) {
+        th->label = "error";
+    } else  {
+        // put info into Thumbnail object
+        th->label = thumbImage->text("originalWidth") + "x" +
+                    thumbImage->text("originalHeight") +
+                    thumbImage->text("label");
+    }
     delete thumbImage;
     emit taskEnd(th, path);
 }

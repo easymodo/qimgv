@@ -12,7 +12,6 @@ ThumbnailLabel::ThumbnailLabel() :
 {
     setAcceptHoverEvents(true);
     //this->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    //loadingIcon = new QPixmap(":/res/icons/loading72.png");
     nameColor.setRgb(20, 20, 20, 255);
 
     font.setPixelSize(11);
@@ -155,16 +154,23 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->fillRect(highlightBarRect, highlightColor);
         painter->setOpacity(1.0f);
     }
-
     if(!thumbnail) {
-        //painter->drawPixmap((width() - loadingIcon->width()) / 2,
-        //                    (height() - loadingIcon->height() - highlightBarHeight) / 2 + highlightBarHeight,
-        //                    *loadingIcon);
+        const QPixmap* loadingIcon = shrRes->loadingIcon72();
+        painter->drawPixmap((width() - loadingIcon->width()) / 2,
+                            (height() - loadingIcon->height() - highlightBarHeight) / 2 + highlightBarHeight,
+                            *loadingIcon);
     } else {
-        painter->setOpacity(currentOpacity);
-        painter->drawPixmap((width() - thumbnail->image->width()) / 2,
-                            (height() - thumbnail->image->height() - highlightBarHeight) / 2 + highlightBarHeight,
-                            *thumbnail->image);
+        if(thumbnail->image->width() == 0) {
+            const QPixmap* errorIcon = shrRes->loadingErrorIcon72();
+            painter->drawPixmap((width() - errorIcon->width()) / 2,
+                                (height() - errorIcon->height() - highlightBarHeight) / 2 + highlightBarHeight,
+                                *errorIcon);
+        } else {
+            painter->setOpacity(currentOpacity);
+            painter->drawPixmap((width() - thumbnail->image->width()) / 2,
+                                (height() - thumbnail->image->height() - highlightBarHeight) / 2 + highlightBarHeight,
+                                *thumbnail->image);
+        }
         // text background
         painter->setOpacity(0.95f);
         painter->fillRect(nameRect, nameColor);

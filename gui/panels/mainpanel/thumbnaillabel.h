@@ -9,6 +9,7 @@
 #include <ctime>
 #include "sourcecontainers/thumbnail.h"
 #include "settings.h"
+#include "sharedresources.h"
 
 enum loadState { EMPTY, LOADING, LOADED };
 
@@ -46,7 +47,6 @@ private:
     QColor highlightColor, nameColor;
     QFont font, fontSmall;
     QFontMetrics *fm, *fmSmall;
-    //QPixmap *loadingIcon;
     QPropertyAnimation *opacityAnimation;
     void setHovered(bool);
     bool isHovered();

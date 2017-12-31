@@ -1,6 +1,7 @@
 #include <QApplication>
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"
+#include "sharedresources.h"
 #include "core.h"
 
 void saveSettings() {
@@ -19,6 +20,7 @@ int main(int argc, char *argv[]) {
 
     settings = Settings::getInstance();
     actionManager = ActionManager::getInstance();
+    shrRes = SharedResources::getInstance();
 
     atexit(saveSettings);
 

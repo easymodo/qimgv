@@ -81,7 +81,8 @@ SOURCES += \
     components/thumbnailer/thumbnailerrunnable.cpp \
     components/directorymanager/watchers/watcherevent.cpp \
     components/directorymanager/watchers/dummywatcher.cpp \
-    components/directorymanager/watchers/watcherworker.cpp
+    components/directorymanager/watchers/watcherworker.cpp \
+    sharedresources.cpp
 
 
 HEADERS += \
@@ -144,7 +145,8 @@ HEADERS += \
     components/cache/cacheitem.h \
     components/thumbnailer/thumbnailerrunnable.h \
     components/directorymanager/watchers/dummywatcher.h \
-    components/directorymanager/watchers/watcherworker.h
+    components/directorymanager/watchers/watcherworker.h \
+    sharedresources.h
 
 FORMS += \
     gui/settingsdialog.ui
