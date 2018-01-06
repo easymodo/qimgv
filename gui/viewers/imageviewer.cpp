@@ -14,7 +14,6 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     fitWindowScale(0.125),
     minScale(0.125),
     maxScale(maxScaleLimit),
-    scaleStep(0.10),
     imageFitMode(FIT_ORIGINAL)
 {
     initOverlays();
@@ -693,7 +692,7 @@ void ImageViewer::doZoomIn() {
     if(!isDisplaying) {
         return;
     }
-    float newScale = currentScale + scaleStep;
+    float newScale = currentScale * 1.1f;
     if(newScale == currentScale) //skip if minScale
         return;
     if(newScale > maxScale)
@@ -709,7 +708,7 @@ void ImageViewer::doZoomOut() {
     if(!isDisplaying) {
         return;
     }
-    float newScale = currentScale - scaleStep;
+    float newScale = currentScale * 0.9f;
     if(newScale == currentScale) //skip if maxScale
         return;
     if(newScale < minScale - FLT_EPSILON)

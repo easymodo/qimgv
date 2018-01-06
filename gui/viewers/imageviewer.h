@@ -84,7 +84,6 @@ private:
     float fitWindowScale;
     float minScale;
     float maxScale;
-    float scaleStep;
     QPoint zoomPoint;
     QPointF zoomDrawRectPoint; // [0-1, 0-1]
     QSize desktopSize;

@@ -14,6 +14,7 @@
 #include "gui/panels/mainpanel/mainpanel.h"
 #include "gui/copydialog.h"
 #include "gui/customwidgets/slidevpanel.h"
+#include "gui/resizedialog.h"
 #include "components/actionmanager/actionmanager.h"
 #include "settings.h"
 #include "settingsdialog.h"
@@ -73,11 +74,13 @@ signals:
     void fullscreenStatusChanged(bool);
     void copyRequested(QString);
     void moveRequested(QString);
+    void resizeRequested(QSize);
 
 public slots:
     void showDefault();
     void showSaveDialog();
     void showOpenDialog();
+    void showResizeDialog(QSize initialSize);
     void showSettings();
     void triggerFullScreen();
     void setInfoString(QString);

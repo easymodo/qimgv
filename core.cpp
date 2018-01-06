@@ -68,6 +68,7 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(opened(QString)), this, SLOT(loadByPathBlocking(QString)));
     connect(mw, SIGNAL(copyRequested(QString)), this, SLOT(copyFile(QString)));
     connect(mw, SIGNAL(moveRequested(QString)), this, SLOT(moveFile(QString)));
+    connect(mw, SIGNAL(resizeRequested(QSize)), this, SLOT(resize(QSize)));
 
     // thumbnails stuff
     connect(thumbnailPanelWidget, SIGNAL(thumbnailRequested(QList<int>, int)),
@@ -107,7 +108,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(zoomOutCursor()), imageViewer, SLOT(zoomOutCursor()));
     connect(actionManager, SIGNAL(scrollUp()), imageViewer, SLOT(scrollUp()));
     connect(actionManager, SIGNAL(scrollDown()), imageViewer, SLOT(scrollDown()));
-    //connect(actionManager, SIGNAL(resize()), this, SLOT(slotResizeDialog()));
+    connect(actionManager, SIGNAL(resize()), this, SLOT(showResizeDialog()));
     connect(actionManager, SIGNAL(rotateLeft()), this, SLOT(rotateLeft()));
     connect(actionManager, SIGNAL(rotateRight()), this, SLOT(rotateRight()));
     connect(actionManager, SIGNAL(openSettings()), mw, SLOT(showSettings()));
@@ -195,6 +196,37 @@ void Core::copyFile(QString destDirectory) {
     }
 }
 
+void Core::showResizeDialog() {
+    QString nameKey = dirManager->fileNameAt(state.currentIndex);
+    mw->showResizeDialog(cache->get(nameKey)->size());
+}
+
+// use default bilinear for now
+void Core::resize(QSize size) {
+    if(state.currentIndex >= 0) {
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        cache->lock();
+        if(cache->reserve(nameKey)) {
+            auto *img = cache->get(nameKey);
+            if(img && img->type() == STATIC) {
+                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                imgStatic->setEditedImage(
+                            ImageLib::scale(imgStatic->getImage(), size, 1));
+                cache->release(nameKey);
+                cache->unlock();
+                displayImage(img);
+            } else {
+                cache->release(nameKey);
+                cache->unlock();
+                mw->showMessage("Editing gifs/video is unsupported.");
+            }
+        } else {
+            cache->unlock();
+            qDebug() << "Core::resize() - could not lock cache object.";
+        }
+    }
+}
+
 // switch between 1:1 and Fit All
 void Core::switchFitMode() {
     if(viewerWidget->fitMode() == FIT_WINDOW)
@@ -239,21 +271,20 @@ void Core::rotateByDegrees(int degrees) {
         if(cache->reserve(nameKey)) {
             auto *img = cache->get(nameKey);
             if(img && img->type() == STATIC) {
-                qDebug() << "Rotate: OK.";
                 auto imgStatic = dynamic_cast<ImageStatic *>(img);
                 imgStatic->setEditedImage(
                             ImageLib::rotate(imgStatic->getImage(), degrees));
                 cache->release(nameKey);
                 cache->unlock();
-                viewerWidget->showImage(imgStatic->getPixmap());
+                displayImage(img);
             } else {
                 cache->release(nameKey);
                 cache->unlock();
-                qDebug() << "Rotating unsupported.";
+                mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
             cache->unlock();
-            qDebug() << "Error: could not lock cache object.";
+            qDebug() << "Core::rotateByDegrees() - could not lock cache object.";
         }
     }
 }

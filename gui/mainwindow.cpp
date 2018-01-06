@@ -197,7 +197,17 @@ void MainWindow::showOpenDialog() {
     dialog.setNameFilters(imageFilter);
     dialog.setWindowTitle("Open image");
     dialog.setWindowModality(Qt::ApplicationModal);
-    connect(&dialog, SIGNAL(fileSelected(QString)), this, SIGNAL(opened(QString)));
+    connect(&dialog, SIGNAL(fileSelected(QString)),
+            this, SIGNAL(opened(QString)));
+    dialog.exec();
+}
+
+void MainWindow::showResizeDialog(QSize initialSize) {
+    ResizeDialog dialog(initialSize);
+    dialog.setWindowTitle("Resize image");
+    dialog.setWindowModality(Qt::ApplicationModal);
+    connect(&dialog, SIGNAL(sizeSelected(QSize)),
+            this, SIGNAL(resizeRequested(QSize)));
     dialog.exec();
 }
 

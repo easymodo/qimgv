@@ -108,6 +108,8 @@ private slots:
     void removeFile(int index);
     void onFileRemoved(int index);
     void onFileAdded(int index);
+    void showResizeDialog();
+    void resize(QSize size);
 };
 
 #endif // CORE_H

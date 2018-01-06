@@ -1,6 +1,6 @@
 #include "resizedialog.h"
 
-ResizeDialog::ResizeDialog(QWidget *parent) : QDialog(parent) {
+ResizeDialog::ResizeDialog(QSize originalSize,  QWidget *parent) : QDialog(parent) {
     setWindowModality(Qt::ApplicationModal);
     setWindowTitle("Resize image (mockup)");
     //setWindowIcon(QIcon(":/res/pepper32.png"));
@@ -35,8 +35,7 @@ ResizeDialog::ResizeDialog(QWidget *parent) : QDialog(parent) {
     width.setFocus();
 
     //test
-    originalSize.setWidth(1980);
-    originalSize.setHeight(1080);
+    this->originalSize = originalSize;
     targetSize = originalSize;
     width.setRange(1, 65535); // should be enough.. right?
     height.setRange(1, 65535);
