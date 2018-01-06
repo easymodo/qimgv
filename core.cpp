@@ -233,19 +233,27 @@ void Core::forwardThumbnail(Thumbnail *thumbnail) {
 }
 
 void Core::rotateByDegrees(int degrees) {
-    /*
     if(state.currentIndex >= 0) {
-        currentImage()->rotate(degrees);
-        ImageStatic *staticImage;
-        if((staticImage = dynamic_cast<ImageStatic *>(currentImage())) != NULL) {
-            viewerWidget->showImage(currentImage()->getPixmap());
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        cache->lock();
+        if(cache->reserve(nameKey)) {
+            auto *img = cache->get(nameKey);
+            if(img && img->type() == STATIC) {
+                qDebug() << "Rotate: OK.";
+                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                imgStatic->setEditedImage(
+                            ImageLib::rotate(imgStatic->getImage(), degrees));
+                cache->release(nameKey);
+                viewerWidget->showImage(imgStatic->getPixmap());
+            } else {
+                cache->release(nameKey);
+                qDebug() << "Rotating unsupported.";
+            }
+        } else {
+            qDebug() << "Error: could not lock cache object.";
         }
-        else if ((currentVideo = dynamic_cast<Video *>(currentImage())) != NULL) {
-            //emit videoAltered(currentVideo->getClip());
-        }
-        updateInfoString();
+        cache->unlock();
     }
-    */
 }
 
 void Core::trimCache() {

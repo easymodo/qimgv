@@ -1,9 +1,5 @@
 #include "imagelib.h"
 
-ImageLib::ImageLib() {
-
-}
-
 QImage *ImageLib::rotate(const QImage* src, int grad) {
     QImage *img = new QImage();
     QTransform transform;
