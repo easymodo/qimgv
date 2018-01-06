@@ -8,12 +8,11 @@
 class ImageStatic : public Image {
 public:
     ImageStatic(QString _path);
-    ImageStatic(ImageInfo *_info);
     ~ImageStatic();
 
     QPixmap *getPixmap();
+    const QImage* getSourceImage();
     const QImage* getImage();
-    void load();
     int height();
     int width();
     QSize size();
@@ -22,14 +21,18 @@ public:
     void rotate(int grad);
     QImage *cropped(QRect newRect, QRect targetRes, bool upscaled);
 
+    bool isEdited();
+    void setEditedImage(QImage *imageEditedNew);
+    void discardEditedImage();
+
 public slots:
     void crop(QRect newRect);
     void save();
-    void save(QString destinationPath);
+    void save(QString destPath);
 
 private:
-    QImage *image;
-    bool unloadRequested;
+    void load();
+    QImage *image, *imageEdited;
 };
 
 #endif // QIMAGESTATIC_H

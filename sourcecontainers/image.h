@@ -20,7 +20,6 @@ public:
     virtual QPixmap* getPixmap() = 0;
     virtual const QImage* getImage() = 0;
     ImageType type();
-    virtual void load() = 0;
     QString getPath();
     virtual int height() = 0;
     virtual int width() = 0;
@@ -28,16 +27,15 @@ public:
     bool isLoaded();
     ImageInfo* info();
 
-    virtual void crop(QRect newRect) = 0;
-    virtual void rotate(int grad) = 0;
-
     ImageInfo* imageInfo;
 
     virtual void save() = 0;
-    virtual void save(QString destinationPath) = 0;
+    virtual void save(QString destPath) = 0;
 
     QString name();
+
 protected:
+    virtual void load() = 0;
     bool loaded;
     QString path;
     QSize resolution;

@@ -9,14 +9,7 @@ ImageAnimated::ImageAnimated(QString _path) {
     mSize.setWidth(0);
     mSize.setHeight(0);
     imageInfo = new ImageInfo(path);
-}
-
-ImageAnimated::ImageAnimated(ImageInfo *_info) {
-    loaded = false;
-    imageInfo = _info;
-    mSize.setWidth(0);
-    mSize.setHeight(0);
-    path = imageInfo->filePath();
+    load();
 }
 
 ImageAnimated::~ImageAnimated() {
@@ -34,10 +27,10 @@ void ImageAnimated::load() {
     loaded = true;
 }
 
-void ImageAnimated::save(QString destinationPath) {
+void ImageAnimated::save(QString destPath) {
     QFile file(path);
     if(file.exists()) {
-        if (!file.copy(destinationPath)) {
+        if (!file.copy(destPath)) {
             qDebug() << "Unable to save file.";
         }
     } else {
@@ -79,12 +72,4 @@ int ImageAnimated::width() {
 
 QSize ImageAnimated::size() {
     return mSize;
-}
-
-void ImageAnimated::rotate(int grad) {
-    Q_UNUSED(grad)
-}
-
-void ImageAnimated::crop(QRect newRect) {
-    Q_UNUSED(newRect)
 }

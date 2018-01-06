@@ -1,17 +1,11 @@
 #include "video.h"
 #include <time.h>
 
-//use this one
 Video::Video(QString _path) {
     path = _path;
     loaded = false;
     imageInfo = new ImageInfo(_path);
-}
-
-Video::Video(ImageInfo *_info) {
-    loaded = true;
-    imageInfo = _info;
-    path = imageInfo->filePath();
+    load();
 }
 
 Video::~Video() {
@@ -19,26 +13,22 @@ Video::~Video() {
 }
 
 void Video::load() {
-    if(!imageInfo) {
-        imageInfo = new ImageInfo(path);
-    }
     if(isLoaded()) {
         return;
+    }
+    if(!imageInfo) {
+        imageInfo = new ImageInfo(path);
     }
     clip = new Clip(path, imageInfo->extension());
     loaded = true;
 }
 
-void Video::save(QString destinationPath) {
-    if(isLoaded()) {
-        clip->save(destinationPath);
-    }
+void Video::save(QString destPath) {
+    clip->save(destPath);
 }
 
 void Video::save() {
-    if(isLoaded()) {
-        clip->save(path);
-    }
+    clip->save(path);
 }
 
 QPixmap *Video::getPixmap() {
@@ -58,25 +48,13 @@ Clip *Video::getClip() {
 }
 
 int Video::height() {
-    return isLoaded() ? clip->height() : 0;
+    return clip->height();
 }
 
 int Video::width() {
-    return isLoaded() ? clip->width() : 0;
+    return clip->width();
 }
 
 QSize Video::size() {
-    return isLoaded() ? clip->size() : QSize(0, 0);
-}
-
-void Video::rotate(int grad) {
-    if (isLoaded()) {
-        clip->rotate(grad);
-    }
-}
-
-void Video::crop(QRect newRect) {
-    if (isLoaded()) {
-        clip->setFrame(newRect);
-    }
+    return clip->size();
 }

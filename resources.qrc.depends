@@ -20,5 +20,6 @@
         <file>res/icons/loading72.png</file>
         <file>res/images/movedialogheader.png</file>
         <file>res/images/copydialogheader.png</file>
+        <file>res/icons/loading-error72.png</file>
     </qresource>
 </RCC>

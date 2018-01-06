@@ -11,27 +11,22 @@
 class Video : public Image {
 public:
     Video(QString _path);
-    Video(ImageInfo *_info);
     ~Video();
 
     QPixmap* getPixmap();
     const QImage* getImage();
     Clip* getClip();    // getPixmap's video equivalent
-    void load();
-    void unload();
     int height();
     int width();
     QSize size();
 
-    void rotate(int grad);
-
 public slots:
-    void crop(QRect newRect);
     void save();
-    void save(QString destinationPath);
+    void save(QString destPath);
 
 
 private:
+    void load();
     Clip *clip;
 };
 

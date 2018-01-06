@@ -8,28 +8,27 @@
 class ImageAnimated : public Image {
 public:
     ImageAnimated(QString _path);
-    ImageAnimated(ImageInfo *_info);
     ~ImageAnimated();
 
     QPixmap *getPixmap();
     const QImage* getImage();
     QMovie* getMovie();
-    void load();
-    void unload();
     int height();
     int width();
     QSize size();
 
-    void rotate(int grad);
-    void crop(QRect newRect);
+    bool isEditable();
+    bool isEdited();
+
 public slots:
     void save();
-    void save(QString destinationPath);
+    void save(QString destPath);
 
 signals:
     void frameChanged(QPixmap*);
 
 private:
+    void load();
     QSize mSize;
 };
 

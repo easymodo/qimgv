@@ -10,6 +10,7 @@
 class ImageLib {
 public:
     ImageLib();
+    QImage *rotate(const QImage *src, int grad);
     QImage *scale(const QImage *source, QSize destSize, int method);
     QImage *scale_Qt(const QImage *source, QSize destSize, bool smooth);
     //QImage *scale_FreeImage(const QImage *source, QSize destSize, FREE_IMAGE_FILTER filter);

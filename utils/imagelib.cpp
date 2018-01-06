@@ -4,6 +4,38 @@ ImageLib::ImageLib() {
 
 }
 
+QImage *ImageLib::rotate(const QImage* src, int grad) {
+    QImage *img = new QImage();
+    QTransform transform;
+    transform.rotate(grad);
+    *img = src->transformed(transform, Qt::SmoothTransformation);
+    return img;
+}
+
+/*
+void ImageLib::crop(QRect newRect) {
+    QImage *tmp = new QImage(newRect.size(), image->format());
+    *tmp = image->copy(newRect);
+    delete image;
+    image = tmp;
+}
+
+QImage *ImageLib::cropped(QRect newRect, QRect targetRes, bool upscaled) {
+    QImage *cropped = new QImage(targetRes.size(), image->format());
+    if(upscaled) {
+        QImage temp = image->copy(newRect);
+        *cropped = temp.scaled(targetRes.size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+        QRect target(QPoint(0, 0), targetRes.size());
+        target.moveCenter(cropped->rect().center());
+        *cropped = cropped->copy(target);
+    } else {
+        newRect.moveCenter(image->rect().center());
+        *cropped = image->copy(newRect);
+    }
+    return cropped;
+}
+*/
+
 /* 0: nearest
  * 1: bilinear
  */
