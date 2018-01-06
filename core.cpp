@@ -244,15 +244,17 @@ void Core::rotateByDegrees(int degrees) {
                 imgStatic->setEditedImage(
                             ImageLib::rotate(imgStatic->getImage(), degrees));
                 cache->release(nameKey);
+                cache->unlock();
                 viewerWidget->showImage(imgStatic->getPixmap());
             } else {
                 cache->release(nameKey);
+                cache->unlock();
                 qDebug() << "Rotating unsupported.";
             }
         } else {
+            cache->unlock();
             qDebug() << "Error: could not lock cache object.";
         }
-        cache->unlock();
     }
 }
 
