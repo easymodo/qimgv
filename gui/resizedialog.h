@@ -8,6 +8,7 @@
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QLabel>
+#include <QDebug>
 
 class ResizeDialog : public QDialog
 {

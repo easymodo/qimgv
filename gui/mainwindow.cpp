@@ -204,7 +204,6 @@ void MainWindow::showOpenDialog() {
 
 void MainWindow::showResizeDialog(QSize initialSize) {
     ResizeDialog dialog(initialSize);
-    dialog.setWindowTitle("Resize image");
     dialog.setWindowModality(Qt::ApplicationModal);
     connect(&dialog, SIGNAL(sizeSelected(QSize)),
             this, SIGNAL(resizeRequested(QSize)));

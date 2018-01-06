@@ -2,7 +2,7 @@
 
 ResizeDialog::ResizeDialog(QSize originalSize,  QWidget *parent) : QDialog(parent) {
     setWindowModality(Qt::ApplicationModal);
-    setWindowTitle("Resize image (mockup)");
+    setWindowTitle("Resize image");
     //setWindowIcon(QIcon(":/res/pepper32.png"));
 
     //set up layout
@@ -62,28 +62,28 @@ QSize ResizeDialog::newSize() {
 }
 
 void ResizeDialog::widthChanged(int newWidth) {
-    if(width.hasFocus()) {
-        float factor = (float)newWidth/originalSize.width();
-        targetSize.setWidth(newWidth);
-        if(aspect.isChecked()) {
-            targetSize.setHeight(originalSize.height() * factor);
-        }
-        updateToTargetValues();
+    float factor = (float)newWidth/originalSize.width();
+    targetSize.setWidth(newWidth);
+    if(aspect.isChecked()) {
+        targetSize.setHeight(originalSize.height() * factor);
     }
+    updateToTargetValues();
 }
 
 void ResizeDialog::heightChanged(int newHeight) {
-    if(height.hasFocus()) {
-        float factor = (float)newHeight/originalSize.height();
-        targetSize.setHeight(newHeight);
-        if(aspect.isChecked()) {
-            targetSize.setWidth(originalSize.width() * factor);
-        }
-        updateToTargetValues();
+    float factor = (float)newHeight/originalSize.height();
+    targetSize.setHeight(newHeight);
+    if(aspect.isChecked()) {
+        targetSize.setWidth(originalSize.width() * factor);
     }
+    updateToTargetValues();
 }
 
 void ResizeDialog::updateToTargetValues() {
+    width.blockSignals(true);
+    height.blockSignals(true);
     width.setValue(targetSize.width());
     height.setValue(targetSize.height());
+    width.blockSignals(false);
+    height.blockSignals(false);
 }
