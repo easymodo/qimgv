@@ -108,7 +108,7 @@ private:
 
     void mouseDragWrapping(QMouseEvent *event);
     void mouseDrag(QMouseEvent *event);
-    void mouseZoom(QMouseEvent *event);
+    void mouseDragZoom(QMouseEvent *event);
     void drawTransparencyGrid();
     void startAnimationTimer();
     void adjustOverlays();

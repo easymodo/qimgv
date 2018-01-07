@@ -339,7 +339,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() & Qt::LeftButton) {
         mouseWrapping?mouseDragWrapping(event):mouseDrag(event);
     } else if(event->buttons() & Qt::RightButton) {
-        mouseZoom(event);
+        mouseDragZoom(event);
     } else {
         showCursor();
         hideCursorTimed(true);
@@ -431,11 +431,11 @@ void ImageViewer::mouseDrag(QMouseEvent *event) {
     }
 }
 
-void ImageViewer::mouseZoom(QMouseEvent *event) {
-    float step = 0.005;
+void ImageViewer::mouseDragZoom(QMouseEvent *event) {
+    float step = 0.003;
     int currentPos = event->pos().y();
     int moveDistance = mouseMoveStartPos.y() - currentPos;
-    float newScale = currentScale + step * moveDistance;
+    float newScale = currentScale * (1.0f + step * moveDistance);
     mouseMoveStartPos = event->pos();
     if(moveDistance < 0 && currentScale <= minScale) {
         return;
