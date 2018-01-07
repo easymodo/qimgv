@@ -21,7 +21,8 @@ void SettingsDialog::readSettings() {
     ui->infiniteScrollingCheckBox->setChecked(settings->infiniteScrolling());
     ui->playVideosCheckBox->setChecked(settings->playVideos());
     ui->playSoundsCheckBox->setChecked(settings->playVideoSounds());
-    ui->enablePanelCheckBox->setChecked(settings->mainPanelEnabled());
+    ui->enablePanelCheckBox->setChecked(settings->panelEnabled());
+    ui->panelFullscreenOnlyCheckBox->setChecked(settings->panelFullscreenOnly());
     ui->mouseWrappingCheckBox->setChecked(settings->mouseWrapping());
     ui->squareThumbnailsCheckBox->setChecked(settings->squareThumbnails());
     ui->transparencyGridCheckBox->setChecked(settings->transparencyGrid());
@@ -100,6 +101,7 @@ void SettingsDialog::applySettings() {
     settings->setPlayVideos(ui->playVideosCheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
     settings->setPanelEnabled(ui->enablePanelCheckBox->isChecked());
+    settings->setPanelFullscreenOnly(ui->panelFullscreenOnlyCheckBox->isChecked());
     settings->setMouseWrapping(ui->mouseWrappingCheckBox->isChecked());
     settings->setSquareThumbnails(ui->squareThumbnailsCheckBox->isChecked());
     settings->setTransparencyGrid(ui->transparencyGridCheckBox->isChecked());

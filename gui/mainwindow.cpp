@@ -4,7 +4,8 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
     : QWidget(parent),
       currentDisplay(0),
       desktopWidget(NULL),
-      mainPanelEnabled(false),
+      panelEnabled(false),
+      panelFullscreenOnly(false),
       mainPanel(NULL)
 {
     this->setMinimumSize(400, 300);
@@ -107,9 +108,11 @@ void MainWindow::saveCurrentDisplay() {
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
-        if(mainPanelEnabled && mainPanel->triggerRect().contains(event->pos()) && !mainPanel->triggerRect().contains(lastMouseMovePos))
-        {
-            mainPanel->show();
+        if(panelEnabled && (isFullScreen() || !panelFullscreenOnly)) {
+            if(mainPanel->triggerRect().contains(event->pos()) && !mainPanel->triggerRect().contains(lastMouseMovePos))
+            {
+                mainPanel->show();
+            }
         }
         event->ignore();
     }
@@ -204,7 +207,6 @@ void MainWindow::showOpenDialog() {
 
 void MainWindow::showResizeDialog(QSize initialSize) {
     ResizeDialog dialog(initialSize);
-    dialog.setWindowModality(Qt::ApplicationModal);
     connect(&dialog, SIGNAL(sizeSelected(QSize)),
             this, SIGNAL(resizeRequested(QSize)));
     dialog.exec();
@@ -305,7 +307,8 @@ void MainWindow::showMessage(QString text) {
 
 void MainWindow::readSettings() {
     panelPosition = settings->panelPosition();
-    mainPanelEnabled = settings->mainPanelEnabled();
+    panelEnabled = settings->panelEnabled();
+    panelFullscreenOnly = settings->panelFullscreenOnly();
     setControlsOverlayEnabled(this->isFullScreen());
     setInfoOverlayEnabled(this->isFullScreen());
     triggerPanelButtons();
@@ -320,7 +323,7 @@ void MainWindow::updateOverlayGeometry() {
 }
 
 void MainWindow::setControlsOverlayEnabled(bool mode) {
-    if(mode && (panelPosition == PANEL_BOTTOM || !settings->mainPanelEnabled()))
+    if(mode && (panelPosition == PANEL_BOTTOM || !settings->panelEnabled()))
         controlsOverlay->show();
     else
         controlsOverlay->hide();
@@ -329,7 +332,7 @@ void MainWindow::setControlsOverlayEnabled(bool mode) {
 // switch some panel buttons on/off depending on
 // fullscreen status and other settings
 void MainWindow::triggerPanelButtons() {
-    if(mainPanelEnabled && panelPosition == PANEL_TOP && isFullScreen())
+    if(panelEnabled && panelPosition == PANEL_TOP && isFullScreen())
         mainPanel->setWindowButtonsEnabled(true);
     else
         mainPanel->setWindowButtonsEnabled(false);

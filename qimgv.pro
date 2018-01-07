@@ -149,7 +149,8 @@ HEADERS += \
     sharedresources.h
 
 FORMS += \
-    gui/settingsdialog.ui
+    gui/settingsdialog.ui \
+    gui/resizedialog.ui
 
 RESOURCES += \
     resources.qrc

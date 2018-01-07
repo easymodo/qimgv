@@ -35,7 +35,7 @@ private:
     int currentDisplay;
     QDesktopWidget *desktopWidget;
 
-    bool mainPanelEnabled;
+    bool panelEnabled, panelFullscreenOnly;
     MainPanel *mainPanel;
 
     CopyDialog *copyDialog;

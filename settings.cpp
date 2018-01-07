@@ -208,12 +208,20 @@ void Settings::setFullscreenMode(bool mode) {
     settings->s.setValue("openInFullscreen", mode);
 }
 
-bool Settings::mainPanelEnabled() {
+bool Settings::panelEnabled() {
     return settings->s.value("panelEnabled", true).toBool();
 }
 
 void Settings::setPanelEnabled(bool mode) {
     settings->s.setValue("panelEnabled", mode);
+}
+
+bool Settings::panelFullscreenOnly() {
+    return settings->s.value("panelFullscreenOnly", false).toBool();
+}
+
+void Settings::setPanelFullscreenOnly(bool mode) {
+    settings->s.setValue("panelFullscreenOnly", mode);
 }
 
 int Settings::lastDisplay() {
@@ -279,14 +287,6 @@ QRect Settings::windowGeometry() {
 
 void Settings::setWindowGeometry(QRect geometry) {
     settings->s.setValue("windowGeometry", geometry);
-}
-
-bool Settings::reduceRamUsage() {
-    return settings->s.value("reduceRamUsage", false).toBool();
-}
-
-void Settings::setReduceRamUsage(bool mode) {
-    settings->s.setValue("reduceRamUsage", mode);
 }
 
 bool Settings::infiniteScrolling() {

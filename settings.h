@@ -79,7 +79,7 @@ public:
     QStringList supportedFormats();
     void readShortcuts();
     void saveShortcuts();
-    bool mainPanelEnabled();
+    bool panelEnabled();
     void setPanelEnabled(bool mode);
     int lastDisplay();
     void setLastDisplay(int display);
@@ -113,6 +113,8 @@ public:
     bool smoothAnimatedImages();
     void setSmoothAnimatedImages(bool mode);
 
+    bool panelFullscreenOnly();
+    void setPanelFullscreenOnly(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;

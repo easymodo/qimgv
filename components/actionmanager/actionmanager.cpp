@@ -268,7 +268,7 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("1", "fitWindow");
     actionManager->addShortcut("2", "fitWidth");
     actionManager->addShortcut("3", "fitNormal");
-    //actionManager->addShortcut("R", "resize"); // TODO: better defaults
+    actionManager->addShortcut("R", "resize");
     actionManager->addShortcut("Ctrl+R", "rotateRight");
     actionManager->addShortcut("Ctrl+L", "rotateLeft");
     actionManager->addShortcut("Ctrl+WheelDown", "zoomInCursor");

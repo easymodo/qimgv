@@ -8,7 +8,12 @@
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QLabel>
+#include <QDesktopWidget>
 #include <QDebug>
+
+namespace Ui {
+    class ResizeDialog;
+}
 
 class ResizeDialog : public QDialog
 {
@@ -18,19 +23,22 @@ public:
     QSize newSize();
 
 private:
-    QVBoxLayout vbox;
-    QHBoxLayout hbox, hbox2, hbox3;
-    QPushButton okButton, cancelButton;
-    QCheckBox aspect;
-    QSpinBox width, height;
-    QSize originalSize, targetSize;
+    Ui::ResizeDialog *ui;
+    QSize originalSize, targetSize, desktopSize;
     void updateToTargetValues();
+    int lastEdited; // 0 - width, 1 - height
+    void resetResCheckBox();
 
 private slots:
     void widthChanged(int);
     void heightChanged(int);
     void sizeSelect();
 
+    void setCommonResolution(int);
+    void reset();
+    void fitDesktop();
+    void fillDesktop();
+    void onAspectRatioCheckbox();
 signals:
     void sizeSelected(QSize);
 };
