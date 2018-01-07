@@ -119,7 +119,7 @@ private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;
     QSettings s;
-    QDir *tempDirectory, *cacheDirectory;
+    QDir *cacheDirectory, *thumbnailDirectory;
 
 signals:
     void settingsChanged();

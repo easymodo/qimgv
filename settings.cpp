@@ -3,16 +3,16 @@
 Settings *settings = NULL;
 
 Settings::Settings(QObject *parent) : QObject(parent) {
-    tempDirectory = new QDir(QDir::homePath() + "/.cache/qimgv");
-    tempDirectory->mkpath(tempDirectory->absolutePath());
-
-    cacheDirectory = new QDir(QDir::homePath() + "/.cache/qimgv/thumbnails");
+    cacheDirectory = new QDir(QDir::homePath() + "/.cache/qimgv");
     cacheDirectory->mkpath(cacheDirectory->absolutePath());
+
+    thumbnailDirectory = new QDir(QDir::homePath() + "/.cache/qimgv/thumbnails");
+    thumbnailDirectory->mkpath(thumbnailDirectory->absolutePath());
 }
 
 Settings::~Settings() {
+    delete thumbnailDirectory;
     delete cacheDirectory;
-    delete tempDirectory;
 }
 
 Settings *Settings::getInstance() {
@@ -45,11 +45,11 @@ void Settings::validate() {
 }
 
 QString Settings::cacheDir() {
-    return cacheDirectory->path() + "/";
+    return thumbnailDirectory->path() + "/";
 }
 
 QString Settings::tempDir() {
-    return tempDirectory->path() + "/";
+    return cacheDirectory->path() + "/";
 }
 
 QString Settings::mpvBinary() {
