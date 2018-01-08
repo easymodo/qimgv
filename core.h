@@ -57,7 +57,6 @@ private:
     // ui stuff
     MainWindow *mw;
     ViewerWidget *viewerWidget;
-    ImageViewer *imageViewer;
     ThumbnailStrip *thumbnailPanelWidget;
 
 

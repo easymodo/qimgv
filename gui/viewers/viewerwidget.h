@@ -17,8 +17,6 @@ class ViewerWidget : public QWidget
     Q_OBJECT
 public:
     explicit ViewerWidget(QWidget *parent = 0);
-    ImageViewer* getImageViewer();
-    VideoPlayerGL* getVideoPlayer();
     QRectF imageRect();
     float currentScale();
     QSize sourceSize();
@@ -43,6 +41,13 @@ signals:
     void scaleChanged(float);
     void sourceSizeChanged(QSize);
     void imageAreaChanged(QRectF);
+    void scalingRequested(QSize);
+    void zoomIn();
+    void zoomOut();
+    void zoomInCursor();
+    void zoomOutCursor();
+    void scrollUp();
+    void scrollDown();
 
 public slots:
     bool showImage(QPixmap *pixmap);
@@ -50,7 +55,12 @@ public slots:
     bool showVideo(Clip *clip);
     void stopPlayback();
     void setFitMode(ImageFitMode mode);
+    void fitWindow();
+    void fitWidth();
+    void fitOriginal();
     ImageFitMode fitMode();
+    void onScalingFinished(QPixmap *scaled);
+    void closeImage();
 
 protected:
     virtual void paintEvent(QPaintEvent* event);

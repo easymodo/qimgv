@@ -42,7 +42,6 @@ void Core::showGui() {
 // create MainWindow and all widgets
 void Core::initGui() {
     viewerWidget = new ViewerWidget();
-    imageViewer = viewerWidget->getImageViewer();
     mw = new MainWindow(viewerWidget);
     thumbnailPanelWidget = new ThumbnailStrip();
     mw->setPanelWidget(thumbnailPanelWidget);
@@ -81,7 +80,7 @@ void Core::connectComponents() {
     connect(this, SIGNAL(imageIndexChanged(int)),
             thumbnailPanelWidget, SLOT(highlightThumbnail(int)));
     // scaling
-    connect(imageViewer, SIGNAL(scalingRequested(QSize)),
+    connect(viewerWidget, SIGNAL(scalingRequested(QSize)),
             this, SLOT(scalingRequest(QSize)));
     connect(scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest)),
             this, SLOT(onScalingFinished(QPixmap*,ScalerRequest)));
@@ -93,9 +92,9 @@ void Core::connectComponents() {
 void Core::initActions() {
     connect(actionManager, SIGNAL(nextImage()), this, SLOT(slotNextImage()));
     connect(actionManager, SIGNAL(prevImage()), this, SLOT(slotPrevImage()));
-    connect(actionManager, SIGNAL(fitWindow()), imageViewer, SLOT(setFitWindow()));
-    connect(actionManager, SIGNAL(fitWidth()), imageViewer, SLOT(setFitWidth()));
-    connect(actionManager, SIGNAL(fitNormal()), imageViewer, SLOT(setFitOriginal()));
+    connect(actionManager, SIGNAL(fitWindow()), viewerWidget, SLOT(fitWindow()));
+    connect(actionManager, SIGNAL(fitWidth()), viewerWidget, SLOT(fitWidth()));
+    connect(actionManager, SIGNAL(fitNormal()), viewerWidget, SLOT(fitOriginal()));
 
     connect(actionManager, SIGNAL(fitWindow()), mw, SLOT(showMessageFitWindow()));
     connect(actionManager, SIGNAL(fitWidth()), mw, SLOT(showMessageFitWidth()));
@@ -103,12 +102,12 @@ void Core::initActions() {
 
     connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
     connect(actionManager, SIGNAL(toggleFullscreen()), mw, SLOT(triggerFullScreen()));
-    connect(actionManager, SIGNAL(zoomIn()), imageViewer, SLOT(zoomIn()));
-    connect(actionManager, SIGNAL(zoomOut()), imageViewer, SLOT(zoomOut()));
-    connect(actionManager, SIGNAL(zoomInCursor()), imageViewer, SLOT(zoomInCursor()));
-    connect(actionManager, SIGNAL(zoomOutCursor()), imageViewer, SLOT(zoomOutCursor()));
-    connect(actionManager, SIGNAL(scrollUp()), imageViewer, SLOT(scrollUp()));
-    connect(actionManager, SIGNAL(scrollDown()), imageViewer, SLOT(scrollDown()));
+    connect(actionManager, SIGNAL(zoomIn()), viewerWidget, SIGNAL(zoomIn()));
+    connect(actionManager, SIGNAL(zoomOut()), viewerWidget, SIGNAL(zoomOut()));
+    connect(actionManager, SIGNAL(zoomInCursor()), viewerWidget, SIGNAL(zoomInCursor()));
+    connect(actionManager, SIGNAL(zoomOutCursor()), viewerWidget, SIGNAL(zoomOutCursor()));
+    connect(actionManager, SIGNAL(scrollUp()), viewerWidget, SIGNAL(scrollUp()));
+    connect(actionManager, SIGNAL(scrollDown()), viewerWidget, SIGNAL(scrollDown()));
     connect(actionManager, SIGNAL(resize()), this, SLOT(showResizeDialog()));
     connect(actionManager, SIGNAL(rotateLeft()), this, SLOT(rotateLeft()));
     connect(actionManager, SIGNAL(rotateRight()), this, SLOT(rotateRight()));
@@ -165,7 +164,7 @@ void Core::onFileRemoved(int index) {
     // removing current file. try switching to another
     if(state.currentIndex == index) {
         if(!dirManager->fileCount()) {
-            imageViewer->closeImage();
+            viewerWidget->closeImage();
             mw->setInfoString("No file opened.");
         } else {
             if(!loadByIndexBlocking(state.currentIndex))
@@ -258,7 +257,7 @@ void Core::scalingRequest(QSize size) {
 
 void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
     if(state.hasActiveImage /* TODO: a better fix > */ && dirManager->filePathAt(state.currentIndex) == req.string) {
-        imageViewer->updateFrame(scaled);
+        viewerWidget->onScalingFinished(scaled);
     } else {
         delete scaled;
     }
@@ -525,7 +524,6 @@ void Core::displayImage(Image *img) {
             auto animated = dynamic_cast<ImageAnimated *>(img);
             viewerWidget->showAnimation(animated->getMovie());
         } else if(type == VIDEO) {
-            imageViewer->closeImage();
             auto video = dynamic_cast<Video *>(img);
             // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
             // affects only initial startup (e.g. we open webm from file manager)

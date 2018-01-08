@@ -19,20 +19,6 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
-ImageViewer *ViewerWidget::getImageViewer() {
-    if(!imageViewer) {
-        initImageViewer();
-    }
-    return imageViewer;
-}
-
-VideoPlayerGL *ViewerWidget::getVideoPlayer() {
-    if(!videoPlayer) {
-        initVideoPlayer();
-    }
-    return videoPlayer;
-}
-
 QRectF ViewerWidget::imageRect() {
     if(imageViewer && currentWidget == IMAGEVIEWER)
         return imageViewer->imageRect();
@@ -62,6 +48,13 @@ void ViewerWidget::initImageViewer() {
         connect(imageViewer, SIGNAL(scaleChanged(float)), this, SIGNAL(scaleChanged(float)));
         connect(imageViewer, SIGNAL(sourceSizeChanged(QSize)), this, SIGNAL(sourceSizeChanged(QSize)));
         connect(imageViewer, SIGNAL(imageAreaChanged(QRectF)), this, SIGNAL(imageAreaChanged(QRectF)));
+        connect(imageViewer, SIGNAL(scalingRequested(QSize)), this, SIGNAL(scalingRequested(QSize)));
+        connect(this, SIGNAL(zoomIn()), imageViewer, SLOT(zoomIn()));
+        connect(this, SIGNAL(zoomOut()), imageViewer, SLOT(zoomOut()));
+        connect(this, SIGNAL(zoomInCursor()), imageViewer, SLOT(zoomInCursor()));
+        connect(this, SIGNAL(zoomOutCursor()), imageViewer, SLOT(zoomOutCursor()));
+        connect(this, SIGNAL(scrollUp()), imageViewer, SLOT(scrollUp()));
+        connect(this, SIGNAL(scrollDown()), imageViewer, SLOT(scrollDown()));
     }
 }
 
@@ -94,7 +87,7 @@ void ViewerWidget::enableImageViewer() {
 void ViewerWidget::enableVideoPlayer() {
     if(currentWidget != VIDEOPLAYER) {
         if(currentWidget == IMAGEVIEWER) {
-            imageViewer->stopAnimation();
+            imageViewer->closeImage();
             imageViewer->hide();
             layout.removeWidget(imageViewer);
         }
@@ -150,8 +143,30 @@ void ViewerWidget::setFitMode(ImageFitMode mode) {
     imageViewer->setFitMode(mode);
 }
 
+void ViewerWidget::fitWindow() {
+    imageViewer->setFitMode(FIT_WINDOW);
+}
+
+void ViewerWidget::fitWidth() {
+    imageViewer->setFitMode(FIT_WIDTH);
+}
+
+void ViewerWidget::fitOriginal() {
+    imageViewer->setFitMode(FIT_ORIGINAL);
+}
+
 ImageFitMode ViewerWidget::fitMode() {
     return imageViewer->fitMode();
+}
+
+void ViewerWidget::onScalingFinished(QPixmap *scaled) {
+    imageViewer->updateFrame(scaled);
+}
+
+void ViewerWidget::closeImage() {
+    imageViewer->closeImage();
+    // TODO: implement this
+    //videoPlayer->closeVideo();
 }
 
 void ViewerWidget::paintEvent(QPaintEvent *event) {
