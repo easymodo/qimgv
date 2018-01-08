@@ -18,6 +18,7 @@ class CropPanel : public QWidget
 public:
     explicit CropPanel(QWidget *parent = 0);
     ~CropPanel();
+    void setMaxSize(QSize);
 
 public slots:
     void onSelectionOutsideChange(QRect rect);

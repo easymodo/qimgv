@@ -20,6 +20,11 @@ CropPanel::~CropPanel()
     delete ui;
 }
 
+void CropPanel::setMaxSize(QSize sz) {
+    ui->width->setMaximum(sz.width());
+    ui->height->setMaximum(sz.height());
+}
+
 void CropPanel::onCropPressed() {
     emit cropClicked();
 }

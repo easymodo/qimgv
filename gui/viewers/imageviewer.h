@@ -30,6 +30,9 @@ public:
 
 signals:
     void scalingRequested(QSize);
+    void scaleChanged(float);
+    void sourceSizeChanged(QSize);
+    void imageAreaChanged(QRectF);
 
 public slots:
     void displayImage(QPixmap* _image);

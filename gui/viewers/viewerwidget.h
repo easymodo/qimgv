@@ -20,7 +20,7 @@ public:
     ImageViewer* getImageViewer();
     VideoPlayerGL* getVideoPlayer();
     QRectF imageRect();
-    float imageScale();
+    float currentScale();
 
 private:
     QHBoxLayout layout;
@@ -39,6 +39,9 @@ private slots:
     void readSettings();
 
 signals:
+    void scaleChanged(float);
+    void sourceSizeChanged(QSize);
+    void imageAreaChanged(QRectF);
 
 public slots:
     bool showImage(QPixmap *pixmap);

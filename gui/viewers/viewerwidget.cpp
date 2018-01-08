@@ -40,7 +40,7 @@ QRectF ViewerWidget::imageRect() {
         return QRectF(0,0,0,0);
 }
 
-float ViewerWidget::imageScale() {
+float ViewerWidget::currentScale() {
     if(currentWidget == IMAGEVIEWER)
         return imageViewer->currentScale();
     else
@@ -52,6 +52,9 @@ void ViewerWidget::initImageViewer() {
         imageViewer = new ImageViewer();
         imageViewer->setParent(this);
         imageViewer->hide();
+        connect(imageViewer, SIGNAL(scaleChanged(float)), this, SIGNAL(scaleChanged(float)));
+        connect(imageViewer, SIGNAL(sourceSizeChanged(QSize)), this, SIGNAL(sourceSizeChanged(QSize)));
+        connect(imageViewer, SIGNAL(imageAreaChanged(QRectF)), this, SIGNAL(imageAreaChanged(QRectF)));
     }
 }
 

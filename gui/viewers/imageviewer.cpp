@@ -142,12 +142,12 @@ void ImageViewer::adjustOverlays() {
 // apply new image dimensions, fit mode, and readjust overlays
 void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     isDisplaying = true;
-    mapOverlay->setEnabled(true);
+    //mapOverlay->setEnabled(true);
     sourceSize  = _sourceSize;
     drawingRect =  _drawingRect;
     updateMinScale();
     updateMaxScale();
-    mCurrentScale = 1.0;
+    setScale(1.0f);
     if(imageFitMode == FIT_FREE)
         imageFitMode = FIT_WINDOW;
     applyFitMode();
@@ -156,7 +156,7 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
 
 // takes scaled image
 void ImageViewer::updateFrame(QPixmap *newFrame) {
-    if(!animation && newFrame->size() != drawingRect.size()) {
+    if(!animation && newFrame->size() != drawingRect.size().toSize()) {
         delete newFrame;
         return;
     }
@@ -252,7 +252,8 @@ void ImageViewer::setScale(float scale) {
     float h = scale * sourceSize.height();
     drawingRect.setWidth(w);
     drawingRect.setHeight(h);
-    mapOverlay->updateMap(drawingRect);
+    //mapOverlay->updateMap(drawingRect); // TODO: fix MapOverlay mess
+    emit scaleChanged(mCurrentScale);
 }
 
 // ##################################################

@@ -198,10 +198,11 @@ void Core::copyFile(QString destDirectory) {
 
 void Core::toggleCropPanel() {
     if(mw->isCropPanelActive()) {
-        mw->toggleCropPanel();
-    } else {
-        //if( is static image)
-        mw->toggleCropPanel();
+        mw->hideCropPanel();
+    } else if(state.hasActiveImage) {
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        cache->get(nameKey)->size();
+        mw->showCropPanel(cache->get(nameKey)->size());
     }
 }
 

@@ -2,7 +2,7 @@
 
 // TODO: this is pretty old. Clean up
 
-CropOverlay::CropOverlay(QWidget *parent) : QWidget(parent),
+CropOverlay::CropOverlay(QWidget *parent) : OverlayWidget(parent),
     viewer(parent),
     startPos(QPoint(0, 0)),
     endPos(QPoint(0, 0)),
@@ -47,29 +47,32 @@ void CropOverlay::prepareDrawElements() {
 
 void CropOverlay::setImageRealSize(QSize sz) {
     imageRealSize = sz;
+    clearSelection();
 }
 
 void CropOverlay::setImageRect(QRectF imageRect) {
     if(this->imageRect != imageRect) {
-        clear = true;
         this->imageRect = imageRect;
-        startPos = QPoint(0, 0);
-        endPos = QPoint(0, 0);
         clearSelection();
-        update();
     }
 }
 
 void CropOverlay::setImageScale(float scale) {
     this->scale = scale;
+    clearSelection();
 }
 
 void CropOverlay::clearSelection() {
-    selectionRect.setTopLeft(imageRect.topLeft());
-    selectionRect.setWidth(0);
-    selectionRect.setHeight(0);
-    clear = true;
-    onSelectionChanged();
+    if(!clear) {
+        startPos = QPoint(0, 0);
+        endPos = QPoint(0, 0);
+        selectionRect.setTopLeft(imageRect.topLeft());
+        selectionRect.setWidth(0);
+        selectionRect.setHeight(0);
+        clear = true;
+        update();
+        onSelectionChanged();
+    }
 }
 
 void CropOverlay::selectAll() {
@@ -194,25 +197,6 @@ QRectF CropOverlay::placeInside(QRectF what, QRectF where) {
         if(what.bottom() > where.bottom())
             what.moveBottom(where.bottom());
     }
-    /*if(what.width() > where.width()) {
-        what.setWidth(where.width());
-    }
-    if(what.height() > where.height()) {
-        what.setHeight(where.height());
-    }
-    if(what.left() < where.left()) {
-        what.moveLeft(where.left());
-    }
-    if(what.top() < where.top()) {
-        what.moveTop(where.top());
-    }
-    if(what.right() > where.right()) {
-        what.moveRight(where.right());
-    }
-    if(what.bottom() > where.bottom()) {
-        what.moveBottom(where.bottom());
-    }
-    */
     return what;
 }
 
@@ -418,12 +402,6 @@ void CropOverlay::keyPressEvent(QKeyEvent *event) {
         event->ignore();
 }
 
-void CropOverlay::mouseDoubleClickEvent(QMouseEvent *event) {
-    /*if(event->button() == Qt::LeftButton && selectionRect.contains(event->pos())) {
-        emit selected(mapSelection());
-        this->hide();
-    } else {
-        QWidget::mouseDoubleClickEvent(event);
-    }
-    */
+void CropOverlay::recalculateGeometry() {
+    setGeometry(0,0, containerSize().width(), containerSize().height());
 }

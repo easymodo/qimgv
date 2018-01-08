@@ -62,7 +62,7 @@ void MainWindow::setupOverlays() {
             cropPanel, SLOT(onSelectionOutsideChange(QRect)));
     connect(cropPanel, SIGNAL(selectionChanged(QRect)),
             cropOverlay, SLOT(onSelectionOutsideChange(QRect)));
-    connect(cropPanel, SIGNAL(cancel()), this, SLOT(hideSidePanel()));
+    connect(cropPanel, SIGNAL(cancel()), this, SLOT(hideCropPanel()));
     connect(copyDialog, SIGNAL(copyRequested(QString)),
             this, SIGNAL(copyRequested(QString)));
     connect(copyDialog, SIGNAL(moveRequested(QString)),
@@ -185,6 +185,10 @@ void MainWindow::dropEvent(QDropEvent *event) {
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
     updateOverlayGeometry();
+    if(!cropOverlay->isHidden()) {
+        cropOverlay->setImageScale(viewerWidget->currentScale());
+        cropOverlay->setImageRect(viewerWidget->imageRect());
+    }
 }
 
 void MainWindow::showDefault() {
@@ -265,21 +269,20 @@ void MainWindow::showWindowed() {
     emit fullscreenStatusChanged(false);
 }
 
-void MainWindow::toggleCropPanel() {
+void MainWindow::showCropPanel(QSize imageRealSize) {
     if(sidePanel->isHidden()) {
         sidePanel->setWidget(cropPanel);
         sidePanel->show();
         cropOverlay->show();
-        cropOverlay->setImageRect(viewerWidget->imageRect());
-        cropOverlay->setImageScale(viewerWidget->imageScale());
-        cropOverlay->setImageRealSize(QSize(1920, 1080)); // TMP
         cropPanelActive = true;
-    } else {
-        hideSidePanel();
     }
+    cropPanel->setMaxSize(imageRealSize);
+    cropOverlay->setImageRect(viewerWidget->imageRect());
+    cropOverlay->setImageScale(viewerWidget->currentScale());
+    cropOverlay->setImageRealSize(imageRealSize);
 }
 
-void MainWindow::hideSidePanel() {
+void MainWindow::hideCropPanel() {
     sidePanel->hide();
     if(sidePanel->widget() == cropPanel) {
         cropPanelActive = false;
@@ -359,6 +362,7 @@ void MainWindow::updateOverlayGeometry() {
     floatingMessage->setContainerSize(size());
     mainPanel->setContainerSize(size());
     copyDialog->setContainerSize(size());
+    cropOverlay->setContainerSize(viewerWidget->size());
 }
 
 void MainWindow::setControlsOverlayEnabled(bool mode) {

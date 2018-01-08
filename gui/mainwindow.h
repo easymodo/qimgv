@@ -67,7 +67,6 @@ private slots:
     void setInfoOverlayEnabled(bool mode);    
     void triggerPanelButtons();
 
-    void hideSidePanel();
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     bool event(QEvent *event);
@@ -85,7 +84,8 @@ signals:
 
 public slots:
     void showDefault();
-    void toggleCropPanel();
+    void showCropPanel(QSize);
+    void hideCropPanel();
     void showSaveDialog();
     void showOpenDialog();
     void showResizeDialog(QSize initialSize);

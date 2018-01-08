@@ -1,7 +1,7 @@
 #ifndef CROPOVERLAY_H
 #define CROPOVERLAY_H
 
-#include <QWidget>
+#include "gui/customwidgets/overlaywidget.h"
 #include <QDebug>
 #include <QPainter>
 #include <QPaintEvent>
@@ -12,7 +12,7 @@ enum mouseDragMode { NO_DRAG, MOVE, DRAG_LEFT, DRAG_RIGHT,
                         DRAG_TOP, DRAG_BOTTOM, DRAG_TOPLEFT,
                         DRAG_TOPRIGHT, DRAG_BOTTOMLEFT, DRAG_BOTTOMRIGHT };
 
-class CropOverlay : public QWidget
+class CropOverlay : public OverlayWidget
 {
     Q_OBJECT
 public:
@@ -33,7 +33,6 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent* event);
     virtual void mouseReleaseEvent(QMouseEvent* event);
     virtual void keyPressEvent(QKeyEvent *event);
-    void mouseDoubleClickEvent(QMouseEvent *event);
 
 private:
     QWidget *viewer;
@@ -67,6 +66,7 @@ private:
     void detectClickTarget(QPoint pos);
     bool resizeSelection(QPointF d);
     void onSelectionChanged();
+    void recalculateGeometry();
 public slots:
     //void setImageRect(QRect area, float _scale);
     void hide();
