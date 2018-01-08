@@ -6,10 +6,12 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
       desktopWidget(NULL),
       panelEnabled(false),
       panelFullscreenOnly(false),
+      cropPanelActive(false),
       mainPanel(NULL)
 {
     this->setMinimumSize(400, 300);
     layout.setContentsMargins(0,0,0,0);
+    layout.setSpacing(0);
     this->setLayout(&layout);
 
     setWindowTitle(QCoreApplication::applicationName() + " " +
@@ -51,6 +53,10 @@ void MainWindow::setupOverlays() {
     infoOverlay = new InfoOverlay(this);
     controlsOverlay = new ControlsOverlay(this);
     copyDialog = new CopyDialog(this);
+    sidePanel = new SidePanel(this);
+    cropPanel = new CropPanel(this);
+    layout.addWidget(sidePanel);
+    connect(cropPanel, SIGNAL(cancel()), sidePanel, SLOT(hide()));
     connect(copyDialog, SIGNAL(copyRequested(QString)),
             this, SIGNAL(copyRequested(QString)));
     connect(copyDialog, SIGNAL(moveRequested(QString)),
@@ -65,6 +71,10 @@ void MainWindow::setPanelWidget(QWidget *panelWidget) {
 
 bool MainWindow::hasPanelWidget() {
     return mainPanel->hasWidget();
+}
+
+bool MainWindow::isCropPanelActive() {
+    return cropPanelActive;
 }
 
 void MainWindow::setViewerWidget(ViewerWidget *viewerWidget) {
@@ -247,6 +257,17 @@ void MainWindow::showWindowed() {
     //QWidget::activateWindow();
     //QWidget::raise();
     emit fullscreenStatusChanged(false);
+}
+
+void MainWindow::toggleCropPanel() {
+    if(sidePanel->isHidden()) {
+        sidePanel->setWidget(cropPanel);
+        sidePanel->show();
+        cropPanelActive = true;
+    } else {
+        sidePanel->hide();
+        cropPanelActive = false;
+    }
 }
 
 void MainWindow::triggerCopyDialog() {

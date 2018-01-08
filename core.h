@@ -110,6 +110,7 @@ private slots:
     void onFileAdded(int index);
     void showResizeDialog();
     void resize(QSize size);
+    void toggleCropPanel();
 };
 
 #endif // CORE_H

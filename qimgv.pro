@@ -57,7 +57,7 @@ SOURCES += \
     gui/panels/mainpanel/thumbnaillabel.cpp \
     gui/panels/mainpanel/thumbnailstrip.cpp \
     gui/panels/mainpanel/thumbnailview.cpp \
-    gui/panels/sidepanel/toolbox.cpp \
+    gui/panels/toolbox/toolbox.cpp \
     gui/viewers/imageviewer.cpp \
     gui/viewers/mpvwidget.cpp \
     gui/viewers/videoplayergl.cpp \
@@ -82,7 +82,9 @@ SOURCES += \
     components/directorymanager/watchers/watcherevent.cpp \
     components/directorymanager/watchers/dummywatcher.cpp \
     components/directorymanager/watchers/watcherworker.cpp \
-    sharedresources.cpp
+    sharedresources.cpp \
+    gui/panels/croppanel/croppanel.cpp \
+    gui/panels/sidepanel/sidepanel.cpp
 
 
 HEADERS += \
@@ -123,7 +125,7 @@ HEADERS += \
     gui/panels/mainpanel/thumbnaillabel.h \
     gui/panels/mainpanel/thumbnailstrip.h \
     gui/panels/mainpanel/thumbnailview.h \
-    gui/panels/sidepanel/toolbox.h \
+    gui/panels/toolbox/toolbox.h \
     gui/viewers/imageviewer.h \
     gui/viewers/mpvwidget.h \
     gui/viewers/videoplayergl.h \
@@ -146,11 +148,15 @@ HEADERS += \
     components/thumbnailer/thumbnailerrunnable.h \
     components/directorymanager/watchers/dummywatcher.h \
     components/directorymanager/watchers/watcherworker.h \
-    sharedresources.h
+    sharedresources.h \
+    gui/panels/croppanel/croppanel.h \
+    gui/panels/sidepanel/sidepanel.h
 
 FORMS += \
     gui/settingsdialog.ui \
-    gui/resizedialog.ui
+    gui/resizedialog.ui \
+    gui/panels/croppanel/croppanel.ui \
+    gui/panels/sidepanel/sidepanel.ui
 
 RESOURCES += \
     resources.qrc

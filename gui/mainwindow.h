@@ -12,8 +12,9 @@
 #include "gui/overlays/floatingmessage.h"
 #include "gui/panels/mainpanel/thumbnailstrip.h"
 #include "gui/panels/mainpanel/mainpanel.h"
+#include "gui/panels/sidepanel/sidepanel.h"
+#include "gui/panels/croppanel/croppanel.h"
 #include "gui/copydialog.h"
-#include "gui/customwidgets/slidevpanel.h"
 #include "gui/resizedialog.h"
 #include "components/actionmanager/actionmanager.h"
 #include "settings.h"
@@ -26,6 +27,7 @@ public:
     explicit MainWindow(ViewerWidget *viewerWidget, QWidget *parent = nullptr);
     void setPanelWidget(QWidget*);
     bool hasPanelWidget();
+    bool isCropPanelActive();
 
 private:
     ViewerWidget *viewerWidget;
@@ -35,8 +37,10 @@ private:
     int currentDisplay;
     QDesktopWidget *desktopWidget;
 
-    bool panelEnabled, panelFullscreenOnly;
+    bool panelEnabled, panelFullscreenOnly, cropPanelActive;
     MainPanel *mainPanel;
+    SidePanel *sidePanel;
+    CropPanel *cropPanel;
 
     CopyDialog *copyDialog;
 
@@ -78,6 +82,7 @@ signals:
 
 public slots:
     void showDefault();
+    void toggleCropPanel();
     void showSaveDialog();
     void showOpenDialog();
     void showResizeDialog(QSize initialSize);

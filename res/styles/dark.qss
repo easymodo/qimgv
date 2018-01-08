@@ -1,3 +1,52 @@
+QWidget#SidePanel {
+    background-color: #242424;
+    border-left: 2px solid #343434;
+}
+
+SidePanel QGroupBox {
+    color: #646464;
+    border: 2px solid #2c2c2c;
+    border-radius: 3px;
+    background-color: #2c2c2c;
+    padding: 5px 10px 5px 10px;
+}
+
+SidePanel QSpinBox {
+    background-color: #242424;
+    color: #646464;
+    border: 2px solid #2c2c2c;
+    border-radius: 4px;
+    padding: 4 0 4 0;
+}
+
+SidePanel QSpinBox::up-button  {
+    max-width: 0px;
+    max-height: 0px;
+    width:0px;
+}
+
+SidePanel QSpinBox::down-button  {
+    max-width: 0px;
+    max-height: 0px;
+    width:0px;
+}
+
+SidePanel QLabel {
+    color: #646464;
+}
+
+SidePanel QPushButton {
+    color: #404040;
+    border: 2px solid #343434;
+    border-radius: 4px;
+    padding: 5px 4px 4px 4px;
+}
+
+SidePanel QPushButton:hover {
+    border-color: #424242;
+    color: #424242;
+}
+
 [accessibleName="PathSelectorLabel"] {
     background-color: #2C2C2C;
     color: #646464;

@@ -112,7 +112,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(rotateLeft()), this, SLOT(rotateLeft()));
     connect(actionManager, SIGNAL(rotateRight()), this, SLOT(rotateRight()));
     connect(actionManager, SIGNAL(openSettings()), mw, SLOT(showSettings()));
-    //connect(actionManager, SIGNAL(crop()), this, SLOT(slotCrop()));
+    connect(actionManager, SIGNAL(crop()), this, SLOT(toggleCropPanel()));
     //connect(actionManager, SIGNAL(setWallpaper()), this, SLOT(slotSelectWallpaper()));
     connect(actionManager, SIGNAL(open()), mw, SLOT(showOpenDialog()));
     connect(actionManager, SIGNAL(save()), mw, SLOT(showSaveDialog()));
@@ -193,6 +193,15 @@ void Core::copyFile(QString destDirectory) {
         qDebug() << "Error copying file to: " << destDirectory;
     } else {
         mw->showMessage("File copied to: " + destDirectory);
+    }
+}
+
+void Core::toggleCropPanel() {
+    if(mw->isCropPanelActive()) {
+        mw->toggleCropPanel();
+    } else {
+        //if( is static image)
+        mw->toggleCropPanel();
     }
 }
 

@@ -21,5 +21,6 @@
         <file>res/images/movedialogheader.png</file>
         <file>res/images/copydialogheader.png</file>
         <file>res/icons/loading-error72.png</file>
+        <file>res/images/cropheader.png</file>
     </qresource>
 </RCC>
