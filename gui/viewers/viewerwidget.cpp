@@ -47,6 +47,13 @@ float ViewerWidget::currentScale() {
         return 1.0f;
 }
 
+QSize ViewerWidget::sourceSize() {
+    if(currentWidget == IMAGEVIEWER)
+        return imageViewer->sourceSize();
+    else
+        return QSize(0,0);
+}
+
 void ViewerWidget::initImageViewer() {
     if(!imageViewer) {
         imageViewer = new ImageViewer();

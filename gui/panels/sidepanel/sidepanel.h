@@ -20,6 +20,11 @@ public:
 
     void setWidget(QWidget *w);
     QWidget* widget();
+
+public slots:
+    void show();
+    void hide();
+
 protected:
     void paintEvent(QPaintEvent *);
 private:

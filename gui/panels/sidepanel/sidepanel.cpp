@@ -30,6 +30,18 @@ QWidget* SidePanel::widget() {
     return mWidget;
 }
 
+void SidePanel::show() {
+    QWidget::show();
+    if(mWidget)
+        mWidget->show();
+}
+
+void SidePanel::hide() {
+    if(mWidget)
+        mWidget->hide();
+    QWidget::hide();
+}
+
 void SidePanel::paintEvent(QPaintEvent *) {
     QStyleOption opt;
     opt.init(this);

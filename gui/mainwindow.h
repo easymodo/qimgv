@@ -21,6 +21,11 @@
 #include "settings.h"
 #include "settingsdialog.h"
 
+enum ActiveSidePanel {
+    SIDEPANEL_CROP,
+    SIDEPANEL_NONE
+};
+
 class MainWindow : public QWidget
 {
     Q_OBJECT
@@ -39,6 +44,7 @@ private:
     QDesktopWidget *desktopWidget;
 
     bool panelEnabled, panelFullscreenOnly, cropPanelActive;
+    ActiveSidePanel activeSidePanel;
     MainPanel *mainPanel;
     SidePanel *sidePanel;
     CropPanel *cropPanel;
@@ -84,8 +90,8 @@ signals:
 
 public slots:
     void showDefault();
-    void showCropPanel(QSize);
-    void hideCropPanel();
+    void showCropPanel();
+    void hideSidePanel();
     void showSaveDialog();
     void showOpenDialog();
     void showResizeDialog(QSize initialSize);
@@ -104,6 +110,8 @@ public slots:
     void triggerMoveDialog();
     void closeFullScreenOrExit();
     void close();
+    void triggerCropPanel();
+    void onImageChanged();
 };
 
 #endif // MainWindow_H

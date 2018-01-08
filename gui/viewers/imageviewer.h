@@ -27,6 +27,7 @@ public:
     ImageFitMode fitMode();
     QRectF imageRect();
     float currentScale();
+    QSize sourceSize();
 
 signals:
     void scalingRequested(QSize);
@@ -74,7 +75,7 @@ private:
     QTimer *cursorTimer, *animationTimer;
     QRectF drawingRect;
     QPoint mouseMoveStartPos;
-    QSize sourceSize;
+    QSize mSourceSize;
     MapOverlay *mapOverlay;
 
     bool isDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;

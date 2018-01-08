@@ -21,6 +21,7 @@ public:
     VideoPlayerGL* getVideoPlayer();
     QRectF imageRect();
     float currentScale();
+    QSize sourceSize();
 
 private:
     QHBoxLayout layout;

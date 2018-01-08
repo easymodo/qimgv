@@ -6,7 +6,7 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
       desktopWidget(NULL),
       panelEnabled(false),
       panelFullscreenOnly(false),
-      cropPanelActive(false),
+      activeSidePanel(SIDEPANEL_NONE),
       mainPanel(NULL)
 {
     this->setMinimumSize(400, 300);
@@ -62,7 +62,7 @@ void MainWindow::setupOverlays() {
             cropPanel, SLOT(onSelectionOutsideChange(QRect)));
     connect(cropPanel, SIGNAL(selectionChanged(QRect)),
             cropOverlay, SLOT(onSelectionOutsideChange(QRect)));
-    connect(cropPanel, SIGNAL(cancel()), this, SLOT(hideCropPanel()));
+    connect(cropPanel, SIGNAL(cancel()), this, SLOT(hideSidePanel()));
     connect(copyDialog, SIGNAL(copyRequested(QString)),
             this, SIGNAL(copyRequested(QString)));
     connect(copyDialog, SIGNAL(moveRequested(QString)),
@@ -80,7 +80,7 @@ bool MainWindow::hasPanelWidget() {
 }
 
 bool MainWindow::isCropPanelActive() {
-    return cropPanelActive;
+    return (activeSidePanel == SIDEPANEL_CROP);
 }
 
 void MainWindow::setViewerWidget(ViewerWidget *viewerWidget) {
@@ -185,7 +185,7 @@ void MainWindow::dropEvent(QDropEvent *event) {
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
     updateOverlayGeometry();
-    if(!cropOverlay->isHidden()) {
+    if(activeSidePanel == SIDEPANEL_CROP) {
         cropOverlay->setImageScale(viewerWidget->currentScale());
         cropOverlay->setImageRect(viewerWidget->imageRect());
     }
@@ -269,26 +269,41 @@ void MainWindow::showWindowed() {
     emit fullscreenStatusChanged(false);
 }
 
-void MainWindow::showCropPanel(QSize imageRealSize) {
-    if(sidePanel->isHidden()) {
+void MainWindow::onImageChanged() {
+    if(activeSidePanel == SIDEPANEL_CROP) {
+        cropPanel->setImageRealSize(viewerWidget->sourceSize());
+        cropOverlay->setImageRect(viewerWidget->imageRect());
+        cropOverlay->setImageScale(viewerWidget->currentScale());
+        cropOverlay->setImageRealSize(viewerWidget->sourceSize());
+    }
+}
+
+// passes the side panel all needed info about current image
+// TODO: store this info in some kind of singleton? for easy access
+void MainWindow::triggerCropPanel() {
+    if(activeSidePanel != SIDEPANEL_CROP) {
+        showCropPanel();
+    } else {
+        hideSidePanel();
+    }
+}
+
+void MainWindow::showCropPanel() {
+    if(activeSidePanel != SIDEPANEL_CROP) {
         sidePanel->setWidget(cropPanel);
         sidePanel->show();
         cropOverlay->show();
-        cropPanelActive = true;
+        activeSidePanel = SIDEPANEL_CROP;
+        // feed the panel current image info
+        onImageChanged();
     }
-    cropPanel->setMaxSize(imageRealSize);
-    cropOverlay->setImageRect(viewerWidget->imageRect());
-    cropOverlay->setImageScale(viewerWidget->currentScale());
-    cropOverlay->setImageRealSize(imageRealSize);
 }
 
-void MainWindow::hideCropPanel() {
+void MainWindow::hideSidePanel() {
     sidePanel->hide();
-    if(sidePanel->widget() == cropPanel) {
-        cropPanelActive = false;
-        sidePanel->widget()->hide();
+    if(activeSidePanel == SIDEPANEL_CROP)
         cropOverlay->hide();
-    }
+    activeSidePanel = SIDEPANEL_NONE;
 }
 
 void MainWindow::triggerCopyDialog() {

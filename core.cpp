@@ -69,6 +69,7 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(copyRequested(QString)), this, SLOT(copyFile(QString)));
     connect(mw, SIGNAL(moveRequested(QString)), this, SLOT(moveFile(QString)));
     connect(mw, SIGNAL(resizeRequested(QSize)), this, SLOT(resize(QSize)));
+    connect(this, SIGNAL(imageIndexChanged(int)), mw, SLOT(onImageChanged()));
 
     // thumbnails stuff
     connect(thumbnailPanelWidget, SIGNAL(thumbnailRequested(QList<int>, int)),
@@ -198,11 +199,9 @@ void Core::copyFile(QString destDirectory) {
 
 void Core::toggleCropPanel() {
     if(mw->isCropPanelActive()) {
-        mw->hideCropPanel();
+        mw->triggerCropPanel();
     } else if(state.hasActiveImage) {
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->get(nameKey)->size();
-        mw->showCropPanel(cache->get(nameKey)->size());
+        mw->triggerCropPanel();
     }
 }
 

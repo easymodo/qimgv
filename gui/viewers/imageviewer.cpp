@@ -143,7 +143,7 @@ void ImageViewer::adjustOverlays() {
 void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     isDisplaying = true;
     //mapOverlay->setEnabled(true);
-    sourceSize  = _sourceSize;
+    mSourceSize  = _sourceSize;
     drawingRect =  _drawingRect;
     updateMinScale();
     updateMaxScale();
@@ -195,8 +195,8 @@ void ImageViewer::setExpandImage(bool mode) {
 
 // scale at which current image fills the window
 void ImageViewer::updateFitWindowScale() {
-    float newMinScaleX = (float) width() / sourceSize.width();
-    float newMinScaleY = (float) height() / sourceSize.height();
+    float newMinScaleX = (float) width() / mSourceSize.width();
+    float newMinScaleY = (float) height() / mSourceSize.height();
     if(newMinScaleX < newMinScaleY) {
         fitWindowScale = newMinScaleX;
     } else {
@@ -205,7 +205,7 @@ void ImageViewer::updateFitWindowScale() {
 }
 
 bool ImageViewer::sourceImageFits() {
-    return sourceSize.width() < width() && sourceSize.height() < height();
+    return mSourceSize.width() < width() && mSourceSize.height() < height();
 }
 
 // limit min scale to window size
@@ -225,11 +225,11 @@ void ImageViewer::updateMinScale() {
 // so we dont go full retard on memory consumption
 void ImageViewer::updateMaxScale() {
     maxScale = maxScaleLimit;
-    float srcRes = (float)sourceSize.width() *
-                          sourceSize.height() / 1000000;
+    float srcRes = (float)mSourceSize.width() *
+                          mSourceSize.height() / 1000000;
     float maxRes = (float)maxScale * maxScale *
-                          sourceSize.width() *
-                          sourceSize.height() / 1000000;
+                          mSourceSize.width() *
+                          mSourceSize.height() / 1000000;
     if(maxRes > maxResolutionLimit) {
         maxScale = (float)(sqrt(maxResolutionLimit) / sqrt(srcRes));
     }
@@ -248,8 +248,8 @@ void ImageViewer::setScale(float scale) {
     } else {
         mCurrentScale = scale;
     }
-    float w = scale * sourceSize.width();
-    float h = scale * sourceSize.height();
+    float w = scale * mSourceSize.width();
+    float h = scale * mSourceSize.height();
     drawingRect.setWidth(w);
     drawingRect.setHeight(h);
     //mapOverlay->updateMap(drawingRect); // TODO: fix MapOverlay mess
@@ -459,7 +459,7 @@ void ImageViewer::mouseDragZoom(QMouseEvent *event) {
 
 void ImageViewer::fitWidth() {
     if(isDisplaying) {
-        float scale = (float) width() / sourceSize.width();
+        float scale = (float) width() / mSourceSize.width();
         if(!expandImage && scale > 1.0) {
             fitNormal();
         } else {
@@ -476,8 +476,8 @@ void ImageViewer::fitWidth() {
 
 void ImageViewer::fitWindow() {
     if(isDisplaying) {
-        bool h = sourceSize.height() <= height();
-        bool w = sourceSize.width() <= width();
+        bool h = mSourceSize.height() <= height();
+        bool w = mSourceSize.width() <= width();
         // source image fits entirely
         if(h && w && !expandImage) {
             fitNormal();
@@ -731,6 +731,10 @@ QRectF ImageViewer::imageRect() {
 
 float ImageViewer::currentScale() {
     return mCurrentScale;
+}
+
+QSize ImageViewer::sourceSize() {
+    return mSourceSize;
 }
 
 void ImageViewer::hideCursor() {
