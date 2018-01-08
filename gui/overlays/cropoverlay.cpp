@@ -363,19 +363,19 @@ QRect CropOverlay::mapSelection() {
         tmp.setSize(selectionRect.size() / scale);
         // kinda ugly but works
         if(selectionRect.top() <= imageRect.top()) {
-            tmp.setTop(0);
+            tmp.moveTop(0);
         }
         if(selectionRect.left() <= imageRect.left()) {
-            tmp.setLeft(0);
+            tmp.moveLeft(0);
         }
         if(selectionRect.bottom() >= imageRect.bottom()) {
-            tmp.setBottom(imageRealSize.height() - 1);
+            tmp.moveBottom(imageRealSize.height() - 1);
         }
         if(selectionRect.right() >= imageRect.right()) {
-            tmp.setRight(imageRealSize.width() - 1);
+            tmp.moveRight(imageRealSize.width() - 1);
         }
     }
-    qDebug() << "mapSelection():" << tmp;
+    qDebug() << selectionRect.size() << " >> " << tmp.size() << "  scale=" << scale;
     return tmp;
 }
 
