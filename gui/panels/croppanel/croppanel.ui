@@ -92,7 +92,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="width">
+         <widget class="SpinBoxInputFix" name="width">
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
@@ -125,7 +125,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="height">
+         <widget class="SpinBoxInputFix" name="height">
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
@@ -198,7 +198,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="posX">
+         <widget class="SpinBoxInputFix" name="posX">
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
@@ -231,7 +231,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="posY">
+         <widget class="SpinBoxInputFix" name="posY">
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
@@ -290,6 +290,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SpinBoxInputFix</class>
+   <extends>QSpinBox</extends>
+   <header>gui/customwidgets/spinboxinputfix.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../../resources.qrc"/>
  </resources>

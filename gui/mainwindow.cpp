@@ -269,6 +269,8 @@ void MainWindow::showWindowed() {
     emit fullscreenStatusChanged(false);
 }
 
+// passes the side panel all needed info about current image
+// TODO: store this info in some kind of singleton? for easy access
 void MainWindow::onImageChanged() {
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropPanel->setImageRealSize(viewerWidget->sourceSize());
@@ -278,8 +280,6 @@ void MainWindow::onImageChanged() {
     }
 }
 
-// passes the side panel all needed info about current image
-// TODO: store this info in some kind of singleton? for easy access
 void MainWindow::triggerCropPanel() {
     if(activeSidePanel != SIDEPANEL_CROP) {
         showCropPanel();

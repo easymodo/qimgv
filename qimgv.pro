@@ -84,7 +84,9 @@ SOURCES += \
     components/directorymanager/watchers/watcherworker.cpp \
     sharedresources.cpp \
     gui/panels/croppanel/croppanel.cpp \
-    gui/panels/sidepanel/sidepanel.cpp
+    gui/panels/sidepanel/sidepanel.cpp \
+    gui/customwidgets/spinboxinputfix.cpp \
+    gui/customwidgets/sidepanelwidget.cpp
 
 
 HEADERS += \
@@ -150,7 +152,9 @@ HEADERS += \
     components/directorymanager/watchers/watcherworker.h \
     sharedresources.h \
     gui/panels/croppanel/croppanel.h \
-    gui/panels/sidepanel/sidepanel.h
+    gui/panels/sidepanel/sidepanel.h \
+    gui/customwidgets/spinboxinputfix.h \
+    gui/customwidgets/sidepanelwidget.h
 
 FORMS += \
     gui/settingsdialog.ui \

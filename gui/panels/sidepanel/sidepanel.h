@@ -5,6 +5,7 @@
 #include <QStyleOption>
 #include <QPainter>
 #include <QVBoxLayout>
+#include "gui/customwidgets/sidepanelwidget.h"
 
 namespace Ui {
 class SidePanel;
@@ -18,8 +19,8 @@ public:
     explicit SidePanel(QWidget *parent = 0);
     ~SidePanel();
 
-    void setWidget(QWidget *w);
-    QWidget* widget();
+    void setWidget(SidePanelWidget *w);
+    SidePanelWidget* widget();
 
 public slots:
     void show();
@@ -29,7 +30,7 @@ protected:
     void paintEvent(QPaintEvent *);
 private:
     Ui::SidePanel *ui;
-    QWidget *mWidget;
+    SidePanelWidget *mWidget;
 };
 
 #endif // SIDEPANEL_H

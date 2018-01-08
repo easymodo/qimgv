@@ -4,14 +4,16 @@
 #include <QWidget>
 #include <QStyleOption>
 #include <QPainter>
-#include <QSpinBox>
+#include "gui/customwidgets/sidepanelwidget.h"
+#include "gui/customwidgets/spinboxinputfix.h"
+#include <QTimer>
 #include <QDebug>
 
 namespace Ui {
 class CropPanel;
 }
 
-class CropPanel : public QWidget
+class CropPanel : public SidePanelWidget
 {
     Q_OBJECT
 
@@ -22,6 +24,8 @@ public:
 
 public slots:
     void onSelectionOutsideChange(QRect rect);
+    void show();
+
 signals:
     void crop(QRect);
     void cancel();
@@ -34,6 +38,7 @@ protected:
 private slots:
     void onCropPressed();
     void onSelectionChange();
+
 private:
     Ui::CropPanel *ui;
     QRect cropRect;

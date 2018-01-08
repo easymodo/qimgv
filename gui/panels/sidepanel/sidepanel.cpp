@@ -16,7 +16,7 @@ SidePanel::~SidePanel()
     delete ui;
 }
 
-void SidePanel::setWidget(QWidget* w) {
+void SidePanel::setWidget(SidePanelWidget* w) {
     if(mWidget) {
         mWidget->hide();
         ui->layout->removeWidget(mWidget);
@@ -26,7 +26,7 @@ void SidePanel::setWidget(QWidget* w) {
     w->show();
 }
 
-QWidget* SidePanel::widget() {
+SidePanelWidget* SidePanel::widget() {
     return mWidget;
 }
 

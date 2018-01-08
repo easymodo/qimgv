@@ -2,11 +2,11 @@
 #include "ui_croppanel.h"
 
 CropPanel::CropPanel(QWidget *parent) :
-    QWidget(parent),
+    SidePanelWidget(parent),
     ui(new Ui::CropPanel)
 {
     ui->setupUi(this);
-    this->hide();
+    hide();
     connect(ui->cancelButton, SIGNAL(pressed()), this, SIGNAL(cancel()));
     connect(ui->cropButton, SIGNAL(pressed()), this, SLOT(onCropPressed()));
     connect(ui->width, SIGNAL(valueChanged(int)), this, SLOT(onSelectionChange()));
@@ -61,4 +61,10 @@ void CropPanel::paintEvent(QPaintEvent *) {
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void CropPanel::show() {
+    QWidget::show();
+    // stackoverflow sorcery
+    QTimer::singleShot(0,ui->width,SLOT(setFocus()));
 }
