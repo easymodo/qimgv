@@ -37,8 +37,8 @@ protected:
 
 private:
     QWidget *viewer;
-    QPoint startPos, endPos, moveStartPos;
-    QRect imageRect, selectionRect;
+    QPointF startPos, endPos, moveStartPos;
+    QRectF imageRect, selectionRect;
     QSize imageRealSize;
     bool clear, moving;
     float scale;
@@ -55,8 +55,8 @@ private:
     const int textMarginH = 5;
     const int textMarginW = 8;
 
-    QPoint setInsidePoint(QPoint, QRect);
-    QRect placeInside(QRect what, QRect where);
+    QPointF setInsidePoint(QPoint, QRectF);
+    QRectF placeInside(QRectF what, QRectF where);
     void clearSelection();
     void selectAll();
     QRect mapSelection();
@@ -65,7 +65,7 @@ private:
     void updateHandlePositions();
     void prepareDrawElements();
     void detectClickTarget(QPoint pos);
-    bool resizeSelection(QPoint d);
+    bool resizeSelection(QPointF d);
     void onSelectionChanged();
 public slots:
     //void setImageRect(QRect area, float _scale);
