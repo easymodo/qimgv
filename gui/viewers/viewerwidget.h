@@ -19,7 +19,7 @@ public:
     explicit ViewerWidget(QWidget *parent = 0);
     ImageViewer* getImageViewer();
     VideoPlayerGL* getVideoPlayer();
-    QRect imageRect();
+    QRectF imageRect();
     float imageScale();
 
 private:

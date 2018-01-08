@@ -263,7 +263,7 @@ void ImageViewer::requestScaling() {
     if(!isDisplaying)
         return;
     if(image->size() != drawingRect.size() && !animation) {
-        emit scalingRequested(drawingRect.size());
+        emit scalingRequested(drawingRect.size().toSize());
     }
 }
 
@@ -724,7 +724,7 @@ ImageFitMode ImageViewer::fitMode() {
     return imageFitMode;
 }
 
-QRect ImageViewer::imageRect() {
+QRectF ImageViewer::imageRect() {
     return drawingRect;
 }
 

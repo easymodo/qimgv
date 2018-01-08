@@ -25,7 +25,7 @@ public:
     ImageViewer(QWidget* parent = 0);
     ~ImageViewer();
     ImageFitMode fitMode();
-    QRect imageRect();
+    QRectF imageRect();
     float currentScale();
 
 signals:
@@ -69,7 +69,7 @@ private:
     QMovie *animation;
     QTransform transform;
     QTimer *cursorTimer, *animationTimer;
-    QRect drawingRect;
+    QRectF drawingRect;
     QPoint mouseMoveStartPos;
     QSize sourceSize;
     MapOverlay *mapOverlay;

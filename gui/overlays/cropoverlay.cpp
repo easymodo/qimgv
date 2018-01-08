@@ -49,7 +49,7 @@ void CropOverlay::setImageRealSize(QSize sz) {
     imageRealSize = sz;
 }
 
-void CropOverlay::setImageRect(QRect imageRect) {
+void CropOverlay::setImageRect(QRectF imageRect) {
     if(this->imageRect != imageRect) {
         clear = true;
         this->imageRect = imageRect;
@@ -177,6 +177,24 @@ QPointF CropOverlay::setInsidePoint(QPoint p, QRectF area) {
 // resizes inner rect to outer size if needed
 QRectF CropOverlay::placeInside(QRectF what, QRectF where) {
     if(what.width() > where.width()) {
+        what.setLeft(where.left());
+        what.setRight(where.right());
+    } else {
+        if(what.left() < where.left())
+            what.moveLeft(where.left());
+        if(what.right() > where.right())
+            what.moveRight(where.right());
+    }
+    if(what.height() > where.height()) {
+        what.setTop(where.top());
+        what.setBottom(where.bottom());
+    } else {
+        if(what.top() < where.top())
+            what.moveTop(where.top());
+        if(what.bottom() > where.bottom())
+            what.moveBottom(where.bottom());
+    }
+    /*if(what.width() > where.width()) {
         what.setWidth(where.width());
     }
     if(what.height() > where.height()) {
@@ -194,6 +212,7 @@ QRectF CropOverlay::placeInside(QRectF what, QRectF where) {
     if(what.bottom() > where.bottom()) {
         what.moveBottom(where.bottom());
     }
+    */
     return what;
 }
 
@@ -274,7 +293,9 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
         QPointF delta = QPointF(QCursor::pos()) - moveStartPos;
         if(dragMode == MOVE) {    // moving selection
             QRectF tmp = selectionRect.translated(delta);
+            qDebug() << "MOVE";
             if(!imageRect.contains(tmp)) {
+                qDebug() << "placeInside";
                 tmp = placeInside(tmp, imageRect);
             }
             selectionRect = tmp;
