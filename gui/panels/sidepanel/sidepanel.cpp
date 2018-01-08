@@ -26,7 +26,7 @@ void SidePanel::setWidget(QWidget* w) {
     w->show();
 }
 
-const QWidget* SidePanel::widget() {
+QWidget* SidePanel::widget() {
     return mWidget;
 }
 

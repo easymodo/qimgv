@@ -33,6 +33,20 @@ VideoPlayerGL *ViewerWidget::getVideoPlayer() {
     return videoPlayer;
 }
 
+QRect ViewerWidget::imageRect() {
+    if(imageViewer && currentWidget == IMAGEVIEWER)
+        return imageViewer->imageRect();
+    else
+        return QRect(0,0,0,0);
+}
+
+float ViewerWidget::imageScale() {
+    if(currentWidget == IMAGEVIEWER)
+        return imageViewer->currentScale();
+    else
+        return 1.0f;
+}
+
 void ViewerWidget::initImageViewer() {
     if(!imageViewer) {
         imageViewer = new ImageViewer();

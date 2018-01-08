@@ -102,6 +102,9 @@
           <property name="keyboardTracking">
            <bool>false</bool>
           </property>
+          <property name="maximum">
+           <number>65535</number>
+          </property>
          </widget>
         </item>
        </layout>
@@ -131,6 +134,9 @@
           </property>
           <property name="keyboardTracking">
            <bool>false</bool>
+          </property>
+          <property name="maximum">
+           <number>65535</number>
           </property>
          </widget>
         </item>
@@ -202,6 +208,9 @@
           <property name="keyboardTracking">
            <bool>false</bool>
           </property>
+          <property name="maximum">
+           <number>65535</number>
+          </property>
          </widget>
         </item>
        </layout>
@@ -231,6 +240,9 @@
           </property>
           <property name="keyboardTracking">
            <bool>false</bool>
+          </property>
+          <property name="maximum">
+           <number>65535</number>
           </property>
          </widget>
         </item>

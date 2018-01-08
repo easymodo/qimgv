@@ -10,7 +10,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     checkboardGridEnabled(false),
     expandImage(false),
     smoothAnimatedImages(true),
-    currentScale(1.0),
+    mCurrentScale(1.0),
     fitWindowScale(0.125),
     minScale(0.125),
     maxScale(maxScaleLimit),
@@ -147,7 +147,7 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     drawingRect =  _drawingRect;
     updateMinScale();
     updateMaxScale();
-    currentScale = 1.0;
+    mCurrentScale = 1.0;
     if(imageFitMode == FIT_FREE)
         imageFitMode = FIT_WINDOW;
     applyFitMode();
@@ -239,14 +239,14 @@ void ImageViewer::updateMaxScale() {
 // drawingRect.topLeft() remains unchanged
 void ImageViewer::setScale(float scale) {
     if(scale > maxScale) {
-        currentScale = maxScale;
+        mCurrentScale = maxScale;
     } else if(scale <= minScale + FLT_EPSILON) {
-        currentScale = minScale;
-        if(imageFitMode == FIT_FREE && currentScale == fitWindowScale) {
+        mCurrentScale = minScale;
+        if(imageFitMode == FIT_FREE && mCurrentScale == fitWindowScale) {
             imageFitMode = FIT_WINDOW;
         }
     } else {
-        currentScale = scale;
+        mCurrentScale = scale;
     }
     float w = scale * sourceSize.width();
     float h = scale * sourceSize.height();
@@ -435,9 +435,9 @@ void ImageViewer::mouseDragZoom(QMouseEvent *event) {
     float step = 0.003;
     int currentPos = event->pos().y();
     int moveDistance = mouseMoveStartPos.y() - currentPos;
-    float newScale = currentScale * (1.0f + step * moveDistance);
+    float newScale = mCurrentScale * (1.0f + step * moveDistance);
     mouseMoveStartPos = event->pos();
-    if(moveDistance < 0 && currentScale <= minScale) {
+    if(moveDistance < 0 && mCurrentScale <= minScale) {
         return;
     } else if(moveDistance > 0 && newScale > maxScale) { // already at max zoom
         newScale = maxScale;
@@ -692,8 +692,8 @@ void ImageViewer::doZoomIn() {
     if(!isDisplaying) {
         return;
     }
-    float newScale = currentScale * 1.1f;
-    if(newScale == currentScale) //skip if minScale
+    float newScale = mCurrentScale * 1.1f;
+    if(newScale == mCurrentScale) //skip if minScale
         return;
     if(newScale > maxScale)
         newScale = maxScale;
@@ -708,8 +708,8 @@ void ImageViewer::doZoomOut() {
     if(!isDisplaying) {
         return;
     }
-    float newScale = currentScale * 0.9f;
-    if(newScale == currentScale) //skip if maxScale
+    float newScale = mCurrentScale * 0.9f;
+    if(newScale == mCurrentScale) //skip if maxScale
         return;
     if(newScale < minScale - FLT_EPSILON)
         newScale = minScale;
@@ -722,6 +722,14 @@ void ImageViewer::doZoomOut() {
 
 ImageFitMode ImageViewer::fitMode() {
     return imageFitMode;
+}
+
+QRect ImageViewer::imageRect() {
+    return drawingRect;
+}
+
+float ImageViewer::currentScale() {
+    return mCurrentScale;
 }
 
 void ImageViewer::hideCursor() {

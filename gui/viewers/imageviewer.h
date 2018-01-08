@@ -25,6 +25,8 @@ public:
     ImageViewer(QWidget* parent = 0);
     ~ImageViewer();
     ImageFitMode fitMode();
+    QRect imageRect();
+    float currentScale();
 
 signals:
     void scalingRequested(QSize);
@@ -80,7 +82,7 @@ private:
     float maxScaleLimit = 4.0;
     float maxResolutionLimit = 75.0; // in megapixels
 
-    float currentScale;
+    float mCurrentScale;
     float fitWindowScale;
     float minScale;
     float maxScale;

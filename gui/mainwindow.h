@@ -14,6 +14,7 @@
 #include "gui/panels/mainpanel/mainpanel.h"
 #include "gui/panels/sidepanel/sidepanel.h"
 #include "gui/panels/croppanel/croppanel.h"
+#include "gui/overlays/cropoverlay.h"
 #include "gui/copydialog.h"
 #include "gui/resizedialog.h"
 #include "components/actionmanager/actionmanager.h"
@@ -41,6 +42,7 @@ private:
     MainPanel *mainPanel;
     SidePanel *sidePanel;
     CropPanel *cropPanel;
+    CropOverlay *cropOverlay;
 
     CopyDialog *copyDialog;
 
@@ -65,6 +67,7 @@ private slots:
     void setInfoOverlayEnabled(bool mode);    
     void triggerPanelButtons();
 
+    void hideSidePanel();
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     bool event(QEvent *event);

@@ -12,6 +12,7 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
     this->setMinimumSize(400, 300);
     layout.setContentsMargins(0,0,0,0);
     layout.setSpacing(0);
+
     this->setLayout(&layout);
 
     setWindowTitle(QCoreApplication::applicationName() + " " +
@@ -55,8 +56,13 @@ void MainWindow::setupOverlays() {
     copyDialog = new CopyDialog(this);
     sidePanel = new SidePanel(this);
     cropPanel = new CropPanel(this);
+    cropOverlay = new CropOverlay(viewerWidget);
     layout.addWidget(sidePanel);
-    connect(cropPanel, SIGNAL(cancel()), sidePanel, SLOT(hide()));
+    connect(cropOverlay, SIGNAL(selectionChanged(QRect)),
+            cropPanel, SLOT(onSelectionOutsideChange(QRect)));
+    connect(cropPanel, SIGNAL(selectionChanged(QRect)),
+            cropOverlay, SLOT(onSelectionOutsideChange(QRect)));
+    connect(cropPanel, SIGNAL(cancel()), this, SLOT(hideSidePanel()));
     connect(copyDialog, SIGNAL(copyRequested(QString)),
             this, SIGNAL(copyRequested(QString)));
     connect(copyDialog, SIGNAL(moveRequested(QString)),
@@ -263,10 +269,22 @@ void MainWindow::toggleCropPanel() {
     if(sidePanel->isHidden()) {
         sidePanel->setWidget(cropPanel);
         sidePanel->show();
+        cropOverlay->show();
+        cropOverlay->setImageRect(viewerWidget->imageRect());
+        cropOverlay->setImageScale(viewerWidget->imageScale());
+        cropOverlay->setImageRealSize(QSize(1920, 1080)); // TMP
         cropPanelActive = true;
     } else {
-        sidePanel->hide();
+        hideSidePanel();
+    }
+}
+
+void MainWindow::hideSidePanel() {
+    sidePanel->hide();
+    if(sidePanel->widget() == cropPanel) {
         cropPanelActive = false;
+        sidePanel->widget()->hide();
+        cropOverlay->hide();
     }
 }
 

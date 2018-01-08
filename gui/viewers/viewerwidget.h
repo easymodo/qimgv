@@ -19,6 +19,8 @@ public:
     explicit ViewerWidget(QWidget *parent = 0);
     ImageViewer* getImageViewer();
     VideoPlayerGL* getVideoPlayer();
+    QRect imageRect();
+    float imageScale();
 
 private:
     QHBoxLayout layout;

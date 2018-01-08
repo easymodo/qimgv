@@ -17,14 +17,15 @@ class CropOverlay : public QWidget
     Q_OBJECT
 public:
     explicit CropOverlay(QWidget *parent = 0);
-    void setImageArea(QRect);
-    void setRealSize(QSize);
+    void setImageRect(QRect);
+    void setImageRealSize(QSize);
     void setButtonText(QString text);
+    void setImageScale(float scale);
 
-    QRect placeInside(QRect what, QRect where);
 signals:
     void positionChanged(float x, float y);
     void selected(QRect);
+    void selectionChanged(QRect);
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
@@ -37,8 +38,8 @@ protected:
 private:
     QWidget *viewer;
     QPoint startPos, endPos, moveStartPos;
-    QRect imageArea, selectionRect;
-    QSize realSize;
+    QRect imageRect, selectionRect;
+    QSize imageRealSize;
     bool clear, moving;
     float scale;
     QBrush brushInactiveTint, brushDarkGray, brushGray, brushLightGray;
@@ -55,21 +56,22 @@ private:
     const int textMarginW = 8;
 
     QPoint setInsidePoint(QPoint, QRect);
+    QRect placeInside(QRect what, QRect where);
     void clearSelection();
     void selectAll();
     QRect mapSelection();
-    void drawLabel(QString text, QPoint pos, QBrush &brush, QPainter*);
-    void drawLabel(QString text, QRect rect, QBrush &brush, QPainter*);
     void drawSelection(QPainter *);
     void drawHandles(QBrush&, QPainter*);
     void updateHandlePositions();
     void prepareDrawElements();
     void detectClickTarget(QPoint pos);
     bool resizeSelection(QPoint d);
+    void onSelectionChanged();
 public slots:
-    void setImageArea(QRect area, float _scale);
+    //void setImageRect(QRect area, float _scale);
     void hide();
-    void display();
+    void show();
+    void onSelectionOutsideChange(QRect unmapped);
 };
 
 #endif // CROPOVERLAY_H

@@ -19,7 +19,7 @@ public:
     ~SidePanel();
 
     void setWidget(QWidget *w);
-    const QWidget* widget();
+    QWidget* widget();
 protected:
     void paintEvent(QPaintEvent *);
 private:
