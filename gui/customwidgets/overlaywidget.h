@@ -2,6 +2,8 @@
 #define OVERLAYWIDGET_H
 
 #include <QWidget>
+#include <QStyleOption>
+#include <QPainter>
 
 class OverlayWidget : public QWidget
 {
@@ -18,6 +20,7 @@ public slots:
 protected:
     // called whenever container rectangle changes
     virtual void recalculateGeometry() = 0;
+    void paintEvent(QPaintEvent *event);
 
 private:
     QSize container;

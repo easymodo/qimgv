@@ -1,22 +1,22 @@
 QWidget#SidePanel {
-    background-color: #242424;
+    background-color: #202020;
     border-left: 2px solid #343434;
 }
 
 SidePanel QGroupBox {
     color: #646464;
-    border: 2px solid #2c2c2c;
+    border: 2px solid #2A2A2A;
     border-radius: 3px;
-    background-color: #2c2c2c;
-    padding: 5px 10px 5px 10px;
+    background-color: #2A2A2A;
+    padding: 6px 10px 6px 10px;
 }
 
 SidePanel QSpinBox {
-    background-color: #242424;
+    background-color: #202020;
     color: #646464;
-    border: 2px solid #2c2c2c;
+    border: 2px solid #202020;
     border-radius: 4px;
-    padding: 4 0 4 0;
+    padding: 2 0 2 0;
 }
 
 SidePanel QSpinBox::up-button  {
@@ -36,21 +36,29 @@ SidePanel QLabel {
 }
 
 SidePanel QPushButton {
+    fotn: bold;
     color: #404040;
     border: 2px solid #343434;
     border-radius: 4px;
-    padding: 5px 4px 4px 4px;
+    padding: 4px 4px 4px 4px;
 }
 
 SidePanel QPushButton:hover {
     border-color: #424242;
-    color: #424242;
+    color: #4e4e4e;
+}
+
+[accessibleName="OverlayWidget"] {
+    background-color: #202020;
+    color: #646464;
+    border: 2px solid #2A2A2A;
+    border-radius: 3px;
 }
 
 [accessibleName="PathSelectorLabel"] {
-    background-color: #2C2C2C;
+    background-color: #2A2A2A;
     color: #646464;
-    border: 2px solid #2C2C2C;
+    border: 2px solid #2A2A2A;
     border-radius: 4px;
     padding: 4px 4px 4px 4px;
 }

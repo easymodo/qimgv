@@ -9,6 +9,7 @@
 #include "overlaywidget.h"
 
 OverlayWidget::OverlayWidget(QWidget *parent) : QWidget(parent) {
+    this->setAccessibleName("OverlayWidget");
 }
 
 QSize OverlayWidget::containerSize() {
@@ -18,4 +19,11 @@ QSize OverlayWidget::containerSize() {
 void OverlayWidget::setContainerSize(QSize container) {
     this->container = container;
     recalculateGeometry();
+}
+
+void OverlayWidget::paintEvent(QPaintEvent *event) {
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }

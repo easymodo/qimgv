@@ -111,16 +111,6 @@ void CopyDialog::recalculateGeometry() {
     setGeometry(QRect(pos, size()));
 }
 
-void CopyDialog::paintEvent(QPaintEvent *event) {
-    QWidget::paintEvent(event);
-    QPainter p(this);
-    QPainterPath path, path2;
-    path.addRoundedRect(rect(), 3, 3);
-    path2.addRoundedRect(rect().adjusted(2,2,-2,-2), 3, 3);
-    p.fillPath(path, borderColor);
-    p.fillPath(path2, bgColor);
-}
-
 void CopyDialog::keyPressEvent(QKeyEvent *event) {
     QString key = actionManager->keyForNativeScancode(event->nativeScanCode());
     if(shortcuts.contains(key)) {

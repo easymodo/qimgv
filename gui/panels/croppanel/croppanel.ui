@@ -54,6 +54,9 @@
       <string/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>8</number>
+      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -68,6 +71,12 @@
       </property>
       <item>
        <widget class="QLabel" name="label_6">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Size</string>
         </property>
@@ -158,7 +167,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <property name="spacing">
-       <number>10</number>
+       <number>8</number>
       </property>
       <property name="leftMargin">
        <number>0</number>
@@ -174,6 +183,12 @@
       </property>
       <item>
        <widget class="QLabel" name="label_7">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Position</string>
         </property>
