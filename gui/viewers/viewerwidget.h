@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QHBoxLayout>
 #include "gui/viewers/imageviewer.h"
-#include "gui/viewers/videoplayergl.h"
+#include "gui/viewers/videoplayermpvproxy.h"
 
 enum CurrentWidget {
     IMAGEVIEWER,
@@ -27,9 +27,7 @@ public:
 private:
     QHBoxLayout layout;
     ImageViewer *imageViewer;
-    VideoPlayerGL *videoPlayer;
-    void initImageViewer();
-    void initVideoPlayer();
+    VideoPlayerMpvProxy *videoPlayer;
 
     void enableImageViewer();
     void enableVideoPlayer();

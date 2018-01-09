@@ -15,7 +15,16 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     this->setMouseTracking(true);
     layout.setContentsMargins(0, 0, 0, 0);
     this->setLayout(&layout);
+
+    imageViewer = new ImageViewer(this);
+    imageViewer->hide();
+    connect(imageViewer, SIGNAL(scalingRequested(QSize)), this, SIGNAL(scalingRequested(QSize)));
+
+    videoPlayer = new VideoPlayerMpvProxy(this);
+    videoPlayer->hide();
+
     enableImageViewer();
+    enableZoomInteraction();
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
@@ -41,24 +50,6 @@ QSize ViewerWidget::sourceSize() {
         return QSize(0,0);
 }
 
-void ViewerWidget::initImageViewer() {
-    if(!imageViewer) {
-        imageViewer = new ImageViewer();
-        imageViewer->setParent(this);
-        imageViewer->hide();
-        connect(imageViewer, SIGNAL(scalingRequested(QSize)), this, SIGNAL(scalingRequested(QSize)));
-        enableZoomInteraction();
-    }
-}
-
-void ViewerWidget::initVideoPlayer() {
-    if(!videoPlayer) {
-        videoPlayer = new VideoPlayerGL();
-        videoPlayer->setParent(this);
-        videoPlayer->hide();
-    }
-}
-
 // hide videoPlayer, show imageViewer
 void ViewerWidget::enableImageViewer() {
     if(currentWidget != IMAGEVIEWER) {
@@ -66,9 +57,6 @@ void ViewerWidget::enableImageViewer() {
             videoPlayer->setPaused(true);
             videoPlayer->hide();
             layout.removeWidget(videoPlayer);
-        }
-        if(!imageViewer) {
-            initImageViewer();
         }
         layout.addWidget(imageViewer);
         imageViewer->show();
@@ -84,8 +72,6 @@ void ViewerWidget::enableVideoPlayer() {
             imageViewer->hide();
             layout.removeWidget(imageViewer);
         }
-        if(!videoPlayer)
-            initVideoPlayer();
         layout.addWidget(videoPlayer);
         videoPlayer->show();
         currentWidget = VIDEOPLAYER;

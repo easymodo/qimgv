@@ -60,7 +60,6 @@ SOURCES += \
     gui/panels/toolbox/toolbox.cpp \
     gui/viewers/imageviewer.cpp \
     gui/viewers/mpvwidget.cpp \
-    gui/viewers/videoplayergl.cpp \
     gui/viewers/viewerwidget.cpp \
     sourcecontainers/clip.cpp \
     sourcecontainers/image.cpp \
@@ -86,7 +85,10 @@ SOURCES += \
     gui/panels/croppanel/croppanel.cpp \
     gui/panels/sidepanel/sidepanel.cpp \
     gui/customwidgets/spinboxinputfix.cpp \
-    gui/customwidgets/sidepanelwidget.cpp
+    gui/customwidgets/sidepanelwidget.cpp \
+    gui/viewers/videoplayer.cpp \
+    gui/viewers/videoplayermpv.cpp \
+    gui/viewers/videoplayermpvproxy.cpp
 
 
 HEADERS += \
@@ -130,7 +132,6 @@ HEADERS += \
     gui/panels/toolbox/toolbox.h \
     gui/viewers/imageviewer.h \
     gui/viewers/mpvwidget.h \
-    gui/viewers/videoplayergl.h \
     gui/viewers/viewerwidget.h \
     sourcecontainers/clip.h \
     sourcecontainers/image.h \
@@ -154,7 +155,10 @@ HEADERS += \
     gui/panels/croppanel/croppanel.h \
     gui/panels/sidepanel/sidepanel.h \
     gui/customwidgets/spinboxinputfix.h \
-    gui/customwidgets/sidepanelwidget.h
+    gui/customwidgets/sidepanelwidget.h \
+    gui/viewers/videoplayer.h \
+    gui/viewers/videoplayermpv.h \
+    gui/viewers/videoplayermpvproxy.h
 
 FORMS += \
     gui/settingsdialog.ui \
