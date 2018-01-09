@@ -6,9 +6,8 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QColor>
-#include <QFont>
 
-enum mouseDragMode { NO_DRAG, MOVE, DRAG_LEFT, DRAG_RIGHT,
+enum MouseDragMode { NO_DRAG, MOVE, DRAG_LEFT, DRAG_RIGHT,
                         DRAG_TOP, DRAG_BOTTOM, DRAG_TOPLEFT,
                         DRAG_TOPRIGHT, DRAG_BOTTOMLEFT, DRAG_BOTTOMRIGHT };
 
@@ -42,17 +41,11 @@ private:
     bool clear, moving;
     float scale;
     QBrush brushInactiveTint, brushDarkGray, brushGray, brushLightGray;
-    QRect *handles[8];
+    QRectF *handles[8];
     int handleSize;
     QImage *drawBuffer;
-    mouseDragMode dragMode;
-    QPen selectionOutlinePen, labelOutlinePen;
-    QFont font;
-    QFontMetrics *fm;
-    QString buttonText;
-    QRect buttonRect;
-    const int textMarginH = 5;
-    const int textMarginW = 8;
+    MouseDragMode dragMode;
+    QPen selectionOutlinePen;
 
     QPointF setInsidePoint(QPoint, QRectF);
     QRectF placeInside(QRectF what, QRectF where);

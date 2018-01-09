@@ -11,29 +11,21 @@ CropOverlay::CropOverlay(QWidget *parent) : OverlayWidget(parent),
     clear(true),
     moving(false),
     scale(1.0f),
-    handleSize(7),
+    handleSize(8),
     drawBuffer(NULL),
     dragMode(NO_DRAG)
 {
-    //setAttribute(Qt::WA_TranslucentBackground);
-    font.setPixelSize(12);
-    font.setBold(true);
-    fm = new QFontMetrics(font);
-
     prepareDrawElements();
-    brushInactiveTint.setColor(QColor(50, 50, 50, 150));
+    brushInactiveTint.setColor(QColor(0, 0, 0, 150));
     brushInactiveTint.setStyle(Qt::SolidPattern);
-    brushDarkGray.setColor(QColor(120, 120, 120, 230));
+    brushDarkGray.setColor(QColor(120, 120, 120, 160));
     brushDarkGray.setStyle(Qt::SolidPattern);
-    brushGray.setColor(QColor(150, 150, 150, 255));
+    brushGray.setColor(QColor(150, 150, 150, 160));
     brushGray.setStyle(Qt::SolidPattern);
-    brushLightGray.setColor(QColor(220, 220, 220, 230));
+    brushLightGray.setColor(QColor(220, 220, 220, 160));
     brushLightGray.setStyle(Qt::SolidPattern);
-    selectionOutlinePen.setColor(Qt::yellow);
+    selectionOutlinePen.setColor(Qt::white);
     selectionOutlinePen.setStyle(Qt::SolidLine);
-    labelOutlinePen.setColor(QColor(60, 60, 60, 230));
-    labelOutlinePen.setStyle(Qt::SolidLine);
-    labelOutlinePen.setWidth(2);
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->hide();
@@ -41,7 +33,7 @@ CropOverlay::CropOverlay(QWidget *parent) : OverlayWidget(parent),
 
 void CropOverlay::prepareDrawElements() {
     for(int i = 0; i < 8; i++) {
-        handles[i] = new QRect(0, 0, handleSize * 2, handleSize * 2);
+        handles[i] = new QRectF(0, 0, handleSize * 2, handleSize * 2);
     }
 }
 
@@ -128,8 +120,13 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
         painter.drawRect(imageRect);
 
         // selection outline & handles
-        drawSelection(&painter);
-        //drawHandles(brushDarkGray, &painter);
+        if(selectionRect.width() > 1 && selectionRect.height() > 1) {
+            drawSelection(&painter);
+            // draw handles if there is no interaction going on
+            // and selection is large enough
+            if(dragMode == NO_DRAG && selectionRect.width() >= 100 && selectionRect.height() >= 100)
+                drawHandles(brushGray, &painter);
+        }
 
         // draw result on screen
         QPainter(this).drawImage(QPoint(0, 0), *drawBuffer);
@@ -139,9 +136,6 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
 //###################################################
 
 void CropOverlay::drawSelection(QPainter *painter) {
-    if(selectionRect.width() <= 1 || selectionRect.height() <= 1) {
-        return;
-    }
     painter->save();
     painter->setCompositionMode(QPainter::CompositionMode_Source);
     painter->setPen(selectionOutlinePen);
@@ -244,6 +238,8 @@ bool CropOverlay::resizeSelection(QPointF d) {
         default:
             break;
     }
+    // crop selection so it's bounded by imageRect
+    selectionRect = selectionRect.intersected(imageRect);
     if(!selectionRect.isValid()) {
         selectionRect = tmp;
         return false;
@@ -276,11 +272,10 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() & Qt::LeftButton && !clear) {
         QPointF delta = QPointF(QCursor::pos()) - moveStartPos;
         if(dragMode == MOVE) {    // moving selection
-            QRectF tmp = selectionRect.translated(delta);
-            if(!imageRect.contains(tmp)) {
-                tmp = placeInside(tmp, imageRect);
+            selectionRect.translate(delta);
+            if(!imageRect.contains(selectionRect)) {
+                selectionRect = placeInside(selectionRect, imageRect);
             }
-            selectionRect = tmp;
             moveStartPos = QCursor::pos();
             updateHandlePositions();
             update();
@@ -316,21 +311,30 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
 void CropOverlay::mouseReleaseEvent(QMouseEvent *event) {
     Q_UNUSED(event)
     dragMode = NO_DRAG;
+    update();
 }
 
 void CropOverlay::updateHandlePositions() {
-    handles[0]->moveTopLeft(selectionRect.topLeft().toPoint() - QPoint(1, 1));
-    handles[1]->moveTopRight(selectionRect.topRight().toPoint() - QPoint(0, 1));
-    handles[2]->moveBottomLeft(selectionRect.bottomLeft().toPoint() - QPoint(1, 0));
-    handles[3]->moveBottomRight(selectionRect.bottomRight().toPoint());
-    handles[4]->moveTopLeft(
-        QPoint(selectionRect.left() - 1, selectionRect.center().y() - handleSize)); // left
-    handles[5]->moveTopRight(
-        QPoint(selectionRect.right(), selectionRect.center().y() - handleSize));  // right
-    handles[6]->moveTopLeft(
-        QPoint(selectionRect.center().x() - handleSize, selectionRect.top() - 1)); // top
-    handles[7]->moveBottomLeft(
-        QPoint(selectionRect.center().x() - handleSize, selectionRect.bottom()));   //bottom
+    // top left
+    handles[0]->moveTopLeft(selectionRect.topLeft() - QPointF(1, 1));
+    // top right
+    handles[1]->moveTopRight(selectionRect.topRight() - QPointF(0, 1));
+    // bottom left
+    handles[2]->moveBottomLeft(selectionRect.bottomLeft() - QPointF(1, 0));
+    // bottom right
+    handles[3]->moveBottomRight(selectionRect.bottomRight());
+    // left
+    handles[4]->moveTopLeft(QPoint(selectionRect.left() - 1,
+                                   selectionRect.center().y() - handleSize));
+    // right
+    handles[5]->moveTopRight(QPoint(selectionRect.right(),
+                                    selectionRect.center().y() - handleSize));
+    // top
+    handles[6]->moveTopLeft(QPoint(selectionRect.center().x() - handleSize,
+                                   selectionRect.top() - 1));
+    // bottom
+    handles[7]->moveBottomLeft(QPoint(selectionRect.center().x() - handleSize,
+                                      selectionRect.bottom()));
 }
 
 // map coordinates to imageRect
