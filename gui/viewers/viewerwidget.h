@@ -21,6 +21,9 @@ public:
     float currentScale();
     QSize sourceSize();
 
+    void enableZoomInteraction();
+    void disableZoomInteraction();
+    bool zoomInteractionEnabled();
 private:
     QHBoxLayout layout;
     ImageViewer *imageViewer;
@@ -33,14 +36,12 @@ private:
 
     CurrentWidget currentWidget;
     QColor bgColor;
+    bool zoomInteraction;
 
 private slots:
     void readSettings();
 
 signals:
-    void scaleChanged(float);
-    void sourceSizeChanged(QSize);
-    void imageAreaChanged(QRectF);
     void scalingRequested(QSize);
     void zoomIn();
     void zoomOut();
@@ -48,6 +49,9 @@ signals:
     void zoomOutCursor();
     void scrollUp();
     void scrollDown();
+    void fitWindow();
+    void fitWidth();
+    void fitOriginal();
 
 public slots:
     bool showImage(QPixmap *pixmap);
@@ -55,9 +59,6 @@ public slots:
     bool showVideo(Clip *clip);
     void stopPlayback();
     void setFitMode(ImageFitMode mode);
-    void fitWindow();
-    void fitWidth();
-    void fitOriginal();
     ImageFitMode fitMode();
     void onScalingFinished(QPixmap *scaled);
     void closeImage();

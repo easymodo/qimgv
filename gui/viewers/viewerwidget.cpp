@@ -9,7 +9,8 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     : QWidget(parent),
       imageViewer(NULL),
       videoPlayer(NULL),
-      currentWidget(UNSET)
+      currentWidget(UNSET),
+      zoomInteraction(false)
 {
     this->setMouseTracking(true);
     layout.setContentsMargins(0, 0, 0, 0);
@@ -45,16 +46,8 @@ void ViewerWidget::initImageViewer() {
         imageViewer = new ImageViewer();
         imageViewer->setParent(this);
         imageViewer->hide();
-        connect(imageViewer, SIGNAL(scaleChanged(float)), this, SIGNAL(scaleChanged(float)));
-        connect(imageViewer, SIGNAL(sourceSizeChanged(QSize)), this, SIGNAL(sourceSizeChanged(QSize)));
-        connect(imageViewer, SIGNAL(imageAreaChanged(QRectF)), this, SIGNAL(imageAreaChanged(QRectF)));
         connect(imageViewer, SIGNAL(scalingRequested(QSize)), this, SIGNAL(scalingRequested(QSize)));
-        connect(this, SIGNAL(zoomIn()), imageViewer, SLOT(zoomIn()));
-        connect(this, SIGNAL(zoomOut()), imageViewer, SLOT(zoomOut()));
-        connect(this, SIGNAL(zoomInCursor()), imageViewer, SLOT(zoomInCursor()));
-        connect(this, SIGNAL(zoomOutCursor()), imageViewer, SLOT(zoomOutCursor()));
-        connect(this, SIGNAL(scrollUp()), imageViewer, SLOT(scrollUp()));
-        connect(this, SIGNAL(scrollDown()), imageViewer, SLOT(scrollDown()));
+        enableZoomInteraction();
     }
 }
 
@@ -104,6 +97,41 @@ void ViewerWidget::readSettings() {
     update();
 }
 
+void ViewerWidget::enableZoomInteraction() {
+    if(!zoomInteraction) {
+        connect(this, SIGNAL(zoomIn()), imageViewer, SLOT(zoomIn()));
+        connect(this, SIGNAL(zoomOut()), imageViewer, SLOT(zoomOut()));
+        connect(this, SIGNAL(zoomInCursor()), imageViewer, SLOT(zoomInCursor()));
+        connect(this, SIGNAL(zoomOutCursor()), imageViewer, SLOT(zoomOutCursor()));
+        connect(this, SIGNAL(scrollUp()), imageViewer, SLOT(scrollUp()));
+        connect(this, SIGNAL(scrollDown()), imageViewer, SLOT(scrollDown()));
+        connect(this, SIGNAL(fitWindow()), imageViewer, SLOT(setFitWindow()));
+        connect(this, SIGNAL(fitWidth()), imageViewer, SLOT(setFitWidth()));
+        connect(this, SIGNAL(fitOriginal()), imageViewer, SLOT(setFitOriginal()));
+        imageViewer->setAttribute(Qt::WA_TransparentForMouseEvents, false);
+        zoomInteraction = true;
+    }
+}
+
+void ViewerWidget::disableZoomInteraction() {
+    if(zoomInteraction) {
+        disconnect(this, SIGNAL(zoomIn()), imageViewer, SLOT(zoomIn()));
+        disconnect(this, SIGNAL(zoomOut()), imageViewer, SLOT(zoomOut()));
+        disconnect(this, SIGNAL(zoomInCursor()), imageViewer, SLOT(zoomInCursor()));
+        disconnect(this, SIGNAL(zoomOutCursor()), imageViewer, SLOT(zoomOutCursor()));
+        disconnect(this, SIGNAL(scrollUp()), imageViewer, SLOT(scrollUp()));
+        disconnect(this, SIGNAL(scrollDown()), imageViewer, SLOT(scrollDown()));
+        disconnect(this, SIGNAL(fitWindow()), imageViewer, SLOT(setFitWindow()));
+        disconnect(this, SIGNAL(fitWidth()), imageViewer, SLOT(setFitWidth()));
+        disconnect(this, SIGNAL(fitOriginal()), imageViewer, SLOT(setFitOriginal()));
+        imageViewer->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+        zoomInteraction = false;
+    }
+}
+
+bool ViewerWidget::zoomInteractionEnabled() {
+    return zoomInteraction;
+}
 
 bool ViewerWidget::showImage(QPixmap *pixmap) {
     if(!pixmap)
@@ -140,19 +168,12 @@ void ViewerWidget::stopPlayback() {
 }
 
 void ViewerWidget::setFitMode(ImageFitMode mode) {
-    imageViewer->setFitMode(mode);
-}
-
-void ViewerWidget::fitWindow() {
-    imageViewer->setFitMode(FIT_WINDOW);
-}
-
-void ViewerWidget::fitWidth() {
-    imageViewer->setFitMode(FIT_WIDTH);
-}
-
-void ViewerWidget::fitOriginal() {
-    imageViewer->setFitMode(FIT_ORIGINAL);
+    if(mode == FIT_WINDOW)
+        emit fitWindow();
+    else if(mode == FIT_WIDTH)
+        emit fitWidth();
+    else if(mode == FIT_ORIGINAL)
+        emit fitOriginal();
 }
 
 ImageFitMode ViewerWidget::fitMode() {

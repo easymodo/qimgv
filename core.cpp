@@ -68,7 +68,7 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(copyRequested(QString)), this, SLOT(copyFile(QString)));
     connect(mw, SIGNAL(moveRequested(QString)), this, SLOT(moveFile(QString)));
     connect(mw, SIGNAL(resizeRequested(QSize)), this, SLOT(resize(QSize)));
-    connect(this, SIGNAL(imageIndexChanged(int)), mw, SLOT(onImageChanged()));
+    connect(this, SIGNAL(imageIndexChanged(int)), mw, SLOT(setupSidePanelData()));
 
     // thumbnails stuff
     connect(thumbnailPanelWidget, SIGNAL(thumbnailRequested(QList<int>, int)),
@@ -92,9 +92,9 @@ void Core::connectComponents() {
 void Core::initActions() {
     connect(actionManager, SIGNAL(nextImage()), this, SLOT(slotNextImage()));
     connect(actionManager, SIGNAL(prevImage()), this, SLOT(slotPrevImage()));
-    connect(actionManager, SIGNAL(fitWindow()), viewerWidget, SLOT(fitWindow()));
-    connect(actionManager, SIGNAL(fitWidth()), viewerWidget, SLOT(fitWidth()));
-    connect(actionManager, SIGNAL(fitNormal()), viewerWidget, SLOT(fitOriginal()));
+    connect(actionManager, SIGNAL(fitWindow()), viewerWidget, SIGNAL(fitWindow()));
+    connect(actionManager, SIGNAL(fitWidth()), viewerWidget, SIGNAL(fitWidth()));
+    connect(actionManager, SIGNAL(fitNormal()), viewerWidget, SIGNAL(fitOriginal()));
 
     connect(actionManager, SIGNAL(fitWindow()), mw, SLOT(showMessageFitWindow()));
     connect(actionManager, SIGNAL(fitWidth()), mw, SLOT(showMessageFitWidth()));

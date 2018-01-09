@@ -271,7 +271,7 @@ void MainWindow::showWindowed() {
 
 // passes the side panel all needed info about current image
 // TODO: store this info in some kind of singleton? for easy access
-void MainWindow::onImageChanged() {
+void MainWindow::setupSidePanelData() {
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropPanel->setImageRealSize(viewerWidget->sourceSize());
         cropOverlay->setImageRect(viewerWidget->imageRect());
@@ -294,15 +294,20 @@ void MainWindow::showCropPanel() {
         sidePanel->show();
         cropOverlay->show();
         activeSidePanel = SIDEPANEL_CROP;
+        // reset & lock zoom so CropOverlay won't go crazy
+        viewerWidget->fitWindow();
+        viewerWidget->disableZoomInteraction();
         // feed the panel current image info
-        onImageChanged();
+        setupSidePanelData();
     }
 }
 
 void MainWindow::hideSidePanel() {
     sidePanel->hide();
-    if(activeSidePanel == SIDEPANEL_CROP)
+    if(activeSidePanel == SIDEPANEL_CROP) {
         cropOverlay->hide();
+        viewerWidget->enableZoomInteraction();
+    }
     activeSidePanel = SIDEPANEL_NONE;
 }
 

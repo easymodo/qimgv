@@ -111,7 +111,7 @@ public slots:
     void closeFullScreenOrExit();
     void close();
     void triggerCropPanel();
-    void onImageChanged();
+    void setupSidePanelData();
 };
 
 #endif // MainWindow_H
