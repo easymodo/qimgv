@@ -26,7 +26,10 @@ void CropPanel::setImageRealSize(QSize sz) {
 }
 
 void CropPanel::onCropPressed() {
-    emit cropClicked();
+    emit crop(QRect(ui->posX->value(),
+                    ui->posY->value(),
+                    ui->width->value(),
+                    ui->height->value()));
 }
 
 // on user input

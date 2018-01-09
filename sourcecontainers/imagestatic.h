@@ -22,7 +22,7 @@ public:
     QImage *cropped(QRect newRect, QRect targetRes, bool upscaled);
 
     bool isEdited();
-    void setEditedImage(QImage *imageEditedNew);
+    bool setEditedImage(QImage *imageEditedNew);
     void discardEditedImage();
 
 public slots:

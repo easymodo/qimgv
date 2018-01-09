@@ -63,6 +63,8 @@ void MainWindow::setupOverlays() {
     connect(cropPanel, SIGNAL(selectionChanged(QRect)),
             cropOverlay, SLOT(onSelectionOutsideChange(QRect)));
     connect(cropPanel, SIGNAL(cancel()), this, SLOT(hideSidePanel()));
+    connect(cropPanel, SIGNAL(crop(QRect)), this, SIGNAL(cropRequested(QRect)));
+    connect(cropPanel, SIGNAL(crop(QRect)), this, SLOT(hideSidePanel()));
     connect(copyDialog, SIGNAL(copyRequested(QString)),
             this, SIGNAL(copyRequested(QString)));
     connect(copyDialog, SIGNAL(moveRequested(QString)),

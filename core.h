@@ -109,6 +109,7 @@ private slots:
     void onFileAdded(int index);
     void showResizeDialog();
     void resize(QSize size);
+    void crop(QRect rect);
     void toggleCropPanel();
     void fitWindow();
     void fitWidth();

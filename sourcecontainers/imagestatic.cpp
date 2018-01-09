@@ -68,10 +68,13 @@ bool ImageStatic::isEdited() {
     return (imageEdited);
 }
 
-void ImageStatic::setEditedImage(QImage *imageEditedNew) {
+bool ImageStatic::setEditedImage(QImage *imageEditedNew) {
     if(imageEditedNew && imageEditedNew->width() != 0) {
         discardEditedImage();
         imageEdited = imageEditedNew;
+        return true;
+    } else {
+        return false;
     }
 }
 

@@ -87,6 +87,7 @@ signals:
     void copyRequested(QString);
     void moveRequested(QString);
     void resizeRequested(QSize);
+    void cropRequested(QRect);
 
 public slots:
     void showDefault();

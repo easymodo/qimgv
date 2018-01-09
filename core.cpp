@@ -68,6 +68,7 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(copyRequested(QString)), this, SLOT(copyFile(QString)));
     connect(mw, SIGNAL(moveRequested(QString)), this, SLOT(moveFile(QString)));
     connect(mw, SIGNAL(resizeRequested(QSize)), this, SLOT(resize(QSize)));
+    connect(mw, SIGNAL(cropRequested(QRect)), this, SLOT(crop(QRect)));
     connect(this, SIGNAL(imageIndexChanged(int)), mw, SLOT(setupSidePanelData()));
 
     // thumbnails stuff
@@ -253,6 +254,34 @@ void Core::resize(QSize size) {
         } else {
             cache->unlock();
             qDebug() << "Core::resize() - could not lock cache object.";
+        }
+    }
+}
+
+void Core::crop(QRect rect) {
+    if(state.currentIndex >= 0) {
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        cache->lock();
+        if(cache->reserve(nameKey)) {
+            auto *img = cache->get(nameKey);
+            if(img && img->type() == STATIC) {
+                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                if(!imgStatic->setEditedImage(
+                            ImageLib::crop(imgStatic->getImage(), rect)))
+                {
+                    mw->showMessage("Could not crop image: incorrect size / position");
+                }
+                cache->release(nameKey);
+                cache->unlock();
+                displayImage(img);
+            } else {
+                cache->release(nameKey);
+                cache->unlock();
+                mw->showMessage("Editing gifs/video is unsupported.");
+            }
+        } else {
+            cache->unlock();
+            qDebug() << "Core::crop() - could not lock cache object.";
         }
     }
 }

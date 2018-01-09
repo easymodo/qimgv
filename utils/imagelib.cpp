@@ -8,13 +8,16 @@ QImage *ImageLib::rotate(const QImage* src, int grad) {
     return img;
 }
 
-/*
-void ImageLib::crop(QRect newRect) {
-    QImage *tmp = new QImage(newRect.size(), image->format());
-    *tmp = image->copy(newRect);
-    delete image;
-    image = tmp;
+QImage* ImageLib::crop(const QImage* src, QRect newRect) {
+    QImage *img = NULL;
+    if(src->rect().contains(newRect, false)) {
+        img = new QImage(newRect.size(), src->format());
+        *img = src->copy(newRect);
+    }
+    return img;
 }
+
+/*
 
 QImage *ImageLib::cropped(QRect newRect, QRect targetRes, bool upscaled) {
     QImage *cropped = new QImage(targetRes.size(), image->format());
