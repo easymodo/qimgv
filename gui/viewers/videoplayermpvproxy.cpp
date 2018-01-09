@@ -53,7 +53,7 @@ void VideoPlayerMpvProxy::show() {
 }
 
 void VideoPlayerMpvProxy::hide() {
-    initPlayer();
-    player->hide();
+    if(player)
+        player->hide();
     VideoPlayer::hide();
 }

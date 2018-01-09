@@ -57,7 +57,6 @@ SOURCES += \
     gui/panels/mainpanel/thumbnaillabel.cpp \
     gui/panels/mainpanel/thumbnailstrip.cpp \
     gui/panels/mainpanel/thumbnailview.cpp \
-    gui/panels/toolbox/toolbox.cpp \
     gui/viewers/imageviewer.cpp \
     gui/viewers/mpvwidget.cpp \
     gui/viewers/viewerwidget.cpp \
@@ -129,7 +128,6 @@ HEADERS += \
     gui/panels/mainpanel/thumbnaillabel.h \
     gui/panels/mainpanel/thumbnailstrip.h \
     gui/panels/mainpanel/thumbnailview.h \
-    gui/panels/toolbox/toolbox.h \
     gui/viewers/imageviewer.h \
     gui/viewers/mpvwidget.h \
     gui/viewers/viewerwidget.h \
