@@ -277,9 +277,7 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
         QPointF delta = QPointF(QCursor::pos()) - moveStartPos;
         if(dragMode == MOVE) {    // moving selection
             QRectF tmp = selectionRect.translated(delta);
-            qDebug() << "MOVE";
             if(!imageRect.contains(tmp)) {
-                qDebug() << "placeInside";
                 tmp = placeInside(tmp, imageRect);
             }
             selectionRect = tmp;
@@ -345,7 +343,6 @@ void CropOverlay::onSelectionOutsideChange(QRect unmapped) {
     tmp.moveTop(tmp.top()*scale + imageRect.top());
     tmp.setWidth(tmp.width() * scale);
     tmp.setHeight(tmp.height() * scale);
-    qDebug() << "imageRect:" << imageRect << "unmapped: " << unmapped << " current mapped: " << selectionRect << " new mapped: " << tmp;
     selectionRect = tmp;
     updateHandlePositions();
     update();
@@ -380,7 +377,6 @@ QRect CropOverlay::mapSelection() {
             tmp.moveRight(imageRealSize.width() - 1);
         }
     }
-    qDebug() << "imageRect: " << imageRect << selectionRect << " >> " << QRect(tmp.topLeft().toPoint(), tmp.size().toSize()) << scale;
     return QRect(tmp.topLeft().toPoint(), tmp.size().toSize());
 }
 
