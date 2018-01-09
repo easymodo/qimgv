@@ -46,7 +46,6 @@ private:
     void createPathWidgets();
     void createShortcuts();
     QGridLayout mLayout;
-    QColor bgColor, borderColor;
     QList<PathSelectorWidget*> pathWidgets;
     const int maxPathCount = 9;
     QStringList paths;

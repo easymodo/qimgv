@@ -28,7 +28,7 @@ private slots:
     void showDirectoryChooser();
 private:
     ClickableLabel pathLabel;
-    ClickableLabel button;
+    QPushButton button;
     QHBoxLayout mLayout;
     QString mPath;
     QFont font;

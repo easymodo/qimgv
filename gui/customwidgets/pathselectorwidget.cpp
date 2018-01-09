@@ -1,8 +1,8 @@
 #include "pathselectorwidget.h"
 
 PathSelectorWidget::PathSelectorWidget(QWidget *parent) : QWidget(parent) {
-    setMinimumSize(200, 36);
-    setFixedHeight(36);
+    setMinimumSize(200, 34);
+    setFixedHeight(34);
     setFocusPolicy(Qt::NoFocus);
     mLayout.setContentsMargins(0,0,0,0);
     mLayout.setSpacing(5);
@@ -12,8 +12,7 @@ PathSelectorWidget::PathSelectorWidget(QWidget *parent) : QWidget(parent) {
     pathLabel.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     button.setAccessibleName("PathSelectorButton");
     button.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    button.setFixedSize(36,36);
-    button.setAlignment(Qt::AlignCenter);
+    button.setFixedSize(34,34);
     font.setPixelSize(15);
     pathLabel.setFont(font);
     font.setBold(true);

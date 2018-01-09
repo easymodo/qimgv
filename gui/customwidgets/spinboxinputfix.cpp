@@ -25,7 +25,6 @@ SpinBoxInputFix::SpinBoxInputFix(QWidget *parent) : QSpinBox(parent) {
 
 void SpinBoxInputFix::keyPressEvent(QKeyEvent *event) {
     int nativeScanCode = event->nativeScanCode();
-    qDebug() << nativeScanCode;
     QString key = actionManager->keyForNativeScancode(nativeScanCode);
     if(allowedKeys.contains(key)) {
         QSpinBox::keyPressEvent(event);

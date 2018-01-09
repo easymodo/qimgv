@@ -2,8 +2,8 @@
 
 CopyDialog::CopyDialog(QWidget *parent) : OverlayWidget(parent) {
     hide();
-    this->setFixedSize(300,450);
-    this->setContentsMargins(20,20,20,20);
+    this->setFixedSize(290,430);
+    this->setContentsMargins(18,18,18,18);
 
     mLayout.setSpacing(5);
     mLayout.setContentsMargins(0,0,0,0);
@@ -14,10 +14,6 @@ CopyDialog::CopyDialog(QWidget *parent) : OverlayWidget(parent) {
     headerLabel.setContentsMargins(0,0,0,6);
     headerLabel.setPixmap(QPixmap(":/res/images/copydialogheader.png"));
     mode = DIALOG_COPY;
-
-    // drawing stuff
-    bgColor.setRgb(36,36,36);
-    borderColor.setRgb(52,52,52);
 
     createShortcuts();
     readSettings();
