@@ -90,16 +90,11 @@ void Core::connectComponents() {
 }
 
 void Core::initActions() {
-    connect(actionManager, SIGNAL(nextImage()), this, SLOT(slotNextImage()));
-    connect(actionManager, SIGNAL(prevImage()), this, SLOT(slotPrevImage()));
-    connect(actionManager, SIGNAL(fitWindow()), viewerWidget, SIGNAL(fitWindow()));
-    connect(actionManager, SIGNAL(fitWidth()), viewerWidget, SIGNAL(fitWidth()));
-    connect(actionManager, SIGNAL(fitNormal()), viewerWidget, SIGNAL(fitOriginal()));
-
-    connect(actionManager, SIGNAL(fitWindow()), mw, SLOT(showMessageFitWindow()));
-    connect(actionManager, SIGNAL(fitWidth()), mw, SLOT(showMessageFitWidth()));
-    connect(actionManager, SIGNAL(fitNormal()), mw, SLOT(showMessageFitOriginal()));
-
+    connect(actionManager, SIGNAL(nextImage()), this, SLOT(nextImage()));
+    connect(actionManager, SIGNAL(prevImage()), this, SLOT(prevImage()));
+    connect(actionManager, SIGNAL(fitWindow()), this, SLOT(fitWindow()));
+    connect(actionManager, SIGNAL(fitWidth()), this, SLOT(fitWidth()));
+    connect(actionManager, SIGNAL(fitNormal()), this, SLOT(fitOriginal()));
     connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
     connect(actionManager, SIGNAL(toggleFullscreen()), mw, SLOT(triggerFullScreen()));
     connect(actionManager, SIGNAL(zoomIn()), viewerWidget, SIGNAL(zoomIn()));
@@ -201,6 +196,33 @@ void Core::toggleCropPanel() {
         mw->triggerCropPanel();
     } else if(state.hasActiveImage) {
         mw->triggerCropPanel();
+    }
+}
+
+void Core::fitWindow() {
+    if(viewerWidget->zoomInteractionEnabled()) {
+        viewerWidget->fitWindow();
+        mw->showMessageFitWindow();
+    } else {
+        mw->showMessage("Zoom temporary disabled");
+    }
+}
+
+void Core::fitWidth() {
+    if(viewerWidget->zoomInteractionEnabled()) {
+        viewerWidget->fitWidth();
+        mw->showMessageFitWidth();
+    } else {
+        mw->showMessage("Zoom temporary disabled");
+    }
+}
+
+void Core::fitOriginal() {
+    if(viewerWidget->zoomInteractionEnabled()) {
+        viewerWidget->fitOriginal();
+        mw->showMessageFitOriginal();
+    } else {
+        mw->showMessage("Zoom temporary disabled");
     }
 }
 
@@ -418,7 +440,7 @@ bool Core::loadByIndexBlocking(int index) {
     return false;
 }
 
-void Core::slotNextImage() {
+void Core::nextImage() {
     if(dirManager->hasImages()) {
         int index = state.currentIndex + 1;
         if(index >= dirManager->fileCount()) {
@@ -441,7 +463,7 @@ void Core::slotNextImage() {
     }
 }
 
-void Core::slotPrevImage() {
+void Core::prevImage() {
     if(dirManager->hasImages()) {
         int index = state.currentIndex - 1;
         if(index < 0) {

@@ -84,8 +84,8 @@ private:
 
 private slots:
     void readSettings();
-    void slotNextImage();
-    void slotPrevImage();
+    void nextImage();
+    void prevImage();
     void jumpToFirst();
     void jumpToLast();
     void onLoadFinished(Image *img);
@@ -110,6 +110,9 @@ private slots:
     void showResizeDialog();
     void resize(QSize size);
     void toggleCropPanel();
+    void fitWindow();
+    void fitWidth();
+    void fitOriginal();
 };
 
 #endif // CORE_H
