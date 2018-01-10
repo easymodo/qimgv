@@ -11,7 +11,9 @@ InfoOverlay::InfoOverlay(ContainerWidget *parent)
     textColor.setRgb(255, 255, 255, 255);
     textShadowColor.setRgb(0, 0, 0, 200);
     bgColor.setRgb(0, 0, 0, 90);
-    setFontSize(11);
+    font.setBold(true);
+    font.setPointSizeF(font.pointSizeF() * 0.9f);
+    fm = new QFontMetrics(font);
     setText("No file opened.");
     hide();
 }
@@ -35,18 +37,6 @@ void InfoOverlay::setText(QString text) {
     this->text = text;
     recalculateGeometry();
     update();
-}
-
-void InfoOverlay::setFontSize(int sz) {
-    if(sz < 6) {
-        qDebug() << "InfoOverlay: incorrect font size specified.";
-    } else {
-        font.setPixelSize(sz);
-        font.setBold(true);
-        if(fm)
-            delete fm;
-        fm = new QFontMetrics(font);
-    }
 }
 
 void InfoOverlay::recalculateGeometry() {

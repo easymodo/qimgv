@@ -14,8 +14,6 @@ public:
     InfoOverlay(ContainerWidget *parent);
     void setText(QString text);
 
-    void setFontSize(int sz);
-
 private:
 
 protected:

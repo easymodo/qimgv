@@ -12,10 +12,9 @@ ThumbnailLabel::ThumbnailLabel() :
 {
     setAcceptHoverEvents(true);
     nameColor.setRgb(20, 20, 20, 255);
-
-    font.setPointSizeF(8.5);
+    font.setPointSizeF(font.pointSizeF() * 0.9f);
     font.setBold(true);
-    fontSmall.setPointSizeF(8);
+    fontSmall.setPointSizeF(fontSmall.pointSizeF() * 0.85f);
     fontSmall.setBold(true);
     fm = new QFontMetrics(font);
     fmSmall = new QFontMetrics(fontSmall);
