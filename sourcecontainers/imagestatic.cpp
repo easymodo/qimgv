@@ -78,11 +78,13 @@ bool ImageStatic::setEditedImage(QImage *imageEditedNew) {
     }
 }
 
-void ImageStatic::discardEditedImage() {
+bool ImageStatic::discardEditedImage() {
     if(imageEdited) {
         delete imageEdited;
         imageEdited = NULL;
+        return true;
     }
+    return false;
 }
 
 

@@ -10,6 +10,7 @@
 #include "gui/overlays/controlsoverlay.h"
 #include "gui/overlays/infooverlay.h"
 #include "gui/overlays/floatingmessage.h"
+#include "gui/overlays/saveconfirmoverlay.h"
 #include "gui/panels/mainpanel/thumbnailstrip.h"
 #include "gui/panels/mainpanel/mainpanel.h"
 #include "gui/panels/sidepanel/sidepanel.h"
@@ -49,6 +50,7 @@ private:
     SidePanel *sidePanel;
     CropPanel *cropPanel;
     CropOverlay *cropOverlay;
+    SaveConfirmOverlay *saveOverlay;
 
     CopyDialog *copyDialog;
 
@@ -73,6 +75,8 @@ private slots:
     void setInfoOverlayEnabled(bool mode);    
     void triggerPanelButtons();
 
+    void onSaveClicked();
+    void onSaveAsClicked();
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     bool event(QEvent *event);
@@ -88,12 +92,16 @@ signals:
     void moveRequested(QString);
     void resizeRequested(QSize);
     void cropRequested(QRect);
+    void discardEditsRequested();
+    void saveClicked();
+    void saveRequested();
+    void saveRequested(QString);
 
 public slots:
     void showDefault();
     void showCropPanel();
     void hideSidePanel();
-    void showSaveDialog();
+    void showSaveDialog(QString filePath);
     void showOpenDialog();
     void showResizeDialog(QSize initialSize);
     void showSettings();

@@ -23,7 +23,7 @@ public:
 
     bool isEdited();
     bool setEditedImage(QImage *imageEditedNew);
-    void discardEditedImage();
+    bool discardEditedImage();
 
 public slots:
     void crop(QRect newRect);

@@ -87,7 +87,9 @@ SOURCES += \
     gui/customwidgets/sidepanelwidget.cpp \
     gui/viewers/videoplayer.cpp \
     gui/viewers/videoplayermpv.cpp \
-    gui/viewers/videoplayermpvproxy.cpp
+    gui/viewers/videoplayermpvproxy.cpp \
+    gui/overlays/saveconfirmoverlay.cpp \
+    gui/customwidgets/floatingwidget.cpp
 
 
 HEADERS += \
@@ -156,13 +158,17 @@ HEADERS += \
     gui/customwidgets/sidepanelwidget.h \
     gui/viewers/videoplayer.h \
     gui/viewers/videoplayermpv.h \
-    gui/viewers/videoplayermpvproxy.h
+    gui/viewers/videoplayermpvproxy.h \
+    gui/overlays/saveconfirmoverlay.h \
+    gui/customwidgets/floatingwidget.h
 
 FORMS += \
     gui/settingsdialog.ui \
     gui/resizedialog.ui \
     gui/panels/croppanel/croppanel.ui \
-    gui/panels/sidepanel/sidepanel.ui
+    gui/panels/sidepanel/sidepanel.ui \
+    gui/overlays/saveconfirmoverlay.ui \
+    gui/overlays/floatingmessage.ui
 
 RESOURCES += \
     resources.qrc

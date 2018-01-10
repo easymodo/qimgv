@@ -69,6 +69,8 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(moveRequested(QString)), this, SLOT(moveFile(QString)));
     connect(mw, SIGNAL(resizeRequested(QSize)), this, SLOT(resize(QSize)));
     connect(mw, SIGNAL(cropRequested(QRect)), this, SLOT(crop(QRect)));
+    connect(mw, SIGNAL(saveRequested()), this, SLOT(saveImageToDisk()));
+    connect(mw, SIGNAL(saveRequested(QString)), this, SLOT(saveImageToDisk(QString)));
     connect(this, SIGNAL(imageIndexChanged(int)), mw, SLOT(setupSidePanelData()));
 
     // thumbnails stuff
@@ -232,14 +234,15 @@ void Core::showResizeDialog() {
     mw->showResizeDialog(cache->get(nameKey)->size());
 }
 
+// TODO: simplify. too much copypasted code
 // use default bilinear for now
 void Core::resize(QSize size) {
-    if(state.currentIndex >= 0) {
+    if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         cache->lock();
         if(cache->reserve(nameKey)) {
             auto *img = cache->get(nameKey);
-            if(img && img->type() == STATIC) {
+            if(img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img);
                 imgStatic->setEditedImage(
                             ImageLib::scale(imgStatic->getImage(), size, 1));
@@ -258,13 +261,14 @@ void Core::resize(QSize size) {
     }
 }
 
+// TODO: simplify. too much copypasted code
 void Core::crop(QRect rect) {
-    if(state.currentIndex >= 0) {
+    if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         cache->lock();
         if(cache->reserve(nameKey)) {
             auto *img = cache->get(nameKey);
-            if(img && img->type() == STATIC) {
+            if(img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img);
                 if(!imgStatic->setEditedImage(
                             ImageLib::crop(imgStatic->getImage(), rect)))
@@ -284,6 +288,53 @@ void Core::crop(QRect rect) {
             qDebug() << "Core::crop() - could not lock cache object.";
         }
     }
+}
+
+// TODO: simplify. too much copypasted code
+void Core::discardEdits() {
+    if(state.hasActiveImage) {
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        cache->lock();
+        if(cache->reserve(nameKey)) {
+            auto *img = cache->get(nameKey);
+            if(img->type() == STATIC) {
+                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                bool ok = imgStatic->discardEditedImage();
+                cache->release(nameKey);
+                cache->unlock();
+                if(ok)
+                    displayImage(img);
+            } else {
+                cache->release(nameKey);
+                cache->unlock();
+            }
+        } else {
+            cache->unlock();
+            qDebug() << "Core::discardEdits() - could not lock cache object.";
+        }
+    }
+}
+
+// TODO: simplify. too much copypasted code
+// also move saving logic away from Image container itself
+void Core::saveImageToDisk() {
+    if(state.hasActiveImage) {
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        cache->lock();
+        if(cache->reserve(nameKey)) {
+            auto *img = cache->get(nameKey);
+            img->save();
+            cache->release(nameKey);
+            cache->unlock();
+        } else {
+            cache->unlock();
+            qDebug() << "Core::saveImageToDisk() - could not lock cache object.";
+        }
+    }
+}
+
+void Core::saveImageToDisk(QString filePath) {
+
 }
 
 // switch between 1:1 and Fit All
@@ -324,7 +375,7 @@ void Core::forwardThumbnail(Thumbnail *thumbnail) {
 }
 
 void Core::rotateByDegrees(int degrees) {
-    if(state.currentIndex >= 0) {
+    if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         cache->lock();
         if(cache->reserve(nameKey)) {

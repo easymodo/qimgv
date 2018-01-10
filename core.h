@@ -110,10 +110,13 @@ private slots:
     void showResizeDialog();
     void resize(QSize size);
     void crop(QRect rect);
+    void discardEdits();
     void toggleCropPanel();
     void fitWindow();
     void fitWidth();
     void fitOriginal();
+    void saveImageToDisk();
+    void saveImageToDisk(QString);
 };
 
 #endif // CORE_H

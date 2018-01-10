@@ -1,4 +1,44 @@
-QWidget#SidePanel {
+FloatingMessage {
+    border: 2px solid #343434;
+    border-radius: 3px;
+    background-color: #202020;
+}
+
+FloatingMessage QLabel {
+    color: #B0B0B0;
+    font: bold;
+}
+
+SaveConfirmOverlay {
+    border: 2px solid #343434;
+    border-radius: 3px;
+    background-color: #202020;
+}
+
+SaveConfirmOverlay QLabel {
+    color: #B0B0B0;
+    font: bold;
+}
+
+SaveConfirmOverlay QPushButton {
+    font: bold;
+    color: #404040;
+    border: 2px solid #343434;
+    border-radius: 4px;
+    padding: 4px 4px 4px 4px;
+}
+
+SaveConfirmOverlay QPushButton:hover {
+    border-color: #424242;
+    color: #4e4e4e;
+}
+
+SaveConfirmOverlay QPushButton:focus {
+    border-color: #424242;
+    color: #4e4e4e;
+}
+
+SidePanel {
     background-color: #202020;
     border-left: 2px solid #343434;
 }
@@ -48,7 +88,12 @@ SidePanel QPushButton:hover {
     color: #4e4e4e;
 }
 
-[accessibleName="OverlayWidget"] {
+SidePanel QPushButton:focus {
+    border-color: #424242;
+    color: #4e4e4e;
+}
+
+CopyDialog {
     background-color: #202020;
     color: #646464;
     border: 2px solid #2A2A2A;

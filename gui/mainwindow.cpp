@@ -57,6 +57,8 @@ void MainWindow::setupOverlays() {
     sidePanel = new SidePanel(this);
     cropPanel = new CropPanel(this);
     cropOverlay = new CropOverlay(viewerWidget);
+    saveOverlay = new SaveConfirmOverlay(viewerWidget);
+    saveOverlay->show();
     layout.addWidget(sidePanel);
     connect(cropOverlay, SIGNAL(selectionChanged(QRect)),
             cropPanel, SLOT(onSelectionOutsideChange(QRect)));
@@ -202,14 +204,20 @@ void MainWindow::showDefault() {
     }
 }
 
-void MainWindow::showSaveDialog() {
-  /*  const QString imagesFilter = settings->supportedFormatsString();
-    QString fileName = core->getCurrentFilePath();
-    fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
-                                            fileName,
+void MainWindow::onSaveClicked() {
+    qDebug() << "MW: onSaveClicked()";
+}
+
+void MainWindow::onSaveAsClicked() {
+    qDebug() << "MW: onSaveAsClicked()";
+}
+
+void MainWindow::showSaveDialog(QString filePath) {
+    const QString imagesFilter = settings->supportedFormatsString();
+    filePath = QFileDialog::getSaveFileName(this, tr("Save File"),
+                                            filePath,
                                             imagesFilter);
-    emit fileSaved(fileName);
-    */
+    emit saveRequested(filePath);
 }
 
 void MainWindow::showOpenDialog() {
@@ -346,27 +354,27 @@ void MainWindow::setInfoString(QString text) {
 }
 
 void MainWindow::showMessageDirectoryEnd() {
-    floatingMessage->showMessage("", Message::POSITION_RIGHT, Message::ICON_RIGHT_EDGE, 500);
+    floatingMessage->showMessage("", FloatingWidgetPosition::RIGHT, FloatingMessageIcon::ICON_RIGHT_EDGE, 700);
 }
 
 void MainWindow::showMessageDirectoryStart() {
-    floatingMessage->showMessage("", Message::POSITION_LEFT, Message::ICON_LEFT_EDGE, 500);
+    floatingMessage->showMessage("", FloatingWidgetPosition::LEFT, FloatingMessageIcon::ICON_LEFT_EDGE, 700);
 }
 
 void MainWindow::showMessageFitWindow() {
-    floatingMessage->showMessage("Fit Window", Message::POSITION_BOTTOM, Message::NO_ICON, 1000);
+    floatingMessage->showMessage("Fit Window", FloatingWidgetPosition::BOTTOM, FloatingMessageIcon::NO_ICON, 1000);
 }
 
 void MainWindow::showMessageFitWidth() {
-    floatingMessage->showMessage("Fit Width", Message::POSITION_BOTTOM, Message::NO_ICON, 1000);
+    floatingMessage->showMessage("Fit Width", FloatingWidgetPosition::BOTTOM, FloatingMessageIcon::NO_ICON, 1000);
 }
 
 void MainWindow::showMessageFitOriginal() {
-    floatingMessage->showMessage("Fit 1:1", Message::POSITION_BOTTOM, Message::NO_ICON, 1000);
+    floatingMessage->showMessage("Fit 1:1", FloatingWidgetPosition::BOTTOM, FloatingMessageIcon::NO_ICON, 1000);
 }
 
 void MainWindow::showMessage(QString text) {
-    floatingMessage->showMessage(text, Message::POSITION_BOTTOM, Message::NO_ICON, 2000);
+    floatingMessage->showMessage(text, FloatingWidgetPosition::BOTTOM, FloatingMessageIcon::NO_ICON, 2000);
 }
 
 void MainWindow::readSettings() {
@@ -385,6 +393,7 @@ void MainWindow::updateOverlayGeometry() {
     mainPanel->setContainerSize(size());
     copyDialog->setContainerSize(size());
     cropOverlay->setContainerSize(viewerWidget->size());
+    saveOverlay->setContainerSize(viewerWidget->size());
 }
 
 void MainWindow::setControlsOverlayEnabled(bool mode) {

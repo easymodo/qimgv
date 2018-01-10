@@ -2,70 +2,53 @@
 #define FLOATINGMESSAGE
 
 #include <QTimeLine>
-#include <QGraphicsColorizeEffect>
 #include <QGraphicsOpacityEffect>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
-#include <QPainterPath>
-#include "gui/overlays/infooverlay.h"
+#include <QLabel>
+#include "gui/customwidgets/floatingwidget.h"
 
-namespace Message {
-    enum Position {
-        POSITION_LEFT,
-        POSITION_RIGHT,
-        POSITION_BOTTOM,
-        POSITION_TOP,
-        POSITION_TOPLEFT,
-        POSITION_TOPRIGHT,
-        POSITION_BOTTOMLEFT,
-        POSITION_BOTTOMRIGHT
-    };
-    enum Icon {
-        NO_ICON,
-        ICON_LEFT_EDGE,
-        ICON_RIGHT_EDGE
-    };
+namespace Ui {
+class FloatingMessage;
 }
 
+enum FloatingMessageIcon {
+    NO_ICON,
+    ICON_LEFT_EDGE,
+    ICON_RIGHT_EDGE
+};
 
-class FloatingMessage : public InfoOverlay {
+
+class FloatingMessage : public FloatingWidget {
     Q_OBJECT
     Q_PROPERTY (float opacity READ opacity WRITE setOpacity)
 public:
     FloatingMessage(QWidget *parent);
-    void showMessage(QString _text, Message::Position _position, Message::Icon _icon, int _duration);
+    ~FloatingMessage();
+    void showMessage(QString text, FloatingWidgetPosition position, FloatingMessageIcon icon, int duration);
 
-    void setIcon(Message::Icon _icon);
+    void setIcon(FloatingMessageIcon icon);
 public slots:
     void show();
+    void setText(QString text);
 
 private:
-    Message::Position position;
-    Message::Icon icon;
-    const int iconSize = 32;
+    Ui::FloatingMessage *ui;
+    QGraphicsOpacityEffect *opacityEffect;
 
 private slots:
     void setOpacity(float opacity);
     float opacity() const;
 
 protected:
-    virtual void recalculateGeometry();
-    void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *event);
 
     QPropertyAnimation *fadeAnimation;
     QParallelAnimationGroup *animGroup;
 
-    QColor effectColor, borderColor;
-    qreal effectStrength, currentOpacity;
+    qreal effectStrength;
     int duration;
-
-    const int marginX = 20;
-    const int marginY = 30;
-
     QPixmap iconLeftEdge, iconRightEdge;
-    QPixmap *currentIcon;
-    QRect iconRect;
 };
 
 #endif // FLOATINGMESSAGE

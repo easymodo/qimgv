@@ -11,12 +11,11 @@ ThumbnailLabel::ThumbnailLabel() :
     marginX(1)
 {
     setAcceptHoverEvents(true);
-    //this->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     nameColor.setRgb(20, 20, 20, 255);
 
-    font.setPixelSize(11);
+    font.setPointSize(9);
     font.setBold(true);
-    fontSmall.setPixelSize(10);
+    fontSmall.setPointSize(8);
     fontSmall.setBold(true);
     fm = new QFontMetrics(font);
     fmSmall = new QFontMetrics(fontSmall);
@@ -32,7 +31,6 @@ ThumbnailLabel::ThumbnailLabel() :
 
 void ThumbnailLabel::readSettings() {
     highlightColor.setRgb(settings->accentColor().rgb());
-    setupLabel();
 }
 
 void ThumbnailLabel::setThumbnailSize(int size) {
@@ -46,7 +44,7 @@ void ThumbnailLabel::setThumbnailSize(int size) {
         thumbnailSize = size;
         highlightBarRect = QRect(marginX, 0, width() - marginX * 2, highlightBarHeight);
         nameRect = QRect(highlightBarRect.left(), highlightBarRect.height(),
-                         highlightBarRect.width(), 22);
+                         highlightBarRect.width(), fm->height() * 1.6);
         update();
     }
 }
@@ -225,7 +223,6 @@ bool ThumbnailLabel::isHovered() {
 }
 
 ThumbnailLabel::~ThumbnailLabel() {
-    //delete loadingIcon;
     delete opacityAnimation;
     delete thumbnail;
     delete fm;
