@@ -19,7 +19,7 @@ enum CopyDialogMode {
 class CopyDialog : public OverlayWidget {
     Q_OBJECT
 public:
-    CopyDialog(QWidget *parent);
+    CopyDialog(ContainerWidget *parent);
     ~CopyDialog();
     void saveSettings();    
     void setDialogMode(CopyDialogMode _mode);

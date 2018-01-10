@@ -15,9 +15,15 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="leftMargin">
+    <number>12</number>
+   </property>
+   <property name="topMargin">
     <number>10</number>
    </property>
    <property name="rightMargin">
+    <number>12</number>
+   </property>
+   <property name="bottomMargin">
     <number>10</number>
    </property>
    <item>
@@ -26,6 +32,22 @@
       <string>Unsaved edits.</string>
      </property>
     </widget>
+   </item>
+   <item>
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>8</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QPushButton" name="saveButton">

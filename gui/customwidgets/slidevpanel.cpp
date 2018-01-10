@@ -1,6 +1,6 @@
 #include "slidevpanel.h"
 
-SlideVPanel::SlideVPanel(QWidget *w)
+SlideVPanel::SlideVPanel(ContainerWidget *w)
     : SlidePanel(w)
 {
     slideAmount = 20;

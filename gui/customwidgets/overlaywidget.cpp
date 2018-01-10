@@ -1,15 +1,14 @@
 /*
  * Base class for overlay widgets.
  * It is not supposed to go into any kind of layout.
- * Instead, you specify the container size and widget will decide
- * where to draw itself within that area.
- * Drawn over the parent widget.
+ * The widget will position itself depending on it's container size
  */
 
 #include "overlaywidget.h"
 
-OverlayWidget::OverlayWidget(QWidget *parent) : QWidget(parent) {
+OverlayWidget::OverlayWidget(ContainerWidget *parent) : QWidget(parent) {
     this->setAccessibleName("OverlayWidget");
+    connect(parent, SIGNAL(resized(QSize)), this, SLOT(setContainerSize(QSize)));
     hide();
 }
 

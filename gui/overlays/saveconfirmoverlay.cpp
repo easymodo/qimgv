@@ -1,7 +1,7 @@
 #include "saveconfirmoverlay.h"
 #include "ui_saveconfirmoverlay.h"
 
-SaveConfirmOverlay::SaveConfirmOverlay(QWidget *parent) :
+SaveConfirmOverlay::SaveConfirmOverlay(ContainerWidget *parent) :
     FloatingWidget(parent),
     ui(new Ui::SaveConfirmOverlay)
 {
@@ -10,9 +10,9 @@ SaveConfirmOverlay::SaveConfirmOverlay(QWidget *parent) :
     connect(ui->saveButton, SIGNAL(clicked()), this, SIGNAL(saveClicked()));
     connect(ui->saveAsButton, SIGNAL(clicked()), this, SIGNAL(saveAsClicked()));
     connect(ui->discardButton, SIGNAL(clicked()), this, SIGNAL(discardClicked()));
-    connect(ui->saveButton, SIGNAL(clicked()), this, SIGNAL(hide()));
-    connect(ui->saveAsButton, SIGNAL(clicked()), this, SIGNAL(hide()));
-    connect(ui->discardButton, SIGNAL(clicked()), this, SIGNAL(hide()));
+    connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(hide()));
+    connect(ui->saveAsButton, SIGNAL(clicked()), this, SLOT(hide()));
+    connect(ui->discardButton, SIGNAL(clicked()), this, SLOT(hide()));
     this->hide();
 }
 

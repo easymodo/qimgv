@@ -1,7 +1,6 @@
 #ifndef SLIDEPANEL_H
 #define SLIDEPANEL_H
 
-#include <QWidget>
 #include <QTimeLine>
 #include <QGraphicsOpacityEffect>
 #include <QParallelAnimationGroup>
@@ -15,7 +14,7 @@
 class SlidePanel : public OverlayWidget {
     Q_OBJECT
 public:
-    explicit SlidePanel(QWidget *parent);
+    explicit SlidePanel(ContainerWidget *parent);
     ~SlidePanel();
     bool hasWidget();
     void setWidget(QWidget* w);

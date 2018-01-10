@@ -8,7 +8,7 @@
 class MainPanel : public SlideHPanel {
     Q_OBJECT
 public:
-    MainPanel(QWidget *parent);
+    MainPanel(ContainerWidget *parent);
     void setPosition(PanelHPosition);
     void setWidget(QWidget* w);
     void setWindowButtonsEnabled(bool mode);

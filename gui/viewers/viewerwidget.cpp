@@ -6,7 +6,7 @@
 #include "viewerwidget.h"
 
 ViewerWidget::ViewerWidget(QWidget *parent)
-    : QWidget(parent),
+    : ContainerWidget(parent),
       imageViewer(NULL),
       videoPlayer(NULL),
       currentWidget(UNSET),

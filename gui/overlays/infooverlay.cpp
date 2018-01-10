@@ -1,6 +1,6 @@
 #include "infooverlay.h"
 
-InfoOverlay::InfoOverlay(QWidget *parent)
+InfoOverlay::InfoOverlay(ContainerWidget *parent)
     : OverlayWidget(parent),
       fm(NULL)
 {

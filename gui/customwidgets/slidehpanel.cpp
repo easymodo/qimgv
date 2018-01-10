@@ -6,7 +6,7 @@
 
 #include "slidehpanel.h"
 
-SlideHPanel::SlideHPanel(QWidget *parent)
+SlideHPanel::SlideHPanel(ContainerWidget *parent)
     : SlidePanel(parent)
 {
     position = PANEL_TOP;

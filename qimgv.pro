@@ -89,7 +89,8 @@ SOURCES += \
     gui/viewers/videoplayermpv.cpp \
     gui/viewers/videoplayermpvproxy.cpp \
     gui/overlays/saveconfirmoverlay.cpp \
-    gui/customwidgets/floatingwidget.cpp
+    gui/customwidgets/floatingwidget.cpp \
+    gui/customwidgets/containerwidget.cpp
 
 
 HEADERS += \
@@ -160,7 +161,8 @@ HEADERS += \
     gui/viewers/videoplayermpv.h \
     gui/viewers/videoplayermpvproxy.h \
     gui/overlays/saveconfirmoverlay.h \
-    gui/customwidgets/floatingwidget.h
+    gui/customwidgets/floatingwidget.h \
+    gui/customwidgets/containerwidget.h
 
 FORMS += \
     gui/settingsdialog.ui \

@@ -6,6 +6,7 @@
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QMimeData>
+#include "gui/customwidgets/containerwidget.h"
 #include "gui/viewers/viewerwidget.h"
 #include "gui/overlays/controlsoverlay.h"
 #include "gui/overlays/infooverlay.h"
@@ -27,7 +28,7 @@ enum ActiveSidePanel {
     SIDEPANEL_NONE
 };
 
-class MainWindow : public QWidget
+class MainWindow : public ContainerWidget
 {
     Q_OBJECT
 public:
@@ -64,9 +65,7 @@ private:
     void saveWindowGeometry();
     void restoreWindowGeometry();
     void saveCurrentDisplay();
-
     void setupOverlays();
-    void updateOverlayGeometry();
 
 private slots:
     void updateCurrentDisplay();

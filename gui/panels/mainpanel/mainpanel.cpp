@@ -1,6 +1,6 @@
 #include "mainpanel.h"
 
-MainPanel::MainPanel(QWidget *parent) : SlideHPanel(parent) {
+MainPanel::MainPanel(ContainerWidget *parent) : SlideHPanel(parent) {
     // buttons stuff
     buttonsWidget.setAccessibleName("panelButtonsWidget");
 

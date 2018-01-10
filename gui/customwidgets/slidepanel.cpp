@@ -1,12 +1,11 @@
 /*
  * Base class for auto-hiding panels.
  * Insert widget you want to show with setWidget().
- * Use setContainerSize() to notify panel of parent resize.
  */
 
 #include "slidepanel.h"
 
-SlidePanel::SlidePanel(QWidget *parent)
+SlidePanel::SlidePanel(ContainerWidget *parent)
     : OverlayWidget(parent),
       panelSize(50),
       slideAmount(30),

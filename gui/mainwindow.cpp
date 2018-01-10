@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
 MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
-    : QWidget(parent),
+    : ContainerWidget(parent),
       currentDisplay(0),
       desktopWidget(NULL),
       panelEnabled(false),
@@ -188,7 +188,7 @@ void MainWindow::dropEvent(QDropEvent *event) {
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
-    updateOverlayGeometry();
+    ContainerWidget::resizeEvent(event);
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropOverlay->setImageScale(viewerWidget->currentScale());
         cropOverlay->setImageRect(viewerWidget->imageRect());
@@ -384,16 +384,6 @@ void MainWindow::readSettings() {
     setControlsOverlayEnabled(this->isFullScreen());
     setInfoOverlayEnabled(this->isFullScreen());
     triggerPanelButtons();
-}
-
-void MainWindow::updateOverlayGeometry() {
-    controlsOverlay->setContainerSize(size());
-    infoOverlay->setContainerSize(size());
-    floatingMessage->setContainerSize(size());
-    mainPanel->setContainerSize(size());
-    copyDialog->setContainerSize(size());
-    cropOverlay->setContainerSize(viewerWidget->size());
-    saveOverlay->setContainerSize(viewerWidget->size());
 }
 
 void MainWindow::setControlsOverlayEnabled(bool mode) {

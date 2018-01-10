@@ -23,7 +23,7 @@ class FloatingMessage : public FloatingWidget {
     Q_OBJECT
     Q_PROPERTY (float opacity READ opacity WRITE setOpacity)
 public:
-    FloatingMessage(QWidget *parent);
+    FloatingMessage(ContainerWidget *parent);
     ~FloatingMessage();
     void showMessage(QString text, FloatingWidgetPosition position, FloatingMessageIcon icon, int duration);
 

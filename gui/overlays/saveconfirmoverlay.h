@@ -11,7 +11,7 @@ class SaveConfirmOverlay : public FloatingWidget
 {
     Q_OBJECT
 public:
-    explicit SaveConfirmOverlay(QWidget *parent = 0);
+    explicit SaveConfirmOverlay(ContainerWidget *parent = 0);
     ~SaveConfirmOverlay();
 
 signals:

@@ -10,7 +10,7 @@ class ControlsOverlay : public OverlayWidget
 {
     Q_OBJECT
 public:
-    explicit ControlsOverlay(QWidget *parent);
+    explicit ControlsOverlay(ContainerWidget *parent);
 
 private:
     QHBoxLayout layout;

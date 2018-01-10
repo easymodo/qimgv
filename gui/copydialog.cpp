@@ -1,6 +1,6 @@
 #include "copydialog.h"
 
-CopyDialog::CopyDialog(QWidget *parent) : OverlayWidget(parent) {
+CopyDialog::CopyDialog(ContainerWidget *parent) : OverlayWidget(parent) {
     hide();
     this->setFixedSize(290,430);
     this->setContentsMargins(18,18,18,18);

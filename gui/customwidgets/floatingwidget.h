@@ -1,7 +1,5 @@
 /* Base class for floating widgets.
- * It will uatomatically reposition itself according to FloatingWidgetPosition.
- * Usage: implement calculateDesiredSize() method.
- * Call setContainerSize(QSize) whenever its container resized.
+ * It will automatically reposition itself according to FloatingWidgetPosition.
  */
 
 #ifndef FLOATINGWIDGET_H
@@ -25,7 +23,7 @@ class FloatingWidget : public OverlayWidget
 {
     Q_OBJECT
 public:
-    FloatingWidget(QWidget *parent = nullptr);
+    FloatingWidget(ContainerWidget *parent);
     void setMarginX(int);
     void setMarginY(int);
 

@@ -1,7 +1,7 @@
 #include "floatingmessage.h"
 #include "ui_floatingmessage.h"
 
-FloatingMessage::FloatingMessage(QWidget *parent) :
+FloatingMessage::FloatingMessage(ContainerWidget *parent) :
     FloatingWidget(parent),
     duration(1200),
     ui(new Ui::FloatingMessage)
