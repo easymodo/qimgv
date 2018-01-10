@@ -659,7 +659,7 @@ void Core::updateInfoString() {
     QString infoString = "";
     infoString.append("[ " +
                       QString::number(state.currentIndex + 1) +
-                      " / " +
+                      "/" +
                       QString::number(dirManager->fileCount()) +
                       " ]   ");
     if(!state.isWaitingForLoader) {
