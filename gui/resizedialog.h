@@ -23,6 +23,8 @@ public:
     ~ResizeDialog();
     QSize newSize();
 
+public slots:
+    int exec();
 private:
     Ui::ResizeDialog *ui;
     QSize originalSize, targetSize, desktopSize;

@@ -71,6 +71,9 @@
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header>gui/customwidgets/clickablelabel.h</header>
+   <slots>
+    <signal>clicked()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>

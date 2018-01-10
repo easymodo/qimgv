@@ -128,3 +128,7 @@ void ResizeDialog::reset() {
     targetSize = originalSize;
     updateToTargetValues();
 }
+int ResizeDialog::exec() {
+    resize(sizeHint());
+    return QDialog::exec();
+}

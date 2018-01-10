@@ -105,7 +105,7 @@ CopyDialog ClickableLabel {
     color: #646464;
     border: 2px solid #2A2A2A;
     border-radius: 4px;
-    padding: 4px 4px 4px 4px;
+    padding: 4px 35px 4px 4px;
 }
 
 CopyDialog ClickableLabel:hover {
