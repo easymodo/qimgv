@@ -27,19 +27,24 @@ void ImageAnimated::load() {
     loaded = true;
 }
 
-void ImageAnimated::save(QString destPath) {
+bool ImageAnimated::save(QString destPath) {
     QFile file(path);
     if(file.exists()) {
-        if (!file.copy(destPath)) {
+        if(!file.copy(destPath)) {
             qDebug() << "Unable to save file.";
+            return false;
+        } else {
+            return true;
         }
     } else {
         qDebug() << "Unable to save file. Perhaps the source file was deleted?";
+        return false;
     }
 }
 
-void ImageAnimated::save() {
+bool ImageAnimated::save() {
     //TODO
+    return false;
 }
 
 // in case of gif returns current frame

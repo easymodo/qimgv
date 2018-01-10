@@ -7,12 +7,17 @@ SaveConfirmOverlay::SaveConfirmOverlay(ContainerWidget *parent) :
 {
     this->position = FloatingWidgetPosition::BOTTOMRIGHT;
     ui->setupUi(this);
+    // block focus until i find better solution
+    ui->saveButton->setFocusPolicy(Qt::NoFocus);
+    ui->saveAsButton->setFocusPolicy(Qt::NoFocus);
+    ui->discardButton->setFocusPolicy(Qt::NoFocus);
     connect(ui->saveButton, SIGNAL(clicked()), this, SIGNAL(saveClicked()));
     connect(ui->saveAsButton, SIGNAL(clicked()), this, SIGNAL(saveAsClicked()));
     connect(ui->discardButton, SIGNAL(clicked()), this, SIGNAL(discardClicked()));
     connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(hide()));
     connect(ui->saveAsButton, SIGNAL(clicked()), this, SLOT(hide()));
     connect(ui->discardButton, SIGNAL(clicked()), this, SLOT(hide()));
+    this->setFocusPolicy(Qt::NoFocus);
     this->hide();
 }
 

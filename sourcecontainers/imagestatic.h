@@ -21,14 +21,13 @@ public:
     void rotate(int grad);
     QImage *cropped(QRect newRect, QRect targetRes, bool upscaled);
 
-    bool isEdited();
     bool setEditedImage(QImage *imageEditedNew);
     bool discardEditedImage();
 
 public slots:
     void crop(QRect newRect);
-    void save();
-    void save(QString destPath);
+    bool save();
+    bool save(QString destPath);
 
 private:
     void load();

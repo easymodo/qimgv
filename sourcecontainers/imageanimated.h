@@ -21,8 +21,8 @@ public:
     bool isEdited();
 
 public slots:
-    void save();
-    void save(QString destPath);
+    bool save();
+    bool save(QString destPath);
 
 signals:
     void frameChanged(QPixmap*);

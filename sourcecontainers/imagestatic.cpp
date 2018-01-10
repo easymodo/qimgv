@@ -30,12 +30,12 @@ void ImageStatic::load() {
     loaded = true;
 }
 
-void ImageStatic::save(QString destPath) {
-    isEdited()?imageEdited->save(destPath):image->save(destPath);
+bool ImageStatic::save(QString destPath) {
+    return isEdited()?imageEdited->save(destPath):image->save(destPath);
 }
 
-void ImageStatic::save() {
-    isEdited()?imageEdited->save(path):image->save(path);
+bool ImageStatic::save() {
+    return isEdited()?imageEdited->save(path):image->save(path);
 }
 
 QPixmap *ImageStatic::getPixmap() {
@@ -64,14 +64,11 @@ QSize ImageStatic::size() {
     return isEdited()?imageEdited->size():image->size();
 }
 
-bool ImageStatic::isEdited() {
-    return (imageEdited);
-}
-
 bool ImageStatic::setEditedImage(QImage *imageEditedNew) {
     if(imageEditedNew && imageEditedNew->width() != 0) {
         discardEditedImage();
         imageEdited = imageEditedNew;
+        edited = true;
         return true;
     } else {
         return false;
@@ -82,6 +79,7 @@ bool ImageStatic::discardEditedImage() {
     if(imageEdited) {
         delete imageEdited;
         imageEdited = NULL;
+        edited = false;
         return true;
     }
     return false;

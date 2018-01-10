@@ -51,6 +51,7 @@ private:
 signals:
     void open();
     void save();
+    void saveAs();
     void openSettings();
     void crop();
     void setWallpaper();

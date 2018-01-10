@@ -69,8 +69,10 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(moveRequested(QString)), this, SLOT(moveFile(QString)));
     connect(mw, SIGNAL(resizeRequested(QSize)), this, SLOT(resize(QSize)));
     connect(mw, SIGNAL(cropRequested(QRect)), this, SLOT(crop(QRect)));
+    connect(mw, SIGNAL(saveAsClicked()), this, SLOT(requestSavePath()));
     connect(mw, SIGNAL(saveRequested()), this, SLOT(saveImageToDisk()));
     connect(mw, SIGNAL(saveRequested(QString)), this, SLOT(saveImageToDisk(QString)));
+    connect(mw, SIGNAL(discardEditsRequested()), this, SLOT(discardEdits()));
     connect(this, SIGNAL(imageIndexChanged(int)), mw, SLOT(setupSidePanelData()));
 
     // thumbnails stuff
@@ -113,7 +115,8 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(crop()), this, SLOT(toggleCropPanel()));
     //connect(actionManager, SIGNAL(setWallpaper()), this, SLOT(slotSelectWallpaper()));
     connect(actionManager, SIGNAL(open()), mw, SLOT(showOpenDialog()));
-    connect(actionManager, SIGNAL(save()), mw, SLOT(showSaveDialog()));
+    connect(actionManager, SIGNAL(save()), this, SLOT(saveImageToDisk()));
+    connect(actionManager, SIGNAL(saveAs()), this, SLOT(requestSavePath()));
     connect(actionManager, SIGNAL(exit()), this, SLOT(close()));
     connect(actionManager, SIGNAL(closeFullScreenOrExit()), mw, SLOT(closeFullScreenOrExit()));
     connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFile()));
@@ -229,6 +232,12 @@ void Core::fitOriginal() {
     }
 }
 
+void Core::requestSavePath() {
+    if(state.hasActiveImage) {
+        mw->showSaveDialog(dirManager->filePathAt(state.currentIndex));
+    }
+}
+
 void Core::showResizeDialog() {
     QString nameKey = dirManager->fileNameAt(state.currentIndex);
     mw->showResizeDialog(cache->get(nameKey)->size());
@@ -318,12 +327,20 @@ void Core::discardEdits() {
 // TODO: simplify. too much copypasted code
 // also move saving logic away from Image container itself
 void Core::saveImageToDisk() {
+    if(state.hasActiveImage)
+        saveImageToDisk(dirManager->filePathAt(state.currentIndex));
+}
+
+void Core::saveImageToDisk(QString filePath) {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         cache->lock();
         if(cache->reserve(nameKey)) {
             auto *img = cache->get(nameKey);
-            img->save();
+            if(img->save(filePath))
+                mw->showMessage("File saved.");
+            else
+                mw->showMessage("Something happened.");
             cache->release(nameKey);
             cache->unlock();
         } else {
@@ -331,10 +348,6 @@ void Core::saveImageToDisk() {
             qDebug() << "Core::saveImageToDisk() - could not lock cache object.";
         }
     }
-}
-
-void Core::saveImageToDisk(QString filePath) {
-
 }
 
 // switch between 1:1 and Fit All
@@ -619,9 +632,13 @@ void Core::displayImage(Image *img) {
     state.isWaitingForLoader = false;
     state.hasActiveImage = true;
     if(img) {  // && img->name() != state.displayingFileName) {
+        mw->hideSaveOverlay();
         ImageType type = img->info()->imageType();
         if(type == STATIC) {
             viewerWidget->showImage(img->getPixmap());
+            if(img->isEdited()) {
+                mw->showSaveOverlay();
+            }
         } else if(type == ANIMATED) {
             auto animated = dynamic_cast<ImageAnimated *>(img);
             viewerWidget->showAnimation(animated->getMovie());

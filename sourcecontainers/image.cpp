@@ -1,6 +1,6 @@
 #include "image.h"
 
-Image::Image() : imageInfo(NULL) {
+Image::Image() : imageInfo(NULL), edited(false) {
 }
 
 Image::~Image() {
@@ -22,6 +22,10 @@ ImageType Image::type() {
 
 QString Image::name() {
     return imageInfo->fileName();
+}
+
+bool Image::isEdited() {
+    return edited;
 }
 
 ImageInfo *Image::info() {

@@ -74,8 +74,6 @@ private slots:
     void setInfoOverlayEnabled(bool mode);    
     void triggerPanelButtons();
 
-    void onSaveClicked();
-    void onSaveAsClicked();
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     bool event(QEvent *event);
@@ -92,7 +90,7 @@ signals:
     void resizeRequested(QSize);
     void cropRequested(QRect);
     void discardEditsRequested();
-    void saveClicked();
+    void saveAsClicked();
     void saveRequested();
     void saveRequested(QString);
 
@@ -100,8 +98,8 @@ public slots:
     void showDefault();
     void showCropPanel();
     void hideSidePanel();
-    void showSaveDialog(QString filePath);
     void showOpenDialog();
+    void showSaveDialog(QString filePath);
     void showResizeDialog(QSize initialSize);
     void showSettings();
     void triggerFullScreen();
@@ -120,6 +118,8 @@ public slots:
     void close();
     void triggerCropPanel();
     void setupSidePanelData();
+    void showSaveOverlay();
+    void hideSaveOverlay();
 };
 
 #endif // MainWindow_H

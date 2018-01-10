@@ -115,6 +115,7 @@ private slots:
     void fitWindow();
     void fitWidth();
     void fitOriginal();
+    void requestSavePath();
     void saveImageToDisk();
     void saveImageToDisk(QString);
 };

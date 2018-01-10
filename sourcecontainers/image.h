@@ -29,14 +29,15 @@ public:
 
     ImageInfo* imageInfo;
 
-    virtual void save() = 0;
-    virtual void save(QString destPath) = 0;
+    virtual bool save() = 0;
+    virtual bool save(QString destPath) = 0;
 
     QString name();
+    bool isEdited();
 
 protected:
     virtual void load() = 0;
-    bool loaded;
+    bool loaded, edited;
     QString path;
     QSize resolution;
 };

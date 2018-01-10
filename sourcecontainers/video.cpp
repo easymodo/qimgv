@@ -23,12 +23,16 @@ void Video::load() {
     loaded = true;
 }
 
-void Video::save(QString destPath) {
-    clip->save(destPath);
+bool Video::save(QString destPath) {
+    //clip->save(destPath);
+    qDebug() << "Saving video is unsupported.";
+    return false;
 }
 
-void Video::save() {
-    clip->save(path);
+bool Video::save() {
+    //clip->save(path);
+    qDebug() << "Saving video is unsupported.";
+    return false;
 }
 
 QPixmap *Video::getPixmap() {

@@ -21,8 +21,8 @@ public:
     QSize size();
 
 public slots:
-    void save();
-    void save(QString destPath);
+    bool save();
+    bool save(QString destPath);
 
 
 private:

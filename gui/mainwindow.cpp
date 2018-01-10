@@ -58,6 +58,9 @@ void MainWindow::setupOverlays() {
     cropPanel = new CropPanel(this);
     cropOverlay = new CropOverlay(viewerWidget);
     saveOverlay = new SaveConfirmOverlay(viewerWidget);
+    connect(saveOverlay, SIGNAL(saveClicked()), this, SIGNAL(saveRequested()));
+    connect(saveOverlay, SIGNAL(saveAsClicked()), this, SIGNAL(saveAsClicked()));
+    connect(saveOverlay, SIGNAL(discardClicked()), this, SIGNAL(discardEditsRequested()));
     saveOverlay->show();
     layout.addWidget(sidePanel);
     connect(cropOverlay, SIGNAL(selectionChanged(QRect)),
@@ -204,14 +207,6 @@ void MainWindow::showDefault() {
     }
 }
 
-void MainWindow::onSaveClicked() {
-    qDebug() << "MW: onSaveClicked()";
-}
-
-void MainWindow::onSaveAsClicked() {
-    qDebug() << "MW: onSaveAsClicked()";
-}
-
 void MainWindow::showSaveDialog(QString filePath) {
     const QString imagesFilter = settings->supportedFormatsString();
     filePath = QFileDialog::getSaveFileName(this, tr("Save File"),
@@ -288,6 +283,14 @@ void MainWindow::setupSidePanelData() {
         cropOverlay->setImageScale(viewerWidget->currentScale());
         cropOverlay->setImageRealSize(viewerWidget->sourceSize());
     }
+}
+
+void MainWindow::showSaveOverlay() {
+    saveOverlay->show();
+}
+
+void MainWindow::hideSaveOverlay() {
+    saveOverlay->hide();
 }
 
 void MainWindow::triggerCropPanel() {

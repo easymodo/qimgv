@@ -40,6 +40,7 @@ void ActionManager::createActionList() {
                                 << "zoomOutCursor"
                                 << "open"
                                 << "save"
+                                << "saveAs"
                                 << "setWallpaper"
                                 << "crop"
                                 << "removeFile"
@@ -283,6 +284,7 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("Down", "scrollDown");
     actionManager->addShortcut("Ctrl+O", "open");
     actionManager->addShortcut("Ctrl+S", "save");
+    actionManager->addShortcut("Ctrl+Shift+S", "saveAs");
     //actionManager->addShortcut("Ctrl+W", "setWallpaper");
     actionManager->addShortcut("X", "crop");
     actionManager->addShortcut("Ctrl+P", "openSettings");

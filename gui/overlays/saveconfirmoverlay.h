@@ -2,6 +2,7 @@
 #define SAVECONFIRMOVERLAY_H
 
 #include "gui/customwidgets/floatingwidget.h"
+#include <QPushButton>
 
 namespace Ui {
 class SaveConfirmOverlay;
