@@ -100,7 +100,7 @@ CopyDialog {
     border-radius: 3px;
 }
 
-[accessibleName="PathSelectorLabel"] {
+CopyDialog ClickableLabel {
     background-color: #2A2A2A;
     color: #646464;
     border: 2px solid #2A2A2A;
@@ -108,21 +108,21 @@ CopyDialog {
     padding: 4px 4px 4px 4px;
 }
 
-[accessibleName="PathSelectorLabel"]:hover {
+CopyDialog ClickableLabel:hover {
     background-color: #323232;
     color: #646464;
     border: 2px solid #323232;
 }
 
-[accessibleName="PathSelectorButton"] {
+CopyDialog QPushButton {
     background-color: transparent;
     color: #404040;
     border: 2px solid #343434;
     border-radius: 4px;
-    padding: 5px 4px 4px 4px;
+    padding: 5px 10px 4px 10px;
 }
 
-[accessibleName="PathSelectorButton"]:hover {
+CopyDialog QPushButton:hover {
     border-color: #424242;
     color: #424242;
 }

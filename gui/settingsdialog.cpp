@@ -226,7 +226,14 @@ void SettingsDialog::onMaxZoomSliderChanged(int value) {
 
 void SettingsDialog::onMaxZoomResolutionSliderChanged(int value) {
     ui->maxZoomResLabel->setText(QString::number(value) + " Mpx");
-    ui->maxZoomResInfoLabel->setText("<small><i>Estimated memory usage: ~" + QString::number(value * 4) + "MB @ 32bpp</i></small>");
+    ui->maxZoomResInfoLabel->setText("<small><i>Max. memory usage: ~" + QString::number(value * 4) + "MB @ 32bpp</i></small>");
+}
+
+int SettingsDialog::exec() {
+    this->show();
+    resize(this->sizeHint());
+    setMinimumSize(sizeHint());
+    return QDialog::exec();
 }
 
 SettingsDialog::~SettingsDialog() {

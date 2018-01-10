@@ -1,38 +1,26 @@
 #include "pathselectorwidget.h"
+#include "ui_pathselectorwidget.h"
 
-PathSelectorWidget::PathSelectorWidget(QWidget *parent) : QWidget(parent) {
-    setMinimumSize(200, 34);
-    setFixedHeight(34);
+PathSelectorWidget::PathSelectorWidget(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::PathSelectorWidget)
+{
+    ui->setupUi(this);
+    setMinimumSize(200, 10);
     setFocusPolicy(Qt::NoFocus);
-    mLayout.setContentsMargins(0,0,0,0);
-    mLayout.setSpacing(5);
-    setLayout(&mLayout);
-    button.setText("?");
-    pathLabel.setAccessibleName("PathSelectorLabel");
-    pathLabel.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    button.setAccessibleName("PathSelectorButton");
-    button.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    button.setFixedSize(34,34);
-    font.setPixelSize(15);
-    pathLabel.setFont(font);
-    font.setBold(true);
-    button.setFont(font);
-
-    mLayout.addWidget(&pathLabel);
-    mLayout.addWidget(&button);
-    connect(&pathLabel, SIGNAL(clicked()), this, SLOT(showDirectoryChooser()));
-    connect(&button, SIGNAL(clicked()), this, SLOT(pathSelected()));
+    connect(ui->pathLabel, SIGNAL(clicked()), this, SLOT(showDirectoryChooser()));
+    connect(ui->button, SIGNAL(clicked()), this, SLOT(pathSelected()));
 }
 
 void PathSelectorWidget::setButtonText(QString text) {
-    button.setText(text);
+    ui->button->setText(text);
 }
 
 void PathSelectorWidget::setPath(QString _path) {
     mPath = _path;
     QString stripped = mPath;
     stripped = stripped.split("/", QString::SkipEmptyParts).last() + "/";
-    pathLabel.setText(stripped);
+    ui->pathLabel->setText(stripped);
 }
 
 QString PathSelectorWidget::path() {

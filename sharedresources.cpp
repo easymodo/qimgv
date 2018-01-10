@@ -22,7 +22,6 @@ const QPixmap *SharedResources::loadingErrorIcon72() {
 
 SharedResources *SharedResources::getInstance() {
     if(!shrRes) {
-        qDebug() << "Loading shared resources.";
         shrRes = new SharedResources();
     }
     return shrRes;

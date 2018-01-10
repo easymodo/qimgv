@@ -26,6 +26,7 @@ public:
     FloatingWidget(ContainerWidget *parent);
     void setMarginX(int);
     void setMarginY(int);
+    void setPosition(FloatingWidgetPosition pos);
 
 private:
     int marginX, marginY;

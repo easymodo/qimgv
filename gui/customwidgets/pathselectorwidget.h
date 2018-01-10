@@ -9,6 +9,10 @@
 #include <QDebug>
 #include "gui/customwidgets/clickablelabel.h"
 
+namespace Ui {
+    class PathSelectorWidget;
+}
+
 class PathSelectorWidget : public QWidget
 {
     Q_OBJECT
@@ -27,11 +31,8 @@ private slots:
     void pathSelected();
     void showDirectoryChooser();
 private:
-    ClickableLabel pathLabel;
-    QPushButton button;
-    QHBoxLayout mLayout;
+    Ui::PathSelectorWidget *ui;
     QString mPath;
-    QFont font;
 };
 
 #endif // PATHSELECTORWIDGET_H

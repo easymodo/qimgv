@@ -23,6 +23,8 @@ public:
     explicit SettingsDialog(QWidget *parent = 0);
     ~SettingsDialog();
 
+public slots:
+    int exec();
 private:
     QPalette bgLabelPalette, accentLabelPalette;
     void readSettings();

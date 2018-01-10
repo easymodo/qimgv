@@ -6,7 +6,7 @@
 #include <QLineEdit>
 #include <QPainter>
 #include <QKeyEvent>
-#include "gui/customwidgets/overlaywidget.h"
+#include "gui/customwidgets/floatingwidget.h"
 #include "gui/customwidgets/pathselectorwidget.h"
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"
@@ -16,7 +16,11 @@ enum CopyDialogMode {
     DIALOG_MOVE
 };
 
-class CopyDialog : public OverlayWidget {
+namespace Ui {
+    class CopyDialog;
+}
+
+class CopyDialog : public FloatingWidget {
     Q_OBJECT
 public:
     CopyDialog(ContainerWidget *parent);
@@ -33,7 +37,6 @@ signals:
     void moveRequested(QString);
 
 protected:
-    void recalculateGeometry();
     void keyPressEvent(QKeyEvent *event);
 
 private slots:
@@ -45,13 +48,13 @@ private:
     void createDefaultPaths();
     void createPathWidgets();
     void createShortcuts();
-    QGridLayout mLayout;
+    Ui::CopyDialog *ui;
     QList<PathSelectorWidget*> pathWidgets;
     const int maxPathCount = 9;
     QStringList paths;
     QMap<QString, int> shortcuts;
-    QLabel headerLabel;
     CopyDialogMode mode;
+    void removePathWidgets();
 };
 
 #endif // COPYDIALOG_H

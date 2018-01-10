@@ -170,7 +170,9 @@ FORMS += \
     gui/panels/croppanel/croppanel.ui \
     gui/panels/sidepanel/sidepanel.ui \
     gui/overlays/saveconfirmoverlay.ui \
-    gui/overlays/floatingmessage.ui
+    gui/overlays/floatingmessage.ui \
+    gui/customwidgets/pathselectorwidget.ui \
+    gui/copydialog.ui
 
 RESOURCES += \
     resources.qrc

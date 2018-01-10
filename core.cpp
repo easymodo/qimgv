@@ -632,13 +632,9 @@ void Core::displayImage(Image *img) {
     state.isWaitingForLoader = false;
     state.hasActiveImage = true;
     if(img) {  // && img->name() != state.displayingFileName) {
-        mw->hideSaveOverlay();
         ImageType type = img->info()->imageType();
         if(type == STATIC) {
             viewerWidget->showImage(img->getPixmap());
-            if(img->isEdited()) {
-                mw->showSaveOverlay();
-            }
         } else if(type == ANIMATED) {
             auto animated = dynamic_cast<ImageAnimated *>(img);
             viewerWidget->showAnimation(animated->getMovie());
@@ -650,6 +646,7 @@ void Core::displayImage(Image *img) {
             viewerWidget->showVideo(video->getClip());
         }
         state.displayingFileName = img->name();
+        img->isEdited()?mw->showSaveOverlay():mw->hideSaveOverlay();
         emit imageIndexChanged(state.currentIndex);
         updateInfoString();
     } else {

@@ -39,7 +39,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QLabel" name="label_5">
+    <widget class="QLabel" name="headerLabel">
      <property name="text">
       <string/>
      </property>
@@ -163,7 +163,7 @@
       <string/>
      </property>
      <property name="flat">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <property name="spacing">

@@ -20,9 +20,9 @@ void DirectoryManager::readSettings() {
 
 void DirectoryManager::setDirectory(QString path) {
     DirectoryWatcher* watcher = DirectoryWatcher::newInstance();
-    watcher->setFileFilters(extensionFilters);
-    watcher->setWatchPath(path);
-    watcher->observe();
+    //watcher->setFileFilters(extensionFilters);
+    //watcher->setWatchPath(path);
+    //watcher->observe();
     connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
         qDebug() << "observing started";
     });

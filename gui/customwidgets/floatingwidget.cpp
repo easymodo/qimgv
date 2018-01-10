@@ -17,6 +17,11 @@ void FloatingWidget::setMarginY(int margin) {
     recalculateGeometry();
 }
 
+void FloatingWidget::setPosition(FloatingWidgetPosition pos) {
+    position = pos;
+    recalculateGeometry();
+}
+
 void FloatingWidget::recalculateGeometry() {
     QRect newRect = QRect(QPoint(0,0), sizeHint());
     QPoint pos(0, 0);

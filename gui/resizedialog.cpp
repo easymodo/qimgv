@@ -36,6 +36,10 @@ ResizeDialog::ResizeDialog(QSize originalSize,  QWidget *parent) :
     connect(ui->okButton, SIGNAL(pressed()), this, SLOT(sizeSelect()));
 }
 
+ResizeDialog::~ResizeDialog() {
+    delete ui;
+}
+
 void ResizeDialog::sizeSelect() {
     if(targetSize != originalSize)
         emit sizeSelected(targetSize);

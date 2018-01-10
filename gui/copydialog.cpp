@@ -1,22 +1,21 @@
 #include "copydialog.h"
+#include "ui_copydialog.h"
 
-CopyDialog::CopyDialog(ContainerWidget *parent) : OverlayWidget(parent) {
+CopyDialog::CopyDialog(ContainerWidget *parent) :
+    FloatingWidget(parent),
+    ui(new Ui::CopyDialog)
+{
+    ui->setupUi(this);
     hide();
-    this->setFixedSize(290,430);
-    this->setContentsMargins(18,18,18,18);
-
-    mLayout.setSpacing(5);
-    mLayout.setContentsMargins(0,0,0,0);
-    setLayout(&mLayout);
-
-    headerLabel.setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-    headerLabel.setMargin(0);
-    headerLabel.setContentsMargins(0,0,0,6);
-    headerLabel.setPixmap(QPixmap(":/res/images/copydialogheader.png"));
+    setPosition(FloatingWidgetPosition::BOTTOMLEFT);
+    ui->headerLabel->setPixmap(QPixmap(":/res/images/copydialogheader.png"));
     mode = DIALOG_COPY;
-
     createShortcuts();
     readSettings();
+}
+
+CopyDialog::~CopyDialog() {
+    delete ui;
 }
 
 void CopyDialog::show() {
@@ -29,23 +28,30 @@ void CopyDialog::hide() {
     clearFocus();
 }
 
-CopyDialog::~CopyDialog() {
-}
 
 void CopyDialog::setDialogMode(CopyDialogMode _mode) {
     mode = _mode;
     if(mode == DIALOG_COPY)
-        headerLabel.setPixmap(QPixmap(":/res/images/copydialogheader.png"));
+        ui->headerLabel->setPixmap(QPixmap(":/res/images/copydialogheader.png"));
     else
-        headerLabel.setPixmap(QPixmap(":/res/images/movedialogheader.png"));
+        ui->headerLabel->setPixmap(QPixmap(":/res/images/movedialogheader.png"));
 }
 
 CopyDialogMode CopyDialog::dialogMode() {
     return mode;
 }
 
+void CopyDialog::removePathWidgets() {
+    for(int i = 0; i < pathWidgets.count(); i++) {
+        QWidget *tmp = pathWidgets.at(i);
+        ui->pathSelectorsLayout->removeWidget(tmp);
+        delete tmp;
+    }
+    pathWidgets.clear();
+}
+
 void CopyDialog::createPathWidgets() {
-    mLayout.addWidget(&headerLabel);
+    removePathWidgets();
     int count = paths.length()>maxPathCount?maxPathCount:paths.length();
     for(int i = 0; i < count; i++) {
         PathSelectorWidget *pathWidget = new PathSelectorWidget(this);
@@ -54,7 +60,7 @@ void CopyDialog::createPathWidgets() {
         connect(pathWidget, SIGNAL(selected(QString)),
                 this, SLOT(requestFileOperation(QString)));
         pathWidgets.append(pathWidget);
-        mLayout.addWidget(pathWidget, i+1, 0);
+        ui->pathSelectorsLayout->addWidget(pathWidget);
     }
 }
 
@@ -97,14 +103,6 @@ void CopyDialog::createDefaultPaths() {
     while(paths.count() < maxPathCount) {
         paths << QDir::homePath();
     }
-}
-
-void CopyDialog::recalculateGeometry() {
-    QPoint pos(0, 0);
-    pos.setX(25);
-    pos.setY(containerSize().height() - height() - 25);
-    // apply position
-    setGeometry(QRect(pos, size()));
 }
 
 void CopyDialog::keyPressEvent(QKeyEvent *event) {
