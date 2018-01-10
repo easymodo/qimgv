@@ -38,7 +38,7 @@ QT5_ADD_RESOURCES(RES resources.qrc)
 
 add_executable(qimgv ${SRC} ${RES})
 
-target_link_libraries(qimgv actionmanager cache directorymanager loader scaler thumbnailer gui utils sourcecontainers mpv)
+target_link_libraries(qimgv actionmanager cache directorymanager loader scaler thumbnailer gui utils sourcecontainers)
      
 qt5_use_modules (qimgv Core Widgets Concurrent)
 
