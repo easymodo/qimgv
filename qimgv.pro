@@ -28,18 +28,15 @@ SOURCES += \
     components/cache/cache.cpp \
     components/cache/thumbnailcache.cpp \
     components/directorymanager/directorymanager.cpp \
-    \
     components/directorymanager/watchers/directorywatcher.cpp \
-    \
     components/loader/loader.cpp \
     components/loader/loaderrunnable.cpp \
     components/scaler/scaler.cpp \
     components/scaler/scalerrunnable.cpp \
     components/thumbnailer/thumbnailer.cpp \
     gui/mainwindow.cpp \
-    gui/opendialog.cpp \
-    gui/settingsdialog.cpp \
-    gui/resizedialog.cpp \
+    gui/dialogs/settingsdialog.cpp \
+    gui/dialogs/resizedialog.cpp \
     gui/customwidgets/clickablelabel.cpp \
     gui/customwidgets/clickablewidget.cpp \
     gui/customwidgets/iconbutton.cpp \
@@ -73,7 +70,7 @@ SOURCES += \
     utils/stuff.cpp \
     utils/wallpapersetter.cpp \
     settings.cpp \
-    gui/copydialog.cpp \
+    gui/overlays/copyoverlay.cpp \
     gui/customwidgets/pathselectorwidget.cpp \
     components/cache/cacheitem.cpp \
     components/thumbnailer/thumbnailerrunnable.cpp \
@@ -99,11 +96,9 @@ HEADERS += \
     components/cache/cache.h \
     components/cache/thumbnailcache.h \
     components/directorymanager/directorymanager.h \
-    \
     components/directorymanager/watchers/directorywatcher_p.h \
     components/directorymanager/watchers/directorywatcher.h \
     components/directorymanager/watchers/watcherevent.h \
-    \
     components/loader/loader.h \
     components/loader/loaderrunnable.h \
     components/scaler/scaler.h \
@@ -111,9 +106,8 @@ HEADERS += \
     components/scaler/scalerrunnable.h \
     components/thumbnailer/thumbnailer.h \
     gui/mainwindow.h \
-    gui/opendialog.h \
-    gui/settingsdialog.h \
-    gui/resizedialog.h \
+    gui/dialogs/settingsdialog.h \
+    gui/dialogs/resizedialog.h \
     gui/customwidgets/clickablelabel.h \
     gui/customwidgets/clickablewidget.h \
     gui/customwidgets/iconbutton.h \
@@ -146,7 +140,7 @@ HEADERS += \
     utils/stuff.h \
     utils/wallpapersetter.h \
     settings.h \
-    gui/copydialog.h \
+    gui/overlays/copyoverlay.h \
     gui/customwidgets/pathselectorwidget.h \
     components/cache/cacheitem.h \
     components/thumbnailer/thumbnailerrunnable.h \
@@ -165,14 +159,14 @@ HEADERS += \
     gui/customwidgets/containerwidget.h
 
 FORMS += \
-    gui/settingsdialog.ui \
-    gui/resizedialog.ui \
+    gui/dialogs/settingsdialog.ui \
+    gui/dialogs/resizedialog.ui \
     gui/panels/croppanel/croppanel.ui \
     gui/panels/sidepanel/sidepanel.ui \
+    gui/overlays/copyoverlay.ui \
     gui/overlays/saveconfirmoverlay.ui \
     gui/overlays/floatingmessage.ui \
-    gui/customwidgets/pathselectorwidget.ui \
-    gui/copydialog.ui
+    gui/customwidgets/pathselectorwidget.ui
 
 RESOURCES += \
     resources.qrc

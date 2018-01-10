@@ -203,7 +203,7 @@ void CropOverlay::detectClickTarget(QPoint pos) {
     else if(handles[5]->contains(pos)) dragMode = DRAG_RIGHT;
     else if(handles[6]->contains(pos)) dragMode = DRAG_TOP;
     else if(handles[7]->contains(pos)) dragMode = DRAG_BOTTOM;
-    else if(selectionRect.contains(pos)) dragMode = MOVE;
+    else if(selectionRect.contains(pos)) dragMode = DRAG_MOVE;
     else dragMode = NO_DRAG;
 }
 
@@ -271,7 +271,7 @@ void CropOverlay::mousePressEvent(QMouseEvent *event) {
 void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() & Qt::LeftButton && !clear) {
         QPointF delta = QPointF(QCursor::pos()) - moveStartPos;
-        if(dragMode == MOVE) {    // moving selection
+        if(dragMode == DRAG_MOVE) {    // moving selection
             selectionRect.translate(delta);
             if(!imageRect.contains(selectionRect)) {
                 selectionRect = placeInside(selectionRect, imageRect);

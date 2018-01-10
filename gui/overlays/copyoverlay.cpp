@@ -1,47 +1,47 @@
-#include "copydialog.h"
-#include "ui_copydialog.h"
+#include "copyoverlay.h"
+#include "ui_copyoverlay.h"
 
-CopyDialog::CopyDialog(ContainerWidget *parent) :
+CopyOverlay::CopyOverlay(ContainerWidget *parent) :
     FloatingWidget(parent),
-    ui(new Ui::CopyDialog)
+    ui(new Ui::CopyOverlay)
 {
     ui->setupUi(this);
     hide();
     setPosition(FloatingWidgetPosition::BOTTOMLEFT);
-    ui->headerLabel->setPixmap(QPixmap(":/res/images/copydialogheader.png"));
-    mode = DIALOG_COPY;
+    ui->headerLabel->setPixmap(QPixmap(":/res/images/copyheader.png"));
+    mode = OVERLAY_COPY;
     createShortcuts();
     readSettings();
 }
 
-CopyDialog::~CopyDialog() {
+CopyOverlay::~CopyOverlay() {
     delete ui;
 }
 
-void CopyDialog::show() {
+void CopyOverlay::show() {
     QWidget::show();
     setFocus();
 }
 
-void CopyDialog::hide() {
+void CopyOverlay::hide() {
     QWidget::hide();
     clearFocus();
 }
 
 
-void CopyDialog::setDialogMode(CopyDialogMode _mode) {
+void CopyOverlay::setDialogMode(CopyOverlayMode _mode) {
     mode = _mode;
-    if(mode == DIALOG_COPY)
-        ui->headerLabel->setPixmap(QPixmap(":/res/images/copydialogheader.png"));
+    if(mode == OVERLAY_COPY)
+        ui->headerLabel->setPixmap(QPixmap(":/res/images/copyheader.png"));
     else
-        ui->headerLabel->setPixmap(QPixmap(":/res/images/movedialogheader.png"));
+        ui->headerLabel->setPixmap(QPixmap(":/res/images/moveheader.png"));
 }
 
-CopyDialogMode CopyDialog::dialogMode() {
+CopyOverlayMode CopyOverlay::operationMode() {
     return mode;
 }
 
-void CopyDialog::removePathWidgets() {
+void CopyOverlay::removePathWidgets() {
     for(int i = 0; i < pathWidgets.count(); i++) {
         QWidget *tmp = pathWidgets.at(i);
         ui->pathSelectorsLayout->removeWidget(tmp);
@@ -50,7 +50,7 @@ void CopyDialog::removePathWidgets() {
     pathWidgets.clear();
 }
 
-void CopyDialog::createPathWidgets() {
+void CopyOverlay::createPathWidgets() {
     removePathWidgets();
     int count = paths.length()>maxPathCount?maxPathCount:paths.length();
     for(int i = 0; i < count; i++) {
@@ -64,26 +64,26 @@ void CopyDialog::createPathWidgets() {
     }
 }
 
-void CopyDialog::createShortcuts() {
+void CopyOverlay::createShortcuts() {
     for(int i=0; i<maxPathCount; i++)
         shortcuts.insert(QString::number(i + 1), i);
 }
 
-void CopyDialog::requestFileOperation(QString path) {
-    if(mode == DIALOG_COPY)
+void CopyOverlay::requestFileOperation(QString path) {
+    if(mode == OVERLAY_COPY)
         emit copyRequested(path);
     else
         emit moveRequested(path);
 }
 
-void CopyDialog::requestFileOperation(int fieldNumber) {
-    if(mode == DIALOG_COPY)
+void CopyOverlay::requestFileOperation(int fieldNumber) {
+    if(mode == OVERLAY_COPY)
         emit copyRequested(pathWidgets.at(fieldNumber)->path());
     else
         emit moveRequested(pathWidgets.at(fieldNumber)->path());
 }
 
-void CopyDialog::readSettings() {
+void CopyOverlay::readSettings() {
     paths = settings->savedPaths();
     if(paths.count() < maxPathCount)
         createDefaultPaths();
@@ -91,7 +91,7 @@ void CopyDialog::readSettings() {
     update();
 }
 
-void CopyDialog::saveSettings() {
+void CopyOverlay::saveSettings() {
     paths.clear();
     for(int i = 0; i< pathWidgets.count(); i++) {
         paths << pathWidgets.at(i)->path();
@@ -99,13 +99,13 @@ void CopyDialog::saveSettings() {
     settings->setSavedPaths(paths);
 }
 
-void CopyDialog::createDefaultPaths() {
+void CopyOverlay::createDefaultPaths() {
     while(paths.count() < maxPathCount) {
         paths << QDir::homePath();
     }
 }
 
-void CopyDialog::keyPressEvent(QKeyEvent *event) {
+void CopyOverlay::keyPressEvent(QKeyEvent *event) {
     QString key = actionManager->keyForNativeScancode(event->nativeScanCode());
     if(shortcuts.contains(key)) {
         event->accept();

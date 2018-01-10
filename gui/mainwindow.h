@@ -17,11 +17,11 @@
 #include "gui/panels/sidepanel/sidepanel.h"
 #include "gui/panels/croppanel/croppanel.h"
 #include "gui/overlays/cropoverlay.h"
-#include "gui/copydialog.h"
-#include "gui/resizedialog.h"
+#include "gui/overlays/copyoverlay.h"
+#include "gui/dialogs/resizedialog.h"
 #include "components/actionmanager/actionmanager.h"
 #include "settings.h"
-#include "settingsdialog.h"
+#include "gui/dialogs/settingsdialog.h"
 
 enum ActiveSidePanel {
     SIDEPANEL_CROP,
@@ -53,7 +53,7 @@ private:
     CropOverlay *cropOverlay;
     SaveConfirmOverlay *saveOverlay;
 
-    CopyDialog *copyDialog;
+    CopyOverlay *copyOverlay;
 
     ControlsOverlay *controlsOverlay;
     InfoOverlay *infoOverlay;
@@ -111,9 +111,9 @@ public slots:
     void showMessageFitOriginal();
     void showFullScreen();
     void showWindowed();
-    void triggerCopyDialog();
+    void triggerCopyOverlay();
     void showMessage(QString text);
-    void triggerMoveDialog();
+    void triggerMoveOverlay();
     void closeFullScreenOrExit();
     void close();
     void triggerCropPanel();

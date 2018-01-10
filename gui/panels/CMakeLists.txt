@@ -1,0 +1,5 @@
+file(GLOB SOURCES *.cpp croppanel/*.cpp mainpanel/*.cpp sidepanel/*.cpp toolbox/*.cpp)
+list (REMOVE_ITEM SOURCES moc_*.cpp)
+list (REMOVE_ITEM SOURCES *_automoc.cpp)
+add_library(panels STATIC ${SOURCES})
+target_link_libraries(panels Qt5::Widgets customwidgets)

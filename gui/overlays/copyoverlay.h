@@ -1,5 +1,5 @@
-#ifndef COPYDIALOG_H
-#define COPYDIALOG_H
+#ifndef COPYOVERLAY_H
+#define COPYOVERLAY_H
 
 #include <QGridLayout>
 #include <QPushButton>
@@ -11,23 +11,23 @@
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"
 
-enum CopyDialogMode {
-    DIALOG_COPY,
-    DIALOG_MOVE
+enum CopyOverlayMode {
+    OVERLAY_COPY,
+    OVERLAY_MOVE
 };
 
 namespace Ui {
-    class CopyDialog;
+    class CopyOverlay;
 }
 
-class CopyDialog : public FloatingWidget {
+class CopyOverlay : public FloatingWidget {
     Q_OBJECT
 public:
-    CopyDialog(ContainerWidget *parent);
-    ~CopyDialog();
+    CopyOverlay(ContainerWidget *parent);
+    ~CopyOverlay();
     void saveSettings();    
-    void setDialogMode(CopyDialogMode _mode);
-    CopyDialogMode dialogMode();
+    void setDialogMode(CopyOverlayMode _mode);
+    CopyOverlayMode operationMode();
 
 public slots:
     void show();
@@ -48,13 +48,13 @@ private:
     void createDefaultPaths();
     void createPathWidgets();
     void createShortcuts();
-    Ui::CopyDialog *ui;
+    Ui::CopyOverlay *ui;
     QList<PathSelectorWidget*> pathWidgets;
     const int maxPathCount = 9;
     QStringList paths;
     QMap<QString, int> shortcuts;
-    CopyDialogMode mode;
+    CopyOverlayMode mode;
     void removePathWidgets();
 };
 
-#endif // COPYDIALOG_H
+#endif // COPYOVERLAY_H

@@ -93,14 +93,14 @@ SidePanel QPushButton:focus {
     color: #4e4e4e;
 }
 
-CopyDialog {
+CopyOverlay {
     background-color: #202020;
     color: #646464;
     border: 2px solid #2A2A2A;
     border-radius: 3px;
 }
 
-CopyDialog ClickableLabel {
+CopyOverlay ClickableLabel {
     background-color: #2A2A2A;
     color: #646464;
     border: 2px solid #2A2A2A;
@@ -108,13 +108,13 @@ CopyDialog ClickableLabel {
     padding: 4px 35px 4px 4px;
 }
 
-CopyDialog ClickableLabel:hover {
+CopyOverlay ClickableLabel:hover {
     background-color: #323232;
     color: #646464;
     border: 2px solid #323232;
 }
 
-CopyDialog QPushButton {
+CopyOverlay QPushButton {
     background-color: transparent;
     color: #404040;
     border: 2px solid #343434;
@@ -122,7 +122,7 @@ CopyDialog QPushButton {
     padding: 5px 10px 4px 10px;
 }
 
-CopyDialog QPushButton:hover {
+CopyOverlay QPushButton:hover {
     border-color: #424242;
     color: #424242;
 }

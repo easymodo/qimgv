@@ -27,11 +27,6 @@ add_subdirectory(components/loader)
 add_subdirectory(components/scaler)
 add_subdirectory(components/thumbnailer)
 add_subdirectory(gui)
-add_subdirectory(gui/customwidgets)
-add_subdirectory(gui/overlays)
-add_subdirectory(gui/panels/mainpanel)
-add_subdirectory(gui/panels/sidepanel)
-add_subdirectory(gui/viewers)
 add_subdirectory(sourcecontainers)
 add_subdirectory(utils)
 
@@ -43,7 +38,7 @@ QT5_ADD_RESOURCES(RES resources.qrc)
 
 add_executable(qimgv ${SRC} ${RES})
 
-target_link_libraries(qimgv actionmanager cache directorymanager loader scaler thumbnailer gui customwidgets overlays mainpanel sidepanel viewers utils sourcecontainers mpv)
+target_link_libraries(qimgv actionmanager cache directorymanager loader scaler thumbnailer gui utils sourcecontainers mpv)
      
 qt5_use_modules (qimgv Core Widgets Concurrent)
 

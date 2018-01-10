@@ -7,7 +7,7 @@
 #include <QPaintEvent>
 #include <QColor>
 
-enum MouseDragMode { NO_DRAG, MOVE, DRAG_LEFT, DRAG_RIGHT,
+enum MouseDragMode { NO_DRAG, DRAG_MOVE, DRAG_LEFT, DRAG_RIGHT,
                         DRAG_TOP, DRAG_BOTTOM, DRAG_TOPLEFT,
                         DRAG_TOPRIGHT, DRAG_BOTTOMLEFT, DRAG_BOTTOMRIGHT };
 

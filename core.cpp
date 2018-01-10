@@ -120,8 +120,8 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(exit()), this, SLOT(close()));
     connect(actionManager, SIGNAL(closeFullScreenOrExit()), mw, SLOT(closeFullScreenOrExit()));
     connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFile()));
-    connect(actionManager, SIGNAL(copyFile()), mw, SLOT(triggerCopyDialog()));
-    connect(actionManager, SIGNAL(moveFile()), mw, SLOT(triggerMoveDialog()));
+    connect(actionManager, SIGNAL(copyFile()), mw, SLOT(triggerCopyOverlay()));
+    connect(actionManager, SIGNAL(moveFile()), mw, SLOT(triggerMoveOverlay()));
     connect(actionManager, SIGNAL(jumpToFirst()), this, SLOT(jumpToFirst()));
     connect(actionManager, SIGNAL(jumpToLast()), this, SLOT(jumpToLast()));
 }

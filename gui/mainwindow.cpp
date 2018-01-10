@@ -53,7 +53,7 @@ void MainWindow::setupOverlays() {
     // this order is used while drawing
     infoOverlay = new InfoOverlay(this);
     controlsOverlay = new ControlsOverlay(this);
-    copyDialog = new CopyDialog(this);
+    copyOverlay = new CopyOverlay(this);
     sidePanel = new SidePanel(this);
     cropPanel = new CropPanel(this);
     cropOverlay = new CropOverlay(viewerWidget);
@@ -70,9 +70,9 @@ void MainWindow::setupOverlays() {
     connect(cropPanel, SIGNAL(cancel()), this, SLOT(hideSidePanel()));
     connect(cropPanel, SIGNAL(crop(QRect)), this, SIGNAL(cropRequested(QRect)));
     connect(cropPanel, SIGNAL(crop(QRect)), this, SLOT(hideSidePanel()));
-    connect(copyDialog, SIGNAL(copyRequested(QString)),
+    connect(copyOverlay, SIGNAL(copyRequested(QString)),
             this, SIGNAL(copyRequested(QString)));
-    connect(copyDialog, SIGNAL(moveRequested(QString)),
+    connect(copyOverlay, SIGNAL(moveRequested(QString)),
             this, SIGNAL(moveRequested(QString)));
     floatingMessage = new FloatingMessage(this);
     mainPanel = new MainPanel(this);
@@ -159,7 +159,7 @@ void MainWindow::close() {
         saveWindowGeometry();
     }
     saveCurrentDisplay();
-    copyDialog->saveSettings();
+    copyOverlay->saveSettings();
     QWidget::close();
 }
 
@@ -324,21 +324,21 @@ void MainWindow::hideSidePanel() {
     activeSidePanel = SIDEPANEL_NONE;
 }
 
-void MainWindow::triggerCopyDialog() {
-    if(copyDialog->dialogMode() == DIALOG_COPY) {
-        copyDialog->isHidden()?copyDialog->show():copyDialog->hide();
+void MainWindow::triggerCopyOverlay() {
+    if(copyOverlay->operationMode() == OVERLAY_COPY) {
+        copyOverlay->isHidden()?copyOverlay->show():copyOverlay->hide();
     } else {
-        copyDialog->setDialogMode(DIALOG_COPY);
-        copyDialog->show();
+        copyOverlay->setDialogMode(OVERLAY_COPY);
+        copyOverlay->show();
     }
 }
 
-void MainWindow::triggerMoveDialog() {
-    if(copyDialog->dialogMode() == DIALOG_MOVE) {
-        copyDialog->isHidden()?copyDialog->show():copyDialog->hide();
+void MainWindow::triggerMoveOverlay() {
+    if(copyOverlay->operationMode() == OVERLAY_MOVE) {
+        copyOverlay->isHidden()?copyOverlay->show():copyOverlay->hide();
     } else {
-        copyDialog->setDialogMode(DIALOG_MOVE);
-        copyDialog->show();
+        copyOverlay->setDialogMode(OVERLAY_MOVE);
+        copyOverlay->show();
     }
 }
 
