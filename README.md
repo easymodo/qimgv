@@ -2,6 +2,8 @@ qimgv
 =====
 A cross-platform image viewer with webm support. Written in qt5.
 
+## [qimgv v0.6 video overview](https://www.youtube.com/watch?v=AODRGCRPCpw)
+
 ![alt tag](https://i.imgur.com/prIficV.png)
 
 ## Key features:
