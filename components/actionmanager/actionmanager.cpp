@@ -291,7 +291,7 @@ void ActionManager::resetDefaults() {
     actionManager->addShortcut("Alt+X", "exit");
     actionManager->addShortcut("Ctrl+Q", "exit");
     actionManager->addShortcut("escape", "closeFullScreenOrExit");
-    actionManager->addShortcut("delete", "removeFile");
+    actionManager->addShortcut("Shift+delete", "removeFile");
     actionManager->addShortcut("C", "copyFile");
     actionManager->addShortcut("M", "moveFile");
     actionManager->addShortcut("home", "jumpToFirst");
