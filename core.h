@@ -59,9 +59,7 @@ private:
     ViewerWidget *viewerWidget;
     ThumbnailStrip *thumbnailPanelWidget;
 
-
     State state;
-    QMutex mutex; // do i need this??
     QTimer *loadingTimer; // this is for loading message delay. TODO: replace with something better
 
     bool infiniteScrolling;

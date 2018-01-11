@@ -30,12 +30,13 @@ void ImageStatic::load() {
     loaded = true;
 }
 
+// TODO: add a way to configure compression level?
 bool ImageStatic::save(QString destPath) {
-    return isEdited()?imageEdited->save(destPath):image->save(destPath);
+    return isEdited()?imageEdited->save(destPath, nullptr, 100):image->save(destPath, nullptr, 100);
 }
 
 bool ImageStatic::save() {
-    return isEdited()?imageEdited->save(path):image->save(path);
+    return isEdited()?imageEdited->save(path, nullptr, 100):image->save(path, nullptr, 100);
 }
 
 QPixmap *ImageStatic::getPixmap() {
