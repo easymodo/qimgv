@@ -44,6 +44,7 @@ A cross-platform image viewer with webm support. Written in qt5.
 | Rotate Right  | Ctrl+R |
 | Quick copy  | C |
 | Quick move  | M |
+| Remove file (permanent)  | Shift+Delete |
 | Save  | Ctrl+S |
 | Save As  | Ctrl+Shift+S |
 | Open | Ctrl+O |
