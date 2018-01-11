@@ -12,7 +12,10 @@ InfoOverlay::InfoOverlay(ContainerWidget *parent)
     textShadowColor.setRgb(0, 0, 0, 200);
     bgColor.setRgb(0, 0, 0, 90);
     font.setBold(true);
-    font.setPointSizeF(font.pointSizeF() * 0.9f);
+    qreal fntSz = font.pointSizeF();
+    if(fntSz > 0) {
+        font.setPointSizeF(font.pointSizeF() * 0.9f);
+    }
     fm = new QFontMetrics(font);
     setText("No file opened.");
     hide();

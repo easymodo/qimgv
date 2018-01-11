@@ -61,7 +61,6 @@ void MainWindow::setupOverlays() {
     connect(saveOverlay, SIGNAL(saveClicked()), this, SIGNAL(saveRequested()));
     connect(saveOverlay, SIGNAL(saveAsClicked()), this, SIGNAL(saveAsClicked()));
     connect(saveOverlay, SIGNAL(discardClicked()), this, SIGNAL(discardEditsRequested()));
-    saveOverlay->show();
     layout.addWidget(sidePanel);
     connect(cropOverlay, SIGNAL(selectionChanged(QRect)),
             cropPanel, SLOT(onSelectionOutsideChange(QRect)));
