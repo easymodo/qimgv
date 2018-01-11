@@ -179,6 +179,11 @@ void Core::onFileAdded(int index) {
 }
 
 void Core::moveFile(QString destDirectory) {
+    QFile file(destDirectory+"/"+dirManager->fileNameAt(state.currentIndex));
+    if(file.exists()) {
+        mw->showMessage("Error: file already exists.");
+        return;
+    }
     if(dirManager->copyTo(destDirectory, state.currentIndex)) {
         removeFile();
         mw->showMessage("File moved to: " + destDirectory);
@@ -189,6 +194,11 @@ void Core::moveFile(QString destDirectory) {
 }
 
 void Core::copyFile(QString destDirectory) {
+    QFile file(destDirectory+"/"+dirManager->fileNameAt(state.currentIndex));
+    if(file.exists()) {
+        mw->showMessage("Error: file already exists.");
+        return;
+    }
     if(!dirManager->copyTo(destDirectory, state.currentIndex)) {
         mw->showMessage("Error copying file to: " + destDirectory);
         qDebug() << "Error copying file to: " << destDirectory;
