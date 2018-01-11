@@ -216,7 +216,7 @@ void MainWindow::showSaveDialog(QString filePath) {
 }
 
 void MainWindow::showOpenDialog() {
-    QFileDialog dialog;
+    QFileDialog dialog(this);
     QStringList imageFilter;
     imageFilter.append(settings->supportedFormatsString());
     imageFilter.append("All Files (*)");
@@ -231,14 +231,14 @@ void MainWindow::showOpenDialog() {
 }
 
 void MainWindow::showResizeDialog(QSize initialSize) {
-    ResizeDialog dialog(initialSize);
+    ResizeDialog dialog(initialSize, this);
     connect(&dialog, SIGNAL(sizeSelected(QSize)),
             this, SIGNAL(resizeRequested(QSize)));
     dialog.exec();
 }
 
 void MainWindow::showSettings() {
-    SettingsDialog settingsDialog;
+    SettingsDialog settingsDialog(this);
     settingsDialog.exec();
 }
 
