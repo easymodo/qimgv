@@ -11,6 +11,8 @@
 #include <QDir>
 #include <QTimerEvent>
 #include <QDir>
+#include <QVariant>
+#include <QSharedPointer>
 
 class DirectoryWatcherPrivate : public QObject {
     Q_OBJECT
