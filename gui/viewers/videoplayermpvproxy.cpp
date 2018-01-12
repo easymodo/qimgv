@@ -24,6 +24,7 @@ inline void VideoPlayerMpvProxy::initPlayer() {
 bool VideoPlayerMpvProxy::openMedia(Clip *clip) {
     initPlayer();
     player->openMedia(clip);
+    return NULL;
 }
 
 void VideoPlayerMpvProxy::seek(int pos) {
