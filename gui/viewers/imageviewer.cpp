@@ -16,7 +16,6 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     maxScale(maxScaleLimit),
     imageFitMode(FIT_ORIGINAL)
 {
-    initOverlays();
     logo = new QPixmap();
     logo->load(":/res/images/logo.png");
     this->setMouseTracking(true);
@@ -33,17 +32,6 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
 }
 
 ImageViewer::~ImageViewer() {
-}
-
-void ImageViewer::initOverlays() {
-    mapOverlay = new MapOverlay(this);
-    mapOverlay->setEnabled(false);
-    connect(mapOverlay, &MapOverlay::positionChanged, [ = ](float x, float y) {
-        drawingRect.moveTo(x, y);
-        centerImage();
-        update();
-        updateMap();
-    });
 }
 
 void ImageViewer::startAnimation() {
@@ -124,7 +112,6 @@ void ImageViewer::reset() {
         delete image;
         image = NULL;
     }
-    mapOverlay->setEnabled(false);
 }
 
 // unsetImage, then update and show cursor
@@ -134,15 +121,9 @@ void ImageViewer::closeImage() {
     showCursor();
 }
 
-void ImageViewer::adjustOverlays() {
-    mapOverlay->updatePosition();
-    updateMap();
-}
-
-// apply new image dimensions, fit mode, and readjust overlays
+// apply new image dimensions and fit mode
 void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     isDisplaying = true;
-    //mapOverlay->setEnabled(true);
     mSourceSize  = _sourceSize;
     drawingRect =  _drawingRect;
     updateMinScale();
@@ -151,7 +132,6 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     if(imageFitMode == FIT_FREE)
         imageFitMode = FIT_WINDOW;
     applyFitMode();
-    adjustOverlays();
 }
 
 // takes scaled image
@@ -252,7 +232,6 @@ void ImageViewer::setScale(float scale) {
     float h = scale * mSourceSize.height();
     drawingRect.setWidth(w);
     drawingRect.setHeight(h);
-    //mapOverlay->updateMap(drawingRect); // TODO: fix MapOverlay mess
     emit scaleChanged(mCurrentScale);
 }
 
@@ -263,8 +242,9 @@ void ImageViewer::setScale(float scale) {
 void ImageViewer::requestScaling() {
     if(!isDisplaying)
         return;
-    if(image->size() != drawingRect.size() && !animation) {
-        emit scalingRequested(drawingRect.size().toSize());
+    QSize drawSz = drawingRect.size().toSize();
+    if(image->size() != drawSz && !animation) {
+        emit scalingRequested(drawSz);
     }
 }
 
@@ -302,7 +282,8 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
     if(animation && smoothAnimatedImages)
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(image) {
-        painter.drawPixmap(drawingRect, *image, image->rect());
+        QRect intRect(drawingRect.topLeft().toPoint(), drawingRect.size().toSize());
+        painter.drawPixmap(intRect, *image, image->rect());
         //zoomPoint for testing
         /*QPen pen(Qt::red);
         pen.setWidth(4);
@@ -320,7 +301,6 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
     QWidget::mousePressEvent(event);
     if(!isDisplaying)
         return;
-    mapOverlay->enableVisibility(true);
     showCursor();
     setCursor(QCursor(Qt::ArrowCursor));
     mouseMoveStartPos = event->pos();
@@ -357,11 +337,8 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
     if(event->button() == Qt::RightButton && imageFitMode != FIT_WINDOW) {
         //requestScaling();
         //fitDefault();
-        //updateMap();
         //update();
     }
-    mapOverlay->enableVisibility(false);
-    updateMap();
 }
 
 // Okular-like cursor drag behavior
@@ -417,7 +394,6 @@ void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
             mouseMoveStartPos = mapFromGlobal(newPos);
         else
             mouseMoveStartPos = event->pos();
-        updateMap();
         update();
     }
 }
@@ -506,7 +482,6 @@ void ImageViewer::fitNormal() {
 void ImageViewer::setFitMode(ImageFitMode newMode) {
     imageFitMode = newMode;
     applyFitMode();
-    updateMap();
     requestScaling();
 }
 
@@ -524,10 +499,6 @@ void ImageViewer::applyFitMode() {
         default: /* FREE etc */
             break;
     }
-}
-
-void ImageViewer::updateMap() {
-    mapOverlay->updateMap(drawingRect);
 }
 
 void ImageViewer::setFitOriginal() {
@@ -550,8 +521,6 @@ void ImageViewer::resizeEvent(QResizeEvent *event) {
     } else {
         applyFitMode();
     }
-    mapOverlay->updatePosition();
-    updateMap();
     update();
     requestScaling();
 }
@@ -597,7 +566,6 @@ void ImageViewer::scroll(int dx, int dy) {
     if(drawingRect.size().height() > this->height()) {
         scrollY(dy);
     }
-    updateMap();
     update();
 }
 
@@ -700,7 +668,6 @@ void ImageViewer::doZoomIn() {
         newScale = maxScale;
     imageFitMode = FIT_FREE;
     scaleAroundZoomPoint(newScale);
-    updateMap();
     update();
     requestScaling();
 }
@@ -716,7 +683,6 @@ void ImageViewer::doZoomOut() {
         newScale = minScale;
     imageFitMode = FIT_FREE;
     scaleAroundZoomPoint(newScale);
-    updateMap();
     update();
     requestScaling();
 }

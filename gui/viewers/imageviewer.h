@@ -12,7 +12,6 @@
 #include <QTimer>
 #include <QDebug>
 #include <time.h>
-#include "gui/overlays/mapoverlay.h"
 #include <cmath>
 #include "settings.h"
 
@@ -76,7 +75,6 @@ private:
     QRectF drawingRect;
     QPoint mouseMoveStartPos;
     QSize mSourceSize;
-    MapOverlay *mapOverlay;
 
     bool isDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;
 
@@ -95,14 +93,12 @@ private:
     QSize desktopSize;
 
     ImageFitMode imageFitMode;
-    void initOverlays();
     void setScale(float scale);
     void updateMinScale();
     void scaleAroundZoomPoint(float oldScale);
     void fitNormal();
     void fitWidth();
     void fitWindow();
-    void updateMap();
     void updateMaxScale();
     void centerImage();
     void snapEdgeHorizontal();
@@ -117,7 +113,6 @@ private:
     void mouseDragZoom(QMouseEvent *event);
     void drawTransparencyGrid();
     void startAnimationTimer();
-    void adjustOverlays();
     void readjust(QSize _sourceSize, QRect _drawingRect);
     void reset();
     void applyFitMode();
