@@ -15,7 +15,8 @@ public:
     void seek(int pos);
     void pauseResume();
     void setPaused(bool mode);
-    void setMuted(bool);
+    void setMuted(bool);    
+    void setVideoUnscaled(bool mode);
 
 private slots:
     void readSettings();

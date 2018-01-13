@@ -30,6 +30,7 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
 
     // Make use of the MPV_SUB_API_OPENGL_CB API.
     mpv::qt::set_option_variant(mpv, "vo", "opengl-cb");
+    mpv::qt::set_option_variant(mpv, "video-unscaled", "downscale-big");
 
     // Loop video
     setRepeat(true);
@@ -60,6 +61,10 @@ MpvWidget::~MpvWidget() {
 
 void MpvWidget::command(const QVariant& params) {
     mpv::qt::command(mpv, params);
+}
+
+void MpvWidget::setOption(const QString& name, const QVariant& value) {
+    mpv::qt::set_option_variant(mpv, name, value);
 }
 
 void MpvWidget::setProperty(const QString& name, const QVariant& value) {

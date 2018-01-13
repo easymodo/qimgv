@@ -46,6 +46,14 @@ void VideoPlayerMpv::setMuted(bool mode) {
     m_mpv->setMuted(mode);
 }
 
+void VideoPlayerMpv::setVideoUnscaled(bool mode) {
+    if(mode)
+        m_mpv->setOption("video-unscaled", "downscale-big");
+    else
+        m_mpv->setOption("video-unscaled", "no");
+}
+
 void VideoPlayerMpv::readSettings() {
     setMuted(!settings->playVideoSounds());
+    setVideoUnscaled(!settings->expandImage());
 }

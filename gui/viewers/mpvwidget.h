@@ -17,6 +17,7 @@ public:
     MpvWidget(QWidget *parent = 0, Qt::WindowFlags f = 0);
     ~MpvWidget();
     void command(const QVariant& params);
+    void setOption(const QString &name, const QVariant &value);
     void setProperty(const QString& name, const QVariant& value);
     QVariant getProperty(const QString& name) const;
     QSize sizeHint() const { return QSize(480, 270);}
