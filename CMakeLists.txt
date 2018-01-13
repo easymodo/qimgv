@@ -39,13 +39,14 @@ QT5_ADD_RESOURCES(RES resources.qrc)
 add_executable(qimgv ${SRC} ${RES})
 
 target_link_libraries(qimgv actionmanager cache directorymanager loader scaler thumbnailer gui utils sourcecontainers)
-     
+
 qt5_use_modules (qimgv Core Widgets Concurrent)
 
 # binary
-install(PROGRAMS build/qimgv DESTINATION bin/)
+install(PROGRAMS ${CMAKE_BINARY_DIR}/qimgv
+	DESTINATION bin)
 # .desktop
-install(FILES distrib/qimgv.desktop 
+install(FILES distrib/qimgv.desktop
 	DESTINATION share/applications)
 # icons
 install(FILES distrib/hicolor/16x16/apps/qimgv.png
