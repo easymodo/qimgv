@@ -148,11 +148,19 @@ void ImageViewer::updateFrame(QPixmap *newFrame) {
 }
 
 void ImageViewer::scrollUp() {
-    scroll(0, -300);
+    scroll(0, -SCROLL_DISTANCE);
 }
 
 void ImageViewer::scrollDown() {
-    scroll(0, 300);
+    scroll(0, SCROLL_DISTANCE);
+}
+
+void ImageViewer::scrollLeft() {
+    scroll(-SCROLL_DISTANCE, 0);
+}
+
+void ImageViewer::scrollRight() {
+    scroll(SCROLL_DISTANCE, 0);
 }
 
 void ImageViewer::readSettings() {

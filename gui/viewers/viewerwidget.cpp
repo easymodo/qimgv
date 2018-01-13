@@ -91,6 +91,8 @@ void ViewerWidget::enableZoomInteraction() {
         connect(this, SIGNAL(zoomOutCursor()), imageViewer, SLOT(zoomOutCursor()));
         connect(this, SIGNAL(scrollUp()), imageViewer, SLOT(scrollUp()));
         connect(this, SIGNAL(scrollDown()), imageViewer, SLOT(scrollDown()));
+        connect(this, SIGNAL(scrollLeft()), imageViewer, SLOT(scrollLeft()));
+        connect(this, SIGNAL(scrollRight()), imageViewer, SLOT(scrollRight()));
         connect(this, SIGNAL(fitWindow()), imageViewer, SLOT(setFitWindow()));
         connect(this, SIGNAL(fitWidth()), imageViewer, SLOT(setFitWidth()));
         connect(this, SIGNAL(fitOriginal()), imageViewer, SLOT(setFitOriginal()));

@@ -94,7 +94,6 @@ void ThumbnailStrip::addItemAt(int pos) {
 
 void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
     if(start > end || !checkRange(start) || !checkRange(end)) {
-        qDebug() << "ThumbnailStrip::updateThumbnailPositions() - arguments out of range";
         return;
     }
     // assume all thumbnails are the same size

@@ -48,6 +48,8 @@ public slots:
     void updateFrame(QPixmap *newFrame);
     void scrollUp();
     void scrollDown();
+    void scrollLeft();
+    void scrollRight();
     void startAnimation();
     void stopAnimation();
     void displayAnimation(QMovie *_animation);
@@ -81,6 +83,7 @@ private:
     const int CHECKBOARD_GRID_SIZE = 10;
     const int FADE_DURATION = 140;
     const int CURSOR_HIDE_TIMEOUT_MS = 1500;
+    const int SCROLL_DISTANCE = 180;
     float maxScaleLimit = 4.0;
     float maxResolutionLimit = 75.0; // in megapixels
 

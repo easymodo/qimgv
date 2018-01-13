@@ -64,6 +64,8 @@ signals:
     void toggleFullscreen();
     void scrollUp();
     void scrollDown();
+    void scrollLeft();
+    void scrollRight();
     void zoomIn();
     void zoomOut();
     void zoomInCursor();

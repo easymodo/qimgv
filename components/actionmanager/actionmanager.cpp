@@ -34,6 +34,8 @@ void ActionManager::createActionList() {
                                 << "rotateLeft"
                                 << "scrollUp"
                                 << "scrollDown"
+                                << "scrollLeft"
+                                << "scrollRight"
                                 << "zoomIn"
                                 << "zoomOut"
                                 << "zoomInCursor"
@@ -119,6 +121,8 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(9, "8");
     actionManager->keyMap.insert(10, "9");
     actionManager->keyMap.insert(11, "0");
+    actionManager->keyMap.insert(12,"-");
+    actionManager->keyMap.insert(13,"=");
     actionManager->keyMap.insert(327, "home");
     actionManager->keyMap.insert(335, "end");
     actionManager->keyMap.insert(14, "backspace");
@@ -191,9 +195,11 @@ void ActionManager::initKeyMap() {
     actionManager->keyMap.insert(17, "8");
     actionManager->keyMap.insert(18, "9");
     actionManager->keyMap.insert(19, "0");
+    actionManager->keyMap.insert(20,"-");
+    actionManager->keyMap.insert(21,"=");
+    actionManager->keyMap.insert(22, "backspace");
     actionManager->keyMap.insert(110, "home");
     actionManager->keyMap.insert(115, "end");
-    actionManager->keyMap.insert(22, "backspace");
 #endif
 }
 

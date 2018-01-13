@@ -47,6 +47,8 @@ signals:
     void zoomOutCursor();
     void scrollUp();
     void scrollDown();
+    void scrollLeft();
+    void scrollRight();
     void fitWindow();
     void fitWidth();
     void fitOriginal();

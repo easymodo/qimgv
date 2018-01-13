@@ -108,6 +108,8 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(zoomOutCursor()), viewerWidget, SIGNAL(zoomOutCursor()));
     connect(actionManager, SIGNAL(scrollUp()), viewerWidget, SIGNAL(scrollUp()));
     connect(actionManager, SIGNAL(scrollDown()), viewerWidget, SIGNAL(scrollDown()));
+    connect(actionManager, SIGNAL(scrollLeft()), viewerWidget, SIGNAL(scrollLeft()));
+    connect(actionManager, SIGNAL(scrollRight()), viewerWidget, SIGNAL(scrollRight()));
     connect(actionManager, SIGNAL(resize()), this, SLOT(showResizeDialog()));
     connect(actionManager, SIGNAL(rotateLeft()), this, SLOT(rotateLeft()));
     connect(actionManager, SIGNAL(rotateRight()), this, SLOT(rotateRight()));
