@@ -42,7 +42,7 @@ void CropOverlay::setImageRealSize(QSize sz) {
     clearSelection();
 }
 
-void CropOverlay::setImageRect(QRectF imageRect) {
+void CropOverlay::setImageRect(QRect imageRect) {
     if(this->imageRect != imageRect) {
         this->imageRect = imageRect;
         clearSelection();
@@ -72,7 +72,7 @@ void CropOverlay::selectAll() {
     selectionRect = imageRect;
     updateHandlePositions();
     update();
-    onSelectionChanged();
+    emit selectionChanged(QRect(QPoint(0,0), imageRealSize));
 }
 
 void CropOverlay::hide() {
@@ -360,6 +360,8 @@ void CropOverlay::onSelectionChanged() {
 // translates selection rect into image coordinates
 // also performs some sanity checks
 QRect CropOverlay::mapSelection() {
+    float newScl = imageRect.width()/imageRealSize.width();
+    qDebug() << "passed scale: " << scale << "newScl:" << newScl;
     QRectF tmp;
     if(selectionRect.width() == 0 || selectionRect.height() == 0) {
         tmp = QRect(0,0,0,0);
@@ -381,6 +383,7 @@ QRect CropOverlay::mapSelection() {
             tmp.moveRight(imageRealSize.width() - 1);
         }
     }
+    qDebug() << QRect(tmp.topLeft().toPoint(), tmp.size().toSize());
     return QRect(tmp.topLeft().toPoint(), tmp.size().toSize());
 }
 

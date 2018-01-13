@@ -24,7 +24,7 @@ public:
     ImageViewer(QWidget* parent = 0);
     ~ImageViewer();
     ImageFitMode fitMode();
-    QRectF imageRect();
+    QRect imageRect();
     float currentScale();
     QSize sourceSize();
 
@@ -32,7 +32,7 @@ signals:
     void scalingRequested(QSize);
     void scaleChanged(float);
     void sourceSizeChanged(QSize);
-    void imageAreaChanged(QRectF);
+    void imageAreaChanged(QRect);
 
 public slots:
     void displayImage(QPixmap* _image);
@@ -74,7 +74,7 @@ private:
     QMovie *animation;
     QTransform transform;
     QTimer *cursorTimer, *animationTimer;
-    QRectF drawingRect;
+    QRect drawingRect;
     QPoint mouseMoveStartPos;
     QSize mSourceSize;
 

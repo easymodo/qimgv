@@ -29,11 +29,11 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
-QRectF ViewerWidget::imageRect() {
+QRect ViewerWidget::imageRect() {
     if(imageViewer && currentWidget == IMAGEVIEWER)
         return imageViewer->imageRect();
     else
-        return QRectF(0,0,0,0);
+        return QRect(0,0,0,0);
 }
 
 float ViewerWidget::currentScale() {

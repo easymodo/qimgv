@@ -17,7 +17,7 @@ class ViewerWidget : public ContainerWidget
     Q_OBJECT
 public:
     explicit ViewerWidget(QWidget *parent = 0);
-    QRectF imageRect();
+    QRect imageRect();
     float currentScale();
     QSize sourceSize();
 

@@ -16,7 +16,7 @@ class CropOverlay : public OverlayWidget
     Q_OBJECT
 public:
     explicit CropOverlay(ContainerWidget *parent = 0);
-    void setImageRect(QRectF);
+    void setImageRect(QRect);
     void setImageRealSize(QSize);
     void setButtonText(QString text);
     void setImageScale(float scale);

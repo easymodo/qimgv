@@ -136,7 +136,7 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
 
 // takes scaled image
 void ImageViewer::updateFrame(QPixmap *newFrame) {
-    if(!animation && newFrame->size() != drawingRect.size().toSize()) {
+    if(!animation && newFrame->size() != drawingRect.size()) {
         delete newFrame;
         return;
     }
@@ -250,9 +250,8 @@ void ImageViewer::setScale(float scale) {
 void ImageViewer::requestScaling() {
     if(!isDisplaying)
         return;
-    QSize drawSz = drawingRect.size().toSize();
-    if(image->size() != drawSz && !animation) {
-        emit scalingRequested(drawSz);
+    if(image->size() != drawingRect.size() && !animation) {
+        emit scalingRequested(drawingRect.size());
     }
 }
 
@@ -290,8 +289,7 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
     if(animation && smoothAnimatedImages)
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(image) {
-        QRect intRect(drawingRect.topLeft().toPoint(), drawingRect.size().toSize());
-        painter.drawPixmap(intRect, *image, image->rect());
+        painter.drawPixmap(drawingRect, *image, image->rect());
         //zoomPoint for testing
         /*QPen pen(Qt::red);
         pen.setWidth(4);
@@ -699,7 +697,7 @@ ImageFitMode ImageViewer::fitMode() {
     return imageFitMode;
 }
 
-QRectF ImageViewer::imageRect() {
+QRect ImageViewer::imageRect() {
     return drawingRect;
 }
 
