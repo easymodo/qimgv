@@ -70,10 +70,11 @@ private slots:
     void showCursor();
 
 private:
-    QPixmap *image, *logo;
+    QPixmap *image;
     QMovie *animation;
     QTransform transform;
     QTimer *cursorTimer, *animationTimer;
+    qreal dpr;
     QRect drawingRect;
     QPoint mouseMoveStartPos;
     QSize mSourceSize;

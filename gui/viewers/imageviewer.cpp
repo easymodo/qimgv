@@ -16,9 +16,8 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     maxScale(maxScaleLimit),
     imageFitMode(FIT_ORIGINAL)
 {
-    logo = new QPixmap();
-    logo->load(":/res/images/logo.png");
     this->setMouseTracking(true);
+    dpr = devicePixelRatioF();
     animationTimer = new QTimer(this);
     animationTimer->setSingleShot(true);
     cursorTimer = new QTimer(this);
@@ -183,8 +182,8 @@ void ImageViewer::setExpandImage(bool mode) {
 
 // scale at which current image fills the window
 void ImageViewer::updateFitWindowScale() {
-    float newMinScaleX = (float) width() / mSourceSize.width();
-    float newMinScaleY = (float) height() / mSourceSize.height();
+    float newMinScaleX = (float) width()*dpr / mSourceSize.width();
+    float newMinScaleY = (float) height()*dpr / mSourceSize.height();
     if(newMinScaleX < newMinScaleY) {
         fitWindowScale = newMinScaleX;
     } else {
@@ -193,7 +192,7 @@ void ImageViewer::updateFitWindowScale() {
 }
 
 bool ImageViewer::sourceImageFits() {
-    return mSourceSize.width() < width() && mSourceSize.height() < height();
+    return mSourceSize.width() < width()*dpr && mSourceSize.height() < height()*dpr;
 }
 
 // limit min scale to window size
@@ -289,17 +288,10 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
     if(animation && smoothAnimatedImages)
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(image) {
-        painter.drawPixmap(drawingRect, *image, image->rect());
-        //zoomPoint for testing
-        /*QPen pen(Qt::red);
-        pen.setWidth(4);
-        painter.setPen(pen);
-        painter.drawPoint(zoomPoint);
-        */
-    } else {
-        QRect logoRect(0,0,logo->width(), logo->height());
-        logoRect.moveCenter(rect().center());
-        painter.drawPixmap(logoRect, *logo, logo->rect());
+        image->setDevicePixelRatio(dpr);
+        QRectF dpiAdjusted(drawingRect.topLeft()/dpr, drawingRect.size()/dpr);
+        //qDebug() << dpiAdjusted;
+        painter.drawPixmap(dpiAdjusted, *image, image->rect());
     }
 }
 
@@ -315,7 +307,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
     }
     if(event->button() == Qt::RightButton) {
         this->setCursor(QCursor(Qt::SizeVerCursor));
-        setZoomPoint(event->pos());
+        setZoomPoint(event->pos()*dpr);
     }
 }
 
@@ -350,8 +342,8 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
 // Okular-like cursor drag behavior
 // TODO: fix multiscreen
 void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
-    if( drawingRect.size().width() > this->width() ||
-        drawingRect.size().height() > this->height() )
+    if( drawingRect.size().width() > width()*dpr ||
+        drawingRect.size().height() > height()*dpr )
     {
         bool wrapped = false;
         QPoint newPos = mapToGlobal(event->pos()); //global
@@ -359,9 +351,9 @@ void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
         if(delta.x() && abs(delta.x()) < desktopSize.width() / 2) {
             int left = drawingRect.x() - delta.x();
             int right = left + drawingRect.width();
-            if(left <= 0 && right > width()) {
+            if(left <= 0 && right > width()*dpr) {
                 // wrap mouse along the X axis
-                if(left+1 <= 0 && right-1 > width()) {
+                if(left+1 <= 0 && right-1 > width()*dpr) {
                     if(newPos.x() >= desktopSize.width() - 1) {
                         newPos.setX(2);
                         cursor().setPos(newPos);
@@ -379,9 +371,9 @@ void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
         if(delta.y() && abs(delta.y()) < desktopSize.height() / 2) {
             int top = drawingRect.y() - delta.y();
             int bottom = top + drawingRect.height();
-            if(top <= 0 && bottom > height()) {
+            if(top <= 0 && bottom > height()*dpr) {
                 // wrap mouse along the Y axis
-                if(top+1 <= 0 && bottom-1 > height()) {
+                if(top+1 <= 0 && bottom-1 > height()*dpr) {
                     if(newPos.y() >= desktopSize.height() - 1) {
                         newPos.setY(2);
                         cursor().setPos(newPos);
@@ -406,10 +398,10 @@ void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
 
 // default drag behavior
 void ImageViewer::mouseDrag(QMouseEvent *event) {
-    if(drawingRect.size().width() > this->width() ||
-            drawingRect.size().height() > this->height()) {
+    if(drawingRect.size().width() > width()*dpr ||
+            drawingRect.size().height() > height()*dpr) {
         mouseMoveStartPos -= event->pos();
-        scroll(mouseMoveStartPos.x(), mouseMoveStartPos.y());
+        scroll(mouseMoveStartPos.x()*dpr, mouseMoveStartPos.y()*dpr);
         mouseMoveStartPos = event->pos();
     }
 }
@@ -441,13 +433,13 @@ void ImageViewer::mouseDragZoom(QMouseEvent *event) {
 
 void ImageViewer::fitWidth() {
     if(isDisplaying) {
-        float scale = (float) width() / mSourceSize.width();
+        float scale = (float) width()*dpr / mSourceSize.width();
         if(!expandImage && scale > 1.0) {
             fitNormal();
         } else {
             setScale(scale);
             centerImage();
-            if(drawingRect.height() > height())
+            if(drawingRect.height() > height()*dpr)
                 drawingRect.moveTop(0);
             update();
         }
@@ -458,8 +450,8 @@ void ImageViewer::fitWidth() {
 
 void ImageViewer::fitWindow() {
     if(isDisplaying) {
-        bool h = mSourceSize.height() <= height();
-        bool w = mSourceSize.width() <= width();
+        bool h = mSourceSize.height() <= height()*dpr;
+        bool w = mSourceSize.width() <= width()*dpr;
         // source image fits entirely
         if(h && w && !expandImage) {
             fitNormal();
@@ -480,8 +472,9 @@ void ImageViewer::fitNormal() {
     }
     setScale(1.0);
     centerImage();
-    if(drawingRect.height() > height())
+    if(drawingRect.height() > height()*dpr) {
         drawingRect.moveTop(0);
+    }
     update();
 }
 
@@ -534,42 +527,42 @@ void ImageViewer::resizeEvent(QResizeEvent *event) {
 // center image if it is smaller than parent
 // align image's corner to window corner if needed
 void ImageViewer::centerImage() {
-    if(drawingRect.height() <= height()) {
-        drawingRect.moveTop((height() - drawingRect.height()) / 2);
+    if(drawingRect.height() <= height()*dpr) {
+        drawingRect.moveTop((height()*dpr - drawingRect.height()) / 2);
     } else {
         snapEdgeVertical();
     }
-    if(drawingRect.width() <= width()) {
-        drawingRect.moveLeft((width() - drawingRect.width()) / 2);
+    if(drawingRect.width() <= width()*dpr) {
+        drawingRect.moveLeft((width()*dpr - drawingRect.width()) / 2);
     } else {
         snapEdgeHorizontal();
     }
 }
 
 void ImageViewer::snapEdgeHorizontal() {
-    if(drawingRect.x() > 0 && drawingRect.right() > width()) {
+    if(drawingRect.x() > 0 && drawingRect.right() > width()*dpr) {
         drawingRect.moveLeft(0);
     }
-    if(width() - drawingRect.x() > drawingRect.width()) {
-        drawingRect.moveRight(width());
+    if(width()*dpr - drawingRect.x() > drawingRect.width()) {
+        drawingRect.moveRight(width()*dpr);
     }
 }
 
 void ImageViewer::snapEdgeVertical() {
-    if(drawingRect.y() > 0 && drawingRect.bottom() > height()) {
+    if(drawingRect.y() > 0 && drawingRect.bottom() > height()*dpr) {
         drawingRect.moveTop(0);
     }
-    if(height() - drawingRect.y() > drawingRect.height()) {
-        drawingRect.moveBottom(height());
+    if(height()*dpr - drawingRect.y() > drawingRect.height()) {
+        drawingRect.moveBottom(height()*dpr);
     }
 }
 
 // scroll viewport and do update()
 void ImageViewer::scroll(int dx, int dy) {
-    if(drawingRect.size().width() > this->width()) {
+    if(drawingRect.size().width() > width()*dpr) {
         scrollX(dx);
     }
-    if(drawingRect.size().height() > this->height()) {
+    if(drawingRect.size().height() > height()*dpr) {
         scrollY(dy);
     }
     update();
@@ -582,8 +575,8 @@ void ImageViewer::scrollX(int dx) {
         int right = left + drawingRect.width();
         if(left > 0)
             left = 0;
-        else if (right <= width())
-            left = width() - drawingRect.width();
+        else if (right <= width()*dpr)
+            left = width()*dpr - drawingRect.width();
         if(left <= 0) {
             drawingRect.moveLeft(left);
         }
@@ -597,8 +590,8 @@ void ImageViewer::scrollY(int dy) {
         int bottom = top + drawingRect.height();
         if(top > 0)
             top = 0;
-        else if (bottom <= height())
-            top = height() - drawingRect.height();
+        else if (bottom <= height()*dpr)
+            top = height()*dpr - drawingRect.height();
         if(top <= 0) {
             drawingRect.moveTop(top);
         }
@@ -633,20 +626,20 @@ void ImageViewer::scaleAroundZoomPoint(float newScale) {
 
 // zoom in around viewport center
 void ImageViewer::zoomIn() {
-    setZoomPoint(rect().center());
+    setZoomPoint(rect().center()*dpr);
     doZoomIn();
 }
 
 // zoom out around viewport center
 void ImageViewer::zoomOut() {
-    setZoomPoint(rect().center());
+    setZoomPoint(rect().center()*dpr);
     doZoomOut();
 }
 
 // zoom in around cursor
 void ImageViewer::zoomInCursor() {
     if(underMouse()) {
-        setZoomPoint(mapFromGlobal(cursor().pos()));
+        setZoomPoint(mapFromGlobal(cursor().pos())*dpr);
         doZoomIn();
     } else {
         zoomIn();
@@ -656,7 +649,7 @@ void ImageViewer::zoomInCursor() {
 // zoom out around cursor
 void ImageViewer::zoomOutCursor() {
     if(underMouse()) {
-        setZoomPoint(mapFromGlobal(cursor().pos()));
+        setZoomPoint(mapFromGlobal(cursor().pos())*dpr);
         doZoomOut();
     } else {
         zoomOut();

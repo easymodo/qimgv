@@ -9,11 +9,9 @@ void saveSettings() {
 }
 
 int main(int argc, char *argv[]) {
-    // enabling this breaks everything related to image scaling & painting
-    // system font size is still honored so it should be fine for now
-    qputenv("QT_AUTO_SCREEN_SCALE_FACTOR","0");
-    qputenv("QT_SCALE_FACTOR","1");
-    QGuiApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
+    //qputenv("QT_AUTO_SCREEN_SCALE_FACTOR","0");
+    //qputenv("QT_SCALE_FACTOR","1.0");
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication a(argc, argv);
     QCoreApplication::setOrganizationName("greenpepper software");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
