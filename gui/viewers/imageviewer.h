@@ -129,6 +129,7 @@ private:
     QPropertyAnimation *posAnimation;
     void propertySetDrawPos(QPoint newPos);
     QPoint propertyDrawPos();
+    void stopPosAnimation();
 };
 
 #endif // IMAGEVIEWER_H

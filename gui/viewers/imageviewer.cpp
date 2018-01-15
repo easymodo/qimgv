@@ -105,8 +105,7 @@ void ImageViewer::displayImage(QPixmap *_image) {
 // reset state, remove image & stop animation
 void ImageViewer::reset() {
     isDisplaying = false;
-    if(posAnimation->state() == QAbstractAnimation::Running)
-        posAnimation->stop();
+    stopPosAnimation();
     if(animation) {
         stopAnimation();
         delete animation;
@@ -531,6 +530,7 @@ void ImageViewer::setFitWindow() {
 
 void ImageViewer::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
+    stopPosAnimation();
     updateMinScale();
     if(imageFitMode == FIT_FREE || imageFitMode == FIT_ORIGINAL) {
         centerImage();
@@ -574,11 +574,14 @@ void ImageViewer::snapEdgeVertical() {
     }
 }
 
+void ImageViewer::stopPosAnimation() {
+    if(posAnimation->state() == QAbstractAnimation::Running)
+        posAnimation->stop();
+}
+
 // scroll viewport and do update()
 void ImageViewer::scroll(int dx, int dy) {
-    if(posAnimation->state() == QAbstractAnimation::Running) {
-        posAnimation->stop();
-    }
+    stopPosAnimation();
     QPoint destTopLeft = drawingRect.topLeft();
     if(drawingRect.size().width() > width()*dpr) {
         destTopLeft.setX(scrolledX(dx));
