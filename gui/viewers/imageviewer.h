@@ -11,7 +11,7 @@
 #include <QPalette>
 #include <QTimer>
 #include <QDebug>
-#include <time.h>
+#include <QPropertyAnimation>
 #include <cmath>
 #include "settings.h"
 
@@ -20,6 +20,7 @@
 class ImageViewer : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY(QPoint drawPos READ propertyDrawPos WRITE propertySetDrawPos)
 public:
     ImageViewer(QWidget* parent = 0);
     ~ImageViewer();
@@ -54,8 +55,8 @@ public slots:
     void stopAnimation();
     void displayAnimation(QMovie *_animation);
     void closeImage();
-
     void setExpandImage(bool mode);
+
 protected:
     virtual void paintEvent(QPaintEvent* event);
     virtual void mousePressEvent(QMouseEvent *event);
@@ -76,15 +77,14 @@ private:
     QTimer *cursorTimer, *animationTimer;
     qreal dpr;
     QRect drawingRect;
-    QPoint mouseMoveStartPos;
+    QPoint mouseMoveStartPos, drawPos;
     QSize mSourceSize;
-
     bool isDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;
-
     const int CHECKBOARD_GRID_SIZE = 10;
     const int FADE_DURATION = 140;
-    const int CURSOR_HIDE_TIMEOUT_MS = 1500;
-    const int SCROLL_DISTANCE = 180;
+    const int CURSOR_HIDE_TIMEOUT_MS = 1200;
+    const int SCROLL_DISTANCE = 250;
+    const int animationSpeed = 150;
     float maxScaleLimit = 4.0;
     float maxResolutionLimit = 75.0; // in megapixels
 
@@ -108,8 +108,8 @@ private:
     void snapEdgeHorizontal();
     void snapEdgeVertical();
     void scroll(int dx, int dy);
-    void scrollX(int dx);
-    void scrollY(int dy);
+    int scrolledX(int dx);
+    int scrolledY(int dy);
     void hideCursorTimed(bool restartTimer);
 
     void mouseDragWrapping(QMouseEvent *event);
@@ -125,6 +125,10 @@ private:
     void doZoomOut();
     void updateFitWindowScale();
     bool sourceImageFits();
+
+    QPropertyAnimation *posAnimation;
+    void propertySetDrawPos(QPoint newPos);
+    QPoint propertyDrawPos();
 };
 
 #endif // IMAGEVIEWER_H

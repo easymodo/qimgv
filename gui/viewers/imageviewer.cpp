@@ -17,6 +17,9 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     imageFitMode(FIT_ORIGINAL)
 {
     this->setMouseTracking(true);
+    posAnimation = new QPropertyAnimation(this, "drawPos");
+    posAnimation->setEasingCurve(QEasingCurve::OutCubic);
+    posAnimation->setDuration(animationSpeed);
     dpr = devicePixelRatioF();
     animationTimer = new QTimer(this);
     animationTimer->setSingleShot(true);
@@ -102,6 +105,8 @@ void ImageViewer::displayImage(QPixmap *_image) {
 // reset state, remove image & stop animation
 void ImageViewer::reset() {
     isDisplaying = false;
+    if(posAnimation->state() == QAbstractAnimation::Running)
+        posAnimation->stop();
     if(animation) {
         stopAnimation();
         delete animation;
@@ -193,6 +198,17 @@ void ImageViewer::updateFitWindowScale() {
 
 bool ImageViewer::sourceImageFits() {
     return mSourceSize.width() < width()*dpr && mSourceSize.height() < height()*dpr;
+}
+
+void ImageViewer::propertySetDrawPos(QPoint newPos) {
+    if(newPos != drawingRect.topLeft()) {
+        drawingRect.moveTopLeft(newPos);
+        update();
+    }
+}
+
+QPoint ImageViewer::propertyDrawPos() {
+    return drawingRect.topLeft();
 }
 
 // limit min scale to window size
@@ -289,6 +305,7 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(image) {
         image->setDevicePixelRatio(dpr);
+        // maybe pre-calculate size so we wont do it in every draw?
         QRectF dpiAdjusted(drawingRect.topLeft()/dpr, drawingRect.size()/dpr);
         //qDebug() << dpiAdjusted;
         painter.drawPixmap(dpiAdjusted, *image, image->rect());
@@ -559,17 +576,23 @@ void ImageViewer::snapEdgeVertical() {
 
 // scroll viewport and do update()
 void ImageViewer::scroll(int dx, int dy) {
+    if(posAnimation->state() == QAbstractAnimation::Running) {
+        posAnimation->stop();
+    }
+    QPoint destTopLeft = drawingRect.topLeft();
     if(drawingRect.size().width() > width()*dpr) {
-        scrollX(dx);
+        destTopLeft.setX(scrolledX(dx));
     }
     if(drawingRect.size().height() > height()*dpr) {
-        scrollY(dy);
+        destTopLeft.setY(scrolledY(dy));
     }
-    update();
+    posAnimation->setStartValue(drawingRect.topLeft());
+    posAnimation->setEndValue(destTopLeft);
+    posAnimation->start(QAbstractAnimation::KeepWhenStopped);
 }
 
-// scroll viewport
-void ImageViewer::scrollX(int dx) {
+int ImageViewer::scrolledX(int dx) {
+    int newXPos = drawingRect.left();
     if(dx) {
         int left = drawingRect.x() - dx;
         int right = left + drawingRect.width();
@@ -578,13 +601,14 @@ void ImageViewer::scrollX(int dx) {
         else if (right <= width()*dpr)
             left = width()*dpr - drawingRect.width();
         if(left <= 0) {
-            drawingRect.moveLeft(left);
+            newXPos = left;
         }
     }
+    return newXPos;
 }
 
-// scroll viewport
-void ImageViewer::scrollY(int dy) {
+int ImageViewer::scrolledY(int dy) {
+    int newYPos = drawingRect.top();
     if(dy) {
         int top = drawingRect.y() - dy;
         int bottom = top + drawingRect.height();
@@ -593,9 +617,10 @@ void ImageViewer::scrollY(int dy) {
         else if (bottom <= height()*dpr)
             top = height()*dpr - drawingRect.height();
         if(top <= 0) {
-            drawingRect.moveTop(top);
+            newYPos = top;
         }
     }
+    return newYPos;
 }
 
 void ImageViewer::hideCursorTimed(bool restartTimer) {
