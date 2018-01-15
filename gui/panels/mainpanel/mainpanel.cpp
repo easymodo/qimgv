@@ -29,6 +29,13 @@ MainPanel::MainPanel(ContainerWidget *parent) : SlideHPanel(parent) {
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
+void MainPanel::setHeight(int newHeight) {
+    if(panelHeight != newHeight) {
+        panelHeight = newHeight;
+        recalculateGeometry();
+    }
+}
+
 void MainPanel::setPosition(PanelHPosition newPosition) {
     position = newPosition;
     if(position == PANEL_TOP) {
@@ -50,7 +57,7 @@ void MainPanel::setWindowButtonsEnabled(bool mode) {
 }
 
 void MainPanel::readSettings() {
-    panelHeight = settings->mainPanelSize();
+    setHeight(settings->mainPanelSize());
     setPosition(settings->panelPosition());
 }
 

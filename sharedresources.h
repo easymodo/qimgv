@@ -11,9 +11,9 @@ public:
     static SharedResources* getInstance();
     ~SharedResources();
 
-    const QPixmap* loadingIcon72();
+    QPixmap* loadingIcon72();
 
-    const QPixmap *loadingErrorIcon72();
+    QPixmap *loadingErrorIcon72();
 private:
     QPixmap *mLoadingIcon72, *mLoadingErrorIcon72;
 };

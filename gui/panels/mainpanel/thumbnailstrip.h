@@ -1,6 +1,7 @@
 #ifndef THUMBNAILSTRIP_H
 #define THUMBNAILSTRIP_H
 
+#include <QApplication>
 #include <QLabel>
 #include <QBoxLayout>
 #include <QScrollArea>
@@ -11,7 +12,7 @@
 #include <QTimer>
 #include <QPainter>
 #include <QResizeEvent>
-#include <time.h>
+#include <cmath>
 #include "sourcecontainers/thumbnail.h"
 #include "thumbnaillabel.h"
 #include "thumbnailview.h"
@@ -46,6 +47,7 @@ private:
     QScrollBar *scrollBar;
     PanelHPosition position;
     QMutex mutex;
+    float dpr;
 
     QGraphicsScene *scene;
     bool checkRange(int pos);

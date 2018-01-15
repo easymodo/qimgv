@@ -28,10 +28,21 @@ ThumbnailStrip::ThumbnailStrip()
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
 
+    dpr = this->devicePixelRatioF();
+
     connect(&thumbnailFrame, SIGNAL(thumbnailClicked(int)),
             this, SLOT(onThumbnailClick(int)));
     connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
     connect(&thumbnailFrame, SIGNAL(scrolled()), this, SLOT(loadVisibleThumbnails()));
+}
+
+void ThumbnailStrip::fillPanel(int count) {
+    if(count >= 0 ) {
+        current = -1;
+        loadTimer.stop();
+        populate(count);
+        loadVisibleThumbnails();
+    }
 }
 
 void ThumbnailStrip::populate(int count) {
@@ -49,15 +60,6 @@ void ThumbnailStrip::populate(int count) {
         }
         setThumbnailSize(thumbnailSize);
         thumbnailFrame.view()->resetViewport();
-    }
-}
-
-void ThumbnailStrip::fillPanel(int count) {
-    if(count >= 0 ) {
-        current = -1;
-        loadTimer.stop();
-        populate(count);
-        loadVisibleThumbnails();
     }
 }
 
@@ -163,7 +165,7 @@ void ThumbnailStrip::loadVisibleThumbnails() {
             }
         }
         if(loadList.count()) {
-            emit thumbnailRequested(loadList, thumbnailSize);
+            emit thumbnailRequested(loadList, floor(dpr*thumbnailSize));
         }
     }
 }
@@ -186,7 +188,7 @@ void ThumbnailStrip::unlock() {
 // called by loader when thubmnail is ready
 void ThumbnailStrip::setThumbnail(int pos, Thumbnail *thumb) {
     lock();
-    if(thumb && thumb->size == thumbnailSize && checkRange(pos)) {
+    if(thumb && thumb->size == floor(thumbnailSize*dpr) && checkRange(pos)) {
         thumbnailLabels->at(pos)->setThumbnail(thumb);
         thumbnailLabels->at(pos)->state = LOADED;
         /*
@@ -251,7 +253,7 @@ void ThumbnailStrip::showEvent(QShowEvent *event) {
 // update size based on widget's size
 // reposition thumbnails within scene if needed
 void ThumbnailStrip::updateThumbnailSize() {
-    int newSize = this->height() - 24;
+    int newSize = height() - 24;
     if( newSize % 2 )
         --newSize;
     if(newSize != thumbnailSize) {

@@ -44,8 +44,8 @@ void ThumbnailLabel::setThumbnailSize(int size) {
             thumbnail = NULL;
         }
         thumbnailSize = size;
-        highlightBarRect = QRect(marginX, 0, width() - marginX * 2, highlightBarHeight);
-        nameRect = QRect(highlightBarRect.left(), highlightBarRect.height(),
+        highlightBarRect = QRectF(marginX, 0, width() - marginX * 2, highlightBarHeight);
+        nameRect = QRectF(highlightBarRect.left(), highlightBarRect.height(),
                          highlightBarRect.width(), fm->height() * 1.6);
         update();
     }
@@ -147,6 +147,7 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     Q_UNUSED(widget)
     Q_UNUSED(option)
     painter->setOpacity(1.0f);
+    qreal dpr = painter->paintEngine()->paintDevice()->devicePixelRatioF();
     if(isHighlighted()) {
         painter->fillRect(highlightBarRect, highlightColor);
     } else if (isHovered()) {
@@ -155,21 +156,15 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setOpacity(1.0f);
     }
     if(!thumbnail) {
-        const QPixmap* loadingIcon = shrRes->loadingIcon72();
-        painter->drawPixmap((width() - loadingIcon->width()) / 2,
-                            (height() - loadingIcon->height() - highlightBarHeight) / 2 + highlightBarHeight,
-                            *loadingIcon);
+        QPixmap* loadingIcon = shrRes->loadingIcon72();
+        drawThumbnail(painter, dpr, loadingIcon);
     } else {
         if(thumbnail->image->width() == 0) {
-            const QPixmap* errorIcon = shrRes->loadingErrorIcon72();
-            painter->drawPixmap((width() - errorIcon->width()) / 2,
-                                (height() - errorIcon->height() - highlightBarHeight) / 2 + highlightBarHeight,
-                                *errorIcon);
+            QPixmap* errorIcon = shrRes->loadingErrorIcon72();
+            drawThumbnail(painter, dpr, errorIcon);
         } else {
             painter->setOpacity(currentOpacity);
-            painter->drawPixmap((width() - thumbnail->image->width()) / 2,
-                                (height() - thumbnail->image->height() - highlightBarHeight) / 2 + highlightBarHeight,
-                                *thumbnail->image);
+            drawThumbnail(painter, dpr, thumbnail->image);
         }
         // text background
         painter->setOpacity(0.95f);
@@ -184,6 +179,19 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setPen(QColor(160, 160, 160, 255));
         painter->drawText(labelTextRect, Qt::TextSingleLine, thumbnail->label);
     }
+}
+
+inline
+void ThumbnailLabel::drawThumbnail(QPainter* painter, qreal dpr, QPixmap *pixmap) {
+    pixmap->setDevicePixelRatio(dpr);
+    QPointF drawPosCentered(width()/2 - pixmap->width()/(2*dpr),
+                            highlightBarHeight + (thumbnailSize)/2 - pixmap->height()/(2*dpr));
+    painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
+}
+
+inline
+void ThumbnailLabel::drawIcon(QPainter* painter, qreal dpr, QPixmap *pixmap) {
+
 }
 
 QSizeF ThumbnailLabel::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {

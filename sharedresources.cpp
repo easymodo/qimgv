@@ -12,11 +12,11 @@ SharedResources::~SharedResources() {
     delete shrRes;
 }
 
-const QPixmap *SharedResources::loadingIcon72() {
+QPixmap *SharedResources::loadingIcon72() {
     return mLoadingIcon72;
 }
 
-const QPixmap *SharedResources::loadingErrorIcon72() {
+QPixmap *SharedResources::loadingErrorIcon72() {
     return mLoadingErrorIcon72;
 }
 
