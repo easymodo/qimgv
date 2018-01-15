@@ -403,7 +403,7 @@ void Settings::setMaxZoomedResolution(int value) {
 }
 
 int Settings::maximumZoom() {
-    return settings->s.value("maximumZoom", 4).toInt();
+    return settings->s.value("maximumZoom", 8).toInt();
 }
 
 void Settings::setMaximumZoom(int value) {
