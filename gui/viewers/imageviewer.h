@@ -107,7 +107,7 @@ private:
     void centerImage();
     void snapEdgeHorizontal();
     void snapEdgeVertical();
-    void scroll(int dx, int dy);
+    void scroll(int dx, int dy, bool animated);
     int scrolledX(int dx);
     int scrolledY(int dy);
     void hideCursorTimed(bool restartTimer);

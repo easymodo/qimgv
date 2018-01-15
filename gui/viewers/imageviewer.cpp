@@ -151,19 +151,19 @@ void ImageViewer::updateFrame(QPixmap *newFrame) {
 }
 
 void ImageViewer::scrollUp() {
-    scroll(0, -SCROLL_DISTANCE);
+    scroll(0, -SCROLL_DISTANCE, true);
 }
 
 void ImageViewer::scrollDown() {
-    scroll(0, SCROLL_DISTANCE);
+    scroll(0, SCROLL_DISTANCE, true);
 }
 
 void ImageViewer::scrollLeft() {
-    scroll(-SCROLL_DISTANCE, 0);
+    scroll(-SCROLL_DISTANCE, 0, true);
 }
 
 void ImageViewer::scrollRight() {
-    scroll(SCROLL_DISTANCE, 0);
+    scroll(SCROLL_DISTANCE, 0, true);
 }
 
 void ImageViewer::readSettings() {
@@ -417,7 +417,7 @@ void ImageViewer::mouseDrag(QMouseEvent *event) {
     if(drawingRect.size().width() > width()*dpr ||
             drawingRect.size().height() > height()*dpr) {
         mouseMoveStartPos -= event->pos();
-        scroll(mouseMoveStartPos.x()*dpr, mouseMoveStartPos.y()*dpr);
+        scroll(mouseMoveStartPos.x()*dpr, mouseMoveStartPos.y()*dpr, false);
         mouseMoveStartPos = event->pos();
     }
 }
@@ -580,7 +580,7 @@ void ImageViewer::stopPosAnimation() {
 }
 
 // scroll viewport and do update()
-void ImageViewer::scroll(int dx, int dy) {
+void ImageViewer::scroll(int dx, int dy, bool smooth) {
     stopPosAnimation();
     QPoint destTopLeft = drawingRect.topLeft();
     if(drawingRect.size().width() > width()*dpr) {
@@ -589,9 +589,14 @@ void ImageViewer::scroll(int dx, int dy) {
     if(drawingRect.size().height() > height()*dpr) {
         destTopLeft.setY(scrolledY(dy));
     }
-    posAnimation->setStartValue(drawingRect.topLeft());
-    posAnimation->setEndValue(destTopLeft);
-    posAnimation->start(QAbstractAnimation::KeepWhenStopped);
+    if(smooth) {
+        posAnimation->setStartValue(drawingRect.topLeft());
+        posAnimation->setEndValue(destTopLeft);
+        posAnimation->start(QAbstractAnimation::KeepWhenStopped);
+    } else {
+        drawingRect.moveTopLeft(destTopLeft);
+        update();
+    }
 }
 
 int ImageViewer::scrolledX(int dx) {
