@@ -62,6 +62,7 @@ private:
     void updateSelectionDrawRect();
     void setCursorForAction(CursorAction action);
 public slots:
+    void show();
     void hide();
     void onSelectionOutsideChange(QRect selection);
     void selectAll();

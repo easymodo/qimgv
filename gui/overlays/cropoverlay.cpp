@@ -77,6 +77,14 @@ void CropOverlay::selectAll() {
     emit selectionChanged(selectionRect);
 }
 
+void CropOverlay::show() {
+    if(!drawBuffer) {
+        drawBuffer = new QImage(size()*dpr, QImage::Format_ARGB32_Premultiplied);
+        drawBuffer->setDevicePixelRatio(dpr);
+    }
+    QWidget::show();
+}
+
 void CropOverlay::hide() {
     startPos = QPoint(0, 0);
     endPos = QPoint(0, 0);
@@ -84,6 +92,10 @@ void CropOverlay::hide() {
     clearSelection();
     QWidget::hide();
     clearFocus();
+    if(drawBuffer) {
+        delete drawBuffer;
+        drawBuffer = NULL;
+    }
 }
 
 //###################################################
@@ -97,32 +109,28 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
         painter.setBrush(brushInactiveTint);
         painter.drawRect(QRect(imageDrawRect.topLeft()/dpr, imageDrawRect.size()/dpr));
     } else {
-        delete drawBuffer;
-        drawBuffer = new QImage(size()*dpr, QImage::Format_ARGB32_Premultiplied);
-        QPainter painter(drawBuffer);
-
-        // clear to avoid corrupted background
-        painter.setCompositionMode(QPainter::CompositionMode_Clear);
-        painter.setBrush(brushInactiveTint); // any brush is ok
-        painter.drawRect(rect());
-
-        // draw tint over the image
-        painter.setCompositionMode(QPainter::CompositionMode_Source);
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(brushInactiveTint);
-        painter.drawRect(imageDrawRect);
-
-        // selection outline & handles
-        if(selectionDrawRect.width() > 0 && selectionDrawRect.height() > 0) {
-            drawSelection(&painter);
-            // draw handles if there is no interaction going on
-            // and selection is large enough
-            if(cursorAction == NO_DRAG && selectionDrawRect.width() >= 90 && selectionDrawRect.height() >= 90)
-                drawHandles(brushGray, &painter);
+        if(drawBuffer) {
+            QPainter painter(drawBuffer);
+            // clear to avoid corrupted background
+            painter.setCompositionMode(QPainter::CompositionMode_Clear);
+            painter.setBrush(brushInactiveTint); // any brush is ok
+            painter.drawRect(rect());
+            // draw tint over the image
+            painter.setCompositionMode(QPainter::CompositionMode_Source);
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(brushInactiveTint);
+            painter.drawRect(imageDrawRect);
+            // selection outline & handles
+            if(selectionDrawRect.width() > 0 && selectionDrawRect.height() > 0) {
+                drawSelection(&painter);
+                // draw handles if there is no interaction going on
+                // and selection is large enough
+                if(cursorAction == NO_DRAG && selectionDrawRect.width() >= 90 && selectionDrawRect.height() >= 90)
+                    drawHandles(brushGray, &painter);
+            }
+            // draw result on screen
+            QPainter(this).drawImage(QPoint(0, 0), *drawBuffer);
         }
-        drawBuffer->setDevicePixelRatio(dpr);
-        // draw result on screen
-        QPainter(this).drawImage(QPoint(0, 0), *drawBuffer);
     }
 }
 //###################################################
