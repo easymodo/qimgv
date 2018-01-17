@@ -20,7 +20,6 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
 
     this->setMouseTracking(true);
     this->setAcceptDrops(true);
-
     desktopWidget = QApplication::desktop();
     windowMoveTimer.setSingleShot(true);
     windowMoveTimer.setInterval(150);
@@ -53,22 +52,21 @@ void MainWindow::setupOverlays() {
     // this order is used while drawing
     infoOverlay = new InfoOverlay(this);
     controlsOverlay = new ControlsOverlay(this);
+    saveOverlay = new SaveConfirmOverlay(viewerWidget);
     copyOverlay = new CopyOverlay(this);
     sidePanel = new SidePanel(this);
-    cropPanel = new CropPanel(this);
+
+    // TODO: do something about this spaghetti
     cropOverlay = new CropOverlay(viewerWidget);
-    saveOverlay = new SaveConfirmOverlay(viewerWidget);
+    cropPanel = new CropPanel(cropOverlay, this);
+    connect(cropPanel, SIGNAL(cancel()), this, SLOT(hideSidePanel()));
+    connect(cropPanel, SIGNAL(crop(QRect)), this, SLOT(hideSidePanel()));
+    connect(cropPanel, SIGNAL(crop(QRect)), this, SIGNAL(cropRequested(QRect)));
+
     connect(saveOverlay, SIGNAL(saveClicked()), this, SIGNAL(saveRequested()));
     connect(saveOverlay, SIGNAL(saveAsClicked()), this, SIGNAL(saveAsClicked()));
     connect(saveOverlay, SIGNAL(discardClicked()), this, SIGNAL(discardEditsRequested()));
     layout.addWidget(sidePanel);
-    connect(cropOverlay, SIGNAL(selectionChanged(QRect)),
-            cropPanel, SLOT(onSelectionOutsideChange(QRect)));
-    connect(cropPanel, SIGNAL(selectionChanged(QRect)),
-            cropOverlay, SLOT(onSelectionOutsideChange(QRect)));
-    connect(cropPanel, SIGNAL(cancel()), this, SLOT(hideSidePanel()));
-    connect(cropPanel, SIGNAL(crop(QRect)), this, SIGNAL(cropRequested(QRect)));
-    connect(cropPanel, SIGNAL(crop(QRect)), this, SLOT(hideSidePanel()));
     connect(copyOverlay, SIGNAL(copyRequested(QString)),
             this, SIGNAL(copyRequested(QString)));
     connect(copyOverlay, SIGNAL(moveRequested(QString)),
@@ -193,7 +191,7 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
     ContainerWidget::resizeEvent(event);
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropOverlay->setImageScale(viewerWidget->currentScale());
-        cropOverlay->setImageRect(viewerWidget->imageRect());
+        cropOverlay->setImageDrawRect(viewerWidget->imageRect());
     }
 }
 
@@ -278,7 +276,7 @@ void MainWindow::showWindowed() {
 void MainWindow::setupSidePanelData() {
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropPanel->setImageRealSize(viewerWidget->sourceSize());
-        cropOverlay->setImageRect(viewerWidget->imageRect());
+        cropOverlay->setImageDrawRect(viewerWidget->imageRect());
         cropOverlay->setImageScale(viewerWidget->currentScale());
         cropOverlay->setImageRealSize(viewerWidget->sourceSize());
     }

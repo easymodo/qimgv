@@ -319,10 +319,10 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
     setCursor(QCursor(Qt::ArrowCursor));
     mouseMoveStartPos = event->pos();
     if(event->button() == Qt::LeftButton) {
-        this->setCursor(QCursor(Qt::ClosedHandCursor));
+        setCursor(QCursor(Qt::ClosedHandCursor));
     }
     if(event->button() == Qt::RightButton) {
-        this->setCursor(QCursor(Qt::SizeVerCursor));
+        setCursor(QCursor(Qt::SizeVerCursor));
         setZoomPoint(event->pos()*dpr);
     }
 }
@@ -347,7 +347,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
         return;
     }
     hideCursorTimed(false);
-    this->setCursor(QCursor(Qt::ArrowCursor));
+    setCursor(QCursor(Qt::ArrowCursor));
     if(event->button() == Qt::RightButton && imageFitMode != FIT_WINDOW) {
         //requestScaling();
         //fitDefault();

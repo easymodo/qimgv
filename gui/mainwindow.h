@@ -22,6 +22,7 @@
 #include "components/actionmanager/actionmanager.h"
 #include "settings.h"
 #include "gui/dialogs/settingsdialog.h"
+#include <QApplication>
 
 enum ActiveSidePanel {
     SIDEPANEL_CROP,

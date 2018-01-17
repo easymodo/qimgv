@@ -20,6 +20,7 @@ SpinBoxInputFix::SpinBoxInputFix(QWidget *parent) : QSpinBox(parent) {
                 << "Return"
                 << "home"
                 << "end"
+                << "delete"
                 << "backspace";
 }
 

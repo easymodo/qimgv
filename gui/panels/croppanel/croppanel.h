@@ -6,6 +6,7 @@
 #include <QPainter>
 #include "gui/customwidgets/sidepanelwidget.h"
 #include "gui/customwidgets/spinboxinputfix.h"
+#include "gui/overlays/cropoverlay.h"
 #include <QTimer>
 #include <QDebug>
 
@@ -18,7 +19,7 @@ class CropPanel : public SidePanelWidget
     Q_OBJECT
 
 public:
-    explicit CropPanel(QWidget *parent = 0);
+    explicit CropPanel(CropOverlay *_overlay, QWidget *parent = 0);
     ~CropPanel();
     void setImageRealSize(QSize);
 
@@ -31,9 +32,11 @@ signals:
     void cancel();
     void cropClicked();
     void selectionChanged(QRect);
+    void selectAll();
 
 protected:
     void paintEvent(QPaintEvent *);
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void onCropPressed();
@@ -42,6 +45,8 @@ private slots:
 private:
     Ui::CropPanel *ui;
     QRect cropRect;
+    CropOverlay *overlay;
+    QSize realSize;
 };
 
 #endif // CROPPANEL_H

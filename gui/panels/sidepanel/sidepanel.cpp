@@ -37,8 +37,9 @@ void SidePanel::show() {
 }
 
 void SidePanel::hide() {
-    if(mWidget)
+    if(mWidget) {
         mWidget->hide();
+    }
     QWidget::hide();
 }
 

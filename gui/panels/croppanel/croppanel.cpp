@@ -1,11 +1,13 @@
 #include "croppanel.h"
 #include "ui_croppanel.h"
 
-CropPanel::CropPanel(QWidget *parent) :
+CropPanel::CropPanel(CropOverlay *_overlay, QWidget *parent) :
+    overlay(_overlay),
     SidePanelWidget(parent),
     ui(new Ui::CropPanel)
 {
     ui->setupUi(this);
+    setFocusPolicy(Qt::NoFocus);
     hide();
     connect(ui->cancelButton, SIGNAL(pressed()), this, SIGNAL(cancel()));
     connect(ui->cropButton, SIGNAL(pressed()), this, SLOT(onCropPressed()));
@@ -13,6 +15,14 @@ CropPanel::CropPanel(QWidget *parent) :
     connect(ui->height, SIGNAL(valueChanged(int)), this, SLOT(onSelectionChange()));
     connect(ui->posX, SIGNAL(valueChanged(int)), this, SLOT(onSelectionChange()));
     connect(ui->posY, SIGNAL(valueChanged(int)), this, SLOT(onSelectionChange()));
+
+    connect(overlay, SIGNAL(selectionChanged(QRect)),
+            this, SLOT(onSelectionOutsideChange(QRect)));
+    connect(this, SIGNAL(selectionChanged(QRect)),
+            overlay, SLOT(onSelectionOutsideChange(QRect)));
+    connect(overlay, SIGNAL(escPressed()), this, SIGNAL(cancel()));
+    connect(overlay, SIGNAL(enterPressed()), this, SLOT(onCropPressed()));
+    connect(this, SIGNAL(selectAll()), overlay, SLOT(selectAll()));
 }
 
 CropPanel::~CropPanel()
@@ -23,13 +33,16 @@ CropPanel::~CropPanel()
 void CropPanel::setImageRealSize(QSize sz) {
     ui->width->setMaximum(sz.width());
     ui->height->setMaximum(sz.height());
+    realSize = sz;
 }
 
 void CropPanel::onCropPressed() {
-    emit crop(QRect(ui->posX->value(),
-                    ui->posY->value(),
-                    ui->width->value(),
-                    ui->height->value()));
+    QRect target(ui->posX->value(), ui->posY->value(),
+                 ui->width->value(), ui->height->value());
+    if(target.width() > 0 && target.height() > 0 || target.size() != realSize)
+        emit crop(target);
+    else
+        emit cancel();
 }
 
 // on user input
@@ -37,8 +50,7 @@ void CropPanel::onSelectionChange() {
     emit selectionChanged(QRect(ui->posX->value(),
                                 ui->posY->value(),
                                 ui->width->value(),
-                                ui->height->value())
-                          );
+                                ui->height->value()));
 }
 
 // update input box values
@@ -70,4 +82,16 @@ void CropPanel::show() {
     QWidget::show();
     // stackoverflow sorcery
     QTimer::singleShot(0,ui->width,SLOT(setFocus()));
+}
+
+void CropPanel::keyPressEvent(QKeyEvent *event) {
+    if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
+        emit onCropPressed();
+    } else if(event->key() == Qt::Key_Escape) {
+        emit cancel();
+    } else if(event->matches(QKeySequence::SelectAll)) {
+        emit selectAll();
+    } else {
+        event->ignore();
+    }
 }

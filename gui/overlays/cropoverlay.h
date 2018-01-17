@@ -7,7 +7,7 @@
 #include <QPaintEvent>
 #include <QColor>
 
-enum MouseDragMode { NO_DRAG, DRAG_MOVE, DRAG_LEFT, DRAG_RIGHT,
+enum CursorAction { NO_DRAG, DRAG_SELECT, DRAG_MOVE, DRAG_LEFT, DRAG_RIGHT,
                         DRAG_TOP, DRAG_BOTTOM, DRAG_TOPLEFT,
                         DRAG_TOPRIGHT, DRAG_BOTTOMLEFT, DRAG_BOTTOMRIGHT };
 
@@ -16,55 +16,55 @@ class CropOverlay : public OverlayWidget
     Q_OBJECT
 public:
     explicit CropOverlay(ContainerWidget *parent = 0);
-    void setImageRect(QRect);
+    void setImageDrawRect(QRect);
     void setImageRealSize(QSize);
     void setButtonText(QString text);
     void setImageScale(float scale);
+    void clearSelection();
 
 signals:
     void positionChanged(float x, float y);
-    void selected(QRect);
     void selectionChanged(QRect);
+    void escPressed();
+    void enterPressed();
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent* event);
     virtual void mouseReleaseEvent(QMouseEvent* event);
-    virtual void keyPressEvent(QKeyEvent *event);
 
+    void keyPressEvent(QKeyEvent *event);
 private:
     QWidget *viewer;
-    QPointF startPos, endPos, moveStartPos;
-    QRectF imageRect, selectionRect;
-    QSize imageRealSize;
+    QPoint startPos, endPos, moveStartPos;
+    QRect imageRect, imageDrawRect, selectionRect, selectionDrawRect;
     bool clear, moving;
     float scale;
     QBrush brushInactiveTint, brushDarkGray, brushGray, brushLightGray;
     QRectF *handles[8];
     int handleSize;
     QImage *drawBuffer;
-    MouseDragMode dragMode;
+    CursorAction cursorAction;
     QPen selectionOutlinePen;
+    qreal dpr;
 
-    QPointF setInsidePoint(QPoint, QRectF);
-    QRectF placeInside(QRectF what, QRectF where);
-    void clearSelection();
-    void selectAll();
-    QRect mapSelection();
-    void drawSelection(QPainter *);
+    QPoint setInsidePoint(QPoint, QRect);
+    QRect placeInside(QRect what, QRect where);
+    void drawSelection(QPainter*);
     void drawHandles(QBrush&, QPainter*);
     void updateHandlePositions();
     void prepareDrawElements();
-    void detectClickTarget(QPoint pos);
-    bool resizeSelection(QPointF d);
-    void onSelectionChanged();
+    CursorAction hoverTarget(QPoint pos);
+    bool resizeSelection(QPoint d);
     void recalculateGeometry();
+    QPoint mapPointToImage(QPoint p);
+    void updateSelectionDrawRect();
+    void setCursorForAction(CursorAction action);
 public slots:
-    //void setImageRect(QRect area, float _scale);
     void hide();
-    void show();
-    void onSelectionOutsideChange(QRect unmapped);
+    void onSelectionOutsideChange(QRect selection);
+    void selectAll();
 };
 
 #endif // CROPOVERLAY_H
