@@ -28,8 +28,6 @@ ThumbnailStrip::ThumbnailStrip()
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
 
-    dpr = this->devicePixelRatioF();
-
     connect(&thumbnailFrame, SIGNAL(thumbnailClicked(int)),
             this, SLOT(onThumbnailClick(int)));
     connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
@@ -64,11 +62,11 @@ void ThumbnailStrip::populate(int count) {
 }
 
 void ThumbnailStrip::addThumbnailLabel() {
-    addItemAt(thumbnailLabels->count());
+    createLabelAt(thumbnailLabels->count());
 }
 
 // TODO: fix this bullshit
-void ThumbnailStrip::addItemAt(int pos) {
+void ThumbnailStrip::createLabelAt(int pos) {
     lock();
     if(pos >= 0 && pos <= thumbnailLabels->count()) {
         if(pos == current)
@@ -82,7 +80,7 @@ void ThumbnailStrip::addItemAt(int pos) {
             tmp = thumbnailLabels->at(i);
             tmp->setLabelNum(i);
         }
-        updateThumbnailPositions(pos, thumbnailLabels->count()-1);
+        updateThumbnailPositions(pos, thumbnailLabels->count() - 1);
         // do i need this here?
         //updateSceneRect();
     }
@@ -91,8 +89,9 @@ void ThumbnailStrip::addItemAt(int pos) {
     //updateThumbnailPositions(pos, thumbnailLabels->count() - 1);
 }
 
-
-
+void ThumbnailStrip::updateThumbnailPositions() {
+    updateThumbnailPositions(0, thumbnailLabels->count() - 1);
+}
 
 void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
     if(start > end || !checkRange(start) || !checkRange(end)) {
@@ -165,7 +164,7 @@ void ThumbnailStrip::loadVisibleThumbnails() {
             }
         }
         if(loadList.count()) {
-            emit thumbnailRequested(loadList, floor(dpr*thumbnailSize));
+            emit thumbnailRequested(loadList, floor(qApp->devicePixelRatio()*thumbnailSize));
         }
     }
 }
@@ -188,7 +187,7 @@ void ThumbnailStrip::unlock() {
 // called by loader when thubmnail is ready
 void ThumbnailStrip::setThumbnail(int pos, Thumbnail *thumb) {
     lock();
-    if(thumb && thumb->size == floor(thumbnailSize*dpr) && checkRange(pos)) {
+    if(thumb && thumb->size == floor(thumbnailSize*qApp->devicePixelRatio()) && checkRange(pos)) {
         thumbnailLabels->at(pos)->setThumbnail(thumb);
         thumbnailLabels->at(pos)->state = LOADED;
         /*
@@ -246,6 +245,7 @@ void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
 }
 
 void ThumbnailStrip::showEvent(QShowEvent *event) {
+    qDebug() << qApp->devicePixelRatio() << this->devicePixelRatioF();
     QWidget::showEvent(event);
     loadVisibleThumbnails();
 }

@@ -26,7 +26,7 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
 
     setViewerWidget(viewerWidget);
 
-    setupOverlays();
+    setupUi();
 
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 
@@ -46,9 +46,8 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
     restoreWindowGeometry();
 }
 
-// floating panels, info bars etc
-// everything that does not go into main layout
-void MainWindow::setupOverlays() {
+// floating panels, info bars, panels etc
+void MainWindow::setupUi() {
     // this order is used while drawing
     infoOverlay = new InfoOverlay(this);
     controlsOverlay = new ControlsOverlay(this);

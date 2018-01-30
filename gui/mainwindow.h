@@ -66,7 +66,7 @@ private:
     void saveWindowGeometry();
     void restoreWindowGeometry();
     void saveCurrentDisplay();
-    void setupOverlays();
+    void setupUi();
 
 private slots:
     void updateCurrentDisplay();

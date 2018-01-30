@@ -11,6 +11,8 @@ class ImageLib {
     public:
         static QImage *rotate(const QImage *src, int grad);
         static QImage *crop(const QImage *src, QRect newRect);
+        static QImage *flipH(const QImage *src);
+        static QImage *flipV(const QImage *src);
         static QImage *scale(const QImage *source, QSize destSize, int method);
         static QImage *scale_Qt(const QImage *source, QSize destSize, bool smooth);
         //static QImage *scale_FreeImage(const QImage *source, QSize destSize, FREE_IMAGE_FILTER filter);

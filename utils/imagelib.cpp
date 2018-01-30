@@ -17,6 +17,14 @@ QImage* ImageLib::crop(const QImage* src, QRect newRect) {
     return img;
 }
 
+QImage* ImageLib::flipH(const QImage* src) {
+    return new QImage(src->mirrored(true, false));
+}
+
+QImage* ImageLib::flipV(const QImage* src) {
+    return new QImage(src->mirrored(false, true));
+}
+
 /*
 
 QImage *ImageLib::cropped(QRect newRect, QRect targetRes, bool upscaled) {

@@ -177,7 +177,7 @@ void Core::onFileRemoved(int index) {
 }
 
 void Core::onFileAdded(int index) {
-    thumbnailPanelWidget->addItemAt(index);
+    thumbnailPanelWidget->createLabelAt(index);
 }
 
 void Core::moveFile(QString destDirectory) {

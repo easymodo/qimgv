@@ -13,6 +13,7 @@
 #include <QDebug>
 #include <QPropertyAnimation>
 #include <cmath>
+#include <ctime>
 #include "settings.h"
 
 #define FLT_EPSILON 1.19209290E-07F
@@ -75,7 +76,6 @@ private:
     QMovie *animation;
     QTransform transform;
     QTimer *cursorTimer, *animationTimer;
-    qreal dpr;
     QRect drawingRect;
     QPoint mouseMoveStartPos, drawPos;
     QSize mSourceSize;

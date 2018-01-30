@@ -47,14 +47,13 @@ private:
     QScrollBar *scrollBar;
     PanelHPosition position;
     QMutex mutex;
-    float dpr;
-
     QGraphicsScene *scene;
     bool checkRange(int pos);
     long idCounter;
     void lock();
     void unlock();
     void updateThumbnailPositions(int start, int end);
+    void updateThumbnailPositions();
     void updateSceneRect();
     void setThumbnailSize(int);
     void updateThumbnailSize();
@@ -72,7 +71,7 @@ public slots:
     void fillPanel(int);
     void highlightThumbnail(int pos);
     void removeItemAt(int pos);
-    void addItemAt(int pos);
+    void createLabelAt(int pos);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);

@@ -10,8 +10,8 @@ void saveSettings() {
 
 int main(int argc, char *argv[]) {
     //qputenv("QT_AUTO_SCREEN_SCALE_FACTOR","0");
-    //qputenv("QT_SCREEN_SCALE_FACTORS", "1;1.4");
-    //qputenv("QT_SCALE_FACTOR","2");
+    //qputenv("QT_SCREEN_SCALE_FACTORS", "1;1.7");
+    //qputenv("QT_SCALE_FACTOR","1.3");
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication a(argc, argv);
     QCoreApplication::setOrganizationName("greenpepper software");

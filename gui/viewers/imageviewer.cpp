@@ -20,7 +20,6 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     posAnimation = new QPropertyAnimation(this, "drawPos");
     posAnimation->setEasingCurve(QEasingCurve::OutCubic);
     posAnimation->setDuration(animationSpeed);
-    dpr = devicePixelRatioF();
     animationTimer = new QTimer(this);
     animationTimer->setSingleShot(true);
     cursorTimer = new QTimer(this);
@@ -186,8 +185,8 @@ void ImageViewer::setExpandImage(bool mode) {
 
 // scale at which current image fills the window
 void ImageViewer::updateFitWindowScale() {
-    float newMinScaleX = (float) width()*dpr / mSourceSize.width();
-    float newMinScaleY = (float) height()*dpr / mSourceSize.height();
+    float newMinScaleX = (float) width()*devicePixelRatioF() / mSourceSize.width();
+    float newMinScaleY = (float) height()*devicePixelRatioF() / mSourceSize.height();
     if(newMinScaleX < newMinScaleY) {
         fitWindowScale = newMinScaleX;
     } else {
@@ -196,7 +195,7 @@ void ImageViewer::updateFitWindowScale() {
 }
 
 bool ImageViewer::sourceImageFits() {
-    return mSourceSize.width() < width()*dpr && mSourceSize.height() < height()*dpr;
+    return mSourceSize.width() < width()*devicePixelRatioF() && mSourceSize.height() < height()*devicePixelRatioF();
 }
 
 void ImageViewer::propertySetDrawPos(QPoint newPos) {
@@ -303,9 +302,9 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
     if(animation && smoothAnimatedImages)
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(image) {
-        image->setDevicePixelRatio(dpr);
+        image->setDevicePixelRatio(devicePixelRatioF());
         // maybe pre-calculate size so we wont do it in every draw?
-        QRectF dpiAdjusted(drawingRect.topLeft()/dpr, drawingRect.size()/dpr);
+        QRectF dpiAdjusted(drawingRect.topLeft()/devicePixelRatioF(), drawingRect.size()/devicePixelRatioF());
         //qDebug() << dpiAdjusted;
         painter.drawPixmap(dpiAdjusted, *image, image->rect());
     }
@@ -323,7 +322,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
     }
     if(event->button() == Qt::RightButton) {
         setCursor(QCursor(Qt::SizeVerCursor));
-        setZoomPoint(event->pos()*dpr);
+        setZoomPoint(event->pos()*devicePixelRatioF());
     }
 }
 
@@ -358,8 +357,8 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
 // Okular-like cursor drag behavior
 // TODO: fix multiscreen
 void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
-    if( drawingRect.size().width() > width()*dpr ||
-        drawingRect.size().height() > height()*dpr )
+    if( drawingRect.size().width() > width()*devicePixelRatioF() ||
+        drawingRect.size().height() > height()*devicePixelRatioF() )
     {
         bool wrapped = false;
         QPoint newPos = mapToGlobal(event->pos()); //global
@@ -367,9 +366,9 @@ void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
         if(delta.x() && abs(delta.x()) < desktopSize.width() / 2) {
             int left = drawingRect.x() - delta.x();
             int right = left + drawingRect.width();
-            if(left <= 0 && right > width()*dpr) {
+            if(left <= 0 && right > width()*devicePixelRatioF()) {
                 // wrap mouse along the X axis
-                if(left+1 <= 0 && right-1 > width()*dpr) {
+                if(left+1 <= 0 && right-1 > width()*devicePixelRatioF()) {
                     if(newPos.x() >= desktopSize.width() - 1) {
                         newPos.setX(2);
                         cursor().setPos(newPos);
@@ -387,9 +386,9 @@ void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
         if(delta.y() && abs(delta.y()) < desktopSize.height() / 2) {
             int top = drawingRect.y() - delta.y();
             int bottom = top + drawingRect.height();
-            if(top <= 0 && bottom > height()*dpr) {
+            if(top <= 0 && bottom > height()*devicePixelRatioF()) {
                 // wrap mouse along the Y axis
-                if(top+1 <= 0 && bottom-1 > height()*dpr) {
+                if(top+1 <= 0 && bottom-1 > height()*devicePixelRatioF()) {
                     if(newPos.y() >= desktopSize.height() - 1) {
                         newPos.setY(2);
                         cursor().setPos(newPos);
@@ -414,10 +413,10 @@ void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
 
 // default drag behavior
 void ImageViewer::mouseDrag(QMouseEvent *event) {
-    if(drawingRect.size().width() > width()*dpr ||
-            drawingRect.size().height() > height()*dpr) {
+    if(drawingRect.size().width() > width()*devicePixelRatioF() ||
+            drawingRect.size().height() > height()*devicePixelRatioF()) {
         mouseMoveStartPos -= event->pos();
-        scroll(mouseMoveStartPos.x()*dpr, mouseMoveStartPos.y()*dpr, false);
+        scroll(mouseMoveStartPos.x()*devicePixelRatioF(), mouseMoveStartPos.y()*devicePixelRatioF(), false);
         mouseMoveStartPos = event->pos();
     }
 }
@@ -449,13 +448,13 @@ void ImageViewer::mouseDragZoom(QMouseEvent *event) {
 
 void ImageViewer::fitWidth() {
     if(isDisplaying) {
-        float scale = (float) width()*dpr / mSourceSize.width();
+        float scale = (float) width()*devicePixelRatioF() / mSourceSize.width();
         if(!expandImage && scale > 1.0) {
             fitNormal();
         } else {
             setScale(scale);
             centerImage();
-            if(drawingRect.height() > height()*dpr)
+            if(drawingRect.height() > height()*devicePixelRatioF())
                 drawingRect.moveTop(0);
             update();
         }
@@ -466,8 +465,8 @@ void ImageViewer::fitWidth() {
 
 void ImageViewer::fitWindow() {
     if(isDisplaying) {
-        bool h = mSourceSize.height() <= height()*dpr;
-        bool w = mSourceSize.width() <= width()*dpr;
+        bool h = mSourceSize.height() <= height()*devicePixelRatioF();
+        bool w = mSourceSize.width() <= width()*devicePixelRatioF();
         // source image fits entirely
         if(h && w && !expandImage) {
             fitNormal();
@@ -488,7 +487,7 @@ void ImageViewer::fitNormal() {
     }
     setScale(1.0);
     centerImage();
-    if(drawingRect.height() > height()*dpr) {
+    if(drawingRect.height() > height()*devicePixelRatioF()) {
         drawingRect.moveTop(0);
     }
     update();
@@ -544,33 +543,33 @@ void ImageViewer::resizeEvent(QResizeEvent *event) {
 // center image if it is smaller than parent
 // align image's corner to window corner if needed
 void ImageViewer::centerImage() {
-    if(drawingRect.height() <= height()*dpr) {
-        drawingRect.moveTop((height()*dpr - drawingRect.height()) / 2);
+    if(drawingRect.height() <= height()*devicePixelRatioF()) {
+        drawingRect.moveTop((height()*devicePixelRatioF() - drawingRect.height()) / 2);
     } else {
         snapEdgeVertical();
     }
-    if(drawingRect.width() <= width()*dpr) {
-        drawingRect.moveLeft((width()*dpr - drawingRect.width()) / 2);
+    if(drawingRect.width() <= width()*devicePixelRatioF()) {
+        drawingRect.moveLeft((width()*devicePixelRatioF() - drawingRect.width()) / 2);
     } else {
         snapEdgeHorizontal();
     }
 }
 
 void ImageViewer::snapEdgeHorizontal() {
-    if(drawingRect.x() > 0 && drawingRect.right() > width()*dpr) {
+    if(drawingRect.x() > 0 && drawingRect.right() > width()*devicePixelRatioF()) {
         drawingRect.moveLeft(0);
     }
-    if(width()*dpr - drawingRect.x() > drawingRect.width()) {
-        drawingRect.moveRight(width()*dpr);
+    if(width()*devicePixelRatioF() - drawingRect.x() > drawingRect.width()) {
+        drawingRect.moveRight(width()*devicePixelRatioF());
     }
 }
 
 void ImageViewer::snapEdgeVertical() {
-    if(drawingRect.y() > 0 && drawingRect.bottom() > height()*dpr) {
+    if(drawingRect.y() > 0 && drawingRect.bottom() > height()*devicePixelRatioF()) {
         drawingRect.moveTop(0);
     }
-    if(height()*dpr - drawingRect.y() > drawingRect.height()) {
-        drawingRect.moveBottom(height()*dpr);
+    if(height()*devicePixelRatioF() - drawingRect.y() > drawingRect.height()) {
+        drawingRect.moveBottom(height()*devicePixelRatioF());
     }
 }
 
@@ -583,10 +582,10 @@ void ImageViewer::stopPosAnimation() {
 void ImageViewer::scroll(int dx, int dy, bool smooth) {
     stopPosAnimation();
     QPoint destTopLeft = drawingRect.topLeft();
-    if(drawingRect.size().width() > width()*dpr) {
+    if(drawingRect.size().width() > width()*devicePixelRatioF()) {
         destTopLeft.setX(scrolledX(dx));
     }
-    if(drawingRect.size().height() > height()*dpr) {
+    if(drawingRect.size().height() > height()*devicePixelRatioF()) {
         destTopLeft.setY(scrolledY(dy));
     }
     if(smooth) {
@@ -599,6 +598,7 @@ void ImageViewer::scroll(int dx, int dy, bool smooth) {
     }
 }
 
+inline
 int ImageViewer::scrolledX(int dx) {
     int newXPos = drawingRect.left();
     if(dx) {
@@ -606,8 +606,8 @@ int ImageViewer::scrolledX(int dx) {
         int right = left + drawingRect.width();
         if(left > 0)
             left = 0;
-        else if (right <= width()*dpr)
-            left = width()*dpr - drawingRect.width();
+        else if (right <= width()*devicePixelRatioF())
+            left = width()*devicePixelRatioF() - drawingRect.width();
         if(left <= 0) {
             newXPos = left;
         }
@@ -615,6 +615,7 @@ int ImageViewer::scrolledX(int dx) {
     return newXPos;
 }
 
+inline
 int ImageViewer::scrolledY(int dy) {
     int newYPos = drawingRect.top();
     if(dy) {
@@ -622,8 +623,8 @@ int ImageViewer::scrolledY(int dy) {
         int bottom = top + drawingRect.height();
         if(top > 0)
             top = 0;
-        else if (bottom <= height()*dpr)
-            top = height()*dpr - drawingRect.height();
+        else if (bottom <= height()*devicePixelRatioF())
+            top = height()*devicePixelRatioF() - drawingRect.height();
         if(top <= 0) {
             newYPos = top;
         }
@@ -659,20 +660,20 @@ void ImageViewer::scaleAroundZoomPoint(float newScale) {
 
 // zoom in around viewport center
 void ImageViewer::zoomIn() {
-    setZoomPoint(rect().center()*dpr);
+    setZoomPoint(rect().center()*devicePixelRatioF());
     doZoomIn();
 }
 
 // zoom out around viewport center
 void ImageViewer::zoomOut() {
-    setZoomPoint(rect().center()*dpr);
+    setZoomPoint(rect().center()*devicePixelRatioF());
     doZoomOut();
 }
 
 // zoom in around cursor
 void ImageViewer::zoomInCursor() {
     if(underMouse()) {
-        setZoomPoint(mapFromGlobal(cursor().pos())*dpr);
+        setZoomPoint(mapFromGlobal(cursor().pos())*devicePixelRatioF());
         doZoomIn();
     } else {
         zoomIn();
@@ -682,7 +683,7 @@ void ImageViewer::zoomInCursor() {
 // zoom out around cursor
 void ImageViewer::zoomOutCursor() {
     if(underMouse()) {
-        setZoomPoint(mapFromGlobal(cursor().pos())*dpr);
+        setZoomPoint(mapFromGlobal(cursor().pos())*devicePixelRatioF());
         doZoomOut();
     } else {
         zoomOut();

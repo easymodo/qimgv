@@ -146,6 +146,7 @@ int ThumbnailLabel::labelNum() {
 void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(widget)
     Q_UNUSED(option)
+    painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
     painter->setOpacity(1.0f);
     qreal dpr = painter->paintEngine()->paintDevice()->devicePixelRatioF();
     if(isHighlighted()) {
@@ -183,9 +184,9 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
 inline
 void ThumbnailLabel::drawThumbnail(QPainter* painter, qreal dpr, QPixmap *pixmap) {
-    pixmap->setDevicePixelRatio(dpr);
-    QPointF drawPosCentered(width()/2 - pixmap->width()/(2*dpr),
-                            highlightBarHeight + (thumbnailSize)/2 - pixmap->height()/(2*dpr));
+    pixmap->setDevicePixelRatio(qApp->devicePixelRatio());
+    QPointF drawPosCentered(width()/2 - pixmap->width()/(2*qApp->devicePixelRatio()),
+                            highlightBarHeight + (thumbnailSize)/2 - pixmap->height()/(2*qApp->devicePixelRatio()));
     painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
 }
 
