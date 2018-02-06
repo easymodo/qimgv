@@ -77,10 +77,10 @@ When you are done press C or M again to hide the panel.
     
   __Others distros (build & install via script):__
   
-  1. Install dependencies ( git, cmake, qt5, libmpv)
+  1. Install dependencies ( git, cmake, qt5 >= 5.6, libmpv >= 0.22)
      - Ubuntu & derivatives
 		```
-		sudo apt install build-essential, cmake, qt5-default, libmpv-dev 
+		sudo apt install build-essential cmake qt5-default libmpv-dev 
 		```
   2. Build
 ```
