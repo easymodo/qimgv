@@ -1,4 +1,5 @@
 /*
+ *
  * Base class for auto-hiding panels.
  * Insert widget you want to show with setWidget().
  */
@@ -11,6 +12,12 @@ SlidePanel::SlidePanel(ContainerWidget *parent)
       slideAmount(30),
       mWidget(NULL)
 {
+    // workaround for https://bugreports.qt.io/browse/QTBUG-66387
+    // TODO: remove this when it'll get fixed. And the QtGlobal include
+    if( strcmp(qVersion(), "5.10.1") == 0 || strcmp(qVersion(), "5.9.4") == 0) {
+        panelVisibleOpacity = 0.999f;
+    }
+
     mLayout.setSpacing(0);
     mLayout.setContentsMargins(0,0,0,0);
     this->setLayout(&mLayout);
@@ -20,12 +27,12 @@ SlidePanel::SlidePanel(ContainerWidget *parent)
     this->setGraphicsEffect(fadeEffect);
     fadeAnimation = new QPropertyAnimation(fadeEffect, "opacity");
     fadeAnimation->setDuration(230);
-    fadeAnimation->setStartValue(1);
+    fadeAnimation->setStartValue(panelVisibleOpacity);
     fadeAnimation->setEndValue(0);
     fadeAnimation->setEasingCurve(QEasingCurve::OutQuart);
     slideAnimation = new QPropertyAnimation(this, "pos");
     slideAnimation->setDuration(300);
-    slideAnimation->setStartValue(QPoint(0,0));
+    slideAnimation->setStartValue(QPoint(0, 0));
     slideAnimation->setEndValue(QPoint(0, -slideAmount));
     slideAnimation->setEasingCurve(QEasingCurve::OutQuart);
 
@@ -57,18 +64,16 @@ bool SlidePanel::hasWidget() {
     return (mWidget != NULL);
 }
 
+// TODO: this misfires with QT_SCALE_FACTOR > 1.0
 void SlidePanel::leaveEvent(QEvent *event) {
     Q_UNUSED(event)
-    // Workaround. For some reason this triggers at (0,0).
-    if(QCursor::pos() == QPoint(0,0))
-        return;
     animGroup->start(QPropertyAnimation::KeepWhenStopped);
 }
 
 void SlidePanel::show() {
     if(hasWidget()) {
         animGroup->stop();
-        fadeEffect->setOpacity(1);
+        fadeEffect->setOpacity(panelVisibleOpacity);
         setProperty("pos", initialPosition);
         QWidget::show();
     } else {
@@ -87,6 +92,6 @@ QRect SlidePanel::staticGeometry() {
 
 void SlidePanel::onAnimationFinish() {
     QWidget::hide();
-    fadeEffect->setOpacity(1);
+    fadeEffect->setOpacity(panelVisibleOpacity);
     setProperty("pos", initialPosition);
 }

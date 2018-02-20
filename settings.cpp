@@ -78,8 +78,11 @@ void Settings::setMpvBinary(QString path) {
 QStringList Settings::supportedFormats() {
     QStringList filters;
     QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-    if(this->playVideos()) {
+    if(this->playWebm()) {
         supportedFormats << "webm";
+    }
+    if(this->playMp4()) {
+        supportedFormats << "mp4";
     }
     for(int i = 0; i < supportedFormats.count(); i++) {
         filters << "*." + QString(supportedFormats.at(i));
@@ -92,8 +95,11 @@ QStringList Settings::supportedFormats() {
 QString Settings::supportedFormatsString() {
     QString filters;
     QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-    if(this->playVideos()) {
+    if(this->playWebm()) {
         supportedFormats << "webm";
+    }
+    if(this->playMp4()) {
+        supportedFormats << "mp4";
     }
     filters.append("Images (");
     for(int i = 0; i < supportedFormats.count(); i++) {
@@ -107,8 +113,11 @@ QString Settings::supportedFormatsString() {
 QStringList Settings::supportedMimeTypes() {
     QStringList filters;
     QList<QByteArray> mimeTypes = QImageReader::supportedMimeTypes();
-    if(this->playVideos()) {
+    if(this->playWebm()) {
         mimeTypes << "video/webm";
+    }
+    if(this->playMp4()) {
+        mimeTypes << "video/mp4";
     }
     for(int i = 0; i < mimeTypes.count(); i++) {
         filters << QString(mimeTypes.at(i));
@@ -117,12 +126,20 @@ QStringList Settings::supportedMimeTypes() {
     return filters;
 }
 
-bool Settings::playVideos() {
-    return settings->s.value("playVideos", true).toBool();
+bool Settings::playWebm() {
+    return settings->s.value("playWebm", true).toBool();
 }
 
-void Settings::setPlayVideos(bool mode) {
-    settings->s.setValue("playVideos", mode);
+void Settings::setPlayWebm(bool mode) {
+    settings->s.setValue("playWebm", mode);
+}
+
+bool Settings::playMp4() {
+    return settings->s.value("playMp4", false).toBool();
+}
+
+void Settings::setPlayMp4(bool mode) {
+    settings->s.setValue("playMp4", mode);
 }
 
 bool Settings::playVideoSounds() {

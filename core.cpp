@@ -669,11 +669,13 @@ void Core::displayImage(Image *img) {
 // TODO: this looks ugly
 void Core::updateInfoString() {
     QString infoString = "";
-    infoString.append("[ " +
-                      QString::number(state.currentIndex + 1) +
-                      "/" +
-                      QString::number(dirManager->fileCount()) +
-                      " ]   ");
+    if(dirManager->fileCount()) {
+        infoString.append("[ " +
+                          QString::number(state.currentIndex + 1) +
+                          "/" +
+                          QString::number(dirManager->fileCount()) +
+                          " ]   ");
+    }
     if(!state.isWaitingForLoader) {
         Image* img = cache->get(dirManager->fileNameAt(state.currentIndex));
         QString name, fullName = img->name();
@@ -684,12 +686,13 @@ void Core::updateInfoString() {
         } else {
             name = fullName;
         }
-        infoString.append(name + "  ");
-        infoString.append("(" +
-                          QString::number(img->width()) +
-                          " x " +
-                          QString::number(img->height()) +
-                          "  ");
+        infoString.append(name + "  (");
+        if(img->width()) {
+            infoString.append(QString::number(img->width()) +
+                              " x " +
+                              QString::number(img->height()) +
+                              "  ");
+        }
         infoString.append(QString::number(img->info()->fileSize()) + " KB)");
     }
     mw->setInfoString(infoString);

@@ -128,7 +128,8 @@ void MainWindow::saveCurrentDisplay() {
 void MainWindow::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
         if(panelEnabled && (isFullScreen() || !panelFullscreenOnly)) {
-            if(mainPanel->triggerRect().contains(event->pos()) && !mainPanel->triggerRect().contains(lastMouseMovePos))
+            if(mainPanel->triggerRect().contains(event->pos())
+               && !mainPanel->triggerRect().contains(lastMouseMovePos))
             {
                 mainPanel->show();
             }

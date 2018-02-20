@@ -20,7 +20,7 @@ A cross-platform image viewer with webm support. Written in qt5.
 
 - Ability to quickly copy / move images to different folders
 
-- Experimental webm playback support via libmpv
+- Experimental video playback support via libmpv
 
 - A nice dark theme, should look identical on every OS / DE
 

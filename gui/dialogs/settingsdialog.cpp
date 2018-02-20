@@ -19,7 +19,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 void SettingsDialog::readSettings() {
     bool setting;
     ui->infiniteScrollingCheckBox->setChecked(settings->infiniteScrolling());
-    ui->playVideosCheckBox->setChecked(settings->playVideos());
+    ui->playWebmCheckBox->setChecked(settings->playWebm());
+    ui->playMp4CheckBox->setChecked(settings->playMp4());
     ui->playSoundsCheckBox->setChecked(settings->playVideoSounds());
     ui->enablePanelCheckBox->setChecked(settings->panelEnabled());
     ui->panelFullscreenOnlyCheckBox->setChecked(settings->panelFullscreenOnly());
@@ -98,7 +99,8 @@ void SettingsDialog::applySettings() {
     settings->setInfiniteScrolling(ui->infiniteScrollingCheckBox->isChecked());
     settings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
     settings->setImageFitMode((ImageFitMode)ui->fitModeComboBox->currentIndex());
-    settings->setPlayVideos(ui->playVideosCheckBox->isChecked());
+    settings->setPlayWebm(ui->playWebmCheckBox->isChecked());
+    settings->setPlayMp4(ui->playMp4CheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
     settings->setPanelEnabled(ui->enablePanelCheckBox->isChecked());
     settings->setPanelFullscreenOnly(ui->panelFullscreenOnlyCheckBox->isChecked());
@@ -231,8 +233,8 @@ void SettingsDialog::onMaxZoomResolutionSliderChanged(int value) {
 
 int SettingsDialog::exec() {
     this->show();
-    resize(this->sizeHint());
-    setMinimumSize(sizeHint());
+    setMinimumSize(sizeHint() + QSize(20, 0));
+    resize(sizeHint() + QSize(20, 0));
     return QDialog::exec();
 }
 

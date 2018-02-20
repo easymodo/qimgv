@@ -60,8 +60,8 @@ public:
     void setWindowGeometry(QRect geometry);
     bool reduceRamUsage();
     void setReduceRamUsage(bool mode);
-    bool playVideos();
-    void setPlayVideos(bool mode);
+    bool playWebm();
+    void setPlayWebm(bool mode);
     bool playVideoSounds();
     void setPlayVideoSounds(bool mode);
     QString cacheDir();
@@ -115,6 +115,8 @@ public:
 
     bool panelFullscreenOnly();
     void setPanelFullscreenOnly(bool mode);
+    bool playMp4();
+    void setPlayMp4(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;

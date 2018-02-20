@@ -1,6 +1,7 @@
 #ifndef SLIDEPANEL_H
 #define SLIDEPANEL_H
 
+#include <QtGlobal>
 #include <QTimeLine>
 #include <QGraphicsOpacityEffect>
 #include <QParallelAnimationGroup>
@@ -44,6 +45,8 @@ protected:
 
 private:
     QRect mStaticGeometry;
+    qreal panelVisibleOpacity = 1.0f;
+
 };
 
 #endif // SLIDEPANEL_H

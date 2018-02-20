@@ -54,6 +54,7 @@ const char *ImageInfo::extension() {
 // ##############################################################
 
 // detect correct file extension
+// TODO: this is just bad
 void ImageInfo::detectType() {
     QMimeDatabase mimeDb;
     QMimeType mimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
@@ -61,6 +62,9 @@ void ImageInfo::detectType() {
 
     if(mimeName == "video/webm") {
         mExtension = "webm";
+        mImageType = ImageType::VIDEO;
+    } else if(mimeName == "video/mp4") {
+        mExtension = "mp4";
         mImageType = ImageType::VIDEO;
     } else if(mimeName == "image/jpeg") {
         mExtension = "jpg";

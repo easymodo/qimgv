@@ -48,7 +48,7 @@ void SlideHPanel::recalculateGeometry() {
         slideAnimation->setEndValue(initialPosition - QPoint(0, slideAmount));
     } else {
         saveStaticGeometry(QRect(QPoint(0, containerSize().height() - panelHeight + 1),
-                                QPoint(containerSize().width(), containerSize().height()) - QPoint(0,1) ));
+                                 QPoint(containerSize().width(), containerSize().height()) - QPoint(0,1) ));
         this->setGeometry(staticGeometry());
         initialPosition = geometry().topLeft(); //QPoint(0, containerSize().height() - height());
         slideAnimation->setStartValue(initialPosition);

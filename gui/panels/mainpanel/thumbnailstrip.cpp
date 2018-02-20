@@ -245,7 +245,7 @@ void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
 }
 
 void ThumbnailStrip::showEvent(QShowEvent *event) {
-    qDebug() << qApp->devicePixelRatio() << this->devicePixelRatioF();
+    //qDebug() << qApp->devicePixelRatio() << this->devicePixelRatioF();
     QWidget::showEvent(event);
     loadVisibleThumbnails();
 }
