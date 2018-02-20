@@ -1,4 +1,4 @@
-qimgv
+qimgv | Current version: 0.6.1
 =====
 A cross-platform image viewer with webm support. Written in qt5.
 
@@ -20,7 +20,7 @@ A cross-platform image viewer with webm support. Written in qt5.
 
 - Ability to quickly copy / move images to different folders
 
-- Experimental video playback support via libmpv
+- Experimental video playback via libmpv
 
 - A nice dark theme, should look identical on every OS / DE
 
@@ -68,6 +68,14 @@ Bring up the panel with C or M shortcut. You will see 9 destination directories,
 With panel visible, use 1 - 9 keys to copy/move current image to corresponding directory.
 
 When you are done press C or M again to hide the panel.
+
+### HiDPI
+
+If qimgv appears too small / too big on your display, you can override the scale factor. Example:
+```
+QT_SCALE_FACTOR="1.5" qimgv /path/to/image.png
+```
+Edit the .desktop file to make it permanent. Using values less than 1.0 may break some things.
 
 ## Installation instructions
 
