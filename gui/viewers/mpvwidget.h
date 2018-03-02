@@ -20,7 +20,15 @@ public:
     void setOption(const QString &name, const QVariant &value);
     void setProperty(const QString& name, const QVariant& value);
     QVariant getProperty(const QString& name) const;
-    QSize sizeHint() const { return QSize(480, 270);}
+    // Related to this:
+    // https://github.com/gnome-mpv/gnome-mpv/issues/245
+    // Let's hope this wont break more than it fixes
+    int width() const {
+        return QOpenGLWidget::width() * this->devicePixelRatioF();
+    }
+    int height() const {
+        return QOpenGLWidget::height() * this->devicePixelRatioF();
+    }
     void setMuted(bool mode);
     void setRepeat(bool mode);
 Q_SIGNALS:

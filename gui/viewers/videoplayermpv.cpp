@@ -23,6 +23,7 @@ bool VideoPlayerMpv::openMedia(Clip *clip) {
             return false;
         m_mpv->command(QStringList() << "loadfile" << file);
         setPaused(false);
+        //qDebug() << m_mpv->size() << this->devicePixelRatioF();
         return true;
     }
     return false;

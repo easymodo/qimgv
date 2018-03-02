@@ -30,11 +30,6 @@ void Settings::validate() {
             settings->s.setValue("lastDir",
                                  QDir::homePath());
         }
-        // minimum cache size
-        if(settings->s.value("cacheSize").toInt() < 32) {
-            settings->s.setValue("cacheSize", "32");
-        }
-
         if(!ok) {
             qDebug() << "Settings: error reading thumbnail size (int conversion failed).";
             qDebug() << "Settings: setting default size.";

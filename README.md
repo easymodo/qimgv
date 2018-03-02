@@ -1,4 +1,4 @@
-qimgv | Current version: 0.6.1
+qimgv | Current version: 0.6.2
 =====
 A cross-platform image viewer with webm support. Written in qt5.
 
@@ -75,7 +75,7 @@ If qimgv appears too small / too big on your display, you can override the scale
 ```
 QT_SCALE_FACTOR="1.5" qimgv /path/to/image.png
 ```
-Edit the .desktop file to make it permanent. Using values less than 1.0 may break some things.
+You can put it in `qimgv.desktop` file to make it permanent. Using values less than `1.0` may break some things.
 
 ## Installation instructions
 
@@ -85,7 +85,7 @@ Edit the .desktop file to make it permanent. Using values less than 1.0 may brea
     
   __Others distros (build & install via script):__
   
-  1. Install dependencies ( git, cmake, qt5 >= 5.6, libmpv >= 0.22)
+  1. Install dependencies ( git, cmake, qt5 >= 5.6, libmpv >= 0.22, mpv)
      - Ubuntu & derivatives
 		```
 		sudo apt install build-essential cmake qt5-default libmpv-dev 

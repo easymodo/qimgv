@@ -32,6 +32,8 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
     mpv::qt::set_option_variant(mpv, "vo", "opengl-cb");
     mpv::qt::set_option_variant(mpv, "video-unscaled", "downscale-big");
 
+    //mpv::qt::set_option_variant(mpv, "video-pan-x", "0.5");
+
     // Loop video
     setRepeat(true);
 
