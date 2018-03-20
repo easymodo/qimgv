@@ -11,6 +11,7 @@
 #include <QDir>
 #include <QKeySequence>
 #include <QMap>
+#include <QVersionNumber>
 #include "components/actionmanager/actionmanager.h"
 
 enum ImageFitMode {
@@ -112,11 +113,13 @@ public:
     void setScalingFilter(int mode);
     bool smoothAnimatedImages();
     void setSmoothAnimatedImages(bool mode);
-
     bool panelFullscreenOnly();
     void setPanelFullscreenOnly(bool mode);
     bool playMp4();
     void setPlayMp4(bool mode);
+    QVersionNumber lastVersion();
+    void setLastVersion(QVersionNumber &ver);
+
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;

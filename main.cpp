@@ -1,4 +1,5 @@
 #include <QApplication>
+#include "appversion.h"
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"
 #include "sharedresources.h"
@@ -23,7 +24,7 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationName("greenpepper software");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
-    QCoreApplication::setApplicationVersion("0.6.2");
+    QCoreApplication::setApplicationVersion(appVersion.normalized().toString());
 
     // needed for mpv
     std::setlocale(LC_NUMERIC, "C");

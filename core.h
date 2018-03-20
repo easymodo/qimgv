@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QMutex>
 #include <malloc.h>
+#include "appversion.h"
 #include "settings.h"
 #include "components/directorymanager/directorymanager.h"
 #include "components/loader/loader.h"
@@ -53,6 +54,7 @@ private:
     void initComponents();
     void connectComponents();
     void initActions();
+    void postUpdate();
 
     // ui stuff
     MainWindow *mw;
@@ -107,6 +109,8 @@ private slots:
     void onFileAdded(int index);
     void showResizeDialog();
     void resize(QSize size);
+    void flipH();
+    void flipV();
     void crop(QRect rect);
     void discardEdits();
     void toggleCropPanel();

@@ -12,48 +12,50 @@ ActionManager::~ActionManager() {
 ActionManager *ActionManager::getInstance() {
     if(!actionManager) {
         actionManager = new ActionManager();
-        createActionList();
         initKeyMap();
         initModMap();
+        initActions();
+        initDefaults();
         initShortcuts();
     }
     return actionManager;
 }
 
 // valid action names
-void ActionManager::createActionList() {
-    actionManager->validActions << "nextImage"
-                                << "prevImage"
-                                << "toggleFullscreen"
-                                << "fitWindow"
-                                << "fitWidth"
-                                << "fitNormal"
-                                << "toggleFitMode"
-                                << "resize"
-                                << "rotateRight"
-                                << "rotateLeft"
-                                << "scrollUp"
-                                << "scrollDown"
-                                << "scrollLeft"
-                                << "scrollRight"
-                                << "zoomIn"
-                                << "zoomOut"
-                                << "zoomInCursor"
-                                << "zoomOutCursor"
-                                << "open"
-                                << "save"
-                                << "saveAs"
-                                << "setWallpaper"
-                                << "crop"
-                                << "removeFile"
-                                << "copyFile"
-                                << "moveFile"
-                                << "jumpToFirst"
-                                << "jumpToLast"
-                                << "openSettings"
-                                << "closeFullScreenOrExit"
-                                << "exit";
-    actionManager->validActions.sort();
+void ActionManager::initActions() {
+    actionManager->actions.insert("nextImage", QVersionNumber(0,6,2));
+    actionManager->actions.insert("prevImage", QVersionNumber(0,6,2));
+    actionManager->actions.insert("toggleFullscreen", QVersionNumber(0,6,2));
+    actionManager->actions.insert("fitWindow", QVersionNumber(0,6,2));
+    actionManager->actions.insert("fitWidth", QVersionNumber(0,6,2));
+    actionManager->actions.insert("fitNormal", QVersionNumber(0,6,2));
+    actionManager->actions.insert("toggleFitMode", QVersionNumber(0,6,2));
+    actionManager->actions.insert("resize", QVersionNumber(0,6,2));
+    actionManager->actions.insert("rotateRight", QVersionNumber(0,6,2));
+    actionManager->actions.insert("rotateLeft", QVersionNumber(0,6,2));
+    actionManager->actions.insert("scrollUp", QVersionNumber(0,6,2));
+    actionManager->actions.insert("scrollDown", QVersionNumber(0,6,2));
+    actionManager->actions.insert("scrollLeft", QVersionNumber(0,6,2));
+    actionManager->actions.insert("scrollRight", QVersionNumber(0,6,2));
+    actionManager->actions.insert("zoomIn", QVersionNumber(0,6,2));
+    actionManager->actions.insert("zoomOut", QVersionNumber(0,6,2));
+    actionManager->actions.insert("zoomInCursor", QVersionNumber(0,6,2));
+    actionManager->actions.insert("zoomOutCursor", QVersionNumber(0,6,2));
+    actionManager->actions.insert("open", QVersionNumber(0,6,2));
+    actionManager->actions.insert("save", QVersionNumber(0,6,2));
+    actionManager->actions.insert("saveAs", QVersionNumber(0,6,2));
+    actionManager->actions.insert("setWallpaper", QVersionNumber(0,6,2));
+    actionManager->actions.insert("crop", QVersionNumber(0,6,2));
+    actionManager->actions.insert("removeFile", QVersionNumber(0,6,2));
+    actionManager->actions.insert("copyFile", QVersionNumber(0,6,2));
+    actionManager->actions.insert("moveFile", QVersionNumber(0,6,2));
+    actionManager->actions.insert("jumpToFirst", QVersionNumber(0,6,2));
+    actionManager->actions.insert("jumpToLast", QVersionNumber(0,6,2));
+    actionManager->actions.insert("openSettings", QVersionNumber(0,6,2));
+    actionManager->actions.insert("closeFullScreenOrExit", QVersionNumber(0,6,2));
+    actionManager->actions.insert("exit", QVersionNumber(0,6,2));
+    actionManager->actions.insert("flipH", QVersionNumber(0,6,3));
+    actionManager->actions.insert("flipV", QVersionNumber(0,6,3));
 }
 
 // layout-independent key codes
@@ -219,8 +221,52 @@ void ActionManager::initShortcuts() {
     }
 }
 
+// TODO: move all this action trash to enums
+void ActionManager::initDefaults() {
+    actionManager->defaults.insert("Right", "nextImage");
+    actionManager->defaults.insert("Left", "prevImage");
+    actionManager->defaults.insert("XButton2", "nextImage");
+    actionManager->defaults.insert("XButton1", "prevImage");
+    actionManager->defaults.insert("WheelUp", "nextImage");
+    actionManager->defaults.insert("WheelDown", "prevImage");
+    actionManager->defaults.insert("F", "toggleFullscreen");
+    actionManager->defaults.insert("F11", "toggleFullscreen");
+    actionManager->defaults.insert("LMB_DoubleClick", "toggleFullscreen");
+    actionManager->defaults.insert("RMB_DoubleClick", "toggleFitMode");
+    actionManager->defaults.insert("MiddleButton", "toggleFitMode");
+    actionManager->defaults.insert("Space", "toggleFitMode");
+    actionManager->defaults.insert("1", "fitWindow");
+    actionManager->defaults.insert("2", "fitWidth");
+    actionManager->defaults.insert("3", "fitNormal");
+    actionManager->defaults.insert("R", "resize");
+    actionManager->defaults.insert("H", "flipH");
+    actionManager->defaults.insert("V", "flipV");
+    actionManager->defaults.insert("Ctrl+R", "rotateRight");
+    actionManager->defaults.insert("Ctrl+L", "rotateLeft");
+    actionManager->defaults.insert("Ctrl+WheelDown", "zoomInCursor");
+    actionManager->defaults.insert("Ctrl+WheelUp", "zoomOutCursor");
+    actionManager->defaults.insert("Ctrl+Up", "zoomIn");
+    actionManager->defaults.insert("Ctrl+Down", "zoomOut");
+    actionManager->defaults.insert("Up", "scrollUp");
+    actionManager->defaults.insert("Down", "scrollDown");
+    actionManager->defaults.insert("Ctrl+O", "open");
+    actionManager->defaults.insert("Ctrl+S", "save");
+    actionManager->defaults.insert("Ctrl+Shift+S", "saveAs");
+    //actionManager->defaults.insert("Ctrl+W", "setWallpaper");
+    actionManager->defaults.insert("X", "crop");
+    actionManager->defaults.insert("Ctrl+P", "openSettings");
+    actionManager->defaults.insert("Alt+X", "exit");
+    actionManager->defaults.insert("Ctrl+Q", "exit");
+    actionManager->defaults.insert("escape", "closeFullScreenOrExit");
+    actionManager->defaults.insert("Shift+delete", "removeFile");
+    actionManager->defaults.insert("C", "copyFile");
+    actionManager->defaults.insert("M", "moveFile");
+    actionManager->defaults.insert("home", "jumpToFirst");
+    actionManager->defaults.insert("end", "jumpToLast");
+}
+
 void ActionManager::addShortcut(QString keys, QString action) {
-    if(actionManager->validActions.contains(action)) {
+    if(actionManager->actions.contains(action)) {
         actionManager->shortcuts.insert(keys, action);
     } else {
         qDebug() << "ActionManager: action " << action << " is invalid.";
@@ -231,8 +277,15 @@ void ActionManager::removeShortcut(QString keys) {
     actionManager->shortcuts.remove(keys);
 }
 
-const QStringList &ActionManager::actionList() {
-    return actionManager->validActions;
+QStringList ActionManager::actionList() {
+    QStringList actionList;
+    QMapIterator<QString, QVersionNumber> i(actions);
+      while(i.hasNext()) {
+          i.next();
+          actionList.append(i.key());
+      }
+    //actionList.sort(); // map should be already sorted
+    return actionList;
 }
 
 const QStringList ActionManager::keys() {
@@ -242,7 +295,7 @@ const QStringList ActionManager::keys() {
         i.next();
         list << i.value();
     }
-    list << "XButton1" << "XButton2" << "LMB" << "RMB" << "MiddleButton" << "WheelUp" << "WheelDown";;
+    list << "XButton1" << "XButton2" << "LMB" << "RMB" << "MiddleButton" << "WheelUp" << "WheelDown";
     return list;
 }
 
@@ -263,45 +316,27 @@ QString ActionManager::keyForNativeScancode(int scanCode) {
 }
 
 void ActionManager::resetDefaults() {
-    actionManager->shortcuts.clear();
-    actionManager->addShortcut("Right", "nextImage");
-    actionManager->addShortcut("Left", "prevImage");
-    actionManager->addShortcut("XButton2", "nextImage");
-    actionManager->addShortcut("XButton1", "prevImage");
-    actionManager->addShortcut("WheelUp", "nextImage");
-    actionManager->addShortcut("WheelDown", "prevImage");
-    actionManager->addShortcut("F", "toggleFullscreen");
-    actionManager->addShortcut("F11", "toggleFullscreen");
-    actionManager->addShortcut("LMB_DoubleClick", "toggleFullscreen");
-    actionManager->addShortcut("RMB_DoubleClick", "toggleFitMode");
-    actionManager->addShortcut("MiddleButton", "toggleFitMode");
-    actionManager->addShortcut("Space", "toggleFitMode");
-    actionManager->addShortcut("1", "fitWindow");
-    actionManager->addShortcut("2", "fitWidth");
-    actionManager->addShortcut("3", "fitNormal");
-    actionManager->addShortcut("R", "resize");
-    actionManager->addShortcut("Ctrl+R", "rotateRight");
-    actionManager->addShortcut("Ctrl+L", "rotateLeft");
-    actionManager->addShortcut("Ctrl+WheelDown", "zoomInCursor");
-    actionManager->addShortcut("Ctrl+WheelUp", "zoomOutCursor");
-    actionManager->addShortcut("Ctrl+Up", "zoomIn");
-    actionManager->addShortcut("Ctrl+Down", "zoomOut");
-    actionManager->addShortcut("Up", "scrollUp");
-    actionManager->addShortcut("Down", "scrollDown");
-    actionManager->addShortcut("Ctrl+O", "open");
-    actionManager->addShortcut("Ctrl+S", "save");
-    actionManager->addShortcut("Ctrl+Shift+S", "saveAs");
-    //actionManager->addShortcut("Ctrl+W", "setWallpaper");
-    actionManager->addShortcut("X", "crop");
-    actionManager->addShortcut("Ctrl+P", "openSettings");
-    actionManager->addShortcut("Alt+X", "exit");
-    actionManager->addShortcut("Ctrl+Q", "exit");
-    actionManager->addShortcut("escape", "closeFullScreenOrExit");
-    actionManager->addShortcut("Shift+delete", "removeFile");
-    actionManager->addShortcut("C", "copyFile");
-    actionManager->addShortcut("M", "moveFile");
-    actionManager->addShortcut("home", "jumpToFirst");
-    actionManager->addShortcut("end", "jumpToLast");
+    actionManager->shortcuts = actionManager->defaults;
+}
+
+// argument: target version
+// every action added from next version onwards will be reset
+// TODO: maybe move this to core or something?
+// TODO: save this to settings immediately
+// settings <=> actionManager <=> settingsDialog
+void ActionManager::resetDefaultsFromVersion(QVersionNumber lastVer) {
+    QMapIterator<QString, QString> i(defaults);
+    while(i.hasNext()) {
+        i.next();
+        if(actions.value(i.value()) > lastVer) {
+            if(!shortcuts.contains(i.key())) {
+                shortcuts.insert(i.key(), i.value());
+                qDebug() << "ActionManager: new action " << i.value() << " - assigning as [" << i.key() << "]";
+            } else {
+                qDebug() << "ActionManager: new action " << i.value() << " - shortcut [" << i.key() << "] already assigned to another action " << actionForShortcut(i.key());
+            }
+        }
+    }
 }
 
 bool ActionManager::processWheelEvent(QWheelEvent *event) {

@@ -137,6 +137,20 @@ void Settings::setPlayMp4(bool mode) {
     settings->s.setValue("playMp4", mode);
 }
 
+// default to v0.6.2
+QVersionNumber Settings::lastVersion() {
+    int vmajor = settings->s.value("lastVerMajor", 0).toInt();
+    int vminor = settings->s.value("lastVerMinor", 6).toInt();
+    int vmicro = settings->s.value("lastVerMicro", 2).toInt();
+    return QVersionNumber(vmajor, vminor, vmicro);
+}
+
+void Settings::setLastVersion(QVersionNumber &ver) {
+    settings->s.setValue("lastVerMajor", ver.majorVersion());
+    settings->s.setValue("lastVerMinor", ver.minorVersion());
+    settings->s.setValue("lastVerMicro", ver.microVersion());
+}
+
 bool Settings::playVideoSounds() {
     return settings->s.value("playVideoSounds", false).toBool();
 }

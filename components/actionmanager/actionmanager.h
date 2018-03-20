@@ -21,25 +21,27 @@ public:
     void resetDefaults();
     QString actionForScanCode(int code);
     QString actionForShortcut(QString keys);
-    const QStringList& actionList();
+    QStringList actionList();
     const QMap<QString,QString>& allShortcuts();
     void removeShortcut(QString keys);
     const QStringList keys();
     void removeAll();
     QString keyForNativeScancode(int scanCode);
+    void resetDefaultsFromVersion(QVersionNumber lastVer);
 
 public slots:
     bool invokeAction(QString actionName);
 private:
     explicit ActionManager(QObject *parent = 0);
-    QMap<QString, QString> shortcuts;
+    QMap<QString, QVersionNumber> actions;
+    QMap<QString, QString> defaults, shortcuts; // <shortcut, action>
     QMap<int, QString> keyMap;
     QMap<QString, Qt::KeyboardModifier> modMap;
-    static void createActionList();
+    static void initDefaults();
+    static void initActions();
     static void initKeyMap();
     static void initModMap();
     static void initShortcuts();
-    QStringList validActions;
     QString modifierKeys(QEvent *event);
     bool processWheelEvent(QWheelEvent *event);
     bool processMouseEvent(QMouseEvent *event);
@@ -60,6 +62,8 @@ signals:
     void fitWindow();
     void fitWidth();
     void fitNormal();
+    void flipH();
+    void flipV();
     void toggleFitMode();
     void toggleFullscreen();
     void scrollUp();

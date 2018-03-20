@@ -71,7 +71,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideNone</enum>
@@ -1290,6 +1290,9 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QTableWidget" name="shortcutsTableWidget"/>
           </item>
           <item>
            <widget class="QListWidget" name="shortcutsListWidget">

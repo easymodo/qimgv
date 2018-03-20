@@ -28,6 +28,11 @@ Core::Core()
     initActions();
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+
+    QVersionNumber lastVersion = settings->lastVersion();
+    qDebug() << "current ver:" << lastVersion.toString() << "lastVer:" << appVersion.toString();
+    if(appVersion > lastVersion)
+        postUpdate();
 }
 
 void Core::readSettings() {
@@ -111,6 +116,8 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(scrollLeft()), viewerWidget, SIGNAL(scrollLeft()));
     connect(actionManager, SIGNAL(scrollRight()), viewerWidget, SIGNAL(scrollRight()));
     connect(actionManager, SIGNAL(resize()), this, SLOT(showResizeDialog()));
+    connect(actionManager, SIGNAL(flipH()), this, SLOT(flipH()));
+    connect(actionManager, SIGNAL(flipV()), this, SLOT(flipV()));
     connect(actionManager, SIGNAL(rotateLeft()), this, SLOT(rotateLeft()));
     connect(actionManager, SIGNAL(rotateRight()), this, SLOT(rotateRight()));
     connect(actionManager, SIGNAL(openSettings()), mw, SLOT(showSettings()));
@@ -126,6 +133,14 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(moveFile()), mw, SLOT(triggerMoveOverlay()));
     connect(actionManager, SIGNAL(jumpToFirst()), this, SLOT(jumpToFirst()));
     connect(actionManager, SIGNAL(jumpToLast()), this, SLOT(jumpToLast()));
+}
+
+void Core::postUpdate() {
+    QVersionNumber lastVer = settings->lastVersion();
+    qDebug() << "Updating: " << settings->lastVersion().toString() << ">" << appVersion.toString();
+    mw->showMessage("Updating: "+settings->lastVersion().toString()+" > "+appVersion.toString());
+    actionManager->resetDefaultsFromVersion(lastVer);
+    //settings->setLastVersion(appVersion); // TODO: DON'T FORGET TO UNCOMMENT THIS!!
 }
 
 void Core::rotateLeft() {
@@ -282,6 +297,57 @@ void Core::resize(QSize size) {
     }
 }
 
+// glowing_brain.jpg
+void Core::flipH() {
+    if(state.hasActiveImage) {
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        cache->lock();
+        if(cache->reserve(nameKey)) {
+            auto *img = cache->get(nameKey);
+            if(img && img->type() == STATIC) {
+                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                imgStatic->setEditedImage(
+                            ImageLib::flipH(imgStatic->getImage()));
+                cache->release(nameKey);
+                cache->unlock();
+                displayImage(img);
+            } else {
+                cache->release(nameKey);
+                cache->unlock();
+                mw->showMessage("Editing gifs/video is unsupported.");
+            }
+        } else {
+            cache->unlock();
+            qDebug() << "Core::flipH() - could not lock cache object.";
+        }
+    }
+}
+
+void Core::flipV() {
+    if(state.hasActiveImage) {
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        cache->lock();
+        if(cache->reserve(nameKey)) {
+            auto *img = cache->get(nameKey);
+            if(img && img->type() == STATIC) {
+                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                imgStatic->setEditedImage(
+                            ImageLib::flipV(imgStatic->getImage()));
+                cache->release(nameKey);
+                cache->unlock();
+                displayImage(img);
+            } else {
+                cache->release(nameKey);
+                cache->unlock();
+                mw->showMessage("Editing gifs/video is unsupported.");
+            }
+        } else {
+            cache->unlock();
+            qDebug() << "Core::flipV() - could not lock cache object.";
+        }
+    }
+}
+
 // TODO: simplify. too much copypasted code
 void Core::crop(QRect rect) {
     if(state.hasActiveImage) {
@@ -307,6 +373,31 @@ void Core::crop(QRect rect) {
         } else {
             cache->unlock();
             qDebug() << "Core::crop() - could not lock cache object.";
+        }
+    }
+}
+
+void Core::rotateByDegrees(int degrees) {
+    if(state.hasActiveImage) {
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        cache->lock();
+        if(cache->reserve(nameKey)) {
+            auto *img = cache->get(nameKey);
+            if(img && img->type() == STATIC) {
+                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                imgStatic->setEditedImage(
+                            ImageLib::rotate(imgStatic->getImage(), degrees));
+                cache->release(nameKey);
+                cache->unlock();
+                displayImage(img);
+            } else {
+                cache->release(nameKey);
+                cache->unlock();
+                mw->showMessage("Editing gifs/video is unsupported.");
+            }
+        } else {
+            cache->unlock();
+            qDebug() << "Core::rotateByDegrees() - could not lock cache object.";
         }
     }
 }
@@ -396,31 +487,6 @@ void Core::forwardThumbnail(Thumbnail *thumbnail) {
         thumbnailPanelWidget->setThumbnail(index, thumbnail);
     } else {
         delete thumbnail;
-    }
-}
-
-void Core::rotateByDegrees(int degrees) {
-    if(state.hasActiveImage) {
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
-        if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
-            if(img && img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img);
-                imgStatic->setEditedImage(
-                            ImageLib::rotate(imgStatic->getImage(), degrees));
-                cache->release(nameKey);
-                cache->unlock();
-                displayImage(img);
-            } else {
-                cache->release(nameKey);
-                cache->unlock();
-                mw->showMessage("Editing gifs/video is unsupported.");
-            }
-        } else {
-            cache->unlock();
-            qDebug() << "Core::rotateByDegrees() - could not lock cache object.";
-        }
     }
 }
 

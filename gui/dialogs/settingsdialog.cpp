@@ -3,7 +3,8 @@
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::SettingsDialog) {
+    ui(new Ui::SettingsDialog)
+{
     ui->setupUi(this);
     this->setWindowTitle("Preferences - qimgv " +
                          QCoreApplication::applicationVersion());
@@ -14,6 +15,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     connect(this, SIGNAL(settingsChanged()),
             settings, SLOT(sendChangeNotification()));
     readSettings();
+}
+
+SettingsDialog::~SettingsDialog() {
+    delete ui;
 }
 
 void SettingsDialog::readSettings() {
@@ -50,9 +55,7 @@ void SettingsDialog::readSettings() {
 
     // ##### UI #####
     ui->scalingQualityComboBox->setCurrentIndex(settings->scalingFilter());
-
     ui->fullscreenCheckBox->setChecked(settings->fullscreenMode());
-
     ui->panelPositionComboBox->setCurrentIndex(settings->panelPosition());
 
     //bg color
@@ -236,8 +239,4 @@ int SettingsDialog::exec() {
     setMinimumSize(sizeHint() + QSize(20, 0));
     resize(sizeHint() + QSize(20, 0));
     return QDialog::exec();
-}
-
-SettingsDialog::~SettingsDialog() {
-    delete ui;
 }
