@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QColorDialog>
 #include <QThreadPool>
+#include <QTableWidget>
 #include <QDebug>
 #include "gui/customwidgets/clickablelabel.h"
 #include "gui/customwidgets/settingsshortcutwidget.h"
@@ -39,9 +40,10 @@ private:
 
 
     int thumbSizeCustom;
-    QStringList shortcutKeys;
+    QStringList actionList, shortcutKeys;
 
     void applyShortcuts();
+    void addShortcutToTable(const QString &action, const QString &shortcut);
 private slots:
     void applySettings();
     void applySettingsAndClose();

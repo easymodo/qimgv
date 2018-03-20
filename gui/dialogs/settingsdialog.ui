@@ -1292,22 +1292,41 @@
            </layout>
           </item>
           <item>
-           <widget class="QTableWidget" name="shortcutsTableWidget"/>
-          </item>
-          <item>
-           <widget class="QListWidget" name="shortcutsListWidget">
-            <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOff</enum>
+           <widget class="QTableWidget" name="shortcutsTableWidget">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>270</height>
+             </size>
             </property>
-            <property name="viewMode">
-             <enum>QListView::ListMode</enum>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
             </property>
-            <property name="uniformItemSizes">
-             <bool>false</bool>
-            </property>
-            <property name="sortingEnabled">
+            <property name="alternatingRowColors">
              <bool>true</bool>
             </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <property name="sortingEnabled">
+             <bool>false</bool>
+            </property>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <column>
+             <property name="text">
+              <string>Action</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Shortcut</string>
+             </property>
+            </column>
            </widget>
           </item>
          </layout>

@@ -19,11 +19,13 @@ public:
     QComboBox action, key;
     QCheckBox ctrl, alt, shift;
     QPushButton okButton, cancelButton;
-    QString text();
+    QString selectedAction();
+    QString selectedShortcut();
 
 signals:
 
 public slots:
+private:
 };
 
 #endif // SETTINGSSHORTCUTWIDGET_H

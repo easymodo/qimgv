@@ -284,7 +284,7 @@ QStringList ActionManager::actionList() {
           i.next();
           actionList.append(i.key());
       }
-    //actionList.sort(); // map should be already sorted
+    actionList.sort();
     return actionList;
 }
 
@@ -303,7 +303,7 @@ const QMap<QString, QString> &ActionManager::allShortcuts() {
     return actionManager->shortcuts;
 }
 
-void ActionManager::removeAll() {
+void ActionManager::removeAllShortcuts() {
     shortcuts.clear();
 }
 

@@ -8,8 +8,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle("Preferences - qimgv " +
                          QCoreApplication::applicationVersion());
+    ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->bgColorLabel->setAutoFillBackground(true);
     ui->accentColorLabel->setAutoFillBackground(true);
+    actionList = actionManager->actionList();
     shortcutKeys = actionManager->keys();
     ui->versionLabel->setText(QApplication::applicationVersion());
     connect(this, SIGNAL(settingsChanged()),
@@ -153,35 +155,48 @@ void SettingsDialog::applySettingsAndClose() {
 }
 
 void SettingsDialog::fillShortcuts() {
-    ui->shortcutsListWidget->clear();
+    ui->shortcutsTableWidget->clearContents();
+    ui->shortcutsTableWidget->setRowCount(0);
     const QMap<QString, QString> shortcuts = actionManager->allShortcuts();
     QMapIterator<QString, QString> i(shortcuts);
     while(i.hasNext()) {
         i.next();
-        ui->shortcutsListWidget->addItem(i.value() + "=" + i.key());
+        addShortcutToTable(i.value(), i.key());
     }
 }
 
+// does not check if the shortcut already there
+void SettingsDialog::addShortcutToTable(const QString &action, const QString &shortcut) {
+    ui->shortcutsTableWidget->setRowCount(ui->shortcutsTableWidget->rowCount() + 1);
+    QTableWidgetItem *actionItem = new QTableWidgetItem(action);
+    actionItem->setTextAlignment(Qt::AlignCenter);
+    ui->shortcutsTableWidget->setItem(ui->shortcutsTableWidget->rowCount() - 1, 0, actionItem);
+    QTableWidgetItem *shortcutItem = new QTableWidgetItem(shortcut);
+    shortcutItem->setTextAlignment(Qt::AlignCenter);
+    ui->shortcutsTableWidget->setItem(ui->shortcutsTableWidget->rowCount() - 1, 1, shortcutItem);
+    // EFFICIENCY
+    ui->shortcutsTableWidget->sortByColumn(0, Qt::AscendingOrder);
+}
+
 void SettingsDialog::addShortcut() {
-    const QStringList actionList = actionManager->actionList(); // move to constructor?
     SettingsShortcutWidget w(actionList, shortcutKeys, this);
     if(w.exec()) {
-        ui->shortcutsListWidget->addItem(w.text());
+        addShortcutToTable(w.selectedAction(), w.selectedShortcut());
     }
 }
 
 void SettingsDialog::removeShortcut() {
-    int row = ui->shortcutsListWidget->currentRow();
+    int row = ui->shortcutsTableWidget->currentRow();
     if(row >= 0) {
-        delete ui->shortcutsListWidget->takeItem(row);
+        ui->shortcutsTableWidget->removeRow(row);
     }
 }
 
 void SettingsDialog::applyShortcuts() {
-    actionManager->removeAll();
-    for(int i = 0; i < ui->shortcutsListWidget->count(); i++) {
-        QStringList s = ui->shortcutsListWidget->item(i)->text().split("=");
-        actionManager->addShortcut(s[1], s[0]);
+    actionManager->removeAllShortcuts();
+    for(int i = 0; i < ui->shortcutsTableWidget->rowCount(); i++) {
+        actionManager->addShortcut(ui->shortcutsTableWidget->item(i, 1)->text(),
+                                   ui->shortcutsTableWidget->item(i, 0)->text());
     }
 }
 

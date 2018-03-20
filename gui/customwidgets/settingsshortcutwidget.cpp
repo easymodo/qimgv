@@ -34,17 +34,20 @@ SettingsShortcutWidget::SettingsShortcutWidget (const QStringList &actionList, c
     setLayout (&hBox);
 }
 
-QString SettingsShortcutWidget::text() {
-    QString str;
-    str = action.currentText() +"=";
+SettingsShortcutWidget::~SettingsShortcutWidget() {
+
+}
+
+QString SettingsShortcutWidget::selectedAction() {
+    return action.currentText();
+}
+
+QString SettingsShortcutWidget::selectedShortcut() {
+    QString str = "";
     if (ctrl.isChecked()) str.append ("Ctrl+");
     if (alt.isChecked()) str.append ("Alt+");
     if (shift.isChecked()) str.append ("Shift+");
     str.append (key.currentText());
     return str;
-}
-
-SettingsShortcutWidget::~SettingsShortcutWidget() {
-
 }
 

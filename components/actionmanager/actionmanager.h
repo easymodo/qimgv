@@ -25,7 +25,7 @@ public:
     const QMap<QString,QString>& allShortcuts();
     void removeShortcut(QString keys);
     const QStringList keys();
-    void removeAll();
+    void removeAllShortcuts();
     QString keyForNativeScancode(int scanCode);
     void resetDefaultsFromVersion(QVersionNumber lastVer);
 
