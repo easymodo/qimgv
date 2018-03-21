@@ -145,7 +145,7 @@ void SettingsDialog::applySettings() {
     settings->setMaxZoomedResolution(ui->maxZoomResSlider->value());
 
     applyShortcuts();
-    settings->saveShortcuts();
+    actionManager->saveShortcuts();
     emit settingsChanged();
 }
 

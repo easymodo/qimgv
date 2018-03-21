@@ -12,7 +12,6 @@
 #include <QKeySequence>
 #include <QMap>
 #include <QVersionNumber>
-#include "components/actionmanager/actionmanager.h"
 
 enum ImageFitMode {
     FIT_WINDOW,
@@ -78,8 +77,8 @@ public:
     bool fullscreenTaskbarShown();
     void setFullscreenTaskbarShown(bool mode);
     QStringList supportedFormats();
-    void readShortcuts();
-    void saveShortcuts();
+    void readShortcuts(QMap<QString, QString> &shortcuts);
+    void saveShortcuts(const QMap<QString, QString> &shortcuts);
     bool panelEnabled();
     void setPanelEnabled(bool mode);
     int lastDisplay();

@@ -30,7 +30,6 @@ Core::Core()
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 
     QVersionNumber lastVersion = settings->lastVersion();
-    qDebug() << "current ver:" << lastVersion.toString() << "lastVer:" << appVersion.toString();
     if(appVersion > lastVersion)
         postUpdate();
 }
@@ -140,7 +139,8 @@ void Core::postUpdate() {
     qDebug() << "Updating: " << settings->lastVersion().toString() << ">" << appVersion.toString();
     mw->showMessage("Updating: "+settings->lastVersion().toString()+" > "+appVersion.toString());
     actionManager->resetDefaultsFromVersion(lastVer);
-    //settings->setLastVersion(appVersion); // TODO: DON'T FORGET TO UNCOMMENT THIS!!
+    actionManager->saveShortcuts();
+    settings->setLastVersion(appVersion);
 }
 
 void Core::rotateLeft() {

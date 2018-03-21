@@ -327,22 +327,21 @@ void Settings::sendChangeNotification() {
     emit settingsChanged();
 }
 
-void Settings::readShortcuts() {
+void Settings::readShortcuts(QMap<QString, QString> &shortcuts) {
     settings->s.beginGroup("Controls");
     QStringList in, pair;
     in = settings->s.value("shortcuts").toStringList();
     for(int i = 0; i < in.count(); i++) {
         pair = in[i].split("=");
         if(!pair[0].isEmpty() && !pair[1].isEmpty()) {
-            actionManager->addShortcut(pair[1], pair[0]);
+            shortcuts.insert(pair[1], pair[0]);
         }
     }
     settings->s.endGroup();
 }
 
-void Settings::saveShortcuts() {
+void Settings::saveShortcuts(const QMap<QString, QString> &shortcuts) {
     settings->s.beginGroup("Controls");
-    const QMap<QString, QString> &shortcuts = actionManager->allShortcuts();
     QMapIterator<QString, QString> i(shortcuts);
     QStringList out;
     while(i.hasNext()) {

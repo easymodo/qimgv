@@ -28,6 +28,7 @@ public:
     void removeAllShortcuts();
     QString keyForNativeScancode(int scanCode);
     void resetDefaultsFromVersion(QVersionNumber lastVer);
+    void saveShortcuts();
 
 public slots:
     bool invokeAction(QString actionName);
@@ -47,8 +48,8 @@ private:
     bool processMouseEvent(QMouseEvent *event);
     bool processKeyEvent(QKeyEvent *event);
     bool invokeActionForShortcut(QString action);
-    void lock();
-    void unlock();
+    void validateShortcuts();
+    void readShortcuts();
 
 signals:
     void open();

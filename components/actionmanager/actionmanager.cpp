@@ -213,9 +213,8 @@ void ActionManager::initModMap() {
     actionManager->modMap.insert("Alt+", Qt::AltModifier);
 }
 
-// fills actionManager->keyMap with defaults
 void ActionManager::initShortcuts() {
-    settings->readShortcuts();
+    actionManager->readShortcuts();
     if(actionManager->shortcuts.isEmpty()) {
         actionManager->resetDefaults();
     }
@@ -280,10 +279,10 @@ void ActionManager::removeShortcut(QString keys) {
 QStringList ActionManager::actionList() {
     QStringList actionList;
     QMapIterator<QString, QVersionNumber> i(actions);
-      while(i.hasNext()) {
-          i.next();
-          actionList.append(i.key());
-      }
+    while(i.hasNext()) {
+        i.next();
+        actionList.append(i.key());
+    }
     actionList.sort();
     return actionList;
 }
@@ -337,6 +336,10 @@ void ActionManager::resetDefaultsFromVersion(QVersionNumber lastVer) {
             }
         }
     }
+}
+
+void ActionManager::saveShortcuts() {
+    settings->saveShortcuts(actionManager->shortcuts);
 }
 
 bool ActionManager::processWheelEvent(QWheelEvent *event) {
@@ -455,6 +458,22 @@ bool ActionManager::invokeActionForShortcut(QString shortcut) {
         return true;
     }
     return false;
+}
+
+void ActionManager::validateShortcuts() {
+    for (auto i = shortcuts.begin(); i != shortcuts.end();) {
+        if(!actions.contains(i.value())) {
+            qDebug() << "erasing: " << i.value();
+            i=shortcuts.erase(i);
+        } else {
+            ++i;
+        }
+    }
+}
+
+void ActionManager::readShortcuts() {
+    settings->readShortcuts(shortcuts);
+    actionManager->validateShortcuts();
 }
 
 // TODO: use some sort of enum instead of action string? this looks kinda retarded now
