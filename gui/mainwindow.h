@@ -18,6 +18,7 @@
 #include "gui/panels/croppanel/croppanel.h"
 #include "gui/overlays/cropoverlay.h"
 #include "gui/overlays/copyoverlay.h"
+#include "gui/overlays/changelogwindow.h"
 #include "gui/dialogs/resizedialog.h"
 #include "components/actionmanager/actionmanager.h"
 #include "settings.h"
@@ -53,6 +54,7 @@ private:
     CropPanel *cropPanel;
     CropOverlay *cropOverlay;
     SaveConfirmOverlay *saveOverlay;
+    ChangelogWindow *changelogWindow;
 
     CopyOverlay *copyOverlay;
 
@@ -121,6 +123,8 @@ public slots:
     void setupSidePanelData();
     void showSaveOverlay();
     void hideSaveOverlay();
+    void showChangelogWindow();
+    void showChangelogWindow(QString text);
 };
 
 #endif // MainWindow_H

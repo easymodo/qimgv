@@ -137,10 +137,15 @@ void Core::initActions() {
 void Core::postUpdate() {
     QVersionNumber lastVer = settings->lastVersion();
     qDebug() << "Updating: " << settings->lastVersion().toString() << ">" << appVersion.toString();
-    mw->showMessage("Updating: "+settings->lastVersion().toString()+" > "+appVersion.toString());
     actionManager->resetDefaultsFromVersion(lastVer);
     actionManager->saveShortcuts();
     settings->setLastVersion(appVersion);
+    // TODO: finish changelogs
+    if(settings->showChangelogs())
+        mw->showChangelogWindow();
+    else
+        mw->showMessage("Updating: "+settings->lastVersion().toString()+" > "+appVersion.toString());
+
 }
 
 void Core::rotateLeft() {

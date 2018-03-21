@@ -93,6 +93,36 @@ SidePanel QPushButton:focus {
     color: #4e4e4e;
 }
 
+ChangelogWindow {
+    background-color: #202020;
+    color: #646464;
+    border: 2px solid #2A2A2A;
+    border-radius: 3px;
+}
+
+ChangelogWindow QTextBrowser {
+    background-color: #202020;
+    color: #646464;
+}
+
+ChangelogWindow QPushButton {
+    font: bold;
+    color: #404040;
+    border: 2px solid #343434;
+    border-radius: 4px;
+    padding: 4px 4px 4px 4px;
+}
+
+ChangelogWindow QPushButton:hover {
+    border-color: #424242;
+    color: #4e4e4e;
+}
+
+ChangelogWindow QPushButton:focus {
+    border-color: #424242;
+    color: #4e4e4e;
+}
+
 CopyOverlay {
     background-color: #202020;
     color: #646464;

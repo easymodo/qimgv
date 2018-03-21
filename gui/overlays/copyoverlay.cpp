@@ -28,7 +28,6 @@ void CopyOverlay::hide() {
     clearFocus();
 }
 
-
 void CopyOverlay::setDialogMode(CopyOverlayMode _mode) {
     mode = _mode;
     if(mode == OVERLAY_COPY)

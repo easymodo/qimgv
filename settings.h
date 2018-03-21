@@ -118,6 +118,8 @@ public:
     void setPlayMp4(bool mode);
     QVersionNumber lastVersion();
     void setLastVersion(QVersionNumber &ver);
+    void setShowChangelogs(bool mode);
+    bool showChangelogs();
 
 private:
     explicit Settings(QObject *parent = 0);

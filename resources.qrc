@@ -22,5 +22,6 @@
         <file>res/images/copyheader.png</file>
         <file>res/icons/loading-error72.png</file>
         <file>res/images/cropheader.png</file>
+        <file>res/images/changelogheader.png</file>
     </qresource>
 </RCC>

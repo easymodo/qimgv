@@ -53,6 +53,7 @@ void MainWindow::setupUi() {
     controlsOverlay = new ControlsOverlay(this);
     saveOverlay = new SaveConfirmOverlay(viewerWidget);
     copyOverlay = new CopyOverlay(this);
+    changelogWindow = new ChangelogWindow(this);
     sidePanel = new SidePanel(this);
 
     // TODO: do something about this spaghetti
@@ -288,6 +289,15 @@ void MainWindow::showSaveOverlay() {
 
 void MainWindow::hideSaveOverlay() {
     saveOverlay->hide();
+}
+
+void MainWindow::showChangelogWindow() {
+    changelogWindow->show();
+}
+
+void MainWindow::showChangelogWindow(QString text) {
+    changelogWindow->setText(text);
+    changelogWindow->show();
 }
 
 void MainWindow::triggerCropPanel() {

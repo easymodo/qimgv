@@ -88,7 +88,8 @@ SOURCES += \
     gui/overlays/saveconfirmoverlay.cpp \
     gui/customwidgets/floatingwidget.cpp \
     gui/customwidgets/containerwidget.cpp \
-    appversion.cpp
+    appversion.cpp \
+    gui/overlays/changelogwindow.cpp
 
 
 HEADERS += \
@@ -158,7 +159,8 @@ HEADERS += \
     gui/overlays/saveconfirmoverlay.h \
     gui/customwidgets/floatingwidget.h \
     gui/customwidgets/containerwidget.h \
-    appversion.h
+    appversion.h \
+    gui/overlays/changelogwindow.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \
@@ -168,7 +170,8 @@ FORMS += \
     gui/overlays/copyoverlay.ui \
     gui/overlays/saveconfirmoverlay.ui \
     gui/overlays/floatingmessage.ui \
-    gui/customwidgets/pathselectorwidget.ui
+    gui/customwidgets/pathselectorwidget.ui \
+    gui/overlays/changelogwindow.ui
 
 RESOURCES += \
     resources.qrc

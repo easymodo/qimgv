@@ -16,7 +16,8 @@ enum FloatingWidgetPosition {
     TOPLEFT,
     TOPRIGHT,
     BOTTOMLEFT,
-    BOTTOMRIGHT
+    BOTTOMRIGHT,
+    CENTER
 };
 
 class FloatingWidget : public OverlayWidget

@@ -151,6 +151,14 @@ void Settings::setLastVersion(QVersionNumber &ver) {
     settings->s.setValue("lastVerMicro", ver.microVersion());
 }
 
+void Settings::setShowChangelogs(bool mode) {
+    settings->s.setValue("showChangelogs", mode);
+}
+
+bool Settings::showChangelogs() {
+    return settings->s.value("showChangelogs", true).toBool();
+}
+
 bool Settings::playVideoSounds() {
     return settings->s.value("playVideoSounds", false).toBool();
 }

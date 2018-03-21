@@ -58,6 +58,9 @@ void FloatingWidget::recalculateGeometry() {
             pos.setX(containerSize().width() - newRect.width() - marginX);
             pos.setY(containerSize().height() - newRect.height() - marginY);
             break;
+        case FloatingWidgetPosition::CENTER:
+            pos.setX( (containerSize().width() - newRect.width()) / 2);
+            pos.setY( (containerSize().height() - newRect.height()) / 2);
     }
     // apply position
     newRect.moveTopLeft(pos);
