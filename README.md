@@ -79,7 +79,7 @@ You can put it in `qimgv.desktop` file to make it permanent. Using values less t
 
 ## Installation instructions
 
-### Linux
+### GNU / Linux
 
   __Arch:__ Available in AUR - `qimgv-git`
   
