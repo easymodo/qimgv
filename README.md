@@ -1,4 +1,4 @@
-qimgv | Current version: 0.6.2
+qimgv | Current version: 0.6.3
 =====
 A cross-platform image viewer with webm support. Written in qt5.
 
@@ -81,11 +81,13 @@ You can put it in `qimgv.desktop` file to make it permanent. Using values less t
 
 ### Linux
 
-  __Arch:__ Available in AUR ( *qimgv-git* )
+  __Arch:__ Available in AUR - `qimgv-git`
+  
+  __Gentoo:__ `emerge qimgv`
     
   __Others distros (build & install via script):__
   
-  1. Install dependencies ( git, cmake, qt5 >= 5.6, libmpv >= 0.22, mpv)
+  1. Install dependencies ( git, cmake, qt >= 5.6, libmpv >= 0.22, mpv)
      - Ubuntu & derivatives
 		```
 		sudo apt install build-essential cmake qt5-default libmpv-dev 
