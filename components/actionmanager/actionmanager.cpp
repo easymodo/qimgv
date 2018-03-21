@@ -232,7 +232,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("F11", "toggleFullscreen");
     actionManager->defaults.insert("LMB_DoubleClick", "toggleFullscreen");
     actionManager->defaults.insert("RMB_DoubleClick", "toggleFitMode");
-    actionManager->defaults.insert("MiddleButton", "toggleFitMode");
+    actionManager->defaults.insert("MiddleButton", "exit");
     actionManager->defaults.insert("Space", "toggleFitMode");
     actionManager->defaults.insert("1", "fitWindow");
     actionManager->defaults.insert("2", "fitWidth");
@@ -462,12 +462,10 @@ bool ActionManager::invokeActionForShortcut(QString shortcut) {
 
 void ActionManager::validateShortcuts() {
     for (auto i = shortcuts.begin(); i != shortcuts.end();) {
-        if(!actions.contains(i.value())) {
-            qDebug() << "erasing: " << i.value();
+        if(!actions.contains(i.value()))
             i=shortcuts.erase(i);
-        } else {
+        else
             ++i;
-        }
     }
 }
 
