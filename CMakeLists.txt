@@ -25,6 +25,7 @@ add_subdirectory(components/cache)
 add_subdirectory(components/directorymanager)
 add_subdirectory(components/loader)
 add_subdirectory(components/scaler)
+add_subdirectory(components/scriptmanager)
 add_subdirectory(components/thumbnailer)
 add_subdirectory(gui)
 add_subdirectory(sourcecontainers)
@@ -38,7 +39,7 @@ QT5_ADD_RESOURCES(RES resources.qrc)
 
 add_executable(qimgv ${SRC} ${RES})
 
-target_link_libraries(qimgv actionmanager cache directorymanager loader scaler thumbnailer gui utils sourcecontainers)
+target_link_libraries(qimgv actionmanager scriptmanager cache directorymanager loader scaler thumbnailer gui utils sourcecontainers)
 
 qt5_use_modules (qimgv Core Widgets Concurrent)
 
