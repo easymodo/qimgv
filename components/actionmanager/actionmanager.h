@@ -10,8 +10,7 @@
 #include <QStringList>
 #include "settings.h"
 
-class ActionManager : public QObject
-{
+class ActionManager : public QObject {
     Q_OBJECT
 public:
     static ActionManager* getInstance();
@@ -85,6 +84,7 @@ signals:
     void closeFullScreenOrExit();
     void jumpToFirst();
     void jumpToLast();
+    void scriptPanel();
 
 };
 

@@ -12,6 +12,7 @@
 #include "components/loader/loader.h"
 #include "components/scaler/scaler.h"
 #include "components/thumbnailer/thumbnailer.h"
+#include "components/scriptmanager/scriptmanager.h"
 #include "gui/mainwindow.h"
 #include "gui/viewers/viewerwidget.h"
 #include "gui/viewers/imageviewer.h"
@@ -120,6 +121,7 @@ private slots:
     void requestSavePath();
     void saveImageToDisk();
     void saveImageToDisk(QString);
+    void runScript();
 };
 
 #endif // CORE_H

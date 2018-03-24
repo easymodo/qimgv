@@ -89,7 +89,8 @@ SOURCES += \
     gui/customwidgets/floatingwidget.cpp \
     gui/customwidgets/containerwidget.cpp \
     appversion.cpp \
-    gui/overlays/changelogwindow.cpp
+    gui/overlays/changelogwindow.cpp \
+    components/scriptmanager/scriptmanager.cpp
 
 
 HEADERS += \
@@ -160,7 +161,8 @@ HEADERS += \
     gui/customwidgets/floatingwidget.h \
     gui/customwidgets/containerwidget.h \
     appversion.h \
-    gui/overlays/changelogwindow.h
+    gui/overlays/changelogwindow.h \
+    components/scriptmanager/scriptmanager.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \

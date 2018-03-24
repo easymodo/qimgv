@@ -31,6 +31,7 @@ int main(int argc, char *argv[]) {
 
     settings = Settings::getInstance();
     actionManager = ActionManager::getInstance();
+    scriptManager = ScriptManager::getInstance();
     shrRes = SharedResources::getInstance();
 
     atexit(saveSettings);

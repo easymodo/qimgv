@@ -56,6 +56,7 @@ void ActionManager::initActions() {
     actionManager->actions.insert("exit", QVersionNumber(0,6,2));
     actionManager->actions.insert("flipH", QVersionNumber(0,6,3));
     actionManager->actions.insert("flipV", QVersionNumber(0,6,3));
+    actionManager->actions.insert("scriptPanel", QVersionNumber(0,7,0));
 }
 
 // layout-independent key codes
@@ -262,6 +263,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("M", "moveFile");
     actionManager->defaults.insert("home", "jumpToFirst");
     actionManager->defaults.insert("end", "jumpToLast");
+    actionManager->defaults.insert("S", "scriptPanel");
 }
 
 void ActionManager::addShortcut(QString keys, QString action) {
