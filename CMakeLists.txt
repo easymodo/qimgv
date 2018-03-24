@@ -65,4 +65,6 @@ install(FILES distrib/hicolor/128x128/apps/qimgv.png
 	DESTINATION share/icons/hicolor/128x128/apps)
 install(FILES distrib/hicolor/256x256/apps/qimgv.png
 	DESTINATION share/icons/hicolor/256x256/apps)
+install(FILES distrib/hicolor/scalable/apps/qimgv.svg
+	DESTINATION share/icons/hicolor/scalable/apps)
 
