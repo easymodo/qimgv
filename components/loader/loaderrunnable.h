@@ -14,7 +14,7 @@ public:
 private:
     QString path;
 signals:
-    void finished(Image*);
+    void finished(Image*, QString);
 };
 
 #endif // LOADERRUNNABLE_H

@@ -7,7 +7,7 @@ Image *ImageFactory::createImage(QString path) {
     ImageInfo *info = new ImageInfo(path);
     Image *img = NULL;
     if(info->imageType() == NONE) {
-        qDebug() << "ImageFactory - could not create image from " << info->filePath();
+        qDebug() << "ImageFactory: could not create image from " << info->filePath();
     } else if(info->imageType() == ANIMATED) {
         img = new ImageAnimated(path);
     } else if(info->imageType() == VIDEO) {
