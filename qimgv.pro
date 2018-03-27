@@ -90,7 +90,8 @@ SOURCES += \
     gui/customwidgets/containerwidget.cpp \
     appversion.cpp \
     gui/overlays/changelogwindow.cpp \
-    components/scriptmanager/scriptmanager.cpp
+    components/scriptmanager/scriptmanager.cpp \
+    gui/customwidgets/scriptwidget.cpp
 
 
 HEADERS += \
@@ -162,7 +163,8 @@ HEADERS += \
     gui/customwidgets/containerwidget.h \
     appversion.h \
     gui/overlays/changelogwindow.h \
-    components/scriptmanager/scriptmanager.h
+    components/scriptmanager/scriptmanager.h \
+    gui/customwidgets/scriptwidget.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \
@@ -173,7 +175,8 @@ FORMS += \
     gui/overlays/saveconfirmoverlay.ui \
     gui/overlays/floatingmessage.ui \
     gui/customwidgets/pathselectorwidget.ui \
-    gui/overlays/changelogwindow.ui
+    gui/overlays/changelogwindow.ui \
+    gui/customwidgets/scriptwidget.ui
 
 RESOURCES += \
     resources.qrc

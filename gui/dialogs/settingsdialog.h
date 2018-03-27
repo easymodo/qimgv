@@ -9,6 +9,7 @@
 #include <QDebug>
 #include "gui/customwidgets/clickablelabel.h"
 #include "gui/customwidgets/settingsshortcutwidget.h"
+#include "gui/customwidgets/scriptwidget.h"
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"
 
@@ -30,6 +31,7 @@ private:
     QPalette bgLabelPalette, accentLabelPalette;
     void readSettings();
     void fillShortcuts();
+    void populateScripts();
     Ui::SettingsDialog *ui;
     enum Constants {
         thumbSizeSmall = 170,

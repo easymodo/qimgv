@@ -93,6 +93,7 @@ void SettingsDialog::readSettings() {
             break;
     }
     fillShortcuts();
+    populateScripts();
 }
 
 void SettingsDialog::applySettings() {
@@ -162,6 +163,12 @@ void SettingsDialog::fillShortcuts() {
     while(i.hasNext()) {
         i.next();
         addShortcutToTable(i.value(), i.key());
+    }
+}
+
+void SettingsDialog::populateScripts() {
+    for(int i=0; i<10; i++) {
+        ui->scriptsLayout->addWidget(new ScriptWidget());
     }
 }
 

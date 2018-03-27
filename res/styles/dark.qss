@@ -159,14 +159,12 @@ CopyOverlay QPushButton:hover {
 
 [accessibleName="iconButton"] {
     padding: 5px 5px 5px 5px;
+    border-radius: 1px;
 }
 
 [accessibleName="iconButton"]:hover {
-    background-color: #353535;
-    border-top: 1px solid #3F3F3F;
-    border-left: 1px solid #3F3F3F;
-    border-right: 1px solid #3F3F3F;
-    border-bottom: 1px solid #3F3F3F;
+    background-color: #4a4a4a;
+    border: 1px solid #4a4a4a;
 }
 
 [accessibleName="panelButtonTransparent"] {
@@ -201,20 +199,18 @@ CopyOverlay QPushButton:hover {
 }
 
 .QScrollBar::handle:horizontal {
-    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #474747, stop: 1 #373737);
-    border-top: 1px solid #6e6e6e;
-    border-left: 1px solid #6e6e6e;
-    border-right: 1px solid #6e6e6e;
+    background-color: #5a5a5a;
+    border: 1px solid #5a5a5a;
     min-width: 60px;
     border-top-right-radius: 2px;
     border-top-left-radius: 2px;
 }
 
 .QScrollBar::handle:horizontal:hover {
-    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #525252, stop: 1 #424242);
-    border-top: 1px solid #727272;
-    border-left: 1px solid #727272;
-    border-right: 1px solid #727272;
+    background-color: #5a5a5a;
+    border-top: 1px solid #5a5a5a;
+    border-left: 1px solid #5a5a5a;
+    border-right: 1px solid #5a5a5a;
 
 }
 

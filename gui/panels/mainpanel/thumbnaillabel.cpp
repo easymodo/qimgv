@@ -119,8 +119,7 @@ void ThumbnailLabel::setOpacity(qreal amount, bool smooth) {
     }
 }
 
-QRectF ThumbnailLabel::boundingRect() const
-{
+QRectF ThumbnailLabel::boundingRect() const {
     return QRectF(0, 0, thumbnailSize + marginX * 2, thumbnailSize + highlightBarHeight);
 }
 
