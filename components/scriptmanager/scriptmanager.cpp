@@ -37,7 +37,7 @@ void ScriptManager::runScript(const QString &scriptName, const QString &argument
         qDebug() << "Script " << scriptName << " does not exist.";
     }
 }
-#elif
+#else
 void ScriptManager::runScript(const QString &scriptName, const QString &arguments) {
     qDebug() << "Nope.";
 }

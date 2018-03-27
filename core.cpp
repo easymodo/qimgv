@@ -67,6 +67,8 @@ void Core::connectComponents() {
     connect(loadingTimer, SIGNAL(timeout()), this, SLOT(onLoadingTimeout()));
     connect(loader, SIGNAL(loadFinished(Image *)),
             this, SLOT(onLoadFinished(Image *)));
+    connect(loader, SIGNAL(loadFailed(QString)),
+            this, SLOT(onLoadFailed(QString)));
 
     connect(mw, SIGNAL(opened(QString)), this, SLOT(loadByPathBlocking(QString)));
     connect(mw, SIGNAL(copyRequested(QString)), this, SLOT(copyFile(QString)));
@@ -715,6 +717,12 @@ void Core::onLoadFinished(Image *img) {
     if(index == state.currentIndex) {
         displayImage(img);
     }
+}
+
+void Core::onLoadFailed(QString path) {
+    mw->showMessage("Load failed: " + path);
+    if(path == dirManager->filePathAt(state.currentIndex))
+        viewerWidget->closeImage();
 }
 
 void Core::displayImage(Image *img) {

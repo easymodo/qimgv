@@ -90,6 +90,7 @@ private slots:
     void jumpToFirst();
     void jumpToLast();
     void onLoadFinished(Image *img);
+    void onLoadFailed(QString path);
     void onLoadStarted();
     void onLoadingTimeout();
     void clearCache();

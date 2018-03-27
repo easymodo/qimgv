@@ -6,8 +6,7 @@
 #include "components/cache/thumbnailcache.h"
 #include "loaderrunnable.h"
 
-class Loader : public QObject
-{
+class Loader : public QObject {
     Q_OBJECT
 public:
     explicit Loader();
@@ -22,9 +21,10 @@ private:
 
 signals:
     void loadFinished(Image*);
+    void loadFailed(QString path);
 
 private slots:
-    void onLoadFinished(Image*);
+    void onLoadFinished(Image*, QString);
 };
 
 #endif // NEWLOADER_H
