@@ -44,10 +44,10 @@ private:
     qreal currentOpacity;
     bool highlighted, hovered;
     int thumbnailSize, highlightBarHeight, marginX;
-    QRectF highlightBarRect, nameRect, nameTextRect, resTextRect, typeLabelRect, typeTextRect;
-    QColor highlightColor, nameColor, typeColorAnimated, typeColorVideo;
-    QFont font, fontSmall, fontMono;
-    QFontMetrics *fm, *fmSmall, *fmMono;
+    QRectF highlightBarRect, nameRect, nameTextRect, labelTextRect;
+    QColor highlightColor, nameColor;
+    QFont font, fontSmall;
+    QFontMetrics *fm, *fmSmall;
     QPropertyAnimation *opacityAnimation;
     void setHovered(bool);
     bool isHovered();

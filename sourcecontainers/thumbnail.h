@@ -8,10 +8,9 @@ class Thumbnail {
 public:
     Thumbnail();
     ~Thumbnail();
-    QString name, resLabel;
+    QString name, label;
     QPixmap *image;
     int size;
-    bool isAnimated, isVideo;
 };
 
 #endif // THUMBNAIL_H
