@@ -12,6 +12,10 @@ ThumbnailLabel::ThumbnailLabel() :
 {
     setAcceptHoverEvents(true);
     nameColor.setRgb(20, 20, 20, 255);
+    //typeColorAnimated.setRgb(173, 164, 75);
+    //typeColorVideo.setRgb(127, 93, 149);
+    typeColorAnimated.setRgb(167, 161, 115);
+    typeColorVideo.setRgb(155, 130, 170);
     qreal fntSz = font.pointSizeF();
     if(fntSz > 0) {
         font.setPointSizeF(font.pointSizeF() * 0.9f);
@@ -63,14 +67,29 @@ void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail) {
 }
 
 void ThumbnailLabel::setupLabel() {
-    if(thumbnail && !thumbnail->label.isEmpty()) {
+    if(thumbnail && !thumbnail->resLabel.isEmpty()) {
         int heightTextMargin = (nameRect.height() - fm->height()) / 2;
         nameTextRect = nameRect.adjusted(4, heightTextMargin, -4, -heightTextMargin);
-        labelTextRect.setWidth(fmSmall->width(thumbnail->label));
-        labelTextRect.setHeight(fmSmall->height());
-        labelTextRect.moveCenter(nameRect.center());
-        labelTextRect.moveRight(nameTextRect.right());
-        nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
+
+        resTextRect.setWidth(fmSmall->width(thumbnail->resLabel));
+        resTextRect.setHeight(fmSmall->height());
+        resTextRect.moveCenter(nameRect.center());
+
+        if(thumbnail->isAnimated || thumbnail->isVideo) {
+            // colored type label
+            typeTextRect = fmSmall->tightBoundingRect("a");
+            typeLabelRect = typeTextRect.adjusted(-3, -3, 4, 3);
+            typeLabelRect.moveCenter(nameRect.center());
+            typeLabelRect.moveRight(nameRect.right() - 3);
+            typeTextRect.moveCenter(typeLabelRect.center());
+            // res text
+            resTextRect.moveRight(typeLabelRect.left() - 4);
+            // crop name text
+            nameTextRect.adjust(0, 0, - resTextRect.width() - typeLabelRect.width() - 7, 0);
+        } else {
+            resTextRect.moveRight(nameRect.right() - 3);
+            nameTextRect.adjust(0, 0, - resTextRect.width() - 4, 0);
+        }
     }
 }
 
@@ -174,10 +193,21 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setFont(font);
         painter->setPen(QColor(245, 245, 245, 255));
         painter->drawText(nameTextRect, Qt::TextSingleLine, thumbnail->name);
-        // label with additional info
+        // labels
         painter->setFont(fontSmall);
+        // resolution
         painter->setPen(QColor(160, 160, 160, 255));
-        painter->drawText(labelTextRect, Qt::TextSingleLine, thumbnail->label);
+        painter->drawText(resTextRect, Qt::TextSingleLine, thumbnail->resLabel);
+        // type label with background
+        if(thumbnail->isAnimated) {
+            painter->fillRect(typeLabelRect, typeColorAnimated);
+            painter->setPen(nameColor);
+            painter->drawText(typeTextRect.bottomLeft(), "a");
+        } else if(thumbnail->isVideo) {
+            painter->fillRect(typeLabelRect, typeColorVideo);
+            painter->setPen(nameColor);
+            painter->drawText(typeTextRect.bottomLeft(),  "v");
+        }
     }
 }
 

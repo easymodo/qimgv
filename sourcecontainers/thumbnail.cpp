@@ -1,6 +1,12 @@
 #include "thumbnail.h"
 
-Thumbnail::Thumbnail() : label(""), size(0), image(NULL) {
+Thumbnail::Thumbnail()
+    : resLabel(""),
+      size(0),
+      image(NULL),
+      isAnimated(false),
+      isVideo(false)
+{
 }
 
 Thumbnail::~Thumbnail() {

@@ -24,9 +24,9 @@ void ThumbnailerRunnable::run() {
         thumbImage->setText("originalWidth", QString::number(originalSize.width()));
         thumbImage->setText("originalHeight", QString::number(originalSize.height()));
         if(imgInfo.imageType() == ANIMATED) {
-            thumbImage->setText("label", " [a]");
+            thumbImage->setText("type", "a");
         } else if(imgInfo.imageType() == VIDEO) {
-            thumbImage->setText("label", " [v]");
+            thumbImage->setText("type", "v");
         }
         if(settings->useThumbnailCache()) {
         // save thumbnail if it makes sense
@@ -38,12 +38,15 @@ void ThumbnailerRunnable::run() {
     *th->image = QPixmap::fromImage(*thumbImage);
 
     if(th->image->width() == 0) {
-        th->label = "error";
+        th->resLabel = "error";
     } else  {
         // put info into Thumbnail object
-        th->label = thumbImage->text("originalWidth") + "x" +
-                    thumbImage->text("originalHeight") +
-                    thumbImage->text("label");
+        th->resLabel = thumbImage->text("originalWidth") + "x" +
+                    thumbImage->text("originalHeight");
+        if(thumbImage->text("type") == "a")
+            th->isAnimated = true;
+        else if(thumbImage->text("type") == "v")
+            th->isVideo = true;
     }
     delete thumbImage;
     emit taskEnd(th, path);
