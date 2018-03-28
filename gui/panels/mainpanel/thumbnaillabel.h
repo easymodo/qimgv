@@ -46,8 +46,8 @@ private:
     int thumbnailSize, highlightBarHeight, marginX;
     QRectF highlightBarRect, nameRect, nameTextRect, resTextRect, typeLabelRect, typeTextRect;
     QColor highlightColor, nameColor, typeColorAnimated, typeColorVideo;
-    QFont font, fontSmall;
-    QFontMetrics *fm, *fmSmall;
+    QFont font, fontSmall, fontMono;
+    QFontMetrics *fm, *fmSmall, *fmMono;
     QPropertyAnimation *opacityAnimation;
     void setHovered(bool);
     bool isHovered();

@@ -12,10 +12,8 @@ ThumbnailLabel::ThumbnailLabel() :
 {
     setAcceptHoverEvents(true);
     nameColor.setRgb(20, 20, 20, 255);
-    //typeColorAnimated.setRgb(173, 164, 75);
-    //typeColorVideo.setRgb(127, 93, 149);
-    typeColorAnimated.setRgb(167, 161, 115);
-    typeColorVideo.setRgb(155, 130, 170);
+    typeColorAnimated.setRgb(108, 111, 86);
+    typeColorVideo.setRgb(92, 87, 111);
     qreal fntSz = font.pointSizeF();
     if(fntSz > 0) {
         font.setPointSizeF(font.pointSizeF() * 0.9f);
@@ -23,8 +21,11 @@ ThumbnailLabel::ThumbnailLabel() :
     }
     font.setBold(true);
     fontSmall.setBold(true);
+    fontMono.setBold(true);
+    fontMono.setStyleHint(QFont::Monospace);
     fm = new QFontMetrics(font);
     fmSmall = new QFontMetrics(fontSmall);
+    fmMono = new QFontMetrics(fontMono);
 
     opacityAnimation = new QPropertyAnimation(this, "currentOpacity");
     opacityAnimation->setEasingCurve(QEasingCurve::InQuad);
@@ -77,8 +78,8 @@ void ThumbnailLabel::setupLabel() {
 
         if(thumbnail->isAnimated || thumbnail->isVideo) {
             // colored type label
-            typeTextRect = fmSmall->tightBoundingRect("a");
-            typeLabelRect = typeTextRect.adjusted(-3, -3, 4, 3);
+            typeTextRect = fmMono->tightBoundingRect("a");
+            typeLabelRect = typeTextRect.adjusted(-4, -4, 4, 4);
             typeLabelRect.moveCenter(nameRect.center());
             typeLabelRect.moveRight(nameRect.right() - 3);
             typeTextRect.moveCenter(typeLabelRect.center());
@@ -202,11 +203,13 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         if(thumbnail->isAnimated) {
             painter->fillRect(typeLabelRect, typeColorAnimated);
             painter->setPen(nameColor);
+            painter->setFont(fontMono);
             painter->drawText(typeTextRect.bottomLeft(), "a");
         } else if(thumbnail->isVideo) {
             painter->fillRect(typeLabelRect, typeColorVideo);
             painter->setPen(nameColor);
-            painter->drawText(typeTextRect.bottomLeft(),  "v");
+            painter->setFont(fontMono);
+            painter->drawText(typeTextRect.bottomLeft(), "v");
         }
     }
 }
@@ -267,4 +270,5 @@ ThumbnailLabel::~ThumbnailLabel() {
     delete thumbnail;
     delete fm;
     delete fmSmall;
+    delete fmMono;
 }
