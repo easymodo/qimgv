@@ -1,10 +1,15 @@
 #include "video.h"
 #include <time.h>
 
-Video::Video(QString _path) {
-    path = _path;
-    loaded = false;
-    imageInfo = new ImageInfo(_path);
+Video::Video(QString _path)
+    : Image(_path)
+{
+    load();
+}
+
+Video::Video(std::unique_ptr<DocumentInfo> _info)
+    : Image(std::move(_info))
+{
     load();
 }
 
@@ -16,11 +21,8 @@ void Video::load() {
     if(isLoaded()) {
         return;
     }
-    if(!imageInfo) {
-        imageInfo = new ImageInfo(path);
-    }
-    clip = new Clip(path, imageInfo->extension());
-    loaded = true;
+    clip = new Clip(mPath, mDocInfo->extension());
+    mLoaded = true;
 }
 
 bool Video::save(QString destPath) {
@@ -35,16 +37,16 @@ bool Video::save() {
     return false;
 }
 
-QPixmap *Video::getPixmap() {
+std::unique_ptr<QPixmap> Video::getPixmap() {
     qDebug() << "SOMETHING HAPPENED.";
     //TODO: find out some easy way to get frames from video source
-    return NULL;
+    return nullptr;
 }
 
 const QImage *Video::getImage() {
     qDebug() << "SOMETHING HAPPENED.";
     //TODO: find out some easy way to get frames from video source
-    return NULL;
+    return nullptr;
 }
 
 Clip *Video::getClip() {

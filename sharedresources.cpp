@@ -1,6 +1,6 @@
 #include "sharedresources.h"
 
-SharedResources *shrRes = NULL;
+SharedResources *shrRes = nullptr;
 
 SharedResources::SharedResources()
 {

@@ -1,6 +1,6 @@
 #include "settings.h"
 
-Settings *settings = NULL;
+Settings *settings = nullptr;
 
 Settings::Settings(QObject *parent) : QObject(parent) {
     cacheDirectory = new QDir(QDir::homePath() + "/.cache/qimgv");

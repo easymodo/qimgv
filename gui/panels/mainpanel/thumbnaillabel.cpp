@@ -3,7 +3,7 @@
 ThumbnailLabel::ThumbnailLabel() :
     state(EMPTY),
     labelNumber(0),
-    thumbnail(NULL),
+    thumbnail(nullptr),
     highlighted(false),
     hovered(false),
     thumbnailSize(100),
@@ -41,7 +41,7 @@ void ThumbnailLabel::setThumbnailSize(int size) {
         // delete the old thumbnail
         if(thumbnail) {
             delete thumbnail;
-            thumbnail = NULL;
+            thumbnail = nullptr;
         }
         thumbnailSize = size;
         highlightBarRect = QRectF(marginX, 0, width() - marginX * 2, highlightBarHeight);
@@ -172,7 +172,7 @@ void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setOpacity(currentOpacity);
         // filename
         painter->setFont(font);
-        painter->setPen(QColor(245, 245, 245, 255));
+        painter->setPen(QColor(230, 230, 230, 255));
         painter->drawText(nameTextRect, Qt::TextSingleLine, thumbnail->name);
         // label with additional info
         painter->setFont(fontSmall);

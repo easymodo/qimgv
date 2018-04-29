@@ -46,8 +46,8 @@ Image* Cache::get(QString name) {
         CacheItem *item = images.value(name);
         return item->getContents();
     } else {
-        qDebug() << "Cache::get() - !!! returning NULL for " << name << ". There is a bug in logic somewhere!";
-        return NULL;
+        qDebug() << "Cache::get() - !!! returning nullptr for " << name << ". There is a bug in logic somewhere!";
+        return nullptr;
     }
 }
 

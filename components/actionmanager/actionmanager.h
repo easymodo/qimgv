@@ -85,6 +85,7 @@ signals:
     void jumpToFirst();
     void jumpToLast();
     void scriptPanel();
+    void folderView();
 
 };
 

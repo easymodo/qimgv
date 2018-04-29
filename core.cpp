@@ -9,11 +9,11 @@
 
 Core::Core()
     : QObject(),
-      loader(NULL),
-      dirManager(NULL),
-      cache(NULL),
-      scaler(NULL),
-      thumbnailer(NULL),
+      loader(nullptr),
+      dirManager(nullptr),
+      cache(nullptr),
+      scaler(nullptr),
+      thumbnailer(nullptr),
       infiniteScrolling(false)
 {
 #ifdef __linux__
@@ -487,9 +487,10 @@ void Core::scalingRequest(QSize size) {
     }
 }
 
+// TODO: don't use connect? otherwise there is no point using unique_ptr
 void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
     if(state.hasActiveImage /* TODO: a better fix > */ && dirManager->filePathAt(state.currentIndex) == req.string) {
-        viewerWidget->onScalingFinished(scaled);
+        viewerWidget->onScalingFinished(std::unique_ptr<QPixmap>(scaled)); // no
     } else {
         delete scaled;
     }
@@ -558,7 +559,7 @@ void Core::loadDirectory(QString path) {
 }
 
 void Core::loadImage(QString path, bool blocking) {
-    ImageInfo *info = new ImageInfo(path);
+    DocumentInfo *info = new DocumentInfo(path);
     // new directory
     setDirectory(info->directoryPath());
     state.currentIndex = dirManager->indexOf(info->fileName());
@@ -730,12 +731,12 @@ void Core::displayImage(Image *img) {
     state.isWaitingForLoader = false;
     state.hasActiveImage = true;
     if(img) {  // && img->name() != state.displayingFileName) {
-        ImageType type = img->info()->imageType();
+        DocumentType type = img->type();
         if(type == STATIC) {
-            viewerWidget->showImage(img->getPixmap());
+            viewerWidget->showImage(std::move(img->getPixmap()));
         } else if(type == ANIMATED) {
             auto animated = dynamic_cast<ImageAnimated *>(img);
-            viewerWidget->showAnimation(animated->getMovie());
+            viewerWidget->showAnimation(std::move(animated->getMovie()));
         } else if(type == VIDEO) {
             auto video = dynamic_cast<Video *>(img);
             // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
@@ -779,7 +780,7 @@ void Core::updateInfoString() {
                               QString::number(img->height()) +
                               "  ");
         }
-        infoString.append(QString::number(img->info()->fileSize()) + " KB)");
+        infoString.append(QString::number(img->fileSize()) + " KB)");
     }
     mw->setInfoString(infoString);
 }

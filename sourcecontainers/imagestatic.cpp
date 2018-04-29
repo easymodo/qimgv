@@ -1,12 +1,19 @@
 #include "imagestatic.h"
 #include <time.h>
 
-ImageStatic::ImageStatic(QString _path) {
-    path = _path;
-    loaded = false;
-    image = NULL;
-    imageEdited = NULL;
-    imageInfo = new ImageInfo(path);
+ImageStatic::ImageStatic(QString _path)
+    : Image(_path)
+{
+    image = nullptr;
+    imageEdited = nullptr;
+    load();
+}
+
+ImageStatic::ImageStatic(std::unique_ptr<DocumentInfo> _info)
+    : Image(std::move(_info))
+{
+    image = nullptr;
+    imageEdited = nullptr;
     load();
 }
 
@@ -22,25 +29,24 @@ void ImageStatic::load() {
     if(isLoaded()) {
         return;
     }
-    if(!imageInfo) {
-        imageInfo = new ImageInfo(path);
-    }
     image = new QImage();
-    image->load(path, imageInfo->extension());
-    loaded = true;
+    image->load(mPath, mDocInfo->extension());
+    mLoaded = true;
 }
 
 // TODO: add a way to configure compression level?
 bool ImageStatic::save(QString destPath) {
-    return isEdited()?imageEdited->save(destPath, nullptr, 100):image->save(destPath, nullptr, 100);
+    int quality = 95;
+    return isEdited()?imageEdited->save(destPath, nullptr, quality):image->save(destPath, nullptr, quality);
 }
 
 bool ImageStatic::save() {
-    return isEdited()?imageEdited->save(path, nullptr, 100):image->save(path, nullptr, 100);
+    int quality = 95;
+    return isEdited()?imageEdited->save(mPath, nullptr, quality):image->save(mPath, nullptr, quality);
 }
 
-QPixmap *ImageStatic::getPixmap() {
-    QPixmap *pix = new QPixmap();
+std::unique_ptr<QPixmap> ImageStatic::getPixmap() {
+    std::unique_ptr<QPixmap> pix(new QPixmap());
     isEdited()?pix->convertFromImage(*imageEdited):pix->convertFromImage(*image);
     return pix;
 }
@@ -69,7 +75,7 @@ bool ImageStatic::setEditedImage(QImage *imageEditedNew) {
     if(imageEditedNew && imageEditedNew->width() != 0) {
         discardEditedImage();
         imageEdited = imageEditedNew;
-        edited = true;
+        mEdited = true;
         return true;
     } else {
         return false;
@@ -79,11 +85,9 @@ bool ImageStatic::setEditedImage(QImage *imageEditedNew) {
 bool ImageStatic::discardEditedImage() {
     if(imageEdited) {
         delete imageEdited;
-        imageEdited = NULL;
-        edited = false;
+        imageEdited = nullptr;
+        mEdited = false;
         return true;
     }
     return false;
 }
-
-

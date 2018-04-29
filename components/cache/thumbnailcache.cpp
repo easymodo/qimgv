@@ -44,12 +44,12 @@ QImage *ThumbnailCache::readThumbnail(QString hash) {
             delete thumb;
             //qDebug() << "file exists but does not appear to be a valid image(expected jpg file): " << filePath;
             //mutex.unlock();
-            return NULL;
+            return nullptr;
         }
         //qDebug() << "reading thumbnail:" << filePath;
     } else {
         //qDebug() << "thumbnail does not exist:" << filePath;
         //mutex.unlock();
-        return NULL;
+        return nullptr;
     }
 }

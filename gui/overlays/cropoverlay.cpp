@@ -11,7 +11,7 @@ CropOverlay::CropOverlay(ContainerWidget *parent) : OverlayWidget(parent),
     clear(true),
     moving(false),
     scale(1.0f),
-    drawBuffer(NULL),
+    drawBuffer(nullptr),
     cursorAction(NO_DRAG)
 {
     setMouseTracking(true);
@@ -94,7 +94,7 @@ void CropOverlay::hide() {
     clearFocus();
     if(drawBuffer) {
         delete drawBuffer;
-        drawBuffer = NULL;
+        drawBuffer = nullptr;
     }
 }
 

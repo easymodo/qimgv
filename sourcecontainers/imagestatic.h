@@ -8,9 +8,10 @@
 class ImageStatic : public Image {
 public:
     ImageStatic(QString _path);
+    ImageStatic(std::unique_ptr<DocumentInfo> _info);
     ~ImageStatic();
 
-    QPixmap *getPixmap();
+    std::unique_ptr<QPixmap> getPixmap();
     const QImage* getSourceImage();
     const QImage* getImage();
     int height();

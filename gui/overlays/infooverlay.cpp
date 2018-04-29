@@ -2,7 +2,7 @@
 
 InfoOverlay::InfoOverlay(ContainerWidget *parent)
     : OverlayWidget(parent),
-      fm(NULL)
+      fm(nullptr)
 {
     setPalette(Qt::transparent);
     setAttribute(Qt::WA_TransparentForMouseEvents);

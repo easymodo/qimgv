@@ -5,10 +5,12 @@
 #include <QHBoxLayout>
 #include "gui/viewers/imageviewer.h"
 #include "gui/viewers/videoplayermpvproxy.h"
+#include "gui/viewers/folderview.h"
 
 enum CurrentWidget {
     IMAGEVIEWER,
     VIDEOPLAYER,
+    FOLDERVIEW,
     UNSET
 };
 
@@ -24,6 +26,11 @@ public:
     void enableZoomInteraction();
     void disableZoomInteraction();
     bool zoomInteractionEnabled();
+
+    bool showImage(std::unique_ptr<QPixmap> pixmap);
+    bool showAnimation(std::unique_ptr<QMovie> movie);
+    void onScalingFinished(std::unique_ptr<QPixmap> scaled);
+
 private:
     QHBoxLayout layout;
     ImageViewer *imageViewer;
@@ -54,13 +61,12 @@ signals:
     void fitOriginal();
 
 public slots:
-    bool showImage(QPixmap *pixmap);
-    bool showAnimation(QMovie *movie);
+
     bool showVideo(Clip *clip);
+    bool showFolderView();
     void stopPlayback();
     void setFitMode(ImageFitMode mode);
     ImageFitMode fitMode();
-    void onScalingFinished(QPixmap *scaled);
     void closeImage();
 
 protected:

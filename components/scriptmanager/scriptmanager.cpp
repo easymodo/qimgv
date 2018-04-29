@@ -1,8 +1,10 @@
 #include "scriptmanager.h"
 
-ScriptManager *scriptManager = NULL;
+ScriptManager *scriptManager = nullptr;
 
-ScriptManager::ScriptManager(QObject *parent) : QObject(parent) {
+ScriptManager::ScriptManager(QObject *parent)
+    : QObject(parent)
+{
 }
 
 ScriptManager::~ScriptManager() {
@@ -24,11 +26,13 @@ void ScriptManager::runScript(const QString &scriptName, const QString &argument
         QProcess exec(this);
         Script *script = scripts.value(scriptName);
         if(script->isBlocking()) {
+            qDebug() << "Starting blocking script.";
             exec.start("/bin/sh", QStringList() << script->path() << arguments);
             qDebug() << "Waiting for script to finish...";
             exec.waitForFinished(-1);
             qDebug() << "Script finished.";
         } else {
+            qDebug() << "Starting detached script.";
             //exec.startDetached("/bin/sh", QStringList() << script->path() << arguments);
             exec.startDetached("/bin/sh", QStringList() << script->path() << arguments);
         }
@@ -45,4 +49,5 @@ void ScriptManager::runScript(const QString &scriptName, const QString &argument
 
 void ScriptManager::initScripts() {
     scriptManager->scripts.insert("TestScript", new Script("/home/easymodo/test.sh", "%filepath%", false));
+    scriptManager->scripts.insert("TestScript", new Script("/home/easymodo/test.sh", "%dir%", false));
 }

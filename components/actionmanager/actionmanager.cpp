@@ -1,6 +1,6 @@
 #include "actionmanager.h"
 
-ActionManager *actionManager = NULL;
+ActionManager *actionManager = nullptr;
 
 ActionManager::ActionManager(QObject *parent) : QObject(parent) {
 }
@@ -57,6 +57,7 @@ void ActionManager::initActions() {
     actionManager->actions.insert("flipH", QVersionNumber(0,6,3));
     actionManager->actions.insert("flipV", QVersionNumber(0,6,3));
     actionManager->actions.insert("scriptPanel", QVersionNumber(0,7,0));
+    actionManager->actions.insert("folderView", QVersionNumber(0,7,0));
 }
 
 // layout-independent key codes
@@ -264,6 +265,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("home", "jumpToFirst");
     actionManager->defaults.insert("end", "jumpToLast");
     actionManager->defaults.insert("S", "scriptPanel");
+    actionManager->defaults.insert("backspace", "folderView");
 }
 
 void ActionManager::addShortcut(QString keys, QString action) {
@@ -346,6 +348,7 @@ void ActionManager::saveShortcuts() {
 
 bool ActionManager::processWheelEvent(QWheelEvent *event) {
     QString keys;
+    //qDebug() << event->pixelDelta() << event->angleDelta() << event->source();
     // test this:
     // ignore event if source is touchpad
     // prevents scrolling through 9999 images in a single swipe

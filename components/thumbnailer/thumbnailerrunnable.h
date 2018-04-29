@@ -23,7 +23,7 @@ public:
 
 private:
     QString generateIdString();
-    QImage* createScaledThumbnail(ImageInfo *img, int size, bool squared);
+    QImage* createScaledThumbnail(DocumentInfo *img, int size, bool squared);
     QString path;
     int size;
     bool squared;

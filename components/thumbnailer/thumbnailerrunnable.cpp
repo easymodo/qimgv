@@ -10,12 +10,12 @@ ThumbnailerRunnable::ThumbnailerRunnable(ThumbnailCache* _thumbnailCache, QStrin
 
 void ThumbnailerRunnable::run() {
     emit taskStart(path);
-    ImageInfo imgInfo(path);
+    DocumentInfo imgInfo(path);
     Thumbnail *th = new Thumbnail();
     th->size = size;
     th->name = imgInfo.fileName();
     QString thumbnailHash = generateIdString();
-    QImage *thumbImage = NULL;
+    QImage *thumbImage = nullptr;
     if(settings->useThumbnailCache())
         thumbImage = thumbnailCache->readThumbnail(thumbnailHash);
     if(!thumbImage) {
@@ -23,9 +23,9 @@ void ThumbnailerRunnable::run() {
         // put in image info
         thumbImage->setText("originalWidth", QString::number(originalSize.width()));
         thumbImage->setText("originalHeight", QString::number(originalSize.height()));
-        if(imgInfo.imageType() == ANIMATED) {
+        if(imgInfo.type() == ANIMATED) {
             thumbImage->setText("label", " [a]");
-        } else if(imgInfo.imageType() == VIDEO) {
+        } else if(imgInfo.type() == VIDEO) {
             thumbImage->setText("label", " [v]");
         }
         if(settings->useThumbnailCache()) {
@@ -57,10 +57,10 @@ QString ThumbnailerRunnable::generateIdString() {
     return queryStr;
 }
 
-QImage* ThumbnailerRunnable::createScaledThumbnail(ImageInfo *imgInfo, int size, bool squared) {
+QImage* ThumbnailerRunnable::createScaledThumbnail(DocumentInfo *imgInfo, int size, bool squared) {
     QImageReader reader;
     QString filePath;
-    if(imgInfo->imageType() == VIDEO) {
+    if(imgInfo->type() == VIDEO) {
         QString mpv = settings->mpvBinary();
         if(!mpv.isEmpty()) {
             filePath = settings->tempDir() + imgInfo->baseName() + ".png";
@@ -91,7 +91,7 @@ QImage* ThumbnailerRunnable::createScaledThumbnail(ImageInfo *imgInfo, int size,
         originalSize = reader.size();
     QImage *scaled = new QImage(reader.read());
     // remove temporary file in video case
-    if(imgInfo->imageType() == VIDEO) {
+    if(imgInfo->type() == VIDEO) {
         QFile tmpFile(filePath);
         tmpFile.remove();
     }

@@ -3,11 +3,11 @@
 MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
     : ContainerWidget(parent),
       currentDisplay(0),
-      desktopWidget(NULL),
+      desktopWidget(nullptr),
       panelEnabled(false),
       panelFullscreenOnly(false),
       activeSidePanel(SIDEPANEL_NONE),
-      mainPanel(NULL)
+      mainPanel(nullptr)
 {
     this->setMinimumSize(400, 300);
     layout.setContentsMargins(0,0,0,0);
@@ -94,7 +94,7 @@ void MainWindow::setViewerWidget(ViewerWidget *viewerWidget) {
         layout.addWidget(viewerWidget);
         viewerWidget->show();
     } else {
-        qDebug() << "MainWindow: viewerWidget is null";
+        qDebug() << "MainWindow: viewerWidget is nullptr";
     }
 }
 

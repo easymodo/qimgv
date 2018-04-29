@@ -10,10 +10,7 @@
 
 class ImageFactory {
 public:
-    ImageFactory();
-
-    static Image* createImage(QString) ;
-    static Image* createImage(ImageInfo*);
+    static Image* createImage(QString path) ;
 };
 
 #endif // IMAGEFACTORY_H

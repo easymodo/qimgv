@@ -1,6 +1,6 @@
 #include "imageinfo.h"
 
-ImageInfo::ImageInfo(QString path) : mImageType(NONE), mExtension(NULL) {
+DocumentInfo::DocumentInfo(QString path) : mImageType(NONE), mExtension(nullptr) {
     fileInfo.setFile(path);
     if(!fileInfo.isFile()) {
         qDebug() << "FileInfo: cannot open: " << path;
@@ -10,42 +10,39 @@ ImageInfo::ImageInfo(QString path) : mImageType(NONE), mExtension(NULL) {
     detectType();
 }
 
-ImageInfo::~ImageInfo() {
+DocumentInfo::~DocumentInfo() {
 }
 
 // ##############################################################
 // ####################### PUBLIC METHODS #######################
 // ##############################################################
 
-QString ImageInfo::directoryPath() {
+QString DocumentInfo::directoryPath() const {
     return fileInfo.absolutePath();
 }
 
-QString ImageInfo::filePath() {
+QString DocumentInfo::filePath() const {
     return fileInfo.absoluteFilePath();
 }
 
-QString ImageInfo::fileName() {
+QString DocumentInfo::fileName() const {
     return fileInfo.fileName();
 }
 
-QString ImageInfo::baseName() {
+QString DocumentInfo::baseName() const {
     return fileInfo.baseName();
 }
 
 // in KB
-int ImageInfo::fileSize() {
+int DocumentInfo::fileSize() const {
     return truncf(fileInfo.size()/1024);
 }
 
-ImageType ImageInfo::imageType() {
-    if(mImageType == NONE) {
-        detectType();
-    }
+DocumentType DocumentInfo::type() const {
     return mImageType;
 }
 
-const char *ImageInfo::extension() {
+const char *DocumentInfo::extension() const {
     return mExtension;
 }
 
@@ -55,17 +52,17 @@ const char *ImageInfo::extension() {
 
 // detect correct file extension
 // TODO: this is just bad
-void ImageInfo::detectType() {
+void DocumentInfo::detectType() {
     QMimeDatabase mimeDb;
     QMimeType mimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
     QString mimeName = mimeType.name();
 
     if(mimeName == "video/webm") {
         mExtension = "webm";
-        mImageType = ImageType::VIDEO;
+        mImageType = DocumentType::VIDEO;
     } else if(mimeName == "video/mp4") {
         mExtension = "mp4";
-        mImageType = ImageType::VIDEO;
+        mImageType = DocumentType::VIDEO;
     } else if(mimeName == "image/jpeg") {
         mExtension = "jpg";
         mImageType = STATIC;

@@ -15,30 +15,28 @@
 
 class Image {
 public:
-    Image();
+    Image(QString);
+    Image(std::unique_ptr<DocumentInfo>);
     virtual ~Image() = 0;
-    virtual QPixmap* getPixmap() = 0;
+    virtual std::unique_ptr<QPixmap> getPixmap() = 0;
     virtual const QImage* getImage() = 0;
-    ImageType type();
-    QString getPath();
+    DocumentType type() const;
+    QString path() const;
     virtual int height() = 0;
     virtual int width() = 0;
     virtual QSize size() = 0;
-    bool isLoaded();
-    ImageInfo* info();
-
-    ImageInfo* imageInfo;
-
+    bool isLoaded() const;
     virtual bool save() = 0;
     virtual bool save(QString destPath) = 0;
-
-    QString name();
-    bool isEdited();
+    QString name() const;
+    bool isEdited() const;
+    int fileSize() const;
 
 protected:
     virtual void load() = 0;
-    bool loaded, edited;
-    QString path;
+    std::unique_ptr<DocumentInfo> mDocInfo;
+    bool mLoaded, mEdited;
+    QString mPath;
     QSize resolution;
 };
 

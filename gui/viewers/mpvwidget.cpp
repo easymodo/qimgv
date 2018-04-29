@@ -11,7 +11,7 @@ static void *get_proc_address(void *ctx, const char *name) {
     Q_UNUSED(ctx);
     QOpenGLContext *glctx = QOpenGLContext::currentContext();
     if (!glctx)
-        return NULL;
+        return nullptr;
     return (void *)glctx->getProcAddress(QByteArray(name));
 }
 
@@ -54,7 +54,7 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
 MpvWidget::~MpvWidget() {
     makeCurrent();
     if (mpv_gl)
-        mpv_opengl_cb_set_update_callback(mpv_gl, NULL, NULL);
+        mpv_opengl_cb_set_update_callback(mpv_gl, nullptr, nullptr);
     // Until this call is done, we need to make sure the player remains
     // alive. This is done implicitly with the mpv::qt::Handle instance
     // in this class.
@@ -78,7 +78,7 @@ QVariant MpvWidget::getProperty(const QString &name) const {
 }
 
 void MpvWidget::initializeGL() {
-    int r = mpv_opengl_cb_init_gl(mpv_gl, NULL, get_proc_address, NULL);
+    int r = mpv_opengl_cb_init_gl(mpv_gl, nullptr, get_proc_address, nullptr);
     if (r < 0)
         throw std::runtime_error("could not initialize OpenGL");
 }

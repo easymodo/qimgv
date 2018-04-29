@@ -9,7 +9,7 @@ void ScalerRunnable::setRequest(ScalerRequest r) {
 
 void ScalerRunnable::run() {
     emit started(req);
-    QImage *scaled = NULL;
+    QImage *scaled = nullptr;
     // this is an estimation based on image size and depth
     // if complexity is above CMPL_FALLBACK_THRESHOLD we fall back to faster (bilinear) filter
     // hopefully this will prevent noticeable lag during scaling

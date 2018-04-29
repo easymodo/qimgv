@@ -11,29 +11,29 @@
 #include <cmath>
 #include "utils/stuff.h"
 
-enum ImageType { NONE, STATIC, ANIMATED, VIDEO };
+enum DocumentType { NONE, STATIC, ANIMATED, VIDEO };
 
-class ImageInfo {
+class DocumentInfo {
 public:
-    ImageInfo(QString path);
-    ~ImageInfo();
+    DocumentInfo(QString path);
+    ~DocumentInfo();
     
-    QString directoryPath();
-    QString filePath();
-    QString fileName();
-    QString baseName();
+    QString directoryPath() const;
+    QString filePath() const;
+    QString fileName() const;
+    QString baseName() const;
 
     // in KB
-    int fileSize();
-    ImageType imageType();
+    int fileSize() const;
+    DocumentType type() const;
 
     // file extension (guessed from mime-type)
-    const char* extension();
+    const char* extension() const;
 
 private:
     QFileInfo fileInfo;
     QDateTime lastModified;
-    ImageType mImageType;
+    DocumentType mImageType;
     const char* mExtension;
 
     // guesses file type from its contents

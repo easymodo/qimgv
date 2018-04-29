@@ -13,7 +13,7 @@
 
 class Script {
 public:
-    Script(QString path, QString argumentPattern,bool blocking)
+    Script(QString path, QString argumentPattern, bool blocking)
         : mPath(path), mArgumentPattern(argumentPattern), mBlocking(blocking)
     {
     }

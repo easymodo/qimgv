@@ -7,8 +7,8 @@
 
 ViewerWidget::ViewerWidget(QWidget *parent)
     : ContainerWidget(parent),
-      imageViewer(NULL),
-      videoPlayer(NULL),
+      imageViewer(nullptr),
+      videoPlayer(nullptr),
       currentWidget(UNSET),
       zoomInteraction(false)
 {
@@ -121,21 +121,21 @@ bool ViewerWidget::zoomInteractionEnabled() {
     return zoomInteraction;
 }
 
-bool ViewerWidget::showImage(QPixmap *pixmap) {
+bool ViewerWidget::showImage(std::unique_ptr<QPixmap> pixmap) {
     if(!pixmap)
         return false;
     stopPlayback();
     enableImageViewer();
-    imageViewer->displayImage(pixmap);
+    imageViewer->displayImage(std::move(pixmap));
     return true;
 }
 
-bool ViewerWidget::showAnimation(QMovie *movie) {
+bool ViewerWidget::showAnimation(std::unique_ptr<QMovie> movie) {
     if(!movie)
         return false;
     stopPlayback();
     enableImageViewer();
-    imageViewer->displayAnimation(movie);
+    imageViewer->displayAnimation(std::move(movie));
     return true;
 }
 
@@ -146,6 +146,10 @@ bool ViewerWidget::showVideo(Clip *clip) {
     enableVideoPlayer();
     videoPlayer->openMedia(clip);
     return true;
+}
+
+bool ViewerWidget::showFolderView() {
+
 }
 
 void ViewerWidget::stopPlayback() {
@@ -168,8 +172,8 @@ ImageFitMode ViewerWidget::fitMode() {
     return imageViewer->fitMode();
 }
 
-void ViewerWidget::onScalingFinished(QPixmap *scaled) {
-    imageViewer->updateFrame(scaled);
+void ViewerWidget::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
+    imageViewer->replacePixmap(std::move(scaled));
 }
 
 void ViewerWidget::closeImage() {

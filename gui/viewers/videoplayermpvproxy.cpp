@@ -2,7 +2,7 @@
 
 VideoPlayerMpvProxy::VideoPlayerMpvProxy(QWidget *parent)
     : VideoPlayer(parent),
-      player(NULL)
+      player(nullptr)
 {
     layout.setContentsMargins(0,0,0,0);
     this->setLayout(&layout);
@@ -23,8 +23,7 @@ inline void VideoPlayerMpvProxy::initPlayer() {
 
 bool VideoPlayerMpvProxy::openMedia(Clip *clip) {
     initPlayer();
-    player->openMedia(clip);
-    return NULL;
+    return player->openMedia(clip);
 }
 
 void VideoPlayerMpvProxy::seek(int pos) {

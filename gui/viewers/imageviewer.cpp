@@ -3,8 +3,8 @@
 // TODO: split into ImageViewerPrivate
 
 ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
-    image(NULL),
-    animation(NULL),
+    pixmap(nullptr),
+    movie(nullptr),
     isDisplaying(false),
     mouseWrapping(false),
     checkboardGridEnabled(false),
@@ -36,7 +36,7 @@ ImageViewer::~ImageViewer() {
 }
 
 void ImageViewer::startAnimation() {
-    if(animation) {
+    if(movie) {
         stopAnimation();
         connect(animationTimer, SIGNAL(timeout()), this, SLOT(nextFrame()));
         startAnimationTimer();
@@ -44,41 +44,41 @@ void ImageViewer::startAnimation() {
 }
 
 void ImageViewer::stopAnimation() {
-    if(animation) {
+    if(movie) {
         animationTimer->stop();
         disconnect(animationTimer, SIGNAL(timeout()), this, SLOT(nextFrame()));
-        animation->jumpToFrame(0);
+        movie->jumpToFrame(0);
     }
 }
 void ImageViewer::nextFrame() {
-    if(animation) {
-        if(!animation->jumpToNextFrame()) {
-            animation->jumpToFrame(0);
+    if(movie) {
+        if(!movie->jumpToNextFrame()) {
+            movie->jumpToFrame(0);
         }
-        QPixmap *newFrame = new QPixmap();
-        *newFrame = animation->currentPixmap();
-        if(animation->frameCount() > 1) {
+        std::unique_ptr<QPixmap> newFrame(new QPixmap());
+        *newFrame = movie->currentPixmap();
+        if(movie->frameCount() > 1) {
             startAnimationTimer();
         }
-        updateFrame(newFrame);
+        replacePixmap(std::move(newFrame));
     }
 }
 
 void ImageViewer::startAnimationTimer() {
-    if(animationTimer && animation) {
-        animationTimer->start(animation->nextFrameDelay());
+    if(animationTimer && movie) {
+        animationTimer->start(movie->nextFrameDelay());
     }
 }
 
-void ImageViewer::displayAnimation(QMovie *_animation) {
-    if(_animation && _animation->isValid()) {
+void ImageViewer::displayAnimation(std::unique_ptr<QMovie> _movie) {
+    if(_movie && _movie->isValid()) {
         reset();
-        animation = _animation;
-        animation->jumpToFrame(0);
-        readjust(animation->currentPixmap().size(),
-                 animation->currentPixmap().rect());
-        image = new QPixmap();
-        *image = animation->currentPixmap().transformed(transform, Qt::SmoothTransformation);
+        movie = std::move(_movie);
+        movie->jumpToFrame(0);
+        readjust(movie->currentPixmap().size(),
+                 movie->currentPixmap().rect());
+        pixmap = std::unique_ptr<QPixmap>(new QPixmap());
+        *pixmap = movie->currentPixmap().transformed(transform, Qt::SmoothTransformation);
         if(settings->transparencyGrid())
             drawTransparencyGrid();
         //update();
@@ -88,11 +88,11 @@ void ImageViewer::displayAnimation(QMovie *_animation) {
 }
 
 // display & initialize
-void ImageViewer::displayImage(QPixmap *_image) {
+void ImageViewer::displayImage(std::unique_ptr<QPixmap> _pixmap) {
     reset();
-    if(_image) {
-        image = _image;
-        readjust(image->size(), image->rect());
+    if(_pixmap) {
+        pixmap = std::move(_pixmap);
+        readjust(pixmap->size(), pixmap->rect());
         if(settings->transparencyGrid())
             drawTransparencyGrid();
         update();
@@ -105,15 +105,9 @@ void ImageViewer::displayImage(QPixmap *_image) {
 void ImageViewer::reset() {
     isDisplaying = false;
     stopPosAnimation();
-    if(animation) {
-        stopAnimation();
-        delete animation;
-        animation = NULL;
-    }
-    if(image) {
-        delete image;
-        image = NULL;
-    }
+    pixmap.reset(nullptr);
+    stopAnimation();
+    movie.reset(nullptr);
 }
 
 // unsetImage, then update and show cursor
@@ -136,14 +130,12 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     applyFitMode();
 }
 
-// takes scaled image
-void ImageViewer::updateFrame(QPixmap *newFrame) {
-    if(!animation && newFrame->size() != drawingRect.size()) {
-        delete newFrame;
+// new pixmap must be the size of drawingRect
+void ImageViewer::replacePixmap(std::unique_ptr<QPixmap> newFrame) {
+    if(!movie && newFrame->size() != drawingRect.size()) {
         return;
     }
-    delete image;
-    image = newFrame;
+    pixmap = std::move(newFrame);
     if(checkboardGridEnabled)
         drawTransparencyGrid();
     update();
@@ -263,20 +255,20 @@ void ImageViewer::setScale(float scale) {
 void ImageViewer::requestScaling() {
     if(!isDisplaying)
         return;
-    if(image->size() != drawingRect.size() && !animation) {
+    if(pixmap->size() != drawingRect.size() && !movie) {
         emit scalingRequested(drawingRect.size());
     }
 }
 
 void ImageViewer::drawTransparencyGrid() {
-    if(image && image->hasAlphaChannel()) {
-        QPainter painter(image);
+    if(pixmap && pixmap->hasAlphaChannel()) {
+        QPainter painter(pixmap.get());
         painter.setCompositionMode(QPainter::CompositionMode_DestinationOver);
         QColor dark(90,90,90,255);
         QColor light(140,140,140,255);
         int xCount, yCount;
-        xCount = image->width() / CHECKBOARD_GRID_SIZE;
-        yCount = image->height() / CHECKBOARD_GRID_SIZE;
+        xCount = pixmap->width() / CHECKBOARD_GRID_SIZE;
+        yCount = pixmap->height() / CHECKBOARD_GRID_SIZE;
         QRect square(0, 0, CHECKBOARD_GRID_SIZE, CHECKBOARD_GRID_SIZE);
         bool evenOdd;
         for(int i = 0; i <= yCount; i++) {
@@ -289,7 +281,7 @@ void ImageViewer::drawTransparencyGrid() {
             square.translate(0, CHECKBOARD_GRID_SIZE);
             square.moveLeft(0);
         }
-        painter.fillRect(image->rect(), dark);
+        painter.fillRect(pixmap->rect(), dark);
     }
 }
 
@@ -299,14 +291,14 @@ void ImageViewer::drawTransparencyGrid() {
 void ImageViewer::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QPainter painter(this);
-    if(animation && smoothAnimatedImages)
+    if(movie && smoothAnimatedImages)
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
-    if(image) {
-        image->setDevicePixelRatio(devicePixelRatioF());
+    if(pixmap) {
+        pixmap->setDevicePixelRatio(devicePixelRatioF());
         // maybe pre-calculate size so we wont do it in every draw?
         QRectF dpiAdjusted(drawingRect.topLeft()/devicePixelRatioF(), drawingRect.size()/devicePixelRatioF());
         //qDebug() << dpiAdjusted;
-        painter.drawPixmap(dpiAdjusted, *image, image->rect());
+        painter.drawPixmap(dpiAdjusted, *pixmap, pixmap->rect());
     }
 }
 
@@ -356,6 +348,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
 
 // Okular-like cursor drag behavior
 // TODO: fix multiscreen
+inline
 void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
     if( drawingRect.size().width() > width()*devicePixelRatioF() ||
         drawingRect.size().height() > height()*devicePixelRatioF() )
@@ -412,9 +405,11 @@ void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
 }
 
 // default drag behavior
+inline
 void ImageViewer::mouseDrag(QMouseEvent *event) {
     if(drawingRect.size().width() > width()*devicePixelRatioF() ||
-            drawingRect.size().height() > height()*devicePixelRatioF()) {
+       drawingRect.size().height() > height()*devicePixelRatioF())
+    {
         mouseMoveStartPos -= event->pos();
         scroll(mouseMoveStartPos.x()*devicePixelRatioF(), mouseMoveStartPos.y()*devicePixelRatioF(), false);
         mouseMoveStartPos = event->pos();
@@ -579,6 +574,7 @@ void ImageViewer::stopPosAnimation() {
 }
 
 // scroll viewport and do update()
+inline
 void ImageViewer::scroll(int dx, int dy, bool smooth) {
     stopPosAnimation();
     QPoint destTopLeft = drawingRect.topLeft();

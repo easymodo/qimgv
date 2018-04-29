@@ -91,7 +91,8 @@ SOURCES += \
     appversion.cpp \
     gui/overlays/changelogwindow.cpp \
     components/scriptmanager/scriptmanager.cpp \
-    gui/customwidgets/scriptwidget.cpp
+    gui/customwidgets/scriptwidget.cpp \
+    gui/viewers/folderview.cpp
 
 
 HEADERS += \
@@ -164,7 +165,8 @@ HEADERS += \
     appversion.h \
     gui/overlays/changelogwindow.h \
     components/scriptmanager/scriptmanager.h \
-    gui/customwidgets/scriptwidget.h
+    gui/customwidgets/scriptwidget.h \
+    gui/viewers/folderview.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \

@@ -3,12 +3,19 @@
 
 // TODO: this class is kinda useless now. redesign?
 
-ImageAnimated::ImageAnimated(QString _path) {
-    path = _path;
-    loaded = false;
+ImageAnimated::ImageAnimated(QString _path)
+    : Image(_path)
+{
     mSize.setWidth(0);
     mSize.setHeight(0);
-    imageInfo = new ImageInfo(path);
+    load();
+}
+
+ImageAnimated::ImageAnimated(std::unique_ptr<DocumentInfo> _info)
+    : Image(std::move(_info))
+{
+    mSize.setWidth(0);
+    mSize.setHeight(0);
     load();
 }
 
@@ -19,16 +26,13 @@ void ImageAnimated::load() {
     if(isLoaded()) {
         return;
     }
-    if(!imageInfo) {
-        imageInfo = new ImageInfo(path);
-    }
-    QPixmap pixmap(path, imageInfo->extension());
+    QPixmap pixmap(mPath, mDocInfo->extension());
     mSize = pixmap.size();
-    loaded = true;
+    mLoaded = true;
 }
 
 bool ImageAnimated::save(QString destPath) {
-    QFile file(path);
+    QFile file(mPath);
     if(file.exists()) {
         if(!file.copy(destPath)) {
             qDebug() << "Unable to save file.";
@@ -48,9 +52,8 @@ bool ImageAnimated::save() {
 }
 
 // in case of gif returns current frame
-QPixmap *ImageAnimated::getPixmap() {
-    QPixmap *pix = new QPixmap(path, imageInfo->extension());
-    return pix;
+std::unique_ptr<QPixmap> ImageAnimated::getPixmap() {
+    return std::unique_ptr<QPixmap>(new QPixmap(mPath, mDocInfo->extension()));
 }
 
 const QImage *ImageAnimated::getImage() {
@@ -59,12 +62,12 @@ const QImage *ImageAnimated::getImage() {
     return cPtr;
 }
 
-QMovie *ImageAnimated::getMovie() {
-    QMovie *_movie = new QMovie();
-    _movie->setFileName(path);
-    _movie->setFormat(imageInfo->extension());
-    _movie->jumpToFrame(0);
-    return _movie;
+std::unique_ptr<QMovie> ImageAnimated::getMovie() {
+    std::unique_ptr<QMovie> movie(new QMovie());
+    movie->setFileName(mPath);
+    movie->setFormat(mDocInfo->extension());
+    movie->jumpToFrame(0);
+    return movie;
 }
 
 int ImageAnimated::height() {

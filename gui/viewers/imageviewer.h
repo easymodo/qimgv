@@ -14,6 +14,7 @@
 #include <QPropertyAnimation>
 #include <cmath>
 #include <ctime>
+#include <memory>
 #include "settings.h"
 
 #define FLT_EPSILON 1.19209290E-07F
@@ -29,6 +30,9 @@ public:
     QRect imageRect();
     float currentScale();
     QSize sourceSize();
+    void displayImage(std::unique_ptr<QPixmap> _pixmap);
+    void displayAnimation(std::unique_ptr<QMovie> _animation);
+    void replacePixmap(std::unique_ptr<QPixmap> newFrame);
 
 signals:
     void scalingRequested(QSize);
@@ -37,7 +41,6 @@ signals:
     void imageAreaChanged(QRect);
 
 public slots:
-    void displayImage(QPixmap* _image);
     void setFitMode(ImageFitMode mode);
     void setFitOriginal();
     void setFitWidth();
@@ -47,14 +50,12 @@ public slots:
     void zoomInCursor();
     void zoomOutCursor();
     void readSettings();
-    void updateFrame(QPixmap *newFrame);
     void scrollUp();
     void scrollDown();
     void scrollLeft();
     void scrollRight();
     void startAnimation();
     void stopAnimation();
-    void displayAnimation(QMovie *_animation);
     void closeImage();
     void setExpandImage(bool mode);
 
@@ -72,8 +73,8 @@ private slots:
     void showCursor();
 
 private:
-    QPixmap *image;
-    QMovie *animation;
+    std::unique_ptr<QPixmap> pixmap;
+    std::unique_ptr<QMovie> movie;
     QTransform transform;
     QTimer *cursorTimer, *animationTimer;
     QRect drawingRect;

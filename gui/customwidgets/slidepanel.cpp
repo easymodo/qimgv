@@ -10,7 +10,7 @@ SlidePanel::SlidePanel(ContainerWidget *parent)
     : OverlayWidget(parent),
       panelSize(50),
       slideAmount(30),
-      mWidget(NULL)
+      mWidget(nullptr)
 {
     // workaround for https://bugreports.qt.io/browse/QTBUG-66387
     // TODO: remove this when it'll get fixed. And the QtGlobal include
@@ -63,7 +63,7 @@ void SlidePanel::setWidget(QWidget *w) {
 }
 
 bool SlidePanel::hasWidget() {
-    return (mWidget != NULL);
+    return (mWidget != nullptr);
 }
 
 // TODO: this misfires with QT_SCALE_FACTOR > 1.0

@@ -9,7 +9,7 @@ QImage *ImageLib::rotate(const QImage* src, int grad) {
 }
 
 QImage* ImageLib::crop(const QImage* src, QRect newRect) {
-    QImage *img = NULL;
+    QImage *img = nullptr;
     if(src->rect().contains(newRect, false)) {
         img = new QImage(newRect.size(), src->format());
         *img = src->copy(newRect);
