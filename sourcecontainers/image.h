@@ -1,14 +1,10 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include <QObject>
 #include <QString>
-#include <QIODevice>
 #include <QDebug>
 #include <QPixmap>
-#include <QPixmapCache>
-#include <QThread>
-#include <QSemaphore>
+#include <memory>
 #include "utils/imagelib.h"
 #include "utils/stuff.h"
 #include "sourcecontainers/imageinfo.h"
