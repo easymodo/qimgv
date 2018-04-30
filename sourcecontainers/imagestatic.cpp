@@ -4,24 +4,16 @@
 ImageStatic::ImageStatic(QString _path)
     : Image(_path)
 {
-    image = nullptr;
-    imageEdited = nullptr;
     load();
 }
 
 ImageStatic::ImageStatic(std::unique_ptr<DocumentInfo> _info)
     : Image(std::move(_info))
 {
-    image = nullptr;
-    imageEdited = nullptr;
     load();
 }
 
 ImageStatic::~ImageStatic() {
-    if(image)
-        delete image;
-    if(imageEdited)
-        delete imageEdited;
 }
 
 //load image data from disk
@@ -29,8 +21,7 @@ void ImageStatic::load() {
     if(isLoaded()) {
         return;
     }
-    image = new QImage();
-    image->load(mPath, mDocInfo->extension());
+    image = std::shared_ptr<const QImage>(new QImage(mPath, mDocInfo->extension()));
     mLoaded = true;
 }
 
@@ -51,11 +42,11 @@ std::unique_ptr<QPixmap> ImageStatic::getPixmap() {
     return pix;
 }
 
-const QImage *ImageStatic::getSourceImage() {
+std::shared_ptr<const QImage> ImageStatic::getSourceImage() {
     return image;
 }
 
-const QImage *ImageStatic::getImage() {
+std::shared_ptr<const QImage> ImageStatic::getImage() {
     return isEdited()?imageEdited:image;
 }
 
@@ -71,10 +62,10 @@ QSize ImageStatic::size() {
     return isEdited()?imageEdited->size():image->size();
 }
 
-bool ImageStatic::setEditedImage(QImage *imageEditedNew) {
+bool ImageStatic::setEditedImage(std::unique_ptr<const QImage> imageEditedNew) {
     if(imageEditedNew && imageEditedNew->width() != 0) {
         discardEditedImage();
-        imageEdited = imageEditedNew;
+        imageEdited = std::move(imageEditedNew);
         mEdited = true;
         return true;
     } else {
@@ -84,8 +75,7 @@ bool ImageStatic::setEditedImage(QImage *imageEditedNew) {
 
 bool ImageStatic::discardEditedImage() {
     if(imageEdited) {
-        delete imageEdited;
-        imageEdited = nullptr;
+        imageEdited.reset();
         mEdited = false;
         return true;
     }

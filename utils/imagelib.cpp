@@ -1,30 +1,48 @@
 #include "imagelib.h"
 
-QImage *ImageLib::rotate(const QImage* src, int grad) {
+QImage *ImageLib::rotated(const QImage *src, int grad) {
     QImage *img = new QImage();
     QTransform transform;
     transform.rotate(grad);
     *img = src->transformed(transform, Qt::SmoothTransformation);
     return img;
 }
-
-QImage* ImageLib::crop(const QImage* src, QRect newRect) {
+//------------------------------------------------------------------------------
+QImage *ImageLib::rotated(std::shared_ptr<const QImage> src, int grad) {
+    return rotated(src.get(), grad);
+}
+//------------------------------------------------------------------------------
+QImage* ImageLib::cropped(const QImage *src, QRect newRect) {
     QImage *img = nullptr;
     if(src->rect().contains(newRect, false)) {
         img = new QImage(newRect.size(), src->format());
         *img = src->copy(newRect);
+    } else {
+        img = new QImage();
     }
     return img;
 }
-
-QImage* ImageLib::flipH(const QImage* src) {
+//------------------------------------------------------------------------------
+QImage* ImageLib::cropped(std::shared_ptr<const QImage> src, QRect newRect) {
+    return cropped(src.get(), newRect);
+}
+//------------------------------------------------------------------------------
+QImage* ImageLib::flippedH(const QImage *src) {
     return new QImage(src->mirrored(true, false));
 }
-
-QImage* ImageLib::flipV(const QImage* src) {
+//------------------------------------------------------------------------------
+QImage* ImageLib::flippedH(std::shared_ptr<const QImage> src) {
+    return flippedH(src.get());
+}
+//------------------------------------------------------------------------------
+QImage* ImageLib::flippedV(const QImage *src) {
     return new QImage(src->mirrored(false, true));
 }
-
+//------------------------------------------------------------------------------
+QImage* ImageLib::flippedV(std::shared_ptr<const QImage> src) {
+    return flippedV(src.get());
+}
+//------------------------------------------------------------------------------
 /*
 
 QImage *ImageLib::cropped(QRect newRect, QRect targetRes, bool upscaled) {
@@ -47,12 +65,12 @@ QImage *ImageLib::cropped(QRect newRect, QRect targetRes, bool upscaled) {
  * 1: bilinear
  */
 
-QImage* ImageLib::scale(const QImage *source, QSize destSize, int method) {
+QImage* ImageLib::scaled(std::shared_ptr<const QImage> source, QSize destSize, int method) {
     switch (method) {
         case 0:
-            return scale_Qt(source, destSize, false);
+            return scaled_Qt(source, destSize, false);
         case 1:
-            return scale_Qt(source, destSize, true);
+            return scaled_Qt(source, destSize, true);
         /*case 2:
             return scale_FreeImage(source, destSize, FILTER_BICUBIC);
         case 3:
@@ -61,11 +79,11 @@ QImage* ImageLib::scale(const QImage *source, QSize destSize, int method) {
             return scale_FreeImage(source, destSize, FILTER_LANCZOS3);
             */
         default:
-            return scale_Qt(source, destSize, true);
+            return scaled_Qt(source, destSize, true);
     }
 }
 
-QImage* ImageLib::scale_Qt(const QImage *source, QSize destSize, bool smooth) {
+QImage* ImageLib::scaled_Qt(std::shared_ptr<const QImage> source, QSize destSize, bool smooth) {
     QImage *dest = new QImage();
     Qt::TransformationMode mode = smooth ? Qt::SmoothTransformation : Qt::FastTransformation;
     *dest = source->scaled(destSize.width(), destSize.height(), Qt::IgnoreAspectRatio, mode);

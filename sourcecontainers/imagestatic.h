@@ -12,17 +12,14 @@ public:
     ~ImageStatic();
 
     std::unique_ptr<QPixmap> getPixmap();
-    const QImage* getSourceImage();
-    const QImage* getImage();
+    std::shared_ptr<const QImage> getSourceImage();
+    std::shared_ptr<const QImage> getImage();
+
     int height();
     int width();
     QSize size();
 
-    QImage *rotated(int grad);
-    void rotate(int grad);
-    QImage *cropped(QRect newRect, QRect targetRes, bool upscaled);
-
-    bool setEditedImage(QImage *imageEditedNew);
+    bool setEditedImage(std::unique_ptr<const QImage> imageEditedNew);
     bool discardEditedImage();
 
 public slots:
@@ -32,7 +29,7 @@ public slots:
 
 private:
     void load();
-    QImage *image, *imageEdited;
+    std::shared_ptr<const QImage> image, imageEdited;
 };
 
 #endif // QIMAGESTATIC_H

@@ -15,7 +15,7 @@ public:
     ~Video();
 
     std::unique_ptr<QPixmap> getPixmap();
-    const QImage* getImage();
+    std::shared_ptr<const QImage> getImage();
     Clip* getClip();    // getPixmap's video equivalent
     int height();
     int width();

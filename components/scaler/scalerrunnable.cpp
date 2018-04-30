@@ -15,10 +15,10 @@ void ScalerRunnable::run() {
     // hopefully this will prevent noticeable lag during scaling
     float complexity =  (float)req.size.width()*req.size.height()*req.image->getImage()->depth() / 8000000;
     if( req.size.width() > req.image->width() && !settings->smoothUpscaling() || settings->scalingFilter() == 0 )
-        scaled = ImageLib::scale(req.image->getImage(), req.size, 0);
+        scaled = ImageLib::scaled(req.image->getImage(), req.size, 0);
     else if( complexity > CMPL_FALLBACK_THRESHOLD )
-        scaled = ImageLib::scale(req.image->getImage(), req.size, 1);
+        scaled = ImageLib::scaled(req.image->getImage(), req.size, 1);
     else
-        scaled = ImageLib::scale(req.image->getImage(), req.size, settings->scalingFilter());
+        scaled = ImageLib::scaled(req.image->getImage(), req.size, settings->scalingFilter());
     emit finished(scaled, req);
 }

@@ -288,8 +288,8 @@ void Core::resize(QSize size) {
             auto *img = cache->get(nameKey);
             if(img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img);
-                imgStatic->setEditedImage(
-                            ImageLib::scale(imgStatic->getImage(), size, 1));
+                imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                            ImageLib::scaled(imgStatic->getImage(), size, 1)));
                 cache->release(nameKey);
                 cache->unlock();
                 displayImage(img);
@@ -314,8 +314,8 @@ void Core::flipH() {
             auto *img = cache->get(nameKey);
             if(img && img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img);
-                imgStatic->setEditedImage(
-                            ImageLib::flipH(imgStatic->getImage()));
+                imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                            ImageLib::flippedH(imgStatic->getImage())));
                 cache->release(nameKey);
                 cache->unlock();
                 displayImage(img);
@@ -339,8 +339,8 @@ void Core::flipV() {
             auto *img = cache->get(nameKey);
             if(img && img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img);
-                imgStatic->setEditedImage(
-                            ImageLib::flipV(imgStatic->getImage()));
+                imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                            ImageLib::flippedV(imgStatic->getImage())));
                 cache->release(nameKey);
                 cache->unlock();
                 displayImage(img);
@@ -365,8 +365,8 @@ void Core::crop(QRect rect) {
             auto *img = cache->get(nameKey);
             if(img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img);
-                if(!imgStatic->setEditedImage(
-                            ImageLib::crop(imgStatic->getImage(), rect)))
+                if(!imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                            ImageLib::cropped(imgStatic->getImage(), rect))))
                 {
                     mw->showMessage("Could not crop image: incorrect size / position");
                 }
@@ -393,8 +393,8 @@ void Core::rotateByDegrees(int degrees) {
             auto *img = cache->get(nameKey);
             if(img && img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img);
-                imgStatic->setEditedImage(
-                            ImageLib::rotate(imgStatic->getImage(), degrees));
+                imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                            ImageLib::rotated(imgStatic->getImage(), degrees)));
                 cache->release(nameKey);
                 cache->unlock();
                 displayImage(img);

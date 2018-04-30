@@ -43,7 +43,7 @@ std::unique_ptr<QPixmap> Video::getPixmap() {
     return nullptr;
 }
 
-const QImage *Video::getImage() {
+std::shared_ptr<const QImage> Video::getImage() {
     qDebug() << "SOMETHING HAPPENED.";
     //TODO: find out some easy way to get frames from video source
     return nullptr;

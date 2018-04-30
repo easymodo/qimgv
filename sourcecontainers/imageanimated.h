@@ -12,7 +12,7 @@ public:
     ~ImageAnimated();
 
     std::unique_ptr<QPixmap> getPixmap();
-    const QImage* getImage();
+    std::shared_ptr<const QImage> getImage();
     std::unique_ptr<QMovie> getMovie();
     int height();
     int width();

@@ -56,10 +56,10 @@ std::unique_ptr<QPixmap> ImageAnimated::getPixmap() {
     return std::unique_ptr<QPixmap>(new QPixmap(mPath, mDocInfo->extension()));
 }
 
-const QImage *ImageAnimated::getImage() {
-    QImage *img = new QImage();
-    const QImage *cPtr = img;
-    return cPtr;
+// wait what?
+std::shared_ptr<const QImage> ImageAnimated::getImage() {
+    std::shared_ptr<const QImage> img(new QImage());
+    return img;
 }
 
 std::unique_ptr<QMovie> ImageAnimated::getMovie() {

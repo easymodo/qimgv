@@ -15,7 +15,7 @@ public:
     Image(std::unique_ptr<DocumentInfo>);
     virtual ~Image() = 0;
     virtual std::unique_ptr<QPixmap> getPixmap() = 0;
-    virtual const QImage* getImage() = 0;
+    virtual std::shared_ptr<const QImage> getImage() = 0;
     DocumentType type() const;
     QString path() const;
     virtual int height() = 0;
