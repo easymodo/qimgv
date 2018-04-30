@@ -20,11 +20,11 @@ private:
     QThreadPool *pool;
 
 signals:
-    void loadFinished(Image*);
+    void loadFinished(std::shared_ptr<Image>);
     void loadFailed(QString path);
 
 private slots:
-    void onLoadFinished(Image*, QString);
+    void onLoadFinished(std::shared_ptr<Image>, QString);
 };
 
 #endif // NEWLOADER_H

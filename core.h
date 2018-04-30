@@ -89,7 +89,7 @@ private slots:
     void prevImage();
     void jumpToFirst();
     void jumpToLast();
-    void onLoadFinished(Image *img);
+    void onLoadFinished(std::shared_ptr<Image> img);
     void onLoadFailed(QString path);
     void onLoadStarted();
     void onLoadingTimeout();

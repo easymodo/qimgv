@@ -1,22 +1,19 @@
 #include "cacheitem.h"
 
 CacheItem::CacheItem() {
-    contents = nullptr;
     sem = new QSemaphore(1);
 }
 
-CacheItem::CacheItem(Image *_contents) {
+CacheItem::CacheItem(std::shared_ptr<Image> _contents) {
     contents = _contents;
     sem = new QSemaphore(1);
 }
 
 CacheItem::~CacheItem() {
-    if(contents)
-        delete contents;
     delete sem;
 }
 
-Image *CacheItem::getContents() {
+std::shared_ptr<Image> CacheItem::getContents() {
     return contents;
 }
 

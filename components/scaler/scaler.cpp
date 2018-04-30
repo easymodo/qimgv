@@ -18,7 +18,7 @@ Scaler::Scaler(Cache *_cache, QObject *parent)
     sem = new QSemaphore(1);
     pool = new QThreadPool(this);
     pool->setMaxThreadCount(1);
-    runnable = new ScalerRunnable(cache);
+    runnable = new ScalerRunnable();
     runnable->setAutoDelete(false);
     connect(this, SIGNAL(startBufferedRequest()), this, SLOT(slotStartBufferedRequest()), Qt::DirectConnection);
     connect(runnable, SIGNAL(started(ScalerRequest)),

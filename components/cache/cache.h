@@ -16,12 +16,12 @@ public:
     void remove(QString name);
     void clear();
 
-    bool insert(QString name, Image *img);
+    bool insert(QString name, std::shared_ptr<Image> img);
     void lock();
     void unlock();
     void trimTo(QStringList list);
 
-    Image* get(QString name);
+    std::shared_ptr<Image> get(QString name);
     bool release(QString name);
     bool reserve(QString name);
     const QList<QString> keys();

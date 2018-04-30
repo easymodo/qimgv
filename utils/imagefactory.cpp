@@ -1,16 +1,16 @@
 #include "imagefactory.h"
 
-Image *ImageFactory::createImage(QString path) {
-    std::unique_ptr<DocumentInfo> info(new DocumentInfo(path));
-    Image *img = nullptr;
-    if(info->type() == NONE) {
-        qDebug() << "ImageFactory: unsupported file - " << info->filePath();
-    } else if(info->type() == ANIMATED) {
-        img = new ImageAnimated(move(info));
-    } else if(info->type() == VIDEO) {
-        img = new Video(move(info));
+std::shared_ptr<Image> ImageFactory::createImage(QString path) {
+    std::unique_ptr<DocumentInfo> docInfo(new DocumentInfo(path));
+    std::shared_ptr<Image> img;
+    if(docInfo->type() == NONE) {
+        qDebug() << "ImageFactory: unsupported file - " << docInfo->filePath();
+    } else if(docInfo->type() == ANIMATED) {
+        img.reset(new ImageAnimated(move(docInfo)));
+    } else if(docInfo->type() == VIDEO) {
+        img.reset(new Video(move(docInfo)));
     } else {
-        img = new ImageStatic(move(info));
+        img.reset(new ImageStatic(move(docInfo)));
     }
     return img;
 }

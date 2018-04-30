@@ -10,7 +10,7 @@
 
 class ImageFactory {
 public:
-    static Image* createImage(QString path) ;
+    static std::shared_ptr<Image> createImage(QString path) ;
 };
 
 #endif // IMAGEFACTORY_H

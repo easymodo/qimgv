@@ -16,7 +16,7 @@ bool Cache::contains(QString name) {
     return images.contains(name);
 }
 
-bool Cache::insert(QString name, Image* img) {
+bool Cache::insert(QString name, std::shared_ptr<Image> img) {
     if(images.contains(name)) {
         return false;
     } else {
@@ -41,7 +41,7 @@ void Cache::clear() {
     }
 }
 
-Image* Cache::get(QString name) {
+std::shared_ptr<Image> Cache::get(QString name) {
     if(images.contains(name)) {
         CacheItem *item = images.value(name);
         return item->getContents();

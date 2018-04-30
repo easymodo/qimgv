@@ -22,6 +22,7 @@ Core::Core()
     mallopt(M_MMAP_THRESHOLD, 64000);
 #endif
     qRegisterMetaType<ScalerRequest>("ScalerRequest");
+    qRegisterMetaType<std::shared_ptr<Image>>("std::shared_ptr<Image>");
     initGui();
     initComponents();
     connectComponents();
@@ -65,8 +66,8 @@ void Core::initComponents() {
 
 void Core::connectComponents() {
     connect(loadingTimer, SIGNAL(timeout()), this, SLOT(onLoadingTimeout()));
-    connect(loader, SIGNAL(loadFinished(Image *)),
-            this, SLOT(onLoadFinished(Image *)));
+    connect(loader, SIGNAL(loadFinished(std::shared_ptr<Image>)),
+            this, SLOT(onLoadFinished(std::shared_ptr<Image>)));
     connect(loader, SIGNAL(loadFailed(QString)),
             this, SLOT(onLoadFailed(QString)));
 
@@ -285,14 +286,14 @@ void Core::resize(QSize size) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::scaled(imgStatic->getImage(), size, 1)));
                 cache->release(nameKey);
                 cache->unlock();
-                displayImage(img);
+                displayImage(img.get());
             } else {
                 cache->release(nameKey);
                 cache->unlock();
@@ -311,14 +312,14 @@ void Core::flipH() {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img && img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::flippedH(imgStatic->getImage())));
                 cache->release(nameKey);
                 cache->unlock();
-                displayImage(img);
+                displayImage(img.get());
             } else {
                 cache->release(nameKey);
                 cache->unlock();
@@ -336,14 +337,14 @@ void Core::flipV() {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img && img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::flippedV(imgStatic->getImage())));
                 cache->release(nameKey);
                 cache->unlock();
-                displayImage(img);
+                displayImage(img.get());
             } else {
                 cache->release(nameKey);
                 cache->unlock();
@@ -362,9 +363,9 @@ void Core::crop(QRect rect) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 if(!imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::cropped(imgStatic->getImage(), rect))))
                 {
@@ -372,7 +373,7 @@ void Core::crop(QRect rect) {
                 }
                 cache->release(nameKey);
                 cache->unlock();
-                displayImage(img);
+                displayImage(img.get());
             } else {
                 cache->release(nameKey);
                 cache->unlock();
@@ -390,14 +391,14 @@ void Core::rotateByDegrees(int degrees) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img && img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::rotated(imgStatic->getImage(), degrees)));
                 cache->release(nameKey);
                 cache->unlock();
-                displayImage(img);
+                displayImage(img.get());
             } else {
                 cache->release(nameKey);
                 cache->unlock();
@@ -416,14 +417,14 @@ void Core::discardEdits() {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 bool ok = imgStatic->discardEditedImage();
                 cache->release(nameKey);
                 cache->unlock();
                 if(ok)
-                    displayImage(img);
+                    displayImage(img.get());
             } else {
                 cache->release(nameKey);
                 cache->unlock();
@@ -447,7 +448,7 @@ void Core::saveImageToDisk(QString filePath) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img->save(filePath))
                 mw->showMessage("File saved.");
             else
@@ -478,10 +479,10 @@ void Core::switchFitMode() {
 void Core::scalingRequest(QSize size) {
     if(state.hasActiveImage && !state.isWaitingForLoader) {
         cache->lock();
-        Image *forScale = cache->get(dirManager->fileNameAt(state.currentIndex));
+        std::shared_ptr<Image> forScale = cache->get(dirManager->fileNameAt(state.currentIndex));
         if(forScale) {
             QString path = dirManager->filePathAt(state.currentIndex);
-            scaler->requestScaled(ScalerRequest(forScale, size, path));
+            scaler->requestScaled(ScalerRequest(forScale.get(), size, path));
         }
         cache->unlock();
     }
@@ -567,7 +568,7 @@ void Core::loadImage(QString path, bool blocking) {
     QString nameKey = dirManager->fileNameAt(state.currentIndex);
     // First check if image is already cached. If it is, just display it.
     if(cache->contains(nameKey))
-        displayImage(cache->get(nameKey));
+        displayImage(cache->get(nameKey).get());
     else if(blocking)
         loader->loadBlocking(path);
     else
@@ -603,7 +604,7 @@ bool Core::loadByIndex(int index) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         // First check if image is already cached. If it is, just display it.
         if(cache->contains(nameKey))
-            displayImage(cache->get(nameKey));
+            displayImage(cache->get(nameKey).get());
         else
             loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         return true;
@@ -618,7 +619,7 @@ bool Core::loadByIndexBlocking(int index) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         // First check if image is already cached. If it is, just display it.
         if(cache->contains(nameKey))
-            displayImage(cache->get(nameKey));
+            displayImage(cache->get(nameKey).get());
         else
             loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         return true;
@@ -642,7 +643,7 @@ void Core::nextImage() {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         // First check if image is already cached. If it is, just display it.
         if(cache->contains(nameKey))
-            displayImage(cache->get(nameKey));
+            displayImage(cache->get(nameKey).get());
         else
             loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         preload(index + 1);
@@ -666,7 +667,7 @@ void Core::prevImage() {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         // First check if image is already cached. If it is, just display it.
         if(cache->contains(nameKey))
-            displayImage(cache->get(nameKey));
+            displayImage(cache->get(nameKey).get());
         else
             loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         preload(index - 1);
@@ -703,20 +704,17 @@ void Core::onLoadingTimeout() {
     // TODO: show loading message over MainWindow
 }
 
-void Core::onLoadFinished(Image *img) {
+void Core::onLoadFinished(std::shared_ptr<Image> img) {
     int index = dirManager->indexOf(img->name());
     bool isRelevant = !(index < state.currentIndex - 1 || index > state.currentIndex + 1);
     QString nameKey = dirManager->fileNameAt(index);
     if(isRelevant) {
         if(!cache->insert(nameKey, img)) {
-            delete img;
             img = cache->get(nameKey);
         }
-    } else {
-        delete img;
     }
     if(index == state.currentIndex) {
-        displayImage(img);
+        displayImage(img.get());
     }
 }
 
@@ -764,7 +762,7 @@ void Core::updateInfoString() {
                           " ]   ");
     }
     if(!state.isWaitingForLoader) {
-        Image* img = cache->get(dirManager->fileNameAt(state.currentIndex));
+        std::shared_ptr<Image> img = cache->get(dirManager->fileNameAt(state.currentIndex));
         QString name, fullName = img->name();
         if(fullName.size()>95) {
             name = fullName.left(95);

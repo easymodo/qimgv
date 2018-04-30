@@ -14,7 +14,7 @@ public:
 private:
     QString path;
 signals:
-    void finished(Image*, QString);
+    void finished(std::shared_ptr<Image>, QString);
 };
 
 #endif // LOADERRUNNABLE_H

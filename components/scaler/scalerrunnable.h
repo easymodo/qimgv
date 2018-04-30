@@ -14,7 +14,7 @@ class ScalerRunnable : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    explicit ScalerRunnable(Cache *_cache);
+    explicit ScalerRunnable();
     void setRequest(ScalerRequest r);
     void run();
 signals:
@@ -23,7 +23,6 @@ signals:
 
 private:
     ScalerRequest req;
-    Cache *cache;
     const float CMPL_FALLBACK_THRESHOLD = 70.0; // equivalent of ~ 5000x3500 @ 32bpp
 };
 

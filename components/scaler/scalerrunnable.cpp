@@ -1,6 +1,6 @@
 #include "scalerrunnable.h"
 
-ScalerRunnable::ScalerRunnable(Cache *_cache) : cache(_cache) {
+ScalerRunnable::ScalerRunnable() {
 }
 
 void ScalerRunnable::setRequest(ScalerRequest r) {
