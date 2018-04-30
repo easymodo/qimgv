@@ -284,7 +284,7 @@ void Core::showResizeDialog() {
 void Core::resize(QSize size) {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
             std::shared_ptr<Image> img = cache->get(nameKey);
             if(img->type() == STATIC) {
@@ -292,15 +292,15 @@ void Core::resize(QSize size) {
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::scaled(imgStatic->getImage(), size, 1)));
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 displayImage(img.get());
             } else {
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::resize() - could not lock cache object.";
         }
     }
@@ -310,7 +310,7 @@ void Core::resize(QSize size) {
 void Core::flipH() {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
             std::shared_ptr<Image> img = cache->get(nameKey);
             if(img && img->type() == STATIC) {
@@ -318,15 +318,15 @@ void Core::flipH() {
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::flippedH(imgStatic->getImage())));
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 displayImage(img.get());
             } else {
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::flipH() - could not lock cache object.";
         }
     }
@@ -335,7 +335,7 @@ void Core::flipH() {
 void Core::flipV() {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
             std::shared_ptr<Image> img = cache->get(nameKey);
             if(img && img->type() == STATIC) {
@@ -343,15 +343,15 @@ void Core::flipV() {
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::flippedV(imgStatic->getImage())));
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 displayImage(img.get());
             } else {
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::flipV() - could not lock cache object.";
         }
     }
@@ -361,7 +361,7 @@ void Core::flipV() {
 void Core::crop(QRect rect) {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
             std::shared_ptr<Image> img = cache->get(nameKey);
             if(img->type() == STATIC) {
@@ -372,15 +372,15 @@ void Core::crop(QRect rect) {
                     mw->showMessage("Could not crop image: incorrect size / position");
                 }
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 displayImage(img.get());
             } else {
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::crop() - could not lock cache object.";
         }
     }
@@ -389,7 +389,7 @@ void Core::crop(QRect rect) {
 void Core::rotateByDegrees(int degrees) {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
             std::shared_ptr<Image> img = cache->get(nameKey);
             if(img && img->type() == STATIC) {
@@ -397,15 +397,15 @@ void Core::rotateByDegrees(int degrees) {
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::rotated(imgStatic->getImage(), degrees)));
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 displayImage(img.get());
             } else {
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::rotateByDegrees() - could not lock cache object.";
         }
     }
@@ -415,22 +415,22 @@ void Core::rotateByDegrees(int degrees) {
 void Core::discardEdits() {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
             std::shared_ptr<Image> img = cache->get(nameKey);
             if(img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 bool ok = imgStatic->discardEditedImage();
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 if(ok)
                     displayImage(img.get());
             } else {
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
             }
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::discardEdits() - could not lock cache object.";
         }
     }
@@ -446,7 +446,7 @@ void Core::saveImageToDisk() {
 void Core::saveImageToDisk(QString filePath) {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
             std::shared_ptr<Image> img = cache->get(nameKey);
             if(img->save(filePath))
@@ -454,9 +454,9 @@ void Core::saveImageToDisk(QString filePath) {
             else
                 mw->showMessage("Something happened.");
             cache->release(nameKey);
-            cache->unlock();
+            //cache->unlock();
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::saveImageToDisk() - could not lock cache object.";
         }
     }
@@ -478,13 +478,13 @@ void Core::switchFitMode() {
 
 void Core::scalingRequest(QSize size) {
     if(state.hasActiveImage && !state.isWaitingForLoader) {
-        cache->lock();
+        //cache->lock();
         std::shared_ptr<Image> forScale = cache->get(dirManager->fileNameAt(state.currentIndex));
         if(forScale) {
             QString path = dirManager->filePathAt(state.currentIndex);
             scaler->requestScaled(ScalerRequest(forScale.get(), size, path));
         }
-        cache->unlock();
+        //cache->unlock();
     }
 }
 
@@ -511,15 +511,15 @@ void Core::trimCache() {
     list << dirManager->fileNameAt(state.currentIndex - 1);
     list << dirManager->fileNameAt(state.currentIndex);
     list << dirManager->fileNameAt(state.currentIndex + 1);
-    cache->lock();
+    //cache->lock();
     cache->trimTo(list);
-    cache->unlock();
+    //cache->unlock();
 }
 
 void Core::clearCache() {
-    cache->lock();
+    //cache->lock();
     cache->clear();
-    cache->unlock();
+    //cache->unlock();
 }
 
 void Core::stopPlayback() {
