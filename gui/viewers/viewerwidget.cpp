@@ -10,8 +10,10 @@ ViewerWidget::ViewerWidget(QWidget *parent)
       imageViewer(nullptr),
       videoPlayer(nullptr),
       currentWidget(UNSET),
+      bgOpacity(1.0f),
       zoomInteraction(false)
 {
+    setAttribute(Qt::WA_TranslucentBackground, true);
     this->setMouseTracking(true);
     layout.setContentsMargins(0, 0, 0, 0);
     this->setLayout(&layout);
@@ -80,6 +82,7 @@ void ViewerWidget::enableVideoPlayer() {
 
 void ViewerWidget::readSettings() {
     bgColor = settings->backgroundColor();
+    bgOpacity = settings->backgroundOpacity();
     update();
 }
 
@@ -184,6 +187,7 @@ void ViewerWidget::closeImage() {
 
 void ViewerWidget::paintEvent(QPaintEvent *event) {
     QPainter p(this);
+    p.setOpacity(bgOpacity);
     p.setBrush(QBrush(bgColor));
     p.fillRect(this->rect(), p.brush());
 }

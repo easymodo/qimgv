@@ -7,4 +7,9 @@ file(GLOB SOURCES *.cpp)
 list (REMOVE_ITEM SOURCES moc_*.cpp)
 list (REMOVE_ITEM SOURCES *_automoc.cpp)
 add_library(gui STATIC ${SOURCES})
+
 target_link_libraries(gui Qt5::Widgets customwidgets dialogs overlays panels viewers)
+
+if(WITH_KDE_BLUR)
+    target_link_libraries(gui KF5::WindowSystem)
+endif()

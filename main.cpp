@@ -48,6 +48,5 @@ int main(int argc, char *argv[]) {
         core.loadByPathBlocking(fileName);
     }
     core.showGui();
-
     return a.exec();
 }

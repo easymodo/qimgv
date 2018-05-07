@@ -25,6 +25,10 @@
 #include "gui/dialogs/settingsdialog.h"
 #include <QApplication>
 
+#ifdef USE_KDE_BLUR
+#include <KWindowEffects>
+#endif
+
 enum ActiveSidePanel {
     SIDEPANEL_CROP,
     SIDEPANEL_NONE

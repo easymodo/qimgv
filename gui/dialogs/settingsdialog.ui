@@ -71,7 +71,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideNone</enum>
@@ -764,6 +764,75 @@
         </layout>
        </item>
        <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_14">
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Background opacity:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="bgOpacityPercentLabel">
+           <property name="text">
+            <string>%</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="bgOpacitySlider">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="tickPosition">
+            <enum>QSlider::TicksBelow</enum>
+           </property>
+           <property name="tickInterval">
+            <number>10</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="blurBackgroundCheckBox">
+         <property name="text">
+          <string>Blur background (KWin 5.13+)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer_11">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -1042,6 +1111,9 @@
          <layout class="QVBoxLayout" name="verticalLayout_12">
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_16">
+            <property name="spacing">
+             <number>6</number>
+            </property>
             <property name="leftMargin">
              <number>0</number>
             </property>
@@ -1709,8 +1781,8 @@ p, li { white-space: pre-wrap; }
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>589</x>
-     <y>389</y>
+     <x>597</x>
+     <y>428</y>
     </hint>
     <hint type="destinationlabel">
      <x>383</x>
@@ -1725,8 +1797,8 @@ p, li { white-space: pre-wrap; }
    <slot>applySettingsAndClose()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>417</x>
-     <y>389</y>
+     <x>425</x>
+     <y>428</y>
     </hint>
     <hint type="destinationlabel">
      <x>132</x>
@@ -1741,8 +1813,8 @@ p, li { white-space: pre-wrap; }
    <slot>applySettings()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>503</x>
-     <y>389</y>
+     <x>511</x>
+     <y>428</y>
     </hint>
     <hint type="destinationlabel">
      <x>137</x>
@@ -1757,8 +1829,8 @@ p, li { white-space: pre-wrap; }
    <slot>bgColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>270</x>
-     <y>65</y>
+     <x>285</x>
+     <y>104</y>
     </hint>
     <hint type="destinationlabel">
      <x>30</x>
@@ -1773,8 +1845,8 @@ p, li { white-space: pre-wrap; }
    <slot>accentColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>270</x>
-     <y>103</y>
+     <x>285</x>
+     <y>132</y>
     </hint>
     <hint type="destinationlabel">
      <x>33</x>
@@ -1789,8 +1861,8 @@ p, li { white-space: pre-wrap; }
    <slot>removeShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>185</x>
-     <y>117</y>
+     <x>195</x>
+     <y>83</y>
     </hint>
     <hint type="destinationlabel">
      <x>584</x>
@@ -1805,8 +1877,8 @@ p, li { white-space: pre-wrap; }
    <slot>addShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>104</x>
-     <y>117</y>
+     <x>109</x>
+     <y>83</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -1821,8 +1893,8 @@ p, li { white-space: pre-wrap; }
    <slot>resetShortcuts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>569</x>
-     <y>134</y>
+     <x>577</x>
+     <y>83</y>
     </hint>
     <hint type="destinationlabel">
      <x>587</x>
@@ -1837,8 +1909,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMaxZoomSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>408</x>
-     <y>115</y>
+     <x>576</x>
+     <y>160</y>
     </hint>
     <hint type="destinationlabel">
      <x>595</x>
@@ -1853,8 +1925,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMaxZoomResolutionSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>353</x>
-     <y>159</y>
+     <x>576</x>
+     <y>213</y>
     </hint>
     <hint type="destinationlabel">
      <x>597</x>
@@ -1869,12 +1941,28 @@ p, li { white-space: pre-wrap; }
    <slot>selectMpvPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>578</x>
-     <y>305</y>
+     <x>586</x>
+     <y>164</y>
     </hint>
     <hint type="destinationlabel">
      <x>596</x>
      <y>185</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>bgOpacitySlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>onBgOpacitySliderChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>556</x>
+     <y>164</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>621</x>
+     <y>159</y>
     </hint>
    </hints>
   </connection>
@@ -1890,5 +1978,6 @@ p, li { white-space: pre-wrap; }
   <slot>selectMpvPath()</slot>
   <slot>onMaxZoomSliderChanged(int)</slot>
   <slot>onMaxZoomResolutionSliderChanged(int)</slot>
+  <slot>onBgOpacitySliderChanged(int)</slot>
  </slots>
 </ui>

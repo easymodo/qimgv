@@ -41,6 +41,7 @@ private:
 
     CurrentWidget currentWidget;
     QColor bgColor;
+    float bgOpacity;
     bool zoomInteraction;
 
 private slots:

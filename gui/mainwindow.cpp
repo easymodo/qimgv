@@ -9,6 +9,7 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
       activeSidePanel(SIDEPANEL_NONE),
       mainPanel(nullptr)
 {
+    setAttribute(Qt::WA_TranslucentBackground, true);
     this->setMinimumSize(400, 300);
     layout.setContentsMargins(0,0,0,0);
     layout.setSpacing(0);
@@ -388,6 +389,12 @@ void MainWindow::showMessage(QString text) {
 }
 
 void MainWindow::readSettings() {
+#ifdef USE_KDE_BLUR
+    if(settings->backgroundOpacity() == 1.0f)
+        KWindowEffects::enableBlurBehind(winId(), false);
+    else
+        KWindowEffects::enableBlurBehind(winId(), settings->blurBackground());
+#endif
     panelPosition = settings->panelPosition();
     panelEnabled = settings->panelEnabled();
     panelFullscreenOnly = settings->panelFullscreenOnly();

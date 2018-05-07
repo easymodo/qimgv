@@ -159,6 +159,37 @@ bool Settings::showChangelogs() {
     return settings->s.value("showChangelogs", true).toBool();
 }
 
+float Settings::backgroundOpacity() {
+    bool ok = false;
+    float value = settings->s.value("backgroundOpacity", 1.0f).toFloat(&ok);
+    if(!ok)
+        return 0.0f;
+    if(value > 1.0f)
+        return 1.0f;
+    if(value < 0.0f)
+        return 0.0f;
+    return value;
+}
+
+void Settings::setBackgroundOpacity(float value) {
+    if(value > 1.0f)
+        value = 1.0f;
+    else if(value < 0.0f)
+        value = 0.0f;
+    settings->s.setValue("backgroundOpacity", value);
+}
+
+bool Settings::blurBackground() {
+#ifndef USE_KDE_BLUR
+    return false;
+#endif
+    return settings->s.value("blurBackground", true).toBool();
+}
+
+void Settings::setBlurBackground(bool mode) {
+    settings->s.setValue("blurBackground", mode);
+}
+
 bool Settings::playVideoSounds() {
     return settings->s.value("playVideoSounds", false).toBool();
 }

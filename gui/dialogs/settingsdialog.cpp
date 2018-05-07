@@ -14,6 +14,11 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     actionList = actionManager->actionList();
     shortcutKeys = actionManager->keys();
     ui->versionLabel->setText(QApplication::applicationVersion());
+
+#ifndef USE_KDE_BLUR
+    ui->blurBackgroundCheckBox->setDisabled(true);
+#endif
+
     connect(this, SIGNAL(settingsChanged()),
             settings, SLOT(sendChangeNotification()));
     readSettings();
@@ -40,6 +45,8 @@ void SettingsDialog::readSettings() {
     ui->smoothUpscalingCheckBox->setChecked(settings->smoothUpscaling());
     ui->expandImageCheckBox->setChecked(settings->expandImage());
     ui->smoothAnimatedImagesCheckBox->setChecked(settings->smoothAnimatedImages());
+    ui->bgOpacitySlider->setValue(settings->backgroundOpacity() * 100);
+    ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -119,6 +126,8 @@ void SettingsDialog::applySettings() {
     settings->setSmoothUpscaling(ui->smoothUpscalingCheckBox->isChecked());
     settings->setExpandImage(ui->expandImageCheckBox->isChecked());
     settings->setSmoothAnimatedImages(ui->smoothAnimatedImagesCheckBox->isChecked());
+    settings->setBackgroundOpacity(ui->bgOpacitySlider->value() / (float)100.0f);
+    settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 
@@ -254,6 +263,10 @@ void SettingsDialog::onMaxZoomSliderChanged(int value) {
 void SettingsDialog::onMaxZoomResolutionSliderChanged(int value) {
     ui->maxZoomResLabel->setText(QString::number(value) + " Mpx");
     ui->maxZoomResInfoLabel->setText("<small><i>Max. memory usage: ~" + QString::number(value * 4) + "MB @ 32bpp</i></small>");
+}
+
+void SettingsDialog::onBgOpacitySliderChanged(int value) {
+    ui->bgOpacityPercentLabel->setText(QString::number(value) + "%");
 }
 
 int SettingsDialog::exec() {
