@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets concurrent KWindowSystem
+QT       += core gui widgets concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -21,7 +21,37 @@ QMAKE_CXXFLAGS_RELEASE -= -O1
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
-DEFINES += USE_KDE_BLUR
+CONFIG += WITH_MPV
+#CONFIG += WITH_KDE_BLUR
+
+# video support
+WITH_MPV {
+    unix {
+        QT_CONFIG -= no-pkg-config
+        CONFIG += link_pkgconfig
+        PKGCONFIG += mpv
+    }
+    windows {
+        LIBS += -L$$PWD/mpv-dev/lib/ -llibmpv
+        INCLUDEPATH += $$PWD/mpv-dev/include
+        DEPENDPATH += $$PWD/mpv-dev
+    }
+    DEFINES += USE_MPV
+    SOURCES += gui/viewers/mpvwidget.cpp
+    SOURCES += gui/viewers/videoplayermpv.cpp
+    HEADERS += gui/viewers/mpvwidget.h
+    HEADERS += gui/viewers/videoplayermpv.h
+} else {
+    SOURCES += gui/viewers/videoplayerdummy.cpp
+    HEADERS += gui/viewers/videoplayerdummy.h
+}
+
+unix {
+    WITH_KDE_BLUR {
+        QT += KWindowSystem
+        DEFINES += USE_KDE_BLUR
+    }
+}
 
 SOURCES += \
     main.cpp \
@@ -57,7 +87,6 @@ SOURCES += \
     gui/panels/mainpanel/thumbnailstrip.cpp \
     gui/panels/mainpanel/thumbnailview.cpp \
     gui/viewers/imageviewer.cpp \
-    gui/viewers/mpvwidget.cpp \
     gui/viewers/viewerwidget.cpp \
     sourcecontainers/clip.cpp \
     sourcecontainers/image.cpp \
@@ -85,8 +114,6 @@ SOURCES += \
     gui/customwidgets/spinboxinputfix.cpp \
     gui/customwidgets/sidepanelwidget.cpp \
     gui/viewers/videoplayer.cpp \
-    gui/viewers/videoplayermpv.cpp \
-    gui/viewers/videoplayermpvproxy.cpp \
     gui/overlays/saveconfirmoverlay.cpp \
     gui/customwidgets/floatingwidget.cpp \
     gui/customwidgets/containerwidget.cpp \
@@ -94,8 +121,8 @@ SOURCES += \
     gui/overlays/changelogwindow.cpp \
     components/scriptmanager/scriptmanager.cpp \
     gui/customwidgets/scriptwidget.cpp \
-    gui/viewers/folderview.cpp
-
+    gui/viewers/folderview.cpp \
+    gui/viewers/videoplayerinitproxy.cpp
 
 HEADERS += \
     core.h \
@@ -133,7 +160,6 @@ HEADERS += \
     gui/panels/mainpanel/thumbnailstrip.h \
     gui/panels/mainpanel/thumbnailview.h \
     gui/viewers/imageviewer.h \
-    gui/viewers/mpvwidget.h \
     gui/viewers/viewerwidget.h \
     sourcecontainers/clip.h \
     sourcecontainers/image.h \
@@ -159,8 +185,6 @@ HEADERS += \
     gui/customwidgets/spinboxinputfix.h \
     gui/customwidgets/sidepanelwidget.h \
     gui/viewers/videoplayer.h \
-    gui/viewers/videoplayermpv.h \
-    gui/viewers/videoplayermpvproxy.h \
     gui/overlays/saveconfirmoverlay.h \
     gui/customwidgets/floatingwidget.h \
     gui/customwidgets/containerwidget.h \
@@ -168,7 +192,8 @@ HEADERS += \
     gui/overlays/changelogwindow.h \
     components/scriptmanager/scriptmanager.h \
     gui/customwidgets/scriptwidget.h \
-    gui/viewers/folderview.h
+    gui/viewers/folderview.h \
+    gui/viewers/videoplayerinitproxy.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \
@@ -186,10 +211,6 @@ RESOURCES += \
     resources.qrc
 
 unix {
-    QT_CONFIG -= no-pkg-config
-    CONFIG += link_pkgconfig
-    PKGCONFIG += mpv
-
     SOURCES += \
         components/directorymanager/watchers/linux/linuxworker.cpp \
         components/directorymanager/watchers/linux/linuxwatcher.cpp \
@@ -212,10 +233,6 @@ windows {
 #        components/directorymanager/watchers/windows/windowsdirectorywatcher.h \
 #        components/directorymanager/watchers/windows/windowswatcherbackgroundworker.h
 }
-
-win32:LIBS += -L$$PWD/mpv-dev/lib/ -llibmpv
-win32:INCLUDEPATH += $$PWD/mpv-dev/include
-win32:DEPENDPATH += $$PWD/mpv-dev
 
 DISTFILES += \
     README.md

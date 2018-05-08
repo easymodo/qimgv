@@ -18,11 +18,12 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     layout.setContentsMargins(0, 0, 0, 0);
     this->setLayout(&layout);
 
-    imageViewer = new ImageViewer(this);
+    imageViewer.reset(new ImageViewer(this));
     imageViewer->hide();
-    connect(imageViewer, SIGNAL(scalingRequested(QSize)), this, SIGNAL(scalingRequested(QSize)));
+    connect(imageViewer.get(), SIGNAL(scalingRequested(QSize)), this, SIGNAL(scalingRequested(QSize)));
 
-    videoPlayer = new VideoPlayerMpvProxy(this);
+    videoPlayer.reset(new VideoPlayerInitProxy(this));
+
     videoPlayer->hide();
 
     enableImageViewer();
@@ -58,9 +59,9 @@ void ViewerWidget::enableImageViewer() {
         if(currentWidget == VIDEOPLAYER) {
             videoPlayer->setPaused(true);
             videoPlayer->hide();
-            layout.removeWidget(videoPlayer);
+            layout.removeWidget(videoPlayer.get());
         }
-        layout.addWidget(imageViewer);
+        layout.addWidget(imageViewer.get());
         imageViewer->show();
         currentWidget = IMAGEVIEWER;
     }
@@ -72,9 +73,9 @@ void ViewerWidget::enableVideoPlayer() {
         if(currentWidget == IMAGEVIEWER) {
             imageViewer->closeImage();
             imageViewer->hide();
-            layout.removeWidget(imageViewer);
+            layout.removeWidget(imageViewer.get());
         }
-        layout.addWidget(videoPlayer);
+        layout.addWidget(videoPlayer.get());
         videoPlayer->show();
         currentWidget = VIDEOPLAYER;
     }
@@ -88,17 +89,17 @@ void ViewerWidget::readSettings() {
 
 void ViewerWidget::enableZoomInteraction() {
     if(!zoomInteraction) {
-        connect(this, SIGNAL(zoomIn()), imageViewer, SLOT(zoomIn()));
-        connect(this, SIGNAL(zoomOut()), imageViewer, SLOT(zoomOut()));
-        connect(this, SIGNAL(zoomInCursor()), imageViewer, SLOT(zoomInCursor()));
-        connect(this, SIGNAL(zoomOutCursor()), imageViewer, SLOT(zoomOutCursor()));
-        connect(this, SIGNAL(scrollUp()), imageViewer, SLOT(scrollUp()));
-        connect(this, SIGNAL(scrollDown()), imageViewer, SLOT(scrollDown()));
-        connect(this, SIGNAL(scrollLeft()), imageViewer, SLOT(scrollLeft()));
-        connect(this, SIGNAL(scrollRight()), imageViewer, SLOT(scrollRight()));
-        connect(this, SIGNAL(fitWindow()), imageViewer, SLOT(setFitWindow()));
-        connect(this, SIGNAL(fitWidth()), imageViewer, SLOT(setFitWidth()));
-        connect(this, SIGNAL(fitOriginal()), imageViewer, SLOT(setFitOriginal()));
+        connect(this, SIGNAL(zoomIn()), imageViewer.get(), SLOT(zoomIn()));
+        connect(this, SIGNAL(zoomOut()), imageViewer.get(), SLOT(zoomOut()));
+        connect(this, SIGNAL(zoomInCursor()), imageViewer.get(), SLOT(zoomInCursor()));
+        connect(this, SIGNAL(zoomOutCursor()), imageViewer.get(), SLOT(zoomOutCursor()));
+        connect(this, SIGNAL(scrollUp()), imageViewer.get(), SLOT(scrollUp()));
+        connect(this, SIGNAL(scrollDown()), imageViewer.get(), SLOT(scrollDown()));
+        connect(this, SIGNAL(scrollLeft()), imageViewer.get(), SLOT(scrollLeft()));
+        connect(this, SIGNAL(scrollRight()), imageViewer.get(), SLOT(scrollRight()));
+        connect(this, SIGNAL(fitWindow()), imageViewer.get(), SLOT(setFitWindow()));
+        connect(this, SIGNAL(fitWidth()), imageViewer.get(), SLOT(setFitWidth()));
+        connect(this, SIGNAL(fitOriginal()), imageViewer.get(), SLOT(setFitOriginal()));
         imageViewer->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         zoomInteraction = true;
     }
@@ -106,15 +107,15 @@ void ViewerWidget::enableZoomInteraction() {
 
 void ViewerWidget::disableZoomInteraction() {
     if(zoomInteraction) {
-        disconnect(this, SIGNAL(zoomIn()), imageViewer, SLOT(zoomIn()));
-        disconnect(this, SIGNAL(zoomOut()), imageViewer, SLOT(zoomOut()));
-        disconnect(this, SIGNAL(zoomInCursor()), imageViewer, SLOT(zoomInCursor()));
-        disconnect(this, SIGNAL(zoomOutCursor()), imageViewer, SLOT(zoomOutCursor()));
-        disconnect(this, SIGNAL(scrollUp()), imageViewer, SLOT(scrollUp()));
-        disconnect(this, SIGNAL(scrollDown()), imageViewer, SLOT(scrollDown()));
-        disconnect(this, SIGNAL(fitWindow()), imageViewer, SLOT(setFitWindow()));
-        disconnect(this, SIGNAL(fitWidth()), imageViewer, SLOT(setFitWidth()));
-        disconnect(this, SIGNAL(fitOriginal()), imageViewer, SLOT(setFitOriginal()));
+        disconnect(this, SIGNAL(zoomIn()), imageViewer.get(), SLOT(zoomIn()));
+        disconnect(this, SIGNAL(zoomOut()), imageViewer.get(), SLOT(zoomOut()));
+        disconnect(this, SIGNAL(zoomInCursor()), imageViewer.get(), SLOT(zoomInCursor()));
+        disconnect(this, SIGNAL(zoomOutCursor()), imageViewer.get(), SLOT(zoomOutCursor()));
+        disconnect(this, SIGNAL(scrollUp()), imageViewer.get(), SLOT(scrollUp()));
+        disconnect(this, SIGNAL(scrollDown()), imageViewer.get(), SLOT(scrollDown()));
+        disconnect(this, SIGNAL(fitWindow()), imageViewer.get(), SLOT(setFitWindow()));
+        disconnect(this, SIGNAL(fitWidth()), imageViewer.get(), SLOT(setFitWidth()));
+        disconnect(this, SIGNAL(fitOriginal()), imageViewer.get(), SLOT(setFitOriginal()));
         imageViewer->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         zoomInteraction = false;
     }

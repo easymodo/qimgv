@@ -5,7 +5,9 @@
 #include <QLayout>
 #include <QFileDialog>
 
+// TODO: window flashes white when opening a video (straight from file manager)
 VideoPlayerMpv::VideoPlayerMpv(QWidget *parent) : VideoPlayer(parent) {
+    setAttribute(Qt::WA_TranslucentBackground, true);
     m_mpv = new MpvWidget(this);
     QVBoxLayout *vl = new QVBoxLayout();
     vl->setContentsMargins(0,0,0,0);
@@ -14,6 +16,8 @@ VideoPlayerMpv::VideoPlayerMpv(QWidget *parent) : VideoPlayer(parent) {
 
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+
+    qDebug() << "using mpv player";
 }
 
 bool VideoPlayerMpv::openMedia(Clip *clip) {
@@ -52,6 +56,10 @@ void VideoPlayerMpv::setVideoUnscaled(bool mode) {
         m_mpv->setOption("video-unscaled", "downscale-big");
     else
         m_mpv->setOption("video-unscaled", "no");
+}
+
+void VideoPlayerMpv::paintEvent(QPaintEvent *event) {
+
 }
 
 void VideoPlayerMpv::readSettings() {

@@ -16,7 +16,11 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->versionLabel->setText(QApplication::applicationVersion());
 
 #ifndef USE_KDE_BLUR
-    ui->blurBackgroundCheckBox->setDisabled(true);
+    ui->blurBackgroundCheckBox->setEnabled(false);
+#endif
+
+#ifndef USE_MPV
+    ui->videoGroupBox->setEnabled(false);
 #endif
 
     connect(this, SIGNAL(settingsChanged()),

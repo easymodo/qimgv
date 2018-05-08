@@ -18,6 +18,9 @@ public:
     void setMuted(bool);    
     void setVideoUnscaled(bool mode);
 
+protected:
+    void paintEvent(QPaintEvent *event);
+
 private slots:
     void readSettings();
 

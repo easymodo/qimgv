@@ -13,6 +13,10 @@ public:
     virtual void pauseResume() = 0;
     virtual void setPaused(bool mode) = 0;
     virtual void setMuted(bool) = 0;
+
+public slots:
+    virtual void show();
+    virtual void hide();
 };
 
 #endif // VIDEOPLAYER_H

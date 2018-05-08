@@ -4,7 +4,7 @@
 #include "gui/customwidgets/containerwidget.h"
 #include <QHBoxLayout>
 #include "gui/viewers/imageviewer.h"
-#include "gui/viewers/videoplayermpvproxy.h"
+#include "gui/viewers/videoplayerinitproxy.h"
 #include "gui/viewers/folderview.h"
 
 enum CurrentWidget {
@@ -33,8 +33,8 @@ public:
 
 private:
     QHBoxLayout layout;
-    ImageViewer *imageViewer;
-    VideoPlayerMpvProxy *videoPlayer;
+    std::unique_ptr<ImageViewer> imageViewer;
+    std::unique_ptr<VideoPlayer> videoPlayer;
 
     void enableImageViewer();
     void enableVideoPlayer();
