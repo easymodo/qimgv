@@ -828,7 +828,7 @@
        <item>
         <widget class="QCheckBox" name="blurBackgroundCheckBox">
          <property name="text">
-          <string>Blur background (KWin 5.13+)</string>
+          <string>Blur background (KDE)</string>
          </property>
         </widget>
        </item>
