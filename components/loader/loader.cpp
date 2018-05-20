@@ -6,7 +6,7 @@ Loader::Loader() {
 }
 
 void Loader::clearTasks() {
-    pool->clear();
+    clearPool();
     pool->waitForDone();
 }
 
@@ -15,39 +15,51 @@ void Loader::loadBlocking(QString path) {
         return;
     }
     LoaderRunnable *runnable = new LoaderRunnable(path);
+    runnable->setAutoDelete(false);
+    tasks.insert(path, runnable);
     connect(runnable, SIGNAL(finished(std::shared_ptr<Image>, QString)),
             this, SLOT(onLoadFinished(std::shared_ptr<Image>, QString)), Qt::UniqueConnection);
-    runnable->setAutoDelete(true);
-    bufferedTasks.append(path);
     runnable->run();
 }
 
 // clears all buffered tasks before loading
 void Loader::loadExclusive(QString path) {
-    if(bufferedTasks.contains(path)) {
-        return;
-    }
-    bufferedTasks.clear();
-    pool->clear();
-    load(path);
+    clearPool();
+    load(path, 1);
 }
 
 void Loader::load(QString path) {
-    if(bufferedTasks.contains(path)) {
+    load(path, 0);
+}
+
+void Loader::load(QString path, int priority) {
+    if(tasks.contains(path)) {
         return;
     }
     LoaderRunnable *runnable = new LoaderRunnable(path);
+    runnable->setAutoDelete(false);
+    tasks.insert(path, runnable);
+
     connect(runnable, SIGNAL(finished(std::shared_ptr<Image>, QString)),
             this, SLOT(onLoadFinished(std::shared_ptr<Image>, QString)), Qt::UniqueConnection);
-    runnable->setAutoDelete(true);
-    bufferedTasks.append(path);
-    pool->start(runnable);
+    pool->start(runnable, priority);
 }
 
 void Loader::onLoadFinished(std::shared_ptr<Image> image, QString path) {
-    bufferedTasks.removeOne(path);
+    auto task = tasks.take(path);
+    delete task;
     if(!image)
         emit loadFailed(path); // due incorrect image format etc
     else
         emit loadFinished(image);
+}
+
+void Loader::clearPool() {
+    QHashIterator<QString, LoaderRunnable*> i(tasks);
+    while (i.hasNext()) {
+        i.next();
+        if(pool->tryTake(i.value())) {
+            delete tasks.take(i.key());
+        }
+    }
 }

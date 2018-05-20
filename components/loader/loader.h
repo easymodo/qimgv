@@ -16,8 +16,11 @@ public:
 
     void clearTasks();
 private:
+    QHash<QString, LoaderRunnable*> tasks;
     QList<QString> bufferedTasks;
-    QThreadPool *pool;
+    QThreadPool *pool;    
+    void clearPool();
+    void load(QString path, int priority);
 
 signals:
     void loadFinished(std::shared_ptr<Image>);
