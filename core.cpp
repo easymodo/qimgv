@@ -634,7 +634,8 @@ void Core::nextImage() {
             if(infiniteScrolling) {
                 index = 0;
             } else {
-                mw->showMessageDirectoryEnd();
+                if(!state.isWaitingForLoader)
+                    mw->showMessageDirectoryEnd();
                 return;
             }
         }
@@ -658,7 +659,8 @@ void Core::prevImage() {
                 index = dirManager->fileCount() - 1;
             }
             else {
-                mw->showMessageDirectoryStart();
+                if(!state.isWaitingForLoader)
+                    mw->showMessageDirectoryStart();
                 return;
             }
         }
