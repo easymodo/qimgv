@@ -1,4 +1,4 @@
-#ifndef ACTIONMANAGER_H
+﻿#ifndef ACTIONMANAGER_H
 #define ACTIONMANAGER_H
 
 #include <QObject>
@@ -8,6 +8,9 @@
 #include <QMap>
 #include <QDebug>
 #include <QStringList>
+#include "utils/inputmap.h"
+#include "utils/actions.h"
+#include "shortcutbuilder.h"
 #include "settings.h"
 
 class ActionManager : public QObject {
@@ -33,19 +36,12 @@ public slots:
     bool invokeAction(QString actionName);
 private:
     explicit ActionManager(QObject *parent = 0);
-    QMap<QString, QVersionNumber> actions;
     QMap<QString, QString> defaults, shortcuts; // <shortcut, action>
-    QMap<int, QString> keyMap;
-    QMap<QString, Qt::KeyboardModifier> modMap;
+
     static void initDefaults();
     static void initActions();
-    static void initKeyMap();
-    static void initModMap();
     static void initShortcuts();
     QString modifierKeys(QEvent *event);
-    bool processWheelEvent(QWheelEvent *event);
-    bool processMouseEvent(QMouseEvent *event);
-    bool processKeyEvent(QKeyEvent *event);
     bool invokeActionForShortcut(QString action);
     void validateShortcuts();
     void readShortcuts();

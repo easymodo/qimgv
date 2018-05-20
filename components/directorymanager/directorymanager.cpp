@@ -150,6 +150,28 @@ bool DirectoryManager::contains(QString fileName) const {
     return mFileNameList.contains(fileName);
 }
 
+void DirectoryManager::sortFileList() {
+    sortFileList(settings->sortingMode());
+}
+
+void DirectoryManager::sortFileList(SortingMode mode) {
+    QCollator collator;
+    collator.setNumericMode(true);
+    qDebug() << "sortMode:" << mode;
+    switch(mode) {
+    case SortingMode::NAME_DESC:
+        std::sort(mFileNameList.rbegin(), mFileNameList.rend(), collator);
+        break;
+    case SortingMode::DATE_ASC:
+        break;
+    case SortingMode::DATE_DESC:
+        break;
+    default: // NAME_ASC
+        std::sort(mFileNameList.begin(), mFileNameList.end(), collator);
+        break;
+    }
+}
+
 // ##############################################################
 // #######################  PUBLIC SLOTS  #######################
 // ##############################################################
@@ -176,15 +198,10 @@ void DirectoryManager::generateFileList() {
 // Additionally there is a mime type check on image load (FileInfo::guessType()).
 // For example an .exe wont open, but a gif with .jpg extension will still play.
 void DirectoryManager::generateFileListQuick() {
+    mFileNameList.clear();
     currentDir.setNameFilters(extensionFilters);
     currentDir.setSorting(QDir::NoSort);
     mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
-}
-
-void DirectoryManager::sortFileList() {
-    QCollator collator;
-    collator.setNumericMode(true);
-    std::sort(mFileNameList.begin(), mFileNameList.end(), collator);
 }
 
 // Filter by mime type. Basically opens every file in a folder
@@ -221,17 +238,3 @@ void DirectoryManager::onFileChangedExternal(QString fileName) {
         emit fileAddedAt(index);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

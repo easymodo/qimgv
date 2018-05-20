@@ -21,7 +21,7 @@ QMAKE_CXXFLAGS_RELEASE -= -O1
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
-CONFIG += WITH_MPV
+#CONFIG += WITH_MPV
 #CONFIG += WITH_KDE_BLUR
 
 # video support
@@ -73,7 +73,6 @@ SOURCES += \
     gui/customwidgets/clickablewidget.cpp \
     gui/customwidgets/iconbutton.cpp \
     gui/customwidgets/overlaywidget.cpp \
-    gui/customwidgets/settingsshortcutwidget.cpp \
     gui/customwidgets/slidehpanel.cpp \
     gui/customwidgets/slidepanel.cpp \
     gui/customwidgets/slidevpanel.cpp \
@@ -122,7 +121,12 @@ SOURCES += \
     components/scriptmanager/scriptmanager.cpp \
     gui/customwidgets/scriptwidget.cpp \
     gui/viewers/folderview.cpp \
-    gui/viewers/videoplayerinitproxy.cpp
+    gui/viewers/videoplayerinitproxy.cpp \
+    gui/dialogs/shortcutcreatordialog.cpp \
+    gui/customwidgets/keysequenceedit.cpp \
+    utils/inputmap.cpp \
+    shortcutbuilder.cpp \
+    utils/actions.cpp
 
 HEADERS += \
     core.h \
@@ -146,7 +150,6 @@ HEADERS += \
     gui/customwidgets/clickablewidget.h \
     gui/customwidgets/iconbutton.h \
     gui/customwidgets/overlaywidget.h \
-    gui/customwidgets/settingsshortcutwidget.h \
     gui/customwidgets/slidehpanel.h \
     gui/customwidgets/slidepanel.h \
     gui/customwidgets/slidevpanel.h \
@@ -193,7 +196,12 @@ HEADERS += \
     components/scriptmanager/scriptmanager.h \
     gui/customwidgets/scriptwidget.h \
     gui/viewers/folderview.h \
-    gui/viewers/videoplayerinitproxy.h
+    gui/viewers/videoplayerinitproxy.h \
+    gui/dialogs/shortcutcreatordialog.h \
+    gui/customwidgets/keysequenceedit.h \
+    utils/inputmap.h \
+    shortcutbuilder.h \
+    utils/actions.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \
@@ -205,7 +213,8 @@ FORMS += \
     gui/overlays/floatingmessage.ui \
     gui/customwidgets/pathselectorwidget.ui \
     gui/overlays/changelogwindow.ui \
-    gui/customwidgets/scriptwidget.ui
+    gui/customwidgets/scriptwidget.ui \
+    gui/dialogs/shortcutcreatordialog.ui
 
 RESOURCES += \
     resources.qrc

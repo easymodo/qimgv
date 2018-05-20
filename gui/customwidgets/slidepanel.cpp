@@ -17,7 +17,7 @@ SlidePanel::SlidePanel(ContainerWidget *parent)
 
     // ok i'm not sure when this will get fixed so let's apply this by default for now
     //if( strcmp(qVersion(), "5.10.1") == 0 || strcmp(qVersion(), "5.9.4") == 0) {
-        panelVisibleOpacity = 0.999f;
+//        panelVisibleOpacity = 0.999f;
     //}
 
     mLayout.setSpacing(0);

@@ -2,6 +2,8 @@
 #include "appversion.h"
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"
+#include "utils/inputmap.h"
+#include "utils/actions.h"
 #include "sharedresources.h"
 #include "core.h"
 
@@ -29,6 +31,8 @@ int main(int argc, char *argv[]) {
     // needed for mpv
     std::setlocale(LC_NUMERIC, "C");
 
+    inputMap = InputMap::getInstance();
+    appActions = Actions::getInstance();
     settings = Settings::getInstance();
     actionManager = ActionManager::getInstance();
     scriptManager = ScriptManager::getInstance();

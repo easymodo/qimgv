@@ -8,7 +8,7 @@
 #include <QTableWidget>
 #include <QDebug>
 #include "gui/customwidgets/clickablelabel.h"
-#include "gui/customwidgets/settingsshortcutwidget.h"
+#include "gui/dialogs/shortcutcreatordialog.h"
 #include "gui/customwidgets/scriptwidget.h"
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"

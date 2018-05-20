@@ -51,6 +51,7 @@ void SettingsDialog::readSettings() {
     ui->smoothAnimatedImagesCheckBox->setChecked(settings->smoothAnimatedImages());
     ui->bgOpacitySlider->setValue(settings->backgroundOpacity() * 100);
     ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
+    ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -132,6 +133,7 @@ void SettingsDialog::applySettings() {
     settings->setSmoothAnimatedImages(ui->smoothAnimatedImagesCheckBox->isChecked());
     settings->setBackgroundOpacity(ui->bgOpacitySlider->value() / (float)100.0f);
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
+    settings->setSortingMode((SortingMode)ui->sortingComboBox->currentIndex());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 
@@ -187,6 +189,9 @@ void SettingsDialog::populateScripts() {
 
 // does not check if the shortcut already there
 void SettingsDialog::addShortcutToTable(const QString &action, const QString &shortcut) {
+    if(action.isEmpty() || shortcut.isEmpty())
+        return;
+
     ui->shortcutsTableWidget->setRowCount(ui->shortcutsTableWidget->rowCount() + 1);
     QTableWidgetItem *actionItem = new QTableWidgetItem(action);
     actionItem->setTextAlignment(Qt::AlignCenter);
@@ -199,7 +204,7 @@ void SettingsDialog::addShortcutToTable(const QString &action, const QString &sh
 }
 
 void SettingsDialog::addShortcut() {
-    SettingsShortcutWidget w(actionList, shortcutKeys, this);
+    ShortcutCreatorDialog w;//actionList, shortcutKeys, this);
     if(w.exec()) {
         addShortcutToTable(w.selectedAction(), w.selectedShortcut());
     }
@@ -275,7 +280,7 @@ void SettingsDialog::onBgOpacitySliderChanged(int value) {
 
 int SettingsDialog::exec() {
     this->show();
-    setMinimumSize(sizeHint() + QSize(20, 0));
-    resize(sizeHint() + QSize(20, 0));
+    setMinimumSize(sizeHint());
+    resize(sizeHint());
     return QDialog::exec();
 }

@@ -23,5 +23,6 @@
         <file>res/icons/loading-error72.png</file>
         <file>res/images/cropheader.png</file>
         <file>res/images/changelogheader.png</file>
+        <file>res/icons/app/22.png</file>
     </qresource>
 </RCC>

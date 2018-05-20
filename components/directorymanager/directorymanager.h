@@ -4,9 +4,9 @@
 #include <QObject>
 #include <QMimeDatabase>
 #include <QDir>
-#include <QCollator>
 #include <algorithm>
 #include <vector>
+#include <QCollator>
 #include <QElapsedTimer>
 #include <QUrl>
 #include <QFile>
@@ -42,6 +42,8 @@ public:
     bool copyTo(QString destDirectory, int index);
     QString fileNameAt(int index) const;
     bool isDirectory(QString path) const;
+    void sortFileList();
+    void sortFileList(SortingMode mode);
 
 private slots:
     void fileChanged(const QString file);
@@ -63,7 +65,6 @@ private:
 
     void onFileRemovedExternal(QString);
 
-    void sortFileList();
     void onFileChangedExternal(QString fileName);
 signals:
     void directoryChanged(const QString &path);

@@ -13,6 +13,13 @@
 #include <QMap>
 #include <QVersionNumber>
 
+enum SortingMode {
+    NAME_ASC,
+    NAME_DESC,
+    DATE_ASC,
+    DATE_DESC
+};
+
 enum ImageFitMode {
     FIT_WINDOW,
     FIT_WIDTH,
@@ -124,6 +131,8 @@ public:
     void setBackgroundOpacity(float value);
     bool blurBackground();
     void setBlurBackground(bool mode);
+    void setSortingMode(SortingMode mode);
+    SortingMode sortingMode();
 
 private:
     explicit Settings(QObject *parent = 0);
