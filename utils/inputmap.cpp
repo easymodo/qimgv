@@ -18,10 +18,6 @@ const QMap<int, QString> &InputMap::keys() {
     return keyMap;
 }
 
-const QMap<QString, int> &InputMap::keysReverse() {
-    return keyMapReverse;
-}
-
 const QMap<QString, Qt::KeyboardModifier> &InputMap::modifiers() {
     return modMap;
 }
@@ -169,79 +165,6 @@ void InputMap::initKeyMap() {
     keyMap.insert(22, "backspace");
     keyMap.insert(110, "home");
     keyMap.insert(115, "end");
-//////////////////////////////////////////
-    keyMapReverse.insert("Q", 24);
-    keyMapReverse.insert("W", 25);
-    keyMapReverse.insert("E", 26);
-    keyMapReverse.insert("R", 27);
-    keyMapReverse.insert("T", 28);
-    keyMapReverse.insert("Y", 29);
-    keyMapReverse.insert("U", 30);
-    keyMapReverse.insert("I", 31);
-    keyMapReverse.insert("O", 32);
-    keyMapReverse.insert("P", 33);
-    keyMapReverse.insert("[", 34);
-    keyMapReverse.insert("]", 35);
-    keyMapReverse.insert("A", 38);
-    keyMapReverse.insert("S", 39);
-    keyMapReverse.insert("D", 40);
-    keyMapReverse.insert("F", 41);
-    keyMapReverse.insert("G", 42);
-    keyMapReverse.insert("H", 43);
-    keyMapReverse.insert("J", 44);
-    keyMapReverse.insert("K", 45);
-    keyMapReverse.insert("L", 46);
-    keyMapReverse.insert(";", 47);
-    keyMapReverse.insert("'", 48);
-    keyMapReverse.insert("Z", 52);
-    keyMapReverse.insert("X", 53);
-    keyMapReverse.insert("C", 54);
-    keyMapReverse.insert("V", 55);
-    keyMapReverse.insert("B", 56);
-    keyMapReverse.insert("N", 57);
-    keyMapReverse.insert("M", 58);
-    keyMapReverse.insert(",", 59);
-    keyMapReverse.insert(".", 60);
-    keyMapReverse.insert("/", 61);
-    keyMapReverse.insert("Left", 113);
-    keyMapReverse.insert("Right", 114);
-    keyMapReverse.insert("Up", 111);
-    keyMapReverse.insert("Down", 116);
-    keyMapReverse.insert("Space", 65);
-    keyMapReverse.insert("Return", 36);
-    keyMapReverse.insert("Tab", 23);
-    keyMapReverse.insert("F1", 67);
-    keyMapReverse.insert("F2", 68);
-    keyMapReverse.insert("F3", 69);
-    keyMapReverse.insert("F4", 70);
-    keyMapReverse.insert("F5", 71);
-    keyMapReverse.insert("F6", 72);
-    keyMapReverse.insert("F7", 73);
-    keyMapReverse.insert("F8", 74);
-    keyMapReverse.insert("F9", 75);
-    keyMapReverse.insert("F10", 76);
-    keyMapReverse.insert("F11", 95);
-    keyMapReverse.insert("F12", 96);
-    keyMapReverse.insert("delete", 119);
-    keyMapReverse.insert("escape", 9);
-    keyMapReverse.insert("pageUp", 112);
-    keyMapReverse.insert("pageDown", 117);
-    keyMapReverse.insert("~", 49);
-    keyMapReverse.insert("1", 10);
-    keyMapReverse.insert("2", 11);
-    keyMapReverse.insert("3", 12);
-    keyMapReverse.insert("4", 13);
-    keyMapReverse.insert("5", 14);
-    keyMapReverse.insert("6", 15);
-    keyMapReverse.insert("7", 16);
-    keyMapReverse.insert("8", 17);
-    keyMapReverse.insert("9", 18);
-    keyMapReverse.insert("0", 19);
-    keyMapReverse.insert("-", 20);
-    keyMapReverse.insert("=", 21);
-    keyMapReverse.insert("backspace", 22);
-    keyMapReverse.insert("home", 110);
-    keyMapReverse.insert("end", 115);
 #endif
 }
 

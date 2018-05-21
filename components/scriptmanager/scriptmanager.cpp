@@ -59,11 +59,9 @@ void ScriptManager::initScripts() {
 
 void ScriptManager::readScripts() {
     settings->readScripts(scripts);
-    qDebug() << "read: " << scripts.count();
 }
 
 void ScriptManager::saveScripts() {
-    qDebug() << "save: " << scripts.count();
     settings->saveScripts(scripts);
 }
 

@@ -24,5 +24,30 @@
         <file>res/images/cropheader.png</file>
         <file>res/images/changelogheader.png</file>
         <file>res/icons/app/22.png</file>
+        <file>res/icons/settings/48/colors.png</file>
+        <file>res/icons/settings/48/icons.png</file>
+        <file>res/icons/settings/48/icons2.png</file>
+        <file>res/icons/settings/48/preferences.png</file>
+        <file>res/icons/settings/48/scale.png</file>
+        <file>res/icons/settings/48/screen.png</file>
+        <file>res/icons/settings/48/shortcuts.png</file>
+        <file>res/icons/settings/48/shortcuts2.png</file>
+        <file>res/icons/settings/48/terminal.png</file>
+        <file>res/icons/settings/48/tweak2.png</file>
+        <file>res/icons/settings/48/tweak.png</file>
+        <file>res/icons/settings/48/viewer.png</file>
+        <file>res/icons/settings/32/colors.png</file>
+        <file>res/icons/settings/32/icons.png</file>
+        <file>res/icons/settings/32/icons2.png</file>
+        <file>res/icons/settings/32/preferences.png</file>
+        <file>res/icons/settings/32/scale.png</file>
+        <file>res/icons/settings/32/screen.png</file>
+        <file>res/icons/settings/32/shortcuts.png</file>
+        <file>res/icons/settings/32/shortcuts2.png</file>
+        <file>res/icons/settings/32/terminal.png</file>
+        <file>res/icons/settings/32/tweak.png</file>
+        <file>res/icons/settings/32/tweak2.png</file>
+        <file>res/icons/settings/32/viewer.png</file>
+        <file>res/icons/app/32.png</file>
     </qresource>
 </RCC>

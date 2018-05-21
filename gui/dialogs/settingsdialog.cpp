@@ -11,7 +11,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->bgColorLabel->setAutoFillBackground(true);
     ui->accentColorLabel->setAutoFillBackground(true);
-    ui->versionLabel->setText(QApplication::applicationVersion());
+    ui->aboutAppTextBrowser->viewport()->setAutoFillBackground(false);
+    ui->versionLabel->setText("Version " + QApplication::applicationVersion());
 
 #ifndef USE_KDE_BLUR
     ui->blurBackgroundCheckBox->setEnabled(false);
@@ -21,6 +22,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->videoGroupBox->setEnabled(false);
 #endif
 
+    setupSidebar();
+
     connect(this, SIGNAL(settingsChanged()),
             settings, SLOT(sendChangeNotification()));
     readSettings();
@@ -28,6 +31,25 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
 SettingsDialog::~SettingsDialog() {
     delete ui;
+}
+
+void SettingsDialog::setupSidebar() {
+    QListWidget *sideBar = ui->sideBar;
+    sideBar->viewport()->setAutoFillBackground(false);
+    // General
+    sideBar->item(0)->setIcon(QIcon(":/res/icons/settings/32/tweak.png"));
+    // Appearance
+    sideBar->item(1)->setIcon(QIcon(":/res/icons/settings/32/colors.png"));
+    // Scaling
+    sideBar->item(2)->setIcon(QIcon(":/res/icons/settings/32/scale.png"));
+    // Controls
+    sideBar->item(3)->setIcon(QIcon(":/res/icons/settings/32/shortcuts.png"));
+    // Scripts
+    sideBar->item(4)->setIcon(QIcon(":/res/icons/settings/32/terminal.png"));
+    // Advanced
+    sideBar->item(5)->setIcon(QIcon(":/res/icons/settings/32/preferences.png"));
+    // About
+    sideBar->item(6)->setIcon(QIcon(":/res/icons/app/32.png"));
 }
 
 void SettingsDialog::readSettings() {
@@ -183,13 +205,11 @@ void SettingsDialog::populateShortcuts() {
 //------------------------------------------------------------------------------
 void SettingsDialog::populateScripts() {
     ui->scriptsListWidget->clear();
-    qDebug() << "populating scripts";
     const QMap<QString, Script> scripts = scriptManager->allScripts();
     QMapIterator<QString, Script> i(scripts);
     while(i.hasNext()) {
         i.next();
         addScriptToList(i.key());
-        qDebug() << i.key();
     }
 }
 
@@ -343,8 +363,8 @@ void SettingsDialog::onBgOpacitySliderChanged(int value) {
 }
 
 int SettingsDialog::exec() {
-    this->show();
-    setMinimumSize(sizeHint());
-    resize(sizeHint());
+    //this->show();
+    //setMinimumSize(sizeHint());
+    //resize(sizeHint());
     return QDialog::exec();
 }

@@ -6,7 +6,9 @@
 #include <QColorDialog>
 #include <QThreadPool>
 #include <QTableWidget>
+#include <QTextBrowser>
 #include <QListWidget>
+#include <QStackedWidget>
 #include <QDebug>
 #include "gui/customwidgets/clickablelabel.h"
 #include "gui/dialogs/shortcutcreatordialog.h"
@@ -46,6 +48,7 @@ private:
     void addShortcutToTable(const QString &action, const QString &shortcut);
     void addScriptToList(const QString &name);
 
+    void setupSidebar();
 private slots:
     void applySettings();
     void applySettingsAndClose();

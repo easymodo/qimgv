@@ -9,14 +9,12 @@ public:
     InputMap();
     static InputMap *getInstance();
     const QMap<int, QString> &keys();
-    const QMap<QString, int> &keysReverse();
     const QMap<QString, Qt::KeyboardModifier> &modifiers();
 
 private:
     void initKeyMap();
     void initModMap();
     QMap<int, QString> keyMap;
-    QMap<QString, int> keyMapReverse;
     QMap<QString, Qt::KeyboardModifier> modMap;
 };
 
