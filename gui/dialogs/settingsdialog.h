@@ -6,10 +6,11 @@
 #include <QColorDialog>
 #include <QThreadPool>
 #include <QTableWidget>
+#include <QListWidget>
 #include <QDebug>
 #include "gui/customwidgets/clickablelabel.h"
 #include "gui/dialogs/shortcutcreatordialog.h"
-#include "gui/customwidgets/scriptwidget.h"
+#include "gui/dialogs/scripteditordialog.h"
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"
 
@@ -30,7 +31,7 @@ public slots:
 private:
     QPalette bgLabelPalette, accentLabelPalette;
     void readSettings();
-    void fillShortcuts();
+    void populateShortcuts();
     void populateScripts();
     Ui::SettingsDialog *ui;
     enum Constants {
@@ -40,20 +41,25 @@ private:
         thumbSizeVeryLarge = 250
     };
 
-
     int thumbSizeCustom;
-    QStringList actionList, shortcutKeys;
-
     void applyShortcuts();
     void addShortcutToTable(const QString &action, const QString &shortcut);
+    void addScriptToList(const QString &name);
+
 private slots:
     void applySettings();
     void applySettingsAndClose();
     void bgColorDialog();
-
     void accentColorDialog();
-    void removeShortcut();
+
+    void addScript();
+    void editScript();
+    void editScript(QListWidgetItem *item);
+    void editScript(QString name);
+    void removeScript();
+
     void addShortcut();
+    void removeShortcut();
     void resetShortcuts();
     void selectMpvPath();
     void onMaxZoomSliderChanged(int value);

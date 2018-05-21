@@ -135,7 +135,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(moveFile()), mw, SLOT(triggerMoveOverlay()));
     connect(actionManager, SIGNAL(jumpToFirst()), this, SLOT(jumpToFirst()));
     connect(actionManager, SIGNAL(jumpToLast()), this, SLOT(jumpToLast()));
-    connect(actionManager, SIGNAL(scriptPanel()), this, SLOT(runScript()));
+    connect(actionManager, SIGNAL(runScript(const QString&)), this, SLOT(runScript(const QString&)));
 }
 
 void Core::postUpdate() {
@@ -462,10 +462,9 @@ void Core::saveImageToDisk(QString filePath) {
     }
 }
 
-void Core::runScript() {
-    qDebug() << "runScript()";
+void Core::runScript(const QString &scriptName) {
     QString imagePath = dirManager->filePathAt(state.currentIndex);
-    scriptManager->runScript("TestScript", imagePath);
+    scriptManager->runScript(scriptName, imagePath);
 }
 
 // switch between 1:1 and Fit All

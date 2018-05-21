@@ -11,8 +11,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->bgColorLabel->setAutoFillBackground(true);
     ui->accentColorLabel->setAutoFillBackground(true);
-    actionList = actionManager->actionList();
-    shortcutKeys = actionManager->keys();
     ui->versionLabel->setText(QApplication::applicationVersion());
 
 #ifndef USE_KDE_BLUR
@@ -104,7 +102,7 @@ void SettingsDialog::readSettings() {
             thumbSizeCustom = size;
             break;
     }
-    fillShortcuts();
+    populateShortcuts();
     populateScripts();
 }
 
@@ -161,6 +159,8 @@ void SettingsDialog::applySettings() {
     settings->setMaxZoomedResolution(ui->maxZoomResSlider->value());
 
     applyShortcuts();
+
+    scriptManager->saveScripts();
     actionManager->saveShortcuts();
     emit settingsChanged();
 }
@@ -170,7 +170,7 @@ void SettingsDialog::applySettingsAndClose() {
     this->close();
 }
 
-void SettingsDialog::fillShortcuts() {
+void SettingsDialog::populateShortcuts() {
     ui->shortcutsTableWidget->clearContents();
     ui->shortcutsTableWidget->setRowCount(0);
     const QMap<QString, QString> shortcuts = actionManager->allShortcuts();
@@ -180,13 +180,77 @@ void SettingsDialog::fillShortcuts() {
         addShortcutToTable(i.value(), i.key());
     }
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::populateScripts() {
-    for(int i=0; i<10; i++) {
-        ui->scriptsLayout->addWidget(new ScriptWidget());
+    ui->scriptsListWidget->clear();
+    qDebug() << "populating scripts";
+    const QMap<QString, Script> scripts = scriptManager->allScripts();
+    QMapIterator<QString, Script> i(scripts);
+    while(i.hasNext()) {
+        i.next();
+        addScriptToList(i.key());
+        qDebug() << i.key();
     }
 }
 
+// does not check if the shortcut already there
+void SettingsDialog::addScriptToList(const QString &name) {
+    if(name.isEmpty())
+        return;
+
+    QListWidget *list = ui->scriptsListWidget;
+    QListWidgetItem *nameItem = new QListWidgetItem(name);
+    nameItem->setTextAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    list->insertItem(ui->scriptsListWidget->count(), nameItem);
+    list->sortItems(Qt::AscendingOrder);
+}
+
+void SettingsDialog::addScript() {
+    ScriptEditorDialog w;
+    if(w.exec()) {
+        if(w.scriptName().isEmpty())
+            return;
+        scriptManager->addScript(w.scriptName(), w.script());
+        populateScripts();
+    }
+}
+
+void SettingsDialog::editScript() {
+    int row = ui->scriptsListWidget->currentRow();
+    if(row >= 0) {
+        QString name = ui->scriptsListWidget->currentItem()->text();
+        editScript(name);
+    }
+}
+
+void SettingsDialog::editScript(QListWidgetItem* item) {
+    if(item) {
+        editScript(item->text());
+    }
+}
+
+void SettingsDialog::editScript(QString name) {
+    ScriptEditorDialog w(name, scriptManager->getScript(name));
+    if(w.exec()) {
+        if(w.scriptName().isEmpty())
+            return;
+        scriptManager->addScript(w.scriptName(), w.script());
+        populateScripts();
+    }
+}
+
+void SettingsDialog::removeScript() {
+    int row = ui->scriptsListWidget->currentRow();
+    if(row >= 0) {
+        QString scriptName = ui->scriptsListWidget->currentItem()->text();
+        delete ui->scriptsListWidget->takeItem(row);
+        applyShortcuts();
+        actionManager->removeAllShortcuts("s:"+scriptName);
+        populateShortcuts();
+        scriptManager->removeScript(scriptName);
+    }
+}
+//------------------------------------------------------------------------------
 // does not check if the shortcut already there
 void SettingsDialog::addShortcutToTable(const QString &action, const QString &shortcut) {
     if(action.isEmpty() || shortcut.isEmpty())
@@ -204,7 +268,7 @@ void SettingsDialog::addShortcutToTable(const QString &action, const QString &sh
 }
 
 void SettingsDialog::addShortcut() {
-    ShortcutCreatorDialog w;//actionList, shortcutKeys, this);
+    ShortcutCreatorDialog w;
     if(w.exec()) {
         addShortcutToTable(w.selectedAction(), w.selectedShortcut());
     }
@@ -227,7 +291,7 @@ void SettingsDialog::applyShortcuts() {
 
 void SettingsDialog::resetShortcuts() {
     actionManager->resetDefaults();
-    fillShortcuts();
+    populateShortcuts();
 }
 
 void SettingsDialog::selectMpvPath() {

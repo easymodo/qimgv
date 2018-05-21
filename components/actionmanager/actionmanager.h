@@ -11,7 +11,14 @@
 #include "utils/inputmap.h"
 #include "utils/actions.h"
 #include "shortcutbuilder.h"
+#include "components/scriptmanager/scriptmanager.h"
 #include "settings.h"
+
+enum ActionType {
+    ACTION_INVALID,
+    ACTION_NORMAL,
+    ACTION_SCRIPT
+};
 
 class ActionManager : public QObject {
     Q_OBJECT
@@ -19,21 +26,21 @@ public:
     static ActionManager* getInstance();
     ~ActionManager();
     bool processEvent(QEvent*);
-    void addShortcut(QString keys, QString action);
+    void addShortcut(const QString &keys, const QString &action);
     void resetDefaults();
     QString actionForScanCode(int code);
-    QString actionForShortcut(QString keys);
+    QString actionForShortcut(const QString &keys);
     QStringList actionList();
     const QMap<QString,QString>& allShortcuts();
-    void removeShortcut(QString keys);
-    const QStringList keys();
+    void removeShortcut(const QString &keys);
     void removeAllShortcuts();
+    void removeAllShortcuts(QString actionName);
     QString keyForNativeScancode(int scanCode);
     void resetDefaultsFromVersion(QVersionNumber lastVer);
     void saveShortcuts();
 
 public slots:
-    bool invokeAction(QString actionName);
+    bool invokeAction(const QString &actionName);
 private:
     explicit ActionManager(QObject *parent = 0);
     QMap<QString, QString> defaults, shortcuts; // <shortcut, action>
@@ -42,9 +49,10 @@ private:
     static void initActions();
     static void initShortcuts();
     QString modifierKeys(QEvent *event);
-    bool invokeActionForShortcut(QString action);
+    bool invokeActionForShortcut(const QString &action);
     void validateShortcuts();
     void readShortcuts();
+    ActionType validateAction(const QString &actionName);
 
 signals:
     void open();
@@ -80,9 +88,8 @@ signals:
     void closeFullScreenOrExit();
     void jumpToFirst();
     void jumpToLast();
-    void scriptPanel();
     void folderView();
-
+    void runScript(const QString&);
 };
 
 extern ActionManager *actionManager;

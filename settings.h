@@ -12,6 +12,7 @@
 #include <QKeySequence>
 #include <QMap>
 #include <QVersionNumber>
+#include "utils/script.h"
 
 enum SortingMode {
     NAME_ASC,
@@ -132,7 +133,9 @@ public:
     bool blurBackground();
     void setBlurBackground(bool mode);
     void setSortingMode(SortingMode mode);
-    SortingMode sortingMode();
+    SortingMode sortingMode();    
+    void readScripts(QMap<QString, Script> &scripts);
+    void saveScripts(const QMap<QString, Script> &scripts);
 
 private:
     explicit Settings(QObject *parent = 0);

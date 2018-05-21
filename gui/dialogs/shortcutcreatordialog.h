@@ -3,8 +3,12 @@
 
 #include <QDialog>
 #include <QComboBox>
+#include <QRadioButton>
 #include "shortcutbuilder.h"
 #include "utils/actions.h"
+#include "components/scriptmanager/scriptmanager.h"
+// TODO: separate gui from components
+// OR move script & action stuff to project root?
 
 namespace Ui {
 class ShortcutCreatorDialog;
@@ -24,7 +28,7 @@ private:
     Ui::ShortcutCreatorDialog *ui;
     int selectedActionIndex;
     QString shortcut;
-    QList<QString> actionList;
+    QList<QString> actionList, scriptList;
 };
 
 #endif // SHORTCUTCREATORDIALOG_H

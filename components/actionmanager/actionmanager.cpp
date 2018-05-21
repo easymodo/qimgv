@@ -4,11 +4,11 @@ ActionManager *actionManager = nullptr;
 
 ActionManager::ActionManager(QObject *parent) : QObject(parent) {
 }
-
+//------------------------------------------------------------------------------
 ActionManager::~ActionManager() {
     delete actionManager;
 }
-
+//------------------------------------------------------------------------------
 ActionManager *ActionManager::getInstance() {
     if(!actionManager) {
         actionManager = new ActionManager();
@@ -17,7 +17,7 @@ ActionManager *ActionManager::getInstance() {
     }
     return actionManager;
 }
-
+//------------------------------------------------------------------------------
 void ActionManager::initDefaults() {
     actionManager->defaults.insert("Right", "nextImage");
     actionManager->defaults.insert("Left", "prevImage");
@@ -59,57 +59,53 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("M", "moveFile");
     actionManager->defaults.insert("home", "jumpToFirst");
     actionManager->defaults.insert("end", "jumpToLast");
+    actionManager->defaults.insert("S", "s:TestScript");
+    actionManager->defaults.insert("A", "s:TestScript2");
 }
-
+//------------------------------------------------------------------------------
 void ActionManager::initShortcuts() {
     actionManager->readShortcuts();
     if(actionManager->shortcuts.isEmpty()) {
         actionManager->resetDefaults();
     }
 }
-
-void ActionManager::addShortcut(QString keys, QString action) {
-    if(appActions->getMap().contains(action)) {
+//------------------------------------------------------------------------------
+void ActionManager::addShortcut(const QString &keys, const QString &action) {
+    ActionType type = validateAction(action);
+    if(type != ActionType::ACTION_INVALID) {
         actionManager->shortcuts.insert(keys, action);
-    } else {
-        qDebug() << "ActionManager: action " << action << " is invalid.";
     }
 }
-
-void ActionManager::removeShortcut(QString keys) {
+//------------------------------------------------------------------------------
+void ActionManager::removeShortcut(const QString &keys) {
     actionManager->shortcuts.remove(keys);
 }
-
+//------------------------------------------------------------------------------
 QStringList ActionManager::actionList() {
-    QStringList actionList;
-    QMapIterator<QString, QVersionNumber> i(appActions->getMap());
-    while(i.hasNext()) {
-        i.next();
-        actionList.append(i.key());
-    }
-    actionList.sort();
-    return actionList;
+    return appActions->getList();
 }
-
-const QStringList ActionManager::keys() {
-    QStringList list;
-    QMapIterator<int, QString> i(inputMap->keys());
-    while(i.hasNext()) {
-        i.next();
-        list << i.value();
-    }
-    list << "XButton1" << "XButton2" << "LMB" << "RMB" << "MiddleButton" << "WheelUp" << "WheelDown";
-    return list;
-}
-
+//------------------------------------------------------------------------------
 const QMap<QString, QString> &ActionManager::allShortcuts() {
     return actionManager->shortcuts;
 }
-
+//------------------------------------------------------------------------------
 void ActionManager::removeAllShortcuts() {
     shortcuts.clear();
 }
+//------------------------------------------------------------------------------
+// Removes all shortcuts for specified action. Slow (reverse map lookup).
+void ActionManager::removeAllShortcuts(QString actionName) {
+    if(validateAction(actionName) == ActionType::ACTION_INVALID)
+        return;
 
+    for (auto i = shortcuts.begin(); i != shortcuts.end();) {
+        if(i.value() == actionName)
+            i = shortcuts.erase(i);
+        else
+            ++i;
+    }
+}
+//------------------------------------------------------------------------------
 QString ActionManager::keyForNativeScancode(int scanCode) {
     if(inputMap->keys().contains(scanCode)) {
         return inputMap->keys()[scanCode];
@@ -117,11 +113,11 @@ QString ActionManager::keyForNativeScancode(int scanCode) {
         return "";
     }
 }
-
+//------------------------------------------------------------------------------
 void ActionManager::resetDefaults() {
     actionManager->shortcuts = actionManager->defaults;
 }
-
+//------------------------------------------------------------------------------
 // argument: target version
 // every action added from next version onwards will be reset
 // TODO: maybe move this to core or something?
@@ -134,65 +130,75 @@ void ActionManager::resetDefaultsFromVersion(QVersionNumber lastVer) {
         if(appActions->getMap().value(i.value()) > lastVer) {
             if(!shortcuts.contains(i.key())) {
                 shortcuts.insert(i.key(), i.value());
-                qDebug() << "ActionManager: new action " << i.value() << " - assigning as [" << i.key() << "]";
+                qDebug() << "[ActionManager] new action " << i.value() << " - assigning as [" << i.key() << "]";
             } else {
-                qDebug() << "ActionManager: new action " << i.value() << " - shortcut [" << i.key() << "] already assigned to another action " << actionForShortcut(i.key());
+                qDebug() << "[ActionManager] new action " << i.value() << " - shortcut [" << i.key() << "] already assigned to another action " << actionForShortcut(i.key());
             }
         }
     }
 }
-
+//------------------------------------------------------------------------------
 void ActionManager::saveShortcuts() {
     settings->saveShortcuts(actionManager->shortcuts);
 }
-
-
-
+//------------------------------------------------------------------------------
 QString ActionManager::actionForScanCode(int code) {
     return actionManager->shortcuts[inputMap->keys()[code]];
 }
-
-QString ActionManager::actionForShortcut(QString keys) {
+//------------------------------------------------------------------------------
+QString ActionManager::actionForShortcut(const QString &keys) {
     return actionManager->shortcuts[keys];
 }
-
-bool ActionManager::invokeActionForShortcut(QString shortcut) {
-    if(shortcuts.contains(shortcut)) {
-        QMetaObject::invokeMethod(this,
-                                  actionManager->shortcuts[shortcut].toLatin1().constData(),
-                                  Qt::DirectConnection);
+//------------------------------------------------------------------------------
+bool ActionManager::invokeAction(const QString &actionName) {
+    ActionType type = validateAction(actionName);
+    if(type == ActionType::ACTION_NORMAL) {
+        QMetaObject::invokeMethod(this, actionName.toLatin1().constData(), Qt::DirectConnection);
+        return true;
+    } else if(type == ActionType::ACTION_SCRIPT) {
+        QString scriptName = actionName;
+        scriptName.remove(0, 2);
+        emit runScript(scriptName);
         return true;
     }
     return false;
 }
-
+//------------------------------------------------------------------------------
+bool ActionManager::invokeActionForShortcut(const QString &shortcut) {
+    if(shortcuts.contains(shortcut)) {
+        return invokeAction(actionManager->shortcuts[shortcut]);
+    }
+    return false;
+}
+//------------------------------------------------------------------------------
 void ActionManager::validateShortcuts() {
     for (auto i = shortcuts.begin(); i != shortcuts.end();) {
-        if(!appActions->getMap().contains(i.value()))
-            i=shortcuts.erase(i);
+        if(validateAction(i.value()) == ActionType::ACTION_INVALID)
+            i = shortcuts.erase(i);
         else
             ++i;
     }
 }
-
+//------------------------------------------------------------------------------
+inline
+ActionType ActionManager::validateAction(const QString &actionName) {
+    if(appActions->getMap().contains(actionName))
+        return ActionType::ACTION_NORMAL;
+    if(actionName.startsWith("s:")) {
+        QString scriptName = actionName;
+        scriptName.remove(0, 2);
+        if(scriptManager->scriptExists(scriptName))
+            return ActionType::ACTION_SCRIPT;
+    }
+    return ActionType::ACTION_INVALID;
+}
+//------------------------------------------------------------------------------
 void ActionManager::readShortcuts() {
     settings->readShortcuts(shortcuts);
     actionManager->validateShortcuts();
 }
-
-// TODO: use some sort of enum instead of action string? this looks kinda retarded now
-bool ActionManager::invokeAction(QString actionName) {
-    if(actionList().contains(actionName)) {
-        QMetaObject::invokeMethod(this,
-                                  actionName.toLatin1().constData(),
-                                  Qt::DirectConnection);
-        return true;
-    } else {
-        qDebug() << "invalid action: " << actionName;
-        return false;
-    }
-}
-
+//------------------------------------------------------------------------------
 bool ActionManager::processEvent(QEvent *event) {
     return actionManager->invokeActionForShortcut(ShortcutBuilder::fromEvent(event));
 }
+//------------------------------------------------------------------------------

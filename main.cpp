@@ -11,6 +11,18 @@ void saveSettings() {
     delete settings;
 }
 
+//------------------------------------------------------------------------------
+QDataStream& operator<<(QDataStream& out, const Script& v) {
+    out << v.path << v.blocking;
+    return out;
+}
+//------------------------------------------------------------------------------
+QDataStream& operator>>(QDataStream& in, Script& v) {
+    in >> v.path;
+    in >> v.blocking;
+    return in;
+}
+
 int main(int argc, char *argv[]) {
 
     // I'm not sure what this does but "1" breaks the UI
@@ -31,11 +43,13 @@ int main(int argc, char *argv[]) {
     // needed for mpv
     std::setlocale(LC_NUMERIC, "C");
 
+    qRegisterMetaTypeStreamOperators<Script>("Script");
+
     inputMap = InputMap::getInstance();
     appActions = Actions::getInstance();
     settings = Settings::getInstance();
-    actionManager = ActionManager::getInstance();
     scriptManager = ScriptManager::getInstance();
+    actionManager = ActionManager::getInstance();
     shrRes = SharedResources::getInstance();
 
     atexit(saveSettings);

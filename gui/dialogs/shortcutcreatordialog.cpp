@@ -9,8 +9,13 @@ ShortcutCreatorDialog::ShortcutCreatorDialog(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("Create shortcut");
     actionList = appActions->getList();
+    scriptList = scriptManager->scriptNames();
+
     ui->actionsComboBox->addItems(actionList);
     ui->actionsComboBox->setCurrentIndex(0);
+
+    ui->scriptsComboBox->addItems(scriptList);
+    ui->scriptsComboBox->setCurrentIndex(0);
 }
 
 ShortcutCreatorDialog::~ShortcutCreatorDialog() {
@@ -18,7 +23,10 @@ ShortcutCreatorDialog::~ShortcutCreatorDialog() {
 }
 
 QString ShortcutCreatorDialog::selectedAction() {
-    return ui->actionsComboBox->currentText();
+    if(ui->actionsRadioButton->isChecked())
+        return ui->actionsComboBox->currentText();
+    else
+        return "s:"+ui->scriptsComboBox->currentText();
 }
 
 QString ShortcutCreatorDialog::selectedShortcut() {

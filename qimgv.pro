@@ -119,14 +119,15 @@ SOURCES += \
     appversion.cpp \
     gui/overlays/changelogwindow.cpp \
     components/scriptmanager/scriptmanager.cpp \
-    gui/customwidgets/scriptwidget.cpp \
     gui/viewers/folderview.cpp \
     gui/viewers/videoplayerinitproxy.cpp \
     gui/dialogs/shortcutcreatordialog.cpp \
     gui/customwidgets/keysequenceedit.cpp \
     utils/inputmap.cpp \
     shortcutbuilder.cpp \
-    utils/actions.cpp
+    utils/actions.cpp \
+    utils/script.cpp \
+    gui/dialogs/scripteditordialog.cpp
 
 HEADERS += \
     core.h \
@@ -194,14 +195,15 @@ HEADERS += \
     appversion.h \
     gui/overlays/changelogwindow.h \
     components/scriptmanager/scriptmanager.h \
-    gui/customwidgets/scriptwidget.h \
     gui/viewers/folderview.h \
     gui/viewers/videoplayerinitproxy.h \
     gui/dialogs/shortcutcreatordialog.h \
     gui/customwidgets/keysequenceedit.h \
     utils/inputmap.h \
     shortcutbuilder.h \
-    utils/actions.h
+    utils/actions.h \
+    utils/script.h \
+    gui/dialogs/scripteditordialog.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \
@@ -213,8 +215,8 @@ FORMS += \
     gui/overlays/floatingmessage.ui \
     gui/customwidgets/pathselectorwidget.ui \
     gui/overlays/changelogwindow.ui \
-    gui/customwidgets/scriptwidget.ui \
-    gui/dialogs/shortcutcreatordialog.ui
+    gui/dialogs/shortcutcreatordialog.ui \
+    gui/dialogs/scripteditordialog.ui
 
 RESOURCES += \
     resources.qrc

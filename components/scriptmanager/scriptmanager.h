@@ -9,22 +9,8 @@
 #include <QDebug>
 #include <QStringList>
 #include <QProcess>
+#include "utils/script.h"
 #include "settings.h"
-
-class Script {
-public:
-    Script(QString path, QString argumentPattern, bool blocking)
-        : mPath(path), mArgumentPattern(argumentPattern), mBlocking(blocking)
-    {
-    }
-    const QString path() { return mPath;   }
-    QString argumentPattern() { return mArgumentPattern; }
-    bool isBlocking()   { return mBlocking; }
-
-private:
-    QString mPath, mArgumentPattern;
-    bool mBlocking;
-};
 
 class ScriptManager : public QObject {
     Q_OBJECT
@@ -32,14 +18,23 @@ public:
     static ScriptManager* getInstance();
     ~ScriptManager();
     void runScript(const QString &scriptName, const QString &arguments);
+    bool scriptExists(QString scriptName);
+    void readScripts();
+    void saveScripts();
+    void removeScript(QString scriptName);
+    const QMap<QString, Script> &allScripts();
+    QList<QString> scriptNames();
+    Script getScript(QString scriptName);
 
+    void addScript(QString scriptName, Script script);
 private:
     explicit ScriptManager(QObject *parent = 0);
     static void initScripts();
-    QMap<QString, Script*> scripts; // <name, script>
+    QMap<QString, Script> scripts; // <name, script>
 
 signals:
     void scriptFinished();
+private slots:
 };
 
 extern ScriptManager *scriptManager;

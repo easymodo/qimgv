@@ -410,6 +410,37 @@ void Settings::saveShortcuts(const QMap<QString, QString> &shortcuts) {
     settings->s.endGroup();
 }
 //------------------------------------------------------------------------------
+void Settings::readScripts(QMap<QString, Script> &scripts) {
+    scripts.clear();
+    settings->s.beginGroup("Scripts");
+    int size = settings->s.beginReadArray("script");
+    for(int i=0; i < size; i++) {
+        settings->s.setArrayIndex(i);
+        QString name = settings->s.value("name").toString();
+        QVariant value = settings->s.value("value");
+        Script scr = value.value<Script>();
+        scripts.insert(name, scr);
+    }
+    settings->s.endArray();
+    settings->s.endGroup();
+}
+
+void Settings::saveScripts(const QMap<QString, Script> &scripts) {
+    settings->s.beginGroup("Scripts");
+    settings->s.beginWriteArray("script");
+    QMapIterator<QString, Script> i(scripts);
+    int counter = 0;
+    while(i.hasNext()) {
+        i.next();
+        settings->s.setArrayIndex(counter);
+        settings->s.setValue("name", i.key());
+        settings->s.setValue("value", QVariant::fromValue(i.value()));
+        counter++;
+    }
+    settings->s.endArray();
+    settings->s.endGroup();
+}
+//------------------------------------------------------------------------------
 bool Settings::mouseWrapping() {
     return settings->s.value("mouseWrapping", false).toBool();
 }

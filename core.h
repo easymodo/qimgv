@@ -122,7 +122,7 @@ private slots:
     void requestSavePath();
     void saveImageToDisk();
     void saveImageToDisk(QString);
-    void runScript();
+    void runScript(const QString&);
 };
 
 #endif // CORE_H
