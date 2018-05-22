@@ -11,6 +11,8 @@
 #include <cmath>
 #include "utils/stuff.h"
 
+#include <exiv2/exiv2.hpp>
+
 enum DocumentType { NONE, STATIC, ANIMATED, VIDEO };
 
 class DocumentInfo {
@@ -29,16 +31,20 @@ public:
 
     // file extension (guessed from mime-type)
     const char* extension() const;
+    long exifOrientation() const;
 
 private:
     QFileInfo fileInfo;
     QDateTime lastModified;
     DocumentType mImageType;
+    long mOrientation;
     const char* mExtension;
 
+    Exiv2::ExifData exifData;
     // guesses file type from its contents
     // and sets extension
     void detectType();
+    void loadExif();
 };
 
 #endif // IMAGEINFO_H

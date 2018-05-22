@@ -24,6 +24,8 @@ QMAKE_CXXFLAGS_RELEASE *= -O3
 #CONFIG += WITH_MPV
 #CONFIG += WITH_KDE_BLUR
 
+LIBS += -lexiv2
+
 # video support
 WITH_MPV {
     unix {

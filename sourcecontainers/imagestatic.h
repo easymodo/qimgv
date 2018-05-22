@@ -4,6 +4,7 @@
 #include <QImage>
 #include <QSemaphore>
 #include "image.h"
+#include "utils/imagelib.h"
 
 class ImageStatic : public Image {
 public:

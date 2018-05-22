@@ -1,6 +1,10 @@
 #include "imageinfo.h"
 
-DocumentInfo::DocumentInfo(QString path) : mImageType(NONE), mExtension(nullptr) {
+DocumentInfo::DocumentInfo(QString path)
+    : mImageType(NONE),
+      mOrientation(1),
+      mExtension(nullptr)
+{
     fileInfo.setFile(path);
     if(!fileInfo.isFile()) {
         qDebug() << "FileInfo: cannot open: " << path;
@@ -8,6 +12,7 @@ DocumentInfo::DocumentInfo(QString path) : mImageType(NONE), mExtension(nullptr)
     }
     lastModified = fileInfo.lastModified();
     detectType();
+    loadExif();
 }
 
 DocumentInfo::~DocumentInfo() {
@@ -44,6 +49,10 @@ DocumentType DocumentInfo::type() const {
 
 const char *DocumentInfo::extension() const {
     return mExtension;
+}
+
+long DocumentInfo::exifOrientation() const {
+    return mOrientation;
 }
 
 // ##############################################################
@@ -92,3 +101,29 @@ void DocumentInfo::detectType() {
         mImageType = STATIC;
     }
 }
+
+void DocumentInfo::loadExif() {
+    if(std::strcmp(mExtension, (const char*)"jpg"))
+        return;
+
+    QString path = filePath();
+    try {
+        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path.toStdString());
+        if(!image.get())
+            return;
+        image->readMetadata();
+        exifData = image->exifData();
+        if(exifData.empty()) {
+            //qDebug() << "[libexiv2] No exif data found in file " << path;
+            return;
+        }
+        const Exiv2::Value &value = exifData["Exif.Image.Orientation"].value();
+        mOrientation = value.toLong();
+    } catch (Exiv2::Error& e) {
+        qDebug() << "[libexiv2] Error: " << e.what();
+        return;
+    }
+}
+
+
+
