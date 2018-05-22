@@ -43,6 +43,8 @@ private:
     QColor bgColor;
     float bgOpacity;
     bool zoomInteraction;
+    QTimer cursorTimer;
+    const int CURSOR_HIDE_TIMEOUT_MS = 1000;
 
 private slots:
     void readSettings();
@@ -70,10 +72,16 @@ public slots:
     ImageFitMode fitMode();
     void closeImage();
 
+    void hideCursor();
+    void showCursor();
+    void hideCursorTimed(bool restartTimer);
+
 protected:
     virtual void paintEvent(QPaintEvent* event);
     void mouseMoveEvent(QMouseEvent *event);
 
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 };
 
 #endif // VIEWERWIDGET_H

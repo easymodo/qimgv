@@ -29,9 +29,11 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
 
     setupUi();
 
-    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+    connect(settings, SIGNAL(settingsChanged()),
+            this, SLOT(readSettings()));
 
-    connect(&windowMoveTimer, SIGNAL(timeout()), this, SLOT(updateCurrentDisplay()));
+    connect(&windowMoveTimer, SIGNAL(timeout()),
+            this, SLOT(updateCurrentDisplay()));
 
     connect(this, SIGNAL(fullscreenStatusChanged(bool)),
             this, SLOT(setControlsOverlayEnabled(bool)));

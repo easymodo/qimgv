@@ -22,13 +22,9 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     posAnimation->setDuration(animationSpeed);
     animationTimer = new QTimer(this);
     animationTimer->setSingleShot(true);
-    cursorTimer = new QTimer(this);
     readSettings();
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
-    connect(cursorTimer, SIGNAL(timeout()),
-            this, SLOT(hideCursor()),
-            Qt::UniqueConnection);
     desktopSize = QApplication::desktop()->size();
 }
 
@@ -83,7 +79,6 @@ void ImageViewer::displayAnimation(std::unique_ptr<QMovie> _movie) {
             drawTransparencyGrid();
         //update();
         startAnimation();
-        hideCursorTimed(false);
     }
 }
 
@@ -97,7 +92,6 @@ void ImageViewer::displayImage(std::unique_ptr<QPixmap> _pixmap) {
             drawTransparencyGrid();
         update();
         requestScaling();
-        hideCursorTimed(false);
     }
 }
 
@@ -114,7 +108,6 @@ void ImageViewer::reset() {
 void ImageViewer::closeImage() {
     reset();
     update();
-    showCursor();
 }
 
 // apply new image dimensions and fit mode
@@ -306,14 +299,8 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
     QWidget::mousePressEvent(event);
     if(!isDisplaying)
         return;
-    showCursor();
-    setCursor(QCursor(Qt::ArrowCursor));
     mouseMoveStartPos = event->pos();
-    if(event->button() == Qt::LeftButton) {
-        setCursor(QCursor(Qt::ClosedHandCursor));
-    }
     if(event->button() == Qt::RightButton) {
-        setCursor(QCursor(Qt::SizeVerCursor));
         setZoomPoint(event->pos()*devicePixelRatioF());
     }
 }
@@ -326,9 +313,6 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
         mouseWrapping?mouseDragWrapping(event):mouseDrag(event);
     } else if(event->buttons() & Qt::RightButton) {
         mouseDragZoom(event);
-    } else {
-        showCursor();
-        hideCursorTimed(true);
     }
 }
 
@@ -337,8 +321,6 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
     if(!isDisplaying) {
         return;
     }
-    hideCursorTimed(false);
-    setCursor(QCursor(Qt::ArrowCursor));
     if(event->button() == Qt::RightButton && imageFitMode != FIT_WINDOW) {
         //requestScaling();
         //fitDefault();
@@ -628,11 +610,6 @@ int ImageViewer::scrolledY(int dy) {
     return newYPos;
 }
 
-void ImageViewer::hideCursorTimed(bool restartTimer) {
-    if(restartTimer || !cursorTimer->isActive())
-        cursorTimer->start(CURSOR_HIDE_TIMEOUT_MS);
-}
-
 void ImageViewer::setZoomPoint(QPoint pos) {
     zoomPoint = pos;
     zoomDrawRectPoint.setX((float) (zoomPoint.x() - drawingRect.x())
@@ -730,16 +707,4 @@ float ImageViewer::currentScale() {
 
 QSize ImageViewer::sourceSize() {
     return mSourceSize;
-}
-
-void ImageViewer::hideCursor() {
-    cursorTimer->stop();
-    if(this->underMouse()) {
-        setCursor(QCursor(Qt::BlankCursor));
-    }
-}
-
-void ImageViewer::showCursor() {
-    cursorTimer->stop();
-    setCursor(QCursor(Qt::ArrowCursor));
 }

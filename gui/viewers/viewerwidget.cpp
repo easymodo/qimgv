@@ -30,6 +30,8 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     enableZoomInteraction();
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+    connect(&cursorTimer, SIGNAL(timeout()),
+            this, SLOT(hideCursor()), Qt::UniqueConnection);
 }
 
 QRect ViewerWidget::imageRect() {
@@ -131,6 +133,7 @@ bool ViewerWidget::showImage(std::unique_ptr<QPixmap> pixmap) {
     stopPlayback();
     enableImageViewer();
     imageViewer->displayImage(std::move(pixmap));
+    hideCursorTimed(false);
     return true;
 }
 
@@ -140,6 +143,7 @@ bool ViewerWidget::showAnimation(std::unique_ptr<QMovie> movie) {
     stopPlayback();
     enableImageViewer();
     imageViewer->displayAnimation(std::move(movie));
+    hideCursorTimed(false);
     return true;
 }
 
@@ -149,6 +153,7 @@ bool ViewerWidget::showVideo(Clip *clip) {
     stopPlayback();
     enableVideoPlayer();
     videoPlayer->openMedia(clip);
+    hideCursorTimed(false);
     return true;
 }
 
@@ -182,6 +187,7 @@ void ViewerWidget::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
 
 void ViewerWidget::closeImage() {
     imageViewer->closeImage();
+    showCursor();
     // TODO: implement this
     //videoPlayer->closeVideo();
 }
@@ -193,6 +199,46 @@ void ViewerWidget::paintEvent(QPaintEvent *event) {
     p.fillRect(this->rect(), p.brush());
 }
 
+void ViewerWidget::mousePressEvent(QMouseEvent *event) {
+    showCursor();
+    // supports zoom/pan
+    if(currentWidget == IMAGEVIEWER) {
+        if(event->button() == Qt::LeftButton) {
+            setCursor(QCursor(Qt::ClosedHandCursor));
+        }
+        if(event->button() == Qt::RightButton) {
+            setCursor(QCursor(Qt::SizeVerCursor));
+        }
+    }
+}
+
+void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
+    showCursor();
+    hideCursorTimed(false);
+}
+
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
+    if(event->buttons() & Qt::LeftButton) {
+    } else if(event->buttons() & Qt::RightButton) {
+    } else {
+        showCursor();
+        hideCursorTimed(true);
+    }
     event->ignore();
+}
+
+void ViewerWidget::hideCursorTimed(bool restartTimer) {
+    if(restartTimer || !cursorTimer.isActive())
+        cursorTimer.start(CURSOR_HIDE_TIMEOUT_MS);
+}
+
+void ViewerWidget::hideCursor() {
+    cursorTimer.stop();
+    if(this->underMouse())
+        setCursor(QCursor(Qt::BlankCursor));
+}
+
+void ViewerWidget::showCursor() {
+    cursorTimer.stop();
+    setCursor(QCursor(Qt::ArrowCursor));
 }

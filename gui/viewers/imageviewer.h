@@ -69,8 +69,6 @@ protected:
 private slots:
     void nextFrame();
     void requestScaling();
-    void hideCursor();
-    void showCursor();
 
 private:
     std::unique_ptr<QPixmap> pixmap;
@@ -83,7 +81,6 @@ private:
     bool isDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int FADE_DURATION = 140;
-    const int CURSOR_HIDE_TIMEOUT_MS = 1200;
     const int SCROLL_DISTANCE = 250;
     const int animationSpeed = 150;
     float maxScaleLimit = 4.0;
@@ -111,7 +108,6 @@ private:
     void scroll(int dx, int dy, bool animated);
     int scrolledX(int dx);
     int scrolledY(int dy);
-    void hideCursorTimed(bool restartTimer);
 
     void mouseDragWrapping(QMouseEvent *event);
     void mouseDrag(QMouseEvent *event);
