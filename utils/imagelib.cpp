@@ -43,6 +43,9 @@ QImage* ImageLib::flippedV(std::shared_ptr<const QImage> src) {
     return flippedV(src.get());
 }
 //------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
 /*
 
 QImage *ImageLib::cropped(QRect newRect, QRect targetRes, bool upscaled) {

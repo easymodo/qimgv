@@ -210,6 +210,7 @@ void ViewerWidget::mousePressEvent(QMouseEvent *event) {
             setCursor(QCursor(Qt::SizeVerCursor));
         }
     }
+    event->ignore();
 }
 
 void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
