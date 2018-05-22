@@ -199,19 +199,11 @@ CopyOverlay QPushButton:hover {
 }
 
 .QScrollBar::handle:horizontal {
-    background-color: #5a5a5a;
-    border: 1px solid #5a5a5a;
+    background-color: #606060;
+    border: 1px solid #606060;
     min-width: 60px;
     border-top-right-radius: 2px;
     border-top-left-radius: 2px;
-}
-
-.QScrollBar::handle:horizontal:hover {
-    background-color: #5a5a5a;
-    border-top: 1px solid #5a5a5a;
-    border-left: 1px solid #5a5a5a;
-    border-right: 1px solid #5a5a5a;
-
 }
 
 .QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
