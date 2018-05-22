@@ -39,13 +39,13 @@ WITH_MPV {
         DEPENDPATH += $$PWD/mpv-dev
     }
     DEFINES += USE_MPV
-    SOURCES += gui/viewers/mpvwidget.cpp
-    SOURCES += gui/viewers/videoplayermpv.cpp
-    HEADERS += gui/viewers/mpvwidget.h
-    HEADERS += gui/viewers/videoplayermpv.h
+    SOURCES += gui/viewers/playermpv/mpvwidget.cpp
+    SOURCES += gui/viewers/playermpv/videoplayermpv.cpp
+    HEADERS += gui/viewers/playermpv/mpvwidget.h
+    HEADERS += gui/viewers/playermpv/videoplayermpv.h
 } else {
-    SOURCES += gui/viewers/videoplayerdummy.cpp
-    HEADERS += gui/viewers/videoplayerdummy.h
+    SOURCES += gui/viewers/playerdummy/videoplayerdummy.cpp
+    HEADERS += gui/viewers/playerdummy/videoplayerdummy.h
 }
 
 unix {

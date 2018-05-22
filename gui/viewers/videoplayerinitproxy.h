@@ -8,10 +8,10 @@
 #include "gui/viewers/videoplayer.h"
 
 #ifdef USE_MPV
-#include "gui/viewers/videoplayermpv.h"
+#include "gui/viewers/playermpv/videoplayermpv.h"
 typedef VideoPlayerMpv VideoPlayerImpl;
 #else
-#include "gui/viewers/videoplayerdummy.h"
+#include "gui/viewers/playerdummy/videoplayerdummy.h"
 typedef VideoPlayerDummy VideoPlayerImpl;
 #endif
 

@@ -8,22 +8,27 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
+
 SET(BASEPATH "${CMAKE_SOURCE_DIR}")
 INCLUDE_DIRECTORIES("${BASEPATH}")
 
 #set(KF5_DEP_VERSION "5.46.0")
 
+option(WITH_MPV "Enable video support" ON)
 option(WITH_KDE_BLUR "Enable blur when using KWin 5.13+" OFF)
 
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
+
+find_package(Exiv2)
+
 if(WITH_KDE_BLUR)
     find_package(KF5WindowSystem REQUIRED)
     add_definitions(-DUSE_KDE_BLUR)
 endif()
 
-
-include_directories(res ${Qt5Widgets_INCLUDES} ${Qt5Concurrent_INCLUDES})
+include_directories(res ${Qt5Widgets_INCLUDES} ${Qt5Concurrent_INCLUDES} ${EXIV2_INCLUDE_DIR})
 
 add_definitions(${Qt5Widgets_DEFINITIONS} ${Qt5Concurrent_DEFINITIONS})
 

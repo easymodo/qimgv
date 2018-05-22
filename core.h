@@ -16,7 +16,6 @@
 #include "gui/mainwindow.h"
 #include "gui/viewers/viewerwidget.h"
 #include "gui/viewers/imageviewer.h"
-#include "gui/viewers/videoplayermpv.h"
 
 struct State {
     State() : currentIndex(0), hasActiveImage(false), isWaitingForLoader(false) {}
