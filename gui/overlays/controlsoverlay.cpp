@@ -12,6 +12,22 @@ ControlsOverlay::ControlsOverlay(OverlayContainerWidget *parent) :
     layout.addWidget(closeButton);
     setLayout(&layout);
     fitToContents();
+
+    setMouseTracking(true);
+
+    fadeEffect = new QGraphicsOpacityEffect(this);
+    this->setGraphicsEffect(fadeEffect);
+    fadeAnimation = new QPropertyAnimation(fadeEffect, "opacity");
+    fadeAnimation->setDuration(230);
+    fadeAnimation->setStartValue(1.0f);
+    fadeAnimation->setEndValue(0);
+    fadeAnimation->setEasingCurve(QEasingCurve::OutQuart);
+    this->show();
+}
+
+void ControlsOverlay::show() {
+    fadeEffect->setOpacity(0.0f);
+    OverlayWidget::show();
 }
 
 QSize ControlsOverlay::contentsSize() {
@@ -30,4 +46,13 @@ void ControlsOverlay::fitToContents() {
 
 void ControlsOverlay::recalculateGeometry() {
     setGeometry(containerSize().width() - width(), 0, width(), height());
+}
+
+void ControlsOverlay::enterEvent(QEvent *event) {
+    fadeAnimation->stop();
+    fadeEffect->setOpacity(1.0f);
+}
+
+void ControlsOverlay::leaveEvent(QEvent *event) {
+    fadeAnimation->start();
 }
