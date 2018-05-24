@@ -72,6 +72,7 @@ void SettingsDialog::readSettings() {
     ui->bgOpacitySlider->setValue(settings->backgroundOpacity() * 100);
     ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
+    ui->showInfoOverlayCheckBox->setChecked(settings->showInfoOverlay());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -154,6 +155,7 @@ void SettingsDialog::applySettings() {
     settings->setBackgroundOpacity(ui->bgOpacitySlider->value() / (float)100.0f);
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
     settings->setSortingMode((SortingMode)ui->sortingComboBox->currentIndex());
+    settings->setShowInfoOverlay(ui->showInfoOverlayCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 

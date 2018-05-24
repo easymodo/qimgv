@@ -554,3 +554,13 @@ void Settings::setSmoothAnimatedImages(bool mode) {
     settings->s.setValue("smoothAnimatedImages", mode);
 }
 //------------------------------------------------------------------------------
+bool Settings::showInfoOverlay() {
+    return settings->s.value("showInfoOverlay", true).toBool();
+}
+
+void Settings::setShowInfoOverlay(bool mode) {
+    settings->s.setValue("showInfoOverlay", mode);
+}
+
+
+

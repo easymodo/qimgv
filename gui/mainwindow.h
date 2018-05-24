@@ -52,7 +52,7 @@ private:
     int currentDisplay;
     QDesktopWidget *desktopWidget;
 
-    bool panelEnabled, panelFullscreenOnly, cropPanelActive;
+    bool panelEnabled, panelFullscreenOnly, cropPanelActive, infoOverlayEnabled;
     std::unique_ptr<DocumentWidget> docWidget;
     ActiveSidePanel activeSidePanel;
     MainPanel *mainPanel;
@@ -80,7 +80,7 @@ private slots:
     void updateCurrentDisplay();
     void readSettings();
     void setControlsOverlayEnabled(bool mode);
-    void setInfoOverlayEnabled(bool mode);    
+    void showInfoOverlay(bool mode);
     void triggerPanelButtons();
 
 protected:

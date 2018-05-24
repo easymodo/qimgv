@@ -137,6 +137,8 @@ public:
     void readScripts(QMap<QString, Script> &scripts);
     void saveScripts(const QMap<QString, Script> &scripts);
 
+    bool showInfoOverlay();
+    void setShowInfoOverlay(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;
