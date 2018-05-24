@@ -10,7 +10,7 @@
 #include "components/cache/thumbnailcache.h"
 #include "utils/imagefactory.h"
 #include "settings.h"
-
+#include <memory>
 #include <QImageWriter>
 
 class ThumbnailerRunnable : public QObject, public QRunnable
@@ -23,7 +23,7 @@ public:
 
 private:
     QString generateIdString();
-    QImage* createScaledThumbnail(DocumentInfo *img, int size, bool squared);
+    QImage* createThumbnailImage(DocumentInfo *img, int size, bool squared);
     QString path;
     int size;
     bool squared;

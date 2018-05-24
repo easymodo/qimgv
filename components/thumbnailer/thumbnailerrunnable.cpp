@@ -9,44 +9,47 @@ ThumbnailerRunnable::ThumbnailerRunnable(ThumbnailCache* _thumbnailCache, QStrin
 }
 
 void ThumbnailerRunnable::run() {
+    // TODO: replace raw pointers with c++11 ones
     emit taskStart(path);
     DocumentInfo imgInfo(path);
-    Thumbnail *th = new Thumbnail();
-    th->size = size;
-    th->name = imgInfo.fileName();
-    QString thumbnailHash = generateIdString();
-    QImage *thumbImage = nullptr;
+    QString tmpName = imgInfo.fileName();
+    QString thumbnailId = generateIdString();
+    std::unique_ptr<QImage> image;
+    bool cached = false;
     if(settings->useThumbnailCache())
-        thumbImage = thumbnailCache->readThumbnail(thumbnailHash);
-    if(!thumbImage) {
-        thumbImage = createScaledThumbnail(&imgInfo, size, squared);
+        image.reset(thumbnailCache->readThumbnail(thumbnailId));
+    if(!image) {
+        image.reset(createThumbnailImage(&imgInfo, size, squared));
+        image = ImageLib::exifRotated(std::move(image), imgInfo.exifOrientation());
         // put in image info
-        thumbImage->setText("originalWidth", QString::number(originalSize.width()));
-        thumbImage->setText("originalHeight", QString::number(originalSize.height()));
+        image.get()->setText("originalWidth", QString::number(originalSize.width()));
+        image.get()->setText("originalHeight", QString::number(originalSize.height()));
         if(imgInfo.type() == ANIMATED) {
-            thumbImage->setText("label", " [a]");
+            image.get()->setText("label", " [a]");
         } else if(imgInfo.type() == VIDEO) {
-            thumbImage->setText("label", " [v]");
+            image.get()->setText("label", " [v]");
         }
         if(settings->useThumbnailCache()) {
-        // save thumbnail if it makes sense
+        // save thumbnail if it makes sensedd
             if(originalSize.width() > size || originalSize.height() > size)
-                thumbnailCache->saveThumbnail(thumbImage, thumbnailHash);
+                thumbnailCache->saveThumbnail(image.get(), thumbnailId);
         }
     }
-    th->image = new QPixmap(thumbImage->size());
-    *th->image = QPixmap::fromImage(*thumbImage);
+    QPixmap *tmpPixmap = new QPixmap(image->size());
+    *tmpPixmap = QPixmap::fromImage(*image);
+    tmpPixmap->setDevicePixelRatio(qApp->devicePixelRatio());
 
-    if(th->image->width() == 0) {
-        th->label = "error";
+    QString tmpLabel;
+    if(tmpPixmap->width() == 0) {
+        tmpLabel = "error";
     } else  {
         // put info into Thumbnail object
-        th->label = thumbImage->text("originalWidth") + "x" +
-                    thumbImage->text("originalHeight") +
-                    thumbImage->text("label");
+        tmpLabel = image.get()->text("originalWidth") + "x" +
+                   image.get()->text("originalHeight") +
+                   image.get()->text("label");
     }
-    delete thumbImage;
-    emit taskEnd(th, path);
+    std::shared_ptr<const QPixmap> pixmapPtr(tmpPixmap);
+    emit taskEnd(new Thumbnail(tmpName, tmpLabel, size, pixmapPtr), path);
 }
 
 QString ThumbnailerRunnable::generateIdString() {
@@ -57,7 +60,7 @@ QString ThumbnailerRunnable::generateIdString() {
     return queryStr;
 }
 
-QImage* ThumbnailerRunnable::createScaledThumbnail(DocumentInfo *imgInfo, int size, bool squared) {
+QImage* ThumbnailerRunnable::createThumbnailImage(DocumentInfo *imgInfo, int size, bool squared) {
     QImageReader reader;
     QString filePath;
     if(imgInfo->type() == VIDEO) {

@@ -58,8 +58,8 @@ private:
     const qreal inactiveOpacity = 0.86f;
     const int opacityAnimationSpeed = 80;
     void setupLabel();
-    void drawThumbnail(QPainter* painter, qreal dpr, QPixmap *pixmap);
-    void drawIcon(QPainter *painter, qreal dpr, QPixmap *pixmap);
+    void drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap);
+    void drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap);
 
 private slots:
     void readSettings();

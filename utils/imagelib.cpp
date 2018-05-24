@@ -43,8 +43,69 @@ QImage* ImageLib::flippedV(std::shared_ptr<const QImage> src) {
     return flippedV(src.get());
 }
 //------------------------------------------------------------------------------
-
-
+std::unique_ptr<const QImage> ImageLib::exifRotated(std::unique_ptr<const QImage> src, long orientation) {
+    switch(orientation) {
+    case 2: {
+        src.reset(ImageLib::flippedH(src.get()));
+    } break;
+    case 3: {
+        src.reset(ImageLib::flippedH(src.get()));
+        src.reset(ImageLib::flippedV(src.get()));
+    } break;
+    case 4: {
+        src.reset(ImageLib::flippedV(src.get()));
+    } break;
+    case 5: {
+        src.reset(ImageLib::rotated(src.get(), 90));
+        src.reset(ImageLib::flippedH(src.get()));
+    } break;
+    case 6: {
+        src.reset(ImageLib::rotated(src.get(), 90));
+    } break;
+    case 7: {
+        src.reset(ImageLib::rotated(src.get(), -90));
+        src.reset(ImageLib::flippedH(src.get()));
+    } break;
+    case 8: {
+        src.reset(ImageLib::rotated(src.get(), -90));
+    } break;
+    default: {
+    } break;
+    }
+    return std::move(src);
+}
+//------------------------------------------------------------------------------
+std::unique_ptr<QImage> ImageLib::exifRotated(std::unique_ptr<QImage> src, long orientation) {
+    switch(orientation) {
+    case 2: {
+        src.reset(ImageLib::flippedH(src.get()));
+    } break;
+    case 3: {
+        src.reset(ImageLib::flippedH(src.get()));
+        src.reset(ImageLib::flippedV(src.get()));
+    } break;
+    case 4: {
+        src.reset(ImageLib::flippedV(src.get()));
+    } break;
+    case 5: {
+        src.reset(ImageLib::rotated(src.get(), 90));
+        src.reset(ImageLib::flippedH(src.get()));
+    } break;
+    case 6: {
+        src.reset(ImageLib::rotated(src.get(), 90));
+    } break;
+    case 7: {
+        src.reset(ImageLib::rotated(src.get(), -90));
+        src.reset(ImageLib::flippedH(src.get()));
+    } break;
+    case 8: {
+        src.reset(ImageLib::rotated(src.get(), -90));
+    } break;
+    default: {
+    } break;
+    }
+    return std::move(src);
+}
 //------------------------------------------------------------------------------
 /*
 

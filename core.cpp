@@ -497,7 +497,7 @@ void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
 }
 
 void Core::forwardThumbnail(Thumbnail *thumbnail) {
-    int index = dirManager->indexOf(thumbnail->name);
+    int index = dirManager->indexOf(thumbnail->name());
     if(index >= 0) {
         thumbnailPanelWidget->setThumbnail(index, thumbnail);
     } else {

@@ -21,60 +21,10 @@ void ImageStatic::load() {
     if(isLoaded()) {
         return;
     }
-    QImage *img = new QImage(mPath, mDocInfo->extension());
-    // apply exif orientation
-    // move to lib & optimize
-    long orientation = this->mDocInfo.get()->exifOrientation();
-    switch(orientation) {
-    case 2: {
-        QImage *tmp = ImageLib::flippedH(img);
-        delete img;
-        img = tmp;
-    } break;
-    case 3: {
-        QImage *tmp = ImageLib::flippedH(img);
-        delete img;
-        img = tmp;
-        tmp = ImageLib::flippedV(img);
-        delete img;
-        img = tmp;
-    } break;
-    case 4: {
-        QImage *tmp = ImageLib::flippedV(img);
-        delete img;
-        img = tmp;
-    } break;
-    case 5: {
-        QImage *tmp = ImageLib::rotated(img, 90);
-        delete img;
-        img = tmp;
-        tmp = ImageLib::flippedH(img);
-        delete img;
-        img = tmp;
-    } break;
-    case 6: {
-        QImage *tmp = ImageLib::rotated(img, 90);
-        delete img;
-        img = tmp;
-    } break;
-    case 7: {
-        QImage *tmp = ImageLib::rotated(img, -90);
-        delete img;
-        img = tmp;
-        tmp = ImageLib::flippedH(img);
-        delete img;
-        img = tmp;
-    } break;
-    case 8: {
-        QImage *tmp = ImageLib::rotated(img, -90);
-        delete img;
-        img = tmp;
-    } break;
-    default: {
-    } break;
-    }
+    std::unique_ptr<const QImage> img(new QImage(mPath, mDocInfo->extension()));
+    img = ImageLib::exifRotated(std::move(img), this->mDocInfo.get()->exifOrientation());
     // set image
-    image = std::shared_ptr<const QImage>(img);
+    image = std::move(img);
     mLoaded = true;
 }
 

@@ -187,7 +187,7 @@ void ThumbnailStrip::unlock() {
 // called by loader when thubmnail is ready
 void ThumbnailStrip::setThumbnail(int pos, Thumbnail *thumb) {
     lock();
-    if(thumb && thumb->size == floor(thumbnailSize*qApp->devicePixelRatio()) && checkRange(pos)) {
+    if(thumb && thumb->size() == floor(thumbnailSize*qApp->devicePixelRatio()) && checkRange(pos)) {
         thumbnailLabels->at(pos)->setThumbnail(thumb);
         thumbnailLabels->at(pos)->state = LOADED;
         /*

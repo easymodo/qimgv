@@ -28,6 +28,8 @@ class ImageLib {
         static QImage *scaled_Qt(const QImage *source, QSize destSize, bool smooth);
         static QImage *scaled_Qt(std::shared_ptr<const QImage> source, QSize destSize, bool smooth);
         //static QImage *scale_FreeImage(const QImage *source, QSize destSize, FREE_IMAGE_FILTER filter);
+        static std::unique_ptr<const QImage> exifRotated(std::unique_ptr<const QImage> src, long orientation);
+        static std::unique_ptr<QImage> exifRotated(std::unique_ptr<QImage> src, long orientation);
 };
 
 #endif // IMAGELIB_H

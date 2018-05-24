@@ -216,12 +216,11 @@ void ViewerWidget::mousePressEvent(QMouseEvent *event) {
 void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
     showCursor();
     hideCursorTimed(false);
+    event->ignore();
 }
 
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
-    if(event->buttons() & Qt::LeftButton) {
-    } else if(event->buttons() & Qt::RightButton) {
-    } else {
+    if(!(event->buttons() & Qt::LeftButton) && !(event->buttons() & Qt::RightButton)) {
         showCursor();
         hideCursorTimed(true);
     }
@@ -242,4 +241,12 @@ void ViewerWidget::hideCursor() {
 void ViewerWidget::showCursor() {
     cursorTimer.stop();
     setCursor(QCursor(Qt::ArrowCursor));
+}
+
+void ViewerWidget::enterEvent(QEvent *event) {
+    qDebug() << "enter";
+}
+
+void ViewerWidget::leaveEvent(QEvent *event) {
+    qDebug() << "leave";
 }

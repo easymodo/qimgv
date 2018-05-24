@@ -55,6 +55,7 @@ void MainWindow::setupUi() {
     infoOverlay = new InfoOverlay(this);
     controlsOverlay = new ControlsOverlay(this);
     saveOverlay = new SaveConfirmOverlay(viewerWidget);
+
     copyOverlay = new CopyOverlay(this);
     changelogWindow = new ChangelogWindow(this);
     sidePanel = new SidePanel(this);
