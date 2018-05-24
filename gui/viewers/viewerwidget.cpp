@@ -242,11 +242,3 @@ void ViewerWidget::showCursor() {
     cursorTimer.stop();
     setCursor(QCursor(Qt::ArrowCursor));
 }
-
-void ViewerWidget::enterEvent(QEvent *event) {
-    qDebug() << "enter";
-}
-
-void ViewerWidget::leaveEvent(QEvent *event) {
-    qDebug() << "leave";
-}

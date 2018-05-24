@@ -4,7 +4,7 @@ DocumentWidget::DocumentWidget(QWidget *parent) : OverlayContainerWidget(parent)
     layout.setContentsMargins(0,0,0,0);
     setLayout(&layout);
     setAttribute(Qt::WA_TranslucentBackground, true);
-    setAttribute(Qt::WA_TransparentForMouseEvents, true);
+    setMouseTracking(true);
 }
 
 DocumentWidget::DocumentWidget(std::shared_ptr<QWidget> _viewWidget, QWidget *parent)
