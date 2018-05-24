@@ -1,6 +1,6 @@
 #include "controlsoverlay.h"
 
-ControlsOverlay::ControlsOverlay(ContainerWidget *parent) :
+ControlsOverlay::ControlsOverlay(OverlayContainerWidget *parent) :
     OverlayWidget(parent)
 {
     settingsButton = new IconButton("openSettings", ":/res/icons/buttons/settings20.png");

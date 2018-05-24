@@ -6,7 +6,7 @@
 
 #include "overlaywidget.h"
 
-OverlayWidget::OverlayWidget(ContainerWidget *parent) : QWidget(parent) {
+OverlayWidget::OverlayWidget(OverlayContainerWidget *parent) : QWidget(parent) {
     this->setAccessibleName("OverlayWidget");
     connect(parent, SIGNAL(resized(QSize)), this, SLOT(setContainerSize(QSize)));
     hide();

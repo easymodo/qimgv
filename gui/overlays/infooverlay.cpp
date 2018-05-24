@@ -1,6 +1,6 @@
 #include "infooverlay.h"
 
-InfoOverlay::InfoOverlay(ContainerWidget *parent)
+InfoOverlay::InfoOverlay(OverlayContainerWidget *parent)
     : OverlayWidget(parent),
       fm(nullptr)
 {

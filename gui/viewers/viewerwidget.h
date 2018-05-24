@@ -1,7 +1,7 @@
 #ifndef VIEWERWIDGET_H
 #define VIEWERWIDGET_H
 
-#include "gui/customwidgets/containerwidget.h"
+#include "gui/customwidgets/overlaycontainerwidget.h"
 #include <QHBoxLayout>
 #include "gui/viewers/imageviewer.h"
 #include "gui/viewers/videoplayerinitproxy.h"
@@ -14,7 +14,7 @@ enum CurrentWidget {
     UNSET
 };
 
-class ViewerWidget : public ContainerWidget
+class ViewerWidget : public OverlayContainerWidget
 {
     Q_OBJECT
 public:

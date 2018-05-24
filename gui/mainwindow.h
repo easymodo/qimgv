@@ -6,7 +6,7 @@
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QMimeData>
-#include "gui/customwidgets/containerwidget.h"
+#include "gui/customwidgets/overlaycontainerwidget.h"
 #include "gui/viewers/viewerwidget.h"
 #include "gui/overlays/controlsoverlay.h"
 #include "gui/overlays/infooverlay.h"
@@ -23,6 +23,7 @@
 #include "components/actionmanager/actionmanager.h"
 #include "settings.h"
 #include "gui/dialogs/settingsdialog.h"
+#include "gui/viewers/documentwidget.h"
 #include <QApplication>
 
 #ifdef USE_KDE_BLUR
@@ -34,7 +35,7 @@ enum ActiveSidePanel {
     SIDEPANEL_NONE
 };
 
-class MainWindow : public ContainerWidget
+class MainWindow : public OverlayContainerWidget
 {
     Q_OBJECT
 public:
@@ -44,14 +45,15 @@ public:
     bool isCropPanelActive();
 
 private:
-    ViewerWidget *viewerWidget;
-    void setViewerWidget(ViewerWidget *viewerWidget);
+    std::shared_ptr<ViewerWidget> viewerWidget;
+    void setViewerWidget(std::shared_ptr<ViewerWidget> viewerWidget);
     QHBoxLayout layout;
     QTimer windowMoveTimer;
     int currentDisplay;
     QDesktopWidget *desktopWidget;
 
     bool panelEnabled, panelFullscreenOnly, cropPanelActive;
+    std::unique_ptr<DocumentWidget> docWidget;
     ActiveSidePanel activeSidePanel;
     MainPanel *mainPanel;
     SidePanel *sidePanel;

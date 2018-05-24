@@ -1,7 +1,7 @@
 #include "changelogwindow.h"
 #include "ui_changelogwindow.h"
 
-ChangelogWindow::ChangelogWindow(ContainerWidget *parent) :
+ChangelogWindow::ChangelogWindow(OverlayContainerWidget *parent) :
     FloatingWidget(parent),
     ui(new Ui::ChangelogWindow)
 {

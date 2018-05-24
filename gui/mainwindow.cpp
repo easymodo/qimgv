@@ -1,7 +1,9 @@
 #include "mainwindow.h"
 
+// TODO: nuke this and rewrite
+
 MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
-    : ContainerWidget(parent),
+    : OverlayContainerWidget(parent),
       currentDisplay(0),
       desktopWidget(nullptr),
       panelEnabled(false),
@@ -25,8 +27,7 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
     windowMoveTimer.setSingleShot(true);
     windowMoveTimer.setInterval(150);
 
-    setViewerWidget(viewerWidget);
-
+    this->viewerWidget.reset(viewerWidget);
     setupUi();
 
     connect(settings, SIGNAL(settingsChanged()),
@@ -51,17 +52,21 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
 
 // floating panels, info bars, panels etc
 void MainWindow::setupUi() {
+    docWidget.reset(new DocumentWidget(this));
+    layout.addWidget(docWidget.get());
+
+    setViewerWidget(viewerWidget);
     // this order is used while drawing
     infoOverlay = new InfoOverlay(this);
     controlsOverlay = new ControlsOverlay(this);
-    saveOverlay = new SaveConfirmOverlay(viewerWidget);
+    saveOverlay = new SaveConfirmOverlay(docWidget.get());
 
     copyOverlay = new CopyOverlay(this);
     changelogWindow = new ChangelogWindow(this);
     sidePanel = new SidePanel(this);
 
     // TODO: do something about this spaghetti
-    cropOverlay = new CropOverlay(viewerWidget);
+    cropOverlay = new CropOverlay(viewerWidget.get());
     cropPanel = new CropPanel(cropOverlay, this);
     connect(cropPanel, SIGNAL(cancel()), this, SLOT(hideSidePanel()));
     connect(cropPanel, SIGNAL(crop(QRect)), this, SLOT(hideSidePanel()));
@@ -91,12 +96,10 @@ bool MainWindow::isCropPanelActive() {
     return (activeSidePanel == SIDEPANEL_CROP);
 }
 
-void MainWindow::setViewerWidget(ViewerWidget *viewerWidget) {
-    if(viewerWidget) {
-        this->viewerWidget = viewerWidget;
-        viewerWidget->setParent(this);
-        layout.addWidget(viewerWidget);
-        viewerWidget->show();
+void MainWindow::setViewerWidget(std::shared_ptr<ViewerWidget> _viewerWidget) {
+    if(_viewerWidget) {
+        viewerWidget = _viewerWidget;
+        docWidget.get()->setViewWidget(viewerWidget);
     } else {
         qDebug() << "MainWindow: viewerWidget is nullptr";
     }
@@ -193,7 +196,7 @@ void MainWindow::dropEvent(QDropEvent *event) {
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
-    ContainerWidget::resizeEvent(event);
+    OverlayContainerWidget::resizeEvent(event);
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropOverlay->setImageScale(viewerWidget->currentScale());
         cropOverlay->setImageDrawRect(viewerWidget->imageRect());

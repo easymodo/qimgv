@@ -11,7 +11,7 @@ class InfoOverlay : public OverlayWidget
 {
     Q_OBJECT
 public:
-    InfoOverlay(ContainerWidget *parent);
+    InfoOverlay(OverlayContainerWidget *parent);
     void setText(QString text);
 
 private:

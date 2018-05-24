@@ -1,6 +1,6 @@
 #include "mainpanel.h"
 
-MainPanel::MainPanel(ContainerWidget *parent) : SlideHPanel(parent) {
+MainPanel::MainPanel(OverlayContainerWidget *parent) : SlideHPanel(parent) {
     // buttons stuff
     buttonsWidget.setAccessibleName("panelButtonsWidget");
 

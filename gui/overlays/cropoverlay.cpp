@@ -2,7 +2,7 @@
 
 // TODO: this is pretty old. Clean up
 
-CropOverlay::CropOverlay(ContainerWidget *parent) : OverlayWidget(parent),
+CropOverlay::CropOverlay(OverlayContainerWidget *parent) : OverlayWidget(parent),
     viewer(parent),
     startPos(QPoint(0, 0)),
     endPos(QPoint(0, 0)),

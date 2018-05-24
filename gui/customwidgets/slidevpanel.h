@@ -6,7 +6,7 @@
 class SlideVPanel : public SlidePanel {
     Q_OBJECT
 public:
-    explicit SlideVPanel(ContainerWidget *w);
+    explicit SlideVPanel(OverlayContainerWidget *w);
     ~SlideVPanel();
     void setPosition(PanelVPosition);
     QRect triggerRect();

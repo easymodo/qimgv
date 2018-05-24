@@ -1,6 +1,6 @@
 #include "floatingwidget.h"
 
-FloatingWidget::FloatingWidget(ContainerWidget *parent)
+FloatingWidget::FloatingWidget(OverlayContainerWidget *parent)
     : OverlayWidget(parent),
       marginX(20),
       marginY(30)

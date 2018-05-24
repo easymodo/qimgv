@@ -6,7 +6,7 @@
 
 #include "slidepanel.h"
 
-SlidePanel::SlidePanel(ContainerWidget *parent)
+SlidePanel::SlidePanel(OverlayContainerWidget *parent)
     : OverlayWidget(parent),
       panelSize(50),
       slideAmount(30),

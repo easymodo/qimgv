@@ -6,7 +6,7 @@
 
 #include "slidehpanel.h"
 
-SlideHPanel::SlideHPanel(ContainerWidget *parent)
+SlideHPanel::SlideHPanel(OverlayContainerWidget *parent)
     : SlidePanel(parent)
 {
     position = PANEL_TOP;

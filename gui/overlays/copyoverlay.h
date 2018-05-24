@@ -23,7 +23,7 @@ namespace Ui {
 class CopyOverlay : public FloatingWidget {
     Q_OBJECT
 public:
-    CopyOverlay(ContainerWidget *parent);
+    CopyOverlay(OverlayContainerWidget *parent);
     ~CopyOverlay();
     void saveSettings();    
     void setDialogMode(CopyOverlayMode _mode);

@@ -1,6 +1,6 @@
 #include "slidevpanel.h"
 
-SlideVPanel::SlideVPanel(ContainerWidget *w)
+SlideVPanel::SlideVPanel(OverlayContainerWidget *w)
     : SlidePanel(w)
 {
     slideAmount = 20;

@@ -15,7 +15,7 @@ namespace Ui {
 class ChangelogWindow : public FloatingWidget {
     Q_OBJECT
 public:
-    explicit ChangelogWindow(ContainerWidget *parent);
+    explicit ChangelogWindow(OverlayContainerWidget *parent);
     ~ChangelogWindow();
     void setText(QString text);
 

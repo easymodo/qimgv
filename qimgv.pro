@@ -117,7 +117,6 @@ SOURCES += \
     gui/viewers/videoplayer.cpp \
     gui/overlays/saveconfirmoverlay.cpp \
     gui/customwidgets/floatingwidget.cpp \
-    gui/customwidgets/containerwidget.cpp \
     appversion.cpp \
     gui/overlays/changelogwindow.cpp \
     components/scriptmanager/scriptmanager.cpp \
@@ -129,7 +128,9 @@ SOURCES += \
     shortcutbuilder.cpp \
     utils/actions.cpp \
     utils/script.cpp \
-    gui/dialogs/scripteditordialog.cpp
+    gui/dialogs/scripteditordialog.cpp \
+    gui/customwidgets/overlaycontainerwidget.cpp \
+    gui/viewers/documentwidget.cpp
 
 HEADERS += \
     core.h \
@@ -193,7 +194,6 @@ HEADERS += \
     gui/viewers/videoplayer.h \
     gui/overlays/saveconfirmoverlay.h \
     gui/customwidgets/floatingwidget.h \
-    gui/customwidgets/containerwidget.h \
     appversion.h \
     gui/overlays/changelogwindow.h \
     components/scriptmanager/scriptmanager.h \
@@ -205,7 +205,9 @@ HEADERS += \
     shortcutbuilder.h \
     utils/actions.h \
     utils/script.h \
-    gui/dialogs/scripteditordialog.h
+    gui/dialogs/scripteditordialog.h \
+    gui/customwidgets/overlaycontainerwidget.h \
+    gui/viewers/documentwidget.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \

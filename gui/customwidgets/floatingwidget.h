@@ -24,7 +24,7 @@ class FloatingWidget : public OverlayWidget
 {
     Q_OBJECT
 public:
-    FloatingWidget(ContainerWidget *parent);
+    FloatingWidget(OverlayContainerWidget *parent);
     void setMarginX(int);
     void setMarginY(int);
     void setPosition(FloatingWidgetPosition pos);

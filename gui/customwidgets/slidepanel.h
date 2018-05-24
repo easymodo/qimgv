@@ -15,7 +15,7 @@
 class SlidePanel : public OverlayWidget {
     Q_OBJECT
 public:
-    explicit SlidePanel(ContainerWidget *parent);
+    explicit SlidePanel(OverlayContainerWidget *parent);
     ~SlidePanel();
     bool hasWidget();
     void setWidget(QWidget* w);
