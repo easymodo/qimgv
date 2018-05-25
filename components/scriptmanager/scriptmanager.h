@@ -32,8 +32,9 @@ private:
     explicit ScriptManager(QObject *parent = 0);
     static void initScripts();
     QMap<QString, Script> scripts; // <name, script>
-    QStringList prepareCommandArguments(Script script, std::shared_ptr<Image> img);
+    void processArguments(QStringList &cmd, std::shared_ptr<Image> img);
 
+    QStringList splitCommandLine(const QString &cmdLine);
 signals:
     void scriptFinished();
 private slots:

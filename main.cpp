@@ -13,12 +13,12 @@ void saveSettings() {
 
 //------------------------------------------------------------------------------
 QDataStream& operator<<(QDataStream& out, const Script& v) {
-    out << v.path << v.blocking;
+    out << v.command << v.blocking;
     return out;
 }
 //------------------------------------------------------------------------------
 QDataStream& operator>>(QDataStream& in, Script& v) {
-    in >> v.path;
+    in >> v.command;
     in >> v.blocking;
     return in;
 }

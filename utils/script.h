@@ -8,7 +8,7 @@ class Script {
 public:
     Script();
     Script(QString _path, bool _blocking);
-    QString path;
+    QString command;
     bool blocking;
 };
 

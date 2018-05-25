@@ -27,7 +27,8 @@ void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> 
         Script script = scripts.value(scriptName);
         QProcess exec(this);
 
-        QStringList command = prepareCommandArguments(script, img);
+        QStringList command = splitCommandLine(script.command);
+        processArguments(command, img);
         exec.setProgram(command.takeAt(0));
         exec.setArguments(command);
 
@@ -53,14 +54,42 @@ void ScriptManager::runScript(const QString &scriptName, const QString &argument
 #endif
 
 // TODO: what if filename contains one of the tags?
-QStringList ScriptManager::prepareCommandArguments(Script script, std::shared_ptr<Image> img) {
-    QStringList arguments = script.path.split(" ");
-    for (auto& i : arguments) {
+void ScriptManager::processArguments(QStringList &cmd, std::shared_ptr<Image> img) {
+    for (auto& i : cmd) {
         if(i == "%file%")
             i = img.get()->path();
     }
-    return arguments;
 }
+
+// thanks stackoverflow
+QStringList ScriptManager::splitCommandLine(const QString & cmdLine) {
+    QStringList list;
+    QString arg;
+    bool escape = false;
+    enum { Idle, Arg, QuotedArg } state = Idle;
+    foreach (QChar const c, cmdLine) {
+        if (!escape && c == '\\') { escape = true; continue; }
+        switch (state) {
+        case Idle:
+            if (!escape && c == '"') state = QuotedArg;
+            else if (escape || !c.isSpace()) { arg += c; state = Arg; }
+            break;
+        case Arg:
+            if (!escape && c == '"') state = QuotedArg;
+            else if (escape || !c.isSpace()) arg += c;
+            else { list << arg; arg.clear(); state = Idle; }
+            break;
+        case QuotedArg:
+            if (!escape && c == '"') state = arg.isEmpty() ? Idle : Arg;
+            else arg += c;
+            break;
+        }
+        escape = false;
+    }
+    if (!arg.isEmpty()) list << arg;
+    return list;
+}
+
 
 bool ScriptManager::scriptExists(QString scriptName) {
     return scripts.contains(scriptName);

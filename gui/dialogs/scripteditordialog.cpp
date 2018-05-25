@@ -22,7 +22,7 @@ ScriptEditorDialog::ScriptEditorDialog(QString name, Script script, QWidget *par
     connect(ui->nameLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(onNameChanged(QString)));
     ui->nameLineEdit->setText(name);
-    ui->pathLineEdit->setText(script.path);
+    ui->pathLineEdit->setText(script.command);
     ui->blockingCheckBox->setChecked(script.blocking);
     this->onNameChanged(ui->nameLineEdit->text());
 }
