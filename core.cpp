@@ -463,8 +463,8 @@ void Core::saveImageToDisk(QString filePath) {
 }
 
 void Core::runScript(const QString &scriptName) {
-    QString imagePath = dirManager->filePathAt(state.currentIndex);
-    scriptManager->runScript(scriptName, imagePath);
+    QString nameKey = dirManager->fileNameAt(state.currentIndex);
+    scriptManager->runScript(scriptName, cache->get(nameKey));
 }
 
 // switch between 1:1 and Fit All

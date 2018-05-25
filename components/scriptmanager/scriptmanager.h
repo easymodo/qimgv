@@ -10,6 +10,7 @@
 #include <QStringList>
 #include <QProcess>
 #include "utils/script.h"
+#include "sourcecontainers/image.h"
 #include "settings.h"
 
 class ScriptManager : public QObject {
@@ -17,7 +18,7 @@ class ScriptManager : public QObject {
 public:
     static ScriptManager* getInstance();
     ~ScriptManager();
-    void runScript(const QString &scriptName, const QString &arguments);
+    void runScript(const QString &scriptName, std::shared_ptr<Image> img);
     bool scriptExists(QString scriptName);
     void readScripts();
     void saveScripts();
@@ -31,6 +32,7 @@ private:
     explicit ScriptManager(QObject *parent = 0);
     static void initScripts();
     QMap<QString, Script> scripts; // <name, script>
+    QStringList prepareCommandArguments(Script script, std::shared_ptr<Image> img);
 
 signals:
     void scriptFinished();
