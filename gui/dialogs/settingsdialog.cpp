@@ -12,7 +12,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->bgColorLabel->setAutoFillBackground(true);
     ui->accentColorLabel->setAutoFillBackground(true);
     ui->aboutAppTextBrowser->viewport()->setAutoFillBackground(false);
-    ui->versionLabel->setText("Version " + QApplication::applicationVersion());
+    ui->versionLabel->setText("" + QApplication::applicationVersion());
+    ui->qtVersionLabel->setText(qVersion());
 
 #ifndef USE_KDE_BLUR
     ui->blurBackgroundCheckBox->setEnabled(false);

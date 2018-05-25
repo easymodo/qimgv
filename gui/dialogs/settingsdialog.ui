@@ -65,13 +65,13 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>160</width>
+         <width>150</width>
          <height>0</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>170</width>
+         <width>150</width>
          <height>16777215</height>
         </size>
        </property>
@@ -215,12 +215,15 @@
             <property name="geometry">
              <rect>
               <x>0</x>
-              <y>-212</y>
-              <width>390</width>
-              <height>658</height>
+              <y>0</y>
+              <width>400</width>
+              <height>685</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_5">
+             <property name="spacing">
+              <number>8</number>
+             </property>
              <property name="leftMargin">
               <number>0</number>
              </property>
@@ -233,6 +236,26 @@
              <property name="bottomMargin">
               <number>0</number>
              </property>
+             <item>
+              <widget class="QLabel" name="title1">
+               <property name="font">
+                <font>
+                 <pointsize>14</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>General</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="indent">
+                <number>-1</number>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QCheckBox" name="fullscreenCheckBox">
                <property name="sizePolicy">
@@ -251,22 +274,6 @@
                 <string>Start in fullscreen</string>
                </property>
               </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>10</height>
-                </size>
-               </property>
-              </spacer>
              </item>
              <item>
               <widget class="QGroupBox" name="groupBox">
@@ -324,7 +331,7 @@
                        </size>
                       </property>
                       <property name="text">
-                       <string>... only in fullscreen</string>
+                       <string>only in fullscreen</string>
                       </property>
                      </widget>
                     </item>
@@ -792,7 +799,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>404</width>
+              <width>414</width>
               <height>446</height>
              </rect>
             </property>
@@ -810,6 +817,20 @@
               <number>0</number>
              </property>
              <item>
+              <widget class="QLabel" name="title2">
+               <property name="font">
+                <font>
+                 <pointsize>14</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Appearance</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QGroupBox" name="groupBox_5">
                <property name="font">
                 <font>
@@ -821,6 +842,13 @@
                 <string>Color scheme</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_23">
+                <item>
+                 <widget class="QLabel" name="label_8">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_9">
                   <item>
@@ -1073,8 +1101,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>398</width>
-              <height>203</height>
+              <width>414</width>
+              <height>446</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1090,6 +1118,20 @@
              <property name="bottomMargin">
               <number>0</number>
              </property>
+             <item>
+              <widget class="QLabel" name="title3">
+               <property name="font">
+                <font>
+                 <pointsize>14</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Scaling</string>
+               </property>
+              </widget>
+             </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_5">
                <item>
@@ -1485,6 +1527,20 @@
           <number>0</number>
          </property>
          <item>
+          <widget class="QLabel" name="title4">
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Controls</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
             <widget class="QPushButton" name="pushButton_2">
@@ -1502,13 +1558,6 @@
              </property>
              <property name="text">
               <string>Action</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_8">
-             <property name="text">
-              <string>Script</string>
              </property>
             </widget>
            </item>
@@ -1562,7 +1611,7 @@
               </size>
              </property>
              <property name="text">
-              <string>Defaults</string>
+              <string>Reset to defaults</string>
              </property>
             </widget>
            </item>
@@ -1616,6 +1665,20 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
+         <item>
+          <widget class="QLabel" name="title5">
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Scripts</string>
+           </property>
+          </widget>
+         </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_21">
            <property name="topMargin">
@@ -1689,8 +1752,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>266</width>
-              <height>443</height>
+              <width>400</width>
+              <height>472</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -1707,6 +1770,20 @@
               <number>0</number>
              </property>
              <item>
+              <widget class="QLabel" name="title6">
+               <property name="font">
+                <font>
+                 <pointsize>14</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Advanced</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QCheckBox" name="forceSmoothScrollCheckBox">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
@@ -1718,7 +1795,7 @@
                 <string>Check this if you dont have smooth scrolling in thumbnail panel</string>
                </property>
                <property name="text">
-                <string>Force smooth scrolling</string>
+                <string>Force smooth scrolling on panel</string>
                </property>
               </widget>
              </item>
@@ -1734,7 +1811,7 @@
                 <string>Preload the next/previous image. Results in a much faster image switching (at the expense of wasting more RAM).</string>
                </property>
                <property name="text">
-                <string>Use preloader</string>
+                <string>Use preloader (recommended)</string>
                </property>
               </widget>
              </item>
@@ -1750,7 +1827,7 @@
                 <string>Cache is stored at ~.cache/qimgv/</string>
                </property>
                <property name="text">
-                <string>Use thumbnail cache</string>
+                <string>Use thumbnail cache (recommended)</string>
                </property>
               </widget>
              </item>
@@ -1876,8 +1953,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>256</width>
-              <height>222</height>
+              <width>414</width>
+              <height>446</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1893,6 +1970,23 @@
              <property name="bottomMargin">
               <number>0</number>
              </property>
+             <item>
+              <widget class="QLabel" name="label_7">
+               <property name="font">
+                <font>
+                 <pointsize>14</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>About qimgv</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QTextBrowser" name="aboutAppTextBrowser">
                <property name="sizePolicy">
@@ -1915,17 +2009,21 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Droid Sans'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt; font-weight:600;&quot;&gt;About qimgv&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:12pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt;&quot;&gt;This is an image viewer designed with usability in mind.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt;&quot;&gt;Features webm support via MPV.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt; font-weight:600; font-style:italic;&quot;&gt;Github page:&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt; font-style:italic;&quot;&gt; &lt;/span&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;https://github.com/easymodo/qimgv&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt; font-weight:600; font-style:italic;&quot;&gt;Main developer:&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt; font-style:italic;&quot;&gt; easymodo (easymodofrf@gmail.com)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv/graphs/contributors&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt; font-weight:600; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;Contributors&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:12pt; font-weight:600; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt;&quot;&gt;qimgv is licensed under &lt;/span&gt;&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.en.html&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#007af4;&quot;&gt;GNU GPL Version 3&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt;&quot;&gt;Report any issues / request features &lt;/span&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv/issues&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#007af4;&quot;&gt;here.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;This is a fast and easy to use image viewer.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;Features webm support via mpv.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; font-style:italic;&quot;&gt;Github page:&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic;&quot;&gt; &lt;/span&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;https://github.com/easymodo/qimgv&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; font-style:italic;&quot;&gt;Main developer:&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic;&quot;&gt; easymodo (easymodofrf@gmail.com)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv/graphs/contributors&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;Contributors&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-weight:600; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;This application uses some icons &lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;from the &lt;/span&gt;&lt;a href=&quot;https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;Papirus icon theme&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;qimgv is licensed under &lt;/span&gt;&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.en.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;GNU GPL Version 3&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;Report any issues / request features &lt;/span&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv/issues&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="acceptRichText">
+                <bool>true</bool>
                </property>
                <property name="openExternalLinks">
                 <bool>true</bool>
@@ -1957,6 +2055,23 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="qtIconLabel">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources.qrc">:/res/icons/qt22.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="qtVersionLabel">
+                 <property name="text">
+                  <string/>
                  </property>
                 </widget>
                </item>

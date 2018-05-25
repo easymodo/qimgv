@@ -49,5 +49,6 @@
         <file>res/icons/settings/32/tweak2.png</file>
         <file>res/icons/settings/32/viewer.png</file>
         <file>res/icons/app/32.png</file>
+        <file>res/icons/qt22.png</file>
     </qresource>
 </RCC>
