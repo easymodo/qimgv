@@ -190,7 +190,6 @@ void DirectoryManager::generateFileList(SortingMode mode) {
         currentDir.setSorting(QDir::Size);
     if(mode == SortingMode::SIZE_DESC)
         currentDir.setSorting(QDir::Size | QDir::Reversed);
-
     mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
 }
 /*

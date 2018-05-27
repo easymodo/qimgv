@@ -552,6 +552,7 @@ void Core::loadDirectory(QString path) {
     if(dirManager->hasImages()) {
         // open the first image
         this->loadByIndexBlocking(0);
+        preload(1);
     } else {
         // we got an empty directory; show an error
         mw->showMessage("Directory does not contain supported files.");
@@ -572,6 +573,8 @@ void Core::loadImage(QString path, bool blocking) {
         loader->loadBlocking(path);
     else
         loader->loadExclusive(path);
+    preload(state.currentIndex - 1);
+    preload(state.currentIndex + 1);
 }
 
 void Core::loadByPath(QString path, bool blocking) {
@@ -580,6 +583,7 @@ void Core::loadByPath(QString path, bool blocking) {
     }
     if(dirManager->isImage(path)) {
         loadImage(path, blocking);
+        int index = dirManager->indexOf(path);
     } else if(dirManager->isDirectory(path)) {
         loadDirectory(path);
     } else {
@@ -606,6 +610,8 @@ bool Core::loadByIndex(int index) {
             displayImage(cache->get(nameKey).get());
         else
             loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
+        preload(index - 1);
+        preload(index + 1);
         return true;
     }
     return false;
