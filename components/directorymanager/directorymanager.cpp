@@ -170,7 +170,7 @@ void DirectoryManager::directoryContentsChanged(QString dirPath) {
 void DirectoryManager::generateFileList(SortingMode mode) {
     qDebug() << "sortMode:" << mode;
     // special case for natural sorting
-    if(mode == (SortingMode::NAME_ASC || SortingMode::NAME_DESC)) {
+    if(mode == SortingMode::NAME_ASC || mode == SortingMode::NAME_DESC) {
         currentDir.setSorting(QDir::NoSort);
         mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
         QCollator collator;
