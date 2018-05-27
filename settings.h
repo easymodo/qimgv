@@ -18,7 +18,9 @@ enum SortingMode {
     NAME_ASC,
     NAME_DESC,
     DATE_ASC,
-    DATE_DESC
+    DATE_DESC,
+    SIZE_ASC,
+    SIZE_DESC
 };
 
 enum ImageFitMode {

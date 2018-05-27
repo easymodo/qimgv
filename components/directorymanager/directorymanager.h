@@ -52,16 +52,16 @@ private slots:
 private:
     QDir currentDir;
     QStringList mFileNameList;
-    QStringList mimeFilters, extensionFilters;
+    QStringList mimeFilter, nameFilter;
 
     void readSettings();
 //    WatcherWindows watcher;
     QMimeDatabase mimeDb;
     bool quickFormatDetection;
 
-    void generateFileList();
-    void generateFileListQuick();
-    void generateFileListDeep();
+    void generateFileList(SortingMode mode);
+    //void generateFileListQuick();
+    //void generateFileListDeep();
 
     void onFileRemovedExternal(QString);
 

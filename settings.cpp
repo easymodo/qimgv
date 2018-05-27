@@ -197,14 +197,14 @@ void Settings::setBlurBackground(bool mode) {
 }
 //------------------------------------------------------------------------------
 void Settings::setSortingMode(SortingMode mode) {
-    if(mode < 0 || mode > 4)
+    if(mode < 0 || mode >= 6)
         mode = SortingMode::NAME_ASC;
     settings->s.setValue("sortingMode", mode);
 }
 
 SortingMode Settings::sortingMode() {
-    int mode = settings->s.value("sortingMode", 1).toInt();
-    if(mode < 0 || mode > 4)
+    int mode = settings->s.value("sortingMode", 0).toInt();
+    if(mode < 0 || mode >= 6)
         mode = 0;
     return (SortingMode)mode;
 }

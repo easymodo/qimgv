@@ -215,7 +215,7 @@
             <property name="geometry">
              <rect>
               <x>0</x>
-              <y>0</y>
+              <y>-239</y>
               <width>400</width>
               <height>685</height>
              </rect>
@@ -697,12 +697,12 @@
                     </item>
                     <item>
                      <property name="text">
-                      <string>File size</string>
+                      <string>Size</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
-                      <string>File size (desc.)</string>
+                      <string>Size (desc.)</string>
                      </property>
                     </item>
                    </widget>
@@ -799,8 +799,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>414</width>
-              <height>446</height>
+              <width>374</width>
+              <height>320</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -1094,8 +1094,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>414</width>
-              <height>446</height>
+              <width>398</width>
+              <height>232</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1749,7 +1749,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>400</width>
+              <width>280</width>
               <height>472</height>
              </rect>
             </property>
@@ -1950,8 +1950,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>414</width>
-              <height>446</height>
+              <width>256</width>
+              <height>221</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_32">

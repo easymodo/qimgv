@@ -5,7 +5,6 @@
 
 DirectoryManager::DirectoryManager() : quickFormatDetection(true)
 {
-    currentDir.setSorting(QDir::NoSort);
     readSettings();
 }
 
@@ -14,8 +13,9 @@ DirectoryManager::DirectoryManager() : quickFormatDetection(true)
 // ##############################################################
 
 void DirectoryManager::readSettings() {
-    mimeFilters = settings->supportedMimeTypes();
-    extensionFilters = settings->supportedFormats();
+    mimeFilter = settings->supportedMimeTypes();
+    nameFilter = settings->supportedFormats();
+    currentDir.setNameFilters(nameFilter);
 }
 
 void DirectoryManager::setDirectory(QString path) {
@@ -53,7 +53,7 @@ void DirectoryManager::setDirectory(QString path) {
     if(!path.isEmpty() && /* TODO: ???-> */ currentDir.exists()) {
         if(currentDir.path() != path) {
             currentDir.setPath(path);
-            generateFileList();
+            generateFileList(settings->sortingMode());
 //            watcher.setDir(path);
             emit directoryChanged(path);
         }
@@ -135,7 +135,7 @@ bool DirectoryManager::isImage(QString filePath) const {
         }
         /* end */
         QMimeType type = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchContent);
-        if(mimeFilters.contains(type.name())) {
+        if(mimeFilter.contains(type.name())) {
             return true;
         }
     }
@@ -148,28 +148,6 @@ bool DirectoryManager::hasImages() const {
 
 bool DirectoryManager::contains(QString fileName) const {
     return mFileNameList.contains(fileName);
-}
-
-void DirectoryManager::sortFileList() {
-    sortFileList(settings->sortingMode());
-}
-
-void DirectoryManager::sortFileList(SortingMode mode) {
-    QCollator collator;
-    collator.setNumericMode(true);
-    qDebug() << "sortMode:" << mode;
-    switch(mode) {
-    case SortingMode::NAME_DESC:
-        std::sort(mFileNameList.rbegin(), mFileNameList.rend(), collator);
-        break;
-    case SortingMode::DATE_ASC:
-        break;
-    case SortingMode::DATE_DESC:
-        break;
-    default: // NAME_ASC
-        std::sort(mFileNameList.begin(), mFileNameList.end(), collator);
-        break;
-    }
 }
 
 // ##############################################################
@@ -188,22 +166,34 @@ void DirectoryManager::directoryContentsChanged(QString dirPath) {
 // ###################### PRIVATE METHODS #######################
 // ##############################################################
 
-void DirectoryManager::generateFileList() {
-    quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
-    sortFileList();
-}
+// generates a sorted file list
+void DirectoryManager::generateFileList(SortingMode mode) {
+    qDebug() << "sortMode:" << mode;
+    // special case for natural sorting
+    if(mode == (SortingMode::NAME_ASC || SortingMode::NAME_DESC)) {
+        currentDir.setSorting(QDir::NoSort);
+        mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
+        QCollator collator;
+        collator.setNumericMode(true);
+        if(mode == SortingMode::NAME_ASC)
+            std::sort(mFileNameList.begin(), mFileNameList.end(), collator);
+        else
+            std::sort(mFileNameList.rbegin(), mFileNameList.rend(), collator);
+        return;
+    }
+    // use QDir's sorting otherwise
+    if(mode == SortingMode::DATE_ASC)
+        currentDir.setSorting(QDir::Time);
+    if(mode == SortingMode::DATE_DESC)
+        currentDir.setSorting(QDir::Time | QDir::Reversed);
+    if(mode == SortingMode::SIZE_ASC)
+        currentDir.setSorting(QDir::Size);
+    if(mode == SortingMode::SIZE_DESC)
+        currentDir.setSorting(QDir::Size | QDir::Reversed);
 
-// Filter by file extension, fast.
-// Files with unsupported extension are ignored.
-// Additionally there is a mime type check on image load (FileInfo::guessType()).
-// For example an .exe wont open, but a gif with .jpg extension will still play.
-void DirectoryManager::generateFileListQuick() {
-    mFileNameList.clear();
-    currentDir.setNameFilters(extensionFilters);
-    currentDir.setSorting(QDir::NoSort);
     mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
 }
-
+/*
 // Filter by mime type. Basically opens every file in a folder
 // and checks what's inside. Very slow.
 void DirectoryManager::generateFileListDeep() {
@@ -218,6 +208,7 @@ void DirectoryManager::generateFileListDeep() {
         }
     }
 }
+*/
 
 void DirectoryManager::onFileRemovedExternal(QString fileName) {
     if(mFileNameList.contains(fileName)) {
@@ -233,7 +224,7 @@ void DirectoryManager::onFileChangedExternal(QString fileName) {
     } else { // file added
         qDebug() << "fileAdd: " << fileName;
         mFileNameList.append(fileName);
-        sortFileList();
+        //sortFileList();
         int index = mFileNameList.indexOf(fileName);
         emit fileAddedAt(index);
     }
