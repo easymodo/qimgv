@@ -215,7 +215,7 @@
             <property name="geometry">
              <rect>
               <x>0</x>
-              <y>-239</y>
+              <y>0</y>
               <width>400</width>
               <height>685</height>
              </rect>
@@ -799,8 +799,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>374</width>
-              <height>320</height>
+              <width>414</width>
+              <height>446</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -1094,8 +1094,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>398</width>
-              <height>232</height>
+              <width>414</width>
+              <height>446</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1680,7 +1680,7 @@
            <item>
             <widget class="QPushButton" name="pushButton_9">
              <property name="text">
-              <string>New script</string>
+              <string>Add</string>
              </property>
             </widget>
            </item>

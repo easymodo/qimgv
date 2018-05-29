@@ -3,6 +3,7 @@
 
 ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) :
     QDialog(parent),
+    editMode(false),
     ui(new Ui::ScriptEditorDialog)
 {
     ui->setupUi(this);
@@ -14,11 +15,13 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) :
 
 ScriptEditorDialog::ScriptEditorDialog(QString name, Script script, QWidget *parent)
     : QDialog(parent),
+      editMode(true),
       ui(new Ui::ScriptEditorDialog)
 {
     ui->setupUi(this);
     this->setWindowTitle("Edit script");
     this->onNameChanged(ui->nameLineEdit->text());
+    editTarget = name;
     connect(ui->nameLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(onNameChanged(QString)));
     ui->nameLineEdit->setText(name);
@@ -43,15 +46,30 @@ void ScriptEditorDialog::onNameChanged(QString name) {
     if(name.isEmpty()) {
         ui->messageLabel->setText("Enter script name");
         ui->acceptButton->setEnabled(false);
-    } else if(scriptManager->scriptExists(name)) {
-        ui->messageLabel->setText("Script with the same name already exists.");
-        ui->acceptButton->setText("Replace");
-        ui->acceptButton->setEnabled(true);
+        return;
     } else {
-        ui->messageLabel->clear();
-        ui->acceptButton->setText("Create");
         ui->acceptButton->setEnabled(true);
     }
+
+    QString okBtnText;
+    ui->messageLabel->clear();
+
+    if(editMode) {
+        if(name != editTarget && scriptManager->scriptExists(name)) {
+            ui->messageLabel->setText("A script with this same name exists.");
+            okBtnText = "Replace";
+        } else {
+            okBtnText = "Save";
+        }
+    } else {
+        if(scriptManager->scriptExists(name)) {
+            ui->messageLabel->setText("A script with this same name exists.");
+            okBtnText = "Replace";
+        } else {
+            okBtnText = "Create";
+        }
+    }
+    ui->acceptButton->setText(okBtnText);
 }
 
 void ScriptEditorDialog::selectScriptPath() {

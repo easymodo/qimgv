@@ -30,6 +30,8 @@ private slots:
     void selectScriptPath();
 private:
     Ui::ScriptEditorDialog *ui;
+    bool editMode;
+    QString editTarget;
 };
 
 #endif // SCRIPTEDITORDIALOG_H
