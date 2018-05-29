@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>470</width>
-    <height>247</height>
+    <height>260</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -125,7 +125,7 @@
         </font>
        </property>
        <property name="text">
-        <string>NOTE: make sure your .sh script has exetute flag.</string>
+        <string>NOTE: make sure your .sh script has execute flag.</string>
        </property>
       </widget>
      </item>

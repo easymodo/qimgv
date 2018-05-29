@@ -35,10 +35,12 @@ void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> 
         if(script.blocking) {
             exec.start();
             if(!exec.waitForStarted())
-                qWarning() << "[ScriptManager] Could not start process.";
+                qDebug() << "[ScriptManager] Unable not start:" << exec.program() << " Make sure it is an executable.";
             exec.waitForFinished(10000);
         } else {
-            exec.startDetached();
+            if(!exec.startDetached()) {
+                qWarning() << "[ScriptManager] Unable not start:" << exec.program() << " Make sure it is an executable.";
+            }
         }
 
         emit scriptFinished();
