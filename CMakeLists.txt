@@ -1,61 +1,74 @@
 cmake_minimum_required(VERSION 3.0)
-
 project(qimgv)
 
-set(CMAKE_BUILD_TYPE RELEASE)
+set(CMAKE_BUILD_TYPE "Release")
 
+# COMPILE FLAGS
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
+
+
+# AUTOMOC
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+
+# USER OPTIONS
+# Usage: cmake -DVIDEO_SUPPORT=ON [...]
+option(VIDEO_SUPPORT "Enable video support" OFF)
+option(KDE_BLUR "Support blur when using KDE" OFF)
+
+
+# FIND PACKAGES
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
-
-SET(BASEPATH "${CMAKE_SOURCE_DIR}")
-INCLUDE_DIRECTORIES("${BASEPATH}")
-
-#set(KF5_DEP_VERSION "5.46.0")
-
-option(WITH_MPV "Enable video support" ON)
-option(WITH_KDE_BLUR "Enable blur when using KWin 5.13+" OFF)
-
+find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
-
-find_package(Exiv2)
-
-if(WITH_KDE_BLUR)
+find_package(Exiv2 REQUIRED)
+if(KDE_BLUR) # do i also need one for mpv?
     find_package(KF5WindowSystem REQUIRED)
-    add_definitions(-DUSE_KDE_BLUR)
 endif()
 
-include_directories(res ${Qt5Widgets_INCLUDES} ${Qt5Concurrent_INCLUDES} ${EXIV2_INCLUDE_DIR})
+if(NOT ${EXIV2_FOUND})
+    message(FATAL_ERROR "** Unable to locate Exiv2... is it installed?")
+endif()
 
-add_definitions(${Qt5Widgets_DEFINITIONS} ${Qt5Concurrent_DEFINITIONS})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS} -std=c++11")
+# INCLUDE SOURCES
+file(GLOB SRC *.cpp)
+list(REMOVE_ITEM SRC moc_*.cpp)
+list(REMOVE_ITEM SRC *_automoc.cpp)
+include(CMake/SRC_Components.cmake)
+include(CMake/SRC_SourceContainers.cmake)
+include(CMake/SRC_Utils.cmake)
+include(CMake/SRC_Gui.cmake)
 
-add_subdirectory(components/actionmanager)
-add_subdirectory(components/cache)
-add_subdirectory(components/directorymanager)
-add_subdirectory(components/loader)
-add_subdirectory(components/scaler)
-add_subdirectory(components/scriptmanager)
-add_subdirectory(components/thumbnailer)
-add_subdirectory(gui)
-add_subdirectory(sourcecontainers)
-add_subdirectory(utils)
 
-FILE (GLOB SRC *.cpp)
-list (REMOVE_ITEM SRC moc_*.cpp)
-list (REMOVE_ITEM SRC *_automoc.cpp)
-
+# ADD RESOURCES
 QT5_ADD_RESOURCES(RES resources.qrc)
 
-add_executable(qimgv ${SRC} ${RES})
 
-target_link_libraries(qimgv actionmanager scriptmanager cache directorymanager loader scaler thumbnailer gui utils sourcecontainers)
+# ADD EXECUTABLE
+add_executable(qimgv ${SRC} ${SRC_Components} ${SRC_SourceContainers} ${SRC_Utils} ${SRC_Gui} ${RES})
 
+
+# LINK STUFF
 target_link_libraries(qimgv Qt5::Core Qt5::Widgets Qt5::Concurrent)
+target_link_libraries(qimgv exiv2)
+
+
+# OPTION DEFINITIONS, LINKING
+if(KDE_BLUR)
+    target_link_libraries(qimgv KF5::WindowSystem)
+    add_definitions(-DUSE_KDE_BLUR)
+endif()
+if(VIDEO_SUPPORT)
+    target_link_libraries(qimgv mpv)
+    add_definitions(-DUSE_MPV)
+endif()
+
+
+## INSTALLATION
 
 # binary
 install(PROGRAMS ${CMAKE_BINARY_DIR}/qimgv
