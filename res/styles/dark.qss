@@ -163,8 +163,8 @@ CopyOverlay QPushButton:hover {
 }
 
 [accessibleName="iconButton"]:hover {
-    background-color: #4a4a4a;
-    border: 1px solid #4a4a4a;
+    background-color: #4c4c4c;
+    border: 1px solid #4c4c4c;
 }
 
 [accessibleName="panelButtonTransparent"] {
@@ -177,6 +177,7 @@ CopyOverlay QPushButton:hover {
 
 [accessibleName="panelButtonsWidget"] {
     background-color: #202020;
+    border-bottom: 1px solid #676767;
 }
 
 [accessibleName="mpvContainer"] {
@@ -193,14 +194,17 @@ CopyOverlay QPushButton:hover {
 }
 
 .QScrollBar:horizontal {
-    height: 15px;
+    height: 16px;
     background-color: transparent;
-    margin: 0px;
 }
 
 .QScrollBar::handle:horizontal {
     background-color: #606060;
-    border: 1px solid #606060;
+    border: 1px solid;
+    border-top-color: #676767;
+    border-bottom-color: #606060;
+    border-right-color: #676767;
+    border-left-color: #676767;
     min-width: 60px;
     border-top-right-radius: 2px;
     border-top-left-radius: 2px;
@@ -208,6 +212,7 @@ CopyOverlay QPushButton:hover {
 
 .QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
     background: none;
+    border-bottom: 1px solid #676767;
 }
 
 .QScrollBar::add-line:horizontal {

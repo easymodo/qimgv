@@ -15,7 +15,7 @@ MainPanel::MainPanel(OverlayContainerWidget *parent) : SlideHPanel(parent) {
 
     buttonsLayout.setDirection(QBoxLayout::BottomToTop);
     buttonsLayout.setSpacing(0);
-    buttonsLayout.setContentsMargins(3,0,0,0);
+    buttonsLayout.setContentsMargins(3,0,0,1);
     buttonsLayout.addWidget(&settingsButton);
     buttonsLayout.addWidget(&openButton);
     buttonsLayout.addStretch(0);
@@ -68,10 +68,8 @@ void MainPanel::paintEvent(QPaintEvent *event) {
     if(position == PanelHPosition::PANEL_TOP) {
         p.setPen(QColor(QColor(96, 96, 96)));
         p.drawLine(rect().bottomLeft() - QPoint(0, invisibleMargin - 1), rect().bottomRight() - QPoint(0, invisibleMargin - 1));
-        p.setPen(QColor(QColor(96, 96, 96)));
-        p.drawLine(rect().bottomLeft() - QPoint(0, invisibleMargin - 2), rect().bottomRight() - QPoint(0, invisibleMargin - 2));
         p.setPen(QColor(QColor(40, 40, 40)));
-        p.drawLine(rect().bottomLeft() - QPoint(0, invisibleMargin - 3), rect().bottomRight() - QPoint(0, invisibleMargin - 3));
+        p.drawLine(rect().bottomLeft() - QPoint(0, invisibleMargin - 2), rect().bottomRight() - QPoint(0, invisibleMargin - 2));
     } else {
         p.setPen(QColor(QColor(40, 40, 40)));
         p.drawLine(rect().topLeft(), rect().topRight());
