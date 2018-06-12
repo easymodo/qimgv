@@ -24,8 +24,6 @@ QMAKE_CXXFLAGS_RELEASE *= -O3
 CONFIG += WITH_MPV
 #CONFIG += WITH_KDE_BLUR
 
-LIBS += -lexiv2
-
 # video support
 WITH_MPV {
     unix {
@@ -92,7 +90,6 @@ SOURCES += \
     sourcecontainers/clip.cpp \
     sourcecontainers/image.cpp \
     sourcecontainers/imageanimated.cpp \
-    sourcecontainers/imageinfo.cpp \
     sourcecontainers/imagestatic.cpp \
     sourcecontainers/thumbnail.cpp \
     sourcecontainers/video.cpp \
@@ -130,7 +127,8 @@ SOURCES += \
     utils/script.cpp \
     gui/dialogs/scripteditordialog.cpp \
     gui/customwidgets/overlaycontainerwidget.cpp \
-    gui/viewers/documentwidget.cpp
+    gui/viewers/documentwidget.cpp \
+    sourcecontainers/documentinfo.cpp
 
 HEADERS += \
     core.h \
@@ -171,7 +169,6 @@ HEADERS += \
     sourcecontainers/clip.h \
     sourcecontainers/image.h \
     sourcecontainers/imageanimated.h \
-    sourcecontainers/imageinfo.h \
     sourcecontainers/imagestatic.h \
     sourcecontainers/thumbnail.h \
     sourcecontainers/video.h \
@@ -207,7 +204,8 @@ HEADERS += \
     utils/script.h \
     gui/dialogs/scripteditordialog.h \
     gui/customwidgets/overlaycontainerwidget.h \
-    gui/viewers/documentwidget.h
+    gui/viewers/documentwidget.h \
+    sourcecontainers/documentinfo.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \

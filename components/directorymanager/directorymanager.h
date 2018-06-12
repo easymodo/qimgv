@@ -17,7 +17,7 @@
 #include <QMessageBox>
 #include <QImageReader>
 #include "settings.h"
-#include "sourcecontainers/imageinfo.h"
+#include "sourcecontainers/documentinfo.h"
 
 class DirectoryManager : public QObject
 {

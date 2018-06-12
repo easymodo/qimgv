@@ -583,7 +583,6 @@ void Core::loadByPath(QString path, bool blocking) {
     }
     if(dirManager->isImage(path)) {
         loadImage(path, blocking);
-        int index = dirManager->indexOf(path);
     } else if(dirManager->isDirectory(path)) {
         loadDirectory(path);
     } else {

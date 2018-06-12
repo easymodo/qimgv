@@ -6,7 +6,6 @@ set(CMAKE_BUILD_TYPE "Release")
 # COMPILE FLAGS
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
 
-
 # AUTOMOC
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -24,15 +23,9 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
-find_package(Exiv2 REQUIRED)
 if(KDE_BLUR) # do i also need one for mpv?
     find_package(KF5WindowSystem REQUIRED)
 endif()
-
-if(NOT ${EXIV2_FOUND})
-    message(FATAL_ERROR "** Unable to locate Exiv2... is it installed?")
-endif()
-
 
 # INCLUDE SOURCES
 file(GLOB SRC *.cpp)
@@ -54,8 +47,6 @@ add_executable(qimgv ${SRC} ${SRC_Components} ${SRC_SourceContainers} ${SRC_Util
 
 # LINK STUFF
 target_link_libraries(qimgv Qt5::Core Qt5::Widgets Qt5::Concurrent)
-target_link_libraries(qimgv exiv2)
-
 
 # OPTION DEFINITIONS, LINKING
 if(KDE_BLUR)

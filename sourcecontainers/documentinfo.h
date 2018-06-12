@@ -1,5 +1,5 @@
-#ifndef IMAGEINFO_H
-#define IMAGEINFO_H
+#ifndef DOCUMENTINFO_H
+#define DOCUMENTINFO_H
 
 #include <QString>
 #include <QSize>
@@ -9,9 +9,10 @@
 #include <QFileInfo>
 #include <QDateTime>
 #include <cmath>
+#include <cstring>
 #include "utils/stuff.h"
 
-#include <exiv2/exiv2.hpp>
+#include <QImageReader>
 
 enum DocumentType { NONE, STATIC, ANIMATED, VIDEO };
 
@@ -31,20 +32,19 @@ public:
 
     // file extension (guessed from mime-type)
     const char* extension() const;
-    long exifOrientation() const;
+    int exifOrientation() const;
 
 private:
     QFileInfo fileInfo;
     QDateTime lastModified;
     DocumentType mImageType;
-    long mOrientation;
+    int mOrientation;
     const char* mExtension;
 
-    Exiv2::ExifData exifData;
     // guesses file type from its contents
     // and sets extension
     void detectType();
-    void loadExif();
+    void loadExifOrientation();
 };
 
-#endif // IMAGEINFO_H
+#endif // DOCUMENTINFO_H

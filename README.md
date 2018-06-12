@@ -87,7 +87,7 @@ You can put it in `qimgv.desktop` file to make it permanent. Using values less t
     
   __Others distros (build & install via script):__
   
-  1. Install dependencies ( git, cmake, qt >= 5.6, exiv2, libmpv >= 0.22, mpv)
+  1. Install dependencies ( git, cmake, qt >= 5.6, libmpv >= 0.22, mpv)
      - Ubuntu & derivatives
 		```
 		sudo apt install build-essential cmake qt5-default libexiv2-14 libmpv-dev 

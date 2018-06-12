@@ -2,7 +2,7 @@
 #define IMAGEFACTORY_H
 
 #include "utils/imagelib.h"
-#include "sourcecontainers/imageinfo.h"
+#include "sourcecontainers/documentinfo.h"
 #include "sourcecontainers/image.h"
 #include "sourcecontainers/imageanimated.h"
 #include "sourcecontainers/imagestatic.h"
