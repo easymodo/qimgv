@@ -168,7 +168,6 @@ void DirectoryManager::directoryContentsChanged(QString dirPath) {
 
 // generates a sorted file list
 void DirectoryManager::generateFileList(SortingMode mode) {
-    qDebug() << "sortMode:" << mode;
     // special case for natural sorting
     if(mode == SortingMode::NAME_ASC || mode == SortingMode::NAME_DESC) {
         currentDir.setSorting(QDir::NoSort);

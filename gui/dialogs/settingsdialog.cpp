@@ -19,7 +19,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 #endif
 
 #ifndef USE_MPV
-    ui->videoGroupBox->setEnabled(false);
+    ui->videoSettingsLayout->setEnabled(false);
 #endif
 
     setupSidebar();
@@ -50,6 +50,11 @@ void SettingsDialog::setupSidebar() {
     sideBar->item(5)->setIcon(QIcon(":/res/icons/settings/32/preferences.png"));
     // About
     sideBar->item(6)->setIcon(QIcon(":/res/icons/app/32.png"));
+
+    // Not implemented on windows. Not sure if will ever be. I don't really care.
+#ifdef _WIN32
+    sideBar->item(4)->setHidden(true);
+#endif
 }
 
 void SettingsDialog::readSettings() {

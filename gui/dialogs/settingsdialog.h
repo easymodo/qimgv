@@ -9,6 +9,7 @@
 #include <QTextBrowser>
 #include <QListWidget>
 #include <QStackedWidget>
+#include <QGridLayout>
 #include <QDebug>
 #include "gui/customwidgets/clickablelabel.h"
 #include "gui/dialogs/shortcutcreatordialog.h"
