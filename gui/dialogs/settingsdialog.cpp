@@ -19,7 +19,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 #endif
 
 #ifndef USE_MPV
-    ui->videoSettingsLayout->setEnabled(false);
+    ui->videoSettingsWidget->setEnabled(false);
 #endif
 
     setupSidebar();
