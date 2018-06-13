@@ -434,6 +434,7 @@ void Core::discardEdits() {
             qDebug() << "Core::discardEdits() - could not lock cache object.";
         }
     }
+    mw->hideSaveOverlay();
 }
 
 // TODO: simplify. too much copypasted code
@@ -460,6 +461,7 @@ void Core::saveImageToDisk(QString filePath) {
             qDebug() << "Core::saveImageToDisk() - could not lock cache object.";
         }
     }
+    mw->hideSaveOverlay();
 }
 
 void Core::runScript(const QString &scriptName) {

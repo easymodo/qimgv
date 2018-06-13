@@ -10,9 +10,6 @@ SaveConfirmOverlay::SaveConfirmOverlay(OverlayContainerWidget *parent) :
     connect(ui->saveButton, SIGNAL(clicked()), this, SIGNAL(saveClicked()));
     connect(ui->saveAsButton, SIGNAL(clicked()), this, SIGNAL(saveAsClicked()));
     connect(ui->discardButton, SIGNAL(clicked()), this, SIGNAL(discardClicked()));
-    connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(hide()));
-    connect(ui->saveAsButton, SIGNAL(clicked()), this, SLOT(hide()));
-    connect(ui->discardButton, SIGNAL(clicked()), this, SLOT(hide()));
     this->setFocusPolicy(Qt::NoFocus);
     this->hide();
 }

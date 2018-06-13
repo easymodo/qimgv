@@ -217,7 +217,8 @@ void MainWindow::showSaveDialog(QString filePath) {
     filePath = QFileDialog::getSaveFileName(this, tr("Save File"),
                                             filePath,
                                             imagesFilter);
-    emit saveRequested(filePath);
+    if(!filePath.isEmpty())
+        emit saveRequested(filePath);
 }
 
 void MainWindow::showOpenDialog() {
