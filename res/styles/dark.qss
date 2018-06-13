@@ -5,7 +5,7 @@
 FloatingMessage {
     border: 2px solid #343434;
     border-radius: 3px;
-    background-color: #202020;
+    background-color: #212121;
 }
 
 FloatingMessage QLabel {
@@ -20,31 +20,34 @@ FloatingMessage QLabel {
 SaveConfirmOverlay {
     border: 1px solid #2A2A2A;
     border-radius: 2px;
-    background-color: #202020;
+    background-color: #222222;
 }
 
 SaveConfirmOverlay QLabel {
-    color: #B0B0B0;
+    color: #8A8A8A;
     font: bold;
 }
 
 SaveConfirmOverlay QPushButton {
     font: bold;
-    color: #646464;
-    background-color: #2A2A2A;
+    color: #6A6A6A;
+    background-color: #323232;
     border: 1px solid #1D1D1D;
+
+    /* background-color: #2A2A2A; */
+    /* border: 1px solid #1D1D1D; */
     border-radius: 3px;
     padding: 6px 8px 6px 8px;
 }
 
 SaveConfirmOverlay QPushButton:hover {
-    background-color: #323232;
-    color: #707070;
+    background-color: #3A3A3A;
+    color: #747474;
 }
 
 SaveConfirmOverlay QPushButton:focus {
-    background-color: #323232;
-    color: #707070;
+    background-color: #3A3A3A;
+    color: #747474;
 }
 
 /*############################################################################*/
@@ -52,7 +55,7 @@ SaveConfirmOverlay QPushButton:focus {
 /*############################################################################*/
 
 SidePanel {
-    background-color: #202020;
+    background-color: #212121;
     border-left: 2px solid #343434;
 }
 
@@ -60,12 +63,12 @@ SidePanel QGroupBox {
     color: #646464;
     border: 1px solid #1D1D1D;
     border-radius: 3px;
-    background-color: #2A2A2A;
+    background-color: #2C2C2C;
     padding: 6px 10px 8px 10px;
 }
 
 SidePanel QSpinBox {
-    background-color: #202020;
+    background-color: #212121;
     color: #646464;
     border: 1px solid #1D1D1D;
     border-radius: 3px;
@@ -90,21 +93,24 @@ SidePanel QLabel {
 
 SidePanel QPushButton {
     font: bold;
-    color: #646464;
-    background-color: #2A2A2A;
+    color: #6A6A6A;
+    background-color: #323232;
     border: 1px solid #1D1D1D;
+
+    /* background-color: #2A2A2A; */
+    /* border: 1px solid #1D1D1D; */
     border-radius: 3px;
     padding: 6px 8px 6px 8px;
 }
 
 SidePanel QPushButton:hover {
-    background-color: #323232;
-    color: #707070;
+    background-color: #3A3A3A;
+    color: #747474;
 }
 
 SidePanel QPushButton:focus {
-    background-color: #323232;
-    color: #707070;
+    background-color: #3A3A3A;
+    color: #747474;
 }
 
 /*############################################################################*/
@@ -112,14 +118,14 @@ SidePanel QPushButton:focus {
 /*############################################################################*/
 
 ChangelogWindow {
-    background-color: #202020;
+    background-color: #212121;
     color: #646464;
     border: 2px solid #2A2A2A;
     border-radius: 3px;
 }
 
 ChangelogWindow QTextBrowser {
-    background-color: #202020;
+    background-color: #212121;
     color: #646464;
 }
 
@@ -146,7 +152,7 @@ ChangelogWindow QPushButton:focus {
 /*############################################################################*/
 
 CopyOverlay {
-    background-color: #202020;
+    background-color: #212121;
     color: #646464;
     border: 2px solid #2A2A2A;
     border-radius: 3px;
@@ -205,7 +211,7 @@ CopyOverlay QPushButton:hover {
 
 /* panel buttons holder widget */
 [accessibleName="panelButtonsWidget"] {
-    background-color: #202020;
+    background-color: #212121;
     border-bottom: 1px solid #676767;
 }
 
@@ -214,7 +220,7 @@ CopyOverlay QPushButton:hover {
 /*############################################################################*/
 
 [accessibleName="mpvContainer"] {
-    background-color: #202020;
+    background-color: #212121;
 }
 
 /*############################################################################*/
@@ -222,12 +228,12 @@ CopyOverlay QPushButton:hover {
 /*############################################################################*/
 
 .GraphicsView {
-    background-color: #202020;
+    background-color: #212121;
     border-style: none;
 }
 
 .ThumbnailLabel {
-    background-color: #202020;
+    background-color: #212121;
 }
 
 .QScrollBar:horizontal {
