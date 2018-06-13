@@ -50,7 +50,7 @@ void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> 
 }
 
 #else
-void ScriptManager::runScript(const QString &scriptName, const QString &arguments) {
+void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> img) {
     qDebug() << "Nope.";
 }
 #endif

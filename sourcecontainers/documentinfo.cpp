@@ -103,12 +103,13 @@ void DocumentInfo::detectType() {
 }
 
 void DocumentInfo::loadExifOrientation() {
-    if(std::strcmp(mExtension, (const char*)"jpg"))
+    if(mImageType == VIDEO || mImageType == NONE)
         return;
 
     QString path = filePath();
     QImageReader reader(path);
-    mOrientation = (int)reader.transformation();
+    if(reader.canRead())
+        mOrientation = (int)reader.transformation();
 }
 
 

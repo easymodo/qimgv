@@ -1,3 +1,7 @@
+/*############################################################################*/
+/* Notifications */
+/*############################################################################*/
+
 FloatingMessage {
     border: 2px solid #343434;
     border-radius: 3px;
@@ -9,9 +13,13 @@ FloatingMessage QLabel {
     font: bold;
 }
 
+/*############################################################################*/
+/* save - discard buttons overlay */
+/*############################################################################*/
+
 SaveConfirmOverlay {
-    border: 2px solid #343434;
-    border-radius: 3px;
+    border: 1px solid #2A2A2A;
+    border-radius: 2px;
     background-color: #202020;
 }
 
@@ -22,21 +30,26 @@ SaveConfirmOverlay QLabel {
 
 SaveConfirmOverlay QPushButton {
     font: bold;
-    color: #404040;
-    border: 2px solid #343434;
-    border-radius: 4px;
-    padding: 4px 4px 4px 4px;
+    color: #646464;
+    background-color: #2A2A2A;
+    border: 1px solid #1D1D1D;
+    border-radius: 3px;
+    padding: 6px 8px 6px 8px;
 }
 
 SaveConfirmOverlay QPushButton:hover {
-    border-color: #424242;
-    color: #4e4e4e;
+    background-color: #323232;
+    color: #707070;
 }
 
 SaveConfirmOverlay QPushButton:focus {
-    border-color: #424242;
-    color: #4e4e4e;
+    background-color: #323232;
+    color: #707070;
 }
+
+/*############################################################################*/
+/* Crop panel */
+/*############################################################################*/
 
 SidePanel {
     background-color: #202020;
@@ -45,17 +58,17 @@ SidePanel {
 
 SidePanel QGroupBox {
     color: #646464;
-    border: 2px solid #2A2A2A;
+    border: 1px solid #1D1D1D;
     border-radius: 3px;
     background-color: #2A2A2A;
-    padding: 6px 10px 6px 10px;
+    padding: 6px 10px 8px 10px;
 }
 
 SidePanel QSpinBox {
     background-color: #202020;
     color: #646464;
-    border: 2px solid #202020;
-    border-radius: 4px;
+    border: 1px solid #1D1D1D;
+    border-radius: 3px;
     padding: 2 0 2 0;
 }
 
@@ -77,21 +90,26 @@ SidePanel QLabel {
 
 SidePanel QPushButton {
     font: bold;
-    color: #404040;
-    border: 2px solid #343434;
-    border-radius: 4px;
-    padding: 4px 4px 4px 4px;
+    color: #646464;
+    background-color: #2A2A2A;
+    border: 1px solid #1D1D1D;
+    border-radius: 3px;
+    padding: 6px 8px 6px 8px;
 }
 
 SidePanel QPushButton:hover {
-    border-color: #424242;
-    color: #4e4e4e;
+    background-color: #323232;
+    color: #707070;
 }
 
 SidePanel QPushButton:focus {
-    border-color: #424242;
-    color: #4e4e4e;
+    background-color: #323232;
+    color: #707070;
 }
+
+/*############################################################################*/
+/* changelog window */
+/*############################################################################*/
 
 ChangelogWindow {
     background-color: #202020;
@@ -123,6 +141,10 @@ ChangelogWindow QPushButton:focus {
     color: #4e4e4e;
 }
 
+/*############################################################################*/
+/* File copy - move window */
+/*############################################################################*/
+
 CopyOverlay {
     background-color: #202020;
     color: #646464;
@@ -130,6 +152,7 @@ CopyOverlay {
     border-radius: 3px;
 }
 
+/* Used for path input */
 CopyOverlay ClickableLabel {
     background-color: #2A2A2A;
     color: #646464;
@@ -147,6 +170,7 @@ CopyOverlay ClickableLabel:hover {
 CopyOverlay QPushButton {
     background-color: transparent;
     color: #404040;
+    font: bold;
     border: 2px solid #343434;
     border-radius: 4px;
     padding: 5px 10px 4px 10px;
@@ -156,6 +180,10 @@ CopyOverlay QPushButton:hover {
     border-color: #424242;
     color: #424242;
 }
+
+/*############################################################################*/
+/* Various buttons (for panel etc.) */
+/*############################################################################*/
 
 [accessibleName="iconButton"] {
     padding: 5px 5px 5px 5px;
@@ -175,14 +203,23 @@ CopyOverlay QPushButton:hover {
     background-color: #424242;
 }
 
+/* panel buttons holder widget */
 [accessibleName="panelButtonsWidget"] {
     background-color: #202020;
     border-bottom: 1px solid #676767;
 }
 
+/*############################################################################*/
+/* Video background. Pretty sure this doesn't work.. */
+/*############################################################################*/
+
 [accessibleName="mpvContainer"] {
     background-color: #202020;
 }
+
+/*############################################################################*/
+/* Thumbnails & stuff */
+/*############################################################################*/
 
 .GraphicsView {
     background-color: #202020;
@@ -203,7 +240,7 @@ CopyOverlay QPushButton:hover {
     border: 1px solid;
     border-top-color: #676767;
     border-bottom-color: #606060;
-    border-right-color: #676767;
+    border-right-color: #636363;
     border-left-color: #676767;
     min-width: 60px;
     border-top-right-radius: 2px;
@@ -225,7 +262,12 @@ CopyOverlay QPushButton:hover {
     height: 0px;
 }
 
+/*############################################################################*/
+/* Nicer combobox */
+/*############################################################################*/
+
 .QComboBox {
-    padding-left: 4px;
+    min-height: 20px;
+    padding-left: 5px;
     padding-right: 3px;
 }
