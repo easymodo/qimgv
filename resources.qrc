@@ -50,5 +50,8 @@
         <file>res/icons/settings/32/viewer.png</file>
         <file>res/icons/app/32.png</file>
         <file>res/icons/qt22.png</file>
+        <file>res/icons/buttons/play18.png</file>
+        <file>res/icons/buttons/step18.png</file>
+        <file>res/icons/buttons/step-back18.png</file>
     </qresource>
 </RCC>

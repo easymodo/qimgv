@@ -136,6 +136,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(jumpToFirst()), this, SLOT(jumpToFirst()));
     connect(actionManager, SIGNAL(jumpToLast()), this, SLOT(jumpToLast()));
     connect(actionManager, SIGNAL(runScript(const QString&)), this, SLOT(runScript(const QString&)));
+    connect(actionManager, SIGNAL(pauseVideo()), viewerWidget, SLOT(pauseVideo()));
 }
 
 void Core::postUpdate() {

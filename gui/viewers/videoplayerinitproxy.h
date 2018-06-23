@@ -15,14 +15,17 @@ typedef VideoPlayerMpv VideoPlayerImpl;
 typedef VideoPlayerDummy VideoPlayerImpl;
 #endif
 
-class VideoPlayerInitProxy : public VideoPlayer
-{
+class VideoPlayerInitProxy : public VideoPlayer {
 public:
     VideoPlayerInitProxy(QWidget *parent = 0);
     ~VideoPlayerInitProxy();
     bool openMedia(Clip *clip);
     void seek(int pos);
+    void seekRelative(int pos);
     void pauseResume();
+    void frameStep();
+    void frameStepBack();
+    void stop();
     void setPaused(bool mode);
     void setMuted(bool);
 

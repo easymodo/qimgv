@@ -61,6 +61,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("end", "jumpToLast");
     actionManager->defaults.insert("S", "s:TestScript");
     actionManager->defaults.insert("A", "s:TestScript2");
+    actionManager->defaults.insert("Z", "pauseVideo");
 }
 //------------------------------------------------------------------------------
 void ActionManager::initShortcuts() {

@@ -10,7 +10,7 @@ InfoOverlay::InfoOverlay(OverlayContainerWidget *parent)
     textMarginY = 4;
     textColor.setRgb(255, 255, 255, 255);
     textShadowColor.setRgb(0, 0, 0, 200);
-    bgColor.setRgb(0, 0, 0, 90);
+    bgColor.setRgb(0, 0, 0, 115);
     font.setBold(true);
     qreal fntSz = font.pointSizeF();
     if(fntSz > 0) {

@@ -306,9 +306,13 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
 }
 
 void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
-    QWidget::mouseMoveEvent(event);
     if(!isDisplaying)
         return;
+    // for some reason MouseMoveEvent() is firing on show()
+    // this causes a bug down the road (video controls reappearing on video-image switching)
+    // so we just ignore the event if there's nothing displayed
+    QWidget::mouseMoveEvent(event);
+
     if(event->buttons() & Qt::LeftButton) {
         mouseWrapping?mouseDragWrapping(event):mouseDrag(event);
     } else if(event->buttons() & Qt::RightButton) {

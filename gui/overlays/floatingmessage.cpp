@@ -3,38 +3,35 @@
 
 FloatingMessage::FloatingMessage(OverlayContainerWidget *parent) :
     FloatingWidget(parent),
-    duration(1200),
     ui(new Ui::FloatingMessage)
 {
     ui->setupUi(this);
-    opacityEffect = new QGraphicsOpacityEffect(this);
-    opacityEffect->setOpacity(1.0f);
-    this->setGraphicsEffect(opacityEffect);
+    hideDelay = 700;
+
+    visibilityTimer.setSingleShot(true);
+    visibilityTimer.setInterval(hideDelay);
+
+    setFadeEnabled(true);
+    setFadeDuration(300);
+
     position = FloatingWidgetPosition::LEFT;
 
     iconLeftEdge.load(":/res/icons/message/left_edge32.png");
     iconRightEdge.load(":/res/icons/message/right_edge32.png");
     setIcon(FloatingMessageIcon::NO_ICON);
 
-    fadeAnimation = new QPropertyAnimation(this, "opacity");
-    fadeAnimation->setDuration(duration);
-    fadeAnimation->setStartValue(1.0f);
-    fadeAnimation->setEndValue(0.0f);
-    fadeAnimation->setEasingCurve(QEasingCurve::InQuad);
-    connect(fadeAnimation, SIGNAL(finished()), this, SLOT(hide()), Qt::UniqueConnection);
     this->setAccessibleName("FloatingMessage");
+    connect(&visibilityTimer, SIGNAL(timeout()), this, SLOT(hide()));
 }
 
 FloatingMessage::~FloatingMessage() {
-    delete opacityEffect;
-    delete fadeAnimation;
     delete ui;
 }
 
-
 void FloatingMessage::showMessage(QString text, FloatingWidgetPosition position, FloatingMessageIcon icon, int duration) {
     this->position = position;
-    this->duration = duration;
+    hideDelay = duration;
+    //
     setIcon(icon);
     setText(text);
     show();
@@ -44,15 +41,6 @@ void FloatingMessage::setText(QString text) {
     ui->textLabel->setText(text);
     text.isEmpty()?ui->textLabel->hide():ui->textLabel->show();
     recalculateGeometry();
-    update();
-}
-
-float FloatingMessage::opacity() const {
-    return opacityEffect->opacity();
-}
-
-void FloatingMessage::setOpacity(float opacity) {
-    opacityEffect->setOpacity(opacity);
     update();
 }
 
@@ -76,9 +64,11 @@ void FloatingMessage::mousePressEvent(QMouseEvent *event) {
     Q_UNUSED (event)
 }
 
+// "blink" the widget; show then fade out immediately
 void FloatingMessage::show() {
-    fadeAnimation->stop();
-    QWidget::show();
-    fadeAnimation->setDuration(duration);
-    fadeAnimation->start(QPropertyAnimation::KeepWhenStopped);
+    visibilityTimer.stop();
+    FloatingWidget::show();
+    // fade out after delay
+    visibilityTimer.setInterval(hideDelay);
+    visibilityTimer.start();
 }

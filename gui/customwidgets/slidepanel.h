@@ -39,7 +39,7 @@ protected:
     QPoint initialPosition;
     QRect mTriggerRect;
     virtual void updateTriggerRect() = 0;
-    void leaveEvent(QEvent *event);    
+    void leaveEvent(QEvent *event);
     void saveStaticGeometry(QRect geometry);
     QRect staticGeometry();
 

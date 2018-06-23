@@ -21,8 +21,8 @@ QMAKE_CXXFLAGS_RELEASE -= -O1
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
-#CONFIG += WITH_MPV
-#CONFIG += WITH_KDE_BLUR
+CONFIG += WITH_MPV
+CONFIG += WITH_KDE_BLUR
 
 # video support
 WITH_MPV {
@@ -128,7 +128,9 @@ SOURCES += \
     gui/dialogs/scripteditordialog.cpp \
     gui/customwidgets/overlaycontainerwidget.cpp \
     gui/viewers/documentwidget.cpp \
-    sourcecontainers/documentinfo.cpp
+    sourcecontainers/documentinfo.cpp \
+    gui/overlays/videocontrols.cpp \
+    gui/customwidgets/videoslider.cpp
 
 HEADERS += \
     core.h \
@@ -205,7 +207,9 @@ HEADERS += \
     gui/dialogs/scripteditordialog.h \
     gui/customwidgets/overlaycontainerwidget.h \
     gui/viewers/documentwidget.h \
-    sourcecontainers/documentinfo.h
+    sourcecontainers/documentinfo.h \
+    gui/overlays/videocontrols.h \
+    gui/customwidgets/videoslider.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \
@@ -218,7 +222,8 @@ FORMS += \
     gui/customwidgets/pathselectorwidget.ui \
     gui/overlays/changelogwindow.ui \
     gui/dialogs/shortcutcreatordialog.ui \
-    gui/dialogs/scripteditordialog.ui
+    gui/dialogs/scripteditordialog.ui \
+    gui/overlays/videocontrols.ui
 
 RESOURCES += \
     resources.qrc

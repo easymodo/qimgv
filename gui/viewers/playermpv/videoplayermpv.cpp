@@ -8,6 +8,7 @@
 // TODO: window flashes white when opening a video (straight from file manager)
 VideoPlayerMpv::VideoPlayerMpv(QWidget *parent) : VideoPlayer(parent) {
     setAttribute(Qt::WA_TranslucentBackground, true);
+    this->setMouseTracking(true);
     m_mpv = new MpvWidget(this);
     QVBoxLayout *vl = new QVBoxLayout();
     vl->setContentsMargins(0,0,0,0);
@@ -16,6 +17,8 @@ VideoPlayerMpv::VideoPlayerMpv(QWidget *parent) : VideoPlayer(parent) {
 
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+    connect(m_mpv, SIGNAL(durationChanged(int)), this, SIGNAL(durationChanged(int)));
+    connect(m_mpv, SIGNAL(positionChanged(int)), this, SIGNAL(positionChanged(int)));
 
     qDebug() << "using mpv player";
 }
@@ -35,6 +38,12 @@ bool VideoPlayerMpv::openMedia(Clip *clip) {
 
 void VideoPlayerMpv::seek(int pos) {
     m_mpv->command(QVariantList() << "seek" << pos << "absolute");
+    //qDebug() << "seek(): " << pos << " sec";
+}
+
+void VideoPlayerMpv::seekRelative(int pos) {
+    m_mpv->command(QVariantList() << "seek" << pos << "relative");
+    //qDebug() << "seekRelative(): " << pos << " sec";
 }
 
 void VideoPlayerMpv::pauseResume() {
@@ -42,8 +51,19 @@ void VideoPlayerMpv::pauseResume() {
     setPaused(!paused);
 }
 
+void VideoPlayerMpv::frameStep() {
+    m_mpv->command(QVariantList() << "frame-step");
+}
+
+void VideoPlayerMpv::frameStepBack() {
+    m_mpv->command(QVariantList() << "frame-back-step");
+}
+
+void VideoPlayerMpv::stop() {
+    m_mpv->command(QVariantList() << "stop");
+}
+
 void VideoPlayerMpv::setPaused(bool mode) {
-    // TODO: ??????????? thats from QObject
     m_mpv->setProperty("pause", mode);
 }
 
@@ -65,4 +85,17 @@ void VideoPlayerMpv::paintEvent(QPaintEvent *event) {
 void VideoPlayerMpv::readSettings() {
     setMuted(!settings->playVideoSounds());
     setVideoUnscaled(!settings->expandImage());
+}
+
+void VideoPlayerMpv::mousePressEvent(QMouseEvent *event) {
+    QWidget::mousePressEvent(event);
+}
+
+void VideoPlayerMpv::mouseMoveEvent(QMouseEvent *event) {
+    //QWidget::mouseMoveEvent(event);
+    event->ignore();
+}
+
+void VideoPlayerMpv::mouseReleaseEvent(QMouseEvent *event) {
+    QWidget::mouseReleaseEvent(event);
 }

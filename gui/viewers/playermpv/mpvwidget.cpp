@@ -18,6 +18,7 @@ static void *get_proc_address(void *ctx, const char *name) {
 MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
     : QOpenGLWidget(parent, f)
 {
+    this->setAttribute(Qt::WA_TransparentForMouseEvents, true);
     mpv = mpv::qt::Handle::FromRawHandle(mpv_create());
     if (!mpv)
         throw std::runtime_error("could not create mpv context");
@@ -46,9 +47,9 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
     mpv_opengl_cb_set_update_callback(mpv_gl, MpvWidget::on_update, (void *)this);
     connect(this, SIGNAL(frameSwapped()), SLOT(swapped()));
 
-    //mpv_observe_property(mpv, 0, "duration", MPV_FORMAT_DOUBLE);
-    //mpv_observe_property(mpv, 0, "time-pos", MPV_FORMAT_DOUBLE);
-    //mpv_set_wakeup_callback(mpv, wakeup, this);
+    mpv_observe_property(mpv, 0, "duration", MPV_FORMAT_DOUBLE);
+    mpv_observe_property(mpv, 0, "time-pos", MPV_FORMAT_DOUBLE);
+    mpv_set_wakeup_callback(mpv, wakeup, this);
 }
 
 MpvWidget::~MpvWidget() {
@@ -109,12 +110,12 @@ void MpvWidget::handle_mpv_event(mpv_event *event) {
         if (strcmp(prop->name, "time-pos") == 0) {
             if (prop->format == MPV_FORMAT_DOUBLE) {
                 double time = *(double *)prop->data;
-                Q_EMIT positionChanged(time);
+                emit positionChanged(time);
             }
         } else if (strcmp(prop->name, "duration") == 0) {
             if (prop->format == MPV_FORMAT_DOUBLE) {
                 double time = *(double *)prop->data;
-                Q_EMIT durationChanged(time);
+                emit durationChanged(time);
             }
         }
         break;

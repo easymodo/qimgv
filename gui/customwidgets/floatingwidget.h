@@ -6,6 +6,9 @@
 #define FLOATINGWIDGET_H
 
 #include "gui/customwidgets/overlaywidget.h"
+#include <QTimeLine>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
 #include <QDebug>
 
 enum FloatingWidgetPosition {
@@ -23,15 +26,31 @@ enum FloatingWidgetPosition {
 class FloatingWidget : public OverlayWidget
 {
     Q_OBJECT
+    Q_PROPERTY (float opacity READ opacity WRITE setOpacity)
 public:
     FloatingWidget(OverlayContainerWidget *parent);
+    ~FloatingWidget();
     void setMarginX(int);
     void setMarginY(int);
     void setPosition(FloatingWidgetPosition pos);
+    void setFadeDuration(int duration);
+    void setFadeEnabled(bool mode);
+
+public slots:
+    void show();
+    void hide();
 
 private:
+    QGraphicsOpacityEffect *opacityEffect;
     int marginX, marginY;
+    bool fadeEnabled;
+    QPropertyAnimation *fadeAnimation;
 
+private slots:
+    void setOpacity(float opacity);
+    float opacity() const;
+
+    void onFadeEnd();
 protected:
     virtual void recalculateGeometry();
     FloatingWidgetPosition position;

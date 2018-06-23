@@ -6,6 +6,7 @@
 #include "gui/viewers/imageviewer.h"
 #include "gui/viewers/videoplayerinitproxy.h"
 #include "gui/viewers/folderview.h"
+#include "gui/overlays/videocontrols.h"
 
 enum CurrentWidget {
     IMAGEVIEWER,
@@ -35,6 +36,7 @@ private:
     QHBoxLayout layout;
     std::unique_ptr<ImageViewer> imageViewer;
     std::unique_ptr<VideoPlayer> videoPlayer;
+    VideoControls *videoControls;
 
     void enableImageViewer();
     void enableVideoPlayer();
@@ -64,22 +66,28 @@ signals:
     void fitOriginal();
 
 public slots:
-
     bool showVideo(Clip *clip);
     bool showFolderView();
     void stopPlayback();
     void setFitMode(ImageFitMode mode);
     ImageFitMode fitMode();
     void closeImage();
-
     void hideCursor();
     void showCursor();
     void hideCursorTimed(bool restartTimer);
 
+    // video control
+    void pauseVideo();
+    void seekVideo(int pos);
+    void seekVideoRelative(int pos);
+    void seekVideoLeft();
+    void seekVideoRight();
+    void frameStep();
+    void frameStepBack();
+
 protected:
     virtual void paintEvent(QPaintEvent* event);
     void mouseMoveEvent(QMouseEvent *event);
-
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 };

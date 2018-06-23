@@ -33,9 +33,6 @@ SaveConfirmOverlay QPushButton {
     color: #6A6A6A;
     background-color: #323232;
     border: 1px solid #1D1D1D;
-
-    /* background-color: #2A2A2A; */
-    /* border: 1px solid #1D1D1D; */
     border-radius: 3px;
     padding: 6px 8px 6px 8px;
 }
@@ -145,6 +142,70 @@ ChangelogWindow QPushButton:hover {
 ChangelogWindow QPushButton:focus {
     border-color: #424242;
     color: #4e4e4e;
+}
+
+/*############################################################################*/
+/* Video controls */
+/*############################################################################*/
+
+VideoControls {
+    background-color: #212121;
+    color: #646464;
+    border: 2px solid #2A2A2A;
+    border-radius: 3px;
+}
+
+VideoControls QLabel {
+    color: #8A8A8A;
+    font: bold;
+}
+
+VideoControls QPushButton {
+    font: bold;
+    color: #6A6A6A;
+    background-color: #323232;
+    border: 1px solid #373737;
+    border-radius: 1px;
+    padding: 6px 8px 6px 8px;
+}
+
+VideoControls QPushButton:hover {
+    background-color: #363636;
+    border: 1px solid #3C3C3C;
+    color: #747474;
+}
+
+VideoControls QPushButton:focus {
+    background-color: #363636;
+    border: 1px solid #3C3C3C;
+    color: #747474;
+}
+
+VideoControls QPushButton:pressed {
+    background-color: #2D2D2D;
+    padding-top: 7px;
+}
+
+VideoControls QSlider {
+    border: 1px solid #424242;
+}
+
+VideoControls QSlider::groove:horizontal {
+    background: #212121;
+}
+
+VideoControls QSlider::handle:horizontal {
+    height: 0px;
+    width:  1px;
+    background: #424242;
+}
+
+VideoControls QSlider::add-page:horizontal {
+    background: #212121;
+}
+
+VideoControls QSlider::sub-page:horizontal {
+    background: #424242;
 }
 
 /*############################################################################*/

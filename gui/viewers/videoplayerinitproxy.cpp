@@ -3,6 +3,7 @@
 VideoPlayerInitProxy::VideoPlayerInitProxy(QWidget *parent)
     : VideoPlayer(parent)
 {
+    this->setMouseTracking(true);
     setAttribute(Qt::WA_TranslucentBackground, true);
     layout.setContentsMargins(0,0,0,0);
     this->setLayout(&layout);
@@ -16,6 +17,8 @@ inline void VideoPlayerInitProxy::initPlayer() {
         player.reset(new VideoPlayerImpl(this));
         layout.addWidget(player.get());
         player->hide();
+        connect(player.get(), SIGNAL(durationChanged(int)), this, SIGNAL(durationChanged(int)));
+        connect(player.get(), SIGNAL(positionChanged(int)), this, SIGNAL(positionChanged(int)));
     }
 }
 
@@ -29,9 +32,29 @@ void VideoPlayerInitProxy::seek(int pos) {
     player->seek(pos);
 }
 
+void VideoPlayerInitProxy::seekRelative(int pos) {
+    initPlayer();
+    player->seekRelative(pos);
+}
+
 void VideoPlayerInitProxy::pauseResume() {
     initPlayer();
     player->pauseResume();
+}
+
+void VideoPlayerInitProxy::frameStep() {
+    initPlayer();
+    player->frameStep();
+}
+
+void VideoPlayerInitProxy::frameStepBack() {
+    initPlayer();
+    player->frameStepBack();
+}
+
+void VideoPlayerInitProxy::stop() {
+    initPlayer();
+    player->stop();
 }
 
 void VideoPlayerInitProxy::setPaused(bool mode) {

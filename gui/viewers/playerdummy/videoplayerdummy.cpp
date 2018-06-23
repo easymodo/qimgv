@@ -13,7 +13,23 @@ void VideoPlayerDummy::seek(int pos)
 {
 }
 
+void VideoPlayerDummy::seekRelative(int pos)
+{
+}
+
 void VideoPlayerDummy::pauseResume()
+{
+}
+
+void VideoPlayerDummy::frameStep()
+{
+}
+
+void VideoPlayerDummy::frameStepBack()
+{
+}
+
+void VideoPlayerDummy::stop()
 {
 }
 

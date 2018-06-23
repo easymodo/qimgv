@@ -90,6 +90,7 @@ signals:
     void jumpToLast();
     void folderView();
     void runScript(const QString&);
+    void pauseVideo();
 };
 
 extern ActionManager *actionManager;

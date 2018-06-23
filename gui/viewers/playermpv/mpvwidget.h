@@ -1,5 +1,5 @@
-#ifndef PLAYERWINDOW_H
-#define PLAYERWINDOW_H
+#ifndef MPVWIDGET_H
+#define MPVWIDGET_H
 
 #include <QtWidgets/QOpenGLWidget>
 #include <mpv/client.h>
@@ -10,8 +10,7 @@
 #include <QSurfaceFormat>
 #include <QTimer>
 
-class MpvWidget Q_DECL_FINAL: public QOpenGLWidget
-{
+class MpvWidget Q_DECL_FINAL: public QOpenGLWidget {
     Q_OBJECT
 public:
     MpvWidget(QWidget *parent = 0, Qt::WindowFlags f = 0);
@@ -31,16 +30,19 @@ public:
     }
     void setMuted(bool mode);
     void setRepeat(bool mode);
-Q_SIGNALS:
+signals:
     void durationChanged(int value);
     void positionChanged(int value);
+
 protected:
     void initializeGL() Q_DECL_OVERRIDE;
     void paintGL() Q_DECL_OVERRIDE;
-private Q_SLOTS:
+
+private slots:
     void swapped();
     void on_mpv_events();
     void maybeUpdate();
+
 private:
     void handle_mpv_event(mpv_event *event);
     static void on_update(void *ctx);
@@ -49,4 +51,4 @@ private:
     mpv_opengl_cb_context *mpv_gl;
 };
 
-#endif // PLAYERWINDOW_H
+#endif // MPVWIDGET_H

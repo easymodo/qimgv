@@ -4,7 +4,6 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QLineEdit>
-#include <QPainter>
 #include <QKeyEvent>
 #include "gui/customwidgets/floatingwidget.h"
 #include "gui/customwidgets/pathselectorwidget.h"

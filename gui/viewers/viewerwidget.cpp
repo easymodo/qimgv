@@ -23,11 +23,25 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     connect(imageViewer.get(), SIGNAL(scalingRequested(QSize)), this, SIGNAL(scalingRequested(QSize)));
 
     videoPlayer.reset(new VideoPlayerInitProxy(this));
-
     videoPlayer->hide();
+
+    videoControls = new VideoControls(this);
+
+    connect(videoPlayer.get(), SIGNAL(durationChanged(int)),
+            videoControls, SLOT(setDurationSeconds(int)));
+    connect(videoPlayer.get(), SIGNAL(positionChanged(int)),
+            videoControls, SLOT(setPositionSeconds(int)));
 
     enableImageViewer();
     enableZoomInteraction();
+
+    connect(videoControls, SIGNAL(pause()), this, SLOT(pauseVideo()));
+    connect(videoControls, SIGNAL(seekLeft()), this, SLOT(seekVideoLeft()));
+    connect(videoControls, SIGNAL(seekRight()), this, SLOT(seekVideoRight()));
+    connect(videoControls, SIGNAL(seek(int)), this, SLOT(seekVideo(int)));
+    connect(videoControls, SIGNAL(nextFrame()), this, SLOT(frameStep()));
+    connect(videoControls, SIGNAL(prevFrame()), this, SLOT(frameStepBack()));
+
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
     connect(&cursorTimer, SIGNAL(timeout()),
@@ -59,6 +73,7 @@ QSize ViewerWidget::sourceSize() {
 void ViewerWidget::enableImageViewer() {
     if(currentWidget != IMAGEVIEWER) {
         if(currentWidget == VIDEOPLAYER) {
+            videoControls->hide();
             videoPlayer->setPaused(true);
             videoPlayer->hide();
             layout.removeWidget(videoPlayer.get());
@@ -133,7 +148,7 @@ bool ViewerWidget::showImage(std::unique_ptr<QPixmap> pixmap) {
     stopPlayback();
     enableImageViewer();
     imageViewer->displayImage(std::move(pixmap));
-    hideCursorTimed(false);
+    //hideCursorTimed(false);
     return true;
 }
 
@@ -143,7 +158,7 @@ bool ViewerWidget::showAnimation(std::unique_ptr<QMovie> movie) {
     stopPlayback();
     enableImageViewer();
     imageViewer->displayAnimation(std::move(movie));
-    hideCursorTimed(false);
+    //hideCursorTimed(false);
     return true;
 }
 
@@ -153,19 +168,22 @@ bool ViewerWidget::showVideo(Clip *clip) {
     stopPlayback();
     enableVideoPlayer();
     videoPlayer->openMedia(clip);
-    hideCursorTimed(false);
+    //hideCursorTimed(false);
     return true;
 }
 
 bool ViewerWidget::showFolderView() {
-
+    videoControls->hide();
 }
 
 void ViewerWidget::stopPlayback() {
-    if(currentWidget == IMAGEVIEWER)
+    if(currentWidget == IMAGEVIEWER) {
         imageViewer->stopAnimation();
-    if(currentWidget == VIDEOPLAYER)
+    }
+    if(currentWidget == VIDEOPLAYER) {
+        //videoPlayer->stop();
         videoPlayer->setPaused(true);
+    }
 }
 
 void ViewerWidget::setFitMode(ImageFitMode mode) {
@@ -187,9 +205,43 @@ void ViewerWidget::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
 
 void ViewerWidget::closeImage() {
     imageViewer->closeImage();
+    videoPlayer->stop();
     showCursor();
-    // TODO: implement this
-    //videoPlayer->closeVideo();
+}
+
+void ViewerWidget::pauseVideo() {
+    if(currentWidget == VIDEOPLAYER)
+        videoPlayer.get()->pauseResume();
+}
+
+void ViewerWidget::seekVideo(int pos) {
+    if(currentWidget == VIDEOPLAYER)
+        videoPlayer.get()->seek(pos);
+}
+
+void ViewerWidget::seekVideoRelative(int pos) {
+    if(currentWidget == VIDEOPLAYER)
+        videoPlayer.get()->seekRelative(pos);
+}
+
+void ViewerWidget::seekVideoLeft() {
+    if(currentWidget == VIDEOPLAYER)
+        videoPlayer.get()->seekRelative(-10);
+}
+
+void ViewerWidget::seekVideoRight() {
+    if(currentWidget == VIDEOPLAYER)
+        videoPlayer.get()->seekRelative(10);
+}
+
+void ViewerWidget::frameStep() {
+    if(currentWidget == VIDEOPLAYER)
+        videoPlayer.get()->frameStep();
+}
+
+void ViewerWidget::frameStepBack() {
+    if(currentWidget == VIDEOPLAYER)
+        videoPlayer.get()->frameStepBack();
 }
 
 void ViewerWidget::paintEvent(QPaintEvent *event) {
@@ -200,6 +252,7 @@ void ViewerWidget::paintEvent(QPaintEvent *event) {
 }
 
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
+    qDebug() << "pressEvent";
     showCursor();
     // supports zoom/pan
     if(currentWidget == IMAGEVIEWER) {
@@ -234,11 +287,19 @@ void ViewerWidget::hideCursorTimed(bool restartTimer) {
 
 void ViewerWidget::hideCursor() {
     cursorTimer.stop();
-    if(this->underMouse())
+    // checking overlays explicitly is a bit ugly
+    // todo: find a better solution without reparenting
+    // maybe keep a list of pointers in OverlayContainerWidget on overlay attach?
+    if(this->underMouse() && !videoControls->underMouse()) {
         setCursor(QCursor(Qt::BlankCursor));
+        videoControls->hide();
+    }
 }
 
 void ViewerWidget::showCursor() {
     cursorTimer.stop();
     setCursor(QCursor(Qt::ArrowCursor));
+    if(currentWidget == VIDEOPLAYER) {
+        videoControls->show();
+    }
 }

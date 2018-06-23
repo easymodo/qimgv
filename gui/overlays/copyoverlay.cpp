@@ -7,6 +7,7 @@ CopyOverlay::CopyOverlay(OverlayContainerWidget *parent) :
 {
     ui->setupUi(this);
     hide();
+    setFadeEnabled(true);
     setPosition(FloatingWidgetPosition::BOTTOMLEFT);
     ui->headerLabel->setPixmap(QPixmap(":/res/images/copyheader.png"));
     mode = OVERLAY_COPY;
@@ -19,12 +20,12 @@ CopyOverlay::~CopyOverlay() {
 }
 
 void CopyOverlay::show() {
-    QWidget::show();
+    FloatingWidget::show();
     setFocus();
 }
 
 void CopyOverlay::hide() {
-    QWidget::hide();
+    FloatingWidget::hide();
     clearFocus();
 }
 
