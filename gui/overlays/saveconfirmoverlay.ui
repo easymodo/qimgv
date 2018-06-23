@@ -32,7 +32,7 @@
    <item>
     <widget class="QLabel" name="textLabel">
      <property name="text">
-      <string>Unsaved edits.</string>
+      <string>Unsaved edits</string>
      </property>
     </widget>
    </item>
