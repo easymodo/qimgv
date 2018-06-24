@@ -169,10 +169,13 @@ void ImageViewer::setExpandImage(bool mode) {
 }
 
 void ImageViewer::show() {
+    setMouseTracking(false);
     QWidget::show();
+    setMouseTracking(true);
 }
 
 void ImageViewer::hide() {
+    setMouseTracking(false);
     QWidget::hide();
 }
 
@@ -316,12 +319,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
 void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     if(!isDisplaying)
         return;
-    qDebug() << "zzz" << event->type();
-    // for some reason MouseMoveEvent() is firing on show()
-    // this causes a bug down the road (video controls reappearing on video-image switching)
-    // so we just ignore the event if there's nothing displayed
     QWidget::mouseMoveEvent(event);
-
     if(event->buttons() & Qt::LeftButton) {
         mouseWrapping?mouseDragWrapping(event):mouseDrag(event);
     } else if(event->buttons() & Qt::RightButton) {

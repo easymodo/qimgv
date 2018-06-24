@@ -75,6 +75,7 @@ QSize ViewerWidget::sourceSize() {
 void ViewerWidget::enableImageViewer() {
     if(currentWidget != IMAGEVIEWER) {
         if(currentWidget == VIDEOPLAYER) {
+            currentWidget = UNSET;
             videoControls->hide();
             videoPlayer->setPaused(true);
             videoPlayer->hide();
@@ -90,6 +91,7 @@ void ViewerWidget::enableImageViewer() {
 void ViewerWidget::enableVideoPlayer() {
     if(currentWidget != VIDEOPLAYER) {
         if(currentWidget == IMAGEVIEWER) {
+            currentWidget = UNSET;
             imageViewer->closeImage();
             imageViewer->hide();
             layout.removeWidget(imageViewer.get());
@@ -150,7 +152,7 @@ bool ViewerWidget::showImage(std::unique_ptr<QPixmap> pixmap) {
     stopPlayback();
     enableImageViewer();
     imageViewer->displayImage(std::move(pixmap));
-    //hideCursorTimed(false);
+    hideCursorTimed(false);
     return true;
 }
 
@@ -160,7 +162,7 @@ bool ViewerWidget::showAnimation(std::unique_ptr<QMovie> movie) {
     stopPlayback();
     enableImageViewer();
     imageViewer->displayAnimation(std::move(movie));
-    //hideCursorTimed(false);
+    hideCursorTimed(false);
     return true;
 }
 
@@ -170,7 +172,7 @@ bool ViewerWidget::showVideo(Clip *clip) {
     stopPlayback();
     enableVideoPlayer();
     videoPlayer->openMedia(clip);
-    //hideCursorTimed(false);
+    hideCursorTimed(false);
     return true;
 }
 
@@ -183,6 +185,7 @@ void ViewerWidget::stopPlayback() {
         imageViewer->stopAnimation();
     }
     if(currentWidget == VIDEOPLAYER) {
+        // stopping is visibly slower
         //videoPlayer->stop();
         videoPlayer->setPaused(true);
     }
@@ -275,7 +278,6 @@ void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
-    qDebug() << "z";
     if(!(event->buttons() & Qt::LeftButton) && !(event->buttons() & Qt::RightButton)) {
         showCursor();
         hideCursorTimed(true);
