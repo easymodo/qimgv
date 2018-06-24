@@ -91,6 +91,10 @@ signals:
     void folderView();
     void runScript(const QString&);
     void pauseVideo();
+    void seekVideo();
+    void seekBackVideo();
+    void frameStep();
+    void frameStepBack();
 };
 
 extern ActionManager *actionManager;

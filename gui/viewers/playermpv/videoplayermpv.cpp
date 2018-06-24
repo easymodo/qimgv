@@ -8,7 +8,6 @@
 // TODO: window flashes white when opening a video (straight from file manager)
 VideoPlayerMpv::VideoPlayerMpv(QWidget *parent) : VideoPlayer(parent) {
     setAttribute(Qt::WA_TranslucentBackground, true);
-    this->setMouseTracking(true);
     m_mpv = new MpvWidget(this);
     QVBoxLayout *vl = new QVBoxLayout();
     vl->setContentsMargins(0,0,0,0);
@@ -20,8 +19,6 @@ VideoPlayerMpv::VideoPlayerMpv(QWidget *parent) : VideoPlayer(parent) {
     connect(m_mpv, SIGNAL(durationChanged(int)), this, SIGNAL(durationChanged(int)));
     connect(m_mpv, SIGNAL(positionChanged(int)), this, SIGNAL(positionChanged(int)));
     connect(m_mpv, SIGNAL(videoPaused(bool)), this, SIGNAL(videoPaused(bool)));
-
-    qDebug() << "using mpv player";
 }
 
 bool VideoPlayerMpv::openMedia(Clip *clip) {
@@ -90,13 +87,36 @@ void VideoPlayerMpv::readSettings() {
 
 void VideoPlayerMpv::mousePressEvent(QMouseEvent *event) {
     QWidget::mousePressEvent(event);
+    if(event->button() == Qt::LeftButton)
+        this->pauseResume();
 }
 
 void VideoPlayerMpv::mouseMoveEvent(QMouseEvent *event) {
-    //QWidget::mouseMoveEvent(event);
+    QWidget::mouseMoveEvent(event);
     event->ignore();
 }
 
 void VideoPlayerMpv::mouseReleaseEvent(QMouseEvent *event) {
     QWidget::mouseReleaseEvent(event);
+}
+
+void VideoPlayerMpv::keyPressEvent(QKeyEvent *event) {
+    int nativeScanCode = event->nativeScanCode();
+    QString key = actionManager->keyForNativeScancode(nativeScanCode);
+    if(key == "Space") {
+        event->accept();
+        pauseResume();
+    } else {
+        event->ignore();
+    }
+}
+
+void VideoPlayerMpv::show() {
+    QWidget::show();
+    this->setFocus();
+}
+
+void VideoPlayerMpv::hide() {
+    this->clearFocus();
+    QWidget::hide();
 }

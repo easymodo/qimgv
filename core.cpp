@@ -137,6 +137,10 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(jumpToLast()), this, SLOT(jumpToLast()));
     connect(actionManager, SIGNAL(runScript(const QString&)), this, SLOT(runScript(const QString&)));
     connect(actionManager, SIGNAL(pauseVideo()), viewerWidget, SLOT(pauseVideo()));
+    connect(actionManager, SIGNAL(seekVideo()), viewerWidget, SLOT(seekVideoRight()));
+    connect(actionManager, SIGNAL(seekBackVideo()), viewerWidget, SLOT(seekVideoLeft()));
+    connect(actionManager, SIGNAL(frameStep()), viewerWidget, SLOT(frameStep()));
+    connect(actionManager, SIGNAL(frameStepBack()), viewerWidget, SLOT(frameStepBack()));
 }
 
 void Core::postUpdate() {

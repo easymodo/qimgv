@@ -16,7 +16,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     maxScale(maxScaleLimit),
     imageFitMode(FIT_ORIGINAL)
 {
-    this->setMouseTracking(true);
+    setMouseTracking(true);
     posAnimation = new QPropertyAnimation(this, "drawPos");
     posAnimation->setEasingCurve(QEasingCurve::OutCubic);
     posAnimation->setDuration(animationSpeed);
@@ -168,6 +168,14 @@ void ImageViewer::setExpandImage(bool mode) {
     applyFitMode();
 }
 
+void ImageViewer::show() {
+    QWidget::show();
+}
+
+void ImageViewer::hide() {
+    QWidget::hide();
+}
+
 // scale at which current image fills the window
 void ImageViewer::updateFitWindowScale() {
     float newMinScaleX = (float) width()*devicePixelRatioF() / mSourceSize.width();
@@ -308,6 +316,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
 void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     if(!isDisplaying)
         return;
+    qDebug() << "zzz" << event->type();
     // for some reason MouseMoveEvent() is firing on show()
     // this causes a bug down the road (video controls reappearing on video-image switching)
     // so we just ignore the event if there's nothing displayed

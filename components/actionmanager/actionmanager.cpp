@@ -61,7 +61,10 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("end", "jumpToLast");
     actionManager->defaults.insert("S", "s:TestScript");
     actionManager->defaults.insert("A", "s:TestScript2");
-    actionManager->defaults.insert("Z", "pauseVideo");
+    actionManager->defaults.insert("Shift+Right", "seekVideo");
+    actionManager->defaults.insert("Shift+Left", "seekBackVideo");
+    actionManager->defaults.insert(",", "frameStep");
+    actionManager->defaults.insert(".", "frameStepBack");
 }
 //------------------------------------------------------------------------------
 void ActionManager::initShortcuts() {
@@ -166,6 +169,9 @@ bool ActionManager::invokeAction(const QString &actionName) {
 }
 //------------------------------------------------------------------------------
 bool ActionManager::invokeActionForShortcut(const QString &shortcut) {
+    if(shortcut.isEmpty())
+        return false;
+
     if(shortcuts.contains(shortcut)) {
         return invokeAction(actionManager->shortcuts[shortcut]);
     }

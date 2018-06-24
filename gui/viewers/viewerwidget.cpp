@@ -14,7 +14,7 @@ ViewerWidget::ViewerWidget(QWidget *parent)
       zoomInteraction(false)
 {
     setAttribute(Qt::WA_TranslucentBackground, true);
-    this->setMouseTracking(true);
+    setMouseTracking(true);
     layout.setContentsMargins(0, 0, 0, 0);
     this->setLayout(&layout);
 
@@ -254,13 +254,14 @@ void ViewerWidget::paintEvent(QPaintEvent *event) {
 }
 
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
-    showCursor();
     // supports zoom/pan
     if(currentWidget == IMAGEVIEWER) {
         if(event->button() == Qt::LeftButton) {
+            showCursor();
             setCursor(QCursor(Qt::ClosedHandCursor));
         }
         if(event->button() == Qt::RightButton) {
+            showCursor();
             setCursor(QCursor(Qt::SizeVerCursor));
         }
     }
@@ -274,6 +275,7 @@ void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
+    qDebug() << "z";
     if(!(event->buttons() & Qt::LeftButton) && !(event->buttons() & Qt::RightButton)) {
         showCursor();
         hideCursorTimed(true);

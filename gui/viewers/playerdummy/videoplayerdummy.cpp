@@ -2,7 +2,6 @@
 
 VideoPlayerDummy::VideoPlayerDummy(QWidget *parent) : VideoPlayer(parent)
 {
-    qDebug() << "using dummy player";
 }
 
 bool VideoPlayerDummy::openMedia(Clip *clip)

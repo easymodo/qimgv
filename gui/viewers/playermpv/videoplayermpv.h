@@ -2,6 +2,8 @@
 #define VIDEOPLAYERMPV_H
 
 #include "gui/viewers/videoplayer.h"
+#include "components/actionmanager/actionmanager.h"
+#include <QKeyEvent>
 #include "settings.h"
 
 class MpvWidget;
@@ -22,8 +24,8 @@ public slots:
     void stop();
     void setPaused(bool mode);
     void setMuted(bool);
-    //void show();
-    //void hide();
+    void show();
+    void hide();
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -31,6 +33,8 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    void keyPressEvent(QKeyEvent *);
+
 private slots:
     void readSettings();
 

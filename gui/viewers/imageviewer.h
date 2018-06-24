@@ -58,6 +58,8 @@ public slots:
     void stopAnimation();
     void closeImage();
     void setExpandImage(bool mode);
+    void show();
+    void hide();
 
 protected:
     virtual void paintEvent(QPaintEvent* event);

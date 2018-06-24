@@ -36,3 +36,23 @@ void ChangelogWindow::paintEvent(QPaintEvent *) {
 void ChangelogWindow::wheelEvent(QWheelEvent *event) {
     event->accept();
 }
+
+void ChangelogWindow::keyPressEvent(QKeyEvent *event) {
+    int nativeScanCode = event->nativeScanCode();
+    QString key = actionManager->keyForNativeScancode(nativeScanCode);
+    if(key == "escape") {
+        event->accept();
+        hide();
+    }
+}
+
+void ChangelogWindow::show() {
+    FloatingWidget::show();
+    ui->closeButton->setFocus();
+}
+
+void ChangelogWindow::hide() {
+    ui->closeButton->clearFocus();
+    ui->shutUpButton->clearFocus();
+    FloatingWidget::hide();
+}
