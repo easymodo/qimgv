@@ -16,8 +16,8 @@ FloatingMessage::FloatingMessage(OverlayContainerWidget *parent) :
 
     position = FloatingWidgetPosition::LEFT;
 
-    iconLeftEdge.load(":/res/icons/message/left_edge32.png");
-    iconRightEdge.load(":/res/icons/message/right_edge32.png");
+    iconLeftEdge.load(":/res/icons/message/dir_start20.png");
+    iconRightEdge.load(":/res/icons/message/dir_end20.png");
     setIcon(FloatingMessageIcon::NO_ICON);
 
     this->setAccessibleName("FloatingMessage");

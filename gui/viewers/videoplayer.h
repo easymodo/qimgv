@@ -21,6 +21,7 @@ public:
 signals:
     void durationChanged(int value);
     void positionChanged(int value);
+    void videoPaused(bool);
 
 public slots:
     virtual void show();

@@ -33,6 +33,7 @@ public:
 signals:
     void durationChanged(int value);
     void positionChanged(int value);
+    void videoPaused(bool);
 
 protected:
     void initializeGL() Q_DECL_OVERRIDE;

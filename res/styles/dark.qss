@@ -180,7 +180,7 @@ VideoControls QPushButton:focus {
 }
 
 VideoControls QPushButton:pressed {
-    background-color: #1f1f21;
+    background-color: #202123;
     padding-top: 7px;
 }
 

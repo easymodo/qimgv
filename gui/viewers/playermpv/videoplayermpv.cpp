@@ -19,6 +19,7 @@ VideoPlayerMpv::VideoPlayerMpv(QWidget *parent) : VideoPlayer(parent) {
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
     connect(m_mpv, SIGNAL(durationChanged(int)), this, SIGNAL(durationChanged(int)));
     connect(m_mpv, SIGNAL(positionChanged(int)), this, SIGNAL(positionChanged(int)));
+    connect(m_mpv, SIGNAL(videoPaused(bool)), this, SIGNAL(videoPaused(bool)));
 
     qDebug() << "using mpv player";
 }

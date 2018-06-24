@@ -9,6 +9,9 @@ VideoControls::VideoControls(OverlayContainerWidget *parent) :
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     hide();
 
+    playIcon.addPixmap(QPixmap(":res/icons/buttons/play18.png"));
+    pauseIcon.addPixmap(QPixmap(":res/icons/buttons/pause18.png"));
+
     setPosition(FloatingWidgetPosition::BOTTOM);
 
     lastVideoPosition = -1;
@@ -61,4 +64,11 @@ void VideoControls::setPositionSeconds(int time) {
         recalculateGeometry();
     }
     lastVideoPosition = time;
+}
+
+void VideoControls::onVideoPaused(bool mode) {
+    if(mode)
+        ui->pauseButton->setIcon(playIcon);
+    else
+        ui->pauseButton->setIcon(pauseIcon);
 }

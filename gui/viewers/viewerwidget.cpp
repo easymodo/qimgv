@@ -31,6 +31,8 @@ ViewerWidget::ViewerWidget(QWidget *parent)
             videoControls, SLOT(setDurationSeconds(int)));
     connect(videoPlayer.get(), SIGNAL(positionChanged(int)),
             videoControls, SLOT(setPositionSeconds(int)));
+    connect(videoPlayer.get(), SIGNAL(videoPaused(bool)),
+            videoControls, SLOT(onVideoPaused(bool)));
 
     enableImageViewer();
     enableZoomInteraction();
@@ -252,7 +254,6 @@ void ViewerWidget::paintEvent(QPaintEvent *event) {
 }
 
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
-    qDebug() << "pressEvent";
     showCursor();
     // supports zoom/pan
     if(currentWidget == IMAGEVIEWER) {

@@ -49,6 +49,7 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
 
     mpv_observe_property(mpv, 0, "duration", MPV_FORMAT_DOUBLE);
     mpv_observe_property(mpv, 0, "time-pos", MPV_FORMAT_DOUBLE);
+    mpv_observe_property(mpv, 0, "pause", MPV_FORMAT_FLAG);
     mpv_set_wakeup_callback(mpv, wakeup, this);
 }
 
@@ -107,16 +108,19 @@ void MpvWidget::handle_mpv_event(mpv_event *event) {
     switch (event->event_id) {
     case MPV_EVENT_PROPERTY_CHANGE: {
         mpv_event_property *prop = (mpv_event_property *)event->data;
-        if (strcmp(prop->name, "time-pos") == 0) {
+        if(strcmp(prop->name, "time-pos") == 0) {
             if (prop->format == MPV_FORMAT_DOUBLE) {
                 double time = *(double *)prop->data;
                 emit positionChanged(time);
             }
-        } else if (strcmp(prop->name, "duration") == 0) {
-            if (prop->format == MPV_FORMAT_DOUBLE) {
+        } else if(strcmp(prop->name, "duration") == 0) {
+            if(prop->format == MPV_FORMAT_DOUBLE) {
                 double time = *(double *)prop->data;
                 emit durationChanged(time);
             }
+        } else if(strcmp(prop->name, "pause") == 0) {
+            int mode = *(int *)prop->data;
+            emit videoPaused(mode == 1);
         }
         break;
     }

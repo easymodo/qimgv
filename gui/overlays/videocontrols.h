@@ -19,6 +19,7 @@ public:
 public slots:
     void setDurationSeconds(int);
     void setPositionSeconds(int);
+    void onVideoPaused(bool);
 
 signals:
     void pause();
@@ -31,6 +32,7 @@ signals:
 private:
     Ui::VideoControls *ui;
     int lastVideoPosition;
+    QIcon playIcon, pauseIcon;
 };
 
 #endif // VIDEOCONTROLS_H

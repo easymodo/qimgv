@@ -1,7 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>res/icons/message/left_edge32.png</file>
-        <file>res/icons/message/right_edge32.png</file>
         <file>res/styles/dark.qss</file>
         <file>res/images/logo.png</file>
         <file>res/icons/video_thumb.png</file>
@@ -53,5 +51,8 @@
         <file>res/icons/buttons/play18.png</file>
         <file>res/icons/buttons/step18.png</file>
         <file>res/icons/buttons/step-back18.png</file>
+        <file>res/icons/buttons/pause18.png</file>
+        <file>res/icons/message/dir_end20.png</file>
+        <file>res/icons/message/dir_start20.png</file>
     </qresource>
 </RCC>
