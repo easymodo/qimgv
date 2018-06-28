@@ -28,9 +28,6 @@ public:
     void setDialogMode(CopyOverlayMode _mode);
     CopyOverlayMode operationMode();
 
-public slots:
-    void show();
-    void hide();
 signals:
     void copyRequested(QString);
     void moveRequested(QString);

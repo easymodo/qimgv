@@ -130,7 +130,8 @@ SOURCES += \
     gui/viewers/documentwidget.cpp \
     sourcecontainers/documentinfo.cpp \
     gui/overlays/videocontrols.cpp \
-    gui/customwidgets/videoslider.cpp
+    gui/customwidgets/videoslider.cpp \
+    gui/flowlayout.cpp
 
 HEADERS += \
     core.h \
@@ -209,7 +210,8 @@ HEADERS += \
     gui/viewers/documentwidget.h \
     sourcecontainers/documentinfo.h \
     gui/overlays/videocontrols.h \
-    gui/customwidgets/videoslider.h
+    gui/customwidgets/videoslider.h \
+    gui/flowlayout.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \

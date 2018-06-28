@@ -25,6 +25,9 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     videoPlayer.reset(new VideoPlayerInitProxy(this));
     videoPlayer->hide();
 
+    folderView.reset(new FolderView(this));
+    folderView->hide();
+
     videoControls = new VideoControls(this);
 
     connect(videoPlayer.get(), SIGNAL(durationChanged(int)),
@@ -74,13 +77,8 @@ QSize ViewerWidget::sourceSize() {
 // hide videoPlayer, show imageViewer
 void ViewerWidget::enableImageViewer() {
     if(currentWidget != IMAGEVIEWER) {
-        if(currentWidget == VIDEOPLAYER) {
-            currentWidget = UNSET;
-            videoControls->hide();
-            videoPlayer->setPaused(true);
-            videoPlayer->hide();
-            layout.removeWidget(videoPlayer.get());
-        }
+        disableVideoPlayer();
+        disableFolderView();
         layout.addWidget(imageViewer.get());
         imageViewer->show();
         currentWidget = IMAGEVIEWER;
@@ -90,15 +88,49 @@ void ViewerWidget::enableImageViewer() {
 // hide imageViewer, show videoPlayer
 void ViewerWidget::enableVideoPlayer() {
     if(currentWidget != VIDEOPLAYER) {
-        if(currentWidget == IMAGEVIEWER) {
-            currentWidget = UNSET;
-            imageViewer->closeImage();
-            imageViewer->hide();
-            layout.removeWidget(imageViewer.get());
-        }
+        disableImageViewer();
+        disableFolderView();
         layout.addWidget(videoPlayer.get());
         videoPlayer->show();
         currentWidget = VIDEOPLAYER;
+    }
+}
+
+void ViewerWidget::enableFolderView() {
+    if(currentWidget != FOLDERVIEW) {
+        disableImageViewer();
+        disableVideoPlayer();
+        currentWidget = FOLDERVIEW;
+        layout.addWidget(folderView.get());
+        folderView->show();
+        showCursor();
+    }
+}
+
+void ViewerWidget::disableImageViewer() {
+    if(currentWidget == IMAGEVIEWER) {
+        currentWidget = UNSET;
+        imageViewer->closeImage();
+        imageViewer->hide();
+        layout.removeWidget(imageViewer.get());
+    }
+}
+
+void ViewerWidget::disableVideoPlayer() {
+    if(currentWidget == VIDEOPLAYER) {
+        currentWidget = UNSET;
+        videoControls->hide();
+        videoPlayer->setPaused(true);
+        videoPlayer->hide();
+        layout.removeWidget(videoPlayer.get());
+    }
+}
+
+void ViewerWidget::disableFolderView() {
+    if(currentWidget == FOLDERVIEW) {
+        currentWidget = UNSET;
+        folderView->hide();
+        layout.removeWidget(folderView.get());
     }
 }
 
@@ -174,10 +206,6 @@ bool ViewerWidget::showVideo(Clip *clip) {
     videoPlayer->openMedia(clip);
     hideCursorTimed(false);
     return true;
-}
-
-bool ViewerWidget::showFolderView() {
-    videoControls->hide();
 }
 
 void ViewerWidget::stopPlayback() {
@@ -288,6 +316,10 @@ void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
 void ViewerWidget::hideCursorTimed(bool restartTimer) {
     if(restartTimer || !cursorTimer.isActive())
         cursorTimer.start(CURSOR_HIDE_TIMEOUT_MS);
+}
+
+void ViewerWidget::setThumbnail(int pos, Thumbnail *thumb) {
+    folderView->setThumbnail(pos, thumb);
 }
 
 void ViewerWidget::hideCursor() {

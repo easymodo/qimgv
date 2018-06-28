@@ -1,7 +1,9 @@
 #ifndef THUMBNAILLABEL_H
 #define THUMBNAILLABEL_H
 
+#include <QGraphicsWidget>
 #include <QGraphicsItem>
+#include <QGraphicsLayoutItem>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QGraphicsSceneHoverEvent>
@@ -14,8 +16,7 @@
 
 enum loadState { EMPTY, LOADING, LOADED };
 
-class ThumbnailLabel : public QObject, public QGraphicsItem
-{
+class ThumbnailLabel : public QGraphicsWidget {
     Q_OBJECT
     Q_PROPERTY(qreal currentOpacity READ propertyOpacity WRITE propertySetOpacity)
 
@@ -38,6 +39,10 @@ public:
     int height();
     void setThumbnailSize(int size);
 
+    void setGeometry(const QRectF &rect);
+
+    virtual QRectF geometry() const;
+    QSizeF effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
 private:
     Thumbnail *thumbnail;
     int labelNumber;
@@ -70,6 +75,7 @@ protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) Q_DECL_OVERRIDE;
     QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
 
+    void updateGeometry();
 };
 
 #endif // THUMBNAILLABEL_H

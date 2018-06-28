@@ -208,6 +208,7 @@ void ThumbnailStrip::setThumbnailSize(int newSize) {
         for(int i=0; i<thumbnailLabels->count(); i++) {
             thumbnailLabels->at(i)->setThumbnailSize(newSize);
         }
+        //scene->invalidate(scene->sceneRect());
         updateThumbnailPositions(0, thumbnailLabels->count() - 1);
         updateSceneRect();
         ensureThumbnailVisible(current);

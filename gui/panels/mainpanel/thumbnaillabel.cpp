@@ -6,7 +6,7 @@ ThumbnailLabel::ThumbnailLabel() :
     thumbnail(nullptr),
     highlighted(false),
     hovered(false),
-    thumbnailSize(100),
+    thumbnailSize(50),
     highlightBarHeight(3),
     marginX(1)
 {
@@ -27,6 +27,9 @@ ThumbnailLabel::ThumbnailLabel() :
     opacityAnimation->setDuration(opacityAnimationSpeed);
     currentOpacity = inactiveOpacity;
 
+    setThumbnailSize(100);
+    //this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
@@ -36,6 +39,7 @@ void ThumbnailLabel::readSettings() {
 }
 
 void ThumbnailLabel::setThumbnailSize(int size) {
+    qDebug() << "SET SIZE" << size;
     if(thumbnailSize != size && size > 0) {
         this->state = EMPTY;
         // delete the old thumbnail
@@ -44,11 +48,33 @@ void ThumbnailLabel::setThumbnailSize(int size) {
             thumbnail = nullptr;
         }
         thumbnailSize = size;
+        updateGeometry();
+
         highlightBarRect = QRectF(marginX, 0, width() - marginX * 2, highlightBarHeight);
         nameRect = QRectF(highlightBarRect.left(), highlightBarRect.height(),
                          highlightBarRect.width(), fm->height() * 1.6);
         update();
     }
+}
+
+void ThumbnailLabel::updateGeometry() {
+    QGraphicsWidget::updateGeometry();
+}
+
+void ThumbnailLabel::setGeometry(const QRectF &rect) {
+    //prepareGeometryChange();
+    //setPos(rect.topLeft());
+    QGraphicsWidget::setGeometry(QRectF(rect.topLeft(), boundingRect().size()));
+}
+
+QRectF ThumbnailLabel::geometry() const {
+    qDebug() << "AAA" << QRectF(QGraphicsWidget::geometry().topLeft(), boundingRect().size());
+    return QRectF(QGraphicsWidget::geometry().topLeft(), boundingRect().size());
+}
+
+QSizeF ThumbnailLabel::effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint) const {
+    //qDebug() << sizeHint(which, constraint);
+    return sizeHint(which, constraint);
 }
 
 void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail) {
@@ -120,6 +146,8 @@ void ThumbnailLabel::setOpacity(qreal amount, bool smooth) {
 }
 
 QRectF ThumbnailLabel::boundingRect() const {
+    //qDebug() << "boundingRect: " << geometry();
+    //return QRectF(QPointF(0, 0), this->geometry().size());
     return QRectF(0, 0, thumbnailSize + marginX * 2, thumbnailSize + highlightBarHeight);
 }
 
@@ -194,16 +222,10 @@ void ThumbnailLabel::drawIcon(QPainter* painter, qreal dpr, const QPixmap *pixma
 }
 
 QSizeF ThumbnailLabel::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {
-    switch(which) {
-        case Qt::MinimumSize:
-        case Qt::PreferredSize:
-            return QSize(thumbnailSize + marginX * 2, thumbnailSize + highlightBarHeight);
-        case Qt::MaximumSize:
-            return QSize(thumbnailSize + marginX * 2, thumbnailSize + highlightBarHeight);
-        default:
-            break;
-    }
-    return constraint;
+    Q_UNUSED(which);
+    Q_UNUSED(constraint);
+
+    return boundingRect().size();
 }
 
 void ThumbnailLabel::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {

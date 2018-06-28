@@ -61,5 +61,6 @@ void Actions::init() {
     mActions.insert("seekBackVideo", QVersionNumber(0,6,85));
     mActions.insert("frameStep", QVersionNumber(0,6,85));
     mActions.insert("frameStepBack", QVersionNumber(0,6,85));
+    mActions.insert("showFolderView", QVersionNumber(0,6,85));
 }
 

@@ -141,6 +141,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(seekBackVideo()), viewerWidget, SLOT(seekVideoLeft()));
     connect(actionManager, SIGNAL(frameStep()), viewerWidget, SLOT(frameStep()));
     connect(actionManager, SIGNAL(frameStepBack()), viewerWidget, SLOT(frameStepBack()));
+    connect(actionManager, SIGNAL(showFolderView()), viewerWidget, SLOT(enableFolderView()));
 }
 
 void Core::postUpdate() {
@@ -507,6 +508,7 @@ void Core::forwardThumbnail(Thumbnail *thumbnail) {
     int index = dirManager->indexOf(thumbnail->name());
     if(index >= 0) {
         thumbnailPanelWidget->setThumbnail(index, thumbnail);
+        viewerWidget->setThumbnail(index, thumbnail);
     } else {
         delete thumbnail;
     }

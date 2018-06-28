@@ -36,6 +36,7 @@ private:
     QHBoxLayout layout;
     std::unique_ptr<ImageViewer> imageViewer;
     std::unique_ptr<VideoPlayer> videoPlayer;
+    std::unique_ptr<FolderView> folderView;
     VideoControls *videoControls;
 
     void enableImageViewer();
@@ -48,6 +49,9 @@ private:
     QTimer cursorTimer;
     const int CURSOR_HIDE_TIMEOUT_MS = 1000;
 
+    void disableImageViewer();
+    void disableVideoPlayer();
+    void disableFolderView();
 private slots:
     void readSettings();
 
@@ -64,10 +68,11 @@ signals:
     void fitWindow();
     void fitWidth();
     void fitOriginal();
+    void thumbnailRequested(int);
 
 public slots:
     bool showVideo(Clip *clip);
-    bool showFolderView();
+    void enableFolderView();
     void stopPlayback();
     void setFitMode(ImageFitMode mode);
     ImageFitMode fitMode();
@@ -75,6 +80,8 @@ public slots:
     void hideCursor();
     void showCursor();
     void hideCursorTimed(bool restartTimer);
+
+    void setThumbnail(int pos, Thumbnail *thumb);
 
     // video control
     void pauseVideo();
