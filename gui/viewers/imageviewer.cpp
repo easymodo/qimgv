@@ -482,6 +482,7 @@ void ImageViewer::fitNormal() {
 }
 
 void ImageViewer::setFitMode(ImageFitMode newMode) {
+    stopPosAnimation();
     imageFitMode = newMode;
     applyFitMode();
     requestScaling();

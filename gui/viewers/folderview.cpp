@@ -1,56 +1,46 @@
 #include "folderview.h"
 
-FolderView::FolderView(QWidget *parent) : QGraphicsView(parent) {
-    this->setScene(&scene);
+// TODO: create a base class for this and the one on panel
+
+FolderView::FolderView(QWidget *parent)
+    : ThumbnailView(THUMBNAILVIEW_VERTICAL, parent)
+{
+    setupLayout();
+}
+
+void FolderView::setupLayout() {
     flowLayout = new FlowLayout();
-    //flowLayout = new QGraphicsLinearLayout();
-    //layout = new QVBoxLayout(this);
+    flowLayout->setContentsMargins(20,20,20,20);
+    setFrameShape(QFrame::NoFrame);
     scene.addItem(&holderWidget);
 
-    populate(40);
-
-    this->setFixedWidth(parent->width());
-    holderWidget.setMaximumWidth(this->width());
-
+    // tmp
+    populate(100);
     holderWidget.setLayout(flowLayout);
 }
 
-void FolderView::populate(int count) {
-    if(count >= 0 ) {
-        for(int i = 0; i < thumbnails.count() - 1; i++) {
-            ThumbnailLabel *tmp = thumbnails.takeAt(0);
-            flowLayout->removeAt(0);
-            delete tmp;
-        }
-        for(int i = 0; i < count; i++) {
-            ThumbnailLabel *label = new ThumbnailLabel();
-            label->setLabelNum(count);
-            label->setThumbnailSize(300);
-            //label->setGeometry(QRectF(0,0,300,300));
-            thumbnails.append(label);
-            flowLayout->addItem(label);
-        }
-    }
-
-    //qDebug() << holderWidget.size() << scene.sceneRect();
+// set up widget's options here before adding to layout
+ThumbnailLabel* FolderView::createThumbnailWidget() {
+    ThumbnailLabel *widget = new ThumbnailLabel();
+    widget->setDrawLabel(false);
+    widget->setHightlightStyle(HIGHLIGHT_BACKGROUND);
+    widget->setMargins(4,8);
+    return widget;
 }
 
-void FolderView::setThumbnail(int pos, Thumbnail *thumb) {
-    if(thumb /*&& thumb->size() == floor(thumbnailSize*qApp->devicePixelRatio()) && checkRange(pos) */) {
-       // qDebug() ->pos()<< "SET: " << pos;
-        thumbnails.at(pos)->setThumbnail(thumb);
-        thumbnails.at(pos)->state = LOADED;
-    } else {
-        // dispose of thumbnail if it is unneeded
-        //delete thumb;
-    }
+// TODO: insert
+void FolderView::addItemToLayout(ThumbnailLabel* widget, int pos) {
+    flowLayout->addItem(widget);
 }
 
-void FolderView::show() {
-    QGraphicsView::show();
-    qDebug() << "widget size: " << holderWidget.size() << thumbnails.at(1)->geometry() << thumbnails.at(1)->boundingRect();
+void FolderView::removeItemFromLayout(int pos) {
+    flowLayout->removeAt(pos);
 }
 
-FolderView::~FolderView() {
-    delete layout;
+void FolderView::resizeEvent(QResizeEvent *event) {
+    QGraphicsView::resizeEvent(event);
+    holderWidget.setMinimumSize(size());
+    holderWidget.setMaximumSize(size());
+    QRectF rect = scene.itemsBoundingRect();
+    scene.setSceneRect(rect);
 }

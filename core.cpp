@@ -85,12 +85,22 @@ void Core::connectComponents() {
     // thumbnails stuff
     connect(thumbnailPanelWidget, SIGNAL(thumbnailRequested(QList<int>, int)),
             thumbnailer, SLOT(generateThumbnailFor(QList<int>, int)), Qt::UniqueConnection);
+
+    connect(viewerWidget, SIGNAL(thumbnailRequested(QList<int>, int)),
+            thumbnailer, SLOT(generateThumbnailFor(QList<int>, int)), Qt::UniqueConnection);
+
     connect(thumbnailer, SIGNAL(thumbnailReady(Thumbnail*)),
             this, SLOT(forwardThumbnail(Thumbnail*)));
-    connect(thumbnailPanelWidget, SIGNAL(thumbnailClicked(int)),
+    connect(thumbnailPanelWidget, SIGNAL(thumbnailPressed(int)),
             this, SLOT(loadByIndex(int)));
     connect(this, SIGNAL(imageIndexChanged(int)),
             thumbnailPanelWidget, SLOT(highlightThumbnail(int)));
+
+    connect(viewerWidget, SIGNAL(thumbnailPressed(int)),
+            this, SLOT(loadByIndex(int)));
+    //connect(this, SIGNAL(imageIndexChanged(int)),
+    //        viewerWidget, SLOT(highlightThumbnail(int)));
+
     // scaling
     connect(viewerWidget, SIGNAL(scalingRequested(QSize)),
             this, SLOT(scalingRequest(QSize)));
@@ -193,7 +203,7 @@ void Core::removeFile() {
 }
 
 void Core::onFileRemoved(int index) {
-    thumbnailPanelWidget->removeItemAt(index);
+    //thumbnailPanelWidget->removeItemAt(index);
     // removing current file. try switching to another
     if(state.currentIndex == index) {
         if(!dirManager->fileCount()) {
@@ -207,7 +217,7 @@ void Core::onFileRemoved(int index) {
 }
 
 void Core::onFileAdded(int index) {
-    thumbnailPanelWidget->createLabelAt(index);
+    //thumbnailPanelWidget->createLabelAt(index);
 }
 
 void Core::moveFile(QString destDirectory) {
@@ -548,7 +558,7 @@ bool Core::setDirectory(QString newPath) {
     if(!dirManager->hasImages() || dirManager->currentDirectoryPath() != newPath) {
         this->reset();
         dirManager->setDirectory(newPath);
-        thumbnailPanelWidget->fillPanel(dirManager->fileCount());
+        thumbnailPanelWidget->populate(dirManager->fileCount());
         return true;
     }
     return false;

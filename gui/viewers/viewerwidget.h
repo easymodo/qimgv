@@ -68,7 +68,8 @@ signals:
     void fitWindow();
     void fitWidth();
     void fitOriginal();
-    void thumbnailRequested(int);
+    void thumbnailRequested(QList<int>, int);
+    void thumbnailPressed(int);
 
 public slots:
     bool showVideo(Clip *clip);

@@ -286,7 +286,7 @@ CopyOverlay QPushButton:hover {
 /* Thumbnails & stuff */
 /*############################################################################*/
 
-.GraphicsView {
+[accessibleName="thumbnailView"] {
     background-color: #1c1d1e;
     border-style: none;
 }
@@ -312,17 +312,29 @@ CopyOverlay QPushButton:hover {
     border-top-left-radius: 2px;
 }
 
-.QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
-    background: none;
- /*   border-bottom: 1px solid #626567; */
+.QScrollBar:vertical {
+    width: 15px;
+    background-color: transparent;
 }
 
-.QScrollBar::add-line:horizontal {
+.QScrollBar::handle:vertical {
+    background-color: #5c5e60;
+    border: 1px solid;
+    border-left-color: #626567;
+    border-right-color: #5c5e60;
+    border-top-color: #5e6163;
+    border-bottom-color: #626567;
+    min-width: 60px;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+}
+
+.QScrollBar::add-line:horizontal, .QScrollBar::add-line:vertical {
     width: 0px;
     height: 0px;
 }
 
-.QScrollBar::sub-line:horizontal {
+.QScrollBar::sub-line:horizontal, .QScrollBar::sub-line:vertical {
     width: 0px;
     height: 0px;
 }

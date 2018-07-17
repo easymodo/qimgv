@@ -51,6 +51,11 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
     connect(&cursorTimer, SIGNAL(timeout()),
             this, SLOT(hideCursor()), Qt::UniqueConnection);
+
+    connect(folderView.get(), SIGNAL(thumbnailRequested(QList<int>, int)),
+            this, SIGNAL(thumbnailRequested(QList<int>, int)));
+    connect(folderView.get(), SIGNAL(thumbnailPressed(int)),
+            this, SIGNAL(thumbnailPressed(int)));
 }
 
 QRect ViewerWidget::imageRect() {

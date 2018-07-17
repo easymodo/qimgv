@@ -14,7 +14,15 @@
 #include "settings.h"
 #include "sharedresources.h"
 
-enum loadState { EMPTY, LOADING, LOADED };
+enum LoadState {
+    EMPTY,
+    LOADING,
+    LOADED
+};
+enum HighlightStyle {
+    HIGHLIGHT_TOPBAR,
+    HIGHLIGHT_BACKGROUND
+};
 
 class ThumbnailLabel : public QGraphicsWidget {
     Q_OBJECT
@@ -24,7 +32,7 @@ public:
     ThumbnailLabel();
     ~ThumbnailLabel();
 
-    loadState state;
+    LoadState state;
     void setThumbnail(Thumbnail *_thumbnail);
 
     void setHighlighted(bool x, bool smooth);
@@ -43,12 +51,16 @@ public:
 
     virtual QRectF geometry() const;
     QSizeF effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
+    void setDrawLabel(bool mode);
+    void setHightlightStyle(HighlightStyle style);
+    void setMargins(int x, int y);
 private:
     Thumbnail *thumbnail;
     int labelNumber;
     qreal currentOpacity;
-    bool highlighted, hovered;
-    int thumbnailSize, highlightBarHeight, marginX;
+    HighlightStyle highlightStyle;
+    bool highlighted, hovered, mDrawLabel;
+    int thumbnailSize, marginY, marginX;
     QRectF highlightBarRect, nameRect, nameTextRect, labelTextRect;
     QColor highlightColor, nameColor;
     QFont font, fontSmall;
@@ -66,6 +78,8 @@ private:
     void drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap);
     void drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap);
 
+    void drawHighlight(QPainter *painter);
+    void drawLabel(QPainter *painter);
 private slots:
     void readSettings();
 
