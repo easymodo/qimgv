@@ -1,6 +1,8 @@
 #ifndef FOLDERVIEW_H
 #define FOLDERVIEW_H
 
+#include <QGraphicsWidget>
+
 #include "gui/customwidgets/thumbnailview.h"
 #include "gui/flowlayout.h"
 
@@ -14,6 +16,7 @@ public slots:
 
 private:
     FlowLayout *flowLayout;
+    QGraphicsWidget holderWidget;
 
 private slots:
 
@@ -23,6 +26,7 @@ protected:
     void removeItemFromLayout(int pos);
     void setupLayout();
     ThumbnailLabel *createThumbnailWidget();
+    void onPopulate();
 
 signals:
 

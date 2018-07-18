@@ -10,7 +10,6 @@
  */
 
 #include <QGraphicsView>
-#include <QGraphicsWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QScrollBar>
@@ -31,9 +30,9 @@ public:
     ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent = nullptr);
 
 public slots:
+    void showEvent(QShowEvent *event);
     void populate(int count);
-    void setThumbnail(int pos, Thumbnail *thumb);
-    void show();
+    void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb);
     void resetViewport();
     void loadVisibleThumbnails();
 
@@ -50,7 +49,6 @@ private:
 
 protected:
     QGraphicsScene scene;
-    QGraphicsWidget holderWidget;
     QList<ThumbnailLabel*> thumbnails;
     QScrollBar *scrollBar;
     QTimeLine *timeLine;
@@ -70,9 +68,11 @@ protected:
 
     bool checkRange(int pos);
 
-    virtual ThumbnailLabel *createThumbnailWidget();
+    virtual ThumbnailLabel *createThumbnailWidget() = 0;
     virtual void addItemToLayout(ThumbnailLabel* widget, int pos) = 0;
     virtual void removeItemFromLayout(int pos) = 0;
+    virtual void onPopulate();
+    void fitSceneToContents();
 
     void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event);

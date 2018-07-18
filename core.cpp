@@ -23,6 +23,7 @@ Core::Core()
 #endif
     qRegisterMetaType<ScalerRequest>("ScalerRequest");
     qRegisterMetaType<std::shared_ptr<Image>>("std::shared_ptr<Image>");
+    qRegisterMetaType<std::shared_ptr<Thumbnail>>("std::shared_ptr<Thumbnail>");
     initGui();
     initComponents();
     connectComponents();
@@ -89,8 +90,8 @@ void Core::connectComponents() {
     connect(viewerWidget, SIGNAL(thumbnailRequested(QList<int>, int)),
             thumbnailer, SLOT(generateThumbnailFor(QList<int>, int)), Qt::UniqueConnection);
 
-    connect(thumbnailer, SIGNAL(thumbnailReady(Thumbnail*)),
-            this, SLOT(forwardThumbnail(Thumbnail*)));
+    connect(thumbnailer, SIGNAL(thumbnailReady(std::shared_ptr<Thumbnail>)),
+            this, SLOT(forwardThumbnail(std::shared_ptr<Thumbnail>)));
     connect(thumbnailPanelWidget, SIGNAL(thumbnailPressed(int)),
             this, SLOT(loadByIndex(int)));
     connect(this, SIGNAL(imageIndexChanged(int)),
@@ -514,13 +515,11 @@ void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
     }
 }
 
-void Core::forwardThumbnail(Thumbnail *thumbnail) {
+void Core::forwardThumbnail(std::shared_ptr<Thumbnail> thumbnail) {
     int index = dirManager->indexOf(thumbnail->name());
     if(index >= 0) {
         thumbnailPanelWidget->setThumbnail(index, thumbnail);
         viewerWidget->setThumbnail(index, thumbnail);
-    } else {
-        delete thumbnail;
     }
 }
 
@@ -559,6 +558,7 @@ bool Core::setDirectory(QString newPath) {
         this->reset();
         dirManager->setDirectory(newPath);
         thumbnailPanelWidget->populate(dirManager->fileCount());
+        viewerWidget->populateFolderView(dirManager->fileCount());
         return true;
     }
     return false;

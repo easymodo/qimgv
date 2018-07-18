@@ -29,19 +29,17 @@ class ThumbnailLabel : public QGraphicsWidget {
     Q_PROPERTY(qreal currentOpacity READ propertyOpacity WRITE propertySetOpacity)
 
 public:
-    ThumbnailLabel();
+    ThumbnailLabel(QGraphicsItem *parent = nullptr);
     ~ThumbnailLabel();
 
     LoadState state;
-    void setThumbnail(Thumbnail *_thumbnail);
+    void setThumbnail(std::shared_ptr<Thumbnail> _thumbnail);
 
     void setHighlighted(bool x, bool smooth);
     bool isHighlighted();
     void setOpacity(qreal amount, bool smooth);
 
     QRectF boundingRect() const Q_DECL_OVERRIDE;
-    void setLabelNum(int num);
-    int labelNum();
 
     int width();
     int height();
@@ -55,8 +53,7 @@ public:
     void setHightlightStyle(HighlightStyle style);
     void setMargins(int x, int y);
 private:
-    Thumbnail *thumbnail;
-    int labelNumber;
+    std::shared_ptr<Thumbnail> thumbnail;
     qreal currentOpacity;
     HighlightStyle highlightStyle;
     bool highlighted, hovered, mDrawLabel;

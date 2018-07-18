@@ -49,7 +49,8 @@ void ThumbnailerRunnable::run() {
                    image.get()->text("label");
     }
     std::shared_ptr<const QPixmap> pixmapPtr(tmpPixmap);
-    emit taskEnd(new Thumbnail(tmpName, tmpLabel, size, pixmapPtr), path);
+    std::shared_ptr<Thumbnail> thumbnail(new Thumbnail(tmpName, tmpLabel, size, pixmapPtr));
+    emit taskEnd(thumbnail, path);
 }
 
 QString ThumbnailerRunnable::generateIdString() {

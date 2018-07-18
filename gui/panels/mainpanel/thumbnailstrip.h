@@ -32,7 +32,6 @@ private:
 
     void updateThumbnailPositions(int start, int end);
     void updateThumbnailPositions();
-    void fitSceneToContents();
     void setThumbnailSize(int);
     void updateThumbnailSize();
 

@@ -323,8 +323,12 @@ void ViewerWidget::hideCursorTimed(bool restartTimer) {
         cursorTimer.start(CURSOR_HIDE_TIMEOUT_MS);
 }
 
-void ViewerWidget::setThumbnail(int pos, Thumbnail *thumb) {
+void ViewerWidget::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
     folderView->setThumbnail(pos, thumb);
+}
+
+void ViewerWidget::populateFolderView(int count) {
+    folderView->populate(count);
 }
 
 void ViewerWidget::hideCursor() {

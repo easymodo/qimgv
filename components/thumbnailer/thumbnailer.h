@@ -27,10 +27,10 @@ private:
 
 private slots:
     void onTaskStart(QString path);
-    void onTaskEnd(Thumbnail*, QString path);
+    void onTaskEnd(std::shared_ptr<Thumbnail> thumbnail, QString path);
 
 signals:
-    void thumbnailReady(Thumbnail*);
+    void thumbnailReady(std::shared_ptr<Thumbnail>);
 };
 
 #endif // THUMBNAILER_H

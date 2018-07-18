@@ -10,11 +10,13 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
     loadTimer.setSingleShot(true);
     this->setFocusPolicy(Qt::NoFocus);
+    setupLayout();
 }
 
+//  no layout; manual item positioning
+//  graphical issues otherwise
 void ThumbnailStrip::setupLayout() {
-    //  no layout; manual item positioning
-    //  graphical issues otherwise
+    this->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 }
 
 ThumbnailLabel* ThumbnailStrip::createThumbnailWidget() {
@@ -68,11 +70,6 @@ void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
     }
 }
 
-// fit scene to it's contents size
-void ThumbnailStrip::fitSceneToContents() {
-    scene.setSceneRect(scene.itemsBoundingRect());
-}
-
 void ThumbnailStrip::highlightThumbnail(int pos) {
     // this code fires twice on click. fix later
     // also wont highlight new label after removing file
@@ -105,7 +102,6 @@ void ThumbnailStrip::loadVisibleThumbnailsDelayed() {
 
 // scene stuff??
 void ThumbnailStrip::setThumbnailSize(int newSize) {
-    qDebug() << "setThumbnailSize: " << newSize;
     if(newSize >= 20) {
         thumbnailSize = newSize;
         for(int i=0; i<thumbnails.count(); i++) {
@@ -144,7 +140,6 @@ void ThumbnailStrip::removeItemAt(int pos) {
 // TODO: find some way to make this trigger while hidden
 void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
-    qDebug() << "resizeEvent";
     QWidget::resizeEvent(event);
     if(event->oldSize().height() != height())
         updateThumbnailSize();
@@ -155,7 +150,6 @@ void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
 // update size based on widget's size
 // reposition thumbnails within scene if needed
 void ThumbnailStrip::updateThumbnailSize() {
-    qDebug() << "updateThumbnailSize()";
     int newSize = height() - 23;
     if( newSize % 2 )
         --newSize;

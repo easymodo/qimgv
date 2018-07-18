@@ -18,6 +18,8 @@ void Thumbnailer::clearTasks() {
 void Thumbnailer::generateThumbnailFor(QList<int> indexes, int size) {
     pool->clear();
     for(int i = 0; i < indexes.count(); i++) {
+        if(!dm->checkRange(indexes[i]))
+            continue;
         QString filePath = dm->filePathAt(indexes[i]);
         if(!runningTasks.contains(filePath)) {
             startThumbnailerThread(filePath, size);
@@ -33,8 +35,8 @@ void Thumbnailer::startThumbnailerThread(QString filePath, int size) {
                                                 settings->squareThumbnails());
     connect(thumbnailerRunnable, SIGNAL(taskStart(QString)),
             this, SLOT(onTaskStart(QString)));
-    connect(thumbnailerRunnable, SIGNAL(taskEnd(Thumbnail*, QString)),
-            this, SLOT(onTaskEnd(Thumbnail*, QString)));
+    connect(thumbnailerRunnable, SIGNAL(taskEnd(std::shared_ptr<Thumbnail>, QString)),
+            this, SLOT(onTaskEnd(std::shared_ptr<Thumbnail>, QString)));
     thumbnailerRunnable->setAutoDelete(true);
     pool->start(thumbnailerRunnable);
 }
@@ -43,7 +45,7 @@ void Thumbnailer::onTaskStart(QString path) {
     runningTasks.append(path);
 }
 
-void Thumbnailer::onTaskEnd(Thumbnail *thumbnail, QString path) {
+void Thumbnailer::onTaskEnd(std::shared_ptr<Thumbnail> thumbnail, QString path) {
     runningTasks.removeOne(path);
     emit thumbnailReady(thumbnail);
 }

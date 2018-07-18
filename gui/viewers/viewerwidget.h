@@ -82,7 +82,9 @@ public slots:
     void showCursor();
     void hideCursorTimed(bool restartTimer);
 
-    void setThumbnail(int pos, Thumbnail *thumb);
+    void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb);
+
+    void populateFolderView(int count);
 
     // video control
     void pauseVideo();

@@ -32,7 +32,7 @@ private:
 
 signals:
     void taskStart(QString);
-    void taskEnd(Thumbnail*, QString);
+    void taskEnd(std::shared_ptr<Thumbnail>, QString);
 };
 
 #endif // THUMBNAILERRUNNABLE_H

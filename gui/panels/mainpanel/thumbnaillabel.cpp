@@ -1,8 +1,8 @@
 #include "thumbnaillabel.h"
 
-ThumbnailLabel::ThumbnailLabel() :
+ThumbnailLabel::ThumbnailLabel(QGraphicsItem *parent) :
+    QGraphicsWidget(parent),
     state(EMPTY),
-    labelNumber(0),
     highlightStyle(HIGHLIGHT_TOPBAR),
     thumbnail(nullptr),
     highlighted(false),
@@ -43,11 +43,7 @@ void ThumbnailLabel::readSettings() {
 void ThumbnailLabel::setThumbnailSize(int size) {
     if(thumbnailSize != size && size > 0) {
         this->state = EMPTY;
-        // delete the old thumbnail
-        if(thumbnail) {
-            delete thumbnail;
-            thumbnail = nullptr;
-        }
+        thumbnail = nullptr;
         thumbnailSize = size;
         updateGeometry();
 
@@ -61,7 +57,6 @@ void ThumbnailLabel::setThumbnailSize(int size) {
 void ThumbnailLabel::setMargins(int x, int y) {
     marginX = x;
     marginY = y;
-    //
 }
 
 void ThumbnailLabel::setDrawLabel(bool mode) {
@@ -95,11 +90,8 @@ QSizeF ThumbnailLabel::effectiveSizeHint(Qt::SizeHint which, const QSizeF &const
     return sizeHint(which, constraint);
 }
 
-void ThumbnailLabel::setThumbnail(Thumbnail *_thumbnail) {
+void ThumbnailLabel::setThumbnail(std::shared_ptr<Thumbnail> _thumbnail) {
     if(_thumbnail) {
-        if(thumbnail) {
-            delete thumbnail;
-        }
         thumbnail = _thumbnail;
         setupLabel();
         update();
@@ -175,17 +167,6 @@ int ThumbnailLabel::width() {
 
 int ThumbnailLabel::height() {
     return boundingRect().height();
-}
-
-void ThumbnailLabel::setLabelNum(int num) {
-    if(num >= 0)
-        labelNumber = num;
-    else
-        qDebug() << "ThumbnailLabel::setLabelNum - invalid argument.";
-}
-
-int ThumbnailLabel::labelNum() {
-    return labelNumber;
 }
 
 void ThumbnailLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -291,7 +272,6 @@ bool ThumbnailLabel::isHovered() {
 
 ThumbnailLabel::~ThumbnailLabel() {
     delete opacityAnimation;
-    delete thumbnail;
     delete fm;
     delete fmSmall;
 }

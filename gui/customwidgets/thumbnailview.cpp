@@ -42,15 +42,18 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     connect(this, SIGNAL(scrolled()), this, SLOT(loadVisibleThumbnails()));
 }
 
-
+void ThumbnailView::showEvent(QShowEvent *event) {
+    QGraphicsView::showEvent(event);
+    loadVisibleThumbnails();
+}
 
 void ThumbnailView::populate(int count) {
-    if(count >= 0 ) {
-        for(int i = 0; i < thumbnails.count() - 1; i++) {
-            ThumbnailLabel *tmp = thumbnails.takeAt(0);
-            removeItemFromLayout(0);
-            delete tmp;
+    if(count >= 0) {
+        for(int i = thumbnails.count() - 1; i >=0; i--) {
+            removeItemFromLayout(i);
         }
+        qDeleteAll(thumbnails);
+        thumbnails.clear();
         for(int i = 0; i < count; i++) {
             ThumbnailLabel *widget = createThumbnailWidget();
             widget->setThumbnailSize(thumbnailSize);
@@ -58,18 +61,12 @@ void ThumbnailView::populate(int count) {
             addItemToLayout(widget, i);
         }
     }
+    onPopulate();
+    fitSceneToContents();
     resetViewport();
 }
 
-// set up widget's options here before adding to layout
-ThumbnailLabel* ThumbnailView::createThumbnailWidget() {
-    ThumbnailLabel *widget = new ThumbnailLabel();
-    widget->setDrawLabel(true);
-    widget->setHightlightStyle(HIGHLIGHT_TOPBAR);
-    return widget;
-}
-
-void ThumbnailView::setThumbnail(int pos, Thumbnail *thumb) {
+void ThumbnailView::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
     if(thumb && thumb->size() == floor(thumbnailSize*qApp->devicePixelRatio()) && checkRange(pos)) {
        // qDebug() ->pos()<< "SET: " << pos;
         thumbnails.at(pos)->setThumbnail(thumb);
@@ -77,14 +74,9 @@ void ThumbnailView::setThumbnail(int pos, Thumbnail *thumb) {
     }
 }
 
-void ThumbnailView::show() {
-    QGraphicsView::show();
-    loadVisibleThumbnails();
-}
-
 void ThumbnailView::loadVisibleThumbnails() {
     //loadTimer.stop();
-    //qDebug() << "load";
+    qDebug() << "load";
     if(isVisible()) {
         QRectF visibleRect = mapToScene(viewport()->geometry()).boundingRect();
         // grow rectangle to cover nearby offscreen items
@@ -101,8 +93,8 @@ void ThumbnailView::loadVisibleThumbnails() {
             }
         }
         if(loadList.count()) {
-            qDebug() << "requested: " << loadList.count() << " items";
-            qDebug() << loadList;
+            //qDebug() << "requested: " << loadList.count() << " items";
+            //qDebug() << loadList;
             emit thumbnailRequested(loadList, floor(qApp->devicePixelRatio()*thumbnailSize));
         }
     }
@@ -149,6 +141,15 @@ bool ThumbnailView::checkRange(int pos) {
         return true;
     else
         return false;
+}
+
+void ThumbnailView::onPopulate() {
+
+}
+
+// fit scene to it's contents size
+void ThumbnailView::fitSceneToContents() {
+    scene.setSceneRect(scene.itemsBoundingRect());
 }
 
 //################### scrolling ######################
