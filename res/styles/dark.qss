@@ -291,16 +291,16 @@ CopyOverlay QPushButton:hover {
     border-style: none;
 }
 
-.ThumbnailLabel {
+ThumbnailLabel {
     background-color: #1c1d1e;
 }
 
-.QScrollBar:horizontal {
+ThumbnailView QScrollBar:horizontal {
     height: 15px;
     background-color: transparent;
 }
 
-.QScrollBar::handle:horizontal {
+ThumbnailView QScrollBar::handle:horizontal {
     background-color: #5c5e60;
     border: 1px solid;
     border-top-color: #626567;
@@ -312,29 +312,37 @@ CopyOverlay QPushButton:hover {
     border-top-left-radius: 2px;
 }
 
-.QScrollBar:vertical {
+ThumbnailView QScrollBar:vertical {
     width: 15px;
     background-color: transparent;
 }
 
-.QScrollBar::handle:vertical {
+ThumbnailView QScrollBar::handle:vertical {
     background-color: #5c5e60;
     border: 1px solid;
     border-left-color: #626567;
     border-right-color: #5c5e60;
     border-top-color: #5e6163;
     border-bottom-color: #626567;
-    min-width: 60px;
+    min-height: 60px;
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
 }
 
-.QScrollBar::add-line:horizontal, .QScrollBar::add-line:vertical {
+ThumbnailView QScrollBar::sub-page {
+    background: none;
+}
+
+ThumbnailView QScrollBar::add-page {
+    background: none;
+}
+
+ThumbnailView QScrollBar::add-line {
     width: 0px;
     height: 0px;
 }
 
-.QScrollBar::sub-line:horizontal, .QScrollBar::sub-line:vertical {
+ThumbnailView QScrollBar::sub-line {
     width: 0px;
     height: 0px;
 }
