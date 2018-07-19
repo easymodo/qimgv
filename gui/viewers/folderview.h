@@ -34,10 +34,10 @@ private slots:
 
 protected:
     void resizeEvent(QResizeEvent *event);
-    void addItemToLayout(ThumbnailLabel *widget, int pos);
+    void addItemToLayout(ThumbnailWidget *widget, int pos);
     void removeItemFromLayout(int pos);
     void setupLayout();
-    ThumbnailLabel *createThumbnailWidget();
+    ThumbnailWidget *createThumbnailWidget();
     void onPopulate();
 
     void keyPressEvent(QKeyEvent *event);

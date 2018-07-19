@@ -18,9 +18,6 @@ FolderView::FolderView(QWidget *parent)
                 << "home"
                 << "end"
                 << "delete";
-
-    // tmp
-    populate(40);
 }
 
 void FolderView::show() {
@@ -104,10 +101,10 @@ void FolderView::selectIndex(int index) {
         return;
 
     if(checkRange(selectedIndex))
-        thumbnails.at(selectedIndex)->setHighlighted(false, false);
+        thumbnails.at(selectedIndex)->setHighlighted(false, true);
     selectedIndex = index;
 
-    ThumbnailLabel *thumb = thumbnails.at(selectedIndex);
+    ThumbnailWidget *thumb = thumbnails.at(selectedIndex);
     thumb->setHighlighted(true, false);
     ensureVisible(thumb, 0, 0);
     loadVisibleThumbnails();
@@ -123,17 +120,17 @@ void FolderView::setupLayout() {
     holderWidget.setLayout(flowLayout);
 }
 
-ThumbnailLabel* FolderView::createThumbnailWidget() {
+ThumbnailWidget* FolderView::createThumbnailWidget() {
     // important: parent must be set, otherwise widget won't be drawn
-    ThumbnailLabel *widget = new ThumbnailLabel(&holderWidget);
-    widget->setDrawLabel(false);
+    ThumbnailWidget *widget = new ThumbnailWidget(&holderWidget);
+    widget->setDrawLabel(true);
     widget->setHightlightStyle(HIGHLIGHT_BACKGROUND);
     widget->setMargins(3,3);
     return widget;
 }
 
 // TODO: insert
-void FolderView::addItemToLayout(ThumbnailLabel* widget, int pos) {
+void FolderView::addItemToLayout(ThumbnailWidget* widget, int pos) {
     flowLayout->addItem(widget);
 }
 
@@ -189,11 +186,9 @@ void FolderView::resizeEvent(QResizeEvent *event) {
 
     holderWidget.setMinimumSize(size());
     holderWidget.setMaximumSize(size());
-
     fitSceneToContents();
 
     loadVisibleThumbnails();
 
-    //qDebug() << this->verticalScrollBar()->width();
-    qDebug() << this->rect() << holderWidget.size() << scene.sceneRect();
+    //qDebug() << this->rect() << holderWidget.size() << scene.sceneRect();
 }

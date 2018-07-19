@@ -48,9 +48,9 @@ public slots:
 protected:
     virtual void resizeEvent(QResizeEvent *event);
     void ensureThumbnailVisible(int pos);
-    void addItemToLayout(ThumbnailLabel *widget, int pos);
+    void addItemToLayout(ThumbnailWidget *widget, int pos);
     void removeItemFromLayout(int pos);
-    ThumbnailLabel *createThumbnailWidget();
+    ThumbnailWidget *createThumbnailWidget();
 };
 
 #endif // THUMBNAILSTRIP_H

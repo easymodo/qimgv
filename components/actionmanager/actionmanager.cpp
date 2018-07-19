@@ -66,6 +66,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert(",", "frameStep");
     actionManager->defaults.insert(".", "frameStepBack");
     actionManager->defaults.insert("Return", "folderView");
+    actionManager->defaults.insert("backspace", "folderView");
 }
 //------------------------------------------------------------------------------
 void ActionManager::initShortcuts() {

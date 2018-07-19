@@ -19,15 +19,15 @@ void ThumbnailStrip::setupLayout() {
     this->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 }
 
-ThumbnailLabel* ThumbnailStrip::createThumbnailWidget() {
-    ThumbnailLabel *widget = new ThumbnailLabel();
+ThumbnailWidget* ThumbnailStrip::createThumbnailWidget() {
+    ThumbnailWidget *widget = new ThumbnailWidget();
     widget->setDrawLabel(true);
     widget->setHightlightStyle(HIGHLIGHT_TOPBAR);
     return widget;
 }
 
 
-void ThumbnailStrip::addItemToLayout(ThumbnailLabel* widget, int pos) {
+void ThumbnailStrip::addItemToLayout(ThumbnailWidget* widget, int pos) {
     if(!checkRange(pos))
         return;
 
@@ -41,10 +41,10 @@ void ThumbnailStrip::removeItemFromLayout(int pos) {
     if(checkRange(pos)) {
         if(pos == current)
             current = -1;
-        ThumbnailLabel *thumb = thumbnails.takeAt(pos);
+        ThumbnailWidget *thumb = thumbnails.takeAt(pos);
         scene.removeItem(thumb);
         // move items left
-        ThumbnailLabel *tmp;
+        ThumbnailWidget *tmp;
         for(int i = pos; i < thumbnails.count(); i++) {
             tmp = thumbnails.at(i);
             tmp->moveBy(-tmp->boundingRect().width(), 0);
@@ -63,7 +63,7 @@ void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
     }
     // assume all thumbnails are the same size
     int thumbWidth = thumbnails.at(start)->boundingRect().width() + thumbnailSpacing;
-    ThumbnailLabel *tmp;
+    ThumbnailWidget *tmp;
     for(int i = start; i <= end; i++) {
         tmp = thumbnails.at(i);
         tmp->setPos(i * thumbWidth, 0);

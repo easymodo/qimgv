@@ -9,7 +9,8 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     this->setMouseTracking(true);
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setScene(&scene);
-    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    //setViewportUpdateMode(QGraphicsView::SmartViewportUpdate); // more buggy than smart
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
     /* scrolling-related things */
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
@@ -55,7 +56,7 @@ void ThumbnailView::populate(int count) {
         qDeleteAll(thumbnails);
         thumbnails.clear();
         for(int i = 0; i < count; i++) {
-            ThumbnailLabel *widget = createThumbnailWidget();
+            ThumbnailWidget *widget = createThumbnailWidget();
             widget->setThumbnailSize(thumbnailSize);
             thumbnails.append(widget);
             addItemToLayout(widget, i);
@@ -87,7 +88,7 @@ void ThumbnailView::loadVisibleThumbnails() {
                                                    Qt::AscendingOrder);
         QList<int> loadList;
         for(int i = 0; i < visibleItems.count(); i++) {
-            ThumbnailLabel* widget = qgraphicsitem_cast<ThumbnailLabel*>(visibleItems.at(i));
+            ThumbnailWidget* widget = qgraphicsitem_cast<ThumbnailWidget*>(visibleItems.at(i));
             if(widget->state == EMPTY) {
                 loadList.append(thumbnails.indexOf(widget));
             }
@@ -212,7 +213,7 @@ void ThumbnailView::scrollSmooth(int angleDelta) {
 
 void ThumbnailView::mousePressEvent(QMouseEvent *event) {
     if(event->button() == Qt::LeftButton) {
-        ThumbnailLabel *item = qgraphicsitem_cast<ThumbnailLabel*>(itemAt(event->pos()));
+        ThumbnailWidget *item = qgraphicsitem_cast<ThumbnailWidget*>(itemAt(event->pos()));
         if(item) {
             emit thumbnailPressed(thumbnails.indexOf(item));
         }

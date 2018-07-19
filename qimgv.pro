@@ -82,7 +82,6 @@ SOURCES += \
     gui/overlays/infooverlay.cpp \
     gui/overlays/mapoverlay.cpp \
     gui/panels/mainpanel/mainpanel.cpp \
-    gui/panels/mainpanel/thumbnaillabel.cpp \
     gui/panels/mainpanel/thumbnailstrip.cpp \
     gui/viewers/imageviewer.cpp \
     gui/viewers/viewerwidget.cpp \
@@ -131,7 +130,8 @@ SOURCES += \
     gui/overlays/videocontrols.cpp \
     gui/customwidgets/videoslider.cpp \
     gui/flowlayout.cpp \
-    gui/customwidgets/thumbnailview.cpp
+    gui/customwidgets/thumbnailview.cpp \
+    gui/customwidgets/thumbnailwidget.cpp
 
 HEADERS += \
     core.h \
@@ -164,7 +164,6 @@ HEADERS += \
     gui/overlays/infooverlay.h \
     gui/overlays/mapoverlay.h \
     gui/panels/mainpanel/mainpanel.h \
-    gui/panels/mainpanel/thumbnaillabel.h \
     gui/panels/mainpanel/thumbnailstrip.h \
     gui/viewers/imageviewer.h \
     gui/viewers/viewerwidget.h \
@@ -211,7 +210,8 @@ HEADERS += \
     gui/overlays/videocontrols.h \
     gui/customwidgets/videoslider.h \
     gui/flowlayout.h \
-    gui/customwidgets/thumbnailview.h
+    gui/customwidgets/thumbnailview.h \
+    gui/customwidgets/thumbnailwidget.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \

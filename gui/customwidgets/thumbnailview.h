@@ -17,7 +17,7 @@
 #include <QTimeLine>
 #include <QTimer>
 
-#include "gui/panels/mainpanel/thumbnaillabel.h"
+#include "gui/customwidgets/thumbnailwidget.h"
 
 enum ThumbnailViewOrientation {
     THUMBNAILVIEW_HORIZONTAL,
@@ -49,7 +49,7 @@ private:
 
 protected:
     QGraphicsScene scene;
-    QList<ThumbnailLabel*> thumbnails;
+    QList<ThumbnailWidget*> thumbnails;
     QScrollBar *scrollBar;
     QTimeLine *timeLine;
     QTimer scrollTimer;
@@ -68,8 +68,8 @@ protected:
 
     bool checkRange(int pos);
 
-    virtual ThumbnailLabel *createThumbnailWidget() = 0;
-    virtual void addItemToLayout(ThumbnailLabel* widget, int pos) = 0;
+    virtual ThumbnailWidget *createThumbnailWidget() = 0;
+    virtual void addItemToLayout(ThumbnailWidget* widget, int pos) = 0;
     virtual void removeItemFromLayout(int pos) = 0;
     virtual void onPopulate();
     void fitSceneToContents();
