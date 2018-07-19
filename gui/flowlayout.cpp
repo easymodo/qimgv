@@ -58,9 +58,31 @@ FlowLayout::FlowLayout()
 {
     m_spacing[0] = 0;
     m_spacing[1] = 0;
+    m_rows = 0;
+    m_columns = 0;
     QSizePolicy sp = sizePolicy();
     sp.setHeightForWidth(true);
     setSizePolicy(sp);
+}
+
+int FlowLayout::itemAbove(int index) {
+    if(index >= m_items.count() || index < 0)
+        return -1;
+
+    int indexAbove = index - m_columns;
+    if(indexAbove >= 0)
+        return indexAbove;
+    return -1;
+}
+
+int FlowLayout::itemBelow(int index) {
+    if(index >= m_items.count() || index < 0)
+        return -1;
+
+    int indexBelow = index + m_columns;
+    if(indexBelow < m_items.count())
+        return indexBelow;
+    return -1;
 }
 
 void FlowLayout::insertItem(int index, QGraphicsLayoutItem *item)
@@ -104,11 +126,12 @@ void FlowLayout::setSpacing(Qt::Orientations o, qreal spacing)
 void FlowLayout::setGeometry(const QRectF &geom)
 {
     QGraphicsLayout::setGeometry(geom);
-    doLayout(geom, true);
+    GridInfo gInfo = doLayout(geom, true);
+    m_columns = gInfo.columns;
+    m_rows = gInfo.rows;
 }
 
-qreal FlowLayout::doLayout(const QRectF &geom, bool applyNewGeometry) const
-{
+GridInfo FlowLayout::doLayout(const QRectF &geom, bool applyNewGeometry) const {
     qreal left, top, right, bottom;
     getContentsMargins(&left, &top, &right, &bottom);
     const qreal maxw = geom.width() - left - right;
@@ -117,6 +140,12 @@ qreal FlowLayout::doLayout(const QRectF &geom, bool applyNewGeometry) const
     qreal y = 0;
     qreal maxRowHeight = 0;
     QSizeF pref;
+
+    int columns = m_items.count();
+    int rows = 0;
+    if(columns)
+        rows = 1;
+
     for (int i = 0; i < m_items.count(); ++i) {
         QGraphicsLayoutItem *item = m_items.at(i);
         pref = item->effectiveSizeHint(Qt::PreferredSize);
@@ -130,6 +159,9 @@ qreal FlowLayout::doLayout(const QRectF &geom, bool applyNewGeometry) const
             } else {
                 x = 0;
                 next_x = pref.width();
+                if(rows == 1)
+                    columns = i;
+                rows++;
             }
             y += maxRowHeight + spacing(Qt::Vertical);
             maxRowHeight = 0;
@@ -140,7 +172,7 @@ qreal FlowLayout::doLayout(const QRectF &geom, bool applyNewGeometry) const
         x = next_x + spacing(Qt::Horizontal);
     }
     maxRowHeight = qMax(maxRowHeight, pref.height());
-    return top + y + maxRowHeight + bottom;
+    return GridInfo(columns, rows, top + y + maxRowHeight + bottom);
 }
 
 QSizeF FlowLayout::minSize(const QSizeF &constraint) const
@@ -149,7 +181,7 @@ QSizeF FlowLayout::minSize(const QSizeF &constraint) const
     qreal left, top, right, bottom;
     getContentsMargins(&left, &top, &right, &bottom);
     if (constraint.width() >= 0) {   // height for width
-        const qreal height = doLayout(QRectF(QPointF(0,0), constraint), false);
+        const qreal height = doLayout(QRectF(QPointF(0,0), constraint), false).height;
         size = QSizeF(constraint.width(), height);
     } else if (constraint.height() >= 0) {  // width for height?
         // not supported

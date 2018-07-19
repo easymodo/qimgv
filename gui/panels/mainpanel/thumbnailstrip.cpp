@@ -150,7 +150,7 @@ void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
 // update size based on widget's size
 // reposition thumbnails within scene if needed
 void ThumbnailStrip::updateThumbnailSize() {
-    int newSize = height() - 23;
+    int newSize = height() - 25;
     if( newSize % 2 )
         --newSize;
     if(newSize != thumbnailSize) {

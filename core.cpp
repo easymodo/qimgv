@@ -96,11 +96,11 @@ void Core::connectComponents() {
             this, SLOT(loadByIndex(int)));
     connect(this, SIGNAL(imageIndexChanged(int)),
             thumbnailPanelWidget, SLOT(highlightThumbnail(int)));
+    connect(this, SIGNAL(imageIndexChanged(int)),
+            viewerWidget, SLOT(highlightThumbnail(int)));
 
     connect(viewerWidget, SIGNAL(thumbnailPressed(int)),
             this, SLOT(loadByIndex(int)));
-    //connect(this, SIGNAL(imageIndexChanged(int)),
-    //        viewerWidget, SLOT(highlightThumbnail(int)));
 
     // scaling
     connect(viewerWidget, SIGNAL(scalingRequested(QSize)),
@@ -152,7 +152,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(seekBackVideo()), viewerWidget, SLOT(seekVideoLeft()));
     connect(actionManager, SIGNAL(frameStep()), viewerWidget, SLOT(frameStep()));
     connect(actionManager, SIGNAL(frameStepBack()), viewerWidget, SLOT(frameStepBack()));
-    connect(actionManager, SIGNAL(showFolderView()), viewerWidget, SLOT(enableFolderView()));
+    connect(actionManager, SIGNAL(folderView()), viewerWidget, SLOT(enableFolderView()));
 }
 
 void Core::postUpdate() {

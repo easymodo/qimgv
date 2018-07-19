@@ -76,7 +76,7 @@ void ThumbnailView::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
 
 void ThumbnailView::loadVisibleThumbnails() {
     //loadTimer.stop();
-    qDebug() << "load";
+    //qDebug() << "load";
     if(isVisible()) {
         QRectF visibleRect = mapToScene(viewport()->geometry()).boundingRect();
         // grow rectangle to cover nearby offscreen items

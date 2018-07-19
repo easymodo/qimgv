@@ -241,6 +241,10 @@ void ViewerWidget::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
     imageViewer->replacePixmap(std::move(scaled));
 }
 
+void ViewerWidget::highlightThumbnail(int index) {
+    folderView->selectIndex(index);
+}
+
 void ViewerWidget::closeImage() {
     imageViewer->closeImage();
     videoPlayer->stop();

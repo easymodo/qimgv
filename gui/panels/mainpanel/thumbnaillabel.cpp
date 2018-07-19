@@ -30,7 +30,6 @@ ThumbnailLabel::ThumbnailLabel(QGraphicsItem *parent) :
     currentOpacity = inactiveOpacity;
 
     setThumbnailSize(100);
-    //this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
@@ -205,6 +204,7 @@ void ThumbnailLabel::drawHighlight(QPainter *painter) {
         }
     } else if(highlightStyle == HIGHLIGHT_BACKGROUND) {
         if(isHighlighted()) {
+            //painter->fillRect(boundingRect().adjusted(-marginX,-marginY,marginX,marginY), highlightColor);
             painter->fillRect(boundingRect(), highlightColor);
         }
     }
@@ -228,8 +228,8 @@ void ThumbnailLabel::drawLabel(QPainter *painter) {
 
 inline
 void ThumbnailLabel::drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
-    QPointF drawPosCentered(width()/2 - pixmap->width()/(2*qApp->devicePixelRatio()),
-                            marginY + (thumbnailSize)/2 - pixmap->height()/(2*qApp->devicePixelRatio()));
+    QPointF drawPosCentered(width()  / 2 - pixmap->width()  / (2 * qApp->devicePixelRatio()),
+                            height() / 2 - pixmap->height() / (2 * qApp->devicePixelRatio()));
     painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
 }
 

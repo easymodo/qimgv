@@ -65,7 +65,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("Shift+Left", "seekBackVideo");
     actionManager->defaults.insert(",", "frameStep");
     actionManager->defaults.insert(".", "frameStepBack");
-    actionManager->defaults.insert("Return", "showFolderView");
+    actionManager->defaults.insert("Return", "folderView");
 }
 //------------------------------------------------------------------------------
 void ActionManager::initShortcuts() {

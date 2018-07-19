@@ -19,6 +19,16 @@ CopyOverlay::~CopyOverlay() {
     delete ui;
 }
 
+void CopyOverlay::show() {
+    FloatingWidget::show();
+    setFocus();
+}
+
+void CopyOverlay::hide() {
+    FloatingWidget::hide();
+    clearFocus();
+}
+
 void CopyOverlay::setDialogMode(CopyOverlayMode _mode) {
     mode = _mode;
     if(mode == OVERLAY_COPY)

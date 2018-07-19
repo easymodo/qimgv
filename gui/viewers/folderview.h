@@ -5,6 +5,7 @@
 
 #include "gui/customwidgets/thumbnailview.h"
 #include "gui/flowlayout.h"
+#include "components/actionmanager/actionmanager.h"
 
 class FolderView : public ThumbnailView
 {
@@ -13,12 +14,23 @@ public:
     explicit FolderView(QWidget *parent = nullptr);
 
 public slots:
+    void show();
+    void hide();
 
+    void selectFirst();
+    void selectLast();
+    void selectIndex(int index);
 private:
     FlowLayout *flowLayout;
     QGraphicsWidget holderWidget;
+    QStringList allowedKeys;
+    int selectedIndex;
 
 private slots:
+    void selectAbove();
+    void selectBelow();
+    void selectNext();
+    void selectPrev();
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -27,6 +39,8 @@ protected:
     void setupLayout();
     ThumbnailLabel *createThumbnailWidget();
     void onPopulate();
+
+    void keyPressEvent(QKeyEvent *event);
 
 signals:
 

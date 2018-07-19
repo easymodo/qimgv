@@ -95,7 +95,6 @@ signals:
     void seekBackVideo();
     void frameStep();
     void frameStepBack();
-    void showFolderView();
 };
 
 extern ActionManager *actionManager;

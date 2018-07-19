@@ -51,6 +51,16 @@
 #include <QGraphicsLayout>
 #include <QDebug>
 
+struct GridInfo {
+    GridInfo(int _columns, int _rows, qreal _height) {
+        columns = _columns;
+        rows = _rows;
+        height = _height;
+    }
+    int columns, rows;
+    qreal height;
+};
+
 class FlowLayout : public QGraphicsLayout
 {
 public:
@@ -67,17 +77,21 @@ public:
     QGraphicsLayoutItem *itemAt(int index) const override;
     void removeAt(int index) override;
 
+    // returns the index of item above / below
+    int itemAbove(int index);
+    int itemBelow(int index);
 protected:
     QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
 
 private:
-    qreal doLayout(const QRectF &geom, bool applyNewGeometry) const;
+    GridInfo doLayout(const QRectF &geom, bool applyNewGeometry) const;
     QSizeF minSize(const QSizeF &constraint) const;
     QSizeF prefSize() const;
     QSizeF maxSize() const;
 
     QList<QGraphicsLayoutItem*> m_items;
     qreal m_spacing[2];
+    int m_rows, m_columns;
 };
 
 
