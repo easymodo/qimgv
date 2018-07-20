@@ -1,6 +1,6 @@
 #include "mainpanel.h"
 
-MainPanel::MainPanel(OverlayContainerWidget *parent) : SlideHPanel(parent) {
+MainPanel::MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *parent) : SlideHPanel(parent) {
     // buttons stuff
     buttonsWidget.setAccessibleName("panelButtonsWidget");
 
@@ -25,6 +25,8 @@ MainPanel::MainPanel(OverlayContainerWidget *parent) : SlideHPanel(parent) {
     buttonsWidget.setLayout(&buttonsLayout);
     mLayout.addWidget(&buttonsWidget, 0, 1);
 
+    setWidget(widget);
+
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
@@ -45,10 +47,6 @@ void MainPanel::setPosition(PanelHPosition newPosition) {
         mLayout.setContentsMargins(0,3,0,0);
     }
     recalculateGeometry();
-}
-
-void MainPanel::setWidget(QWidget *w) {
-    SlidePanel::setWidget(w);
 }
 
 void MainPanel::setWindowButtonsEnabled(bool mode) {

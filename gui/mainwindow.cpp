@@ -2,9 +2,10 @@
 
 // TODO: nuke this and rewrite
 
-MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
+MainWindow::MainWindow(QWidget *parent)
     : OverlayContainerWidget(parent),
       currentDisplay(0),
+      bgOpacity(1.0f),
       desktopWidget(nullptr),
       panelEnabled(false),
       panelFullscreenOnly(false),
@@ -27,7 +28,6 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
     windowMoveTimer.setSingleShot(true);
     windowMoveTimer.setInterval(150);
 
-    this->viewerWidget.reset(viewerWidget);
     setupUi();
 
     connect(settings, SIGNAL(settingsChanged()),
@@ -50,14 +50,24 @@ MainWindow::MainWindow(ViewerWidget *viewerWidget, QWidget *parent)
     restoreWindowGeometry();
 }
 
-// floating panels, info bars, panels etc
+/*                                                          |-- [ImageViewer]
+ *                                   |-- [DocumentWidget] --|
+ * [MainWindow] -- [CentralWidget] --|                      |-- [VideoPlayer]
+ *                                   |-- [FolderView]
+ *
+ *  (not counting floating widgets)
+ */
 void MainWindow::setupUi() {
-    docWidget.reset(new DocumentWidget(this));
-    layout.addWidget(docWidget.get());
+    viewerWidget.reset(new ViewerWidget());
+    docWidget.reset(new DocumentWidget(viewerWidget));
+    folderView.reset(new FolderView());
 
-    setViewerWidget(viewerWidget);
+    centralWidget.reset(new CentralWidget(docWidget, folderView, this));
+    layout.addWidget(centralWidget.get());
+
+    // overlays etc.
     // this order is used while drawing
-    infoOverlay = new InfoOverlay(this);
+    infoOverlay = new InfoOverlay(viewerWidget.get());
     controlsOverlay = new ControlsOverlay(this);
     saveOverlay = new SaveConfirmOverlay(docWidget.get());
 
@@ -81,28 +91,133 @@ void MainWindow::setupUi() {
     connect(copyOverlay, SIGNAL(moveRequested(QString)),
             this, SIGNAL(moveRequested(QString)));
     floatingMessage = new FloatingMessage(this);
-    mainPanel = new MainPanel(this);
+    thumbnailStrip.reset(new ThumbnailStrip());
+    mainPanel = new MainPanel(thumbnailStrip, this);
+
+    // passthrough signals
+    //   MW >> Core
+    connect(folderView.get(), SIGNAL(thumbnailRequested(QList<int>, int)),
+            this, SIGNAL(thumbnailRequested(QList<int>, int)));
+    connect(thumbnailStrip.get(), SIGNAL(thumbnailRequested(QList<int>, int)),
+            this, SIGNAL(thumbnailRequested(QList<int>, int)));
+    connect(folderView.get(), SIGNAL(thumbnailPressed(int)),
+            this, SIGNAL(thumbnailPressed(int)));
+    connect(thumbnailStrip.get(), SIGNAL(thumbnailPressed(int)),
+            this, SIGNAL(thumbnailPressed(int)));
+
+    connect(viewerWidget.get(), SIGNAL(scalingRequested(QSize)),
+            this, SIGNAL(scalingRequested(QSize)));
+
+    //  Core >> MW
+    connect(this, SIGNAL(selectThumbnail(int)),
+            folderView.get(), SLOT(selectIndex(int)));
+    connect(this, SIGNAL(onThumbnailReady(int, std::shared_ptr<Thumbnail>)),
+            folderView.get(), SLOT(setThumbnail(int, std::shared_ptr<Thumbnail>)));
+    connect(this, SIGNAL(selectThumbnail(int)),
+            thumbnailStrip.get(), SLOT(highlightThumbnail(int)));
+    connect(this, SIGNAL(onThumbnailReady(int, std::shared_ptr<Thumbnail>)),
+            thumbnailStrip.get(), SLOT(setThumbnail(int, std::shared_ptr<Thumbnail>)));
+    //strip too^
+    connect(this, SIGNAL(zoomIn()),
+            viewerWidget.get(), SIGNAL(zoomIn()));
+    connect(this, SIGNAL(zoomOut()),
+            viewerWidget.get(), SIGNAL(zoomOut()));
+    connect(this, SIGNAL(zoomInCursor()),
+            viewerWidget.get(), SIGNAL(zoomInCursor()));
+    connect(this, SIGNAL(zoomOutCursor()),
+            viewerWidget.get(), SIGNAL(zoomOutCursor()));
+
+    connect(this, SIGNAL(scrollUp()),
+            viewerWidget.get(), SIGNAL(scrollUp()));
+    connect(this, SIGNAL(scrollDown()),
+            viewerWidget.get(), SIGNAL(scrollDown()));
+    connect(this, SIGNAL(scrollLeft()),
+            viewerWidget.get(), SIGNAL(scrollLeft()));
+    connect(this, SIGNAL(scrollRight()),
+            viewerWidget.get(), SIGNAL(scrollRight()));
+    connect(this, SIGNAL(pauseVideo()),
+            viewerWidget.get(), SLOT(pauseVideo()));
+    connect(this, SIGNAL(stopPlayback()),
+            viewerWidget.get(), SLOT(stopPlayback()));
+    connect(this, SIGNAL(seekVideoRight()),
+            viewerWidget.get(), SLOT(seekVideoRight()));
+    connect(this, SIGNAL(seekVideoLeft()),
+            viewerWidget.get(), SLOT(seekVideoLeft()));
+    connect(this, SIGNAL(frameStep()),
+            viewerWidget.get(), SLOT(frameStep()));
+    connect(this, SIGNAL(frameStepBack()),
+            viewerWidget.get(), SLOT(frameStepBack()));
+
+    connect(this, SIGNAL(enableFolderView()),
+            centralWidget.get(), SLOT(showFolderView()));
+
+    connect(this, SIGNAL(closeImage()),
+            viewerWidget.get(), SLOT(closeImage()));
+
 }
 
-void MainWindow::setPanelWidget(QWidget *panelWidget) {
-    mainPanel->setWidget(panelWidget);
+void MainWindow::fitWindow() {
+    if(viewerWidget->zoomInteractionEnabled()) {
+        viewerWidget->fitWindow();
+        showMessageFitWindow();
+    } else {
+        showMessage("Zoom temporary disabled");
+    }
 }
 
-bool MainWindow::hasPanelWidget() {
-    return mainPanel->hasWidget();
+void MainWindow::fitWidth() {
+    if(viewerWidget->zoomInteractionEnabled()) {
+        viewerWidget->fitWidth();
+        showMessageFitWidth();
+    } else {
+        showMessage("Zoom temporary disabled");
+    }
+}
+
+void MainWindow::fitOriginal() {
+    if(viewerWidget->zoomInteractionEnabled()) {
+        viewerWidget->fitOriginal();
+        showMessageFitOriginal();
+    } else {
+        showMessage("Zoom temporary disabled");
+    }
+}
+
+// switch between 1:1 and Fit All
+// TODO: move to viewerWidget?
+void MainWindow::switchFitMode() {
+    if(viewerWidget->fitMode() == FIT_WINDOW)
+        viewerWidget->setFitMode(FIT_ORIGINAL);
+    else
+        viewerWidget->setFitMode(FIT_WINDOW);
+}
+
+void MainWindow::showImage(std::unique_ptr<QPixmap> pixmap) {
+    centralWidget->showDocumentWidget();
+    viewerWidget->showImage(std::move(pixmap));
+}
+
+void MainWindow::showAnimation(std::unique_ptr<QMovie> movie) {
+    centralWidget->showDocumentWidget();
+    viewerWidget->showAnimation(std::move(movie));
+}
+
+void MainWindow::showVideo(Clip *clip) {
+    centralWidget->showDocumentWidget();
+    viewerWidget->showVideo(clip);
+}
+
+void MainWindow::populateThumbnailViews(int count) {
+    folderView->populate(count);
+    thumbnailStrip->populate(count);
 }
 
 bool MainWindow::isCropPanelActive() {
     return (activeSidePanel == SIDEPANEL_CROP);
 }
 
-void MainWindow::setViewerWidget(std::shared_ptr<ViewerWidget> _viewerWidget) {
-    if(_viewerWidget) {
-        viewerWidget = _viewerWidget;
-        docWidget.get()->setViewWidget(viewerWidget);
-    } else {
-        qDebug() << "MainWindow: viewerWidget is nullptr";
-    }
+void MainWindow::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
+    viewerWidget->onScalingFinished(std::move(scaled));
 }
 
 void MainWindow::updateCurrentDisplay() {
@@ -396,8 +511,10 @@ void MainWindow::showMessage(QString text) {
 }
 
 void MainWindow::readSettings() {
+    bgColor   = settings->backgroundColor();
+    bgOpacity = settings->backgroundOpacity();
 #ifdef USE_KDE_BLUR
-    if(settings->backgroundOpacity() == 1.0f)
+    if(bgOpacity == 1.0f)
         KWindowEffects::enableBlurBehind(winId(), false);
     else
         KWindowEffects::enableBlurBehind(winId(), settings->blurBackground());
@@ -432,4 +549,12 @@ void MainWindow::showInfoOverlay(bool mode) {
         infoOverlay->show();
     else
         infoOverlay->hide();
+}
+
+void MainWindow::paintEvent(QPaintEvent *event) {
+    QPainter p(this);
+    p.setOpacity(bgOpacity);
+    p.setBrush(QBrush(bgColor));
+    p.fillRect(this->rect(), p.brush());
+    OverlayContainerWidget::paintEvent(event);
 }

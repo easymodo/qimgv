@@ -18,7 +18,7 @@ public:
     explicit SlidePanel(OverlayContainerWidget *parent);
     ~SlidePanel();
     bool hasWidget();
-    void setWidget(QWidget* w);
+    void setWidget(std::shared_ptr<QWidget> w);
     // Use visibleGeometry instead of geometry() here.
     // If this is called mid-animation then geometry() will be all wrong.
     virtual QRect triggerRect() = 0;
@@ -35,7 +35,7 @@ protected:
     QPropertyAnimation *fadeAnimation, *slideAnimation;
     QParallelAnimationGroup *animGroup;
     int panelSize, slideAmount;
-    QWidget *mWidget;
+    std::shared_ptr<QWidget> mWidget;
     QPoint initialPosition;
     QRect mTriggerRect;
     virtual void updateTriggerRect() = 0;

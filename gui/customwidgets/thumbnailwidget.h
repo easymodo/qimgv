@@ -19,10 +19,6 @@ enum LoadState {
     LOADING,
     LOADED
 };
-enum HighlightStyle {
-    HIGHLIGHT_TOPBAR,
-    HIGHLIGHT_BACKGROUND
-};
 
 class ThumbnailWidget : public QGraphicsWidget {
     Q_OBJECT
@@ -39,7 +35,7 @@ public:
     bool isHighlighted();
     void setOpacity(qreal amount, bool smooth);
 
-    QRectF boundingRect() const Q_DECL_OVERRIDE;
+    virtual QRectF boundingRect() const Q_DECL_OVERRIDE;
 
     int width();
     int height();
@@ -50,43 +46,41 @@ public:
     virtual QRectF geometry() const;
     QSizeF effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
     void setDrawLabel(bool mode);
-    void setHightlightStyle(HighlightStyle style);
     void setMargins(int x, int y);
 private:
-    std::shared_ptr<Thumbnail> thumbnail;
-    qreal currentOpacity;
-    HighlightStyle highlightStyle;
-    bool highlighted, hovered, mDrawLabel;
-    int thumbnailSize, marginY, marginX;
-    QRectF highlightBarRect, nameRect, nameTextRect, labelTextRect;
-    QColor highlightColor, nameColor;
-    QFont font, fontSmall;
-    QFontMetrics *fm, *fmSmall;
-    QPropertyAnimation *opacityAnimation;
     void setHovered(bool);
     bool isHovered();
 
     void propertySetOpacity(qreal amount);
     qreal propertyOpacity();
 
-    const qreal inactiveOpacity = 0.86f;
-    const int opacityAnimationSpeed = 80;
-    void setupLabel();
-    void drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap);
     void drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap);
 
-    void drawHighlight(QPainter *painter);
-    void drawLabel(QPainter *painter);
 private slots:
     void readSettings();
 
 protected:
+    virtual void setupLayout();
+    virtual void drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap);
+    virtual void drawHighlight(QPainter *painter);
+    virtual void drawLabel(QPainter *painter);
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) Q_DECL_OVERRIDE;
     QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
-
     void updateGeometry();
+
+    std::shared_ptr<Thumbnail> thumbnail;
+    qreal currentOpacity;
+    bool highlighted, hovered, mDrawLabel;
+    int thumbnailSize, marginY, marginX, textHeight;
+    QRectF highlightRect, nameRect, nameTextRect, labelTextRect;
+    QColor highlightColor, nameColor;
+    QFont font, fontSmall;
+    QFontMetrics *fm, *fmSmall;
+    QPropertyAnimation *opacityAnimation;
+    const qreal inactiveOpacity = 0.86f;
+    const int opacityAnimationSpeed = 80;
 };
 
 #endif // THUMBNAILWIDGET_H

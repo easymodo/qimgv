@@ -1,8 +1,8 @@
-#include "folderview.h"
+#include "foldergridview.h"
 
 // TODO: create a base class for this and the one on panel
 
-FolderView::FolderView(QWidget *parent)
+FolderGridView::FolderGridView(QWidget *parent)
     : ThumbnailView(THUMBNAILVIEW_VERTICAL, parent),
       selectedIndex(-1)
 {
@@ -20,17 +20,17 @@ FolderView::FolderView(QWidget *parent)
                 << "delete";
 }
 
-void FolderView::show() {
+void FolderGridView::show() {
     ThumbnailView::show();
     setFocus();
 }
 
-void FolderView::hide() {
+void FolderGridView::hide() {
     ThumbnailView::hide();
     clearFocus();
 }
 
-void FolderView::selectAbove() {
+void FolderGridView::selectAbove() {
     if(!thumbnails.count())
         return;
 
@@ -43,7 +43,7 @@ void FolderView::selectAbove() {
     selectIndex(index);
 }
 
-void FolderView::selectBelow() {
+void FolderGridView::selectBelow() {
     if(!thumbnails.count())
         return;
 
@@ -56,7 +56,7 @@ void FolderView::selectBelow() {
     selectIndex(index);
 }
 
-void FolderView::selectNext() {
+void FolderGridView::selectNext() {
     if(!thumbnails.count())
         return;
 
@@ -69,7 +69,7 @@ void FolderView::selectNext() {
     selectIndex(index);
 }
 
-void FolderView::selectPrev() {
+void FolderGridView::selectPrev() {
     if(!thumbnails.count())
         return;
 
@@ -82,21 +82,21 @@ void FolderView::selectPrev() {
     selectIndex(index);
 }
 
-void FolderView::selectFirst() {
+void FolderGridView::selectFirst() {
     if(!thumbnails.count())
         return;
 
     selectIndex(0);
 }
 
-void FolderView::selectLast() {
+void FolderGridView::selectLast() {
     if(!thumbnails.count())
         return;
 
     selectIndex(thumbnails.count() - 1);
 }
 
-void FolderView::selectIndex(int index) {
+void FolderGridView::selectIndex(int index) {
     if(!checkRange(index))
         return;
 
@@ -110,41 +110,40 @@ void FolderView::selectIndex(int index) {
     loadVisibleThumbnails();
 }
 
-void FolderView::setupLayout() {
+void FolderGridView::setupLayout() {
     this->setAlignment(Qt::AlignHCenter);
 
     flowLayout = new FlowLayout();
-    flowLayout->setContentsMargins(20,20,20,20);
+    flowLayout->setContentsMargins(0,0,0,0);
     setFrameShape(QFrame::NoFrame);
     scene.addItem(&holderWidget);
     holderWidget.setLayout(flowLayout);
 }
 
-ThumbnailWidget* FolderView::createThumbnailWidget() {
+ThumbnailWidget* FolderGridView::createThumbnailWidget() {
     // important: parent must be set, otherwise widget won't be drawn
-    ThumbnailWidget *widget = new ThumbnailWidget(&holderWidget);
+    ThumbnailGridWidget *widget = new ThumbnailGridWidget(&holderWidget);
     widget->setDrawLabel(true);
-    widget->setHightlightStyle(HIGHLIGHT_BACKGROUND);
     widget->setMargins(3,3);
     return widget;
 }
 
 // TODO: insert
-void FolderView::addItemToLayout(ThumbnailWidget* widget, int pos) {
+void FolderGridView::addItemToLayout(ThumbnailWidget* widget, int pos) {
     flowLayout->addItem(widget);
 }
 
-void FolderView::removeItemFromLayout(int pos) {
+void FolderGridView::removeItemFromLayout(int pos) {
     flowLayout->removeAt(pos);
 }
 
-void FolderView::onPopulate() {
+void FolderGridView::onPopulate() {
     flowLayout->activate();
     if(thumbnails.count())
         selectedIndex = -1;
 }
 
-void FolderView::keyPressEvent(QKeyEvent *event) {
+void FolderGridView::keyPressEvent(QKeyEvent *event) {
     int nativeScanCode = event->nativeScanCode();
     QString key = actionManager->keyForNativeScancode(nativeScanCode);
     if(allowedKeys.contains(key)) {
@@ -181,11 +180,11 @@ void FolderView::keyPressEvent(QKeyEvent *event) {
     }
 }
 
-void FolderView::resizeEvent(QResizeEvent *event) {
+void FolderGridView::resizeEvent(QResizeEvent *event) {
     QGraphicsView::resizeEvent(event);
 
-    holderWidget.setMinimumSize(size());
-    holderWidget.setMaximumSize(size());
+    holderWidget.setMinimumSize(size() - QSize(scrollBar->width(), 0));
+    holderWidget.setMaximumSize(size() - QSize(scrollBar->width(), 0));
     fitSceneToContents();
 
     loadVisibleThumbnails();

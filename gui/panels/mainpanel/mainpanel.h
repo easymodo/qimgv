@@ -8,10 +8,9 @@
 class MainPanel : public SlideHPanel {
     Q_OBJECT
 public:
-    MainPanel(OverlayContainerWidget *parent);
+    MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *parent);
     void setHeight(int newHeight);
     void setPosition(PanelHPosition);
-    void setWidget(QWidget* w);
     void setWindowButtonsEnabled(bool mode);
 
 private slots:

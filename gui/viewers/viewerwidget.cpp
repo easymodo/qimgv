@@ -10,7 +10,6 @@ ViewerWidget::ViewerWidget(QWidget *parent)
       imageViewer(nullptr),
       videoPlayer(nullptr),
       currentWidget(UNSET),
-      bgOpacity(1.0f),
       zoomInteraction(false)
 {
     setAttribute(Qt::WA_TranslucentBackground, true);
@@ -24,9 +23,6 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
     videoPlayer.reset(new VideoPlayerInitProxy(this));
     videoPlayer->hide();
-
-    folderView.reset(new FolderView(this));
-    folderView->hide();
 
     videoControls = new VideoControls(this);
 
@@ -47,15 +43,8 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     connect(videoControls, SIGNAL(nextFrame()), this, SLOT(frameStep()));
     connect(videoControls, SIGNAL(prevFrame()), this, SLOT(frameStepBack()));
 
-    readSettings();
-    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
     connect(&cursorTimer, SIGNAL(timeout()),
             this, SLOT(hideCursor()), Qt::UniqueConnection);
-
-    connect(folderView.get(), SIGNAL(thumbnailRequested(QList<int>, int)),
-            this, SIGNAL(thumbnailRequested(QList<int>, int)));
-    connect(folderView.get(), SIGNAL(thumbnailPressed(int)),
-            this, SIGNAL(thumbnailPressed(int)));
 }
 
 QRect ViewerWidget::imageRect() {
@@ -83,7 +72,6 @@ QSize ViewerWidget::sourceSize() {
 void ViewerWidget::enableImageViewer() {
     if(currentWidget != IMAGEVIEWER) {
         disableVideoPlayer();
-        disableFolderView();
         layout.addWidget(imageViewer.get());
         imageViewer->show();
         currentWidget = IMAGEVIEWER;
@@ -94,21 +82,9 @@ void ViewerWidget::enableImageViewer() {
 void ViewerWidget::enableVideoPlayer() {
     if(currentWidget != VIDEOPLAYER) {
         disableImageViewer();
-        disableFolderView();
         layout.addWidget(videoPlayer.get());
         videoPlayer->show();
         currentWidget = VIDEOPLAYER;
-    }
-}
-
-void ViewerWidget::enableFolderView() {
-    if(currentWidget != FOLDERVIEW) {
-        disableImageViewer();
-        disableVideoPlayer();
-        currentWidget = FOLDERVIEW;
-        layout.addWidget(folderView.get());
-        folderView->show();
-        showCursor();
     }
 }
 
@@ -129,20 +105,6 @@ void ViewerWidget::disableVideoPlayer() {
         videoPlayer->hide();
         layout.removeWidget(videoPlayer.get());
     }
-}
-
-void ViewerWidget::disableFolderView() {
-    if(currentWidget == FOLDERVIEW) {
-        currentWidget = UNSET;
-        folderView->hide();
-        layout.removeWidget(folderView.get());
-    }
-}
-
-void ViewerWidget::readSettings() {
-    bgColor = settings->backgroundColor();
-    bgOpacity = settings->backgroundOpacity();
-    update();
 }
 
 void ViewerWidget::enableZoomInteraction() {
@@ -241,10 +203,6 @@ void ViewerWidget::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
     imageViewer->replacePixmap(std::move(scaled));
 }
 
-void ViewerWidget::highlightThumbnail(int index) {
-    folderView->selectIndex(index);
-}
-
 void ViewerWidget::closeImage() {
     imageViewer->closeImage();
     videoPlayer->stop();
@@ -286,13 +244,6 @@ void ViewerWidget::frameStepBack() {
         videoPlayer.get()->frameStepBack();
 }
 
-void ViewerWidget::paintEvent(QPaintEvent *event) {
-    QPainter p(this);
-    p.setOpacity(bgOpacity);
-    p.setBrush(QBrush(bgColor));
-    p.fillRect(this->rect(), p.brush());
-}
-
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
     // supports zoom/pan
     if(currentWidget == IMAGEVIEWER) {
@@ -325,14 +276,6 @@ void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
 void ViewerWidget::hideCursorTimed(bool restartTimer) {
     if(restartTimer || !cursorTimer.isActive())
         cursorTimer.start(CURSOR_HIDE_TIMEOUT_MS);
-}
-
-void ViewerWidget::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
-    folderView->setThumbnail(pos, thumb);
-}
-
-void ViewerWidget::populateFolderView(int count) {
-    folderView->populate(count);
 }
 
 void ViewerWidget::hideCursor() {

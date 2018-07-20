@@ -5,13 +5,11 @@
 #include <QHBoxLayout>
 #include "gui/viewers/imageviewer.h"
 #include "gui/viewers/videoplayerinitproxy.h"
-#include "gui/viewers/folderview.h"
 #include "gui/overlays/videocontrols.h"
 
 enum CurrentWidget {
     IMAGEVIEWER,
     VIDEOPLAYER,
-    FOLDERVIEW,
     UNSET
 };
 
@@ -36,24 +34,18 @@ private:
     QHBoxLayout layout;
     std::unique_ptr<ImageViewer> imageViewer;
     std::unique_ptr<VideoPlayer> videoPlayer;
-    std::unique_ptr<FolderView> folderView;
     VideoControls *videoControls;
 
     void enableImageViewer();
     void enableVideoPlayer();
 
     CurrentWidget currentWidget;
-    QColor bgColor;
-    float bgOpacity;
     bool zoomInteraction;
     QTimer cursorTimer;
     const int CURSOR_HIDE_TIMEOUT_MS = 1000;
 
     void disableImageViewer();
     void disableVideoPlayer();
-    void disableFolderView();
-private slots:
-    void readSettings();
 
 signals:
     void scalingRequested(QSize);
@@ -68,12 +60,9 @@ signals:
     void fitWindow();
     void fitWidth();
     void fitOriginal();
-    void thumbnailRequested(QList<int>, int);
-    void thumbnailPressed(int);
 
 public slots:
     bool showVideo(Clip *clip);
-    void enableFolderView();
     void stopPlayback();
     void setFitMode(ImageFitMode mode);
     ImageFitMode fitMode();
@@ -81,11 +70,6 @@ public slots:
     void hideCursor();
     void showCursor();
     void hideCursorTimed(bool restartTimer);
-
-    void highlightThumbnail(int index);
-    void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb);
-
-    void populateFolderView(int count);
 
     // video control
     void pauseVideo();
@@ -97,7 +81,6 @@ public slots:
     void frameStepBack();
 
 protected:
-    virtual void paintEvent(QPaintEvent* event);
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);

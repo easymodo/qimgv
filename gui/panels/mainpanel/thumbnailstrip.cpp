@@ -6,6 +6,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
       current(-1),
       thumbnailSpacing(0)
 {
+    this->setAttribute(Qt::WA_NoMousePropagation, true);
     // Load delay. Move to base class?
     connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
     loadTimer.setSingleShot(true);
@@ -22,7 +23,6 @@ void ThumbnailStrip::setupLayout() {
 ThumbnailWidget* ThumbnailStrip::createThumbnailWidget() {
     ThumbnailWidget *widget = new ThumbnailWidget();
     widget->setDrawLabel(true);
-    widget->setHightlightStyle(HIGHLIGHT_TOPBAR);
     return widget;
 }
 

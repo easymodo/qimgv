@@ -90,11 +90,11 @@ bool DirectoryManager::removeAt(int index) {
     if(checkRange(index)) {
         QString path = filePathAt(index);
         QFile file(path);
-        //if(file.remove()) {
+        if(file.remove()) {
             mFileNameList.removeAt(index);
             emit fileRemovedAt(index);
             return true;
-        //}
+        }
     }
     return false;
 }

@@ -14,8 +14,6 @@
 #include "components/thumbnailer/thumbnailer.h"
 #include "components/scriptmanager/scriptmanager.h"
 #include "gui/mainwindow.h"
-#include "gui/viewers/viewerwidget.h"
-#include "gui/viewers/imageviewer.h"
 
 struct State {
     State() : currentIndex(0), hasActiveImage(false), isWaitingForLoader(false) {}
@@ -58,8 +56,6 @@ private:
 
     // ui stuff
     MainWindow *mw;
-    ViewerWidget *viewerWidget;
-    ThumbnailStrip *thumbnailPanelWidget;
 
     State state;
     QTimer *loadingTimer; // this is for loading message delay. TODO: replace with something better
@@ -93,12 +89,10 @@ private slots:
     void onLoadStarted();
     void onLoadingTimeout();
     void clearCache();
-    void stopPlayback();
     void rotateLeft();
     void rotateRight();
     void closeBackgroundTasks();
     void close();
-    void switchFitMode();
     void scalingRequest(QSize);
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
     void forwardThumbnail(std::shared_ptr<Thumbnail> thumbnail);
@@ -115,9 +109,6 @@ private slots:
     void crop(QRect rect);
     void discardEdits();
     void toggleCropPanel();
-    void fitWindow();
-    void fitWidth();
-    void fitOriginal();
     void requestSavePath();
     void saveImageToDisk();
     void saveImageToDisk(QString);

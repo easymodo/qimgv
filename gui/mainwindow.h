@@ -20,6 +20,7 @@
 #include "gui/overlays/copyoverlay.h"
 #include "gui/overlays/changelogwindow.h"
 #include "gui/dialogs/resizedialog.h"
+#include "gui/centralwidget.h"
 #include "components/actionmanager/actionmanager.h"
 #include "settings.h"
 #include "gui/dialogs/settingsdialog.h"
@@ -39,22 +40,28 @@ class MainWindow : public OverlayContainerWidget
 {
     Q_OBJECT
 public:
-    explicit MainWindow(ViewerWidget *viewerWidget, QWidget *parent = nullptr);
-    void setPanelWidget(QWidget*);
-    bool hasPanelWidget();
+    explicit MainWindow(QWidget *parent = nullptr);
     bool isCropPanelActive();
+    void onScalingFinished(std::unique_ptr<QPixmap>(scaled));
+    void showImage(std::unique_ptr<QPixmap> pixmap);
+    void showAnimation(std::unique_ptr<QMovie> movie);
+    void showVideo(Clip *clip);
 
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;
-    void setViewerWidget(std::shared_ptr<ViewerWidget> viewerWidget);
     QHBoxLayout layout;
     QTimer windowMoveTimer;
     int currentDisplay;
     QDesktopWidget *desktopWidget;
 
+    QColor bgColor;
+    float bgOpacity;
     bool panelEnabled, panelFullscreenOnly, cropPanelActive, infoOverlayEnabled;
-    std::unique_ptr<DocumentWidget> docWidget;
+    std::shared_ptr<DocumentWidget> docWidget;
+    std::shared_ptr<FolderView> folderView;
+    std::shared_ptr<CentralWidget> centralWidget;
     ActiveSidePanel activeSidePanel;
+    std::shared_ptr<ThumbnailStrip> thumbnailStrip;
     MainPanel *mainPanel;
     SidePanel *sidePanel;
     CropPanel *cropPanel;
@@ -86,6 +93,7 @@ private slots:
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     bool event(QEvent *event);
+    void paintEvent(QPaintEvent *event);
     void closeEvent(QCloseEvent *event);
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *event);
@@ -102,6 +110,31 @@ signals:
     void saveAsClicked();
     void saveRequested();
     void saveRequested(QString);
+
+    // thumbnails
+    void thumbnailRequested(QList<int>, int);
+    void selectThumbnail(int);
+    void thumbnailPressed(int);
+    void onThumbnailReady(int, std::shared_ptr<Thumbnail>);
+    // viewerWidget
+    void scalingRequested(QSize);
+    void zoomIn();
+    void zoomOut();
+    void zoomInCursor();
+    void zoomOutCursor();
+    void scrollUp();
+    void scrollDown();
+    void scrollLeft();
+    void scrollRight();
+    void pauseVideo();
+    void stopPlayback();
+    void seekVideoRight();
+    void seekVideoLeft();
+    void frameStep();
+    void frameStepBack();
+    void enableFolderView();
+
+    void closeImage();
 
 public slots:
     void showDefault();
@@ -131,6 +164,11 @@ public slots:
     void hideSaveOverlay();
     void showChangelogWindow();
     void showChangelogWindow(QString text);
+    void fitWindow();
+    void fitWidth();
+    void fitOriginal();
+    void switchFitMode();
+    void populateThumbnailViews(int count);
 };
 
 #endif // MainWindow_H

@@ -115,7 +115,6 @@ SOURCES += \
     appversion.cpp \
     gui/overlays/changelogwindow.cpp \
     components/scriptmanager/scriptmanager.cpp \
-    gui/viewers/folderview.cpp \
     gui/viewers/videoplayerinitproxy.cpp \
     gui/dialogs/shortcutcreatordialog.cpp \
     gui/customwidgets/keysequenceedit.cpp \
@@ -131,7 +130,11 @@ SOURCES += \
     gui/customwidgets/videoslider.cpp \
     gui/flowlayout.cpp \
     gui/customwidgets/thumbnailview.cpp \
-    gui/customwidgets/thumbnailwidget.cpp
+    gui/customwidgets/thumbnailwidget.cpp \
+    gui/folderview/folderview.cpp \
+    gui/folderview/foldergridview.cpp \
+    gui/folderview/thumbnailgridwidget.cpp \
+    gui/centralwidget.cpp
 
 HEADERS += \
     core.h \
@@ -195,7 +198,6 @@ HEADERS += \
     appversion.h \
     gui/overlays/changelogwindow.h \
     components/scriptmanager/scriptmanager.h \
-    gui/viewers/folderview.h \
     gui/viewers/videoplayerinitproxy.h \
     gui/dialogs/shortcutcreatordialog.h \
     gui/customwidgets/keysequenceedit.h \
@@ -211,7 +213,11 @@ HEADERS += \
     gui/customwidgets/videoslider.h \
     gui/flowlayout.h \
     gui/customwidgets/thumbnailview.h \
-    gui/customwidgets/thumbnailwidget.h
+    gui/customwidgets/thumbnailwidget.h \
+    gui/folderview/folderview.h \
+    gui/folderview/foldergridview.h \
+    gui/folderview/thumbnailgridwidget.h \
+    gui/centralwidget.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \
@@ -225,7 +231,8 @@ FORMS += \
     gui/overlays/changelogwindow.ui \
     gui/dialogs/shortcutcreatordialog.ui \
     gui/dialogs/scripteditordialog.ui \
-    gui/overlays/videocontrols.ui
+    gui/overlays/videocontrols.ui \
+    gui/folderview/folderview.ui
 
 RESOURCES += \
     resources.qrc

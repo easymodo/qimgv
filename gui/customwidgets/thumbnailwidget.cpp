@@ -3,14 +3,14 @@
 ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     QGraphicsWidget(parent),
     state(EMPTY),
-    highlightStyle(HIGHLIGHT_TOPBAR),
     thumbnail(nullptr),
     highlighted(false),
     hovered(false),
     mDrawLabel(true),
     thumbnailSize(100),
     marginX(1),
-    marginY(3)
+    marginY(3),
+    textHeight(5)
 {
     setAcceptHoverEvents(true);
     nameColor.setRgb(20, 20, 20, 255);
@@ -23,6 +23,7 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     fontSmall.setBold(true);
     fm = new QFontMetrics(font);
     fmSmall = new QFontMetrics(fontSmall);
+    textHeight = fm->height();
 
     opacityAnimation = new QPropertyAnimation(this, "currentOpacity");
     opacityAnimation->setEasingCurve(QEasingCurve::InQuad);
@@ -45,10 +46,7 @@ void ThumbnailWidget::setThumbnailSize(int size) {
         thumbnail = nullptr;
         thumbnailSize = size;
         updateGeometry();
-
-        highlightBarRect = QRectF(marginX, 0, width() - marginX * 2, marginY);
-        nameRect = QRectF(highlightBarRect.left(), highlightBarRect.height(),
-                         highlightBarRect.width(), fm->height() * 1.6);
+        setupLayout();
         update();
     }
 }
@@ -62,14 +60,6 @@ void ThumbnailWidget::setDrawLabel(bool mode) {
     if(mDrawLabel != mode) {
         mDrawLabel = mode;
         update();
-    }
-}
-
-void ThumbnailWidget::setHightlightStyle(HighlightStyle style) {
-    if(highlightStyle != style) {
-        highlightStyle = style;
-        if(isHighlighted() || isHovered())
-            update();
     }
 }
 
@@ -92,14 +82,18 @@ QSizeF ThumbnailWidget::effectiveSizeHint(Qt::SizeHint which, const QSizeF &cons
 void ThumbnailWidget::setThumbnail(std::shared_ptr<Thumbnail> _thumbnail) {
     if(_thumbnail) {
         thumbnail = _thumbnail;
-        setupLabel();
+        setupLayout();
         update();
     }
 }
 
-void ThumbnailWidget::setupLabel() {
+void ThumbnailWidget::setupLayout() {
+    highlightRect = QRectF(marginX, 0, width() - marginX * 2, marginY);
+    nameRect = QRectF(highlightRect.left(), highlightRect.height(),
+                     highlightRect.width(), textHeight * 1.6);
+
     if(thumbnail && !thumbnail->label().isEmpty()) {
-        int heightTextMargin = (nameRect.height() - fm->height()) / 2;
+        int heightTextMargin = (nameRect.height() - textHeight) / 2;
         nameTextRect = nameRect.adjusted(4, heightTextMargin, -4, -heightTextMargin);
         labelTextRect.setWidth(fmSmall->width(thumbnail->label()));
         labelTextRect.setHeight(fmSmall->height());
@@ -192,25 +186,16 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     }
 }
 
-inline
 void ThumbnailWidget::drawHighlight(QPainter *painter) {
-    if(highlightStyle == HIGHLIGHT_TOPBAR) {
-        if(isHighlighted()) {
-            painter->fillRect(highlightBarRect, highlightColor);
-        } else if (isHovered()) {
-            painter->setOpacity(0.6f);
-            painter->fillRect(highlightBarRect, highlightColor);
-            painter->setOpacity(1.0f);
-        }
-    } else if(highlightStyle == HIGHLIGHT_BACKGROUND) {
-        if(isHighlighted()) {
-            //painter->fillRect(boundingRect().adjusted(-marginX,-marginY,marginX,marginY), highlightColor);
-            painter->fillRect(boundingRect(), highlightColor);
-        }
+    if(isHighlighted()) {
+        painter->fillRect(highlightRect, highlightColor);
+    } else if (isHovered()) {
+        painter->setOpacity(0.6f);
+        painter->fillRect(highlightRect, highlightColor);
+        painter->setOpacity(1.0f);
     }
 }
 
-inline
 void ThumbnailWidget::drawLabel(QPainter *painter) {
     // text background
     painter->setOpacity(0.95f);
@@ -226,14 +211,16 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
     painter->drawText(labelTextRect, Qt::TextSingleLine, thumbnail->label());
 }
 
-inline
 void ThumbnailWidget::drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
     QPointF drawPosCentered(width()  / 2 - pixmap->width()  / (2 * qApp->devicePixelRatio()),
                             height() / 2 - pixmap->height() / (2 * qApp->devicePixelRatio()));
+
+    //QPointF drawPosCentered(width()/2 - pixmap->width()/(2*qApp->devicePixelRatio()),
+    //                        highlightBarHeight + (thumbnailSize)/2 - pixmap->height()/(2*qApp->devicePixelRatio()));
+
     painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
 }
 
-inline
 void ThumbnailWidget::drawIcon(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
 
 }

@@ -4,16 +4,17 @@
 #include <memory>
 #include <QVBoxLayout>
 #include "gui/customwidgets/overlaycontainerwidget.h"
+#include "gui/viewers/viewerwidget.h"
+
+// TODO: use a template here?
 
 class DocumentWidget : public OverlayContainerWidget {
 public:
-    DocumentWidget(QWidget* parent = nullptr);
-    DocumentWidget(std::shared_ptr<QWidget> _viewWidget, QWidget* parent = nullptr);
-    std::shared_ptr<QWidget> viewWidget();
-    void setViewWidget(std::shared_ptr<QWidget> _viewWidget);
+    DocumentWidget(std::shared_ptr<ViewerWidget> _viewWidget, QWidget* parent = nullptr);
+    std::shared_ptr<ViewerWidget> viewWidget();
 private:
     QVBoxLayout layout;
-    std::shared_ptr<QWidget> mViewWidget;
+    std::shared_ptr<ViewerWidget> mViewWidget;
 };
 
 #endif // DOCUMENTWIDGET_H

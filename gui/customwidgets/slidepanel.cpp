@@ -49,14 +49,14 @@ SlidePanel::SlidePanel(OverlayContainerWidget *parent)
 SlidePanel::~SlidePanel() {
 }
 
-void SlidePanel::setWidget(QWidget *w) {
+void SlidePanel::setWidget(std::shared_ptr<QWidget> w) {
     if(!w)
         return;
     if(hasWidget())
-        mLayout.removeWidget(mWidget);
+        mLayout.removeWidget(mWidget.get());
     mWidget = w;
     mWidget->setParent(this);
-    mLayout.addWidget(mWidget, 0, 0);
+    mLayout.addWidget(mWidget.get(), 0, 0);
 }
 
 bool SlidePanel::hasWidget() {

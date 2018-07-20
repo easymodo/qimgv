@@ -1,0 +1,41 @@
+#ifndef FOLDERVIEW_H
+#define FOLDERVIEW_H
+
+#include <QWidget>
+#include "gui/folderview/foldergridview.h"
+#include "gui/customwidgets/iconbutton.h"
+
+namespace Ui {
+class FolderView;
+}
+
+class FolderView : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit FolderView(QWidget *parent = 0);
+    ~FolderView();
+
+public slots:
+    void show();
+    void hide();
+    void populate(int);
+    void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb);
+    void selectIndex(int);
+    void setDirectoryPath(QString path);
+
+signals:
+    void thumbnailPressed(int);
+    void thumbnailRequested(QList<int>, int);
+
+protected:
+    void mouseReleaseEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event);
+
+    void focusInEvent(QFocusEvent *event);
+private:
+    Ui::FolderView *ui;
+};
+
+#endif // FOLDERVIEW_H

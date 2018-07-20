@@ -8,9 +8,8 @@
 
 class IconButton : public QLabel {
 public:
-    IconButton();
-    IconButton(QString actionName, QString iconPath);
-    IconButton(QString actionName, QString iconPath, QWidget *parent);
+    IconButton(QWidget *parent = nullptr);
+    IconButton(QString actionName, QString iconPath, QWidget *parent = nullptr);
     void setAction(QString _actionName);
 
 protected:

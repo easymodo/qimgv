@@ -47,10 +47,7 @@ void Core::showGui() {
 
 // create MainWindow and all widgets
 void Core::initGui() {
-    viewerWidget = new ViewerWidget();
-    mw = new MainWindow(viewerWidget);
-    thumbnailPanelWidget = new ThumbnailStrip();
-    mw->setPanelWidget(thumbnailPanelWidget);
+    mw = new MainWindow();
     mw->hide();
 }
 
@@ -83,27 +80,20 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(discardEditsRequested()), this, SLOT(discardEdits()));
     connect(this, SIGNAL(imageIndexChanged(int)), mw, SLOT(setupSidePanelData()));
 
-    // thumbnails stuff
-    connect(thumbnailPanelWidget, SIGNAL(thumbnailRequested(QList<int>, int)),
-            thumbnailer, SLOT(generateThumbnailFor(QList<int>, int)), Qt::UniqueConnection);
-
-    connect(viewerWidget, SIGNAL(thumbnailRequested(QList<int>, int)),
+    connect(mw, SIGNAL(thumbnailRequested(QList<int>, int)),
             thumbnailer, SLOT(generateThumbnailFor(QList<int>, int)), Qt::UniqueConnection);
 
     connect(thumbnailer, SIGNAL(thumbnailReady(std::shared_ptr<Thumbnail>)),
             this, SLOT(forwardThumbnail(std::shared_ptr<Thumbnail>)));
-    connect(thumbnailPanelWidget, SIGNAL(thumbnailPressed(int)),
-            this, SLOT(loadByIndex(int)));
-    connect(this, SIGNAL(imageIndexChanged(int)),
-            thumbnailPanelWidget, SLOT(highlightThumbnail(int)));
-    connect(this, SIGNAL(imageIndexChanged(int)),
-            viewerWidget, SLOT(highlightThumbnail(int)));
 
-    connect(viewerWidget, SIGNAL(thumbnailPressed(int)),
+    connect(this, SIGNAL(imageIndexChanged(int)),
+            mw, SIGNAL(selectThumbnail(int)));
+
+    connect(mw, SIGNAL(thumbnailPressed(int)),
             this, SLOT(loadByIndex(int)));
 
     // scaling
-    connect(viewerWidget, SIGNAL(scalingRequested(QSize)),
+    connect(mw, SIGNAL(scalingRequested(QSize)),
             this, SLOT(scalingRequest(QSize)));
     connect(scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest)),
             this, SLOT(onScalingFinished(QPixmap*,ScalerRequest)));
@@ -115,19 +105,19 @@ void Core::connectComponents() {
 void Core::initActions() {
     connect(actionManager, SIGNAL(nextImage()), this, SLOT(nextImage()));
     connect(actionManager, SIGNAL(prevImage()), this, SLOT(prevImage()));
-    connect(actionManager, SIGNAL(fitWindow()), this, SLOT(fitWindow()));
-    connect(actionManager, SIGNAL(fitWidth()), this, SLOT(fitWidth()));
-    connect(actionManager, SIGNAL(fitNormal()), this, SLOT(fitOriginal()));
-    connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
+    connect(actionManager, SIGNAL(fitWindow()), mw, SLOT(fitWindow()));
+    connect(actionManager, SIGNAL(fitWidth()), mw, SLOT(fitWidth()));
+    connect(actionManager, SIGNAL(fitNormal()), mw, SLOT(fitOriginal()));
+    connect(actionManager, SIGNAL(toggleFitMode()), mw, SLOT(switchFitMode()));
     connect(actionManager, SIGNAL(toggleFullscreen()), mw, SLOT(triggerFullScreen()));
-    connect(actionManager, SIGNAL(zoomIn()), viewerWidget, SIGNAL(zoomIn()));
-    connect(actionManager, SIGNAL(zoomOut()), viewerWidget, SIGNAL(zoomOut()));
-    connect(actionManager, SIGNAL(zoomInCursor()), viewerWidget, SIGNAL(zoomInCursor()));
-    connect(actionManager, SIGNAL(zoomOutCursor()), viewerWidget, SIGNAL(zoomOutCursor()));
-    connect(actionManager, SIGNAL(scrollUp()), viewerWidget, SIGNAL(scrollUp()));
-    connect(actionManager, SIGNAL(scrollDown()), viewerWidget, SIGNAL(scrollDown()));
-    connect(actionManager, SIGNAL(scrollLeft()), viewerWidget, SIGNAL(scrollLeft()));
-    connect(actionManager, SIGNAL(scrollRight()), viewerWidget, SIGNAL(scrollRight()));
+    connect(actionManager, SIGNAL(zoomIn()), mw, SIGNAL(zoomIn()));
+    connect(actionManager, SIGNAL(zoomOut()), mw, SIGNAL(zoomOut()));
+    connect(actionManager, SIGNAL(zoomInCursor()), mw, SIGNAL(zoomInCursor()));
+    connect(actionManager, SIGNAL(zoomOutCursor()), mw, SIGNAL(zoomOutCursor()));
+    connect(actionManager, SIGNAL(scrollUp()), mw, SIGNAL(scrollUp()));
+    connect(actionManager, SIGNAL(scrollDown()), mw, SIGNAL(scrollDown()));
+    connect(actionManager, SIGNAL(scrollLeft()), mw, SIGNAL(scrollLeft()));
+    connect(actionManager, SIGNAL(scrollRight()), mw, SIGNAL(scrollRight()));
     connect(actionManager, SIGNAL(resize()), this, SLOT(showResizeDialog()));
     connect(actionManager, SIGNAL(flipH()), this, SLOT(flipH()));
     connect(actionManager, SIGNAL(flipV()), this, SLOT(flipV()));
@@ -147,12 +137,12 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(jumpToFirst()), this, SLOT(jumpToFirst()));
     connect(actionManager, SIGNAL(jumpToLast()), this, SLOT(jumpToLast()));
     connect(actionManager, SIGNAL(runScript(const QString&)), this, SLOT(runScript(const QString&)));
-    connect(actionManager, SIGNAL(pauseVideo()), viewerWidget, SLOT(pauseVideo()));
-    connect(actionManager, SIGNAL(seekVideo()), viewerWidget, SLOT(seekVideoRight()));
-    connect(actionManager, SIGNAL(seekBackVideo()), viewerWidget, SLOT(seekVideoLeft()));
-    connect(actionManager, SIGNAL(frameStep()), viewerWidget, SLOT(frameStep()));
-    connect(actionManager, SIGNAL(frameStepBack()), viewerWidget, SLOT(frameStepBack()));
-    connect(actionManager, SIGNAL(folderView()), viewerWidget, SLOT(enableFolderView()));
+    connect(actionManager, SIGNAL(pauseVideo()), mw, SIGNAL(pauseVideo()));
+    connect(actionManager, SIGNAL(seekVideo()), mw, SIGNAL(seekVideoRight()));
+    connect(actionManager, SIGNAL(seekBackVideo()), mw, SIGNAL(seekVideoLeft()));
+    connect(actionManager, SIGNAL(frameStep()), mw, SIGNAL(frameStep()));
+    connect(actionManager, SIGNAL(frameStepBack()), mw, SIGNAL(frameStepBack()));
+    connect(actionManager, SIGNAL(folderView()), mw, SIGNAL(enableFolderView()));
 }
 
 void Core::postUpdate() {
@@ -208,7 +198,7 @@ void Core::onFileRemoved(int index) {
     // removing current file. try switching to another
     if(state.currentIndex == index) {
         if(!dirManager->fileCount()) {
-            viewerWidget->closeImage();
+            mw->closeImage();
             mw->setInfoString("No file opened.");
         } else {
             if(!loadByIndexBlocking(state.currentIndex))
@@ -255,33 +245,6 @@ void Core::toggleCropPanel() {
         mw->triggerCropPanel();
     } else if(state.hasActiveImage) {
         mw->triggerCropPanel();
-    }
-}
-
-void Core::fitWindow() {
-    if(viewerWidget->zoomInteractionEnabled()) {
-        viewerWidget->fitWindow();
-        mw->showMessageFitWindow();
-    } else {
-        mw->showMessage("Zoom temporary disabled");
-    }
-}
-
-void Core::fitWidth() {
-    if(viewerWidget->zoomInteractionEnabled()) {
-        viewerWidget->fitWidth();
-        mw->showMessageFitWidth();
-    } else {
-        mw->showMessage("Zoom temporary disabled");
-    }
-}
-
-void Core::fitOriginal() {
-    if(viewerWidget->zoomInteractionEnabled()) {
-        viewerWidget->fitOriginal();
-        mw->showMessageFitOriginal();
-    } else {
-        mw->showMessage("Zoom temporary disabled");
     }
 }
 
@@ -486,14 +449,6 @@ void Core::runScript(const QString &scriptName) {
     scriptManager->runScript(scriptName, cache->get(nameKey));
 }
 
-// switch between 1:1 and Fit All
-void Core::switchFitMode() {
-    if(viewerWidget->fitMode() == FIT_WINDOW)
-        viewerWidget->setFitMode(FIT_ORIGINAL);
-    else
-        viewerWidget->setFitMode(FIT_WINDOW);
-}
-
 void Core::scalingRequest(QSize size) {
     if(state.hasActiveImage && !state.isWaitingForLoader) {
         //cache->lock();
@@ -509,7 +464,7 @@ void Core::scalingRequest(QSize size) {
 // TODO: don't use connect? otherwise there is no point using unique_ptr
 void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
     if(state.hasActiveImage /* TODO: a better fix > */ && dirManager->filePathAt(state.currentIndex) == req.string) {
-        viewerWidget->onScalingFinished(std::unique_ptr<QPixmap>(scaled)); // no
+        mw->onScalingFinished(std::unique_ptr<QPixmap>(scaled));
     } else {
         delete scaled;
     }
@@ -518,8 +473,7 @@ void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
 void Core::forwardThumbnail(std::shared_ptr<Thumbnail> thumbnail) {
     int index = dirManager->indexOf(thumbnail->name());
     if(index >= 0) {
-        thumbnailPanelWidget->setThumbnail(index, thumbnail);
-        viewerWidget->setThumbnail(index, thumbnail);
+        mw->onThumbnailReady(index, thumbnail);
     }
 }
 
@@ -539,10 +493,6 @@ void Core::clearCache() {
     //cache->unlock();
 }
 
-void Core::stopPlayback() {
-    viewerWidget->stopPlayback();
-}
-
 // reset state; clear cache; etc
 void Core::reset() {
     state.hasActiveImage = false;
@@ -557,8 +507,7 @@ bool Core::setDirectory(QString newPath) {
     if(!dirManager->hasImages() || dirManager->currentDirectoryPath() != newPath) {
         this->reset();
         dirManager->setDirectory(newPath);
-        thumbnailPanelWidget->populate(dirManager->fileCount());
-        viewerWidget->populateFolderView(dirManager->fileCount());
+        mw->populateThumbnailViews(dirManager->fileCount());
         return true;
     }
     return false;
@@ -746,7 +695,7 @@ void Core::onLoadFinished(std::shared_ptr<Image> img) {
 void Core::onLoadFailed(QString path) {
     mw->showMessage("Load failed: " + path);
     if(path == dirManager->filePathAt(state.currentIndex))
-        viewerWidget->closeImage();
+        mw->closeImage();
 }
 
 void Core::displayImage(Image *img) {
@@ -756,16 +705,16 @@ void Core::displayImage(Image *img) {
     if(img) {  // && img->name() != state.displayingFileName) {
         DocumentType type = img->type();
         if(type == STATIC) {
-            viewerWidget->showImage(std::move(img->getPixmap()));
+            mw->showImage(std::move(img->getPixmap()));
         } else if(type == ANIMATED) {
             auto animated = dynamic_cast<ImageAnimated *>(img);
-            viewerWidget->showAnimation(std::move(animated->getMovie()));
+            mw->showAnimation(std::move(animated->getMovie()));
         } else if(type == VIDEO) {
             auto video = dynamic_cast<Video *>(img);
             // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
             // affects only initial startup (e.g. we open webm from file manager)
             showGui();
-            viewerWidget->showVideo(video->getClip());
+            mw->showVideo(video->getClip());
         }
         state.displayingFileName = img->name();
         img->isEdited()?mw->showSaveOverlay():mw->hideSaveOverlay();

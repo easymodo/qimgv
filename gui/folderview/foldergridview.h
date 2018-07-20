@@ -1,17 +1,18 @@
-#ifndef FOLDERVIEW_H
-#define FOLDERVIEW_H
+#ifndef FOLDERGRIDVIEW_H
+#define FOLDERGRIDVIEW_H
 
 #include <QGraphicsWidget>
 
 #include "gui/customwidgets/thumbnailview.h"
+#include "gui/folderview/thumbnailgridwidget.h"
 #include "gui/flowlayout.h"
 #include "components/actionmanager/actionmanager.h"
 
-class FolderView : public ThumbnailView
+class FolderGridView : public ThumbnailView
 {
     Q_OBJECT
 public:
-    explicit FolderView(QWidget *parent = nullptr);
+    explicit FolderGridView(QWidget *parent = nullptr);
 
 public slots:
     void show();
@@ -46,4 +47,4 @@ signals:
 
 };
 
-#endif // FOLDERVIEW_H
+#endif // FOLDERGRIDVIEW_H

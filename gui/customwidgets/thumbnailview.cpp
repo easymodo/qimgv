@@ -7,7 +7,6 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
 {
     setAccessibleName("thumbnailView");
     this->setMouseTracking(true);
-    this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setScene(&scene);
     //setViewportUpdateMode(QGraphicsView::SmartViewportUpdate); // more buggy than smart
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
@@ -201,7 +200,7 @@ void ThumbnailView::scrollSmooth(int angleDelta) {
         timeLine->setFrameRange(center,
                                 timeLine->endFrame() -
                                 angleDelta *
-                                SCROLL_SPEED_MULTIPLIER*1.2f);
+                                SCROLL_SPEED_MULTIPLIER * 1.2f);
     } else {
         timeLine->setFrameRange(center,
                                 center -
