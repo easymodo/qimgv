@@ -124,7 +124,7 @@ ThumbnailWidget* FolderGridView::createThumbnailWidget() {
     // important: parent must be set, otherwise widget won't be drawn
     ThumbnailGridWidget *widget = new ThumbnailGridWidget(&holderWidget);
     widget->setDrawLabel(true);
-    widget->setMargins(3,3);
+    widget->setMargins(4,4);
     return widget;
 }
 

@@ -16,7 +16,7 @@ void ThumbnailGridWidget::setupLayout() {
     highlightRect = boundingRect();
     highlightRect.setBottom(highlightRect.bottom() - marginY);
     if(thumbnail) {
-        highlightRect.setTop(thumbnailSize - thumbnail->pixmap()->height());
+        highlightRect.setTop(thumbnailSize - thumbnail->pixmap()->height()/qApp->devicePixelRatio());
     }
     nameRect = QRectF(marginX, marginY + thumbnailSize,
                      thumbnailSize, fm->height() * 1.6);
@@ -42,7 +42,11 @@ void ThumbnailGridWidget::setupLayout() {
 void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
     if(isHighlighted()) {
         //painter->fillRect(highlightRect.adjusted(-marginX,-marginY,marginX,marginY), highlightColor);
-        painter->fillRect(highlightRect, highlightColor);
+        //painter->fillRect(highlightRect, highlightColor);
+        //painter->setRenderHint(QPainter::Antialiasing);
+        QPainterPath path;
+        path.addRoundedRect(highlightRect, 2, 2);
+        painter->fillPath(path, highlightColor);
     }
 }
 
