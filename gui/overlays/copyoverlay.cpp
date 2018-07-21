@@ -25,7 +25,8 @@ void CopyOverlay::show() {
 }
 
 void CopyOverlay::hide() {
-    FloatingWidget::hide();
+    //FloatingWidget::hide();
+    QWidget::hide();
     clearFocus();
 }
 

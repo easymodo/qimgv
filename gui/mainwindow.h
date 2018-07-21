@@ -139,7 +139,7 @@ signals:
 public slots:
     void showDefault();
     void showCropPanel();
-    void hideSidePanel();
+    void hideCropPanel();
     void showOpenDialog();
     void showSaveDialog(QString filePath);
     void showResizeDialog(QSize initialSize);

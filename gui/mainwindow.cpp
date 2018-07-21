@@ -78,8 +78,8 @@ void MainWindow::setupUi() {
     // TODO: do something about this spaghetti
     cropOverlay = new CropOverlay(viewerWidget.get());
     cropPanel = new CropPanel(cropOverlay, this);
-    connect(cropPanel, SIGNAL(cancel()), this, SLOT(hideSidePanel()));
-    connect(cropPanel, SIGNAL(crop(QRect)), this, SLOT(hideSidePanel()));
+    connect(cropPanel, SIGNAL(cancel()), this, SLOT(hideCropPanel()));
+    connect(cropPanel, SIGNAL(crop(QRect)), this, SLOT(hideCropPanel()));
     connect(cropPanel, SIGNAL(crop(QRect)), this, SIGNAL(cropRequested(QRect)));
 
     connect(saveOverlay, SIGNAL(saveClicked()), this, SIGNAL(saveRequested()));
@@ -150,6 +150,10 @@ void MainWindow::setupUi() {
 
     connect(this, SIGNAL(enableFolderView()),
             mainPanel, SLOT(hide()));
+    connect(this, SIGNAL(enableFolderView()),
+            this, SLOT(hideCropPanel()));
+    connect(this, SIGNAL(enableFolderView()),
+            copyOverlay, SLOT(hide()));
     connect(this, SIGNAL(enableFolderView()),
             centralWidget.get(), SLOT(showFolderView()));
 
@@ -429,11 +433,14 @@ void MainWindow::triggerCropPanel() {
     if(activeSidePanel != SIDEPANEL_CROP) {
         showCropPanel();
     } else {
-        hideSidePanel();
+        hideCropPanel();
     }
 }
 
 void MainWindow::showCropPanel() {
+    if(centralWidget->viewMode() == MODE_FOLDERVIEW)
+        return;
+
     if(activeSidePanel != SIDEPANEL_CROP) {
         mainPanel->hide();
         sidePanel->setWidget(cropPanel);
@@ -448,7 +455,7 @@ void MainWindow::showCropPanel() {
     }
 }
 
-void MainWindow::hideSidePanel() {
+void MainWindow::hideCropPanel() {
     sidePanel->hide();
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropOverlay->hide();
@@ -458,6 +465,8 @@ void MainWindow::hideSidePanel() {
 }
 
 void MainWindow::triggerCopyOverlay() {
+    if(centralWidget->viewMode() == MODE_FOLDERVIEW)
+        return;
     if(copyOverlay->operationMode() == OVERLAY_COPY) {
         copyOverlay->isHidden()?copyOverlay->show():copyOverlay->hide();
     } else {
@@ -467,6 +476,8 @@ void MainWindow::triggerCopyOverlay() {
 }
 
 void MainWindow::triggerMoveOverlay() {
+    if(centralWidget->viewMode() == MODE_FOLDERVIEW)
+        return;
     if(copyOverlay->operationMode() == OVERLAY_MOVE) {
         copyOverlay->isHidden()?copyOverlay->show():copyOverlay->hide();
     } else {

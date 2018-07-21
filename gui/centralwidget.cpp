@@ -16,12 +16,18 @@ CentralWidget::CentralWidget(std::shared_ptr<DocumentWidget> _docWidget, std::sh
 }
 
 void CentralWidget::showDocumentWidget() {
+    mode = MODE_DOCUMENT;
     setCurrentIndex(0);
     widget(0)->setFocus();
 }
 
 void CentralWidget::showFolderView() {
+    mode = MODE_FOLDERVIEW;
     setCurrentIndex(1);
     widget(1)->setFocus();
     docWidget->viewWidget()->stopPlayback();
+}
+
+CentralWidgetViewMode CentralWidget::viewMode() {
+    return mode;
 }
