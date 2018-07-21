@@ -171,11 +171,11 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     drawHighlight(painter);
     if(!thumbnail) {
         QPixmap* loadingIcon = shrRes->loadingIcon72();
-        drawThumbnail(painter, dpr, loadingIcon);
+        drawIcon(painter, dpr, loadingIcon);
     } else {
         if(thumbnail->pixmap().get()->width() == 0) {
             QPixmap* errorIcon = shrRes->loadingErrorIcon72();
-            drawThumbnail(painter, dpr, errorIcon);
+            drawIcon(painter, dpr, errorIcon);
         } else {
             painter->setOpacity(currentOpacity);
             drawThumbnail(painter, dpr, thumbnail->pixmap().get());
@@ -222,7 +222,7 @@ void ThumbnailWidget::drawThumbnail(QPainter* painter, qreal dpr, const QPixmap 
 }
 
 void ThumbnailWidget::drawIcon(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
-
+    drawThumbnail(painter, dpr, pixmap);
 }
 
 QSizeF ThumbnailWidget::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {

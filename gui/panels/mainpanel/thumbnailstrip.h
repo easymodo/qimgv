@@ -51,6 +51,7 @@ protected:
     void addItemToLayout(ThumbnailWidget *widget, int pos);
     void removeItemFromLayout(int pos);
     ThumbnailWidget *createThumbnailWidget();
+    void ensureSelectedItemVisible();
 };
 
 #endif // THUMBNAILSTRIP_H

@@ -8,6 +8,8 @@ FolderGridView::FolderGridView(QWidget *parent)
 {
     setupLayout();
 
+    OFFSCREEN_PRELOAD_AREA = 800;
+
     allowedKeys << "Up"
                 << "Down"
                 << "Left"
@@ -20,14 +22,23 @@ FolderGridView::FolderGridView(QWidget *parent)
                 << "delete";
 }
 
+// probably unneeded
 void FolderGridView::show() {
     ThumbnailView::show();
     setFocus();
 }
 
+// probably unneeded
 void FolderGridView::hide() {
     ThumbnailView::hide();
     clearFocus();
+}
+
+void FolderGridView::ensureSelectedItemVisible() {
+    if(!checkRange(selectedIndex))
+        return;
+    ThumbnailWidget *thumb = thumbnails.at(selectedIndex);
+    ensureVisible(thumb, 0, 0);
 }
 
 void FolderGridView::selectAbove() {

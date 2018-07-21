@@ -40,6 +40,7 @@ protected:
     void setupLayout();
     ThumbnailWidget *createThumbnailWidget();
     void onPopulate();
+    void ensureSelectedItemVisible();
 
     void keyPressEvent(QKeyEvent *event);
 

@@ -1,5 +1,7 @@
 #include "thumbnailstrip.h"
 
+// TODO: move item highlight logic to base class
+
 ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     : ThumbnailView(THUMBNAILVIEW_HORIZONTAL, parent),
       panelSize(100),
@@ -24,6 +26,10 @@ ThumbnailWidget* ThumbnailStrip::createThumbnailWidget() {
     ThumbnailWidget *widget = new ThumbnailWidget();
     widget->setDrawLabel(true);
     return widget;
+}
+
+void ThumbnailStrip::ensureSelectedItemVisible() {
+
 }
 
 

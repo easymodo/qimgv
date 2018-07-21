@@ -44,6 +44,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
 
 void ThumbnailView::showEvent(QShowEvent *event) {
     QGraphicsView::showEvent(event);
+    ensureSelectedItemVisible();
     loadVisibleThumbnails();
 }
 

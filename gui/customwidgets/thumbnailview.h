@@ -61,7 +61,7 @@ protected:
     const int SCROLL_ANIMATION_SPEED = 180;
 
     const uint LOAD_DELAY = 40;
-    const int OFFSCREEN_PRELOAD_AREA = 2500;
+    int OFFSCREEN_PRELOAD_AREA = 2500;
 
     bool atSceneStart();
     bool atSceneEnd();
@@ -73,6 +73,7 @@ protected:
     virtual void removeItemFromLayout(int pos) = 0;
     virtual void onPopulate();
     void fitSceneToContents();
+    virtual void ensureSelectedItemVisible() = 0;
 
     void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event);

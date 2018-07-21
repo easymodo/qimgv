@@ -49,6 +49,11 @@ SlidePanel::SlidePanel(OverlayContainerWidget *parent)
 SlidePanel::~SlidePanel() {
 }
 
+void SlidePanel::hide() {
+    animGroup->stop();
+    QWidget::hide();
+}
+
 void SlidePanel::setWidget(std::shared_ptr<QWidget> w) {
     if(!w)
         return;

@@ -25,6 +25,7 @@ public:
 
 public slots:
     void show();
+    void hide();
 
 private slots:
     void onAnimationFinish();

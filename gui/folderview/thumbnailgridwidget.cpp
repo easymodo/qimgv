@@ -52,11 +52,10 @@ void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
 
 void ThumbnailGridWidget::drawLabel(QPainter *painter) {
     // text background
-    painter->setOpacity(0.95f);
+    //painter->setOpacity(0.95f);
     //painter->fillRect(nameRect, nameColor);
     painter->setOpacity(currentOpacity);
     // filename
-    Qt::AlignmentFlag flags;
     if(nameFits) {
         painter->setFont(font);
         painter->setPen(Qt::black);
@@ -86,7 +85,6 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, qreal dpr, const QPix
 
     QPointF drawPosCentered(width()/2 - pixmap->width()/(2*qApp->devicePixelRatio()),
                             marginY + thumbnailSize - pixmap->height()/(qApp->devicePixelRatio()));
-
     painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
 
     //painter->setOpacity(1.0f);
@@ -95,6 +93,12 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, qreal dpr, const QPix
     //painter->setOpacity(opacity());
 
     //painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+}
+
+void ThumbnailGridWidget::drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap) {
+    QPointF drawPosCentered(width()  / 2 - pixmap->width()  / (2 * qApp->devicePixelRatio()),
+                            height() / 2 - pixmap->height() / (2 * qApp->devicePixelRatio()));
+    painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
 }
 
 

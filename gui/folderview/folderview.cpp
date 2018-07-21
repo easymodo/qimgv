@@ -23,11 +23,13 @@ FolderView::~FolderView() {
     delete ui;
 }
 
+// probably unneeded
 void FolderView::show() {
     QWidget::show();
     ui->thumbnailGrid->setFocus();
 }
 
+// probably unneeded
 void FolderView::hide() {
     QWidget::hide();
     ui->thumbnailGrid->clearFocus();

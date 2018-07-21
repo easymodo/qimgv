@@ -10,10 +10,11 @@ public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
 
 protected:
-    virtual void setupLayout();
-    virtual void drawHighlight(QPainter *painter);
+    virtual void setupLayout() Q_DECL_OVERRIDE;
+    virtual void drawHighlight(QPainter *painter) Q_DECL_OVERRIDE;
     virtual void drawLabel(QPainter *painter) Q_DECL_OVERRIDE;
     virtual void drawThumbnail(QPainter *painter, qreal dpr, const QPixmap *pixmap) Q_DECL_OVERRIDE;
+    virtual void drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap) Q_DECL_OVERRIDE;
 
 private:
 

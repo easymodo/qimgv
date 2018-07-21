@@ -149,6 +149,8 @@ void MainWindow::setupUi() {
             viewerWidget.get(), SLOT(frameStepBack()));
 
     connect(this, SIGNAL(enableFolderView()),
+            mainPanel, SLOT(hide()));
+    connect(this, SIGNAL(enableFolderView()),
             centralWidget.get(), SLOT(showFolderView()));
 
     connect(this, SIGNAL(closeImage()),
@@ -433,6 +435,7 @@ void MainWindow::triggerCropPanel() {
 
 void MainWindow::showCropPanel() {
     if(activeSidePanel != SIDEPANEL_CROP) {
+        mainPanel->hide();
         sidePanel->setWidget(cropPanel);
         sidePanel->show();
         cropOverlay->show();
