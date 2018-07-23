@@ -186,6 +186,17 @@ void ViewerWidget::stopPlayback() {
     }
 }
 
+void ViewerWidget::startPlayback() {
+    if(currentWidget == IMAGEVIEWER) {
+        imageViewer->startAnimation();
+    }
+    if(currentWidget == VIDEOPLAYER) {
+        // stopping is visibly slower
+        //videoPlayer->stop();
+        videoPlayer->setPaused(false);
+    }
+}
+
 void ViewerWidget::setFitMode(ImageFitMode mode) {
     if(mode == FIT_WINDOW)
         emit fitWindow();

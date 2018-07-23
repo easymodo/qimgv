@@ -133,6 +133,7 @@ signals:
     void frameStep();
     void frameStepBack();
     void enableFolderView();
+    void enableDocumentView();
     void setDirectoryPath(QString);
 
     void closeImage();

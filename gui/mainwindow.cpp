@@ -68,7 +68,7 @@ void MainWindow::setupUi() {
     // overlays etc.
     // this order is used while drawing
     infoOverlay = new InfoOverlay(viewerWidget.get());
-    controlsOverlay = new ControlsOverlay(this);
+    controlsOverlay = new ControlsOverlay(docWidget.get());
     saveOverlay = new SaveConfirmOverlay(docWidget.get());
 
     copyOverlay = new CopyOverlay(this);
@@ -157,6 +157,9 @@ void MainWindow::setupUi() {
     connect(this, SIGNAL(enableFolderView()),
             centralWidget.get(), SLOT(showFolderView()));
 
+    connect(this, SIGNAL(enableDocumentView()),
+            centralWidget.get(), SLOT(showDocumentView()));
+
     connect(this, SIGNAL(setDirectoryPath(QString)),
             folderView.get(), SLOT(setDirectoryPath(QString)));
 
@@ -202,17 +205,17 @@ void MainWindow::switchFitMode() {
 }
 
 void MainWindow::showImage(std::unique_ptr<QPixmap> pixmap) {
-    centralWidget->showDocumentWidget();
+    centralWidget->showDocumentView();
     viewerWidget->showImage(std::move(pixmap));
 }
 
 void MainWindow::showAnimation(std::unique_ptr<QMovie> movie) {
-    centralWidget->showDocumentWidget();
+    centralWidget->showDocumentView();
     viewerWidget->showAnimation(std::move(movie));
 }
 
 void MainWindow::showVideo(Clip *clip) {
-    centralWidget->showDocumentWidget();
+    centralWidget->showDocumentView();
     viewerWidget->showVideo(clip);
 }
 
@@ -556,10 +559,14 @@ void MainWindow::setControlsOverlayEnabled(bool mode) {
 // switch some panel buttons on/off depending on
 // fullscreen status and other settings
 void MainWindow::triggerPanelButtons() {
-    if(panelEnabled && panelPosition == PANEL_TOP && isFullScreen())
-        mainPanel->setWindowButtonsEnabled(true);
-    else
+    if(isFullScreen()) {
+        folderView->setCloseButtonEnabled(true);
+        if(panelEnabled && panelPosition == PANEL_TOP)
+            mainPanel->setWindowButtonsEnabled(true);
+    } else {
+        folderView->setCloseButtonEnabled(false);
         mainPanel->setWindowButtonsEnabled(false);
+    }
 }
 
 void MainWindow::showInfoOverlay(bool mode) {

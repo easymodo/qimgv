@@ -20,11 +20,11 @@ public:
 signals:
 
 public slots:
-    void showDocumentWidget();
+    void showDocumentView();
     void showFolderView();
 
 private:
-    std::shared_ptr<DocumentWidget> docWidget;
+    std::shared_ptr<DocumentWidget> documentView;
     std::shared_ptr<FolderView> folderView;
     CentralWidgetViewMode mode;
 };

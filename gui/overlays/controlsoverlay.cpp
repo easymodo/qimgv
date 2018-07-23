@@ -3,12 +3,20 @@
 ControlsOverlay::ControlsOverlay(OverlayContainerWidget *parent) :
     OverlayWidget(parent)
 {
+    folderViewButton = new IconButton("folderView", ":/res/icons/buttons/folderview20.png", 30);
     settingsButton = new IconButton("openSettings", ":/res/icons/buttons/settings20.png", 30);
     closeButton = new IconButton("exit", ":/res/icons/buttons/close20.png", 30);
+
+    QWidget *horizontalLineWidget = new QWidget;
+    horizontalLineWidget->setFixedSize(5, 22);
+    horizontalLineWidget->setStyleSheet(QString("background-color: #707070; margin-left: 2px; margin-right: 2px"));
+
     layout.setContentsMargins(0,0,0,0);
     this->setContentsMargins(0,0,0,0);
     layout.setSpacing(0);
+    layout.addWidget(folderViewButton);
     layout.addWidget(settingsButton);
+    layout.addWidget(horizontalLineWidget);
     layout.addWidget(closeButton);
     setLayout(&layout);
     fitToContents();

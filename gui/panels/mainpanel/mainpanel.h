@@ -19,7 +19,7 @@ private slots:
 private:
     QVBoxLayout buttonsLayout;
     QWidget buttonsWidget;
-    IconButton *openButton, *exitFullscreenButton, *settingsButton, *exitButton;
+    IconButton *openButton, *exitFullscreenButton, *settingsButton, *exitButton, *folderViewButton;
 
 protected:
     virtual void paintEvent(QPaintEvent* event);

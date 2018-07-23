@@ -17,6 +17,9 @@ FolderView::FolderView(QWidget *parent) :
     ui->closeButton->setAction("exit");
     ui->closeButton->setPixmap(QPixmap(":/res/icons/buttons/close20.png"));
 
+    ui->docViewButton->setAction("documentView");
+    ui->docViewButton->setPixmap(QPixmap(":/res/icons/buttons/docview20.png"));
+
     ui->directoryPathLabel->setAccessibleName("FolderViewPathLabel");
 
     connect(ui->thumbnailGrid, SIGNAL(thumbnailPressed(int)),
@@ -39,6 +42,10 @@ void FolderView::show() {
 void FolderView::hide() {
     QWidget::hide();
     ui->thumbnailGrid->clearFocus();
+}
+
+void FolderView::setCloseButtonEnabled(bool mode) {
+    ui->closeButton->setHidden(!mode);
 }
 
 void FolderView::focusInEvent(QFocusEvent *event) {

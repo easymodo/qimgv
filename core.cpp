@@ -143,6 +143,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(frameStep()), mw, SIGNAL(frameStep()));
     connect(actionManager, SIGNAL(frameStepBack()), mw, SIGNAL(frameStepBack()));
     connect(actionManager, SIGNAL(folderView()), mw, SIGNAL(enableFolderView()));
+    connect(actionManager, SIGNAL(documentView()), mw, SIGNAL(enableDocumentView()));
 }
 
 void Core::postUpdate() {

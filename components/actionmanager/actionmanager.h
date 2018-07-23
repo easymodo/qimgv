@@ -89,6 +89,7 @@ signals:
     void jumpToFirst();
     void jumpToLast();
     void folderView();
+    void documentView();
     void runScript(const QString&);
     void pauseVideo();
     void seekVideo();

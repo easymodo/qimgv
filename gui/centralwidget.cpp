@@ -2,30 +2,32 @@
 
 CentralWidget::CentralWidget(std::shared_ptr<DocumentWidget> _docWidget, std::shared_ptr<FolderView> _folderView, QWidget *parent)
     : QStackedWidget(parent),
-      docWidget(_docWidget),
+      documentView(_docWidget),
       folderView(_folderView)
 {
     setMouseTracking(true);
-    if(!docWidget || !folderView)
+    if(!documentView || !folderView)
         qDebug() << "[CentralWidget] Error: child widget is null. We will crash now.  Bye.";
 
     // docWidget - 0, folderView - 1
-    addWidget(docWidget.get());
+    addWidget(documentView.get());
     addWidget(folderView.get());
-    showDocumentWidget();
+    showDocumentView();
 }
 
-void CentralWidget::showDocumentWidget() {
+void CentralWidget::showDocumentView() {
     mode = MODE_DOCUMENT;
     setCurrentIndex(0);
     widget(0)->setFocus();
+    // TODO: start playback if we can?
+    documentView->viewWidget()->startPlayback();
 }
 
 void CentralWidget::showFolderView() {
     mode = MODE_FOLDERVIEW;
     setCurrentIndex(1);
     widget(1)->setFocus();
-    docWidget->viewWidget()->stopPlayback();
+    documentView->viewWidget()->stopPlayback();
 }
 
 CentralWidgetViewMode CentralWidget::viewMode() {

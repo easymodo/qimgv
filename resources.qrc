@@ -54,5 +54,7 @@
         <file>res/icons/buttons/pause18.png</file>
         <file>res/icons/message/dir_end20.png</file>
         <file>res/icons/message/dir_start20.png</file>
+        <file>res/icons/buttons/docview20.png</file>
+        <file>res/icons/buttons/folderview20.png</file>
     </qresource>
 </RCC>

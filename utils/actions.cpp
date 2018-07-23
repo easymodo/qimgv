@@ -62,5 +62,6 @@ void Actions::init() {
     mActions.insert("frameStep", QVersionNumber(0,6,85));
     mActions.insert("frameStepBack", QVersionNumber(0,6,85));
     mActions.insert("folderView", QVersionNumber(0,6,85));
+    mActions.insert("documentView", QVersionNumber(0,6,88));
 }
 

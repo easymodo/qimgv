@@ -25,6 +25,7 @@ public slots:
     void selectIndex(int);
     void setDirectoryPath(QString path);
 
+    void setCloseButtonEnabled(bool mode);
 signals:
     void thumbnailPressed(int);
     void thumbnailRequested(QList<int>, int);

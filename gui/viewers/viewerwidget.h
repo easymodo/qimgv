@@ -80,6 +80,7 @@ public slots:
     void frameStep();
     void frameStepBack();
 
+    void startPlayback();
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
