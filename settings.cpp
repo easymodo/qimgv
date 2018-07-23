@@ -491,8 +491,8 @@ void Settings::setSavedPaths(QStringList paths) {
 //------------------------------------------------------------------------------
 int Settings::thumbnailerThreadCount() {
     int count = settings->s.value("thumbnailerThreads", 2).toInt();
-    if(count <= 0)
-        count = 2;
+    if(count < 1)
+        count = 1;
     return count;
 }
 

@@ -89,6 +89,10 @@ void SettingsDialog::readSettings() {
     ui->maxZoomResSlider->setValue(settings->maxZoomedResolution());
     onMaxZoomResolutionSliderChanged(settings->maxZoomedResolution());
 
+    // thumbnailer threads
+    ui->thumbnailerThreadsSlider->setValue(settings->thumbnailerThreadCount());
+    onThumbnailerThreadsSliderChanged(settings->thumbnailerThreadCount());
+
     // ##### fit mode #####
     int fitMode = settings->imageFitMode();
     ui->fitModeComboBox->setCurrentIndex(fitMode);
@@ -186,6 +190,7 @@ void SettingsDialog::applySettings() {
 
     settings->setMaximumZoom(ui->maxZoomSlider->value());
     settings->setMaxZoomedResolution(ui->maxZoomResSlider->value());
+    settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
 
     applyShortcuts();
 
@@ -363,6 +368,10 @@ void SettingsDialog::onMaxZoomSliderChanged(int value) {
 void SettingsDialog::onMaxZoomResolutionSliderChanged(int value) {
     ui->maxZoomResLabel->setText(QString::number(value) + " Mpx");
     ui->maxZoomResInfoLabel->setText("<small><i>Max. memory usage: ~" + QString::number(value * 4) + "MB @ 32bpp</i></small>");
+}
+
+void SettingsDialog::onThumbnailerThreadsSliderChanged(int value) {
+    ui->thumbnailerThreadsLabel->setText(QString::number(value));
 }
 
 void SettingsDialog::onBgOpacitySliderChanged(int value) {

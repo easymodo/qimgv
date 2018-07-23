@@ -69,6 +69,7 @@ private slots:
     void onMaxZoomSliderChanged(int value);
     void onMaxZoomResolutionSliderChanged(int value);
     void onBgOpacitySliderChanged(int value);
+    void onThumbnailerThreadsSliderChanged(int value);
 signals:
     void settingsChanged();
 };

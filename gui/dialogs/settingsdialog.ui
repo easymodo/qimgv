@@ -2160,6 +2160,74 @@
                 </widget>
                </item>
                <item>
+                <layout class="QHBoxLayout" name="horizontalLayout">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="label_17">
+                   <property name="text">
+                    <string>Thumbnailer threads:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_9">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="thumbnailerThreadsLabel">
+                   <property name="text">
+                    <string>2</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSlider" name="thumbnailerThreadsSlider">
+                   <property name="minimumSize">
+                    <size>
+                     <width>180</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="minimum">
+                    <number>1</number>
+                   </property>
+                   <property name="maximum">
+                    <number>4</number>
+                   </property>
+                   <property name="pageStep">
+                    <number>1</number>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="tickPosition">
+                    <enum>QSlider::TicksBelow</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_7">
                  <item>
                   <widget class="QLabel" name="mpvLabel">
@@ -2486,8 +2554,8 @@ p, li { white-space: pre-wrap; }
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>725</x>
-     <y>559</y>
+     <x>577</x>
+     <y>487</y>
     </hint>
     <hint type="destinationlabel">
      <x>383</x>
@@ -2502,8 +2570,8 @@ p, li { white-space: pre-wrap; }
    <slot>applySettingsAndClose()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>553</x>
-     <y>559</y>
+     <x>405</x>
+     <y>487</y>
     </hint>
     <hint type="destinationlabel">
      <x>132</x>
@@ -2518,8 +2586,8 @@ p, li { white-space: pre-wrap; }
    <slot>applySettings()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>639</x>
-     <y>559</y>
+     <x>491</x>
+     <y>487</y>
     </hint>
     <hint type="destinationlabel">
      <x>137</x>
@@ -2534,8 +2602,8 @@ p, li { white-space: pre-wrap; }
    <slot>resetShortcuts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>602</x>
-     <y>81</y>
+     <x>577</x>
+     <y>70</y>
     </hint>
     <hint type="destinationlabel">
      <x>587</x>
@@ -2550,8 +2618,8 @@ p, li { white-space: pre-wrap; }
    <slot>bgColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>341</x>
-     <y>104</y>
+     <x>569</x>
+     <y>64</y>
     </hint>
     <hint type="destinationlabel">
      <x>30</x>
@@ -2566,8 +2634,8 @@ p, li { white-space: pre-wrap; }
    <slot>accentColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>341</x>
-     <y>132</y>
+     <x>569</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>33</x>
@@ -2582,8 +2650,8 @@ p, li { white-space: pre-wrap; }
    <slot>removeShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>272</x>
-     <y>81</y>
+     <x>335</x>
+     <y>70</y>
     </hint>
     <hint type="destinationlabel">
      <x>584</x>
@@ -2598,8 +2666,8 @@ p, li { white-space: pre-wrap; }
    <slot>addShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>100</x>
-     <y>81</y>
+     <x>249</x>
+     <y>70</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -2614,8 +2682,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMaxZoomSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>576</x>
-     <y>160</y>
+     <x>567</x>
+     <y>173</y>
     </hint>
     <hint type="destinationlabel">
      <x>595</x>
@@ -2630,8 +2698,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMaxZoomResolutionSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>576</x>
-     <y>213</y>
+     <x>567</x>
+     <y>226</y>
     </hint>
     <hint type="destinationlabel">
      <x>597</x>
@@ -2646,8 +2714,8 @@ p, li { white-space: pre-wrap; }
    <slot>selectMpvPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>698</x>
-     <y>164</y>
+     <x>577</x>
+     <y>193</y>
     </hint>
     <hint type="destinationlabel">
      <x>596</x>
@@ -2662,8 +2730,8 @@ p, li { white-space: pre-wrap; }
    <slot>onBgOpacitySliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>602</x>
-     <y>190</y>
+     <x>568</x>
+     <y>172</y>
     </hint>
     <hint type="destinationlabel">
      <x>621</x>
@@ -2678,8 +2746,8 @@ p, li { white-space: pre-wrap; }
    <slot>addScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>77</x>
-     <y>64</y>
+     <x>247</x>
+     <y>70</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
@@ -2694,8 +2762,8 @@ p, li { white-space: pre-wrap; }
    <slot>removeScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>272</x>
-     <y>81</y>
+     <x>421</x>
+     <y>70</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -2710,8 +2778,8 @@ p, li { white-space: pre-wrap; }
    <slot>editScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>69</y>
+     <x>335</x>
+     <y>70</y>
     </hint>
     <hint type="destinationlabel">
      <x>2</x>
@@ -2742,12 +2810,28 @@ p, li { white-space: pre-wrap; }
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>227</x>
-     <y>174</y>
+     <x>160</x>
+     <y>185</y>
     </hint>
     <hint type="destinationlabel">
      <x>363</x>
      <y>127</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>thumbnailerThreadsSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>onThumbnailerThreadsSliderChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>514</x>
+     <y>139</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>591</x>
+     <y>128</y>
     </hint>
    </hints>
   </connection>
@@ -2768,5 +2852,6 @@ p, li { white-space: pre-wrap; }
   <slot>removeScript()</slot>
   <slot>editScript()</slot>
   <slot>editScript(QListWidgetItem*)</slot>
+  <slot>onThumbnailerThreadsSliderChanged(int)</slot>
  </slots>
 </ui>
