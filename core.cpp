@@ -507,6 +507,7 @@ void Core::reset() {
 bool Core::setDirectory(QString newPath) {
     if(!dirManager->hasImages() || dirManager->currentDirectoryPath() != newPath) {
         this->reset();
+        settings->setLastDirectory(newPath);
         dirManager->setDirectory(newPath);
         mw->setDirectoryPath(newPath);
         mw->populateThumbnailViews(dirManager->fileCount());
