@@ -21,11 +21,13 @@ public slots:
     void selectFirst();
     void selectLast();
     void selectIndex(int index);
+    void pageUp();
+    void pageDown();
 private:
     FlowLayout *flowLayout;
     QGraphicsWidget holderWidget;
     QStringList allowedKeys;
-    int selectedIndex;
+    int selectedIndex, shiftedIndex;
 
 private slots:
     void selectAbove();

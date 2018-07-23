@@ -80,6 +80,8 @@ public:
     // returns the index of item above / below
     int itemAbove(int index);
     int itemBelow(int index);
+    int rows();
+    int columns();
 protected:
     QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
 
