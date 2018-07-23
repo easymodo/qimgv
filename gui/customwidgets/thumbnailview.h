@@ -56,12 +56,12 @@ protected:
     QPointF viewportCenter;
     int thumbnailSize;
 
-    const int SCROLL_UPDATE_RATE = 8; // 16 feels too laggy
-    const float SCROLL_SPEED_MULTIPLIER = 3.6;
-    const int SCROLL_ANIMATION_SPEED = 180;
+    const int SCROLL_UPDATE_RATE = 8;
+    const float SCROLL_SPEED_MULTIPLIER = 4.0f;
+    const int SCROLL_ANIMATION_SPEED = 120;
 
     const uint LOAD_DELAY = 40;
-    int OFFSCREEN_PRELOAD_AREA = 2500;
+    const int OFFSCREEN_PRELOAD_AREA = 2500;
 
     bool atSceneStart();
     bool atSceneEnd();

@@ -10,8 +10,14 @@ FolderView::FolderView(QWidget *parent) :
 
     ui->openButton->setAction("open");
     ui->openButton->setPixmap(QPixmap(":/res/icons/buttons/open20.png"));
+
     ui->settingsButton->setAction("openSettings");
     ui->settingsButton->setPixmap(QPixmap(":/res/icons/buttons/settings20.png"));
+
+    ui->closeButton->setAction("exit");
+    ui->closeButton->setPixmap(QPixmap(":/res/icons/buttons/close20.png"));
+
+    ui->directoryPathLabel->setAccessibleName("FolderViewPathLabel");
 
     connect(ui->thumbnailGrid, SIGNAL(thumbnailPressed(int)),
             this, SIGNAL(thumbnailPressed(int)));
@@ -62,4 +68,11 @@ void FolderView::mouseReleaseEvent(QMouseEvent *event) {
 // prevent passthrough to parent
 void FolderView::wheelEvent(QWheelEvent *event) {
     event->accept();
+}
+
+void FolderView::paintEvent(QPaintEvent *) {
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }

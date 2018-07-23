@@ -8,8 +8,8 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     hovered(false),
     mDrawLabel(true),
     thumbnailSize(100),
-    marginX(1),
     marginY(3),
+    marginX(1),
     textHeight(5)
 {
     setAcceptHoverEvents(true);
@@ -26,7 +26,7 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     textHeight = fm->height();
 
     opacityAnimation = new QPropertyAnimation(this, "currentOpacity");
-    opacityAnimation->setEasingCurve(QEasingCurve::InQuad);
+    opacityAnimation->setEasingCurve(QEasingCurve::OutCubic);
     opacityAnimation->setDuration(opacityAnimationSpeed);
     currentOpacity = inactiveOpacity;
 
@@ -216,7 +216,7 @@ void ThumbnailWidget::drawThumbnail(QPainter* painter, qreal dpr, const QPixmap 
                             height() / 2 - pixmap->height() / (2 * qApp->devicePixelRatio()));
 
     //QPointF drawPosCentered(width()/2 - pixmap->width()/(2*qApp->devicePixelRatio()),
-    //                        highlightBarHeight + (thumbnailSize)/2 - pixmap->height()/(2*qApp->devicePixelRatio()));
+    //                        marginY + (thumbnailSize)/2 - pixmap->height()/(2*qApp->devicePixelRatio()));
 
     painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
 }

@@ -7,9 +7,6 @@ FolderGridView::FolderGridView(QWidget *parent)
       selectedIndex(-1)
 {
     setupLayout();
-
-    OFFSCREEN_PRELOAD_AREA = 800;
-
     allowedKeys << "Up"
                 << "Down"
                 << "Left"
@@ -125,7 +122,7 @@ void FolderGridView::setupLayout() {
     this->setAlignment(Qt::AlignHCenter);
 
     flowLayout = new FlowLayout();
-    flowLayout->setContentsMargins(0,0,0,0);
+    flowLayout->setContentsMargins(12,0,12,0);
     setFrameShape(QFrame::NoFrame);
     scene.addItem(&holderWidget);
     holderWidget.setLayout(flowLayout);

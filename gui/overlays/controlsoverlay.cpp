@@ -3,8 +3,8 @@
 ControlsOverlay::ControlsOverlay(OverlayContainerWidget *parent) :
     OverlayWidget(parent)
 {
-    settingsButton = new IconButton("openSettings", ":/res/icons/buttons/settings20.png");
-    closeButton = new IconButton("exit", ":/res/icons/buttons/close20.png");
+    settingsButton = new IconButton("openSettings", ":/res/icons/buttons/settings20.png", 30);
+    closeButton = new IconButton("exit", ":/res/icons/buttons/close20.png", 30);
     layout.setContentsMargins(0,0,0,0);
     this->setContentsMargins(0,0,0,0);
     layout.setSpacing(0);

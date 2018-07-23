@@ -82,6 +82,9 @@ int FlowLayout::itemBelow(int index) {
     int indexBelow = index + m_columns;
     if(indexBelow < m_items.count())
         return indexBelow;
+    else if(index / m_columns < m_rows - 1) {
+        return m_items.count() - 1;
+    }
     return -1;
 }
 

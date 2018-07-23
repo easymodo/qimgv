@@ -3,7 +3,7 @@
 ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     : orientation(orient),
       QGraphicsView(parent),
-      thumbnailSize(180)
+      thumbnailSize(160)
 {
     setAccessibleName("thumbnailView");
     this->setMouseTracking(true);

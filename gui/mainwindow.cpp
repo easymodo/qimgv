@@ -157,6 +157,9 @@ void MainWindow::setupUi() {
     connect(this, SIGNAL(enableFolderView()),
             centralWidget.get(), SLOT(showFolderView()));
 
+    connect(this, SIGNAL(setDirectoryPath(QString)),
+            folderView.get(), SLOT(setDirectoryPath(QString)));
+
     connect(this, SIGNAL(closeImage()),
             viewerWidget.get(), SLOT(closeImage()));
 
@@ -255,6 +258,7 @@ void MainWindow::saveCurrentDisplay() {
 //#############################################################
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event) {
+    //qDebug() << "event: " << event->pos();
     if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
         if(panelEnabled && (isFullScreen() || !panelFullscreenOnly)) {
             if(mainPanel->triggerRect().contains(event->pos())

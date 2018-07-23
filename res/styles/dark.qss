@@ -253,19 +253,12 @@ CopyOverlay QPushButton:hover {
 [accessibleName="iconButton"] {
     padding: 5px 5px 5px 5px;
     border-radius: 1px;
+    color: #86888a;
 }
 
 [accessibleName="iconButton"]:hover {
     background-color: #414244;
     border: 1px solid #414244;
-}
-
-[accessibleName="panelButtonTransparent"] {
-    padding: 3px 3px 3px 3px;
-}
-
-[accessibleName="panelButtonTransparent"]:hover {
-    background-color: #414244;
 }
 
 /* panel buttons holder widget */
@@ -286,9 +279,33 @@ CopyOverlay QPushButton:hover {
 /* Thumbnails & stuff */
 /*############################################################################*/
 
-[accessibleName="thumbnailView"] {
-    background-color: #1c1d1e;
+ThumbnailView {
     border-style: none;
+}
+
+ThumbnailStrip {
+    background-color: #1c1d1e;
+}
+
+FolderGridView {
+    background-color: #28282a;
+}
+
+FolderView {
+    background-color: #28282a;
+}
+
+[accessibleName="FolderViewBar"] {
+    background-color: #1b1b1c;
+    /* border-bottom: 2px solid #313234; */
+}
+
+[accessibleName="FolderViewPathLabel"] {
+    background-color: #28282a;
+    color: #696a6c;
+    border: 2px solid #28282a;
+    border-radius: 4px;
+    padding: 4px 35px 4px 4px;
 }
 
 ThumbnailLabel {
@@ -313,8 +330,10 @@ ThumbnailView QScrollBar::handle:horizontal {
 }
 
 ThumbnailView QScrollBar:vertical {
-    width: 15px;
+    width: 33px;
     background-color: transparent;
+    margin-left: 6px;
+    margin-right: 12px;
 }
 
 ThumbnailView QScrollBar::handle:vertical {
@@ -355,3 +374,4 @@ ThumbnailView QScrollBar::sub-line {
     padding-left: 5px;
     padding-right: 3px;
 }
+

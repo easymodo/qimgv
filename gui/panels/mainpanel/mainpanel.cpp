@@ -4,23 +4,19 @@ MainPanel::MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *pa
     // buttons stuff
     buttonsWidget.setAccessibleName("panelButtonsWidget");
 
-    openButton.setPixmap(QPixmap(":/res/icons/buttons/open20.png"));
-    openButton.setAction("open");
-    settingsButton.setPixmap(QPixmap(":/res/icons/buttons/settings20.png"));
-    settingsButton.setAction("openSettings");
-    //exitFullscreenButton.setPixmap(QPixmap(":/res/icons/exit-fullscreen.png"));
-    //exitFullscreenButton.setAction("toggleFullscreen");
-    exitButton.setPixmap(QPixmap(":/res/icons/buttons/close20.png"));
-    exitButton.setAction("exit");
+    openButton     = new IconButton("open", ":/res/icons/buttons/open20.png", 30);
+    settingsButton = new IconButton("openSettings", ":/res/icons/buttons/settings20.png", 30);
+    exitButton     = new IconButton("exit", ":/res/icons/buttons/close20.png", 30);
+    //exitFullscreenButton = new IconButton("ToggleFullscreen", ":/res/icons/buttons/exit-fullscreen.png", QSize(30, 30));
 
     buttonsLayout.setDirection(QBoxLayout::BottomToTop);
     buttonsLayout.setSpacing(0);
     buttonsLayout.setContentsMargins(3,0,0,1);
-    buttonsLayout.addWidget(&settingsButton);
-    buttonsLayout.addWidget(&openButton);
+    buttonsLayout.addWidget(settingsButton);
+    buttonsLayout.addWidget(openButton);
     buttonsLayout.addStretch(0);
     //buttonsLayout.addWidget(&exitFullscreenButton);
-    buttonsLayout.addWidget(&exitButton);
+    buttonsLayout.addWidget(exitButton);
 
     buttonsWidget.setLayout(&buttonsLayout);
     mLayout.addWidget(&buttonsWidget, 0, 1);
@@ -50,7 +46,7 @@ void MainPanel::setPosition(PanelHPosition newPosition) {
 }
 
 void MainPanel::setWindowButtonsEnabled(bool mode) {
-    exitButton.setHidden(!mode);
+    exitButton->setHidden(!mode);
     //exitFullscreenButton.setHidden(!mode);
 }
 

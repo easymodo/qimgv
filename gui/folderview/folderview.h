@@ -34,6 +34,7 @@ protected:
     void wheelEvent(QWheelEvent *event);
 
     void focusInEvent(QFocusEvent *event);
+    void paintEvent(QPaintEvent *);
 private:
     Ui::FolderView *ui;
 };
