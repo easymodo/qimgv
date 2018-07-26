@@ -255,19 +255,16 @@ void ViewerWidget::frameStepBack() {
         videoPlayer.get()->frameStepBack();
 }
 
+bool ViewerWidget::isDisplaying() {
+    if(currentWidget == IMAGEVIEWER && imageViewer->isDisplaying())
+        return true;
+    if(currentWidget == VIDEOPLAYER /*&& imageViewer->isDisplaying()*/) // todo
+        return true;
+    else
+        return false;
+}
+
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
-    /*
-    if(currentWidget == IMAGEVIEWER) {
-        showCursor();
-        if(event->button() == Qt::LeftButton) {
-            setCursor(QCursor(Qt::ClosedHandCursor));
-        }
-        if(event->button() == Qt::RightButton) {
-            showCursor();
-            setCursor(QCursor(Qt::SizeVerCursor));
-        }
-    }
-    */
     event->ignore();
 }
 
@@ -295,7 +292,7 @@ void ViewerWidget::hideCursor() {
     // checking overlays explicitly is a bit ugly
     // todo: find a better solution without reparenting
     // maybe keep a list of pointers in OverlayContainerWidget on overlay attach?
-    if(this->underMouse() && !videoControls->underMouse()) {
+    if(this->underMouse() && !videoControls->underMouse() && isDisplaying()) {
         setCursor(QCursor(Qt::BlankCursor));
         videoControls->hide();
     }

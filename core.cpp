@@ -144,6 +144,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(frameStepBack()), mw, SIGNAL(frameStepBack()));
     connect(actionManager, SIGNAL(folderView()), mw, SIGNAL(enableFolderView()));
     connect(actionManager, SIGNAL(documentView()), mw, SIGNAL(enableDocumentView()));
+    connect(actionManager, SIGNAL(toggleFolderView()), mw, SIGNAL(toggleFolderView()));
 }
 
 void Core::postUpdate() {

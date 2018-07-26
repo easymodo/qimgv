@@ -315,8 +315,7 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
 //  Right button zooming / dragging logic
 //  mouseMoveStartPos: stores the previous mouseMoveEvent() position,
 //                     used to calculate delta.
-//  mZooming: this flag is set when we had a zoom event
-//             used to choose which action to take - zoom or context menu
+//  mouseInteraction: trscks which action we are performing since the last mousePressEvent()
 //
 void ImageViewer::mousePressEvent(QMouseEvent *event) {
     QWidget::mousePressEvent(event);
@@ -346,19 +345,17 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
+    unsetCursor();
     QWidget::mouseReleaseEvent(event);
-    setCursor(Qt::ArrowCursor);
     if(!mIsDisplaying) {
         mouseInteraction = MOUSE_NONE;
         return;
     }
     if(mouseInteraction == MOUSE_NONE) {
         if(event->button() == Qt::RightButton) {
-            qDebug() << "rightClick";
             emit rightClicked();
         } else if(event->button() == Qt::LeftButton) {
-            qDebug() << "click";
-            emit clicked();
+            emit leftClicked();
         }
     }
     mouseInteraction = MOUSE_NONE;

@@ -30,6 +30,10 @@ void CentralWidget::showFolderView() {
     documentView->viewWidget()->stopPlayback();
 }
 
+void CentralWidget::toggleViewMode() {
+    (mode == MODE_DOCUMENT) ? showFolderView() : showDocumentView();
+}
+
 CentralWidgetViewMode CentralWidget::viewMode() {
     return mode;
 }

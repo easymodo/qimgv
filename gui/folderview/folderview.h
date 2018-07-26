@@ -31,9 +31,7 @@ signals:
     void thumbnailRequested(QList<int>, int);
 
 protected:
-    void mouseReleaseEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
-
     void focusInEvent(QFocusEvent *event);
     void paintEvent(QPaintEvent *);
 private:

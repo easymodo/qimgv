@@ -69,10 +69,6 @@ void FolderView::setDirectoryPath(QString path) {
 }
 
 // prevent passthrough to parent
-void FolderView::mouseReleaseEvent(QMouseEvent *event) {
-}
-
-// prevent passthrough to parent
 void FolderView::wheelEvent(QWheelEvent *event) {
     event->accept();
 }

@@ -22,6 +22,7 @@ signals:
 public slots:
     void showDocumentView();
     void showFolderView();
+    void toggleViewMode();
 
 private:
     std::shared_ptr<DocumentWidget> documentView;

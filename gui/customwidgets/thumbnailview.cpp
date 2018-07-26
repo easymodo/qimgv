@@ -217,6 +217,6 @@ void ThumbnailView::mousePressEvent(QMouseEvent *event) {
         if(item) {
             emit thumbnailPressed(thumbnails.indexOf(item));
         }
-        QGraphicsView::mousePressEvent(event);
     }
+    QGraphicsView::mousePressEvent(event);
 }

@@ -166,6 +166,9 @@ void MainWindow::setupUi() {
     connect(this, SIGNAL(closeImage()),
             viewerWidget.get(), SLOT(closeImage()));
 
+    connect(this, SIGNAL(toggleFolderView()),
+            centralWidget.get(), SLOT(toggleViewMode()));
+
 }
 
 void MainWindow::fitWindow() {

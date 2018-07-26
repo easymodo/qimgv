@@ -135,8 +135,8 @@ signals:
     void enableFolderView();
     void enableDocumentView();
     void setDirectoryPath(QString);
-
     void closeImage();
+    void toggleFolderView();
 
 public slots:
     void showDefault();
