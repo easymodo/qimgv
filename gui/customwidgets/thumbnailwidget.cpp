@@ -90,16 +90,17 @@ void ThumbnailWidget::setThumbnail(std::shared_ptr<Thumbnail> _thumbnail) {
 void ThumbnailWidget::setupLayout() {
     highlightRect = QRectF(marginX, 0, width() - marginX * 2, marginY);
     nameRect = QRectF(highlightRect.left(), highlightRect.height(),
-                     highlightRect.width(), textHeight * 1.6);
+                      highlightRect.width(), textHeight * 1.7);
 
     if(thumbnail && !thumbnail->label().isEmpty()) {
-        int heightTextMargin = (nameRect.height() - textHeight) / 2;
-        nameTextRect = nameRect.adjusted(4, heightTextMargin, -4, -heightTextMargin);
-        labelTextRect.setWidth(fmSmall->width(thumbnail->label()));
-        labelTextRect.setHeight(fmSmall->height());
-        labelTextRect.moveCenter(nameRect.center());
-        labelTextRect.moveRight(nameTextRect.right());
-        nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
+        nameTextRect = nameRect.adjusted(4, 0, -4, 0);
+        if(!thumbnail->label().isEmpty()) {
+            labelTextRect.setWidth(fmSmall->width(thumbnail->label()));
+            labelTextRect.setHeight(nameRect.height());
+            labelTextRect.moveTop(nameTextRect.top());
+            labelTextRect.moveRight(nameTextRect.right());
+            nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
+        }
     }
 }
 
@@ -149,8 +150,6 @@ void ThumbnailWidget::setOpacity(qreal amount, bool smooth) {
 }
 
 QRectF ThumbnailWidget::boundingRect() const {
-    //qDebug() << "boundingRect: " << geometry();
-    //return QRectF(QPointF(0, 0), this->geometry().size());
     return QRectF(0, 0, thumbnailSize + marginX * 2, thumbnailSize + marginY * 2);
 }
 
@@ -202,13 +201,14 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
     painter->fillRect(nameRect, nameColor);
     painter->setOpacity(currentOpacity);
     // filename
+    int flags = Qt::TextSingleLine | Qt::AlignVCenter;
     painter->setFont(font);
     painter->setPen(QColor(230, 230, 230, 255));
-    painter->drawText(nameTextRect, Qt::TextSingleLine, thumbnail->name());
+    painter->drawText(nameTextRect, flags, thumbnail->name());
     // additional info
     painter->setFont(fontSmall);
     painter->setPen(QColor(160, 160, 160, 255));
-    painter->drawText(labelTextRect, Qt::TextSingleLine, thumbnail->label());
+    painter->drawText(labelTextRect, flags, thumbnail->label());
 }
 
 void ThumbnailWidget::drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
@@ -246,7 +246,7 @@ void ThumbnailWidget::setHovered(bool mode) {
     hovered = mode;
     if(!isHighlighted()) {
         if(mode) {
-            setOpacity(1.0f, false);
+            setOpacity(1.0, false);
         } else {
             setOpacity(inactiveOpacity, false);
         }

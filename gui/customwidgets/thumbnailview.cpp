@@ -1,9 +1,9 @@
 #include "thumbnailview.h"
 
 ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
-    : orientation(orient),
-      QGraphicsView(parent),
-      thumbnailSize(160)
+    : QGraphicsView(parent),
+      orientation(orient),
+      thumbnailSize(144)
 {
     setAccessibleName("thumbnailView");
     this->setMouseTracking(true);
@@ -117,10 +117,10 @@ void ThumbnailView::resetViewport() {
 
 bool ThumbnailView::atSceneStart() {
     if(orientation == THUMBNAILVIEW_HORIZONTAL) {
-        if(viewportTransform().dx() == 0)
+        if(viewportTransform().dx() == 0.0)
             return true;
     } else {
-        if(viewportTransform().dy() == 0)
+        if(viewportTransform().dy() == 0.0)
             return true;
     }
     return false;

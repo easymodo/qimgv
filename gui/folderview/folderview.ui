@@ -18,7 +18,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>18</number>
+    <number>2</number>
    </property>
    <property name="leftMargin">
     <number>0</number>
@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>12</number>
+    <number>0</number>
    </property>
    <item>
     <widget class="QWidget" name="topBar" native="true">
@@ -63,14 +63,14 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>48</width>
-          <height>48</height>
+          <width>44</width>
+          <height>44</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>48</width>
-          <height>48</height>
+          <width>44</width>
+          <height>44</height>
          </size>
         </property>
         <property name="text">
@@ -88,14 +88,14 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>48</width>
-          <height>48</height>
+          <width>44</width>
+          <height>44</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>48</width>
-          <height>48</height>
+          <width>44</width>
+          <height>44</height>
          </size>
         </property>
         <property name="text">
@@ -168,14 +168,14 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>48</width>
-              <height>48</height>
+              <width>44</width>
+              <height>44</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>48</width>
-              <height>48</height>
+              <width>44</width>
+              <height>44</height>
              </size>
             </property>
             <property name="text">
@@ -193,14 +193,14 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>48</width>
-              <height>48</height>
+              <width>44</width>
+              <height>44</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>48</width>
-              <height>48</height>
+              <width>44</width>
+              <height>44</height>
              </size>
             </property>
             <property name="text">

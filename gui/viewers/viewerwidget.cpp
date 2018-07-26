@@ -256,10 +256,10 @@ void ViewerWidget::frameStepBack() {
 }
 
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
-    // supports zoom/pan
+    /*
     if(currentWidget == IMAGEVIEWER) {
+        showCursor();
         if(event->button() == Qt::LeftButton) {
-            showCursor();
             setCursor(QCursor(Qt::ClosedHandCursor));
         }
         if(event->button() == Qt::RightButton) {
@@ -267,6 +267,7 @@ void ViewerWidget::mousePressEvent(QMouseEvent *event) {
             setCursor(QCursor(Qt::SizeVerCursor));
         }
     }
+    */
     event->ignore();
 }
 
@@ -302,7 +303,8 @@ void ViewerWidget::hideCursor() {
 
 void ViewerWidget::showCursor() {
     cursorTimer.stop();
-    setCursor(QCursor(Qt::ArrowCursor));
+    if(cursor().shape() == Qt::BlankCursor)
+        setCursor(QCursor(Qt::ArrowCursor));
     if(currentWidget == VIDEOPLAYER) {
         videoControls->show();
     }

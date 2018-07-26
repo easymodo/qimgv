@@ -330,10 +330,10 @@ ThumbnailView QScrollBar::handle:horizontal {
 }
 
 ThumbnailView QScrollBar:vertical {
-    width: 33px;
+    width: 28px;
     background-color: transparent;
-    margin-left: 6px;
-    margin-right: 12px;
+    margin-left: 4px;
+    margin-right: 10px;
 }
 
 ThumbnailView QScrollBar::handle:vertical {

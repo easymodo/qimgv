@@ -19,6 +19,12 @@
 
 #define FLT_EPSILON 1.19209290E-07F
 
+enum MouseInteractionState {
+    MOUSE_NONE,
+    MOUSE_DRAG,
+    MOUSE_ZOOM
+};
+
 class ImageViewer : public QWidget
 {
     Q_OBJECT
@@ -33,12 +39,15 @@ public:
     void displayImage(std::unique_ptr<QPixmap> _pixmap);
     void displayAnimation(std::unique_ptr<QMovie> _animation);
     void replacePixmap(std::unique_ptr<QPixmap> newFrame);
+    bool isDisplaying();
 
 signals:
     void scalingRequested(QSize);
     void scaleChanged(float);
     void sourceSizeChanged(QSize);
     void imageAreaChanged(QRect);
+    void rightClicked();
+    void clicked();
 
 public slots:
     void setFitMode(ImageFitMode mode);
@@ -80,7 +89,8 @@ private:
     QRect drawingRect;
     QPoint mouseMoveStartPos, drawPos;
     QSize mSourceSize;
-    bool isDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;
+    bool mIsDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;
+    MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int FADE_DURATION = 140;
     const int SCROLL_DISTANCE = 250;
@@ -113,7 +123,7 @@ private:
 
     void mouseDragWrapping(QMouseEvent *event);
     void mouseDrag(QMouseEvent *event);
-    void mouseDragZoom(QMouseEvent *event);
+    void mouseMoveZoom(QMouseEvent *event);
     void drawTransparencyGrid();
     void startAnimationTimer();
     void readjust(QSize _sourceSize, QRect _drawingRect);

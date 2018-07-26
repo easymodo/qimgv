@@ -9,7 +9,7 @@ ThumbnailGridWidget::ThumbnailGridWidget(QGraphicsItem* parent)
 QRectF ThumbnailGridWidget::boundingRect() const {
     return QRectF(0, 0,
                   thumbnailSize + marginX * 2,
-                  thumbnailSize + marginY * 2 + textHeight * 1.6);
+                  thumbnailSize + marginY * 2 + textHeight * 1.7);
 }
 
 void ThumbnailGridWidget::setupLayout() {
@@ -19,12 +19,8 @@ void ThumbnailGridWidget::setupLayout() {
         highlightRect.setTop(thumbnailSize - thumbnail->pixmap()->height()/qApp->devicePixelRatio());
     }
     nameRect = QRectF(marginX, marginY + thumbnailSize,
-                     thumbnailSize, fm->height() * 1.6);
-    int heightTextMargin = (nameRect.height() - fm->height()) / 2;
-    int textMargins[4] = {4, heightTextMargin, -4, -heightTextMargin};
-
-    nameTextRect = nameRect.adjusted(textMargins[0], textMargins[1],
-                                     textMargins[2], textMargins[3]);
+                     thumbnailSize, fm->height() * 1.7);
+    nameTextRect = nameRect.adjusted(4, 0, -4, 0);
     if(thumbnail && fm->width(thumbnail->name()) >= nameTextRect.width()) {
         nameFits = false;
     }
@@ -51,24 +47,18 @@ void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
 }
 
 void ThumbnailGridWidget::drawLabel(QPainter *painter) {
-    // text background
-    //painter->setOpacity(0.95f);
-    //painter->fillRect(nameRect, nameColor);
     painter->setOpacity(currentOpacity);
     // filename
-    if(nameFits) {
-        painter->setFont(font);
-        painter->setPen(Qt::black);
-        painter->drawText(nameTextRect.adjusted(1,1,1,1), Qt::TextSingleLine | Qt::AlignHCenter, thumbnail->name());
-        painter->setPen(QColor(230, 230, 230, 255));
-        painter->drawText(nameTextRect, Qt::TextSingleLine | Qt::AlignHCenter, thumbnail->name());
-    } else {
-        painter->setFont(font);
-        painter->setPen(Qt::black);
-        painter->drawText(nameTextRect.adjusted(1,1,1,1), Qt::TextSingleLine, thumbnail->name());
-        painter->setPen(QColor(230, 230, 230, 255));
-        painter->drawText(nameTextRect, Qt::TextSingleLine, thumbnail->name());
-    }
+    int flags;
+    if(nameFits)
+        flags = Qt::TextSingleLine | Qt::AlignVCenter | Qt::AlignHCenter;
+    else
+        flags = Qt::TextSingleLine | Qt::AlignVCenter;
+    painter->setFont(font);
+    painter->setPen(Qt::black);
+    painter->drawText(nameTextRect.adjusted(1,1,1,1), flags, thumbnail->name());
+    painter->setPen(QColor(230, 230, 230, 255));
+    painter->drawText(nameTextRect, flags, thumbnail->name());
     // additional info
     //painter->setFont(fontSmall);
     //painter->setPen(QColor(160, 160, 160, 255));
@@ -76,13 +66,6 @@ void ThumbnailGridWidget::drawLabel(QPainter *painter) {
 }
 
 void ThumbnailGridWidget::drawThumbnail(QPainter *painter, qreal dpr, const QPixmap *pixmap) {
-    //QPointF drawPosCentered(width()  / 2 - pixmap->width()  / (2 * qApp->devicePixelRatio()),
-    //                        height() / 2 - pixmap->height() / (2 * qApp->devicePixelRatio()));
-
-    //QPointF drawPosCentered(width()/2 - pixmap->width()/(2*qApp->devicePixelRatio()),
-    //                        highlightBarHeight + (thumbnailSize)/2 - pixmap->height()/(2*qApp->devicePixelRatio()));
-
-
     QPointF drawPosCentered(width()/2 - pixmap->width()/(2*qApp->devicePixelRatio()),
                             marginY + thumbnailSize - pixmap->height()/(qApp->devicePixelRatio()));
     painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
@@ -91,7 +74,6 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, qreal dpr, const QPix
     //painter->setCompositionMode(QPainter::CompositionMode_DestinationOut);
     //painter->fillRect(boundingRect().adjusted(10,10,10,40), QColor(Qt::red));
     //painter->setOpacity(opacity());
-
     //painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 }
 
@@ -100,7 +82,3 @@ void ThumbnailGridWidget::drawIcon(QPainter *painter, qreal dpr, const QPixmap *
                             height() / 2 - pixmap->height() / (2 * qApp->devicePixelRatio()));
     painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
 }
-
-
-
-
