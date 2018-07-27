@@ -36,6 +36,9 @@ public slots:
     void resetViewport();
     void loadVisibleThumbnails();
 
+    void addItem();
+    void insertItem(int index);
+    void removeItem(int index);
 signals:
     void scrolled();
     void thumbnailPressed(int);
@@ -71,7 +74,7 @@ protected:
     virtual ThumbnailWidget *createThumbnailWidget() = 0;
     virtual void addItemToLayout(ThumbnailWidget* widget, int pos) = 0;
     virtual void removeItemFromLayout(int pos) = 0;
-    virtual void onPopulate();
+    virtual void updateLayout();
     void fitSceneToContents();
     virtual void ensureSelectedItemVisible() = 0;
 

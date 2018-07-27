@@ -97,6 +97,7 @@ signals:
     void frameStep();
     void frameStepBack();
     void toggleFolderView();
+    void moveToTrash();
 };
 
 extern ActionManager *actionManager;

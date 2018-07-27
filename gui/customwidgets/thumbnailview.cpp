@@ -62,9 +62,32 @@ void ThumbnailView::populate(int count) {
             addItemToLayout(widget, i);
         }
     }
-    onPopulate();
+    updateLayout();
     fitSceneToContents();
     resetViewport();
+}
+
+void ThumbnailView::addItem() {
+    insertItem(thumbnails.count());
+}
+
+// insert at index
+// !! calls loadVisibleThumbnails() at the end
+void ThumbnailView::insertItem(int index) {
+    ThumbnailWidget *widget = createThumbnailWidget();
+    thumbnails.insert(index, widget);
+    addItemToLayout(widget, index);
+    fitSceneToContents();
+    loadVisibleThumbnails();
+}
+
+void ThumbnailView::removeItem(int index) {
+    if(checkRange(index)) {
+        removeItemFromLayout(index);
+        delete thumbnails.takeAt(index);
+        loadVisibleThumbnails();
+        fitSceneToContents();
+    }
 }
 
 void ThumbnailView::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
@@ -144,7 +167,7 @@ bool ThumbnailView::checkRange(int pos) {
         return false;
 }
 
-void ThumbnailView::onPopulate() {
+void ThumbnailView::updateLayout() {
 
 }
 

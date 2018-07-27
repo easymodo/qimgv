@@ -50,13 +50,13 @@ void DirectoryManager::setDirectory(QString path) {
         qDebug() << "file renamed from" << file1 << "to" << file2;
     });
 
-    if(!path.isEmpty() && /* TODO: ???-> */ currentDir.exists()) {
-        if(currentDir.path() != path) {
+    if(!path.isEmpty()) {// && /* TODO: ???-> */ currentDir.exists()) {
+        //if(currentDir.path() != path) {
             currentDir.setPath(path);
             generateFileList(settings->sortingMode());
 //            watcher.setDir(path);
             emit directoryChanged(path);
-        }
+        //}
     }
 }
 
@@ -86,18 +86,121 @@ QString DirectoryManager::fileNameAt(int index) const {
     return checkRange(index) ? mFileNameList.at(index) : "";
 }
 
-bool DirectoryManager::removeAt(int index) {
-    if(checkRange(index)) {
-        QString path = filePathAt(index);
-        QFile file(path);
-        if(file.remove()) {
-            mFileNameList.removeAt(index);
-            emit fileRemovedAt(index);
-            return true;
-        }
+bool DirectoryManager::removeAt(int index, bool trash) {
+    bool result = false;
+    if(!checkRange(index))
+        return result;
+
+    QString path = filePathAt(index);
+    QFile file(path);
+    mFileNameList.removeAt(index);
+    if(trash) {
+        moveToTrash(path);
+        result = true;
+    } else {
+        if(file.remove())
+            result = true;
     }
-    return false;
+    emit fileRemovedAt(index);
+    return result;
 }
+
+#ifdef Q_OS_WIN32
+void DirectoryManager::moveToTrash(QString file) {
+    QFileInfo fileinfo( file );
+    if( !fileinfo.exists() )
+        qDebug() << "File doesnt exists, cant move to trash";
+    WCHAR from[ MAX_PATH ];
+    memset( from, 0, sizeof( from ));
+    int l = fileinfo.absoluteFilePath().toWCharArray( from );
+    Q_ASSERT( 0 <= l && l < MAX_PATH );
+    from[ l ] = '\0';
+    SHFILEOPSTRUCT fileop;
+    memset( &fileop, 0, sizeof( fileop ) );
+    fileop.wFunc = FO_DELETE;
+    fileop.pFrom = from;
+    fileop.fFlags = FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_SILENT;
+    int rv = SHFileOperation( &fileop );
+    if( 0 != rv ){
+        qDebug() << rv << QString::number( rv ).toInt( 0, 8 );
+        qDebug() << "move to trash failed";
+    }
+}
+#endif
+
+#ifdef Q_OS_LINUX
+void DirectoryManager::moveToTrash(QString file) {
+    #ifdef QT_GUI_LIB
+    bool TrashInitialized = false;
+    QString TrashPath;
+    QString TrashPathInfo;
+    QString TrashPathFiles;
+    if(!TrashInitialized) {
+        QStringList paths;
+        const char* xdg_data_home = getenv( "XDG_DATA_HOME" );
+        if(xdg_data_home) {
+            qDebug() << "XDG_DATA_HOME not yet tested";
+            QString xdgTrash( xdg_data_home );
+            paths.append(xdgTrash + "/Trash");
+        }
+        QString home = QStandardPaths::writableLocation( QStandardPaths::HomeLocation );
+        paths.append( home + "/.local/share/Trash" );
+        paths.append( home + "/.trash" );
+        foreach( QString path, paths ){
+            if( TrashPath.isEmpty() ){
+                QDir dir( path );
+                if( dir.exists() ){
+                    TrashPath = path;
+                }
+            }
+        }
+        if( TrashPath.isEmpty() )
+            qDebug() << "Cant detect trash folder";
+        TrashPathInfo = TrashPath + "/info";
+        TrashPathFiles = TrashPath + "/files";
+        if( !QDir( TrashPathInfo ).exists() || !QDir( TrashPathFiles ).exists() )
+            qDebug() << "Trash doesnt looks like FreeDesktop.org Trash specification";
+        TrashInitialized = true;
+    }
+    QFileInfo original( file );
+    if( !original.exists() )
+        qDebug() << "File doesnt exists, cant move to trash";
+    QString info;
+    info += "[Trash Info]\nPath=";
+    info += original.absoluteFilePath();
+    info += "\nDeletionDate=";
+    info += QDateTime::currentDateTime().toString("yyyy-MM-ddThh:mm:ss");
+    info += "\n";
+    QString trashname = original.fileName();
+    QString infopath = TrashPathInfo + "/" + trashname + ".trashinfo";
+    QString filepath = TrashPathFiles + "/" + trashname;
+    int nr = 1;
+    while( QFileInfo( infopath ).exists() || QFileInfo( filepath ).exists() ){
+        nr++;
+        trashname = original.baseName() + "." + QString::number( nr );
+        if( !original.completeSuffix().isEmpty() ){
+            trashname += QString( "." ) + original.completeSuffix();
+        }
+        infopath = TrashPathInfo + "/" + trashname + ".trashinfo";
+        filepath = TrashPathFiles + "/" + trashname;
+    }
+    QDir dir;
+    if( !dir.rename( original.absoluteFilePath(), filepath ) ){
+        qDebug() << "move to trash failed";
+    }
+    QFile infoFile(infopath);
+    infoFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&infoFile);
+    out.setCodec("UTF-8");
+    out.setGenerateByteOrderMark(false);
+    out << info;
+    infoFile.close();
+    #else
+    Q_UNUSED( file );
+    qDebug() << "Trash in server-mode not supported";
+    #endif
+}
+#endif
 
 bool DirectoryManager::checkRange(int index) const {
     return index >= 0 && index < mFileNameList.length();

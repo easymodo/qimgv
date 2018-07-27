@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QMimeDatabase>
+#include <QStandardPaths>
 #include <QDir>
 #include <algorithm>
 #include <vector>
@@ -19,6 +20,10 @@
 #include "settings.h"
 #include "sourcecontainers/documentinfo.h"
 
+#ifdef Q_OS_WIN32
+#include "windows.h"
+#endif
+
 class DirectoryManager : public QObject
 {
     Q_OBJECT
@@ -32,7 +37,7 @@ public:
     QStringList fileList() const;
     QString currentDirectoryPath() const;
     QString filePathAt(int index) const;
-    bool removeAt(int index);
+    bool removeAt(int index, bool trash);
     int fileCount() const;
     bool existsInCurrentDir(QString fileName) const;
     bool isImage(QString filePath) const;
@@ -66,6 +71,7 @@ private:
     void onFileRemovedExternal(QString);
 
     void onFileChangedExternal(QString fileName);
+    void moveToTrash(QString file);
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();

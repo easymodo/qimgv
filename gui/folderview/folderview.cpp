@@ -68,6 +68,18 @@ void FolderView::setDirectoryPath(QString path) {
     ui->directoryPathLabel->setText(path);
 }
 
+void FolderView::addItem() {
+    ui->thumbnailGrid->addItem();
+}
+
+void FolderView::insertItem(int index) {
+    ui->thumbnailGrid->insertItem(index);
+}
+
+void FolderView::removeItem(int index) {
+    ui->thumbnailGrid->removeItem(index);
+}
+
 // prevent passthrough to parent
 void FolderView::wheelEvent(QWheelEvent *event) {
     event->accept();

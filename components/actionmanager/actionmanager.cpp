@@ -54,6 +54,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("Alt+X", "exit");
     actionManager->defaults.insert("Ctrl+Q", "exit");
     actionManager->defaults.insert("escape", "closeFullScreenOrExit");
+    actionManager->defaults.insert("delete", "moveToTrash");
     actionManager->defaults.insert("Shift+delete", "removeFile");
     actionManager->defaults.insert("C", "copyFile");
     actionManager->defaults.insert("M", "moveFile");

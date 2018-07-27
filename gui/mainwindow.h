@@ -171,6 +171,8 @@ public slots:
     void fitOriginal();
     void switchFitMode();
     void populateThumbnailViews(int count);
+    void addThumbnail(int index);
+    void removeThumbnail(int index);
 };
 
 #endif // MainWindow_H

@@ -96,10 +96,9 @@ private slots:
     void scalingRequest(QSize);
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
     void forwardThumbnail(std::shared_ptr<Thumbnail> thumbnail);
-    void removeFile();
     void moveFile(QString destDirectory);
     void copyFile(QString destDirectory);
-    void removeFile(int index);
+    void removeFile(int index, bool trash);
     void onFileRemoved(int index);
     void onFileAdded(int index);
     void showResizeDialog();
@@ -113,6 +112,10 @@ private slots:
     void saveImageToDisk();
     void saveImageToDisk(QString);
     void runScript(const QString&);
+    void removeFilePermanent();
+    void removeFilePermanent(int index);
+    void moveToTrash();
+    void moveToTrash(int index);
 };
 
 #endif // CORE_H

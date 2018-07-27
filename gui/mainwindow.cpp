@@ -227,6 +227,16 @@ void MainWindow::populateThumbnailViews(int count) {
     thumbnailStrip->populate(count);
 }
 
+void MainWindow::addThumbnail(int index) {
+    thumbnailStrip->insertItem(index);
+    folderView->insertItem(index);
+}
+
+void MainWindow::removeThumbnail(int index) {
+    thumbnailStrip->removeItem(index);
+    folderView->removeItem(index);
+}
+
 bool MainWindow::isCropPanelActive() {
     return (activeSidePanel == SIDEPANEL_CROP);
 }

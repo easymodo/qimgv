@@ -41,7 +41,7 @@ protected:
     void removeItemFromLayout(int pos);
     void setupLayout();
     ThumbnailWidget *createThumbnailWidget();
-    void onPopulate();
+    void updateLayout();
     void ensureSelectedItemVisible();
 
     void keyPressEvent(QKeyEvent *event);

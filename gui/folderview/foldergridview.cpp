@@ -39,6 +39,38 @@ void FolderGridView::ensureSelectedItemVisible() {
     ensureVisible(thumb, 0, 0);
 }
 
+/*void FolderGridView::ensureItemVisible(const QRectF &rect, int xmargin, int ymargin) {
+    //Q_D(QGraphicsView);
+    qreal width = viewport()->width();
+    qreal height = viewport()->height();
+    QRectF viewRect = this->matrix().mapRect(rect);
+    qreal left = d->horizontalScroll();
+    qreal right = left + width;
+    qreal top = d->verticalScroll();
+    qreal bottom = top + height;
+    if (viewRect.left() <= left + xmargin) {
+        // need to scroll from the left
+        if (!d->leftIndent)
+            horizontalScrollBar()->setValue(int(viewRect.left() - xmargin - 0.5));
+    }
+    if (viewRect.right() >= right - xmargin) {
+        // need to scroll from the right
+        if (!d->leftIndent)
+            horizontalScrollBar()->setValue(int(viewRect.right() - width + xmargin + 0.5));
+    }
+    if (viewRect.top() <= top + ymargin) {
+        // need to scroll from the top
+        if (!d->topIndent)
+            verticalScrollBar()->setValue(int(viewRect.top() - ymargin - 0.5));
+    }
+    if (viewRect.bottom() >= bottom - ymargin) {
+        // need to scroll from the bottom
+        if (!d->topIndent)
+            verticalScrollBar()->setValue(int(viewRect.bottom() - height + ymargin + 0.5));
+    }
+}
+*/
+
 void FolderGridView::selectAbove() {
     if(!thumbnails.count())
         return;
@@ -183,14 +215,14 @@ ThumbnailWidget* FolderGridView::createThumbnailWidget() {
 
 // TODO: insert
 void FolderGridView::addItemToLayout(ThumbnailWidget* widget, int pos) {
-    flowLayout->addItem(widget);
+    flowLayout->insertItem(pos, widget);
 }
 
 void FolderGridView::removeItemFromLayout(int pos) {
     flowLayout->removeAt(pos);
 }
 
-void FolderGridView::onPopulate() {
+void FolderGridView::updateLayout() {
     shiftedIndex = -1;
     flowLayout->activate();
     if(thumbnails.count())

@@ -131,7 +131,8 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(saveAs()), this, SLOT(requestSavePath()));
     connect(actionManager, SIGNAL(exit()), this, SLOT(close()));
     connect(actionManager, SIGNAL(closeFullScreenOrExit()), mw, SLOT(closeFullScreenOrExit()));
-    connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFile()));
+    connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFilePermanent()));
+    connect(actionManager, SIGNAL(moveToTrash()), this, SLOT(moveToTrash()));
     connect(actionManager, SIGNAL(copyFile()), mw, SLOT(triggerCopyOverlay()));
     connect(actionManager, SIGNAL(moveFile()), mw, SLOT(triggerMoveOverlay()));
     connect(actionManager, SIGNAL(jumpToFirst()), this, SLOT(jumpToFirst()));
@@ -179,24 +180,36 @@ void Core::close() {
     closeBackgroundTasks();
 }
 
+void Core::removeFilePermanent() {
+    if(state.hasActiveImage)
+        removeFilePermanent(state.currentIndex);
+}
+
+void Core::removeFilePermanent(int index) {
+    removeFile(index, false);
+}
+
+void Core::moveToTrash() {
+    if(state.hasActiveImage)
+        moveToTrash(state.currentIndex);
+}
+
+void Core::moveToTrash(int index) {
+    removeFile(index, true);
+}
+
 // removes file at specified index within current directory
-void Core::removeFile(int index) {
+void Core::removeFile(int index, bool trash) {
     if(index < 0 || index >= dirManager->fileCount())
         return;
     QString fileName = dirManager->fileNameAt(index);
-    if(dirManager->removeAt(index)) {
+    if(dirManager->removeAt(index, trash)) {
         mw->showMessage("File removed: " + fileName);
     }
 }
 
-// removes current file
-void Core::removeFile() {
-    if(state.hasActiveImage)
-        removeFile(state.currentIndex);
-}
-
 void Core::onFileRemoved(int index) {
-    //thumbnailPanelWidget->removeItemAt(index);
+    mw->removeThumbnail(index);
     // removing current file. try switching to another
     if(state.currentIndex == index) {
         if(!dirManager->fileCount()) {
@@ -210,7 +223,7 @@ void Core::onFileRemoved(int index) {
 }
 
 void Core::onFileAdded(int index) {
-    //thumbnailPanelWidget->createLabelAt(index);
+    mw->addThumbnail(index);
 }
 
 void Core::moveFile(QString destDirectory) {
@@ -220,7 +233,7 @@ void Core::moveFile(QString destDirectory) {
         return;
     }
     if(dirManager->copyTo(destDirectory, state.currentIndex)) {
-        removeFile();
+        removeFilePermanent();
         mw->showMessage("File moved to: " + destDirectory);
     } else {
         mw->showMessage("Error moving file to: " + destDirectory);

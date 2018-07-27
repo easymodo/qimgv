@@ -32,7 +32,6 @@ void ThumbnailStrip::ensureSelectedItemVisible() {
 
 }
 
-
 void ThumbnailStrip::addItemToLayout(ThumbnailWidget* widget, int pos) {
     if(!checkRange(pos))
         return;
@@ -47,7 +46,7 @@ void ThumbnailStrip::removeItemFromLayout(int pos) {
     if(checkRange(pos)) {
         if(pos == current)
             current = -1;
-        ThumbnailWidget *thumb = thumbnails.takeAt(pos);
+        ThumbnailWidget *thumb = thumbnails.at(pos);
         scene.removeItem(thumb);
         // move items left
         ThumbnailWidget *tmp;
@@ -55,7 +54,6 @@ void ThumbnailStrip::removeItemFromLayout(int pos) {
             tmp = thumbnails.at(i);
             tmp->moveBy(-tmp->boundingRect().width(), 0);
         }
-        fitSceneToContents();
     }
 }
 
