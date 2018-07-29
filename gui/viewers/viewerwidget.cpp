@@ -14,34 +14,37 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 {
     setAttribute(Qt::WA_TranslucentBackground, true);
     setMouseTracking(true);
+
     layout.setContentsMargins(0, 0, 0, 0);
     this->setLayout(&layout);
 
+    contextMenu.reset(new ContextMenu());
+
     imageViewer.reset(new ImageViewer(this));
     imageViewer->hide();
-    connect(imageViewer.get(), SIGNAL(scalingRequested(QSize)), this, SIGNAL(scalingRequested(QSize)));
+    connect(imageViewer.get(), SIGNAL(scalingRequested(QSize)),
+            this, SIGNAL(scalingRequested(QSize)));
+    connect(imageViewer.get(), SIGNAL(rightClicked()),
+            this, SLOT(showContextMenu()));
 
     videoPlayer.reset(new VideoPlayerInitProxy(this));
     videoPlayer->hide();
-
     videoControls = new VideoControls(this);
-
     connect(videoPlayer.get(), SIGNAL(durationChanged(int)),
             videoControls, SLOT(setDurationSeconds(int)));
     connect(videoPlayer.get(), SIGNAL(positionChanged(int)),
             videoControls, SLOT(setPositionSeconds(int)));
     connect(videoPlayer.get(), SIGNAL(videoPaused(bool)),
             videoControls, SLOT(onVideoPaused(bool)));
-
-    enableImageViewer();
-    enableZoomInteraction();
-
     connect(videoControls, SIGNAL(pause()), this, SLOT(pauseVideo()));
     connect(videoControls, SIGNAL(seekLeft()), this, SLOT(seekVideoLeft()));
     connect(videoControls, SIGNAL(seekRight()), this, SLOT(seekVideoRight()));
     connect(videoControls, SIGNAL(seek(int)), this, SLOT(seekVideo(int)));
     connect(videoControls, SIGNAL(nextFrame()), this, SLOT(frameStep()));
     connect(videoControls, SIGNAL(prevFrame()), this, SLOT(frameStepBack()));
+
+    enableImageViewer();
+    enableZoomInteraction();
 
     connect(&cursorTimer, SIGNAL(timeout()),
             this, SLOT(hideCursor()), Qt::UniqueConnection);
@@ -266,6 +269,9 @@ bool ViewerWidget::isDisplaying() {
 
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
     event->ignore();
+    if(event->buttons() & Qt::LeftButton) {
+        hideContextMenu();
+    }
 }
 
 void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
@@ -305,4 +311,16 @@ void ViewerWidget::showCursor() {
     if(currentWidget == VIDEOPLAYER) {
         videoControls->show();
     }
+}
+
+void ViewerWidget::showContextMenu() {
+    showContextMenu(cursor().pos());
+}
+
+void ViewerWidget::showContextMenu(QPoint pos) {
+    contextMenu->showAt(pos);
+}
+
+void ViewerWidget::hideContextMenu() {
+    contextMenu->hide();
 }

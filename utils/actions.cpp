@@ -54,7 +54,6 @@ void Actions::init() {
     mActions.insert("exit", QVersionNumber(0,6,2));
     mActions.insert("flipH", QVersionNumber(0,6,3));
     mActions.insert("flipV", QVersionNumber(0,6,3));
-    mActions.insert("scriptPanel", QVersionNumber(0,6,85));
     mActions.insert("folderView", QVersionNumber(0,6,85));
     mActions.insert("pauseVideo", QVersionNumber(0,6,85));
     mActions.insert("seekVideo", QVersionNumber(0,6,85));

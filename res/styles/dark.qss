@@ -250,13 +250,14 @@ CopyOverlay QPushButton:hover {
 /* Various buttons (for panel etc.) */
 /*############################################################################*/
 
-[accessibleName="iconButton"] {
-    padding: 5px 5px 5px 5px;
+[accessibleName="IconButton"] {
+    padding: 7px 7px 7px 7px;
     border-radius: 1px;
-    color: #86888a;
+    color: #bebebe; /*#86888a;*/
+    border: 1px solid transparent;
 }
 
-[accessibleName="iconButton"]:hover {
+[accessibleName="IconButton"]:hover {
     background-color: #414244;
     border: 1px solid #414244;
 }
@@ -375,3 +376,32 @@ ThumbnailView QScrollBar::sub-line {
     padding-right: 3px;
 }
 
+/*############################################################################*/
+/* Right click menu */
+/*############################################################################*/
+
+ContextMenu {
+    background-color: #212223;
+    color: #86888a;
+    border: 1px solid #414244;
+    border-radius: 3px;
+}
+
+ContextMenu QLabel {
+    color: #414244;
+}
+
+[accessibleName="ContextMenuItem"] {
+    border-radius: 1px;
+    color: #bebebe;
+    border: 1px solid transparent;
+}
+
+[accessibleName="ContextMenuItem"]:hover {
+    background-color: #414244;
+    border: 1px solid #414244;
+}
+
+[accessibleName="ContextMenuItem"] QLabel {
+    color: #bebebe;
+}

@@ -315,13 +315,15 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
 //  Right button zooming / dragging logic
 //  mouseMoveStartPos: stores the previous mouseMoveEvent() position,
 //                     used to calculate delta.
-//  mouseInteraction: trscks which action we are performing since the last mousePressEvent()
+//  mousePressPos: used to filter out accidental zoom events
+//  mouseInteraction: tracks which action we are performing since the last mousePressEvent()
 //
 void ImageViewer::mousePressEvent(QMouseEvent *event) {
     QWidget::mousePressEvent(event);
     if(!mIsDisplaying)
         return;
     mouseMoveStartPos = event->pos();
+    mousePressPos = mouseMoveStartPos;
     if(event->button() == Qt::RightButton) {
         setZoomPoint(event->pos() * devicePixelRatioF());
     }
@@ -332,15 +334,20 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     if(!mIsDisplaying)
         return;
     if(event->buttons() & Qt::LeftButton && mouseInteraction != MOUSE_ZOOM) {
-        if(cursor().shape() != Qt::ClosedHandCursor)
+        if(cursor().shape() != Qt::ClosedHandCursor) {
             setCursor(Qt::ClosedHandCursor);
+        }
         mouseInteraction = MOUSE_DRAG;
         mouseWrapping ? mouseDragWrapping(event) : mouseDrag(event);
     } else if(event->buttons() & Qt::RightButton && mouseInteraction != MOUSE_DRAG) {
-        if(cursor().shape() != Qt::SizeVerCursor)
-            setCursor(Qt::SizeVerCursor);
-        mouseInteraction = MOUSE_ZOOM;
-        mouseMoveZoom(event);
+        // filter out possible mouse jitter by ignoring low delta drags
+        if(mouseInteraction == MOUSE_ZOOM || abs(mousePressPos.y() - event->pos().y()) > ZOOM_THRESHOLD) {
+            if(cursor().shape() != Qt::SizeVerCursor) {
+                setCursor(Qt::SizeVerCursor);
+            }
+            mouseInteraction = MOUSE_ZOOM;
+            mouseMoveZoom(event);
+        }
     }
 }
 

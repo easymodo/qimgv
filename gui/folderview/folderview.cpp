@@ -9,16 +9,9 @@ FolderView::FolderView(QWidget *parent) :
     ui->setupUi(this);
 
     ui->openButton->setAction("open");
-    ui->openButton->setPixmap(QPixmap(":/res/icons/buttons/open20.png"));
-
     ui->settingsButton->setAction("openSettings");
-    ui->settingsButton->setPixmap(QPixmap(":/res/icons/buttons/settings20.png"));
-
     ui->closeButton->setAction("exit");
-    ui->closeButton->setPixmap(QPixmap(":/res/icons/buttons/close20.png"));
-
     ui->docViewButton->setAction("documentView");
-    ui->docViewButton->setPixmap(QPixmap(":/res/icons/buttons/docview20.png"));
 
     ui->directoryPathLabel->setAccessibleName("FolderViewPathLabel");
 

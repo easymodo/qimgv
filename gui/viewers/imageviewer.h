@@ -87,7 +87,7 @@ private:
     QTransform transform;
     QTimer *cursorTimer, *animationTimer;
     QRect drawingRect;
-    QPoint mouseMoveStartPos, drawPos;
+    QPoint mouseMoveStartPos, mousePressPos, drawPos;
     QSize mSourceSize;
     bool mIsDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;
     MouseInteractionState mouseInteraction;
@@ -95,6 +95,7 @@ private:
     const int FADE_DURATION = 140;
     const int SCROLL_DISTANCE = 250;
     const int animationSpeed = 150;
+    const int ZOOM_THRESHOLD = 4; // pixels
     float maxScaleLimit = 4.0;
     float maxResolutionLimit = 75.0; // in megapixels
 

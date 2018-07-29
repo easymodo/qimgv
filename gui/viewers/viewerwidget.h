@@ -6,6 +6,7 @@
 #include "gui/viewers/imageviewer.h"
 #include "gui/viewers/videoplayerinitproxy.h"
 #include "gui/overlays/videocontrols.h"
+#include "gui/contextmenu.h"
 
 enum CurrentWidget {
     IMAGEVIEWER,
@@ -35,6 +36,7 @@ private:
     QHBoxLayout layout;
     std::unique_ptr<ImageViewer> imageViewer;
     std::unique_ptr<VideoPlayer> videoPlayer;
+    std::unique_ptr<ContextMenu> contextMenu;
     VideoControls *videoControls;
 
     void enableImageViewer();
@@ -82,6 +84,9 @@ public slots:
     void frameStepBack();
 
     void startPlayback();
+    void showContextMenu();
+    void hideContextMenu();
+    void showContextMenu(QPoint pos);
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);

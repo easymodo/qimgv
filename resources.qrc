@@ -2,18 +2,10 @@
     <qresource prefix="/">
         <file>res/styles/dark.qss</file>
         <file>res/images/logo.png</file>
-        <file>res/icons/video_thumb.png</file>
         <file>res/icons/buttons/close20.png</file>
         <file>res/icons/buttons/open20.png</file>
-        <file>res/icons/buttons/rotate-left48.png</file>
-        <file>res/icons/buttons/rotate-right48.png</file>
         <file>res/icons/buttons/save20.png</file>
         <file>res/icons/buttons/settings20.png</file>
-        <file>res/icons/buttons/zoom-fit48.png</file>
-        <file>res/icons/buttons/zoom-in48.png</file>
-        <file>res/icons/buttons/zoom-original48.png</file>
-        <file>res/icons/buttons/zoom-out48.png</file>
-        <file>res/icons/buttons/zoom-width48.png</file>
         <file>res/icons/app/48.png</file>
         <file>res/icons/loading72.png</file>
         <file>res/images/moveheader.png</file>
@@ -56,5 +48,25 @@
         <file>res/icons/message/dir_start20.png</file>
         <file>res/icons/buttons/docview20.png</file>
         <file>res/icons/buttons/folderview20.png</file>
+        <file>res/icons/buttons/rotate-right32.png</file>
+        <file>res/icons/buttons/rotate-left32.png</file>
+        <file>res/icons/buttons/image-crop16.png</file>
+        <file>res/icons/buttons/image-crop32.png</file>
+        <file>res/icons/buttons/rotate-left16.png</file>
+        <file>res/icons/buttons/rotate-right16.png</file>
+        <file>res/icons/buttons/view-fullscreen16.png</file>
+        <file>res/icons/buttons/view-fullscreen32.png</file>
+        <file>res/icons/buttons/zoom-in16.png</file>
+        <file>res/icons/buttons/zoom-original16.png</file>
+        <file>res/icons/buttons/zoom-out16.png</file>
+        <file>res/icons/buttons/fit-orig16.png</file>
+        <file>res/icons/buttons/fit-width16.png</file>
+        <file>res/icons/buttons/fit-window16.png</file>
+        <file>res/icons/buttons/flip-v16.png</file>
+        <file>res/icons/buttons/folderview16v2.png</file>
+        <file>res/icons/buttons/folderview16.png</file>
+        <file>res/icons/buttons/settings16.png</file>
+        <file>res/icons/buttons/empty.png</file>
+        <file>res/icons/buttons/flip-h16.png</file>
     </qresource>
 </RCC>

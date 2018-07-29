@@ -134,7 +134,9 @@ SOURCES += \
     gui/folderview/folderview.cpp \
     gui/folderview/foldergridview.cpp \
     gui/folderview/thumbnailgridwidget.cpp \
-    gui/centralwidget.cpp
+    gui/centralwidget.cpp \
+    gui/contextmenu.cpp \
+    gui/customwidgets/contextmenuitem.cpp
 
 HEADERS += \
     core.h \
@@ -217,7 +219,9 @@ HEADERS += \
     gui/folderview/folderview.h \
     gui/folderview/foldergridview.h \
     gui/folderview/thumbnailgridwidget.h \
-    gui/centralwidget.h
+    gui/centralwidget.h \
+    gui/contextmenu.h \
+    gui/customwidgets/contextmenuitem.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \
@@ -232,7 +236,8 @@ FORMS += \
     gui/dialogs/shortcutcreatordialog.ui \
     gui/dialogs/scripteditordialog.ui \
     gui/overlays/videocontrols.ui \
-    gui/folderview/folderview.ui
+    gui/folderview/folderview.ui \
+    gui/contextmenu.ui
 
 RESOURCES += \
     resources.qrc

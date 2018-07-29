@@ -30,6 +30,7 @@ public:
     void resetDefaults();
     QString actionForScanCode(int code);
     QString actionForShortcut(const QString &keys);
+    const QString shortcutForAction(QString action);
     QStringList actionList();
     const QMap<QString,QString>& allShortcuts();
     void removeShortcut(const QString &keys);

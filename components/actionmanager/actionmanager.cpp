@@ -156,6 +156,11 @@ QString ActionManager::actionForScanCode(int code) {
 QString ActionManager::actionForShortcut(const QString &keys) {
     return actionManager->shortcuts[keys];
 }
+
+// returns first shortcut that is found
+const QString ActionManager::shortcutForAction(QString action) {
+    return shortcuts.key(action, "");
+}
 //------------------------------------------------------------------------------
 bool ActionManager::invokeAction(const QString &actionName) {
     ActionType type = validateAction(actionName);
