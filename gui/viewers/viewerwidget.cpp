@@ -36,6 +36,9 @@ ViewerWidget::ViewerWidget(QWidget *parent)
             videoControls, SLOT(setPositionSeconds(int)));
     connect(videoPlayer.get(), SIGNAL(videoPaused(bool)),
             videoControls, SLOT(onVideoPaused(bool)));
+    connect(videoPlayer.get(), SIGNAL(rightClicked()),
+            this, SLOT(showContextMenu()));
+
     connect(videoControls, SIGNAL(pause()), this, SLOT(pauseVideo()));
     connect(videoControls, SIGNAL(seekLeft()), this, SLOT(seekVideoLeft()));
     connect(videoControls, SIGNAL(seekRight()), this, SLOT(seekVideoRight()));

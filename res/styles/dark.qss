@@ -405,3 +405,9 @@ ContextMenu QLabel {
 [accessibleName="ContextMenuItem"] QLabel {
     color: #bebebe;
 }
+
+ContextMenu QFrame[frameShape="4"] {
+    background-color: red;
+    background: blue;
+    color: green;
+}

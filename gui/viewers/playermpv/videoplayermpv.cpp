@@ -100,6 +100,9 @@ void VideoPlayerMpv::mouseMoveEvent(QMouseEvent *event) {
 
 void VideoPlayerMpv::mouseReleaseEvent(QMouseEvent *event) {
     QWidget::mouseReleaseEvent(event);
+    if(event->button() == Qt::RightButton) {
+        emit rightClicked();
+    }
 }
 
 void VideoPlayerMpv::keyPressEvent(QKeyEvent *event) {

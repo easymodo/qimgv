@@ -48,15 +48,15 @@ ContextMenu::ContextMenu(QWidget *parent) :
     // -------------------------------------------------------------------------
     ui->copy->setAction("copyFile");
     ui->copy->setText("Quick copy");
-    ui->copy->setPixmap(QPixmap(":/res/icons/buttons/folderview16v2.png"));
+    ui->copy->setPixmap(QPixmap(":/res/icons/buttons/copy16.png"));
 
     ui->move->setAction("moveFile");
     ui->move->setText("Quick move");
-    ui->move->setPixmap(QPixmap(":/res/icons/buttons/folderview16v2.png"));
+    ui->move->setPixmap(QPixmap(":/res/icons/buttons/move16.png"));
 
     ui->trash->setAction("moveToTrash");
     ui->trash->setText("Move to trash");
-    ui->trash->setPixmap(QPixmap(":/res/icons/buttons/folderview16v2.png"));
+    ui->trash->setPixmap(QPixmap(":/res/icons/buttons/trash-red16.png"));
     // -------------------------------------------------------------------------
     ui->folderView->setAction("folderView");
     ui->folderView->setText("Folder View");

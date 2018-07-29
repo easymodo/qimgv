@@ -22,6 +22,7 @@ signals:
     void durationChanged(int value);
     void positionChanged(int value);
     void videoPaused(bool);
+    void rightClicked();
 
 public slots:
     virtual void show();
