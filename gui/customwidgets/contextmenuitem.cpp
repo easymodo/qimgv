@@ -4,7 +4,7 @@ ContextMenuItem::ContextMenuItem(QWidget *parent)
     : ClickableWidget(parent) ,
       action("")
 {
-    layout.setContentsMargins(11,6,11,6);
+    layout.setContentsMargins(11,5,11,5);
     layout.setSpacing(7);
 
     setAccessibleName("ContextMenuItem");
