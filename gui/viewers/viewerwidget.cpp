@@ -10,7 +10,7 @@ ViewerWidget::ViewerWidget(QWidget *parent)
       imageViewer(nullptr),
       videoPlayer(nullptr),
       currentWidget(UNSET),
-      zoomInteraction(false)
+      mInteractionEnabled(false)
 {
     setAttribute(Qt::WA_TranslucentBackground, true);
     setMouseTracking(true);
@@ -47,7 +47,7 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     connect(videoControls, SIGNAL(prevFrame()), this, SLOT(frameStepBack()));
 
     enableImageViewer();
-    enableZoomInteraction();
+    enableInteraction();
 
     connect(&cursorTimer, SIGNAL(timeout()),
             this, SLOT(hideCursor()), Qt::UniqueConnection);
@@ -113,8 +113,8 @@ void ViewerWidget::disableVideoPlayer() {
     }
 }
 
-void ViewerWidget::enableZoomInteraction() {
-    if(!zoomInteraction) {
+void ViewerWidget::enableInteraction() {
+    if(!mInteractionEnabled) {
         connect(this, SIGNAL(zoomIn()), imageViewer.get(), SLOT(zoomIn()));
         connect(this, SIGNAL(zoomOut()), imageViewer.get(), SLOT(zoomOut()));
         connect(this, SIGNAL(zoomInCursor()), imageViewer.get(), SLOT(zoomInCursor()));
@@ -126,13 +126,14 @@ void ViewerWidget::enableZoomInteraction() {
         connect(this, SIGNAL(fitWindow()), imageViewer.get(), SLOT(setFitWindow()));
         connect(this, SIGNAL(fitWidth()), imageViewer.get(), SLOT(setFitWidth()));
         connect(this, SIGNAL(fitOriginal()), imageViewer.get(), SLOT(setFitOriginal()));
+        // block dragging & RMB zoom
         imageViewer->setAttribute(Qt::WA_TransparentForMouseEvents, false);
-        zoomInteraction = true;
+        mInteractionEnabled = true;
     }
 }
 
-void ViewerWidget::disableZoomInteraction() {
-    if(zoomInteraction) {
+void ViewerWidget::disableInteraction() {
+    if(mInteractionEnabled) {
         disconnect(this, SIGNAL(zoomIn()), imageViewer.get(), SLOT(zoomIn()));
         disconnect(this, SIGNAL(zoomOut()), imageViewer.get(), SLOT(zoomOut()));
         disconnect(this, SIGNAL(zoomInCursor()), imageViewer.get(), SLOT(zoomInCursor()));
@@ -143,12 +144,13 @@ void ViewerWidget::disableZoomInteraction() {
         disconnect(this, SIGNAL(fitWidth()), imageViewer.get(), SLOT(setFitWidth()));
         disconnect(this, SIGNAL(fitOriginal()), imageViewer.get(), SLOT(setFitOriginal()));
         imageViewer->setAttribute(Qt::WA_TransparentForMouseEvents, true);
-        zoomInteraction = false;
+        hideContextMenu();
+        mInteractionEnabled = false;
     }
 }
 
-bool ViewerWidget::zoomInteractionEnabled() {
-    return zoomInteraction;
+bool ViewerWidget::interactionEnabled() {
+    return mInteractionEnabled;
 }
 
 bool ViewerWidget::showImage(std::unique_ptr<QPixmap> pixmap) {
@@ -272,9 +274,7 @@ bool ViewerWidget::isDisplaying() {
 
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
     event->ignore();
-    if(event->buttons() & Qt::LeftButton) {
-        hideContextMenu();
-    }
+    hideContextMenu();
 }
 
 void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
@@ -321,9 +321,17 @@ void ViewerWidget::showContextMenu() {
 }
 
 void ViewerWidget::showContextMenu(QPoint pos) {
-    contextMenu->showAt(pos);
+    if(interactionEnabled()) {
+        contextMenu->setImageEntriesEnabled(isDisplaying());
+        contextMenu->showAt(pos);
+    }
 }
 
 void ViewerWidget::hideContextMenu() {
     contextMenu->hide();
+}
+
+void ViewerWidget::hideEvent(QHideEvent *event) {
+    QWidget::hideEvent(event);
+    hideContextMenu();
 }

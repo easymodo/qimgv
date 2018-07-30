@@ -16,6 +16,7 @@ class ContextMenu : public ClickableWidget {
 public:
     explicit ContextMenu(QWidget *parent = nullptr);
     ~ContextMenu();
+    void setImageEntriesEnabled(bool mode);
 
 public slots:
     void showAt(QPoint pos);

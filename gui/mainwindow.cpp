@@ -172,7 +172,7 @@ void MainWindow::setupUi() {
 }
 
 void MainWindow::fitWindow() {
-    if(viewerWidget->zoomInteractionEnabled()) {
+    if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitWindow();
         showMessageFitWindow();
     } else {
@@ -181,7 +181,7 @@ void MainWindow::fitWindow() {
 }
 
 void MainWindow::fitWidth() {
-    if(viewerWidget->zoomInteractionEnabled()) {
+    if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitWidth();
         showMessageFitWidth();
     } else {
@@ -190,7 +190,7 @@ void MainWindow::fitWidth() {
 }
 
 void MainWindow::fitOriginal() {
-    if(viewerWidget->zoomInteractionEnabled()) {
+    if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitOriginal();
         showMessageFitOriginal();
     } else {
@@ -469,7 +469,7 @@ void MainWindow::showCropPanel() {
         activeSidePanel = SIDEPANEL_CROP;
         // reset & lock zoom so CropOverlay won't go crazy
         viewerWidget->fitWindow();
-        viewerWidget->disableZoomInteraction();
+        viewerWidget->disableInteraction();
         // feed the panel current image info
         setupSidePanelData();
     }
@@ -479,7 +479,7 @@ void MainWindow::hideCropPanel() {
     sidePanel->hide();
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropOverlay->hide();
-        viewerWidget->enableZoomInteraction();
+        viewerWidget->enableInteraction();
     }
     activeSidePanel = SIDEPANEL_NONE;
 }

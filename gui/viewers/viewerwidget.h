@@ -23,9 +23,9 @@ public:
     float currentScale();
     QSize sourceSize();
 
-    void enableZoomInteraction();
-    void disableZoomInteraction();
-    bool zoomInteractionEnabled();
+    void enableInteraction();
+    void disableInteraction();
+    bool interactionEnabled();
 
     bool showImage(std::unique_ptr<QPixmap> pixmap);
     bool showAnimation(std::unique_ptr<QMovie> movie);
@@ -43,7 +43,7 @@ private:
     void enableVideoPlayer();
 
     CurrentWidget currentWidget;
-    bool zoomInteraction;
+    bool mInteractionEnabled;
     QTimer cursorTimer;
     const int CURSOR_HIDE_TIMEOUT_MS = 1000;
 
@@ -91,6 +91,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    void hideEvent(QHideEvent *event);
 };
 
 #endif // VIEWERWIDGET_H

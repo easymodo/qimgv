@@ -61,7 +61,7 @@ protected:
 
     const int SCROLL_UPDATE_RATE = 8;
     const float SCROLL_SPEED_MULTIPLIER = 4.0f;
-    const int SCROLL_ANIMATION_SPEED = 140;
+    const int SCROLL_ANIMATION_SPEED = 150;
 
     const uint LOAD_DELAY = 40;
     const int OFFSCREEN_PRELOAD_AREA = 3000;

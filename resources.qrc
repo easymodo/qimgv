@@ -72,5 +72,6 @@
         <file>res/icons/buttons/trash16.png</file>
         <file>res/icons/buttons/move16.png</file>
         <file>res/icons/buttons/trash-red16.png</file>
+        <file>res/icons/buttons/open16.png</file>
     </qresource>
 </RCC>

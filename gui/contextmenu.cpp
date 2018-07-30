@@ -58,6 +58,10 @@ ContextMenu::ContextMenu(QWidget *parent) :
     ui->trash->setText("Move to trash");
     ui->trash->setPixmap(QPixmap(":/res/icons/buttons/trash-red16.png"));
     // -------------------------------------------------------------------------
+    ui->open->setAction("open");
+    ui->open->setText("Open");
+    ui->open->setPixmap(QPixmap(":/res/icons/buttons/open16.png"));
+
     ui->folderView->setAction("folderView");
     ui->folderView->setText("Folder View");
     ui->folderView->setPixmap(QPixmap(":/res/icons/buttons/folderview16v2.png"));
@@ -71,6 +75,18 @@ ContextMenu::ContextMenu(QWidget *parent) :
 
 ContextMenu::~ContextMenu() {
     delete ui;
+}
+
+void ContextMenu::setImageEntriesEnabled(bool mode) {
+    ui->rotateLeft->setEnabled(mode);
+    ui->rotateRight->setEnabled(mode);
+    ui->flipH->setEnabled(mode);
+    ui->flipV->setEnabled(mode);
+    ui->crop->setEnabled(mode);
+    ui->resize->setEnabled(mode);
+    ui->copy->setEnabled(mode);
+    ui->move->setEnabled(mode);
+    ui->trash->setEnabled(mode);
 }
 
 //hide self on click

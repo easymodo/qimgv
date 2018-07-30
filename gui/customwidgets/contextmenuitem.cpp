@@ -14,7 +14,7 @@ ContextMenuItem::ContextMenuItem(QWidget *parent)
     shortcut.setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     icon.setMinimumSize(16, 16);
 
-    spacer = new QSpacerItem(12, 1, QSizePolicy::Expanding, QSizePolicy::Fixed);
+    spacer = new QSpacerItem(16, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
     layout.addWidget(&icon);
     layout.addWidget(&text);

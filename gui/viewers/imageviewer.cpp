@@ -356,6 +356,11 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
     QWidget::mouseReleaseEvent(event);
     if(!mIsDisplaying) {
         mouseInteraction = MOUSE_NONE;
+        if(event->button() == Qt::RightButton) {
+            emit rightClicked();
+        } else if(event->button() == Qt::LeftButton) {
+            emit leftClicked();
+        }
         return;
     }
     if(mouseInteraction == MOUSE_NONE) {

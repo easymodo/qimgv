@@ -3,7 +3,7 @@
 ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     : QGraphicsView(parent),
       orientation(orient),
-      thumbnailSize(144)
+      thumbnailSize(160)
 {
     setAccessibleName("thumbnailView");
     this->setMouseTracking(true);
@@ -13,7 +13,9 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
 
     /* scrolling-related things */
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
-    timeLine->setEasingCurve(QEasingCurve::OutCubic);
+    //timeLine->setEasingCurve(QEasingCurve::OutCubic);
+    //timeLine->setEasingCurve(QEasingCurve::OutQuad);
+    timeLine->setEasingCurve(QEasingCurve::OutSine);
     timeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
     scrollTimer.setSingleShot(true);
     scrollTimer.setInterval(40);

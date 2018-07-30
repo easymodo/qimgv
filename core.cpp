@@ -270,8 +270,10 @@ void Core::requestSavePath() {
 }
 
 void Core::showResizeDialog() {
-    QString nameKey = dirManager->fileNameAt(state.currentIndex);
-    mw->showResizeDialog(cache->get(nameKey)->size());
+    if(state.hasActiveImage) {
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        mw->showResizeDialog(cache->get(nameKey)->size());
+    }
 }
 
 // TODO: simplify. too much copypasted code

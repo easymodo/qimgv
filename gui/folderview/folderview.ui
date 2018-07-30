@@ -165,7 +165,7 @@
         <item>
          <widget class="QLabel" name="directoryPathLabel">
           <property name="text">
-           <string>[path]</string>
+           <string>No directory opened</string>
           </property>
          </widget>
         </item>
@@ -271,14 +271,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FolderGridView</class>
-   <extends>QGraphicsView</extends>
-   <header>gui/folderview/foldergridview.h</header>
-  </customwidget>
-  <customwidget>
    <class>IconButton</class>
    <extends>QPushButton</extends>
    <header>gui/customwidgets/iconbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FolderGridView</class>
+   <extends>QGraphicsView</extends>
+   <header>gui/folderview/foldergridview.h</header>
   </customwidget>
  </customwidgets>
  <resources>
