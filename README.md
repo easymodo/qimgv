@@ -1,8 +1,10 @@
-qimgv | Current version: 0.6.3
+qimgv | Current version: 0.7.0
 =====
 A cross-platform image viewer with webm support. Written in qt5.
 
 ## [qimgv v0.6 video overview](https://www.youtube.com/watch?v=AODRGCRPCpw)
+
+## qimgv v0.7 update overview [TODO]
 
 ![alt tag](https://i.imgur.com/prIficV.png)
 
@@ -22,6 +24,8 @@ A cross-platform image viewer with webm support. Written in qt5.
 
 - Experimental video playback via libmpv
 
+- Ability to run shell scripts
+
 - A nice dark theme, should look identical on every OS / DE
 
 ## Default control scheme:
@@ -37,7 +41,7 @@ A cross-platform image viewer with webm support. Written in qt5.
 | Fit mode: window | 1 |
 | Fit mode: width | 2 |
 | Fit mode: 1:1 (no scaling) | 3 |
-| Switch fit modes  | Space / MiddleClick |
+| Switch fit modes  | Space |
 | Toggle fullscreen mode  | DoubleClick / F / F11 |
 | Exit fullscreen mode | Esc |
 | Crop image  | X |
@@ -46,12 +50,13 @@ A cross-platform image viewer with webm support. Written in qt5.
 | Rotate Right  | Ctrl+R |
 | Quick copy  | C |
 | Quick move  | M |
-| Remove file (permanent)  | Shift+Delete |
+| Move to trash | Delete |
+| Delete file  | Shift+Delete |
 | Save  | Ctrl+S |
 | Save As  | Ctrl+Shift+S |
 | Open | Ctrl+O |
 | Settings  | Ctrl+P |
-| Exit application | Esc / Ctrl+Q / Alt+X |
+| Exit application | Esc / Ctrl+Q / Alt+X / MiddleClick |
 
 Note: you can configure every shortcut listed above by going to __Settings > Controls__
 
@@ -59,7 +64,9 @@ Note: you can configure every shortcut listed above by going to __Settings > Con
 
 The idea is to have a uncluttered, simple and easy to use UI. You can see ui elements only when you need them.
 
-There is a window with image, and a panel with thumbnails at the top (only shows up on mouse hover).
+There is a pull-down panel with thumbnails, as well as folder view (accessible by pressing Return).
+
+You can also bring up a context menu by right-clicking on an image.
 
 ### Using quick copy / quick move panels
 
@@ -68,6 +75,25 @@ Bring up the panel with C or M shortcut. You will see 9 destination directories,
 With panel visible, use 1 - 9 keys to copy/move current image to corresponding directory.
 
 When you are done press C or M again to hide the panel.
+
+### Running scripts
+
+Starting with v0.7 you can run scripts on a current image.
+
+Open __Settings > Scripts__. Press Add. Here you can choose between a shell command and a shell script. 
+
+Example of a command: 
+
+`convert %file% %file%_.pdf`
+
+Example of a shell script file: 
+```
+#!/bin/bash
+gimp "$1"
+```
+_Note: The $1 argument will be a full file path. Also, the script file must be an executable._
+
+When you've created your script go to __Settings > Controls > Add__, then select it and assign a shortcut like for any regular action.
 
 ### HiDPI
 
@@ -79,7 +105,7 @@ You can put it in `qimgv.desktop` file to make it permanent. Using values less t
 
 ## Installation instructions
 
-### GNU / Linux
+### Linux
 
   __Arch:__ Available in AUR - `qimgv-git`
   
@@ -90,7 +116,7 @@ You can put it in `qimgv.desktop` file to make it permanent. Using values less t
   1. Install dependencies ( git, cmake, qt >= 5.6, libmpv >= 0.22, mpv)
      - Ubuntu & derivatives
 		```
-		sudo apt install build-essential cmake qt5-default libexiv2-14 libmpv-dev 
+		sudo apt install build-essential cmake qt5-default libmpv-dev 
 		```
   2. Build
 ```
@@ -106,5 +132,4 @@ cd qimgv/scripts
 ### Windows
 
   [Grab the latest release here](https://github.com/easymodo/qimgv/releases)
-  
   
