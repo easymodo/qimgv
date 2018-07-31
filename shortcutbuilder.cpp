@@ -26,8 +26,8 @@ QString ShortcutBuilder::processWheelEvent(QWheelEvent *event) {
 }
 //------------------------------------------------------------------------------
 // Detects mouse button clicks only
-// DoubleClick works only for LMB/RMB
-// Otherwise treated as regular click
+// DoubleClick works only for LMB
+// Otherwise treated as a regular click
 QString ShortcutBuilder::processMouseEvent(QMouseEvent *event) {
     QString sequence;
     if(event->button() == Qt::XButton1) {
@@ -48,7 +48,7 @@ QString ShortcutBuilder::processMouseEvent(QMouseEvent *event) {
 
     sequence.prepend(modifierKeys(event));
     // ignore everything except MouseButtonPress and double clicks
-    if(event->type() == QEvent::MouseButtonDblClick) {
+    if(event->type() == QEvent::MouseButtonDblClick && event->button() == Qt::LeftButton) {
         sequence.append("_DoubleClick");
         return sequence;
     } else if(event->type() == QEvent::MouseButtonPress) {

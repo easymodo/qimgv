@@ -58,8 +58,8 @@ void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> 
 // TODO: what if filename contains one of the tags?
 void ScriptManager::processArguments(QStringList &cmd, std::shared_ptr<Image> img) {
     for (auto& i : cmd) {
-        if(i == "%file%")
-            i = img.get()->path();
+        if(i.contains("%file%"))
+            i.replace("%file%", img.get()->path());
     }
 }
 
