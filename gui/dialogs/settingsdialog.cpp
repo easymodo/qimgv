@@ -302,15 +302,24 @@ void SettingsDialog::addShortcutToTable(const QString &action, const QString &sh
 void SettingsDialog::addShortcut() {
     ShortcutCreatorDialog w;
     if(w.exec()) {
+        for(int i = 0; i < ui->shortcutsTableWidget->rowCount(); i++) {
+            if(ui->shortcutsTableWidget->item(i, 1)->text() == w.selectedShortcut()) {
+                removeShortcutAt(i);
+            }
+        }
         addShortcutToTable(w.selectedAction(), w.selectedShortcut());
     }
 }
 
+void SettingsDialog::removeShortcutAt(int row) {
+    if(row > 0 && row >= ui->shortcutsTableWidget->rowCount())
+        return;
+
+    ui->shortcutsTableWidget->removeRow(row);
+}
+
 void SettingsDialog::removeShortcut() {
-    int row = ui->shortcutsTableWidget->currentRow();
-    if(row >= 0) {
-        ui->shortcutsTableWidget->removeRow(row);
-    }
+    removeShortcutAt(ui->shortcutsTableWidget->currentRow());
 }
 
 void SettingsDialog::applyShortcuts() {

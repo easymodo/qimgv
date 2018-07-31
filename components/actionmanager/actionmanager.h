@@ -31,6 +31,7 @@ public:
     QString actionForScanCode(int code);
     QString actionForShortcut(const QString &keys);
     const QString shortcutForAction(QString action);
+    const QList<QString> shortcutsForAction(QString action);
     QStringList actionList();
     const QMap<QString,QString>& allShortcuts();
     void removeShortcut(const QString &keys);

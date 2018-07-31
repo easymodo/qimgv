@@ -29,6 +29,15 @@ QString ShortcutCreatorDialog::selectedAction() {
         return "s:"+ui->scriptsComboBox->currentText();
 }
 
+void ShortcutCreatorDialog::onShortcutEdited() {
+    QString action = actionManager->actionForShortcut(ui->sequenceEdit->sequence());
+    if(!action.isEmpty()) {
+        ui->warningLabel->setText("This shortcut is used for action: " + action + ". Replace?");
+    } else {
+        ui->warningLabel->setText("");
+    }
+}
+
 QString ShortcutCreatorDialog::selectedShortcut() {
     return ui->sequenceEdit->sequence();
 }

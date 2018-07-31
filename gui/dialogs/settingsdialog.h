@@ -50,6 +50,7 @@ private:
     void addScriptToList(const QString &name);
 
     void setupSidebar();
+    void removeShortcutAt(int row);
 private slots:
     void applySettings();
     void applySettingsAndClose();

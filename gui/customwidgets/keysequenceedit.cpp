@@ -25,6 +25,7 @@ void KeySequenceEdit::processEvent(QEvent *e) {
     mSequence = ShortcutBuilder::fromEvent(e);
     if(!mSequence.isEmpty()) {
         this->setText(mSequence);
+        emit edited();
     }
 }
 

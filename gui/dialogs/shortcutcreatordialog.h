@@ -6,6 +6,7 @@
 #include <QRadioButton>
 #include "shortcutbuilder.h"
 #include "utils/actions.h"
+#include "components/actionmanager/actionmanager.h"
 #include "components/scriptmanager/scriptmanager.h"
 // TODO: separate gui from components
 // OR move script & action stuff to project root?
@@ -23,6 +24,9 @@ public:
     ~ShortcutCreatorDialog();
     QString selectedAction();
     QString selectedShortcut();
+
+private slots:
+    void onShortcutEdited();
 
 private:
     Ui::ShortcutCreatorDialog *ui;

@@ -23,6 +23,9 @@ private:
 private slots:
     void enterEditMode();
     void exitEditMode();
+
+signals:
+    void edited();
 };
 
 #endif // KEYSEQUENCEEDIT_H

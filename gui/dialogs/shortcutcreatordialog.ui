@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>340</width>
-    <height>208</height>
+    <height>235</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -139,6 +139,22 @@
     </spacer>
    </item>
    <item>
+    <widget class="QLabel" name="warningLabel">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>36</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -155,6 +171,9 @@
    <class>KeySequenceEdit</class>
    <extends>QPushButton</extends>
    <header>gui/customwidgets/keysequenceedit.h</header>
+   <slots>
+    <signal>edited()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -171,7 +190,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
-     <y>274</y>
+     <y>208</y>
     </hint>
    </hints>
   </connection>
@@ -187,7 +206,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
-     <y>274</y>
+     <y>208</y>
     </hint>
    </hints>
   </connection>
@@ -255,5 +274,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>sequenceEdit</sender>
+   <signal>edited()</signal>
+   <receiver>ShortcutCreatorDialog</receiver>
+   <slot>onShortcutEdited()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>170</x>
+     <y>126</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>94</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>onShortcutEdited()</slot>
+ </slots>
 </ui>
