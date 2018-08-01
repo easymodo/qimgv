@@ -5,6 +5,7 @@ IconButton::IconButton(QWidget *parent)
 {
     this->setContentsMargins(0,0,0,0);
     this->setAccessibleName("IconButton");
+    this->setFocusPolicy(Qt::NoFocus);
 }
 
 IconButton::IconButton(QString _actionName, QString _iconPath, QWidget *parent)
