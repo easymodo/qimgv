@@ -11,7 +11,7 @@ CopyOverlay::CopyOverlay(OverlayContainerWidget *parent) :
     setPosition(FloatingWidgetPosition::BOTTOMLEFT);
 
     ui->headerIcon->setPixmap(QPixmap(":/res/icons/buttons/copy16.png"));
-    ui->headerLabel->setText("Copy file to..");
+    ui->headerLabel->setText("Copy file to...");
     mode = OVERLAY_COPY;
 
     createShortcuts();
@@ -36,10 +36,10 @@ void CopyOverlay::setDialogMode(CopyOverlayMode _mode) {
     mode = _mode;
     if(mode == OVERLAY_COPY) {
         ui->headerIcon->setPixmap(QPixmap(":/res/icons/buttons/copy16.png"));
-        ui->headerLabel->setText("Copy file to..");
+        ui->headerLabel->setText("Copy file to...");
     } else {
         ui->headerIcon->setPixmap(QPixmap(":/res/icons/buttons/move16.png"));
-        ui->headerLabel->setText("Move file to..");
+        ui->headerLabel->setText("Move file to...");
     }
 }
 

@@ -295,6 +295,9 @@
      </property>
      <item>
       <widget class="QPushButton" name="cropButton">
+       <property name="accessibleName">
+        <string>Button</string>
+       </property>
        <property name="text">
         <string>Crop</string>
        </property>
@@ -302,6 +305,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="cancelButton">
+       <property name="accessibleName">
+        <string>Button</string>
+       </property>
        <property name="text">
         <string>Cancel</string>
        </property>
