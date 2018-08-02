@@ -31,19 +31,19 @@ SaveConfirmOverlay QLabel {
 SaveConfirmOverlay QPushButton {
     font: bold;
     color: #86888a;
-    background-color: #28282a;
-    border: 1px solid #28282a;
+    background-color: #29292a;
+    border: 1px solid #29292a;
     border-radius: 3px;
     padding: 6px 8px 6px 8px;
 }
 
 SaveConfirmOverlay QPushButton:hover {
-    background-color: #2e3032;
+    background-color: #2e2e2f;
     color: #8e9092;
 }
 
 SaveConfirmOverlay QPushButton:focus {
-    background-color: #2e3032;
+    background-color: #2e2e2f;
     color: #8e9092;
 }
 
@@ -60,7 +60,7 @@ SidePanel QGroupBox {
     color: #86888a;
     border: 1px solid #212223;
     border-radius: 3px;
-    background-color: #28282a;
+    background-color: #29292a;
     padding: 6px 10px 8px 10px;
 }
 
@@ -91,19 +91,19 @@ SidePanel QLabel {
 SidePanel QPushButton {
     font: bold;
     color: #6A6A6A;
-    background-color: #28282a;
+    background-color: #29292a;
     border: 1px solid #212223;
     border-radius: 3px;
     padding: 6px 8px 6px 8px;
 }
 
 SidePanel QPushButton:hover {
-    background-color: #2e3032;
+    background-color: #2e2e2f;
     color: #86888a;
 }
 
 SidePanel QPushButton:focus {
-    background-color: #2e3032;
+    background-color: #2e2e2f;
     color: #86888a;
 }
 
@@ -114,7 +114,7 @@ SidePanel QPushButton:focus {
 ChangelogWindow {
     background-color: #1c1d1e;
     color: #86888a;
-    border: 2px solid #28282a;
+    border: 2px solid #29292a;
     border-radius: 3px;
 }
 
@@ -126,19 +126,19 @@ ChangelogWindow QTextBrowser {
 ChangelogWindow QPushButton {
     font: bold;
     color: #6A6A6A;
-    background-color: #28282a;
+    background-color: #29292a;
     border: 1px solid #212223;
     border-radius: 3px;
     padding: 6px 8px 6px 8px;
 }
 
 ChangelogWindow QPushButton:hover {
-    background-color: #2e3032;
+    background-color: #2e2e2f;
     color: #86888a;
 }
 
 ChangelogWindow QPushButton:focus {
-    background-color: #2e3032;
+    background-color: #2e2e2f;
     color: #86888a;
 }
 
@@ -149,7 +149,7 @@ ChangelogWindow QPushButton:focus {
 VideoControls {
     background-color: #1c1d1e;
     color: #86888a;
-    border: 2px solid #28282a;
+    border: 2px solid #29292a;
     border-radius: 3px;
 }
 
@@ -161,8 +161,8 @@ VideoControls QLabel {
 VideoControls QPushButton {
     font: bold;
     color: #86888a;
-    background-color: #2e3032;
-    border: 1px solid #2e3032;
+    background-color: #2e2e2f;
+    border: 1px solid #2e2e2f;
     border-radius: 1px;
     padding: 6px 8px 6px 8px;
 }
@@ -212,38 +212,68 @@ VideoControls QSlider::sub-page:horizontal {
 
 CopyOverlay {
     background-color: #1c1d1e;
-    color: #86888a;
-    border: 2px solid #28282a;
-    border-radius: 3px;
+    border: 1px solid #414244;
+    border-radius: 2px;
 }
 
-/* Used for path input */
+[accessibleName="OverlayHeaderWidget"] {
+    background-color: #2e2e2f;
+    border: 1px solid #2e2e2f;
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
+}
+
+[accessibleName="OverlayTitleLabel"] {
+    color: #bebebe;
+    padding: 4px 4px 4px 4px;
+}
+
+/* Close button */
+[accessibleName="OverlayCloseButton"] {
+    background-color: transparent;
+    border: 2px solid transparent;
+    color: #bebebe;
+    font: bold;
+    padding: 4px 4px 4px 4px;
+}
+
+[accessibleName="OverlayCloseButton"]:hover {
+    background-color: #414244;
+    border-color: #414244;
+    color: #bebebe;
+}
+
+/* Path input */
 CopyOverlay ClickableLabel {
-    background-color: #28282a;
-    color: #696a6c;
-    border: 2px solid #28282a;
-    border-radius: 4px;
-    padding: 4px 35px 4px 4px;
+    background-color: #29292a;
+    color: #aeaeae;
+    border: 2px solid #29292a;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    padding: 4px 10px 4px 4px;
 }
 
 CopyOverlay ClickableLabel:hover {
-    background-color: #303132;
-    color: #717274;
-    border: 2px solid #303132;
+    background-color: #2e2e2f;
+    color: #bebebe;
+    border-color: #2e2e2f;
 }
 
-CopyOverlay QPushButton {
-    background-color: transparent;
-    color: #3a3c3f;
+/* Right side buttons */
+PathSelectorWidget QPushButton {
+    background-color: #29292a;
+    border: 2px solid #29292a;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    color: #86888a;
     font: bold;
-    border: 2px solid #2e3032;
-    border-radius: 4px;
-    padding: 5px 10px 4px 10px;
+    padding: 4px 4px 4px 4px;
 }
 
-CopyOverlay QPushButton:hover {
-    border-color: #3a3c3f;
-    color: #414244;
+PathSelectorWidget QPushButton:hover {
+    background-color: #2e2e2f;
+    border-color: #2e2e2f;
+    color: #8e9092;
 }
 
 /*############################################################################*/
@@ -289,11 +319,11 @@ ThumbnailStrip {
 }
 
 FolderGridView {
-    background-color: #28282a;
+    background-color: #29292a;
 }
 
 FolderView {
-    background-color: #28282a;
+    background-color: #29292a;
 }
 
 [accessibleName="FolderViewBar"] {
@@ -302,9 +332,9 @@ FolderView {
 }
 
 [accessibleName="FolderViewPathLabel"] {
-    background-color: #28282a;
-    color: #696a6c;
-    border: 2px solid #28282a;
+    background-color: #29292a;
+    color: #aeaeae;
+    border: 2px solid #29292a;
     border-radius: 4px;
     padding: 4px 35px 4px 4px;
 }
@@ -382,7 +412,6 @@ ThumbnailView QScrollBar::sub-line {
 
 ContextMenu {
     background-color: #212223;
-    color: #86888a;
     border: 1px solid #414244;
     border-radius: 3px;
 }

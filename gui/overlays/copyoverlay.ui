@@ -27,28 +27,109 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>10</number>
+    <number>16</number>
    </property>
    <property name="leftMargin">
-    <number>18</number>
+    <number>1</number>
    </property>
    <property name="topMargin">
-    <number>18</number>
+    <number>1</number>
    </property>
    <property name="rightMargin">
-    <number>18</number>
+    <number>1</number>
    </property>
    <property name="bottomMargin">
-    <number>18</number>
+    <number>1</number>
    </property>
    <item>
-    <widget class="QLabel" name="headerLabel">
-     <property name="text">
-      <string>TextLabel</string>
+    <widget class="QWidget" name="headerWidget" native="true">
+     <property name="accessibleName">
+      <string>OverlayHeaderWidget</string>
      </property>
-     <property name="margin">
-      <number>0</number>
-     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>10</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="headerIcon">
+        <property name="text">
+         <string>icon</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="headerLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="accessibleName">
+         <string>OverlayTitleLabel</string>
+        </property>
+        <property name="text">
+         <string>header</string>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="closeButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="accessibleName">
+         <string>OverlayCloseButton</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/res/icons/buttons/close-dim16.png</normaloff>:/res/icons/buttons/close-dim16.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
@@ -56,10 +137,41 @@
      <property name="spacing">
       <number>5</number>
      </property>
+     <property name="leftMargin">
+      <number>16</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>16</number>
+     </property>
+     <property name="bottomMargin">
+      <number>16</number>
+     </property>
     </layout>
    </item>
   </layout>
  </widget>
- <resources/>
- <connections/>
+ <resources>
+  <include location="../../resources.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CopyOverlay</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>274</x>
+     <y>58</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>295</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
