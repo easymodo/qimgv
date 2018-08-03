@@ -37,12 +37,12 @@ void ThumbnailGridWidget::setupLayout() {
 
 void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
     if(isHighlighted()) {
-        //painter->fillRect(highlightRect.adjusted(-marginX,-marginY,marginX,marginY), highlightColor);
-        //painter->fillRect(highlightRect, highlightColor);
-        //painter->setRenderHint(QPainter::Antialiasing);
-        QPainterPath path;
-        path.addRoundedRect(highlightRect, 2, 2);
-        painter->fillPath(path, highlightColor);
+        //QPainterPath path;
+        //path.addRoundedRect(highlightRect, 2, 2);
+        //painter->fillPath(path, QColor(92,92,96));
+        //painter->setPen(QColor(96,101,103));
+        //painter->drawPath(path);
+        painter->fillRect(highlightRect, QColor(98,101,103));
     }
 }
 

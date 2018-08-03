@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>res/styles/dark.qss</file>
         <file>res/images/logo.png</file>
-        <file>res/icons/buttons/close20.png</file>
         <file>res/icons/buttons/open20.png</file>
         <file>res/icons/buttons/save20.png</file>
         <file>res/icons/buttons/settings20.png</file>
@@ -40,13 +39,8 @@
         <file>res/icons/settings/32/viewer.png</file>
         <file>res/icons/app/32.png</file>
         <file>res/icons/qt22.png</file>
-        <file>res/icons/buttons/play18.png</file>
-        <file>res/icons/buttons/step18.png</file>
-        <file>res/icons/buttons/step-back18.png</file>
-        <file>res/icons/buttons/pause18.png</file>
         <file>res/icons/message/dir_end20.png</file>
         <file>res/icons/message/dir_start20.png</file>
-        <file>res/icons/buttons/docview20.png</file>
         <file>res/icons/buttons/folderview20.png</file>
         <file>res/icons/buttons/rotate-right32.png</file>
         <file>res/icons/buttons/rotate-left32.png</file>
@@ -75,5 +69,11 @@
         <file>res/icons/buttons/open16.png</file>
         <file>res/icons/buttons/close16.png</file>
         <file>res/icons/buttons/close-dim16.png</file>
+        <file>res/icons/buttons/document-view16.png</file>
+        <file>res/icons/buttons/edit16.png</file>
+        <file>res/icons/buttons/skip-backwards24.png</file>
+        <file>res/icons/buttons/skip-forward24.png</file>
+        <file>res/icons/buttons/pause24.png</file>
+        <file>res/icons/buttons/play24.png</file>
     </qresource>
 </RCC>

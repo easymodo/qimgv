@@ -7,21 +7,75 @@
     color: #86888a;
     background-color: #29292a;
     border: 1px solid #29292a;
-    border-radius: 3px;
+    border-radius: 2px;
     padding: 6px 9px 6px 9px;
 }
 
 [accessibleName="Button"]:hover {
-    background-color: #303031;
-    border-color: #303031;
+    background-color: #313132;
+    border-color: #313132;
     color: #8e9092;
 }
 
 [accessibleName="Button"]:focus {
-    background-color: #303031;
-    border-color: #303031;
+    background-color: #313132;
+    border-color: #313132;
     color: #8e9092;
 }
+
+/* ##### button set left ##### */
+
+[accessibleName="ButtonSetLeft"] {
+    font: bold;
+    color: #86888a;
+    background-color: #29292a;
+    border: 1px solid #29292a;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    padding: 6px 9px 6px 9px;
+}
+
+[accessibleName="ButtonSetLeft"]:hover {
+    background-color: #313132;
+    border-color: #313132;
+    color: #8e9092;
+}
+
+/* ### middle ### */
+
+[accessibleName="ButtonSetMid"] {
+    font: bold;
+    color: #86888a;
+    background-color: #29292a;
+    border: 1px solid #29292a;
+    padding: 6px 9px 6px 9px;
+}
+
+[accessibleName="ButtonSetMid"]:hover {
+    background-color: #313132;
+    border-color: #313132;
+    color: #8e9092;
+}
+
+/* ### right ### */
+
+[accessibleName="ButtonSetRight"] {
+    font: bold;
+    color: #86888a;
+    background-color: #29292a;
+    border: 1px solid #29292a;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    padding: 6px 9px 6px 9px;
+}
+
+[accessibleName="ButtonSetRight"]:hover {
+    background-color: #313132;
+    border-color: #313132;
+    color: #8e9092;
+}
+
+/* ###################### */
 
 [accessibleName="IconButton"] {
     padding: 7px 7px 7px 7px;
@@ -51,8 +105,8 @@ FloatingWidget {
 }
 
 [accessibleName="OverlayHeaderWidget"] {
-    background-color: #303031;
-    border: 1px solid #303031;
+    background-color: #313132;
+    border: 1px solid #313132;
     border-top-left-radius: 1px;
     border-top-right-radius: 1px;
 }
@@ -92,7 +146,7 @@ FloatingMessage QLabel {
 
 SidePanel {
     background-color: #1c1c1d;
-    border-left: 2px solid #313234;
+    border-left: 2px solid #313132;
 }
 
 SidePanel QGroupBox {
@@ -141,30 +195,30 @@ ChangelogWindow QTextBrowser {
 /*############################################################################*/
 
 VideoControls QLabel {
-    color: #86888a;
+    color: #8e9092;
     font: bold;
 }
 
 VideoControls QSlider {
-    border: 1px solid #414244;
+    /* border-bottom: 2px solid #8e9092; */
 }
 
 VideoControls QSlider::groove:horizontal {
-    background: #1c1c1d;
+    background: #29292a;
 }
 
 VideoControls QSlider::handle:horizontal {
     height: 0px;
     width:  1px;
-    background: #414244;
+    background: #707070;
 }
 
 VideoControls QSlider::add-page:horizontal {
-    background: #1c1c1d;
+    background: #29292a;
 }
 
 VideoControls QSlider::sub-page:horizontal {
-    background: #414244;
+    background: #707070;
 }
 
 /*############################################################################*/
@@ -176,31 +230,31 @@ CopyOverlay ClickableLabel {
     background-color: #29292a;
     color: #aeaeae;
     border: 2px solid #29292a;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
     padding: 4px 10px 4px 4px;
 }
 
 CopyOverlay ClickableLabel:hover {
-    background-color: #303031;
+    background-color: #313132;
     color: #bebebe;
-    border-color: #303031;
+    border-color: #313132;
 }
 
 /* Right side buttons */
 PathSelectorWidget QPushButton {
     background-color: #29292a;
     border: 2px solid #29292a;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
     color: #86888a;
     font: bold;
     padding: 4px 4px 4px 4px;
 }
 
 PathSelectorWidget QPushButton:hover {
-    background-color: #303031;
-    border-color: #303031;
+    background-color: #313132;
+    border-color: #313132;
     color: #8e9092;
 }
 
@@ -241,7 +295,7 @@ FolderView {
     color: #aeaeae;
     border: 2px solid #29292a;
     border-radius: 4px;
-    padding: 4px 10px 4px 4px;
+    padding: 4px 20px 4px 4px;
 }
 
 ThumbnailLabel {

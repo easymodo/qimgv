@@ -59,7 +59,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../../resources.qrc">:/res/icons/buttons/open16.png</pixmap>
+         <pixmap resource="../../resources.qrc">:/res/icons/buttons/edit16.png</pixmap>
         </property>
        </widget>
       </item>

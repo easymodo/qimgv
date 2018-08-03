@@ -135,7 +135,7 @@
    <item>
     <layout class="QVBoxLayout" name="pathSelectorsLayout">
      <property name="spacing">
-      <number>5</number>
+      <number>4</number>
      </property>
      <property name="leftMargin">
       <number>16</number>

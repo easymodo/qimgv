@@ -113,7 +113,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../resources.qrc">
-            <normaloff>:/res/icons/buttons/open20.png</normaloff>:/res/icons/buttons/open20.png</iconset>
+            <normaloff>:/res/icons/buttons/open16.png</normaloff>:/res/icons/buttons/open16.png</iconset>
           </property>
          </widget>
         </item>
@@ -142,7 +142,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../resources.qrc">
-            <normaloff>:/res/icons/buttons/settings20.png</normaloff>:/res/icons/buttons/settings20.png</iconset>
+            <normaloff>:/res/icons/buttons/settings16.png</normaloff>:/res/icons/buttons/settings16.png</iconset>
           </property>
          </widget>
         </item>
@@ -226,7 +226,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../resources.qrc">
-            <normaloff>:/res/icons/buttons/docview20.png</normaloff>:/res/icons/buttons/docview20.png</iconset>
+            <normaloff>:/res/icons/buttons/document-view16.png</normaloff>:/res/icons/buttons/document-view16.png</iconset>
           </property>
          </widget>
         </item>
@@ -255,7 +255,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../resources.qrc">
-            <normaloff>:/res/icons/buttons/close20.png</normaloff>:/res/icons/buttons/close20.png</iconset>
+            <normaloff>:/res/icons/buttons/close16.png</normaloff>:/res/icons/buttons/close16.png</iconset>
           </property>
          </widget>
         </item>

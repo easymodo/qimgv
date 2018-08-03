@@ -9,8 +9,8 @@ VideoControls::VideoControls(OverlayContainerWidget *parent) :
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     hide();
 
-    playIcon.addPixmap(QPixmap(":res/icons/buttons/play18.png"));
-    pauseIcon.addPixmap(QPixmap(":res/icons/buttons/pause18.png"));
+    playIcon.addPixmap(QPixmap(":res/icons/buttons/play24.png"));
+    pauseIcon.addPixmap(QPixmap(":res/icons/buttons/pause24.png"));
 
     setPosition(FloatingWidgetPosition::BOTTOM);
 
@@ -24,7 +24,7 @@ VideoControls::VideoControls(OverlayContainerWidget *parent) :
     connect(ui->seekRightButton, SIGNAL(pressed()), this, SIGNAL(seekRight()));
     connect(ui->prevFrameButton, SIGNAL(pressed()), this, SIGNAL(prevFrame()));
     connect(ui->nextFrameButton, SIGNAL(pressed()), this, SIGNAL(nextFrame()));
-    connect(ui->seekBar, SIGNAL(valueChanged(int)), this, SIGNAL(seek(int)));
+    connect(ui->seekBar, SIGNAL(sliderMovedX(int)), this, SIGNAL(seek(int)));
 }
 
 VideoControls::~VideoControls() {

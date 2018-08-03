@@ -14,9 +14,10 @@ bright_1:
 normal_0:   #1c1c1d;
 normal_1:   #212223;
 normal_2:   #29292a;
-normal_3:   #303031;
+normal_4:   #313132;
+
 ---------------------
-border_0:   #313234;
+border_0:   #313233;
 border_1:   #414244;
 
 scrollbar:  #5c5e60;

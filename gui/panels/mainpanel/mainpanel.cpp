@@ -6,7 +6,7 @@ MainPanel::MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *pa
 
     openButton       = new IconButton("open", ":/res/icons/buttons/open20.png", 30);
     settingsButton   = new IconButton("openSettings", ":/res/icons/buttons/settings20.png", 30);
-    exitButton       = new IconButton("exit", ":/res/icons/buttons/close20.png", 30);
+    exitButton       = new IconButton("exit", ":/res/icons/buttons/close16.png", 30);
     folderViewButton = new IconButton("folderView", ":/res/icons/buttons/folderview20.png", 30);
     //exitFullscreenButton = new IconButton("ToggleFullscreen", ":/res/icons/buttons/exit-fullscreen.png", QSize(30, 30));
 
