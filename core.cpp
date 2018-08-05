@@ -32,8 +32,13 @@ Core::Core()
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 
     QVersionNumber lastVersion = settings->lastVersion();
-    if(appVersion > lastVersion)
-        postUpdate();
+    // If we get (0,0,0) then it is a new install; no need to run update logic.
+    // There shouldn't be any weirdness if you update 0.6.3 -> 0.7
+    // In addition there is a firstRun flag.
+    if(appVersion > lastVersion && lastVersion != QVersionNumber(0,0,0))
+        onUpdate();
+    if(settings->firstRun())
+        onFirstRun();
 }
 
 void Core::readSettings() {
@@ -148,7 +153,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(toggleFolderView()), mw, SIGNAL(toggleFolderView()));
 }
 
-void Core::postUpdate() {
+void Core::onUpdate() {
     QVersionNumber lastVer = settings->lastVersion();
     actionManager->resetDefaultsFromVersion(lastVer);
     actionManager->saveShortcuts();
@@ -160,6 +165,12 @@ void Core::postUpdate() {
     //else
         mw->showMessage("Updated: "+settings->lastVersion().toString()+" > "+appVersion.toString());
 
+}
+
+void Core::onFirstRun() {
+    //mw->showSomeSortOfWelcomeScreen();
+    mw->showMessage("Welcome to qimgv version " + appVersion.toString() + "!", 3000);
+    settings->setFirstRun(false);
 }
 
 void Core::rotateLeft() {
@@ -204,7 +215,8 @@ void Core::removeFile(int index, bool trash) {
         return;
     QString fileName = dirManager->fileNameAt(index);
     if(dirManager->removeAt(index, trash)) {
-        mw->showMessage("File removed: " + fileName);
+        QString msg = trash?"Moved to trash: ":"File removed: ";
+        mw->showMessage(msg + fileName);
     }
 }
 

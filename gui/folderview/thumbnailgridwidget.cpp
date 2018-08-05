@@ -24,15 +24,6 @@ void ThumbnailGridWidget::setupLayout() {
     if(thumbnail && fm->width(thumbnail->name()) >= nameTextRect.width()) {
         nameFits = false;
     }
-
-    /*if(thumbnail && !thumbnail->label().isEmpty()) {
-        labelTextRect.setWidth(fmSmall->width(thumbnail->label()));
-        labelTextRect.setHeight(fmSmall->height());
-        labelTextRect.moveCenter(nameRect.center());
-        labelTextRect.moveRight(nameTextRect.right());
-        nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
-    }
-    */
 }
 
 void ThumbnailGridWidget::drawHighlight(QPainter *painter) {

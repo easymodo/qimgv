@@ -17,10 +17,10 @@
     color: #8e9092;
 }
 
-[accessibleName="Button"]:focus {
-    background-color: #313132;
-    border-color: #313132;
-    color: #8e9092;
+[accessibleName="Button"]:pressed {
+    background-color: #222223;
+    border-color: #222223;
+    color: #707070;
 }
 
 /* ##### button set left ##### */
@@ -41,6 +41,12 @@
     color: #8e9092;
 }
 
+[accessibleName="ButtonSetLeft"]:pressed {
+    background-color: #222223;
+    border-color: #222223;
+    color: #707070;
+}
+
 /* ### middle ### */
 
 [accessibleName="ButtonSetMid"] {
@@ -55,6 +61,12 @@
     background-color: #313132;
     border-color: #313132;
     color: #8e9092;
+}
+
+[accessibleName="ButtonSetMid"]:pressed {
+    background-color: #222223;
+    border-color: #222223;
+    color: #707070;
 }
 
 /* ### right ### */
@@ -73,6 +85,12 @@
     background-color: #313132;
     border-color: #313132;
     color: #8e9092;
+}
+
+[accessibleName="ButtonSetRight"]:pressed {
+    background-color: #222223;
+    border-color: #222223;
+    color: #707070;
 }
 
 /* ###################### */
@@ -294,8 +312,8 @@ FolderView {
     background-color: #29292a;
     color: #aeaeae;
     border: 2px solid #29292a;
-    border-radius: 4px;
-    padding: 4px 20px 4px 4px;
+    border-radius: 2px;
+    padding: 4px 10px 4px 4px;
 }
 
 ThumbnailLabel {
@@ -370,7 +388,7 @@ ThumbnailView QScrollBar::sub-line {
 /*############################################################################*/
 
 ContextMenu {
-    background-color: #212223;
+    background-color: #222223;
     border: 1px solid #414244;
     border-radius: 3px;
 }

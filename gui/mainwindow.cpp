@@ -544,6 +544,10 @@ void MainWindow::showMessage(QString text) {
     floatingMessage->showMessage(text, FloatingWidgetPosition::BOTTOM, FloatingMessageIcon::NO_ICON, 1800);
 }
 
+void MainWindow::showMessage(QString text, int duration) {
+    floatingMessage->showMessage(text, FloatingWidgetPosition::BOTTOM, FloatingMessageIcon::NO_ICON, duration);
+}
+
 void MainWindow::readSettings() {
     bgColor   = settings->backgroundColor();
     bgOpacity = settings->backgroundOpacity();

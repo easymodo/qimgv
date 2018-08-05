@@ -157,6 +157,7 @@ public slots:
     void showWindowed();
     void triggerCopyOverlay();
     void showMessage(QString text);
+    void showMessage(QString text, int duration);
     void triggerMoveOverlay();
     void closeFullScreenOrExit();
     void close();

@@ -52,7 +52,8 @@ private:
     void initComponents();
     void connectComponents();
     void initActions();
-    void postUpdate();
+    void onUpdate();
+    void onFirstRun();
 
     // ui stuff
     MainWindow *mw;

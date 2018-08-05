@@ -141,6 +141,8 @@ public:
 
     bool showInfoOverlay();
     void setShowInfoOverlay(bool mode);
+    bool firstRun();
+    void setFirstRun(bool mode);
 private:
     explicit Settings(QObject *parent = 0);
     const int mainPanelSizeDefault = 210;

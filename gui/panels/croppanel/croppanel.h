@@ -39,7 +39,7 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
 private slots:
-    void onCropPressed();
+    void onCropClicked();
     void onSelectionChange();
 
 private:

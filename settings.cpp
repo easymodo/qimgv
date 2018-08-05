@@ -143,11 +143,10 @@ void Settings::setPlayMp4(bool mode) {
     settings->s.setValue("playMp4", mode);
 }
 //------------------------------------------------------------------------------
-// default to v0.6.2
 QVersionNumber Settings::lastVersion() {
     int vmajor = settings->s.value("lastVerMajor", 0).toInt();
-    int vminor = settings->s.value("lastVerMinor", 6).toInt();
-    int vmicro = settings->s.value("lastVerMicro", 2).toInt();
+    int vminor = settings->s.value("lastVerMinor", 0).toInt();
+    int vmicro = settings->s.value("lastVerMicro", 0).toInt();
     return QVersionNumber(vmajor, vminor, vmicro);
 }
 
@@ -269,7 +268,7 @@ void Settings::setUsePreloader(bool mode) {
 }
 //------------------------------------------------------------------------------
 QColor Settings::backgroundColor() {
-    return settings->s.value("bgColor", QColor(27, 27, 27)).value<QColor>();
+    return settings->s.value("bgColor", QColor(27, 27, 28)).value<QColor>();
 }
 
 void Settings::setBackgroundColor(QColor color) {
@@ -277,7 +276,7 @@ void Settings::setBackgroundColor(QColor color) {
 }
 //------------------------------------------------------------------------------
 QColor Settings::accentColor() {
-    return settings->s.value("accentColor", QColor(104, 159, 56)).value<QColor>();
+    return settings->s.value("accentColor", QColor(17, 121, 100)).value<QColor>();
 }
 
 void Settings::setAccentColor(QColor color) {
@@ -458,7 +457,7 @@ void Settings::setSquareThumbnails(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::transparencyGrid() {
-    return settings->s.value("drawTransparencyGrid", true).toBool();
+    return settings->s.value("drawTransparencyGrid", false).toBool();
 }
 
 void Settings::setTransparencyGrid(bool mode) {
@@ -560,6 +559,14 @@ bool Settings::showInfoOverlay() {
 
 void Settings::setShowInfoOverlay(bool mode) {
     settings->s.setValue("showInfoOverlay", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::firstRun() {
+    return settings->s.value("firstRun", true).toBool();
+}
+
+void Settings::setFirstRun(bool mode) {
+    settings->s.setValue("firstRun", mode);
 }
 
 
