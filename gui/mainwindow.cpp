@@ -485,6 +485,9 @@ void MainWindow::hideCropPanel() {
 }
 
 void MainWindow::triggerCopyOverlay() {
+    if(!viewerWidget->isDisplaying())
+        return;
+
     if(centralWidget->viewMode() == MODE_FOLDERVIEW)
         return;
     if(copyOverlay->operationMode() == OVERLAY_COPY) {
@@ -496,6 +499,9 @@ void MainWindow::triggerCopyOverlay() {
 }
 
 void MainWindow::triggerMoveOverlay() {
+    if(!viewerWidget->isDisplaying())
+        return;
+
     if(centralWidget->viewMode() == MODE_FOLDERVIEW)
         return;
     if(copyOverlay->operationMode() == OVERLAY_MOVE) {
@@ -552,7 +558,7 @@ void MainWindow::readSettings() {
     bgColor   = settings->backgroundColor();
     bgOpacity = settings->backgroundOpacity();
 #ifdef USE_KDE_BLUR
-    if(bgOpacity == 1.0f)
+    if(bgOpacity == 1.0)
         KWindowEffects::enableBlurBehind(winId(), false);
     else
         KWindowEffects::enableBlurBehind(winId(), settings->blurBackground());

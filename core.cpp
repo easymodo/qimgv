@@ -254,9 +254,10 @@ void Core::moveFile(QString destDirectory) {
 }
 
 void Core::copyFile(QString destDirectory) {
-    QFile file(destDirectory+"/"+dirManager->fileNameAt(state.currentIndex));
+    QFileInfo file(destDirectory + "/" + dirManager->fileNameAt(state.currentIndex));
     if(file.exists()) {
-        mw->showMessage("Error: file already exists.");
+        if(file.isFile())
+            mw->showMessage("Error: file already exists.");
         return;
     }
     if(!dirManager->copyTo(destDirectory, state.currentIndex)) {

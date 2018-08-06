@@ -166,23 +166,23 @@ bool Settings::showChangelogs() {
     return settings->s.value("showChangelogs", true).toBool();
 }
 //------------------------------------------------------------------------------
-float Settings::backgroundOpacity() {
+qreal Settings::backgroundOpacity() {
     bool ok = false;
-    float value = settings->s.value("backgroundOpacity", 1.0f).toFloat(&ok);
+    qreal value = settings->s.value("backgroundOpacity", 1.0).toReal(&ok);
     if(!ok)
-        return 0.0f;
-    if(value > 1.0f)
-        return 1.0f;
-    if(value < 0.0f)
-        return 0.0f;
+        return 0.0;
+    if(value > 1.0)
+        return 1.0;
+    if(value < 0.0)
+        return 0.0;
     return value;
 }
 
-void Settings::setBackgroundOpacity(float value) {
-    if(value > 1.0f)
-        value = 1.0f;
-    else if(value < 0.0f)
-        value = 0.0f;
+void Settings::setBackgroundOpacity(qreal value) {
+    if(value > 1.0)
+        value = 1.0;
+    else if(value < 0.0)
+        value = 0.0;
     settings->s.setValue("backgroundOpacity", value);
 }
 //------------------------------------------------------------------------------

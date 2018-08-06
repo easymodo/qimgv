@@ -130,8 +130,8 @@ public:
     void setLastVersion(QVersionNumber &ver);
     void setShowChangelogs(bool mode);
     bool showChangelogs();
-    float backgroundOpacity();
-    void setBackgroundOpacity(float value);
+    qreal backgroundOpacity();
+    void setBackgroundOpacity(qreal value);
     bool blurBackground();
     void setBlurBackground(bool mode);
     void setSortingMode(SortingMode mode);

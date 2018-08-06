@@ -55,7 +55,7 @@ private:
     QDesktopWidget *desktopWidget;
 
     QColor bgColor;
-    float bgOpacity;
+    qreal bgOpacity;
     bool panelEnabled, panelFullscreenOnly, cropPanelActive, infoOverlayEnabled;
     std::shared_ptr<DocumentWidget> docWidget;
     std::shared_ptr<FolderView> folderView;
