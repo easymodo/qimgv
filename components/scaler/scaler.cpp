@@ -9,11 +9,11 @@
  */
 
 Scaler::Scaler(Cache *_cache, QObject *parent)
-    : cache(_cache),
-      QObject(parent),
-      currentRequestTimestamp(0),
+    : QObject(parent),
       buffered(false),
-      running(false)
+      running(false),
+      currentRequestTimestamp(0),
+      cache(_cache)
 {
     sem = new QSemaphore(1);
     pool = new QThreadPool(this);

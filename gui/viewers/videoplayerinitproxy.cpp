@@ -82,4 +82,5 @@ void VideoPlayerInitProxy::hide() {
 }
 
 void VideoPlayerInitProxy::paintEvent(QPaintEvent *event) {
+    Q_UNUSED(event)
 }

@@ -74,7 +74,7 @@ void SettingsDialog::readSettings() {
     ui->smoothUpscalingCheckBox->setChecked(settings->smoothUpscaling());
     ui->expandImageCheckBox->setChecked(settings->expandImage());
     ui->smoothAnimatedImagesCheckBox->setChecked(settings->smoothAnimatedImages());
-    ui->bgOpacitySlider->setValue(settings->backgroundOpacity() * 100);
+    ui->bgOpacitySlider->setValue(static_cast<int>(settings->backgroundOpacity() * 100));
     ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
     ui->showInfoOverlayCheckBox->setChecked(settings->showInfoOverlay());
@@ -114,7 +114,7 @@ void SettingsDialog::readSettings() {
 
     // thumbnail size
     // maybe use slider instead of combobox?
-    int size = settings->mainPanelSize();
+    unsigned int size = settings->mainPanelSize();
     switch(size) {
         case SettingsDialog::thumbSizeSmall:
             ui->thumbSizeComboBox->setCurrentIndex(0);
@@ -146,7 +146,7 @@ void SettingsDialog::applySettings() {
 
     settings->setInfiniteScrolling(ui->infiniteScrollingCheckBox->isChecked());
     settings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
-    settings->setImageFitMode((ImageFitMode)ui->fitModeComboBox->currentIndex());
+    settings->setImageFitMode(static_cast<ImageFitMode>(ui->fitModeComboBox->currentIndex()));
     settings->setPlayWebm(ui->playWebmCheckBox->isChecked());
     settings->setPlayMp4(ui->playMp4CheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
@@ -161,16 +161,16 @@ void SettingsDialog::applySettings() {
     settings->setSmoothUpscaling(ui->smoothUpscalingCheckBox->isChecked());
     settings->setExpandImage(ui->expandImageCheckBox->isChecked());
     settings->setSmoothAnimatedImages(ui->smoothAnimatedImagesCheckBox->isChecked());
-    settings->setBackgroundOpacity(ui->bgOpacitySlider->value() / (float)100.0f);
+    settings->setBackgroundOpacity(static_cast<float>(ui->bgOpacitySlider->value()) / 100);
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
-    settings->setSortingMode((SortingMode)ui->sortingComboBox->currentIndex());
+    settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
     settings->setShowInfoOverlay(ui->showInfoOverlayCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 
     settings->setScalingFilter(ui->scalingQualityComboBox->currentIndex());
 
-    settings->setPanelPosition((PanelHPosition) ui->panelPositionComboBox->currentIndex());
+    settings->setPanelPosition(static_cast<PanelHPosition>(ui->panelPositionComboBox->currentIndex()));
 
     settings->setBackgroundColor(bgLabelPalette.color(QPalette::Window));
     settings->setAccentColor(accentLabelPalette.color(QPalette::Window));

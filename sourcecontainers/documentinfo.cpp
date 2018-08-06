@@ -2,7 +2,7 @@
 
 DocumentInfo::DocumentInfo(QString path)
     : mImageType(NONE),
-      mOrientation(1),
+      mOrientation(0),
       mExtension(nullptr)
 {
     fileInfo.setFile(path);
@@ -40,7 +40,7 @@ QString DocumentInfo::baseName() const {
 
 // in KB
 int DocumentInfo::fileSize() const {
-    return truncf(fileInfo.size()/1024);
+    return static_cast<int>(fileInfo.size() / 1024);
 }
 
 DocumentType DocumentInfo::type() const {
@@ -109,5 +109,5 @@ void DocumentInfo::loadExifOrientation() {
     QString path = filePath();
     const QImageReader& reader = (mExtension) ? QImageReader(path, mExtension) : QImageReader(path);
     if(reader.canRead())
-        mOrientation = (int)reader.transformation();
+        mOrientation = static_cast<int>(reader.transformation());
 }

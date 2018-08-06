@@ -66,7 +66,7 @@ void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
         return;
     }
     // assume all thumbnails are the same size
-    int thumbWidth = thumbnails.at(start)->boundingRect().width() + thumbnailSpacing;
+    int thumbWidth = static_cast<int>(thumbnails.at(start)->boundingRect().width()) + thumbnailSpacing;
     ThumbnailWidget *tmp;
     for(int i = start; i <= end; i++) {
         tmp = thumbnails.at(i);
@@ -101,7 +101,7 @@ void ThumbnailStrip::ensureThumbnailVisible(int pos) {
 
 void ThumbnailStrip::loadVisibleThumbnailsDelayed() {
     loadTimer.stop();
-    loadTimer.start(LOAD_DELAY);
+    loadTimer.start(static_cast<const int>(LOAD_DELAY));
 }
 
 // scene stuff??

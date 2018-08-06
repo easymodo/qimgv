@@ -75,20 +75,20 @@ QSize ResizeDialog::newSize() {
 
 void ResizeDialog::widthChanged(int newWidth) {
     lastEdited = 0;
-    float factor = (float)newWidth/originalSize.width();
+    float factor = static_cast<float>(newWidth) / originalSize.width();
     targetSize.setWidth(newWidth);
     if(ui->keepAspectRatio->isChecked()) {
-        targetSize.setHeight(originalSize.height() * factor);
+        targetSize.setHeight(static_cast<int>(originalSize.height() * factor));
     }
     updateToTargetValues();
 }
 
 void ResizeDialog::heightChanged(int newHeight) {
     lastEdited = 1;
-    float factor = (float)newHeight/originalSize.height();
+    float factor = static_cast<float>(newHeight) / originalSize.height();
     targetSize.setHeight(newHeight);
     if(ui->keepAspectRatio->isChecked()) {
-        targetSize.setWidth(originalSize.width() * factor);
+        targetSize.setWidth(static_cast<int>(originalSize.width() * factor));
     }
     updateToTargetValues();
 }

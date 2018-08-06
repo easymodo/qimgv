@@ -16,7 +16,7 @@ CropOverlay::CropOverlay(OverlayContainerWidget *parent) : OverlayWidget(parent)
 {
     setMouseTracking(true);
     dpr = devicePixelRatioF();
-    handleSize = 8 * dpr;
+    handleSize = static_cast<int>(8 * dpr);
     prepareDrawElements();
     brushInactiveTint.setColor(QColor(0, 0, 0, 160));
     brushInactiveTint.setStyle(Qt::SolidPattern);
@@ -298,7 +298,7 @@ void CropOverlay::mousePressEvent(QMouseEvent *event) {
 
 void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() & Qt::LeftButton && !clear) {
-        QPoint delta = (event->pos() - moveStartPos)*dpr;
+        QPoint delta = (event->pos() - moveStartPos) * dpr;
         if(cursorAction == DRAG_MOVE) { // moving selection
             setCursor(Qt::ClosedHandCursor);
             moveStartPos = event->pos();
@@ -319,8 +319,8 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
             startPos.x() <= endPos.x() ? br.setX(endPos.x()) : br.setX(startPos.x());
             startPos.y() <= endPos.y() ? br.setY(endPos.y()) : br.setY(startPos.y());
 
-            selectionRect.setTopLeft(mapPointToImage(tl*dpr));
-            selectionRect.setBottomRight(mapPointToImage(br*dpr));
+            selectionRect.setTopLeft(mapPointToImage(tl * dpr));
+            selectionRect.setBottomRight(mapPointToImage(br * dpr));
             updateSelectionDrawRect();
             updateHandlePositions();
             update();

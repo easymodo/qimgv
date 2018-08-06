@@ -46,7 +46,7 @@ protected:
 
 private:
     QRect mStaticGeometry;
-    qreal panelVisibleOpacity = 1.0f;
+    qreal panelVisibleOpacity = 1.0;
 
 };
 

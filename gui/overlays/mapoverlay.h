@@ -21,7 +21,7 @@ public:
         LeftBottom
     };
     
-    explicit MapOverlay(QWidget *parent = 0);
+    explicit MapOverlay(QWidget *parent = nullptr);
     virtual ~MapOverlay();
     void resize(int size);
     int size() const;

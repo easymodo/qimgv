@@ -4,7 +4,7 @@
 #include <QtCore/QMetaObject>
 
 static void wakeup(void *ctx) {
-    QMetaObject::invokeMethod((MpvWidget*)ctx, "on_mpv_events", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(reinterpret_cast<MpvWidget*>(ctx), "on_mpv_events", Qt::QueuedConnection);
 }
 
 static void *get_proc_address(void *ctx, const char *name) {
@@ -12,7 +12,7 @@ static void *get_proc_address(void *ctx, const char *name) {
     QOpenGLContext *glctx = QOpenGLContext::currentContext();
     if (!glctx)
         return nullptr;
-    return (void *)glctx->getProcAddress(QByteArray(name));
+    return reinterpret_cast<void*>(glctx->getProcAddress(QByteArray(name)));
 }
 
 MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
@@ -41,10 +41,10 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
     // Unmute
     setMuted(false);
 
-    mpv_gl = (mpv_opengl_cb_context *)mpv_get_sub_api(mpv, MPV_SUB_API_OPENGL_CB);
+    mpv_gl = reinterpret_cast<mpv_opengl_cb_context*>(mpv_get_sub_api(mpv, MPV_SUB_API_OPENGL_CB));
     if (!mpv_gl)
         throw std::runtime_error("OpenGL not compiled in");
-    mpv_opengl_cb_set_update_callback(mpv_gl, MpvWidget::on_update, (void *)this);
+    mpv_opengl_cb_set_update_callback(mpv_gl, MpvWidget::on_update, reinterpret_cast<void*>(this));
     connect(this, SIGNAL(frameSwapped()), SLOT(swapped()));
 
     mpv_observe_property(mpv, 0, "duration", MPV_FORMAT_DOUBLE);
@@ -86,7 +86,7 @@ void MpvWidget::initializeGL() {
 }
 
 void MpvWidget::paintGL() {
-    mpv_opengl_cb_draw(mpv_gl, defaultFramebufferObject(), width(), -height());
+    mpv_opengl_cb_draw(mpv_gl, static_cast<int>(defaultFramebufferObject()), width(), -height());
 }
 
 void MpvWidget::swapped() {
@@ -107,19 +107,19 @@ void MpvWidget::on_mpv_events() {
 void MpvWidget::handle_mpv_event(mpv_event *event) {
     switch (event->event_id) {
     case MPV_EVENT_PROPERTY_CHANGE: {
-        mpv_event_property *prop = (mpv_event_property *)event->data;
+        mpv_event_property *prop = reinterpret_cast<mpv_event_property*>(event->data);
         if(strcmp(prop->name, "time-pos") == 0) {
             if (prop->format == MPV_FORMAT_DOUBLE) {
-                double time = *(double *)prop->data;
-                emit positionChanged(time);
+                double time = *reinterpret_cast<double*>(prop->data);
+                emit positionChanged(static_cast<int>(time));
             }
         } else if(strcmp(prop->name, "duration") == 0) {
             if(prop->format == MPV_FORMAT_DOUBLE) {
-                double time = *(double *)prop->data;
-                emit durationChanged(time);
+                double time = *reinterpret_cast<double*>(prop->data);
+                emit durationChanged(static_cast<int>(time));
             }
         } else if(strcmp(prop->name, "pause") == 0) {
-            int mode = *(int *)prop->data;
+            int mode = *reinterpret_cast<int*>(prop->data);
             emit videoPaused(mode == 1);
         }
         break;
@@ -138,7 +138,7 @@ void MpvWidget::maybeUpdate() {
     // Note: Qt doesn't seem to provide a way to query whether update() will
     //       be skipped, and the following code still fails when e.g. switching
     //       to a different workspace with a reparenting window manager.
-    if (window()->isMinimized()) {
+    if(window()->isMinimized()) {
         makeCurrent();
         paintGL();
         context()->swapBuffers(context()->surface());
@@ -164,5 +164,5 @@ void MpvWidget::setRepeat(bool mode) {
 }
 
 void MpvWidget::on_update(void *ctx) {
-    QMetaObject::invokeMethod((MpvWidget*)ctx, "maybeUpdate");
+    QMetaObject::invokeMethod(reinterpret_cast<MpvWidget*>(ctx), "maybeUpdate");
 }

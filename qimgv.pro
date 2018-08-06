@@ -221,7 +221,8 @@ HEADERS += \
     gui/folderview/thumbnailgridwidget.h \
     gui/centralwidget.h \
     gui/contextmenu.h \
-    gui/customwidgets/contextmenuitem.h
+    gui/customwidgets/contextmenuitem.h \
+    utils/numeric.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \

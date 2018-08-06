@@ -72,7 +72,7 @@ std::unique_ptr<const QImage> ImageLib::exifRotated(std::unique_ptr<const QImage
     default: {
     } break;
     }
-    return std::move(src);
+    return src;
 }
 //------------------------------------------------------------------------------
 std::unique_ptr<QImage> ImageLib::exifRotated(std::unique_ptr<QImage> src, int orientation) {
@@ -104,7 +104,7 @@ std::unique_ptr<QImage> ImageLib::exifRotated(std::unique_ptr<QImage> src, int o
     default: {
     } break;
     }
-    return std::move(src);
+    return src;
 }
 //------------------------------------------------------------------------------
 /*

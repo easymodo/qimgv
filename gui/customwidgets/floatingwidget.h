@@ -26,7 +26,7 @@ enum FloatingWidgetPosition {
 class FloatingWidget : public OverlayWidget
 {
     Q_OBJECT
-    Q_PROPERTY (float opacity READ opacity WRITE setOpacity)
+    Q_PROPERTY (qreal opacity READ opacity WRITE setOpacity)
 public:
     FloatingWidget(OverlayContainerWidget *parent);
     ~FloatingWidget();
@@ -47,8 +47,8 @@ private:
     QPropertyAnimation *fadeAnimation;
 
 private slots:
-    void setOpacity(float opacity);
-    float opacity() const;
+    void setOpacity(qreal opacity);
+    qreal opacity() const;
 
     void onFadeEnd();
 protected:

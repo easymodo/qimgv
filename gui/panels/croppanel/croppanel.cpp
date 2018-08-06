@@ -2,9 +2,9 @@
 #include "ui_croppanel.h"
 
 CropPanel::CropPanel(CropOverlay *_overlay, QWidget *parent) :
-    overlay(_overlay),
     SidePanelWidget(parent),
-    ui(new Ui::CropPanel)
+    ui(new Ui::CropPanel),
+    overlay(_overlay)
 {
     ui->setupUi(this);
     setFocusPolicy(Qt::NoFocus);

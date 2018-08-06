@@ -8,13 +8,13 @@ class InputMap {
 public:
     InputMap();
     static InputMap *getInstance();
-    const QMap<int, QString> &keys();
+    const QMap<quint32, QString> &keys();
     const QMap<QString, Qt::KeyboardModifier> &modifiers();
 
 private:
     void initKeyMap();
     void initModMap();
-    QMap<int, QString> keyMap;
+    QMap<quint32, QString> keyMap;
     QMap<QString, Qt::KeyboardModifier> modMap;
 };
 

@@ -29,8 +29,7 @@ public:
 
     void addScript(QString scriptName, Script script);
 private:
-    explicit ScriptManager(QObject *parent = 0);
-    static void initScripts();
+    explicit ScriptManager(QObject *parent = nullptr);
     QMap<QString, Script> scripts; // <name, script>
     void processArguments(QStringList &cmd, std::shared_ptr<Image> img);
 

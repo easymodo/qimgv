@@ -30,7 +30,7 @@ class ImageViewer : public QWidget
     Q_OBJECT
     Q_PROPERTY(QPoint drawPos READ propertyDrawPos WRITE propertySetDrawPos)
 public:
-    ImageViewer(QWidget* parent = 0);
+    ImageViewer(QWidget* parent = nullptr);
     ~ImageViewer();
     ImageFitMode fitMode();
     QRect imageRect();

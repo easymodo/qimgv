@@ -79,7 +79,7 @@ void VideoPlayerMpv::setVideoUnscaled(bool mode) {
 }
 
 void VideoPlayerMpv::paintEvent(QPaintEvent *event) {
-
+    Q_UNUSED(event)
 }
 
 void VideoPlayerMpv::readSettings() {
@@ -106,7 +106,7 @@ void VideoPlayerMpv::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void VideoPlayerMpv::keyPressEvent(QKeyEvent *event) {
-    int nativeScanCode = event->nativeScanCode();
+    quint32 nativeScanCode = event->nativeScanCode();
     QString key = actionManager->keyForNativeScancode(nativeScanCode);
     if(key == "Space") {
         event->accept();

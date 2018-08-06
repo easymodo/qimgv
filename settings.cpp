@@ -124,8 +124,9 @@ QStringList Settings::supportedMimeTypes() {
 bool Settings::playWebm() {
 #ifdef USE_MPV
     return settings->s.value("playWebm", true).toBool();
-#endif
+#else
     return false;
+#endif
 }
 
 void Settings::setPlayWebm(bool mode) {
@@ -135,8 +136,9 @@ void Settings::setPlayWebm(bool mode) {
 bool Settings::playMp4() {
 #ifdef USE_MPV
     return settings->s.value("playMp4", false).toBool();
-#endif
+#else
     return false;
+#endif
 }
 
 void Settings::setPlayMp4(bool mode) {
@@ -196,7 +198,7 @@ void Settings::setBlurBackground(bool mode) {
 }
 //------------------------------------------------------------------------------
 void Settings::setSortingMode(SortingMode mode) {
-    if(mode < 0 || mode >= 6)
+    if(mode >= 6)
         mode = SortingMode::NAME_ASC;
     settings->s.setValue("sortingMode", mode);
 }
@@ -205,7 +207,7 @@ SortingMode Settings::sortingMode() {
     int mode = settings->s.value("sortingMode", 0).toInt();
     if(mode < 0 || mode >= 6)
         mode = 0;
-    return (SortingMode)mode;
+    return static_cast<SortingMode>(mode);
 }
 //------------------------------------------------------------------------------
 bool Settings::playVideoSounds() {
@@ -234,7 +236,7 @@ void Settings::setLastDirectory(QString path) {
 //------------------------------------------------------------------------------
 unsigned int Settings::lastFilePosition() {
     bool ok = true;
-    unsigned int pos = settings->s.value("lastFilePosition", "0").toInt(&ok);
+    unsigned int pos = settings->s.value("lastFilePosition", "0").toUInt(&ok);
     if(!ok) {
         qDebug() << "Settings: Invalid lastFilePosition. Resetting to 0.";
         pos = 0;
@@ -248,7 +250,7 @@ void Settings::setLastFilePosition(unsigned int pos) {
 //------------------------------------------------------------------------------
 unsigned int Settings::mainPanelSize() {
     bool ok = true;
-    unsigned int size = settings->s.value("mainPanelSize", mainPanelSizeDefault).toInt(&ok);
+    unsigned int size = settings->s.value("mainPanelSize", mainPanelSizeDefault).toUInt(&ok);
     if(!ok) {
         size = mainPanelSizeDefault;
     }
@@ -327,7 +329,6 @@ PanelHPosition Settings::panelPosition() {
 void Settings::setPanelPosition(PanelHPosition pos) {
     QString posString;
     switch(pos) {
-            break;
         case PANEL_TOP:
             posString = "top";
             break;
@@ -349,16 +350,16 @@ ImageFitMode Settings::imageFitMode() {
         qDebug() << "Settings: Invalid fit mode ( " + QString::number(mode) + " ). Resetting to default.";
         mode = 0;
     }
-    return (ImageFitMode)mode;
+    return static_cast<ImageFitMode>(mode);
 }
 
 void Settings::setImageFitMode(ImageFitMode mode) {
-    int modeInteger = (int)mode;
-    if(modeInteger < 0 || modeInteger > 2) {
-        qDebug() << "Settings: Invalid fit mode ( " + QString::number(modeInteger) + " ). Resetting to default.";
-        modeInteger = 0;
+    int modeInt = static_cast<ImageFitMode>(mode);
+    if(modeInt < 0 || modeInt > 2) {
+        qDebug() << "Settings: Invalid fit mode ( " + QString::number(modeInt) + " ). Resetting to default.";
+        modeInt = 0;
     }
-    settings->s.setValue("defaultFitMode", modeInteger);
+    settings->s.setValue("defaultFitMode", modeInt);
 }
 //------------------------------------------------------------------------------
 QRect Settings::windowGeometry() {

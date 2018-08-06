@@ -42,6 +42,7 @@ void FolderView::setCloseButtonEnabled(bool mode) {
 }
 
 void FolderView::focusInEvent(QFocusEvent *event) {
+    Q_UNUSED(event)
     ui->thumbnailGrid->setFocus();
 }
 

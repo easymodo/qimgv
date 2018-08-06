@@ -35,10 +35,10 @@ void Clip::load(const QString &fileName, const char* format) {
 
     path = fileName;
     extension = format;
-    srcWidth = wt.toInt();
-    srcHeight = ht.toInt();
+    srcWidth = wt.toUInt();
+    srcHeight = ht.toUInt();
     grad = 0;
-    frame = QRect(0,0,srcWidth, srcHeight);
+    frame = QRect(0, 0, static_cast<int>(srcWidth), static_cast<int>(srcHeight));
 }
 
 void Clip::save(const QString &fileName) {

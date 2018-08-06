@@ -13,8 +13,8 @@
 class MpvWidget Q_DECL_FINAL: public QOpenGLWidget {
     Q_OBJECT
 public:
-    MpvWidget(QWidget *parent = 0, Qt::WindowFlags f = 0);
-    ~MpvWidget();
+    MpvWidget(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::Widget);
+    ~MpvWidget() Q_DECL_OVERRIDE;
     void command(const QVariant& params);
     void setOption(const QString &name, const QVariant &value);
     void setProperty(const QString& name, const QVariant& value);
@@ -23,10 +23,10 @@ public:
     // https://github.com/gnome-mpv/gnome-mpv/issues/245
     // Let's hope this wont break more than it fixes
     int width() const {
-        return QOpenGLWidget::width() * this->devicePixelRatioF();
+        return static_cast<int>(QOpenGLWidget::width() * this->devicePixelRatioF());
     }
     int height() const {
-        return QOpenGLWidget::height() * this->devicePixelRatioF();
+        return static_cast<int>(QOpenGLWidget::height() * this->devicePixelRatioF());
     }
     void setMuted(bool mode);
     void setRepeat(bool mode);

@@ -230,7 +230,7 @@ void FolderGridView::updateLayout() {
 }
 
 void FolderGridView::keyPressEvent(QKeyEvent *event) {
-    int nativeScanCode = event->nativeScanCode();
+    quint32 nativeScanCode = event->nativeScanCode();
     QString key = actionManager->keyForNativeScancode(nativeScanCode);
     if(allowedKeys.contains(key)) {
         if(key == "Right") {

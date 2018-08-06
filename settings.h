@@ -144,8 +144,8 @@ public:
     bool firstRun();
     void setFirstRun(bool mode);
 private:
-    explicit Settings(QObject *parent = 0);
-    const int mainPanelSizeDefault = 210;
+    explicit Settings(QObject *parent = nullptr);
+    const unsigned int mainPanelSizeDefault = 210;
     QSettings s;
     QDir *cacheDirectory, *thumbnailDirectory;
 

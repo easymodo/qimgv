@@ -18,8 +18,8 @@ class ScriptEditorDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ScriptEditorDialog(QWidget *parent = 0);
-    explicit ScriptEditorDialog(QString name, Script script, QWidget *parent = 0);
+    explicit ScriptEditorDialog(QWidget *parent = nullptr);
+    explicit ScriptEditorDialog(QString name, Script script, QWidget *parent = nullptr);
     ~ScriptEditorDialog();
     QString scriptName();
     Script script();

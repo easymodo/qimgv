@@ -14,7 +14,7 @@ InputMap *InputMap::getInstance() {
     return inputMap;
 }
 
-const QMap<int, QString> &InputMap::keys() {
+const QMap<quint32, QString> &InputMap::keys() {
     return keyMap;
 }
 

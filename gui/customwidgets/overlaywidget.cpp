@@ -22,6 +22,7 @@ void OverlayWidget::setContainerSize(QSize container) {
 }
 
 void OverlayWidget::paintEvent(QPaintEvent *event) {
+    Q_UNUSED(event)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);

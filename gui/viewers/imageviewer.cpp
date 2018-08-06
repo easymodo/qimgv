@@ -158,8 +158,8 @@ void ImageViewer::scrollRight() {
 void ImageViewer::readSettings() {
     smoothAnimatedImages = settings->smoothAnimatedImages();
     expandImage = settings->expandImage();
-    maxResolutionLimit = (float)settings->maxZoomedResolution();
-    maxScaleLimit = (float)settings->maximumZoom();
+    maxResolutionLimit = static_cast<float>(settings->maxZoomedResolution());
+    maxScaleLimit = static_cast<float>(settings->maximumZoom());
     updateMinScale();
     updateMaxScale();
     setFitMode(settings->imageFitMode());

@@ -20,7 +20,7 @@ class ShortcutCreatorDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ShortcutCreatorDialog(QWidget *parent = 0);
+    explicit ShortcutCreatorDialog(QWidget *parent = nullptr);
     ~ShortcutCreatorDialog();
     QString selectedAction();
     QString selectedShortcut();

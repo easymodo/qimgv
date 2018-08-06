@@ -42,7 +42,7 @@ class MainWindow : public OverlayContainerWidget
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     bool isCropPanelActive();
-    void onScalingFinished(std::unique_ptr<QPixmap>(scaled));
+    void onScalingFinished(std::unique_ptr<QPixmap>scaled);
     void showImage(std::unique_ptr<QPixmap> pixmap);
     void showAnimation(std::unique_ptr<QMovie> movie);
     void showVideo(Clip *clip);

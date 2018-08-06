@@ -16,8 +16,8 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     nameColor.setRgb(20, 20, 20, 255);
     qreal fntSz = font.pointSizeF();
     if(fntSz > 0) {
-        font.setPointSizeF(font.pointSizeF() * 0.9f);
-        fontSmall.setPointSizeF(fontSmall.pointSizeF() * 0.85f);
+        font.setPointSizeF(font.pointSizeF() * 0.9);
+        fontSmall.setPointSizeF(fontSmall.pointSizeF() * 0.85);
     }
     font.setBold(true);
     fontSmall.setBold(true);
@@ -110,7 +110,7 @@ void ThumbnailWidget::setHighlighted(bool mode, bool smooth) {
         if(highlighted) {
             if(opacityAnimation->state() == QAbstractAnimation::Running)
                 opacityAnimation->stop();
-            setOpacity(1.0f, smooth);
+            setOpacity(1.0, smooth);
         } else {
             if(!mode)
                 setOpacity(inactiveOpacity, smooth);
@@ -153,11 +153,11 @@ QRectF ThumbnailWidget::boundingRect() const {
     return QRectF(0, 0, thumbnailSize + marginX * 2, thumbnailSize + marginY * 2);
 }
 
-int ThumbnailWidget::width() {
+qreal ThumbnailWidget::width() {
     return boundingRect().width();
 }
 
-int ThumbnailWidget::height() {
+qreal ThumbnailWidget::height() {
     return boundingRect().height();
 }
 
@@ -165,7 +165,7 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     Q_UNUSED(widget)
     Q_UNUSED(option)
     painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
-    painter->setOpacity(1.0f);
+    painter->setOpacity(1.0);
     qreal dpr = painter->paintEngine()->paintDevice()->devicePixelRatioF();
     drawHighlight(painter);
     if(!thumbnail) {
@@ -189,15 +189,15 @@ void ThumbnailWidget::drawHighlight(QPainter *painter) {
     if(isHighlighted()) {
         painter->fillRect(highlightRect, highlightColor);
     } else if (isHovered()) {
-        painter->setOpacity(0.6f);
+        painter->setOpacity(0.6);
         painter->fillRect(highlightRect, highlightColor);
-        painter->setOpacity(1.0f);
+        painter->setOpacity(1.0);
     }
 }
 
 void ThumbnailWidget::drawLabel(QPainter *painter) {
     // text background
-    painter->setOpacity(0.95f);
+    painter->setOpacity(0.95);
     painter->fillRect(nameRect, nameColor);
     painter->setOpacity(currentOpacity);
     // filename
@@ -212,6 +212,7 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
 }
 
 void ThumbnailWidget::drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
+    Q_UNUSED(dpr)
     QPointF drawPosCentered(width()  / 2 - pixmap->width()  / (2 * qApp->devicePixelRatio()),
                             height() / 2 - pixmap->height() / (2 * qApp->devicePixelRatio()));
 

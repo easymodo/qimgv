@@ -3,8 +3,8 @@
 
 ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) :
     QDialog(parent),
-    editMode(false),
-    ui(new Ui::ScriptEditorDialog)
+    ui(new Ui::ScriptEditorDialog),
+    editMode(false)
 {
     ui->setupUi(this);
     this->setWindowTitle("New script");
@@ -15,8 +15,8 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) :
 
 ScriptEditorDialog::ScriptEditorDialog(QString name, Script script, QWidget *parent)
     : QDialog(parent),
-      editMode(true),
-      ui(new Ui::ScriptEditorDialog)
+      ui(new Ui::ScriptEditorDialog),
+      editMode(true)
 {
     ui->setupUi(this);
     this->setWindowTitle("Edit script");

@@ -11,7 +11,7 @@ class MpvWidget;
 class VideoPlayerMpv : public VideoPlayer {
     Q_OBJECT
 public:
-    explicit VideoPlayerMpv(QWidget *parent = 0);
+    explicit VideoPlayerMpv(QWidget *parent = nullptr);
     bool openMedia(Clip *clip);
     void setVideoUnscaled(bool mode);
 

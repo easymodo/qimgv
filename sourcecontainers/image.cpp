@@ -2,17 +2,17 @@
 
 Image::Image(QString _path)
     : mDocInfo(new DocumentInfo(_path)),
-      mPath(_path),
       mLoaded(false),
-      mEdited(false)
+      mEdited(false),
+      mPath(_path)
 {
 }
 
 Image::Image(std::unique_ptr<DocumentInfo> _info)
     : mDocInfo(std::move(_info)),
-      mPath(mDocInfo->filePath()),
       mLoaded(false),
-      mEdited(false)
+      mEdited(false),
+      mPath(mDocInfo->filePath())
 {
 }
 

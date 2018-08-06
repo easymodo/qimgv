@@ -19,7 +19,7 @@ class CropPanel : public SidePanelWidget
     Q_OBJECT
 
 public:
-    explicit CropPanel(CropOverlay *_overlay, QWidget *parent = 0);
+    explicit CropPanel(CropOverlay *_overlay, QWidget *parent = nullptr);
     ~CropPanel();
     void setImageRealSize(QSize);
 

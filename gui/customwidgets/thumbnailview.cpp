@@ -121,7 +121,7 @@ void ThumbnailView::loadVisibleThumbnails() {
         if(loadList.count()) {
             //qDebug() << "requested: " << loadList.count() << " items";
             //qDebug() << loadList;
-            emit thumbnailRequested(loadList, floor(qApp->devicePixelRatio()*thumbnailSize));
+            emit thumbnailRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * thumbnailSize));
         }
     }
 }

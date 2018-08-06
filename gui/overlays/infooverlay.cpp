@@ -14,7 +14,7 @@ InfoOverlay::InfoOverlay(OverlayContainerWidget *parent)
     font.setBold(true);
     qreal fntSz = font.pointSizeF();
     if(fntSz > 0) {
-        font.setPointSizeF(font.pointSizeF() * 0.9f);
+        font.setPointSizeF(font.pointSizeF() * 0.9);
     }
     fm = new QFontMetrics(font);
     setText("No file opened.");

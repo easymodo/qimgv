@@ -26,7 +26,7 @@ class SettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SettingsDialog(QWidget *parent = 0);
+    explicit SettingsDialog(QWidget *parent = nullptr);
     ~SettingsDialog();
 
 public slots:
@@ -44,7 +44,7 @@ private:
         thumbSizeVeryLarge = 250
     };
 
-    int thumbSizeCustom;
+    unsigned int thumbSizeCustom;
     void applyShortcuts();
     void addShortcutToTable(const QString &action, const QString &shortcut);
     void addScriptToList(const QString &name);

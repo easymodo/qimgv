@@ -53,7 +53,7 @@ void MainPanel::setWindowButtonsEnabled(bool mode) {
 }
 
 void MainPanel::readSettings() {
-    setHeight(settings->mainPanelSize());
+    setHeight(static_cast<int>(settings->mainPanelSize()));
     setPosition(settings->panelPosition());
 }
 

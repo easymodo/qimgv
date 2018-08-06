@@ -112,7 +112,7 @@ void ActionManager::removeAllShortcuts(QString actionName) {
     }
 }
 //------------------------------------------------------------------------------
-QString ActionManager::keyForNativeScancode(int scanCode) {
+QString ActionManager::keyForNativeScancode(quint32 scanCode) {
     if(inputMap->keys().contains(scanCode)) {
         return inputMap->keys()[scanCode];
     } else {
@@ -148,7 +148,7 @@ void ActionManager::saveShortcuts() {
     settings->saveShortcuts(actionManager->shortcuts);
 }
 //------------------------------------------------------------------------------
-QString ActionManager::actionForScanCode(int code) {
+QString ActionManager::actionForScanCode(quint32 code) {
     return actionManager->shortcuts[inputMap->keys()[code]];
 }
 //------------------------------------------------------------------------------

@@ -19,6 +19,8 @@
 
 #include "gui/customwidgets/thumbnailwidget.h"
 
+
+
 enum ThumbnailViewOrientation {
     THUMBNAILVIEW_HORIZONTAL,
     THUMBNAILVIEW_VERTICAL
@@ -30,7 +32,7 @@ public:
     ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent = nullptr);
 
 public slots:
-    void showEvent(QShowEvent *event);
+    void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
     void populate(int count);
     void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb);
     void resetViewport();
@@ -79,7 +81,7 @@ protected:
     virtual void ensureSelectedItemVisible() = 0;
 
     void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 private slots:
     void centerOnX(int);

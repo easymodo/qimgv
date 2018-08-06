@@ -26,7 +26,7 @@ class ThumbnailWidget : public QGraphicsWidget {
 
 public:
     ThumbnailWidget(QGraphicsItem *parent = nullptr);
-    ~ThumbnailWidget();
+    ~ThumbnailWidget() Q_DECL_OVERRIDE;
 
     LoadState state;
     void setThumbnail(std::shared_ptr<Thumbnail> _thumbnail);
@@ -37,11 +37,11 @@ public:
 
     virtual QRectF boundingRect() const Q_DECL_OVERRIDE;
 
-    int width();
-    int height();
+    qreal width();
+    qreal height();
     void setThumbnailSize(int size);
 
-    void setGeometry(const QRectF &rect);
+    void setGeometry(const QRectF &rect) Q_DECL_OVERRIDE;
 
     virtual QRectF geometry() const;
     QSizeF effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
@@ -64,11 +64,11 @@ protected:
     virtual void drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap);
     virtual void drawHighlight(QPainter *painter);
     virtual void drawLabel(QPainter *painter);
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) Q_DECL_OVERRIDE;
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
-    void updateGeometry();
+    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const Q_DECL_OVERRIDE;
+    void updateGeometry() Q_DECL_OVERRIDE;
 
     std::shared_ptr<Thumbnail> thumbnail;
     qreal currentOpacity;
@@ -79,7 +79,7 @@ protected:
     QFont font, fontSmall;
     QFontMetrics *fm, *fmSmall;
     QPropertyAnimation *opacityAnimation;
-    const qreal inactiveOpacity = 0.86f;
+    const qreal inactiveOpacity = 0.86;
     const int opacityAnimationSpeed = 80;
 };
 

@@ -9,12 +9,12 @@
 
 Core::Core()
     : QObject(),
+      infiniteScrolling(false),
       loader(nullptr),
       dirManager(nullptr),
       cache(nullptr),
       scaler(nullptr),
-      thumbnailer(nullptr),
-      infiniteScrolling(false)
+      thumbnailer(nullptr)
 {
 #ifdef __linux__
     // default value of 128k causes memory fragmentation issues
@@ -736,10 +736,10 @@ void Core::displayImage(Image *img) {
     if(img) {  // && img->name() != state.displayingFileName) {
         DocumentType type = img->type();
         if(type == STATIC) {
-            mw->showImage(std::move(img->getPixmap()));
+            mw->showImage(img->getPixmap());
         } else if(type == ANIMATED) {
             auto animated = dynamic_cast<ImageAnimated *>(img);
-            mw->showAnimation(std::move(animated->getMovie()));
+            mw->showAnimation(animated->getMovie());
         } else if(type == VIDEO) {
             auto video = dynamic_cast<Video *>(img);
             // workaround for mpv. If we play video while mainwindow is hidden we get black screen.

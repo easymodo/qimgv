@@ -26,6 +26,7 @@ void Video::load() {
 }
 
 bool Video::save(QString destPath) {
+    Q_UNUSED(destPath)
     //clip->save(destPath);
     qDebug() << "Saving video is unsupported.";
     return false;
@@ -38,13 +39,13 @@ bool Video::save() {
 }
 
 std::unique_ptr<QPixmap> Video::getPixmap() {
-    qDebug() << "SOMETHING HAPPENED.";
+    qDebug() << "[Video] getPixmap() is not implemented.";
     //TODO: find out some easy way to get frames from video source
     return nullptr;
 }
 
 std::shared_ptr<const QImage> Video::getImage() {
-    qDebug() << "SOMETHING HAPPENED.";
+    qDebug() << "[Video] getImage() is not implemented.";
     //TODO: find out some easy way to get frames from video source
     return nullptr;
 }

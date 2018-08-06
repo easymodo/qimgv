@@ -34,7 +34,7 @@ ControlsOverlay::ControlsOverlay(OverlayContainerWidget *parent) :
 }
 
 void ControlsOverlay::show() {
-    fadeEffect->setOpacity(0.0f);
+    fadeEffect->setOpacity(0.0);
     OverlayWidget::show();
 }
 
@@ -57,10 +57,12 @@ void ControlsOverlay::recalculateGeometry() {
 }
 
 void ControlsOverlay::enterEvent(QEvent *event) {
+    Q_UNUSED(event)
     fadeAnimation->stop();
-    fadeEffect->setOpacity(1.0f);
+    fadeEffect->setOpacity(1.0);
 }
 
 void ControlsOverlay::leaveEvent(QEvent *event) {
+    Q_UNUSED(event)
     fadeAnimation->start();
 }

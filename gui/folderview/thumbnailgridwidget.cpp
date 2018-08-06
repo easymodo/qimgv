@@ -57,6 +57,7 @@ void ThumbnailGridWidget::drawLabel(QPainter *painter) {
 }
 
 void ThumbnailGridWidget::drawThumbnail(QPainter *painter, qreal dpr, const QPixmap *pixmap) {
+    Q_UNUSED(dpr)
     QPointF drawPosCentered(width()/2 - pixmap->width()/(2*qApp->devicePixelRatio()),
                             marginY + thumbnailSize - pixmap->height()/(qApp->devicePixelRatio()));
     painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
@@ -69,6 +70,7 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, qreal dpr, const QPix
 }
 
 void ThumbnailGridWidget::drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap) {
+    Q_UNUSED(dpr)
     QPointF drawPosCentered(width()  / 2 - pixmap->width()  / (2 * qApp->devicePixelRatio()),
                             height() / 2 - pixmap->height() / (2 * qApp->devicePixelRatio()));
     painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));

@@ -3,8 +3,8 @@
 ThumbnailerRunnable::ThumbnailerRunnable(ThumbnailCache* _thumbnailCache, QString _path, int _size, bool _squared) :
     path(_path),
     size(_size),
-    thumbnailCache(_thumbnailCache),
-    squared(_squared)
+    squared(_squared),
+    thumbnailCache(_thumbnailCache)
 {
 }
 
@@ -15,7 +15,6 @@ void ThumbnailerRunnable::run() {
     QString tmpName = imgInfo.fileName();
     QString thumbnailId = generateIdString();
     std::unique_ptr<QImage> image;
-    bool cached = false;
     if(settings->useThumbnailCache())
         image.reset(thumbnailCache->readThumbnail(thumbnailId));
     if(!image) {

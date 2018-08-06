@@ -5,8 +5,8 @@
 MainWindow::MainWindow(QWidget *parent)
     : OverlayContainerWidget(parent),
       currentDisplay(0),
-      bgOpacity(1.0f),
       desktopWidget(nullptr),
+      bgOpacity(1.0f),
       panelEnabled(false),
       panelFullscreenOnly(false),
       activeSidePanel(SIDEPANEL_NONE),

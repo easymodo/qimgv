@@ -14,7 +14,7 @@ SlidePanel::SlidePanel(OverlayContainerWidget *parent)
 {
     // workaround for https://bugreports.qt.io/browse/QTBUG-66387
     if( strcmp(qVersion(), "5.10.1") == 0 || strcmp(qVersion(), "5.9.4") == 0) {
-        panelVisibleOpacity = 0.999f;
+        panelVisibleOpacity = 0.999;
     }
 
     mLayout.setSpacing(0);

@@ -14,7 +14,7 @@ class FolderView : public QWidget
     Q_OBJECT
 
 public:
-    explicit FolderView(QWidget *parent = 0);
+    explicit FolderView(QWidget *parent = nullptr);
     ~FolderView();
 
 public slots:

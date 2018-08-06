@@ -13,7 +13,7 @@ class VideoControls : public FloatingWidget
     Q_OBJECT
 
 public:
-    explicit VideoControls(OverlayContainerWidget *parent = 0);
+    explicit VideoControls(OverlayContainerWidget *parent = nullptr);
     ~VideoControls();
 
 public slots:

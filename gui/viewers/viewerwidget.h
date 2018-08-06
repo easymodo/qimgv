@@ -18,7 +18,7 @@ class ViewerWidget : public OverlayContainerWidget
 {
     Q_OBJECT
 public:
-    explicit ViewerWidget(QWidget *parent = 0);
+    explicit ViewerWidget(QWidget *parent = nullptr);
     QRect imageRect();
     float currentScale();
     QSize sourceSize();

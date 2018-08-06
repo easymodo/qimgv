@@ -8,7 +8,7 @@ class ClickableWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ClickableWidget(QWidget *parent = 0);
+    explicit ClickableWidget(QWidget *parent = nullptr);
 
 signals:
     void pressed();

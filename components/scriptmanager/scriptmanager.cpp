@@ -15,7 +15,6 @@ ScriptManager::~ScriptManager() {
 ScriptManager *ScriptManager::getInstance() {
     if(!scriptManager) {
         scriptManager = new ScriptManager();
-        //scriptManager->initScripts(); // tmp
         scriptManager->readScripts();
     }
     return scriptManager;
@@ -95,11 +94,6 @@ QStringList ScriptManager::splitCommandLine(const QString & cmdLine) {
 
 bool ScriptManager::scriptExists(QString scriptName) {
     return scripts.contains(scriptName);
-}
-
-void ScriptManager::initScripts() {
-    scriptManager->scripts.insert("TestScript", Script("/home/easymodo/test.sh %file%", false));
-    scriptManager->scripts.insert("TestScript2", Script("/home/easymodo/test2.sh %file%", false));
 }
 
 void ScriptManager::readScripts() {

@@ -17,7 +17,7 @@ typedef VideoPlayerDummy VideoPlayerImpl;
 
 class VideoPlayerInitProxy : public VideoPlayer {
 public:
-    VideoPlayerInitProxy(QWidget *parent = 0);
+    VideoPlayerInitProxy(QWidget *parent = nullptr);
     ~VideoPlayerInitProxy();
     bool openMedia(Clip *clip);
     void seek(int pos);
