@@ -4,13 +4,14 @@
 #include <QtGlobal>
 #include <QTimeLine>
 #include <QGraphicsOpacityEffect>
-#include <QParallelAnimationGroup>
-#include <QPropertyAnimation>
 #include <QPainter>
 #include <QGridLayout>
+#include <QTimer>
+#include <QTimeLine>
 #include "overlaywidget.h"
 #include "settings.h"
 #include <QDebug>
+#include <ctime>
 
 class SlidePanel : public OverlayWidget {
     Q_OBJECT
@@ -30,19 +31,22 @@ public slots:
 private slots:
     void onAnimationFinish();
 
+    void animationUpdate(int frame);
 protected:
     QGridLayout mLayout;
     QGraphicsOpacityEffect *fadeEffect;
-    QPropertyAnimation *fadeAnimation, *slideAnimation;
-    QParallelAnimationGroup *animGroup;
     int panelSize, slideAmount;
     std::shared_ptr<QWidget> mWidget;
-    QPoint initialPosition;
+    QPoint startPosition, endPosition;
     QRect mTriggerRect;
     virtual void updateTriggerRect() = 0;
     void leaveEvent(QEvent *event);
     void saveStaticGeometry(QRect geometry);
     QRect staticGeometry();
+
+    QTimer timer;
+    QTimeLine timeline;
+    QEasingCurve outCurve;
 
 private:
     QRect mStaticGeometry;

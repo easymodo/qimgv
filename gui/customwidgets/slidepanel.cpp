@@ -9,7 +9,7 @@
 SlidePanel::SlidePanel(OverlayContainerWidget *parent)
     : OverlayWidget(parent),
       panelSize(50),
-      slideAmount(30),
+      slideAmount(40),
       mWidget(nullptr)
 {
     // workaround for https://bugreports.qt.io/browse/QTBUG-66387
@@ -21,25 +21,22 @@ SlidePanel::SlidePanel(OverlayContainerWidget *parent)
     mLayout.setContentsMargins(0,0,0,0);
     this->setLayout(&mLayout);
 
-    //fade & slide hover effect
+    //fade effect
     fadeEffect = new QGraphicsOpacityEffect(this);
     this->setGraphicsEffect(fadeEffect);
-    fadeAnimation = new QPropertyAnimation(fadeEffect, "opacity");
-    fadeAnimation->setDuration(230);
-    fadeAnimation->setStartValue(panelVisibleOpacity);
-    fadeAnimation->setEndValue(0);
-    fadeAnimation->setEasingCurve(QEasingCurve::OutQuart);
-    slideAnimation = new QPropertyAnimation(this, "pos");
-    slideAnimation->setDuration(300);
-    slideAnimation->setStartValue(QPoint(0, 0));
-    slideAnimation->setEndValue(QPoint(0, -slideAmount));
-    slideAnimation->setEasingCurve(QEasingCurve::OutQuart);
 
-    animGroup = new QParallelAnimationGroup;
-    animGroup->addAnimation(fadeAnimation);
-    animGroup->addAnimation(slideAnimation);
-    connect(animGroup, SIGNAL(finished()),
-            this, SLOT(onAnimationFinish()), Qt::UniqueConnection);
+    startPosition = geometry().topLeft();
+
+    outCurve.setType(QEasingCurve::OutQuart);
+
+    timeline.setDuration(230);
+    timeline.setCurveShape(QTimeLine::LinearCurve);
+    timeline.setStartFrame(0);
+    timeline.setEndFrame(100);
+    timeline.setUpdateInterval(16);
+
+    connect(&timeline, SIGNAL(frameChanged(int)), this, SLOT(animationUpdate(int)));
+    connect(&timeline, SIGNAL(finished()), this, SLOT(onAnimationFinish()));
 
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
@@ -50,7 +47,7 @@ SlidePanel::~SlidePanel() {
 }
 
 void SlidePanel::hide() {
-    animGroup->stop();
+    timeline.stop();
     QWidget::hide();
 }
 
@@ -71,14 +68,15 @@ bool SlidePanel::hasWidget() {
 // TODO: this misfires with QT_SCALE_FACTOR > 1.0
 void SlidePanel::leaveEvent(QEvent *event) {
     Q_UNUSED(event)
-    animGroup->start(QPropertyAnimation::KeepWhenStopped);
+    if(timeline.state() != QTimeLine::Running)
+        timeline.start();
 }
 
 void SlidePanel::show() {
     if(hasWidget()) {
-        animGroup->stop();
+        timeline.stop();
         fadeEffect->setOpacity(panelVisibleOpacity);
-        setProperty("pos", initialPosition);
+        setProperty("pos", startPosition);
         QWidget::show();
     } else {
         qDebug() << "Warning: Trying to show panel containing no widget!";
@@ -94,8 +92,26 @@ QRect SlidePanel::staticGeometry() {
     return mStaticGeometry;
 }
 
+void SlidePanel::animationUpdate(int frame) {
+    // Calculate local cursor position; ocrrect for the current pos() animation
+    QPoint adjustedPos = mapFromGlobal(QCursor::pos()) + this->pos();
+    if(triggerRect().contains(adjustedPos, true)) {
+        // Cancel the animation if cursor is back at the panel
+        timeline.stop();
+        fadeEffect->setOpacity(panelVisibleOpacity);
+        setProperty("pos", startPosition);
+    } else {
+        // Apply the animation frame
+        qreal value = outCurve.valueForProgress(frame / 100.0);
+        QPoint newPos = QPoint(static_cast<int>(endPosition.x() * value),
+                               static_cast<int>(endPosition.y() * value));
+        setProperty("pos", newPos);
+        fadeEffect->setOpacity(1 - value);
+    }
+}
+
 void SlidePanel::onAnimationFinish() {
     QWidget::hide();
     fadeEffect->setOpacity(panelVisibleOpacity);
-    setProperty("pos", initialPosition);
+    setProperty("pos", startPosition);
 }

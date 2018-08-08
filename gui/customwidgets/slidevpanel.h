@@ -13,7 +13,6 @@ public:
 
 protected:
     PanelVPosition position;
-    virtual void paintEvent(QPaintEvent* event);
     void recalculateGeometry();
     virtual void updateTriggerRect();
 };

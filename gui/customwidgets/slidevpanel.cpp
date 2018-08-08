@@ -3,10 +3,8 @@
 SlideVPanel::SlideVPanel(OverlayContainerWidget *w)
     : SlidePanel(w)
 {
-    slideAmount = 20;
-    position = PANEL_RIGHT;
     mLayout.setContentsMargins(0,0,0,0);
-    recalculateGeometry();
+    setPosition(PANEL_RIGHT);
 }
 
 SlideVPanel::~SlideVPanel() {
@@ -18,38 +16,23 @@ QRect SlideVPanel::triggerRect() {
 
 void SlideVPanel::setPosition(PanelVPosition p) {
     position = p;
+    if(position == PANEL_RIGHT)
+        endPosition = QPoint(startPosition.x() + 20, startPosition.y());
+    else
+        endPosition = QPoint(startPosition.x() - 20, startPosition.y());
     recalculateGeometry();
 }
 
 // TODO: this may be incorrect.
 void SlideVPanel::recalculateGeometry() {
-    if(position == PANEL_RIGHT) {
+    if(position == PANEL_RIGHT)
         saveStaticGeometry(QRect(containerSize().width() - width(), containerSize().height()/2 - height()/2, width(), height()));
-        setGeometry(staticGeometry());
-        initialPosition = geometry().topLeft();
-        slideAnimation->setStartValue(initialPosition);
-        slideAnimation->setEndValue(QPoint(initialPosition.x() + 20, initialPosition.y()));
-    } else {
+    else
         saveStaticGeometry(QRect(0, containerSize().height()/2 - height()/2, width(), height()));
-        setGeometry(staticGeometry());
-        initialPosition = geometry().topLeft();
-        slideAnimation->setStartValue(initialPosition);
-        slideAnimation->setEndValue(QPoint(initialPosition.x() - 20, initialPosition.y()));
-    }
+    setGeometry(staticGeometry());
     updateTriggerRect();
 }
 
 void SlideVPanel::updateTriggerRect() {
     mTriggerRect = staticGeometry();
-}
-
-void SlideVPanel::paintEvent(QPaintEvent *event) {
-    QWidget::paintEvent(event);
-    /*
-    if(position == PanelVPosition::LEFT) {
-        QPainter p(this);
-        p.setPen(QColor(QColor(40, 255, 40)));
-        p.drawRect(rect());
-    }
-    */
 }
