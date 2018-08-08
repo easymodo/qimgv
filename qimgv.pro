@@ -21,6 +21,38 @@ QMAKE_CXXFLAGS_RELEASE -= -O1
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
+CONFIG += WITH_MPV
+CONFIG += WITH_KDE_BLUR
+
+# video support
+WITH_MPV {
+    unix {
+        QT_CONFIG -= no-pkg-config
+        CONFIG += link_pkgconfig
+        PKGCONFIG += mpv
+    }
+    windows {
+        LIBS += -L$$PWD/mpv-dev/lib/ -llibmpv
+        INCLUDEPATH += $$PWD/mpv-dev/include
+        DEPENDPATH += $$PWD/mpv-dev
+    }
+    DEFINES += USE_MPV
+    SOURCES += gui/viewers/playermpv/mpvwidget.cpp
+    SOURCES += gui/viewers/playermpv/videoplayermpv.cpp
+    HEADERS += gui/viewers/playermpv/mpvwidget.h
+    HEADERS += gui/viewers/playermpv/videoplayermpv.h
+} else {
+    SOURCES += gui/viewers/playerdummy/videoplayerdummy.cpp
+    HEADERS += gui/viewers/playerdummy/videoplayerdummy.h
+}
+
+unix {
+    WITH_KDE_BLUR {
+        QT += KWindowSystem
+        DEFINES += USE_KDE_BLUR
+    }
+}
+
 SOURCES += \
     main.cpp \
     core.cpp \
@@ -41,7 +73,6 @@ SOURCES += \
     gui/customwidgets/clickablewidget.cpp \
     gui/customwidgets/iconbutton.cpp \
     gui/customwidgets/overlaywidget.cpp \
-    gui/customwidgets/settingsshortcutwidget.cpp \
     gui/customwidgets/slidehpanel.cpp \
     gui/customwidgets/slidepanel.cpp \
     gui/customwidgets/slidevpanel.cpp \
@@ -51,16 +82,12 @@ SOURCES += \
     gui/overlays/infooverlay.cpp \
     gui/overlays/mapoverlay.cpp \
     gui/panels/mainpanel/mainpanel.cpp \
-    gui/panels/mainpanel/thumbnaillabel.cpp \
     gui/panels/mainpanel/thumbnailstrip.cpp \
-    gui/panels/mainpanel/thumbnailview.cpp \
     gui/viewers/imageviewer.cpp \
-    gui/viewers/mpvwidget.cpp \
     gui/viewers/viewerwidget.cpp \
     sourcecontainers/clip.cpp \
     sourcecontainers/image.cpp \
     sourcecontainers/imageanimated.cpp \
-    sourcecontainers/imageinfo.cpp \
     sourcecontainers/imagestatic.cpp \
     sourcecontainers/thumbnail.cpp \
     sourcecontainers/video.cpp \
@@ -83,14 +110,33 @@ SOURCES += \
     gui/customwidgets/spinboxinputfix.cpp \
     gui/customwidgets/sidepanelwidget.cpp \
     gui/viewers/videoplayer.cpp \
-    gui/viewers/videoplayermpv.cpp \
-    gui/viewers/videoplayermpvproxy.cpp \
     gui/overlays/saveconfirmoverlay.cpp \
     gui/customwidgets/floatingwidget.cpp \
-    gui/customwidgets/containerwidget.cpp \
     appversion.cpp \
-    gui/overlays/changelogwindow.cpp
-
+    gui/overlays/changelogwindow.cpp \
+    components/scriptmanager/scriptmanager.cpp \
+    gui/viewers/videoplayerinitproxy.cpp \
+    gui/dialogs/shortcutcreatordialog.cpp \
+    gui/customwidgets/keysequenceedit.cpp \
+    utils/inputmap.cpp \
+    shortcutbuilder.cpp \
+    utils/actions.cpp \
+    utils/script.cpp \
+    gui/dialogs/scripteditordialog.cpp \
+    gui/customwidgets/overlaycontainerwidget.cpp \
+    gui/viewers/documentwidget.cpp \
+    sourcecontainers/documentinfo.cpp \
+    gui/overlays/videocontrols.cpp \
+    gui/customwidgets/videoslider.cpp \
+    gui/flowlayout.cpp \
+    gui/customwidgets/thumbnailview.cpp \
+    gui/customwidgets/thumbnailwidget.cpp \
+    gui/folderview/folderview.cpp \
+    gui/folderview/foldergridview.cpp \
+    gui/folderview/thumbnailgridwidget.cpp \
+    gui/centralwidget.cpp \
+    gui/contextmenu.cpp \
+    gui/customwidgets/contextmenuitem.cpp
 
 HEADERS += \
     core.h \
@@ -114,7 +160,6 @@ HEADERS += \
     gui/customwidgets/clickablewidget.h \
     gui/customwidgets/iconbutton.h \
     gui/customwidgets/overlaywidget.h \
-    gui/customwidgets/settingsshortcutwidget.h \
     gui/customwidgets/slidehpanel.h \
     gui/customwidgets/slidepanel.h \
     gui/customwidgets/slidevpanel.h \
@@ -124,16 +169,12 @@ HEADERS += \
     gui/overlays/infooverlay.h \
     gui/overlays/mapoverlay.h \
     gui/panels/mainpanel/mainpanel.h \
-    gui/panels/mainpanel/thumbnaillabel.h \
     gui/panels/mainpanel/thumbnailstrip.h \
-    gui/panels/mainpanel/thumbnailview.h \
     gui/viewers/imageviewer.h \
-    gui/viewers/mpvwidget.h \
     gui/viewers/viewerwidget.h \
     sourcecontainers/clip.h \
     sourcecontainers/image.h \
     sourcecontainers/imageanimated.h \
-    sourcecontainers/imageinfo.h \
     sourcecontainers/imagestatic.h \
     sourcecontainers/thumbnail.h \
     sourcecontainers/video.h \
@@ -154,13 +195,34 @@ HEADERS += \
     gui/customwidgets/spinboxinputfix.h \
     gui/customwidgets/sidepanelwidget.h \
     gui/viewers/videoplayer.h \
-    gui/viewers/videoplayermpv.h \
-    gui/viewers/videoplayermpvproxy.h \
     gui/overlays/saveconfirmoverlay.h \
     gui/customwidgets/floatingwidget.h \
-    gui/customwidgets/containerwidget.h \
     appversion.h \
-    gui/overlays/changelogwindow.h
+    gui/overlays/changelogwindow.h \
+    components/scriptmanager/scriptmanager.h \
+    gui/viewers/videoplayerinitproxy.h \
+    gui/dialogs/shortcutcreatordialog.h \
+    gui/customwidgets/keysequenceedit.h \
+    utils/inputmap.h \
+    shortcutbuilder.h \
+    utils/actions.h \
+    utils/script.h \
+    gui/dialogs/scripteditordialog.h \
+    gui/customwidgets/overlaycontainerwidget.h \
+    gui/viewers/documentwidget.h \
+    sourcecontainers/documentinfo.h \
+    gui/overlays/videocontrols.h \
+    gui/customwidgets/videoslider.h \
+    gui/flowlayout.h \
+    gui/customwidgets/thumbnailview.h \
+    gui/customwidgets/thumbnailwidget.h \
+    gui/folderview/folderview.h \
+    gui/folderview/foldergridview.h \
+    gui/folderview/thumbnailgridwidget.h \
+    gui/centralwidget.h \
+    gui/contextmenu.h \
+    gui/customwidgets/contextmenuitem.h \
+    utils/numeric.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \
@@ -171,16 +233,17 @@ FORMS += \
     gui/overlays/saveconfirmoverlay.ui \
     gui/overlays/floatingmessage.ui \
     gui/customwidgets/pathselectorwidget.ui \
-    gui/overlays/changelogwindow.ui
+    gui/overlays/changelogwindow.ui \
+    gui/dialogs/shortcutcreatordialog.ui \
+    gui/dialogs/scripteditordialog.ui \
+    gui/overlays/videocontrols.ui \
+    gui/folderview/folderview.ui \
+    gui/contextmenu.ui
 
 RESOURCES += \
     resources.qrc
 
 unix {
-    QT_CONFIG -= no-pkg-config
-    CONFIG += link_pkgconfig
-    PKGCONFIG += mpv
-
     SOURCES += \
         components/directorymanager/watchers/linux/linuxworker.cpp \
         components/directorymanager/watchers/linux/linuxwatcher.cpp \
@@ -203,10 +266,6 @@ windows {
 #        components/directorymanager/watchers/windows/windowsdirectorywatcher.h \
 #        components/directorymanager/watchers/windows/windowswatcherbackgroundworker.h
 }
-
-win32:LIBS += -L$$PWD/mpv-dev/lib/ -llibmpv
-win32:INCLUDEPATH += $$PWD/mpv-dev/include
-win32:DEPENDPATH += $$PWD/mpv-dev
 
 DISTFILES += \
     README.md

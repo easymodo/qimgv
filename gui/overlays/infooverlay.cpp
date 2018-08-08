@@ -1,8 +1,8 @@
 #include "infooverlay.h"
 
-InfoOverlay::InfoOverlay(ContainerWidget *parent)
+InfoOverlay::InfoOverlay(OverlayContainerWidget *parent)
     : OverlayWidget(parent),
-      fm(NULL)
+      fm(nullptr)
 {
     setPalette(Qt::transparent);
     setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -10,11 +10,11 @@ InfoOverlay::InfoOverlay(ContainerWidget *parent)
     textMarginY = 4;
     textColor.setRgb(255, 255, 255, 255);
     textShadowColor.setRgb(0, 0, 0, 200);
-    bgColor.setRgb(0, 0, 0, 90);
+    bgColor.setRgb(0, 0, 0, 115);
     font.setBold(true);
     qreal fntSz = font.pointSizeF();
     if(fntSz > 0) {
-        font.setPointSizeF(font.pointSizeF() * 0.9f);
+        font.setPointSizeF(font.pointSizeF() * 0.9);
     }
     fm = new QFontMetrics(font);
     setText("No file opened.");

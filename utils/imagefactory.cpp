@@ -1,35 +1,16 @@
 #include "imagefactory.h"
 
-ImageFactory::ImageFactory() {
-}
-
-Image *ImageFactory::createImage(QString path) {
-    ImageInfo *info = new ImageInfo(path);
-    Image *img = NULL;
-    if(info->imageType() == NONE) {
-        qDebug() << "ImageFactory - could not create image from " << info->filePath();
-    } else if(info->imageType() == ANIMATED) {
-        img = new ImageAnimated(path);
-    } else if(info->imageType() == VIDEO) {
-        img = new Video(path);
+std::shared_ptr<Image> ImageFactory::createImage(QString path) {
+    std::unique_ptr<DocumentInfo> docInfo(new DocumentInfo(path));
+    std::shared_ptr<Image> img;
+    if(docInfo->type() == NONE) {
+        qDebug() << "ImageFactory: unsupported file - " << docInfo->filePath();
+    } else if(docInfo->type() == ANIMATED) {
+        img.reset(new ImageAnimated(move(docInfo)));
+    } else if(docInfo->type() == VIDEO) {
+        img.reset(new Video(move(docInfo)));
     } else {
-        img = new ImageStatic(path);
+        img.reset(new ImageStatic(move(docInfo)));
     }
-    delete info;
-    return img;
-}
-
-Image *ImageFactory::createImage(ImageInfo *info) {
-    Image *img = NULL;
-    if(info->imageType() == NONE) {
-        qDebug() << "ImageFactory - could not create image from " << info->filePath();
-    } else if(info->imageType() == ANIMATED) {
-        img = new ImageAnimated(info->filePath());
-    } else if(info->imageType() == VIDEO) {
-        img = new Video(info->filePath());
-    } else {
-        img = new ImageStatic(info->filePath());
-    }
-    delete info;
     return img;
 }

@@ -12,7 +12,7 @@ class SpinBoxInputFix : public QSpinBox
 {
     Q_OBJECT
 public:
-    SpinBoxInputFix(QWidget *parent = Q_NULLPTR);
+    SpinBoxInputFix(QWidget *parent = nullptr);
 
 private:
     QStringList allowedKeys;

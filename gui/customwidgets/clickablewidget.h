@@ -8,16 +8,15 @@ class ClickableWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ClickableWidget(QWidget *parent = 0);
+    explicit ClickableWidget(QWidget *parent = nullptr);
 
 signals:
-    void pressed(QPoint);
-    void pressedLeft(QPoint);
-    void pressedRight(QPoint);
-    void pressedMiddle(QPoint);
+    void pressed();
+    void clicked();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 };
 
 #endif // CLICKABLEWIDGET_H

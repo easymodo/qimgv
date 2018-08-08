@@ -13,69 +13,45 @@
 #include <QPainter>
 #include <QResizeEvent>
 #include <cmath>
-#include "sourcecontainers/thumbnail.h"
-#include "thumbnaillabel.h"
-#include "thumbnailview.h"
 
-class ThumbnailStrip : public QWidget
+#include "gui/customwidgets/thumbnailview.h"
+#include "sourcecontainers/thumbnail.h"
+
+class ThumbnailStrip : public ThumbnailView
 {
     Q_OBJECT
 public:
-    explicit ThumbnailStrip();
-    ~ThumbnailStrip();
+    explicit ThumbnailStrip(QWidget *parent = nullptr);
 
 private:
-    QList<ThumbnailLabel*> *thumbnailLabels;
-    QHash<int, long> posIdHash;
-    QHash<long, int> posIdHashReverse;
-    void addThumbnailLabel();
-    QBoxLayout *layout, *viewLayout;
-    ThumbnailFrame thumbnailFrame;
-
-    const int ANIMATION_SPEED_INSTANT = 0;
-    const int ANIMATION_SPEED_FAST = 80;
-    const int ANIMATION_SPEED_NORMAL = 150;
-
-    const uint LOAD_DELAY = 40;
-    const int OFFSCREEN_PRELOAD_AREA = 2500;
-
     int panelSize;
-    int itemCount, current, thumbnailSize, thumbnailInterval;
-    ThumbnailStrip *strip;
-    QRectF preloadArea, visibleRegion;
+
+    int current, thumbnailSpacing;
+
     QTimer loadTimer;
-    QScrollBar *scrollBar;
-    PanelHPosition position;
-    QMutex mutex;
-    QGraphicsScene *scene;
-    bool checkRange(int pos);
-    long idCounter;
-    void lock();
-    void unlock();
+
     void updateThumbnailPositions(int start, int end);
     void updateThumbnailPositions();
-    void updateSceneRect();
     void setThumbnailSize(int);
     void updateThumbnailSize();
-    void ensureThumbnailVisible(int pos);
+
+    void setupLayout();
 signals:
-    void thumbnailRequested(QList<int>, int);
-    void thumbnailClicked(int pos);
 
 public slots:
-    void onThumbnailClick(int pos);
-    void populate(int count);
-    void loadVisibleThumbnails();
     void loadVisibleThumbnailsDelayed();
-    void setThumbnail(int, Thumbnail*);
-    void fillPanel(int);
     void highlightThumbnail(int pos);
-    void removeItemAt(int pos);
-    void createLabelAt(int pos);
+
+    //void removeItemAt(int pos);
+    //void createLabelAt(int pos);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);
-    virtual void showEvent(QShowEvent *event);
+    void ensureThumbnailVisible(int pos);
+    void addItemToLayout(ThumbnailWidget *widget, int pos);
+    void removeItemFromLayout(int pos);
+    ThumbnailWidget *createThumbnailWidget();
+    void ensureSelectedItemVisible();
 };
 
 #endif // THUMBNAILSTRIP_H

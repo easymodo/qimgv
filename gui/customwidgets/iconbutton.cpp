@@ -1,35 +1,38 @@
 #include "iconbutton.h"
 
-IconButton::IconButton() {
-    this->setFixedSize(30, 30);
+IconButton::IconButton(QWidget *parent)
+    : QPushButton(parent)
+{
     this->setContentsMargins(0,0,0,0);
-    this->setAccessibleName("iconButton");
-}
-
-IconButton::IconButton(QString _actionName, QString _iconPath) {
-    this->setFixedSize(30, 30);
-    this->setContentsMargins(0,0,0,0);
-    this->setAccessibleName("iconButton");
-    this->setPixmap(QPixmap(_iconPath));
-    setAction(_actionName);
+    this->setAccessibleName("IconButton");
+    this->setFocusPolicy(Qt::NoFocus);
 }
 
 IconButton::IconButton(QString _actionName, QString _iconPath, QWidget *parent)
-    :  QLabel(parent)
+    :  IconButton(parent)
 {
-    this->setFixedSize(30, 30);
-    this->setContentsMargins(0,0,0,0);
-    this->setAccessibleName("iconButton");
-    this->setPixmap(QPixmap(_iconPath));
+    this->setIcon(QIcon(_iconPath));
     setAction(_actionName);
+}
+
+IconButton::IconButton(QString _actionName, QString _iconPath, int _size, QWidget *parent)
+    :  IconButton(_actionName, _iconPath, parent)
+{
+    if(_size > 0)
+        setFixedSize(_size, _size);
 }
 
 void IconButton::setAction(QString _actionName) {
     actionName = _actionName;
 }
 
+void IconButton::setIcon(QIcon icon) {
+    QPushButton::setIcon(icon);
+    setIconSize(icon.availableSizes().first());
+}
+
 void IconButton::mousePressEvent(QMouseEvent *event) {
-    Q_UNUSED (event)
+    QPushButton::mousePressEvent(event);
     if(event->button() == Qt::LeftButton)
         actionManager->invokeAction(actionName);
 }

@@ -1,6 +1,6 @@
 #include "settings.h"
 
-Settings *settings = NULL;
+Settings *settings = nullptr;
 
 Settings::Settings(QObject *parent) : QObject(parent) {
     cacheDirectory = new QDir(QDir::homePath() + "/.cache/qimgv");
@@ -38,15 +38,15 @@ void Settings::validate() {
         }
     }
 }
-
+//------------------------------------------------------------------------------
 QString Settings::cacheDir() {
     return thumbnailDirectory->path() + "/";
 }
-
+//------------------------------------------------------------------------------
 QString Settings::tempDir() {
     return cacheDirectory->path() + "/";
 }
-
+//------------------------------------------------------------------------------
 QString Settings::mpvBinary() {
     QString mpvPath = settings->s.value("mpvBinary", "").toString();
     if(!QFile::exists(mpvPath)) {
@@ -68,7 +68,7 @@ void Settings::setMpvBinary(QString path) {
         settings->s.setValue("mpvBinary", path);
     }
 }
-
+//------------------------------------------------------------------------------
 // returns list of regexps
 QStringList Settings::supportedFormats() {
     QStringList filters;
@@ -84,7 +84,7 @@ QStringList Settings::supportedFormats() {
     }
     return filters;
 }
-
+//------------------------------------------------------------------------------
 // (for open/save dialogs)
 // example:  "Images (*.jpg, *.png)"
 QString Settings::supportedFormatsString() {
@@ -103,7 +103,7 @@ QString Settings::supportedFormatsString() {
     filters.append(")");
     return filters;
 }
-
+//------------------------------------------------------------------------------
 // returns list of mime types
 QStringList Settings::supportedMimeTypes() {
     QStringList filters;
@@ -120,28 +120,35 @@ QStringList Settings::supportedMimeTypes() {
     //qDebug() << filters;
     return filters;
 }
-
+//------------------------------------------------------------------------------
 bool Settings::playWebm() {
+#ifdef USE_MPV
     return settings->s.value("playWebm", true).toBool();
+#else
+    return false;
+#endif
 }
 
 void Settings::setPlayWebm(bool mode) {
     settings->s.setValue("playWebm", mode);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::playMp4() {
+#ifdef USE_MPV
     return settings->s.value("playMp4", false).toBool();
+#else
+    return false;
+#endif
 }
 
 void Settings::setPlayMp4(bool mode) {
     settings->s.setValue("playMp4", mode);
 }
-
-// default to v0.6.2
+//------------------------------------------------------------------------------
 QVersionNumber Settings::lastVersion() {
     int vmajor = settings->s.value("lastVerMajor", 0).toInt();
-    int vminor = settings->s.value("lastVerMinor", 6).toInt();
-    int vmicro = settings->s.value("lastVerMicro", 2).toInt();
+    int vminor = settings->s.value("lastVerMinor", 0).toInt();
+    int vmicro = settings->s.value("lastVerMicro", 0).toInt();
     return QVersionNumber(vmajor, vminor, vmicro);
 }
 
@@ -150,7 +157,7 @@ void Settings::setLastVersion(QVersionNumber &ver) {
     settings->s.setValue("lastVerMinor", ver.minorVersion());
     settings->s.setValue("lastVerMicro", ver.microVersion());
 }
-
+//------------------------------------------------------------------------------
 void Settings::setShowChangelogs(bool mode) {
     settings->s.setValue("showChangelogs", mode);
 }
@@ -158,7 +165,51 @@ void Settings::setShowChangelogs(bool mode) {
 bool Settings::showChangelogs() {
     return settings->s.value("showChangelogs", true).toBool();
 }
+//------------------------------------------------------------------------------
+qreal Settings::backgroundOpacity() {
+    bool ok = false;
+    qreal value = settings->s.value("backgroundOpacity", 1.0).toReal(&ok);
+    if(!ok)
+        return 0.0;
+    if(value > 1.0)
+        return 1.0;
+    if(value < 0.0)
+        return 0.0;
+    return value;
+}
 
+void Settings::setBackgroundOpacity(qreal value) {
+    if(value > 1.0)
+        value = 1.0;
+    else if(value < 0.0)
+        value = 0.0;
+    settings->s.setValue("backgroundOpacity", value);
+}
+//------------------------------------------------------------------------------
+bool Settings::blurBackground() {
+#ifndef USE_KDE_BLUR
+    return false;
+#endif
+    return settings->s.value("blurBackground", true).toBool();
+}
+
+void Settings::setBlurBackground(bool mode) {
+    settings->s.setValue("blurBackground", mode);
+}
+//------------------------------------------------------------------------------
+void Settings::setSortingMode(SortingMode mode) {
+    if(mode >= 6)
+        mode = SortingMode::NAME_ASC;
+    settings->s.setValue("sortingMode", mode);
+}
+
+SortingMode Settings::sortingMode() {
+    int mode = settings->s.value("sortingMode", 0).toInt();
+    if(mode < 0 || mode >= 6)
+        mode = 0;
+    return static_cast<SortingMode>(mode);
+}
+//------------------------------------------------------------------------------
 bool Settings::playVideoSounds() {
     return settings->s.value("playVideoSounds", false).toBool();
 }
@@ -166,7 +217,7 @@ bool Settings::playVideoSounds() {
 void Settings::setPlayVideoSounds(bool mode) {
     settings->s.setValue("playVideoSounds", mode);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::useFastScale() {
     return settings->s.value("useFastScale", "true").toBool();
 }
@@ -174,7 +225,7 @@ bool Settings::useFastScale() {
 void Settings::setUseFastScale(bool mode) {
     settings->s.setValue("useFastScale", mode);
 }
-
+//------------------------------------------------------------------------------
 QString Settings::lastDirectory() {
     return settings->s.value("lastDir", QDir::homePath()).toString();
 }
@@ -182,10 +233,10 @@ QString Settings::lastDirectory() {
 void Settings::setLastDirectory(QString path) {
     settings->s.setValue("lastDir", path);
 }
-
+//------------------------------------------------------------------------------
 unsigned int Settings::lastFilePosition() {
     bool ok = true;
-    unsigned int pos = settings->s.value("lastFilePosition", "0").toInt(&ok);
+    unsigned int pos = settings->s.value("lastFilePosition", "0").toUInt(&ok);
     if(!ok) {
         qDebug() << "Settings: Invalid lastFilePosition. Resetting to 0.";
         pos = 0;
@@ -196,10 +247,10 @@ unsigned int Settings::lastFilePosition() {
 void Settings::setLastFilePosition(unsigned int pos) {
     settings->s.setValue("lastFilePosition", pos);
 }
-
+//------------------------------------------------------------------------------
 unsigned int Settings::mainPanelSize() {
     bool ok = true;
-    unsigned int size = settings->s.value("mainPanelSize", mainPanelSizeDefault).toInt(&ok);
+    unsigned int size = settings->s.value("mainPanelSize", mainPanelSizeDefault).toUInt(&ok);
     if(!ok) {
         size = mainPanelSizeDefault;
     }
@@ -209,7 +260,7 @@ unsigned int Settings::mainPanelSize() {
 void Settings::setMainPanelSize(unsigned int size) {
     settings->s.setValue("mainPanelSize", size);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::usePreloader() {
     return settings->s.value("usePreloader", true).toBool();
 }
@@ -217,23 +268,23 @@ bool Settings::usePreloader() {
 void Settings::setUsePreloader(bool mode) {
     settings->s.setValue("usePreloader", mode);
 }
-
+//------------------------------------------------------------------------------
 QColor Settings::backgroundColor() {
-    return settings->s.value("bgColor", QColor(27, 27, 27)).value<QColor>();
+    return settings->s.value("bgColor", QColor(27, 27, 28)).value<QColor>();
 }
 
 void Settings::setBackgroundColor(QColor color) {
     settings->s.setValue("bgColor", color);
 }
-
+//------------------------------------------------------------------------------
 QColor Settings::accentColor() {
-    return settings->s.value("accentColor", QColor(104, 159, 56)).value<QColor>();
+    return settings->s.value("accentColor", QColor(17, 121, 100)).value<QColor>();
 }
 
 void Settings::setAccentColor(QColor color) {
     settings->s.setValue("accentColor", color);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::fullscreenMode() {
     return settings->s.value("openInFullscreen", true).toBool();
 }
@@ -241,7 +292,7 @@ bool Settings::fullscreenMode() {
 void Settings::setFullscreenMode(bool mode) {
     settings->s.setValue("openInFullscreen", mode);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::panelEnabled() {
     return settings->s.value("panelEnabled", true).toBool();
 }
@@ -249,7 +300,7 @@ bool Settings::panelEnabled() {
 void Settings::setPanelEnabled(bool mode) {
     settings->s.setValue("panelEnabled", mode);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::panelFullscreenOnly() {
     return settings->s.value("panelFullscreenOnly", false).toBool();
 }
@@ -257,7 +308,7 @@ bool Settings::panelFullscreenOnly() {
 void Settings::setPanelFullscreenOnly(bool mode) {
     settings->s.setValue("panelFullscreenOnly", mode);
 }
-
+//------------------------------------------------------------------------------
 int Settings::lastDisplay() {
     return settings->s.value("lastDisplay", 0).toInt();
 }
@@ -265,7 +316,7 @@ int Settings::lastDisplay() {
 void Settings::setLastDisplay(int display) {
     settings->s.setValue("lastDisplay", display);
 }
-
+//------------------------------------------------------------------------------
 PanelHPosition Settings::panelPosition() {
     QString posString = settings->s.value("panelPosition", "top").toString();
     if(posString == "top") {
@@ -278,7 +329,6 @@ PanelHPosition Settings::panelPosition() {
 void Settings::setPanelPosition(PanelHPosition pos) {
     QString posString;
     switch(pos) {
-            break;
         case PANEL_TOP:
             posString = "top";
             break;
@@ -288,7 +338,7 @@ void Settings::setPanelPosition(PanelHPosition pos) {
     }
     settings->s.setValue("panelPosition", posString);
 }
-
+//------------------------------------------------------------------------------
 /*
  * 0: fit window
  * 1: fit width
@@ -300,18 +350,18 @@ ImageFitMode Settings::imageFitMode() {
         qDebug() << "Settings: Invalid fit mode ( " + QString::number(mode) + " ). Resetting to default.";
         mode = 0;
     }
-    return (ImageFitMode)mode;
+    return static_cast<ImageFitMode>(mode);
 }
 
 void Settings::setImageFitMode(ImageFitMode mode) {
-    int modeInteger = (int)mode;
-    if(modeInteger < 0 || modeInteger > 2) {
-        qDebug() << "Settings: Invalid fit mode ( " + QString::number(modeInteger) + " ). Resetting to default.";
-        modeInteger = 0;
+    int modeInt = static_cast<ImageFitMode>(mode);
+    if(modeInt < 0 || modeInt > 2) {
+        qDebug() << "Settings: Invalid fit mode ( " + QString::number(modeInt) + " ). Resetting to default.";
+        modeInt = 0;
     }
-    settings->s.setValue("defaultFitMode", modeInteger);
+    settings->s.setValue("defaultFitMode", modeInt);
 }
-
+//------------------------------------------------------------------------------
 QRect Settings::windowGeometry() {
     QRect savedRect = settings->s.value("windowGeometry").toRect();
     if(savedRect.size().isEmpty())
@@ -322,7 +372,7 @@ QRect Settings::windowGeometry() {
 void Settings::setWindowGeometry(QRect geometry) {
     settings->s.setValue("windowGeometry", geometry);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::infiniteScrolling() {
     return settings->s.value("infiniteScrolling", false).toBool();
 }
@@ -330,11 +380,11 @@ bool Settings::infiniteScrolling() {
 void Settings::setInfiniteScrolling(bool mode) {
     settings->s.setValue("infiniteScrolling", mode);
 }
-
+//------------------------------------------------------------------------------
 void Settings::sendChangeNotification() {
     emit settingsChanged();
 }
-
+//------------------------------------------------------------------------------
 void Settings::readShortcuts(QMap<QString, QString> &shortcuts) {
     settings->s.beginGroup("Controls");
     QStringList in, pair;
@@ -359,7 +409,38 @@ void Settings::saveShortcuts(const QMap<QString, QString> &shortcuts) {
     settings->s.setValue("shortcuts", out);
     settings->s.endGroup();
 }
+//------------------------------------------------------------------------------
+void Settings::readScripts(QMap<QString, Script> &scripts) {
+    scripts.clear();
+    settings->s.beginGroup("Scripts");
+    int size = settings->s.beginReadArray("script");
+    for(int i=0; i < size; i++) {
+        settings->s.setArrayIndex(i);
+        QString name = settings->s.value("name").toString();
+        QVariant value = settings->s.value("value");
+        Script scr = value.value<Script>();
+        scripts.insert(name, scr);
+    }
+    settings->s.endArray();
+    settings->s.endGroup();
+}
 
+void Settings::saveScripts(const QMap<QString, Script> &scripts) {
+    settings->s.beginGroup("Scripts");
+    settings->s.beginWriteArray("script");
+    QMapIterator<QString, Script> i(scripts);
+    int counter = 0;
+    while(i.hasNext()) {
+        i.next();
+        settings->s.setArrayIndex(counter);
+        settings->s.setValue("name", i.key());
+        settings->s.setValue("value", QVariant::fromValue(i.value()));
+        counter++;
+    }
+    settings->s.endArray();
+    settings->s.endGroup();
+}
+//------------------------------------------------------------------------------
 bool Settings::mouseWrapping() {
     return settings->s.value("mouseWrapping", false).toBool();
 }
@@ -367,7 +448,7 @@ bool Settings::mouseWrapping() {
 void Settings::setMouseWrapping(bool mode) {
     settings->s.setValue("mouseWrapping", mode);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::squareThumbnails() {
     return settings->s.value("squareThumbnails", true).toBool();
 }
@@ -375,15 +456,15 @@ bool Settings::squareThumbnails() {
 void Settings::setSquareThumbnails(bool mode) {
     settings->s.setValue("squareThumbnails", mode);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::transparencyGrid() {
-    return settings->s.value("drawTransparencyGrid", true).toBool();
+    return settings->s.value("drawTransparencyGrid", false).toBool();
 }
 
 void Settings::setTransparencyGrid(bool mode) {
     settings->s.setValue("drawTransparencyGrid", mode);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::forceSmoothScroll() {
     return settings->s.value("forceSmoothScroll", false).toBool();
 }
@@ -391,7 +472,7 @@ bool Settings::forceSmoothScroll() {
 void Settings::setForceSmoothScroll(bool mode) {
     settings->s.setValue("forceSmoothScroll", mode);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::useThumbnailCache() {
     return settings->s.value("thumbnailCache", true).toBool();
 }
@@ -399,7 +480,7 @@ bool Settings::useThumbnailCache() {
 void Settings::setUseThumbnailCache(bool mode) {
     settings->s.setValue("thumbnailCache", mode);
 }
-
+//------------------------------------------------------------------------------
 QStringList Settings::savedPaths() {
     return settings->s.value("savedPaths").toStringList();
 }
@@ -407,18 +488,18 @@ QStringList Settings::savedPaths() {
 void Settings::setSavedPaths(QStringList paths) {
     settings->s.setValue("savedPaths", paths);
 }
-
+//------------------------------------------------------------------------------
 int Settings::thumbnailerThreadCount() {
     int count = settings->s.value("thumbnailerThreads", 2).toInt();
-    if(count <= 0)
-        count = 2;
+    if(count < 1)
+        count = 1;
     return count;
 }
 
 void Settings::setThumbnailerThreadCount(int count) {
     settings->s.setValue("thumbnailerThreads", count);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::smoothUpscaling() {
     return settings->s.value("smoothUpscaling", true).toBool();
 }
@@ -426,7 +507,7 @@ bool Settings::smoothUpscaling() {
 void Settings::setSmoothUpscaling(bool mode) {
     settings->s.setValue("smoothUpscaling", mode);
 }
-
+//------------------------------------------------------------------------------
 int Settings::maxZoomedResolution() {
     return settings->s.value("maximumZoomResolution", 75).toInt();
 }
@@ -434,7 +515,7 @@ int Settings::maxZoomedResolution() {
 void Settings::setMaxZoomedResolution(int value) {
     settings->s.setValue("maximumZoomResolution", value);
 }
-
+//------------------------------------------------------------------------------
 int Settings::maximumZoom() {
     return settings->s.value("maximumZoom", 8).toInt();
 }
@@ -442,7 +523,7 @@ int Settings::maximumZoom() {
 void Settings::setMaximumZoom(int value) {
     settings->s.setValue("maximumZoom", value);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::expandImage() {
     return settings->s.value("expandImage", false).toBool();
 }
@@ -450,7 +531,7 @@ bool Settings::expandImage() {
 void Settings::setExpandImage(bool mode) {
     settings->s.setValue("expandImage", mode);
 }
-
+//------------------------------------------------------------------------------
 /* 0: nearest
  * 1: bilinear
  */
@@ -464,7 +545,7 @@ int Settings::scalingFilter() {
 void Settings::setScalingFilter(int mode) {
     settings->s.setValue("scalingFilter", mode);
 }
-
+//------------------------------------------------------------------------------
 bool Settings::smoothAnimatedImages() {
     return settings->s.value("smoothAnimatedImages", true).toBool();
 }
@@ -472,3 +553,22 @@ bool Settings::smoothAnimatedImages() {
 void Settings::setSmoothAnimatedImages(bool mode) {
     settings->s.setValue("smoothAnimatedImages", mode);
 }
+//------------------------------------------------------------------------------
+bool Settings::showInfoOverlay() {
+    return settings->s.value("showInfoOverlay", true).toBool();
+}
+
+void Settings::setShowInfoOverlay(bool mode) {
+    settings->s.setValue("showInfoOverlay", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::firstRun() {
+    return settings->s.value("firstRun", true).toBool();
+}
+
+void Settings::setFirstRun(bool mode) {
+    settings->s.setValue("firstRun", mode);
+}
+
+
+

@@ -11,10 +11,11 @@
 class Video : public Image {
 public:
     Video(QString _path);
+    Video(std::unique_ptr<DocumentInfo> _info);
     ~Video();
 
-    QPixmap* getPixmap();
-    const QImage* getImage();
+    std::unique_ptr<QPixmap> getPixmap();
+    std::shared_ptr<const QImage> getImage();
     Clip* getClip();    // getPixmap's video equivalent
     int height();
     int width();

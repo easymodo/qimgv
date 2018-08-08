@@ -4,7 +4,6 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QLineEdit>
-#include <QPainter>
 #include <QKeyEvent>
 #include "gui/customwidgets/floatingwidget.h"
 #include "gui/customwidgets/pathselectorwidget.h"
@@ -23,7 +22,7 @@ namespace Ui {
 class CopyOverlay : public FloatingWidget {
     Q_OBJECT
 public:
-    CopyOverlay(ContainerWidget *parent);
+    CopyOverlay(OverlayContainerWidget *parent);
     ~CopyOverlay();
     void saveSettings();    
     void setDialogMode(CopyOverlayMode _mode);
@@ -32,6 +31,7 @@ public:
 public slots:
     void show();
     void hide();
+
 signals:
     void copyRequested(QString);
     void moveRequested(QString);

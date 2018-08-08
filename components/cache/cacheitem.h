@@ -7,17 +7,17 @@
 class CacheItem {
 public:
     CacheItem();
-    CacheItem(Image *_contents);
+    CacheItem(std::shared_ptr<Image> _contents);
     ~CacheItem();
 
-    Image *getContents();
+    std::shared_ptr<Image> getContents();
 
     void lock();
     void unlock();
 
     int lockStatus();
 private:
-    Image *contents;
+    std::shared_ptr<Image> contents;
     QSemaphore *sem;
 };
 

@@ -6,14 +6,13 @@
 class SlideVPanel : public SlidePanel {
     Q_OBJECT
 public:
-    explicit SlideVPanel(ContainerWidget *w);
+    explicit SlideVPanel(OverlayContainerWidget *w);
     ~SlideVPanel();
     void setPosition(PanelVPosition);
     QRect triggerRect();
 
 protected:
     PanelVPosition position;
-    virtual void paintEvent(QPaintEvent* event);
     void recalculateGeometry();
     virtual void updateTriggerRect();
 };

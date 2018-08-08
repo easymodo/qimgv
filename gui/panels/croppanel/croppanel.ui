@@ -27,15 +27,18 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="spacing">
-    <number>10</number>
+    <number>8</number>
    </property>
    <property name="leftMargin">
-    <number>0</number>
+    <number>20</number>
    </property>
    <property name="topMargin">
-    <number>0</number>
+    <number>20</number>
    </property>
    <property name="rightMargin">
+    <number>18</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -73,8 +76,8 @@
        <widget class="QLabel" name="label_6">
         <property name="font">
          <font>
-          <weight>50</weight>
-          <bold>false</bold>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
@@ -185,8 +188,8 @@
        <widget class="QLabel" name="label_7">
         <property name="font">
          <font>
-          <weight>50</weight>
-          <bold>false</bold>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
@@ -267,15 +270,34 @@
     </widget>
    </item>
    <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>5</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
-      <number>10</number>
+      <number>4</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
      <item>
       <widget class="QPushButton" name="cropButton">
+       <property name="accessibleName">
+        <string>Button</string>
+       </property>
        <property name="text">
         <string>Crop</string>
        </property>
@@ -283,6 +305,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="cancelButton">
+       <property name="accessibleName">
+        <string>Button</string>
+       </property>
        <property name="text">
         <string>Cancel</string>
        </property>

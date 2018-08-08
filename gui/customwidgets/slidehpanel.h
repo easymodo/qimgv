@@ -7,7 +7,7 @@ class SlideHPanel : public SlidePanel
 {
     Q_OBJECT
 public:
-    explicit SlideHPanel(ContainerWidget *parent);
+    explicit SlideHPanel(OverlayContainerWidget *parent);
     ~SlideHPanel();
     void setPosition(PanelHPosition);
     QRect triggerRect();

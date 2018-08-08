@@ -1,33 +1,44 @@
 #include "image.h"
 
-Image::Image() : imageInfo(NULL), edited(false) {
+Image::Image(QString _path)
+    : mDocInfo(new DocumentInfo(_path)),
+      mLoaded(false),
+      mEdited(false),
+      mPath(_path)
+{
+}
+
+Image::Image(std::unique_ptr<DocumentInfo> _info)
+    : mDocInfo(std::move(_info)),
+      mLoaded(false),
+      mEdited(false),
+      mPath(mDocInfo->filePath())
+{
 }
 
 Image::~Image() {
-    if(imageInfo)
-        delete imageInfo;
 }
 
-QString Image::getPath() {
-    return path;
+QString Image::path() const {
+    return mPath;
 }
 
-bool Image::isLoaded() {
-    return loaded;
+bool Image::isLoaded() const {
+    return mLoaded;
 }
 
-ImageType Image::type() {
-    return imageInfo->imageType();
+DocumentType Image::type() const {
+    return mDocInfo->type();
 }
 
-QString Image::name() {
-    return imageInfo->fileName();
+QString Image::name() const {
+    return mDocInfo->fileName();
 }
 
-bool Image::isEdited() {
-    return edited;
+bool Image::isEdited() const {
+    return mEdited;
 }
 
-ImageInfo *Image::info() {
-    return imageInfo;
+int Image::fileSize() const {
+    return mDocInfo->fileSize();
 }

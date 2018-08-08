@@ -6,8 +6,7 @@
 #include "components/cache/thumbnailcache.h"
 #include "loaderrunnable.h"
 
-class Loader : public QObject
-{
+class Loader : public QObject {
     Q_OBJECT
 public:
     explicit Loader();
@@ -17,14 +16,18 @@ public:
 
     void clearTasks();
 private:
+    QHash<QString, LoaderRunnable*> tasks;
     QList<QString> bufferedTasks;
-    QThreadPool *pool;
+    QThreadPool *pool;    
+    void clearPool();
+    void load(QString path, int priority);
 
 signals:
-    void loadFinished(Image*);
+    void loadFinished(std::shared_ptr<Image>);
+    void loadFailed(QString path);
 
 private slots:
-    void onLoadFinished(Image*);
+    void onLoadFinished(std::shared_ptr<Image>, QString);
 };
 
 #endif // NEWLOADER_H

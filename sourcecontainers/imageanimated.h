@@ -8,11 +8,12 @@
 class ImageAnimated : public Image {
 public:
     ImageAnimated(QString _path);
+    ImageAnimated(std::unique_ptr<DocumentInfo> _info);
     ~ImageAnimated();
 
-    QPixmap *getPixmap();
-    const QImage* getImage();
-    QMovie* getMovie();
+    std::unique_ptr<QPixmap> getPixmap();
+    std::shared_ptr<const QImage> getImage();
+    std::unique_ptr<QMovie> getMovie();
     int height();
     int width();
     QSize size();

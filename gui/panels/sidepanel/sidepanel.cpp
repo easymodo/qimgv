@@ -4,7 +4,7 @@
 SidePanel::SidePanel(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SidePanel),
-    mWidget(NULL)
+    mWidget(nullptr)
 {
     ui->setupUi(this);
     this->setObjectName("SidePanel");

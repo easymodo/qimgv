@@ -6,9 +6,14 @@
 #include <QColorDialog>
 #include <QThreadPool>
 #include <QTableWidget>
+#include <QTextBrowser>
+#include <QListWidget>
+#include <QStackedWidget>
+#include <QGridLayout>
 #include <QDebug>
 #include "gui/customwidgets/clickablelabel.h"
-#include "gui/customwidgets/settingsshortcutwidget.h"
+#include "gui/dialogs/shortcutcreatordialog.h"
+#include "gui/dialogs/scripteditordialog.h"
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"
 
@@ -21,7 +26,7 @@ class SettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SettingsDialog(QWidget *parent = 0);
+    explicit SettingsDialog(QWidget *parent = nullptr);
     ~SettingsDialog();
 
 public slots:
@@ -29,7 +34,8 @@ public slots:
 private:
     QPalette bgLabelPalette, accentLabelPalette;
     void readSettings();
-    void fillShortcuts();
+    void populateShortcuts();
+    void populateScripts();
     Ui::SettingsDialog *ui;
     enum Constants {
         thumbSizeSmall = 170,
@@ -38,24 +44,33 @@ private:
         thumbSizeVeryLarge = 250
     };
 
-
-    int thumbSizeCustom;
-    QStringList actionList, shortcutKeys;
-
+    unsigned int thumbSizeCustom;
     void applyShortcuts();
     void addShortcutToTable(const QString &action, const QString &shortcut);
+    void addScriptToList(const QString &name);
+
+    void setupSidebar();
+    void removeShortcutAt(int row);
 private slots:
     void applySettings();
     void applySettingsAndClose();
     void bgColorDialog();
-
     void accentColorDialog();
-    void removeShortcut();
+
+    void addScript();
+    void editScript();
+    void editScript(QListWidgetItem *item);
+    void editScript(QString name);
+    void removeScript();
+
     void addShortcut();
+    void removeShortcut();
     void resetShortcuts();
     void selectMpvPath();
     void onMaxZoomSliderChanged(int value);
     void onMaxZoomResolutionSliderChanged(int value);
+    void onBgOpacitySliderChanged(int value);
+    void onThumbnailerThreadsSliderChanged(int value);
 signals:
     void settingsChanged();
 };

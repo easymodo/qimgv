@@ -1,10 +1,7 @@
 #ifndef FLOATINGMESSAGE
 #define FLOATINGMESSAGE
 
-#include <QTimeLine>
-#include <QGraphicsOpacityEffect>
-#include <QParallelAnimationGroup>
-#include <QPropertyAnimation>
+#include <QTimer>
 #include <QLabel>
 #include "gui/customwidgets/floatingwidget.h"
 
@@ -20,34 +17,24 @@ enum FloatingMessageIcon {
 
 
 class FloatingMessage : public FloatingWidget {
-    Q_OBJECT
-    Q_PROPERTY (float opacity READ opacity WRITE setOpacity)
+    Q_OBJECT 
 public:
-    FloatingMessage(ContainerWidget *parent);
+    FloatingMessage(OverlayContainerWidget *parent);
     ~FloatingMessage();
-    void showMessage(QString text, FloatingWidgetPosition position, FloatingMessageIcon icon, int duration);
-
+    void showMessage(QString text, FloatingWidgetPosition position, FloatingMessageIcon icon, int fadeDuration);
     void setIcon(FloatingMessageIcon icon);
+
 public slots:
     void show();
     void setText(QString text);
 
 private:
     Ui::FloatingMessage *ui;
-    QGraphicsOpacityEffect *opacityEffect;
-
-private slots:
-    void setOpacity(float opacity);
-    float opacity() const;
+    QTimer visibilityTimer;
+    int hideDelay;
 
 protected:
     void mousePressEvent(QMouseEvent *event);
-
-    QPropertyAnimation *fadeAnimation;
-    QParallelAnimationGroup *animGroup;
-
-    qreal effectStrength;
-    int duration;
     QPixmap iconLeftEdge, iconRightEdge;
 };
 

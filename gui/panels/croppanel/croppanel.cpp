@@ -2,15 +2,15 @@
 #include "ui_croppanel.h"
 
 CropPanel::CropPanel(CropOverlay *_overlay, QWidget *parent) :
-    overlay(_overlay),
     SidePanelWidget(parent),
-    ui(new Ui::CropPanel)
+    ui(new Ui::CropPanel),
+    overlay(_overlay)
 {
     ui->setupUi(this);
     setFocusPolicy(Qt::NoFocus);
     hide();
-    connect(ui->cancelButton, SIGNAL(pressed()), this, SIGNAL(cancel()));
-    connect(ui->cropButton, SIGNAL(pressed()), this, SLOT(onCropPressed()));
+    connect(ui->cancelButton, SIGNAL(clicked()), this, SIGNAL(cancel()));
+    connect(ui->cropButton, SIGNAL(clicked()), this, SLOT(onCropClicked()));
     connect(ui->width, SIGNAL(valueChanged(int)), this, SLOT(onSelectionChange()));
     connect(ui->height, SIGNAL(valueChanged(int)), this, SLOT(onSelectionChange()));
     connect(ui->posX, SIGNAL(valueChanged(int)), this, SLOT(onSelectionChange()));
@@ -21,7 +21,7 @@ CropPanel::CropPanel(CropOverlay *_overlay, QWidget *parent) :
     connect(this, SIGNAL(selectionChanged(QRect)),
             overlay, SLOT(onSelectionOutsideChange(QRect)));
     connect(overlay, SIGNAL(escPressed()), this, SIGNAL(cancel()));
-    connect(overlay, SIGNAL(enterPressed()), this, SLOT(onCropPressed()));
+    connect(overlay, SIGNAL(enterPressed()), this, SLOT(onCropClicked()));
     connect(this, SIGNAL(selectAll()), overlay, SLOT(selectAll()));
 }
 
@@ -36,10 +36,10 @@ void CropPanel::setImageRealSize(QSize sz) {
     realSize = sz;
 }
 
-void CropPanel::onCropPressed() {
+void CropPanel::onCropClicked() {
     QRect target(ui->posX->value(), ui->posY->value(),
                  ui->width->value(), ui->height->value());
-    if(target.width() > 0 && target.height() > 0 || target.size() != realSize)
+    if(target.width() > 0 && target.height() > 0 && target.size() != realSize)
         emit crop(target);
     else
         emit cancel();
@@ -86,7 +86,7 @@ void CropPanel::show() {
 
 void CropPanel::keyPressEvent(QKeyEvent *event) {
     if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
-        emit onCropPressed();
+        emit onCropClicked();
     } else if(event->key() == Qt::Key_Escape) {
         emit cancel();
     } else if(event->matches(QKeySequence::SelectAll)) {

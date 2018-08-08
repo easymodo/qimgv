@@ -1,59 +1,50 @@
 #include "cache.h"
 
- Cache::Cache() {
-    sem = new QSemaphore(1);
-}
-
-void Cache::lock() {
-    sem->acquire();
-}
-
-void Cache::unlock() {
-    sem->release();
+Cache::Cache() {
 }
 
 bool Cache::contains(QString name) {
-    return images.contains(name);
+    return items.contains(name);
 }
 
-bool Cache::insert(QString name, Image* img) {
-    if(images.contains(name)) {
+bool Cache::insert(QString name, std::shared_ptr<Image> img) {
+    if(items.contains(name)) {
         return false;
     } else {
-        images.insert(name, new CacheItem(img));
+        items.insert(name, new CacheItem(img));
         return true;
     }
 }
 
 void Cache::remove(QString name) {
-    if(images.contains(name)) {
-        images[name]->lock();
-        auto *item = images.take(name);
+    if(items.contains(name)) {
+        items[name]->lock();
+        auto *item = items.take(name);
         delete item;
     }
 }
 
 void Cache::clear() {
-    for(auto name : images.keys()) {
-        images[name]->lock();
-        auto item = images.take(name);
+    for(auto name : items.keys()) {
+        items[name]->lock();
+        auto item = items.take(name);
         delete item;
     }
 }
 
-Image* Cache::get(QString name) {
-    if(images.contains(name)) {
-        CacheItem *item = images.value(name);
+std::shared_ptr<Image> Cache::get(QString name) {
+    if(items.contains(name)) {
+        CacheItem *item = items.value(name);
         return item->getContents();
     } else {
-        qDebug() << "Cache::get() - !!! returning NULL for " << name << ". There is a bug in logic somewhere!";
-        return NULL;
+        qDebug() << "Cache::get() - !!! returning nullptr for " << name << ". There is a bug in logic somewhere!";
+        return nullptr;
     }
 }
 
 bool Cache::reserve(QString name) {
-    if(images.contains(name)) {
-        images[name]->lock();
+    if(items.contains(name)) {
+        items[name]->lock();
         return true;
     } else {
         return false;
@@ -61,8 +52,8 @@ bool Cache::reserve(QString name) {
 }
 
 bool Cache::release(QString name) {
-    if(images.contains(name)) {
-        images[name]->unlock();
+    if(items.contains(name)) {
+        items[name]->unlock();
         return true;
     } else {
         return false;
@@ -71,17 +62,17 @@ bool Cache::release(QString name) {
 
 // removes all items except the ones in list
 void Cache::trimTo(QStringList nameList) {
-    for(auto name : images.keys()) {
+    for(auto name : items.keys()) {
         if(!nameList.contains(name)) {
             //qDebug() << "CACHE-RM: locking.. " << name;
-            images[name]->lock();
+            items[name]->lock();
             //qDebug() << "CACHE-RM: LOCKED: " << name;
-            auto *item = images.take(name);
+            auto *item = items.take(name);
             delete item;
         }
     }
 }
 
 const QList<QString> Cache::keys() {
-    return images.keys();
+    return items.keys();
 }

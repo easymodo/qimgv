@@ -16,7 +16,7 @@ class SidePanel : public QWidget
     Q_OBJECT
 
 public:
-    explicit SidePanel(QWidget *parent = 0);
+    explicit SidePanel(QWidget *parent = nullptr);
     ~SidePanel();
 
     void setWidget(SidePanelWidget *w);

@@ -2,7 +2,7 @@
 #define IMAGEFACTORY_H
 
 #include "utils/imagelib.h"
-#include "sourcecontainers/imageinfo.h"
+#include "sourcecontainers/documentinfo.h"
 #include "sourcecontainers/image.h"
 #include "sourcecontainers/imageanimated.h"
 #include "sourcecontainers/imagestatic.h"
@@ -10,10 +10,7 @@
 
 class ImageFactory {
 public:
-    ImageFactory();
-
-    static Image* createImage(QString) ;
-    static Image* createImage(ImageInfo*);
+    static std::shared_ptr<Image> createImage(QString path);
 };
 
 #endif // IMAGEFACTORY_H

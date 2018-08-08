@@ -4,48 +4,53 @@
 #include <QtGlobal>
 #include <QTimeLine>
 #include <QGraphicsOpacityEffect>
-#include <QParallelAnimationGroup>
-#include <QPropertyAnimation>
 #include <QPainter>
 #include <QGridLayout>
+#include <QTimer>
+#include <QTimeLine>
 #include "overlaywidget.h"
 #include "settings.h"
 #include <QDebug>
+#include <ctime>
 
 class SlidePanel : public OverlayWidget {
     Q_OBJECT
 public:
-    explicit SlidePanel(ContainerWidget *parent);
+    explicit SlidePanel(OverlayContainerWidget *parent);
     ~SlidePanel();
     bool hasWidget();
-    void setWidget(QWidget* w);
+    void setWidget(std::shared_ptr<QWidget> w);
     // Use visibleGeometry instead of geometry() here.
     // If this is called mid-animation then geometry() will be all wrong.
     virtual QRect triggerRect() = 0;
 
 public slots:
     void show();
+    void hide();
 
 private slots:
     void onAnimationFinish();
 
+    void animationUpdate(int frame);
 protected:
     QGridLayout mLayout;
     QGraphicsOpacityEffect *fadeEffect;
-    QPropertyAnimation *fadeAnimation, *slideAnimation;
-    QParallelAnimationGroup *animGroup;
     int panelSize, slideAmount;
-    QWidget *mWidget;
-    QPoint initialPosition;
+    std::shared_ptr<QWidget> mWidget;
+    QPoint startPosition, endPosition;
     QRect mTriggerRect;
     virtual void updateTriggerRect() = 0;
-    void leaveEvent(QEvent *event);    
+    void leaveEvent(QEvent *event);
     void saveStaticGeometry(QRect geometry);
     QRect staticGeometry();
 
+    QTimer timer;
+    QTimeLine timeline;
+    QEasingCurve outCurve;
+
 private:
     QRect mStaticGeometry;
-    qreal panelVisibleOpacity = 1.0f;
+    qreal panelVisibleOpacity = 1.0;
 
 };
 

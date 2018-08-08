@@ -5,7 +5,6 @@
 
 DirectoryManager::DirectoryManager() : quickFormatDetection(true)
 {
-    currentDir.setSorting(QDir::NoSort);
     readSettings();
 }
 
@@ -14,8 +13,9 @@ DirectoryManager::DirectoryManager() : quickFormatDetection(true)
 // ##############################################################
 
 void DirectoryManager::readSettings() {
-    mimeFilters = settings->supportedMimeTypes();
-    extensionFilters = settings->supportedFormats();
+    mimeFilter = settings->supportedMimeTypes();
+    nameFilter = settings->supportedFormats();
+    currentDir.setNameFilters(nameFilter);
 }
 
 void DirectoryManager::setDirectory(QString path) {
@@ -50,13 +50,13 @@ void DirectoryManager::setDirectory(QString path) {
         qDebug() << "file renamed from" << file1 << "to" << file2;
     });
 
-    if(!path.isEmpty() && /* TODO: ???-> */ currentDir.exists()) {
-        if(currentDir.path() != path) {
+    if(!path.isEmpty()) {// && /* TODO: ???-> */ currentDir.exists()) {
+        //if(currentDir.path() != path) {
             currentDir.setPath(path);
-            generateFileList();
+            generateFileList(settings->sortingMode());
 //            watcher.setDir(path);
             emit directoryChanged(path);
-        }
+        //}
     }
 }
 
@@ -86,18 +86,121 @@ QString DirectoryManager::fileNameAt(int index) const {
     return checkRange(index) ? mFileNameList.at(index) : "";
 }
 
-bool DirectoryManager::removeAt(int index) {
-    if(checkRange(index)) {
-        QString path = filePathAt(index);
-        QFile file(path);
-        if(file.remove()) {
-            mFileNameList.removeAt(index);
-            emit fileRemovedAt(index);
-            return true;
-        }
+bool DirectoryManager::removeAt(int index, bool trash) {
+    bool result = false;
+    if(!checkRange(index))
+        return result;
+
+    QString path = filePathAt(index);
+    QFile file(path);
+    mFileNameList.removeAt(index);
+    if(trash) {
+        moveToTrash(path);
+        result = true;
+    } else {
+        if(file.remove())
+            result = true;
     }
-    return false;
+    emit fileRemovedAt(index);
+    return result;
 }
+
+#ifdef Q_OS_WIN32
+void DirectoryManager::moveToTrash(QString file) {
+    QFileInfo fileinfo( file );
+    if( !fileinfo.exists() )
+        qDebug() << "File doesnt exists, cant move to trash";
+    WCHAR from[ MAX_PATH ];
+    memset( from, 0, sizeof( from ));
+    int l = fileinfo.absoluteFilePath().toWCharArray( from );
+    Q_ASSERT( 0 <= l && l < MAX_PATH );
+    from[ l ] = '\0';
+    SHFILEOPSTRUCT fileop;
+    memset( &fileop, 0, sizeof( fileop ) );
+    fileop.wFunc = FO_DELETE;
+    fileop.pFrom = from;
+    fileop.fFlags = FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_SILENT;
+    int rv = SHFileOperation( &fileop );
+    if( 0 != rv ){
+        qDebug() << rv << QString::number( rv ).toInt( 0, 8 );
+        qDebug() << "move to trash failed";
+    }
+}
+#endif
+
+#ifdef Q_OS_LINUX
+void DirectoryManager::moveToTrash(QString file) {
+    #ifdef QT_GUI_LIB
+    bool TrashInitialized = false;
+    QString TrashPath;
+    QString TrashPathInfo;
+    QString TrashPathFiles;
+    if(!TrashInitialized) {
+        QStringList paths;
+        const char* xdg_data_home = getenv( "XDG_DATA_HOME" );
+        if(xdg_data_home) {
+            qDebug() << "XDG_DATA_HOME not yet tested";
+            QString xdgTrash( xdg_data_home );
+            paths.append(xdgTrash + "/Trash");
+        }
+        QString home = QStandardPaths::writableLocation( QStandardPaths::HomeLocation );
+        paths.append( home + "/.local/share/Trash" );
+        paths.append( home + "/.trash" );
+        foreach( QString path, paths ){
+            if( TrashPath.isEmpty() ){
+                QDir dir( path );
+                if( dir.exists() ){
+                    TrashPath = path;
+                }
+            }
+        }
+        if( TrashPath.isEmpty() )
+            qDebug() << "Cant detect trash folder";
+        TrashPathInfo = TrashPath + "/info";
+        TrashPathFiles = TrashPath + "/files";
+        if( !QDir( TrashPathInfo ).exists() || !QDir( TrashPathFiles ).exists() )
+            qDebug() << "Trash doesnt looks like FreeDesktop.org Trash specification";
+        TrashInitialized = true;
+    }
+    QFileInfo original( file );
+    if( !original.exists() )
+        qDebug() << "File doesnt exists, cant move to trash";
+    QString info;
+    info += "[Trash Info]\nPath=";
+    info += original.absoluteFilePath();
+    info += "\nDeletionDate=";
+    info += QDateTime::currentDateTime().toString("yyyy-MM-ddThh:mm:ss");
+    info += "\n";
+    QString trashname = original.fileName();
+    QString infopath = TrashPathInfo + "/" + trashname + ".trashinfo";
+    QString filepath = TrashPathFiles + "/" + trashname;
+    int nr = 1;
+    while( QFileInfo( infopath ).exists() || QFileInfo( filepath ).exists() ){
+        nr++;
+        trashname = original.baseName() + "." + QString::number( nr );
+        if( !original.completeSuffix().isEmpty() ){
+            trashname += QString( "." ) + original.completeSuffix();
+        }
+        infopath = TrashPathInfo + "/" + trashname + ".trashinfo";
+        filepath = TrashPathFiles + "/" + trashname;
+    }
+    QDir dir;
+    if( !dir.rename( original.absoluteFilePath(), filepath ) ){
+        qDebug() << "move to trash failed";
+    }
+    QFile infoFile(infopath);
+    infoFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&infoFile);
+    out.setCodec("UTF-8");
+    out.setGenerateByteOrderMark(false);
+    out << info;
+    infoFile.close();
+    #else
+    Q_UNUSED( file );
+    qDebug() << "Trash in server-mode not supported";
+    #endif
+}
+#endif
 
 bool DirectoryManager::checkRange(int index) const {
     return index >= 0 && index < mFileNameList.length();
@@ -135,7 +238,7 @@ bool DirectoryManager::isImage(QString filePath) const {
         }
         /* end */
         QMimeType type = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchContent);
-        if(mimeFilters.contains(type.name())) {
+        if(mimeFilter.contains(type.name())) {
             return true;
         }
     }
@@ -166,27 +269,32 @@ void DirectoryManager::directoryContentsChanged(QString dirPath) {
 // ###################### PRIVATE METHODS #######################
 // ##############################################################
 
-void DirectoryManager::generateFileList() {
-    quickFormatDetection ? generateFileListQuick() : generateFileListDeep();
-    sortFileList();
-}
-
-// Filter by file extension, fast.
-// Files with unsupported extension are ignored.
-// Additionally there is a mime type check on image load (FileInfo::guessType()).
-// For example an .exe wont open, but a gif with .jpg extension will still play.
-void DirectoryManager::generateFileListQuick() {
-    currentDir.setNameFilters(extensionFilters);
-    currentDir.setSorting(QDir::NoSort);
+// generates a sorted file list
+void DirectoryManager::generateFileList(SortingMode mode) {
+    // special case for natural sorting
+    if(mode == SortingMode::NAME_ASC || mode == SortingMode::NAME_DESC) {
+        currentDir.setSorting(QDir::NoSort);
+        mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
+        QCollator collator;
+        collator.setNumericMode(true);
+        if(mode == SortingMode::NAME_ASC)
+            std::sort(mFileNameList.begin(), mFileNameList.end(), collator);
+        else
+            std::sort(mFileNameList.rbegin(), mFileNameList.rend(), collator);
+        return;
+    }
+    // use QDir's sorting otherwise
+    if(mode == SortingMode::DATE_ASC)
+        currentDir.setSorting(QDir::Time);
+    if(mode == SortingMode::DATE_DESC)
+        currentDir.setSorting(QDir::Time | QDir::Reversed);
+    if(mode == SortingMode::SIZE_ASC)
+        currentDir.setSorting(QDir::Size);
+    if(mode == SortingMode::SIZE_DESC)
+        currentDir.setSorting(QDir::Size | QDir::Reversed);
     mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
 }
-
-void DirectoryManager::sortFileList() {
-    QCollator collator;
-    collator.setNumericMode(true);
-    std::sort(mFileNameList.begin(), mFileNameList.end(), collator);
-}
-
+/*
 // Filter by mime type. Basically opens every file in a folder
 // and checks what's inside. Very slow.
 void DirectoryManager::generateFileListDeep() {
@@ -201,6 +309,7 @@ void DirectoryManager::generateFileListDeep() {
         }
     }
 }
+*/
 
 void DirectoryManager::onFileRemovedExternal(QString fileName) {
     if(mFileNameList.contains(fileName)) {
@@ -216,22 +325,8 @@ void DirectoryManager::onFileChangedExternal(QString fileName) {
     } else { // file added
         qDebug() << "fileAdd: " << fileName;
         mFileNameList.append(fileName);
-        sortFileList();
+        //sortFileList();
         int index = mFileNameList.indexOf(fileName);
         emit fileAddedAt(index);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

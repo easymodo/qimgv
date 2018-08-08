@@ -1,4 +1,4 @@
-#ifndef ACTIONMANAGER_H
+﻿#ifndef ACTIONMANAGER_H
 #define ACTIONMANAGER_H
 
 #include <QObject>
@@ -8,48 +8,53 @@
 #include <QMap>
 #include <QDebug>
 #include <QStringList>
+#include "utils/inputmap.h"
+#include "utils/actions.h"
+#include "shortcutbuilder.h"
+#include "components/scriptmanager/scriptmanager.h"
 #include "settings.h"
 
-class ActionManager : public QObject
-{
+enum ActionType {
+    ACTION_INVALID,
+    ACTION_NORMAL,
+    ACTION_SCRIPT
+};
+
+class ActionManager : public QObject {
     Q_OBJECT
 public:
     static ActionManager* getInstance();
     ~ActionManager();
     bool processEvent(QEvent*);
-    void addShortcut(QString keys, QString action);
+    void addShortcut(const QString &keys, const QString &action);
     void resetDefaults();
-    QString actionForScanCode(int code);
-    QString actionForShortcut(QString keys);
+    QString actionForScanCode(quint32 code);
+    QString actionForShortcut(const QString &keys);
+    const QString shortcutForAction(QString action);
+    const QList<QString> shortcutsForAction(QString action);
     QStringList actionList();
     const QMap<QString,QString>& allShortcuts();
-    void removeShortcut(QString keys);
-    const QStringList keys();
+    void removeShortcut(const QString &keys);
     void removeAllShortcuts();
-    QString keyForNativeScancode(int scanCode);
+    void removeAllShortcuts(QString actionName);
+    QString keyForNativeScancode(quint32 scanCode);
     void resetDefaultsFromVersion(QVersionNumber lastVer);
     void saveShortcuts();
 
 public slots:
-    bool invokeAction(QString actionName);
+    bool invokeAction(const QString &actionName);
 private:
-    explicit ActionManager(QObject *parent = 0);
-    QMap<QString, QVersionNumber> actions;
+    explicit ActionManager(QObject *parent = nullptr);
     QMap<QString, QString> defaults, shortcuts; // <shortcut, action>
-    QMap<int, QString> keyMap;
-    QMap<QString, Qt::KeyboardModifier> modMap;
+
     static void initDefaults();
     static void initActions();
-    static void initKeyMap();
-    static void initModMap();
     static void initShortcuts();
     QString modifierKeys(QEvent *event);
-    bool processWheelEvent(QWheelEvent *event);
-    bool processMouseEvent(QMouseEvent *event);
-    bool processKeyEvent(QKeyEvent *event);
-    bool invokeActionForShortcut(QString action);
+    bool invokeActionForShortcut(const QString &action);
     void validateShortcuts();
     void readShortcuts();
+    ActionType validateAction(const QString &actionName);
 
 signals:
     void open();
@@ -85,7 +90,16 @@ signals:
     void closeFullScreenOrExit();
     void jumpToFirst();
     void jumpToLast();
-
+    void folderView();
+    void documentView();
+    void runScript(const QString&);
+    void pauseVideo();
+    void seekVideo();
+    void seekBackVideo();
+    void frameStep();
+    void frameStepBack();
+    void toggleFolderView();
+    void moveToTrash();
 };
 
 extern ActionManager *actionManager;

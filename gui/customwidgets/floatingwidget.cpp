@@ -1,10 +1,34 @@
 #include "floatingwidget.h"
 
-FloatingWidget::FloatingWidget(ContainerWidget *parent)
+FloatingWidget::FloatingWidget(OverlayContainerWidget *parent)
     : OverlayWidget(parent),
       marginX(20),
-      marginY(30)
+      marginY(30),
+      fadeEnabled(false)
 {
+    opacityEffect = new QGraphicsOpacityEffect(this);
+    opacityEffect->setOpacity(1.0);
+    this->setGraphicsEffect(opacityEffect);
+    fadeAnimation = new QPropertyAnimation(this, "opacity");
+    fadeAnimation->setDuration(120);
+    fadeAnimation->setStartValue(1.0f);
+    fadeAnimation->setEndValue(0.0f);
+    fadeAnimation->setEasingCurve(QEasingCurve::OutQuad);
+    connect(fadeAnimation, SIGNAL(finished()), this, SLOT(onFadeEnd()), Qt::UniqueConnection);
+}
+
+FloatingWidget::~FloatingWidget() {
+    delete opacityEffect;
+    delete fadeAnimation;
+}
+
+qreal FloatingWidget::opacity() const {
+    return opacityEffect->opacity();
+}
+
+void FloatingWidget::setOpacity(qreal opacity) {
+    opacityEffect->setOpacity(opacity);
+    update();
 }
 
 void FloatingWidget::setMarginX(int margin) {
@@ -20,6 +44,33 @@ void FloatingWidget::setMarginY(int margin) {
 void FloatingWidget::setPosition(FloatingWidgetPosition pos) {
     position = pos;
     recalculateGeometry();
+}
+
+void FloatingWidget::setFadeDuration(int duration) {
+    fadeAnimation->setDuration(duration);
+}
+
+void FloatingWidget::setFadeEnabled(bool mode) {
+    this->fadeEnabled = mode;
+}
+
+void FloatingWidget::show() {
+    fadeAnimation->stop();
+    opacityEffect->setOpacity(1.0);
+    QWidget::show();
+}
+
+void FloatingWidget::hide() {
+    if(fadeEnabled && !this->isHidden()) {
+        fadeAnimation->stop();
+        fadeAnimation->start(QPropertyAnimation::KeepWhenStopped);
+    } else {
+        QWidget::hide();
+    }
+}
+
+void FloatingWidget::onFadeEnd() {
+    QWidget::hide();
 }
 
 void FloatingWidget::recalculateGeometry() {

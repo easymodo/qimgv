@@ -6,7 +6,7 @@
 #ifndef OVERLAYWIDGET_H
 #define OVERLAYWIDGET_H
 
-#include "gui/customwidgets/containerwidget.h"
+#include "gui/customwidgets/overlaycontainerwidget.h"
 #include <QStyleOption>
 #include <QPainter>
 #include <QDebug>
@@ -15,7 +15,7 @@ class OverlayWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit OverlayWidget(ContainerWidget *parent);
+    explicit OverlayWidget(OverlayContainerWidget *parent);
     QSize containerSize();
 
 protected:

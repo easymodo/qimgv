@@ -16,22 +16,16 @@ public:
     void remove(QString name);
     void clear();
 
-    bool insert(QString name, Image *img);
-    void lock();
-    void unlock();
+    bool insert(QString name, std::shared_ptr<Image> img);
     void trimTo(QStringList list);
 
-    Image* get(QString name);
+    std::shared_ptr<Image> get(QString name);
     bool release(QString name);
     bool reserve(QString name);
     const QList<QString> keys();
-signals:
-
-public slots:
 
 private:
-    QSemaphore *sem;
-    QMap<QString, CacheItem*> images;
+    QMap<QString, CacheItem*> items;
 };
 
 #endif // CACHE_H

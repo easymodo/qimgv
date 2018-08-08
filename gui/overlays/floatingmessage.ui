@@ -18,10 +18,16 @@
     <enum>QLayout::SetDefaultConstraint</enum>
    </property>
    <property name="leftMargin">
-    <number>10</number>
+    <number>12</number>
+   </property>
+   <property name="topMargin">
+    <number>11</number>
    </property>
    <property name="rightMargin">
-    <number>10</number>
+    <number>12</number>
+   </property>
+   <property name="bottomMargin">
+    <number>11</number>
    </property>
    <item>
     <widget class="QLabel" name="textLabel">

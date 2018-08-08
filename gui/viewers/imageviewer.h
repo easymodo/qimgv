@@ -14,30 +14,42 @@
 #include <QPropertyAnimation>
 #include <cmath>
 #include <ctime>
+#include <memory>
 #include "settings.h"
 
 #define FLT_EPSILON 1.19209290E-07F
+
+enum MouseInteractionState {
+    MOUSE_NONE,
+    MOUSE_DRAG,
+    MOUSE_ZOOM
+};
 
 class ImageViewer : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY(QPoint drawPos READ propertyDrawPos WRITE propertySetDrawPos)
 public:
-    ImageViewer(QWidget* parent = 0);
+    ImageViewer(QWidget* parent = nullptr);
     ~ImageViewer();
     ImageFitMode fitMode();
     QRect imageRect();
     float currentScale();
     QSize sourceSize();
+    void displayImage(std::unique_ptr<QPixmap> _pixmap);
+    void displayAnimation(std::unique_ptr<QMovie> _animation);
+    void replacePixmap(std::unique_ptr<QPixmap> newFrame);
+    bool isDisplaying();
 
 signals:
     void scalingRequested(QSize);
     void scaleChanged(float);
     void sourceSizeChanged(QSize);
     void imageAreaChanged(QRect);
+    void rightClicked();
+    void leftClicked();
 
 public slots:
-    void displayImage(QPixmap* _image);
     void setFitMode(ImageFitMode mode);
     void setFitOriginal();
     void setFitWidth();
@@ -47,16 +59,16 @@ public slots:
     void zoomInCursor();
     void zoomOutCursor();
     void readSettings();
-    void updateFrame(QPixmap *newFrame);
     void scrollUp();
     void scrollDown();
     void scrollLeft();
     void scrollRight();
     void startAnimation();
     void stopAnimation();
-    void displayAnimation(QMovie *_animation);
     void closeImage();
     void setExpandImage(bool mode);
+    void show();
+    void hide();
 
 protected:
     virtual void paintEvent(QPaintEvent* event);
@@ -68,23 +80,22 @@ protected:
 private slots:
     void nextFrame();
     void requestScaling();
-    void hideCursor();
-    void showCursor();
 
 private:
-    QPixmap *image;
-    QMovie *animation;
+    std::unique_ptr<QPixmap> pixmap;
+    std::unique_ptr<QMovie> movie;
     QTransform transform;
     QTimer *cursorTimer, *animationTimer;
     QRect drawingRect;
-    QPoint mouseMoveStartPos, drawPos;
+    QPoint mouseMoveStartPos, mousePressPos, drawPos;
     QSize mSourceSize;
-    bool isDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;
+    bool mIsDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;
+    MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int FADE_DURATION = 140;
-    const int CURSOR_HIDE_TIMEOUT_MS = 1200;
     const int SCROLL_DISTANCE = 250;
     const int animationSpeed = 150;
+    const int ZOOM_THRESHOLD = 4; // pixels
     float maxScaleLimit = 4.0;
     float maxResolutionLimit = 75.0; // in megapixels
 
@@ -110,11 +121,10 @@ private:
     void scroll(int dx, int dy, bool animated);
     int scrolledX(int dx);
     int scrolledY(int dy);
-    void hideCursorTimed(bool restartTimer);
 
     void mouseDragWrapping(QMouseEvent *event);
     void mouseDrag(QMouseEvent *event);
-    void mouseDragZoom(QMouseEvent *event);
+    void mouseMoveZoom(QMouseEvent *event);
     void drawTransparencyGrid();
     void startAnimationTimer();
     void readjust(QSize _sourceSize, QRect _drawingRect);

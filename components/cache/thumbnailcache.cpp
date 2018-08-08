@@ -4,12 +4,12 @@ ThumbnailCache::ThumbnailCache() {
     cacheDirPath = settings->cacheDir();
 }
 
-QString ThumbnailCache::thumbnailPath(QString hash) {
-    return QString(cacheDirPath + hash + ".jpg");
+QString ThumbnailCache::thumbnailPath(QString id) {
+    return QString(cacheDirPath + id + ".jpg");
 }
 
-bool ThumbnailCache::exists(QString hash) {
-    QString filePath = thumbnailPath(hash);
+bool ThumbnailCache::exists(QString id) {
+    QString filePath = thumbnailPath(id);
     QFileInfo file(filePath);
     if(file.exists() && file.isReadable()) {
         return true;
@@ -18,10 +18,10 @@ bool ThumbnailCache::exists(QString hash) {
     }
 }
 
-void ThumbnailCache::saveThumbnail(QImage *image, QString hash) {
+void ThumbnailCache::saveThumbnail(QImage *image, QString id) {
     //mutex.lock();
     if(image) {
-        QString filePath = thumbnailPath(hash);
+        QString filePath = thumbnailPath(id);
         //qDebug() << "saving thumnbail as: " << filePath;
         if(!image->save(filePath, "JPG", 96)) {
             qDebug() << "could not save thumbnail to " << filePath;
@@ -30,9 +30,9 @@ void ThumbnailCache::saveThumbnail(QImage *image, QString hash) {
     //mutex.unlock();
 }
 
-QImage *ThumbnailCache::readThumbnail(QString hash) {
+QImage *ThumbnailCache::readThumbnail(QString id) {
     //mutex.lock();
-    QString filePath = thumbnailPath(hash);
+    QString filePath = thumbnailPath(id);
     QFileInfo file(filePath);
     if(file.exists() && file.isReadable()) {
         QImage *thumb = new QImage();
@@ -44,12 +44,12 @@ QImage *ThumbnailCache::readThumbnail(QString hash) {
             delete thumb;
             //qDebug() << "file exists but does not appear to be a valid image(expected jpg file): " << filePath;
             //mutex.unlock();
-            return NULL;
+            return nullptr;
         }
         //qDebug() << "reading thumbnail:" << filePath;
     } else {
         //qDebug() << "thumbnail does not exist:" << filePath;
         //mutex.unlock();
-        return NULL;
+        return nullptr;
     }
 }

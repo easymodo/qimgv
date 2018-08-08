@@ -12,6 +12,16 @@
 #include <QKeySequence>
 #include <QMap>
 #include <QVersionNumber>
+#include "utils/script.h"
+
+enum SortingMode {
+    NAME_ASC,
+    NAME_DESC,
+    DATE_ASC,
+    DATE_DESC,
+    SIZE_ASC,
+    SIZE_DESC
+};
 
 enum ImageFitMode {
     FIT_WINDOW,
@@ -120,10 +130,22 @@ public:
     void setLastVersion(QVersionNumber &ver);
     void setShowChangelogs(bool mode);
     bool showChangelogs();
+    qreal backgroundOpacity();
+    void setBackgroundOpacity(qreal value);
+    bool blurBackground();
+    void setBlurBackground(bool mode);
+    void setSortingMode(SortingMode mode);
+    SortingMode sortingMode();    
+    void readScripts(QMap<QString, Script> &scripts);
+    void saveScripts(const QMap<QString, Script> &scripts);
 
+    bool showInfoOverlay();
+    void setShowInfoOverlay(bool mode);
+    bool firstRun();
+    void setFirstRun(bool mode);
 private:
-    explicit Settings(QObject *parent = 0);
-    const int mainPanelSizeDefault = 210;
+    explicit Settings(QObject *parent = nullptr);
+    const unsigned int mainPanelSizeDefault = 210;
     QSettings s;
     QDir *cacheDirectory, *thumbnailDirectory;
 

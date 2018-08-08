@@ -3,50 +3,53 @@
 ThumbnailerRunnable::ThumbnailerRunnable(ThumbnailCache* _thumbnailCache, QString _path, int _size, bool _squared) :
     path(_path),
     size(_size),
-    thumbnailCache(_thumbnailCache),
-    squared(_squared)
+    squared(_squared),
+    thumbnailCache(_thumbnailCache)
 {
 }
 
 void ThumbnailerRunnable::run() {
+    // TODO: replace raw pointers with c++11 ones
     emit taskStart(path);
-    ImageInfo imgInfo(path);
-    Thumbnail *th = new Thumbnail();
-    th->size = size;
-    th->name = imgInfo.fileName();
-    QString thumbnailHash = generateIdString();
-    QImage *thumbImage = NULL;
+    DocumentInfo imgInfo(path);
+    QString tmpName = imgInfo.fileName();
+    QString thumbnailId = generateIdString();
+    std::unique_ptr<QImage> image;
     if(settings->useThumbnailCache())
-        thumbImage = thumbnailCache->readThumbnail(thumbnailHash);
-    if(!thumbImage) {
-        thumbImage = createScaledThumbnail(&imgInfo, size, squared);
+        image.reset(thumbnailCache->readThumbnail(thumbnailId));
+    if(!image) {
+        image.reset(createThumbnailImage(&imgInfo, size, squared));
+        image = ImageLib::exifRotated(std::move(image), imgInfo.exifOrientation());
         // put in image info
-        thumbImage->setText("originalWidth", QString::number(originalSize.width()));
-        thumbImage->setText("originalHeight", QString::number(originalSize.height()));
-        if(imgInfo.imageType() == ANIMATED) {
-            thumbImage->setText("label", " [a]");
-        } else if(imgInfo.imageType() == VIDEO) {
-            thumbImage->setText("label", " [v]");
+        image.get()->setText("originalWidth", QString::number(originalSize.width()));
+        image.get()->setText("originalHeight", QString::number(originalSize.height()));
+        if(imgInfo.type() == ANIMATED) {
+            image.get()->setText("label", " [a]");
+        } else if(imgInfo.type() == VIDEO) {
+            image.get()->setText("label", " [v]");
         }
         if(settings->useThumbnailCache()) {
-        // save thumbnail if it makes sense
+        // save thumbnail if it makes sensedd
             if(originalSize.width() > size || originalSize.height() > size)
-                thumbnailCache->saveThumbnail(thumbImage, thumbnailHash);
+                thumbnailCache->saveThumbnail(image.get(), thumbnailId);
         }
     }
-    th->image = new QPixmap(thumbImage->size());
-    *th->image = QPixmap::fromImage(*thumbImage);
+    QPixmap *tmpPixmap = new QPixmap(image->size());
+    *tmpPixmap = QPixmap::fromImage(*image);
+    tmpPixmap->setDevicePixelRatio(qApp->devicePixelRatio());
 
-    if(th->image->width() == 0) {
-        th->label = "error";
+    QString tmpLabel;
+    if(tmpPixmap->width() == 0) {
+        tmpLabel = "error";
     } else  {
         // put info into Thumbnail object
-        th->label = thumbImage->text("originalWidth") + "x" +
-                    thumbImage->text("originalHeight") +
-                    thumbImage->text("label");
+        tmpLabel = image.get()->text("originalWidth") + "x" +
+                   image.get()->text("originalHeight") +
+                   image.get()->text("label");
     }
-    delete thumbImage;
-    emit taskEnd(th, path);
+    std::shared_ptr<const QPixmap> pixmapPtr(tmpPixmap);
+    std::shared_ptr<Thumbnail> thumbnail(new Thumbnail(tmpName, tmpLabel, size, pixmapPtr));
+    emit taskEnd(thumbnail, path);
 }
 
 QString ThumbnailerRunnable::generateIdString() {
@@ -57,10 +60,10 @@ QString ThumbnailerRunnable::generateIdString() {
     return queryStr;
 }
 
-QImage* ThumbnailerRunnable::createScaledThumbnail(ImageInfo *imgInfo, int size, bool squared) {
+QImage* ThumbnailerRunnable::createThumbnailImage(DocumentInfo *imgInfo, int size, bool squared) {
     QImageReader reader;
     QString filePath;
-    if(imgInfo->imageType() == VIDEO) {
+    if(imgInfo->type() == VIDEO) {
         QString mpv = settings->mpvBinary();
         if(!mpv.isEmpty()) {
             filePath = settings->tempDir() + imgInfo->baseName() + ".png";
@@ -91,7 +94,7 @@ QImage* ThumbnailerRunnable::createScaledThumbnail(ImageInfo *imgInfo, int size,
         originalSize = reader.size();
     QImage *scaled = new QImage(reader.read());
     // remove temporary file in video case
-    if(imgInfo->imageType() == VIDEO) {
+    if(imgInfo->type() == VIDEO) {
         QFile tmpFile(filePath);
         tmpFile.remove();
     }

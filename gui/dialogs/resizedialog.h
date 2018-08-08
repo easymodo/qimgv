@@ -19,7 +19,7 @@ class ResizeDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit ResizeDialog(QSize initialSize, QWidget *parent = 0);
+    explicit ResizeDialog(QSize initialSize, QWidget *parent = nullptr);
     ~ResizeDialog();
     QSize newSize();
 

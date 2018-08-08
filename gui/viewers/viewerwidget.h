@@ -1,10 +1,12 @@
 #ifndef VIEWERWIDGET_H
 #define VIEWERWIDGET_H
 
-#include "gui/customwidgets/containerwidget.h"
+#include "gui/customwidgets/overlaycontainerwidget.h"
 #include <QHBoxLayout>
 #include "gui/viewers/imageviewer.h"
-#include "gui/viewers/videoplayermpvproxy.h"
+#include "gui/viewers/videoplayerinitproxy.h"
+#include "gui/overlays/videocontrols.h"
+#include "gui/contextmenu.h"
 
 enum CurrentWidget {
     IMAGEVIEWER,
@@ -12,32 +14,41 @@ enum CurrentWidget {
     UNSET
 };
 
-class ViewerWidget : public ContainerWidget
+class ViewerWidget : public OverlayContainerWidget
 {
     Q_OBJECT
 public:
-    explicit ViewerWidget(QWidget *parent = 0);
+    explicit ViewerWidget(QWidget *parent = nullptr);
     QRect imageRect();
     float currentScale();
     QSize sourceSize();
 
-    void enableZoomInteraction();
-    void disableZoomInteraction();
-    bool zoomInteractionEnabled();
+    void enableInteraction();
+    void disableInteraction();
+    bool interactionEnabled();
+
+    bool showImage(std::unique_ptr<QPixmap> pixmap);
+    bool showAnimation(std::unique_ptr<QMovie> movie);
+    void onScalingFinished(std::unique_ptr<QPixmap> scaled);
+
+    bool isDisplaying();
 private:
     QHBoxLayout layout;
-    ImageViewer *imageViewer;
-    VideoPlayerMpvProxy *videoPlayer;
+    std::unique_ptr<ImageViewer> imageViewer;
+    std::unique_ptr<VideoPlayer> videoPlayer;
+    std::unique_ptr<ContextMenu> contextMenu;
+    VideoControls *videoControls;
 
     void enableImageViewer();
     void enableVideoPlayer();
 
     CurrentWidget currentWidget;
-    QColor bgColor;
-    bool zoomInteraction;
+    bool mInteractionEnabled;
+    QTimer cursorTimer;
+    const int CURSOR_HIDE_TIMEOUT_MS = 1000;
 
-private slots:
-    void readSettings();
+    void disableImageViewer();
+    void disableVideoPlayer();
 
 signals:
     void scalingRequested(QSize);
@@ -54,19 +65,33 @@ signals:
     void fitOriginal();
 
 public slots:
-    bool showImage(QPixmap *pixmap);
-    bool showAnimation(QMovie *movie);
     bool showVideo(Clip *clip);
     void stopPlayback();
     void setFitMode(ImageFitMode mode);
     ImageFitMode fitMode();
-    void onScalingFinished(QPixmap *scaled);
     void closeImage();
+    void hideCursor();
+    void showCursor();
+    void hideCursorTimed(bool restartTimer);
 
+    // video control
+    void pauseVideo();
+    void seekVideo(int pos);
+    void seekVideoRelative(int pos);
+    void seekVideoLeft();
+    void seekVideoRight();
+    void frameStep();
+    void frameStepBack();
+
+    void startPlayback();
+    void showContextMenu();
+    void hideContextMenu();
+    void showContextMenu(QPoint pos);
 protected:
-    virtual void paintEvent(QPaintEvent* event);
     void mouseMoveEvent(QMouseEvent *event);
-
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void hideEvent(QHideEvent *event);
 };
 
 #endif // VIEWERWIDGET_H

@@ -1,0 +1,38 @@
+======= TEXT ========
+=====================
+disabled:	#707070;
+dim_0:      #86888a;
+dim_1:      #8e9092;
+---------------------
+normal_0:   #aeaeae;
+normal_1:   #bebebe;
+---------------------
+bright_0:    
+bright_1:
+
+====== WIDGETS =======
+normal_0:   #1c1c1d;
+normal_1:   #222223;
+normal_2:   #29292a;
+normal_4:   #313132;
+
+---------------------
+border_0:   #313233;
+border_1:   #414244;
+
+scrollbar:  #5c5e60;
+
+
+======= ICONS ========
+dim:        #8e8e8e;     
+regular:    #bebebe;
+
+
+============= ELEMENTS ==============
+=====================================
+
+====== overlay window ======
+bg:          #1c1d1e;
+border:      #414244;
+header-bg:   #2e3032;
+header-text: #bebebe;

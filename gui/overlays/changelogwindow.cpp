@@ -1,7 +1,7 @@
 #include "changelogwindow.h"
 #include "ui_changelogwindow.h"
 
-ChangelogWindow::ChangelogWindow(ContainerWidget *parent) :
+ChangelogWindow::ChangelogWindow(OverlayContainerWidget *parent) :
     FloatingWidget(parent),
     ui(new Ui::ChangelogWindow)
 {
@@ -35,4 +35,24 @@ void ChangelogWindow::paintEvent(QPaintEvent *) {
 // move to base class?
 void ChangelogWindow::wheelEvent(QWheelEvent *event) {
     event->accept();
+}
+
+void ChangelogWindow::keyPressEvent(QKeyEvent *event) {
+    quint32 nativeScanCode = event->nativeScanCode();
+    QString key = actionManager->keyForNativeScancode(nativeScanCode);
+    if(key == "escape") {
+        event->accept();
+        hide();
+    }
+}
+
+void ChangelogWindow::show() {
+    FloatingWidget::show();
+    ui->closeButton->setFocus();
+}
+
+void ChangelogWindow::hide() {
+    ui->closeButton->clearFocus();
+    ui->shutUpButton->clearFocus();
+    FloatingWidget::hide();
 }

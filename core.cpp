@@ -9,12 +9,12 @@
 
 Core::Core()
     : QObject(),
-      loader(NULL),
-      dirManager(NULL),
-      cache(NULL),
-      scaler(NULL),
-      thumbnailer(NULL),
-      infiniteScrolling(false)
+      infiniteScrolling(false),
+      loader(nullptr),
+      dirManager(nullptr),
+      cache(nullptr),
+      scaler(nullptr),
+      thumbnailer(nullptr)
 {
 #ifdef __linux__
     // default value of 128k causes memory fragmentation issues
@@ -22,6 +22,8 @@ Core::Core()
     mallopt(M_MMAP_THRESHOLD, 64000);
 #endif
     qRegisterMetaType<ScalerRequest>("ScalerRequest");
+    qRegisterMetaType<std::shared_ptr<Image>>("std::shared_ptr<Image>");
+    qRegisterMetaType<std::shared_ptr<Thumbnail>>("std::shared_ptr<Thumbnail>");
     initGui();
     initComponents();
     connectComponents();
@@ -30,8 +32,13 @@ Core::Core()
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 
     QVersionNumber lastVersion = settings->lastVersion();
-    if(appVersion > lastVersion)
-        postUpdate();
+    // If we get (0,0,0) then it is a new install; no need to run update logic.
+    // There shouldn't be any weirdness if you update 0.6.3 -> 0.7
+    // In addition there is a firstRun flag.
+    if(appVersion > lastVersion && lastVersion != QVersionNumber(0,0,0))
+        onUpdate();
+    if(settings->firstRun())
+        onFirstRun();
 }
 
 void Core::readSettings() {
@@ -45,10 +52,7 @@ void Core::showGui() {
 
 // create MainWindow and all widgets
 void Core::initGui() {
-    viewerWidget = new ViewerWidget();
-    mw = new MainWindow(viewerWidget);
-    thumbnailPanelWidget = new ThumbnailStrip();
-    mw->setPanelWidget(thumbnailPanelWidget);
+    mw = new MainWindow();
     mw->hide();
 }
 
@@ -65,8 +69,10 @@ void Core::initComponents() {
 
 void Core::connectComponents() {
     connect(loadingTimer, SIGNAL(timeout()), this, SLOT(onLoadingTimeout()));
-    connect(loader, SIGNAL(loadFinished(Image *)),
-            this, SLOT(onLoadFinished(Image *)));
+    connect(loader, SIGNAL(loadFinished(std::shared_ptr<Image>)),
+            this, SLOT(onLoadFinished(std::shared_ptr<Image>)));
+    connect(loader, SIGNAL(loadFailed(QString)),
+            this, SLOT(onLoadFailed(QString)));
 
     connect(mw, SIGNAL(opened(QString)), this, SLOT(loadByPathBlocking(QString)));
     connect(mw, SIGNAL(copyRequested(QString)), this, SLOT(copyFile(QString)));
@@ -79,17 +85,20 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(discardEditsRequested()), this, SLOT(discardEdits()));
     connect(this, SIGNAL(imageIndexChanged(int)), mw, SLOT(setupSidePanelData()));
 
-    // thumbnails stuff
-    connect(thumbnailPanelWidget, SIGNAL(thumbnailRequested(QList<int>, int)),
+    connect(mw, SIGNAL(thumbnailRequested(QList<int>, int)),
             thumbnailer, SLOT(generateThumbnailFor(QList<int>, int)), Qt::UniqueConnection);
-    connect(thumbnailer, SIGNAL(thumbnailReady(Thumbnail*)),
-            this, SLOT(forwardThumbnail(Thumbnail*)));
-    connect(thumbnailPanelWidget, SIGNAL(thumbnailClicked(int)),
-            this, SLOT(loadByIndex(int)));
+
+    connect(thumbnailer, SIGNAL(thumbnailReady(std::shared_ptr<Thumbnail>)),
+            this, SLOT(forwardThumbnail(std::shared_ptr<Thumbnail>)));
+
     connect(this, SIGNAL(imageIndexChanged(int)),
-            thumbnailPanelWidget, SLOT(highlightThumbnail(int)));
+            mw, SIGNAL(selectThumbnail(int)));
+
+    connect(mw, SIGNAL(thumbnailPressed(int)),
+            this, SLOT(loadByIndex(int)));
+
     // scaling
-    connect(viewerWidget, SIGNAL(scalingRequested(QSize)),
+    connect(mw, SIGNAL(scalingRequested(QSize)),
             this, SLOT(scalingRequest(QSize)));
     connect(scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest)),
             this, SLOT(onScalingFinished(QPixmap*,ScalerRequest)));
@@ -101,19 +110,19 @@ void Core::connectComponents() {
 void Core::initActions() {
     connect(actionManager, SIGNAL(nextImage()), this, SLOT(nextImage()));
     connect(actionManager, SIGNAL(prevImage()), this, SLOT(prevImage()));
-    connect(actionManager, SIGNAL(fitWindow()), this, SLOT(fitWindow()));
-    connect(actionManager, SIGNAL(fitWidth()), this, SLOT(fitWidth()));
-    connect(actionManager, SIGNAL(fitNormal()), this, SLOT(fitOriginal()));
-    connect(actionManager, SIGNAL(toggleFitMode()), this, SLOT(switchFitMode()));
+    connect(actionManager, SIGNAL(fitWindow()), mw, SLOT(fitWindow()));
+    connect(actionManager, SIGNAL(fitWidth()), mw, SLOT(fitWidth()));
+    connect(actionManager, SIGNAL(fitNormal()), mw, SLOT(fitOriginal()));
+    connect(actionManager, SIGNAL(toggleFitMode()), mw, SLOT(switchFitMode()));
     connect(actionManager, SIGNAL(toggleFullscreen()), mw, SLOT(triggerFullScreen()));
-    connect(actionManager, SIGNAL(zoomIn()), viewerWidget, SIGNAL(zoomIn()));
-    connect(actionManager, SIGNAL(zoomOut()), viewerWidget, SIGNAL(zoomOut()));
-    connect(actionManager, SIGNAL(zoomInCursor()), viewerWidget, SIGNAL(zoomInCursor()));
-    connect(actionManager, SIGNAL(zoomOutCursor()), viewerWidget, SIGNAL(zoomOutCursor()));
-    connect(actionManager, SIGNAL(scrollUp()), viewerWidget, SIGNAL(scrollUp()));
-    connect(actionManager, SIGNAL(scrollDown()), viewerWidget, SIGNAL(scrollDown()));
-    connect(actionManager, SIGNAL(scrollLeft()), viewerWidget, SIGNAL(scrollLeft()));
-    connect(actionManager, SIGNAL(scrollRight()), viewerWidget, SIGNAL(scrollRight()));
+    connect(actionManager, SIGNAL(zoomIn()), mw, SIGNAL(zoomIn()));
+    connect(actionManager, SIGNAL(zoomOut()), mw, SIGNAL(zoomOut()));
+    connect(actionManager, SIGNAL(zoomInCursor()), mw, SIGNAL(zoomInCursor()));
+    connect(actionManager, SIGNAL(zoomOutCursor()), mw, SIGNAL(zoomOutCursor()));
+    connect(actionManager, SIGNAL(scrollUp()), mw, SIGNAL(scrollUp()));
+    connect(actionManager, SIGNAL(scrollDown()), mw, SIGNAL(scrollDown()));
+    connect(actionManager, SIGNAL(scrollLeft()), mw, SIGNAL(scrollLeft()));
+    connect(actionManager, SIGNAL(scrollRight()), mw, SIGNAL(scrollRight()));
     connect(actionManager, SIGNAL(resize()), this, SLOT(showResizeDialog()));
     connect(actionManager, SIGNAL(flipH()), this, SLOT(flipH()));
     connect(actionManager, SIGNAL(flipV()), this, SLOT(flipV()));
@@ -127,25 +136,41 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(saveAs()), this, SLOT(requestSavePath()));
     connect(actionManager, SIGNAL(exit()), this, SLOT(close()));
     connect(actionManager, SIGNAL(closeFullScreenOrExit()), mw, SLOT(closeFullScreenOrExit()));
-    connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFile()));
+    connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFilePermanent()));
+    connect(actionManager, SIGNAL(moveToTrash()), this, SLOT(moveToTrash()));
     connect(actionManager, SIGNAL(copyFile()), mw, SLOT(triggerCopyOverlay()));
     connect(actionManager, SIGNAL(moveFile()), mw, SLOT(triggerMoveOverlay()));
     connect(actionManager, SIGNAL(jumpToFirst()), this, SLOT(jumpToFirst()));
     connect(actionManager, SIGNAL(jumpToLast()), this, SLOT(jumpToLast()));
+    connect(actionManager, SIGNAL(runScript(const QString&)), this, SLOT(runScript(const QString&)));
+    connect(actionManager, SIGNAL(pauseVideo()), mw, SIGNAL(pauseVideo()));
+    connect(actionManager, SIGNAL(seekVideo()), mw, SIGNAL(seekVideoRight()));
+    connect(actionManager, SIGNAL(seekBackVideo()), mw, SIGNAL(seekVideoLeft()));
+    connect(actionManager, SIGNAL(frameStep()), mw, SIGNAL(frameStep()));
+    connect(actionManager, SIGNAL(frameStepBack()), mw, SIGNAL(frameStepBack()));
+    connect(actionManager, SIGNAL(folderView()), mw, SIGNAL(enableFolderView()));
+    connect(actionManager, SIGNAL(documentView()), mw, SIGNAL(enableDocumentView()));
+    connect(actionManager, SIGNAL(toggleFolderView()), mw, SIGNAL(toggleFolderView()));
 }
 
-void Core::postUpdate() {
+void Core::onUpdate() {
     QVersionNumber lastVer = settings->lastVersion();
-    qDebug() << "Updating: " << settings->lastVersion().toString() << ">" << appVersion.toString();
     actionManager->resetDefaultsFromVersion(lastVer);
     actionManager->saveShortcuts();
     settings->setLastVersion(appVersion);
+    qDebug() << "Updated: " << settings->lastVersion().toString() << ">" << appVersion.toString();
     // TODO: finish changelogs
-    if(settings->showChangelogs())
-        mw->showChangelogWindow();
-    else
-        mw->showMessage("Updating: "+settings->lastVersion().toString()+" > "+appVersion.toString());
+    //if(settings->showChangelogs())
+    //    mw->showChangelogWindow();
+    //else
+        mw->showMessage("Updated: "+settings->lastVersion().toString()+" > "+appVersion.toString());
 
+}
+
+void Core::onFirstRun() {
+    //mw->showSomeSortOfWelcomeScreen();
+    mw->showMessage("Welcome to qimgv version " + appVersion.toString() + "!", 3000);
+    settings->setFirstRun(false);
 }
 
 void Core::rotateLeft() {
@@ -166,28 +191,41 @@ void Core::close() {
     closeBackgroundTasks();
 }
 
+void Core::removeFilePermanent() {
+    if(state.hasActiveImage)
+        removeFilePermanent(state.currentIndex);
+}
+
+void Core::removeFilePermanent(int index) {
+    removeFile(index, false);
+}
+
+void Core::moveToTrash() {
+    if(state.hasActiveImage)
+        moveToTrash(state.currentIndex);
+}
+
+void Core::moveToTrash(int index) {
+    removeFile(index, true);
+}
+
 // removes file at specified index within current directory
-void Core::removeFile(int index) {
+void Core::removeFile(int index, bool trash) {
     if(index < 0 || index >= dirManager->fileCount())
         return;
     QString fileName = dirManager->fileNameAt(index);
-    if(dirManager->removeAt(index)) {
-        mw->showMessage("File removed: " + fileName);
+    if(dirManager->removeAt(index, trash)) {
+        QString msg = trash?"Moved to trash: ":"File removed: ";
+        mw->showMessage(msg + fileName);
     }
 }
 
-// removes current file
-void Core::removeFile() {
-    if(state.hasActiveImage)
-        removeFile(state.currentIndex);
-}
-
 void Core::onFileRemoved(int index) {
-    thumbnailPanelWidget->removeItemAt(index);
+    mw->removeThumbnail(index);
     // removing current file. try switching to another
     if(state.currentIndex == index) {
         if(!dirManager->fileCount()) {
-            viewerWidget->closeImage();
+            mw->closeImage();
             mw->setInfoString("No file opened.");
         } else {
             if(!loadByIndexBlocking(state.currentIndex))
@@ -197,7 +235,7 @@ void Core::onFileRemoved(int index) {
 }
 
 void Core::onFileAdded(int index) {
-    thumbnailPanelWidget->createLabelAt(index);
+    mw->addThumbnail(index);
 }
 
 void Core::moveFile(QString destDirectory) {
@@ -207,7 +245,7 @@ void Core::moveFile(QString destDirectory) {
         return;
     }
     if(dirManager->copyTo(destDirectory, state.currentIndex)) {
-        removeFile();
+        removeFilePermanent();
         mw->showMessage("File moved to: " + destDirectory);
     } else {
         mw->showMessage("Error moving file to: " + destDirectory);
@@ -216,9 +254,10 @@ void Core::moveFile(QString destDirectory) {
 }
 
 void Core::copyFile(QString destDirectory) {
-    QFile file(destDirectory+"/"+dirManager->fileNameAt(state.currentIndex));
+    QFileInfo file(destDirectory + "/" + dirManager->fileNameAt(state.currentIndex));
     if(file.exists()) {
-        mw->showMessage("Error: file already exists.");
+        if(file.isFile())
+            mw->showMessage("Error: file already exists.");
         return;
     }
     if(!dirManager->copyTo(destDirectory, state.currentIndex)) {
@@ -237,33 +276,6 @@ void Core::toggleCropPanel() {
     }
 }
 
-void Core::fitWindow() {
-    if(viewerWidget->zoomInteractionEnabled()) {
-        viewerWidget->fitWindow();
-        mw->showMessageFitWindow();
-    } else {
-        mw->showMessage("Zoom temporary disabled");
-    }
-}
-
-void Core::fitWidth() {
-    if(viewerWidget->zoomInteractionEnabled()) {
-        viewerWidget->fitWidth();
-        mw->showMessageFitWidth();
-    } else {
-        mw->showMessage("Zoom temporary disabled");
-    }
-}
-
-void Core::fitOriginal() {
-    if(viewerWidget->zoomInteractionEnabled()) {
-        viewerWidget->fitOriginal();
-        mw->showMessageFitOriginal();
-    } else {
-        mw->showMessage("Zoom temporary disabled");
-    }
-}
-
 void Core::requestSavePath() {
     if(state.hasActiveImage) {
         mw->showSaveDialog(dirManager->filePathAt(state.currentIndex));
@@ -271,8 +283,10 @@ void Core::requestSavePath() {
 }
 
 void Core::showResizeDialog() {
-    QString nameKey = dirManager->fileNameAt(state.currentIndex);
-    mw->showResizeDialog(cache->get(nameKey)->size());
+    if(state.hasActiveImage) {
+        QString nameKey = dirManager->fileNameAt(state.currentIndex);
+        mw->showResizeDialog(cache->get(nameKey)->size());
+    }
 }
 
 // TODO: simplify. too much copypasted code
@@ -280,23 +294,23 @@ void Core::showResizeDialog() {
 void Core::resize(QSize size) {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img);
-                imgStatic->setEditedImage(
-                            ImageLib::scale(imgStatic->getImage(), size, 1));
+                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
+                imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                            ImageLib::scaled(imgStatic->getImage(), size, 1)));
                 cache->release(nameKey);
-                cache->unlock();
-                displayImage(img);
+                //cache->unlock();
+                displayImage(img.get());
             } else {
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::resize() - could not lock cache object.";
         }
     }
@@ -306,23 +320,23 @@ void Core::resize(QSize size) {
 void Core::flipH() {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img && img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img);
-                imgStatic->setEditedImage(
-                            ImageLib::flipH(imgStatic->getImage()));
+                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
+                imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                            ImageLib::flippedH(imgStatic->getImage())));
                 cache->release(nameKey);
-                cache->unlock();
-                displayImage(img);
+                //cache->unlock();
+                displayImage(img.get());
             } else {
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::flipH() - could not lock cache object.";
         }
     }
@@ -331,23 +345,23 @@ void Core::flipH() {
 void Core::flipV() {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img && img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img);
-                imgStatic->setEditedImage(
-                            ImageLib::flipV(imgStatic->getImage()));
+                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
+                imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                            ImageLib::flippedV(imgStatic->getImage())));
                 cache->release(nameKey);
-                cache->unlock();
-                displayImage(img);
+                //cache->unlock();
+                displayImage(img.get());
             } else {
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::flipV() - could not lock cache object.";
         }
     }
@@ -357,26 +371,26 @@ void Core::flipV() {
 void Core::crop(QRect rect) {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img);
-                if(!imgStatic->setEditedImage(
-                            ImageLib::crop(imgStatic->getImage(), rect)))
+                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
+                if(!imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                            ImageLib::cropped(imgStatic->getImage(), rect))))
                 {
                     mw->showMessage("Could not crop image: incorrect size / position");
                 }
                 cache->release(nameKey);
-                cache->unlock();
-                displayImage(img);
+                //cache->unlock();
+                displayImage(img.get());
             } else {
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::crop() - could not lock cache object.";
         }
     }
@@ -385,23 +399,23 @@ void Core::crop(QRect rect) {
 void Core::rotateByDegrees(int degrees) {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img && img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img);
-                imgStatic->setEditedImage(
-                            ImageLib::rotate(imgStatic->getImage(), degrees));
+                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
+                imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                            ImageLib::rotated(imgStatic->getImage(), degrees)));
                 cache->release(nameKey);
-                cache->unlock();
-                displayImage(img);
+                //cache->unlock();
+                displayImage(img.get());
             } else {
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::rotateByDegrees() - could not lock cache object.";
         }
     }
@@ -411,25 +425,26 @@ void Core::rotateByDegrees(int degrees) {
 void Core::discardEdits() {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img);
+                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 bool ok = imgStatic->discardEditedImage();
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
                 if(ok)
-                    displayImage(img);
+                    displayImage(img.get());
             } else {
                 cache->release(nameKey);
-                cache->unlock();
+                //cache->unlock();
             }
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::discardEdits() - could not lock cache object.";
         }
     }
+    mw->hideSaveOverlay();
 }
 
 // TODO: simplify. too much copypasted code
@@ -442,56 +457,53 @@ void Core::saveImageToDisk() {
 void Core::saveImageToDisk(QString filePath) {
     if(state.hasActiveImage) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        cache->lock();
+        //cache->lock();
         if(cache->reserve(nameKey)) {
-            auto *img = cache->get(nameKey);
+            std::shared_ptr<Image> img = cache->get(nameKey);
             if(img->save(filePath))
                 mw->showMessage("File saved.");
             else
                 mw->showMessage("Something happened.");
             cache->release(nameKey);
-            cache->unlock();
+            //cache->unlock();
         } else {
-            cache->unlock();
+            //cache->unlock();
             qDebug() << "Core::saveImageToDisk() - could not lock cache object.";
         }
     }
+    mw->hideSaveOverlay();
 }
 
-// switch between 1:1 and Fit All
-void Core::switchFitMode() {
-    if(viewerWidget->fitMode() == FIT_WINDOW)
-        viewerWidget->setFitMode(FIT_ORIGINAL);
-    else
-        viewerWidget->setFitMode(FIT_WINDOW);
+void Core::runScript(const QString &scriptName) {
+    QString nameKey = dirManager->fileNameAt(state.currentIndex);
+    scriptManager->runScript(scriptName, cache->get(nameKey));
 }
 
 void Core::scalingRequest(QSize size) {
     if(state.hasActiveImage && !state.isWaitingForLoader) {
-        cache->lock();
-        Image *forScale = cache->get(dirManager->fileNameAt(state.currentIndex));
+        //cache->lock();
+        std::shared_ptr<Image> forScale = cache->get(dirManager->fileNameAt(state.currentIndex));
         if(forScale) {
             QString path = dirManager->filePathAt(state.currentIndex);
-            scaler->requestScaled(ScalerRequest(forScale, size, path));
+            scaler->requestScaled(ScalerRequest(forScale.get(), size, path));
         }
-        cache->unlock();
+        //cache->unlock();
     }
 }
 
+// TODO: don't use connect? otherwise there is no point using unique_ptr
 void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
     if(state.hasActiveImage /* TODO: a better fix > */ && dirManager->filePathAt(state.currentIndex) == req.string) {
-        viewerWidget->onScalingFinished(scaled);
+        mw->onScalingFinished(std::unique_ptr<QPixmap>(scaled));
     } else {
         delete scaled;
     }
 }
 
-void Core::forwardThumbnail(Thumbnail *thumbnail) {
-    int index = dirManager->indexOf(thumbnail->name);
+void Core::forwardThumbnail(std::shared_ptr<Thumbnail> thumbnail) {
+    int index = dirManager->indexOf(thumbnail->name());
     if(index >= 0) {
-        thumbnailPanelWidget->setThumbnail(index, thumbnail);
-    } else {
-        delete thumbnail;
+        mw->onThumbnailReady(index, thumbnail);
     }
 }
 
@@ -500,19 +512,15 @@ void Core::trimCache() {
     list << dirManager->fileNameAt(state.currentIndex - 1);
     list << dirManager->fileNameAt(state.currentIndex);
     list << dirManager->fileNameAt(state.currentIndex + 1);
-    cache->lock();
+    //cache->lock();
     cache->trimTo(list);
-    cache->unlock();
+    //cache->unlock();
 }
 
 void Core::clearCache() {
-    cache->lock();
+    //cache->lock();
     cache->clear();
-    cache->unlock();
-}
-
-void Core::stopPlayback() {
-    viewerWidget->stopPlayback();
+    //cache->unlock();
 }
 
 // reset state; clear cache; etc
@@ -528,8 +536,10 @@ void Core::reset() {
 bool Core::setDirectory(QString newPath) {
     if(!dirManager->hasImages() || dirManager->currentDirectoryPath() != newPath) {
         this->reset();
+        settings->setLastDirectory(newPath);
         dirManager->setDirectory(newPath);
-        thumbnailPanelWidget->fillPanel(dirManager->fileCount());
+        mw->setDirectoryPath(newPath);
+        mw->populateThumbnailViews(dirManager->fileCount());
         return true;
     }
     return false;
@@ -542,6 +552,7 @@ void Core::loadDirectory(QString path) {
     if(dirManager->hasImages()) {
         // open the first image
         this->loadByIndexBlocking(0);
+        preload(1);
     } else {
         // we got an empty directory; show an error
         mw->showMessage("Directory does not contain supported files.");
@@ -549,7 +560,7 @@ void Core::loadDirectory(QString path) {
 }
 
 void Core::loadImage(QString path, bool blocking) {
-    ImageInfo *info = new ImageInfo(path);
+    DocumentInfo *info = new DocumentInfo(path);
     // new directory
     setDirectory(info->directoryPath());
     state.currentIndex = dirManager->indexOf(info->fileName());
@@ -557,11 +568,13 @@ void Core::loadImage(QString path, bool blocking) {
     QString nameKey = dirManager->fileNameAt(state.currentIndex);
     // First check if image is already cached. If it is, just display it.
     if(cache->contains(nameKey))
-        displayImage(cache->get(nameKey));
+        displayImage(cache->get(nameKey).get());
     else if(blocking)
         loader->loadBlocking(path);
     else
         loader->loadExclusive(path);
+    preload(state.currentIndex - 1);
+    preload(state.currentIndex + 1);
 }
 
 void Core::loadByPath(QString path, bool blocking) {
@@ -593,9 +606,11 @@ bool Core::loadByIndex(int index) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         // First check if image is already cached. If it is, just display it.
         if(cache->contains(nameKey))
-            displayImage(cache->get(nameKey));
+            displayImage(cache->get(nameKey).get());
         else
             loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
+        preload(index - 1);
+        preload(index + 1);
         return true;
     }
     return false;
@@ -608,7 +623,7 @@ bool Core::loadByIndexBlocking(int index) {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         // First check if image is already cached. If it is, just display it.
         if(cache->contains(nameKey))
-            displayImage(cache->get(nameKey));
+            displayImage(cache->get(nameKey).get());
         else
             loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         return true;
@@ -623,7 +638,8 @@ void Core::nextImage() {
             if(infiniteScrolling) {
                 index = 0;
             } else {
-                mw->showMessageDirectoryEnd();
+                if(!state.isWaitingForLoader)
+                    mw->showMessageDirectoryEnd();
                 return;
             }
         }
@@ -632,7 +648,7 @@ void Core::nextImage() {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         // First check if image is already cached. If it is, just display it.
         if(cache->contains(nameKey))
-            displayImage(cache->get(nameKey));
+            displayImage(cache->get(nameKey).get());
         else
             loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         preload(index + 1);
@@ -647,7 +663,8 @@ void Core::prevImage() {
                 index = dirManager->fileCount() - 1;
             }
             else {
-                mw->showMessageDirectoryStart();
+                if(!state.isWaitingForLoader)
+                    mw->showMessageDirectoryStart();
                 return;
             }
         }
@@ -656,7 +673,7 @@ void Core::prevImage() {
         QString nameKey = dirManager->fileNameAt(state.currentIndex);
         // First check if image is already cached. If it is, just display it.
         if(cache->contains(nameKey))
-            displayImage(cache->get(nameKey));
+            displayImage(cache->get(nameKey).get());
         else
             loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         preload(index - 1);
@@ -693,21 +710,24 @@ void Core::onLoadingTimeout() {
     // TODO: show loading message over MainWindow
 }
 
-void Core::onLoadFinished(Image *img) {
+void Core::onLoadFinished(std::shared_ptr<Image> img) {
     int index = dirManager->indexOf(img->name());
     bool isRelevant = !(index < state.currentIndex - 1 || index > state.currentIndex + 1);
     QString nameKey = dirManager->fileNameAt(index);
     if(isRelevant) {
         if(!cache->insert(nameKey, img)) {
-            delete img;
             img = cache->get(nameKey);
         }
-    } else {
-        delete img;
     }
     if(index == state.currentIndex) {
-        displayImage(img);
+        displayImage(img.get());
     }
+}
+
+void Core::onLoadFailed(QString path) {
+    mw->showMessage("Load failed: " + path);
+    if(path == dirManager->filePathAt(state.currentIndex))
+        mw->closeImage();
 }
 
 void Core::displayImage(Image *img) {
@@ -715,18 +735,18 @@ void Core::displayImage(Image *img) {
     state.isWaitingForLoader = false;
     state.hasActiveImage = true;
     if(img) {  // && img->name() != state.displayingFileName) {
-        ImageType type = img->info()->imageType();
+        DocumentType type = img->type();
         if(type == STATIC) {
-            viewerWidget->showImage(img->getPixmap());
+            mw->showImage(img->getPixmap());
         } else if(type == ANIMATED) {
             auto animated = dynamic_cast<ImageAnimated *>(img);
-            viewerWidget->showAnimation(animated->getMovie());
+            mw->showAnimation(animated->getMovie());
         } else if(type == VIDEO) {
             auto video = dynamic_cast<Video *>(img);
             // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
             // affects only initial startup (e.g. we open webm from file manager)
             showGui();
-            viewerWidget->showVideo(video->getClip());
+            mw->showVideo(video->getClip());
         }
         state.displayingFileName = img->name();
         img->isEdited()?mw->showSaveOverlay():mw->hideSaveOverlay();
@@ -748,7 +768,7 @@ void Core::updateInfoString() {
                           " ]   ");
     }
     if(!state.isWaitingForLoader) {
-        Image* img = cache->get(dirManager->fileNameAt(state.currentIndex));
+        std::shared_ptr<Image> img = cache->get(dirManager->fileNameAt(state.currentIndex));
         QString name, fullName = img->name();
         if(fullName.size()>95) {
             name = fullName.left(95);
@@ -764,7 +784,7 @@ void Core::updateInfoString() {
                               QString::number(img->height()) +
                               "  ");
         }
-        infoString.append(QString::number(img->info()->fileSize()) + " KB)");
+        infoString.append(QString::number(img->fileSize()) + " KB)");
     }
     mw->setInfoString(infoString);
 }

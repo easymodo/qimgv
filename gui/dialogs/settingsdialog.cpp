@@ -6,14 +6,24 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
-    this->setWindowTitle("Preferences - qimgv " +
-                         QCoreApplication::applicationVersion());
+    this->setWindowTitle("Preferences - qimgv");
     ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->bgColorLabel->setAutoFillBackground(true);
     ui->accentColorLabel->setAutoFillBackground(true);
-    actionList = actionManager->actionList();
-    shortcutKeys = actionManager->keys();
-    ui->versionLabel->setText(QApplication::applicationVersion());
+    ui->aboutAppTextBrowser->viewport()->setAutoFillBackground(false);
+    ui->versionLabel->setText("" + QApplication::applicationVersion());
+    ui->qtVersionLabel->setText(qVersion());
+
+#ifndef USE_KDE_BLUR
+    ui->blurBackgroundCheckBox->setEnabled(false);
+#endif
+
+#ifndef USE_MPV
+    ui->videoSettingsWidget->setEnabled(false);
+#endif
+
+    setupSidebar();
+
     connect(this, SIGNAL(settingsChanged()),
             settings, SLOT(sendChangeNotification()));
     readSettings();
@@ -21,6 +31,30 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
 SettingsDialog::~SettingsDialog() {
     delete ui;
+}
+
+void SettingsDialog::setupSidebar() {
+    QListWidget *sideBar = ui->sideBar;
+    sideBar->viewport()->setAutoFillBackground(false);
+    // General
+    sideBar->item(0)->setIcon(QIcon(":/res/icons/settings/32/tweak.png"));
+    // Appearance
+    sideBar->item(1)->setIcon(QIcon(":/res/icons/settings/32/colors.png"));
+    // Scaling
+    sideBar->item(2)->setIcon(QIcon(":/res/icons/settings/32/scale.png"));
+    // Controls
+    sideBar->item(3)->setIcon(QIcon(":/res/icons/settings/32/shortcuts.png"));
+    // Scripts
+    sideBar->item(4)->setIcon(QIcon(":/res/icons/settings/32/terminal.png"));
+    // Advanced
+    sideBar->item(5)->setIcon(QIcon(":/res/icons/settings/32/preferences.png"));
+    // About
+    sideBar->item(6)->setIcon(QIcon(":/res/icons/app/32.png"));
+
+    // Not implemented on windows. Not sure if will ever be. I don't really care.
+#ifdef _WIN32
+    sideBar->item(4)->setHidden(true);
+#endif
 }
 
 void SettingsDialog::readSettings() {
@@ -40,6 +74,10 @@ void SettingsDialog::readSettings() {
     ui->smoothUpscalingCheckBox->setChecked(settings->smoothUpscaling());
     ui->expandImageCheckBox->setChecked(settings->expandImage());
     ui->smoothAnimatedImagesCheckBox->setChecked(settings->smoothAnimatedImages());
+    ui->bgOpacitySlider->setValue(static_cast<int>(settings->backgroundOpacity() * 100));
+    ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
+    ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
+    ui->showInfoOverlayCheckBox->setChecked(settings->showInfoOverlay());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -50,6 +88,10 @@ void SettingsDialog::readSettings() {
     onMaxZoomSliderChanged(settings->maximumZoom());
     ui->maxZoomResSlider->setValue(settings->maxZoomedResolution());
     onMaxZoomResolutionSliderChanged(settings->maxZoomedResolution());
+
+    // thumbnailer threads
+    ui->thumbnailerThreadsSlider->setValue(settings->thumbnailerThreadCount());
+    onThumbnailerThreadsSliderChanged(settings->thumbnailerThreadCount());
 
     // ##### fit mode #####
     int fitMode = settings->imageFitMode();
@@ -72,7 +114,7 @@ void SettingsDialog::readSettings() {
 
     // thumbnail size
     // maybe use slider instead of combobox?
-    int size = settings->mainPanelSize();
+    unsigned int size = settings->mainPanelSize();
     switch(size) {
         case SettingsDialog::thumbSizeSmall:
             ui->thumbSizeComboBox->setCurrentIndex(0);
@@ -92,7 +134,8 @@ void SettingsDialog::readSettings() {
             thumbSizeCustom = size;
             break;
     }
-    fillShortcuts();
+    populateShortcuts();
+    populateScripts();
 }
 
 void SettingsDialog::applySettings() {
@@ -103,7 +146,7 @@ void SettingsDialog::applySettings() {
 
     settings->setInfiniteScrolling(ui->infiniteScrollingCheckBox->isChecked());
     settings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
-    settings->setImageFitMode((ImageFitMode)ui->fitModeComboBox->currentIndex());
+    settings->setImageFitMode(static_cast<ImageFitMode>(ui->fitModeComboBox->currentIndex()));
     settings->setPlayWebm(ui->playWebmCheckBox->isChecked());
     settings->setPlayMp4(ui->playMp4CheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
@@ -118,12 +161,16 @@ void SettingsDialog::applySettings() {
     settings->setSmoothUpscaling(ui->smoothUpscalingCheckBox->isChecked());
     settings->setExpandImage(ui->expandImageCheckBox->isChecked());
     settings->setSmoothAnimatedImages(ui->smoothAnimatedImagesCheckBox->isChecked());
+    settings->setBackgroundOpacity(static_cast<qreal>(ui->bgOpacitySlider->value()) / 100);
+    settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
+    settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
+    settings->setShowInfoOverlay(ui->showInfoOverlayCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 
     settings->setScalingFilter(ui->scalingQualityComboBox->currentIndex());
 
-    settings->setPanelPosition((PanelHPosition) ui->panelPositionComboBox->currentIndex());
+    settings->setPanelPosition(static_cast<PanelHPosition>(ui->panelPositionComboBox->currentIndex()));
 
     settings->setBackgroundColor(bgLabelPalette.color(QPalette::Window));
     settings->setAccentColor(accentLabelPalette.color(QPalette::Window));
@@ -143,8 +190,11 @@ void SettingsDialog::applySettings() {
 
     settings->setMaximumZoom(ui->maxZoomSlider->value());
     settings->setMaxZoomedResolution(ui->maxZoomResSlider->value());
+    settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
 
     applyShortcuts();
+
+    scriptManager->saveScripts();
     actionManager->saveShortcuts();
     emit settingsChanged();
 }
@@ -154,7 +204,7 @@ void SettingsDialog::applySettingsAndClose() {
     this->close();
 }
 
-void SettingsDialog::fillShortcuts() {
+void SettingsDialog::populateShortcuts() {
     ui->shortcutsTableWidget->clearContents();
     ui->shortcutsTableWidget->setRowCount(0);
     const QMap<QString, QString> shortcuts = actionManager->allShortcuts();
@@ -164,9 +214,80 @@ void SettingsDialog::fillShortcuts() {
         addShortcutToTable(i.value(), i.key());
     }
 }
+//------------------------------------------------------------------------------
+void SettingsDialog::populateScripts() {
+    ui->scriptsListWidget->clear();
+    const QMap<QString, Script> scripts = scriptManager->allScripts();
+    QMapIterator<QString, Script> i(scripts);
+    while(i.hasNext()) {
+        i.next();
+        addScriptToList(i.key());
+    }
+}
 
 // does not check if the shortcut already there
+void SettingsDialog::addScriptToList(const QString &name) {
+    if(name.isEmpty())
+        return;
+
+    QListWidget *list = ui->scriptsListWidget;
+    QListWidgetItem *nameItem = new QListWidgetItem(name);
+    nameItem->setTextAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    list->insertItem(ui->scriptsListWidget->count(), nameItem);
+    list->sortItems(Qt::AscendingOrder);
+}
+
+void SettingsDialog::addScript() {
+    ScriptEditorDialog w;
+    if(w.exec()) {
+        if(w.scriptName().isEmpty())
+            return;
+        scriptManager->addScript(w.scriptName(), w.script());
+        populateScripts();
+    }
+}
+
+void SettingsDialog::editScript() {
+    int row = ui->scriptsListWidget->currentRow();
+    if(row >= 0) {
+        QString name = ui->scriptsListWidget->currentItem()->text();
+        editScript(name);
+    }
+}
+
+void SettingsDialog::editScript(QListWidgetItem* item) {
+    if(item) {
+        editScript(item->text());
+    }
+}
+
+void SettingsDialog::editScript(QString name) {
+    ScriptEditorDialog w(name, scriptManager->getScript(name));
+    if(w.exec()) {
+        if(w.scriptName().isEmpty())
+            return;
+        scriptManager->addScript(w.scriptName(), w.script());
+        populateScripts();
+    }
+}
+
+void SettingsDialog::removeScript() {
+    int row = ui->scriptsListWidget->currentRow();
+    if(row >= 0) {
+        QString scriptName = ui->scriptsListWidget->currentItem()->text();
+        delete ui->scriptsListWidget->takeItem(row);
+        applyShortcuts();
+        actionManager->removeAllShortcuts("s:"+scriptName);
+        populateShortcuts();
+        scriptManager->removeScript(scriptName);
+    }
+}
+//------------------------------------------------------------------------------
+// does not check if the shortcut already there
 void SettingsDialog::addShortcutToTable(const QString &action, const QString &shortcut) {
+    if(action.isEmpty() || shortcut.isEmpty())
+        return;
+
     ui->shortcutsTableWidget->setRowCount(ui->shortcutsTableWidget->rowCount() + 1);
     QTableWidgetItem *actionItem = new QTableWidgetItem(action);
     actionItem->setTextAlignment(Qt::AlignCenter);
@@ -179,17 +300,26 @@ void SettingsDialog::addShortcutToTable(const QString &action, const QString &sh
 }
 
 void SettingsDialog::addShortcut() {
-    SettingsShortcutWidget w(actionList, shortcutKeys, this);
+    ShortcutCreatorDialog w;
     if(w.exec()) {
+        for(int i = 0; i < ui->shortcutsTableWidget->rowCount(); i++) {
+            if(ui->shortcutsTableWidget->item(i, 1)->text() == w.selectedShortcut()) {
+                removeShortcutAt(i);
+            }
+        }
         addShortcutToTable(w.selectedAction(), w.selectedShortcut());
     }
 }
 
+void SettingsDialog::removeShortcutAt(int row) {
+    if(row > 0 && row >= ui->shortcutsTableWidget->rowCount())
+        return;
+
+    ui->shortcutsTableWidget->removeRow(row);
+}
+
 void SettingsDialog::removeShortcut() {
-    int row = ui->shortcutsTableWidget->currentRow();
-    if(row >= 0) {
-        ui->shortcutsTableWidget->removeRow(row);
-    }
+    removeShortcutAt(ui->shortcutsTableWidget->currentRow());
 }
 
 void SettingsDialog::applyShortcuts() {
@@ -202,7 +332,7 @@ void SettingsDialog::applyShortcuts() {
 
 void SettingsDialog::resetShortcuts() {
     actionManager->resetDefaults();
-    fillShortcuts();
+    populateShortcuts();
 }
 
 void SettingsDialog::selectMpvPath() {
@@ -249,9 +379,17 @@ void SettingsDialog::onMaxZoomResolutionSliderChanged(int value) {
     ui->maxZoomResInfoLabel->setText("<small><i>Max. memory usage: ~" + QString::number(value * 4) + "MB @ 32bpp</i></small>");
 }
 
+void SettingsDialog::onThumbnailerThreadsSliderChanged(int value) {
+    ui->thumbnailerThreadsLabel->setText(QString::number(value));
+}
+
+void SettingsDialog::onBgOpacitySliderChanged(int value) {
+    ui->bgOpacityPercentLabel->setText(QString::number(value) + "%");
+}
+
 int SettingsDialog::exec() {
-    this->show();
-    setMinimumSize(sizeHint() + QSize(20, 0));
-    resize(sizeHint() + QSize(20, 0));
+    //this->show();
+    //setMinimumSize(sizeHint());
+    //resize(sizeHint());
     return QDialog::exec();
 }

@@ -12,10 +12,8 @@
 #include "components/loader/loader.h"
 #include "components/scaler/scaler.h"
 #include "components/thumbnailer/thumbnailer.h"
+#include "components/scriptmanager/scriptmanager.h"
 #include "gui/mainwindow.h"
-#include "gui/viewers/viewerwidget.h"
-#include "gui/viewers/imageviewer.h"
-#include "gui/viewers/videoplayermpv.h"
 
 struct State {
     State() : currentIndex(0), hasActiveImage(false), isWaitingForLoader(false) {}
@@ -54,12 +52,11 @@ private:
     void initComponents();
     void connectComponents();
     void initActions();
-    void postUpdate();
+    void onUpdate();
+    void onFirstRun();
 
     // ui stuff
     MainWindow *mw;
-    ViewerWidget *viewerWidget;
-    ThumbnailStrip *thumbnailPanelWidget;
 
     State state;
     QTimer *loadingTimer; // this is for loading message delay. TODO: replace with something better
@@ -88,23 +85,21 @@ private slots:
     void prevImage();
     void jumpToFirst();
     void jumpToLast();
-    void onLoadFinished(Image *img);
+    void onLoadFinished(std::shared_ptr<Image> img);
+    void onLoadFailed(QString path);
     void onLoadStarted();
     void onLoadingTimeout();
     void clearCache();
-    void stopPlayback();
     void rotateLeft();
     void rotateRight();
     void closeBackgroundTasks();
     void close();
-    void switchFitMode();
     void scalingRequest(QSize);
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
-    void forwardThumbnail(Thumbnail*);
-    void removeFile();
+    void forwardThumbnail(std::shared_ptr<Thumbnail> thumbnail);
     void moveFile(QString destDirectory);
     void copyFile(QString destDirectory);
-    void removeFile(int index);
+    void removeFile(int index, bool trash);
     void onFileRemoved(int index);
     void onFileAdded(int index);
     void showResizeDialog();
@@ -114,12 +109,14 @@ private slots:
     void crop(QRect rect);
     void discardEdits();
     void toggleCropPanel();
-    void fitWindow();
-    void fitWidth();
-    void fitOriginal();
     void requestSavePath();
     void saveImageToDisk();
     void saveImageToDisk(QString);
+    void runScript(const QString&);
+    void removeFilePermanent();
+    void removeFilePermanent(int index);
+    void moveToTrash();
+    void moveToTrash(int index);
 };
 
 #endif // CORE_H

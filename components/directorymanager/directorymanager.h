@@ -3,10 +3,11 @@
 
 #include <QObject>
 #include <QMimeDatabase>
+#include <QStandardPaths>
 #include <QDir>
-#include <QCollator>
 #include <algorithm>
 #include <vector>
+#include <QCollator>
 #include <QElapsedTimer>
 #include <QUrl>
 #include <QFile>
@@ -17,7 +18,11 @@
 #include <QMessageBox>
 #include <QImageReader>
 #include "settings.h"
-#include "sourcecontainers/imageinfo.h"
+#include "sourcecontainers/documentinfo.h"
+
+#ifdef Q_OS_WIN32
+#include "windows.h"
+#endif
 
 class DirectoryManager : public QObject
 {
@@ -32,7 +37,7 @@ public:
     QStringList fileList() const;
     QString currentDirectoryPath() const;
     QString filePathAt(int index) const;
-    bool removeAt(int index);
+    bool removeAt(int index, bool trash);
     int fileCount() const;
     bool existsInCurrentDir(QString fileName) const;
     bool isImage(QString filePath) const;
@@ -42,6 +47,8 @@ public:
     bool copyTo(QString destDirectory, int index);
     QString fileNameAt(int index) const;
     bool isDirectory(QString path) const;
+    void sortFileList();
+    void sortFileList(SortingMode mode);
 
 private slots:
     void fileChanged(const QString file);
@@ -50,21 +57,21 @@ private slots:
 private:
     QDir currentDir;
     QStringList mFileNameList;
-    QStringList mimeFilters, extensionFilters;
+    QStringList mimeFilter, nameFilter;
 
     void readSettings();
 //    WatcherWindows watcher;
     QMimeDatabase mimeDb;
     bool quickFormatDetection;
 
-    void generateFileList();
-    void generateFileListQuick();
-    void generateFileListDeep();
+    void generateFileList(SortingMode mode);
+    //void generateFileListQuick();
+    //void generateFileListDeep();
 
     void onFileRemovedExternal(QString);
 
-    void sortFileList();
     void onFileChangedExternal(QString fileName);
+    void moveToTrash(QString file);
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();

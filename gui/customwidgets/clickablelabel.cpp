@@ -15,6 +15,6 @@ ClickableLabel::ClickableLabel(const QString &text, QWidget *parent) : QLabel(pa
 }
 
 void ClickableLabel::mousePressEvent(QMouseEvent *event) {
-    Q_UNUSED (event)
+    QLabel::mousePressEvent(event);
     emit clicked();
 }
