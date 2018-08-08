@@ -33,7 +33,12 @@ SlidePanel::SlidePanel(OverlayContainerWidget *parent)
     timeline.setCurveShape(QTimeLine::LinearCurve);
     timeline.setStartFrame(0);
     timeline.setEndFrame(100);
+    // For some reason 16 feels janky on windows. Linux is fine.
+#ifdef _WIN32
+    timeline.setUpdateInterval(8);
+#else
     timeline.setUpdateInterval(16);
+#endif
 
     connect(&timeline, SIGNAL(frameChanged(int)), this, SLOT(animationUpdate(int)));
     connect(&timeline, SIGNAL(finished()), this, SLOT(onAnimationFinish()));

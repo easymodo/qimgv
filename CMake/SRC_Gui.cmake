@@ -27,6 +27,8 @@ else()
     file(GLOB SRC_Gui ${SRC_Gui} ${dir}/playerdummy/*.cpp)
 endif()
 
+set(dir "gui/folderview")
+file(GLOB SRC_Gui ${SRC_Gui} ${dir}/*.cpp)
 
 # clean up some possible mess from old builds
 list(REMOVE_ITEM SRC_Gui */moc_*.cpp)

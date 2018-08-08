@@ -274,16 +274,19 @@ void MainWindow::saveCurrentDisplay() {
 //#############################################################
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event) {
-    if(event->buttons() != Qt::RightButton && event->buttons() != Qt::LeftButton) {
-        if(panelEnabled && (isFullScreen() || !panelFullscreenOnly)) {
-            if( mainPanel->triggerRect().contains(event->pos()) &&
-               !mainPanel->triggerRect().contains(lastMouseMovePos))
-            {
-                mainPanel->show();
-            }
-        }
-        event->ignore();
+    if(event->buttons() != Qt::NoButton) {
+        lastMouseMovePos = event->pos();
+        return;
     }
+
+    if(panelEnabled && (isFullScreen() || !panelFullscreenOnly)) {
+        if( mainPanel->triggerRect().contains(event->pos()) &&
+           !mainPanel->triggerRect().contains(lastMouseMovePos))
+        {
+            mainPanel->show();
+        }
+    }
+    event->ignore();
     lastMouseMovePos = event->pos();
 }
 
