@@ -16,7 +16,7 @@ Core::Core()
       scaler(nullptr),
       thumbnailer(nullptr)
 {
-#ifdef __linux__
+#ifdef __GLIBC__
     // default value of 128k causes memory fragmentation issues
     // finding this took 3 days of my life
     mallopt(M_MMAP_THRESHOLD, 64000);
