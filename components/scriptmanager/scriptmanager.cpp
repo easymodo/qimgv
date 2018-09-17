@@ -25,19 +25,15 @@ void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> 
     if(scripts.contains(scriptName)) {
         Script script = scripts.value(scriptName);
         QProcess exec(this);
-
         QStringList command = splitCommandLine(script.command);
         processArguments(command, img);
-        exec.setProgram(command.takeAt(0));
-        exec.setArguments(command);
-
         if(script.blocking) {
-            exec.start();
+            exec.start(command.takeAt(0), command);
             if(!exec.waitForStarted())
                 qDebug() << "[ScriptManager] Unable not start:" << exec.program() << " Make sure it is an executable.";
             exec.waitForFinished(10000);
         } else {
-            if(!exec.startDetached()) {
+            if(!exec.startDetached(command.takeAt(0), command)) {
                 qWarning() << "[ScriptManager] Unable not start:" << exec.program() << " Make sure it is an executable.";
             }
         }

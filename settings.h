@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSettings>
 #include <QApplication>
+#include <QStandardPaths>
 #include <QDebug>
 #include <QImageReader>
 #include <QStringList>
@@ -143,10 +144,11 @@ public:
     void setShowInfoOverlay(bool mode);
     bool firstRun();
     void setFirstRun(bool mode);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;
-    QSettings s;
+    QSettings *s;
     QDir *cacheDirectory, *thumbnailDirectory;
 
 signals:

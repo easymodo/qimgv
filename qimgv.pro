@@ -21,8 +21,9 @@ QMAKE_CXXFLAGS_RELEASE -= -O1
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
-CONFIG += WITH_MPV
+#CONFIG += WITH_MPV
 CONFIG += WITH_KDE_BLUR
+CONFIG += PORTABLE
 
 # video support
 WITH_MPV {
@@ -50,6 +51,12 @@ unix {
     WITH_KDE_BLUR {
         QT += KWindowSystem
         DEFINES += USE_KDE_BLUR
+    }
+}
+
+PORTABLE {
+    windows {
+        DEFINES += IS_PORTABLE
     }
 }
 
