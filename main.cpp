@@ -4,6 +4,7 @@
 #include "components/actionmanager/actionmanager.h"
 #include "utils/inputmap.h"
 #include "utils/actions.h"
+#include "utils/helprunner.h"
 #include "sharedresources.h"
 #include "core.h"
 
@@ -40,6 +41,20 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationName("qimgv");
     QCoreApplication::setApplicationVersion(appVersion.normalized().toString());
 
+    // get arguments
+    QString arg1;
+    if(a.arguments().length() > 1) {
+        arg1 = a.arguments().at(1);
+    }
+
+    // output help text & shutdown
+    if(arg1 == "-h" || arg1 == "--help") {
+        HelpRunner r;
+        QTimer::singleShot(0, &r, SLOT(run()));
+        return a.exec();
+    }
+
+    // init
     // needed for mpv
     std::setlocale(LC_NUMERIC, "C");
 
@@ -61,9 +76,9 @@ int main(int argc, char *argv[]) {
     }
 
     Core core;
-    if(a.arguments().length() > 1) {
-        QString fileName = a.arguments().at(1);
-        core.loadByPathBlocking(fileName);
+    // assume 1st arg is the filename
+    if(!arg1.isEmpty()) {
+        core.loadByPathBlocking(arg1);
     }
     core.showGui();
     return a.exec();
