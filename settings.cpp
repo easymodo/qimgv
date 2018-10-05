@@ -402,6 +402,8 @@ void Settings::readShortcuts(QMap<QString, QString> &shortcuts) {
     for(int i = 0; i < in.count(); i++) {
         pair = in[i].split("=");
         if(!pair[0].isEmpty() && !pair[1].isEmpty()) {
+            if(pair[1]=="eq")
+                pair[1]="=";
             shortcuts.insert(pair[1], pair[0]);
         }
     }
@@ -414,7 +416,10 @@ void Settings::saveShortcuts(const QMap<QString, QString> &shortcuts) {
     QStringList out;
     while(i.hasNext()) {
         i.next();
-        out << i.value() + "=" + i.key();
+        if(i.key() == "=")
+            out << i.value() + "=" + "eq";
+        else
+            out << i.value() + "=" + i.key();
     }
     settings->s->setValue("shortcuts", out);
     settings->s->endGroup();
