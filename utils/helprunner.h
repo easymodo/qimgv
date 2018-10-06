@@ -20,7 +20,7 @@ public slots:
 
         QStringList features;
 #ifdef USE_MPV
-        features << "USE_MPV"
+        features << "USE_MPV";
 #endif
 #ifdef USE_KDE_BLUR
         features << "USE_KDE_BLUR";
