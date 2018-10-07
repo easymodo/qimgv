@@ -83,6 +83,8 @@ private:
     void saveCurrentDisplay();
     void setupUi();
 
+    void applyWindowedBackground();
+    void applyFullscreenBackground();
 private slots:
     void updateCurrentDisplay();
     void readSettings();

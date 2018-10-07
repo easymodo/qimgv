@@ -32,7 +32,7 @@ public:
 public slots:
     int exec();
 private:
-    QPalette bgLabelPalette, accentLabelPalette;
+    QPalette windowColorPalette, fullscreenColorPalette, accentLabelPalette;
     void readSettings();
     void populateShortcuts();
     void populateScripts();
@@ -54,7 +54,7 @@ private:
 private slots:
     void applySettings();
     void applySettingsAndClose();
-    void bgColorDialog();
+    void windowColorDialog();
     void accentColorDialog();
 
     void addScript();
@@ -71,6 +71,7 @@ private slots:
     void onMaxZoomResolutionSliderChanged(int value);
     void onBgOpacitySliderChanged(int value);
     void onThumbnailerThreadsSliderChanged(int value);
+    void fullscreenColorDialog();
 signals:
     void settingsChanged();
 };

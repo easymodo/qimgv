@@ -287,6 +287,14 @@ void Settings::setBackgroundColor(QColor color) {
     settings->s->setValue("bgColor", color);
 }
 //------------------------------------------------------------------------------
+QColor Settings::backgroundColorFullscreen() {
+    return settings->s->value("bgColorFullscreen", QColor(27, 27, 28)).value<QColor>();
+}
+
+void Settings::setBackgroundColorFullscreen(QColor color) {
+    settings->s->setValue("bgColorFullscreen", color);
+}
+//------------------------------------------------------------------------------
 QColor Settings::accentColor() {
     return settings->s->value("accentColor", QColor(17, 121, 100)).value<QColor>();
 }

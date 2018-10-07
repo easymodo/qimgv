@@ -400,6 +400,7 @@ void MainWindow::triggerFullScreen() {
 }
 
 void MainWindow::showFullScreen() {
+    applyFullscreenBackground();
     //do not save immediately on application start
     if(!isHidden())
         saveWindowGeometry();
@@ -415,6 +416,7 @@ void MainWindow::showFullScreen() {
 }
 
 void MainWindow::showWindowed() {
+    applyWindowedBackground();
     QWidget::show();
     QWidget::showNormal();
     restoreWindowGeometry();
@@ -557,14 +559,10 @@ void MainWindow::showMessage(QString text, int duration) {
 }
 
 void MainWindow::readSettings() {
-    bgColor   = settings->backgroundColor();
-    bgOpacity = settings->backgroundOpacity();
-#ifdef USE_KDE_BLUR
-    if(bgOpacity == 1.0)
-        KWindowEffects::enableBlurBehind(winId(), false);
+    if(isFullScreen())
+        applyFullscreenBackground();
     else
-        KWindowEffects::enableBlurBehind(winId(), settings->blurBackground());
-#endif
+        applyWindowedBackground();
     panelPosition = settings->panelPosition();
     panelEnabled = settings->panelEnabled();
     panelFullscreenOnly = settings->panelFullscreenOnly();
@@ -572,6 +570,26 @@ void MainWindow::readSettings() {
     setControlsOverlayEnabled(this->isFullScreen());
     showInfoOverlay(this->isFullScreen());
     triggerPanelButtons();
+    update();
+}
+
+void MainWindow::applyWindowedBackground() {
+    bgColor = settings->backgroundColor();
+    bgOpacity = settings->backgroundOpacity();
+#ifdef USE_KDE_BLUR
+    if(bgOpacity == 1.0)
+        KWindowEffects::enableBlurBehind(winId(), false);
+    else
+        KWindowEffects::enableBlurBehind(winId(), settings->blurBackground());
+#endif
+}
+
+void MainWindow::applyFullscreenBackground() {
+    bgColor = settings->backgroundColorFullscreen();
+    bgOpacity = 1.0;
+#ifdef USE_KDE_BLUR
+    KWindowEffects::enableBlurBehind(winId(), false);
+#endif
 }
 
 void MainWindow::setControlsOverlayEnabled(bool mode) {

@@ -8,7 +8,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle("Preferences - qimgv");
     ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->bgColorLabel->setAutoFillBackground(true);
+    ui->windowColorLabel->setAutoFillBackground(true);
+    ui->fullscreenColorLabel->setAutoFillBackground(true);
     ui->accentColorLabel->setAutoFillBackground(true);
     ui->aboutAppTextBrowser->viewport()->setAutoFillBackground(false);
     ui->versionLabel->setText("" + QApplication::applicationVersion());
@@ -102,10 +103,14 @@ void SettingsDialog::readSettings() {
     ui->fullscreenCheckBox->setChecked(settings->fullscreenMode());
     ui->panelPositionComboBox->setCurrentIndex(settings->panelPosition());
 
-    //bg color
-    QColor bgColor = settings->backgroundColor();
-    bgLabelPalette.setColor(QPalette::Window, bgColor);
-    ui->bgColorLabel->setPalette(bgLabelPalette);
+    //bg colors
+    QColor windowColor = settings->backgroundColor();
+    windowColorPalette.setColor(QPalette::Window, windowColor);
+    ui->windowColorLabel->setPalette(windowColorPalette);
+
+    QColor fullscreenColor = settings->backgroundColorFullscreen();
+    fullscreenColorPalette.setColor(QPalette::Window, fullscreenColor);
+    ui->fullscreenColorLabel->setPalette(fullscreenColorPalette);
 
     //accent color
     QColor accentColor = settings->accentColor();
@@ -172,7 +177,8 @@ void SettingsDialog::applySettings() {
 
     settings->setPanelPosition(static_cast<PanelHPosition>(ui->panelPositionComboBox->currentIndex()));
 
-    settings->setBackgroundColor(bgLabelPalette.color(QPalette::Window));
+    settings->setBackgroundColor(windowColorPalette.color(QPalette::Window));
+    settings->setBackgroundColorFullscreen(fullscreenColorPalette.color(QPalette::Window));
     settings->setAccentColor(accentLabelPalette.color(QPalette::Window));
 
     int index = ui->thumbSizeComboBox->currentIndex();
@@ -344,15 +350,28 @@ void SettingsDialog::selectMpvPath() {
     }
 }
 
-void SettingsDialog::bgColorDialog() {
+void SettingsDialog::windowColorDialog() {
     QColorDialog *colorDialog = new QColorDialog(this);
     QColor newColor;
-    newColor = colorDialog->getColor(bgLabelPalette.color(QPalette::Window),
+    newColor = colorDialog->getColor(windowColorPalette.color(QPalette::Window),
                                      this,
-                                     "Background color.");
+                                     "Windowed mode background");
     if(newColor.isValid()) {
-        bgLabelPalette.setColor(QPalette::Window, newColor);
-        ui->bgColorLabel->setPalette(bgLabelPalette);
+        windowColorPalette.setColor(QPalette::Window, newColor);
+        ui->windowColorLabel->setPalette(windowColorPalette);
+    }
+    delete colorDialog;
+}
+
+void SettingsDialog::fullscreenColorDialog() {
+    QColorDialog *colorDialog = new QColorDialog(this);
+    QColor newColor;
+    newColor = colorDialog->getColor(fullscreenColorPalette.color(QPalette::Window),
+                                     this,
+                                     "Fullscreen mode background");
+    if(newColor.isValid()) {
+        fullscreenColorPalette.setColor(QPalette::Window, newColor);
+        ui->fullscreenColorLabel->setPalette(fullscreenColorPalette);
     }
     delete colorDialog;
 }
@@ -362,7 +381,7 @@ void SettingsDialog::accentColorDialog() {
     QColor newColor;
     newColor = colorDialog->getColor(accentLabelPalette.color(QPalette::Window),
                                      this,
-                                     "Accent color.");
+                                     "Accent color");
     if(newColor.isValid()) {
         accentLabelPalette.setColor(QPalette::Window, newColor);
         ui->accentColorLabel->setPalette(accentLabelPalette);

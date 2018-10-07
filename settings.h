@@ -145,6 +145,8 @@ public:
     bool firstRun();
     void setFirstRun(bool mode);
 
+    QColor backgroundColorFullscreen();
+    void setBackgroundColorFullscreen(QColor color);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;
