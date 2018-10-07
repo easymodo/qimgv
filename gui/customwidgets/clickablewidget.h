@@ -2,6 +2,7 @@
 #define CLICKABLEWIDGET_H
 
 #include <QWidget>
+#include <QDebug>
 #include <QMouseEvent>
 
 class ClickableWidget : public QWidget

@@ -1,7 +1,7 @@
 #include "contextmenuitem.h"
 
 ContextMenuItem::ContextMenuItem(QWidget *parent)
-    : ClickableWidget(parent) ,
+    : QWidget(parent),
       action("")
 {
     layout.setContentsMargins(11,5,11,5);
@@ -22,9 +22,6 @@ ContextMenuItem::ContextMenuItem(QWidget *parent)
     layout.addWidget(&shortcut);
 
     setLayout(&layout);
-
-    connect(this, SIGNAL(clicked()),
-            this, SLOT(onClick()));
 }
 
 ContextMenuItem::~ContextMenuItem() {
@@ -55,4 +52,13 @@ void ContextMenuItem::paintEvent(QPaintEvent *event) {
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void ContextMenuItem::mousePressEvent(QMouseEvent *event) {
+    // the order here matters
+    // hide the parent menu FIRST, then do whatever
+    // otherwise it may stay visible when it shouldn't be
+    this->parentWidget()->hide();
+    onClick();
+    QWidget::mousePressEvent(event);
 }

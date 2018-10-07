@@ -4,7 +4,7 @@ ClickableWidget::ClickableWidget(QWidget *parent) : QWidget(parent) {
 }
 
 void ClickableWidget::mousePressEvent(QMouseEvent *event) {
-    QWidget::mouseReleaseEvent(event);
+    QWidget::mousePressEvent(event);
     emit pressed();
 }
 

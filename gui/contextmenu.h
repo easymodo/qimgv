@@ -26,8 +26,7 @@ private:
 
 protected:
     void paintEvent(QPaintEvent *);
-private slots:
-    void onPressed();
+
 };
 
 #endif // CONTEXTMENU_H

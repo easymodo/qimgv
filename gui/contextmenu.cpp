@@ -70,7 +70,7 @@ ContextMenu::ContextMenu(QWidget *parent) :
     ui->settings->setText("Settings");
     ui->settings->setPixmap(QPixmap(":/res/icons/buttons/settings16.png"));
     // -------------------------------------------------------------------------
-    connect(this, SIGNAL(pressed()), this, SLOT(onPressed()));
+    connect(this, SIGNAL(pressed()), this, SLOT(hide()));
 }
 
 ContextMenu::~ContextMenu() {
@@ -87,11 +87,6 @@ void ContextMenu::setImageEntriesEnabled(bool mode) {
     ui->copy->setEnabled(mode);
     ui->move->setEnabled(mode);
     ui->trash->setEnabled(mode);
-}
-
-//hide self on click
-void ContextMenu::onPressed() {
-    this->hide();
 }
 
 void ContextMenu::showAt(QPoint pos) {
