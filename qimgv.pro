@@ -229,7 +229,8 @@ HEADERS += \
     gui/centralwidget.h \
     gui/contextmenu.h \
     gui/customwidgets/contextmenuitem.h \
-    utils/numeric.h
+    utils/numeric.h \
+    utils/helprunner.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \
