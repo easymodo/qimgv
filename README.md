@@ -1,4 +1,4 @@
-qimgv | Current version: 0.7.0
+qimgv | Current version: 0.7.1
 =====
 A cross-platform image viewer with webm support. Written in qt5.
 
@@ -109,19 +109,28 @@ You can put it in `qimgv.desktop` file to make it permanent. Using values less t
   
   __Gentoo:__ `emerge qimgv`
     
-  __Others distros (build & install via script):__
+  __Other distros (manual install):__
   
   1. Install dependencies ( git, cmake, qt >= 5.6, libmpv >= 0.22, mpv)
-     - Ubuntu & derivatives
-		```
-		sudo apt install build-essential cmake qt5-default libmpv-dev 
-		```
+  
+     __Ubuntu & derivatives:__
+     
+     	`sudo apt install build-essential cmake qt5-default libmpv-dev `
+     
+     __Fedora__:
+     
+     	Enable RPMFusion in order to get `mpv` [https://rpmfusion.org/Configuration](https://rpmfusion.org/Configuration).
+	
+        `sudo dnf install git cmake qt5 qt5-devel gcc-c++ qt5-devel mpv mpv-libs-devel`
+		
   2. Build
 ```
 git clone https://github.com/easymodo/qimgv.git
 cd qimgv/scripts
 ./build.sh
 ```
+  _Note:_ in order to get background blur in kde run `build-kde.sh` instead.
+  
   3. Install  
 ```
 ./install.sh
