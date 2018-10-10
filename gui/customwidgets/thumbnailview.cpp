@@ -6,10 +6,8 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       thumbnailSize(130)
 {
     setAccessibleName("thumbnailView");
-    //setViewport(new QOpenGLWidget());
     this->setMouseTracking(true);
     this->setScene(&scene);
-    //scene.setBackgroundBrush();
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate); // more buggy than smart
     //setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     this->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing, true);
@@ -17,7 +15,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     setRenderHint(QPainter::Antialiasing, false);
     setRenderHint(QPainter::SmoothPixmapTransform, false);
     //setAttribute(Qt::WA_OpaquePaintEvent, true);
-    //setCacheMode(QGraphicsView::CacheBackground);
+    // breaks panel animation
     //this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
 
     /* scrolling-related things */
@@ -140,7 +138,6 @@ void ThumbnailView::centerOnX(int dx) {
 
 void ThumbnailView::centerOnY(int dy) {
     centerOn(viewportCenter.x(), dy);
-    //scrollBar->setValue(scrollBar->value()+1);
 }
 
 void ThumbnailView::resetViewport() {
