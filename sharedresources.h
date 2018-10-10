@@ -15,7 +15,7 @@ public:
 
     QPixmap *loadingErrorIcon72();
 private:
-    QPixmap *mLoadingIcon72, *mLoadingErrorIcon72;
+    QPixmap *mLoadingIcon72 = nullptr, *mLoadingErrorIcon72 = nullptr;
 };
 
 extern SharedResources *shrRes;

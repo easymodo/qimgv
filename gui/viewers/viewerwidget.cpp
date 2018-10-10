@@ -9,6 +9,7 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     : OverlayContainerWidget(parent),
       imageViewer(nullptr),
       videoPlayer(nullptr),
+      contextMenu(nullptr),
       currentWidget(UNSET),
       mInteractionEnabled(false)
 {
@@ -17,8 +18,6 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
     layout.setContentsMargins(0, 0, 0, 0);
     this->setLayout(&layout);
-
-    contextMenu.reset(new ContextMenu());
 
     imageViewer.reset(new ImageViewer(this));
     imageViewer->hide();
@@ -322,12 +321,16 @@ void ViewerWidget::showContextMenu() {
 
 void ViewerWidget::showContextMenu(QPoint pos) {
     if(interactionEnabled()) {
+        if(!contextMenu)
+            contextMenu.reset(new ContextMenu());
         contextMenu->setImageEntriesEnabled(isDisplaying());
         contextMenu->showAt(pos);
     }
 }
 
 void ViewerWidget::hideContextMenu() {
+    if(!contextMenu)
+        contextMenu.reset(new ContextMenu());
     contextMenu->hide();
 }
 

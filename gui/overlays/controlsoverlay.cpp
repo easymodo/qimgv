@@ -30,7 +30,7 @@ ControlsOverlay::ControlsOverlay(OverlayContainerWidget *parent) :
     fadeAnimation->setStartValue(1.0f);
     fadeAnimation->setEndValue(0);
     fadeAnimation->setEasingCurve(QEasingCurve::OutQuart);
-    this->show();
+    //this->show();
 }
 
 void ControlsOverlay::show() {

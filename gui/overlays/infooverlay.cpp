@@ -17,7 +17,6 @@ InfoOverlay::InfoOverlay(OverlayContainerWidget *parent)
         font.setPointSizeF(font.pointSizeF() * 0.9);
     }
     fm = new QFontMetrics(font);
-    setText("No file opened.");
     hide();
 }
 
