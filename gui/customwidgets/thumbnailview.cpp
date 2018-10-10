@@ -3,19 +3,27 @@
 ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     : QGraphicsView(parent),
       orientation(orient),
-      thumbnailSize(160)
+      thumbnailSize(130)
 {
     setAccessibleName("thumbnailView");
+    //setViewport(new QOpenGLWidget());
     this->setMouseTracking(true);
     this->setScene(&scene);
-    //setViewportUpdateMode(QGraphicsView::SmartViewportUpdate); // more buggy than smart
-    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    //scene.setBackgroundBrush();
+    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate); // more buggy than smart
+    //setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    this->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing, true);
+    this->setOptimizationFlag(QGraphicsView::DontSavePainterState, true);
+    setRenderHint(QPainter::Antialiasing, false);
+    setRenderHint(QPainter::SmoothPixmapTransform, false);
+    //setAttribute(Qt::WA_OpaquePaintEvent, true);
+    //setCacheMode(QGraphicsView::CacheBackground);
+    //this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
 
     /* scrolling-related things */
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
-    //timeLine->setEasingCurve(QEasingCurve::OutCubic);
-    //timeLine->setEasingCurve(QEasingCurve::OutQuad);
     timeLine->setEasingCurve(QEasingCurve::OutSine);
+
     timeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
     scrollTimer.setSingleShot(true);
     scrollTimer.setInterval(40);
@@ -132,6 +140,7 @@ void ThumbnailView::centerOnX(int dx) {
 
 void ThumbnailView::centerOnY(int dy) {
     centerOn(viewportCenter.x(), dy);
+    //scrollBar->setValue(scrollBar->value()+1);
 }
 
 void ThumbnailView::resetViewport() {

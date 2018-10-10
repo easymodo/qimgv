@@ -4,6 +4,7 @@ ThumbnailGridWidget::ThumbnailGridWidget(QGraphicsItem* parent)
     : ThumbnailWidget(parent),
       nameFits(true)
 {
+    outlineColor.setRgb(255,255,255,60);
 }
 
 QRectF ThumbnailGridWidget::boundingRect() const {
@@ -28,17 +29,17 @@ void ThumbnailGridWidget::setupLayout() {
 
 void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
     if(isHighlighted()) {
-        //QPainterPath path;
-        //path.addRoundedRect(highlightRect, 2, 2);
-        //painter->fillPath(path, QColor(92,92,96));
-        //painter->setPen(QColor(96,101,103));
-        //painter->drawPath(path);
-        painter->fillRect(highlightRect, QColor(98,101,103));
+        painter->fillRect(highlightRect, QColor(77,78,79));
+    }
+}
+
+void ThumbnailGridWidget::drawHover(QPainter *painter) {
+    if(isHovered()) {
+        painter->fillRect(highlightRect, QColor(255,255,255, 10));
     }
 }
 
 void ThumbnailGridWidget::drawLabel(QPainter *painter) {
-    painter->setOpacity(currentOpacity);
     // filename
     int flags;
     if(nameFits)
@@ -46,8 +47,6 @@ void ThumbnailGridWidget::drawLabel(QPainter *painter) {
     else
         flags = Qt::TextSingleLine | Qt::AlignVCenter;
     painter->setFont(font);
-    painter->setPen(Qt::black);
-    painter->drawText(nameTextRect.adjusted(1,1,1,1), flags, thumbnail->name());
     painter->setPen(QColor(230, 230, 230, 255));
     painter->drawText(nameTextRect, flags, thumbnail->name());
     // additional info
@@ -56,22 +55,20 @@ void ThumbnailGridWidget::drawLabel(QPainter *painter) {
     //painter->drawText(labelTextRect, Qt::TextSingleLine, thumbnail->label());
 }
 
-void ThumbnailGridWidget::drawThumbnail(QPainter *painter, qreal dpr, const QPixmap *pixmap) {
-    Q_UNUSED(dpr)
-    QPointF drawPosCentered(width()/2 - pixmap->width()/(2*qApp->devicePixelRatio()),
-                            marginY + thumbnailSize - pixmap->height()/(qApp->devicePixelRatio()));
-    painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
+void ThumbnailGridWidget::updateThumbnailDrawPosition() {
+    if(thumbnail) {
+        qreal dpr = qApp->devicePixelRatio();
+        drawPosCentered = QPointF((width() / 2.0 - thumbnail->pixmap()->width() / (2.0 * dpr)),
+                                  (marginY + thumbnailSize - thumbnail->pixmap()->height() / dpr));
+    }
+}
 
-    //painter->setOpacity(1.0f);
-    //painter->setCompositionMode(QPainter::CompositionMode_DestinationOut);
-    //painter->fillRect(boundingRect().adjusted(10,10,10,40), QColor(Qt::red));
-    //painter->setOpacity(opacity());
-    //painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+void ThumbnailGridWidget::drawThumbnail(QPainter *painter, qreal dpr, const QPixmap *pixmap) {
+    painter->drawPixmap(drawPosCentered, *pixmap);
 }
 
 void ThumbnailGridWidget::drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap) {
-    Q_UNUSED(dpr)
-    QPointF drawPosCentered(width()  / 2 - pixmap->width()  / (2 * qApp->devicePixelRatio()),
-                            height() / 2 - pixmap->height() / (2 * qApp->devicePixelRatio()));
+    QPointF drawPosCentered(width()  / 2 - pixmap->width()  / (2 * dpr),
+                            height() / 2 - pixmap->height() / (2 * dpr));
     painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
 }

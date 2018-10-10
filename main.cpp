@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     qputenv("QT_AUTO_SCREEN_SCALE_FACTOR","0");
 
     // for testing purposes
-    //qputenv("QT_SCALE_FACTOR","2.0");
+    qputenv("QT_SCALE_FACTOR","1.0");
     //qputenv("QT_SCREEN_SCALE_FACTORS", "1;1.7");
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

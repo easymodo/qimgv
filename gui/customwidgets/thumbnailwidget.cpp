@@ -12,6 +12,8 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     marginX(1),
     textHeight(5)
 {
+    setAttribute(Qt::WA_OpaquePaintEvent, true);
+    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     setAcceptHoverEvents(true);
     nameColor.setRgb(20, 20, 20, 255);
     qreal fntSz = font.pointSizeF();
@@ -24,11 +26,6 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     fm = new QFontMetrics(font);
     fmSmall = new QFontMetrics(fontSmall);
     textHeight = fm->height();
-
-    opacityAnimation = new QPropertyAnimation(this, "currentOpacity");
-    opacityAnimation->setEasingCurve(QEasingCurve::OutCubic);
-    opacityAnimation->setDuration(opacityAnimationSpeed);
-    currentOpacity = inactiveOpacity;
 
     setThumbnailSize(100);
 
@@ -83,6 +80,7 @@ void ThumbnailWidget::setThumbnail(std::shared_ptr<Thumbnail> _thumbnail) {
     if(_thumbnail) {
         thumbnail = _thumbnail;
         setupLayout();
+        updateThumbnailDrawPosition();
         update();
     }
 }
@@ -107,46 +105,12 @@ void ThumbnailWidget::setupLayout() {
 void ThumbnailWidget::setHighlighted(bool mode, bool smooth) {
     if(highlighted != mode) {
         highlighted = mode;
-        if(highlighted) {
-            if(opacityAnimation->state() == QAbstractAnimation::Running)
-                opacityAnimation->stop();
-            setOpacity(1.0, smooth);
-        } else {
-            if(!mode)
-                setOpacity(inactiveOpacity, smooth);
-        }
+        update();
     }
 }
 
 bool ThumbnailWidget::isHighlighted() {
     return highlighted;
-}
-
-// method for propertyAnimation. Use setOpacity() instead
-void ThumbnailWidget::propertySetOpacity(qreal amount) {
-    if(amount != currentOpacity) {
-        currentOpacity = amount;
-        update();
-    }
-}
-
-qreal ThumbnailWidget::propertyOpacity() {
-    return currentOpacity;
-}
-
-void ThumbnailWidget::setOpacity(qreal amount, bool smooth) {
-    if(opacityAnimation->state() == QAbstractAnimation::Running)
-        opacityAnimation->stop();
-    if(amount != currentOpacity) {
-        if(smooth) {
-            opacityAnimation->setStartValue(currentOpacity);
-            opacityAnimation->setEndValue(amount);
-            opacityAnimation->start(QAbstractAnimation::KeepWhenStopped);
-        } else {
-            currentOpacity = amount;
-            update();
-        }
-    }
 }
 
 QRectF ThumbnailWidget::boundingRect() const {
@@ -164,8 +128,6 @@ qreal ThumbnailWidget::height() {
 void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(widget)
     Q_UNUSED(option)
-    painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
-    painter->setOpacity(1.0);
     qreal dpr = painter->paintEngine()->paintDevice()->devicePixelRatioF();
     drawHighlight(painter);
     if(!thumbnail) {
@@ -176,22 +138,27 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
             QPixmap* errorIcon = shrRes->loadingErrorIcon72();
             drawIcon(painter, dpr, errorIcon);
         } else {
-            painter->setOpacity(currentOpacity);
             drawThumbnail(painter, dpr, thumbnail->pixmap().get());
         }
         if(mDrawLabel) {
             drawLabel(painter);
         }
     }
+    drawHover(painter);
 }
 
 void ThumbnailWidget::drawHighlight(QPainter *painter) {
     if(isHighlighted()) {
         painter->fillRect(highlightRect, highlightColor);
-    } else if (isHovered()) {
+    }
+}
+
+void ThumbnailWidget::drawHover(QPainter *painter) {
+    if(isHovered()) {
         painter->setOpacity(0.6);
         painter->fillRect(highlightRect, highlightColor);
         painter->setOpacity(1.0);
+        painter->fillRect(boundingRect(), QColor(255,255,255, 10));
     }
 }
 
@@ -199,7 +166,7 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
     // text background
     painter->setOpacity(0.95);
     painter->fillRect(nameRect, nameColor);
-    painter->setOpacity(currentOpacity);
+    painter->setOpacity(1.0);
     // filename
     int flags = Qt::TextSingleLine | Qt::AlignVCenter;
     painter->setFont(font);
@@ -212,18 +179,13 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
 }
 
 void ThumbnailWidget::drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
-    Q_UNUSED(dpr)
-    QPointF drawPosCentered(width()  / 2 - pixmap->width()  / (2 * qApp->devicePixelRatio()),
-                            height() / 2 - pixmap->height() / (2 * qApp->devicePixelRatio()));
-
-    //QPointF drawPosCentered(width()/2 - pixmap->width()/(2*qApp->devicePixelRatio()),
-    //                        marginY + (thumbnailSize)/2 - pixmap->height()/(2*qApp->devicePixelRatio()));
-
-    painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
+    painter->drawPixmap(drawPosCentered, *pixmap);
 }
 
 void ThumbnailWidget::drawIcon(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
-    drawThumbnail(painter, dpr, pixmap);
+    QPointF pos = QPointF(width()  / 2 - pixmap->width()  / (2 * dpr),
+                          height() / 2 - pixmap->height() / (2 * dpr));
+    painter->drawPixmap(pos, *pixmap);
 }
 
 QSizeF ThumbnailWidget::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {
@@ -244,13 +206,9 @@ void ThumbnailWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
 }
 
 void ThumbnailWidget::setHovered(bool mode) {
-    hovered = mode;
-    if(!isHighlighted()) {
-        if(mode) {
-            setOpacity(1.0, false);
-        } else {
-            setOpacity(inactiveOpacity, false);
-        }
+    if(hovered != mode) {
+        hovered = mode;
+        update();
     }
 }
 
@@ -258,8 +216,15 @@ bool ThumbnailWidget::isHovered() {
     return hovered;
 }
 
+void ThumbnailWidget::updateThumbnailDrawPosition() {
+    if(thumbnail) {
+        qreal dpr = qApp->devicePixelRatio();
+        drawPosCentered = QPointF(width()  / 2 - thumbnail->pixmap()->width()  / (2 * dpr),
+                                  height() / 2 - thumbnail->pixmap()->height() / (2 * dpr));
+    }
+}
+
 ThumbnailWidget::~ThumbnailWidget() {
-    delete opacityAnimation;
     delete fm;
     delete fmSmall;
 }

@@ -7,6 +7,8 @@ FolderGridView::FolderGridView(QWidget *parent)
       selectedIndex(-1),
       shiftedIndex(-1)
 {
+    this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
+    this->scene.setBackgroundBrush(QColor(41,41,42));
     setupLayout();
     allowedKeys << "Up"
                 << "Down"
@@ -186,7 +188,7 @@ void FolderGridView::selectIndex(int index) {
         return;
 
     if(checkRange(selectedIndex))
-        thumbnails.at(selectedIndex)->setHighlighted(false, true);
+        thumbnails.at(selectedIndex)->setHighlighted(false, false);
     selectedIndex = index;
 
     ThumbnailWidget *thumb = thumbnails.at(selectedIndex);

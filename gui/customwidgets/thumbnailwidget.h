@@ -7,7 +7,6 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QGraphicsSceneHoverEvent>
-#include <QPropertyAnimation>
 #include <QPaintEngine>
 #include <cmath>
 #include "sourcecontainers/thumbnail.h"
@@ -22,7 +21,6 @@ enum LoadState {
 
 class ThumbnailWidget : public QGraphicsWidget {
     Q_OBJECT
-    Q_PROPERTY(qreal currentOpacity READ propertyOpacity WRITE propertySetOpacity)
 
 public:
     ThumbnailWidget(QGraphicsItem *parent = nullptr);
@@ -48,12 +46,6 @@ public:
     void setDrawLabel(bool mode);
     void setMargins(int x, int y);
 private:
-    void setHovered(bool);
-    bool isHovered();
-
-    void propertySetOpacity(qreal amount);
-    qreal propertyOpacity();
-
 
 private slots:
     void readSettings();
@@ -63,24 +55,26 @@ protected:
     virtual void drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap);
     virtual void drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap);
     virtual void drawHighlight(QPainter *painter);
+    virtual void drawHover(QPainter *painter);
     virtual void drawLabel(QPainter *painter);
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) Q_DECL_OVERRIDE;
     QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const Q_DECL_OVERRIDE;
     void updateGeometry() Q_DECL_OVERRIDE;
+    void setHovered(bool);
+    bool isHovered();
+
+    virtual void updateThumbnailDrawPosition();
 
     std::shared_ptr<Thumbnail> thumbnail;
-    qreal currentOpacity;
     bool highlighted, hovered, mDrawLabel;
     int thumbnailSize, marginY, marginX, textHeight;
     QRectF highlightRect, nameRect, nameTextRect, labelTextRect;
     QColor highlightColor, nameColor;
     QFont font, fontSmall;
     QFontMetrics *fm, *fmSmall;
-    QPropertyAnimation *opacityAnimation;
-    const qreal inactiveOpacity = 0.86;
-    const int opacityAnimationSpeed = 80;
+    QPointF drawPosCentered;
 };
 
 #endif // THUMBNAILWIDGET_H
