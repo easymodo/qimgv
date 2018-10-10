@@ -143,7 +143,8 @@ SOURCES += \
     gui/folderview/thumbnailgridwidget.cpp \
     gui/centralwidget.cpp \
     gui/contextmenu.cpp \
-    gui/customwidgets/contextmenuitem.cpp
+    gui/customwidgets/contextmenuitem.cpp \
+    utils/helprunner.cpp
 
 HEADERS += \
     core.h \
