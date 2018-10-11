@@ -42,6 +42,7 @@ public slots:
     void addItem();
     void insertItem(int index);
     void removeItem(int index);
+
 signals:
     void scrolled();
     void thumbnailPressed(int);

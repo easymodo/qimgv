@@ -29,7 +29,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     if(orientation == THUMBNAILVIEW_HORIZONTAL) {
         this->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        scrollBar = this->verticalScrollBar();
+        scrollBar = this->horizontalScrollBar();
         connect(timeLine, SIGNAL(frameChanged(int)),
                 this, SLOT(centerOnX(int)), Qt::UniqueConnection);
     } else {
