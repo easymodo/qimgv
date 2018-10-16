@@ -149,6 +149,8 @@ void InputMap::initKeyMap() {
     keyMap.insert(9, "escape");
     keyMap.insert(112, "pageUp");
     keyMap.insert(117, "pageDown");
+    keyMap.insert(166, "pageBack");
+    keyMap.insert(167, "pageForward");
     keyMap.insert(49, "~");
     keyMap.insert(10, "1");
     keyMap.insert(11, "2");
