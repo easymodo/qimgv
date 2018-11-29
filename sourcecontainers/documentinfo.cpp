@@ -107,7 +107,13 @@ void DocumentInfo::loadExifOrientation() {
         return;
 
     QString path = filePath();
-    const QImageReader& reader = (mExtension) ? QImageReader(path, mExtension) : QImageReader(path);
-    if(reader.canRead())
-        mOrientation = static_cast<int>(reader.transformation());
+    QImageReader *reader = nullptr;
+    if(mExtension)
+        reader = new QImageReader(path, mExtension);
+    else
+        reader = new QImageReader(path);
+
+    if(reader->canRead())
+        mOrientation = static_cast<int>(reader->transformation());
+    delete reader;
 }
