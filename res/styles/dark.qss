@@ -6,20 +6,20 @@
     font: bold;
     color: #86888a;
     background-color: #29292a;
-    border: 1px solid #29292a;
+    border: 1px solid #1a1a1b;
     border-radius: 2px;
     padding: 6px 9px 6px 9px;
 }
 
 [accessibleName="Button"]:hover {
     background-color: #313132;
-    border-color: #313132;
+    border-color: #1a1a1b;
     color: #8e9092;
 }
 
 [accessibleName="Button"]:pressed {
     background-color: #222223;
-    border-color: #222223;
+    border-color: #1a1a1b;
     color: #707070;
 }
 
@@ -29,7 +29,7 @@
     font: bold;
     color: #86888a;
     background-color: #29292a;
-    border: 1px solid #29292a;
+    border: 1px solid #1a1a1b;
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
     padding: 6px 9px 6px 9px;
@@ -37,13 +37,13 @@
 
 [accessibleName="ButtonSetLeft"]:hover {
     background-color: #313132;
-    border-color: #313132;
+    border-color: #1a1a1b;
     color: #8e9092;
 }
 
 [accessibleName="ButtonSetLeft"]:pressed {
     background-color: #222223;
-    border-color: #222223;
+    border-color: #1a1a1b;
     color: #707070;
 }
 
@@ -53,19 +53,19 @@
     font: bold;
     color: #86888a;
     background-color: #29292a;
-    border: 1px solid #29292a;
+    border: 1px solid #1a1a1b;
     padding: 6px 9px 6px 9px;
 }
 
 [accessibleName="ButtonSetMid"]:hover {
     background-color: #313132;
-    border-color: #313132;
+    border-color: #1a1a1b;
     color: #8e9092;
 }
 
 [accessibleName="ButtonSetMid"]:pressed {
     background-color: #222223;
-    border-color: #222223;
+    border-color: #1a1a1b;
     color: #707070;
 }
 
@@ -75,7 +75,7 @@
     font: bold;
     color: #86888a;
     background-color: #29292a;
-    border: 1px solid #29292a;
+    border: 1px solid #1a1a1b;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
     padding: 6px 9px 6px 9px;
@@ -83,13 +83,13 @@
 
 [accessibleName="ButtonSetRight"]:hover {
     background-color: #313132;
-    border-color: #313132;
+    border-color: #1a1a1b;
     color: #8e9092;
 }
 
 [accessibleName="ButtonSetRight"]:pressed {
     background-color: #222223;
-    border-color: #222223;
+    border-color: #1a1a1b;
     color: #707070;
 }
 
@@ -169,33 +169,59 @@ SidePanel {
 
 SidePanel QGroupBox {
     color: #86888a;
-    border: 1px solid #29292a;
-    border-radius: 3px;
     background-color: #29292a;
+    border: 1px solid #1a1a1b;
+    border-radius: 3px;
     padding: 6px 10px 8px 10px;
 }
 
-SidePanel QSpinBox {
+SidePanel QSpinBox, QDoubleSpinBox {
     background-color: #1c1c1d;
     color: #86888a;
-    border: 1px solid #1c1c1d;
+    border: 1px solid #1a1a1b;
     border-radius: 3px;
     padding: 2 0 2 0;
 }
 
-SidePanel QSpinBox::up-button  {
+SidePanel QSpinBox::up-button, QDoubleSpinBox::up-button  {
     max-width: 0px;
     max-height: 0px;
     width:0px;
 }
 
-SidePanel QSpinBox::down-button  {
+SidePanel QSpinBox::down-button, QDoubleSpinBox::down-button {
     max-width: 0px;
     max-height: 0px;
     width:0px;
 }
 
 SidePanel QLabel {
+    color: #86888a;
+}
+
+SidePanel QComboBox {
+    background-color: #1c1c1d;
+    color: #86888a;
+    border: 1px solid #1a1a1b;
+    border-radius: 3px;
+    padding: 2 0 2 0;
+}
+
+SidePanel QComboBox::down-arrow {
+    border: 0px;
+    margin-right: 8px;
+    image: url(:/res/icons/buttons/dropDownArrow.png);
+}
+
+SidePanel QComboBox::drop-down {
+    border: 0px;
+}
+
+SidePanel QComboBox QAbstractItemView {
+    background-color: #222223;
+    selection-background-color: #414244;
+    selection-color: #86888a;
+    border: 1px solid #414244;
     color: #86888a;
 }
 

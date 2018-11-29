@@ -35,7 +35,7 @@ void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
 
 void ThumbnailGridWidget::drawHover(QPainter *painter) {
     if(isHovered()) {
-        painter->fillRect(highlightRect, QColor(255,255,255, 10));
+        painter->fillRect(highlightRect, QColor(255,255,255, 15));
     }
 }
 

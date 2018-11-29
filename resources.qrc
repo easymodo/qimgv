@@ -75,5 +75,6 @@
         <file>res/icons/buttons/skip-forward24.png</file>
         <file>res/icons/buttons/pause24.png</file>
         <file>res/icons/buttons/play24.png</file>
+        <file>res/icons/buttons/dropDownArrow.png</file>
     </qresource>
 </RCC>

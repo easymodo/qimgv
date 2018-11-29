@@ -2,6 +2,7 @@
 #define CROPPANEL_H
 
 #include <QWidget>
+#include <QScreen>
 #include <QStyleOption>
 #include <QPainter>
 #include "gui/customwidgets/sidepanelwidget.h"
@@ -33,6 +34,7 @@ signals:
     void cropClicked();
     void selectionChanged(QRect);
     void selectAll();
+    void aspectRatioChanged(QPointF);
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -41,6 +43,8 @@ protected:
 private slots:
     void onCropClicked();
     void onSelectionChange();
+    void onAspectRatioChange(); // via manual input
+    void onAspectRatioSelected(); // via ComboBox
 
 private:
     Ui::CropPanel *ui;

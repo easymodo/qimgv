@@ -37,9 +37,9 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 private:
     QWidget *viewer;
-    QPoint startPos, endPos, moveStartPos;
+    QPoint startPos, endPos, moveStartPos, resizeAnchor;
     QRect imageRect, imageDrawRect, selectionRect, selectionDrawRect;
-    bool clear, moving;
+    bool clear, moving, forceAspectRatio;
     float scale;
     QBrush brushInactiveTint, brushDarkGray, brushGray, brushLightGray;
     QRectF *handles[8];
@@ -48,6 +48,7 @@ private:
     CursorAction cursorAction;
     QPen selectionOutlinePen;
     qreal dpr;
+    QPointF ar;
 
     QPoint setInsidePoint(QPoint, QRect);
     QRect placeInside(QRect what, QRect where);
@@ -56,16 +57,21 @@ private:
     void updateHandlePositions();
     void prepareDrawElements();
     CursorAction hoverTarget(QPoint pos);
-    bool resizeSelection(QPoint d);
+    void resizeSelection(QPoint d);
+    void resizeSelectionAR2(QPoint d);
+    void resizeSelectionFree(QPoint d);
     void recalculateGeometry();
     QPoint mapPointToImage(QPoint p);
     void updateSelectionDrawRect();
-    void setCursorForAction(CursorAction action);
+    void setCursorAction(CursorAction action);
+    void setResizeAnchor(CursorAction action);
 public slots:
     void show();
     void hide();
     void onSelectionOutsideChange(QRect selection);
     void selectAll();
+    void setAspectRatio(QPointF);
+    void setForceAspectRatio(bool mode);
 };
 
 #endif // CROPOVERLAY_H
