@@ -7,6 +7,13 @@
 #include <QDebug>
 #include <memory>
 //#include <FreeImagePlus.h>
+#include <QElapsedTimer>
+
+#include "3rdparty/QtOpenCV/cvmatandqimage.h"
+#include "sourcecontainers/staticimagecontainer.h"
+
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
 
 class ImageLib {
     public:
@@ -28,6 +35,7 @@ class ImageLib {
         static QImage *scaled_Qt(const QImage *source, QSize destSize, bool smooth);
         static QImage *scaled_Qt(std::shared_ptr<const QImage> source, QSize destSize, bool smooth);
         //static QImage *scale_FreeImage(const QImage *source, QSize destSize, FREE_IMAGE_FILTER filter);
+        static StaticImageContainer *scaledCv(std::shared_ptr<const QImage> source, QSize destSize, int method, bool sharpen);
 
         static std::unique_ptr<const QImage> exifRotated(std::unique_ptr<const QImage> src, int orientation);
         static std::unique_ptr<QImage> exifRotated(std::unique_ptr<QImage> src, int orientation);

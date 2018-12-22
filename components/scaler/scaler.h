@@ -10,6 +10,8 @@
 #include "scalerrequest.h"
 #include "scalerrunnable.h"
 
+#include "sourcecontainers/staticimagecontainer.h"
+
 class Scaler : public QObject
 {
     Q_OBJECT
@@ -18,7 +20,7 @@ public:
 
 signals:
     void scalingFinished(QPixmap* result, ScalerRequest request);
-    void acceptScalingResult(QImage *image, ScalerRequest req);
+    void acceptScalingResult(StaticImageContainer *image, ScalerRequest req);
     void startBufferedRequest();
 
 public slots:
@@ -26,9 +28,9 @@ public slots:
 
 private slots:
     void onTaskStart(ScalerRequest req);
-    void onTaskFinish(QImage* scaled, ScalerRequest req);
+    void onTaskFinish(StaticImageContainer* scaled, ScalerRequest req);
     void slotStartBufferedRequest();
-    void slotForwardScaledResult(QImage *image, ScalerRequest req);
+    void slotForwardScaledResult(StaticImageContainer *image, ScalerRequest req);
 
 private:
     QThreadPool *pool;

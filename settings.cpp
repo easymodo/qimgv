@@ -523,14 +523,6 @@ void Settings::setThumbnailerThreadCount(int count) {
     settings->s->setValue("thumbnailerThreads", count);
 }
 //------------------------------------------------------------------------------
-bool Settings::smoothUpscaling() {
-    return settings->s->value("smoothUpscaling", true).toBool();
-}
-
-void Settings::setSmoothUpscaling(bool mode) {
-    settings->s->setValue("smoothUpscaling", mode);
-}
-//------------------------------------------------------------------------------
 int Settings::maxZoomedResolution() {
     return settings->s->value("maximumZoomResolution", 75).toInt();
 }
@@ -557,16 +549,27 @@ void Settings::setExpandImage(bool mode) {
 //------------------------------------------------------------------------------
 /* 0: nearest
  * 1: bilinear
+ * 2: bicubic
+ * 3: lanczos4
  */
 int Settings::scalingFilter() {
-    int mode = settings->s->value("scalingFilter", 1).toInt();
-    if(mode < 0 || mode > 1)
-        mode = 1;
+    int mode = settings->s->value("scalingFilter", 2).toInt();
+    if(mode < 0 || mode > 3)
+        mode = 2;
     return mode;
 }
 
 void Settings::setScalingFilter(int mode) {
     settings->s->setValue("scalingFilter", mode);
+}
+
+//------------------------------------------------------------------------------
+bool Settings::imageSharpening() {
+    return settings->s->value("imageSharpening", true).toBool();
+}
+
+void Settings::setImageSharpening(bool mode) {
+    settings->s->setValue("imageSharpening", mode);
 }
 //------------------------------------------------------------------------------
 bool Settings::smoothAnimatedImages() {

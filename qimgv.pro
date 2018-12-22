@@ -21,11 +21,30 @@ QMAKE_CXXFLAGS_RELEASE -= -O1
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
+# video support
 #CONFIG += WITH_MPV
+
+# support window blur
+# TODO: use more kde stuff (file dialogs for example)
 #CONFIG += WITH_KDE_BLUR
+
+# high quality image scaling
+# and possible speedups (needs testing)
+CONFIG += WITH_OPENCV
+
+# store configs & temp dirs alongside the executable (windows only)
 CONFIG += PORTABLE
 
-# video support
+WITH_OPENCV {
+    unix {
+        # TODO: figure out the includes that work for opencv4 & older
+        INCLUDEPATH += /usr/include/opencv4/
+        LIBS += -lopencv_core -lopencv_imgcodecs -lopencv_imgproc
+        #LIBS += -L/usr/local/lib   -lopencv_imgproc -lopencv_highgui -lopencv_core
+        include (3rdparty/QtOpenCV/opencv.pri)
+    }
+}
+
 WITH_MPV {
     unix {
         QT_CONFIG -= no-pkg-config
@@ -144,7 +163,8 @@ SOURCES += \
     gui/centralwidget.cpp \
     gui/contextmenu.cpp \
     gui/customwidgets/contextmenuitem.cpp \
-    utils/helprunner.cpp
+    utils/helprunner.cpp \
+    sourcecontainers/staticimagecontainer.cpp
 
 HEADERS += \
     core.h \
@@ -231,7 +251,8 @@ HEADERS += \
     gui/contextmenu.h \
     gui/customwidgets/contextmenuitem.h \
     utils/numeric.h \
-    utils/helprunner.h
+    utils/helprunner.h \
+    sourcecontainers/staticimagecontainer.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \

@@ -72,13 +72,13 @@ void SettingsDialog::readSettings() {
     ui->forceSmoothScrollCheckBox->setChecked(settings->forceSmoothScroll());
     ui->usePreloaderCheckBox->setChecked(settings->usePreloader());
     ui->useThumbnailCacheCheckBox->setChecked(settings->useThumbnailCache());
-    ui->smoothUpscalingCheckBox->setChecked(settings->smoothUpscaling());
     ui->expandImageCheckBox->setChecked(settings->expandImage());
     ui->smoothAnimatedImagesCheckBox->setChecked(settings->smoothAnimatedImages());
     ui->bgOpacitySlider->setValue(static_cast<int>(settings->backgroundOpacity() * 100));
     ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
     ui->showInfoOverlayCheckBox->setChecked(settings->showInfoOverlay());
+    ui->imageSharpeningCheckBox->setChecked(settings->imageSharpening());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -163,13 +163,13 @@ void SettingsDialog::applySettings() {
     settings->setForceSmoothScroll(ui->forceSmoothScrollCheckBox->isChecked());
     settings->setUsePreloader(ui->usePreloaderCheckBox->isChecked());
     settings->setUseThumbnailCache(ui->useThumbnailCacheCheckBox->isChecked());
-    settings->setSmoothUpscaling(ui->smoothUpscalingCheckBox->isChecked());
     settings->setExpandImage(ui->expandImageCheckBox->isChecked());
     settings->setSmoothAnimatedImages(ui->smoothAnimatedImagesCheckBox->isChecked());
     settings->setBackgroundOpacity(static_cast<qreal>(ui->bgOpacitySlider->value()) / 100);
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
     settings->setShowInfoOverlay(ui->showInfoOverlayCheckBox->isChecked());
+    settings->setImageSharpening(ui->imageSharpeningCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 

@@ -10,6 +10,8 @@
 #include "utils/imagelib.h"
 #include "settings.h"
 
+#include "sourcecontainers/staticimagecontainer.h"
+
 class ScalerRunnable : public QObject, public QRunnable
 {
     Q_OBJECT
@@ -19,7 +21,7 @@ public:
     void run();
 signals:
     void started(ScalerRequest);
-    void finished(QImage*, ScalerRequest);
+    void finished(StaticImageContainer*, ScalerRequest);
 
 private:
     ScalerRequest req;

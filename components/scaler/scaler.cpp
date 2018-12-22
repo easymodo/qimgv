@@ -23,9 +23,10 @@ Scaler::Scaler(Cache *_cache, QObject *parent)
     connect(this, SIGNAL(startBufferedRequest()), this, SLOT(slotStartBufferedRequest()), Qt::DirectConnection);
     connect(runnable, SIGNAL(started(ScalerRequest)),
             this, SLOT(onTaskStart(ScalerRequest)), Qt::DirectConnection);
-    connect(runnable, SIGNAL(finished(QImage*,ScalerRequest)),
-            this, SLOT(onTaskFinish(QImage*,ScalerRequest)), Qt::DirectConnection);
-    connect(this, SIGNAL(acceptScalingResult(QImage*,ScalerRequest)), this, SLOT(slotForwardScaledResult(QImage*,ScalerRequest)), Qt::QueuedConnection);
+    connect(runnable, SIGNAL(finished(StaticImageContainer*,ScalerRequest)),
+            this, SLOT(onTaskFinish(StaticImageContainer*,ScalerRequest)), Qt::DirectConnection);
+    connect(this, SIGNAL(acceptScalingResult(StaticImageContainer*,ScalerRequest)),
+            this, SLOT(slotForwardScaledResult(StaticImageContainer*,ScalerRequest)), Qt::QueuedConnection);
 }
 
 void Scaler::requestScaled(ScalerRequest req) {
@@ -92,7 +93,7 @@ void Scaler::onTaskStart(ScalerRequest req) {
     sem->release(1);
 }
 
-void Scaler::onTaskFinish(QImage *scaled, ScalerRequest req) {
+void Scaler::onTaskFinish(StaticImageContainer *scaled, ScalerRequest req) {
     sem->acquire(1);
     running = false;
     if(buffered && bufferedRequest.image == req.image) {
@@ -118,9 +119,9 @@ void Scaler::slotStartBufferedRequest() {
     startRequest(bufferedRequest);
 }
 
-void Scaler::slotForwardScaledResult(QImage *image, ScalerRequest req) {
+void Scaler::slotForwardScaledResult(StaticImageContainer *image, ScalerRequest req) {
     QPixmap *pixmap = new QPixmap();
-    *pixmap = QPixmap::fromImage(*image);
+    *pixmap = QPixmap::fromImage(image->getImage());
     delete image;
     emit scalingFinished(pixmap, req);
 }
