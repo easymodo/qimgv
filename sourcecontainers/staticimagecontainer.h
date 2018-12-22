@@ -10,7 +10,6 @@ class StaticImageContainer {
 public:
     StaticImageContainer(cv::Mat *image);
     StaticImageContainer(QImage *image);
-
     ~StaticImageContainer();
 
     const QImage& getImage();

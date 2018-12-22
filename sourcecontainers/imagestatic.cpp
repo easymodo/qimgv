@@ -22,6 +22,10 @@ void ImageStatic::load() {
         return;
     }
     std::unique_ptr<const QImage> img(new QImage(mPath, mDocInfo->extension()));
+    // temporary workaround for all the colorMap bullshit
+    if(img->format() == QImage::Format_Indexed8) {
+        img.reset(new QImage(img->convertToFormat(QImage::Format_RGB888)));
+    }
     img = ImageLib::exifRotated(std::move(img), this->mDocInfo.get()->exifOrientation());
     // set image
     image = std::move(img);

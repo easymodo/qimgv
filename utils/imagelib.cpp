@@ -127,31 +127,35 @@ QImage *ImageLib::cropped(QRect newRect, QRect targetRes, bool upscaled) {
 
 StaticImageContainer* ImageLib::scaledCv(std::shared_ptr<const QImage> source, QSize destSize, int filter, bool sharpen) {
     cv::Mat srcMat = QtOcv::image2Mat_shared(*source.get());
-    if(destSize.width() > source.get()->width()) {
+    cv::Size destSizeCv(destSize.width(), destSize.height());
+    //qDebug() << source.get()->format() << source.get()->pixelColor(100,100) << srcMat.channels();
+    StaticImageContainer *result = nullptr;
+    if(destSize.width() > source.get()->width()) { // upscale
         cv::InterpolationFlags flag = cv::INTER_CUBIC;
         if     (filter == 0) flag = cv::INTER_NEAREST;
         else if(filter == 1) flag = cv::INTER_LINEAR;
         else if(filter == 2) flag = cv::INTER_CUBIC;
         else if(filter == 3) flag = cv::INTER_LANCZOS4;
         cv::Mat *dstMat = new cv::Mat;
-        cv::resize(srcMat, *dstMat, cv::Size(destSize.width(), destSize.height()), 0, 0, flag);
-        return new StaticImageContainer(dstMat);
-    } else {
+        cv::resize(srcMat, *dstMat, destSizeCv, 0, 0, flag);
+        result = new StaticImageContainer(dstMat);
+    } else { // downscale
         cv::InterpolationFlags flag = cv::INTER_AREA;
         if(filter == 0) flag = cv::INTER_NEAREST;
-        cv::Mat *dstMat = new cv::Mat;
-        cv::resize(srcMat, *dstMat, cv::Size(destSize.width(), destSize.height()), 0, 0, flag);
+        cv::Mat *dstMat = new cv::Mat(destSizeCv, srcMat.type());
+        cv::resize(srcMat, *dstMat, destSizeCv, 0, 0, flag);
         if(!sharpen || flag == cv::INTER_NEAREST) {
-            return new StaticImageContainer(dstMat);
+            result = new StaticImageContainer(dstMat);
+        } else {
+            // unsharp mask
+            cv::Mat *dstMat_sharpened = new cv::Mat;
+            cv::GaussianBlur(*dstMat, *dstMat_sharpened, cv::Size(0, 0), 3);
+            cv::addWeighted(*dstMat, 1.5, *dstMat_sharpened, -0.5, 0, *dstMat_sharpened);
+            delete dstMat;
+            result = new StaticImageContainer(dstMat_sharpened);
         }
-        // unsharp mask
-        cv::Mat *dstMat_sharpened = new cv::Mat;
-        cv::GaussianBlur(*dstMat, *dstMat_sharpened, cv::Size(0, 0), 3);
-        cv::addWeighted(*dstMat, 1.5, *dstMat_sharpened, -0.5, 0, *dstMat_sharpened);
-        delete dstMat;
-        return new StaticImageContainer(dstMat_sharpened);
     }
-
+    return result;
 }
 
 /* 0: nearest
