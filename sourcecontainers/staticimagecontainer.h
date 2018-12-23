@@ -8,15 +8,15 @@
 
 class StaticImageContainer {
 public:
-    StaticImageContainer(cv::Mat *image);
-    StaticImageContainer(QImage *image);
+    StaticImageContainer(std::shared_ptr<QImage> image);
+    StaticImageContainer(std::shared_ptr<cv::Mat> image);
     ~StaticImageContainer();
 
-    const QImage& getImage();
+    const std::shared_ptr<QImage> getImage();
 
 private:
-    QImage  *imageQt;
-    cv::Mat *imageCv;
+    std::shared_ptr<QImage> imageQt;
+    std::shared_ptr<cv::Mat> imageCv;
 };
 
 #endif // STATICIMAGECONTAINER_H

@@ -21,7 +21,7 @@ public:
     void run();
 signals:
     void started(ScalerRequest);
-    void finished(StaticImageContainer*, ScalerRequest);
+    void finished(std::shared_ptr<StaticImageContainer>, ScalerRequest);
 
 private:
     ScalerRequest req;

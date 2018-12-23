@@ -1800,7 +1800,7 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>Bilinear (fast, low quality)</string>
+                       <string>Bilinear (fast)</string>
                       </property>
                      </item>
                      <item>

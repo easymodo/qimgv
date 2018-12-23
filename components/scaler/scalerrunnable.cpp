@@ -10,7 +10,8 @@ void ScalerRunnable::setRequest(ScalerRequest r) {
 
 void ScalerRunnable::run() {
     emit started(req);
-    StaticImageContainer *scaled = nullptr;
-    scaled = ImageLib::scaledCv(req.image->getImage(), req.size, settings->scalingFilter(), settings->imageSharpening());
+    std::shared_ptr<StaticImageContainer> scaled(
+        ImageLib::scaledCv(req.image->getImage(), req.size, settings->scalingFilter(), settings->imageSharpening())
+    );
     emit finished(scaled, req);
 }

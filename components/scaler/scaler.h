@@ -20,7 +20,7 @@ public:
 
 signals:
     void scalingFinished(QPixmap* result, ScalerRequest request);
-    void acceptScalingResult(StaticImageContainer *image, ScalerRequest req);
+    void acceptScalingResult(std::shared_ptr<StaticImageContainer> image, ScalerRequest req);
     void startBufferedRequest();
 
 public slots:
@@ -28,9 +28,9 @@ public slots:
 
 private slots:
     void onTaskStart(ScalerRequest req);
-    void onTaskFinish(StaticImageContainer* scaled, ScalerRequest req);
+    void onTaskFinish(std::shared_ptr<StaticImageContainer> scaled, ScalerRequest req);
     void slotStartBufferedRequest();
-    void slotForwardScaledResult(StaticImageContainer *image, ScalerRequest req);
+    void slotForwardScaledResult(std::shared_ptr<StaticImageContainer> image, ScalerRequest req);
 
 private:
     QThreadPool *pool;

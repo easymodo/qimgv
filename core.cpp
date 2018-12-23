@@ -24,6 +24,7 @@ Core::Core()
     qRegisterMetaType<ScalerRequest>("ScalerRequest");
     qRegisterMetaType<std::shared_ptr<Image>>("std::shared_ptr<Image>");
     qRegisterMetaType<std::shared_ptr<Thumbnail>>("std::shared_ptr<Thumbnail>");
+    qRegisterMetaType<std::shared_ptr<StaticImageContainer>>("std::shared_ptr<StaticImageContainer>");
     initGui();
     initComponents();
     connectComponents();
@@ -454,10 +455,10 @@ void Core::runScript(const QString &scriptName) {
 
 void Core::scalingRequest(QSize size) {
     if(state.hasActiveImage && !state.isWaitingForLoader) {
-        std::shared_ptr<Image> forScale = cache->get(dirManager->fileNameAt(state.currentIndex));
-        if(forScale) {
+        std::shared_ptr<Image> imageSource = cache->get(dirManager->fileNameAt(state.currentIndex));
+        if(imageSource) {
             QString path = dirManager->filePathAt(state.currentIndex);
-            scaler->requestScaled(ScalerRequest(forScale.get(), size, path));
+            scaler->requestScaled(ScalerRequest(imageSource.get(), size, path));
         }
     }
 }

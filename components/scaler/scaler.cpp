@@ -8,6 +8,9 @@
  *    start the last task that came and ignore the middle ones.
  */
 
+// --------------------------------------
+// what the *&$%#   - me, 1 year later
+
 Scaler::Scaler(Cache *_cache, QObject *parent)
     : QObject(parent),
       buffered(false),
@@ -23,10 +26,10 @@ Scaler::Scaler(Cache *_cache, QObject *parent)
     connect(this, SIGNAL(startBufferedRequest()), this, SLOT(slotStartBufferedRequest()), Qt::DirectConnection);
     connect(runnable, SIGNAL(started(ScalerRequest)),
             this, SLOT(onTaskStart(ScalerRequest)), Qt::DirectConnection);
-    connect(runnable, SIGNAL(finished(StaticImageContainer*,ScalerRequest)),
-            this, SLOT(onTaskFinish(StaticImageContainer*,ScalerRequest)), Qt::DirectConnection);
-    connect(this, SIGNAL(acceptScalingResult(StaticImageContainer*,ScalerRequest)),
-            this, SLOT(slotForwardScaledResult(StaticImageContainer*,ScalerRequest)), Qt::QueuedConnection);
+    connect(runnable, SIGNAL(finished(std::shared_ptr<StaticImageContainer>,ScalerRequest)),
+            this, SLOT(onTaskFinish(std::shared_ptr<StaticImageContainer>,ScalerRequest)), Qt::DirectConnection);
+    connect(this, SIGNAL(acceptScalingResult(std::shared_ptr<StaticImageContainer>,ScalerRequest)),
+            this, SLOT(slotForwardScaledResult(std::shared_ptr<StaticImageContainer>,ScalerRequest)), Qt::QueuedConnection);
 }
 
 void Scaler::requestScaled(ScalerRequest req) {
@@ -36,20 +39,15 @@ void Scaler::requestScaled(ScalerRequest req) {
         if(!buffered) {
             bufferedRequest = req;
             buffered = true;
-          //qDebug() << "1 requestScaled() - locking..  " <<  req.image->name();
             cache->reserve(req.image->name());
-          //qDebug() << "1 requestScaled() - LOCKED!  " <<  req.image->name();
             startRequest(req);
         } else if(bufferedRequest.image != req.image) {
-          //qDebug() << "2 requestScaled() - locking...  " <<  req.image->name();
             cache->reserve(req.image->name());
-          //qDebug() << "2 requestScaled() - LOCKED!  " <<  req.image->name();
             auto tmp = bufferedRequest;
             bufferedRequest = req;
             buffered = true;
             if(startedRequest.image != tmp.image) {
                 cache->release(tmp.image->name());
-              //qDebug() << "2 requestScaled() - RELEASED!  " <<  tmp.image->name();
             }
         } else {
             bufferedRequest = req;
@@ -68,7 +66,6 @@ void Scaler::requestScaled(ScalerRequest req) {
                 buffered = true;
             } else {
                 if(bufferedRequest.image != startedRequest.image) {
-                    //qDebug() << "4 RELEASING " << bufferedRequest.image->name();
                     cache->release(bufferedRequest.image->name());
                 }
                 if(req.image != startedRequest.image)
@@ -89,28 +86,22 @@ void Scaler::onTaskStart(ScalerRequest req) {
         buffered = false;
     }
     startedRequest = req;
-  //qDebug() << "onTaskStart(): " << req.image->name();
     sem->release(1);
 }
 
-void Scaler::onTaskFinish(StaticImageContainer *scaled, ScalerRequest req) {
+// called from off-thread
+void Scaler::onTaskFinish(std::shared_ptr<StaticImageContainer> scaled, ScalerRequest req) {
     sem->acquire(1);
     running = false;
-    if(buffered && bufferedRequest.image == req.image) {
-    } else {
-      //qDebug() << "onTaskFinish() - 2 releasing..  " <<  req.image->name();
-        QString name = req.image->name();
+    if( !(buffered && bufferedRequest.image == req.image) ) {
         cache->release(req.image->name());
-      //qDebug() << "onTaskFinish() - 2 RELEASED!  " <<  name;
     }
     if(buffered) {
-      //qDebug() << "onTaskFinish - startingBuffered: " << bufferedRequest.string;
-        delete scaled;
-        //startRequest(bufferedRequest);
         emit startBufferedRequest();
         sem->release(1);
     } else {
         sem->release(1);
+        // convert & return pixmap in main thread
         emit acceptScalingResult(scaled, req);
     }
 }
@@ -119,14 +110,28 @@ void Scaler::slotStartBufferedRequest() {
     startRequest(bufferedRequest);
 }
 
-void Scaler::slotForwardScaledResult(StaticImageContainer *image, ScalerRequest req) {
+void Scaler::slotForwardScaledResult(std::shared_ptr<StaticImageContainer> image, ScalerRequest req) {
     QPixmap *pixmap = new QPixmap();
-    *pixmap = QPixmap::fromImage(image->getImage());
-    delete image;
+    *pixmap = QPixmap::fromImage(*image->getImage());
     emit scalingFinished(pixmap, req);
 }
 
 void Scaler::startRequest(ScalerRequest req) {
-    runnable->setRequest(req);
-    pool->start(runnable);
+    if(req.size != req.image->size()) {
+        runnable->setRequest(req);
+        pool->start(runnable);
+    } else { // request is the same size as original; straight convert to QPixmap & return
+        if(buffered && bufferedRequest.image == req.image && bufferedRequest.size == req.size) {
+            buffered = false;
+        }
+        startedRequest = req;
+        QPixmap *result = new QPixmap();
+        result->convertFromImage(*req.image->getImage());
+        cache->release(req.image->name());
+        running = false;
+        if( !(buffered && bufferedRequest.image == req.image) ) {
+            cache->release(req.image->name());
+        }
+        emit scalingFinished(result, req);
+    }
 }
