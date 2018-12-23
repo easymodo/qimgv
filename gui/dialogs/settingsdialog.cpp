@@ -78,7 +78,7 @@ void SettingsDialog::readSettings() {
     ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
     ui->showInfoOverlayCheckBox->setChecked(settings->showInfoOverlay());
-    ui->imageSharpeningCheckBox->setChecked(settings->imageSharpening());
+    ui->sharpenFilterComboBox->setCurrentIndex(settings->imageSharpening());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -169,7 +169,7 @@ void SettingsDialog::applySettings() {
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
     settings->setShowInfoOverlay(ui->showInfoOverlayCheckBox->isChecked());
-    settings->setImageSharpening(ui->imageSharpeningCheckBox->isChecked());
+    settings->setImageSharpening(ui->sharpenFilterComboBox->currentIndex());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 

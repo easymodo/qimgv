@@ -125,7 +125,7 @@ QImage *ImageLib::cropped(QRect newRect, QRect targetRes, bool upscaled) {
 }
 */
 
-std::shared_ptr<StaticImageContainer> ImageLib::scaledCv(std::shared_ptr<const QImage> source, QSize destSize, int filter, bool sharpen) {
+std::shared_ptr<StaticImageContainer> ImageLib::scaledCv(std::shared_ptr<const QImage> source, QSize destSize, int filter, int sharpen) {
     QElapsedTimer t;
     t.start();
     cv::Mat srcMat = QtOcv::image2Mat_shared(*source.get());
@@ -152,10 +152,11 @@ std::shared_ptr<StaticImageContainer> ImageLib::scaledCv(std::shared_ptr<const Q
         if(!sharpen || flag == cv::INTER_NEAREST) {
             result.reset(new StaticImageContainer(dstMat));
         } else {
+            double amount = 0.25 * sharpen;
             // unsharp mask
             std::shared_ptr<cv::Mat> dstMat_sharpened(new cv::Mat);
-            cv::GaussianBlur(*dstMat, *dstMat_sharpened, cv::Size(0, 0), 3);
-            cv::addWeighted(*dstMat, 1.5, *dstMat_sharpened, -0.5, 0, *dstMat_sharpened);
+            cv::GaussianBlur(*dstMat, *dstMat_sharpened, cv::Size(0, 0), 2);
+            cv::addWeighted(*dstMat, 1.0 + amount, *dstMat_sharpened, -amount, 0, *dstMat_sharpened);
             result.reset(new StaticImageContainer(dstMat_sharpened));
         }
     }

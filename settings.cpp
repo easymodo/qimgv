@@ -564,11 +564,14 @@ void Settings::setScalingFilter(int mode) {
 }
 
 //------------------------------------------------------------------------------
-bool Settings::imageSharpening() {
-    return settings->s->value("imageSharpening", true).toBool();
+int Settings::imageSharpening() {
+    int mode = settings->s->value("imageSharpening", 1).toInt();
+    if(mode < 0 || mode > 2)
+        mode = 1;
+    return mode;
 }
 
-void Settings::setImageSharpening(bool mode) {
+void Settings::setImageSharpening(int mode) {
     settings->s->setValue("imageSharpening", mode);
 }
 //------------------------------------------------------------------------------

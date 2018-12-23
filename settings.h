@@ -147,8 +147,8 @@ public:
 
     QColor backgroundColorFullscreen();
     void setBackgroundColorFullscreen(QColor color);
-    bool imageSharpening();
-    void setImageSharpening(bool mode);
+    int imageSharpening();
+    void setImageSharpening(int mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;
