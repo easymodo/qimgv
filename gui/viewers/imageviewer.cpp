@@ -465,7 +465,7 @@ void ImageViewer::mouseMoveZoom(QMouseEvent *event) {
         newScale = maxScale;
     } else if(moveDistance < 0 && newScale < minScale - FLT_EPSILON) { // at min zoom
         if(sourceImageFits() && expandImage) {
-            fitNormal();
+            setFitOriginal();
         } else {
             newScale = minScale;
             setFitWindow();
@@ -562,18 +562,19 @@ void ImageViewer::setFitWindow() {
 
 void ImageViewer::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
-    stopPosAnimation();
-    updateMinScale();
-    if(imageFitMode == FIT_FREE || imageFitMode == FIT_ORIGINAL) {
-        centerImage();
-    } else {
-        applyFitMode();
-    }
-    update();
     // Qt emits some unnecessary resizeEvents on startup
     // so we try to ignore them
-    if(this->isVisible())
+    if(this->isVisible()) {
+        stopPosAnimation();
+        updateMinScale();
+        if(imageFitMode == FIT_FREE || imageFitMode == FIT_ORIGINAL) {
+            centerImage();
+        } else {
+            applyFitMode();
+        }
+        update();
         requestScaling();
+    }
 }
 
 // center image if it is smaller than parent
