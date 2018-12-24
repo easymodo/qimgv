@@ -76,10 +76,10 @@ int main(int argc, char *argv[]) {
     }
 
     Core core;
+    core.showGui();
     // assume 1st arg is the filename
     if(!arg1.isEmpty()) {
         core.loadByPathBlocking(arg1);
     }
-    core.showGui();
     return a.exec();
 }

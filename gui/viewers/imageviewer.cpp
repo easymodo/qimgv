@@ -570,7 +570,10 @@ void ImageViewer::resizeEvent(QResizeEvent *event) {
         applyFitMode();
     }
     update();
-    requestScaling();
+    // Qt emits some unnecessary resizeEvents on startup
+    // so we try to ignore them
+    if(this->isVisible())
+        requestScaling();
 }
 
 // center image if it is smaller than parent
