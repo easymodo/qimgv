@@ -147,10 +147,11 @@ public:
 
     QColor backgroundColorFullscreen();
     void setBackgroundColorFullscreen(QColor color);
+    void sync();
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;
-    QSettings *s;
+    QSettings *s, *state;
     QDir *cacheDirectory, *thumbnailDirectory;
 
 signals:

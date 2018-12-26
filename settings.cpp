@@ -9,6 +9,7 @@ Settings::Settings(QObject *parent) : QObject(parent) {
     thumbnailDirectory = new QDir(QApplication::applicationDirPath() + "/thumbnails");
     thumbnailDirectory->mkpath(thumbnailDirectory->absolutePath());
     s = new QSettings(QApplication::applicationDirPath() + "/qimgv.ini", QSettings::IniFormat);
+    state = new QSettings(QApplication::applicationDirPath() + "/savedState.ini", QSettings::IniFormat);
 #else
     cacheDirectory = new QDir(QDir::homePath() + "/.cache/qimgv");
     cacheDirectory->mkpath(cacheDirectory->absolutePath());
@@ -16,6 +17,7 @@ Settings::Settings(QObject *parent) : QObject(parent) {
     thumbnailDirectory->mkpath(thumbnailDirectory->absolutePath());
     QSettings::setDefaultFormat(QSettings::NativeFormat);
     s = new QSettings();
+    state = new QSettings(QCoreApplication::organizationName(), "savedState");
 #endif
 }
 
@@ -23,6 +25,7 @@ Settings::~Settings() {
     delete thumbnailDirectory;
     delete cacheDirectory;
     delete s;
+    delete state;
 }
 
 Settings *Settings::getInstance() {
@@ -36,9 +39,8 @@ Settings *Settings::getInstance() {
 void Settings::validate() {
     if(settings) {
         bool ok = true;
-        if(settings->s->value("lastDir") == "") {
-            settings->s->setValue("lastDir",
-                                 QDir::homePath());
+        if(settings->state->value("lastDir") == "") {
+            settings->state->setValue("lastDir", QDir::homePath());
         }
         if(!ok) {
             qDebug() << "Settings: error reading thumbnail size (int conversion failed).";
@@ -47,6 +49,11 @@ void Settings::validate() {
             settings->s->setValue("mainPanelSize", 160);
         }
     }
+}
+//------------------------------------------------------------------------------
+void Settings::sync() {
+    settings->s->sync();
+    settings->state->sync();
 }
 //------------------------------------------------------------------------------
 QString Settings::cacheDir() {
@@ -237,16 +244,16 @@ void Settings::setUseFastScale(bool mode) {
 }
 //------------------------------------------------------------------------------
 QString Settings::lastDirectory() {
-    return settings->s->value("lastDir", QDir::homePath()).toString();
+    return settings->state->value("lastDir", QDir::homePath()).toString();
 }
 
 void Settings::setLastDirectory(QString path) {
-    settings->s->setValue("lastDir", path);
+    settings->state->setValue("lastDir", path);
 }
 //------------------------------------------------------------------------------
 unsigned int Settings::lastFilePosition() {
     bool ok = true;
-    unsigned int pos = settings->s->value("lastFilePosition", "0").toUInt(&ok);
+    unsigned int pos = settings->state->value("lastFilePosition", "0").toUInt(&ok);
     if(!ok) {
         qDebug() << "Settings: Invalid lastFilePosition. Resetting to 0.";
         pos = 0;
@@ -255,7 +262,7 @@ unsigned int Settings::lastFilePosition() {
 }
 
 void Settings::setLastFilePosition(unsigned int pos) {
-    settings->s->setValue("lastFilePosition", pos);
+    settings->state->setValue("lastFilePosition", pos);
 }
 //------------------------------------------------------------------------------
 unsigned int Settings::mainPanelSize() {
@@ -328,11 +335,11 @@ void Settings::setPanelFullscreenOnly(bool mode) {
 }
 //------------------------------------------------------------------------------
 int Settings::lastDisplay() {
-    return settings->s->value("lastDisplay", 0).toInt();
+    return settings->state->value("lastDisplay", 0).toInt();
 }
 
 void Settings::setLastDisplay(int display) {
-    settings->s->setValue("lastDisplay", display);
+    settings->state->setValue("lastDisplay", display);
 }
 //------------------------------------------------------------------------------
 PanelHPosition Settings::panelPosition() {
@@ -381,14 +388,14 @@ void Settings::setImageFitMode(ImageFitMode mode) {
 }
 //------------------------------------------------------------------------------
 QRect Settings::windowGeometry() {
-    QRect savedRect = settings->s->value("windowGeometry").toRect();
+    QRect savedRect = settings->state->value("windowGeometry").toRect();
     if(savedRect.size().isEmpty())
         savedRect.setRect(100, 100, 900, 600);
     return savedRect;
 }
 
 void Settings::setWindowGeometry(QRect geometry) {
-    settings->s->setValue("windowGeometry", geometry);
+    settings->state->setValue("windowGeometry", geometry);
 }
 //------------------------------------------------------------------------------
 bool Settings::infiniteScrolling() {
@@ -505,11 +512,11 @@ void Settings::setUseThumbnailCache(bool mode) {
 }
 //------------------------------------------------------------------------------
 QStringList Settings::savedPaths() {
-    return settings->s->value("savedPaths").toStringList();
+    return settings->state->value("savedPaths").toStringList();
 }
 
 void Settings::setSavedPaths(QStringList paths) {
-    settings->s->setValue("savedPaths", paths);
+    settings->state->setValue("savedPaths", paths);
 }
 //------------------------------------------------------------------------------
 int Settings::thumbnailerThreadCount() {
@@ -592,6 +599,3 @@ bool Settings::firstRun() {
 void Settings::setFirstRun(bool mode) {
     settings->s->setValue("firstRun", mode);
 }
-
-
-
