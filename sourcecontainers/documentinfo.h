@@ -45,6 +45,7 @@ private:
     // and sets extension
     void detectType();
     void loadExifOrientation();
+    bool detectAPNG();
 };
 
 #endif // DOCUMENTINFO_H
