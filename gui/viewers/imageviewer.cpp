@@ -564,7 +564,7 @@ void ImageViewer::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
     // Qt emits some unnecessary resizeEvents on startup
     // so we try to ignore them
-    if(this->isVisible()) {
+    if(parentWidget()->isVisible()) {
         stopPosAnimation();
         updateMinScale();
         if(imageFitMode == FIT_FREE || imageFitMode == FIT_ORIGINAL) {
