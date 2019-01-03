@@ -24,6 +24,7 @@ public:
     // If this is called mid-animation then geometry() will be all wrong.
     virtual QRect triggerRect() = 0;
 
+    void hideAnimated();
 public slots:
     void show();
     void hide();
@@ -40,7 +41,6 @@ protected:
     QRect mTriggerRect;
     virtual void setAnimationRange(QPoint start, QPoint end);
     virtual void updateTriggerRect() = 0;
-    void leaveEvent(QEvent *event);
     void saveStaticGeometry(QRect geometry);
     QRect staticGeometry();
 
@@ -48,6 +48,7 @@ protected:
     QTimeLine timeline;
     QEasingCurve outCurve;
 
+//    void mouseMoveEvent(QMouseEvent *event);
 private:
     QRect mStaticGeometry;
     qreal panelVisibleOpacity = 1.0;

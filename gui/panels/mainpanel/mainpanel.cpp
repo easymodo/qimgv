@@ -12,7 +12,7 @@ MainPanel::MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *pa
 
     buttonsLayout.setDirection(QBoxLayout::BottomToTop);
     buttonsLayout.setSpacing(0);
-    buttonsLayout.setContentsMargins(3,0,0,0);
+    buttonsLayout.setContentsMargins(4,0,0,0);
     buttonsLayout.addWidget(settingsButton);
     buttonsLayout.addWidget(openButton);
     buttonsLayout.addStretch(0);
@@ -39,7 +39,7 @@ void MainPanel::setHeight(int newHeight) {
 void MainPanel::setPosition(PanelHPosition newPosition) {
     SlideHPanel::setPosition(newPosition);
     if(newPosition == PANEL_TOP) {
-        mLayout.setContentsMargins(0,0,0,invisibleMargin);
+        mLayout.setContentsMargins(0,0,0,bottomMargin);
     } else {
         mLayout.setContentsMargins(0,3,0,0);
     }
@@ -62,13 +62,14 @@ void MainPanel::paintEvent(QPaintEvent *event) {
     QPainter p(this);
     if(position == PanelHPosition::PANEL_TOP) {
         p.setPen(QColor(QColor(96, 96, 96)));
-        p.drawLine(rect().bottomLeft() - QPoint(0, invisibleMargin - 1), rect().bottomRight() - QPoint(0, invisibleMargin - 1));
+        p.drawLine(rect().bottomLeft() - QPoint(0, bottomMargin - 1), rect().bottomRight() - QPoint(0, bottomMargin - 1));
         p.setPen(QColor(QColor(40, 40, 40)));
-        p.drawLine(rect().bottomLeft() - QPoint(0, invisibleMargin - 2), rect().bottomRight() - QPoint(0, invisibleMargin - 2));
+        p.drawLine(rect().bottomLeft() - QPoint(0, bottomMargin - 2), rect().bottomRight() - QPoint(0, bottomMargin - 2));
     } else {
         p.setPen(QColor(QColor(40, 40, 40)));
         p.drawLine(rect().topLeft(), rect().topRight());
         p.drawLine(rect().topLeft() + QPoint(0,1), rect().topRight() + QPoint(0,1));
         p.drawLine(rect().topLeft() + QPoint(0,2), rect().topRight() + QPoint(0,2));
+        p.drawLine(rect().topLeft() + QPoint(0,3), rect().topRight() + QPoint(0,3));
     }
 }

@@ -9,7 +9,7 @@
 SlideHPanel::SlideHPanel(OverlayContainerWidget *parent)
     : SlidePanel(parent)
 {
-    invisibleMargin = 12;
+    bottomMargin = 6;
     panelHeight = 100;
     mLayout.setContentsMargins(0,0,0,0);
     setPosition(PANEL_TOP);
@@ -37,11 +37,10 @@ void SlideHPanel::setPosition(PanelHPosition p) {
 
 void SlideHPanel::recalculateGeometry() {
     if(position == PANEL_TOP) {
-        QPoint start = QPoint(0,0);
-        setAnimationRange(start,
-                          start - QPoint(0, slideAmount));
+        setAnimationRange(QPoint(0,0),
+                          QPoint(0,0) - QPoint(0, slideAmount));
         saveStaticGeometry(QRect(QPoint(0, 0),
-                                 QPoint(containerSize().width() - 1, panelHeight - 1 + invisibleMargin)));
+                                 QPoint(containerSize().width() - 1, panelHeight - 1 + bottomMargin)));
     } else {
         setAnimationRange(QPoint(0, containerSize().height() - height()),
                           QPoint(0, containerSize().height() - height() + slideAmount));

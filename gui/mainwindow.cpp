@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->setMouseTracking(true);
     this->setAcceptDrops(true);
+    this->setAccessibleName("mainwindow");
     desktopWidget = QApplication::desktop();
     windowMoveTimer.setSingleShot(true);
     windowMoveTimer.setInterval(150);
@@ -285,6 +286,14 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event) {
         {
             mainPanel->show();
         }
+        // leaveEvent which misfires on HiDPI (rounding error somewhere?)
+        // add a few px of buffer area to avoid bugs
+        // it still fcks up Fitts law as the buttons are not receiving hover on screen border
+        else if( !mainPanel->triggerRect().adjusted(-8,-8,8,8).contains(event->pos()) &&
+                 mainPanel->triggerRect().adjusted(-8,-8,8,8).contains(lastMouseMovePos))
+        {
+            mainPanel->hideAnimated();
+        }
     }
     event->ignore();
     lastMouseMovePos = event->pos();
@@ -344,6 +353,11 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
         cropOverlay->setImageScale(viewerWidget->currentScale());
         cropOverlay->setImageDrawRect(viewerWidget->imageRect());
     }
+}
+
+void MainWindow::leaveEvent(QEvent *event) {
+    if(mainPanel)
+        mainPanel->hideAnimated();
 }
 
 void MainWindow::showDefault() {

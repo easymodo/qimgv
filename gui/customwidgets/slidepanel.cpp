@@ -56,6 +56,11 @@ void SlidePanel::hide() {
     QWidget::hide();
 }
 
+void SlidePanel::hideAnimated() {
+    if(timeline.state() != QTimeLine::Running)
+        timeline.start();
+}
+
 void SlidePanel::setWidget(std::shared_ptr<QWidget> w) {
     if(!w)
         return;
@@ -68,13 +73,6 @@ void SlidePanel::setWidget(std::shared_ptr<QWidget> w) {
 
 bool SlidePanel::hasWidget() {
     return (mWidget != nullptr);
-}
-
-// TODO: this misfires with QT_SCALE_FACTOR > 1.0
-void SlidePanel::leaveEvent(QEvent *event) {
-    Q_UNUSED(event)
-    if(timeline.state() != QTimeLine::Running)
-        timeline.start();
 }
 
 void SlidePanel::show() {

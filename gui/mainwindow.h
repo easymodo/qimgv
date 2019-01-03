@@ -100,6 +100,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *event);
     void resizeEvent(QResizeEvent *event);
+    void leaveEvent(QEvent *event);
 
 signals:
     void opened(QString);
