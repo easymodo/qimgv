@@ -4,6 +4,7 @@
 #include <QTimer>
 #include <QLabel>
 #include "gui/customwidgets/floatingwidget.h"
+#include "settings.h"
 
 namespace Ui {
 class FloatingMessage;
@@ -21,21 +22,26 @@ class FloatingMessage : public FloatingWidget {
 public:
     FloatingMessage(OverlayContainerWidget *parent);
     ~FloatingMessage();
-    void showMessage(QString text, FloatingWidgetPosition position, FloatingMessageIcon icon, int fadeDuration);
+    void showMessage(QString text, FloatingMessageIcon icon, int fadeDuration);
     void setIcon(FloatingMessageIcon icon);
 
+    void showMessage(QString text, FloatingWidgetPosition position, FloatingMessageIcon icon, int duration);
 public slots:
     void show();
     void setText(QString text);
 
 private:
-    Ui::FloatingMessage *ui;
     QTimer visibilityTimer;
     int hideDelay;
+    FloatingWidgetPosition preferredPosition;
+    Ui::FloatingMessage *ui;
 
+    void doShowMessage(QString text, FloatingMessageIcon icon, int duration);
 protected:
     void mousePressEvent(QMouseEvent *event);
     QPixmap iconLeftEdge, iconRightEdge;
+private slots:
+    void readSettings();
 };
 
 #endif // FLOATINGMESSAGE

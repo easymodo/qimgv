@@ -8,14 +8,21 @@ CopyOverlay::CopyOverlay(OverlayContainerWidget *parent) :
     ui->setupUi(this);
     hide();
     setFadeEnabled(true);
-    setPosition(FloatingWidgetPosition::BOTTOMLEFT);
 
     ui->headerIcon->setPixmap(QPixmap(":/res/icons/buttons/copy16.png"));
     ui->headerLabel->setText("Copy file to...");
     mode = OVERLAY_COPY;
 
     createShortcuts();
+
+    paths = settings->savedPaths();
+    if(paths.count() < maxPathCount)
+        createDefaultPaths();
+    createPathWidgets();
+
     readSettings();
+    connect(settings, SIGNAL(settingsChanged()),
+            this, SLOT(readSettings()));
 }
 
 CopyOverlay::~CopyOverlay() {
@@ -71,7 +78,7 @@ void CopyOverlay::createPathWidgets() {
 }
 
 void CopyOverlay::createShortcuts() {
-    for(int i=0; i<maxPathCount; i++)
+    for(int i = 0; i < maxPathCount; i++)
         shortcuts.insert(QString::number(i + 1), i);
 }
 
@@ -90,10 +97,12 @@ void CopyOverlay::requestFileOperation(int fieldNumber) {
 }
 
 void CopyOverlay::readSettings() {
-    paths = settings->savedPaths();
-    if(paths.count() < maxPathCount)
-        createDefaultPaths();
-    createPathWidgets();
+    // don't interfere with the main panel
+    if(settings->panelEnabled() && settings->panelPosition() == PanelHPosition::PANEL_BOTTOM) {
+        setPosition(FloatingWidgetPosition::TOPLEFT);
+    } else {
+        setPosition(FloatingWidgetPosition::BOTTOMLEFT);
+    }
     update();
 }
 

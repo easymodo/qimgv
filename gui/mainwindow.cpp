@@ -539,23 +539,23 @@ void MainWindow::showMessageDirectoryStart() {
 }
 
 void MainWindow::showMessageFitWindow() {
-    floatingMessage->showMessage("Fit Window", FloatingWidgetPosition::BOTTOM, FloatingMessageIcon::NO_ICON, 350);
+    floatingMessage->showMessage("Fit Window", FloatingMessageIcon::NO_ICON, 350);
 }
 
 void MainWindow::showMessageFitWidth() {
-    floatingMessage->showMessage("Fit Width", FloatingWidgetPosition::BOTTOM, FloatingMessageIcon::NO_ICON, 350);
+    floatingMessage->showMessage("Fit Width", FloatingMessageIcon::NO_ICON, 350);
 }
 
 void MainWindow::showMessageFitOriginal() {
-    floatingMessage->showMessage("Fit 1:1", FloatingWidgetPosition::BOTTOM, FloatingMessageIcon::NO_ICON, 350);
+    floatingMessage->showMessage("Fit 1:1", FloatingMessageIcon::NO_ICON, 350);
 }
 
 void MainWindow::showMessage(QString text) {
-    floatingMessage->showMessage(text, FloatingWidgetPosition::BOTTOM, FloatingMessageIcon::NO_ICON, 1800);
+    floatingMessage->showMessage(text,  FloatingMessageIcon::NO_ICON, 1800);
 }
 
 void MainWindow::showMessage(QString text, int duration) {
-    floatingMessage->showMessage(text, FloatingWidgetPosition::BOTTOM, FloatingMessageIcon::NO_ICON, duration);
+    floatingMessage->showMessage(text, FloatingMessageIcon::NO_ICON, duration);
 }
 
 void MainWindow::readSettings() {

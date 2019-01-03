@@ -3,7 +3,7 @@
 FloatingWidget::FloatingWidget(OverlayContainerWidget *parent)
     : OverlayWidget(parent),
       marginX(20),
-      marginY(30),
+      marginY(35),
       fadeEnabled(false)
 {
     opacityEffect = new QGraphicsOpacityEffect(this);

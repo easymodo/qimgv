@@ -3,6 +3,7 @@
 
 FloatingMessage::FloatingMessage(OverlayContainerWidget *parent) :
     FloatingWidget(parent),
+    preferredPosition(FloatingWidgetPosition::BOTTOM),
     ui(new Ui::FloatingMessage)
 {
     ui->setupUi(this);
@@ -14,24 +15,45 @@ FloatingMessage::FloatingMessage(OverlayContainerWidget *parent) :
     setFadeEnabled(true);
     setFadeDuration(300);
 
-    position = FloatingWidgetPosition::LEFT;
-
     iconLeftEdge.load(":/res/icons/message/dir_start20.png");
     iconRightEdge.load(":/res/icons/message/dir_end20.png");
     setIcon(FloatingMessageIcon::NO_ICON);
 
     this->setAccessibleName("FloatingMessage");
     connect(&visibilityTimer, SIGNAL(timeout()), this, SLOT(hide()));
+
+    readSettings();
+    connect(settings, SIGNAL(settingsChanged()),
+            this, SLOT(readSettings()));
 }
 
 FloatingMessage::~FloatingMessage() {
     delete ui;
 }
 
+void FloatingMessage::readSettings() {
+    /*
+    // don't interfere with the main panel
+    if(settings->panelEnabled() && settings->panelPosition() == PanelHPosition::PANEL_BOTTOM) {
+        preferredPosition = FloatingWidgetPosition::TOP;
+    } else {
+        preferredPosition = FloatingWidgetPosition::BOTTOM;
+    }
+    */
+}
+
 void FloatingMessage::showMessage(QString text, FloatingWidgetPosition position, FloatingMessageIcon icon, int duration) {
-    this->position = position;
+    setPosition(position);
+    doShowMessage(text, icon, duration);
+}
+
+void FloatingMessage::showMessage(QString text, FloatingMessageIcon icon, int duration) {
+    setPosition(preferredPosition);
+    doShowMessage(text, icon, duration);
+}
+
+void FloatingMessage::doShowMessage(QString text, FloatingMessageIcon icon, int duration) {
     hideDelay = duration;
-    //
     setIcon(icon);
     setText(text);
     show();
