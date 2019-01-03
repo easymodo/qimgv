@@ -16,10 +16,15 @@ QRect SlideVPanel::triggerRect() {
 
 void SlideVPanel::setPosition(PanelVPosition p) {
     position = p;
-    if(position == PANEL_RIGHT)
-        endPosition = QPoint(startPosition.x() + 20, startPosition.y());
-    else
-        endPosition = QPoint(startPosition.x() - 20, startPosition.y());
+    if(position == PANEL_RIGHT) {
+        QPoint start = QPoint(0,0);
+        setAnimationRange(start,
+                          start + QPoint(20,0));
+    } else {
+        QPoint start = QPoint(0,0);
+        setAnimationRange(start,
+                          start + QPoint(-20,0));
+    }
     recalculateGeometry();
 }
 

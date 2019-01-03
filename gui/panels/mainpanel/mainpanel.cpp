@@ -12,7 +12,7 @@ MainPanel::MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *pa
 
     buttonsLayout.setDirection(QBoxLayout::BottomToTop);
     buttonsLayout.setSpacing(0);
-    buttonsLayout.setContentsMargins(3,0,0,1);
+    buttonsLayout.setContentsMargins(3,0,0,0);
     buttonsLayout.addWidget(settingsButton);
     buttonsLayout.addWidget(openButton);
     buttonsLayout.addStretch(0);
@@ -37,11 +37,10 @@ void MainPanel::setHeight(int newHeight) {
 }
 
 void MainPanel::setPosition(PanelHPosition newPosition) {
-    position = newPosition;
-    if(position == PANEL_TOP) {
+    SlideHPanel::setPosition(newPosition);
+    if(newPosition == PANEL_TOP) {
         mLayout.setContentsMargins(0,0,0,invisibleMargin);
-    }
-    else {
+    } else {
         mLayout.setContentsMargins(0,3,0,0);
     }
     recalculateGeometry();

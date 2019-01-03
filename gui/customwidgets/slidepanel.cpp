@@ -98,7 +98,7 @@ QRect SlidePanel::staticGeometry() {
 }
 
 void SlidePanel::animationUpdate(int frame) {
-    // Calculate local cursor position; ocrrect for the current pos() animation
+    // Calculate local cursor position; correct for the current pos() animation
     QPoint adjustedPos = mapFromGlobal(QCursor::pos()) + this->pos();
     if(triggerRect().contains(adjustedPos, true)) {
         // Cancel the animation if cursor is back at the panel
@@ -108,11 +108,16 @@ void SlidePanel::animationUpdate(int frame) {
     } else {
         // Apply the animation frame
         qreal value = outCurve.valueForProgress(frame / 100.0);
-        QPoint newPos = QPoint(static_cast<int>(endPosition.x() * value),
-                               static_cast<int>(endPosition.y() * value));
-        setProperty("pos", newPos);
+        QPoint newPosOffset = QPoint(static_cast<int>((endPosition.x() - startPosition.x()) * value),
+                               static_cast<int>((endPosition.y() - startPosition.y()) * value));
+        setProperty("pos", startPosition + newPosOffset);
         fadeEffect->setOpacity(1 - value);
     }
+}
+
+void SlidePanel::setAnimationRange(QPoint start, QPoint end) {
+    startPosition = start;
+    endPosition = end;
 }
 
 void SlidePanel::onAnimationFinish() {

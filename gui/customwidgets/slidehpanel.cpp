@@ -32,18 +32,19 @@ void SlideHPanel::setPanelHeight(int newHeight) {
 
 void SlideHPanel::setPosition(PanelHPosition p) {
     position = p;
-    if(position == PANEL_TOP)
-        endPosition = startPosition - QPoint(0, slideAmount);
-    else
-        endPosition = QPoint(0, containerSize().height() - height() + slideAmount);
     recalculateGeometry();
 }
 
 void SlideHPanel::recalculateGeometry() {
     if(position == PANEL_TOP) {
+        QPoint start = QPoint(0,0);
+        setAnimationRange(start,
+                          start - QPoint(0, slideAmount));
         saveStaticGeometry(QRect(QPoint(0, 0),
                                  QPoint(containerSize().width() - 1, panelHeight - 1 + invisibleMargin)));
     } else {
+        setAnimationRange(QPoint(0, containerSize().height() - height()),
+                          QPoint(0, containerSize().height() - height() + slideAmount));
         saveStaticGeometry(QRect(QPoint(0, containerSize().height() - panelHeight + 1),
                                  QPoint(containerSize().width(), containerSize().height()) - QPoint(0,1) ));
     }

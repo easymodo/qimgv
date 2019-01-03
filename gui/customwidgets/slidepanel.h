@@ -37,8 +37,8 @@ protected:
     QGraphicsOpacityEffect *fadeEffect;
     int panelSize, slideAmount;
     std::shared_ptr<QWidget> mWidget;
-    QPoint startPosition, endPosition;
     QRect mTriggerRect;
+    virtual void setAnimationRange(QPoint start, QPoint end);
     virtual void updateTriggerRect() = 0;
     void leaveEvent(QEvent *event);
     void saveStaticGeometry(QRect geometry);
@@ -51,6 +51,7 @@ protected:
 private:
     QRect mStaticGeometry;
     qreal panelVisibleOpacity = 1.0;
+    QPoint startPosition, endPosition;
 
 };
 
