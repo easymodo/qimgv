@@ -275,7 +275,7 @@ void FolderGridView::resizeEvent(QResizeEvent *event) {
     holderWidget.setMaximumSize(size() - QSize(scrollBar->width(), 0));
     fitSceneToContents();
 
-    loadVisibleThumbnails();
+    loadVisibleThumbnailsDelayed();
 
     //qDebug() << this->rect() << holderWidget.size() << scene.sceneRect();
 }

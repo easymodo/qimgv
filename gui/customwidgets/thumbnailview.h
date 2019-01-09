@@ -38,6 +38,7 @@ public slots:
     void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb);
     void resetViewport();
     void loadVisibleThumbnails();
+    void loadVisibleThumbnailsDelayed();
 
     void addItem();
     void insertItem(int index);
@@ -53,13 +54,13 @@ private:
 
     void scrollPrecise(int pixelDelta);
     void scrollSmooth(int angleDelta);
+    QTimer loadTimer, scrollTimer;
 
 protected:
     QGraphicsScene scene;
     QList<ThumbnailWidget*> thumbnails;
     QScrollBar *scrollBar;
     QTimeLine *timeLine;
-    QTimer scrollTimer;
     QPointF viewportCenter;
     int thumbnailSize;
 
@@ -67,7 +68,7 @@ protected:
     const float SCROLL_SPEED_MULTIPLIER = 4.0f;
     const int SCROLL_ANIMATION_SPEED = 140;
 
-    const uint LOAD_DELAY = 40;
+    const uint LOAD_DELAY = 200;
     const int OFFSCREEN_PRELOAD_AREA = 3000;
 
     bool atSceneStart();

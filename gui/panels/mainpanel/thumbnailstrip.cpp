@@ -9,9 +9,6 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
       thumbnailSpacing(0)
 {
     this->setAttribute(Qt::WA_NoMousePropagation, true);
-    // Load delay. Move to base class?
-    connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
-    loadTimer.setSingleShot(true);
     this->setFocusPolicy(Qt::NoFocus);
     setupLayout();
 }
@@ -97,11 +94,6 @@ void ThumbnailStrip::ensureThumbnailVisible(int pos) {
         ensureVisible(thumbnails.at(pos)->sceneBoundingRect(),
                       thumbnailSize / 2,
                       0);
-}
-
-void ThumbnailStrip::loadVisibleThumbnailsDelayed() {
-    loadTimer.stop();
-    loadTimer.start(static_cast<const int>(LOAD_DELAY));
 }
 
 // scene stuff??

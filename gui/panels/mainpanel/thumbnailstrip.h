@@ -9,7 +9,6 @@
 #include <QWheelEvent>
 #include <QScrollBar>
 #include <QMutex>
-#include <QTimer>
 #include <QPainter>
 #include <QResizeEvent>
 #include <cmath>
@@ -28,8 +27,6 @@ private:
 
     int current, thumbnailSpacing;
 
-    QTimer loadTimer;
-
     void updateThumbnailPositions(int start, int end);
     void updateThumbnailPositions();
     void setThumbnailSize(int);
@@ -39,7 +36,6 @@ private:
 signals:
 
 public slots:
-    void loadVisibleThumbnailsDelayed();
     void highlightThumbnail(int pos);
 
     //void removeItemAt(int pos);

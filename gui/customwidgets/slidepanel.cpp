@@ -111,6 +111,7 @@ void SlidePanel::animationUpdate(int frame) {
         setProperty("pos", startPosition + newPosOffset);
         fadeEffect->setOpacity(1 - value);
     }
+    qApp->processEvents();
 }
 
 void SlidePanel::setAnimationRange(QPoint start, QPoint end) {

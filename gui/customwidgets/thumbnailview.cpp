@@ -21,10 +21,16 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     /* scrolling-related things */
     timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
     timeLine->setEasingCurve(QEasingCurve::OutSine);
-
     timeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
+
+    // delay timer for wheel scroll
     scrollTimer.setSingleShot(true);
     scrollTimer.setInterval(40);
+    connect(&scrollTimer, SIGNAL(timeout()), this, SIGNAL(scrolled()));
+
+    connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
+    loadTimer.setInterval(static_cast<const int>(LOAD_DELAY));
+    loadTimer.setSingleShot(true);
 
     if(orientation == THUMBNAILVIEW_HORIZONTAL) {
         this->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -46,8 +52,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     connect(timeLine, SIGNAL(finished()), this, SIGNAL(scrolled()));
     // on manual scrollbar drag
     connect(scrollBar, SIGNAL(sliderMoved(int)), &scrollTimer, SLOT(start()));
-    connect(&scrollTimer, SIGNAL(timeout()), this, SIGNAL(scrolled()));
-    connect(this, SIGNAL(scrolled()), this, SLOT(loadVisibleThumbnails()));
+    connect(this, SIGNAL(scrolled()), this, SLOT(loadVisibleThumbnailsDelayed()));
 }
 
 void ThumbnailView::showEvent(QShowEvent *event) {
@@ -107,7 +112,7 @@ void ThumbnailView::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
 }
 
 void ThumbnailView::loadVisibleThumbnails() {
-    //loadTimer.stop();
+    loadTimer.stop();
     //qDebug() << "load";
     if(isVisible()) {
         QRectF visibleRect = mapToScene(viewport()->geometry()).boundingRect();
@@ -132,12 +137,21 @@ void ThumbnailView::loadVisibleThumbnails() {
     }
 }
 
+void ThumbnailView::loadVisibleThumbnailsDelayed() {
+    loadTimer.stop();
+    loadTimer.start();
+}
+
 void ThumbnailView::centerOnX(int dx) {
     centerOn(dx, viewportCenter.y());
+    // trigger repaint immediately
+    qApp->processEvents();
 }
 
 void ThumbnailView::centerOnY(int dy) {
     centerOn(viewportCenter.x(), dy);
+    // trigger repaint immediately
+    qApp->processEvents();
 }
 
 void ThumbnailView::resetViewport() {
@@ -186,12 +200,10 @@ void ThumbnailView::fitSceneToContents() {
 
 //################### scrolling ######################
 void ThumbnailView::wheelEvent(QWheelEvent *event) {
-    // TODO: if(orient = vertical - then scroll dy etc.
     event->accept();
     viewportCenter = mapToScene(viewport()->rect().center());
     // pixelDelta() with libinput returns non-zero values with mouse wheel
     // so there's no way to distinguish between wheel scroll and touchpad scroll (at least not that i know of)
-    // that's why smoothScroll flag workaround
     // NOTE: looks like it's been fixed in current versions. Need testing.
     int pixelDelta = event->pixelDelta().y();
     int angleDelta = event->angleDelta().ry();
@@ -203,14 +215,16 @@ void ThumbnailView::wheelEvent(QWheelEvent *event) {
 }
 
 void ThumbnailView::scrollPrecise(int pixelDelta) {
+    if(timeLine->state() == QTimeLine::Running)
+        timeLine->stop();
     // ignore if we reached boundaries
     if( (pixelDelta > 0 && atSceneStart()) || (pixelDelta < 0 && atSceneEnd()) )
         return;
     // pixel scrolling (precise)
     if(orientation == THUMBNAILVIEW_HORIZONTAL) {
-        centerOnX(viewportCenter.x() - pixelDelta);
+        centerOnX(static_cast<int>(viewportCenter.x() - pixelDelta));
     } else {
-        centerOnY(viewportCenter.y() - pixelDelta);
+        centerOnY(static_cast<int>(viewportCenter.y() - pixelDelta));
     }
     scrollTimer.start();
 }
@@ -222,23 +236,21 @@ void ThumbnailView::scrollSmooth(int angleDelta) {
 
     int center;
     if(orientation == THUMBNAILVIEW_HORIZONTAL) {
-        center = viewportCenter.x();
+        center = static_cast<int>(viewportCenter.x());
     } else {
-        center = viewportCenter.y();
+        center = static_cast<int>(viewportCenter.y());
     }
-    // smooth scrolling by fixed intervals
-    if(timeLine->state() == QTimeLine::Running) {
-        timeLine->stop();
-        timeLine->setFrameRange(center,
-                                timeLine->endFrame() -
-                                angleDelta *
-                                SCROLL_SPEED_MULTIPLIER * 1.2f);
-    } else {
-        timeLine->setFrameRange(center,
-                                center -
-                                angleDelta *
-                                SCROLL_SPEED_MULTIPLIER);
+    bool redirect = false;
+    int newEndFrame = center - static_cast<int>(angleDelta * SCROLL_SPEED_MULTIPLIER);
+    if( (newEndFrame < center && center < timeLine->endFrame()) || (newEndFrame > center && center > timeLine->endFrame()) )
+    {
+        redirect = true;
     }
+    if(timeLine->state() == QTimeLine::Running && !redirect) {
+        newEndFrame = timeLine->endFrame() - static_cast<int>(angleDelta * SCROLL_SPEED_MULTIPLIER * 1.3f);
+    }
+    timeLine->stop();
+    timeLine->setFrameRange(center, newEndFrame);
     timeLine->start();
 }
 
