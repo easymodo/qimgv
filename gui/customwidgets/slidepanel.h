@@ -47,6 +47,7 @@ protected:
     QTimer timer;
     QTimeLine timeline;
     QEasingCurve outCurve;
+    const int ANIMATION_DURATION = 230;
 
 //    void mouseMoveEvent(QMouseEvent *event);
 private:

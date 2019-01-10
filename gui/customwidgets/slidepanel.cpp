@@ -29,10 +29,10 @@ SlidePanel::SlidePanel(OverlayContainerWidget *parent)
 
     outCurve.setType(QEasingCurve::OutQuart);
 
-    timeline.setDuration(230);
+    timeline.setDuration(ANIMATION_DURATION);
     timeline.setCurveShape(QTimeLine::LinearCurve);
     timeline.setStartFrame(0);
-    timeline.setEndFrame(100);
+    timeline.setEndFrame(ANIMATION_DURATION);
     // For some reason 16 feels janky on windows. Linux is fine.
 #ifdef _WIN32
     timeline.setUpdateInterval(8);
@@ -57,8 +57,9 @@ void SlidePanel::hide() {
 }
 
 void SlidePanel::hideAnimated() {
-    if(timeline.state() != QTimeLine::Running)
+    if(!this->isHidden() && timeline.state() != QTimeLine::Running) {
         timeline.start();
+    }
 }
 
 void SlidePanel::setWidget(std::shared_ptr<QWidget> w) {
@@ -105,9 +106,9 @@ void SlidePanel::animationUpdate(int frame) {
         setProperty("pos", startPosition);
     } else {
         // Apply the animation frame
-        qreal value = outCurve.valueForProgress(frame / 100.0);
+        qreal value = outCurve.valueForProgress(static_cast<qreal>(frame) / ANIMATION_DURATION);
         QPoint newPosOffset = QPoint(static_cast<int>((endPosition.x() - startPosition.x()) * value),
-                               static_cast<int>((endPosition.y() - startPosition.y()) * value));
+                                     static_cast<int>((endPosition.y() - startPosition.y()) * value));
         setProperty("pos", startPosition + newPosOffset);
         fadeEffect->setOpacity(1 - value);
     }
