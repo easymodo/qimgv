@@ -1,10 +1,10 @@
-qimgv | Current version: 0.7.1
+qimgv | Current version: 0.7.2
 =====
 A cross-platform image viewer with webm support. Written in qt5.
 
 ## [qimgv v0.6 video overview](https://www.youtube.com/watch?v=AODRGCRPCpw)
 
-![alt tag](https://i.imgur.com/prIficV.png)
+![alt tag](https://i.imgur.com/fdHKWtf.png)
 
 ## Key features:
 
@@ -64,7 +64,7 @@ The idea is to have a uncluttered, simple and easy to use UI. You can see ui ele
 
 There is a pull-down panel with thumbnails, as well as folder view (accessible by pressing Return).
 
-You can also bring up a context menu by right-clicking on an image.
+You can also bring up a context menu by right-clicking an image.
 
 ### Using quick copy / quick move panels
 
@@ -101,15 +101,27 @@ QT_SCALE_FACTOR="1.5" qimgv /path/to/image.png
 ```
 You can put it in `qimgv.desktop` file to make it permanent. Using values less than `1.0` may break some things.
 
+qimgv should also obey the global scale factor set in kde's systemsettings.
+
+### APNG support
+
+APNG is supported via third-party qt plugin. (Included in windows qimgv package)
+ 
+If you are linux user, install the latest [QtApng by Skycoder42](https://github.com/Skycoder42/QtApng).
+
+### RAW support
+
+Viewing raw is supported via [qtraw plugin](https://github.com/mardy/qtraw). It is not included in windows release at the time.
+
 ## Installation instructions
 
-### Linux
+### GNU+Linux
 
   __Arch:__ Available in AUR - `qimgv-git`
   
   __Gentoo:__ `emerge qimgv`
     
-  __Other distros (manual install):__
+  __Manual install:__
   
   1. Install dependencies ( git, cmake, qt >= 5.6, libmpv >= 0.22, mpv)
   
