@@ -495,12 +495,12 @@ void Settings::setTransparencyGrid(bool mode) {
     settings->s->setValue("drawTransparencyGrid", mode);
 }
 //------------------------------------------------------------------------------
-bool Settings::forceSmoothScroll() {
-    return settings->s->value("forceSmoothScroll", false).toBool();
+bool Settings::enableSmoothScroll() {
+    return settings->s->value("enableSmoothScroll", true).toBool();
 }
 
-void Settings::setForceSmoothScroll(bool mode) {
-    settings->s->setValue("forceSmoothScroll", mode);
+void Settings::setEnableSmoothScroll(bool mode) {
+    settings->s->setValue("enableSmoothScroll", mode);
 }
 //------------------------------------------------------------------------------
 bool Settings::useThumbnailCache() {

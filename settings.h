@@ -102,8 +102,8 @@ public:
     void setDrawThumbnailSelectionBorder(bool mode);
     bool transparencyGrid();
     void setTransparencyGrid(bool mode);
-    bool forceSmoothScroll();
-    void setForceSmoothScroll(bool mode);
+    bool enableSmoothScroll();
+    void setEnableSmoothScroll(bool mode);
     bool useThumbnailCache();
     void setUseThumbnailCache(bool mode);
     QStringList savedPaths();

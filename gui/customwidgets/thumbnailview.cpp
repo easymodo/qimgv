@@ -202,15 +202,22 @@ void ThumbnailView::fitSceneToContents() {
 void ThumbnailView::wheelEvent(QWheelEvent *event) {
     event->accept();
     viewportCenter = mapToScene(viewport()->rect().center());
-    // pixelDelta() with libinput returns non-zero values with mouse wheel
-    // so there's no way to distinguish between wheel scroll and touchpad scroll (at least not that i know of)
-    // NOTE: looks like it's been fixed in current versions. Need testing.
+    // alright, i officially gave up on fixing libinput scrolling
+    // let's just hope it gets done in Qt while I am still alive
     int pixelDelta = event->pixelDelta().y();
     int angleDelta = event->angleDelta().ry();
-    if(pixelDelta != 0)  {
-        scrollPrecise(pixelDelta);
+
+    if(!settings->enableSmoothScroll()) {
+        if(pixelDelta != 0)
+            scrollPrecise(pixelDelta);
+        else
+            scrollPrecise(angleDelta);
     } else {
-        scrollSmooth(angleDelta);
+        if(pixelDelta != 0)  {
+            scrollPrecise(pixelDelta);
+        } else {
+            scrollSmooth(angleDelta);
+        }
     }
 }
 

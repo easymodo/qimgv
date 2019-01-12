@@ -52,9 +52,12 @@ void SettingsDialog::setupSidebar() {
     // About
     sideBar->item(6)->setIcon(QIcon(":/res/icons/app/32.png"));
 
-    // Not implemented on windows. Not sure if will ever be. I don't really care.
 #ifdef _WIN32
+    // Not implemented on windows. Not sure if will ever be. I don't really care.
     sideBar->item(4)->setHidden(true);
+    // Should be no reason to tweak this on windows
+    ui->enableSmoothScrollCheckBox->setHidden(true);
+    ui->enableSmoothScrollLabel->setHidden(true);
 #endif
 }
 
@@ -69,7 +72,7 @@ void SettingsDialog::readSettings() {
     ui->mouseWrappingCheckBox->setChecked(settings->mouseWrapping());
     ui->squareThumbnailsCheckBox->setChecked(settings->squareThumbnails());
     ui->transparencyGridCheckBox->setChecked(settings->transparencyGrid());
-    ui->forceSmoothScrollCheckBox->setChecked(settings->forceSmoothScroll());
+    ui->enableSmoothScrollCheckBox->setChecked(settings->enableSmoothScroll());
     ui->usePreloaderCheckBox->setChecked(settings->usePreloader());
     ui->useThumbnailCacheCheckBox->setChecked(settings->useThumbnailCache());
     ui->smoothUpscalingCheckBox->setChecked(settings->smoothUpscaling());
@@ -160,7 +163,7 @@ void SettingsDialog::applySettings() {
     settings->setMouseWrapping(ui->mouseWrappingCheckBox->isChecked());
     settings->setSquareThumbnails(ui->squareThumbnailsCheckBox->isChecked());
     settings->setTransparencyGrid(ui->transparencyGridCheckBox->isChecked());
-    settings->setForceSmoothScroll(ui->forceSmoothScrollCheckBox->isChecked());
+    settings->setEnableSmoothScroll(ui->enableSmoothScrollCheckBox->isChecked());
     settings->setUsePreloader(ui->usePreloaderCheckBox->isChecked());
     settings->setUseThumbnailCache(ui->useThumbnailCacheCheckBox->isChecked());
     settings->setSmoothUpscaling(ui->smoothUpscalingCheckBox->isChecked());
