@@ -41,6 +41,10 @@ void CropPanel::setImageRealSize(QSize sz) {
     ui->width->setMaximum(sz.width());
     ui->height->setMaximum(sz.height());
     realSize = sz;
+    // reset to free mode on image change
+    ui->ARcomboBox->setCurrentIndex(0);
+    // update aspect ratio in input fields
+
     onAspectRatioSelected();
 }
 
@@ -73,13 +77,17 @@ void CropPanel::onAspectRatioChange() {
 // 3 == current screen
 // 4 ...
 void CropPanel::onAspectRatioSelected() {
-    int index = ui->ARcomboBox->currentIndex();
-    if(index == 0) {
-        overlay->setForceAspectRatio(false);
-        return;
-    }
     QPointF newAR(1, 1);
+
+    int index = ui->ARcomboBox->currentIndex();
     switch(index) {
+    case 0:
+    {
+        overlay->setForceAspectRatio(false);
+        if(realSize.height() != 0)
+            newAR = QPointF(qreal(realSize.width()) / realSize.height(), 1.0);
+        break;
+    }
     case 1:
     {
         newAR = QPointF(ui->ARX->value(), ui->ARY->value());
@@ -130,7 +138,8 @@ void CropPanel::onAspectRatioSelected() {
     ui->ARY->setValue(newAR.y());
     ui->ARX->blockSignals(false);
     ui->ARY->blockSignals(false);
-    overlay->setAspectRatio(newAR);
+    if(index)
+        overlay->setAspectRatio(newAR);
 }
 
 // update input box values

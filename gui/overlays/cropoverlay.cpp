@@ -47,19 +47,17 @@ void CropOverlay::prepareDrawElements() {
 
 void CropOverlay::setImageRealSize(QSize sz) {
     imageRect.setSize(sz);
-    clearSelection();
+    selectAll();
 }
 
 void CropOverlay::setImageDrawRect(QRect imageDrawRect) {
     if(this->imageDrawRect != imageDrawRect) {
         this->imageDrawRect = imageDrawRect;
     }
-    clearSelection();
 }
 
 void CropOverlay::setImageScale(float scale) {
     this->scale = scale;
-    clearSelection();
 }
 
 void CropOverlay::clearSelection() {
@@ -105,6 +103,7 @@ void CropOverlay::show() {
         drawBuffer->setDevicePixelRatio(dpr);
     }
     QWidget::show();
+    selectAll();
 }
 
 void CropOverlay::hide() {
@@ -412,21 +411,8 @@ void CropOverlay::mousePressEvent(QMouseEvent *event) {
         cursorAction = hoverTarget(event->pos() * dpr);
         setCursorAction(cursorAction);
         setResizeAnchor(cursorAction);
-        if(cursorAction == NO_DRAG) { // start selection
-            clear = false;
-            startPos = event->pos();
-            endPos = startPos;
-            selectionRect.setTopLeft(mapPointToImage(event->pos() * dpr));
-            selectionRect.setBottomRight(selectionRect.topLeft());
-            updateSelectionDrawRect();
-            emit selectionChanged(selectionRect);
-        } else {
-            moveStartPos = event->pos();
-        }
-    } else {
-        clearSelection();
+        moveStartPos = event->pos();
     }
-    update();
 }
 
 void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
@@ -442,7 +428,10 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
             updateSelectionDrawRect();
             updateHandlePositions();
             update();
-        } else if(cursorAction == NO_DRAG) { // selecting
+        } else if(cursorAction == NO_DRAG) {
+            // ignore. we should always have some selection rectangle
+
+            /*
             endPos = event->pos();
             //build selection rectangle
             QPoint tl, br;
@@ -454,9 +443,11 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
 
             selectionRect.setTopLeft(mapPointToImage(tl * dpr));
             selectionRect.setBottomRight(mapPointToImage(br * dpr));
+
             updateSelectionDrawRect();
             updateHandlePositions();
             update();
+            */
         } else { // resizing selection
             resizeSelection(delta / scale);
             moveStartPos = event->pos();
@@ -513,7 +504,7 @@ void CropOverlay::onSelectionOutsideChange(QRect selection) {
         if(selectionRect != selection)
             emit selectionChanged(selectionRect);
     } else {
-        clearSelection();
+        selectAll();
     }
 }
 
