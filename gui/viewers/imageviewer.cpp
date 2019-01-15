@@ -94,7 +94,6 @@ void ImageViewer::displayAnimation(std::unique_ptr<QMovie> _movie) {
 // display & initialize
 void ImageViewer::displayImage(std::unique_ptr<QPixmap> _pixmap) {
     bool fadeIn = !mIsDisplaying && emptyViewTimer.elapsed() > FADE_IN_THRESHOLD_MS;
-    //qDebug() << emptyViewTimer.elapsed();
     reset();
     if(_pixmap) {
         pixmap = std::move(_pixmap);
