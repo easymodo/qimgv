@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
     //qputenv("QT_SCREEN_SCALE_FACTORS", "1;1.7");
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QApplication a(argc, argv);
     QCoreApplication::setOrganizationName("greenpepper software");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
