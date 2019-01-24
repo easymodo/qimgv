@@ -14,6 +14,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->aboutAppTextBrowser->viewport()->setAutoFillBackground(false);
     ui->versionLabel->setText("" + QApplication::applicationVersion());
     ui->qtVersionLabel->setText(qVersion());
+    ui->appIconLabel->setPixmap(QIcon(":/res/icons/app/22.png").pixmap(22,22));
+    ui->qtIconLabel->setPixmap(QIcon(":/res/icons/qt22.png").pixmap(22,16));
 
 #ifndef USE_KDE_BLUR
     ui->blurBackgroundCheckBox->setEnabled(false);
@@ -37,27 +39,25 @@ SettingsDialog::~SettingsDialog() {
 void SettingsDialog::setupSidebar() {
     QListWidget *sideBar = ui->sideBar;
     sideBar->viewport()->setAutoFillBackground(false);
+    //ui->sideBar->setFixedSize(QSize(150,150) * qApp->devicePixelRatio());
     // General
-    sideBar->item(0)->setIcon(QIcon(":/res/icons/settings/32/tweak.png"));
+    sideBar->item(0)->setIcon(QIcon(":/res/icons/settings/32/tweak32.png"));
     // Appearance
-    sideBar->item(1)->setIcon(QIcon(":/res/icons/settings/32/colors.png"));
+    sideBar->item(1)->setIcon(QIcon(":/res/icons/settings/32/colors32.png"));
     // Scaling
-    sideBar->item(2)->setIcon(QIcon(":/res/icons/settings/32/scale.png"));
+    sideBar->item(2)->setIcon(QIcon(":/res/icons/settings/32/scale32.png"));
     // Controls
-    sideBar->item(3)->setIcon(QIcon(":/res/icons/settings/32/shortcuts.png"));
+    sideBar->item(3)->setIcon(QIcon(":/res/icons/settings/32/shortcuts32.png"));
     // Scripts
-    sideBar->item(4)->setIcon(QIcon(":/res/icons/settings/32/terminal.png"));
+    sideBar->item(4)->setIcon(QIcon(":/res/icons/settings/32/terminal32.png"));
     // Advanced
-    sideBar->item(5)->setIcon(QIcon(":/res/icons/settings/32/preferences.png"));
+    sideBar->item(5)->setIcon(QIcon(":/res/icons/settings/32/preferences32.png"));
     // About
     sideBar->item(6)->setIcon(QIcon(":/res/icons/app/32.png"));
 
 #ifdef _WIN32
     // Not implemented on windows. Not sure if will ever be. I don't really care.
     sideBar->item(4)->setHidden(true);
-    // Should be no reason to tweak this on windows
-    ui->enableSmoothScrollCheckBox->setHidden(true);
-    ui->enableSmoothScrollLabel->setHidden(true);
 #endif
 }
 

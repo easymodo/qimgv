@@ -14,6 +14,7 @@ public:
     ~ContextMenuItem();
     void setText(QString text);
     void setPixmap(QPixmap pixmap);
+    void setIcon(QIcon icon);
     void setAction(QString action);
 
 protected:
