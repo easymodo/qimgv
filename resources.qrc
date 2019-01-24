@@ -91,7 +91,7 @@
         <file>res/icons/settings/32/terminal32@2x.png</file>
         <file>res/icons/settings/32/tweak32.png</file>
         <file>res/icons/settings/32/tweak32@2x.png</file>
-        <file>res/icons/settings/32/viewer32.png</file>
-        <file>res/icons/settings/32/viewer32@2x.png</file>
+        <file>res/icons/message/dir_end20@2x.png</file>
+        <file>res/icons/message/dir_start20@2x.png</file>
     </qresource>
 </RCC>

@@ -15,8 +15,8 @@ FloatingMessage::FloatingMessage(OverlayContainerWidget *parent) :
     setFadeEnabled(true);
     setFadeDuration(300);
 
-    iconLeftEdge.load(":/res/icons/message/dir_start20.png");
-    iconRightEdge.load(":/res/icons/message/dir_end20.png");
+    iconLeftEdge = QIcon(":/res/icons/message/dir_start20.png");
+    iconRightEdge = QIcon(":/res/icons/message/dir_end20.png");
     setIcon(FloatingMessageIcon::NO_ICON);
 
     this->setAccessibleName("FloatingMessage");
@@ -73,11 +73,11 @@ void FloatingMessage::setIcon(FloatingMessageIcon icon) {
             break;
         case FloatingMessageIcon::ICON_LEFT_EDGE:
             ui->iconLabel->show();
-            ui->iconLabel->setPixmap(iconLeftEdge);
+            ui->iconLabel->setPixmap(iconLeftEdge.pixmap(20,20));
             break;
         case FloatingMessageIcon::ICON_RIGHT_EDGE:
             ui->iconLabel->show();
-            ui->iconLabel->setPixmap(iconRightEdge);
+            ui->iconLabel->setPixmap(iconRightEdge.pixmap(20,20));
             break;
     }
 }
