@@ -23,6 +23,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
 #ifndef USE_MPV
     ui->videoSettingsWidget->setEnabled(false);
+    ui->novideoInfoLabel->setHidden(false);
+#else
+    ui->novideoInfoLabel->setHidden(true);
 #endif
 
     setupSidebar();
@@ -39,11 +42,10 @@ SettingsDialog::~SettingsDialog() {
 void SettingsDialog::setupSidebar() {
     QListWidget *sideBar = ui->sideBar;
     sideBar->viewport()->setAutoFillBackground(false);
-    //ui->sideBar->setFixedSize(QSize(150,150) * qApp->devicePixelRatio());
     // General
     sideBar->item(0)->setIcon(QIcon(":/res/icons/settings/32/tweak32.png"));
     // Appearance
-    sideBar->item(1)->setIcon(QIcon(":/res/icons/settings/32/colors32.png"));
+    sideBar->item(1)->setIcon(QIcon(":/res/icons/settings/32/appearance32.png"));
     // Scaling
     sideBar->item(2)->setIcon(QIcon(":/res/icons/settings/32/scale32.png"));
     // Controls

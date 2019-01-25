@@ -77,14 +77,10 @@
         <file>res/icons/app/128@2x.png</file>
         <file>res/icons/buttons/rotate-right16@2x.png</file>
         <file>res/icons/buttons/rotate-left16@2x.png</file>
-        <file>res/icons/settings/32/colors32.png</file>
-        <file>res/icons/settings/32/colors32@2x.png</file>
         <file>res/icons/settings/32/preferences32.png</file>
         <file>res/icons/settings/32/preferences32@2x.png</file>
         <file>res/icons/settings/32/scale32.png</file>
         <file>res/icons/settings/32/scale32@2x.png</file>
-        <file>res/icons/settings/32/screen32.png</file>
-        <file>res/icons/settings/32/screen32@2x.png</file>
         <file>res/icons/settings/32/shortcuts32.png</file>
         <file>res/icons/settings/32/shortcuts32@2x.png</file>
         <file>res/icons/settings/32/terminal32.png</file>
@@ -93,5 +89,7 @@
         <file>res/icons/settings/32/tweak32@2x.png</file>
         <file>res/icons/message/dir_end20@2x.png</file>
         <file>res/icons/message/dir_start20@2x.png</file>
+        <file>res/icons/settings/32/appearance32.png</file>
+        <file>res/icons/settings/32/appearance32@2x.png</file>
     </qresource>
 </RCC>
