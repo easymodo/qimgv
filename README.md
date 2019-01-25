@@ -117,13 +117,19 @@ Viewing raw is supported via [qtraw plugin](https://github.com/mardy/qtraw). It 
 
 ### GNU+Linux
 
+_NOTE: by default qimgv will be built without video support. See manual install for more info._
+
 __Arch:__ Available in AUR - `qimgv-git`
   
 __Gentoo:__ `emerge qimgv`
+
+__OpenSUSE__: `zypper install qimgv`
+
+__Void linux__: `xbps-install -S qimgv`
   
 __Manual install:__
  
-__1. Install dependencies ( git, cmake, qt >= 5.6, libmpv >= 0.22, mpv)__
+__1. Install dependencies ( git, cmake, qt >= 5.6 )__
   
 _Ubuntu & derivatives:_
      
@@ -137,7 +143,7 @@ _Fedora:_
 sudo dnf install git cmake qt5 qt5-devel gcc-c++ qt5-devel
 ```
 	
-__2. _(Optional)_ Dependencies for video playback ( libmpv >= 0.22, mpv)__
+__2. _(Optional)_ Dependencies for video playback ( libmpv >= 0.22, mpv )__
   	
 _Ubuntu & derivatives:_
      
@@ -159,19 +165,19 @@ git clone https://github.com/easymodo/qimgv.git
 cd qimgv && mkdir -p build && cd build
 ```
 
-Regular build
+2a. Regular build
 
 ```
 cmake -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make -j4
 ```
 
-Build with __video support__ (note: negatively affects startup speed)
+2b. Build with __video support__ (note: negatively affects startup speed)
 
 ```
 cmake -DVIDEO_SUPPORT=ON -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make -j4
 ```
 
-Build with better __KDE support__
+2c. Build with better __KDE support__
 
 ```
 cmake -DKDE_SUPPORT=ON -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make -j4
