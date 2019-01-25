@@ -105,7 +105,9 @@ void ImageViewer::displayImage(std::unique_ptr<QPixmap> _pixmap) {
         } else {
             update();
         }
-        requestScaling();
+        // filter out unnecessary scale event on startup
+        if(isVisible())
+            requestScaling();
     }
 }
 
