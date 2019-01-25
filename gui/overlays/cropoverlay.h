@@ -38,11 +38,11 @@ protected:
 private:
     QWidget *viewer;
     QPoint startPos, endPos, moveStartPos, resizeAnchor;
-    QRect imageRect, imageDrawRect, selectionRect, selectionDrawRect;
+    QRect imageRect, imageDrawRect, selectionRect, selectionDrawRect, handles[8];
     bool clear, moving, forceAspectRatio;
     float scale;
     QBrush brushInactiveTint, brushDarkGray, brushGray, brushLightGray;
-    QRectF *handles[8];
+    QRectF selectionDrawRectDpi, handlesDpi[8];
     int handleSize;
     QImage *drawBuffer;
     CursorAction cursorAction;

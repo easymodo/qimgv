@@ -143,13 +143,13 @@ void ThumbnailView::loadVisibleThumbnailsDelayed() {
 }
 
 void ThumbnailView::centerOnX(int dx) {
-    centerOn(dx, viewportCenter.y());
+    centerOn(dx + 1, viewportCenter.y());
     // trigger repaint immediately
     qApp->processEvents();
 }
 
 void ThumbnailView::centerOnY(int dy) {
-    centerOn(viewportCenter.x(), dy);
+    centerOn(viewportCenter.x(), dy + 1);
     // trigger repaint immediately
     qApp->processEvents();
 }
@@ -206,32 +206,30 @@ void ThumbnailView::wheelEvent(QWheelEvent *event) {
     // let's just hope it gets done in Qt while I am still alive
     int pixelDelta = event->pixelDelta().y();
     int angleDelta = event->angleDelta().ry();
-
     if(!settings->enableSmoothScroll()) {
-        if(pixelDelta != 0)
+        if(pixelDelta)
             scrollPrecise(pixelDelta);
-        else
+        else if(angleDelta)
             scrollPrecise(angleDelta);
     } else {
-        if(pixelDelta != 0)  {
+        if(pixelDelta)
             scrollPrecise(pixelDelta);
-        } else {
+        else if(angleDelta)
             scrollSmooth(angleDelta);
-        }
     }
 }
 
-void ThumbnailView::scrollPrecise(int pixelDelta) {
+void ThumbnailView::scrollPrecise(int delta) {
     if(timeLine->state() == QTimeLine::Running)
         timeLine->stop();
     // ignore if we reached boundaries
-    if( (pixelDelta > 0 && atSceneStart()) || (pixelDelta < 0 && atSceneEnd()) )
+    if( (delta > 0 && atSceneStart()) || (delta < 0 && atSceneEnd()) )
         return;
     // pixel scrolling (precise)
     if(orientation == THUMBNAILVIEW_HORIZONTAL) {
-        centerOnX(static_cast<int>(viewportCenter.x() - pixelDelta));
+        centerOnX(static_cast<int>(viewportCenter.x() - delta));
     } else {
-        centerOnY(static_cast<int>(viewportCenter.y() - pixelDelta));
+        centerOnY(static_cast<int>(viewportCenter.y() - delta));
     }
     scrollTimer.start();
 }

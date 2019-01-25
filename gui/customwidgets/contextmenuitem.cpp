@@ -37,6 +37,10 @@ void ContextMenuItem::setPixmap(QPixmap pixmap) {
     this->icon.setFixedSize(pixmap.size());
 }
 
+void ContextMenuItem::setIcon(QIcon icon) {
+    this->icon.setPixmap(icon.pixmap(16,16));
+}
+
 void ContextMenuItem::setAction(QString text) {
     this->action = text;
     shortcut.setText(actionManager->shortcutForAction(action));

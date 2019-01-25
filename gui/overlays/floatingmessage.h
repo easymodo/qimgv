@@ -39,7 +39,7 @@ private:
     void doShowMessage(QString text, FloatingMessageIcon icon, int duration);
 protected:
     void mousePressEvent(QMouseEvent *event);
-    QPixmap iconLeftEdge, iconRightEdge;
+    QIcon iconLeftEdge, iconRightEdge;
 private slots:
     void readSettings();
 };

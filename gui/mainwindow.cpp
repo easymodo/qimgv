@@ -51,12 +51,13 @@ MainWindow::MainWindow(QWidget *parent)
     restoreWindowGeometry();
 }
 
-/*                                                          |-- [ImageViewer]
- *                                   |-- [DocumentWidget] --|
- * [MainWindow] -- [CentralWidget] --|                      |-- [VideoPlayer]
+/*                                                                         |-- [ImageViewer]
+ *                                   |-- [DocumentWidget]--[ViewerWidget]--|
+ * [MainWindow] -- [CentralWidget] --|                                     |-- [VideoPlayer]
  *                                   |-- [FolderView]
  *
  *  (not counting floating widgets)
+ *  ViewerWidget exists for input handling reasons (correct overlay hover handling)
  */
 void MainWindow::setupUi() {
     viewerWidget.reset(new ViewerWidget());

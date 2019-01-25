@@ -14,8 +14,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # USER OPTIONS
 # Usage: cmake -DVIDEO_SUPPORT=ON [...]
-option(VIDEO_SUPPORT "Enable video support" ON)
-option(KDE_BLUR "Support blur when using KDE" OFF)
+option(VIDEO_SUPPORT "Enable video support" OFF)
+option(KDE_SUPPORT "Support blur when using KDE" OFF)
 
 
 # FIND PACKAGES
@@ -23,7 +23,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
-if(KDE_BLUR) # do i also need one for mpv?
+if(KDE_SUPPORT) # do i also need one for mpv?
     find_package(KF5WindowSystem REQUIRED)
 endif()
 
@@ -49,7 +49,7 @@ add_executable(qimgv ${SRC} ${SRC_Components} ${SRC_SourceContainers} ${SRC_Util
 target_link_libraries(qimgv Qt5::Core Qt5::Widgets Qt5::Concurrent)
 
 # OPTION DEFINITIONS, LINKING
-if(KDE_BLUR)
+if(KDE_SUPPORT)
     target_link_libraries(qimgv KF5::WindowSystem)
     add_definitions(-DUSE_KDE_BLUR)
 endif()

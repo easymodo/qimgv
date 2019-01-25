@@ -540,8 +540,6 @@ void Core::loadImage(QString path, bool blocking) {
         loader->loadBlocking(path);
     else
         loader->loadExclusive(path);
-    preload(state.currentIndex - 1);
-    preload(state.currentIndex + 1);
 }
 
 void Core::loadByPath(QString path, bool blocking) {
@@ -687,7 +685,11 @@ void Core::onLoadFinished(std::shared_ptr<Image> img) {
         }
     }
     if(index == state.currentIndex) {
+        // display
         displayImage(img.get());
+        // preload nearest
+        preload(state.currentIndex - 1);
+        preload(state.currentIndex + 1);
     }
 }
 

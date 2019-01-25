@@ -11,30 +11,6 @@
         <file>res/images/cropheader.png</file>
         <file>res/images/changelogheader.png</file>
         <file>res/icons/app/22.png</file>
-        <file>res/icons/settings/48/colors.png</file>
-        <file>res/icons/settings/48/icons.png</file>
-        <file>res/icons/settings/48/icons2.png</file>
-        <file>res/icons/settings/48/preferences.png</file>
-        <file>res/icons/settings/48/scale.png</file>
-        <file>res/icons/settings/48/screen.png</file>
-        <file>res/icons/settings/48/shortcuts.png</file>
-        <file>res/icons/settings/48/shortcuts2.png</file>
-        <file>res/icons/settings/48/terminal.png</file>
-        <file>res/icons/settings/48/tweak2.png</file>
-        <file>res/icons/settings/48/tweak.png</file>
-        <file>res/icons/settings/48/viewer.png</file>
-        <file>res/icons/settings/32/colors.png</file>
-        <file>res/icons/settings/32/icons.png</file>
-        <file>res/icons/settings/32/icons2.png</file>
-        <file>res/icons/settings/32/preferences.png</file>
-        <file>res/icons/settings/32/scale.png</file>
-        <file>res/icons/settings/32/screen.png</file>
-        <file>res/icons/settings/32/shortcuts.png</file>
-        <file>res/icons/settings/32/shortcuts2.png</file>
-        <file>res/icons/settings/32/terminal.png</file>
-        <file>res/icons/settings/32/tweak.png</file>
-        <file>res/icons/settings/32/tweak2.png</file>
-        <file>res/icons/settings/32/viewer.png</file>
         <file>res/icons/app/32.png</file>
         <file>res/icons/qt22.png</file>
         <file>res/icons/message/dir_end20.png</file>
@@ -50,7 +26,7 @@
         <file>res/icons/buttons/fit-width16.png</file>
         <file>res/icons/buttons/fit-window16.png</file>
         <file>res/icons/buttons/flip-v16.png</file>
-        <file>res/icons/buttons/folderview16v2.png</file>
+        <file>res/icons/buttons/folderview16.png</file>
         <file>res/icons/buttons/settings16.png</file>
         <file>res/icons/buttons/empty.png</file>
         <file>res/icons/buttons/flip-h16.png</file>
@@ -68,5 +44,54 @@
         <file>res/icons/buttons/pause24.png</file>
         <file>res/icons/buttons/play24.png</file>
         <file>res/icons/buttons/dropDownArrow.png</file>
+        <file>res/icons/buttons/close-dim16@2x.png</file>
+        <file>res/icons/buttons/close16@2x.png</file>
+        <file>res/icons/buttons/copy16@2x.png</file>
+        <file>res/icons/buttons/document-view16@2x.png</file>
+        <file>res/icons/buttons/dropDownArrow@2x.png</file>
+        <file>res/icons/buttons/edit16@2x.png</file>
+        <file>res/icons/buttons/fit-width16@2x.png</file>
+        <file>res/icons/buttons/fit-window16@2x.png</file>
+        <file>res/icons/buttons/flip-h16@2x.png</file>
+        <file>res/icons/buttons/flip-v16@2x.png</file>
+        <file>res/icons/buttons/folderview16@2x.png</file>
+        <file>res/icons/buttons/folderview20@2x.png</file>
+        <file>res/icons/buttons/image-crop16@2x.png</file>
+        <file>res/icons/buttons/move16@2x.png</file>
+        <file>res/icons/buttons/open16@2x.png</file>
+        <file>res/icons/buttons/open20@2x.png</file>
+        <file>res/icons/buttons/settings16@2x.png</file>
+        <file>res/icons/buttons/settings20@2x.png</file>
+        <file>res/icons/buttons/trash-red16@2x.png</file>
+        <file>res/icons/buttons/trash16@2x.png</file>
+        <file>res/icons/buttons/view-fullscreen16@2x.png</file>
+        <file>res/icons/buttons/zoom-in16@2x.png</file>
+        <file>res/icons/buttons/zoom-original16@2x.png</file>
+        <file>res/icons/buttons/zoom-out16@2x.png</file>
+        <file>res/icons/qt22@2x.png</file>
+        <file>res/icons/app/16@2x.png</file>
+        <file>res/icons/app/22@2x.png</file>
+        <file>res/icons/app/24@2x.png</file>
+        <file>res/icons/app/36@2x.png</file>
+        <file>res/icons/app/64@2x.png</file>
+        <file>res/icons/app/128@2x.png</file>
+        <file>res/icons/buttons/rotate-right16@2x.png</file>
+        <file>res/icons/buttons/rotate-left16@2x.png</file>
+        <file>res/icons/settings/32/colors32.png</file>
+        <file>res/icons/settings/32/colors32@2x.png</file>
+        <file>res/icons/settings/32/preferences32.png</file>
+        <file>res/icons/settings/32/preferences32@2x.png</file>
+        <file>res/icons/settings/32/scale32.png</file>
+        <file>res/icons/settings/32/scale32@2x.png</file>
+        <file>res/icons/settings/32/screen32.png</file>
+        <file>res/icons/settings/32/screen32@2x.png</file>
+        <file>res/icons/settings/32/shortcuts32.png</file>
+        <file>res/icons/settings/32/shortcuts32@2x.png</file>
+        <file>res/icons/settings/32/terminal32.png</file>
+        <file>res/icons/settings/32/terminal32@2x.png</file>
+        <file>res/icons/settings/32/tweak32.png</file>
+        <file>res/icons/settings/32/tweak32@2x.png</file>
+        <file>res/icons/message/dir_end20@2x.png</file>
+        <file>res/icons/message/dir_start20@2x.png</file>
     </qresource>
 </RCC>

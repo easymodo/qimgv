@@ -1,6 +1,6 @@
 qimgv | Current version: 0.7.2
 =====
-A cross-platform image viewer with webm support. Written in qt5.
+Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
 
 ![alt tag](https://i.imgur.com/fdHKWtf.png)
 
@@ -117,38 +117,81 @@ Viewing raw is supported via [qtraw plugin](https://github.com/mardy/qtraw). It 
 
 ### GNU+Linux
 
-  __Arch:__ Available in AUR - `qimgv-git`
+_NOTE: by default qimgv will be built without video support. See manual install for more info._
+
+__Arch:__ Available in AUR - `qimgv-git`
   
-  __Gentoo:__ `emerge qimgv`
-    
-  __Manual install:__
+__Gentoo:__ `emerge qimgv`
+
+__OpenSUSE__: `zypper install qimgv`
+
+__Void linux__: `xbps-install -S qimgv`
   
-  1. Install dependencies ( git, cmake, qt >= 5.6, libmpv >= 0.22, mpv)
+__Manual install:__
+ 
+__1. Install dependencies ( git, cmake, qt >= 5.6 )__
   
-     __Ubuntu & derivatives:__
+_Ubuntu & derivatives:_
      
-     	`sudo apt install build-essential cmake qt5-default libmpv-dev `
+```
+sudo apt install build-essential cmake qt5-default
+```
      
-     __Fedora__:
-     
-     	Enable RPMFusion in order to get `mpv` [https://rpmfusion.org/Configuration](https://rpmfusion.org/Configuration).
+_Fedora:_
+
+```
+sudo dnf install git cmake qt5 qt5-devel gcc-c++ qt5-devel
+```
 	
-        `sudo dnf install git cmake qt5 qt5-devel gcc-c++ qt5-devel mpv mpv-libs-devel`
+__2. _(Optional)_ Dependencies for video playback ( libmpv >= 0.22, mpv )__
+  	
+_Ubuntu & derivatives:_
+     
+```
+sudo apt install libmpv-dev
+```
+     
+_Fedora_:
+     
+Enable RPMFusion [https://rpmfusion.org/Configuration](https://rpmfusion.org/Configuration).
+	
+```
+sudo dnf install mpv mpv-libs-devel
+```
 		
-  2. Build
+__2. Build__
 ```
 git clone https://github.com/easymodo/qimgv.git
-cd qimgv/scripts
-./build.sh
+cd qimgv && mkdir -p build && cd build
 ```
-  _Note:_ in order to get background blur in kde run `build-kde.sh` instead.
-  
-  3. Install  
+
+2a. Regular build
+
 ```
-./install.sh
+cmake -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make -j4
+```
+
+2b. Build with __video support__ (note: negatively affects startup speed)
+
+```
+cmake -DVIDEO_SUPPORT=ON -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make -j4
+```
+
+2c. Build with better __KDE support__
+
+```
+cmake -DKDE_SUPPORT=ON -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make -j4
+```
+
+__3. Install__
+
+```
+sudo make install
 ```
 
 ### Windows
 
-  [Grab the latest release here](https://github.com/easymodo/qimgv/releases)
+  [Grab the latest release here.](https://github.com/easymodo/qimgv/releases)
+  
+  All windows builds are portable.
   

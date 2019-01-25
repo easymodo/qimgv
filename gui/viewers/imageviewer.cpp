@@ -11,6 +11,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     expandImage(false),
     smoothAnimatedImages(true),
     mouseInteraction(MOUSE_NONE),
+    mOpacity(1.0f),
     mCurrentScale(1.0),
     fitWindowScale(0.125),
     minScale(0.125),
@@ -27,6 +28,14 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
     desktopSize = QApplication::desktop()->size();
+    // measure time until something gets displayed
+    // if it's too long, play a subtle fade in effect
+    fadeTimeLine.setStartFrame(0);
+    fadeTimeLine.setEndFrame(100);
+    fadeTimeLine.setDuration(80);
+    fadeTimeLine.setEasingCurve(QEasingCurve::Linear);
+    fadeTimeLine.setUpdateInterval(16);
+    connect(&fadeTimeLine, SIGNAL(frameChanged(int)), this, SLOT(fadeFrame(int)));
 }
 
 ImageViewer::~ImageViewer() {
@@ -72,8 +81,7 @@ void ImageViewer::displayAnimation(std::unique_ptr<QMovie> _movie) {
         reset();
         movie = std::move(_movie);
         movie->jumpToFrame(0);
-        readjust(movie->currentPixmap().size(),
-                 movie->currentPixmap().rect());
+        readjust(movie->currentPixmap().size(), movie->currentPixmap().rect());
         pixmap = std::unique_ptr<QPixmap>(new QPixmap());
         *pixmap = movie->currentPixmap().transformed(transform, Qt::SmoothTransformation);
         if(settings->transparencyGrid())
@@ -85,24 +93,31 @@ void ImageViewer::displayAnimation(std::unique_ptr<QMovie> _movie) {
 
 // display & initialize
 void ImageViewer::displayImage(std::unique_ptr<QPixmap> _pixmap) {
+    bool fadeIn = false; //!mIsDisplaying && emptyViewTimer.elapsed() > FADE_IN_THRESHOLD_MS;
     reset();
     if(_pixmap) {
         pixmap = std::move(_pixmap);
         readjust(pixmap->size(), pixmap->rect());
         if(settings->transparencyGrid())
             drawTransparencyGrid();
-        update();
+        if(fadeIn) {
+            doFadeIn();
+        } else {
+            update();
+        }
         requestScaling();
     }
 }
 
 // reset state, remove image & stop animation
 void ImageViewer::reset() {
+    stopFadeIn();
     mIsDisplaying = false;
     stopPosAnimation();
     pixmap.reset(nullptr);
     stopAnimation();
     movie.reset(nullptr);
+    emptyViewTimer.start();
 }
 
 // unsetImage, then update and show cursor
@@ -122,6 +137,23 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     if(imageFitMode == FIT_FREE)
         imageFitMode = FIT_WINDOW;
     applyFitMode();
+}
+
+void ImageViewer::doFadeIn() {
+    mOpacity = 0.0f;
+    fadeTimeLine.start();
+}
+
+void ImageViewer::fadeFrame(int frame) {
+    mOpacity = frame / 100.f;
+    update();
+}
+
+void ImageViewer::stopFadeIn() {
+    if(fadeTimeLine.state() == QTimeLine::Running) {
+        fadeTimeLine.stop();
+        mOpacity = 1.0f;
+    }
 }
 
 // new pixmap must be the size of drawingRect
@@ -175,6 +207,8 @@ void ImageViewer::setExpandImage(bool mode) {
 
 void ImageViewer::show() {
     setMouseTracking(false);
+    if(!isDisplaying() && isHidden())
+        emptyViewTimer.start();
     QWidget::show();
     setMouseTracking(true);
 }
@@ -300,6 +334,7 @@ void ImageViewer::drawTransparencyGrid() {
 void ImageViewer::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QPainter painter(this);
+    painter.setOpacity(mOpacity);
     if(movie && smoothAnimatedImages)
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(pixmap) {

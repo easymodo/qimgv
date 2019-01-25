@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     QApplication a(argc, argv);
     QCoreApplication::setOrganizationName("greenpepper software");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
@@ -78,10 +79,10 @@ int main(int argc, char *argv[]) {
     }
 
     Core core;
-    core.showGui();
     // assume 1st arg is the filename
     if(!arg1.isEmpty()) {
         core.loadByPathBlocking(arg1);
     }
+    core.showGui();
     return a.exec();
 }
