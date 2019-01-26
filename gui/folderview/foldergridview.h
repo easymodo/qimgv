@@ -45,7 +45,7 @@ protected:
     ThumbnailWidget *createThumbnailWidget();
     void updateLayout();
     void ensureSelectedItemVisible();
-    void fitSceneToContents();
+    void fitToContents();
 
     void keyPressEvent(QKeyEvent *event);
     void wheelEvent(QWheelEvent *event);

@@ -295,27 +295,21 @@ void FolderGridView::setThumbnailSize(int newSize) {
             thumbnails.at(i)->setThumbnailSize(newSize);
         }
         updateLayout();
-        fitSceneToContents();
+        fitToContents();
         if(checkRange(selectedIndex))
             ensureVisible(thumbnails.at(selectedIndex), 0, 40);
         loadVisibleThumbnails();
     }
 }
 
-void FolderGridView::fitSceneToContents() {
+void FolderGridView::fitToContents() {
     holderWidget.setMinimumSize(size() - QSize(scrollBar->width(), 0));
     holderWidget.setMaximumSize(size() - QSize(scrollBar->width(), 0));
-
-    ThumbnailView::fitSceneToContents();
-    qDebug() << this->rect() << holderWidget.size() << scene.sceneRect() << scene.itemsBoundingRect();
+    fitSceneToContents();
 }
 
 void FolderGridView::resizeEvent(QResizeEvent *event) {
     QGraphicsView::resizeEvent(event);
-
-    fitSceneToContents();
-
+    fitToContents();
     loadVisibleThumbnailsDelayed();
-
-    //qDebug() << this->rect() << holderWidget.size() << scene.sceneRect();
 }
