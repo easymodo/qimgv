@@ -92,8 +92,7 @@ void ThumbnailStrip::highlightThumbnail(int pos) {
 void ThumbnailStrip::ensureThumbnailVisible(int pos) {
     if(checkRange(pos))
         ensureVisible(thumbnails.at(pos)->sceneBoundingRect(),
-                      thumbnailSize / 2,
-                      0);
+                      thumbnailSize / 2, 0);
 }
 
 // scene stuff??

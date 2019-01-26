@@ -7,7 +7,7 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     highlighted(false),
     hovered(false),
     mDrawLabel(true),
-    thumbnailSize(100),
+    mThumbnailSize(100),
     marginY(3),
     marginX(1),
     textHeight(5)
@@ -39,10 +39,10 @@ void ThumbnailWidget::readSettings() {
 }
 
 void ThumbnailWidget::setThumbnailSize(int size) {
-    if(thumbnailSize != size && size > 0) {
+    if(mThumbnailSize != size && size > 0) {
         this->state = EMPTY;
         thumbnail = nullptr;
-        thumbnailSize = size;
+        mThumbnailSize = size;
         updateGeometry();
         setupLayout();
         update();
@@ -54,10 +54,14 @@ void ThumbnailWidget::setMargins(int x, int y) {
     marginY = y;
 }
 
+int ThumbnailWidget::thubmnailSize() {
+    return mThumbnailSize;
+}
+
 void ThumbnailWidget::setDrawLabel(bool mode) {
     if(mDrawLabel != mode) {
         mDrawLabel = mode;
-        update();
+        //update();
     }
 }
 
@@ -115,7 +119,7 @@ bool ThumbnailWidget::isHighlighted() {
 }
 
 QRectF ThumbnailWidget::boundingRect() const {
-    return QRectF(0, 0, thumbnailSize + marginX * 2, thumbnailSize + marginY * 2);
+    return QRectF(0, 0, mThumbnailSize + marginX * 2, mThumbnailSize + marginY * 2);
 }
 
 qreal ThumbnailWidget::width() {

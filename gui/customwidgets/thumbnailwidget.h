@@ -45,6 +45,7 @@ public:
     QSizeF effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
     void setDrawLabel(bool mode);
     void setMargins(int x, int y);
+    int thubmnailSize();
 private:
 
 private slots:
@@ -69,7 +70,7 @@ protected:
 
     std::shared_ptr<Thumbnail> thumbnail;
     bool highlighted, hovered, mDrawLabel;
-    int thumbnailSize, marginY, marginX, textHeight;
+    int mThumbnailSize, marginY, marginX, textHeight;
     QRectF highlightRect, nameRect, nameTextRect, labelTextRect;
     QColor highlightColor, nameColor;
     QFont font, fontSmall;

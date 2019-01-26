@@ -17,7 +17,7 @@
 #include <QWheelEvent>
 #include <QTimeLine>
 #include <QTimer>
-
+#include <QElapsedTimer>
 #include "gui/customwidgets/thumbnailwidget.h"
 
 

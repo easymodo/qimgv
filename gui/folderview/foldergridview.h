@@ -23,6 +23,8 @@ public slots:
     void selectIndex(int index);
     void pageUp();
     void pageDown();
+    void zoomIn();
+    void zoomOut();
 private:
     FlowLayout *flowLayout;
     QGraphicsWidget holderWidget;
@@ -45,9 +47,12 @@ protected:
     void ensureSelectedItemVisible();
 
     void keyPressEvent(QKeyEvent *event);
+    void wheelEvent(QWheelEvent *event);
 
 signals:
 
+protected slots:
+    void setThumbnailSize(int newSize);
 };
 
 #endif // FOLDERGRIDVIEW_H

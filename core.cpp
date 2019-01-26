@@ -504,9 +504,14 @@ bool Core::setDirectory(QString newPath) {
     if(!dirManager->hasImages() || dirManager->currentDirectoryPath() != newPath) {
         this->reset();
         settings->setLastDirectory(newPath);
+        QElapsedTimer t;
+        t.start();
         dirManager->setDirectory(newPath);
+        qDebug() << "[setDir]" << t.elapsed();
         mw->setDirectoryPath(newPath);
+        t.start();
         mw->populateThumbnailViews(dirManager->fileCount());
+        qDebug() << "[populateThumbnails total]" << t.elapsed();
         return true;
     }
     return false;
@@ -529,7 +534,10 @@ void Core::loadDirectory(QString path) {
 void Core::loadImage(QString path, bool blocking) {
     DocumentInfo *info = new DocumentInfo(path);
     // new directory
+    QElapsedTimer t;
+    t.start();
     setDirectory(info->directoryPath());
+    qDebug() << "setDirectory total:" << t.elapsed();
     state.currentIndex = dirManager->indexOf(info->fileName());
     onLoadStarted();
     QString nameKey = dirManager->fileNameAt(state.currentIndex);

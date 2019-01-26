@@ -208,8 +208,7 @@ void FolderGridView::setupLayout() {
 }
 
 ThumbnailWidget* FolderGridView::createThumbnailWidget() {
-    // important: parent must be set, otherwise widget won't be drawn
-    ThumbnailGridWidget *widget = new ThumbnailGridWidget(&holderWidget);
+    ThumbnailGridWidget *widget = new ThumbnailGridWidget();
     widget->setDrawLabel(true);
     widget->setMargins(4,4);
     return widget;
@@ -217,6 +216,7 @@ ThumbnailWidget* FolderGridView::createThumbnailWidget() {
 
 // TODO: insert
 void FolderGridView::addItemToLayout(ThumbnailWidget* widget, int pos) {
+    scene.addItem(widget);
     flowLayout->insertItem(pos, widget);
 }
 
@@ -265,6 +265,38 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
         }
     } else {
         event->ignore();
+    }
+}
+
+void FolderGridView::wheelEvent(QWheelEvent *event) {
+    if(event->modifiers().testFlag(Qt::ControlModifier)) {
+        if(event->delta() > 0)
+            zoomIn();
+        else if(event->delta() < 0)
+            zoomOut();
+    } else {
+        ThumbnailView::wheelEvent(event);
+    }
+}
+
+void FolderGridView::zoomIn() {
+    setThumbnailSize(this->thumbnailSize + 20);
+}
+
+void FolderGridView::zoomOut() {
+    setThumbnailSize(this->thumbnailSize - 20);
+}
+
+void FolderGridView::setThumbnailSize(int newSize) {
+    if(newSize >= 80 && newSize <= 400) {
+        thumbnailSize = newSize;
+        for(int i = 0; i < thumbnails.count(); i++) {
+            thumbnails.at(i)->setThumbnailSize(newSize);
+        }
+        fitSceneToContents();
+        if(checkRange(selectedIndex))
+            ensureVisible(thumbnails.at(selectedIndex), 0, 40);
+        loadVisibleThumbnails();
     }
 }
 
