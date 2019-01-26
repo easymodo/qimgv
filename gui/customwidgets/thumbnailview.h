@@ -80,7 +80,7 @@ protected:
     virtual void addItemToLayout(ThumbnailWidget* widget, int pos) = 0;
     virtual void removeItemFromLayout(int pos) = 0;
     virtual void updateLayout();
-    void fitSceneToContents();
+    virtual void fitSceneToContents();
     virtual void ensureSelectedItemVisible() = 0;
 
     void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;

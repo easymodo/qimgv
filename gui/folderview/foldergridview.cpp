@@ -226,8 +226,9 @@ void FolderGridView::removeItemFromLayout(int pos) {
 
 void FolderGridView::updateLayout() {
     shiftedIndex = -1;
+    flowLayout->invalidate();
     flowLayout->activate();
-    if(thumbnails.count())
+    if(!thumbnails.count())
         selectedIndex = -1;
 }
 
@@ -293,6 +294,7 @@ void FolderGridView::setThumbnailSize(int newSize) {
         for(int i = 0; i < thumbnails.count(); i++) {
             thumbnails.at(i)->setThumbnailSize(newSize);
         }
+        updateLayout();
         fitSceneToContents();
         if(checkRange(selectedIndex))
             ensureVisible(thumbnails.at(selectedIndex), 0, 40);
@@ -300,11 +302,17 @@ void FolderGridView::setThumbnailSize(int newSize) {
     }
 }
 
+void FolderGridView::fitSceneToContents() {
+    holderWidget.setMinimumSize(size() - QSize(scrollBar->width(), 0));
+    holderWidget.setMaximumSize(size() - QSize(scrollBar->width(), 0));
+
+    ThumbnailView::fitSceneToContents();
+    qDebug() << this->rect() << holderWidget.size() << scene.sceneRect() << scene.itemsBoundingRect();
+}
+
 void FolderGridView::resizeEvent(QResizeEvent *event) {
     QGraphicsView::resizeEvent(event);
 
-    holderWidget.setMinimumSize(size() - QSize(scrollBar->width(), 0));
-    holderWidget.setMaximumSize(size() - QSize(scrollBar->width(), 0));
     fitSceneToContents();
 
     loadVisibleThumbnailsDelayed();
