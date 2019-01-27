@@ -14,6 +14,10 @@ class FolderGridView : public ThumbnailView
 public:
     explicit FolderGridView(QWidget *parent = nullptr);
 
+    const int THUMBNAIL_SIZE_MIN = 100;  //px
+    const int THUMBNAIL_SIZE_MAX = 400;
+    const int ZOOM_STEP = 20;
+
 public slots:
     void show();
     void hide();
@@ -25,6 +29,8 @@ public slots:
     void pageDown();
     void zoomIn();
     void zoomOut();
+    void setThumbnailSize(int newSize);
+
 private:
     FlowLayout *flowLayout;
     QGraphicsWidget holderWidget;
@@ -51,9 +57,7 @@ protected:
     void wheelEvent(QWheelEvent *event);
 
 signals:
-
-protected slots:
-    void setThumbnailSize(int newSize);
+    void thumbnailSizeChanged(int);
 };
 
 #endif // FOLDERGRIDVIEW_H

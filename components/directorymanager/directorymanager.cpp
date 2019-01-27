@@ -47,7 +47,6 @@ void DirectoryManager::readSettings() {
     nameFilter.removeOne("*.rgb");
     nameFilter.removeOne("*.rgba");
     currentDir.setNameFilters(nameFilter);
-    qDebug() << "##" << nameFilter.count() << nameFilter;
 }
 
 void DirectoryManager::setDirectory(QString path) {
@@ -301,22 +300,16 @@ void DirectoryManager::directoryContentsChanged(QString dirPath) {
 
 // generates a sorted file list
 void DirectoryManager::generateFileList(SortingMode mode) {
-    QElapsedTimer t;
     // special case for natural sorting
     if(mode == SortingMode::NAME_ASC || mode == SortingMode::NAME_DESC) {
-        t.start();
         currentDir.setSorting(QDir::NoSort);
-        qDebug() << "[1]" << t.elapsed();
         mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
-        qDebug() << "[2]" << t.elapsed();
         QCollator collator;
         collator.setNumericMode(true);
-        qDebug() << "[3]" << t.elapsed();
         if(mode == SortingMode::NAME_ASC)
             std::sort(mFileNameList.begin(), mFileNameList.end(), collator);
         else
             std::sort(mFileNameList.rbegin(), mFileNameList.rend(), collator);
-        qDebug() << "[4]" << t.elapsed();
         return;
     }
     // use QDir's sorting otherwise
@@ -328,9 +321,7 @@ void DirectoryManager::generateFileList(SortingMode mode) {
         currentDir.setSorting(QDir::Size);
     if(mode == SortingMode::SIZE_DESC)
         currentDir.setSorting(QDir::Size | QDir::Reversed);
-    qDebug() << "[5]" << t.elapsed();
     mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
-    qDebug() << "[6]" << t.elapsed();
 }
 /*
 // Filter by mime type. Basically opens every file in a folder

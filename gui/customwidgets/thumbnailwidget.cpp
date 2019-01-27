@@ -41,8 +41,8 @@ void ThumbnailWidget::readSettings() {
 void ThumbnailWidget::setThumbnailSize(int size) {
     if(mThumbnailSize != size && size > 0) {
         this->state = EMPTY;
-        thumbnail = nullptr;
         mThumbnailSize = size;
+        updateThumbnailDrawPosition();
         updateGeometry();
         setupLayout();
         update();
@@ -184,7 +184,7 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
 }
 
 void ThumbnailWidget::drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
-    painter->drawPixmap(drawPosCentered, *pixmap);
+    painter->drawPixmap(drawRectCentered, *pixmap);
 }
 
 void ThumbnailWidget::drawIcon(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
@@ -224,8 +224,17 @@ bool ThumbnailWidget::isHovered() {
 void ThumbnailWidget::updateThumbnailDrawPosition() {
     if(thumbnail) {
         qreal dpr = qApp->devicePixelRatio();
-        drawPosCentered = QPointF(width()  / 2 - thumbnail->pixmap()->width()  / (2 * dpr),
-                                  height() / 2 - thumbnail->pixmap()->height() / (2 * dpr));
+        // correct thumbnail
+        if(qMax(thumbnail->pixmap()->width(), thumbnail->pixmap()->height()) == floor(mThumbnailSize * dpr)) {
+            QPoint topLeft(width()  / 2 - thumbnail->pixmap()->width()  / (2 * dpr),
+                           height() / 2 - thumbnail->pixmap()->height() / (2 * dpr));
+            drawRectCentered = QRect(topLeft, thumbnail->pixmap()->size() / dpr);
+        } else {
+            QSize scaled = thumbnail->pixmap()->size().scaled(mThumbnailSize, mThumbnailSize, Qt::KeepAspectRatioByExpanding);
+            QPoint topLeft(width()  / 2 - scaled.width()  / (2 * dpr),
+                           height() / 2 - scaled.height() / (2 * dpr));
+            drawRectCentered = QRect(topLeft, scaled);
+        }
     }
 }
 

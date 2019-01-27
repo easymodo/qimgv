@@ -10,7 +10,7 @@ ThumbnailerRunnable::ThumbnailerRunnable(ThumbnailCache* _thumbnailCache, QStrin
 
 void ThumbnailerRunnable::run() {
     // TODO: replace raw pointers with c++11 ones
-    emit taskStart(path);
+    emit taskStart(path, size);
     DocumentInfo imgInfo(path);
     QString tmpName = imgInfo.fileName();
     QString thumbnailId = generateIdString();
@@ -29,7 +29,8 @@ void ThumbnailerRunnable::run() {
             image.get()->setText("label", " [v]");
         }
         if(settings->useThumbnailCache()) {
-        // save thumbnail if it makes sensedd
+            // save thumbnail if it makes sense
+            // FIXME: avoid too much i/o
             if(originalSize.width() > size || originalSize.height() > size)
                 thumbnailCache->saveThumbnail(image.get(), thumbnailId);
         }

@@ -37,6 +37,7 @@ public slots:
     void populate(int count);
     void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb);
     void resetViewport();
+    int thumbnailSize();
     void loadVisibleThumbnails();
     void loadVisibleThumbnailsDelayed();
 
@@ -62,7 +63,7 @@ protected:
     QScrollBar *scrollBar;
     QTimeLine *timeLine;
     QPointF viewportCenter;
-    int thumbnailSize;
+    int mThumbnailSize;
 
     const int SCROLL_UPDATE_RATE = 8;
     const float SCROLL_SPEED_MULTIPLIER = 4.0f;

@@ -342,6 +342,44 @@ FolderView {
     padding: 4px 10px 4px 4px;
 }
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+[accessibleName="FolderViewSlider"]::groove:horizontal {
+    border: 1px solid #29292a;
+    background: blue;
+    height: 6px;
+    border-radius: 2px;
+    margin: 0 12px;
+}
+
+[accessibleName="FolderViewSlider"]::sub-page:horizontal { /* left */
+    background: #29292a;
+    border: 1px solid #29292a;
+    height: 6px;
+    border-radius: 2px;
+}
+
+[accessibleName="FolderViewSlider"]::add-page:horizontal {
+    background: #29292a;
+    border: 1px solid #29292a;
+    height: 6px;
+    border-radius: 2px;
+}
+
+[accessibleName="FolderViewSlider"]::handle:horizontal {
+    background: #5c5e60;
+    border: 1px solid #626567;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    margin: -4px -12px;
+}
+
+[accessibleName="FolderViewSlider"]::handle:horizontal:hover {
+    background: #6f7274;
+    border: 1px solid #75797b;
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 ThumbnailLabel {
     background-color: #1c1c1d;
 }
@@ -368,6 +406,7 @@ ThumbnailView QScrollBar:vertical {
     background-color: transparent;
     margin-left: 4px;
     margin-right: 10px;
+    margin-bottom: 8px; /* top one is in the layout. probably should change this */
 }
 
 ThumbnailView QScrollBar::handle:vertical {

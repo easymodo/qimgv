@@ -92,13 +92,13 @@ void ThumbnailStrip::highlightThumbnail(int pos) {
 void ThumbnailStrip::ensureThumbnailVisible(int pos) {
     if(checkRange(pos))
         ensureVisible(thumbnails.at(pos)->sceneBoundingRect(),
-                      thumbnailSize / 2, 0);
+                      mThumbnailSize / 2, 0);
 }
 
 // scene stuff??
 void ThumbnailStrip::setThumbnailSize(int newSize) {
     if(newSize >= 20) {
-        thumbnailSize = newSize;
+        mThumbnailSize = newSize;
         for(int i=0; i<thumbnails.count(); i++) {
             thumbnails.at(i)->setThumbnailSize(newSize);
         }
@@ -148,7 +148,7 @@ void ThumbnailStrip::updateThumbnailSize() {
     int newSize = height() - 25;
     if( newSize % 2 )
         --newSize;
-    if(newSize != thumbnailSize) {
+    if(newSize != mThumbnailSize) {
         setThumbnailSize(newSize);
     }
 }

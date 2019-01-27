@@ -75,7 +75,7 @@ protected:
     QColor highlightColor, nameColor;
     QFont font, fontSmall;
     QFontMetrics *fm, *fmSmall;
-    QPointF drawPosCentered;
+    QRect drawRectCentered;
 };
 
 #endif // THUMBNAILWIDGET_H

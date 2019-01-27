@@ -14,11 +14,24 @@ FolderView::FolderView(QWidget *parent) :
     ui->docViewButton->setAction("documentView");
 
     ui->directoryPathLabel->setAccessibleName("FolderViewPathLabel");
+    ui->zoomSlider->setMinimum(ui->thumbnailGrid->THUMBNAIL_SIZE_MIN);
+    ui->zoomSlider->setMaximum(ui->thumbnailGrid->THUMBNAIL_SIZE_MAX);
+    ui->zoomSlider->setSingleStep(ui->thumbnailGrid->ZOOM_STEP);
+    ui->zoomSlider->setPageStep(ui->thumbnailGrid->ZOOM_STEP);
 
     connect(ui->thumbnailGrid, SIGNAL(thumbnailPressed(int)),
             this, SIGNAL(thumbnailPressed(int)));
     connect(ui->thumbnailGrid, SIGNAL(thumbnailRequested(QList<int>, int)),
             this, SIGNAL(thumbnailRequested(QList<int>, int)));
+
+    connect(ui->zoomSlider, SIGNAL(valueChanged(int)), ui->thumbnailGrid, SLOT(setThumbnailSize(int)));
+    connect(ui->thumbnailGrid, SIGNAL(thumbnailSizeChanged(int)), this, SLOT(onThumbnailSizeChanged(int)));
+    ui->thumbnailGrid->setThumbnailSize(settings->folderViewIconSize());
+}
+
+void FolderView::onThumbnailSizeChanged(int newSize) {
+    ui->zoomSlider->setValue(newSize);
+    settings->setFolderViewIconSize(newSize);
 }
 
 FolderView::~FolderView() {

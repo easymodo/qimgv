@@ -281,16 +281,16 @@ void FolderGridView::wheelEvent(QWheelEvent *event) {
 }
 
 void FolderGridView::zoomIn() {
-    setThumbnailSize(this->thumbnailSize + 20);
+    setThumbnailSize(this->mThumbnailSize + ZOOM_STEP);
 }
 
 void FolderGridView::zoomOut() {
-    setThumbnailSize(this->thumbnailSize - 20);
+    setThumbnailSize(this->mThumbnailSize - ZOOM_STEP);
 }
 
 void FolderGridView::setThumbnailSize(int newSize) {
-    if(newSize >= 80 && newSize <= 400) {
-        thumbnailSize = newSize;
+    if(newSize >= THUMBNAIL_SIZE_MIN && newSize <= THUMBNAIL_SIZE_MAX) {
+        mThumbnailSize = newSize;
         for(int i = 0; i < thumbnails.count(); i++) {
             thumbnails.at(i)->setThumbnailSize(newSize);
         }
@@ -298,6 +298,8 @@ void FolderGridView::setThumbnailSize(int newSize) {
         fitToContents();
         if(checkRange(selectedIndex))
             ensureVisible(thumbnails.at(selectedIndex), 0, 40);
+        emit thumbnailSizeChanged(mThumbnailSize);
+
         loadVisibleThumbnails();
     }
 }
