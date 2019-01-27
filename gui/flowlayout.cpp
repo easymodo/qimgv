@@ -142,6 +142,7 @@ GridInfo FlowLayout::doLayout(const QRectF &geom, bool applyNewGeometry) const {
     qreal left, top, right, bottom;
     getContentsMargins(&left, &top, &right, &bottom);
     const qreal maxw = geom.width() - left - right;
+    int centerOffset = 0;
 
     qreal x = 0;
     qreal y = 0;
@@ -152,6 +153,14 @@ GridInfo FlowLayout::doLayout(const QRectF &geom, bool applyNewGeometry) const {
     int rows = 0;
     if(columns)
         rows = 1;
+
+    // calculate offset for centering
+    if(m_items.count()) {
+        const qreal itemWidth = m_items[0]->effectiveSizeHint(Qt::PreferredSize).width();
+        int maxCols = (int)maxw / itemWidth;
+        if(m_items.count() >= maxCols)
+            centerOffset = static_cast<int>(fmod(maxw, itemWidth) / 2);
+    }
 
     for (int i = 0; i < m_items.count(); ++i) {
         QGraphicsLayoutItem *item = m_items.at(i);
@@ -175,7 +184,7 @@ GridInfo FlowLayout::doLayout(const QRectF &geom, bool applyNewGeometry) const {
         }
 
         if (applyNewGeometry)
-            item->setGeometry(QRectF(QPointF(left + x, top + y), pref));
+            item->setGeometry(QRectF(QPointF(left + x + centerOffset, top + y), pref));
         x = next_x + spacing(Qt::Horizontal);
     }
     maxRowHeight = qMax(maxRowHeight, pref.height());
