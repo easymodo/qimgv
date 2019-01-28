@@ -7,6 +7,7 @@
 #include "gui/folderview/thumbnailgridwidget.h"
 #include "gui/flowlayout.h"
 #include "components/actionmanager/actionmanager.h"
+#include "utils/stuff.h"
 
 class FolderGridView : public ThumbnailView
 {
@@ -14,9 +15,9 @@ class FolderGridView : public ThumbnailView
 public:
     explicit FolderGridView(QWidget *parent = nullptr);
 
-    const int THUMBNAIL_SIZE_MIN = 100;  //px
-    const int THUMBNAIL_SIZE_MAX = 400;
-    const int ZOOM_STEP = 20;
+    const int THUMBNAIL_SIZE_MIN = 100;  // px
+    const int THUMBNAIL_SIZE_MAX = 400;  // these should be divisible by ZOOM_STEP
+    const int ZOOM_STEP = 25;
 
 public slots:
     void show();

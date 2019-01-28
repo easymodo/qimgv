@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>483</width>
-    <height>371</height>
+    <height>302</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -190,20 +190,20 @@
         <item>
          <widget class="QSlider" name="zoomSlider">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
           <property name="minimumSize">
            <size>
-            <width>80</width>
+            <width>120</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>170</width>
+            <width>120</width>
             <height>16777215</height>
            </size>
           </property>

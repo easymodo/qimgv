@@ -106,7 +106,6 @@ void ThumbnailView::removeItem(int index) {
 void ThumbnailView::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
     if(thumb && thumb->size() == floor(mThumbnailSize * qApp->devicePixelRatio()) && checkRange(pos)) {
         thumbnails.at(pos)->setThumbnail(thumb);
-        thumbnails.at(pos)->state = LOADED;
     }
 }
 

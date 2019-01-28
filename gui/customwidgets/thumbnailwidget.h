@@ -15,7 +15,6 @@
 
 enum LoadState {
     EMPTY,
-    LOADING,
     LOADED
 };
 

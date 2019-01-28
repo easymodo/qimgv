@@ -289,19 +289,17 @@ void FolderGridView::zoomOut() {
 }
 
 void FolderGridView::setThumbnailSize(int newSize) {
-    if(newSize >= THUMBNAIL_SIZE_MIN && newSize <= THUMBNAIL_SIZE_MAX) {
-        mThumbnailSize = newSize;
-        for(int i = 0; i < thumbnails.count(); i++) {
-            thumbnails.at(i)->setThumbnailSize(newSize);
-        }
-        updateLayout();
-        fitToContents();
-        if(checkRange(selectedIndex))
-            ensureVisible(thumbnails.at(selectedIndex), 0, 40);
-        emit thumbnailSizeChanged(mThumbnailSize);
-
-        loadVisibleThumbnails();
+    newSize = clamp(newSize, THUMBNAIL_SIZE_MIN, THUMBNAIL_SIZE_MAX);
+    mThumbnailSize = newSize;
+    for(int i = 0; i < thumbnails.count(); i++) {
+        thumbnails.at(i)->setThumbnailSize(newSize);
     }
+    updateLayout();
+    fitToContents();
+    if(checkRange(selectedIndex))
+        ensureVisible(thumbnails.at(selectedIndex), 0, 40);
+    emit thumbnailSizeChanged(mThumbnailSize);
+    loadVisibleThumbnails();
 }
 
 void FolderGridView::fitToContents() {

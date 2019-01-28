@@ -420,6 +420,11 @@ ThumbnailView QScrollBar::handle:vertical {
     border-radius: 2px;
 }
 
+ThumbnailView QScrollBar::handle:vertical:hover {
+    background-color: #6f7274;
+    border: 1px solid #75797b;
+}
+
 ThumbnailView QScrollBar::sub-page {
     background: none;
 }

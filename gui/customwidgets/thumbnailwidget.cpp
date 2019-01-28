@@ -84,8 +84,9 @@ QSizeF ThumbnailWidget::effectiveSizeHint(Qt::SizeHint which, const QSizeF &cons
 void ThumbnailWidget::setThumbnail(std::shared_ptr<Thumbnail> _thumbnail) {
     if(_thumbnail) {
         thumbnail = _thumbnail;
-        setupLayout();
+        state = LOADED;
         updateThumbnailDrawPosition();
+        setupLayout();
         update();
     }
 }
@@ -97,13 +98,11 @@ void ThumbnailWidget::setupLayout() {
 
     if(thumbnail && !thumbnail->label().isEmpty()) {
         nameTextRect = nameRect.adjusted(4, 0, -4, 0);
-        if(!thumbnail->label().isEmpty()) {
-            labelTextRect.setWidth(fmSmall->width(thumbnail->label()));
-            labelTextRect.setHeight(nameRect.height());
-            labelTextRect.moveTop(nameTextRect.top());
-            labelTextRect.moveRight(nameTextRect.right());
-            nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
-        }
+        labelTextRect.setWidth(fmSmall->width(thumbnail->label()));
+        labelTextRect.setHeight(nameRect.height());
+        labelTextRect.moveTop(nameTextRect.top());
+        labelTextRect.moveRight(nameTextRect.right());
+        nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
     }
 }
 
@@ -224,12 +223,13 @@ bool ThumbnailWidget::isHovered() {
 void ThumbnailWidget::updateThumbnailDrawPosition() {
     if(thumbnail) {
         qreal dpr = qApp->devicePixelRatio();
-        // correct thumbnail
-        if(qMax(thumbnail->pixmap()->width(), thumbnail->pixmap()->height()) == floor(mThumbnailSize * dpr)) {
+        if(state == LOADED) {
+            // correctly sized thumbnail
             QPoint topLeft(width()  / 2 - thumbnail->pixmap()->width()  / (2 * dpr),
                            height() / 2 - thumbnail->pixmap()->height() / (2 * dpr));
             drawRectCentered = QRect(topLeft, thumbnail->pixmap()->size() / dpr);
         } else {
+            // old size pixmap, scaling
             QSize scaled = thumbnail->pixmap()->size().scaled(mThumbnailSize, mThumbnailSize, Qt::KeepAspectRatioByExpanding);
             QPoint topLeft(width()  / 2 - scaled.width()  / (2 * dpr),
                            height() / 2 - scaled.height() / (2 * dpr));

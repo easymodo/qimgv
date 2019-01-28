@@ -14,11 +14,8 @@ QRectF ThumbnailGridWidget::boundingRect() const {
 }
 
 void ThumbnailGridWidget::setupLayout() {
-    highlightRect = boundingRect();
-    highlightRect.setBottom(highlightRect.bottom() - marginY);
-    if(thumbnail) {
-        highlightRect.setTop(mThumbnailSize - qMax(thumbnail->pixmap()->height(), mThumbnailSize));
-    }
+    //highlightRect = drawRectCentered.adjusted(-marginX, -marginY, marginX, marginY);
+    highlightRect = boundingRect();//.adjusted(0, marginY, 0, -marginY);
     nameRect = QRectF(marginX, marginY + mThumbnailSize,
                       mThumbnailSize, fm->height() * 1.7);
     nameTextRect = nameRect.adjusted(4, 0, -4, 0);
@@ -56,8 +53,8 @@ void ThumbnailGridWidget::drawLabel(QPainter *painter) {
 void ThumbnailGridWidget::updateThumbnailDrawPosition() {
     if(thumbnail) {
         qreal dpr = qApp->devicePixelRatio();
-        if(qMax(thumbnail->pixmap()->width(), thumbnail->pixmap()->height()) == floor(mThumbnailSize * dpr)) {
-            // correctly sized  thumbnail
+        if(state == LOADED) {
+            // correctly sized thumbnail
             QPoint topLeft(width() / 2.0 - thumbnail->pixmap()->width() / (2.0 * dpr),
                            marginY + mThumbnailSize - thumbnail->pixmap()->height() / dpr);
             drawRectCentered = QRect(topLeft, thumbnail->pixmap()->size() / dpr);
