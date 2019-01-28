@@ -529,6 +529,8 @@ void Core::loadDirectory(QString path) {
 void Core::loadImage(QString path, bool blocking) {
     DocumentInfo *info = new DocumentInfo(path);
     // new directory
+    QElapsedTimer t;
+    t.start();
     setDirectory(info->directoryPath());
     state.currentIndex = dirManager->indexOf(info->fileName());
     onLoadStarted();

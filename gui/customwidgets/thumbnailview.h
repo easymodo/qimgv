@@ -17,7 +17,7 @@
 #include <QWheelEvent>
 #include <QTimeLine>
 #include <QTimer>
-
+#include <QElapsedTimer>
 #include "gui/customwidgets/thumbnailwidget.h"
 
 
@@ -37,6 +37,7 @@ public slots:
     void populate(int count);
     void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb);
     void resetViewport();
+    int thumbnailSize();
     void loadVisibleThumbnails();
     void loadVisibleThumbnailsDelayed();
 
@@ -62,7 +63,7 @@ protected:
     QScrollBar *scrollBar;
     QTimeLine *timeLine;
     QPointF viewportCenter;
-    int thumbnailSize;
+    int mThumbnailSize;
 
     const int SCROLL_UPDATE_RATE = 8;
     const float SCROLL_SPEED_MULTIPLIER = 4.0f;
@@ -80,7 +81,7 @@ protected:
     virtual void addItemToLayout(ThumbnailWidget* widget, int pos) = 0;
     virtual void removeItemFromLayout(int pos) = 0;
     virtual void updateLayout();
-    void fitSceneToContents();
+    virtual void fitSceneToContents();
     virtual void ensureSelectedItemVisible() = 0;
 
     void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;

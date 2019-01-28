@@ -23,10 +23,10 @@ private:
     QThreadPool *pool;
     void startThumbnailerThread(QString filePath, int size);
     DirectoryManager *dm;
-    QStringList runningTasks;
+    QMultiMap<QString, int> runningTasks;
 
 private slots:
-    void onTaskStart(QString path);
+    void onTaskStart(QString path, int size);
     void onTaskEnd(std::shared_ptr<Thumbnail> thumbnail, QString path);
 
 signals:

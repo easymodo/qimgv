@@ -139,6 +139,8 @@ public:
     SortingMode sortingMode();    
     void readScripts(QMap<QString, Script> &scripts);
     void saveScripts(const QMap<QString, Script> &scripts);
+    int folderViewIconSize();
+    void setFolderViewIconSize(int value);
 
     bool showInfoOverlay();
     void setShowInfoOverlay(bool mode);

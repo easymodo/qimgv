@@ -554,6 +554,14 @@ void Settings::setMaximumZoom(int value) {
     settings->s->setValue("maximumZoom", value);
 }
 //------------------------------------------------------------------------------
+int Settings::folderViewIconSize() {
+    return settings->s->value("folderViewIconSize", 120).toInt();
+}
+
+void Settings::setFolderViewIconSize(int value) {
+    settings->s->setValue("folderViewIconSize", value);
+}
+//------------------------------------------------------------------------------
 bool Settings::expandImage() {
     return settings->s->value("expandImage", false).toBool();
 }

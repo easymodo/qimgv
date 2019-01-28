@@ -15,6 +15,37 @@ DirectoryManager::DirectoryManager() : quickFormatDetection(true)
 void DirectoryManager::readSettings() {
     mimeFilter = settings->supportedMimeTypes();
     nameFilter = settings->supportedFormats();
+    // looks like >40 filters is a bit too much for QDir
+    // removing some exotic formats from the filter speeds things up by ~2x
+    // TODO: implement lazy directory crawling instead (gwenview does this)
+    //qDebug() << nameFilter.count() << nameFilter;
+    QElapsedTimer t;
+    t.start();
+    nameFilter.removeOne("*.bw");
+    nameFilter.removeOne("*.arw");
+    nameFilter.removeOne("*.crw");
+    nameFilter.removeOne("*.dng");
+    nameFilter.removeOne("*.eps");
+    nameFilter.removeOne("*.epsf");
+    nameFilter.removeOne("*.epsi");
+    nameFilter.removeOne("*.nef");
+    nameFilter.removeOne("*.ora");
+    nameFilter.removeOne("*.pbm");
+    nameFilter.removeOne("*.pcx");
+    nameFilter.removeOne("*.pgm");
+    nameFilter.removeOne("*.pic");
+    nameFilter.removeOne("*.ppm");
+    nameFilter.removeOne("*.psd");
+    nameFilter.removeOne("*.raf");
+    nameFilter.removeOne("*.ras");
+    nameFilter.removeOne("*.sgi");
+    nameFilter.removeOne("*.wbmp");
+    nameFilter.removeOne("*.xbm");
+    nameFilter.removeOne("*.exr");
+    nameFilter.removeOne("*.icns");
+    nameFilter.removeOne("*.mng");
+    nameFilter.removeOne("*.rgb");
+    nameFilter.removeOne("*.rgba");
     currentDir.setNameFilters(nameFilter);
 }
 
@@ -51,12 +82,10 @@ void DirectoryManager::setDirectory(QString path) {
     });
 
     if(!path.isEmpty()) {// && /* TODO: ???-> */ currentDir.exists()) {
-        //if(currentDir.path() != path) {
-            currentDir.setPath(path);
-            generateFileList(settings->sortingMode());
-//            watcher.setDir(path);
-            emit directoryChanged(path);
-        //}
+        currentDir.setPath(path);
+        generateFileList(settings->sortingMode());
+        //watcher.setDir(path);
+        emit directoryChanged(path);
     }
 }
 

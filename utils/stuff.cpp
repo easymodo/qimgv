@@ -1,5 +1,9 @@
 #include "stuff.h"
 
+int clamp(int x, int lower, int upper) {
+    return qMin(upper, qMax(x, lower));
+}
+
 // 0 - mac, 1 - linux, 2 - windows, 3 - other
 int probeOS() {
 #ifdef TARGET_OS_MAC

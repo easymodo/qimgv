@@ -9,22 +9,17 @@ ThumbnailGridWidget::ThumbnailGridWidget(QGraphicsItem* parent)
 
 QRectF ThumbnailGridWidget::boundingRect() const {
     return QRectF(0, 0,
-                  thumbnailSize + marginX * 2,
-                  thumbnailSize + marginY * 2 + textHeight * 1.7);
+                  mThumbnailSize + marginX * 2,
+                  mThumbnailSize + marginY * 2 + textHeight * 1.7);
 }
 
 void ThumbnailGridWidget::setupLayout() {
-    highlightRect = boundingRect();
-    highlightRect.setBottom(highlightRect.bottom() - marginY);
-    if(thumbnail) {
-        highlightRect.setTop(thumbnailSize - thumbnail->pixmap()->height()/qApp->devicePixelRatio());
-    }
-    nameRect = QRectF(marginX, marginY + thumbnailSize,
-                     thumbnailSize, fm->height() * 1.7);
+    //highlightRect = drawRectCentered.adjusted(-marginX, -marginY, marginX, marginY);
+    highlightRect = boundingRect();//.adjusted(0, marginY, 0, -marginY);
+    nameRect = QRectF(marginX, marginY + mThumbnailSize,
+                      mThumbnailSize, fm->height() * 1.7);
     nameTextRect = nameRect.adjusted(4, 0, -4, 0);
-    if(thumbnail && fm->width(thumbnail->name()) >= nameTextRect.width()) {
-        nameFits = false;
-    }
+    nameFits = !(thumbnail && fm->width(thumbnail->name()) >= nameTextRect.width());
 }
 
 void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
@@ -58,13 +53,19 @@ void ThumbnailGridWidget::drawLabel(QPainter *painter) {
 void ThumbnailGridWidget::updateThumbnailDrawPosition() {
     if(thumbnail) {
         qreal dpr = qApp->devicePixelRatio();
-        drawPosCentered = QPointF((width() / 2.0 - thumbnail->pixmap()->width() / (2.0 * dpr)),
-                                  (marginY + thumbnailSize - thumbnail->pixmap()->height() / dpr));
+        if(state == LOADED) {
+            // correctly sized thumbnail
+            QPoint topLeft(width() / 2.0 - thumbnail->pixmap()->width() / (2.0 * dpr),
+                           marginY + mThumbnailSize - thumbnail->pixmap()->height() / dpr);
+            drawRectCentered = QRect(topLeft, thumbnail->pixmap()->size() / dpr);
+        } else {
+            // old size pixmap, scaling
+            QSize scaled = thumbnail->pixmap()->size().scaled(mThumbnailSize, mThumbnailSize, Qt::KeepAspectRatio);
+            QPoint topLeft((width() - scaled.width()) / 2.0,
+                           marginY + mThumbnailSize - scaled.height());
+            drawRectCentered = QRect(topLeft, scaled);
+        }
     }
-}
-
-void ThumbnailGridWidget::drawThumbnail(QPainter *painter, qreal dpr, const QPixmap *pixmap) {
-    painter->drawPixmap(drawPosCentered, *pixmap);
 }
 
 void ThumbnailGridWidget::drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap) {

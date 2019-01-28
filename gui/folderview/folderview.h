@@ -37,6 +37,11 @@ protected:
     void wheelEvent(QWheelEvent *event);
     void focusInEvent(QFocusEvent *event);
     void paintEvent(QPaintEvent *);
+
+protected slots:
+    void onZoomSliderValueChanged(int value);
+private slots:
+    void onThumbnailSizeChanged(int newSize);
 private:
     Ui::FolderView *ui;
 };

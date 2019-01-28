@@ -31,7 +31,7 @@ private:
     QSize originalSize;
 
 signals:
-    void taskStart(QString);
+    void taskStart(QString, int);
     void taskEnd(std::shared_ptr<Thumbnail>, QString);
 };
 

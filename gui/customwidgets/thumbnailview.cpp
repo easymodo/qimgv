@@ -3,7 +3,7 @@
 ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     : QGraphicsView(parent),
       orientation(orient),
-      thumbnailSize(130)
+      mThumbnailSize(120)
 {
     setAccessibleName("thumbnailView");
     this->setMouseTracking(true);
@@ -63,14 +63,14 @@ void ThumbnailView::showEvent(QShowEvent *event) {
 
 void ThumbnailView::populate(int count) {
     if(count >= 0) {
-        for(int i = thumbnails.count() - 1; i >=0; i--) {
+        for(int i = thumbnails.count() - 1; i >= 0; i--) {
             removeItemFromLayout(i);
         }
         qDeleteAll(thumbnails);
         thumbnails.clear();
         for(int i = 0; i < count; i++) {
             ThumbnailWidget *widget = createThumbnailWidget();
-            widget->setThumbnailSize(thumbnailSize);
+            widget->setThumbnailSize(mThumbnailSize);
             thumbnails.append(widget);
             addItemToLayout(widget, i);
         }
@@ -104,10 +104,8 @@ void ThumbnailView::removeItem(int index) {
 }
 
 void ThumbnailView::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
-    if(thumb && thumb->size() == floor(thumbnailSize*qApp->devicePixelRatio()) && checkRange(pos)) {
-       // qDebug() ->pos()<< "SET: " << pos;
+    if(thumb && thumb->size() == floor(mThumbnailSize * qApp->devicePixelRatio()) && checkRange(pos)) {
         thumbnails.at(pos)->setThumbnail(thumb);
-        thumbnails.at(pos)->state = LOADED;
     }
 }
 
@@ -132,7 +130,7 @@ void ThumbnailView::loadVisibleThumbnails() {
         if(loadList.count()) {
             //qDebug() << "requested: " << loadList.count() << " items";
             //qDebug() << loadList;
-            emit thumbnailRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * thumbnailSize));
+            emit thumbnailRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize));
         }
     }
 }
@@ -158,6 +156,10 @@ void ThumbnailView::resetViewport() {
     if(timeLine->state() == QTimeLine::Running)
         timeLine->stop();
     scrollBar->setValue(0);
+}
+
+int ThumbnailView::thumbnailSize() {
+    return mThumbnailSize;
 }
 
 bool ThumbnailView::atSceneStart() {

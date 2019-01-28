@@ -13,12 +13,32 @@ FolderView::FolderView(QWidget *parent) :
     ui->closeButton->setAction("exit");
     ui->docViewButton->setAction("documentView");
 
+    int min = ui->thumbnailGrid->THUMBNAIL_SIZE_MIN;
+    int max = ui->thumbnailGrid->THUMBNAIL_SIZE_MAX;
+    int step = ui->thumbnailGrid->ZOOM_STEP;
     ui->directoryPathLabel->setAccessibleName("FolderViewPathLabel");
+    ui->zoomSlider->setMinimum(min / step);
+    ui->zoomSlider->setMaximum(max / step);
+    ui->zoomSlider->setSingleStep(1);
+    ui->zoomSlider->setPageStep(1);
 
     connect(ui->thumbnailGrid, SIGNAL(thumbnailPressed(int)),
             this, SIGNAL(thumbnailPressed(int)));
     connect(ui->thumbnailGrid, SIGNAL(thumbnailRequested(QList<int>, int)),
             this, SIGNAL(thumbnailRequested(QList<int>, int)));
+
+    connect(ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(onZoomSliderValueChanged(int)));
+    connect(ui->thumbnailGrid, SIGNAL(thumbnailSizeChanged(int)), this, SLOT(onThumbnailSizeChanged(int)));
+    ui->thumbnailGrid->setThumbnailSize(settings->folderViewIconSize());
+}
+
+void FolderView::onZoomSliderValueChanged(int value) {
+    ui->thumbnailGrid->setThumbnailSize(value * ui->thumbnailGrid->ZOOM_STEP);
+}
+
+void FolderView::onThumbnailSizeChanged(int newSize) {
+    ui->zoomSlider->setValue(newSize / ui->thumbnailGrid->ZOOM_STEP);
+    settings->setFolderViewIconSize(newSize);
 }
 
 FolderView::~FolderView() {

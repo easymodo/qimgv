@@ -7,7 +7,7 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     highlighted(false),
     hovered(false),
     mDrawLabel(true),
-    thumbnailSize(100),
+    mThumbnailSize(100),
     marginY(3),
     marginX(1),
     textHeight(5)
@@ -39,10 +39,10 @@ void ThumbnailWidget::readSettings() {
 }
 
 void ThumbnailWidget::setThumbnailSize(int size) {
-    if(thumbnailSize != size && size > 0) {
+    if(mThumbnailSize != size && size > 0) {
         this->state = EMPTY;
-        thumbnail = nullptr;
-        thumbnailSize = size;
+        mThumbnailSize = size;
+        updateThumbnailDrawPosition();
         updateGeometry();
         setupLayout();
         update();
@@ -54,10 +54,14 @@ void ThumbnailWidget::setMargins(int x, int y) {
     marginY = y;
 }
 
+int ThumbnailWidget::thubmnailSize() {
+    return mThumbnailSize;
+}
+
 void ThumbnailWidget::setDrawLabel(bool mode) {
     if(mDrawLabel != mode) {
         mDrawLabel = mode;
-        update();
+        //update();
     }
 }
 
@@ -80,8 +84,9 @@ QSizeF ThumbnailWidget::effectiveSizeHint(Qt::SizeHint which, const QSizeF &cons
 void ThumbnailWidget::setThumbnail(std::shared_ptr<Thumbnail> _thumbnail) {
     if(_thumbnail) {
         thumbnail = _thumbnail;
-        setupLayout();
+        state = LOADED;
         updateThumbnailDrawPosition();
+        setupLayout();
         update();
     }
 }
@@ -93,13 +98,11 @@ void ThumbnailWidget::setupLayout() {
 
     if(thumbnail && !thumbnail->label().isEmpty()) {
         nameTextRect = nameRect.adjusted(4, 0, -4, 0);
-        if(!thumbnail->label().isEmpty()) {
-            labelTextRect.setWidth(fmSmall->width(thumbnail->label()));
-            labelTextRect.setHeight(nameRect.height());
-            labelTextRect.moveTop(nameTextRect.top());
-            labelTextRect.moveRight(nameTextRect.right());
-            nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
-        }
+        labelTextRect.setWidth(fmSmall->width(thumbnail->label()));
+        labelTextRect.setHeight(nameRect.height());
+        labelTextRect.moveTop(nameTextRect.top());
+        labelTextRect.moveRight(nameTextRect.right());
+        nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
     }
 }
 
@@ -115,7 +118,7 @@ bool ThumbnailWidget::isHighlighted() {
 }
 
 QRectF ThumbnailWidget::boundingRect() const {
-    return QRectF(0, 0, thumbnailSize + marginX * 2, thumbnailSize + marginY * 2);
+    return QRectF(0, 0, mThumbnailSize + marginX * 2, mThumbnailSize + marginY * 2);
 }
 
 qreal ThumbnailWidget::width() {
@@ -180,7 +183,7 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
 }
 
 void ThumbnailWidget::drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
-    painter->drawPixmap(drawPosCentered, *pixmap);
+    painter->drawPixmap(drawRectCentered, *pixmap);
 }
 
 void ThumbnailWidget::drawIcon(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
@@ -220,8 +223,18 @@ bool ThumbnailWidget::isHovered() {
 void ThumbnailWidget::updateThumbnailDrawPosition() {
     if(thumbnail) {
         qreal dpr = qApp->devicePixelRatio();
-        drawPosCentered = QPointF(width()  / 2 - thumbnail->pixmap()->width()  / (2 * dpr),
-                                  height() / 2 - thumbnail->pixmap()->height() / (2 * dpr));
+        if(state == LOADED) {
+            // correctly sized thumbnail
+            QPoint topLeft(width()  / 2 - thumbnail->pixmap()->width()  / (2 * dpr),
+                           height() / 2 - thumbnail->pixmap()->height() / (2 * dpr));
+            drawRectCentered = QRect(topLeft, thumbnail->pixmap()->size() / dpr);
+        } else {
+            // old size pixmap, scaling
+            QSize scaled = thumbnail->pixmap()->size().scaled(mThumbnailSize, mThumbnailSize, Qt::KeepAspectRatioByExpanding);
+            QPoint topLeft(width()  / 2 - scaled.width()  / (2 * dpr),
+                           height() / 2 - scaled.height() / (2 * dpr));
+            drawRectCentered = QRect(topLeft, scaled);
+        }
     }
 }
 

@@ -208,8 +208,7 @@ void FolderGridView::setupLayout() {
 }
 
 ThumbnailWidget* FolderGridView::createThumbnailWidget() {
-    // important: parent must be set, otherwise widget won't be drawn
-    ThumbnailGridWidget *widget = new ThumbnailGridWidget(&holderWidget);
+    ThumbnailGridWidget *widget = new ThumbnailGridWidget();
     widget->setDrawLabel(true);
     widget->setMargins(4,4);
     return widget;
@@ -217,6 +216,7 @@ ThumbnailWidget* FolderGridView::createThumbnailWidget() {
 
 // TODO: insert
 void FolderGridView::addItemToLayout(ThumbnailWidget* widget, int pos) {
+    scene.addItem(widget);
     flowLayout->insertItem(pos, widget);
 }
 
@@ -226,8 +226,9 @@ void FolderGridView::removeItemFromLayout(int pos) {
 
 void FolderGridView::updateLayout() {
     shiftedIndex = -1;
+    flowLayout->invalidate();
     flowLayout->activate();
-    if(thumbnails.count())
+    if(!thumbnails.count())
         selectedIndex = -1;
 }
 
@@ -268,14 +269,47 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
     }
 }
 
-void FolderGridView::resizeEvent(QResizeEvent *event) {
-    QGraphicsView::resizeEvent(event);
+void FolderGridView::wheelEvent(QWheelEvent *event) {
+    if(event->modifiers().testFlag(Qt::ControlModifier)) {
+        if(event->delta() > 0)
+            zoomIn();
+        else if(event->delta() < 0)
+            zoomOut();
+    } else {
+        ThumbnailView::wheelEvent(event);
+    }
+}
 
+void FolderGridView::zoomIn() {
+    setThumbnailSize(this->mThumbnailSize + ZOOM_STEP);
+}
+
+void FolderGridView::zoomOut() {
+    setThumbnailSize(this->mThumbnailSize - ZOOM_STEP);
+}
+
+void FolderGridView::setThumbnailSize(int newSize) {
+    newSize = clamp(newSize, THUMBNAIL_SIZE_MIN, THUMBNAIL_SIZE_MAX);
+    mThumbnailSize = newSize;
+    for(int i = 0; i < thumbnails.count(); i++) {
+        thumbnails.at(i)->setThumbnailSize(newSize);
+    }
+    updateLayout();
+    fitToContents();
+    if(checkRange(selectedIndex))
+        ensureVisible(thumbnails.at(selectedIndex), 0, 40);
+    emit thumbnailSizeChanged(mThumbnailSize);
+    loadVisibleThumbnails();
+}
+
+void FolderGridView::fitToContents() {
     holderWidget.setMinimumSize(size() - QSize(scrollBar->width(), 0));
     holderWidget.setMaximumSize(size() - QSize(scrollBar->width(), 0));
     fitSceneToContents();
+}
 
+void FolderGridView::resizeEvent(QResizeEvent *event) {
+    QGraphicsView::resizeEvent(event);
+    fitToContents();
     loadVisibleThumbnailsDelayed();
-
-    //qDebug() << this->rect() << holderWidget.size() << scene.sceneRect();
 }
