@@ -74,12 +74,15 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="IconButton" name="fitWindow">
+      <widget class="ActionButton" name="fitWindow">
        <property name="minimumSize">
         <size>
          <width>0</width>
          <height>32</height>
         </size>
+       </property>
+       <property name="accessibleName">
+        <string>IconButton</string>
        </property>
        <property name="text">
         <string/>
@@ -91,12 +94,15 @@
       </widget>
      </item>
      <item>
-      <widget class="IconButton" name="fitWidth">
+      <widget class="ActionButton" name="fitWidth">
        <property name="minimumSize">
         <size>
          <width>0</width>
          <height>32</height>
         </size>
+       </property>
+       <property name="accessibleName">
+        <string>IconButton</string>
        </property>
        <property name="text">
         <string/>
@@ -108,12 +114,15 @@
       </widget>
      </item>
      <item>
-      <widget class="IconButton" name="zoomOriginal">
+      <widget class="ActionButton" name="zoomOriginal">
        <property name="minimumSize">
         <size>
          <width>0</width>
          <height>32</height>
         </size>
+       </property>
+       <property name="accessibleName">
+        <string>IconButton</string>
        </property>
        <property name="text">
         <string/>
@@ -125,12 +134,15 @@
       </widget>
      </item>
      <item>
-      <widget class="IconButton" name="zoomIn">
+      <widget class="ActionButton" name="zoomIn">
        <property name="minimumSize">
         <size>
          <width>0</width>
          <height>32</height>
         </size>
+       </property>
+       <property name="accessibleName">
+        <string>IconButton</string>
        </property>
        <property name="text">
         <string/>
@@ -142,12 +154,15 @@
       </widget>
      </item>
      <item>
-      <widget class="IconButton" name="zoomOut">
+      <widget class="ActionButton" name="zoomOut">
        <property name="minimumSize">
         <size>
          <width>0</width>
          <height>32</height>
         </size>
+       </property>
+       <property name="accessibleName">
+        <string>IconButton</string>
        </property>
        <property name="text">
         <string/>
@@ -270,9 +285,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>IconButton</class>
+   <class>ActionButton</class>
    <extends>QPushButton</extends>
-   <header>gui/customwidgets/iconbutton.h</header>
+   <header>gui/customwidgets/actionbutton.h</header>
   </customwidget>
   <customwidget>
    <class>ContextMenuItem</class>

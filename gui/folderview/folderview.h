@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "gui/folderview/foldergridview.h"
-#include "gui/customwidgets/iconbutton.h"
+#include "gui/customwidgets/actionbutton.h"
 
 namespace Ui {
 class FolderView;

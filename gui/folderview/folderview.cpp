@@ -16,7 +16,7 @@ FolderView::FolderView(QWidget *parent) :
     int min = ui->thumbnailGrid->THUMBNAIL_SIZE_MIN;
     int max = ui->thumbnailGrid->THUMBNAIL_SIZE_MAX;
     int step = ui->thumbnailGrid->ZOOM_STEP;
-    ui->directoryPathLabel->setAccessibleName("FolderViewPathLabel");
+
     ui->zoomSlider->setMinimum(min / step);
     ui->zoomSlider->setMaximum(max / step);
     ui->zoomSlider->setSingleStep(1);

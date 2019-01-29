@@ -16,10 +16,15 @@ ContextMenu::ContextMenu(QWidget *parent) :
     // setup actions
     // top zoom buttons
     ui->zoomIn->setAction("zoomIn");
+    ui->zoomIn->setTriggerMode(TriggerMode::PressTrigger);
     ui->zoomOut->setAction("zoomOut");
+    ui->zoomOut->setTriggerMode(TriggerMode::PressTrigger);
     ui->zoomOriginal->setAction("fitNormal");
+    ui->zoomOriginal->setTriggerMode(TriggerMode::PressTrigger);
     ui->fitWidth->setAction("fitWidth");
+    ui->fitWidth->setTriggerMode(TriggerMode::PressTrigger);
     ui->fitWindow->setAction("fitWindow");
+    ui->fitWindow->setTriggerMode(TriggerMode::PressTrigger);
     // -------------------------------------------------------------------------
     //  entries
     ui->rotateLeft->setAction("rotateLeft");

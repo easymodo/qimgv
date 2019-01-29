@@ -3,9 +3,9 @@
 ControlsOverlay::ControlsOverlay(OverlayContainerWidget *parent) :
     OverlayWidget(parent)
 {
-    folderViewButton = new IconButton("folderView", ":/res/icons/buttons/folderview20.png", 30);
-    settingsButton = new IconButton("openSettings", ":/res/icons/buttons/settings20.png", 30);
-    closeButton = new IconButton("exit", ":/res/icons/buttons/close16.png", 30);
+    folderViewButton = new ActionButton("folderView", ":/res/icons/buttons/folderview20.png", 30);
+    settingsButton = new ActionButton("openSettings", ":/res/icons/buttons/settings20.png", 30);
+    closeButton = new ActionButton("exit", ":/res/icons/buttons/close16.png", 30);
 
     QWidget *horizontalLineWidget = new QWidget;
     horizontalLineWidget->setFixedSize(5, 22);
