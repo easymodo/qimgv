@@ -16,10 +16,12 @@ protected:
     virtual void drawLabel(QPainter *painter) Q_DECL_OVERRIDE;
     virtual void drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap) Q_DECL_OVERRIDE;
 
-    QColor outlineColor;
+    QColor shadowColor;
     void updateThumbnailDrawPosition() Q_DECL_OVERRIDE;
+    void drawThumbnail(QPainter *painter, qreal dpr, const QPixmap *pixmap) Q_DECL_OVERRIDE;
 private:
     bool nameFits;
+    int labelSpacing;
 };
 
 #endif // THUMBNAILGRIDWIDGET_H

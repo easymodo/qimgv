@@ -8,8 +8,8 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     hovered(false),
     mDrawLabel(true),
     mThumbnailSize(100),
-    marginY(3),
-    marginX(1),
+    paddingX(1),
+    paddingY(3),
     textHeight(5)
 {
     setAttribute(Qt::WA_OpaquePaintEvent, true);
@@ -42,16 +42,16 @@ void ThumbnailWidget::setThumbnailSize(int size) {
     if(mThumbnailSize != size && size > 0) {
         this->state = EMPTY;
         mThumbnailSize = size;
-        updateThumbnailDrawPosition();
         updateGeometry();
+        updateThumbnailDrawPosition();
         setupLayout();
         update();
     }
 }
 
-void ThumbnailWidget::setMargins(int x, int y) {
-    marginX = x;
-    marginY = y;
+void ThumbnailWidget::setPadding(int x, int y) {
+    paddingX = x;
+    paddingY = y;
 }
 
 int ThumbnailWidget::thubmnailSize() {
@@ -61,7 +61,10 @@ int ThumbnailWidget::thubmnailSize() {
 void ThumbnailWidget::setDrawLabel(bool mode) {
     if(mDrawLabel != mode) {
         mDrawLabel = mode;
-        //update();
+        setupLayout();
+        updateThumbnailDrawPosition();
+        updateGeometry();
+        update();
     }
 }
 
@@ -92,7 +95,7 @@ void ThumbnailWidget::setThumbnail(std::shared_ptr<Thumbnail> _thumbnail) {
 }
 
 void ThumbnailWidget::setupLayout() {
-    highlightRect = QRectF(marginX, 0, width() - marginX * 2, marginY);
+    highlightRect = QRectF(paddingX, 0, width() - paddingX * 2, paddingY);
     nameRect = QRectF(highlightRect.left(), highlightRect.height(),
                       highlightRect.width(), textHeight * 1.7);
 
@@ -118,7 +121,7 @@ bool ThumbnailWidget::isHighlighted() {
 }
 
 QRectF ThumbnailWidget::boundingRect() const {
-    return QRectF(0, 0, mThumbnailSize + marginX * 2, mThumbnailSize + marginY * 2);
+    return QRectF(0, 0, mThumbnailSize + paddingX * 2, mThumbnailSize + paddingY * 2);
 }
 
 qreal ThumbnailWidget::width() {

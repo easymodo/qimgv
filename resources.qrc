@@ -91,5 +91,7 @@
         <file>res/icons/message/dir_start20@2x.png</file>
         <file>res/icons/settings/32/appearance32.png</file>
         <file>res/icons/settings/32/appearance32@2x.png</file>
+        <file>res/icons/buttons/labels@2x.png</file>
+        <file>res/icons/buttons/labels.png</file>
     </qresource>
 </RCC>

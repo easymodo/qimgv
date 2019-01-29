@@ -5,10 +5,11 @@
 FolderGridView::FolderGridView(QWidget *parent)
     : ThumbnailView(THUMBNAILVIEW_VERTICAL, parent),
       selectedIndex(-1),
-      shiftedIndex(-1)
+      shiftedIndex(-1),
+      mShowLabels(false)
 {
     this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
-    this->scene.setBackgroundBrush(QColor(41,41,42));
+    this->scene.setBackgroundBrush(QColor(50,50,51));
     setupLayout();
     allowedKeys << "Up"
                 << "Down"
@@ -32,6 +33,17 @@ void FolderGridView::show() {
 void FolderGridView::hide() {
     ThumbnailView::hide();
     clearFocus();
+}
+
+void FolderGridView::setShowLabels(bool mode) {
+    mShowLabels = mode;
+    for(int i = 0; i < thumbnails.count(); i++) {
+        thumbnails.at(i)->setDrawLabel(mShowLabels);
+    }
+    updateLayout();
+    fitToContents();
+    ensureSelectedItemVisible();
+    emit showLabelsChanged(mShowLabels);
 }
 
 void FolderGridView::ensureSelectedItemVisible() {
@@ -209,8 +221,8 @@ void FolderGridView::setupLayout() {
 
 ThumbnailWidget* FolderGridView::createThumbnailWidget() {
     ThumbnailGridWidget *widget = new ThumbnailGridWidget();
-    widget->setDrawLabel(true);
-    widget->setMargins(4,4);
+    widget->setDrawLabel(mShowLabels);
+    widget->setPadding(6,6);
     return widget;
 }
 

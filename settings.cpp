@@ -265,6 +265,14 @@ void Settings::setLastFilePosition(unsigned int pos) {
     settings->state->setValue("lastFilePosition", pos);
 }
 //------------------------------------------------------------------------------
+bool Settings::showThumbnailLabels() {
+    return settings->s->value("showThumbnailLabels", false).toBool();
+}
+
+void Settings::setShowThumbnailLabels(bool mode) {
+    settings->s->setValue("showThumbnailLabels", mode);
+}
+//------------------------------------------------------------------------------
 unsigned int Settings::mainPanelSize() {
     bool ok = true;
     unsigned int size = settings->s->value("mainPanelSize", mainPanelSizeDefault).toUInt(&ok);

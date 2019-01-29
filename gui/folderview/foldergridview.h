@@ -31,12 +31,14 @@ public slots:
     void zoomIn();
     void zoomOut();
     void setThumbnailSize(int newSize);
+    void setShowLabels(bool mode);
 
 private:
     FlowLayout *flowLayout;
     QGraphicsWidget holderWidget;
     QStringList allowedKeys;
     int selectedIndex, shiftedIndex;
+    bool mShowLabels;
 
 private slots:
     void selectAbove();
@@ -59,6 +61,7 @@ protected:
 
 signals:
     void thumbnailSizeChanged(int);
+    void showLabelsChanged(bool);
 };
 
 #endif // FOLDERGRIDVIEW_H
