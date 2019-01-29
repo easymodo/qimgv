@@ -29,16 +29,28 @@ FolderView::FolderView(QWidget *parent) :
 
     connect(ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(onZoomSliderValueChanged(int)));
     connect(ui->thumbnailGrid, SIGNAL(thumbnailSizeChanged(int)), this, SLOT(onThumbnailSizeChanged(int)));
+    connect(ui->thumbnailGrid, SIGNAL(showLabelsChanged(bool)), this, SLOT(onShowLabelsChanged(bool)));
+    connect(ui->showLabelsButton, SIGNAL(toggled(bool)), this, SLOT(onShowLabelsButtonToggled(bool)));
     ui->thumbnailGrid->setThumbnailSize(settings->folderViewIconSize());
+    ui->thumbnailGrid->setShowLabels(settings->showThumbnailLabels());
 }
 
-void FolderView::onZoomSliderValueChanged(int value) {
-    ui->thumbnailGrid->setThumbnailSize(value * ui->thumbnailGrid->ZOOM_STEP);
+void FolderView::onShowLabelsChanged(bool mode) {
+    ui->showLabelsButton->setChecked(mode);
+    settings->setShowThumbnailLabels(mode);
+}
+
+void FolderView::onShowLabelsButtonToggled(bool mode) {
+    ui->thumbnailGrid->setShowLabels(mode);
 }
 
 void FolderView::onThumbnailSizeChanged(int newSize) {
     ui->zoomSlider->setValue(newSize / ui->thumbnailGrid->ZOOM_STEP);
     settings->setFolderViewIconSize(newSize);
+}
+
+void FolderView::onZoomSliderValueChanged(int value) {
+    ui->thumbnailGrid->setThumbnailSize(value * ui->thumbnailGrid->ZOOM_STEP);
 }
 
 FolderView::~FolderView() {

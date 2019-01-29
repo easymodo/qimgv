@@ -39,9 +39,12 @@ protected:
     void paintEvent(QPaintEvent *);
 
 protected slots:
-    void onZoomSliderValueChanged(int value);
-private slots:
+    void onShowLabelsChanged(bool mode);
+    void onShowLabelsButtonToggled(bool mode);
     void onThumbnailSizeChanged(int newSize);
+    void onZoomSliderValueChanged(int value);
+
+private slots:
 private:
     Ui::FolderView *ui;
 };

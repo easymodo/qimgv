@@ -19,8 +19,34 @@
 
 [accessibleName="Button"]:pressed {
     background-color: #222223;
-    border-color: #1a1a1b;
-    color: #707070;
+    border-color: #19191a;
+    color: #666669;
+}
+
+/*----------------------------------------------------------------------------*/
+[accessibleName="CheckableButton"] {
+    font: bold;
+    color: #666669;
+    border-radius: 2px;
+    padding: 6px 9px 6px 9px;
+}
+
+[accessibleName="CheckableButton"]:hover {
+    background-color: #29292a;
+    border: 1px solid #1a1a1b;
+    color: #666669;
+}
+
+[accessibleName="CheckableButton"]:pressed {
+    background-color: #313132;
+    border: 1px solid #1a1a1b;
+    color: #8e9092;
+}
+
+[accessibleName="CheckableButton"]:checked {
+    background-color: #313132;
+    border: 1px solid #1a1a1b;
+    color: #8e9092;
 }
 
 /* ##### button set left ##### */
@@ -41,10 +67,10 @@
     color: #8e9092;
 }
 
-[accessibleName="ButtonSetLeft"]:pressed {
+[accessibleName="ButtonSetLeft"]:pressed,:checked {
     background-color: #222223;
     border-color: #1a1a1b;
-    color: #707070;
+    color: #666669;
 }
 
 /* ### middle ### */
@@ -66,7 +92,7 @@
 [accessibleName="ButtonSetMid"]:pressed {
     background-color: #222223;
     border-color: #1a1a1b;
-    color: #707070;
+    color: #666669;
 }
 
 /* ### right ### */
@@ -90,7 +116,7 @@
 [accessibleName="ButtonSetRight"]:pressed {
     background-color: #222223;
     border-color: #1a1a1b;
-    color: #707070;
+    color: #666669;
 }
 
 /* ###################### */
@@ -323,11 +349,11 @@ ThumbnailStrip {
 }
 
 FolderGridView {
-    background-color: #29292a;
+    background-color: #323233;
 }
 
 FolderView {
-    background-color: #29292a;
+    background-color: #323233;
 }
 
 [accessibleName="FolderViewBar"] {
@@ -345,7 +371,6 @@ FolderView {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 [accessibleName="FolderViewSlider"]::groove:horizontal {
     border: 1px solid #29292a;
-    background: blue;
     height: 6px;
     border-radius: 2px;
     margin: 0 12px;
