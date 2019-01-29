@@ -67,7 +67,7 @@
     color: #8e9092;
 }
 
-[accessibleName="ButtonSetLeft"]:pressed,:checked {
+[accessibleName="ButtonSetLeft"]:pressed {
     background-color: #222223;
     border-color: #1a1a1b;
     color: #666669;
