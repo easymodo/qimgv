@@ -134,7 +134,7 @@ __1. Install dependencies ( git, cmake, qt >= 5.9 )__
 _Ubuntu & derivatives:_
      
 ```
-sudo apt install build-essential cmake qt5-default
+sudo apt install build-essential git cmake qt5-default
 ```
      
 _Fedora:_
