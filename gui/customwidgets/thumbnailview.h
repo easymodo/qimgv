@@ -66,7 +66,7 @@ protected:
     int mThumbnailSize;
 
     const int SCROLL_UPDATE_RATE = 8;
-    const float SCROLL_SPEED_MULTIPLIER = 4.0f;
+    const float SCROLL_SPEED_MULTIPLIER = 3.0f;
     const int SCROLL_ANIMATION_SPEED = 140;
 
     const uint LOAD_DELAY = 200;
