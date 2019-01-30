@@ -129,7 +129,7 @@ __Void linux__: `xbps-install -S qimgv`
   
 __Manual install:__
  
-__1. Install dependencies ( git, cmake, qt >= 5.6 )__
+__1. Install dependencies ( git, cmake, qt >= 5.9 )__
   
 _Ubuntu & derivatives:_
      
