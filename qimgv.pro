@@ -78,7 +78,6 @@ SOURCES += \
     gui/dialogs/resizedialog.cpp \
     gui/customwidgets/clickablelabel.cpp \
     gui/customwidgets/clickablewidget.cpp \
-    gui/customwidgets/iconbutton.cpp \
     gui/customwidgets/overlaywidget.cpp \
     gui/customwidgets/slidehpanel.cpp \
     gui/customwidgets/slidepanel.cpp \
@@ -144,7 +143,8 @@ SOURCES += \
     gui/centralwidget.cpp \
     gui/contextmenu.cpp \
     gui/customwidgets/contextmenuitem.cpp \
-    utils/helprunner.cpp
+    utils/helprunner.cpp \
+    gui/customwidgets/actionbutton.cpp
 
 HEADERS += \
     core.h \
@@ -166,7 +166,6 @@ HEADERS += \
     gui/dialogs/resizedialog.h \
     gui/customwidgets/clickablelabel.h \
     gui/customwidgets/clickablewidget.h \
-    gui/customwidgets/iconbutton.h \
     gui/customwidgets/overlaywidget.h \
     gui/customwidgets/slidehpanel.h \
     gui/customwidgets/slidepanel.h \
@@ -231,7 +230,8 @@ HEADERS += \
     gui/contextmenu.h \
     gui/customwidgets/contextmenuitem.h \
     utils/numeric.h \
-    utils/helprunner.h
+    utils/helprunner.h \
+    gui/customwidgets/actionbutton.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \

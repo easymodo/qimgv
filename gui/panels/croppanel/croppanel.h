@@ -5,6 +5,7 @@
 #include <QScreen>
 #include <QStyleOption>
 #include <QPainter>
+#include <QtGlobal>
 #include "gui/customwidgets/sidepanelwidget.h"
 #include "gui/customwidgets/spinboxinputfix.h"
 #include "gui/overlays/cropoverlay.h"

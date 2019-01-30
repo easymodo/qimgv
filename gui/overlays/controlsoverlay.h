@@ -6,7 +6,7 @@
 #include <QPropertyAnimation>
 #include <QDebug>
 #include "gui/customwidgets/overlaywidget.h"
-#include "gui/customwidgets/iconbutton.h"
+#include "gui/customwidgets/actionbutton.h"
 
 class ControlsOverlay : public OverlayWidget
 {
@@ -19,7 +19,7 @@ public slots:
 
 private:
     QHBoxLayout layout;
-    IconButton *closeButton, *settingsButton, *folderViewButton;
+    ActionButton *closeButton, *settingsButton, *folderViewButton;
     QGraphicsOpacityEffect *fadeEffect;
     QPropertyAnimation *fadeAnimation;
     QSize contentsSize();

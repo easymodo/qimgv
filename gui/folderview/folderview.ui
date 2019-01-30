@@ -33,7 +33,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="topBar" native="true">
+    <widget class="QWidget" name="panel" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -53,7 +53,7 @@
       </size>
      </property>
      <property name="accessibleName">
-      <string>FolderViewBar</string>
+      <string>FolderViewPanel</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <property name="spacing">
@@ -72,7 +72,39 @@
        <number>0</number>
       </property>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <widget class="ActionButton" name="openButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>38</width>
+          <height>38</height>
+         </size>
+        </property>
+        <property name="accessibleName">
+         <string>PanelButton</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/res/icons/buttons/open16.png</normaloff>:/res/icons/buttons/open16.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
         <property name="spacing">
          <number>0</number>
         </property>
@@ -89,54 +121,9 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="IconButton" name="openButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>38</width>
-            <height>38</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>38</width>
-            <height>38</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../../resources.qrc">
-            <normaloff>:/res/icons/buttons/open16.png</normaloff>:/res/icons/buttons/open16.png</iconset>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <property name="leftMargin">
-         <number>5</number>
-        </property>
-        <property name="topMargin">
-         <number>5</number>
-        </property>
-        <property name="rightMargin">
-         <number>5</number>
-        </property>
-        <property name="bottomMargin">
-         <number>5</number>
-        </property>
-        <item>
          <widget class="QLabel" name="directoryPathLabel">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -146,6 +133,9 @@
             <width>120</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="accessibleName">
+           <string>FolderViewPathBar</string>
           </property>
           <property name="text">
            <string>No directory opened</string>
@@ -176,13 +166,13 @@
          <number>6</number>
         </property>
         <property name="leftMargin">
-         <number>0</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
          <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>0</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
          <number>0</number>
@@ -235,7 +225,7 @@
           <property name="maximumSize">
            <size>
             <width>38</width>
-            <height>16777215</height>
+            <height>38</height>
            </size>
           </property>
           <property name="accessibleName">
@@ -295,17 +285,17 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="IconButton" name="settingsButton">
+         <widget class="ActionButton" name="settingsButton">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
           <property name="minimumSize">
            <size>
-            <width>38</width>
-            <height>38</height>
+            <width>0</width>
+            <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
@@ -313,6 +303,9 @@
             <width>38</width>
             <height>38</height>
            </size>
+          </property>
+          <property name="accessibleName">
+           <string>PanelButton</string>
           </property>
           <property name="text">
            <string/>
@@ -324,17 +317,17 @@
          </widget>
         </item>
         <item>
-         <widget class="IconButton" name="docViewButton">
+         <widget class="ActionButton" name="docViewButton">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
           <property name="minimumSize">
            <size>
-            <width>38</width>
-            <height>38</height>
+            <width>0</width>
+            <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
@@ -342,6 +335,9 @@
             <width>38</width>
             <height>38</height>
            </size>
+          </property>
+          <property name="accessibleName">
+           <string>PanelButton</string>
           </property>
           <property name="text">
            <string/>
@@ -353,17 +349,17 @@
          </widget>
         </item>
         <item>
-         <widget class="IconButton" name="closeButton">
+         <widget class="ActionButton" name="closeButton">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
           <property name="minimumSize">
            <size>
-            <width>38</width>
-            <height>38</height>
+            <width>0</width>
+            <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
@@ -371,6 +367,9 @@
             <width>38</width>
             <height>38</height>
            </size>
+          </property>
+          <property name="accessibleName">
+           <string>PanelButton</string>
           </property>
           <property name="text">
            <string/>
@@ -393,9 +392,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>IconButton</class>
+   <class>ActionButton</class>
    <extends>QPushButton</extends>
-   <header>gui/customwidgets/iconbutton.h</header>
+   <header>gui/customwidgets/actionbutton.h</header>
   </customwidget>
   <customwidget>
    <class>FolderGridView</class>

@@ -1,4 +1,4 @@
-qimgv | Current version: 0.7.2
+qimgv | Current version: 0.7.3
 =====
 Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
 

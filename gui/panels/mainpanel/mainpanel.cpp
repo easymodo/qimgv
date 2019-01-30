@@ -4,10 +4,18 @@ MainPanel::MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *pa
     // buttons stuff
     buttonsWidget.setAccessibleName("panelButtonsWidget");
 
-    openButton       = new IconButton("open", ":/res/icons/buttons/open20.png", 30);
-    settingsButton   = new IconButton("openSettings", ":/res/icons/buttons/settings20.png", 30);
-    exitButton       = new IconButton("exit", ":/res/icons/buttons/close16.png", 30);
-    folderViewButton = new IconButton("folderView", ":/res/icons/buttons/folderview20.png", 30);
+    openButton       = new ActionButton("open", ":/res/icons/buttons/open20.png", 30);
+    openButton->setAccessibleName("IconButton");
+    openButton->setTriggerMode(TriggerMode::PressTrigger);
+    settingsButton   = new ActionButton("openSettings", ":/res/icons/buttons/settings20.png", 30);
+    settingsButton->setAccessibleName("IconButton");
+    settingsButton->setTriggerMode(TriggerMode::PressTrigger);
+    exitButton       = new ActionButton("exit", ":/res/icons/buttons/close16.png", 30);
+    exitButton->setAccessibleName("IconButton");
+    exitButton->setTriggerMode(TriggerMode::PressTrigger);
+    folderViewButton = new ActionButton("folderView", ":/res/icons/buttons/folderview20.png", 30);
+    folderViewButton->setAccessibleName("IconButton");
+    folderViewButton->setTriggerMode(TriggerMode::PressTrigger);
     //exitFullscreenButton = new IconButton("ToggleFullscreen", ":/res/icons/buttons/exit-fullscreen.png", QSize(30, 30));
 
     buttonsLayout.setDirection(QBoxLayout::BottomToTop);

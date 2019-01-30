@@ -3,7 +3,7 @@
 
 #include <QVBoxLayout>
 #include "gui/customwidgets/slidehpanel.h"
-#include "gui/customwidgets/iconbutton.h"
+#include "gui/customwidgets/actionbutton.h"
 
 class MainPanel : public SlideHPanel {
     Q_OBJECT
@@ -19,7 +19,7 @@ private slots:
 private:
     QVBoxLayout buttonsLayout;
     QWidget buttonsWidget;
-    IconButton *openButton, *exitFullscreenButton, *settingsButton, *exitButton, *folderViewButton;
+    ActionButton *openButton, *exitFullscreenButton, *settingsButton, *exitButton, *folderViewButton;
 
 protected:
     virtual void paintEvent(QPaintEvent* event);
