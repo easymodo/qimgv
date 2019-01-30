@@ -83,7 +83,8 @@ void ThumbnailGridWidget::updateThumbnailDrawPosition() {
                 topLeft.setX(width() / 2.0 - thumbnail->pixmap()->width() / (2.0 * dpr));
                 topLeft.setY(height() / 2.0 - thumbnail->pixmap()->height() / (2.0 * dpr));
             }
-            drawRectCentered = QRect(topLeft, thumbnail->pixmap()->size() / dpr);
+            // shift by 1px to offset the drop shadow
+            drawRectCentered = QRect(topLeft - QPoint(1,1), thumbnail->pixmap()->size() / dpr);
         } else {
             // old size pixmap, scaling
             QSize scaled = thumbnail->pixmap()->size().scaled(mThumbnailSize, mThumbnailSize, Qt::KeepAspectRatio);
@@ -97,7 +98,7 @@ void ThumbnailGridWidget::updateThumbnailDrawPosition() {
                 topLeft.setX((width() - scaled.width()) / 2.0);
                 topLeft.setY((height() - scaled.height()) / 2.0);
             }
-            drawRectCentered = QRect(topLeft, scaled);
+            drawRectCentered = QRect(topLeft - QPoint(1,1), scaled);
         }
     }
 }
