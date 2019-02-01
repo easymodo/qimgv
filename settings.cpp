@@ -490,7 +490,7 @@ void Settings::setMouseWrapping(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::squareThumbnails() {
-    return settings->s->value("squareThumbnails", true).toBool();
+    return settings->s->value("squareThumbnails", false).toBool();
 }
 
 void Settings::setSquareThumbnails(bool mode) {
