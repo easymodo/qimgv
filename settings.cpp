@@ -4,17 +4,19 @@ Settings *settings = nullptr;
 
 Settings::Settings(QObject *parent) : QObject(parent) {
 #ifdef IS_PORTABLE
-    cacheDirectory = new QDir(QApplication::applicationDirPath() + "/cache");
-    cacheDirectory->mkpath(cacheDirectory->absolutePath());
-    thumbnailDirectory = new QDir(QApplication::applicationDirPath() + "/thumbnails");
-    thumbnailDirectory->mkpath(thumbnailDirectory->absolutePath());
-    s = new QSettings(QApplication::applicationDirPath() + "/qimgv.ini", QSettings::IniFormat);
-    state = new QSettings(QApplication::applicationDirPath() + "/savedState.ini", QSettings::IniFormat);
+    mCacheDir = new QDir(QApplication::applicationDirPath() + "/cache");
+    mCacheDir->mkpath(mCacheDir->absolutePath());
+    mThumbnailDir = new QDir(QApplication::applicationDirPath() + "/thumbnails");
+    mThumbnailDir->mkpath(mThumbnailDir->absolutePath());
+    mConfDir = new QDir(QApplication::applicationDirPath() + "/conf");
+    mConfDir->mkpath(QApplication::applicationDirPath() + "/conf");
+    s = new QSettings(mConfDir->absolutePath() + "/qimgv.ini", QSettings::IniFormat);
+    state = new QSettings(mConfDir->absolutePath() + "/savedState.ini", QSettings::IniFormat);
 #else
-    cacheDirectory = new QDir(QDir::homePath() + "/.cache/qimgv");
-    cacheDirectory->mkpath(cacheDirectory->absolutePath());
-    thumbnailDirectory = new QDir(QDir::homePath() + "/.cache/qimgv/thumbnails");
-    thumbnailDirectory->mkpath(thumbnailDirectory->absolutePath());
+    mCacheDir = new QDir(QDir::homePath() + "/.cache/qimgv");
+    mCacheDir->mkpath(mCacheDir->absolutePath());
+    mThumbnailDir = new QDir(QDir::homePath() + "/.cache/qimgv/thumbnails");
+    mThumbnailDir->mkpath(mThumbnailDir->absolutePath());
     QSettings::setDefaultFormat(QSettings::NativeFormat);
     s = new QSettings();
     state = new QSettings(QCoreApplication::organizationName(), "savedState");
@@ -22,8 +24,8 @@ Settings::Settings(QObject *parent) : QObject(parent) {
 }
 
 Settings::~Settings() {
-    delete thumbnailDirectory;
-    delete cacheDirectory;
+    delete mThumbnailDir;
+    delete mCacheDir;
     delete s;
     delete state;
 }
@@ -57,11 +59,11 @@ void Settings::sync() {
 }
 //------------------------------------------------------------------------------
 QString Settings::cacheDir() {
-    return thumbnailDirectory->path() + "/";
+    return mThumbnailDir->path() + "/";
 }
 //------------------------------------------------------------------------------
 QString Settings::tempDir() {
-    return cacheDirectory->path() + "/";
+    return mCacheDir->path() + "/";
 }
 //------------------------------------------------------------------------------
 QString Settings::mpvBinary() {

@@ -162,9 +162,7 @@ void Core::onUpdate() {
     // TODO: finish changelogs
     //if(settings->showChangelogs())
     //    mw->showChangelogWindow();
-    //else
-        mw->showMessage("Updated: "+settings->lastVersion().toString()+" > "+appVersion.toString());
-
+    mw->showMessage("Updated: "+settings->lastVersion().toString()+" > "+appVersion.toString());
 }
 
 void Core::onFirstRun() {

@@ -154,7 +154,7 @@ private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;
     QSettings *s, *state;
-    QDir *cacheDirectory, *thumbnailDirectory;
+    QDir *mCacheDir, *mThumbnailDir, *mConfDir;
 
 signals:
     void settingsChanged();
