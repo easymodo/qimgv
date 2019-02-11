@@ -178,8 +178,9 @@ FloatingWidget {
     border-top-right-radius: 1px;
 }
 /*----------------------------------------------------------------------------*/
-[accessibleName="OverlayTitleLabel"] {
-    color: #bebebe;
+[accessibleName="OverlayHeaderLabel"] {
+    color: #8e9092;
+/*  color: #bebebe */
     padding: 4px 4px 4px 4px;
 }
 /*----------------------------------------------------------------------------*/
@@ -318,16 +319,7 @@ VideoControls QSlider::sub-page:horizontal {
 /* File copy - move window */
 /*----------------------------------------------------------------------------*/
 
-/* Path input field-button thing */
-CopyOverlay ClickableLabel {
-    color: #bebebe;
-    padding: 4px 10px 4px 4px;
-}
 
-CopyOverlay ClickableLabel:hover {
-    background-color: #414244;
-    color: #bebebe;
-}
 
 /*----------------------------------------------------------------------------*/
 /* Right side buttons */
@@ -518,20 +510,20 @@ ContextMenu QLabel {
     color: #414244;
 }
 /*----------------------------------------------------------------------------*/
-[accessibleName="ContextMenuItem"] {
+[accessibleName="MenuItem"] {
     color: #bebebe;
     border: 1px solid transparent;
 }
 
-[accessibleName="ContextMenuItem"]:hover {
+[accessibleName="MenuItem"]:hover {
     background-color: #414244;
 }
 
-[accessibleName="ContextMenuItem"] QLabel {
+[accessibleName="MenuItem"] QLabel {
     color: #bebebe;
 }
 
-[accessibleName="ContextMenuItem"] QLabel:disabled {
+[accessibleName="MenuItem"] QLabel:disabled {
     color: #707070;
 }
 /*----------------------------------------------------------------------------*/

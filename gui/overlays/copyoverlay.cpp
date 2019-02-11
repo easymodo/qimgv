@@ -67,12 +67,13 @@ void CopyOverlay::createPathWidgets() {
     removePathWidgets();
     int count = paths.length()>maxPathCount?maxPathCount:paths.length();
     for(int i = 0; i < count; i++) {
-        ContextMenuItem *item = new ContextMenuItem(this);
-        item->setText(paths.at(i));
+        PathSelectorMenuItem *item = new PathSelectorMenuItem(this);
+        qDebug() << paths.at(i);
+        item->setDirectory(paths.at(i));
         item->setShortcutText(shortcuts.key(i));
         item->setIcon(QIcon(":/res/icons/buttons/copy16.png"));
 
-        connect(item, SIGNAL(clicked(QString)),
+        connect(item, SIGNAL(directorySelected(QString)),
                 this, SLOT(requestFileOperation(QString)));
         pathWidgets.append(item);
         ui->pathSelectorsLayout->addWidget(item);
@@ -111,7 +112,7 @@ void CopyOverlay::readSettings() {
 void CopyOverlay::saveSettings() {
     paths.clear();
     for(int i = 0; i< pathWidgets.count(); i++) {
-        paths << pathWidgets.at(i)->text();
+        paths << pathWidgets.at(i)->directory();
     }
     settings->setSavedPaths(paths);
 }

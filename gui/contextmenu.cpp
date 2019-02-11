@@ -6,9 +6,7 @@ ContextMenu::ContextMenu(QWidget *parent) :
     ui(new Ui::ContextMenu)
 {
     ui->setupUi(this);
-    //setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowDoesNotAcceptFocus);
-    setWindowFlags(Qt::Popup | Qt::WindowDoesNotAcceptFocus);
-    setAttribute(Qt::WA_X11NetWmWindowTypeMenu, true);
+    setWindowFlags(Qt::Popup);
     setAttribute(Qt::WA_TranslucentBackground, true);
     setAttribute(Qt::WA_NoMousePropagation, true);
     this->hide();

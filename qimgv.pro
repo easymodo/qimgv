@@ -144,7 +144,9 @@ SOURCES += \
     gui/contextmenu.cpp \
     gui/customwidgets/contextmenuitem.cpp \
     utils/helprunner.cpp \
-    gui/customwidgets/actionbutton.cpp
+    gui/customwidgets/actionbutton.cpp \
+    gui/customwidgets/menuitem.cpp \
+    gui/customwidgets/pathselectormenuitem.cpp
 
 HEADERS += \
     core.h \
@@ -231,7 +233,9 @@ HEADERS += \
     gui/customwidgets/contextmenuitem.h \
     utils/numeric.h \
     utils/helprunner.h \
-    gui/customwidgets/actionbutton.h
+    gui/customwidgets/actionbutton.h \
+    gui/customwidgets/menuitem.h \
+    gui/customwidgets/pathselectormenuitem.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \

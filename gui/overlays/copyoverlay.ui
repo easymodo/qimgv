@@ -78,7 +78,7 @@
          </sizepolicy>
         </property>
         <property name="accessibleName">
-         <string>OverlayTitleLabel</string>
+         <string>OverlayHeaderLabel</string>
         </property>
         <property name="text">
          <string>header</string>
