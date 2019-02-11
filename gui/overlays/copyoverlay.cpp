@@ -67,13 +67,15 @@ void CopyOverlay::createPathWidgets() {
     removePathWidgets();
     int count = paths.length()>maxPathCount?maxPathCount:paths.length();
     for(int i = 0; i < count; i++) {
-        PathSelectorWidget *pathWidget = new PathSelectorWidget(this);
-        pathWidget->setPath(paths.at(i));
-        pathWidget->setButtonText(shortcuts.key(i));
-        connect(pathWidget, SIGNAL(selected(QString)),
+        ContextMenuItem *item = new ContextMenuItem(this);
+        item->setText(paths.at(i));
+        item->setShortcutText(shortcuts.key(i));
+        item->setIcon(QIcon(":/res/icons/buttons/copy16.png"));
+
+        connect(item, SIGNAL(clicked(QString)),
                 this, SLOT(requestFileOperation(QString)));
-        pathWidgets.append(pathWidget);
-        ui->pathSelectorsLayout->addWidget(pathWidget);
+        pathWidgets.append(item);
+        ui->pathSelectorsLayout->addWidget(item);
     }
 }
 
@@ -91,9 +93,9 @@ void CopyOverlay::requestFileOperation(QString path) {
 
 void CopyOverlay::requestFileOperation(int fieldNumber) {
     if(mode == OVERLAY_COPY)
-        emit copyRequested(pathWidgets.at(fieldNumber)->path());
+        emit copyRequested(pathWidgets.at(fieldNumber)->text());
     else
-        emit moveRequested(pathWidgets.at(fieldNumber)->path());
+        emit moveRequested(pathWidgets.at(fieldNumber)->text());
 }
 
 void CopyOverlay::readSettings() {
@@ -109,7 +111,7 @@ void CopyOverlay::readSettings() {
 void CopyOverlay::saveSettings() {
     paths.clear();
     for(int i = 0; i< pathWidgets.count(); i++) {
-        paths << pathWidgets.at(i)->path();
+        paths << pathWidgets.at(i)->text();
     }
     settings->setSavedPaths(paths);
 }

@@ -2,26 +2,26 @@
 
 ContextMenuItem::ContextMenuItem(QWidget *parent)
     : QWidget(parent),
-      action("")
+      mAction("")
 {
-    layout.setContentsMargins(11,5,11,5);
-    layout.setSpacing(7);
+    mLayout.setContentsMargins(11,5,11,5);
+    mLayout.setSpacing(7);
 
     setAccessibleName("ContextMenuItem");
     this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    icon.setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-    text.setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-    shortcut.setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    icon.setMinimumSize(16, 16);
+    mIcon.setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+    mText.setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    mShortcut.setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    mIcon.setMinimumSize(16, 16);
 
     spacer = new QSpacerItem(16, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
-    layout.addWidget(&icon);
-    layout.addWidget(&text);
-    layout.addSpacerItem(spacer);
-    layout.addWidget(&shortcut);
+    mLayout.addWidget(&mIcon);
+    mLayout.addWidget(&mText);
+    mLayout.addSpacerItem(spacer);
+    mLayout.addWidget(&mShortcut);
 
-    setLayout(&layout);
+    setLayout(&mLayout);
 }
 
 ContextMenuItem::~ContextMenuItem() {
@@ -29,25 +29,38 @@ ContextMenuItem::~ContextMenuItem() {
 }
 
 void ContextMenuItem::setText(QString text) {
-    this->text.setText(text);
+    this->mText.setText(text);
+}
+
+QString ContextMenuItem::text() {
+    return mText.text();
+}
+
+void ContextMenuItem::setShortcutText(QString text) {
+    this->mShortcut.setText(text);
+}
+
+QString ContextMenuItem::shortcut() {
+    return mShortcut.text();
 }
 
 void ContextMenuItem::setPixmap(QPixmap pixmap) {
-    this->icon.setPixmap(pixmap);
-    this->icon.setFixedSize(pixmap.size());
+    this->mIcon.setPixmap(pixmap);
+    this->mIcon.setFixedSize(pixmap.size());
 }
 
 void ContextMenuItem::setIcon(QIcon icon) {
-    this->icon.setPixmap(icon.pixmap(16,16));
+    this->mIcon.setPixmap(icon.pixmap(16,16));
 }
 
 void ContextMenuItem::setAction(QString text) {
-    this->action = text;
-    shortcut.setText(actionManager->shortcutForAction(action));
+    this->mAction = text;
+    setShortcutText(actionManager->shortcutForAction(mAction));
 }
 
 void ContextMenuItem::onClick() {
-    actionManager->invokeAction(action);
+    if(!mAction.isEmpty())
+        actionManager->invokeAction(mAction);
 }
 
 void ContextMenuItem::paintEvent(QPaintEvent *event) {
@@ -62,7 +75,7 @@ void ContextMenuItem::mousePressEvent(QMouseEvent *event) {
     // the order here matters
     // hide the parent menu FIRST, then do whatever
     // otherwise it may stay visible when it shouldn't be
-    this->parentWidget()->hide();
+    //this->parentWidget()->hide();
     onClick();
     QWidget::mousePressEvent(event);
 }

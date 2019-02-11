@@ -6,14 +6,14 @@
     font: bold;
     color: #86888a;
     background-color: #29292a;
-    border: 1px solid #1a1a1b;
+    border: 1px solid #181819;
     border-radius: 2px;
     padding: 6px 9px 6px 9px;
 }
 
 [accessibleName="Button"]:hover {
-    background-color: #313132;
-    border-color: #1a1a1b;
+    background-color: #343435;
+    border-color: #181819;
     color: #8e9092;
 }
 
@@ -34,19 +34,19 @@
 
 [accessibleName="CheckableButton"]:hover {
     background-color: #29292a;
-    border: 1px solid #1a1a1b;
+    border: 1px solid #181819;
     color: #666669;
 }
 
 [accessibleName="CheckableButton"]:pressed {
-    background-color: #313132;
-    border: 1px solid #1a1a1b;
+    background-color: #343435;
+    border: 1px solid #181819;
     color: #8e9092;
 }
 
 [accessibleName="CheckableButton"]:checked {
-    background-color: #313132;
-    border: 1px solid #1a1a1b;
+    background-color: #343435;
+    border: 1px solid #181819;
     color: #8e9092;
 }
 
@@ -55,17 +55,18 @@
     padding: 7px 7px 7px 7px;
     border-radius: 2px;
     margin: 2px;
+    color: #86888a;
 }
 
 [accessibleName="PanelButton"]:hover {
-    background-color: #313132;
-    border: 1px solid #1a1a1b;
+    background-color: #343435;
+    border: 1px solid #181819;
     color: #8e9092;
 }
 
 [accessibleName="PanelButton"]:pressed {
-    background-color: #29292a;
-    border: 1px solid #1a1a1b;
+    background-color: #343435;
+    border: 1px solid #181819;
     color: #666669;
 }
 
@@ -76,21 +77,21 @@
     font: bold;
     color: #86888a;
     background-color: #29292a;
-    border: 1px solid #1a1a1b;
+    border: 1px solid #181819;
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
     padding: 6px 9px 6px 9px;
 }
 
 [accessibleName="ButtonSetLeft"]:hover {
-    background-color: #313132;
-    border-color: #1a1a1b;
+    background-color: #343435;
+    border-color: #181819;
     color: #8e9092;
 }
 
 [accessibleName="ButtonSetLeft"]:pressed {
     background-color: #222223;
-    border-color: #1a1a1b;
+    border-color: #181819;
     color: #666669;
 }
 
@@ -101,19 +102,19 @@
     font: bold;
     color: #86888a;
     background-color: #29292a;
-    border: 1px solid #1a1a1b;
+    border: 1px solid #181819;
     padding: 6px 9px 6px 9px;
 }
 
 [accessibleName="ButtonSetMid"]:hover {
-    background-color: #313132;
-    border-color: #1a1a1b;
+    background-color: #343435;
+    border-color: #181819;
     color: #8e9092;
 }
 
 [accessibleName="ButtonSetMid"]:pressed {
     background-color: #222223;
-    border-color: #1a1a1b;
+    border-color: #181819;
     color: #666669;
 }
 
@@ -124,21 +125,21 @@
     font: bold;
     color: #86888a;
     background-color: #29292a;
-    border: 1px solid #1a1a1b;
+    border: 1px solid #181819;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
     padding: 6px 9px 6px 9px;
 }
 
 [accessibleName="ButtonSetRight"]:hover {
-    background-color: #313132;
-    border-color: #1a1a1b;
+    background-color: #343435;
+    border-color: #181819;
     color: #8e9092;
 }
 
 [accessibleName="ButtonSetRight"]:pressed {
     background-color: #222223;
-    border-color: #1a1a1b;
+    border-color: #181819;
     color: #666669;
 }
 
@@ -166,14 +167,13 @@
 /*----------------------------------------------------------------------------*/
 
 FloatingWidget {
-    background-color: #1c1c1d;
+    background-color: #222223;
     border: 1px solid #414244;
-    border-radius: 2px;
+    border-radius: 3px;
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="OverlayHeaderWidget"] {
-    background-color: #313132;
-    border: 1px solid #313132;
+
     border-top-left-radius: 1px;
     border-top-right-radius: 1px;
 }
@@ -213,13 +213,13 @@ FloatingMessage QLabel {
 
 SidePanel {
     background-color: #1c1c1d;
-    border-left: 2px solid #313132;
+    border-left: 2px solid #343435;
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QGroupBox {
     color: #86888a;
     background-color: #29292a;
-    border: 1px solid #1a1a1b;
+    border: 1px solid #181819;
     border-radius: 3px;
     padding: 6px 10px 8px 10px;
 }
@@ -227,7 +227,7 @@ SidePanel QGroupBox {
 SidePanel QSpinBox, QDoubleSpinBox {
     background-color: #1c1c1d;
     color: #86888a;
-    border: 1px solid #1a1a1b;
+    border: 1px solid #181819;
     border-radius: 3px;
     padding: 2 0 2 0;
 }
@@ -251,7 +251,7 @@ SidePanel QLabel {
 SidePanel QComboBox {
     background-color: #1c1c1d;
     color: #86888a;
-    border: 1px solid #1a1a1b;
+    border: 1px solid #181819;
     border-radius: 3px;
     padding: 2 0 2 0;
 }
@@ -320,21 +320,19 @@ VideoControls QSlider::sub-page:horizontal {
 
 /* Path input field-button thing */
 CopyOverlay ClickableLabel {
-    background-color: #29292a;
-    color: #aeaeae;
-    border: 2px solid #29292a;
-    border-top-left-radius: 2px;
-    border-bottom-left-radius: 2px;
+    color: #bebebe;
     padding: 4px 10px 4px 4px;
 }
 
 CopyOverlay ClickableLabel:hover {
-    background-color: #313132;
+    background-color: #414244;
     color: #bebebe;
-    border-color: #313132;
 }
+
 /*----------------------------------------------------------------------------*/
 /* Right side buttons */
+/*----------------------------------------------------------------------------*/
+
 PathSelectorWidget QPushButton {
     background-color: #29292a;
     border: 2px solid #29292a;
@@ -346,8 +344,8 @@ PathSelectorWidget QPushButton {
 }
 
 PathSelectorWidget QPushButton:hover {
-    background-color: #313132;
-    border-color: #313132;
+    background-color: #343435;
+    border-color: #343435;
     color: #8e9092;
 }
 
@@ -521,14 +519,12 @@ ContextMenu QLabel {
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="ContextMenuItem"] {
-    border-radius: 1px;
     color: #bebebe;
     border: 1px solid transparent;
 }
 
 [accessibleName="ContextMenuItem"]:hover {
     background-color: #414244;
-    border: 1px solid #414244;
 }
 
 [accessibleName="ContextMenuItem"] QLabel {

@@ -1,3 +1,5 @@
+// A menu item that executes an action on press
+
 #ifndef CONTEXTMENUITEM_H
 #define CONTEXTMENUITEM_H
 
@@ -12,10 +14,13 @@ class ContextMenuItem : public QWidget {
 public:
     ContextMenuItem(QWidget *parent = nullptr);
     ~ContextMenuItem();
-    void setText(QString text);
+    void setText(QString mText);
+    QString text();
+    void setShortcutText(QString mText);
+    QString shortcut();
     void setPixmap(QPixmap pixmap);
-    void setIcon(QIcon icon);
-    void setAction(QString action);
+    void setIcon(QIcon mIcon);
+    void setAction(QString mAction);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -25,10 +30,10 @@ private slots:
     void onClick();
 
 private:
-    QLabel icon, text, shortcut;
+    QLabel mIcon, mText, mShortcut;
     QSpacerItem *spacer;
-    QHBoxLayout layout;
-    QString action;
+    QHBoxLayout mLayout;
+    QString mAction;
 };
 
 #endif // CONTEXTMENUITEM_H

@@ -6,7 +6,7 @@
 #include <QLineEdit>
 #include <QKeyEvent>
 #include "gui/customwidgets/floatingwidget.h"
-#include "gui/customwidgets/pathselectorwidget.h"
+#include "gui/customwidgets/contextmenuitem.h"
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"
 
@@ -49,7 +49,7 @@ private:
     void createPathWidgets();
     void createShortcuts();
     Ui::CopyOverlay *ui;
-    QList<PathSelectorWidget*> pathWidgets;
+    QList<ContextMenuItem*> pathWidgets;
     const int maxPathCount = 9;
     QStringList paths;
     QMap<QString, int> shortcuts;
