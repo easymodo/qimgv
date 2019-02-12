@@ -151,6 +151,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(folderView()), mw, SIGNAL(enableFolderView()));
     connect(actionManager, SIGNAL(documentView()), mw, SIGNAL(enableDocumentView()));
     connect(actionManager, SIGNAL(toggleFolderView()), mw, SIGNAL(toggleFolderView()));
+    connect(actionManager, SIGNAL(reloadImage()), this, SLOT(reloadImage()));
 }
 
 void Core::onUpdate() {
@@ -205,6 +206,14 @@ void Core::moveToTrash() {
 
 void Core::moveToTrash(int index) {
     removeFile(index, true);
+}
+
+void Core::reloadImage() {
+    if(state.currentIndex < 0 || state.currentIndex >= dirManager->fileCount())
+        return;
+    QString nameKey = dirManager->fileNameAt(state.currentIndex);
+    cache->remove(nameKey);
+    loadByIndexBlocking(state.currentIndex);
 }
 
 // removes file at specified index within current directory

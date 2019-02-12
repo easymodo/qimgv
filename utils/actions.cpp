@@ -64,5 +64,6 @@ void Actions::init() {
     mActions.insert("documentView", QVersionNumber(0,6,88));
     mActions.insert("toggleFolderView", QVersionNumber(0,6,88));
     mActions.insert("moveToTrash", QVersionNumber(0,6,89));
+    mActions.insert("reloadImage", QVersionNumber(0,7,80));
 }
 

@@ -117,6 +117,7 @@ private slots:
     void removeFilePermanent(int index);
     void moveToTrash();
     void moveToTrash(int index);
+    void reloadImage();
 };
 
 #endif // CORE_H

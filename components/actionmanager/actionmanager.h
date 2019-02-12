@@ -100,6 +100,7 @@ signals:
     void frameStepBack();
     void toggleFolderView();
     void moveToTrash();
+    void reloadImage();
 };
 
 extern ActionManager *actionManager;
