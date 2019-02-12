@@ -5,6 +5,8 @@ PathSelectorMenuItem::PathSelectorMenuItem(QWidget *parent)
       mDirectory("")
 {
     setFocusPolicy(Qt::NoFocus);
+    setIcon(QIcon(":/res/icons/buttons/folder16.png"));
+    mIconLabel.setAttribute(Qt::WA_TransparentForMouseEvents, false);
     connect(&mIconLabel, SIGNAL(clicked()), this, SLOT(showDirectoryChooser()));
 }
 
@@ -19,7 +21,6 @@ void PathSelectorMenuItem::setDirectory(QString path) {
 }
 
 void PathSelectorMenuItem::onPress() {
-    qDebug() << mDirectory;
     if(!mDirectory.isEmpty())
         emit directorySelected(mDirectory);
 }

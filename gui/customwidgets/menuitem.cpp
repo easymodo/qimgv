@@ -3,7 +3,8 @@
 MenuItem::MenuItem(QWidget *parent)
     : QWidget(parent)
 {
-    mLayout.setContentsMargins(11,5,11,5);
+    //mLayout.setContentsMargins(11,5,11,5);
+    mLayout.setContentsMargins(6,0,11,0);
     mLayout.setSpacing(7);
 
     setAccessibleName("MenuItem");
@@ -14,6 +15,8 @@ MenuItem::MenuItem(QWidget *parent)
     mIconLabel.setMinimumSize(16, 16);
 
     spacer = new QSpacerItem(16, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    mIconLabel.setAccessibleName("MenuItemIcon");
+    mTextLabel.setAccessibleName("MenuItemText");
     mShortcutLabel.setAccessibleName("MenuItemShortcutLabel");
     mLayout.addWidget(&mIconLabel);
     mLayout.addWidget(&mTextLabel);

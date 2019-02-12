@@ -68,11 +68,8 @@ void CopyOverlay::createPathWidgets() {
     int count = paths.length()>maxPathCount?maxPathCount:paths.length();
     for(int i = 0; i < count; i++) {
         PathSelectorMenuItem *item = new PathSelectorMenuItem(this);
-        qDebug() << paths.at(i);
         item->setDirectory(paths.at(i));
         item->setShortcutText(shortcuts.key(i));
-        item->setIcon(QIcon(":/res/icons/buttons/copy16.png"));
-
         connect(item, SIGNAL(directorySelected(QString)),
                 this, SLOT(requestFileOperation(QString)));
         pathWidgets.append(item);

@@ -93,5 +93,7 @@
         <file>res/icons/settings/32/appearance32@2x.png</file>
         <file>res/icons/buttons/labels@2x.png</file>
         <file>res/icons/buttons/labels.png</file>
+        <file>res/icons/buttons/folder16.png</file>
+        <file>res/icons/buttons/folder16@2x.png</file>
     </qresource>
 </RCC>
