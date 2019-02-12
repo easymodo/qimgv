@@ -3,32 +3,29 @@
 /*----------------------------------------------------------------------------*/
 
 [accessibleName="Button"] {
-    font: bold;
-    color: #86888a;
+    color: #8e9092;
     background-color: #2b2b2c;
     border: 1px solid #1a1a1b;
     border-radius: 2px;
-    padding: 6px 9px 6px 9px;
+    padding: 7px 10px 7px 10px;
 }
 
 [accessibleName="Button"]:hover {
     background-color: #343435;
-    border-color: #1a1a1b;
-    color: #8e9092;
+    color: #999b9d;
 }
 
 [accessibleName="Button"]:pressed {
     background-color: #222223;
-    border-color: #19191a;
-    color: #666669;
+    border-color:  #19191a;
+    color: #86888a;
 }
 
 /*----------------------------------------------------------------------------*/
 [accessibleName="CheckableButton"] {
-    font: bold;
     color: #666669;
     border-radius: 2px;
-    padding: 6px 9px 6px 9px;
+    padding: 7px 10px 7px 10px;
     margin: 2px;
 }
 
@@ -55,70 +52,68 @@
     padding: 7px 7px 7px 7px;
     border-radius: 2px;
     margin: 2px;
-    color: #86888a;
+    color: #8e9092;
 }
 
 [accessibleName="PanelButton"]:hover {
     background-color: #343435;
     border: 1px solid #1a1a1b;
-    color: #8e9092;
+    color: #999b9d;
 }
 
 [accessibleName="PanelButton"]:pressed {
     background-color: #2b2b2c;
     border: 1px solid #19191a;
-    color: #666669;
+    color: #86888a;
 }
 
 /*----------------------------------------------------------------------------*/
 /* ##### button set left ##### */
 
 [accessibleName="ButtonSetLeft"] {
-    font: bold;
-    color: #86888a;
+    color: #8e9092;
     background-color: #2b2b2c;
     border: 1px solid #1a1a1b;
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
-    padding: 6px 9px 6px 9px;
+    padding: 7px 10px 7px 10px;
 }
 
 [accessibleName="ButtonSetLeft"]:hover {
     background-color: #343435;
     border-color: #1a1a1b;
-    color: #8e9092;
+    color: #999b9d;
 }
 
 [accessibleName="ButtonSetLeft"]:pressed {
     background-color: #222223;
     border-color: #19191a;
-    color: #666669;
+    color: #86888a;
 }
 
 /*----------------------------------------------------------------------------*/
 /* ### right ### */
 
 [accessibleName="ButtonSetRight"] {
-    font: bold;
-    color: #86888a;
+    color: #8e9092;
     background-color: #2b2b2c;
     border: 1px solid #1a1a1b;
     border-left: 0px;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
-    padding: 6px 9px 6px 9px;
+    padding: 7px 10px 7px 10px;
 }
 
 [accessibleName="ButtonSetRight"]:hover {
     background-color: #343435;
     border-color: #1a1a1b;
-    color: #8e9092;
+    color: #999b9d;
 }
 
 [accessibleName="ButtonSetRight"]:pressed {
     background-color: #222223;
     border-color: #19191a;
-    color: #666669;
+    color: #86888a;
 }
 
 /*----------------------------------------------------------------------------*/

@@ -434,9 +434,9 @@ void Core::saveImageToDisk(QString filePath) {
         if(cache->reserve(nameKey)) {
             std::shared_ptr<Image> img = cache->get(nameKey);
             if(img->save(filePath))
-                mw->showMessage("File saved.");
+                mw->showMessageSuccess("File saved.");
             else
-                mw->showMessage("Something happened.");
+                mw->showMessageError("Could not save file.");
             cache->release(nameKey);
         } else {
             qDebug() << "Core::saveImageToDisk() - could not lock cache object.";

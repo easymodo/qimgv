@@ -95,5 +95,7 @@
         <file>res/icons/buttons/labels.png</file>
         <file>res/icons/buttons/folder16.png</file>
         <file>res/icons/buttons/folder16@2x.png</file>
+        <file>res/icons/buttons/success16@2x.png</file>
+        <file>res/icons/buttons/success16.png</file>
     </qresource>
 </RCC>
