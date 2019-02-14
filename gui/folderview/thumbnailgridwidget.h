@@ -19,6 +19,7 @@ protected:
     QColor shadowColor;
     void updateThumbnailDrawPosition() Q_DECL_OVERRIDE;
     void drawThumbnail(QPainter *painter, qreal dpr, const QPixmap *pixmap) Q_DECL_OVERRIDE;
+
 private:
     bool nameFits;
     int labelSpacing;

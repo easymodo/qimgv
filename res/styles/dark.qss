@@ -3,49 +3,46 @@
 /*----------------------------------------------------------------------------*/
 
 [accessibleName="Button"] {
-    font: bold;
-    color: #86888a;
-    background-color: #29292a;
+    color: #8e9092;
+    background-color: #2b2b2c;
     border: 1px solid #1a1a1b;
     border-radius: 2px;
-    padding: 6px 9px 6px 9px;
+    padding: 7px 10px 7px 10px;
 }
 
 [accessibleName="Button"]:hover {
-    background-color: #313132;
-    border-color: #1a1a1b;
-    color: #8e9092;
+    background-color: #343435;
+    color: #999b9d;
 }
 
 [accessibleName="Button"]:pressed {
     background-color: #222223;
-    border-color: #19191a;
-    color: #666669;
+    border-color:  #19191a;
+    color: #86888a;
 }
 
 /*----------------------------------------------------------------------------*/
 [accessibleName="CheckableButton"] {
-    font: bold;
     color: #666669;
     border-radius: 2px;
-    padding: 6px 9px 6px 9px;
+    padding: 7px 10px 7px 10px;
     margin: 2px;
 }
 
 [accessibleName="CheckableButton"]:hover {
-    background-color: #29292a;
-    border: 1px solid #1a1a1b;
+    background-color: #2b2b2c;
+    border: 1px solid #19191a;
     color: #666669;
 }
 
 [accessibleName="CheckableButton"]:pressed {
-    background-color: #313132;
+    background-color: #343435;
     border: 1px solid #1a1a1b;
     color: #8e9092;
 }
 
 [accessibleName="CheckableButton"]:checked {
-    background-color: #313132;
+    background-color: #343435;
     border: 1px solid #1a1a1b;
     color: #8e9092;
 }
@@ -55,91 +52,68 @@
     padding: 7px 7px 7px 7px;
     border-radius: 2px;
     margin: 2px;
-}
-
-[accessibleName="PanelButton"]:hover {
-    background-color: #313132;
-    border: 1px solid #1a1a1b;
     color: #8e9092;
 }
 
-[accessibleName="PanelButton"]:pressed {
-    background-color: #29292a;
+[accessibleName="PanelButton"]:hover {
+    background-color: #343435;
     border: 1px solid #1a1a1b;
-    color: #666669;
+    color: #999b9d;
+}
+
+[accessibleName="PanelButton"]:pressed {
+    background-color: #2b2b2c;
+    border: 1px solid #19191a;
+    color: #86888a;
 }
 
 /*----------------------------------------------------------------------------*/
 /* ##### button set left ##### */
 
 [accessibleName="ButtonSetLeft"] {
-    font: bold;
-    color: #86888a;
-    background-color: #29292a;
+    color: #8e9092;
+    background-color: #2b2b2c;
     border: 1px solid #1a1a1b;
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
-    padding: 6px 9px 6px 9px;
+    padding: 7px 10px 7px 10px;
 }
 
 [accessibleName="ButtonSetLeft"]:hover {
-    background-color: #313132;
+    background-color: #343435;
     border-color: #1a1a1b;
-    color: #8e9092;
+    color: #999b9d;
 }
 
 [accessibleName="ButtonSetLeft"]:pressed {
     background-color: #222223;
-    border-color: #1a1a1b;
-    color: #666669;
-}
-
-/*----------------------------------------------------------------------------*/
-/* ### middle ### */
-
-[accessibleName="ButtonSetMid"] {
-    font: bold;
+    border-color: #19191a;
     color: #86888a;
-    background-color: #29292a;
-    border: 1px solid #1a1a1b;
-    padding: 6px 9px 6px 9px;
-}
-
-[accessibleName="ButtonSetMid"]:hover {
-    background-color: #313132;
-    border-color: #1a1a1b;
-    color: #8e9092;
-}
-
-[accessibleName="ButtonSetMid"]:pressed {
-    background-color: #222223;
-    border-color: #1a1a1b;
-    color: #666669;
 }
 
 /*----------------------------------------------------------------------------*/
 /* ### right ### */
 
 [accessibleName="ButtonSetRight"] {
-    font: bold;
-    color: #86888a;
-    background-color: #29292a;
+    color: #8e9092;
+    background-color: #2b2b2c;
     border: 1px solid #1a1a1b;
+    border-left: 0px;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
-    padding: 6px 9px 6px 9px;
+    padding: 7px 10px 7px 10px;
 }
 
 [accessibleName="ButtonSetRight"]:hover {
-    background-color: #313132;
+    background-color: #343435;
     border-color: #1a1a1b;
-    color: #8e9092;
+    color: #999b9d;
 }
 
 [accessibleName="ButtonSetRight"]:pressed {
     background-color: #222223;
-    border-color: #1a1a1b;
-    color: #666669;
+    border-color: #19191a;
+    color: #86888a;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -158,7 +132,7 @@
 /*----------------------------------------------------------------------------*/
 /* panel buttons holder widget */
 [accessibleName="panelButtonsWidget"] {
-    background-color: #1c1c1d;
+    background-color: #1a1a1b;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -166,19 +140,18 @@
 /*----------------------------------------------------------------------------*/
 
 FloatingWidget {
-    background-color: #1c1c1d;
+    background-color: #222223;
     border: 1px solid #414244;
     border-radius: 2px;
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="OverlayHeaderWidget"] {
-    background-color: #313132;
-    border: 1px solid #313132;
+
     border-top-left-radius: 1px;
     border-top-right-radius: 1px;
 }
 /*----------------------------------------------------------------------------*/
-[accessibleName="OverlayTitleLabel"] {
+[accessibleName="OverlayHeaderLabel"] {
     color: #bebebe;
     padding: 4px 4px 4px 4px;
 }
@@ -187,6 +160,7 @@ FloatingWidget {
 [accessibleName="OverlayCloseButton"] {
     background-color: transparent;
     border: 2px solid transparent;
+    border-bottom-left-radius: 2px;
     color: #bebebe;
     font: bold;
     padding: 4px 4px 4px 4px;
@@ -212,23 +186,23 @@ FloatingMessage QLabel {
 /*----------------------------------------------------------------------------*/
 
 SidePanel {
-    background-color: #1c1c1d;
-    border-left: 2px solid #313132;
+    background-color: #1a1a1b;
+    border-left: 2px solid #343435;
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QGroupBox {
     color: #86888a;
-    background-color: #29292a;
-    border: 1px solid #1a1a1b;
-    border-radius: 3px;
+    background-color: #2b2b2c;
+    border: 1px solid #19191a;
+    border-radius: 2px;
     padding: 6px 10px 8px 10px;
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QSpinBox, QDoubleSpinBox {
-    background-color: #1c1c1d;
+    background-color: #1a1a1b;
     color: #86888a;
-    border: 1px solid #1a1a1b;
-    border-radius: 3px;
+    border: 1px solid #19191a;
+    border-radius: 2px;
     padding: 2 0 2 0;
 }
 
@@ -249,10 +223,10 @@ SidePanel QLabel {
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QComboBox {
-    background-color: #1c1c1d;
+    background-color: #1a1a1b;
     color: #86888a;
-    border: 1px solid #1a1a1b;
-    border-radius: 3px;
+    border: 1px solid #19191a;
+    border-radius: 2px;
     padding: 2 0 2 0;
 }
 
@@ -279,7 +253,7 @@ SidePanel QComboBox QAbstractItemView {
 /*----------------------------------------------------------------------------*/
 
 ChangelogWindow QTextBrowser {
-    background-color: #1c1c1d;
+    background-color: #1a1a1b;
     color: #86888a;
 }
 
@@ -297,7 +271,7 @@ VideoControls QSlider {
 }
 
 VideoControls QSlider::groove:horizontal {
-    background: #29292a;
+    background: #2b2b2c;
 }
 
 VideoControls QSlider::handle:horizontal {
@@ -307,7 +281,7 @@ VideoControls QSlider::handle:horizontal {
 }
 
 VideoControls QSlider::add-page:horizontal {
-    background: #29292a;
+    background: #2b2b2c;
 }
 
 VideoControls QSlider::sub-page:horizontal {
@@ -318,37 +292,8 @@ VideoControls QSlider::sub-page:horizontal {
 /* File copy - move window */
 /*----------------------------------------------------------------------------*/
 
-/* Path input field-button thing */
-CopyOverlay ClickableLabel {
-    background-color: #29292a;
-    color: #aeaeae;
-    border: 2px solid #29292a;
-    border-top-left-radius: 2px;
-    border-bottom-left-radius: 2px;
-    padding: 4px 10px 4px 4px;
-}
-
-CopyOverlay ClickableLabel:hover {
-    background-color: #313132;
-    color: #bebebe;
-    border-color: #313132;
-}
-/*----------------------------------------------------------------------------*/
-/* Right side buttons */
-PathSelectorWidget QPushButton {
-    background-color: #29292a;
-    border: 2px solid #29292a;
-    border-top-right-radius: 2px;
-    border-bottom-right-radius: 2px;
-    color: #86888a;
-    font: bold;
-    padding: 4px 4px 4px 4px;
-}
-
-PathSelectorWidget QPushButton:hover {
-    background-color: #313132;
-    border-color: #313132;
-    color: #8e9092;
+PathSelectorMenuItem [accessibleName="MenuItemIcon"]:hover {
+    background-color: #646669;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -356,7 +301,7 @@ PathSelectorWidget QPushButton:hover {
 /*----------------------------------------------------------------------------*/
 
 [accessibleName="mpvContainer"] {
-    background-color: #1c1c1d;
+    background-color: #1a1a1b;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -368,7 +313,7 @@ ThumbnailView {
 }
 /*----------------------------------------------------------------------------*/
 ThumbnailStrip {
-    background-color: #1c1c1d;
+    background-color: #1a1a1b;
 }
 /*----------------------------------------------------------------------------*/
 FolderGridView {
@@ -380,14 +325,14 @@ FolderView {
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewPanel"] {
-    background-color: #1c1c1d;
-    border-bottom: 1px solid #19191a;
+    background-color: #1a1a1b;
+    border-bottom: 1px solid #1a1a1b;
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewPathBar"] {
-    background-color: #29292a;
+    background-color: #2b2b2c;
     color: #aeaeae;
-    border: 2px solid #29292a;
+    border: 2px solid #2b2b2c;
     border-radius: 2px;
     padding: 4px 8px 4px 8px;
     margin-top: 5px;
@@ -398,22 +343,22 @@ FolderView {
 
 /*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewSlider"]::groove:horizontal {
-    border: 1px solid #29292a;
+    border: 1px solid #2b2b2c;
     height: 6px;
     border-radius: 2px;
     margin: 0 12px;
 }
 
 [accessibleName="FolderViewSlider"]::sub-page:horizontal { /* left */
-    background: #29292a;
-    border: 1px solid #29292a;
+    background: #2b2b2c;
+    border: 1px solid #2b2b2c;
     height: 6px;
     border-radius: 2px;
 }
 
 [accessibleName="FolderViewSlider"]::add-page:horizontal {
-    background: #29292a;
-    border: 1px solid #29292a;
+    background: #2b2b2c;
+    border: 1px solid #2b2b2c;
     height: 6px;
     border-radius: 2px;
 }
@@ -434,7 +379,7 @@ FolderView {
 /*----------------------------------------------------------------------------*/
 
 ThumbnailLabel {
-    background-color: #1c1c1d;
+    background-color: #1a1a1b;
 }
 /*----------------------------------------------------------------------------*/
 ThumbnailView QScrollBar:horizontal {
@@ -513,29 +458,31 @@ ThumbnailView QScrollBar::sub-line {
 ContextMenu {
     background-color: #222223;
     border: 1px solid #414244;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 /*----------------------------------------------------------------------------*/
 ContextMenu QLabel {
     color: #414244;
 }
 /*----------------------------------------------------------------------------*/
-[accessibleName="ContextMenuItem"] {
-    border-radius: 1px;
+[accessibleName="MenuItem"] {
     color: #bebebe;
-    border: 1px solid transparent;
 }
 
-[accessibleName="ContextMenuItem"]:hover {
+[accessibleName="MenuItem"]:hover {
     background-color: #414244;
-    border: 1px solid #414244;
 }
 
-[accessibleName="ContextMenuItem"] QLabel {
+[accessibleName="MenuItem"] QLabel {
     color: #bebebe;
 }
 
-[accessibleName="ContextMenuItem"] QLabel:disabled {
+[accessibleName="MenuItem"] QLabel:disabled {
     color: #707070;
 }
+
+[accessibleName="MenuItemIcon"] {
+    padding: 5px;
+}
+
 /*----------------------------------------------------------------------------*/

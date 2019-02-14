@@ -566,11 +566,23 @@ void MainWindow::showMessageFitOriginal() {
 }
 
 void MainWindow::showMessage(QString text) {
-    floatingMessage->showMessage(text,  FloatingMessageIcon::NO_ICON, 1800);
+    floatingMessage->showMessage(text,  FloatingMessageIcon::NO_ICON, 1500);
 }
 
 void MainWindow::showMessage(QString text, int duration) {
     floatingMessage->showMessage(text, FloatingMessageIcon::NO_ICON, duration);
+}
+
+void MainWindow::showMessageSuccess(QString text) {
+    floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_SUCCESS, 1500);
+}
+
+void MainWindow::showMessageWarning(QString text) {
+    floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_WARNING, 1500);
+}
+
+void MainWindow::showMessageError(QString text) {
+    floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_ERROR, 1800);
 }
 
 void MainWindow::readSettings() {
