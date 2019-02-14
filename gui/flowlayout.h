@@ -65,7 +65,6 @@ class FlowLayout : public QGraphicsLayout
 {
 public:
     FlowLayout();
-    inline void addItem(QGraphicsLayoutItem *item);
     void insertItem(int index, QGraphicsLayoutItem *item);
     void setSpacing(Qt::Orientations o, qreal spacing);
     qreal spacing(Qt::Orientation o) const;
@@ -95,9 +94,3 @@ private:
     qreal m_spacing[2];
     int m_rows, m_columns;
 };
-
-
-inline void FlowLayout::addItem(QGraphicsLayoutItem *item)
-{
-    insertItem(-1, item);
-}

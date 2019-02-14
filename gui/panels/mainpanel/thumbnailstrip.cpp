@@ -5,7 +5,6 @@
 ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     : ThumbnailView(THUMBNAILVIEW_HORIZONTAL, parent),
       panelSize(100),
-      current(-1),
       thumbnailSpacing(0)
 {
     this->setAttribute(Qt::WA_NoMousePropagation, true);
@@ -21,6 +20,7 @@ void ThumbnailStrip::setupLayout() {
 
 ThumbnailWidget* ThumbnailStrip::createThumbnailWidget() {
     ThumbnailWidget *widget = new ThumbnailWidget();
+    widget->setThumbnailSize(this->mThumbnailSize);
     widget->setDrawLabel(true);
     return widget;
 }
@@ -33,16 +33,16 @@ void ThumbnailStrip::addItemToLayout(ThumbnailWidget* widget, int pos) {
     if(!checkRange(pos))
         return;
 
-    if(pos == current)
-        current++;
+    if(pos == selectedIndex)
+        selectedIndex++;
     scene.addItem(widget);
     updateThumbnailPositions(pos, thumbnails.count() - 1);
 }
 
 void ThumbnailStrip::removeItemFromLayout(int pos) {
     if(checkRange(pos)) {
-        if(pos == current)
-            current = -1;
+        if(pos == selectedIndex)
+            selectedIndex = -1;
         ThumbnailWidget *thumb = thumbnails.at(pos);
         scene.removeItem(thumb);
         // move items left
@@ -71,21 +71,17 @@ void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
     }
 }
 
-void ThumbnailStrip::highlightThumbnail(int pos) {
-    // this code fires twice on click. fix later
-    // also wont highlight new label after removing file
-    if(current != pos) {
-        ensureThumbnailVisible(pos);
-        // disable highlighting on previous thumbnail
-        if(checkRange(current)) {
-            thumbnails.at(current)->setHighlighted(false, false);
-        }
-        // highlight the new one
-        if(checkRange(pos)) {
-            thumbnails.at(pos)->setHighlighted(true, false);
-            current = pos;
-        }
-    }
+void ThumbnailStrip::selectIndex(int index) {
+    if(!checkRange(index))
+        return;
+
+    if(checkRange(selectedIndex))
+        thumbnails.at(selectedIndex)->setHighlighted(false, false);
+    selectedIndex = index;
+
+    ThumbnailWidget *thumb = thumbnails.at(selectedIndex);
+    thumb->setHighlighted(true, false);
+    ensureVisible(thumb, 0, 0);
     loadVisibleThumbnails();
 }
 
@@ -105,7 +101,7 @@ void ThumbnailStrip::setThumbnailSize(int newSize) {
         //scene.invalidate(scene.sceneRect());
         updateThumbnailPositions(0, thumbnails.count() - 1);
         fitSceneToContents();
-        ensureThumbnailVisible(current);
+        ensureThumbnailVisible(selectedIndex);
     }
 }
 

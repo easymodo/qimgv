@@ -95,10 +95,11 @@ int FlowLayout::columns() {
 
 void FlowLayout::insertItem(int index, QGraphicsLayoutItem *item) {
     item->setParentLayoutItem(this);
-    if (uint(index) > uint(m_items.count()))
+    if(uint(index) > uint(m_items.count()))
         index = m_items.count();
     m_items.insert(index, item);
     invalidate();
+    //activate();
 }
 
 int FlowLayout::count() const

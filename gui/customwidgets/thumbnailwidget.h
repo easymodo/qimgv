@@ -13,11 +13,6 @@
 #include "settings.h"
 #include "sharedresources.h"
 
-enum LoadState {
-    EMPTY,
-    LOADED
-};
-
 class ThumbnailWidget : public QGraphicsWidget {
     Q_OBJECT
 
@@ -25,7 +20,7 @@ public:
     ThumbnailWidget(QGraphicsItem *parent = nullptr);
     ~ThumbnailWidget() Q_DECL_OVERRIDE;
 
-    LoadState state;
+    bool isLoaded;
     void setThumbnail(std::shared_ptr<Thumbnail> _thumbnail);
 
     void setHighlighted(bool x, bool smooth);

@@ -45,7 +45,7 @@ public slots:
     bool loadByIndexBlocking(int index);
 
 signals:
-    void imageIndexChanged(int);
+    void currentIndexChanged(int);
 
 private:
     void initGui();

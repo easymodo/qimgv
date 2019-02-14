@@ -50,42 +50,41 @@ void DirectoryManager::readSettings() {
 }
 
 void DirectoryManager::setDirectory(QString path) {
-    DirectoryWatcher* watcher = DirectoryWatcher::newInstance();
-    //watcher->setFileFilters(extensionFilters);
-    //watcher->setWatchPath(path);
-    //watcher->observe();
-    connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
-        qDebug() << "observing started";
-    });
-
-    connect(watcher, &DirectoryWatcher::observingStopped, this, [watcher] () {
-        qDebug() << "observing stopped";
-    });
-
-    connect(watcher, &DirectoryWatcher::fileCreated, this, [this] (const QString& filename) {
-        qDebug() << "file created" << filename;
-        onFileChangedExternal(filename);
-    });
-
-    connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
-        qDebug() << "file deleted" << filename;
-        onFileRemovedExternal(filename);
-    });
-
-    connect(watcher, &DirectoryWatcher::fileModified, this, [this] (const QString& filename) {
-        qDebug() << "file modified" << filename;
-        onFileChangedExternal(filename);
-    });
-
-    connect(watcher, &DirectoryWatcher::fileRenamed, this, [watcher] (const QString& file1, const QString& file2) {
-        qDebug() << "file renamed from" << file1 << "to" << file2;
-    });
-
-    if(!path.isEmpty()) {// && /* TODO: ???-> */ currentDir.exists()) {
+    if(!path.isEmpty()) {
         currentDir.setPath(path);
         generateFileList(settings->sortingMode());
-        //watcher.setDir(path);
         emit directoryChanged(path);
+
+        DirectoryWatcher* watcher = DirectoryWatcher::newInstance();
+        watcher->setFileFilters(nameFilter);
+        watcher->setWatchPath(path);
+        watcher->observe();
+        connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
+            qDebug() << "observing started";
+        });
+
+        connect(watcher, &DirectoryWatcher::observingStopped, this, [watcher] () {
+            qDebug() << "observing stopped";
+        });
+
+        connect(watcher, &DirectoryWatcher::fileCreated, this, [this] (const QString& filename) {
+            qDebug() << "[w] file created" << filename;
+            onFileAddedExternal(filename);
+        });
+
+        connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
+            qDebug() << "[w] file deleted" << filename;
+            onFileRemovedExternal(filename);
+        });
+
+        connect(watcher, &DirectoryWatcher::fileModified, this, [this] (const QString& filename) {
+            qDebug() << "[w] file modified" << filename;
+            onFileChangedExternal(filename);
+        });
+
+        connect(watcher, &DirectoryWatcher::fileRenamed, this, [watcher] (const QString& file1, const QString& file2) {
+            qDebug() << "[w] file renamed from" << file1 << "to" << file2;
+        });
     }
 }
 
@@ -344,18 +343,29 @@ void DirectoryManager::onFileRemovedExternal(QString fileName) {
     if(mFileNameList.contains(fileName)) {
         int index = mFileNameList.indexOf(fileName);
         mFileNameList.removeOne(fileName);
+        qDebug() << "fileRemove: " << fileName << index;
         emit fileRemovedAt(index);
+    }
+}
+
+void DirectoryManager::onFileAddedExternal(QString fileName) {
+    if(mFileNameList.contains(fileName)) { // file changed
+        qDebug() << "DirectoryManager::onFileAddedExternal - file already in list " << fileName;
+    } else { // file added
+        mFileNameList.append(fileName);
+        // TODO: fast sorted inserts
+        generateFileList(settings->sortingMode());
+        //sortFileList();
+        int index = mFileNameList.indexOf(fileName);
+        qDebug() << "fileAdd: " << fileName << " pos: " << index;
+        emit fileAddedAt(index);
     }
 }
 
 void DirectoryManager::onFileChangedExternal(QString fileName) {
     if(mFileNameList.contains(fileName)) { // file changed
         qDebug() << "fileChange: " << fileName;
-    } else { // file added
-        qDebug() << "fileAdd: " << fileName;
-        mFileNameList.append(fileName);
-        //sortFileList();
-        int index = mFileNameList.indexOf(fileName);
-        emit fileAddedAt(index);
+    } else { // file added?
+        onFileAddedExternal(fileName);
     }
 }

@@ -54,6 +54,7 @@ private slots:
     void fileChanged(const QString file);
     void directoryContentsChanged(QString dirPath);
 
+    void onFileAddedExternal(QString filename);
 private:
     QDir currentDir;
     QStringList mFileNameList;
