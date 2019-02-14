@@ -9,7 +9,7 @@ FolderGridView::FolderGridView(QWidget *parent)
       mShowLabels(false)
 {
     this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
-    this->scene.setBackgroundBrush(QColor(50,50,51));
+    this->scene.setBackgroundBrush(QColor(47,47,48)); //#2f2f30 TODO: use qss??
     setupLayout();
     allowedKeys << "Up"
                 << "Down"

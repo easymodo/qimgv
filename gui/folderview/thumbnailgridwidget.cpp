@@ -5,6 +5,7 @@ ThumbnailGridWidget::ThumbnailGridWidget(QGraphicsItem* parent)
       nameFits(true),
       labelSpacing(7)
 {
+    font.setBold(false);
     shadowColor.setRgb(10,10,10,100);
 }
 
@@ -29,7 +30,11 @@ void ThumbnailGridWidget::setupLayout() {
 
 void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
     if(isHighlighted()) {
-        painter->fillRect(highlightRect, QColor(77,78,79));
+        //painter->fillRect(highlightRect, QColor(77,78,79));
+        QPainterPath path;
+        path.addRoundedRect(highlightRect, 3, 3);
+        painter->fillPath(path, QColor(80,80,81));
+        //painter->drawPath(path);
     }
 }
 
@@ -57,9 +62,9 @@ void ThumbnailGridWidget::drawLabel(QPainter *painter) {
     painter->drawText(nameTextRect.adjusted(2,2,2,2), flags, thumbnail->name());
     //text
     if(isHovered())
-        painter->setPen(QColor(242, 242, 242, 255));
+        painter->setPen(QColor(240, 240, 240, 255));
     else
-        painter->setPen(QColor(215, 215, 215, 255));
+        painter->setPen(QColor(220, 220, 220, 255));
     painter->drawText(nameTextRect, flags, thumbnail->name());
     // additional info
     //painter->setFont(fontSmall);
