@@ -79,11 +79,13 @@ void DirectoryManager::setDirectory(QString path) {
 
         connect(watcher, &DirectoryWatcher::fileModified, this, [this] (const QString& filename) {
             qDebug() << "[w] file modified" << filename;
-            onFileChangedExternal(filename);
+            onFileModifiedExternal(filename);
         });
 
-        connect(watcher, &DirectoryWatcher::fileRenamed, this, [watcher] (const QString& file1, const QString& file2) {
+        connect(watcher, &DirectoryWatcher::fileRenamed, this, [this] (const QString& file1, const QString& file2) {
             qDebug() << "[w] file renamed from" << file1 << "to" << file2;
+            onFileRemovedExternal(file1);
+            onFileAddedExternal(file2);
         });
     }
 }
@@ -362,9 +364,10 @@ void DirectoryManager::onFileAddedExternal(QString fileName) {
     }
 }
 
-void DirectoryManager::onFileChangedExternal(QString fileName) {
+void DirectoryManager::onFileModifiedExternal(QString fileName) {
     if(mFileNameList.contains(fileName)) { // file changed
         qDebug() << "fileChange: " << fileName;
+        emit fileModifiedAt(mFileNameList.indexOf(fileName));
     } else { // file added?
         onFileAddedExternal(fileName);
     }

@@ -102,6 +102,7 @@ private slots:
     void removeFile(int index, bool trash);
     void onFileRemoved(int index);
     void onFileAdded(int index);
+    void onFileModified(int index);
     void showResizeDialog();
     void resize(QSize size);
     void flipH();
@@ -118,6 +119,7 @@ private slots:
     void moveToTrash();
     void moveToTrash(int index);
     void reloadImage();
+    void reloadImage(int index);
 };
 
 #endif // CORE_H

@@ -106,6 +106,7 @@ void Core::connectComponents() {
     // filesystem changes
     connect(dirManager, SIGNAL(fileRemovedAt(int)), this, SLOT(onFileRemoved(int)));
     connect(dirManager, SIGNAL(fileAddedAt(int)), this, SLOT(onFileAdded(int)));
+    connect(dirManager, SIGNAL(fileModifiedAt(int)), this, SLOT(onFileModified(int)));
 }
 
 void Core::initActions() {
@@ -210,11 +211,16 @@ void Core::moveToTrash(int index) {
 }
 
 void Core::reloadImage() {
+    reloadImage(state.currentIndex);
+}
+
+void Core::reloadImage(int index) {
     if(state.currentIndex < 0 || state.currentIndex >= dirManager->fileCount())
         return;
     QString nameKey = dirManager->fileNameAt(state.currentIndex);
     cache->remove(nameKey);
-    loadByIndexBlocking(state.currentIndex);
+    if(state.currentIndex == index)
+        loadByIndexBlocking(state.currentIndex);
 }
 
 // removes file at specified index within current directory
@@ -252,6 +258,12 @@ void Core::onFileAdded(int index) {
         state.currentIndex++;
     emit currentIndexChanged(state.currentIndex);
     updateInfoString();
+}
+
+void Core::onFileModified(int index) {
+    if(index == state.currentIndex)
+        mw->showMessage("File changed on disk. Reloading..");
+    reloadImage(index);
 }
 
 void Core::moveFile(QString destDirectory) {

@@ -71,13 +71,13 @@ private:
 
     void onFileRemovedExternal(QString);
 
-    void onFileChangedExternal(QString fileName);
+    void onFileModifiedExternal(QString fileName);
     void moveToTrash(QString file);
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();
     void fileRemovedAt(int);
-    void fileChangedAt(int);
+    void fileModifiedAt(int);
     void fileAddedAt(int);
 };
 
