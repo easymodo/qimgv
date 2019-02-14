@@ -116,7 +116,7 @@ signals:
 
     // thumbnails
     void thumbnailRequested(QList<int>, int);
-    void selectThumbnail(int);
+    void setCurrentIndex(int);
     void thumbnailPressed(int);
     void onThumbnailReady(int, std::shared_ptr<Thumbnail>);
     // viewerWidget

@@ -71,7 +71,7 @@ void ThumbnailGridWidget::drawLabel(QPainter *painter) {
 void ThumbnailGridWidget::updateThumbnailDrawPosition() {
     if(thumbnail) {
         qreal dpr = qApp->devicePixelRatio();
-        if(state == LOADED) {
+        if(isLoaded) {
             QPoint topLeft;
             // correctly sized thumbnail
             if(mDrawLabel) {

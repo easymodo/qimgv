@@ -4,7 +4,6 @@
 
 FolderGridView::FolderGridView(QWidget *parent)
     : ThumbnailView(THUMBNAILVIEW_VERTICAL, parent),
-      selectedIndex(-1),
       shiftedIndex(-1),
       mShowLabels(false)
 {
@@ -223,10 +222,10 @@ ThumbnailWidget* FolderGridView::createThumbnailWidget() {
     ThumbnailGridWidget *widget = new ThumbnailGridWidget();
     widget->setDrawLabel(mShowLabels);
     widget->setPadding(7,7);
+    widget->setThumbnailSize(this->mThumbnailSize); // TODO: constructor
     return widget;
 }
 
-// TODO: insert
 void FolderGridView::addItemToLayout(ThumbnailWidget* widget, int pos) {
     scene.addItem(widget);
     flowLayout->insertItem(pos, widget);
@@ -240,8 +239,9 @@ void FolderGridView::updateLayout() {
     shiftedIndex = -1;
     flowLayout->invalidate();
     flowLayout->activate();
-    if(!thumbnails.count())
+    if(!thumbnails.count()) {
         selectedIndex = -1;
+    }
 }
 
 void FolderGridView::keyPressEvent(QKeyEvent *event) {

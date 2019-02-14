@@ -3,12 +3,13 @@
 ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     : QGraphicsView(parent),
       orientation(orient),
-      mThumbnailSize(120)
+      mThumbnailSize(120),
+      selectedIndex(-1)
 {
     setAccessibleName("thumbnailView");
     this->setMouseTracking(true);
     this->setScene(&scene);
-    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate); // more buggy than smart
+    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     //setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     this->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing, true);
     this->setOptimizationFlag(QGraphicsView::DontSavePainterState, true);
@@ -85,17 +86,25 @@ void ThumbnailView::addItem() {
 }
 
 // insert at index
-// !! calls loadVisibleThumbnails() at the end
 void ThumbnailView::insertItem(int index) {
+    if(index <= selectedIndex) {
+        selectedIndex++;
+    }
     ThumbnailWidget *widget = createThumbnailWidget();
     thumbnails.insert(index, widget);
     addItemToLayout(widget, index);
+    updateLayout();
     fitSceneToContents();
     loadVisibleThumbnails();
 }
 
 void ThumbnailView::removeItem(int index) {
     if(checkRange(index)) {
+        if(index < selectedIndex) {
+            selectedIndex--;
+        } else if(index == selectedIndex) {
+            selectedIndex = -1;
+        }
         removeItemFromLayout(index);
         delete thumbnails.takeAt(index);
         loadVisibleThumbnails();
@@ -123,7 +132,7 @@ void ThumbnailView::loadVisibleThumbnails() {
         QList<int> loadList;
         for(int i = 0; i < visibleItems.count(); i++) {
             ThumbnailWidget* widget = qgraphicsitem_cast<ThumbnailWidget*>(visibleItems.at(i));
-            if(widget->state == EMPTY) {
+            if(!widget->isLoaded) {
                 loadList.append(thumbnails.indexOf(widget));
             }
         }

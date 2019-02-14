@@ -45,6 +45,8 @@ public slots:
     void insertItem(int index);
     void removeItem(int index);
 
+    virtual void selectIndex(int index) = 0;
+
 signals:
     void scrolled();
     void thumbnailPressed(int);
@@ -63,7 +65,7 @@ protected:
     QScrollBar *scrollBar;
     QTimeLine *timeLine;
     QPointF viewportCenter;
-    int mThumbnailSize;
+    int mThumbnailSize, selectedIndex;
 
     const int SCROLL_UPDATE_RATE = 8;
     const float SCROLL_SPEED_MULTIPLIER = 3.0f;

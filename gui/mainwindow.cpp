@@ -111,12 +111,12 @@ void MainWindow::setupUi() {
             this, SIGNAL(scalingRequested(QSize)));
 
     //  Core >> MW
-    connect(this, SIGNAL(selectThumbnail(int)),
+    connect(this, SIGNAL(setCurrentIndex(int)),
             folderView.get(), SLOT(selectIndex(int)));
     connect(this, SIGNAL(onThumbnailReady(int, std::shared_ptr<Thumbnail>)),
             folderView.get(), SLOT(setThumbnail(int, std::shared_ptr<Thumbnail>)));
-    connect(this, SIGNAL(selectThumbnail(int)),
-            thumbnailStrip.get(), SLOT(highlightThumbnail(int)));
+    connect(this, SIGNAL(setCurrentIndex(int)),
+            thumbnailStrip.get(), SLOT(selectIndex(int)));
     connect(this, SIGNAL(onThumbnailReady(int, std::shared_ptr<Thumbnail>)),
             thumbnailStrip.get(), SLOT(setThumbnail(int, std::shared_ptr<Thumbnail>)));
     //strip too^

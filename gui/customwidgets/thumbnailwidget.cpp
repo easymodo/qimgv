@@ -2,7 +2,7 @@
 
 ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     QGraphicsWidget(parent),
-    state(EMPTY),
+    isLoaded(false),
     thumbnail(nullptr),
     highlighted(false),
     hovered(false),
@@ -40,7 +40,7 @@ void ThumbnailWidget::readSettings() {
 
 void ThumbnailWidget::setThumbnailSize(int size) {
     if(mThumbnailSize != size && size > 0) {
-        this->state = EMPTY;
+        isLoaded = false;
         mThumbnailSize = size;
         updateGeometry();
         updateThumbnailDrawPosition();
@@ -87,7 +87,7 @@ QSizeF ThumbnailWidget::effectiveSizeHint(Qt::SizeHint which, const QSizeF &cons
 void ThumbnailWidget::setThumbnail(std::shared_ptr<Thumbnail> _thumbnail) {
     if(_thumbnail) {
         thumbnail = _thumbnail;
-        state = LOADED;
+        isLoaded = true;
         updateThumbnailDrawPosition();
         setupLayout();
         update();
@@ -226,7 +226,7 @@ bool ThumbnailWidget::isHovered() {
 void ThumbnailWidget::updateThumbnailDrawPosition() {
     if(thumbnail) {
         qreal dpr = qApp->devicePixelRatio();
-        if(state == LOADED) {
+        if(isLoaded) {
             // correctly sized thumbnail
             QPoint topLeft(width()  / 2 - thumbnail->pixmap()->width()  / (2 * dpr),
                            height() / 2 - thumbnail->pixmap()->height() / (2 * dpr));

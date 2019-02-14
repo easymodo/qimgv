@@ -25,7 +25,7 @@ public:
 private:
     int panelSize;
 
-    int current, thumbnailSpacing;
+    int thumbnailSpacing;
 
     void updateThumbnailPositions(int start, int end);
     void updateThumbnailPositions();
@@ -36,7 +36,7 @@ private:
 signals:
 
 public slots:
-    void highlightThumbnail(int pos);
+    virtual void selectIndex(int index);
 
     //void removeItemAt(int pos);
     //void createLabelAt(int pos);

@@ -61,6 +61,7 @@ void Core::initComponents() {
     loadingTimer->setSingleShot(true);
     loadingTimer->setInterval(500); // TODO: test on slower pc & adjust timeout
     dirManager = new DirectoryManager();
+    //dirManager2 = new DirectoryManager2();
     cache = new Cache();
     loader = new Loader();
     scaler = new Scaler(cache);
@@ -83,7 +84,7 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(saveRequested()), this, SLOT(saveImageToDisk()));
     connect(mw, SIGNAL(saveRequested(QString)), this, SLOT(saveImageToDisk(QString)));
     connect(mw, SIGNAL(discardEditsRequested()), this, SLOT(discardEdits()));
-    connect(this, SIGNAL(imageIndexChanged(int)), mw, SLOT(setupSidePanelData()));
+    connect(this, SIGNAL(currentIndexChanged(int)), mw, SLOT(setupSidePanelData()));
 
     connect(mw, SIGNAL(thumbnailRequested(QList<int>, int)),
             thumbnailer, SLOT(generateThumbnailFor(QList<int>, int)), Qt::UniqueConnection);
@@ -91,8 +92,8 @@ void Core::connectComponents() {
     connect(thumbnailer, SIGNAL(thumbnailReady(std::shared_ptr<Thumbnail>)),
             this, SLOT(forwardThumbnail(std::shared_ptr<Thumbnail>)));
 
-    connect(this, SIGNAL(imageIndexChanged(int)),
-            mw, SIGNAL(selectThumbnail(int)));
+    connect(this, SIGNAL(currentIndexChanged(int)),
+            mw, SIGNAL(setCurrentIndex(int)));
 
     connect(mw, SIGNAL(thumbnailPressed(int)),
             this, SLOT(loadByIndex(int)));
@@ -238,11 +239,19 @@ void Core::onFileRemoved(int index) {
             if(!loadByIndexBlocking(state.currentIndex))
                 loadByIndexBlocking(--state.currentIndex);
         }
+    } else if(state.currentIndex > index) {
+        state.currentIndex--;
+        emit currentIndexChanged(state.currentIndex);
     }
+    updateInfoString();
 }
 
 void Core::onFileAdded(int index) {
     mw->addThumbnail(index);
+    if(state.currentIndex >= index)
+        state.currentIndex++;
+    emit currentIndexChanged(state.currentIndex);
+    updateInfoString();
 }
 
 void Core::moveFile(QString destDirectory) {
@@ -728,7 +737,7 @@ void Core::displayImage(Image *img) {
         }
         state.displayingFileName = img->name();
         img->isEdited()?mw->showSaveOverlay():mw->hideSaveOverlay();
-        emit imageIndexChanged(state.currentIndex);
+        emit currentIndexChanged(state.currentIndex);
         updateInfoString();
     } else {
         mw->showMessage("Error: could not load image.");
