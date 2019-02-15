@@ -66,13 +66,13 @@ protected:
     QTimeLine *timeLine;
     QPointF viewportCenter;
     int mThumbnailSize, selectedIndex;
+    int offscreenPreloadArea = 3000;
 
     const int SCROLL_UPDATE_RATE = 8;
-    const float SCROLL_SPEED_MULTIPLIER = 3.0f;
+    const float SCROLL_SPEED_MULTIPLIER = 2.5f;
     const int SCROLL_ANIMATION_SPEED = 140;
 
     const uint LOAD_DELAY = 200;
-    const int OFFSCREEN_PRELOAD_AREA = 3000;
 
     bool atSceneStart();
     bool atSceneEnd();

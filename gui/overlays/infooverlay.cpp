@@ -8,9 +8,9 @@ InfoOverlay::InfoOverlay(OverlayContainerWidget *parent)
     setAttribute(Qt::WA_TransparentForMouseEvents);
     textMarginX = 8;
     textMarginY = 4;
-    textColor.setRgb(255, 255, 255, 255);
+    textColor.setRgb(210, 210, 210, 255);
     textShadowColor.setRgb(0, 0, 0, 200);
-    bgColor.setRgb(0, 0, 0, 115);
+    bgColor.setRgb(0, 0, 0, 130);
     font.setBold(true);
     qreal fntSz = font.pointSizeF();
     if(fntSz > 0) {

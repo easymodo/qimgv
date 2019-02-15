@@ -3,21 +3,64 @@
 /*----------------------------------------------------------------------------*/
 
 [accessibleName="Button"] {
-    color: #8e9092;
-    background-color: #2b2b2c;
-    border: 1px solid #1a1a1b;
+    color: #97999b;
+    background-color: #2f2f30;
+    border: 1px solid #1c1c1d;
     border-radius: 2px;
     padding: 7px 10px 7px 10px;
 }
 
 [accessibleName="Button"]:hover {
-    background-color: #343435;
-    color: #999b9d;
+    background-color: #373738;
+    color: #9c9ea0;
 }
 
 [accessibleName="Button"]:pressed {
-    background-color: #222223;
-    border-color:  #19191a;
+    background-color: #2a2a2b;
+    color: #86888a;
+}
+/*----------------------------------------------------------------------------*/
+/* ##### button set left ##### */
+
+[accessibleName="ButtonSetLeft"] {
+    color: #97999b;
+    background-color: #2f2f30;
+    border: 1px solid #1c1c1d;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    padding: 7px 10px 7px 10px;
+}
+
+[accessibleName="ButtonSetLeft"]:hover {
+    background-color: #373738;
+    color: #9c9ea0;
+}
+
+[accessibleName="ButtonSetLeft"]:pressed {
+    background-color: #2a2a2b;
+    color: #86888a;
+}
+
+/*----------------------------------------------------------------------------*/
+/* ### right ### */
+
+[accessibleName="ButtonSetRight"] {
+    color: #97999b;
+    background-color: #2f2f30;
+    border: 1px solid #1c1c1d;
+    border-left: 0px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    padding: 7px 10px 7px 10px;
+}
+
+[accessibleName="ButtonSetRight"]:hover {
+    background-color: #373738;
+    color: #9c9ea0;
+}
+
+[accessibleName="ButtonSetRight"]:pressed {
+    background-color: #2a2a2b;
     color: #86888a;
 }
 
@@ -30,21 +73,21 @@
 }
 
 [accessibleName="CheckableButton"]:hover {
-    background-color: #2b2b2c;
+    background-color: #2f2f30;
     border: 1px solid #19191a;
     color: #666669;
 }
 
 [accessibleName="CheckableButton"]:pressed {
-    background-color: #343435;
+    background-color: #373738;
     border: 1px solid #1a1a1b;
-    color: #8e9092;
+    color: #97999b;
 }
 
 [accessibleName="CheckableButton"]:checked {
-    background-color: #343435;
+    background-color: #373738;
     border: 1px solid #1a1a1b;
-    color: #8e9092;
+    color: #97999b;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -52,67 +95,18 @@
     padding: 7px 7px 7px 7px;
     border-radius: 2px;
     margin: 2px;
-    color: #8e9092;
+    color: #97999b;
 }
 
 [accessibleName="PanelButton"]:hover {
-    background-color: #343435;
+    background-color: #373738;
     border: 1px solid #1a1a1b;
-    color: #999b9d;
+    color: #9c9ea0;
 }
 
 [accessibleName="PanelButton"]:pressed {
-    background-color: #2b2b2c;
+    background-color: #2f2f30;
     border: 1px solid #19191a;
-    color: #86888a;
-}
-
-/*----------------------------------------------------------------------------*/
-/* ##### button set left ##### */
-
-[accessibleName="ButtonSetLeft"] {
-    color: #8e9092;
-    background-color: #2b2b2c;
-    border: 1px solid #1a1a1b;
-    border-top-left-radius: 2px;
-    border-bottom-left-radius: 2px;
-    padding: 7px 10px 7px 10px;
-}
-
-[accessibleName="ButtonSetLeft"]:hover {
-    background-color: #343435;
-    border-color: #1a1a1b;
-    color: #999b9d;
-}
-
-[accessibleName="ButtonSetLeft"]:pressed {
-    background-color: #222223;
-    border-color: #19191a;
-    color: #86888a;
-}
-
-/*----------------------------------------------------------------------------*/
-/* ### right ### */
-
-[accessibleName="ButtonSetRight"] {
-    color: #8e9092;
-    background-color: #2b2b2c;
-    border: 1px solid #1a1a1b;
-    border-left: 0px;
-    border-top-right-radius: 2px;
-    border-bottom-right-radius: 2px;
-    padding: 7px 10px 7px 10px;
-}
-
-[accessibleName="ButtonSetRight"]:hover {
-    background-color: #343435;
-    border-color: #1a1a1b;
-    color: #999b9d;
-}
-
-[accessibleName="ButtonSetRight"]:pressed {
-    background-color: #222223;
-    border-color: #19191a;
     color: #86888a;
 }
 
@@ -187,12 +181,12 @@ FloatingMessage QLabel {
 
 SidePanel {
     background-color: #1a1a1b;
-    border-left: 2px solid #343435;
+    border-left: 2px solid #373738;
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QGroupBox {
     color: #86888a;
-    background-color: #2b2b2c;
+    background-color: #2f2f30;
     border: 1px solid #19191a;
     border-radius: 2px;
     padding: 6px 10px 8px 10px;
@@ -262,16 +256,16 @@ ChangelogWindow QTextBrowser {
 /*----------------------------------------------------------------------------*/
 
 VideoControls QLabel {
-    color: #8e9092;
+    color: #97999b;
     font: bold;
 }
 /*----------------------------------------------------------------------------*/
 VideoControls QSlider {
-    /* border-bottom: 2px solid #8e9092; */
+    /* border-bottom: 2px solid #97999b; */
 }
 
 VideoControls QSlider::groove:horizontal {
-    background: #2b2b2c;
+    background: #2f2f30;
 }
 
 VideoControls QSlider::handle:horizontal {
@@ -281,7 +275,7 @@ VideoControls QSlider::handle:horizontal {
 }
 
 VideoControls QSlider::add-page:horizontal {
-    background: #2b2b2c;
+    background: #2f2f30;
 }
 
 VideoControls QSlider::sub-page:horizontal {
@@ -330,9 +324,9 @@ FolderView {
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewPathBar"] {
-    background-color: #2b2b2c;
+    background-color: #2f2f30;
     color: #aeaeae;
-    border: 2px solid #2b2b2c;
+    border: 2px solid #2f2f30;
     border-radius: 2px;
     padding: 4px 8px 4px 8px;
     margin-top: 5px;
@@ -343,22 +337,22 @@ FolderView {
 
 /*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewSlider"]::groove:horizontal {
-    border: 1px solid #2b2b2c;
+    border: 1px solid #2f2f30;
     height: 6px;
     border-radius: 2px;
     margin: 0 12px;
 }
 
 [accessibleName="FolderViewSlider"]::sub-page:horizontal { /* left */
-    background: #2b2b2c;
-    border: 1px solid #2b2b2c;
+    background: #2f2f30;
+    border: 1px solid #2f2f30;
     height: 6px;
     border-radius: 2px;
 }
 
 [accessibleName="FolderViewSlider"]::add-page:horizontal {
-    background: #2b2b2c;
-    border: 1px solid #2b2b2c;
+    background: #2f2f30;
+    border: 1px solid #2f2f30;
     height: 6px;
     border-radius: 2px;
 }

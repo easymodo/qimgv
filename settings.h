@@ -63,6 +63,8 @@ public:
     void setBackgroundColor(QColor color);
     QColor accentColor();
     void setAccentColor(QColor color);
+    QColor highlightColor();
+    void setHighlightColor(QColor color);
     bool fullscreenMode();
     void setFullscreenMode(bool mode);
     ImageFitMode imageFitMode();

@@ -39,11 +39,10 @@ public:
     QSizeF effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
     void setDrawLabel(bool mode);
     void setPadding(int x, int y);
-    int thubmnailSize();
-private:
+    int thumbnailSize();
 
-private slots:
-    void readSettings();
+protected slots:
+    virtual void readSettings();
 
 protected:
     virtual void setupLayout();
@@ -59,6 +58,7 @@ protected:
     void updateGeometry() Q_DECL_OVERRIDE;
     void setHovered(bool);
     bool isHovered();
+    virtual void updateHighlightRect();
 
     virtual void updateThumbnailDrawPosition();
 

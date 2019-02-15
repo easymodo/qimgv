@@ -19,7 +19,7 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     nameColor.setRgb(20, 20, 20, 255);
     qreal fntSz = font.pointSizeF();
     if(fntSz > 0) {
-        font.setPointSizeF(font.pointSizeF() * 0.9);
+        //font.setPointSizeF(font.pointSizeF() * 0.9);
         fontSmall.setPointSizeF(fontSmall.pointSizeF() * 0.85);
     }
     font.setBold(true);
@@ -29,7 +29,6 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     textHeight = fm->height();
 
     setThumbnailSize(100);
-
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
@@ -44,6 +43,7 @@ void ThumbnailWidget::setThumbnailSize(int size) {
         mThumbnailSize = size;
         updateGeometry();
         updateThumbnailDrawPosition();
+        updateHighlightRect();
         setupLayout();
         update();
     }
@@ -54,15 +54,16 @@ void ThumbnailWidget::setPadding(int x, int y) {
     paddingY = y;
 }
 
-int ThumbnailWidget::thubmnailSize() {
+int ThumbnailWidget::thumbnailSize() {
     return mThumbnailSize;
 }
 
 void ThumbnailWidget::setDrawLabel(bool mode) {
     if(mDrawLabel != mode) {
         mDrawLabel = mode;
-        setupLayout();
         updateThumbnailDrawPosition();
+        setupLayout();
+        updateHighlightRect();
         updateGeometry();
         update();
     }
@@ -90,12 +91,12 @@ void ThumbnailWidget::setThumbnail(std::shared_ptr<Thumbnail> _thumbnail) {
         isLoaded = true;
         updateThumbnailDrawPosition();
         setupLayout();
+        updateHighlightRect();
         update();
     }
 }
 
 void ThumbnailWidget::setupLayout() {
-    highlightRect = QRectF(paddingX, 0, width() - paddingX * 2, paddingY);
     nameRect = QRectF(highlightRect.left(), highlightRect.height(),
                       highlightRect.width(), textHeight * 1.7);
 
@@ -107,6 +108,10 @@ void ThumbnailWidget::setupLayout() {
         labelTextRect.moveRight(nameTextRect.right());
         nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
     }
+}
+
+void ThumbnailWidget::updateHighlightRect() {
+    highlightRect = QRectF(paddingX, 0, width() - paddingX * 2, paddingY);
 }
 
 void ThumbnailWidget::setHighlighted(bool mode, bool smooth) {

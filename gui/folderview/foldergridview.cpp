@@ -7,6 +7,7 @@ FolderGridView::FolderGridView(QWidget *parent)
       shiftedIndex(-1),
       mShowLabels(false)
 {
+    offscreenPreloadArea = 2000;
     this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
     this->scene.setBackgroundBrush(QColor(47,47,48)); //#2f2f30 TODO: use qss??
     setupLayout();
@@ -221,7 +222,7 @@ void FolderGridView::setupLayout() {
 ThumbnailWidget* FolderGridView::createThumbnailWidget() {
     ThumbnailGridWidget *widget = new ThumbnailGridWidget();
     widget->setDrawLabel(mShowLabels);
-    widget->setPadding(7,7);
+    widget->setPadding(8,8);
     widget->setThumbnailSize(this->mThumbnailSize); // TODO: constructor
     return widget;
 }

@@ -91,9 +91,9 @@ void CopyOverlay::requestFileOperation(QString path) {
 
 void CopyOverlay::requestFileOperation(int fieldNumber) {
     if(mode == OVERLAY_COPY)
-        emit copyRequested(pathWidgets.at(fieldNumber)->text());
+        emit copyRequested(pathWidgets.at(fieldNumber)->directory());
     else
-        emit moveRequested(pathWidgets.at(fieldNumber)->text());
+        emit moveRequested(pathWidgets.at(fieldNumber)->directory());
 }
 
 void CopyOverlay::readSettings() {

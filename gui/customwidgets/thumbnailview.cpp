@@ -124,8 +124,8 @@ void ThumbnailView::loadVisibleThumbnails() {
     if(isVisible()) {
         QRectF visibleRect = mapToScene(viewport()->geometry()).boundingRect();
         // grow rectangle to cover nearby offscreen items
-        visibleRect.adjust(-OFFSCREEN_PRELOAD_AREA, -OFFSCREEN_PRELOAD_AREA,
-                           OFFSCREEN_PRELOAD_AREA, OFFSCREEN_PRELOAD_AREA);
+        visibleRect.adjust(-offscreenPreloadArea, -offscreenPreloadArea,
+                           offscreenPreloadArea, offscreenPreloadArea);
         QList<QGraphicsItem *>visibleItems = scene.items(visibleRect,
                                                    Qt::IntersectsItemShape,
                                                    Qt::AscendingOrder);

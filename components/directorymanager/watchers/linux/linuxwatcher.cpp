@@ -128,7 +128,6 @@ void LinuxWatcherPrivate::handleMovedToEvent(const QString &name, uint cookie) {
     }
 }
 
-
 void LinuxWatcherPrivate::timerEvent(QTimerEvent *timerEvent) {
     Q_Q(LinuxWatcher);
 
