@@ -34,6 +34,8 @@ bool ImageStatic::save(QString destPath) {
     bool success = isEdited()?imageEdited->save(destPath, nullptr, quality):image->save(destPath, nullptr, quality);
     if(destPath == mPath && success) {
         mDocInfo->refresh();
+        image.swap(imageEdited);
+        discardEditedImage();
     }
     return success;
 }
