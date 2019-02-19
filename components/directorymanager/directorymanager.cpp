@@ -256,6 +256,14 @@ bool DirectoryManager::isDirectory(QString path) const {
     return (fileInfo.isDir() && fileInfo.isReadable());
 }
 
+QDateTime DirectoryManager::lastModified(int index) const {
+    QFileInfo info;
+    if(checkRange(index)) {
+        info.setFile(filePathAt(index));
+    }
+    return info.lastModified();
+}
+
 bool DirectoryManager::isImage(QString filePath) const {
     QFile file(filePath);
     if(file.exists()) {

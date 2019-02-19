@@ -42,3 +42,8 @@ bool Image::isEdited() const {
 int Image::fileSize() const {
     return mDocInfo->fileSize();
 }
+
+QDateTime Image::lastModified() const {
+    return mDocInfo->lastModified();
+}
+

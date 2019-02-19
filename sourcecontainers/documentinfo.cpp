@@ -10,7 +10,6 @@ DocumentInfo::DocumentInfo(QString path)
         qDebug() << "FileInfo: cannot open: " << path;
         return;
     }
-    lastModified = fileInfo.lastModified();
     detectType();
     loadExifOrientation();
 }
@@ -49,6 +48,16 @@ DocumentType DocumentInfo::type() const {
 
 const char *DocumentInfo::extension() const {
     return mExtension;
+}
+
+QDateTime DocumentInfo::lastModified() const {
+    return fileInfo.lastModified();
+}
+
+// For cases like orientation / even mimetype change we just reload
+// Image from scratch, so don`t bother handling it here
+void DocumentInfo::refresh() {
+    fileInfo.refresh();
 }
 
 int DocumentInfo::exifOrientation() const {

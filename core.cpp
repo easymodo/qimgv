@@ -261,9 +261,19 @@ void Core::onFileAdded(int index) {
 }
 
 void Core::onFileModified(int index) {
-    if(index == state.currentIndex)
-        mw->showMessage("File changed on disk. Reloading..");
-    reloadImage(index);
+    QString nameKey = dirManager->fileNameAt(index);
+    if(cache->contains(nameKey)) {
+        QDateTime modTime = dirManager->lastModified(index);
+        std::shared_ptr<Image> img = cache->get(nameKey);
+        if(modTime.isValid() && modTime > img->lastModified()) {
+            if(index == state.currentIndex) {
+                mw->showMessage("File changed on disk. Reloading.");
+                reloadImage(index);
+            } else {
+                cache->remove(nameKey);
+            }
+        }
+    }
 }
 
 void Core::moveFile(QString destDirectory) {

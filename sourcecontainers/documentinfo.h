@@ -34,9 +34,10 @@ public:
     const char* extension() const;
     int exifOrientation() const;
 
+    QDateTime lastModified() const;
+    void refresh();
 private:
     QFileInfo fileInfo;
-    QDateTime lastModified;
     DocumentType mImageType;
     int mOrientation;
     const char* mExtension;

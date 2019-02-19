@@ -377,7 +377,7 @@ ThumbnailLabel {
 }
 /*----------------------------------------------------------------------------*/
 ThumbnailView QScrollBar:horizontal {
-    height: 15px;
+    height: 14px;
     background-color: transparent;
 }
 
@@ -387,10 +387,15 @@ ThumbnailView QScrollBar::handle:horizontal {
     border-top-color: #626567;
     border-bottom-color: #5c5e60;
     border-right-color: #5e6163;
-    border-left-color: #626567;
+    border-left-color: #5e6163;
     min-width: 60px;
-    border-top-right-radius: 2px;
-    border-top-left-radius: 2px;
+    border-top-right-radius: 1px;
+    border-top-left-radius: 1px;
+}
+
+ThumbnailView QScrollBar::handle:horizontal:hover {
+    background-color: #6f7274;
+    border-color: #75797b;
 }
 
 ThumbnailView QScrollBar:vertical {
@@ -409,12 +414,12 @@ ThumbnailView QScrollBar::handle:vertical {
     border-top-color: #5e6163;
     border-bottom-color: #626567;
     min-height: 60px;
-    border-radius: 2px;
+    border-radius: 1px;
 }
 
 ThumbnailView QScrollBar::handle:vertical:hover {
     background-color: #6f7274;
-    border: 1px solid #75797b;
+    border-color: #75797b;
 }
 
 ThumbnailView QScrollBar::sub-page {

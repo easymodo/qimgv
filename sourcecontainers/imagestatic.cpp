@@ -31,12 +31,15 @@ void ImageStatic::load() {
 // TODO: add a way to configure compression level?
 bool ImageStatic::save(QString destPath) {
     int quality = 95;
-    return isEdited()?imageEdited->save(destPath, nullptr, quality):image->save(destPath, nullptr, quality);
+    bool success = isEdited()?imageEdited->save(destPath, nullptr, quality):image->save(destPath, nullptr, quality);
+    if(destPath == mPath && success) {
+        mDocInfo->refresh();
+    }
+    return success;
 }
 
 bool ImageStatic::save() {
-    int quality = 95;
-    return isEdited()?imageEdited->save(mPath, nullptr, quality):image->save(mPath, nullptr, quality);
+    return save(mPath);
 }
 
 std::unique_ptr<QPixmap> ImageStatic::getPixmap() {

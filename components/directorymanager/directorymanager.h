@@ -49,6 +49,7 @@ public:
     bool isDirectory(QString path) const;
     void sortFileList();
     void sortFileList(SortingMode mode);
+    QDateTime lastModified(int index) const;
 
 private slots:
     void fileChanged(const QString file);
