@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QMutex>
+#include <QClipboard>
 #include <malloc.h>
 #include "appversion.h"
 #include "settings.h"
@@ -120,6 +121,8 @@ private slots:
     void moveToTrash(int index);
     void reloadImage();
     void reloadImage(int index);
+    void copyFileClipboard();
+    void copyPathClipboard();
 };
 
 #endif // CORE_H

@@ -101,6 +101,8 @@ signals:
     void toggleFolderView();
     void moveToTrash();
     void reloadImage();
+    void copyFileClipboard();
+    void copyPathClipboard();
 };
 
 extern ActionManager *actionManager;

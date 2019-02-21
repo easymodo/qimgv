@@ -68,6 +68,8 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("Return", "folderView");
     actionManager->defaults.insert("backspace", "folderView");
     actionManager->defaults.insert("F5", "reloadImage");
+    actionManager->defaults.insert("Ctrl+C", "copyFileClipboard");
+    actionManager->defaults.insert("Ctrl+Shift+C", "copyPathClipboard");
 }
 //------------------------------------------------------------------------------
 void ActionManager::initShortcuts() {

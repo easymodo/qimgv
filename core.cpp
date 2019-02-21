@@ -154,6 +154,8 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(documentView()), mw, SIGNAL(enableDocumentView()));
     connect(actionManager, SIGNAL(toggleFolderView()), mw, SIGNAL(toggleFolderView()));
     connect(actionManager, SIGNAL(reloadImage()), this, SLOT(reloadImage()));
+    connect(actionManager, SIGNAL(copyFileClipboard()), this, SLOT(copyFileClipboard()));
+    connect(actionManager, SIGNAL(copyPathClipboard()), this, SLOT(copyPathClipboard()));
 }
 
 void Core::onUpdate() {
@@ -221,6 +223,32 @@ void Core::reloadImage(int index) {
     cache->remove(nameKey);
     if(state.currentIndex == index)
         loadByIndexBlocking(state.currentIndex);
+}
+
+// TODO: also copy selection from folder view?
+void Core::copyFileClipboard() {
+    QString path = dirManager->filePathAt(state.currentIndex);
+    if(!path.isEmpty()) {
+        QMimeData* mimeData = new QMimeData();
+        mimeData->setUrls({QUrl::fromLocalFile(path)});
+
+        // gnome being special
+        // doesn't seem to work
+        //QByteArray gnomeFormat = QByteArray("copy\n").append(QUrl::fromLocalFile(path).toEncoded());
+        //mimeData->setData("x-special/gnome-copied-files", gnomeFormat);
+
+        QApplication::clipboard()->setMimeData(mimeData);
+        mw->showMessage("File copied");
+    }
+}
+
+void Core::copyPathClipboard() {
+    // test on windows
+    QString path = dirManager->filePathAt(state.currentIndex);
+    if(!path.isEmpty()) {
+        QApplication::clipboard()->setText(path);
+        mw->showMessage("Path copied");
+    }
 }
 
 // removes file at specified index within current directory
