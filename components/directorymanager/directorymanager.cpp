@@ -84,8 +84,8 @@ void DirectoryManager::setDirectory(QString path) {
 
         connect(watcher, &DirectoryWatcher::fileRenamed, this, [this] (const QString& file1, const QString& file2) {
             qDebug() << "[w] file renamed from" << file1 << "to" << file2;
-            onFileRemovedExternal(file1);
-            onFileAddedExternal(file2);
+            if(isImage(this->currentDirectoryPath() + "/" + file2))
+                onFileRenamedExternal(file1, file2);
         });
     }
 }
@@ -122,6 +122,7 @@ bool DirectoryManager::removeAt(int index, bool trash) {
         return result;
 
     QString path = filePathAt(index);
+    QString name = fileNameAt(index);
     QFile file(path);
     mFileNameList.removeAt(index);
     if(trash) {
@@ -131,7 +132,7 @@ bool DirectoryManager::removeAt(int index, bool trash) {
         if(file.remove())
             result = true;
     }
-    emit fileRemovedAt(index);
+    emit fileRemovedAt(index, name);
     return result;
 }
 
@@ -248,7 +249,7 @@ int DirectoryManager::fileCount() const {
 }
 
 bool DirectoryManager::existsInCurrentDir(QString fileName) const {
-    return mFileNameList.contains(fileName, Qt::CaseInsensitive);
+    return mFileNameList.contains(fileName, Qt::CaseSensitive);
 }
 
 bool DirectoryManager::isDirectory(QString path) const {
@@ -267,14 +268,13 @@ QDateTime DirectoryManager::lastModified(int index) const {
 bool DirectoryManager::isImage(QString filePath) const {
     QFile file(filePath);
     if(file.exists()) {
-        /* workaround
-         * webp is detected as "audio/x-riff"
-         * TODO: parse file header for this case
-         */
+        // workaround
+        // webp is detected as "audio/x-riff"
+        // TODO: parse file header for this case
         if(QString::compare(filePath.split('.').last(), "webp", Qt::CaseInsensitive) == 0) {
             return true;
         }
-        /* end */
+        // end
         QMimeType type = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchContent);
         if(mimeFilter.contains(type.name())) {
             return true;
@@ -289,18 +289,6 @@ bool DirectoryManager::hasImages() const {
 
 bool DirectoryManager::contains(QString fileName) const {
     return mFileNameList.contains(fileName);
-}
-
-// ##############################################################
-// #######################  PUBLIC SLOTS  #######################
-// ##############################################################
-
-void DirectoryManager::fileChanged(const QString file) {
-    qDebug() << "file changed: " << file;
-}
-
-void DirectoryManager::directoryContentsChanged(QString dirPath) {
-    qDebug() << "directory changed: " << dirPath;
 }
 
 // ##############################################################
@@ -353,8 +341,7 @@ void DirectoryManager::onFileRemovedExternal(QString fileName) {
     if(mFileNameList.contains(fileName)) {
         int index = mFileNameList.indexOf(fileName);
         mFileNameList.removeOne(fileName);
-        qDebug() << "fileRemove: " << fileName << index;
-        emit fileRemovedAt(index);
+        emit fileRemovedAt(index, fileName);
     }
 }
 
@@ -362,13 +349,21 @@ void DirectoryManager::onFileAddedExternal(QString fileName) {
     if(mFileNameList.contains(fileName)) { // file changed
         qDebug() << "DirectoryManager::onFileAddedExternal - file already in list " << fileName;
     } else { // file added
-        mFileNameList.append(fileName);
         // TODO: fast sorted inserts
         generateFileList(settings->sortingMode());
         //sortFileList();
         int index = mFileNameList.indexOf(fileName);
-        qDebug() << "fileAdd: " << fileName << " pos: " << index;
         emit fileAddedAt(index);
+    }
+}
+
+void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
+    int oldIndex = mFileNameList.indexOf(oldFile);
+    generateFileList(settings->sortingMode());
+    if(existsInCurrentDir(newFile)) {
+        emit fileRenamed(oldIndex, mFileNameList.indexOf(newFile));
+    } else {
+        emit fileRemovedAt(oldIndex, oldFile);
     }
 }
 

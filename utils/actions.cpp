@@ -67,5 +67,6 @@ void Actions::init() {
     mActions.insert("reloadImage", QVersionNumber(0,7,80));
     mActions.insert("copyFileClipboard", QVersionNumber(0,7,80));
     mActions.insert("copyPathClipboard", QVersionNumber(0,7,80));
+    mActions.insert("renameFile", QVersionNumber(0,7,80));
 }
 

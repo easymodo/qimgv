@@ -101,7 +101,8 @@ private slots:
     void moveFile(QString destDirectory);
     void copyFile(QString destDirectory);
     void removeFile(int index, bool trash);
-    void onFileRemoved(int index);
+    void onFileRemoved(int index, QString fileName);
+    void onFileRenamed(int oldIndex, int newIndex);
     void onFileAdded(int index);
     void onFileModified(int index);
     void showResizeDialog();
@@ -123,6 +124,8 @@ private slots:
     void reloadImage(int index);
     void copyFileClipboard();
     void copyPathClipboard();
+    void renameCurrentFile(QString newName);
+    void renameRequested();
 };
 
 #endif // CORE_H

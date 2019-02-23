@@ -103,6 +103,7 @@ signals:
     void reloadImage();
     void copyFileClipboard();
     void copyPathClipboard();
+    void renameFile();
 };
 
 extern ActionManager *actionManager;

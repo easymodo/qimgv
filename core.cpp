@@ -61,7 +61,6 @@ void Core::initComponents() {
     loadingTimer->setSingleShot(true);
     loadingTimer->setInterval(500); // TODO: test on slower pc & adjust timeout
     dirManager = new DirectoryManager();
-    //dirManager2 = new DirectoryManager2();
     cache = new Cache();
     loader = new Loader();
     scaler = new Scaler(cache);
@@ -104,9 +103,10 @@ void Core::connectComponents() {
     connect(scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest)),
             this, SLOT(onScalingFinished(QPixmap*,ScalerRequest)));
     // filesystem changes
-    connect(dirManager, SIGNAL(fileRemovedAt(int)), this, SLOT(onFileRemoved(int)));
+    connect(dirManager, SIGNAL(fileRemovedAt(int, QString)), this, SLOT(onFileRemoved(int, QString)));
     connect(dirManager, SIGNAL(fileAddedAt(int)), this, SLOT(onFileAdded(int)));
     connect(dirManager, SIGNAL(fileModifiedAt(int)), this, SLOT(onFileModified(int)));
+    connect(dirManager, SIGNAL(fileRenamed(int, int)), this, SLOT(onFileRenamed(int, int)));
 }
 
 void Core::initActions() {
@@ -156,6 +156,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(reloadImage()), this, SLOT(reloadImage()));
     connect(actionManager, SIGNAL(copyFileClipboard()), this, SLOT(copyFileClipboard()));
     connect(actionManager, SIGNAL(copyPathClipboard()), this, SLOT(copyPathClipboard()));
+    connect(actionManager, SIGNAL(renameFile()), this, SLOT(renameRequested()));
 }
 
 void Core::onUpdate() {
@@ -251,6 +252,38 @@ void Core::copyPathClipboard() {
     }
 }
 
+void Core::renameRequested() {
+    renameCurrentFile("new.png");
+}
+
+void Core::renameCurrentFile(QString newName) {
+    QString newPath = dirManager->currentDirectoryPath() + "/" + newName;
+    QString oldPath = dirManager->filePathAt(state.currentIndex);
+    bool exists = dirManager->existsInCurrentDir(newName);
+    QFile replaceMe(newPath);
+    // move existing file so we can revert if something fails
+    if(replaceMe.exists()) {
+        if(!replaceMe.rename(newPath + "__tmp")) {
+            mw->showError("Could not replace file");
+            return;
+        }
+    }
+    // do the renaming
+    QFile file(oldPath);
+    if(file.exists() && file.rename(newPath)) {
+        // remove tmp file on success
+        if(exists)
+            replaceMe.remove();
+        // at this point we will get a dirwatcher rename event
+        // and the new file will be opened
+    } else {
+        mw->showError("Could not rename file");
+        // revert tmp file on fail
+        if(exists)
+            replaceMe.rename(newPath);
+    }
+}
+
 // removes file at specified index within current directory
 void Core::removeFile(int index, bool trash) {
     if(index < 0 || index >= dirManager->fileCount())
@@ -262,7 +295,7 @@ void Core::removeFile(int index, bool trash) {
     }
 }
 
-void Core::onFileRemoved(int index) {
+void Core::onFileRemoved(int index, QString fileName) {
     mw->removeThumbnail(index);
     // removing current file. try switching to another
     if(state.currentIndex == index) {
@@ -278,6 +311,19 @@ void Core::onFileRemoved(int index) {
         emit currentIndexChanged(state.currentIndex);
     }
     updateInfoString();
+    cache->remove(fileName);
+}
+
+// MESS
+// need to use something else to correctly identify files (name + modify time?)
+void Core::onFileRenamed(int oldIndex, int newIndex) {
+    //cache->remove(oldName);
+    if(state.currentIndex != -1 && state.currentIndex == oldIndex) {
+        cache->clear();
+        this->loadByIndex(newIndex);
+    }
+    mw->removeThumbnail(oldIndex);
+    mw->addThumbnail(newIndex);
 }
 
 void Core::onFileAdded(int index) {
@@ -504,7 +550,7 @@ void Core::saveImageToDisk(QString filePath) {
             if(img->save(filePath))
                 mw->showMessageSuccess("File saved.");
             else
-                mw->showMessageError("Could not save file.");
+                mw->showError("Could not save file.");
             cache->release(nameKey);
         } else {
             qDebug() << "Core::saveImageToDisk() - could not lock cache object.";

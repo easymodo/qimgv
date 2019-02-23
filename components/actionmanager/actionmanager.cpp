@@ -70,6 +70,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("F5", "reloadImage");
     actionManager->defaults.insert("Ctrl+C", "copyFileClipboard");
     actionManager->defaults.insert("Ctrl+Shift+C", "copyPathClipboard");
+    actionManager->defaults.insert("F2", "renameFile");
 }
 //------------------------------------------------------------------------------
 void ActionManager::initShortcuts() {

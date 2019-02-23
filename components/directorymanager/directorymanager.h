@@ -51,11 +51,6 @@ public:
     void sortFileList(SortingMode mode);
     QDateTime lastModified(int index) const;
 
-private slots:
-    void fileChanged(const QString file);
-    void directoryContentsChanged(QString dirPath);
-
-    void onFileAddedExternal(QString filename);
 private:
     QDir currentDir;
     QStringList mFileNameList;
@@ -70,16 +65,18 @@ private:
     //void generateFileListQuick();
     //void generateFileListDeep();
 
+    void onFileAddedExternal(QString filename);
     void onFileRemovedExternal(QString);
-
     void onFileModifiedExternal(QString fileName);
+    void onFileRenamedExternal(QString oldFile, QString newFile);
     void moveToTrash(QString file);
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();
-    void fileRemovedAt(int);
+    void fileRemovedAt(int, QString);
     void fileModifiedAt(int);
     void fileAddedAt(int);
+    void fileRenamed(int oldIndex, int newIndex);
 };
 
 #endif // DIRECTORYMANAGER_H

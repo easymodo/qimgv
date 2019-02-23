@@ -577,11 +577,11 @@ void MainWindow::showMessageSuccess(QString text) {
     floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_SUCCESS, 1500);
 }
 
-void MainWindow::showMessageWarning(QString text) {
+void MainWindow::showWarning(QString text) {
     floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_WARNING, 1500);
 }
 
-void MainWindow::showMessageError(QString text) {
+void MainWindow::showError(QString text) {
     floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_ERROR, 1800);
 }
 
