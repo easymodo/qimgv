@@ -14,7 +14,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # USER OPTIONS
 # Usage: cmake -DVIDEO_SUPPORT=ON [...]
-option(VIDEO_SUPPORT "Enable video support" OFF)
+option(VIDEO_SUPPORT "Enable video support" ON)
 option(KDE_SUPPORT "Support blur when using KDE" OFF)
 
 
