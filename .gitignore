@@ -11,6 +11,7 @@
 debug/
 release/
 *.debug
+*.depends
 *.release
 *.user
 ui_settingsdialog.h
