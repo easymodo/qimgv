@@ -5,7 +5,7 @@ MenuItem::MenuItem(QWidget *parent)
 {
     //mLayout.setContentsMargins(11,5,11,5);
     mLayout.setContentsMargins(6,0,11,0);
-    mLayout.setSpacing(7);
+    mLayout.setSpacing(3);
 
     setAccessibleName("MenuItem");
     this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
