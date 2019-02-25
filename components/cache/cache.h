@@ -16,7 +16,7 @@ public:
     void remove(QString name);
     void clear();
 
-    bool insert(QString name, std::shared_ptr<Image> img);
+    bool insert(std::shared_ptr<Image> img);
     void trimTo(QStringList list);
 
     std::shared_ptr<Image> get(QString name);

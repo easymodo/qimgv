@@ -112,19 +112,38 @@ QString DirectoryManager::filePathAt(int index) const {
     return checkRange(index) ? currentDir.absolutePath() + "/" + mFileNameList.at(index) : "";
 }
 
+QString DirectoryManager::fullFilePath(QString fileName) const {
+    return currentDir.absolutePath() + "/" + fileName;
+}
+
 QString DirectoryManager::fileNameAt(int index) const {
     return checkRange(index) ? mFileNameList.at(index) : "";
 }
 
-bool DirectoryManager::removeAt(int index, bool trash) {
-    bool result = false;
-    if(!checkRange(index))
-        return result;
+QString DirectoryManager::prevOf(QString fileName) const {
+    QString prevFileName = "";
+    int currentIndex = mFileNameList.indexOf(fileName);
+    if(currentIndex > 0)
+        prevFileName = mFileNameList.at(currentIndex - 1);
+    return prevFileName;
+}
 
-    QString path = filePathAt(index);
-    QString name = fileNameAt(index);
+QString DirectoryManager::nextOf(QString fileName) const {
+    QString nextFileName = "";
+    int currentIndex = mFileNameList.indexOf(fileName);
+    if(currentIndex >= 0 && currentIndex < mFileNameList.count() - 1)
+        nextFileName = mFileNameList.at(currentIndex + 1);
+    return nextFileName;
+}
+
+bool DirectoryManager::removeFile(QString fileName, bool trash) {
+    bool result = false;
+    if(!mFileNameList.contains(fileName))
+        return result;
+    QString path = fullFilePath(fileName);
     QFile file(path);
-    mFileNameList.removeAt(index);
+    int index = mFileNameList.indexOf(fileName);
+    mFileNameList.removeOne(fileName);
     if(trash) {
         moveToTrash(path);
         result = true;
@@ -132,7 +151,7 @@ bool DirectoryManager::removeAt(int index, bool trash) {
         if(file.remove())
             result = true;
     }
-    emit fileRemovedAt(index, name);
+    emit fileRemoved(fileName, index);
     return result;
 }
 
@@ -237,11 +256,10 @@ bool DirectoryManager::checkRange(int index) const {
     return index >= 0 && index < mFileNameList.length();
 }
 
-bool DirectoryManager::copyTo(QString destDirectory, int index) {
-    if(checkRange(index)) {
-        return QFile::copy(filePathAt(index), destDirectory + "/" + fileNameAt(index));
-    }
-    return false;
+bool DirectoryManager::copyTo(QString destDirectory, QString fileName) {
+    if(!mFileNameList.contains(fileName))
+        return false;
+    return QFile::copy(fullFilePath(fileName), destDirectory + "/" + fileName);
 }
 
 int DirectoryManager::fileCount() const {
@@ -257,11 +275,10 @@ bool DirectoryManager::isDirectory(QString path) const {
     return (fileInfo.isDir() && fileInfo.isReadable());
 }
 
-QDateTime DirectoryManager::lastModified(int index) const {
+QDateTime DirectoryManager::lastModified(QString fileName) const {
     QFileInfo info;
-    if(checkRange(index)) {
-        info.setFile(filePathAt(index));
-    }
+    if(mFileNameList.contains(fileName))
+        info.setFile(fullFilePath(fileName));
     return info.lastModified();
 }
 
@@ -341,7 +358,7 @@ void DirectoryManager::onFileRemovedExternal(QString fileName) {
     if(mFileNameList.contains(fileName)) {
         int index = mFileNameList.indexOf(fileName);
         mFileNameList.removeOne(fileName);
-        emit fileRemovedAt(index, fileName);
+        emit fileRemoved(fileName, index);
     }
 }
 
@@ -352,25 +369,24 @@ void DirectoryManager::onFileAddedExternal(QString fileName) {
         // TODO: fast sorted inserts
         generateFileList(settings->sortingMode());
         //sortFileList();
-        int index = mFileNameList.indexOf(fileName);
-        emit fileAddedAt(index);
+        emit fileAdded(fileName);
     }
 }
 
 void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
-    int oldIndex = mFileNameList.indexOf(oldFile);
+    int index = mFileNameList.indexOf(oldFile);
     generateFileList(settings->sortingMode());
     if(existsInCurrentDir(newFile)) {
-        emit fileRenamed(oldIndex, mFileNameList.indexOf(newFile));
+        emit fileRenamed(oldFile, newFile);
     } else {
-        emit fileRemovedAt(oldIndex, oldFile);
+        emit fileRemoved(oldFile, index);
     }
 }
 
 void DirectoryManager::onFileModifiedExternal(QString fileName) {
     if(mFileNameList.contains(fileName)) { // file changed
         qDebug() << "fileChange: " << fileName;
-        emit fileModifiedAt(mFileNameList.indexOf(fileName));
+        emit fileModified(fileName);
     } else { // file added?
         onFileAddedExternal(fileName);
     }

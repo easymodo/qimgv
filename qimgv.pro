@@ -282,3 +282,5 @@ windows {
 
 DISTFILES += \
     README.md
+
+TRANSLATIONS = translations/qimgv_ru_RU.ts

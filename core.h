@@ -17,10 +17,8 @@
 #include "gui/mainwindow.h"
 
 struct State {
-    State() : currentIndex(0), hasActiveImage(false), isWaitingForLoader(false) {}
-    int currentIndex;
-    // TODO: come up with something better?
-    QString displayingFileName;
+    State() : currentFileName(""), hasActiveImage(false), isWaitingForLoader(false) {}
+    QString currentFileName, displayingFileName;
     bool hasActiveImage, isWaitingForLoader;
 };
 
@@ -43,7 +41,6 @@ public slots:
 
     // invalid position will be ignored
     bool loadByIndex(int index);
-    bool loadByIndexBlocking(int index);
 
 signals:
     void currentIndexChanged(int);
@@ -78,7 +75,7 @@ private:
     void loadDirectory(QString);
     void loadImage(QString path, bool blocking);
     void trimCache();
-    void preload(int index);
+    void preload(QString fileName);
 
 private slots:
     void readSettings();
@@ -100,11 +97,11 @@ private slots:
     void forwardThumbnail(std::shared_ptr<Thumbnail> thumbnail);
     void moveFile(QString destDirectory);
     void copyFile(QString destDirectory);
-    void removeFile(int index, bool trash);
-    void onFileRemoved(int index, QString fileName);
-    void onFileRenamed(int oldIndex, int newIndex);
-    void onFileAdded(int index);
-    void onFileModified(int index);
+    void removeFile(QString fileName, bool trash);
+    void onFileRemoved(QString fileName, int index);
+    void onFileRenamed(QString from, QString to);
+    void onFileAdded(QString fileName);
+    void onFileModified(QString fileName);
     void showResizeDialog();
     void resize(QSize size);
     void flipH();
@@ -117,11 +114,11 @@ private slots:
     void saveImageToDisk(QString);
     void runScript(const QString&);
     void removeFilePermanent();
-    void removeFilePermanent(int index);
+    void removeFilePermanent(QString fileName);
     void moveToTrash();
-    void moveToTrash(int index);
+    void moveToTrash(QString fileName);
     void reloadImage();
-    void reloadImage(int index);
+    void reloadImage(QString fileName);
     void copyFileClipboard();
     void copyPathClipboard();
     void renameCurrentFile(QString newName);

@@ -197,59 +197,55 @@ void Core::close() {
 
 void Core::removeFilePermanent() {
     if(state.hasActiveImage)
-        removeFilePermanent(state.currentIndex);
+        removeFilePermanent(state.currentFileName);
 }
 
-void Core::removeFilePermanent(int index) {
-    removeFile(index, false);
+void Core::removeFilePermanent(QString fileName) {
+    removeFile(fileName, false);
 }
 
 void Core::moveToTrash() {
     if(state.hasActiveImage)
-        moveToTrash(state.currentIndex);
+        moveToTrash(state.currentFileName);
 }
 
-void Core::moveToTrash(int index) {
-    removeFile(index, true);
+void Core::moveToTrash(QString fileName) {
+    removeFile(fileName, true);
 }
 
 void Core::reloadImage() {
-    reloadImage(state.currentIndex);
+    reloadImage(state.currentFileName);
 }
 
-void Core::reloadImage(int index) {
-    if(state.currentIndex < 0 || state.currentIndex >= dirManager->fileCount())
+void Core::reloadImage(QString fileName) {
+    if(!dirManager->contains(fileName))
         return;
-    QString nameKey = dirManager->fileNameAt(state.currentIndex);
-    cache->remove(nameKey);
-    if(state.currentIndex == index)
-        loadByIndexBlocking(state.currentIndex);
+    cache->remove(fileName);
+    if(state.currentFileName == fileName)
+        loadByPathBlocking(dirManager->fullFilePath(state.currentFileName));
 }
 
 // TODO: also copy selection from folder view?
 void Core::copyFileClipboard() {
-    QString path = dirManager->filePathAt(state.currentIndex);
-    if(!path.isEmpty()) {
-        QMimeData* mimeData = new QMimeData();
-        mimeData->setUrls({QUrl::fromLocalFile(path)});
+    if(state.currentFileName.isEmpty())
+        return;
+    QMimeData* mimeData = new QMimeData();
+    mimeData->setUrls({QUrl::fromLocalFile(dirManager->fullFilePath(state.currentFileName))});
 
-        // gnome being special
-        // doesn't seem to work
-        //QByteArray gnomeFormat = QByteArray("copy\n").append(QUrl::fromLocalFile(path).toEncoded());
-        //mimeData->setData("x-special/gnome-copied-files", gnomeFormat);
+    // gnome being special
+    // doesn't seem to work
+    //QByteArray gnomeFormat = QByteArray("copy\n").append(QUrl::fromLocalFile(path).toEncoded());
+    //mimeData->setData("x-special/gnome-copied-files", gnomeFormat);
 
-        QApplication::clipboard()->setMimeData(mimeData);
-        mw->showMessage("File copied");
-    }
+    QApplication::clipboard()->setMimeData(mimeData);
+    mw->showMessage("File copied");
 }
 
 void Core::copyPathClipboard() {
-    // test on windows
-    QString path = dirManager->filePathAt(state.currentIndex);
-    if(!path.isEmpty()) {
-        QApplication::clipboard()->setText(path);
-        mw->showMessage("Path copied");
-    }
+    if(state.currentFileName.isEmpty())
+        return;
+    QApplication::clipboard()->setText(dirManager->fullFilePath(state.currentFileName));
+    mw->showMessage("Path copied");
 }
 
 void Core::renameRequested() {
@@ -257,8 +253,8 @@ void Core::renameRequested() {
 }
 
 void Core::renameCurrentFile(QString newName) {
-    QString newPath = dirManager->currentDirectoryPath() + "/" + newName;
-    QString oldPath = dirManager->filePathAt(state.currentIndex);
+    QString newPath = dirManager->fullFilePath(newName);
+    QString currentPath = dirManager->fullFilePath(state.currentFileName);
     bool exists = dirManager->existsInCurrentDir(newName);
     QFile replaceMe(newPath);
     // move existing file so we can revert if something fails
@@ -269,7 +265,7 @@ void Core::renameCurrentFile(QString newName) {
         }
     }
     // do the renaming
-    QFile file(oldPath);
+    QFile file(currentPath);
     if(file.exists() && file.rename(newPath)) {
         // remove tmp file on success
         if(exists)
@@ -285,78 +281,73 @@ void Core::renameCurrentFile(QString newName) {
 }
 
 // removes file at specified index within current directory
-void Core::removeFile(int index, bool trash) {
-    if(index < 0 || index >= dirManager->fileCount())
-        return;
-    QString fileName = dirManager->fileNameAt(index);
-    if(dirManager->removeAt(index, trash)) {
+void Core::removeFile(QString fileName, bool trash) {
+    if(dirManager->removeFile(fileName, trash)) {
         QString msg = trash?"Moved to trash: ":"File removed: ";
         mw->showMessage(msg + fileName);
     }
 }
 
-void Core::onFileRemoved(int index, QString fileName) {
+void Core::onFileRemoved(QString fileName, int index) {
+    cache->remove(fileName);
     mw->removeThumbnail(index);
     // removing current file. try switching to another
-    if(state.currentIndex == index) {
+    if(state.currentFileName == fileName) {
         if(!dirManager->fileCount()) {
             mw->closeImage();
             mw->setInfoString("No file opened.");
         } else {
-            if(!loadByIndexBlocking(state.currentIndex))
-                loadByIndexBlocking(--state.currentIndex);
+            if(!loadByIndex(index))
+                loadByIndex(--index);
         }
-    } else if(state.currentIndex > index) {
+    } /*else if(state.currentIndex > index) {
         state.currentIndex--;
         emit currentIndexChanged(state.currentIndex);
-    }
+    } */
     updateInfoString();
-    cache->remove(fileName);
 }
 
 // MESS
 // need to use something else to correctly identify files (name + modify time?)
-void Core::onFileRenamed(int oldIndex, int newIndex) {
-    //cache->remove(oldName);
-    if(state.currentIndex != -1 && state.currentIndex == oldIndex) {
+void Core::onFileRenamed(QString from, QString to) {
+    cache->remove(from);
+    if(state.currentFileName == from) {
         cache->clear();
-        this->loadByIndex(newIndex);
+        this->loadByPathBlocking(dirManager->fullFilePath(to));
     }
-    mw->removeThumbnail(oldIndex);
-    mw->addThumbnail(newIndex);
+    //mw->removeThumbnail(oldIndex);
+    //mw->addThumbnail(newIndex);
 }
 
-void Core::onFileAdded(int index) {
+void Core::onFileAdded(QString fileName) {
+    int index = dirManager->indexOf(fileName);
     mw->addThumbnail(index);
-    if(state.currentIndex >= index)
-        state.currentIndex++;
-    emit currentIndexChanged(state.currentIndex);
+    //emit currentIndexChanged(state.currentIndex);
     updateInfoString();
 }
 
-void Core::onFileModified(int index) {
-    QString nameKey = dirManager->fileNameAt(index);
-    if(cache->contains(nameKey)) {
-        QDateTime modTime = dirManager->lastModified(index);
-        std::shared_ptr<Image> img = cache->get(nameKey);
+void Core::onFileModified(QString fileName) {
+    if(cache->contains(fileName)) {
+        QDateTime modTime = dirManager->lastModified(fileName);
+        std::shared_ptr<Image> img = cache->get(fileName);
         if(modTime.isValid() && modTime > img->lastModified()) {
-            if(index == state.currentIndex) {
+            if(fileName == state.currentFileName) {
                 mw->showMessage("File changed on disk. Reloading.");
-                reloadImage(index);
+                reloadImage(fileName);
             } else {
-                cache->remove(nameKey);
+                cache->remove(fileName);
             }
         }
     }
 }
 
 void Core::moveFile(QString destDirectory) {
-    QFile file(destDirectory+"/"+dirManager->fileNameAt(state.currentIndex));
+    QFileInfo file(destDirectory + "/" + state.currentFileName);
     if(file.exists()) {
         mw->showMessage("Error: file already exists.");
         return;
     }
-    if(dirManager->copyTo(destDirectory, state.currentIndex)) {
+    if(dirManager->copyTo(destDirectory, state.currentFileName)) {
         removeFilePermanent();
         mw->showMessage("File moved to: " + destDirectory);
     } else {
@@ -366,13 +357,13 @@ void Core::moveFile(QString destDirectory) {
 }
 
 void Core::copyFile(QString destDirectory) {
-    QFileInfo file(destDirectory + "/" + dirManager->fileNameAt(state.currentIndex));
+    QFileInfo file(destDirectory + "/" + state.currentFileName);
     if(file.exists()) {
         if(file.isFile())
             mw->showMessage("Error: file already exists.");
         return;
     }
-    if(!dirManager->copyTo(destDirectory, state.currentIndex)) {
+    if(!dirManager->copyTo(destDirectory, state.currentFileName)) {
         mw->showMessage("Error copying file to: " + destDirectory);
         qDebug() << "Error copying file to: " << destDirectory;
     } else {
@@ -390,14 +381,13 @@ void Core::toggleCropPanel() {
 
 void Core::requestSavePath() {
     if(state.hasActiveImage) {
-        mw->showSaveDialog(dirManager->filePathAt(state.currentIndex));
+        mw->showSaveDialog(dirManager->fullFilePath(state.currentFileName));
     }
 }
 
 void Core::showResizeDialog() {
     if(state.hasActiveImage) {
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        mw->showResizeDialog(cache->get(nameKey)->size());
+        mw->showResizeDialog(cache->get(state.currentFileName)->size());
     }
 }
 
@@ -405,17 +395,16 @@ void Core::showResizeDialog() {
 // use default bilinear for now
 void Core::resize(QSize size) {
     if(state.hasActiveImage) {
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        if(cache->reserve(nameKey)) {
-            std::shared_ptr<Image> img = cache->get(nameKey);
+        if(cache->reserve(state.currentFileName)) {
+            std::shared_ptr<Image> img = cache->get(state.currentFileName);
             if(img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::scaled(imgStatic->getImage(), size, 1)));
-                cache->release(nameKey);
+                cache->release(state.currentFileName);
                 displayImage(img.get());
             } else {
-                cache->release(nameKey);
+                cache->release(state.currentFileName);
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
@@ -427,17 +416,16 @@ void Core::resize(QSize size) {
 // glowing_brain.jpg
 void Core::flipH() {
     if(state.hasActiveImage) {
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        if(cache->reserve(nameKey)) {
-            std::shared_ptr<Image> img = cache->get(nameKey);
+        if(cache->reserve(state.currentFileName)) {
+            std::shared_ptr<Image> img = cache->get(state.currentFileName);
             if(img && img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::flippedH(imgStatic->getImage())));
-                cache->release(nameKey);
+                cache->release(state.currentFileName);
                 displayImage(img.get());
             } else {
-                cache->release(nameKey);
+                cache->release(state.currentFileName);
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
@@ -448,17 +436,16 @@ void Core::flipH() {
 
 void Core::flipV() {
     if(state.hasActiveImage) {
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        if(cache->reserve(nameKey)) {
-            std::shared_ptr<Image> img = cache->get(nameKey);
+        if(cache->reserve(state.currentFileName)) {
+            std::shared_ptr<Image> img = cache->get(state.currentFileName);
             if(img && img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::flippedV(imgStatic->getImage())));
-                cache->release(nameKey);
+                cache->release(state.currentFileName);
                 displayImage(img.get());
             } else {
-                cache->release(nameKey);
+                cache->release(state.currentFileName);
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
@@ -470,9 +457,8 @@ void Core::flipV() {
 // TODO: simplify. too much copypasted code
 void Core::crop(QRect rect) {
     if(state.hasActiveImage) {
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        if(cache->reserve(nameKey)) {
-            std::shared_ptr<Image> img = cache->get(nameKey);
+        if(cache->reserve(state.currentFileName)) {
+            std::shared_ptr<Image> img = cache->get(state.currentFileName);
             if(img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 if(!imgStatic->setEditedImage(std::unique_ptr<const QImage>(
@@ -480,10 +466,10 @@ void Core::crop(QRect rect) {
                 {
                     mw->showMessage("Could not crop image: incorrect size / position");
                 }
-                cache->release(nameKey);
+                cache->release(state.currentFileName);
                 displayImage(img.get());
             } else {
-                cache->release(nameKey);
+                cache->release(state.currentFileName);
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
@@ -494,17 +480,16 @@ void Core::crop(QRect rect) {
 
 void Core::rotateByDegrees(int degrees) {
     if(state.hasActiveImage) {
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        if(cache->reserve(nameKey)) {
-            std::shared_ptr<Image> img = cache->get(nameKey);
+        if(cache->reserve(state.currentFileName)) {
+            std::shared_ptr<Image> img = cache->get(state.currentFileName);
             if(img && img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::rotated(imgStatic->getImage(), degrees)));
-                cache->release(nameKey);
+                cache->release(state.currentFileName);
                 displayImage(img.get());
             } else {
-                cache->release(nameKey);
+                cache->release(state.currentFileName);
                 mw->showMessage("Editing gifs/video is unsupported.");
             }
         } else {
@@ -516,17 +501,16 @@ void Core::rotateByDegrees(int degrees) {
 // TODO: simplify. too much copypasted code
 void Core::discardEdits() {
     if(state.hasActiveImage) {
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        if(cache->reserve(nameKey)) {
-            std::shared_ptr<Image> img = cache->get(nameKey);
+        if(cache->reserve(state.currentFileName)) {
+            std::shared_ptr<Image> img = cache->get(state.currentFileName);
             if(img->type() == STATIC) {
                 auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
                 bool ok = imgStatic->discardEditedImage();
-                cache->release(nameKey);
+                cache->release(state.currentFileName);
                 if(ok)
                     displayImage(img.get());
             } else {
-                cache->release(nameKey);
+                cache->release(state.currentFileName);
             }
         } else {
             qDebug() << "Core::discardEdits() - could not lock cache object.";
@@ -539,19 +523,18 @@ void Core::discardEdits() {
 // also move saving logic away from Image container itself
 void Core::saveImageToDisk() {
     if(state.hasActiveImage)
-        saveImageToDisk(dirManager->filePathAt(state.currentIndex));
+        saveImageToDisk(dirManager->fullFilePath(state.currentFileName));
 }
 
 void Core::saveImageToDisk(QString filePath) {
     if(state.hasActiveImage) {
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        if(cache->reserve(nameKey)) {
-            std::shared_ptr<Image> img = cache->get(nameKey);
+        if(cache->reserve(state.currentFileName)) {
+            std::shared_ptr<Image> img = cache->get(state.currentFileName);
             if(img->save(filePath))
                 mw->showMessageSuccess("File saved.");
             else
                 mw->showError("Could not save file.");
-            cache->release(nameKey);
+            cache->release(state.currentFileName);
         } else {
             qDebug() << "Core::saveImageToDisk() - could not lock cache object.";
         }
@@ -560,15 +543,14 @@ void Core::saveImageToDisk(QString filePath) {
 }
 
 void Core::runScript(const QString &scriptName) {
-    QString nameKey = dirManager->fileNameAt(state.currentIndex);
-    scriptManager->runScript(scriptName, cache->get(nameKey));
+    scriptManager->runScript(scriptName, cache->get(state.currentFileName));
 }
 
 void Core::scalingRequest(QSize size) {
     if(state.hasActiveImage && !state.isWaitingForLoader) {
-        std::shared_ptr<Image> forScale = cache->get(dirManager->fileNameAt(state.currentIndex));
+        std::shared_ptr<Image> forScale = cache->get(state.currentFileName);
         if(forScale) {
-            QString path = dirManager->filePathAt(state.currentIndex);
+            QString path = dirManager->currentDirectoryPath() + "/" + state.currentFileName;
             scaler->requestScaled(ScalerRequest(forScale.get(), size, path));
         }
     }
@@ -576,7 +558,7 @@ void Core::scalingRequest(QSize size) {
 
 // TODO: don't use connect? otherwise there is no point using unique_ptr
 void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
-    if(state.hasActiveImage /* TODO: a better fix > */ && dirManager->filePathAt(state.currentIndex) == req.string) {
+    if(state.hasActiveImage /* TODO: a better fix > */ && req.string == dirManager->fullFilePath(state.currentFileName)) {
         mw->onScalingFinished(std::unique_ptr<QPixmap>(scaled));
     } else {
         delete scaled;
@@ -592,9 +574,9 @@ void Core::forwardThumbnail(std::shared_ptr<Thumbnail> thumbnail) {
 
 void Core::trimCache() {
     QList<QString> list;
-    list << dirManager->fileNameAt(state.currentIndex - 1);
-    list << dirManager->fileNameAt(state.currentIndex);
-    list << dirManager->fileNameAt(state.currentIndex + 1);
+    list << dirManager->prevOf(state.currentFileName);
+    list << state.currentFileName;
+    list << dirManager->nextOf(state.currentFileName);
     cache->trimTo(list);
 }
 
@@ -606,7 +588,7 @@ void Core::clearCache() {
 void Core::reset() {
     state.hasActiveImage = false;
     state.isWaitingForLoader = false;
-    state.currentIndex = 0;
+    state.currentFileName = "";
     state.displayingFileName = "";
     //viewerWidget->unset();
     this->clearCache();
@@ -630,8 +612,8 @@ void Core::loadDirectory(QString path) {
     setDirectory(path);
     if(dirManager->hasImages()) {
         // open the first image
-        this->loadByIndexBlocking(0);
-        preload(1);
+        this->loadByIndex(0);
+        preload(dirManager->fileNameAt(1));
     } else {
         // we got an empty directory; show an error
         mw->showMessage("Directory does not contain supported files.");
@@ -639,17 +621,16 @@ void Core::loadDirectory(QString path) {
 }
 
 void Core::loadImage(QString path, bool blocking) {
-    DocumentInfo *info = new DocumentInfo(path);
+    QFileInfo info(path);
     // new directory
     QElapsedTimer t;
     t.start();
-    setDirectory(info->directoryPath());
-    state.currentIndex = dirManager->indexOf(info->fileName());
+    setDirectory(info.absolutePath());
+    state.currentFileName = info.fileName();
     onLoadStarted();
-    QString nameKey = dirManager->fileNameAt(state.currentIndex);
     // First check if image is already cached. If it is, just display it.
-    if(cache->contains(nameKey))
-        displayImage(cache->get(nameKey).get());
+    if(cache->contains(info.fileName()))
+        displayImage(cache->get(info.fileName()).get());
     else if(blocking)
         loader->loadBlocking(path);
     else
@@ -680,37 +661,23 @@ void Core::loadByPathBlocking(QString filePath) {
 
 bool Core::loadByIndex(int index) {
     if(index >= 0 && index < dirManager->fileCount()) {
-        state.currentIndex = index;
+        state.currentFileName = dirManager->fileNameAt(index);
         onLoadStarted();
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
         // First check if image is already cached. If it is, just display it.
-        if(cache->contains(nameKey))
-            displayImage(cache->get(nameKey).get());
+        // force reload??
+        if(cache->contains(state.currentFileName))
+            displayImage(cache->get(state.currentFileName).get());
         else
-            loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
-        preload(index - 1);
-        preload(index + 1);
-        return true;
-    }
-    return false;
-}
-
-bool Core::loadByIndexBlocking(int index) {
-    if(index >= 0 && index < dirManager->fileCount()) {
-        state.currentIndex = index;
-        onLoadStarted();
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        // First check if image is already cached. If it is, just display it.
-        if(cache->contains(nameKey))
-            displayImage(cache->get(nameKey).get());
-        else
-            loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
+            loader->loadExclusive(dirManager->fullFilePath(state.currentFileName));
+        preload(dirManager->prevOf(state.currentFileName));
+        preload(dirManager->nextOf(state.currentFileName));
         return true;
     }
     return false;
 }
 
 void Core::nextImage() {
+    /*
     if(dirManager->hasImages()) {
         int index = state.currentIndex + 1;
         if(index >= dirManager->fileCount()) {
@@ -732,10 +699,11 @@ void Core::nextImage() {
             loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         preload(index + 1);
     }
+    */
 }
 
 void Core::prevImage() {
-    if(dirManager->hasImages()) {
+    /*if(dirManager->hasImages()) {
         int index = state.currentIndex - 1;
         if(index < 0) {
             if(infiniteScrolling) {
@@ -757,6 +725,7 @@ void Core::prevImage() {
             loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
         preload(index - 1);
     }
+    */
 }
 
 void Core::jumpToFirst() {
@@ -773,9 +742,9 @@ void Core::jumpToLast() {
     }
 }
 
-void Core::preload(int index) {
-    if(settings->usePreloader() && dirManager->checkRange(index) && !cache->contains(dirManager->fileNameAt(index)))
-        loader->load(dirManager->filePathAt(index));
+void Core::preload(QString fileName) {
+    if(settings->usePreloader() && dirManager->contains(fileName) && !cache->contains(fileName))
+        loader->load(dirManager->fullFilePath(fileName));
 }
 
 void Core::onLoadStarted() {
@@ -790,26 +759,29 @@ void Core::onLoadingTimeout() {
 }
 
 void Core::onLoadFinished(std::shared_ptr<Image> img) {
-    int index = dirManager->indexOf(img->name());
-    bool isRelevant = !(index < state.currentIndex - 1 || index > state.currentIndex + 1);
-    QString nameKey = dirManager->fileNameAt(index);
-    if(isRelevant) {
-        if(!cache->insert(nameKey, img)) {
-            img = cache->get(nameKey);
+    if(img) {
+        bool isRelevant = (img->name() == state.currentFileName)
+                || (img->name() == dirManager->prevOf(state.currentFileName))
+                || (img->name() == dirManager->nextOf(state.currentFileName));
+        if(isRelevant) {
+            if(!cache->insert(img)) {
+                img = cache->get(img->name());
+            }
         }
-    }
-    if(index == state.currentIndex) {
-        // display
-        displayImage(img.get());
-        // preload nearest
-        preload(state.currentIndex - 1);
-        preload(state.currentIndex + 1);
+        if(img->name() == state.currentFileName) {
+            // display
+            displayImage(img.get());
+            // preload nearest
+            preload(dirManager->prevOf(state.currentFileName));
+            preload(dirManager->nextOf(state.currentFileName));
+        }
     }
 }
 
 void Core::onLoadFailed(QString path) {
     mw->showMessage("Load failed: " + path);
-    if(path == dirManager->filePathAt(state.currentIndex))
+    QString currentPath = dirManager->fullFilePath(state.currentFileName);
+    if(path == currentPath)
         mw->closeImage();
 }
 
@@ -833,7 +805,7 @@ void Core::displayImage(Image *img) {
         }
         state.displayingFileName = img->name();
         img->isEdited()?mw->showSaveOverlay():mw->hideSaveOverlay();
-        emit currentIndexChanged(state.currentIndex);
+        //emit currentIndexChanged(state.currentIndex);
         updateInfoString();
     } else {
         mw->showMessage("Error: could not load image.");
@@ -845,13 +817,13 @@ void Core::updateInfoString() {
     QString infoString = "";
     if(dirManager->fileCount()) {
         infoString.append("[ " +
-                          QString::number(state.currentIndex + 1) +
+                          QString::number(dirManager->indexOf(state.currentFileName) + 1) +
                           "/" +
                           QString::number(dirManager->fileCount()) +
                           " ]   ");
     }
     if(!state.isWaitingForLoader) {
-        std::shared_ptr<Image> img = cache->get(dirManager->fileNameAt(state.currentIndex));
+        std::shared_ptr<Image> img = cache->get(state.currentFileName);
         QString name, fullName = img->name();
         if(fullName.size()>95) {
             name = fullName.left(95);

@@ -37,19 +37,22 @@ public:
     QStringList fileList() const;
     QString currentDirectoryPath() const;
     QString filePathAt(int index) const;
-    bool removeAt(int index, bool trash);
+    QString fullFilePath(QString fileName) const;
+    bool removeFile(QString fileName, bool trash);
     int fileCount() const;
     bool existsInCurrentDir(QString fileName) const;
     bool isImage(QString filePath) const;
     bool hasImages() const;
     bool contains(QString fileName) const;
     bool checkRange(int index) const;
-    bool copyTo(QString destDirectory, int index);
+    bool copyTo(QString destDirectory, QString fileName);
     QString fileNameAt(int index) const;
+    QString prevOf(QString fileName) const;
+    QString nextOf(QString fileName) const;
     bool isDirectory(QString path) const;
     void sortFileList();
     void sortFileList(SortingMode mode);
-    QDateTime lastModified(int index) const;
+    QDateTime lastModified(QString fileName) const;
 
 private:
     QDir currentDir;
@@ -73,10 +76,10 @@ private:
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();
-    void fileRemovedAt(int, QString);
-    void fileModifiedAt(int);
-    void fileAddedAt(int);
-    void fileRenamed(int oldIndex, int newIndex);
+    void fileRemoved(QString, int);
+    void fileModified(QString);
+    void fileAdded(QString);
+    void fileRenamed(QString from, QString to);
 };
 
 #endif // DIRECTORYMANAGER_H

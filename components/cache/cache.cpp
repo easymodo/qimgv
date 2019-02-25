@@ -7,12 +7,14 @@ bool Cache::contains(QString name) {
     return items.contains(name);
 }
 
-bool Cache::insert(QString name, std::shared_ptr<Image> img) {
-    if(items.contains(name)) {
-        return false;
-    } else {
-        items.insert(name, new CacheItem(img));
-        return true;
+bool Cache::insert(std::shared_ptr<Image> img) {
+    if(img) {
+        if(items.contains(img->name())) {
+            return false;
+        } else {
+            items.insert(img->name(), new CacheItem(img));
+            return true;
+        }
     }
 }
 
