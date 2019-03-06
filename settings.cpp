@@ -311,14 +311,6 @@ QColor Settings::backgroundColorFullscreen() {
 void Settings::setBackgroundColorFullscreen(QColor color) {
     settings->s->setValue("bgColorFullscreen", color);
 }
-
-bool Settings::rightButtonZoom() {
-    return settings->s->value("rightButtonZoom", false).toBool();
-}
-
-void Settings::setRightButtonZoom(bool mode) {
-    settings->s->setValue("rightButtonZoom", mode);
-}
 //------------------------------------------------------------------------------
 QColor Settings::accentColor() {
     return settings->s->value("accentColor", QColor(134, 170, 103)).value<QColor>();

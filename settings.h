@@ -151,8 +151,6 @@ public:
 
     QColor backgroundColorFullscreen();
     void setBackgroundColorFullscreen(QColor color);
-    bool rightButtonZoom();
-    void setRightButtonZoom(bool mode);
 
     void sync();
 private:

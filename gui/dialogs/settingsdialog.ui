@@ -2217,16 +2217,9 @@
             </spacer>
            </item>
            <item>
-            <widget class="QCheckBox" name="rightButtonZoomCheckBox">
-             <property name="text">
-              <string>Use right mouse button for zooming</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QLabel" name="label_21">
              <property name="text">
-              <string>&lt;i&gt;&lt;small&gt;NOTE: This will override any action assigned above&lt;/small&gt;&lt;/i&gt;</string>
+              <string>&lt;i&gt;&lt;small&gt;Tip: You can zoom image by moving a cursor while pressing mousewheel&lt;/small&gt;&lt;/i&gt;</string>
              </property>
             </widget>
            </item>

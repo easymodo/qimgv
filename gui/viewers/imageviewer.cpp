@@ -1,7 +1,6 @@
 #include "imageviewer.h"
 
 // TODO: split into ImageViewerPrivate
-
 ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     pixmap(nullptr),
     movie(nullptr),
@@ -199,7 +198,6 @@ void ImageViewer::readSettings() {
     setFitMode(settings->imageFitMode());
     mouseWrapping = settings->mouseWrapping();
     checkboardGridEnabled = settings->transparencyGrid();
-    rightButtonZoomEnabled = settings->rightButtonZoom();
 }
 
 void ImageViewer::setExpandImage(bool mode) {
@@ -363,7 +361,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
     }
     mouseMoveStartPos = event->pos();
     mousePressPos = mouseMoveStartPos;
-    if(rightButtonZoomEnabled && event->button() == Qt::RightButton) {
+    if(event->button() & Qt::MiddleButton) {
         setZoomPoint(event->pos() * devicePixelRatioF());
     } else {
         QWidget::mousePressEvent(event);
@@ -380,7 +378,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
         }
         mouseInteraction = MOUSE_DRAG;
         mouseWrapping ? mouseDragWrapping(event) : mouseDrag(event);
-    } else if(rightButtonZoomEnabled && event->buttons() & Qt::RightButton && mouseInteraction != MOUSE_DRAG) {
+    } else if(event->buttons() & Qt::MiddleButton && mouseInteraction != MOUSE_DRAG) {
         // filter out possible mouse jitter by ignoring low delta drags
         if(mouseInteraction == MOUSE_ZOOM || abs(mousePressPos.y() - event->pos().y()) > ZOOM_THRESHOLD) {
             if(cursor().shape() != Qt::SizeVerCursor) {

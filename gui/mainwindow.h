@@ -85,6 +85,7 @@ private:
 
     void applyWindowedBackground();
     void applyFullscreenBackground();
+    void mouseDoubleClickEvent(QMouseEvent *event);
 private slots:
     void updateCurrentDisplay();
     void readSettings();
@@ -102,6 +103,9 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void leaveEvent(QEvent *event);
 
+    void mousePressEvent(QMouseEvent *event);
+    void keyPressEvent(QKeyEvent *event);
+    void wheelEvent(QWheelEvent *event);
 signals:
     void opened(QString);
     void fullscreenStatusChanged(bool);

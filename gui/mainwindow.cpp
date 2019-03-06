@@ -305,14 +305,33 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event) {
 }
 
 bool MainWindow::event(QEvent *event) {
-    if(event->type() == QEvent::MouseMove) {
-        return QWidget::event(event);
-    }
-    if(event->type() == QEvent::Move) {
+    if(event->type() == QEvent::Move)
         windowMoveTimer.start();
-        return QWidget::event(event);
-    }
-    return (actionManager->processEvent(event)) ? true : QWidget::event(event);
+    return QWidget::event(event);
+    //return (actionManager->processEvent(event)) ? true : QWidget::event(event);
+}
+
+// hook up to actionManager
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+    event->accept();
+    actionManager->processEvent(event);
+}
+
+void MainWindow::wheelEvent(QWheelEvent *event) {
+    event->accept();
+    actionManager->processEvent(event);
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event) {
+    event->accept();
+    actionManager->processEvent(event);
+}
+
+void MainWindow::mouseDoubleClickEvent(QMouseEvent *event) {
+    event->accept();
+    QMouseEvent *fakePressEvent = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), event->button(), event->buttons(), event->modifiers());
+    actionManager->processEvent(fakePressEvent);
+    actionManager->processEvent(event);
 }
 
 void MainWindow::close() {

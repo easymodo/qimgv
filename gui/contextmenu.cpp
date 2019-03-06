@@ -6,7 +6,7 @@ ContextMenu::ContextMenu(QWidget *parent) :
     ui(new Ui::ContextMenu)
 {
     ui->setupUi(this);
-    setWindowFlags(Qt::Popup);
+    setWindowFlags(Qt::Popup); // TODO: fix transparency on windows
     setAttribute(Qt::WA_TranslucentBackground, true);
     setAttribute(Qt::WA_NoMousePropagation, true);
     this->hide();
