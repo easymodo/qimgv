@@ -334,11 +334,9 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event) {
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *event) {
     event->accept();
-    // not sure if it is better to always emit both
-    if(!actionManager->processEvent(event)) {
-        QMouseEvent *fakePressEvent = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), event->button(), event->buttons(), event->modifiers());
-        actionManager->processEvent(fakePressEvent);
-    }
+    QMouseEvent *fakePressEvent = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), event->button(), event->buttons(), event->modifiers());
+    actionManager->processEvent(fakePressEvent);
+    actionManager->processEvent(event);
 }
 
 void MainWindow::close() {

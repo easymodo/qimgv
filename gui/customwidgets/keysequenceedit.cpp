@@ -26,8 +26,9 @@ void KeySequenceEdit::wheelEvent(QWheelEvent *e) {
 }
 
 void KeySequenceEdit::processEvent(QEvent *e) {
-    mSequence = ShortcutBuilder::fromEvent(e);
-    if(!mSequence.isEmpty()) {
+    QString tmp = ShortcutBuilder::fromEvent(e);
+    if(!tmp.isEmpty()) {
+        mSequence = tmp;
         this->setText(mSequence);
         emit edited();
     }

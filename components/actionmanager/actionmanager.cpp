@@ -83,6 +83,7 @@ void ActionManager::initShortcuts() {
 //------------------------------------------------------------------------------
 void ActionManager::addShortcut(const QString &keys, const QString &action) {
     ActionType type = validateAction(action);
+    qDebug() << "ADD" << keys << action;
     if(type != ActionType::ACTION_INVALID) {
         actionManager->shortcuts.insert(keys, action);
     }
