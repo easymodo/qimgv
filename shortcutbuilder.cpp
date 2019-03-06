@@ -47,10 +47,12 @@ QString ShortcutBuilder::processMouseEvent(QMouseEvent *event) {
     }
 
     sequence.prepend(modifierKeys(event));
-    if(event->type() == QEvent::MouseButtonDblClick/* && event->button() == Qt::LeftButton*/) {
+    // This works poorly if you do multiple fast clicks and want
+    // a single click action to occur. Maybe make it emit both sequences?
+    if(event->type() == QEvent::MouseButtonDblClick) {
         sequence.append("_DoubleClick");
         return sequence;
-    } else if(event->type() == QEvent::MouseButtonRelease) {
+    } else if(event->type() == QEvent::MouseButtonPress) {
         return sequence;
     }
     return "";

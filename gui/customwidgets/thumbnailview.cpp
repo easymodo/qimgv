@@ -275,6 +275,8 @@ void ThumbnailView::mousePressEvent(QMouseEvent *event) {
         ThumbnailWidget *item = qgraphicsitem_cast<ThumbnailWidget*>(itemAt(event->pos()));
         if(item) {
             emit thumbnailPressed(thumbnails.indexOf(item));
+            // return so we don't propagate unnecessary click to mainwindow
+            return;
         }
     }
     QGraphicsView::mousePressEvent(event);

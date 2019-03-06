@@ -18,7 +18,6 @@ CentralWidget::CentralWidget(std::shared_ptr<DocumentWidget> _docWidget, std::sh
 void CentralWidget::showDocumentView() {
     if(mode == MODE_DOCUMENT)
         return;
-
     mode = MODE_DOCUMENT;
     setCurrentIndex(0);
     widget(0)->setFocus();

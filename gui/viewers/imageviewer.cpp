@@ -93,7 +93,7 @@ void ImageViewer::displayAnimation(std::unique_ptr<QMovie> _movie) {
 
 // display & initialize
 void ImageViewer::displayImage(std::unique_ptr<QPixmap> _pixmap) {
-    bool fadeIn = false; //!mIsDisplaying && emptyViewTimer.elapsed() > FADE_IN_THRESHOLD_MS;
+    bool fadeIn = false;
     reset();
     if(_pixmap) {
         pixmap = std::move(_pixmap);
@@ -199,6 +199,7 @@ void ImageViewer::readSettings() {
     setFitMode(settings->imageFitMode());
     mouseWrapping = settings->mouseWrapping();
     checkboardGridEnabled = settings->transparencyGrid();
+    rightButtonZoomEnabled = settings->rightButtonZoom();
 }
 
 void ImageViewer::setExpandImage(bool mode) {
@@ -356,13 +357,16 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
 //  mouseInteraction: tracks which action we are performing since the last mousePressEvent()
 //
 void ImageViewer::mousePressEvent(QMouseEvent *event) {
-    QWidget::mousePressEvent(event);
-    if(!mIsDisplaying)
+    if(!mIsDisplaying) {
+        QWidget::mousePressEvent(event);
         return;
+    }
     mouseMoveStartPos = event->pos();
     mousePressPos = mouseMoveStartPos;
-    if(event->button() == Qt::RightButton) {
+    if(rightButtonZoomEnabled && event->button() == Qt::RightButton) {
         setZoomPoint(event->pos() * devicePixelRatioF());
+    } else {
+        QWidget::mousePressEvent(event);
     }
 }
 
@@ -376,7 +380,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
         }
         mouseInteraction = MOUSE_DRAG;
         mouseWrapping ? mouseDragWrapping(event) : mouseDrag(event);
-    } else if(event->buttons() & Qt::RightButton && mouseInteraction != MOUSE_DRAG) {
+    } else if(rightButtonZoomEnabled && event->buttons() & Qt::RightButton && mouseInteraction != MOUSE_DRAG) {
         // filter out possible mouse jitter by ignoring low delta drags
         if(mouseInteraction == MOUSE_ZOOM || abs(mousePressPos.y() - event->pos().y()) > ZOOM_THRESHOLD) {
             if(cursor().shape() != Qt::SizeVerCursor) {
@@ -390,9 +394,9 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
 
 void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
     unsetCursor();
-    if(!mIsDisplaying || mouseInteraction == MOUSE_NONE) {
-        QWidget::mouseReleaseEvent(event);
-    }
+    QWidget::mouseReleaseEvent(event);
+    //if(!mIsDisplaying || mouseInteraction == MOUSE_NONE) {
+    //}
     mouseInteraction = MOUSE_NONE;
 }
 

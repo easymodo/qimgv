@@ -94,7 +94,7 @@ private:
     QRect drawingRect;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
     QSize mSourceSize;
-    bool mIsDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;
+    bool mIsDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages, rightButtonZoomEnabled;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int FADE_DURATION = 140;

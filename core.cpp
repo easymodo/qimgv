@@ -666,10 +666,11 @@ bool Core::loadByIndex(int index) {
         onLoadStarted();
         // First check if image is already cached. If it is, just display it.
         // force reload??
-        if(cache->contains(state.currentFileName))
+        if(cache->contains(state.currentFileName)) {
             displayImage(cache->get(state.currentFileName).get());
-        else
+        } else {
             loader->loadExclusive(dirManager->fullFilePath(state.currentFileName));
+        }
         preload(dirManager->prevOf(state.currentFileName));
         preload(dirManager->nextOf(state.currentFileName));
         return true;

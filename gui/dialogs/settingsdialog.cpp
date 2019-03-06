@@ -87,6 +87,7 @@ void SettingsDialog::readSettings() {
     ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
     ui->showInfoOverlayCheckBox->setChecked(settings->showInfoOverlay());
+    ui->rightButtonZoomCheckBox->setChecked(settings->rightButtonZoom());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -183,6 +184,7 @@ void SettingsDialog::applySettings() {
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
     settings->setShowInfoOverlay(ui->showInfoOverlayCheckBox->isChecked());
+    settings->setRightButtonZoom(ui->rightButtonZoomCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 

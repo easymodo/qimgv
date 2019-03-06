@@ -17,10 +17,6 @@ void KeySequenceEdit::mousePressEvent(QMouseEvent *e) {
     processEvent(e);
 }
 
-void KeySequenceEdit::mouseReleaseEvent(QMouseEvent *e) {
-    processEvent(e);
-}
-
 void KeySequenceEdit::wheelEvent(QWheelEvent *e) {
     processEvent(e);
 }
