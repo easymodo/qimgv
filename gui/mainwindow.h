@@ -106,6 +106,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void wheelEvent(QWheelEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 signals:
     void opened(QString);
     void fullscreenStatusChanged(bool);

@@ -42,7 +42,7 @@ QString ShortcutBuilder::processMouseEvent(QMouseEvent *event) {
         sequence = "XButton2";
 
     sequence.prepend(modifierKeys(event));
-    if(event->type() == QEvent::MouseButtonDblClick && event->button() == Qt::LeftButton)
+    if(event->type() == QEvent::MouseButtonDblClick)
     {
         sequence.append("_DoubleClick");
         return sequence;

@@ -16,6 +16,7 @@ protected:
     void mousePressEvent(QMouseEvent *e);
     void wheelEvent(QWheelEvent *e);
 
+    void mouseReleaseEvent(QMouseEvent *e);
 private:
     void processEvent(QEvent *e);
     QString mSequence;
