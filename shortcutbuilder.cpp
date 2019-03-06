@@ -47,12 +47,11 @@ QString ShortcutBuilder::processMouseEvent(QMouseEvent *event) {
     }
 
     sequence.prepend(modifierKeys(event));
-    // ignore everything except MouseButtonPress and double clicks
-    if(event->type() == QEvent::MouseButtonDblClick && event->button() == Qt::LeftButton) {
+    if(event->type() == QEvent::MouseButtonDblClick/* && event->button() == Qt::LeftButton*/) {
         sequence.append("_DoubleClick");
         return sequence;
-    } else if(event->type() == QEvent::MouseButtonPress) {
-       return sequence;
+    } else if(event->type() == QEvent::MouseButtonRelease) {
+        return sequence;
     }
     return "";
 }

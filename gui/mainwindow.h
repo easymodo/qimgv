@@ -180,6 +180,7 @@ public slots:
     void populateThumbnailViews(int count);
     void addThumbnail(int index);
     void removeThumbnail(int index);
+    void showContextMenu();
 };
 
 #endif // MainWindow_H

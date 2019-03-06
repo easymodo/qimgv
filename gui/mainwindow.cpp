@@ -239,6 +239,10 @@ void MainWindow::removeThumbnail(int index) {
     folderView->removeItem(index);
 }
 
+void MainWindow::showContextMenu() {
+    viewerWidget->showContextMenu();
+}
+
 bool MainWindow::isCropPanelActive() {
     return (activeSidePanel == SIDEPANEL_CROP);
 }

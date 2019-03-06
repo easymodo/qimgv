@@ -20,7 +20,6 @@ inline void VideoPlayerInitProxy::initPlayer() {
         connect(player.get(), SIGNAL(durationChanged(int)), this, SIGNAL(durationChanged(int)));
         connect(player.get(), SIGNAL(positionChanged(int)), this, SIGNAL(positionChanged(int)));
         connect(player.get(), SIGNAL(videoPaused(bool)), this, SIGNAL(videoPaused(bool)));
-        connect(player.get(), SIGNAL(rightClicked()), this, SIGNAL(rightClicked()));
     }
 }
 

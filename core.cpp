@@ -157,6 +157,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(copyFileClipboard()), this, SLOT(copyFileClipboard()));
     connect(actionManager, SIGNAL(copyPathClipboard()), this, SLOT(copyPathClipboard()));
     connect(actionManager, SIGNAL(renameFile()), this, SLOT(renameRequested()));
+    connect(actionManager, SIGNAL(contextMenu()), mw, SLOT(showContextMenu()));
 }
 
 void Core::onUpdate() {

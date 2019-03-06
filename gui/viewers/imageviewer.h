@@ -48,8 +48,6 @@ signals:
     void scaleChanged(float);
     void sourceSizeChanged(QSize);
     void imageAreaChanged(QRect);
-    void rightClicked();
-    void leftClicked();
 
 public slots:
     void setFitMode(ImageFitMode mode);

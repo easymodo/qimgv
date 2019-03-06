@@ -23,8 +23,6 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     imageViewer->hide();
     connect(imageViewer.get(), SIGNAL(scalingRequested(QSize)),
             this, SIGNAL(scalingRequested(QSize)));
-    connect(imageViewer.get(), SIGNAL(rightClicked()),
-            this, SLOT(showContextMenu()));
 
     videoPlayer.reset(new VideoPlayerInitProxy(this));
     videoPlayer->hide();
@@ -35,8 +33,6 @@ ViewerWidget::ViewerWidget(QWidget *parent)
             videoControls, SLOT(setPositionSeconds(int)));
     connect(videoPlayer.get(), SIGNAL(videoPaused(bool)),
             videoControls, SLOT(onVideoPaused(bool)));
-    connect(videoPlayer.get(), SIGNAL(rightClicked()),
-            this, SLOT(showContextMenu()));
 
     connect(videoControls, SIGNAL(pause()), this, SLOT(pauseVideo()));
     connect(videoControls, SIGNAL(seekLeft()), this, SLOT(seekVideoLeft()));
@@ -272,8 +268,8 @@ bool ViewerWidget::isDisplaying() {
 }
 
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
-    event->ignore();
     hideContextMenu();
+    event->ignore();
 }
 
 void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
@@ -316,11 +312,12 @@ void ViewerWidget::showCursor() {
 }
 
 void ViewerWidget::showContextMenu() {
-    showContextMenu(cursor().pos());
+    QPoint pos = cursor().pos();
+    showContextMenu(pos);
 }
 
 void ViewerWidget::showContextMenu(QPoint pos) {
-    if(interactionEnabled()) {
+    if(isVisible() && interactionEnabled()) {
         if(!contextMenu)
             contextMenu.reset(new ContextMenu());
         contextMenu->setImageEntriesEnabled(isDisplaying());
@@ -329,9 +326,8 @@ void ViewerWidget::showContextMenu(QPoint pos) {
 }
 
 void ViewerWidget::hideContextMenu() {
-    if(!contextMenu)
-        contextMenu.reset(new ContextMenu());
-    contextMenu->hide();
+    if(contextMenu)
+        contextMenu->hide();
 }
 
 void ViewerWidget::hideEvent(QHideEvent *event) {

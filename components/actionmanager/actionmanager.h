@@ -104,6 +104,7 @@ signals:
     void copyFileClipboard();
     void copyPathClipboard();
     void renameFile();
+    void contextMenu();
 };
 
 extern ActionManager *actionManager;

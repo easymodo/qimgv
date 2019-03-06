@@ -36,21 +36,21 @@
     <number>7</number>
    </property>
    <property name="leftMargin">
-    <number>12</number>
+    <number>10</number>
    </property>
    <property name="topMargin">
-    <number>12</number>
+    <number>8</number>
    </property>
    <property name="rightMargin">
-    <number>12</number>
+    <number>10</number>
    </property>
    <property name="bottomMargin">
-    <number>12</number>
+    <number>8</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0">
      <property name="spacing">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="leftMargin">
       <number>0</number>
@@ -79,7 +79,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="accessibleName">
-        <string>ButtonSetLeft</string>
+        <string>Button</string>
        </property>
        <property name="text">
         <string/>
@@ -91,6 +91,22 @@
         </size>
        </property>
       </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>4</width>
+         <height>5</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item>
       <widget class="QPushButton" name="prevFrameButton">
@@ -116,7 +132,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="accessibleName">
-        <string>ButtonSetMid</string>
+        <string>ButtonSetLeft</string>
        </property>
        <property name="text">
         <string/>
