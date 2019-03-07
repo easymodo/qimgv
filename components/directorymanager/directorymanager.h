@@ -54,6 +54,8 @@ public:
     void sortFileList(SortingMode mode);
     QDateTime lastModified(QString fileName) const;
 
+    QString first();
+    QString last();
 private:
     QDir currentDir;
     QStringList mFileNameList;

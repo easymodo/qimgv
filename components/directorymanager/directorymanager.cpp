@@ -113,11 +113,25 @@ QString DirectoryManager::filePathAt(int index) const {
 }
 
 QString DirectoryManager::fullFilePath(QString fileName) const {
-    return currentDir.absolutePath() + "/" + fileName;
+    return fileName.isEmpty() ? "" : currentDir.absolutePath() + "/" + fileName;
 }
 
 QString DirectoryManager::fileNameAt(int index) const {
     return checkRange(index) ? mFileNameList.at(index) : "";
+}
+
+QString DirectoryManager::first() {
+    QString fileName = "";
+    if(mFileNameList.count())
+        fileName = mFileNameList.at(0);
+    return fileName;
+}
+
+QString DirectoryManager::last() {
+    QString fileName = "";
+    if(mFileNameList.count())
+        fileName = mFileNameList.at(mFileNameList.count() - 1);
+    return fileName;
 }
 
 QString DirectoryManager::prevOf(QString fileName) const {

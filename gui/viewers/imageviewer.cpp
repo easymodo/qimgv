@@ -392,9 +392,9 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
 
 void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
     unsetCursor();
-    QWidget::mouseReleaseEvent(event);
-    //if(!mIsDisplaying || mouseInteraction == MOUSE_NONE) {
-    //}
+    if(!mIsDisplaying || mouseInteraction == MOUSE_NONE) {
+        QWidget::mouseReleaseEvent(event);
+    }
     mouseInteraction = MOUSE_NONE;
 }
 

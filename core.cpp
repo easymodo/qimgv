@@ -103,10 +103,10 @@ void Core::connectComponents() {
     connect(scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest)),
             this, SLOT(onScalingFinished(QPixmap*,ScalerRequest)));
     // filesystem changes
-    connect(dirManager, SIGNAL(fileRemovedAt(int, QString)), this, SLOT(onFileRemoved(int, QString)));
-    connect(dirManager, SIGNAL(fileAddedAt(int)), this, SLOT(onFileAdded(int)));
-    connect(dirManager, SIGNAL(fileModifiedAt(int)), this, SLOT(onFileModified(int)));
-    connect(dirManager, SIGNAL(fileRenamed(int, int)), this, SLOT(onFileRenamed(int, int)));
+    connect(dirManager, SIGNAL(fileRemoved(QString, int)), this, SLOT(onFileRemoved(QString, int)));
+    connect(dirManager, SIGNAL(fileAdded(QString)), this, SLOT(onFileAdded(QString)));
+    connect(dirManager, SIGNAL(fileModified(QString)), this, SLOT(onFileModified(QString)));
+    connect(dirManager, SIGNAL(fileRenamed(QString, QString)), this, SLOT(onFileRenamed(QString, QString)));
 }
 
 void Core::initActions() {
@@ -679,55 +679,47 @@ bool Core::loadByIndex(int index) {
 }
 
 void Core::nextImage() {
-    /*
-    if(dirManager->hasImages()) {
-        int index = state.currentIndex + 1;
-        if(index >= dirManager->fileCount()) {
-            if(infiniteScrolling) {
-                index = 0;
-            } else {
-                if(!state.isWaitingForLoader)
-                    mw->showMessageDirectoryEnd();
-                return;
-            }
+    if(!dirManager->hasImages())
+        return;
+    QString next = dirManager->nextOf(state.currentFileName);
+    if(next.isEmpty()) {
+        if(infiniteScrolling) {
+            next = dirManager->first();
+        } else {
+            if(!state.isWaitingForLoader)
+                mw->showMessageDirectoryEnd();
+            return;
         }
-        state.currentIndex = index;
-        onLoadStarted();
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        // First check if image is already cached. If it is, just display it.
-        if(cache->contains(nameKey))
-            displayImage(cache->get(nameKey).get());
-        else
-            loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
-        preload(index + 1);
     }
-    */
+    state.currentFileName = next;
+    onLoadStarted();
+    if(cache->contains(state.currentFileName))
+        displayImage(cache->get(state.currentFileName).get());
+    else
+        loader->loadExclusive(dirManager->fullFilePath(state.currentFileName));
+    preload(dirManager->nextOf(state.currentFileName));
 }
 
 void Core::prevImage() {
-    /*if(dirManager->hasImages()) {
-        int index = state.currentIndex - 1;
-        if(index < 0) {
-            if(infiniteScrolling) {
-                index = dirManager->fileCount() - 1;
-            }
-            else {
-                if(!state.isWaitingForLoader)
-                    mw->showMessageDirectoryStart();
-                return;
-            }
+    if(!dirManager->hasImages())
+        return;
+    QString next = dirManager->prevOf(state.currentFileName);
+    if(next.isEmpty()) {
+        if(infiniteScrolling) {
+            next = dirManager->last();
+        } else {
+            if(!state.isWaitingForLoader)
+                mw->showMessageDirectoryStart();
+            return;
         }
-        state.currentIndex = index;
-        onLoadStarted();
-        QString nameKey = dirManager->fileNameAt(state.currentIndex);
-        // First check if image is already cached. If it is, just display it.
-        if(cache->contains(nameKey))
-            displayImage(cache->get(nameKey).get());
-        else
-            loader->loadExclusive(dirManager->filePathAt(state.currentIndex));
-        preload(index - 1);
     }
-    */
+    state.currentFileName = next;
+    onLoadStarted();
+    if(cache->contains(state.currentFileName))
+        displayImage(cache->get(state.currentFileName).get());
+    else
+        loader->loadExclusive(dirManager->fullFilePath(state.currentFileName));
+    preload(dirManager->prevOf(state.currentFileName));
 }
 
 void Core::jumpToFirst() {
@@ -824,19 +816,20 @@ void Core::updateInfoString() {
                           QString::number(dirManager->fileCount()) +
                           " ]   ");
     }
+    QString name, fullName = state.currentFileName;
+    if(fullName.size()>95) {
+        name = fullName.left(95);
+        name.append(" (...) ");
+        name.append(fullName.right(12));
+    } else {
+        name = fullName;
+    }
+    infoString.append(name);
     if(!state.isWaitingForLoader) {
         std::shared_ptr<Image> img = cache->get(state.currentFileName);
-        QString name, fullName = img->name();
-        if(fullName.size()>95) {
-            name = fullName.left(95);
-            name.append(" (...) ");
-            name.append(fullName.right(12));
-        } else {
-            name = fullName;
-        }
-        infoString.append(name + "  (");
+
         if(img->width()) {
-            infoString.append(QString::number(img->width()) +
+            infoString.append("  (" + QString::number(img->width()) +
                               " x " +
                               QString::number(img->height()) +
                               "  ");
