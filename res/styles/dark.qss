@@ -485,3 +485,6 @@ ContextMenu QLabel {
 }
 
 /*----------------------------------------------------------------------------*/
+ControlsOverlay {
+    background-color: #1a1a1b;
+}

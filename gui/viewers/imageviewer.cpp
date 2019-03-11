@@ -101,7 +101,6 @@ void ImageViewer::reset() {
     pixmap.reset(nullptr);
     stopAnimation();
     movie.reset(nullptr);
-    emptyViewTimer.start();
 }
 
 // unsetImage, then update and show cursor
@@ -172,8 +171,6 @@ void ImageViewer::setExpandImage(bool mode) {
 
 void ImageViewer::show() {
     setMouseTracking(false);
-    if(!isDisplaying() && isHidden())
-        emptyViewTimer.start();
     QWidget::show();
     setMouseTracking(true);
 }

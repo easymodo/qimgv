@@ -5,12 +5,11 @@
 #include <QDesktopWidget>
 #include <QPaintEvent>
 #include <QPainter>
-#include <QImageReader>
+//#include <QImageReader>
 #include <QMovie>
 #include <QColor>
 #include <QPalette>
 #include <QTimer>
-#include <QElapsedTimer>
 #include <QDebug>
 #include <QPropertyAnimation>
 #include <cmath>
@@ -85,7 +84,6 @@ private:
     std::unique_ptr<QMovie> movie;
     QTransform transform;
     QTimer *cursorTimer, *animationTimer;
-    QElapsedTimer emptyViewTimer;
     QRect drawingRect;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
     QSize mSourceSize;
