@@ -10,7 +10,6 @@
 #include <QColor>
 #include <QPalette>
 #include <QTimer>
-#include <QTimeLine>
 #include <QElapsedTimer>
 #include <QDebug>
 #include <QPropertyAnimation>
@@ -81,27 +80,21 @@ private slots:
     void nextFrame();
     void requestScaling();
 
-    void doFadeIn();
-    void fadeFrame(int frame);
-    void stopFadeIn();
 private:
     std::unique_ptr<QPixmap> pixmap;
     std::unique_ptr<QMovie> movie;
     QTransform transform;
     QTimer *cursorTimer, *animationTimer;
     QElapsedTimer emptyViewTimer;
-    QTimeLine fadeTimeLine;
     QRect drawingRect;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
     QSize mSourceSize;
-    bool mIsDisplaying, mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;
+    bool mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
-    const int FADE_DURATION = 140;
     const int SCROLL_DISTANCE = 250;
     const int animationSpeed = 150;
     const int ZOOM_THRESHOLD = 4; // pixels
-    const int FADE_IN_THRESHOLD_MS = 160;
     float maxScaleLimit = 4.0;
     float maxResolutionLimit = 75.0; // in megapixels
     float mOpacity;
