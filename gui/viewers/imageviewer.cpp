@@ -71,9 +71,9 @@ void ImageViewer::displayAnimation(std::unique_ptr<QMovie> _movie) {
         reset();
         movie = std::move(_movie);
         movie->jumpToFrame(0);
-        readjust(movie->currentPixmap().size(), movie->currentPixmap().rect());
         pixmap = std::unique_ptr<QPixmap>(new QPixmap());
         *pixmap = movie->currentPixmap().transformed(transform, Qt::SmoothTransformation);
+        readjust(pixmap->size(), pixmap->rect());
         if(settings->transparencyGrid())
             drawTransparencyGrid();
         startAnimation();

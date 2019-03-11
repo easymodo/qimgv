@@ -11,9 +11,6 @@ void Loader::clearTasks() {
 }
 
 void Loader::loadBlocking(QString path) {
-    if(bufferedTasks.contains(path)) {
-        return;
-    }
     LoaderRunnable *runnable = new LoaderRunnable(path);
     runnable->setAutoDelete(false);
     tasks.insert(path, runnable);
