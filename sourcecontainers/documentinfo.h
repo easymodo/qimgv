@@ -25,8 +25,6 @@ public:
     QString filePath() const;
     QString fileName() const;
     QString baseName() const;
-
-    // in KB
     int fileSize() const;
     DocumentType type() const;
 

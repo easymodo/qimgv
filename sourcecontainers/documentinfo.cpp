@@ -37,9 +37,9 @@ QString DocumentInfo::baseName() const {
     return fileInfo.baseName();
 }
 
-// in KB
+// bytes
 int DocumentInfo::fileSize() const {
-    return static_cast<int>(fileInfo.size() / 1024);
+    return static_cast<int>(fileInfo.size());
 }
 
 DocumentType DocumentInfo::type() const {

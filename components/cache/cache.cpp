@@ -39,7 +39,6 @@ std::shared_ptr<Image> Cache::get(QString name) {
         CacheItem *item = items.value(name);
         return item->getContents();
     } else {
-        qDebug() << "Cache::get() - !!! returning nullptr for " << name << ". There is a bug in logic somewhere!";
         return nullptr;
     }
 }

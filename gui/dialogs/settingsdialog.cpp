@@ -6,7 +6,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
-    this->setWindowTitle("Preferences - qimgv");
+    this->setWindowTitle("Preferences — " + qApp->applicationName());
     ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->windowColorLabel->setAutoFillBackground(true);
     ui->fullscreenColorLabel->setAutoFillBackground(true);
@@ -87,6 +87,10 @@ void SettingsDialog::readSettings() {
     ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
     ui->showInfoOverlayCheckBox->setChecked(settings->showInfoOverlay());
+    ui->titleFileIndexCheckBox->setChecked(settings->windowTitleIndex());
+    ui->titleDimensionsCheckBox->setChecked(settings->windowTitleDimensions());
+    ui->titleSizeCheckBox->setChecked(settings->windowTitleSize());
+    ui->titleNameCheckBox->setChecked(settings->windowTitleProgramName());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -183,6 +187,10 @@ void SettingsDialog::applySettings() {
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
     settings->setShowInfoOverlay(ui->showInfoOverlayCheckBox->isChecked());
+    settings->setWindowTitleIndex(ui->titleFileIndexCheckBox->isChecked());
+    settings->setWindowTitleDimensions(ui->titleDimensionsCheckBox->isChecked());
+    settings->setWindowTitleSize(ui->titleSizeCheckBox->isChecked());
+    settings->setWindowProgramName(ui->titleNameCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 

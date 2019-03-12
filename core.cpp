@@ -296,20 +296,14 @@ void Core::onFileRemoved(QString fileName, int index) {
     if(state.currentFileName == fileName) {
         if(!dirManager->fileCount()) {
             mw->closeImage();
-            mw->setInfoString("No file opened.");
         } else {
             if(!loadByIndex(index))
                 loadByIndex(--index);
         }
-    } /*else if(state.currentIndex > index) {
-        state.currentIndex--;
-        emit currentIndexChanged(state.currentIndex);
-    } */
-    updateInfoString();
+    }
+    //updateInfoString();
 }
 
-// MESS
-// need to use something else to correctly identify files (name + modify time?)
 void Core::onFileRenamed(QString from, QString to) {
     cache->remove(from);
     if(state.currentFileName == from) {
@@ -743,7 +737,7 @@ void Core::preload(QString fileName) {
 
 void Core::onLoadStarted() {
     state.isWaitingForLoader = true;
-    updateInfoString();
+    //updateInfoString();
     loadingTimer->start();
     trimCache();
 }
@@ -783,7 +777,7 @@ void Core::displayImage(Image *img) {
     loadingTimer->stop();
     state.isWaitingForLoader = false;
     state.hasActiveImage = true;
-    if(img) {  // && img->name() != state.displayingFileName) {
+    if(img) {
         DocumentType type = img->type();
         if(type == STATIC) {
             mw->showImage(img->getPixmap());
@@ -806,35 +800,17 @@ void Core::displayImage(Image *img) {
     }
 }
 
-// TODO: this looks ugly
 void Core::updateInfoString() {
-    QString infoString = "";
-    if(dirManager->fileCount()) {
-        infoString.append("[ " +
-                          QString::number(dirManager->indexOf(state.currentFileName) + 1) +
-                          "/" +
-                          QString::number(dirManager->fileCount()) +
-                          " ]   ");
+    QSize imageSize(0,0);
+    int fileSize = 0;
+    std::shared_ptr<Image> img = cache->get(state.currentFileName);
+    if(img) {
+        imageSize = img->size();
+        fileSize  = img->fileSize();
     }
-    QString name, fullName = state.currentFileName;
-    if(fullName.size()>95) {
-        name = fullName.left(95);
-        name.append(" (...) ");
-        name.append(fullName.right(12));
-    } else {
-        name = fullName;
-    }
-    infoString.append(name);
-    if(!state.isWaitingForLoader) {
-        std::shared_ptr<Image> img = cache->get(state.currentFileName);
-
-        if(img->width()) {
-            infoString.append("  (" + QString::number(img->width()) +
-                              " x " +
-                              QString::number(img->height()) +
-                              "  ");
-        }
-        infoString.append(QString::number(img->fileSize()) + " KB)");
-    }
-    mw->setInfoString(infoString);
+    mw->setCurrentInfo(dirManager->indexOf(state.currentFileName),
+                       dirManager->fileCount(),
+                       state.currentFileName,
+                       imageSize,
+                       fileSize);
 }

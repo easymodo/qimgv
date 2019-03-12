@@ -165,9 +165,6 @@ void MainWindow::setupUi() {
     connect(this, SIGNAL(setDirectoryPath(QString)),
             folderView.get(), SLOT(setDirectoryPath(QString)));
 
-    connect(this, SIGNAL(closeImage()),
-            viewerWidget.get(), SLOT(closeImage()));
-
     connect(this, SIGNAL(toggleFolderView()),
             centralWidget.get(), SLOT(toggleViewMode()));
 
@@ -207,6 +204,11 @@ void MainWindow::switchFitMode() {
         viewerWidget->setFitMode(FIT_ORIGINAL);
     else
         viewerWidget->setFitMode(FIT_WINDOW);
+}
+
+void MainWindow::closeImage() {
+    viewerWidget->closeImage();
+    infoOverlay->setText("No file opened.");
 }
 
 void MainWindow::showImage(std::unique_ptr<QPixmap> pixmap) {
@@ -568,9 +570,18 @@ void MainWindow::closeFullScreenOrExit() {
     }
 }
 
-void MainWindow::setInfoString(QString text) {
-    infoOverlay->setText(text);
-    setWindowTitle(text);
+void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize) {
+    QString title = fileName;
+    if(settings->windowTitleIndex())
+        title.prepend(QString::number(fileIndex + 1) + "/" + QString::number(fileCount) + " - ");
+    if(settings->windowTitleDimensions())
+        title.append(" - " + QString::number(imageSize.width()) + " x " + QString::number(imageSize.height()));
+    if(settings->windowTitleSize())
+        title.append(" - " + QString::number(fileSize / 1024) + " KB");
+    infoOverlay->setText(title);
+    if(settings->windowTitleProgramName())
+        title.append(" — " + qApp->applicationName());
+    setWindowTitle(title);
 }
 
 void MainWindow::showMessageDirectoryEnd() {

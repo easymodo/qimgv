@@ -153,6 +153,14 @@ public:
     void setBackgroundColorFullscreen(QColor color);
 
     void sync();
+    bool windowTitleIndex();
+    void setWindowTitleIndex(bool mode);
+    bool windowTitleDimensions();
+    void setWindowTitleDimensions(bool mode);
+    bool windowTitleSize();
+    void setWindowTitleSize(bool mode);
+    bool windowTitleProgramName();
+    void setWindowProgramName(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;

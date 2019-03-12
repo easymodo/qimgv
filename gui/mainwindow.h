@@ -47,6 +47,7 @@ public:
     void showAnimation(std::unique_ptr<QMovie> movie);
     void showVideo(Clip *clip);
 
+    void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize);
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;
     QHBoxLayout layout;
@@ -143,7 +144,6 @@ signals:
     void enableFolderView();
     void enableDocumentView();
     void setDirectoryPath(QString);
-    void closeImage();
     void toggleFolderView();
 
 public slots:
@@ -155,7 +155,6 @@ public slots:
     void showResizeDialog(QSize initialSize);
     void showSettings();
     void triggerFullScreen();
-    void setInfoString(QString);
     void showMessageDirectoryEnd();
     void showMessageDirectoryStart();
     void showMessageFitWindow();
@@ -182,6 +181,7 @@ public slots:
     void fitWidth();
     void fitOriginal();
     void switchFitMode();
+    void closeImage();
     void populateThumbnailViews(int count);
     void addThumbnail(int index);
     void removeThumbnail(int index);
