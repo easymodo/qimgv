@@ -161,6 +161,8 @@ public:
     void setWindowTitleSize(bool mode);
     bool windowTitleProgramName();
     void setWindowProgramName(bool mode);
+    bool cursorAutohide();
+    void setCursorAutohide(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;

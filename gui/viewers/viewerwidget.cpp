@@ -297,8 +297,9 @@ void ViewerWidget::hideCursor() {
     // todo: find a better solution without reparenting
     // maybe keep a list of pointers in OverlayContainerWidget on overlay attach?
     if(this->underMouse() && !videoControls->underMouse() && isDisplaying()) {
-        setCursor(QCursor(Qt::BlankCursor));
-        videoControls->hide();
+        if(settings->cursorAutohide())
+            setCursor(QCursor(Qt::BlankCursor));
+        videoControls->hide(); // todo: separate
     }
 }
 

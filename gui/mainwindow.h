@@ -48,6 +48,8 @@ public:
     void showVideo(Clip *clip);
 
     void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize);
+    std::shared_ptr<IDirectoryView> getFolderView();
+    std::shared_ptr<IDirectoryView> getThumbnailPanel();
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;
     QHBoxLayout layout;
@@ -182,9 +184,6 @@ public slots:
     void fitOriginal();
     void switchFitMode();
     void closeImage();
-    void populateThumbnailViews(int count);
-    void addThumbnail(int index);
-    void removeThumbnail(int index);
     void showContextMenu();
 };
 

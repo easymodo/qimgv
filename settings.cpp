@@ -649,6 +649,14 @@ bool Settings::windowTitleProgramName() {
 void Settings::setWindowProgramName(bool mode) {
     settings->s->setValue("windowTitleProgramName", mode);
 }
+
+bool Settings::cursorAutohide() {
+    return settings->s->value("cursorAutohiding", true).toBool();
+}
+
+void Settings::setCursorAutohide(bool mode) {
+    settings->s->setValue("cursorAutohiding", mode);
+}
 //------------------------------------------------------------------------------
 bool Settings::firstRun() {
     return settings->s->value("firstRun", true).toBool();

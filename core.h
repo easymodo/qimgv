@@ -3,22 +3,18 @@
 
 #include <QObject>
 #include <QDebug>
-#include <QTimer>
 #include <QMutex>
 #include <QClipboard>
 #include <malloc.h>
 #include "appversion.h"
 #include "settings.h"
-#include "components/directorymanager/directorymanager.h"
-#include "components/loader/loader.h"
-#include "components/scaler/scaler.h"
-#include "components/thumbnailer/thumbnailer.h"
+#include "components/directorymodel.h"
+#include "components/directorypresenter.h"
 #include "components/scriptmanager/scriptmanager.h"
 #include "gui/mainwindow.h"
 
 struct State {
-    State() : currentFileName(""), hasActiveImage(false), isWaitingForLoader(false) {}
-    QString currentFileName, displayingFileName;
+    State() : hasActiveImage(false), isWaitingForLoader(false) {}
     bool hasActiveImage, isWaitingForLoader;
 };
 
@@ -57,16 +53,12 @@ private:
     MainWindow *mw;
 
     State state;
-    QTimer *loadingTimer; // this is for loading message delay. TODO: replace with something better
-
     bool infiniteScrolling;
 
     // components
-    Loader *loader;
-    DirectoryManager *dirManager;
-    Cache *cache;
-    Scaler *scaler;
-    Thumbnailer *thumbnailer;
+    std::shared_ptr<DirectoryModel> model;
+
+    DirectoryPresenter presenter;
 
     void rotateByDegrees(int degrees);
     void reset();
@@ -86,7 +78,6 @@ private slots:
     void onLoadFinished(std::shared_ptr<Image> img);
     void onLoadFailed(QString path);
     void onLoadStarted();
-    void onLoadingTimeout();
     void clearCache();
     void rotateLeft();
     void rotateRight();

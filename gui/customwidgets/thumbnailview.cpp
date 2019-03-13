@@ -56,6 +56,10 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     connect(this, SIGNAL(scrolled()), this, SLOT(loadVisibleThumbnailsDelayed()));
 }
 
+void ThumbnailView::setDirectoryPath(QString path) {
+
+}
+
 void ThumbnailView::showEvent(QShowEvent *event) {
     QGraphicsView::showEvent(event);
     ensureSelectedItemVisible();

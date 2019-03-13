@@ -82,6 +82,12 @@ int main(int argc, char *argv[]) {
     actionManager = ActionManager::getInstance();
     shrRes = SharedResources::getInstance();
 
+#ifdef __linux__
+    QString platform = QProcessEnvironment::systemEnvironment().value("QT_QPA_PLATFORM", "");
+    if(platform.startsWith("wayland"))
+        settings->setCursorAutohide(false);
+#endif
+
     atexit(saveSettings);
 
     QFile file(":/res/styles/dark.qss");

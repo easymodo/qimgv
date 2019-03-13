@@ -19,38 +19,37 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include "gui/customwidgets/thumbnailwidget.h"
-
-
+#include "gui/idirectoryview.h"
 
 enum ThumbnailViewOrientation {
     THUMBNAILVIEW_HORIZONTAL,
     THUMBNAILVIEW_VERTICAL
 };
 
-class ThumbnailView : public QGraphicsView {
+class ThumbnailView : public QGraphicsView, public IDirectoryView {
     Q_OBJECT
 public:
     ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent = nullptr);
+    virtual void setDirectoryPath(QString path) Q_DECL_OVERRIDE;
 
 public slots:
     void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
-    void populate(int count);
-    void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb);
     void resetViewport();
     int thumbnailSize();
     void loadVisibleThumbnails();
     void loadVisibleThumbnailsDelayed();
 
     void addItem();
-    void insertItem(int index);
-    void removeItem(int index);
 
-    virtual void selectIndex(int index) = 0;
+    virtual void populate(int count) Q_DECL_OVERRIDE;
+    virtual void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) Q_DECL_OVERRIDE;
+    virtual void insertItem(int index) Q_DECL_OVERRIDE;
+    virtual void removeItem(int index) Q_DECL_OVERRIDE;
 
 signals:
     void scrolled();
-    void thumbnailPressed(int);
-    void thumbnailRequested(QList<int>, int);
+    void thumbnailPressed(int) Q_DECL_OVERRIDE;
+    void thumbnailRequested(QList<int>, int) Q_DECL_OVERRIDE;
 
 private:
     ThumbnailViewOrientation orientation;
@@ -92,7 +91,6 @@ protected:
 private slots:
     void centerOnX(int);
     void centerOnY(int);
-
 };
 
 #endif // THUMBNAILVIEW_H

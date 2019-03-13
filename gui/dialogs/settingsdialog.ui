@@ -364,9 +364,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-315</y>
                 <width>386</width>
-                <height>724</height>
+                <height>752</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -950,19 +950,6 @@
                  <property name="rightMargin">
                   <number>9</number>
                  </property>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_6">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="text">
-                    <string>Directory sorting: </string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="1">
                   <widget class="QComboBox" name="sortingComboBox">
                    <property name="sizePolicy">
@@ -1001,6 +988,19 @@
                      <string>Size (desc.)</string>
                     </property>
                    </item>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_6">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Directory sorting: </string>
+                   </property>
                   </widget>
                  </item>
                  <item row="1" column="0" colspan="2">
@@ -1045,6 +1045,13 @@
                    </property>
                    <property name="text">
                     <string>Enable mouse wrapping</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0" colspan="2">
+                  <widget class="QCheckBox" name="cursorAutohideCheckBox">
+                   <property name="text">
+                    <string>Cursor autohiding</string>
                    </property>
                   </widget>
                  </item>
@@ -1098,8 +1105,8 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-57</y>
-                <width>386</width>
+                <y>0</y>
+                <width>279</width>
                 <height>508</height>
                </rect>
               </property>

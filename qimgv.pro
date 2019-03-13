@@ -146,7 +146,10 @@ SOURCES += \
     utils/helprunner.cpp \
     gui/customwidgets/actionbutton.cpp \
     gui/customwidgets/menuitem.cpp \
-    gui/customwidgets/pathselectormenuitem.cpp
+    gui/customwidgets/pathselectormenuitem.cpp \
+    components/directorymodel.cpp \
+    components/directorypresenter.cpp \
+    gui/idirectoryview.cpp
 
 HEADERS += \
     core.h \
@@ -235,7 +238,10 @@ HEADERS += \
     utils/helprunner.h \
     gui/customwidgets/actionbutton.h \
     gui/customwidgets/menuitem.h \
-    gui/customwidgets/pathselectormenuitem.h
+    gui/customwidgets/pathselectormenuitem.h \
+    components/directorymodel.h \
+    components/directorypresenter.h \
+    gui/idirectoryview.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \

@@ -91,6 +91,7 @@ void SettingsDialog::readSettings() {
     ui->titleDimensionsCheckBox->setChecked(settings->windowTitleDimensions());
     ui->titleSizeCheckBox->setChecked(settings->windowTitleSize());
     ui->titleNameCheckBox->setChecked(settings->windowTitleProgramName());
+    ui->cursorAutohideCheckBox->setChecked(settings->cursorAutohide());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -191,6 +192,7 @@ void SettingsDialog::applySettings() {
     settings->setWindowTitleDimensions(ui->titleDimensionsCheckBox->isChecked());
     settings->setWindowTitleSize(ui->titleSizeCheckBox->isChecked());
     settings->setWindowProgramName(ui->titleNameCheckBox->isChecked());
+    settings->setCursorAutohide(ui->cursorAutohideCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 

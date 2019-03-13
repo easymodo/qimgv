@@ -226,21 +226,6 @@ void MainWindow::showVideo(Clip *clip) {
     viewerWidget->showVideo(clip);
 }
 
-void MainWindow::populateThumbnailViews(int count) {
-    folderView->populate(count);
-    thumbnailStrip->populate(count);
-}
-
-void MainWindow::addThumbnail(int index) {
-    thumbnailStrip->insertItem(index);
-    folderView->insertItem(index);
-}
-
-void MainWindow::removeThumbnail(int index) {
-    thumbnailStrip->removeItem(index);
-    folderView->removeItem(index);
-}
-
 void MainWindow::showContextMenu() {
     viewerWidget->showContextMenu();
 }
@@ -387,6 +372,7 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 }
 
 void MainWindow::leaveEvent(QEvent *event) {
+    QWidget::leaveEvent(event);
     if(mainPanel)
         mainPanel->hideAnimated();
 }
@@ -511,7 +497,7 @@ void MainWindow::showCropPanel() {
         return;
 
     if(activeSidePanel != SIDEPANEL_CROP) {
-        mainPanel->hide();
+        (mainPanel)->hide();
         sidePanel->setWidget(cropPanel);
         sidePanel->show();
         cropOverlay->show();
@@ -578,10 +564,18 @@ void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, 
         title.append(" - " + QString::number(imageSize.width()) + " x " + QString::number(imageSize.height()));
     if(settings->windowTitleSize())
         title.append(" - " + QString::number(fileSize / 1024) + " KB");
-    infoOverlay->setText(title);
+    infoOverlay->setText(title); // temporary
     if(settings->windowTitleProgramName())
         title.append(" — " + qApp->applicationName());
     setWindowTitle(title);
+}
+
+std::shared_ptr<IDirectoryView> MainWindow::getFolderView() {
+    return folderView;
+}
+
+std::shared_ptr<IDirectoryView> MainWindow::getThumbnailPanel() {
+    return thumbnailStrip;
 }
 
 void MainWindow::showMessageDirectoryEnd() {
