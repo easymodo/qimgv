@@ -84,7 +84,7 @@ void DirectoryManager::setDirectory(QString path) {
 
         connect(watcher, &DirectoryWatcher::fileRenamed, this, [this] (const QString& file1, const QString& file2) {
             qDebug() << "[w] file renamed from" << file1 << "to" << file2;
-            if(isImage(this->currentDirectoryPath() + "/" + file2))
+            if(isImage(this->absolutePath() + "/" + file2))
                 onFileRenamedExternal(file1, file2);
         });
     }
@@ -104,7 +104,7 @@ QStringList DirectoryManager::fileList() const {
     return files;
 }
 
-QString DirectoryManager::currentDirectoryPath() const {
+QString DirectoryManager::absolutePath() const {
     return currentDir.absolutePath();
 }
 
@@ -152,7 +152,7 @@ QString DirectoryManager::nextOf(QString fileName) const {
 
 bool DirectoryManager::removeFile(QString fileName, bool trash) {
     bool result = false;
-    if(!mFileNameList.contains(fileName))
+    if(!contains(fileName))
         return result;
     QString path = fullFilePath(fileName);
     QFile file(path);
@@ -271,17 +271,13 @@ bool DirectoryManager::checkRange(int index) const {
 }
 
 bool DirectoryManager::copyTo(QString destDirectory, QString fileName) {
-    if(!mFileNameList.contains(fileName))
+    if(!contains(fileName))
         return false;
     return QFile::copy(fullFilePath(fileName), destDirectory + "/" + fileName);
 }
 
 int DirectoryManager::fileCount() const {
     return mFileNameList.length();
-}
-
-bool DirectoryManager::existsInCurrentDir(QString fileName) const {
-    return mFileNameList.contains(fileName, Qt::CaseSensitive);
 }
 
 bool DirectoryManager::isDirectory(QString path) const {
@@ -291,7 +287,7 @@ bool DirectoryManager::isDirectory(QString path) const {
 
 QDateTime DirectoryManager::lastModified(QString fileName) const {
     QFileInfo info;
-    if(mFileNameList.contains(fileName))
+    if(contains(fileName))
         info.setFile(fullFilePath(fileName));
     return info.lastModified();
 }
@@ -314,12 +310,12 @@ bool DirectoryManager::isImage(QString filePath) const {
     return false;
 }
 
-bool DirectoryManager::hasImages() const {
-    return !mFileNameList.empty();
+bool DirectoryManager::isEmpty() const {
+    return mFileNameList.empty();
 }
 
 bool DirectoryManager::contains(QString fileName) const {
-    return mFileNameList.contains(fileName);
+    return mFileNameList.contains(fileName, Qt::CaseSensitive);
 }
 
 // ##############################################################
@@ -369,7 +365,7 @@ void DirectoryManager::generateFileListDeep() {
 */
 
 void DirectoryManager::onFileRemovedExternal(QString fileName) {
-    if(mFileNameList.contains(fileName)) {
+    if(contains(fileName)) {
         int index = mFileNameList.indexOf(fileName);
         mFileNameList.removeOne(fileName);
         emit fileRemoved(fileName, index);
@@ -377,7 +373,7 @@ void DirectoryManager::onFileRemovedExternal(QString fileName) {
 }
 
 void DirectoryManager::onFileAddedExternal(QString fileName) {
-    if(mFileNameList.contains(fileName)) { // file changed
+    if(contains(fileName)) { // file changed
         qDebug() << "DirectoryManager::onFileAddedExternal - file already in list " << fileName;
     } else { // file added
         // TODO: fast sorted inserts
@@ -390,7 +386,7 @@ void DirectoryManager::onFileAddedExternal(QString fileName) {
 void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
     int index = mFileNameList.indexOf(oldFile);
     generateFileList(settings->sortingMode());
-    if(existsInCurrentDir(newFile)) {
+    if(contains(newFile)) {
         emit fileRenamed(oldFile, newFile);
     } else {
         emit fileRemoved(oldFile, index);
@@ -398,7 +394,7 @@ void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
 }
 
 void DirectoryManager::onFileModifiedExternal(QString fileName) {
-    if(mFileNameList.contains(fileName)) { // file changed
+    if(contains(fileName)) { // file changed
         qDebug() << "fileChange: " << fileName;
         emit fileModified(fileName);
     } else { // file added?

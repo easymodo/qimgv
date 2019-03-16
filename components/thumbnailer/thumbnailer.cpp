@@ -15,7 +15,7 @@ void Thumbnailer::clearTasks() {
     pool->waitForDone();
 }
 
-void Thumbnailer::generateThumbnailFor(QList<int> indexes, int size) {
+void Thumbnailer::generateThumbnails(QList<int> indexes, int size) {
     pool->clear();
     for(int i = 0; i < indexes.count(); i++) {
         if(!dm->checkRange(indexes[i]))

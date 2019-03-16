@@ -85,7 +85,6 @@ private slots:
     void close();
     void scalingRequest(QSize);
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
-    void forwardThumbnail(std::shared_ptr<Thumbnail> thumbnail);
     void moveFile(QString destDirectory);
     void copyFile(QString destDirectory);
     void removeFile(QString fileName, bool trash);

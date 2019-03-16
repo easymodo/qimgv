@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <memory>
-#include "gui/idirectoryview.h"
+#include "gui/directoryviewwrapper.h"
 #include "directorymodel.h"
 
 class DirectoryPresenter : public QObject {
@@ -15,12 +15,13 @@ public:
     void removeModel();
 
 signals:
+    void generateThumbnails(QList<int>, int);
 
 public slots:
-    void connectView(std::shared_ptr<IDirectoryView> view);
+    void connectView(std::shared_ptr<DirectoryViewWrapper>);
 
     void disconnectAllViews();
-    void disconnectView(std::shared_ptr<IDirectoryView> view);
+    void disconnectView(std::shared_ptr<DirectoryViewWrapper>);
 
     void loadByIndex(int);
 private slots:
@@ -29,8 +30,10 @@ private slots:
     void onFileAdded(QString fileName);
     void onFileModified(QString fileName);
 
+    void reloadModel();
+    void onThumbnailReady(std::shared_ptr<Thumbnail>);
 private:
-    QList<std::shared_ptr<IDirectoryView>> views;
+    QList<std::shared_ptr<DirectoryViewWrapper>> views;
     std::shared_ptr<DirectoryModel> model = nullptr;
 };
 

@@ -49,7 +49,7 @@ public slots:
 signals:
     void scrolled();
     void thumbnailPressed(int) Q_DECL_OVERRIDE;
-    void thumbnailRequested(QList<int>, int) Q_DECL_OVERRIDE;
+    void thumbnailsRequested(QList<int>, int) Q_DECL_OVERRIDE;
 
 private:
     ThumbnailViewOrientation orientation;

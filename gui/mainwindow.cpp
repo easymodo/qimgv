@@ -96,30 +96,16 @@ void MainWindow::setupUi() {
     thumbnailStrip.reset(new ThumbnailStrip());
     mainPanel = new MainPanel(thumbnailStrip, this);
 
-    // passthrough signals
-    //   MW >> Core
-    connect(folderView.get(), SIGNAL(thumbnailRequested(QList<int>, int)),
-            this, SIGNAL(thumbnailRequested(QList<int>, int)));
-    connect(thumbnailStrip.get(), SIGNAL(thumbnailRequested(QList<int>, int)),
-            this, SIGNAL(thumbnailRequested(QList<int>, int)));
-    connect(folderView.get(), SIGNAL(thumbnailPressed(int)),
-            this, SIGNAL(thumbnailPressed(int)));
-    connect(thumbnailStrip.get(), SIGNAL(thumbnailPressed(int)),
-            this, SIGNAL(thumbnailPressed(int)));
-
     connect(viewerWidget.get(), SIGNAL(scalingRequested(QSize)),
             this, SIGNAL(scalingRequested(QSize)));
 
     //  Core >> MW
+    /*
     connect(this, SIGNAL(setCurrentIndex(int)),
             folderView.get(), SLOT(selectIndex(int)));
-    connect(this, SIGNAL(onThumbnailReady(int, std::shared_ptr<Thumbnail>)),
-            folderView.get(), SLOT(setThumbnail(int, std::shared_ptr<Thumbnail>)));
     connect(this, SIGNAL(setCurrentIndex(int)),
             thumbnailStrip.get(), SLOT(selectIndex(int)));
-    connect(this, SIGNAL(onThumbnailReady(int, std::shared_ptr<Thumbnail>)),
-            thumbnailStrip.get(), SLOT(setThumbnail(int, std::shared_ptr<Thumbnail>)));
-    //strip too^
+    */
     connect(this, SIGNAL(zoomIn()),
             viewerWidget.get(), SIGNAL(zoomIn()));
     connect(this, SIGNAL(zoomOut()),
@@ -570,12 +556,13 @@ void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, 
     setWindowTitle(title);
 }
 
-std::shared_ptr<IDirectoryView> MainWindow::getFolderView() {
-    return folderView;
+std::shared_ptr<DirectoryViewWrapper> MainWindow::getFolderView() {
+    return folderView->wrapper();
 }
 
-std::shared_ptr<IDirectoryView> MainWindow::getThumbnailPanel() {
-    return thumbnailStrip;
+std::shared_ptr<DirectoryViewWrapper> MainWindow::getThumbnailPanel() {
+    //return thumbnailStrip;
+    return this->thumbnailStrip->wrapper();
 }
 
 void MainWindow::showMessageDirectoryEnd() {

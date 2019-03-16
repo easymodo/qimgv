@@ -54,6 +54,9 @@ void Core::initComponents() {
 }
 
 void Core::connectComponents() {
+    presenter.connectView(mw->getFolderView());
+    presenter.connectView(mw->getThumbnailPanel());
+
     connect(&model->loader, SIGNAL(loadFinished(std::shared_ptr<Image>)),
             this, SLOT(onLoadFinished(std::shared_ptr<Image>)));
     connect(&model->loader, SIGNAL(loadFailed(QString)),
@@ -193,11 +196,11 @@ void Core::reloadImage() {
 }
 
 void Core::reloadImage(QString fileName) {
-    if(!model->dirManager.contains(fileName))
+    if(!model->contains(fileName))
         return;
     model->cache.remove(fileName);
     if(model->currentFileName == fileName)
-        loadByPathBlocking(model->dirManager.fullFilePath(model->currentFileName));
+        loadByPathBlocking(model->fullFilePath(model->currentFileName));
 }
 
 // TODO: also copy selection from folder view?
@@ -205,7 +208,7 @@ void Core::copyFileClipboard() {
     if(model->currentFileName.isEmpty())
         return;
     QMimeData* mimeData = new QMimeData();
-    mimeData->setUrls({QUrl::fromLocalFile(model->dirManager.fullFilePath(model->currentFileName))});
+    mimeData->setUrls({QUrl::fromLocalFile(model->fullFilePath(model->currentFileName))});
 
     // gnome being special
     // doesn't seem to work
@@ -219,7 +222,7 @@ void Core::copyFileClipboard() {
 void Core::copyPathClipboard() {
     if(model->currentFileName.isEmpty())
         return;
-    QApplication::clipboard()->setText(model->dirManager.fullFilePath(model->currentFileName));
+    QApplication::clipboard()->setText(model->fullFilePath(model->currentFileName));
     mw->showMessage("Path copied");
 }
 
@@ -228,9 +231,9 @@ void Core::renameRequested() {
 }
 
 void Core::renameCurrentFile(QString newName) {
-    QString newPath = model->dirManager.fullFilePath(newName);
-    QString currentPath = model->dirManager.fullFilePath(model->currentFileName);
-    bool exists = model->dirManager.existsInCurrentDir(newName);
+    QString newPath = model->fullFilePath(newName);
+    QString currentPath = model->fullFilePath(model->currentFileName);
+    bool exists = model->contains(newName);
     QFile replaceMe(newPath);
     // move existing file so we can revert if something fails
     if(replaceMe.exists()) {
@@ -257,7 +260,7 @@ void Core::renameCurrentFile(QString newName) {
 
 // removes file at specified index within current directory
 void Core::removeFile(QString fileName, bool trash) {
-    if(model->dirManager.removeFile(fileName, trash)) {
+    if(model->removeFile(fileName, trash)) {
         QString msg = trash?"Moved to trash: ":"File removed: ";
         mw->showMessage(msg + fileName);
     }
@@ -268,7 +271,7 @@ void Core::onFileRemoved(QString fileName, int index) {
 //    mw->removeThumbnail(index);
     // removing current file. try switching to another
     if(model->currentFileName == fileName) {
-        if(!model->dirManager.fileCount()) {
+        if(!model->itemCount()) {
             mw->closeImage();
         } else {
             if(!loadByIndex(index))
@@ -281,14 +284,14 @@ void Core::onFileRenamed(QString from, QString to) {
     model->cache.remove(from);
     if(model->currentFileName == from) {
         model->cache.clear();
-        this->loadByPathBlocking(model->dirManager.fullFilePath(to));
+        this->loadByPathBlocking(model->fullFilePath(to));
     }
     //mw->removeThumbnail(oldIndex);
     //mw->addThumbnail(newIndex);
 }
 
 void Core::onFileAdded(QString fileName) {
-    //int index = model->dirManager.indexOf(fileName);
+    //int index = model->indexOf(fileName);
     //mw->addThumbnail(index);
 
     //emit currentIndexChanged(state.currentIndex);
@@ -297,7 +300,7 @@ void Core::onFileAdded(QString fileName) {
 
 void Core::onFileModified(QString fileName) {
     if(model->cache.contains(fileName)) {
-        QDateTime modTime = model->dirManager.lastModified(fileName);
+        QDateTime modTime = model->lastModified(fileName);
         std::shared_ptr<Image> img = model->cache.get(fileName);
         if(modTime.isValid() && modTime > img->lastModified()) {
             if(fileName == model->currentFileName) {
@@ -311,33 +314,38 @@ void Core::onFileModified(QString fileName) {
 }
 
 void Core::moveFile(QString destDirectory) {
+    model->moveTo(destDirectory, model->currentFileName);
+    /*
     QFileInfo file(destDirectory + "/" + model->currentFileName);
     if(file.exists()) {
         mw->showMessage("Error: file already exists.");
         return;
     }
-    if(model->dirManager.copyTo(destDirectory, model->currentFileName)) {
+    if(model->copyTo(destDirectory, model->currentFileName)) {
         removeFilePermanent();
         mw->showMessage("File moved to: " + destDirectory);
     } else {
         mw->showMessage("Error moving file to: " + destDirectory);
         qDebug() << "Error moving file to: " << destDirectory;
     }
+    */
 }
 
 void Core::copyFile(QString destDirectory) {
-    QFileInfo file(destDirectory + "/" + model->currentFileName);
+    model->copyTo(destDirectory, model->currentFileName);
+    /*QFileInfo file(destDirectory + "/" + model->currentFileName);
     if(file.exists()) {
         if(file.isFile())
             mw->showMessage("Error: file already exists.");
         return;
     }
-    if(!model->dirManager.copyTo(destDirectory, model->currentFileName)) {
+    if(!model->copyTo(destDirectory, model->currentFileName)) {
         mw->showMessage("Error copying file to: " + destDirectory);
         qDebug() << "Error copying file to: " << destDirectory;
     } else {
         mw->showMessage("File copied to: " + destDirectory);
     }
+    */
 }
 
 void Core::toggleCropPanel() {
@@ -350,7 +358,7 @@ void Core::toggleCropPanel() {
 
 void Core::requestSavePath() {
     if(state.hasActiveImage) {
-        mw->showSaveDialog(model->dirManager.fullFilePath(model->currentFileName));
+        mw->showSaveDialog(model->fullFilePath(model->currentFileName));
     }
 }
 
@@ -492,7 +500,7 @@ void Core::discardEdits() {
 // also move saving logic away from Image container itself
 void Core::saveImageToDisk() {
     if(state.hasActiveImage)
-        saveImageToDisk(model->dirManager.fullFilePath(model->currentFileName));
+        saveImageToDisk(model->fullFilePath(model->currentFileName));
 }
 
 void Core::saveImageToDisk(QString filePath) {
@@ -519,7 +527,7 @@ void Core::scalingRequest(QSize size) {
     if(state.hasActiveImage && !state.isWaitingForLoader) {
         std::shared_ptr<Image> forScale = model->cache.get(model->currentFileName);
         if(forScale) {
-            QString path = model->dirManager.currentDirectoryPath() + "/" + model->currentFileName;
+            QString path = model->absolutePath() + "/" + model->currentFileName;
             model->scaler->requestScaled(ScalerRequest(forScale.get(), size, path));
         }
     }
@@ -527,25 +535,18 @@ void Core::scalingRequest(QSize size) {
 
 // TODO: don't use connect? otherwise there is no point using unique_ptr
 void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
-    if(state.hasActiveImage /* TODO: a better fix > */ && req.string == model->dirManager.fullFilePath(model->currentFileName)) {
+    if(state.hasActiveImage /* TODO: a better fix > */ && req.string == model->fullFilePath(model->currentFileName)) {
         mw->onScalingFinished(std::unique_ptr<QPixmap>(scaled));
     } else {
         delete scaled;
     }
 }
 
-void Core::forwardThumbnail(std::shared_ptr<Thumbnail> thumbnail) {
-    int index = model->dirManager.indexOf(thumbnail->name());
-    if(index >= 0) {
-        mw->onThumbnailReady(index, thumbnail);
-    }
-}
-
 void Core::trimCache() {
     QList<QString> list;
-    list << model->dirManager.prevOf(model->currentFileName);
+    list << model->prevOf(model->currentFileName);
     list << model->currentFileName;
-    list << model->dirManager.nextOf(model->currentFileName);
+    list << model->nextOf(model->currentFileName);
     model->cache.trimTo(list);
 }
 
@@ -563,12 +564,11 @@ void Core::reset() {
 }
 
 bool Core::setDirectory(QString newPath) {
-    if(!model->dirManager.hasImages() || model->dirManager.currentDirectoryPath() != newPath) {
+    if(model->isEmpty() || model->absolutePath() != newPath) {
         this->reset();
         settings->setLastDirectory(newPath);
-        model->dirManager.setDirectory(newPath);
+        model->setDirectory(newPath);
         mw->setDirectoryPath(newPath);
-        //mw->populateThumbnailViews(model->dirManager.fileCount());
         return true;
     }
     return false;
@@ -578,10 +578,10 @@ void Core::loadDirectory(QString path) {
     this->reset();
     // new directory
     setDirectory(path);
-    if(model->dirManager.hasImages()) {
+    if(!model->isEmpty()) {
         // open the first image
         this->loadByIndex(0);
-        preload(model->dirManager.fileNameAt(1));
+        preload(model->fileNameAt(1));
     } else {
         // we got an empty directory; show an error
         mw->showMessage("Directory does not contain supported files.");
@@ -591,8 +591,6 @@ void Core::loadDirectory(QString path) {
 void Core::loadImage(QString path, bool blocking) {
     QFileInfo info(path);
     // new directory
-    QElapsedTimer t;
-    t.start();
     setDirectory(info.absolutePath());
     model->currentFileName = info.fileName();
     onLoadStarted();
@@ -609,7 +607,7 @@ void Core::loadByPath(QString path, bool blocking) {
     if(path.startsWith("file://", Qt::CaseInsensitive)) {
         path.remove(0, 7);
     }
-    if(model->dirManager.isImage(path)) {
+    /*if(model->dirManager.isImage(path)) {
         loadImage(path, blocking);
     } else if(model->dirManager.isDirectory(path)) {
         loadDirectory(path);
@@ -617,6 +615,8 @@ void Core::loadByPath(QString path, bool blocking) {
         mw->showMessage("File does not exist or is not supported.");
         qDebug() << "Could not open path: " << path;
     }
+    */
+    loadImage(path, blocking);
 }
 
 void Core::loadByPath(QString filePath) {
@@ -628,30 +628,30 @@ void Core::loadByPathBlocking(QString filePath) {
 }
 
 bool Core::loadByIndex(int index) {
-    if(index >= 0 && index < model->dirManager.fileCount()) {
-        model->currentFileName = model->dirManager.fileNameAt(index);
+    if(index >= 0 && index < model->itemCount()) {
+        model->currentFileName = model->fileNameAt(index);
         onLoadStarted();
         // First check if image is already cached. If it is, just display it.
         // force reload??
         if(model->cache.contains(model->currentFileName)) {
             displayImage(model->cache.get(model->currentFileName).get());
         } else {
-            model->loader.loadExclusive(model->dirManager.fullFilePath(model->currentFileName));
+            model->loader.loadExclusive(model->fullFilePath(model->currentFileName));
         }
-        preload(model->dirManager.prevOf(model->currentFileName));
-        preload(model->dirManager.nextOf(model->currentFileName));
+        preload(model->prevOf(model->currentFileName));
+        preload(model->nextOf(model->currentFileName));
         return true;
     }
     return false;
 }
 
 void Core::nextImage() {
-    if(!model->dirManager.hasImages())
+    if(model->isEmpty())
         return;
-    QString next = model->dirManager.nextOf(model->currentFileName);
+    QString next = model->nextOf(model->currentFileName);
     if(next.isEmpty()) {
         if(infiniteScrolling) {
-            next = model->dirManager.first();
+            next = model->first();
         } else {
             if(!state.isWaitingForLoader)
                 mw->showMessageDirectoryEnd();
@@ -663,17 +663,17 @@ void Core::nextImage() {
     if(model->cache.contains(model->currentFileName))
         displayImage(model->cache.get(model->currentFileName).get());
     else
-        model->loader.loadExclusive(model->dirManager.fullFilePath(model->currentFileName));
-    preload(model->dirManager.nextOf(model->currentFileName));
+        model->loader.loadExclusive(model->fullFilePath(model->currentFileName));
+    preload(model->nextOf(model->currentFileName));
 }
 
 void Core::prevImage() {
-    if(!model->dirManager.hasImages())
+    if(model->isEmpty())
         return;
-    QString next = model->dirManager.prevOf(model->currentFileName);
+    QString next = model->prevOf(model->currentFileName);
     if(next.isEmpty()) {
         if(infiniteScrolling) {
-            next = model->dirManager.last();
+            next = model->last();
         } else {
             if(!state.isWaitingForLoader)
                 mw->showMessageDirectoryStart();
@@ -685,27 +685,27 @@ void Core::prevImage() {
     if(model->cache.contains(model->currentFileName))
         displayImage(model->cache.get(model->currentFileName).get());
     else
-        model->loader.loadExclusive(model->dirManager.fullFilePath(model->currentFileName));
-    preload(model->dirManager.prevOf(model->currentFileName));
+        model->loader.loadExclusive(model->fullFilePath(model->currentFileName));
+    preload(model->prevOf(model->currentFileName));
 }
 
 void Core::jumpToFirst() {
-    if(model->dirManager.hasImages()) {
+    if(!model->isEmpty()) {
         this->loadByIndex(0);
         mw->showMessageDirectoryStart();
     }
 }
 
 void Core::jumpToLast() {
-    if(model->dirManager.hasImages()) {
-        this->loadByIndex(model->dirManager.fileCount() - 1);
+    if(!model->isEmpty()) {
+        this->loadByIndex(model->itemCount() - 1);
         mw->showMessageDirectoryEnd();
     }
 }
 
 void Core::preload(QString fileName) {
-    if(settings->usePreloader() && model->dirManager.contains(fileName) && !model->cache.contains(fileName))
-        model->loader.load(model->dirManager.fullFilePath(fileName));
+    if(settings->usePreloader() && model->contains(fileName) && !model->cache.contains(fileName))
+        model->loader.load(model->fullFilePath(fileName));
 }
 
 void Core::onLoadStarted() {
@@ -716,8 +716,8 @@ void Core::onLoadStarted() {
 void Core::onLoadFinished(std::shared_ptr<Image> img) {
     if(img) {
         bool isRelevant = (img->name() == model->currentFileName)
-                || (img->name() == model->dirManager.prevOf(model->currentFileName))
-                || (img->name() == model->dirManager.nextOf(model->currentFileName));
+                || (img->name() == model->prevOf(model->currentFileName))
+                || (img->name() == model->nextOf(model->currentFileName));
         if(isRelevant) {
             if(!model->cache.insert(img)) {
                 img = model->cache.get(img->name());
@@ -727,15 +727,15 @@ void Core::onLoadFinished(std::shared_ptr<Image> img) {
             // display
             displayImage(img.get());
             // preload nearest
-            preload(model->dirManager.prevOf(model->currentFileName));
-            preload(model->dirManager.nextOf(model->currentFileName));
+            preload(model->prevOf(model->currentFileName));
+            preload(model->nextOf(model->currentFileName));
         }
     }
 }
 
 void Core::onLoadFailed(QString path) {
     mw->showMessage("Load failed: " + path);
-    QString currentPath = model->dirManager.fullFilePath(model->currentFileName);
+    QString currentPath = model->fullFilePath(model->currentFileName);
     if(path == currentPath)
         mw->closeImage();
 }
@@ -773,8 +773,8 @@ void Core::updateInfoString() {
         imageSize = img->size();
         fileSize  = img->fileSize();
     }
-    mw->setCurrentInfo(model->dirManager.indexOf(model->currentFileName),
-                       model->dirManager.fileCount(),
+    mw->setCurrentInfo(model->indexOf(model->currentFileName),
+                       model->itemCount(),
                        model->currentFileName,
                        imageSize,
                        fileSize);

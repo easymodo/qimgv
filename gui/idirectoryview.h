@@ -18,7 +18,7 @@ public:
 
 //signals
     virtual void thumbnailPressed(int) = 0;
-    virtual void thumbnailRequested(QList<int>, int) = 0;
+    virtual void thumbnailsRequested(QList<int>, int) = 0;
 };
 
 #endif // IDIRECTORYVIEW_H

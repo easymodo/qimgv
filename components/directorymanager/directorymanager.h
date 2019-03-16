@@ -35,14 +35,13 @@ public:
     // -1 if not found
     int indexOf(QString fileName) const;
     QStringList fileList() const;
-    QString currentDirectoryPath() const;
+    QString absolutePath() const;
     QString filePathAt(int index) const;
     QString fullFilePath(QString fileName) const;
     bool removeFile(QString fileName, bool trash);
     int fileCount() const;
-    bool existsInCurrentDir(QString fileName) const;
     bool isImage(QString filePath) const;
-    bool hasImages() const;
+    bool isEmpty() const;
     bool contains(QString fileName) const;
     bool checkRange(int index) const;
     bool copyTo(QString destDirectory, QString fileName);

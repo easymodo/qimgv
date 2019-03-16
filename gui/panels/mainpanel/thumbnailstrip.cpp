@@ -10,6 +10,11 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
     setupLayout();
+    mWrapper.reset(new DirectoryViewWrapper(this));
+}
+
+std::shared_ptr<DirectoryViewWrapper> ThumbnailStrip::wrapper() {
+    return mWrapper;
 }
 
 //  no layout; manual item positioning

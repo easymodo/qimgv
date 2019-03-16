@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "gui/idirectoryview.h"
+#include "gui/directoryviewwrapper.h"
 #include "gui/folderview/foldergridview.h"
 #include "gui/customwidgets/actionbutton.h"
 
@@ -15,6 +16,8 @@ class FolderView : public QWidget, public IDirectoryView {
 public:
     explicit FolderView(QWidget *parent = nullptr);
     ~FolderView();
+
+    std::shared_ptr<DirectoryViewWrapper> wrapper();
 
 public slots:
     void show();
@@ -41,11 +44,12 @@ protected slots:
 
 signals:
     void thumbnailPressed(int) Q_DECL_OVERRIDE;
-    void thumbnailRequested(QList<int>, int) Q_DECL_OVERRIDE;
+    void thumbnailsRequested(QList<int>, int) Q_DECL_OVERRIDE;
 
 private slots:
 private:
     Ui::FolderView *ui;
+    std::shared_ptr<DirectoryViewWrapper> mWrapper;
 };
 
 #endif // FOLDERVIEW_H

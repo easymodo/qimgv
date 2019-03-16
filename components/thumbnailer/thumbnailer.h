@@ -16,7 +16,7 @@ public:
     void clearTasks();
 
 public slots:
-    void generateThumbnailFor(QList<int> indexes, int size);
+    void generateThumbnails(QList<int> indexes, int size);
 
 private:
     ThumbnailCache *thumbnailCache;

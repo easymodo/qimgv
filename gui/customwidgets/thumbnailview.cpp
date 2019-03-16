@@ -143,7 +143,7 @@ void ThumbnailView::loadVisibleThumbnails() {
         if(loadList.count()) {
             //qDebug() << "requested: " << loadList.count() << " items";
             //qDebug() << loadList;
-            emit thumbnailRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize));
+            emit thumbnailsRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize));
         }
     }
 }
@@ -276,10 +276,9 @@ void ThumbnailView::scrollSmooth(int angleDelta) {
 
 void ThumbnailView::mousePressEvent(QMouseEvent *event) {
     if(event->button() == Qt::LeftButton) {
-        ThumbnailWidget *item = qgraphicsitem_cast<ThumbnailWidget*>(itemAt(event->pos()));
+        ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
         if(item) {
             emit thumbnailPressed(thumbnails.indexOf(item));
-            // return so we don't propagate unnecessary click to mainwindow
             return;
         }
     }

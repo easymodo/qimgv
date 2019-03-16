@@ -5,8 +5,9 @@ FolderView::FolderView(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::FolderView)
 {
-    //this->setAttribute(Qt::WA_NoMousePropagation, true);
     ui->setupUi(this);
+
+    mWrapper.reset(new DirectoryViewWrapper(this));
 
     ui->openButton->setAction("open");
     ui->settingsButton->setAction("openSettings");
@@ -24,8 +25,8 @@ FolderView::FolderView(QWidget *parent) :
 
     connect(ui->thumbnailGrid, SIGNAL(thumbnailPressed(int)),
             this, SIGNAL(thumbnailPressed(int)));
-    connect(ui->thumbnailGrid, SIGNAL(thumbnailRequested(QList<int>, int)),
-            this, SIGNAL(thumbnailRequested(QList<int>, int)));
+    connect(ui->thumbnailGrid, SIGNAL(thumbnailsRequested(QList<int>, int)),
+            this, SIGNAL(thumbnailsRequested(QList<int>, int)));
 
     connect(ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(onZoomSliderValueChanged(int)));
     connect(ui->thumbnailGrid, SIGNAL(thumbnailSizeChanged(int)), this, SLOT(onThumbnailSizeChanged(int)));
@@ -55,6 +56,10 @@ void FolderView::onZoomSliderValueChanged(int value) {
 
 FolderView::~FolderView() {
     delete ui;
+}
+
+std::shared_ptr<DirectoryViewWrapper> FolderView::wrapper() {
+    return mWrapper;
 }
 
 // probably unneeded

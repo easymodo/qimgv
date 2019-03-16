@@ -48,8 +48,8 @@ public:
     void showVideo(Clip *clip);
 
     void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize);
-    std::shared_ptr<IDirectoryView> getFolderView();
-    std::shared_ptr<IDirectoryView> getThumbnailPanel();
+    std::shared_ptr<DirectoryViewWrapper> getFolderView();
+    std::shared_ptr<DirectoryViewWrapper> getThumbnailPanel();
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;
     QHBoxLayout layout;
@@ -123,10 +123,8 @@ signals:
     void saveRequested(QString);
 
     // thumbnails
-    void thumbnailRequested(QList<int>, int);
     void setCurrentIndex(int);
-    void thumbnailPressed(int);
-    void onThumbnailReady(int, std::shared_ptr<Thumbnail>);
+    //void onThumbnailReady(int, std::shared_ptr<Thumbnail>);
     // viewerWidget
     void scalingRequested(QSize);
     void zoomIn();

@@ -22,7 +22,7 @@ QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
 #CONFIG += WITH_MPV
-#CONFIG += WITH_KDE_BLUR
+CONFIG += WITH_KDE_BLUR
 CONFIG += PORTABLE
 
 # video support
@@ -149,7 +149,8 @@ SOURCES += \
     gui/customwidgets/pathselectormenuitem.cpp \
     components/directorymodel.cpp \
     components/directorypresenter.cpp \
-    gui/idirectoryview.cpp
+    gui/idirectoryview.cpp \
+    gui/directoryviewwrapper.cpp
 
 HEADERS += \
     core.h \
@@ -241,7 +242,8 @@ HEADERS += \
     gui/customwidgets/pathselectormenuitem.h \
     components/directorymodel.h \
     components/directorypresenter.h \
-    gui/idirectoryview.h
+    gui/idirectoryview.h \
+    gui/directoryviewwrapper.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \

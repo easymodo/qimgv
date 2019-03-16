@@ -8,12 +8,12 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QScrollBar>
-#include <QMutex>
 #include <QPainter>
 #include <QResizeEvent>
 #include <cmath>
 
 #include "gui/customwidgets/thumbnailview.h"
+#include "gui/directoryviewwrapper.h"
 #include "sourcecontainers/thumbnail.h"
 
 class ThumbnailStrip : public ThumbnailView
@@ -21,6 +21,8 @@ class ThumbnailStrip : public ThumbnailView
     Q_OBJECT
 public:
     explicit ThumbnailStrip(QWidget *parent = nullptr);
+
+    std::shared_ptr<DirectoryViewWrapper> wrapper();
 
 private:
     int panelSize;
@@ -31,15 +33,12 @@ private:
     void updateThumbnailPositions();
     void setThumbnailSize(int);
     void updateThumbnailSize();
-
     void setupLayout();
-signals:
+
+    std::shared_ptr<DirectoryViewWrapper> mWrapper;
 
 public slots:
     virtual void selectIndex(int index);
-
-    //void removeItemAt(int pos);
-    //void createLabelAt(int pos);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);
