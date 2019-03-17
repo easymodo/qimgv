@@ -294,7 +294,7 @@ void Core::onFileAdded(QString fileName) {
     //int index = model->indexOf(fileName);
     //mw->addThumbnail(index);
 
-    //emit currentIndexChanged(state.currentIndex);
+    emit currentIndexChanged(model->indexOf(model->currentFileName));
     updateInfoString();
 }
 
@@ -758,7 +758,11 @@ void Core::displayImage(Image *img) {
             mw->showVideo(video->getClip());
         }
         img->isEdited()?mw->showSaveOverlay():mw->hideSaveOverlay();
-        //emit currentIndexChanged(state.currentIndex);
+
+        int index = model->indexOf(model->currentFileName);
+        emit currentIndexChanged(index);
+        presenter.setCurrentIndex(index);
+
         updateInfoString();
     } else {
         mw->showMessage("Error: could not load image.");

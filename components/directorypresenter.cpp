@@ -102,6 +102,7 @@ void DirectoryPresenter::onFileAdded(QString fileName) {
     for(int i=0; i<views.count(); i++) {
         views.at(i)->insertItem(index);
     }
+    setCurrentIndex(model->indexOf(model->currentFileName));
 }
 
 void DirectoryPresenter::onFileModified(QString fileName) {
@@ -136,4 +137,11 @@ void DirectoryPresenter::loadByIndex(int index) {
         //return true;
     }
     //return false;
+}
+
+// tmp
+void DirectoryPresenter::setCurrentIndex(int index) {
+    for(int i=0; i<views.count(); i++) {
+        views.at(i)->selectIndex(index);
+    }
 }
