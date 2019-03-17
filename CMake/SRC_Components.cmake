@@ -1,5 +1,8 @@
 ## SOURCES FOR QIMGV COMPONENTS
 
+set(dir "components")
+file(GLOB SRC_Components ${SRC_Components} ${dir}/*.cpp)
+
 set(dir "components/scriptmanager")
 file(GLOB SRC_Components ${SRC_Components} ${dir}/*.cpp)
 
