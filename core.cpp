@@ -57,12 +57,12 @@ void Core::connectComponents() {
     presenter.connectView(mw->getFolderView());
     presenter.connectView(mw->getThumbnailPanel());
 
-    connect(&model->loader, SIGNAL(loadFinished(std::shared_ptr<Image>)),
+    /*connect(&model->loader, SIGNAL(loadFinished(std::shared_ptr<Image>)),
             this, SLOT(onLoadFinished(std::shared_ptr<Image>)));
     connect(&model->loader, SIGNAL(loadFailed(QString)),
             this, SLOT(onLoadFailed(QString)));
-
-    connect(mw, SIGNAL(opened(QString)), this, SLOT(loadByPathBlocking(QString)));
+    */
+    connect(mw, SIGNAL(opened(QString)), this, SLOT(loadPath(QString)));
     connect(mw, SIGNAL(copyRequested(QString)), this, SLOT(copyFile(QString)));
     connect(mw, SIGNAL(moveRequested(QString)), this, SLOT(moveFile(QString)));
     connect(mw, SIGNAL(resizeRequested(QSize)), this, SLOT(resize(QSize)));
@@ -71,7 +71,7 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(saveRequested()), this, SLOT(saveImageToDisk()));
     connect(mw, SIGNAL(saveRequested(QString)), this, SLOT(saveImageToDisk(QString)));
     connect(mw, SIGNAL(discardEditsRequested()), this, SLOT(discardEdits()));
-    connect(this, SIGNAL(currentIndexChanged(int)), mw, SLOT(setupSidePanelData()));
+    connect(this, SIGNAL(modelIndexChanged(int)), mw, SLOT(setupSidePanelData()));
 
     // scaling
     connect(mw, SIGNAL(scalingRequested(QSize)),
@@ -84,6 +84,9 @@ void Core::connectComponents() {
     connect(model.get(), SIGNAL(fileAdded(QString)), this, SLOT(onFileAdded(QString)));
     connect(model.get(), SIGNAL(fileModified(QString)), this, SLOT(onFileModified(QString)));
     connect(model.get(), SIGNAL(fileRenamed(QString, QString)), this, SLOT(onFileRenamed(QString, QString)));
+
+    connect(model.get(), SIGNAL(indexChanged(int)), this, SLOT(onModelIndexChange(int)));
+    connect(model.get(), SIGNAL(itemReady(std::shared_ptr<Image>)), this, SLOT(onModelItemReady(std::shared_ptr<Image>)));
 }
 
 void Core::initActions() {
@@ -164,8 +167,8 @@ void Core::rotateRight() {
 }
 
 void Core::closeBackgroundTasks() {
-    model->thumbnailer->clearTasks();
-    model->loader.clearTasks();
+    //model->thumbnailer->clearTasks();
+    //model->loader.clearTasks();
 }
 
 void Core::close() {
@@ -200,7 +203,7 @@ void Core::reloadImage(QString fileName) {
         return;
     model->cache.remove(fileName);
     if(model->currentFileName == fileName)
-        loadByPathBlocking(model->fullFilePath(model->currentFileName));
+        loadPath(model->fullFilePath(model->currentFileName)); // replace with direct model method
 }
 
 // TODO: also copy selection from folder view?
@@ -274,8 +277,8 @@ void Core::onFileRemoved(QString fileName, int index) {
         if(!model->itemCount()) {
             mw->closeImage();
         } else {
-            if(!loadByIndex(index))
-                loadByIndex(--index);
+            if(!model->setIndex(index))
+                model->setIndex(--index);
         }
     }
 }
@@ -283,8 +286,8 @@ void Core::onFileRemoved(QString fileName, int index) {
 void Core::onFileRenamed(QString from, QString to) {
     model->cache.remove(from);
     if(model->currentFileName == from) {
-        model->cache.clear();
-        this->loadByPathBlocking(model->fullFilePath(to));
+        model->cache.clear(); // ? do it in the model itself
+        model->setIndex(model->indexOf(to));
     }
     //mw->removeThumbnail(oldIndex);
     //mw->addThumbnail(newIndex);
@@ -294,7 +297,7 @@ void Core::onFileAdded(QString fileName) {
     //int index = model->indexOf(fileName);
     //mw->addThumbnail(index);
 
-    emit currentIndexChanged(model->indexOf(model->currentFileName));
+    emit modelIndexChanged(model->indexOf(model->currentFileName));
     updateInfoString();
 }
 
@@ -379,7 +382,7 @@ void Core::resize(QSize size) {
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::scaled(imgStatic->getImage(), size, 1)));
                 model->cache.release(model->currentFileName);
-                displayImage(img.get());
+                displayImage(img);
             } else {
                 model->cache.release(model->currentFileName);
                 mw->showMessage("Editing gifs/video is unsupported.");
@@ -400,7 +403,7 @@ void Core::flipH() {
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::flippedH(imgStatic->getImage())));
                 model->cache.release(model->currentFileName);
-                displayImage(img.get());
+                displayImage(img);
             } else {
                 model->cache.release(model->currentFileName);
                 mw->showMessage("Editing gifs/video is unsupported.");
@@ -420,7 +423,7 @@ void Core::flipV() {
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::flippedV(imgStatic->getImage())));
                 model->cache.release(model->currentFileName);
-                displayImage(img.get());
+                displayImage(img);
             } else {
                 model->cache.release(model->currentFileName);
                 mw->showMessage("Editing gifs/video is unsupported.");
@@ -444,7 +447,7 @@ void Core::crop(QRect rect) {
                     mw->showMessage("Could not crop image: incorrect size / position");
                 }
                 model->cache.release(model->currentFileName);
-                displayImage(img.get());
+                displayImage(img);
             } else {
                 model->cache.release(model->currentFileName);
                 mw->showMessage("Editing gifs/video is unsupported.");
@@ -464,7 +467,7 @@ void Core::rotateByDegrees(int degrees) {
                 imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                             ImageLib::rotated(imgStatic->getImage(), degrees)));
                 model->cache.release(model->currentFileName);
-                displayImage(img.get());
+                displayImage(img);
             } else {
                 model->cache.release(model->currentFileName);
                 mw->showMessage("Editing gifs/video is unsupported.");
@@ -485,7 +488,7 @@ void Core::discardEdits() {
                 bool ok = imgStatic->discardEditedImage();
                 model->cache.release(model->currentFileName);
                 if(ok)
-                    displayImage(img.get());
+                    displayImage(img);
             } else {
                 model->cache.release(model->currentFileName);
             }
@@ -524,7 +527,7 @@ void Core::runScript(const QString &scriptName) {
 }
 
 void Core::scalingRequest(QSize size) {
-    if(state.hasActiveImage && !state.isWaitingForLoader) {
+    if(state.hasActiveImage/* && !state.isWaitingForLoader*/) {
         std::shared_ptr<Image> forScale = model->cache.get(model->currentFileName);
         if(forScale) {
             QString path = model->absolutePath() + "/" + model->currentFileName;
@@ -557,7 +560,7 @@ void Core::clearCache() {
 // reset state; clear cache; etc
 void Core::reset() {
     state.hasActiveImage = false;
-    state.isWaitingForLoader = false;
+    //state.isWaitingForLoader = false;
     model->currentFileName = "";
     //viewerWidget->unset();
     this->clearCache();
@@ -574,199 +577,115 @@ bool Core::setDirectory(QString newPath) {
     return false;
 }
 
-void Core::loadDirectory(QString path) {
-    this->reset();
-    // new directory
-    setDirectory(path);
-    if(!model->isEmpty()) {
-        // open the first image
-        this->loadByIndex(0);
-        preload(model->fileNameAt(1));
-    } else {
-        // we got an empty directory; show an error
-        mw->showMessage("Directory does not contain supported files.");
-    }
-}
-
-void Core::loadImage(QString path, bool blocking) {
-    QFileInfo info(path);
-    // new directory
-    setDirectory(info.absolutePath());
-    model->currentFileName = info.fileName();
-    onLoadStarted();
-    // First check if image is already cached. If it is, just display it.
-    if(model->cache.contains(info.fileName()))
-        displayImage(model->cache.get(info.fileName()).get());
-    else if(blocking)
-        model->loader.loadBlocking(path);
-    else
-        model->loader.loadExclusive(path);
-}
-
-void Core::loadByPath(QString path, bool blocking) {
+void Core::loadPath(QString path) {
     if(path.startsWith("file://", Qt::CaseInsensitive)) {
         path.remove(0, 7);
     }
-    /*if(model->dirManager.isImage(path)) {
-        loadImage(path, blocking);
-    } else if(model->dirManager.isDirectory(path)) {
-        loadDirectory(path);
+    QFileInfo info(path);
+    if(!setDirectory(info.absolutePath())) {
+        this->reset();
+        return;
+    }
+    if(info.isFile()) {
+        model->setIndex(model->indexOf(info.fileName()));
+    } else if(info.isDir()) {
+        model->setIndex(0);
     } else {
-        mw->showMessage("File does not exist or is not supported.");
+        mw->showError("Could not open path: " + path);
         qDebug() << "Could not open path: " << path;
     }
-    */
-    loadImage(path, blocking);
-}
-
-void Core::loadByPath(QString filePath) {
-    loadByPath(filePath, false);
-}
-
-void Core::loadByPathBlocking(QString filePath) {
-    loadByPath(filePath, true);
-}
-
-bool Core::loadByIndex(int index) {
-    if(index >= 0 && index < model->itemCount()) {
-        model->currentFileName = model->fileNameAt(index);
-        onLoadStarted();
-        // First check if image is already cached. If it is, just display it.
-        // force reload??
-        if(model->cache.contains(model->currentFileName)) {
-            displayImage(model->cache.get(model->currentFileName).get());
-        } else {
-            model->loader.loadExclusive(model->fullFilePath(model->currentFileName));
-        }
-        preload(model->prevOf(model->currentFileName));
-        preload(model->nextOf(model->currentFileName));
-        return true;
-    }
-    return false;
 }
 
 void Core::nextImage() {
     if(model->isEmpty())
         return;
-    QString next = model->nextOf(model->currentFileName);
-    if(next.isEmpty()) {
+    int newIndex = model->indexOf(model->currentFileName) + 1;
+    if(newIndex >= model->itemCount()) {
         if(infiniteScrolling) {
-            next = model->first();
+            newIndex = 0;
         } else {
-            if(!state.isWaitingForLoader)
+            //if(!state.isWaitingForLoader)
                 mw->showMessageDirectoryEnd();
             return;
         }
     }
-    model->currentFileName = next;
-    onLoadStarted();
-    if(model->cache.contains(model->currentFileName))
-        displayImage(model->cache.get(model->currentFileName).get());
-    else
-        model->loader.loadExclusive(model->fullFilePath(model->currentFileName));
-    preload(model->nextOf(model->currentFileName));
+    model->setIndex(newIndex);
 }
 
 void Core::prevImage() {
     if(model->isEmpty())
         return;
-    QString next = model->prevOf(model->currentFileName);
-    if(next.isEmpty()) {
+    int newIndex = model->indexOf(model->currentFileName) - 1;
+    if(newIndex < 0) {
         if(infiniteScrolling) {
-            next = model->last();
+            newIndex = model->itemCount() - 1;
         } else {
-            if(!state.isWaitingForLoader)
+            //if(!state.isWaitingForLoader)
                 mw->showMessageDirectoryStart();
             return;
         }
     }
-    model->currentFileName = next;
-    onLoadStarted();
-    if(model->cache.contains(model->currentFileName))
-        displayImage(model->cache.get(model->currentFileName).get());
-    else
-        model->loader.loadExclusive(model->fullFilePath(model->currentFileName));
-    preload(model->prevOf(model->currentFileName));
+    model->setIndex(newIndex);
 }
 
 void Core::jumpToFirst() {
     if(!model->isEmpty()) {
-        this->loadByIndex(0);
+        model->setIndex(0);
         mw->showMessageDirectoryStart();
     }
 }
 
 void Core::jumpToLast() {
     if(!model->isEmpty()) {
-        this->loadByIndex(model->itemCount() - 1);
+        model->setIndex(model->itemCount() - 1);
         mw->showMessageDirectoryEnd();
     }
 }
 
-void Core::preload(QString fileName) {
-    if(settings->usePreloader() && model->contains(fileName) && !model->cache.contains(fileName))
-        model->loader.load(model->fullFilePath(fileName));
-}
-
-void Core::onLoadStarted() {
-    state.isWaitingForLoader = true;
-    trimCache();
-}
-
-void Core::onLoadFinished(std::shared_ptr<Image> img) {
-    if(img) {
-        bool isRelevant = (img->name() == model->currentFileName)
-                || (img->name() == model->prevOf(model->currentFileName))
-                || (img->name() == model->nextOf(model->currentFileName));
-        if(isRelevant) {
-            if(!model->cache.insert(img)) {
-                img = model->cache.get(img->name());
-            }
-        }
-        if(img->name() == model->currentFileName) {
-            // display
-            displayImage(img.get());
-            // preload nearest
-            preload(model->prevOf(model->currentFileName));
-            preload(model->nextOf(model->currentFileName));
-        }
-    }
-}
-
 void Core::onLoadFailed(QString path) {
-    mw->showMessage("Load failed: " + path);
+    /*mw->showMessage("Load failed: " + path);
     QString currentPath = model->fullFilePath(model->currentFileName);
     if(path == currentPath)
         mw->closeImage();
+        */
 }
 
-void Core::displayImage(Image *img) {
-    state.isWaitingForLoader = false;
+void Core::onModelIndexChange(int index) {
+    presenter.setCurrentIndex(index);
+    // maybe display partial info as it was before?
+    //updateInfoString();
+    emit modelIndexChanged(index);
+}
+
+void Core::onModelItemReady(std::shared_ptr<Image> img) {
+    displayImage(img);
+    updateInfoString();
+}
+
+void Core::displayImage(std::shared_ptr<Image> img) {
+    // ??
+    //state.isWaitingForLoader = false;
     state.hasActiveImage = true;
-    if(img) {
-        DocumentType type = img->type();
-        if(type == STATIC) {
-            mw->showImage(img->getPixmap());
-        } else if(type == ANIMATED) {
-            auto animated = dynamic_cast<ImageAnimated *>(img);
-            mw->showAnimation(animated->getMovie());
-        } else if(type == VIDEO) {
-            auto video = dynamic_cast<Video *>(img);
-            // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
-            // affects only initial startup (e.g. we open webm from file manager)
-            showGui();
-            mw->showVideo(video->getClip());
-        }
-        img->isEdited()?mw->showSaveOverlay():mw->hideSaveOverlay();
 
-        int index = model->indexOf(model->currentFileName);
-        emit currentIndexChanged(index);
-        presenter.setCurrentIndex(index);
-
-        updateInfoString();
-    } else {
+    if(!img) {
         mw->showMessage("Error: could not load image.");
+        return;
     }
+
+    DocumentType type = img->type();
+    if(type == STATIC) {
+        mw->showImage(img->getPixmap());
+    } else if(type == ANIMATED) {
+        auto animated = dynamic_cast<ImageAnimated *>(img.get());
+        mw->showAnimation(animated->getMovie());
+    } else if(type == VIDEO) {
+        auto video = dynamic_cast<Video *>(img.get());
+        // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
+        // affects only initial startup (e.g. we open webm from file manager)
+        showGui();
+        mw->showVideo(video->getClip());
+    }
+    img->isEdited() ? mw->showSaveOverlay() : mw->hideSaveOverlay();
 }
 
 void Core::updateInfoString() {

@@ -38,16 +38,30 @@ public:
     bool moveTo(QString destDirectory, QString fileName);
     void setDirectory(QString);
 
+    bool setIndex(int index);
+
+    std::shared_ptr<Image> itemAt(int index);
+
+    std::shared_ptr<Image> getItemAt(int index);
+    std::shared_ptr<Image> getItem(QString fileName);
 signals:
     void fileRemoved(QString fileName, int index);
     void fileRenamed(QString from, QString to);
     void fileAdded(QString fileName);
     void fileModified(QString fileName);
     void directoryChanged(QString);
+    void indexChanged(int index);
+    // returns current item
+    void itemReady(std::shared_ptr<Image> img);
 
 public slots:
 private:
     DirectoryManager dirManager;
+    void preload(QString fileName);
+    void trimCache();
+
+private slots:
+    void onItemReady(std::shared_ptr<Image> img);
 };
 
 #endif // DIRECTORYMODEL_H

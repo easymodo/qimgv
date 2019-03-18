@@ -10,9 +10,16 @@ DirectoryModel::DirectoryModel(QObject *parent) : QObject(parent) {
     connect(&dirManager, SIGNAL(fileRenamed(QString, QString)), this, SIGNAL(fileRenamed(QString, QString)));
     // ditch this and make dirModel single directory only (passed in constructor?)
     connect(&dirManager, SIGNAL(directoryChanged(QString)), this, SIGNAL(directoryChanged(QString)));
+
+    connect(&loader, SIGNAL(loadFinished(std::shared_ptr<Image>)),
+            this, SLOT(onItemReady(std::shared_ptr<Image>)));
+    //connect(&loader, SIGNAL(loadFailed(QString)),
+    //        this, SLOT(onLoadFailed(QString)));
 }
 
 DirectoryModel::~DirectoryModel() {
+    thumbnailer->clearTasks();
+    loader.clearTasks();
     delete scaler;
     delete thumbnailer;
 }
@@ -102,4 +109,77 @@ bool DirectoryModel::moveTo(QString destDirectory, QString fileName) {
 
 void DirectoryModel::setDirectory(QString path) {
     dirManager.setDirectory(path);
+}
+
+bool DirectoryModel::setIndex(int index) {
+    if(index >= 0 && index < itemCount()) {
+        currentFileName = fileNameAt(index);
+        emit indexChanged(index);
+        trimCache();
+        if(cache.contains(currentFileName)) {
+            emit itemReady(cache.get(currentFileName));
+            if(settings->usePreloader()) {
+                preload(dirManager.prevOf(currentFileName));
+                preload(dirManager.nextOf(currentFileName));
+            }
+        } else {
+            loader.loadExclusive(fullFilePath(currentFileName));
+        }
+        return true;
+    }
+    return false;
+}
+
+std::shared_ptr<Image> DirectoryModel::itemAt(int index) {
+    return cache.get(dirManager.fileNameAt(index));
+}
+
+void DirectoryModel::trimCache() {
+    QList<QString> list;
+    list << prevOf(currentFileName);
+    list << currentFileName;
+    list << nextOf(currentFileName);
+    cache.trimTo(list);
+}
+
+void DirectoryModel::onItemReady(std::shared_ptr<Image> img) {
+    if(!img)
+        return;
+    bool isRelevant = (img->name() == currentFileName)
+            || (img->name() == prevOf(currentFileName))
+            || (img->name() == nextOf(currentFileName));
+    if(isRelevant) {
+        // maybe force insert into the cache? we already loaded it anyway
+        if(!cache.insert(img)) {
+            img = cache.get(img->name());
+        }
+    }
+    if(img->name() == currentFileName) {
+        emit itemReady(img);
+        if(settings->usePreloader()) {
+            preload(dirManager.prevOf(currentFileName));
+            preload(dirManager.nextOf(currentFileName));
+        }
+    }
+}
+
+std::shared_ptr<Image> DirectoryModel::getItemAt(int index) {
+    return getItem(dirManager.fileNameAt(index));
+}
+
+// returns cached image
+// if image is not cached, loads it in the main thread
+// for async access use setIndex(int)
+std::shared_ptr<Image> DirectoryModel::getItem(QString fileName) {
+    std::shared_ptr<Image> img = cache.get(fileName);
+    if(!img) {
+        // main thread load
+        //img = loader.
+    }
+    return img;
+}
+
+void DirectoryModel::preload(QString fileName) {
+    if(contains(fileName) && !cache.contains(fileName))
+        loader.load(fullFilePath(fileName));
 }

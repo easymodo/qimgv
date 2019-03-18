@@ -122,6 +122,7 @@ void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb) {
 }
 
 void DirectoryPresenter::loadByIndex(int index) {
+    model->setIndex(index);
     if(index >= 0 && index < model->itemCount()) {
         model->currentFileName = model->fileNameAt(index);
         //onLoadStarted();

@@ -14,8 +14,8 @@
 #include "gui/mainwindow.h"
 
 struct State {
-    State() : hasActiveImage(false), isWaitingForLoader(false) {}
-    bool hasActiveImage, isWaitingForLoader;
+    State() : hasActiveImage(false) {}
+    bool hasActiveImage;
 };
 
 class Core : public QObject {
@@ -27,19 +27,10 @@ public:
 public slots:
     void updateInfoString();
 
-    void loadByPath(QString filePath, bool blocking);
-
-    // loads image in second thread
-    void loadByPath(QString);
-
-    // loads image in main thread
-    void loadByPathBlocking(QString);
-
-    // invalid position will be ignored
-    bool loadByIndex(int index);
+    void loadPath(QString);
 
 signals:
-    void currentIndexChanged(int);
+    void modelIndexChanged(int);
 
 private:
     void initGui();
@@ -63,11 +54,10 @@ private:
     void rotateByDegrees(int degrees);
     void reset();
     bool setDirectory(QString newPath);
-    void displayImage(Image *img);
-    void loadDirectory(QString);
-    void loadImage(QString path, bool blocking);
+    void displayImage(std::shared_ptr<Image>);
+    void loadDirectoryPath(QString);
+    void loadImagePath(QString path, bool blocking);
     void trimCache();
-    void preload(QString fileName);
 
 private slots:
     void readSettings();
@@ -75,9 +65,9 @@ private slots:
     void prevImage();
     void jumpToFirst();
     void jumpToLast();
-    void onLoadFinished(std::shared_ptr<Image> img);
-    void onLoadFailed(QString path);
-    void onLoadStarted();
+    void onModelIndexChange(int index);
+    void onModelItemReady(std::shared_ptr<Image>);
+    void onLoadFailed(QString path); //
     void clearCache();
     void rotateLeft();
     void rotateRight();
