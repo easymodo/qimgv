@@ -14,8 +14,8 @@ void DirectoryPresenter::removeModel() {
                this, SLOT(onFileRenamed(QString, QString)));
     disconnect(model.get(), SIGNAL(directoryChanged(QString)),
                this, SLOT(reloadModel()));
-    disconnect(model->thumbnailer, &Thumbnailer::thumbnailReady,
-               this, &DirectoryPresenter::onThumbnailReady);
+    disconnect(model.get(), &DirectoryModel::thumbnailReady,
+               this,  &DirectoryPresenter::onThumbnailReady);
     model = nullptr;
     // also empty views?
 }
@@ -43,10 +43,10 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
     connect(model.get(), SIGNAL(directoryChanged(QString)),
             this, SLOT(reloadModel()), Qt::UniqueConnection);
 
-    connect(this, &DirectoryPresenter::generateThumbnails,
-            model->thumbnailer, &Thumbnailer::generateThumbnails, Qt::UniqueConnection);
-    connect(model->thumbnailer, &Thumbnailer::thumbnailReady,
-            this, &DirectoryPresenter::onThumbnailReady, Qt::UniqueConnection);
+    connect(this,        &DirectoryPresenter::generateThumbnails,
+            model.get(), &DirectoryModel::generateThumbnails, Qt::UniqueConnection);
+    connect(model.get(), &DirectoryModel::thumbnailReady,
+            this,        &DirectoryPresenter::onThumbnailReady, Qt::UniqueConnection);
 }
 
 void DirectoryPresenter::connectView(std::shared_ptr<DirectoryViewWrapper> view) {
@@ -123,21 +123,6 @@ void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb) {
 
 void DirectoryPresenter::loadByIndex(int index) {
     model->setIndex(index);
-    if(index >= 0 && index < model->itemCount()) {
-        model->currentFileName = model->fileNameAt(index);
-        //onLoadStarted();
-        // First check if image is already cached. If it is, just display it.
-        // force reload??
-        //if(model->cache.contains(model->currentFileName)) {
-        //    displayImage(model->cache.get(model->currentFileName).get());
-        //} else {
-            model->loader.loadExclusive(model->fullFilePath(model->currentFileName));
-        //}
-        //preload(model->dirManager.prevOf(model->currentFileName));
-        //preload(model->dirManager.nextOf(model->currentFileName));
-        //return true;
-    }
-    //return false;
 }
 
 // tmp

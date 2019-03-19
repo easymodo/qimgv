@@ -30,12 +30,17 @@ void ImageStatic::load() {
 
 // TODO: add a way to configure compression level?
 bool ImageStatic::save(QString destPath) {
-    int quality = 95;
-    bool success = isEdited()?imageEdited->save(destPath, nullptr, quality):image->save(destPath, nullptr, quality);
-    if(destPath == mPath && success) {
-        mDocInfo->refresh();
+    int quality = 100;
+    bool success = false;
+    if(isEdited()) {
+        success = imageEdited->save(destPath, nullptr, quality);
         image.swap(imageEdited);
         discardEditedImage();
+    } else {
+        success = image->save(destPath, nullptr, quality);
+    }
+    if(destPath == mPath && success) {
+        mDocInfo->refresh();
     }
     return success;
 }

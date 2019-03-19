@@ -16,8 +16,6 @@ public:
 
     Cache cache;
     Scaler *scaler;
-    Thumbnailer *thumbnailer;
-    Loader loader;
 
     QString currentFileName;
 
@@ -54,9 +52,13 @@ signals:
     // returns current item
     void itemReady(std::shared_ptr<Image> img);
 
-public slots:
+    void generateThumbnails(QList<int> indexes, int size);
+    void thumbnailReady(std::shared_ptr<Thumbnail>);
+
 private:
     DirectoryManager dirManager;
+    Loader loader;
+    Thumbnailer *thumbnailer;
     void preload(QString fileName);
     void trimCache();
 

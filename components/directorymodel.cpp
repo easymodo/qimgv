@@ -4,17 +4,14 @@ DirectoryModel::DirectoryModel(QObject *parent) : QObject(parent) {
     thumbnailer = new Thumbnailer(&dirManager); // remove pointers
     scaler = new Scaler(&cache);
 
-    connect(&dirManager, SIGNAL(fileRemoved(QString, int)), this, SIGNAL(fileRemoved(QString, int)));
-    connect(&dirManager, SIGNAL(fileAdded(QString)), this, SIGNAL(fileAdded(QString)));
-    connect(&dirManager, SIGNAL(fileModified(QString)), this, SIGNAL(fileModified(QString)));
-    connect(&dirManager, SIGNAL(fileRenamed(QString, QString)), this, SIGNAL(fileRenamed(QString, QString)));
-    // ditch this and make dirModel single directory only (passed in constructor?)
-    connect(&dirManager, SIGNAL(directoryChanged(QString)), this, SIGNAL(directoryChanged(QString)));
-
-    connect(&loader, SIGNAL(loadFinished(std::shared_ptr<Image>)),
-            this, SLOT(onItemReady(std::shared_ptr<Image>)));
-    //connect(&loader, SIGNAL(loadFailed(QString)),
-    //        this, SLOT(onLoadFailed(QString)));
+    connect(&dirManager, &DirectoryManager::fileRemoved, this, &DirectoryModel::fileRemoved);
+    connect(&dirManager, &DirectoryManager::fileAdded, this, &DirectoryModel::fileAdded);
+    connect(&dirManager, &DirectoryManager::fileModified,this, &DirectoryModel::fileModified);
+    connect(&dirManager, &DirectoryManager::fileRenamed, this, &DirectoryModel::fileRenamed);
+    connect(&dirManager, &DirectoryManager::directoryChanged, this, &DirectoryModel::directoryChanged);
+    connect(&loader, &Loader::loadFinished, this, &DirectoryModel::onItemReady);
+    connect(thumbnailer, &Thumbnailer::thumbnailReady, this, &DirectoryModel::thumbnailReady);
+    connect(this, &DirectoryModel::generateThumbnails, thumbnailer, &Thumbnailer::generateThumbnails);
 }
 
 DirectoryModel::~DirectoryModel() {
@@ -113,9 +110,12 @@ void DirectoryModel::setDirectory(QString path) {
 
 bool DirectoryModel::setIndex(int index) {
     if(index >= 0 && index < itemCount()) {
-        currentFileName = fileNameAt(index);
-        emit indexChanged(index);
-        trimCache();
+        QString newName = fileNameAt(index);
+        if(currentFileName != newName) {
+            currentFileName = fileNameAt(index);
+            emit indexChanged(index);
+            trimCache();
+        }
         if(cache.contains(currentFileName)) {
             emit itemReady(cache.get(currentFileName));
             if(settings->usePreloader()) {
