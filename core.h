@@ -6,6 +6,7 @@
 #include <QMutex>
 #include <QClipboard>
 #include <malloc.h>
+#include <QFileSystemModel>
 #include "appversion.h"
 #include "settings.h"
 #include "components/directorymodel.h"
@@ -67,11 +68,11 @@ private slots:
     void jumpToLast();
     void onModelIndexChange(int index);
     void onModelItemReady(std::shared_ptr<Image>);
+    void onModelItemUpdated(std::shared_ptr<Image>);
     void onLoadFailed(QString path); //
     void clearCache();
     void rotateLeft();
     void rotateRight();
-    void closeBackgroundTasks();
     void close();
     void scalingRequest(QSize);
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);

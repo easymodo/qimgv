@@ -10,26 +10,21 @@ void Loader::clearTasks() {
     pool->waitForDone();
 }
 
-void Loader::loadBlocking(QString path) {
-    LoaderRunnable *runnable = new LoaderRunnable(path);
-    runnable->setAutoDelete(false);
-    tasks.insert(path, runnable);
-    connect(runnable, SIGNAL(finished(std::shared_ptr<Image>, QString)),
-            this, SLOT(onLoadFinished(std::shared_ptr<Image>, QString)), Qt::UniqueConnection);
-    runnable->run();
+std::shared_ptr<Image> Loader::load(QString path) {
+    return ImageFactory::createImage(path);
 }
 
 // clears all buffered tasks before loading
-void Loader::loadExclusive(QString path) {
+void Loader::loadAsyncPriority(QString path) {
     clearPool();
-    load(path, 1);
+    doLoadAsync(path, 1);
 }
 
-void Loader::load(QString path) {
-    load(path, 0);
+void Loader::loadAsync(QString path) {
+    doLoadAsync(path, 0);
 }
 
-void Loader::load(QString path, int priority) {
+void Loader::doLoadAsync(QString path, int priority) {
     if(tasks.contains(path)) {
         return;
     }

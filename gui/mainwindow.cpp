@@ -61,7 +61,8 @@ MainWindow::MainWindow(QWidget *parent)
  */
 void MainWindow::setupUi() {
     viewerWidget.reset(new ViewerWidget());
-    docWidget.reset(new DocumentWidget(viewerWidget));
+    infoBar.reset(new InfoBar());
+    docWidget.reset(new DocumentWidget(viewerWidget, infoBar));
     folderView.reset(new FolderView());
 
     centralWidget.reset(new CentralWidget(docWidget, folderView, this));
@@ -554,6 +555,7 @@ void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, 
     if(settings->windowTitleProgramName())
         title.append(" — " + qApp->applicationName());
     setWindowTitle(title);
+    infoBar->setInfo(fileIndex, fileCount, fileName, imageSize, fileSize);
 }
 
 std::shared_ptr<DirectoryViewWrapper> MainWindow::getFolderView() {

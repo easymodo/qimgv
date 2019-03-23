@@ -488,3 +488,11 @@ ContextMenu QLabel {
 ControlsOverlay {
     background-color: #1a1a1b;
 }
+
+[accessibleName="InfoBar"] {
+    background-color: #141415;
+}
+
+[accessibleName="InfoBar"] QLabel {
+    color: #aeaeae;
+}

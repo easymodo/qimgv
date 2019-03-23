@@ -123,7 +123,7 @@ bool DirectoryModel::setIndex(int index) {
                 preload(dirManager.nextOf(currentFileName));
             }
         } else {
-            loader.loadExclusive(fullFilePath(currentFileName));
+            loader.loadAsyncPriority(fullFilePath(currentFileName));
         }
         return true;
     }
@@ -173,13 +173,19 @@ std::shared_ptr<Image> DirectoryModel::getItemAt(int index) {
 std::shared_ptr<Image> DirectoryModel::getItem(QString fileName) {
     std::shared_ptr<Image> img = cache.get(fileName);
     if(!img) {
-        // main thread load
-        //img = loader.
+        img = loader.load(fullFilePath(fileName));
     }
     return img;
 }
 
+void DirectoryModel::updateItem(QString fileName, std::shared_ptr<Image> img) {
+    if(dirManager.contains(fileName)) {
+        cache.insert(img);
+        emit itemUpdated(img);
+    }
+}
+
 void DirectoryModel::preload(QString fileName) {
     if(contains(fileName) && !cache.contains(fileName))
-        loader.load(fullFilePath(fileName));
+        loader.loadAsync(fullFilePath(fileName));
 }

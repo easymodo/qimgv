@@ -75,7 +75,8 @@ private:
     CopyOverlay *copyOverlay;
 
     ControlsOverlay *controlsOverlay;
-    InfoOverlay *infoOverlay;
+    InfoOverlay *infoOverlay; // fullscreen one. rename pending
+    std::shared_ptr<InfoBar> infoBar;
     FloatingMessage *floatingMessage;
 
     PanelHPosition panelPosition;

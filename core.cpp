@@ -87,6 +87,7 @@ void Core::connectComponents() {
 
     connect(model.get(), SIGNAL(indexChanged(int)), this, SLOT(onModelIndexChange(int)));
     connect(model.get(), SIGNAL(itemReady(std::shared_ptr<Image>)), this, SLOT(onModelItemReady(std::shared_ptr<Image>)));
+    connect(model.get(), SIGNAL(itemUpdated(std::shared_ptr<Image>)), this, SLOT(onModelItemUpdated(std::shared_ptr<Image>)));
 }
 
 void Core::initActions() {
@@ -166,14 +167,8 @@ void Core::rotateRight() {
     rotateByDegrees(90);
 }
 
-void Core::closeBackgroundTasks() {
-    //model->thumbnailer->clearTasks();
-    //model->loader.clearTasks();
-}
-
 void Core::close() {
     mw->close();
-    closeBackgroundTasks();
 }
 
 void Core::removeFilePermanent() {
@@ -371,154 +366,104 @@ void Core::showResizeDialog() {
     }
 }
 
-// TODO: simplify. too much copypasted code
-// use default bilinear for now
+// all editing operations should be done in the main thread
+// do an access wrapper with edit function as argument?
 void Core::resize(QSize size) {
-    if(state.hasActiveImage) {
-        if(model->cache.reserve(model->currentFileName)) {
-            std::shared_ptr<Image> img = model->cache.get(model->currentFileName);
-            if(img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-                imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                            ImageLib::scaled(imgStatic->getImage(), size, 1)));
-                model->cache.release(model->currentFileName);
-                displayImage(img);
-            } else {
-                model->cache.release(model->currentFileName);
-                mw->showMessage("Editing gifs/video is unsupported.");
-            }
-        } else {
-            qDebug() << "Core::resize() - could not lock cache object.";
-        }
+    if(!state.hasActiveImage)
+        return;
+    std::shared_ptr<Image> img = model->getItem(model->currentFileName);
+    if(img && img->type() == STATIC) {
+        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
+        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                    ImageLib::scaled(imgStatic->getImage(), size, 1)));
+        model->updateItem(model->currentFileName, img);
+    } else {
+        mw->showMessage("Editing gifs/video is unsupported.");
     }
 }
 
-// glowing_brain.jpg
 void Core::flipH() {
-    if(state.hasActiveImage) {
-        if(model->cache.reserve(model->currentFileName)) {
-            std::shared_ptr<Image> img = model->cache.get(model->currentFileName);
-            if(img && img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-                imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                            ImageLib::flippedH(imgStatic->getImage())));
-                model->cache.release(model->currentFileName);
-                displayImage(img);
-            } else {
-                model->cache.release(model->currentFileName);
-                mw->showMessage("Editing gifs/video is unsupported.");
-            }
-        } else {
-            qDebug() << "Core::flipH() - could not lock cache object.";
-        }
+    if(!state.hasActiveImage)
+        return;
+    std::shared_ptr<Image> img = model->getItem(model->currentFileName);
+    if(img && img->type() == STATIC) {
+        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
+        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                    ImageLib::flippedH(imgStatic->getImage())));
+        model->updateItem(model->currentFileName, img);
+    } else {
+        mw->showMessage("Editing gifs/video is unsupported.");
     }
 }
 
 void Core::flipV() {
-    if(state.hasActiveImage) {
-        if(model->cache.reserve(model->currentFileName)) {
-            std::shared_ptr<Image> img = model->cache.get(model->currentFileName);
-            if(img && img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-                imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                            ImageLib::flippedV(imgStatic->getImage())));
-                model->cache.release(model->currentFileName);
-                displayImage(img);
-            } else {
-                model->cache.release(model->currentFileName);
-                mw->showMessage("Editing gifs/video is unsupported.");
-            }
-        } else {
-            qDebug() << "Core::flipV() - could not lock cache object.";
-        }
+    if(!state.hasActiveImage)
+        return;
+    std::shared_ptr<Image> img = model->getItem(model->currentFileName);
+    if(img && img->type() == STATIC) {
+        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
+        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                    ImageLib::flippedV(imgStatic->getImage())));
+        model->updateItem(model->currentFileName, img);
+    } else {
+        mw->showMessage("Editing gifs/video is unsupported.");
     }
 }
 
-// TODO: simplify. too much copypasted code
 void Core::crop(QRect rect) {
-    if(state.hasActiveImage) {
-        if(model->cache.reserve(model->currentFileName)) {
-            std::shared_ptr<Image> img = model->cache.get(model->currentFileName);
-            if(img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-                if(!imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                            ImageLib::cropped(imgStatic->getImage(), rect))))
-                {
-                    mw->showMessage("Could not crop image: incorrect size / position");
-                }
-                model->cache.release(model->currentFileName);
-                displayImage(img);
-            } else {
-                model->cache.release(model->currentFileName);
-                mw->showMessage("Editing gifs/video is unsupported.");
-            }
-        } else {
-            qDebug() << "Core::crop() - could not lock cache object.";
-        }
+    if(!state.hasActiveImage)
+        return;
+    std::shared_ptr<Image> img = model->getItem(model->currentFileName);
+    if(img && img->type() == STATIC) {
+        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
+        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                    ImageLib::cropped(imgStatic->getImage(), rect)));
+        model->updateItem(model->currentFileName, img);
+    } else {
+        mw->showMessage("Editing gifs/video is unsupported.");
     }
 }
 
 void Core::rotateByDegrees(int degrees) {
-    if(state.hasActiveImage) {
-        if(model->cache.reserve(model->currentFileName)) {
-            std::shared_ptr<Image> img = model->cache.get(model->currentFileName);
-            if(img && img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-                imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                            ImageLib::rotated(imgStatic->getImage(), degrees)));
-                model->cache.release(model->currentFileName);
-                displayImage(img);
-            } else {
-                model->cache.release(model->currentFileName);
-                mw->showMessage("Editing gifs/video is unsupported.");
-            }
-        } else {
-            qDebug() << "Core::rotateByDegrees() - could not lock cache object.";
-        }
+    if(!state.hasActiveImage)
+        return;
+    std::shared_ptr<Image> img = model->getItem(model->currentFileName);
+    if(img && img->type() == STATIC) {
+        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
+        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                    ImageLib::rotated(imgStatic->getImage(), degrees)));
+        model->updateItem(model->currentFileName, img);
+    } else {
+        mw->showMessage("Editing gifs/video is unsupported.");
     }
 }
 
-// TODO: simplify. too much copypasted code
 void Core::discardEdits() {
-    if(state.hasActiveImage) {
-        if(model->cache.reserve(model->currentFileName)) {
-            std::shared_ptr<Image> img = model->cache.get(model->currentFileName);
-            if(img->type() == STATIC) {
-                auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-                bool ok = imgStatic->discardEditedImage();
-                model->cache.release(model->currentFileName);
-                if(ok)
-                    displayImage(img);
-            } else {
-                model->cache.release(model->currentFileName);
-            }
-        } else {
-            qDebug() << "Core::discardEdits() - could not lock cache object.";
-        }
+    if(!state.hasActiveImage)
+        return;
+    std::shared_ptr<Image> img = model->getItem(model->currentFileName);
+    if(img && img->type() == STATIC) {
+        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
+        imgStatic->discardEditedImage();
+        model->updateItem(model->currentFileName, img);
     }
     mw->hideSaveOverlay();
 }
 
-// TODO: simplify. too much copypasted code
-// also move saving logic away from Image container itself
+// move saving logic away from Image container itself
 void Core::saveImageToDisk() {
     if(state.hasActiveImage)
         saveImageToDisk(model->fullFilePath(model->currentFileName));
 }
 
 void Core::saveImageToDisk(QString filePath) {
-    if(state.hasActiveImage) {
-        if(model->cache.reserve(model->currentFileName)) {
-            std::shared_ptr<Image> img = model->cache.get(model->currentFileName);
-            if(img->save(filePath))
-                mw->showMessageSuccess("File saved.");
-            else
-                mw->showError("Could not save file.");
-            model->cache.release(model->currentFileName);
-        } else {
-            qDebug() << "Core::saveImageToDisk() - could not lock cache object.";
-        }
-    }
+    if(!state.hasActiveImage)
+        return;
+    std::shared_ptr<Image> img = model->getItem(model->currentFileName);
+    if(img->save(filePath))
+        mw->showMessageSuccess("File saved.");
+    else
+        mw->showError("Could not save file.");
     mw->hideSaveOverlay();
 }
 
@@ -660,6 +605,10 @@ void Core::onModelIndexChange(int index) {
 void Core::onModelItemReady(std::shared_ptr<Image> img) {
     displayImage(img);
     updateInfoString();
+}
+
+void Core::onModelItemUpdated(std::shared_ptr<Image> img) {
+    onModelItemReady(img);
 }
 
 void Core::displayImage(std::shared_ptr<Image> img) {

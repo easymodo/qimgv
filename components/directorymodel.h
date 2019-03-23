@@ -42,6 +42,7 @@ public:
 
     std::shared_ptr<Image> getItemAt(int index);
     std::shared_ptr<Image> getItem(QString fileName);
+    void updateItem(QString fileName, std::shared_ptr<Image> img);
 signals:
     void fileRemoved(QString fileName, int index);
     void fileRenamed(QString from, QString to);
@@ -51,6 +52,7 @@ signals:
     void indexChanged(int index);
     // returns current item
     void itemReady(std::shared_ptr<Image> img);
+    void itemUpdated(std::shared_ptr<Image> img);
 
     void generateThumbnails(QList<int> indexes, int size);
     void thumbnailReady(std::shared_ptr<Thumbnail>);
