@@ -364,9 +364,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-315</y>
+                <y>-375</y>
                 <width>386</width>
-                <height>752</height>
+                <height>812</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -521,7 +521,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>... only in fullscreen</string>
+                    <string>only in fullscreen</string>
                    </property>
                   </widget>
                  </item>
@@ -588,7 +588,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>Panel position:</string>
+                    <string>Panel position</string>
                    </property>
                   </widget>
                  </item>
@@ -601,7 +601,7 @@
                     </sizepolicy>
                    </property>
                    <property name="text">
-                    <string>Thumbnail size:</string>
+                    <string>Thumbnail size</string>
                    </property>
                   </widget>
                  </item>
@@ -656,7 +656,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>Square thumbnails</string>
+                    <string>Crop thumbnails to square</string>
                    </property>
                   </widget>
                  </item>
@@ -718,7 +718,7 @@
                     </sizepolicy>
                    </property>
                    <property name="text">
-                    <string>Default fit mode:</string>
+                    <string>Default fit mode</string>
                    </property>
                   </widget>
                  </item>
@@ -832,7 +832,65 @@
                   <property name="bottomMargin">
                    <number>0</number>
                   </property>
-                  <item row="4" column="0">
+                  <item row="6" column="0">
+                   <widget class="QCheckBox" name="videoControlsCheckBox">
+                    <property name="text">
+                     <string>Show video controls</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_15">
+                    <property name="text">
+                     <string>Enabled formats</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QFrame" name="frame_3">
+                    <property name="frameShape">
+                     <enum>QFrame::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_4">
+                     <item>
+                      <widget class="QCheckBox" name="playWebmCheckBox">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="toolTip">
+                        <string>Enables webm playback via Mpv</string>
+                       </property>
+                       <property name="text">
+                        <string>WebM</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="playMp4CheckBox">
+                       <property name="text">
+                        <string>MP4</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
                    <widget class="QCheckBox" name="playSoundsCheckBox">
                     <property name="enabled">
                      <bool>true</bool>
@@ -851,52 +909,6 @@
                     </property>
                     <property name="text">
                      <string>Play sounds</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_15">
-                    <property name="text">
-                     <string>Enable formats:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QCheckBox" name="playWebmCheckBox">
-                    <property name="enabled">
-                     <bool>true</bool>
-                    </property>
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="toolTip">
-                     <string>Enables webm playback via Mpv</string>
-                    </property>
-                    <property name="text">
-                     <string>WebM</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QCheckBox" name="playMp4CheckBox">
-                    <property name="text">
-                     <string>MP4</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="0">
-                   <widget class="QCheckBox" name="videoControlsCheckBox">
-                    <property name="text">
-                     <string>Show video controls</string>
                     </property>
                    </widget>
                   </item>
@@ -950,6 +962,41 @@
                  <property name="rightMargin">
                   <number>9</number>
                  </property>
+                 <item row="1" column="0" colspan="2">
+                  <widget class="QCheckBox" name="infiniteScrollingCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Start from beginning when reaching end of directory.</string>
+                   </property>
+                   <property name="text">
+                    <string>Infinite scrolling</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_6">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Directory sorting</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="0" column="1">
                   <widget class="QComboBox" name="sortingComboBox">
                    <property name="sizePolicy">
@@ -990,49 +1037,7 @@
                    </item>
                   </widget>
                  </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_6">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="text">
-                    <string>Directory sorting: </string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0" colspan="2">
-                  <widget class="QCheckBox" name="infiniteScrollingCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>Start from beginning when reaching end of directory.</string>
-                   </property>
-                   <property name="text">
-                    <string>Infinite scrolling</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="2" column="0" colspan="2">
-                  <widget class="QCheckBox" name="showInfoOverlayCheckBox">
-                   <property name="text">
-                    <string>(Fullscreen) Show image info</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="0" colspan="2">
                   <widget class="QCheckBox" name="mouseWrappingCheckBox">
                    <property name="minimumSize">
                     <size>
@@ -1048,7 +1053,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="0" colspan="2">
+                 <item row="3" column="0" colspan="2">
                   <widget class="QCheckBox" name="cursorAutohideCheckBox">
                    <property name="text">
                     <string>Cursor autohiding</string>
@@ -1056,6 +1061,39 @@
                   </widget>
                  </item>
                 </layout>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_23">
+                 <property name="text">
+                  <string>Image info bar</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QFrame" name="frame_4">
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_6">
+                  <item>
+                   <widget class="QCheckBox" name="checkBox">
+                    <property name="text">
+                     <string>Windowed</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="showInfoOverlayCheckBox">
+                    <property name="text">
+                     <string>Fullscreen</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
                </item>
                <item>
                 <spacer name="verticalSpacer_3">
@@ -1106,7 +1144,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>279</width>
+                <width>386</width>
                 <height>508</height>
                </rect>
               </property>
@@ -1708,8 +1746,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>392</width>
-                <height>230</height>
+                <width>400</width>
+                <height>437</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">

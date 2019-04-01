@@ -95,7 +95,7 @@ private slots:
     void readSettings();
     void setControlsOverlayEnabled(bool mode);
     void showInfoOverlay(bool mode);
-    void triggerPanelButtons();
+    void triggerFullscreenUI();
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);

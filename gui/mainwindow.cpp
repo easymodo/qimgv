@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
             this, SLOT(setControlsOverlayEnabled(bool)));
 
     connect(this, SIGNAL(fullscreenStatusChanged(bool)),
-            this, SLOT(triggerPanelButtons()));
+            this, SLOT(triggerFullscreenUI()));
 
     connect(this, SIGNAL(fullscreenStatusChanged(bool)),
             this, SLOT(showInfoOverlay(bool)));
@@ -618,7 +618,7 @@ void MainWindow::readSettings() {
     infoOverlayEnabled = settings->showInfoOverlay();
     setControlsOverlayEnabled(this->isFullScreen());
     showInfoOverlay(this->isFullScreen());
-    triggerPanelButtons();
+    triggerFullscreenUI();
     update();
 }
 
@@ -648,14 +648,16 @@ void MainWindow::setControlsOverlayEnabled(bool mode) {
         controlsOverlay->hide();
 }
 
-// switch some panel buttons on/off depending on
-// fullscreen status and other settings
-void MainWindow::triggerPanelButtons() {
+// do some adjustments depending on fullscreen state
+// todo: rename
+void MainWindow::triggerFullscreenUI() {
     if(isFullScreen()) {
+        infoBar->hide();
         folderView->setCloseButtonEnabled(true);
         if(panelEnabled && panelPosition == PANEL_TOP)
             mainPanel->setWindowButtonsEnabled(true);
     } else {
+        infoBar->show();
         folderView->setCloseButtonEnabled(false);
         mainPanel->setWindowButtonsEnabled(false);
     }

@@ -54,7 +54,6 @@ private:
 
     void rotateByDegrees(int degrees);
     void reset();
-    bool setDirectory(QString newPath);
     void displayImage(std::shared_ptr<Image>);
     void loadDirectoryPath(QString);
     void loadImagePath(QString path, bool blocking);

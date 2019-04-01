@@ -511,25 +511,17 @@ void Core::reset() {
     this->clearCache();
 }
 
-bool Core::setDirectory(QString newPath) {
-    if(model->isEmpty() || model->absolutePath() != newPath) {
-        this->reset();
-        settings->setLastDirectory(newPath);
-        model->setDirectory(newPath);
-        mw->setDirectoryPath(newPath);
-        return true;
-    }
-    return false;
-}
-
 void Core::loadPath(QString path) {
     if(path.startsWith("file://", Qt::CaseInsensitive)) {
         path.remove(0, 7);
     }
     QFileInfo info(path);
-    if(!setDirectory(info.absolutePath())) {
+    QString directoryPath = info.absolutePath();
+    if(model->absolutePath() != directoryPath) {
         this->reset();
-        return;
+        settings->setLastDirectory(directoryPath);
+        model->setDirectory(directoryPath);
+        mw->setDirectoryPath(directoryPath);
     }
     if(info.isFile()) {
         model->setIndex(model->indexOf(info.fileName()));

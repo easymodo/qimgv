@@ -5,6 +5,7 @@
 
 DirectoryManager::DirectoryManager() : quickFormatDetection(true)
 {
+    currentDir.setPath("");
     readSettings();
 }
 
