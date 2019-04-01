@@ -5,7 +5,7 @@
 #include <QVBoxLayout>
 #include "gui/customwidgets/overlaycontainerwidget.h"
 #include "gui/viewers/viewerwidget.h"
-#include "gui/panels/infobar.h"
+#include "gui/panels/infobar/infobar.h"
 
 // TODO: use a template here?
 

@@ -151,7 +151,7 @@ SOURCES += \
     components/directorypresenter.cpp \
     gui/idirectoryview.cpp \
     gui/directoryviewwrapper.cpp \
-    gui/panels/infobar.cpp
+    gui/panels/infobar/infobar.cpp
 
 HEADERS += \
     core.h \
@@ -245,7 +245,7 @@ HEADERS += \
     components/directorypresenter.h \
     gui/idirectoryview.h \
     gui/directoryviewwrapper.h \
-    gui/panels/infobar.h
+    gui/panels/infobar/infobar.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \
@@ -262,7 +262,7 @@ FORMS += \
     gui/overlays/videocontrols.ui \
     gui/folderview/folderview.ui \
     gui/contextmenu.ui \
-    gui/panels/infobar.ui
+    gui/panels/infobar/infobar.ui
 
 RESOURCES += \
     resources.qrc

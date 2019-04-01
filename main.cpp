@@ -43,6 +43,8 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationName("qimgv");
     QCoreApplication::setApplicationVersion(appVersion.normalized().toString());
 
+    QGuiApplication::setDesktopFileName("qimgv.desktop");
+
     // enable translations
     /*QTranslator qtTranslator;
     qtTranslator.load("qt_" + QLocale::system().name(),
