@@ -272,8 +272,8 @@ void Core::onFileRemoved(QString fileName, int index) {
         if(!model->itemCount()) {
             mw->closeImage();
         } else {
-            if(!model->setIndex(index))
-                model->setIndex(--index);
+            if(!model->setIndexAsync(index))
+                model->setIndexAsync(--index);
         }
     }
 }
@@ -282,7 +282,7 @@ void Core::onFileRenamed(QString from, QString to) {
     model->cache.remove(from);
     if(model->currentFileName == from) {
         model->cache.clear(); // ? do it in the model itself
-        model->setIndex(model->indexOf(to));
+        model->setIndexAsync(model->indexOf(to));
     }
     //mw->removeThumbnail(oldIndex);
     //mw->addThumbnail(newIndex);
@@ -526,7 +526,10 @@ void Core::loadPath(QString path) {
     if(info.isFile()) {
         model->setIndex(model->indexOf(info.fileName()));
     } else if(info.isDir()) {
+        //todo: set index without loading actual file?
         model->setIndex(0);
+        mw->enableFolderView();
+
     } else {
         mw->showError("Could not open path: " + path);
         qDebug() << "Could not open path: " << path;
@@ -546,7 +549,7 @@ void Core::nextImage() {
             return;
         }
     }
-    model->setIndex(newIndex);
+    model->setIndexAsync(newIndex);
 }
 
 void Core::prevImage() {
@@ -562,19 +565,19 @@ void Core::prevImage() {
             return;
         }
     }
-    model->setIndex(newIndex);
+    model->setIndexAsync(newIndex);
 }
 
 void Core::jumpToFirst() {
     if(!model->isEmpty()) {
-        model->setIndex(0);
+        model->setIndexAsync(0);
         mw->showMessageDirectoryStart();
     }
 }
 
 void Core::jumpToLast() {
     if(!model->isEmpty()) {
-        model->setIndex(model->itemCount() - 1);
+        model->setIndexAsync(model->itemCount() - 1);
         mw->showMessageDirectoryEnd();
     }
 }

@@ -117,6 +117,29 @@ bool DirectoryModel::setIndex(int index) {
             trimCache();
         }
         if(cache.contains(currentFileName)) {
+            if(settings->usePreloader()) {
+                preload(dirManager.prevOf(currentFileName));
+                preload(dirManager.nextOf(currentFileName));
+            }
+        } else {
+            auto img = loader.load(fullFilePath(currentFileName));
+            cache.insert(img);
+        }
+        emit itemReady(cache.get(currentFileName));
+        return true;
+    }
+    return false;
+}
+
+bool DirectoryModel::setIndexAsync(int index) {
+    if(index >= 0 && index < itemCount()) {
+        QString newName = fileNameAt(index);
+        if(currentFileName != newName) {
+            currentFileName = fileNameAt(index);
+            emit indexChanged(index);
+            trimCache();
+        }
+        if(cache.contains(currentFileName)) {
             emit itemReady(cache.get(currentFileName));
             if(settings->usePreloader()) {
                 preload(dirManager.prevOf(currentFileName));
@@ -174,6 +197,7 @@ std::shared_ptr<Image> DirectoryModel::getItem(QString fileName) {
     std::shared_ptr<Image> img = cache.get(fileName);
     if(!img) {
         img = loader.load(fullFilePath(fileName));
+
     }
     return img;
 }

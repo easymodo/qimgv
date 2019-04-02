@@ -122,7 +122,7 @@ void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb) {
 }
 
 void DirectoryPresenter::loadByIndex(int index) {
-    model->setIndex(index);
+    model->setIndexAsync(index);
 }
 
 // tmp

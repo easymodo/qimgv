@@ -37,6 +37,7 @@ public:
     void setDirectory(QString);
 
     bool setIndex(int index);
+    bool setIndexAsync(int index);
 
     std::shared_ptr<Image> itemAt(int index);
 
