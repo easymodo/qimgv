@@ -93,7 +93,7 @@ private:
 private slots:
     void updateCurrentDisplay();
     void readSettings();
-    void triggerFullscreenUI();
+    void adaptToWindowState();
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);

@@ -38,10 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
             this, SLOT(updateCurrentDisplay()));
 
     connect(this, SIGNAL(fullscreenStatusChanged(bool)),
-            this, SLOT(triggerFullscreenUI()));
-
-    connect(this, SIGNAL(fullscreenStatusChanged(bool)),
-            this, SLOT(showInfoOverlay(bool)));
+            this, SLOT(adaptToWindowState()));
 
     readSettings();
     currentDisplay = settings->lastDisplay();
@@ -249,24 +246,25 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event) {
         lastMouseMovePos = event->pos();
         return;
     }
-
+    // show on hover event
     if(panelEnabled && (isFullScreen() || !panelFullscreenOnly)) {
-        if( mainPanel->triggerRect().contains(event->pos()) &&
-           !mainPanel->triggerRect().contains(lastMouseMovePos))
+        if( mainPanel->triggerRect().contains(event->pos()) && !mainPanel->triggerRect().contains(lastMouseMovePos))
         {
             mainPanel->show();
         }
+    }
+    // fade out on leave event
+    if(!mainPanel->isHidden()) {
         // leaveEvent which misfires on HiDPI (rounding error somewhere?)
         // add a few px of buffer area to avoid bugs
         // it still fcks up Fitts law as the buttons are not receiving hover on screen border
-        else if( !mainPanel->triggerRect().adjusted(-8,-8,8,8).contains(event->pos()) &&
-                 mainPanel->triggerRect().adjusted(-8,-8,8,8).contains(lastMouseMovePos))
+        if(!mainPanel->triggerRect().adjusted(-8,-8,8,8).contains(event->pos()))
         {
             mainPanel->hideAnimated();
         }
     }
-    event->ignore();
     lastMouseMovePos = event->pos();
+    event->ignore();
 }
 
 bool MainWindow::event(QEvent *event) {
@@ -602,8 +600,7 @@ void MainWindow::readSettings() {
     panelFullscreenOnly = settings->panelFullscreenOnly();
     showInfoBarFullscreen = settings->infoBarFullscreen();
     showInfoBarWindowed = settings->infoBarWindowed();
-    triggerFullscreenUI();
-    update();
+    adaptToWindowState();
 }
 
 void MainWindow::applyWindowedBackground() {
@@ -625,9 +622,8 @@ void MainWindow::applyFullscreenBackground() {
 #endif
 }
 
-// do some adjustments depending on fullscreen state
-// todo: rename
-void MainWindow::triggerFullscreenUI() {
+// changes ui elements according to fullscreen state
+void MainWindow::adaptToWindowState() {
     if(panelEnabled)
         mainPanel->hide();
     if(isFullScreen()) { //-------------------------------------- fullscreen ---
@@ -635,20 +631,22 @@ void MainWindow::triggerFullscreenUI() {
         infoBarWindowed->hide();
         if(showInfoBarFullscreen)
             infoBarFullscreen->show();
+        else
+            infoBarFullscreen->hide();
         folderView->setExitButtonEnabled(true);
-        if(panelEnabled && panelPosition == PANEL_TOP) {
+        if(panelEnabled && panelPosition == PANEL_TOP)
             mainPanel->setExitButtonEnabled(true);
-        }
-        if(panelPosition == PANEL_BOTTOM || !panelEnabled) {
+        if(panelPosition == PANEL_BOTTOM || !panelEnabled)
             controlsOverlay->show();
-        } else {
+        else
             controlsOverlay->hide();
-        }
     } else { //------------------------------------------------------ window ---
         applyWindowedBackground();
         infoBarFullscreen->hide();
         if(showInfoBarWindowed)
             infoBarWindowed->show();
+        else
+            infoBarWindowed->hide();
         folderView->setExitButtonEnabled(false);
         mainPanel->setExitButtonEnabled(false);
     }
