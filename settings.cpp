@@ -610,12 +610,20 @@ void Settings::setSmoothAnimatedImages(bool mode) {
     settings->s->setValue("smoothAnimatedImages", mode);
 }
 //------------------------------------------------------------------------------
-bool Settings::showInfoOverlay() {
-    return settings->s->value("showInfoOverlay", true).toBool();
+bool Settings::infoBarFullscreen() {
+    return settings->s->value("infoBarFullscreen", true).toBool();
 }
 
-void Settings::setShowInfoOverlay(bool mode) {
-    settings->s->setValue("showInfoOverlay", mode);
+void Settings::setInfoBarFullscreen(bool mode) {
+    settings->s->setValue("infoBarFullscreen", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::infoBarWindowed() {
+    return settings->s->value("infoBarWindowed", false).toBool();
+}
+
+void Settings::setInfoBarWindowed(bool mode) {
+    settings->s->setValue("infoBarWindowed", mode);
 }
 //------------------------------------------------------------------------------
 bool Settings::windowTitleIndex() {

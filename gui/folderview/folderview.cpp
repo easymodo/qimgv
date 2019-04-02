@@ -11,7 +11,7 @@ FolderView::FolderView(QWidget *parent) :
 
     ui->openButton->setAction("open");
     ui->settingsButton->setAction("openSettings");
-    ui->closeButton->setAction("exit");
+    ui->exitButton->setAction("exit");
     ui->docViewButton->setAction("documentView");
 
     int min = ui->thumbnailGrid->THUMBNAIL_SIZE_MIN;
@@ -74,8 +74,8 @@ void FolderView::hide() {
     ui->thumbnailGrid->clearFocus();
 }
 
-void FolderView::setCloseButtonEnabled(bool mode) {
-    ui->closeButton->setHidden(!mode);
+void FolderView::setExitButtonEnabled(bool mode) {
+    ui->exitButton->setHidden(!mode);
 }
 
 void FolderView::focusInEvent(QFocusEvent *event) {

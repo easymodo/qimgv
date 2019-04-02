@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 
 // TODO: nuke this and rewrite
 
@@ -38,9 +38,6 @@ MainWindow::MainWindow(QWidget *parent)
             this, SLOT(updateCurrentDisplay()));
 
     connect(this, SIGNAL(fullscreenStatusChanged(bool)),
-            this, SLOT(setControlsOverlayEnabled(bool)));
-
-    connect(this, SIGNAL(fullscreenStatusChanged(bool)),
             this, SLOT(triggerFullscreenUI()));
 
     connect(this, SIGNAL(fullscreenStatusChanged(bool)),
@@ -61,8 +58,8 @@ MainWindow::MainWindow(QWidget *parent)
  */
 void MainWindow::setupUi() {
     viewerWidget.reset(new ViewerWidget());
-    infoBar.reset(new InfoBar());
-    docWidget.reset(new DocumentWidget(viewerWidget, infoBar));
+    infoBarWindowed.reset(new InfoBar());
+    docWidget.reset(new DocumentWidget(viewerWidget, infoBarWindowed));
     folderView.reset(new FolderView());
 
     centralWidget.reset(new CentralWidget(docWidget, folderView, this));
@@ -70,7 +67,7 @@ void MainWindow::setupUi() {
 
     // overlays etc.
     // this order is used while drawing
-    infoOverlay = new InfoOverlay(viewerWidget.get());
+    infoBarFullscreen = new InfoOverlay(viewerWidget.get());
     controlsOverlay = new ControlsOverlay(docWidget.get());
     saveOverlay = new SaveConfirmOverlay(docWidget.get());
 
@@ -101,12 +98,6 @@ void MainWindow::setupUi() {
             this, SIGNAL(scalingRequested(QSize)));
 
     //  Core >> MW
-    /*
-    connect(this, SIGNAL(setCurrentIndex(int)),
-            folderView.get(), SLOT(selectIndex(int)));
-    connect(this, SIGNAL(setCurrentIndex(int)),
-            thumbnailStrip.get(), SLOT(selectIndex(int)));
-    */
     connect(this, SIGNAL(zoomIn()),
             viewerWidget.get(), SIGNAL(zoomIn()));
     connect(this, SIGNAL(zoomOut()),
@@ -195,7 +186,7 @@ void MainWindow::switchFitMode() {
 
 void MainWindow::closeImage() {
     viewerWidget->closeImage();
-    infoOverlay->setText("No file opened.");
+    infoBarFullscreen->setText("No file opened.");
 }
 
 void MainWindow::showImage(std::unique_ptr<QPixmap> pixmap) {
@@ -418,7 +409,6 @@ void MainWindow::triggerFullScreen() {
 }
 
 void MainWindow::showFullScreen() {
-    applyFullscreenBackground();
     //do not save immediately on application start
     if(!isHidden())
         saveWindowGeometry();
@@ -434,7 +424,6 @@ void MainWindow::showFullScreen() {
 }
 
 void MainWindow::showWindowed() {
-    applyWindowedBackground();
     QWidget::show();
     QWidget::showNormal();
     restoreWindowGeometry();
@@ -551,11 +540,11 @@ void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, 
         title.append(" - " + QString::number(imageSize.width()) + " x " + QString::number(imageSize.height()));
     if(settings->windowTitleSize())
         title.append(" - " + QString::number(fileSize / 1024) + " KB");
-    infoOverlay->setText(title); // temporary
+    infoBarFullscreen->setText(title); // temporary
     if(settings->windowTitleProgramName())
         title.append(" — " + qApp->applicationName());
     setWindowTitle(title);
-    infoBar->setInfo(fileIndex, fileCount, fileName, imageSize, fileSize);
+    infoBarWindowed->setInfo(fileIndex, fileCount, fileName, imageSize, fileSize);
 }
 
 std::shared_ptr<DirectoryViewWrapper> MainWindow::getFolderView() {
@@ -608,16 +597,11 @@ void MainWindow::showError(QString text) {
 }
 
 void MainWindow::readSettings() {
-    if(isFullScreen())
-        applyFullscreenBackground();
-    else
-        applyWindowedBackground();
     panelPosition = settings->panelPosition();
     panelEnabled = settings->panelEnabled();
     panelFullscreenOnly = settings->panelFullscreenOnly();
-    infoOverlayEnabled = settings->showInfoOverlay();
-    setControlsOverlayEnabled(this->isFullScreen());
-    showInfoOverlay(this->isFullScreen());
+    showInfoBarFullscreen = settings->infoBarFullscreen();
+    showInfoBarWindowed = settings->infoBarWindowed();
     triggerFullscreenUI();
     update();
 }
@@ -641,33 +625,33 @@ void MainWindow::applyFullscreenBackground() {
 #endif
 }
 
-void MainWindow::setControlsOverlayEnabled(bool mode) {
-    if(mode && (panelPosition == PANEL_BOTTOM || !settings->panelEnabled()))
-        controlsOverlay->show();
-    else
-        controlsOverlay->hide();
-}
-
 // do some adjustments depending on fullscreen state
 // todo: rename
 void MainWindow::triggerFullscreenUI() {
-    if(isFullScreen()) {
-        infoBar->hide();
-        folderView->setCloseButtonEnabled(true);
-        if(panelEnabled && panelPosition == PANEL_TOP)
-            mainPanel->setWindowButtonsEnabled(true);
-    } else {
-        infoBar->show();
-        folderView->setCloseButtonEnabled(false);
-        mainPanel->setWindowButtonsEnabled(false);
+    if(panelEnabled)
+        mainPanel->hide();
+    if(isFullScreen()) { //-------------------------------------- fullscreen ---
+        applyFullscreenBackground();
+        infoBarWindowed->hide();
+        if(showInfoBarFullscreen)
+            infoBarFullscreen->show();
+        folderView->setExitButtonEnabled(true);
+        if(panelEnabled && panelPosition == PANEL_TOP) {
+            mainPanel->setExitButtonEnabled(true);
+        }
+        if(panelPosition == PANEL_BOTTOM || !panelEnabled) {
+            controlsOverlay->show();
+        } else {
+            controlsOverlay->hide();
+        }
+    } else { //------------------------------------------------------ window ---
+        applyWindowedBackground();
+        infoBarFullscreen->hide();
+        if(showInfoBarWindowed)
+            infoBarWindowed->show();
+        folderView->setExitButtonEnabled(false);
+        mainPanel->setExitButtonEnabled(false);
     }
-}
-
-void MainWindow::showInfoOverlay(bool mode) {
-    if(mode && infoOverlayEnabled)
-        infoOverlay->show();
-    else
-        infoOverlay->hide();
 }
 
 void MainWindow::paintEvent(QPaintEvent *event) {

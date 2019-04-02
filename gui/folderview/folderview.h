@@ -29,7 +29,7 @@ public slots:
     virtual void insertItem(int index) Q_DECL_OVERRIDE;
     virtual void removeItem(int index) Q_DECL_OVERRIDE;
     void addItem();
-    void setCloseButtonEnabled(bool mode);
+    void setExitButtonEnabled(bool mode);
 
 protected:
     void wheelEvent(QWheelEvent *event) Q_DECL_OVERRIDE;

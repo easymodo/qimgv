@@ -349,7 +349,7 @@
          </widget>
         </item>
         <item>
-         <widget class="ActionButton" name="closeButton">
+         <widget class="ActionButton" name="exitButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>

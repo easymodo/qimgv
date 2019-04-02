@@ -54,7 +54,7 @@ void MainPanel::setPosition(PanelHPosition newPosition) {
     recalculateGeometry();
 }
 
-void MainPanel::setWindowButtonsEnabled(bool mode) {
+void MainPanel::setExitButtonEnabled(bool mode) {
     exitButton->setHidden(!mode);
     //exitFullscreenButton.setHidden(!mode);
 }

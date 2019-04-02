@@ -144,8 +144,8 @@ public:
     int folderViewIconSize();
     void setFolderViewIconSize(int value);
 
-    bool showInfoOverlay();
-    void setShowInfoOverlay(bool mode);
+    bool infoBarFullscreen();
+    void setInfoBarFullscreen(bool mode);
     bool firstRun();
     void setFirstRun(bool mode);
 
@@ -163,6 +163,8 @@ public:
     void setWindowProgramName(bool mode);
     bool cursorAutohide();
     void setCursorAutohide(bool mode);
+    bool infoBarWindowed();
+    void setInfoBarWindowed(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;

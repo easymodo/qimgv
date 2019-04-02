@@ -1079,14 +1079,14 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
                   <item>
-                   <widget class="QCheckBox" name="checkBox">
+                   <widget class="QCheckBox" name="showInfoBarWindowed">
                     <property name="text">
                      <string>Windowed</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="showInfoOverlayCheckBox">
+                   <widget class="QCheckBox" name="showInfoBarFullscreen">
                     <property name="text">
                      <string>Fullscreen</string>
                     </property>
@@ -1144,7 +1144,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>386</width>
+                <width>279</width>
                 <height>508</height>
                </rect>
               </property>
@@ -1746,8 +1746,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>400</width>
-                <height>437</height>
+                <width>392</width>
+                <height>230</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">

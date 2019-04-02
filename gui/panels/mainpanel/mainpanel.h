@@ -11,7 +11,7 @@ public:
     MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *parent);
     void setHeight(int newHeight);
     void setPosition(PanelHPosition);
-    void setWindowButtonsEnabled(bool mode);
+    void setExitButtonEnabled(bool mode);
 
 private slots:
     void readSettings();

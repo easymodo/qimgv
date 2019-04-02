@@ -59,7 +59,7 @@ private:
 
     QColor bgColor;
     qreal bgOpacity;
-    bool panelEnabled, panelFullscreenOnly, cropPanelActive, infoOverlayEnabled;
+    bool panelEnabled, panelFullscreenOnly, cropPanelActive, showInfoBarFullscreen, showInfoBarWindowed;
     std::shared_ptr<DocumentWidget> docWidget;
     std::shared_ptr<FolderView> folderView;
     std::shared_ptr<CentralWidget> centralWidget;
@@ -75,8 +75,8 @@ private:
     CopyOverlay *copyOverlay;
 
     ControlsOverlay *controlsOverlay;
-    InfoOverlay *infoOverlay; // fullscreen one. rename pending
-    std::shared_ptr<InfoBar> infoBar;
+    InfoOverlay *infoBarFullscreen;
+    std::shared_ptr<InfoBar> infoBarWindowed;
     FloatingMessage *floatingMessage;
 
     PanelHPosition panelPosition;
@@ -93,8 +93,6 @@ private:
 private slots:
     void updateCurrentDisplay();
     void readSettings();
-    void setControlsOverlayEnabled(bool mode);
-    void showInfoOverlay(bool mode);
     void triggerFullscreenUI();
 
 protected:

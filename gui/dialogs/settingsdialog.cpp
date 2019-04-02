@@ -86,7 +86,8 @@ void SettingsDialog::readSettings() {
     ui->bgOpacitySlider->setValue(static_cast<int>(settings->backgroundOpacity() * 100));
     ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
-    ui->showInfoOverlayCheckBox->setChecked(settings->showInfoOverlay());
+    ui->showInfoBarFullscreen->setChecked(settings->infoBarFullscreen());
+    ui->showInfoBarWindowed->setChecked(settings->infoBarWindowed());
     ui->titleFileIndexCheckBox->setChecked(settings->windowTitleIndex());
     ui->titleDimensionsCheckBox->setChecked(settings->windowTitleDimensions());
     ui->titleSizeCheckBox->setChecked(settings->windowTitleSize());
@@ -187,7 +188,8 @@ void SettingsDialog::applySettings() {
     settings->setBackgroundOpacity(static_cast<qreal>(ui->bgOpacitySlider->value()) / 100);
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
-    settings->setShowInfoOverlay(ui->showInfoOverlayCheckBox->isChecked());
+    settings->setInfoBarFullscreen(ui->showInfoBarFullscreen->isChecked());
+    settings->setInfoBarWindowed(ui->showInfoBarWindowed->isChecked());
     settings->setWindowTitleIndex(ui->titleFileIndexCheckBox->isChecked());
     settings->setWindowTitleDimensions(ui->titleDimensionsCheckBox->isChecked());
     settings->setWindowTitleSize(ui->titleSizeCheckBox->isChecked());
