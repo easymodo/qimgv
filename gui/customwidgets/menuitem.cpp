@@ -15,6 +15,7 @@ MenuItem::MenuItem(QWidget *parent)
     mIconLabel.setMinimumSize(16, 16);
 
     spacer = new QSpacerItem(16, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    mIconLabel.setAttribute(Qt::WA_TransparentForMouseEvents, true);
     mIconLabel.setAccessibleName("MenuItemIcon");
     mTextLabel.setAccessibleName("MenuItemText");
     mShortcutLabel.setAccessibleName("MenuItemShortcutLabel");
