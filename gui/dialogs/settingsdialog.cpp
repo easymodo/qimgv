@@ -88,10 +88,7 @@ void SettingsDialog::readSettings() {
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
     ui->showInfoBarFullscreen->setChecked(settings->infoBarFullscreen());
     ui->showInfoBarWindowed->setChecked(settings->infoBarWindowed());
-    ui->titleFileIndexCheckBox->setChecked(settings->windowTitleIndex());
-    ui->titleDimensionsCheckBox->setChecked(settings->windowTitleDimensions());
-    ui->titleSizeCheckBox->setChecked(settings->windowTitleSize());
-    ui->titleNameCheckBox->setChecked(settings->windowTitleProgramName());
+    ui->showExtendedInfoTitle->setChecked(settings->windowTitleExtendedInfo());
     ui->cursorAutohideCheckBox->setChecked(settings->cursorAutohide());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
@@ -190,10 +187,7 @@ void SettingsDialog::applySettings() {
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
     settings->setInfoBarFullscreen(ui->showInfoBarFullscreen->isChecked());
     settings->setInfoBarWindowed(ui->showInfoBarWindowed->isChecked());
-    settings->setWindowTitleIndex(ui->titleFileIndexCheckBox->isChecked());
-    settings->setWindowTitleDimensions(ui->titleDimensionsCheckBox->isChecked());
-    settings->setWindowTitleSize(ui->titleSizeCheckBox->isChecked());
-    settings->setWindowProgramName(ui->titleNameCheckBox->isChecked());
+    settings->setWindowTitleExtendedInfo(ui->showExtendedInfoTitle->isChecked());
     settings->setCursorAutohide(ui->cursorAutohideCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());

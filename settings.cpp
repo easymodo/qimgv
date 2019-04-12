@@ -626,38 +626,14 @@ void Settings::setInfoBarWindowed(bool mode) {
     settings->s->setValue("infoBarWindowed", mode);
 }
 //------------------------------------------------------------------------------
-bool Settings::windowTitleIndex() {
-    return settings->s->value("windowTitleIndex", false).toBool();
+bool Settings::windowTitleExtendedInfo() {
+    return settings->s->value("windowTitleExtendedInfo", true).toBool();
 }
 
-void Settings::setWindowTitleIndex(bool mode) {
-    settings->s->setValue("windowTitleIndex", mode);
+void Settings::setWindowTitleExtendedInfo(bool mode) {
+    settings->s->setValue("windowTitleExtendedInfo", mode);
 }
 //------------------------------------------------------------------------------
-bool Settings::windowTitleDimensions() {
-    return settings->s->value("windowTitleDimensions", true).toBool();
-}
-
-void Settings::setWindowTitleDimensions(bool mode) {
-    settings->s->setValue("windowTitleDimensions", mode);
-}
-//------------------------------------------------------------------------------
-bool Settings::windowTitleSize() {
-    return settings->s->value("windowTitleSize", false).toBool();
-}
-
-void Settings::setWindowTitleSize(bool mode) {
-    settings->s->setValue("windowTitleSize", mode);
-}
-//------------------------------------------------------------------------------
-bool Settings::windowTitleProgramName() {
-    return settings->s->value("windowTitleProgramName", true).toBool();
-}
-
-void Settings::setWindowProgramName(bool mode) {
-    settings->s->setValue("windowTitleProgramName", mode);
-}
-
 bool Settings::cursorAutohide() {
     return settings->s->value("cursorAutohiding", true).toBool();
 }

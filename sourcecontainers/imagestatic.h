@@ -2,6 +2,7 @@
 #define QIMAGESTATIC_H
 
 #include <QImage>
+#include <QImageWriter>
 #include <QSemaphore>
 #include "image.h"
 #include "utils/imagelib.h"

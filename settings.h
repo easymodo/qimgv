@@ -144,8 +144,6 @@ public:
     int folderViewIconSize();
     void setFolderViewIconSize(int value);
 
-    bool infoBarFullscreen();
-    void setInfoBarFullscreen(bool mode);
     bool firstRun();
     void setFirstRun(bool mode);
 
@@ -153,18 +151,16 @@ public:
     void setBackgroundColorFullscreen(QColor color);
 
     void sync();
-    bool windowTitleIndex();
-    void setWindowTitleIndex(bool mode);
-    bool windowTitleDimensions();
-    void setWindowTitleDimensions(bool mode);
-    bool windowTitleSize();
-    void setWindowTitleSize(bool mode);
-    bool windowTitleProgramName();
-    void setWindowProgramName(bool mode);
     bool cursorAutohide();
     void setCursorAutohide(bool mode);
+
+    bool infoBarFullscreen();
+    void setInfoBarFullscreen(bool mode);
     bool infoBarWindowed();
     void setInfoBarWindowed(bool mode);
+
+    bool windowTitleExtendedInfo();
+    void setWindowTitleExtendedInfo(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;

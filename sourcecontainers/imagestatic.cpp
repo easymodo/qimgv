@@ -32,6 +32,21 @@ void ImageStatic::load() {
 bool ImageStatic::save(QString destPath) {
     int quality = 100;
     bool success = false;
+    QImageWriter writer(destPath);
+    //writer.setQuality(85);
+    // PNG
+    writer.setQuality( 0 );
+    //writer.setCompression(100);
+
+    //writer.setOptimizedWrite(true);
+    //writer.setProgressiveScanWrite(true);
+    //writer.setCompression(100);
+    qDebug() << writer.compression() << writer.quality();
+    if(!writer.canWrite())
+        return false;
+
+    return writer.write(*image);
+    /*
     if(isEdited()) {
         success = imageEdited->save(destPath, nullptr, quality);
         image.swap(imageEdited);
@@ -43,6 +58,7 @@ bool ImageStatic::save(QString destPath) {
         mDocInfo->refresh();
     }
     return success;
+    */
 }
 
 bool ImageStatic::save() {

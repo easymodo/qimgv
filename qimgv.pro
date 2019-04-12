@@ -148,10 +148,10 @@ SOURCES += \
     gui/customwidgets/menuitem.cpp \
     gui/customwidgets/pathselectormenuitem.cpp \
     components/directorymodel.cpp \
-    components/directorypresenter.cpp \
     gui/idirectoryview.cpp \
     gui/directoryviewwrapper.cpp \
-    gui/panels/infobar/infobar.cpp
+    gui/panels/infobar/infobar.cpp \
+    components/directorypresenter.cpp
 
 HEADERS += \
     core.h \

@@ -532,15 +532,13 @@ void MainWindow::closeFullScreenOrExit() {
 
 void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize) {
     QString title = fileName;
-    if(settings->windowTitleIndex())
-        title.prepend(QString::number(fileIndex + 1) + "/" + QString::number(fileCount) + " - ");
-    if(settings->windowTitleDimensions())
-        title.append(" - " + QString::number(imageSize.width()) + " x " + QString::number(imageSize.height()));
-    if(settings->windowTitleSize())
-        title.append(" - " + QString::number(fileSize / 1024) + " KB");
+    if(settings->windowTitleExtendedInfo()) {
+        title.prepend("[ " + QString::number(fileIndex + 1) + "/" + QString::number(fileCount) + " ]  ");
+        title.append("  -  " + QString::number(imageSize.width()) + " x " + QString::number(imageSize.height()));
+        //title.append(" " + QString::number(fileSize / 1024) + " KB");
+        // — -
+    }
     infoBarFullscreen->setText(title); // temporary
-    if(settings->windowTitleProgramName())
-        title.append(" — " + qApp->applicationName());
     setWindowTitle(title);
     infoBarWindowed->setInfo(fileIndex, fileCount, fileName, imageSize, fileSize);
 }
