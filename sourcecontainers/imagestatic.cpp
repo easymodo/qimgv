@@ -30,13 +30,15 @@ void ImageStatic::load() {
 
 // TODO: add a way to configure compression level?
 bool ImageStatic::save(QString destPath) {
-    int quality = 95;
+    // png compression note from libpng
+    // Note that tests have shown that zlib compression levels 3-6 usually perform as well
+    // as level 9 for PNG images, and do considerably fewer caclulations
+    int quality = destPath.endsWith(".png", Qt::CaseInsensitive) ? 30 : 95;
     return isEdited()?imageEdited->save(destPath, nullptr, quality):image->save(destPath, nullptr, quality);
 }
 
 bool ImageStatic::save() {
-    int quality = 95;
-    return isEdited()?imageEdited->save(mPath, nullptr, quality):image->save(mPath, nullptr, quality);
+    return save(mPath);
 }
 
 std::unique_ptr<QPixmap> ImageStatic::getPixmap() {
