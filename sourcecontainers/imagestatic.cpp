@@ -30,23 +30,11 @@ void ImageStatic::load() {
 
 // TODO: add a way to configure compression level?
 bool ImageStatic::save(QString destPath) {
-    int quality = 100;
+    // png compression note from libpng
+    // Note that tests have shown that zlib compression levels 3-6 usually perform as well
+    // as level 9 for PNG images, and do considerably fewer caclulations
+    int quality = destPath.endsWith(".png", Qt::CaseInsensitive) ? 30 : 95;
     bool success = false;
-    QImageWriter writer(destPath);
-    //writer.setQuality(85);
-    // PNG
-    writer.setQuality( 0 );
-    //writer.setCompression(100);
-
-    //writer.setOptimizedWrite(true);
-    //writer.setProgressiveScanWrite(true);
-    //writer.setCompression(100);
-    qDebug() << writer.compression() << writer.quality();
-    if(!writer.canWrite())
-        return false;
-
-    return writer.write(*image);
-    /*
     if(isEdited()) {
         success = imageEdited->save(destPath, nullptr, quality);
         image.swap(imageEdited);
@@ -58,7 +46,6 @@ bool ImageStatic::save(QString destPath) {
         mDocInfo->refresh();
     }
     return success;
-    */
 }
 
 bool ImageStatic::save() {

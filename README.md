@@ -140,7 +140,7 @@ sudo apt install build-essential git cmake qt5-default
 _Fedora:_
 
 ```
-sudo dnf install git cmake qt5 qt5-devel gcc-c++ qt5-devel
+sudo dnf install git cmake make qt5 qt5-devel gcc-c++ qt5-devel
 ```
 	
 __2. _(Optional)_ Dependencies for video playback ( libmpv >= 0.22, mpv )__
