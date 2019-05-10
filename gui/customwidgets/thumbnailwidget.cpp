@@ -2,7 +2,7 @@
 
 ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     QGraphicsWidget(parent),
-    state(EMPTY),
+    isLoaded(false),
     thumbnail(nullptr),
     highlighted(false),
     hovered(false),
@@ -19,7 +19,7 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     nameColor.setRgb(20, 20, 20, 255);
     qreal fntSz = font.pointSizeF();
     if(fntSz > 0) {
-        font.setPointSizeF(font.pointSizeF() * 0.9);
+        //font.setPointSizeF(font.pointSizeF() * 0.9);
         fontSmall.setPointSizeF(fontSmall.pointSizeF() * 0.85);
     }
     font.setBold(true);
@@ -29,7 +29,6 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     textHeight = fm->height();
 
     setThumbnailSize(100);
-
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
@@ -40,10 +39,11 @@ void ThumbnailWidget::readSettings() {
 
 void ThumbnailWidget::setThumbnailSize(int size) {
     if(mThumbnailSize != size && size > 0) {
-        this->state = EMPTY;
+        isLoaded = false;
         mThumbnailSize = size;
         updateGeometry();
         updateThumbnailDrawPosition();
+        updateHighlightRect();
         setupLayout();
         update();
     }
@@ -54,15 +54,16 @@ void ThumbnailWidget::setPadding(int x, int y) {
     paddingY = y;
 }
 
-int ThumbnailWidget::thubmnailSize() {
+int ThumbnailWidget::thumbnailSize() {
     return mThumbnailSize;
 }
 
 void ThumbnailWidget::setDrawLabel(bool mode) {
     if(mDrawLabel != mode) {
         mDrawLabel = mode;
-        setupLayout();
         updateThumbnailDrawPosition();
+        setupLayout();
+        updateHighlightRect();
         updateGeometry();
         update();
     }
@@ -87,15 +88,15 @@ QSizeF ThumbnailWidget::effectiveSizeHint(Qt::SizeHint which, const QSizeF &cons
 void ThumbnailWidget::setThumbnail(std::shared_ptr<Thumbnail> _thumbnail) {
     if(_thumbnail) {
         thumbnail = _thumbnail;
-        state = LOADED;
+        isLoaded = true;
         updateThumbnailDrawPosition();
         setupLayout();
+        updateHighlightRect();
         update();
     }
 }
 
 void ThumbnailWidget::setupLayout() {
-    highlightRect = QRectF(paddingX, 0, width() - paddingX * 2, paddingY);
     nameRect = QRectF(highlightRect.left(), highlightRect.height(),
                       highlightRect.width(), textHeight * 1.7);
 
@@ -107,6 +108,10 @@ void ThumbnailWidget::setupLayout() {
         labelTextRect.moveRight(nameTextRect.right());
         nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
     }
+}
+
+void ThumbnailWidget::updateHighlightRect() {
+    highlightRect = QRectF(paddingX, 0, width() - paddingX * 2, paddingY);
 }
 
 void ThumbnailWidget::setHighlighted(bool mode, bool smooth) {
@@ -177,7 +182,7 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
     // filename
     int flags = Qt::TextSingleLine | Qt::AlignVCenter;
     painter->setFont(font);
-    painter->setPen(QColor(230, 230, 230, 255));
+    painter->setPen(QColor(210, 210, 210, 255));
     painter->drawText(nameTextRect, flags, thumbnail->name());
     // additional info
     painter->setFont(fontSmall);
@@ -226,7 +231,7 @@ bool ThumbnailWidget::isHovered() {
 void ThumbnailWidget::updateThumbnailDrawPosition() {
     if(thumbnail) {
         qreal dpr = qApp->devicePixelRatio();
-        if(state == LOADED) {
+        if(isLoaded) {
             // correctly sized thumbnail
             QPoint topLeft(width()  / 2 - thumbnail->pixmap()->width()  / (2 * dpr),
                            height() / 2 - thumbnail->pixmap()->height() / (2 * dpr));

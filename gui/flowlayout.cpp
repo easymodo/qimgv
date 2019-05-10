@@ -95,10 +95,11 @@ int FlowLayout::columns() {
 
 void FlowLayout::insertItem(int index, QGraphicsLayoutItem *item) {
     item->setParentLayoutItem(this);
-    if (uint(index) > uint(m_items.count()))
+    if(uint(index) > uint(m_items.count()))
         index = m_items.count();
     m_items.insert(index, item);
     invalidate();
+    //activate();
 }
 
 int FlowLayout::count() const
@@ -156,7 +157,7 @@ GridInfo FlowLayout::doLayout(const QRectF &geom, bool applyNewGeometry) const {
 
     // calculate offset for centering
     if(m_items.count()) {
-        const qreal itemWidth = m_items[0]->effectiveSizeHint(Qt::PreferredSize).width();
+        const qreal itemWidth = m_items.at(0)->effectiveSizeHint(Qt::PreferredSize).width();
         int maxCols = (int)maxw / itemWidth;
         if(m_items.count() >= maxCols)
             centerOffset = static_cast<int>(fmod(maxw, itemWidth) / 2);

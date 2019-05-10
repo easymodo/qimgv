@@ -35,25 +35,26 @@ public:
     // -1 if not found
     int indexOf(QString fileName) const;
     QStringList fileList() const;
-    QString currentDirectoryPath() const;
+    QString absolutePath() const;
     QString filePathAt(int index) const;
-    bool removeAt(int index, bool trash);
+    QString fullFilePath(QString fileName) const;
+    bool removeFile(QString fileName, bool trash);
     int fileCount() const;
-    bool existsInCurrentDir(QString fileName) const;
     bool isImage(QString filePath) const;
-    bool hasImages() const;
+    bool isEmpty() const;
     bool contains(QString fileName) const;
     bool checkRange(int index) const;
-    bool copyTo(QString destDirectory, int index);
+    bool copyTo(QString destDirectory, QString fileName);
     QString fileNameAt(int index) const;
+    QString prevOf(QString fileName) const;
+    QString nextOf(QString fileName) const;
     bool isDirectory(QString path) const;
     void sortFileList();
     void sortFileList(SortingMode mode);
+    QDateTime lastModified(QString fileName) const;
 
-private slots:
-    void fileChanged(const QString file);
-    void directoryContentsChanged(QString dirPath);
-
+    QString first();
+    QString last();
 private:
     QDir currentDir;
     QStringList mFileNameList;
@@ -68,16 +69,18 @@ private:
     //void generateFileListQuick();
     //void generateFileListDeep();
 
+    void onFileAddedExternal(QString filename);
     void onFileRemovedExternal(QString);
-
-    void onFileChangedExternal(QString fileName);
+    void onFileModifiedExternal(QString fileName);
+    void onFileRenamedExternal(QString oldFile, QString newFile);
     void moveToTrash(QString file);
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();
-    void fileRemovedAt(int);
-    void fileChangedAt(int);
-    void fileAddedAt(int);
+    void fileRemoved(QString, int);
+    void fileModified(QString);
+    void fileAdded(QString);
+    void fileRenamed(QString from, QString to);
 };
 
 #endif // DIRECTORYMANAGER_H

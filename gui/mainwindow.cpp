@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 
 // TODO: nuke this and rewrite
 
@@ -38,13 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
             this, SLOT(updateCurrentDisplay()));
 
     connect(this, SIGNAL(fullscreenStatusChanged(bool)),
-            this, SLOT(setControlsOverlayEnabled(bool)));
-
-    connect(this, SIGNAL(fullscreenStatusChanged(bool)),
-            this, SLOT(triggerPanelButtons()));
-
-    connect(this, SIGNAL(fullscreenStatusChanged(bool)),
-            this, SLOT(showInfoOverlay(bool)));
+            this, SLOT(adaptToWindowState()));
 
     readSettings();
     currentDisplay = settings->lastDisplay();
@@ -61,7 +55,8 @@ MainWindow::MainWindow(QWidget *parent)
  */
 void MainWindow::setupUi() {
     viewerWidget.reset(new ViewerWidget());
-    docWidget.reset(new DocumentWidget(viewerWidget));
+    infoBarWindowed.reset(new InfoBar());
+    docWidget.reset(new DocumentWidget(viewerWidget, infoBarWindowed));
     folderView.reset(new FolderView());
 
     centralWidget.reset(new CentralWidget(docWidget, folderView, this));
@@ -69,7 +64,7 @@ void MainWindow::setupUi() {
 
     // overlays etc.
     // this order is used while drawing
-    infoOverlay = new InfoOverlay(viewerWidget.get());
+    infoBarFullscreen = new InfoOverlay(viewerWidget.get());
     controlsOverlay = new ControlsOverlay(docWidget.get());
     saveOverlay = new SaveConfirmOverlay(docWidget.get());
 
@@ -96,30 +91,10 @@ void MainWindow::setupUi() {
     thumbnailStrip.reset(new ThumbnailStrip());
     mainPanel = new MainPanel(thumbnailStrip, this);
 
-    // passthrough signals
-    //   MW >> Core
-    connect(folderView.get(), SIGNAL(thumbnailRequested(QList<int>, int)),
-            this, SIGNAL(thumbnailRequested(QList<int>, int)));
-    connect(thumbnailStrip.get(), SIGNAL(thumbnailRequested(QList<int>, int)),
-            this, SIGNAL(thumbnailRequested(QList<int>, int)));
-    connect(folderView.get(), SIGNAL(thumbnailPressed(int)),
-            this, SIGNAL(thumbnailPressed(int)));
-    connect(thumbnailStrip.get(), SIGNAL(thumbnailPressed(int)),
-            this, SIGNAL(thumbnailPressed(int)));
-
     connect(viewerWidget.get(), SIGNAL(scalingRequested(QSize)),
             this, SIGNAL(scalingRequested(QSize)));
 
     //  Core >> MW
-    connect(this, SIGNAL(selectThumbnail(int)),
-            folderView.get(), SLOT(selectIndex(int)));
-    connect(this, SIGNAL(onThumbnailReady(int, std::shared_ptr<Thumbnail>)),
-            folderView.get(), SLOT(setThumbnail(int, std::shared_ptr<Thumbnail>)));
-    connect(this, SIGNAL(selectThumbnail(int)),
-            thumbnailStrip.get(), SLOT(highlightThumbnail(int)));
-    connect(this, SIGNAL(onThumbnailReady(int, std::shared_ptr<Thumbnail>)),
-            thumbnailStrip.get(), SLOT(setThumbnail(int, std::shared_ptr<Thumbnail>)));
-    //strip too^
     connect(this, SIGNAL(zoomIn()),
             viewerWidget.get(), SIGNAL(zoomIn()));
     connect(this, SIGNAL(zoomOut()),
@@ -165,9 +140,6 @@ void MainWindow::setupUi() {
     connect(this, SIGNAL(setDirectoryPath(QString)),
             folderView.get(), SLOT(setDirectoryPath(QString)));
 
-    connect(this, SIGNAL(closeImage()),
-            viewerWidget.get(), SLOT(closeImage()));
-
     connect(this, SIGNAL(toggleFolderView()),
             centralWidget.get(), SLOT(toggleViewMode()));
 
@@ -209,6 +181,11 @@ void MainWindow::switchFitMode() {
         viewerWidget->setFitMode(FIT_WINDOW);
 }
 
+void MainWindow::closeImage() {
+    viewerWidget->closeImage();
+    infoBarFullscreen->setText("No file opened.");
+}
+
 void MainWindow::showImage(std::unique_ptr<QPixmap> pixmap) {
     centralWidget->showDocumentView();
     viewerWidget->showImage(std::move(pixmap));
@@ -224,19 +201,8 @@ void MainWindow::showVideo(Clip *clip) {
     viewerWidget->showVideo(clip);
 }
 
-void MainWindow::populateThumbnailViews(int count) {
-    folderView->populate(count);
-    thumbnailStrip->populate(count);
-}
-
-void MainWindow::addThumbnail(int index) {
-    thumbnailStrip->insertItem(index);
-    folderView->insertItem(index);
-}
-
-void MainWindow::removeThumbnail(int index) {
-    thumbnailStrip->removeItem(index);
-    folderView->removeItem(index);
+void MainWindow::showContextMenu() {
+    viewerWidget->showContextMenu();
 }
 
 bool MainWindow::isCropPanelActive() {
@@ -280,35 +246,60 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event) {
         lastMouseMovePos = event->pos();
         return;
     }
-
+    // show on hover event
     if(panelEnabled && (isFullScreen() || !panelFullscreenOnly)) {
-        if( mainPanel->triggerRect().contains(event->pos()) &&
-           !mainPanel->triggerRect().contains(lastMouseMovePos))
+        if( mainPanel->triggerRect().contains(event->pos()) && !mainPanel->triggerRect().contains(lastMouseMovePos))
         {
             mainPanel->show();
         }
+    }
+    // fade out on leave event
+    if(!mainPanel->isHidden()) {
         // leaveEvent which misfires on HiDPI (rounding error somewhere?)
         // add a few px of buffer area to avoid bugs
         // it still fcks up Fitts law as the buttons are not receiving hover on screen border
-        else if( !mainPanel->triggerRect().adjusted(-8,-8,8,8).contains(event->pos()) &&
-                 mainPanel->triggerRect().adjusted(-8,-8,8,8).contains(lastMouseMovePos))
+        if(!mainPanel->triggerRect().adjusted(-8,-8,8,8).contains(event->pos()))
         {
             mainPanel->hideAnimated();
         }
     }
-    event->ignore();
     lastMouseMovePos = event->pos();
+    event->ignore();
 }
 
 bool MainWindow::event(QEvent *event) {
-    if(event->type() == QEvent::MouseMove) {
-        return QWidget::event(event);
-    }
-    if(event->type() == QEvent::Move) {
+    if(event->type() == QEvent::Move)
         windowMoveTimer.start();
-        return QWidget::event(event);
-    }
-    return (actionManager->processEvent(event)) ? true : QWidget::event(event);
+    return QWidget::event(event);
+    //return (actionManager->processEvent(event)) ? true : QWidget::event(event);
+}
+
+// hook up to actionManager
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+    event->accept();
+    actionManager->processEvent(event);
+}
+
+void MainWindow::wheelEvent(QWheelEvent *event) {
+    event->accept();
+    actionManager->processEvent(event);
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event) {
+    event->accept();
+    actionManager->processEvent(event);
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *event) {
+    event->accept();
+    actionManager->processEvent(event);
+}
+
+void MainWindow::mouseDoubleClickEvent(QMouseEvent *event) {
+    event->accept();
+    QMouseEvent *fakePressEvent = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), event->button(), event->buttons(), event->modifiers());
+    actionManager->processEvent(fakePressEvent);
+    actionManager->processEvent(event);
 }
 
 void MainWindow::close() {
@@ -357,6 +348,7 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 }
 
 void MainWindow::leaveEvent(QEvent *event) {
+    QWidget::leaveEvent(event);
     if(mainPanel)
         mainPanel->hideAnimated();
 }
@@ -415,7 +407,6 @@ void MainWindow::triggerFullScreen() {
 }
 
 void MainWindow::showFullScreen() {
-    applyFullscreenBackground();
     //do not save immediately on application start
     if(!isHidden())
         saveWindowGeometry();
@@ -431,7 +422,6 @@ void MainWindow::showFullScreen() {
 }
 
 void MainWindow::showWindowed() {
-    applyWindowedBackground();
     QWidget::show();
     QWidget::showNormal();
     restoreWindowGeometry();
@@ -481,7 +471,7 @@ void MainWindow::showCropPanel() {
         return;
 
     if(activeSidePanel != SIDEPANEL_CROP) {
-        mainPanel->hide();
+        (mainPanel)->hide();
         sidePanel->setWidget(cropPanel);
         sidePanel->show();
         cropOverlay->show();
@@ -540,9 +530,26 @@ void MainWindow::closeFullScreenOrExit() {
     }
 }
 
-void MainWindow::setInfoString(QString text) {
-    infoOverlay->setText(text);
-    setWindowTitle(text);
+void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize) {
+    QString title = fileName;
+    if(settings->windowTitleExtendedInfo()) {
+        title.prepend("[ " + QString::number(fileIndex + 1) + "/" + QString::number(fileCount) + " ]  ");
+        title.append("  -  " + QString::number(imageSize.width()) + " x " + QString::number(imageSize.height()));
+        //title.append(" " + QString::number(fileSize / 1024) + " KB");
+        // — -
+    }
+    infoBarFullscreen->setText(title); // temporary
+    setWindowTitle(title);
+    infoBarWindowed->setInfo(fileIndex, fileCount, fileName, imageSize, fileSize);
+}
+
+std::shared_ptr<DirectoryViewWrapper> MainWindow::getFolderView() {
+    return folderView->wrapper();
+}
+
+std::shared_ptr<DirectoryViewWrapper> MainWindow::getThumbnailPanel() {
+    //return thumbnailStrip;
+    return this->thumbnailStrip->wrapper();
 }
 
 void MainWindow::showMessageDirectoryEnd() {
@@ -566,26 +573,32 @@ void MainWindow::showMessageFitOriginal() {
 }
 
 void MainWindow::showMessage(QString text) {
-    floatingMessage->showMessage(text,  FloatingMessageIcon::NO_ICON, 1800);
+    floatingMessage->showMessage(text,  FloatingMessageIcon::NO_ICON, 1500);
 }
 
 void MainWindow::showMessage(QString text, int duration) {
     floatingMessage->showMessage(text, FloatingMessageIcon::NO_ICON, duration);
 }
 
+void MainWindow::showMessageSuccess(QString text) {
+    floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_SUCCESS, 1500);
+}
+
+void MainWindow::showWarning(QString text) {
+    floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_WARNING, 1500);
+}
+
+void MainWindow::showError(QString text) {
+    floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_ERROR, 1800);
+}
+
 void MainWindow::readSettings() {
-    if(isFullScreen())
-        applyFullscreenBackground();
-    else
-        applyWindowedBackground();
     panelPosition = settings->panelPosition();
     panelEnabled = settings->panelEnabled();
     panelFullscreenOnly = settings->panelFullscreenOnly();
-    infoOverlayEnabled = settings->showInfoOverlay();
-    setControlsOverlayEnabled(this->isFullScreen());
-    showInfoOverlay(this->isFullScreen());
-    triggerPanelButtons();
-    update();
+    showInfoBarFullscreen = settings->infoBarFullscreen();
+    showInfoBarWindowed = settings->infoBarWindowed();
+    adaptToWindowState();
 }
 
 void MainWindow::applyWindowedBackground() {
@@ -607,31 +620,34 @@ void MainWindow::applyFullscreenBackground() {
 #endif
 }
 
-void MainWindow::setControlsOverlayEnabled(bool mode) {
-    if(mode && (panelPosition == PANEL_BOTTOM || !settings->panelEnabled()))
-        controlsOverlay->show();
-    else
-        controlsOverlay->hide();
-}
-
-// switch some panel buttons on/off depending on
-// fullscreen status and other settings
-void MainWindow::triggerPanelButtons() {
-    if(isFullScreen()) {
-        folderView->setCloseButtonEnabled(true);
+// changes ui elements according to fullscreen state
+void MainWindow::adaptToWindowState() {
+    if(panelEnabled)
+        mainPanel->hide();
+    if(isFullScreen()) { //-------------------------------------- fullscreen ---
+        applyFullscreenBackground();
+        infoBarWindowed->hide();
+        if(showInfoBarFullscreen)
+            infoBarFullscreen->show();
+        else
+            infoBarFullscreen->hide();
+        folderView->setExitButtonEnabled(true);
         if(panelEnabled && panelPosition == PANEL_TOP)
-            mainPanel->setWindowButtonsEnabled(true);
-    } else {
-        folderView->setCloseButtonEnabled(false);
-        mainPanel->setWindowButtonsEnabled(false);
+            mainPanel->setExitButtonEnabled(true);
+        if(panelPosition == PANEL_BOTTOM || !panelEnabled)
+            controlsOverlay->show();
+        else
+            controlsOverlay->hide();
+    } else { //------------------------------------------------------ window ---
+        applyWindowedBackground();
+        infoBarFullscreen->hide();
+        if(showInfoBarWindowed)
+            infoBarWindowed->show();
+        else
+            infoBarWindowed->hide();
+        folderView->setExitButtonEnabled(false);
+        mainPanel->setExitButtonEnabled(false);
     }
-}
-
-void MainWindow::showInfoOverlay(bool mode) {
-    if(mode && infoOverlayEnabled)
-        infoOverlay->show();
-    else
-        infoOverlay->hide();
 }
 
 void MainWindow::paintEvent(QPaintEvent *event) {

@@ -30,29 +30,27 @@ QString ShortcutBuilder::processWheelEvent(QWheelEvent *event) {
 // Otherwise treated as a regular click
 QString ShortcutBuilder::processMouseEvent(QMouseEvent *event) {
     QString sequence;
-    if(event->button() == Qt::XButton1) {
-        sequence = "XButton1";
-    }
-    if(event->button() == Qt::XButton2) {
-        sequence = "XButton2";
-    }
-    if(event->button() == Qt::LeftButton) {
+    if(event->button() == Qt::LeftButton)
         sequence = "LMB";
-    }
-    if(event->button() == Qt::RightButton) {
+    else if(event->button() == Qt::RightButton)
         sequence = "RMB";
-    }
-    if(event->button() == Qt::MiddleButton) {
+    else if(event->button() == Qt::MiddleButton)
         sequence = "MiddleButton";
-    }
+    else if(event->button() == Qt::XButton1)
+        sequence = "XButton1";
+    else if(event->button() == Qt::XButton2)
+        sequence = "XButton2";
 
     sequence.prepend(modifierKeys(event));
-    // ignore everything except MouseButtonPress and double clicks
-    if(event->type() == QEvent::MouseButtonDblClick && event->button() == Qt::LeftButton) {
+    if(event->type() == QEvent::MouseButtonDblClick)
+    {
         sequence.append("_DoubleClick");
         return sequence;
-    } else if(event->type() == QEvent::MouseButtonPress) {
-       return sequence;
+    } else if((event->type() == QEvent::MouseButtonPress   && event->button() != Qt::MiddleButton) ||
+              (event->type() == QEvent::MouseButtonRelease && event->button() == Qt::MiddleButton))
+    {
+        // Press event for middle button is reserved for zooming, use release instead
+        return sequence;
     }
     return "";
 }

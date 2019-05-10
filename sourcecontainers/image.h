@@ -27,6 +27,7 @@ public:
     QString name() const;
     bool isEdited() const;
     int fileSize() const;
+    QDateTime lastModified() const;
 
 protected:
     virtual void load() = 0;

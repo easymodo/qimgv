@@ -31,6 +31,7 @@ void ImageAnimated::load() {
     mLoaded = true;
 }
 
+// TODO: overwrite (self included)
 bool ImageAnimated::save(QString destPath) {
     QFile file(mPath);
     if(file.exists()) {
@@ -38,6 +39,10 @@ bool ImageAnimated::save(QString destPath) {
             qDebug() << "Unable to save file.";
             return false;
         } else {
+            qDebug() << destPath << this->path();
+            if(destPath == this->path()) {
+                mDocInfo->refresh();
+            }
             return true;
         }
     } else {

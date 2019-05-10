@@ -3,12 +3,13 @@
 ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     : QGraphicsView(parent),
       orientation(orient),
-      mThumbnailSize(120)
+      mThumbnailSize(120),
+      selectedIndex(-1)
 {
     setAccessibleName("thumbnailView");
     this->setMouseTracking(true);
     this->setScene(&scene);
-    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate); // more buggy than smart
+    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     //setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     this->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing, true);
     this->setOptimizationFlag(QGraphicsView::DontSavePainterState, true);
@@ -55,6 +56,10 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     connect(this, SIGNAL(scrolled()), this, SLOT(loadVisibleThumbnailsDelayed()));
 }
 
+void ThumbnailView::setDirectoryPath(QString path) {
+
+}
+
 void ThumbnailView::showEvent(QShowEvent *event) {
     QGraphicsView::showEvent(event);
     ensureSelectedItemVisible();
@@ -85,17 +90,25 @@ void ThumbnailView::addItem() {
 }
 
 // insert at index
-// !! calls loadVisibleThumbnails() at the end
 void ThumbnailView::insertItem(int index) {
+    if(index <= selectedIndex) {
+        selectedIndex++;
+    }
     ThumbnailWidget *widget = createThumbnailWidget();
     thumbnails.insert(index, widget);
     addItemToLayout(widget, index);
+    updateLayout();
     fitSceneToContents();
     loadVisibleThumbnails();
 }
 
 void ThumbnailView::removeItem(int index) {
     if(checkRange(index)) {
+        if(index < selectedIndex) {
+            selectedIndex--;
+        } else if(index == selectedIndex) {
+            selectedIndex = -1;
+        }
         removeItemFromLayout(index);
         delete thumbnails.takeAt(index);
         loadVisibleThumbnails();
@@ -115,22 +128,22 @@ void ThumbnailView::loadVisibleThumbnails() {
     if(isVisible()) {
         QRectF visibleRect = mapToScene(viewport()->geometry()).boundingRect();
         // grow rectangle to cover nearby offscreen items
-        visibleRect.adjust(-OFFSCREEN_PRELOAD_AREA, -OFFSCREEN_PRELOAD_AREA,
-                           OFFSCREEN_PRELOAD_AREA, OFFSCREEN_PRELOAD_AREA);
+        visibleRect.adjust(-offscreenPreloadArea, -offscreenPreloadArea,
+                           offscreenPreloadArea, offscreenPreloadArea);
         QList<QGraphicsItem *>visibleItems = scene.items(visibleRect,
                                                    Qt::IntersectsItemShape,
                                                    Qt::AscendingOrder);
         QList<int> loadList;
         for(int i = 0; i < visibleItems.count(); i++) {
             ThumbnailWidget* widget = qgraphicsitem_cast<ThumbnailWidget*>(visibleItems.at(i));
-            if(widget->state == EMPTY) {
+            if(!widget->isLoaded) {
                 loadList.append(thumbnails.indexOf(widget));
             }
         }
         if(loadList.count()) {
             //qDebug() << "requested: " << loadList.count() << " items";
             //qDebug() << loadList;
-            emit thumbnailRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize));
+            emit thumbnailsRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize));
         }
     }
 }
@@ -263,9 +276,10 @@ void ThumbnailView::scrollSmooth(int angleDelta) {
 
 void ThumbnailView::mousePressEvent(QMouseEvent *event) {
     if(event->button() == Qt::LeftButton) {
-        ThumbnailWidget *item = qgraphicsitem_cast<ThumbnailWidget*>(itemAt(event->pos()));
+        ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
         if(item) {
             emit thumbnailPressed(thumbnails.indexOf(item));
+            return;
         }
     }
     QGraphicsView::mousePressEvent(event);

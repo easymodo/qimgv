@@ -100,6 +100,11 @@ signals:
     void frameStepBack();
     void toggleFolderView();
     void moveToTrash();
+    void reloadImage();
+    void copyFileClipboard();
+    void copyPathClipboard();
+    void renameFile();
+    void contextMenu();
 };
 
 extern ActionManager *actionManager;

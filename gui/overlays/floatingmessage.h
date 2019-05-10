@@ -13,7 +13,10 @@ class FloatingMessage;
 enum FloatingMessageIcon {
     NO_ICON,
     ICON_LEFT_EDGE,
-    ICON_RIGHT_EDGE
+    ICON_RIGHT_EDGE,
+    ICON_SUCCESS,
+    ICON_WARNING,
+    ICON_ERROR
 };
 
 
@@ -39,7 +42,7 @@ private:
     void doShowMessage(QString text, FloatingMessageIcon icon, int duration);
 protected:
     void mousePressEvent(QMouseEvent *event);
-    QIcon iconLeftEdge, iconRightEdge;
+    QIcon iconLeftEdge, iconRightEdge, iconSuccess, iconWarning, iconError;
 private slots:
     void readSettings();
 };

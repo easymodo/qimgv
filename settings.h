@@ -63,6 +63,8 @@ public:
     void setBackgroundColor(QColor color);
     QColor accentColor();
     void setAccentColor(QColor color);
+    QColor highlightColor();
+    void setHighlightColor(QColor color);
     bool fullscreenMode();
     void setFullscreenMode(bool mode);
     ImageFitMode imageFitMode();
@@ -142,19 +144,28 @@ public:
     int folderViewIconSize();
     void setFolderViewIconSize(int value);
 
-    bool showInfoOverlay();
-    void setShowInfoOverlay(bool mode);
     bool firstRun();
     void setFirstRun(bool mode);
 
     QColor backgroundColorFullscreen();
     void setBackgroundColorFullscreen(QColor color);
+
     void sync();
+    bool cursorAutohide();
+    void setCursorAutohide(bool mode);
+
+    bool infoBarFullscreen();
+    void setInfoBarFullscreen(bool mode);
+    bool infoBarWindowed();
+    void setInfoBarWindowed(bool mode);
+
+    bool windowTitleExtendedInfo();
+    void setWindowTitleExtendedInfo(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;
     QSettings *s, *state;
-    QDir *cacheDirectory, *thumbnailDirectory;
+    QDir *mCacheDir, *mThumbnailDir, *mConfDir;
 
 signals:
     void settingsChanged();

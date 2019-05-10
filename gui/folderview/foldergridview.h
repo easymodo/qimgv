@@ -25,7 +25,7 @@ public slots:
 
     void selectFirst();
     void selectLast();
-    void selectIndex(int index);
+    virtual void selectIndex(int index);
     void pageUp();
     void pageDown();
     void zoomIn();
@@ -37,7 +37,7 @@ private:
     FlowLayout *flowLayout;
     QGraphicsWidget holderWidget;
     QStringList allowedKeys;
-    int selectedIndex, shiftedIndex;
+    int shiftedIndex;
     bool mShowLabels;
 
 private slots:

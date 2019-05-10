@@ -34,7 +34,18 @@ bool ImageStatic::save(QString destPath) {
     // Note that tests have shown that zlib compression levels 3-6 usually perform as well
     // as level 9 for PNG images, and do considerably fewer caclulations
     int quality = destPath.endsWith(".png", Qt::CaseInsensitive) ? 30 : 95;
-    return isEdited()?imageEdited->save(destPath, nullptr, quality):image->save(destPath, nullptr, quality);
+    bool success = false;
+    if(isEdited()) {
+        success = imageEdited->save(destPath, nullptr, quality);
+        image.swap(imageEdited);
+        discardEditedImage();
+    } else {
+        success = image->save(destPath, nullptr, quality);
+    }
+    if(destPath == mPath && success) {
+        mDocInfo->refresh();
+    }
+    return success;
 }
 
 bool ImageStatic::save() {

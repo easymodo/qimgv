@@ -4,12 +4,12 @@
 
 FolderGridView::FolderGridView(QWidget *parent)
     : ThumbnailView(THUMBNAILVIEW_VERTICAL, parent),
-      selectedIndex(-1),
       shiftedIndex(-1),
       mShowLabels(false)
 {
+    offscreenPreloadArea = 2000;
     this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
-    this->scene.setBackgroundBrush(QColor(50,50,51));
+    this->scene.setBackgroundBrush(QColor(47,47,48)); //#2f2f30 TODO: use qss??
     setupLayout();
     allowedKeys << "Up"
                 << "Down"
@@ -222,11 +222,11 @@ void FolderGridView::setupLayout() {
 ThumbnailWidget* FolderGridView::createThumbnailWidget() {
     ThumbnailGridWidget *widget = new ThumbnailGridWidget();
     widget->setDrawLabel(mShowLabels);
-    widget->setPadding(7,7);
+    widget->setPadding(8,8);
+    widget->setThumbnailSize(this->mThumbnailSize); // TODO: constructor
     return widget;
 }
 
-// TODO: insert
 void FolderGridView::addItemToLayout(ThumbnailWidget* widget, int pos) {
     scene.addItem(widget);
     flowLayout->insertItem(pos, widget);
@@ -240,8 +240,9 @@ void FolderGridView::updateLayout() {
     shiftedIndex = -1;
     flowLayout->invalidate();
     flowLayout->activate();
-    if(!thumbnails.count())
+    if(!thumbnails.count()) {
         selectedIndex = -1;
+    }
 }
 
 void FolderGridView::keyPressEvent(QKeyEvent *event) {

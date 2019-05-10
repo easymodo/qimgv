@@ -6,7 +6,6 @@
 class ThumbnailGridWidget : public ThumbnailWidget {
 public:
     ThumbnailGridWidget(QGraphicsItem *parent = nullptr);
-
     QRectF boundingRect() const Q_DECL_OVERRIDE;
 
 protected:
@@ -19,6 +18,9 @@ protected:
     QColor shadowColor;
     void updateThumbnailDrawPosition() Q_DECL_OVERRIDE;
     void drawThumbnail(QPainter *painter, qreal dpr, const QPixmap *pixmap) Q_DECL_OVERRIDE;
+    virtual void readSettings() Q_DECL_OVERRIDE;
+    virtual void updateHighlightRect() Q_DECL_OVERRIDE;
+
 private:
     bool nameFits;
     int labelSpacing;

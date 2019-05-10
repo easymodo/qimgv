@@ -12,8 +12,11 @@
   * Time to wait for rename event. If event take time longer
   * than specified then event will be considered as remove event
   */
+
+// TODO: this may break event order.
+// Implement a proper queue.
 #define EVENT_MOVE_TIMEOUT      500 // ms
-#define EVENT_MODIFY_TIMEOUT    200 // ms
+#define EVENT_MODIFY_TIMEOUT    500 // ms
 
 LinuxWatcherPrivate::LinuxWatcherPrivate(LinuxWatcher* qq) :
     DirectoryWatcherPrivate(qq, new LinuxWorker()),
@@ -59,7 +62,7 @@ void LinuxWatcherPrivate::dispatchFilesystemEvent(LinuxFsEvent* e) {
         bool isDirEvent = mask & IN_ISDIR;
         
         // Skip events for directories and files that isn't in filter range
-        if (isDirEvent || !isFileNeeded(name)) {
+        if ( (isDirEvent || !isFileNeeded(name)) && !(mask & IN_MOVED_TO) ) {
             continue;
         }
 
@@ -127,7 +130,6 @@ void LinuxWatcherPrivate::handleMovedToEvent(const QString &name, uint cookie) {
         emit q->fileRenamed(watcherEvent->name(), name);
     }
 }
-
 
 void LinuxWatcherPrivate::timerEvent(QTimerEvent *timerEvent) {
     Q_Q(LinuxWatcher);

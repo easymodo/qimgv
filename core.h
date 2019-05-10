@@ -3,24 +3,20 @@
 
 #include <QObject>
 #include <QDebug>
-#include <QTimer>
 #include <QMutex>
+#include <QClipboard>
 #include <malloc.h>
+#include <QFileSystemModel>
 #include "appversion.h"
 #include "settings.h"
-#include "components/directorymanager/directorymanager.h"
-#include "components/loader/loader.h"
-#include "components/scaler/scaler.h"
-#include "components/thumbnailer/thumbnailer.h"
+#include "components/directorymodel.h"
+#include "components/directorypresenter.h"
 #include "components/scriptmanager/scriptmanager.h"
 #include "gui/mainwindow.h"
 
 struct State {
-    State() : currentIndex(0), hasActiveImage(false), isWaitingForLoader(false) {}
-    int currentIndex;
-    // TODO: come up with something better?
-    QString displayingFileName;
-    bool hasActiveImage, isWaitingForLoader;
+    State() : hasActiveImage(false) {}
+    bool hasActiveImage;
 };
 
 class Core : public QObject {
@@ -32,20 +28,10 @@ public:
 public slots:
     void updateInfoString();
 
-    void loadByPath(QString filePath, bool blocking);
-
-    // loads image in second thread
-    void loadByPath(QString);
-
-    // loads image in main thread
-    void loadByPathBlocking(QString);
-
-    // invalid position will be ignored
-    bool loadByIndex(int index);
-    bool loadByIndexBlocking(int index);
+    void loadPath(QString);
 
 signals:
-    void imageIndexChanged(int);
+    void modelIndexChanged(int);
 
 private:
     void initGui();
@@ -59,25 +45,19 @@ private:
     MainWindow *mw;
 
     State state;
-    QTimer *loadingTimer; // this is for loading message delay. TODO: replace with something better
-
     bool infiniteScrolling;
 
     // components
-    Loader *loader;
-    DirectoryManager *dirManager;
-    Cache *cache;
-    Scaler *scaler;
-    Thumbnailer *thumbnailer;
+    std::shared_ptr<DirectoryModel> model;
+
+    DirectoryPresenter presenter;
 
     void rotateByDegrees(int degrees);
     void reset();
-    bool setDirectory(QString newPath);
-    void displayImage(Image *img);
-    void loadDirectory(QString);
-    void loadImage(QString path, bool blocking);
+    void displayImage(std::shared_ptr<Image>);
+    void loadDirectoryPath(QString);
+    void loadImagePath(QString path, bool blocking);
     void trimCache();
-    void preload(int index);
 
 private slots:
     void readSettings();
@@ -85,23 +65,23 @@ private slots:
     void prevImage();
     void jumpToFirst();
     void jumpToLast();
-    void onLoadFinished(std::shared_ptr<Image> img);
-    void onLoadFailed(QString path);
-    void onLoadStarted();
-    void onLoadingTimeout();
+    void onModelIndexChange(int index);
+    void onModelItemReady(std::shared_ptr<Image>);
+    void onModelItemUpdated(std::shared_ptr<Image>);
+    void onLoadFailed(QString path); //
     void clearCache();
     void rotateLeft();
     void rotateRight();
-    void closeBackgroundTasks();
     void close();
     void scalingRequest(QSize);
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
-    void forwardThumbnail(std::shared_ptr<Thumbnail> thumbnail);
     void moveFile(QString destDirectory);
     void copyFile(QString destDirectory);
-    void removeFile(int index, bool trash);
-    void onFileRemoved(int index);
-    void onFileAdded(int index);
+    void removeFile(QString fileName, bool trash);
+    void onFileRemoved(QString fileName, int index);
+    void onFileRenamed(QString from, QString to);
+    void onFileAdded(QString fileName);
+    void onFileModified(QString fileName);
     void showResizeDialog();
     void resize(QSize size);
     void flipH();
@@ -114,9 +94,15 @@ private slots:
     void saveImageToDisk(QString);
     void runScript(const QString&);
     void removeFilePermanent();
-    void removeFilePermanent(int index);
+    void removeFilePermanent(QString fileName);
     void moveToTrash();
-    void moveToTrash(int index);
+    void moveToTrash(QString fileName);
+    void reloadImage();
+    void reloadImage(QString fileName);
+    void copyFileClipboard();
+    void copyPathClipboard();
+    void renameCurrentFile(QString newName);
+    void renameRequested();
 };
 
 #endif // CORE_H

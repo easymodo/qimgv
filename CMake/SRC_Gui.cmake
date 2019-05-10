@@ -19,6 +19,9 @@ file(GLOB SRC_Gui ${SRC_Gui} ${dir}/*.cpp)
 set(dir "gui/panels/sidepanel")
 file(GLOB SRC_Gui ${SRC_Gui} ${dir}/*.cpp)
 
+set(dir "gui/panels/infobar")
+file(GLOB SRC_Gui ${SRC_Gui} ${dir}/*.cpp)
+
 set(dir "gui/viewers")
 file(GLOB SRC_Gui ${SRC_Gui} ${dir}/*.cpp)
 if(VIDEO_SUPPORT)

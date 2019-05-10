@@ -45,13 +45,13 @@
     <number>0</number>
    </property>
    <property name="topMargin">
-    <number>6</number>
+    <number>5</number>
    </property>
    <property name="rightMargin">
     <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>6</number>
+    <number>5</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="zoomLayout">

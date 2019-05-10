@@ -19,36 +19,37 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include "gui/customwidgets/thumbnailwidget.h"
-
-
+#include "gui/idirectoryview.h"
 
 enum ThumbnailViewOrientation {
     THUMBNAILVIEW_HORIZONTAL,
     THUMBNAILVIEW_VERTICAL
 };
 
-class ThumbnailView : public QGraphicsView {
+class ThumbnailView : public QGraphicsView, public IDirectoryView {
     Q_OBJECT
 public:
     ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent = nullptr);
+    virtual void setDirectoryPath(QString path) Q_DECL_OVERRIDE;
 
 public slots:
     void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
-    void populate(int count);
-    void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb);
     void resetViewport();
     int thumbnailSize();
     void loadVisibleThumbnails();
     void loadVisibleThumbnailsDelayed();
 
     void addItem();
-    void insertItem(int index);
-    void removeItem(int index);
+
+    virtual void populate(int count) Q_DECL_OVERRIDE;
+    virtual void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) Q_DECL_OVERRIDE;
+    virtual void insertItem(int index) Q_DECL_OVERRIDE;
+    virtual void removeItem(int index) Q_DECL_OVERRIDE;
 
 signals:
     void scrolled();
-    void thumbnailPressed(int);
-    void thumbnailRequested(QList<int>, int);
+    void thumbnailPressed(int) Q_DECL_OVERRIDE;
+    void thumbnailsRequested(QList<int>, int) Q_DECL_OVERRIDE;
 
 private:
     ThumbnailViewOrientation orientation;
@@ -63,14 +64,14 @@ protected:
     QScrollBar *scrollBar;
     QTimeLine *timeLine;
     QPointF viewportCenter;
-    int mThumbnailSize;
+    int mThumbnailSize, selectedIndex;
+    int offscreenPreloadArea = 3000;
 
     const int SCROLL_UPDATE_RATE = 8;
-    const float SCROLL_SPEED_MULTIPLIER = 3.0f;
+    const float SCROLL_SPEED_MULTIPLIER = 2.5f;
     const int SCROLL_ANIMATION_SPEED = 140;
 
     const uint LOAD_DELAY = 200;
-    const int OFFSCREEN_PRELOAD_AREA = 3000;
 
     bool atSceneStart();
     bool atSceneEnd();
@@ -90,7 +91,6 @@ protected:
 private slots:
     void centerOnX(int);
     void centerOnY(int);
-
 };
 
 #endif // THUMBNAILVIEW_H

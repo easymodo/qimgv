@@ -43,6 +43,20 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationName("qimgv");
     QCoreApplication::setApplicationVersion(appVersion.normalized().toString());
 
+    QGuiApplication::setDesktopFileName("qimgv.desktop");
+
+    // enable translations
+    /*QTranslator qtTranslator;
+    qtTranslator.load("qt_" + QLocale::system().name(),
+                      QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    a.installTranslator(&qtTranslator);
+    */
+
+    QTranslator translator;
+    translator.load(a.applicationName() + "_" + QLocale::system().name());
+    a.installTranslator(&translator);
+    qDebug() << a.applicationName() + "_" + QLocale::system().name();
+
     // get arguments
     QString arg1;
     if(a.arguments().length() > 1) {
@@ -81,7 +95,7 @@ int main(int argc, char *argv[]) {
     Core core;
     // assume 1st arg is the filename
     if(!arg1.isEmpty()) {
-        core.loadByPathBlocking(arg1);
+        core.loadPath(arg1);
     }
     core.showGui();
     return a.exec();

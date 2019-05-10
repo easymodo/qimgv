@@ -5,8 +5,6 @@
         <file>res/icons/buttons/settings20.png</file>
         <file>res/icons/app/48.png</file>
         <file>res/icons/loading72.png</file>
-        <file>res/images/moveheader.png</file>
-        <file>res/images/copyheader.png</file>
         <file>res/icons/loading-error72.png</file>
         <file>res/images/cropheader.png</file>
         <file>res/images/changelogheader.png</file>
@@ -93,5 +91,9 @@
         <file>res/icons/settings/32/appearance32@2x.png</file>
         <file>res/icons/buttons/labels@2x.png</file>
         <file>res/icons/buttons/labels.png</file>
+        <file>res/icons/buttons/folder16.png</file>
+        <file>res/icons/buttons/folder16@2x.png</file>
+        <file>res/icons/buttons/success16@2x.png</file>
+        <file>res/icons/buttons/success16.png</file>
     </qresource>
 </RCC>

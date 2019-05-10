@@ -144,7 +144,7 @@
           <bool>true</bool>
          </property>
          <property name="currentRow">
-          <number>0</number>
+          <number>-1</number>
          </property>
          <item>
           <property name="text">
@@ -154,6 +154,11 @@
          <item>
           <property name="text">
            <string>Appearance</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Folder View</string>
           </property>
          </item>
          <item>
@@ -359,9 +364,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-183</y>
+                <y>-413</y>
                 <width>386</width>
-                <height>716</height>
+                <height>878</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -439,6 +444,19 @@
                 </layout>
                </item>
                <item>
+                <spacer name="verticalSpacer_13">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
                 <spacer name="verticalSpacer_5">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -503,7 +521,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>... only in fullscreen</string>
+                    <string>only in fullscreen</string>
                    </property>
                   </widget>
                  </item>
@@ -570,7 +588,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>Panel position:</string>
+                    <string>Panel position</string>
                    </property>
                   </widget>
                  </item>
@@ -583,7 +601,7 @@
                     </sizepolicy>
                    </property>
                    <property name="text">
-                    <string>Thumbnail size:</string>
+                    <string>Thumbnail size</string>
                    </property>
                   </widget>
                  </item>
@@ -638,7 +656,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>Square thumbnails</string>
+                    <string>Crop thumbnails to square</string>
                    </property>
                   </widget>
                  </item>
@@ -700,7 +718,7 @@
                     </sizepolicy>
                    </property>
                    <property name="text">
-                    <string>Default fit mode:</string>
+                    <string>Default fit mode</string>
                    </property>
                   </widget>
                  </item>
@@ -814,7 +832,65 @@
                   <property name="bottomMargin">
                    <number>0</number>
                   </property>
-                  <item row="4" column="0">
+                  <item row="6" column="0">
+                   <widget class="QCheckBox" name="videoControlsCheckBox">
+                    <property name="text">
+                     <string>Show video controls</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_15">
+                    <property name="text">
+                     <string>Enabled formats</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QFrame" name="frame_3">
+                    <property name="frameShape">
+                     <enum>QFrame::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_4">
+                     <item>
+                      <widget class="QCheckBox" name="playWebmCheckBox">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="toolTip">
+                        <string>Enables webm playback via Mpv</string>
+                       </property>
+                       <property name="text">
+                        <string>WebM</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="playMp4CheckBox">
+                       <property name="text">
+                        <string>MP4</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
                    <widget class="QCheckBox" name="playSoundsCheckBox">
                     <property name="enabled">
                      <bool>true</bool>
@@ -836,57 +912,81 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_15">
-                    <property name="text">
-                     <string>Enable formats:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QCheckBox" name="playWebmCheckBox">
-                    <property name="enabled">
-                     <bool>true</bool>
-                    </property>
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="toolTip">
-                     <string>Enables webm playback via Mpv</string>
-                    </property>
-                    <property name="text">
-                     <string>WebM</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QCheckBox" name="playMp4CheckBox">
-                    <property name="text">
-                     <string>MP4</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="0">
-                   <widget class="QCheckBox" name="videoControlsCheckBox">
-                    <property name="text">
-                     <string>Show video controls</string>
-                    </property>
-                   </widget>
-                  </item>
                  </layout>
                 </widget>
                </item>
                <item>
                 <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Fixed</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>9</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_23">
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Image info</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Line" name="line_19">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QGridLayout" name="gridLayout_13">
+                 <property name="leftMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>9</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QCheckBox" name="showInfoBarWindowed">
+                   <property name="text">
+                    <string>Status bar (windowed mode)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QCheckBox" name="showExtendedInfoTitle">
+                   <property name="text">
+                    <string>Extended info in window title</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QCheckBox" name="showInfoBarFullscreen">
+                   <property name="text">
+                    <string>Fullscreen info overlay</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_17">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
                  </property>
@@ -932,6 +1032,28 @@
                  <property name="rightMargin">
                   <number>9</number>
                  </property>
+                 <item row="1" column="0" colspan="2">
+                  <widget class="QCheckBox" name="infiniteScrollingCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Start from beginning when reaching end of directory.</string>
+                   </property>
+                   <property name="text">
+                    <string>Infinite scrolling</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="0" column="0">
                   <widget class="QLabel" name="label_6">
                    <property name="sizePolicy">
@@ -941,7 +1063,7 @@
                     </sizepolicy>
                    </property>
                    <property name="text">
-                    <string>Directory sorting: </string>
+                    <string>Directory sorting</string>
                    </property>
                   </widget>
                  </item>
@@ -985,36 +1107,7 @@
                    </item>
                   </widget>
                  </item>
-                 <item row="1" column="0" colspan="2">
-                  <widget class="QCheckBox" name="infiniteScrollingCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>Start from beginning when reaching end of directory.</string>
-                   </property>
-                   <property name="text">
-                    <string>Infinite scrolling</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="2" column="0" colspan="2">
-                  <widget class="QCheckBox" name="showInfoOverlayCheckBox">
-                   <property name="text">
-                    <string>(Fullscreen) Show image info</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="0" colspan="2">
                   <widget class="QCheckBox" name="mouseWrappingCheckBox">
                    <property name="minimumSize">
                     <size>
@@ -1027,6 +1120,13 @@
                    </property>
                    <property name="text">
                     <string>Enable mouse wrapping</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0" colspan="2">
+                  <widget class="QCheckBox" name="cursorAutohideCheckBox">
+                   <property name="text">
+                    <string>Cursor autohiding</string>
                    </property>
                   </widget>
                  </item>
@@ -1081,8 +1181,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>279</width>
-                <height>348</height>
+                <width>400</width>
+                <height>437</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -1488,6 +1588,94 @@
               </layout>
              </widget>
             </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="FolderView">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_20">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Folder View</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="Line" name="line_17">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <property name="leftMargin">
+              <number>9</number>
+             </property>
+             <property name="rightMargin">
+              <number>9</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="label_19">
+               <property name="text">
+                <string>Highlight color</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="ClickableLabel" name="highlightColorLabel">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>30</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::Box</enum>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_14">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -2092,6 +2280,29 @@
                <string>Shortcut</string>
               </property>
              </column>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_15">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>4</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_21">
+             <property name="text">
+              <string>&lt;i&gt;&lt;small&gt;Tip: You can zoom image by moving a cursor while pressing mousewheel&lt;/small&gt;&lt;/i&gt;</string>
+             </property>
             </widget>
            </item>
           </layout>
@@ -2854,8 +3065,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMaxZoomSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>564</x>
-     <y>174</y>
+     <x>550</x>
+     <y>166</y>
     </hint>
     <hint type="destinationlabel">
      <x>595</x>
@@ -2870,8 +3081,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMaxZoomResolutionSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>564</x>
-     <y>227</y>
+     <x>550</x>
+     <y>219</y>
     </hint>
     <hint type="destinationlabel">
      <x>597</x>
@@ -2886,8 +3097,8 @@ p, li { white-space: pre-wrap; }
    <slot>selectMpvPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>531</x>
-     <y>194</y>
+     <x>520</x>
+     <y>213</y>
     </hint>
     <hint type="destinationlabel">
      <x>596</x>
@@ -2903,7 +3114,7 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>568</x>
-     <y>225</y>
+     <y>169</y>
     </hint>
     <hint type="destinationlabel">
      <x>621</x>
@@ -2998,8 +3209,8 @@ p, li { white-space: pre-wrap; }
    <slot>onThumbnailerThreadsSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>531</x>
-     <y>160</y>
+     <x>520</x>
+     <y>181</y>
     </hint>
     <hint type="destinationlabel">
      <x>591</x>
@@ -3014,8 +3225,8 @@ p, li { white-space: pre-wrap; }
    <slot>fullscreenColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>555</x>
-     <y>119</y>
+     <x>569</x>
+     <y>253</y>
     </hint>
     <hint type="destinationlabel">
      <x>583</x>
@@ -3030,12 +3241,28 @@ p, li { white-space: pre-wrap; }
    <slot>windowColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>549</x>
-     <y>195</y>
+     <x>569</x>
+     <y>137</y>
     </hint>
     <hint type="destinationlabel">
      <x>582</x>
      <y>197</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>highlightColorLabel</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>highlightColorDialog()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>463</x>
+     <y>58</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>586</x>
+     <y>44</y>
     </hint>
    </hints>
   </connection>
@@ -3059,5 +3286,6 @@ p, li { white-space: pre-wrap; }
   <slot>onThumbnailerThreadsSliderChanged(int)</slot>
   <slot>fullscreenColorDialog()</slot>
   <slot>windowColorDialog()</slot>
+  <slot>highlightColorDialog()</slot>
  </slots>
 </ui>

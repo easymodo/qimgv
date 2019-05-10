@@ -6,11 +6,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
-    this->setWindowTitle("Preferences - qimgv");
+    this->setWindowTitle("Preferences — " + qApp->applicationName());
     ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->windowColorLabel->setAutoFillBackground(true);
     ui->fullscreenColorLabel->setAutoFillBackground(true);
     ui->accentColorLabel->setAutoFillBackground(true);
+    ui->highlightColorLabel->setAutoFillBackground(true);
     ui->aboutAppTextBrowser->viewport()->setAutoFillBackground(false);
     ui->versionLabel->setText("" + QApplication::applicationVersion());
     ui->qtVersionLabel->setText(qVersion());
@@ -46,20 +47,22 @@ void SettingsDialog::setupSidebar() {
     sideBar->item(0)->setIcon(QIcon(":/res/icons/settings/32/tweak32.png"));
     // Appearance
     sideBar->item(1)->setIcon(QIcon(":/res/icons/settings/32/appearance32.png"));
+    // FolderView
+    sideBar->item(1)->setIcon(QIcon(":/res/icons/settings/32/appearance32.png"));
     // Scaling
-    sideBar->item(2)->setIcon(QIcon(":/res/icons/settings/32/scale32.png"));
+    sideBar->item(3)->setIcon(QIcon(":/res/icons/settings/32/scale32.png"));
     // Controls
-    sideBar->item(3)->setIcon(QIcon(":/res/icons/settings/32/shortcuts32.png"));
+    sideBar->item(4)->setIcon(QIcon(":/res/icons/settings/32/shortcuts32.png"));
     // Scripts
-    sideBar->item(4)->setIcon(QIcon(":/res/icons/settings/32/terminal32.png"));
+    sideBar->item(5)->setIcon(QIcon(":/res/icons/settings/32/terminal32.png"));
     // Advanced
-    sideBar->item(5)->setIcon(QIcon(":/res/icons/settings/32/preferences32.png"));
+    sideBar->item(6)->setIcon(QIcon(":/res/icons/settings/32/preferences32.png"));
     // About
-    sideBar->item(6)->setIcon(QIcon(":/res/icons/app/32.png"));
+    sideBar->item(7)->setIcon(QIcon(":/res/icons/app/32.png"));
 
 #ifdef _WIN32
     // Not implemented on windows. Not sure if will ever be. I don't really care.
-    sideBar->item(4)->setHidden(true);
+    sideBar->item(5)->setHidden(true);
 #endif
 }
 
@@ -83,7 +86,10 @@ void SettingsDialog::readSettings() {
     ui->bgOpacitySlider->setValue(static_cast<int>(settings->backgroundOpacity() * 100));
     ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
-    ui->showInfoOverlayCheckBox->setChecked(settings->showInfoOverlay());
+    ui->showInfoBarFullscreen->setChecked(settings->infoBarFullscreen());
+    ui->showInfoBarWindowed->setChecked(settings->infoBarWindowed());
+    ui->showExtendedInfoTitle->setChecked(settings->windowTitleExtendedInfo());
+    ui->cursorAutohideCheckBox->setChecked(settings->cursorAutohide());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -121,6 +127,11 @@ void SettingsDialog::readSettings() {
     QColor accentColor = settings->accentColor();
     accentLabelPalette.setColor(QPalette::Window, accentColor);
     ui->accentColorLabel->setPalette(accentLabelPalette);
+
+    // folder view highlight color
+    QColor higlightColor = settings->highlightColor();
+    highlightLabelPalette.setColor(QPalette::Window, higlightColor);
+    ui->highlightColorLabel->setPalette(highlightLabelPalette);
 
     // thumbnail size
     // maybe use slider instead of combobox?
@@ -174,7 +185,10 @@ void SettingsDialog::applySettings() {
     settings->setBackgroundOpacity(static_cast<qreal>(ui->bgOpacitySlider->value()) / 100);
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
-    settings->setShowInfoOverlay(ui->showInfoOverlayCheckBox->isChecked());
+    settings->setInfoBarFullscreen(ui->showInfoBarFullscreen->isChecked());
+    settings->setInfoBarWindowed(ui->showInfoBarWindowed->isChecked());
+    settings->setWindowTitleExtendedInfo(ui->showExtendedInfoTitle->isChecked());
+    settings->setCursorAutohide(ui->cursorAutohideCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 
@@ -185,6 +199,7 @@ void SettingsDialog::applySettings() {
     settings->setBackgroundColor(windowColorPalette.color(QPalette::Window));
     settings->setBackgroundColorFullscreen(fullscreenColorPalette.color(QPalette::Window));
     settings->setAccentColor(accentLabelPalette.color(QPalette::Window));
+    settings->setHighlightColor(highlightLabelPalette.color(QPalette::Window));
 
     int index = ui->thumbSizeComboBox->currentIndex();
     if(index == 0) {
@@ -390,6 +405,19 @@ void SettingsDialog::accentColorDialog() {
     if(newColor.isValid()) {
         accentLabelPalette.setColor(QPalette::Window, newColor);
         ui->accentColorLabel->setPalette(accentLabelPalette);
+    }
+    delete colorDialog;
+}
+
+void SettingsDialog::highlightColorDialog() {
+    QColorDialog *colorDialog = new QColorDialog(this);
+    QColor newColor;
+    newColor = colorDialog->getColor(highlightLabelPalette.color(QPalette::Window),
+                                     this,
+                                     "Highlight color");
+    if(newColor.isValid()) {
+        highlightLabelPalette.setColor(QPalette::Window, newColor);
+        ui->highlightColorLabel->setPalette(highlightLabelPalette);
     }
     delete colorDialog;
 }

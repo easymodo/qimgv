@@ -47,6 +47,9 @@ public:
     void showAnimation(std::unique_ptr<QMovie> movie);
     void showVideo(Clip *clip);
 
+    void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize);
+    std::shared_ptr<DirectoryViewWrapper> getFolderView();
+    std::shared_ptr<DirectoryViewWrapper> getThumbnailPanel();
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;
     QHBoxLayout layout;
@@ -56,7 +59,7 @@ private:
 
     QColor bgColor;
     qreal bgOpacity;
-    bool panelEnabled, panelFullscreenOnly, cropPanelActive, infoOverlayEnabled;
+    bool panelEnabled, panelFullscreenOnly, cropPanelActive, showInfoBarFullscreen, showInfoBarWindowed;
     std::shared_ptr<DocumentWidget> docWidget;
     std::shared_ptr<FolderView> folderView;
     std::shared_ptr<CentralWidget> centralWidget;
@@ -72,7 +75,8 @@ private:
     CopyOverlay *copyOverlay;
 
     ControlsOverlay *controlsOverlay;
-    InfoOverlay *infoOverlay;
+    InfoOverlay *infoBarFullscreen;
+    std::shared_ptr<InfoBar> infoBarWindowed;
     FloatingMessage *floatingMessage;
 
     PanelHPosition panelPosition;
@@ -85,12 +89,11 @@ private:
 
     void applyWindowedBackground();
     void applyFullscreenBackground();
+    void mouseDoubleClickEvent(QMouseEvent *event);
 private slots:
     void updateCurrentDisplay();
     void readSettings();
-    void setControlsOverlayEnabled(bool mode);
-    void showInfoOverlay(bool mode);
-    void triggerPanelButtons();
+    void adaptToWindowState();
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);
@@ -102,6 +105,10 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void leaveEvent(QEvent *event);
 
+    void mousePressEvent(QMouseEvent *event);
+    void keyPressEvent(QKeyEvent *event);
+    void wheelEvent(QWheelEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 signals:
     void opened(QString);
     void fullscreenStatusChanged(bool);
@@ -115,10 +122,8 @@ signals:
     void saveRequested(QString);
 
     // thumbnails
-    void thumbnailRequested(QList<int>, int);
-    void selectThumbnail(int);
-    void thumbnailPressed(int);
-    void onThumbnailReady(int, std::shared_ptr<Thumbnail>);
+    void setCurrentIndex(int);
+    //void onThumbnailReady(int, std::shared_ptr<Thumbnail>);
     // viewerWidget
     void scalingRequested(QSize);
     void zoomIn();
@@ -138,7 +143,6 @@ signals:
     void enableFolderView();
     void enableDocumentView();
     void setDirectoryPath(QString);
-    void closeImage();
     void toggleFolderView();
 
 public slots:
@@ -150,7 +154,6 @@ public slots:
     void showResizeDialog(QSize initialSize);
     void showSettings();
     void triggerFullScreen();
-    void setInfoString(QString);
     void showMessageDirectoryEnd();
     void showMessageDirectoryStart();
     void showMessageFitWindow();
@@ -161,6 +164,9 @@ public slots:
     void triggerCopyOverlay();
     void showMessage(QString text);
     void showMessage(QString text, int duration);
+    void showMessageSuccess(QString text);
+    void showWarning(QString text);
+    void showError(QString text);
     void triggerMoveOverlay();
     void closeFullScreenOrExit();
     void close();
@@ -174,9 +180,8 @@ public slots:
     void fitWidth();
     void fitOriginal();
     void switchFitMode();
-    void populateThumbnailViews(int count);
-    void addThumbnail(int index);
-    void removeThumbnail(int index);
+    void closeImage();
+    void showContextMenu();
 };
 
 #endif // MainWindow_H

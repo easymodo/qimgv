@@ -72,7 +72,7 @@
          </sizepolicy>
         </property>
         <property name="accessibleName">
-         <string>OverlayTitleLabel</string>
+         <string>OverlayHeaderLabel</string>
         </property>
         <property name="text">
          <string>Unsaved edits</string>
@@ -120,7 +120,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
-      <number>4</number>
+      <number>0</number>
      </property>
      <property name="sizeConstraint">
       <enum>QLayout::SetMinimumSize</enum>
@@ -143,7 +143,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="accessibleName">
-        <string>Button</string>
+        <string>ButtonSetLeft</string>
        </property>
        <property name="text">
         <string>Save</string>
@@ -156,7 +156,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="accessibleName">
-        <string>Button</string>
+        <string>ButtonSetRight</string>
        </property>
        <property name="text">
         <string>Save As</string>
@@ -173,7 +173,7 @@
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>4</width>
+         <width>8</width>
          <height>10</height>
         </size>
        </property>

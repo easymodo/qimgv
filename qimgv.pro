@@ -144,7 +144,14 @@ SOURCES += \
     gui/contextmenu.cpp \
     gui/customwidgets/contextmenuitem.cpp \
     utils/helprunner.cpp \
-    gui/customwidgets/actionbutton.cpp
+    gui/customwidgets/actionbutton.cpp \
+    gui/customwidgets/menuitem.cpp \
+    gui/customwidgets/pathselectormenuitem.cpp \
+    components/directorymodel.cpp \
+    gui/idirectoryview.cpp \
+    gui/directoryviewwrapper.cpp \
+    gui/panels/infobar/infobar.cpp \
+    components/directorypresenter.cpp
 
 HEADERS += \
     core.h \
@@ -231,7 +238,14 @@ HEADERS += \
     gui/customwidgets/contextmenuitem.h \
     utils/numeric.h \
     utils/helprunner.h \
-    gui/customwidgets/actionbutton.h
+    gui/customwidgets/actionbutton.h \
+    gui/customwidgets/menuitem.h \
+    gui/customwidgets/pathselectormenuitem.h \
+    components/directorymodel.h \
+    components/directorypresenter.h \
+    gui/idirectoryview.h \
+    gui/directoryviewwrapper.h \
+    gui/panels/infobar/infobar.h
 
 FORMS += \
     gui/dialogs/settingsdialog.ui \
@@ -247,7 +261,8 @@ FORMS += \
     gui/dialogs/scripteditordialog.ui \
     gui/overlays/videocontrols.ui \
     gui/folderview/folderview.ui \
-    gui/contextmenu.ui
+    gui/contextmenu.ui \
+    gui/panels/infobar/infobar.ui
 
 RESOURCES += \
     resources.qrc
@@ -278,3 +293,5 @@ windows {
 
 DISTFILES += \
     README.md
+
+TRANSLATIONS = translations/qimgv_ru_RU.ts

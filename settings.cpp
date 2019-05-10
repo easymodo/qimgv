@@ -4,17 +4,19 @@ Settings *settings = nullptr;
 
 Settings::Settings(QObject *parent) : QObject(parent) {
 #ifdef IS_PORTABLE
-    cacheDirectory = new QDir(QApplication::applicationDirPath() + "/cache");
-    cacheDirectory->mkpath(cacheDirectory->absolutePath());
-    thumbnailDirectory = new QDir(QApplication::applicationDirPath() + "/thumbnails");
-    thumbnailDirectory->mkpath(thumbnailDirectory->absolutePath());
-    s = new QSettings(QApplication::applicationDirPath() + "/qimgv.ini", QSettings::IniFormat);
-    state = new QSettings(QApplication::applicationDirPath() + "/savedState.ini", QSettings::IniFormat);
+    mCacheDir = new QDir(QApplication::applicationDirPath() + "/cache");
+    mCacheDir->mkpath(mCacheDir->absolutePath());
+    mThumbnailDir = new QDir(QApplication::applicationDirPath() + "/thumbnails");
+    mThumbnailDir->mkpath(mThumbnailDir->absolutePath());
+    mConfDir = new QDir(QApplication::applicationDirPath() + "/conf");
+    mConfDir->mkpath(QApplication::applicationDirPath() + "/conf");
+    s = new QSettings(mConfDir->absolutePath() + "/qimgv.ini", QSettings::IniFormat);
+    state = new QSettings(mConfDir->absolutePath() + "/savedState.ini", QSettings::IniFormat);
 #else
-    cacheDirectory = new QDir(QDir::homePath() + "/.cache/qimgv");
-    cacheDirectory->mkpath(cacheDirectory->absolutePath());
-    thumbnailDirectory = new QDir(QDir::homePath() + "/.cache/qimgv/thumbnails");
-    thumbnailDirectory->mkpath(thumbnailDirectory->absolutePath());
+    mCacheDir = new QDir(QDir::homePath() + "/.cache/qimgv");
+    mCacheDir->mkpath(mCacheDir->absolutePath());
+    mThumbnailDir = new QDir(QDir::homePath() + "/.cache/qimgv/thumbnails");
+    mThumbnailDir->mkpath(mThumbnailDir->absolutePath());
     QSettings::setDefaultFormat(QSettings::NativeFormat);
     s = new QSettings();
     state = new QSettings(QCoreApplication::organizationName(), "savedState");
@@ -22,8 +24,8 @@ Settings::Settings(QObject *parent) : QObject(parent) {
 }
 
 Settings::~Settings() {
-    delete thumbnailDirectory;
-    delete cacheDirectory;
+    delete mThumbnailDir;
+    delete mCacheDir;
     delete s;
     delete state;
 }
@@ -57,11 +59,11 @@ void Settings::sync() {
 }
 //------------------------------------------------------------------------------
 QString Settings::cacheDir() {
-    return thumbnailDirectory->path() + "/";
+    return mThumbnailDir->path() + "/";
 }
 //------------------------------------------------------------------------------
 QString Settings::tempDir() {
-    return cacheDirectory->path() + "/";
+    return mCacheDir->path() + "/";
 }
 //------------------------------------------------------------------------------
 QString Settings::mpvBinary() {
@@ -311,11 +313,19 @@ void Settings::setBackgroundColorFullscreen(QColor color) {
 }
 //------------------------------------------------------------------------------
 QColor Settings::accentColor() {
-    return settings->s->value("accentColor", QColor(17, 121, 100)).value<QColor>();
+    return settings->s->value("accentColor", QColor(134, 170, 103)).value<QColor>();
 }
 
 void Settings::setAccentColor(QColor color) {
     settings->s->setValue("accentColor", color);
+}
+//------------------------------------------------------------------------------
+QColor Settings::highlightColor() {
+    return settings->s->value("highlightColor", QColor(109, 120, 100)).value<QColor>();
+}
+
+void Settings::setHighlightColor(QColor color) {
+    settings->s->setValue("highlightColor", color);
 }
 //------------------------------------------------------------------------------
 bool Settings::fullscreenMode() {
@@ -488,7 +498,7 @@ void Settings::setMouseWrapping(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::squareThumbnails() {
-    return settings->s->value("squareThumbnails", true).toBool();
+    return settings->s->value("squareThumbnails", false).toBool();
 }
 
 void Settings::setSquareThumbnails(bool mode) {
@@ -600,12 +610,36 @@ void Settings::setSmoothAnimatedImages(bool mode) {
     settings->s->setValue("smoothAnimatedImages", mode);
 }
 //------------------------------------------------------------------------------
-bool Settings::showInfoOverlay() {
-    return settings->s->value("showInfoOverlay", true).toBool();
+bool Settings::infoBarFullscreen() {
+    return settings->s->value("infoBarFullscreen", true).toBool();
 }
 
-void Settings::setShowInfoOverlay(bool mode) {
-    settings->s->setValue("showInfoOverlay", mode);
+void Settings::setInfoBarFullscreen(bool mode) {
+    settings->s->setValue("infoBarFullscreen", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::infoBarWindowed() {
+    return settings->s->value("infoBarWindowed", false).toBool();
+}
+
+void Settings::setInfoBarWindowed(bool mode) {
+    settings->s->setValue("infoBarWindowed", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::windowTitleExtendedInfo() {
+    return settings->s->value("windowTitleExtendedInfo", true).toBool();
+}
+
+void Settings::setWindowTitleExtendedInfo(bool mode) {
+    settings->s->setValue("windowTitleExtendedInfo", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::cursorAutohide() {
+    return settings->s->value("cursorAutohiding", true).toBool();
+}
+
+void Settings::setCursorAutohide(bool mode) {
+    settings->s->setValue("cursorAutohiding", mode);
 }
 //------------------------------------------------------------------------------
 bool Settings::firstRun() {

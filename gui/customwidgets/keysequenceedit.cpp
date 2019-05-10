@@ -17,13 +17,18 @@ void KeySequenceEdit::mousePressEvent(QMouseEvent *e) {
     processEvent(e);
 }
 
+void KeySequenceEdit::mouseReleaseEvent(QMouseEvent *e) {
+    processEvent(e);
+}
+
 void KeySequenceEdit::wheelEvent(QWheelEvent *e) {
     processEvent(e);
 }
 
 void KeySequenceEdit::processEvent(QEvent *e) {
-    mSequence = ShortcutBuilder::fromEvent(e);
-    if(!mSequence.isEmpty()) {
+    QString tmp = ShortcutBuilder::fromEvent(e);
+    if(!tmp.isEmpty()) {
+        mSequence = tmp;
         this->setText(mSequence);
         emit edited();
     }

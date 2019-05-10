@@ -32,7 +32,7 @@ public:
 public slots:
     int exec();
 private:
-    QPalette windowColorPalette, fullscreenColorPalette, accentLabelPalette;
+    QPalette windowColorPalette, fullscreenColorPalette, accentLabelPalette, highlightLabelPalette;
     void readSettings();
     void populateShortcuts();
     void populateScripts();
@@ -56,6 +56,7 @@ private slots:
     void applySettingsAndClose();
     void windowColorDialog();
     void accentColorDialog();
+    void highlightColorDialog();
 
     void addScript();
     void editScript();
