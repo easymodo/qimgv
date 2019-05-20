@@ -14,7 +14,6 @@ public:
     void setModel(std::shared_ptr<DirectoryModel> newModel);
     void removeModel();
 
-    void setCurrentIndex(int index);
 signals:
     void generateThumbnails(QList<int>, int);
 
@@ -33,6 +32,7 @@ private slots:
 
     void reloadModel();
     void onThumbnailReady(std::shared_ptr<Thumbnail>);
+    void setCurrentIndex(int index);
 private:
     QList<std::shared_ptr<DirectoryViewWrapper>> views;
     std::shared_ptr<DirectoryModel> model = nullptr;

@@ -15,6 +15,7 @@ public:
     void loadAsync(QString path);
 
     void clearTasks();
+    bool isBusy();
 private:
     QHash<QString, LoaderRunnable*> tasks;
     QThreadPool *pool;    

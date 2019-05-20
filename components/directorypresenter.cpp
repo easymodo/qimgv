@@ -16,6 +16,8 @@ void DirectoryPresenter::removeModel() {
                this, SLOT(reloadModel()));
     disconnect(model.get(), &DirectoryModel::thumbnailReady,
                this,  &DirectoryPresenter::onThumbnailReady);
+    disconnect(model.get(), SIGNAL(indexChanged(int)),
+               this, SLOT(setCurrentIndex(int)));
     model = nullptr;
     // also empty views?
 }
@@ -40,6 +42,9 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
     connect(model.get(), SIGNAL(fileRenamed(QString, QString)),
             this, SLOT(onFileRenamed(QString, QString)), Qt::UniqueConnection);
 
+    connect(model.get(), SIGNAL(indexChanged(int)),
+            this, SLOT(setCurrentIndex(int)), Qt::UniqueConnection);
+
     connect(model.get(), SIGNAL(directoryChanged(QString)),
             this, SLOT(reloadModel()), Qt::UniqueConnection);
 
@@ -59,19 +64,6 @@ void DirectoryPresenter::connectView(std::shared_ptr<DirectoryViewWrapper> view)
                 this, &DirectoryPresenter::loadByIndex, Qt::UniqueConnection);
         connect(view.get(), &DirectoryViewWrapper::thumbnailsRequested,
                 this, &DirectoryPresenter::generateThumbnails, Qt::UniqueConnection);
-
-        /*connect(view.get(), SIGNAL(thumbnailsRequested(QList<int>, int)),
-                model->thumbnailer, SLOT(generateThumbnailFor(QList<int>, int)), Qt::UniqueConnection);
-
-        connect(model->thumbnailer, SIGNAL(thumbnailReady(std::shared_ptr<Thumbnail>)),
-                this, SLOT(forwardThumbnail(std::shared_ptr<Thumbnail>)));
-
-        connect(this, SIGNAL(currentIndexChanged(int)),
-                view.get(), SIGNAL(setCurrentIndex(int)));
-
-        connect(view.get(), SIGNAL(thumbnailPressed(int)),
-                this, SLOT(loadByIndex(int)));
-                */
     }
 }
 
@@ -94,7 +86,8 @@ void DirectoryPresenter::onFileRemoved(QString fileName, int index) {
 }
 
 void DirectoryPresenter::onFileRenamed(QString from, QString to) {
-
+    //mw->removeThumbnail(oldIndex);
+    //mw->addThumbnail(newIndex);
 }
 
 void DirectoryPresenter::onFileAdded(QString fileName) {
@@ -102,7 +95,7 @@ void DirectoryPresenter::onFileAdded(QString fileName) {
     for(int i=0; i<views.count(); i++) {
         views.at(i)->insertItem(index);
     }
-    setCurrentIndex(model->indexOf(model->currentFileName));
+    setCurrentIndex(model->indexOf(model->currentFileName()));
 }
 
 void DirectoryPresenter::onFileModified(QString fileName) {
@@ -125,7 +118,7 @@ void DirectoryPresenter::loadByIndex(int index) {
     model->setIndexAsync(index);
 }
 
-// tmp
+// tmp -- ?
 void DirectoryPresenter::setCurrentIndex(int index) {
     for(int i=0; i<views.count(); i++) {
         views.at(i)->selectIndex(index);

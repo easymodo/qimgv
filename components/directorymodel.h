@@ -17,12 +17,13 @@ public:
     Cache cache;
     Scaler *scaler;
 
-    QString currentFileName;
+    QString currentFileName();
+    QString currentFilePath();
+    QString fullPath(QString fileName);
 
     int itemCount() const;
     int indexOf(QString fileName);
     QString fileNameAt(int index);
-    QString fullFilePath(QString fileName);
     bool contains(QString fileName);
     bool removeFile(QString fileName, bool trash);
     bool isEmpty();
@@ -38,6 +39,8 @@ public:
 
     bool setIndex(int index);
     bool setIndexAsync(int index);
+
+    bool loaderBusy();
 
     std::shared_ptr<Image> itemAt(int index);
 
@@ -64,6 +67,8 @@ private:
     Thumbnailer *thumbnailer;
     void preload(QString fileName);
     void trimCache();
+
+    QString mCurrentFileName;
 
 private slots:
     void onItemReady(std::shared_ptr<Image> img);

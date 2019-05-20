@@ -65,7 +65,7 @@ private slots:
     void prevImage();
     void jumpToFirst();
     void jumpToLast();
-    void onModelIndexChange(int index);
+    void onModelIndexChanged(int index);
     void onModelItemReady(std::shared_ptr<Image>);
     void onModelItemUpdated(std::shared_ptr<Image>);
     void onLoadFailed(QString path); //

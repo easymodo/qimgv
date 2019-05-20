@@ -10,6 +10,10 @@ void Loader::clearTasks() {
     pool->waitForDone();
 }
 
+bool Loader::isBusy() {
+    return (tasks.count() != 0);
+}
+
 std::shared_ptr<Image> Loader::load(QString path) {
     return ImageFactory::createImage(path);
 }
