@@ -9,6 +9,7 @@ class MainPanel : public SlideHPanel {
     Q_OBJECT
 public:
     MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *parent);
+    ~MainPanel();
     void setHeight(int newHeight);
     void setPosition(PanelHPosition);
     void setExitButtonEnabled(bool mode);
@@ -19,7 +20,7 @@ private slots:
 private:
     QVBoxLayout buttonsLayout;
     QWidget buttonsWidget;
-    ActionButton *openButton, *exitFullscreenButton, *settingsButton, *exitButton, *folderViewButton;
+    ActionButton *openButton, *settingsButton, *exitButton, *folderViewButton;
 
 protected:
     virtual void paintEvent(QPaintEvent* event);

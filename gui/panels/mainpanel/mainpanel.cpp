@@ -4,19 +4,18 @@ MainPanel::MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *pa
     // buttons stuff
     buttonsWidget.setAccessibleName("panelButtonsWidget");
 
-    openButton       = new ActionButton("open", ":/res/icons/buttons/open20.png", 30);
+    openButton       = new ActionButton("open", ":/res/icons/buttons/open20.png", 30, this);
     openButton->setAccessibleName("IconButton");
     openButton->setTriggerMode(TriggerMode::PressTrigger);
-    settingsButton   = new ActionButton("openSettings", ":/res/icons/buttons/settings20.png", 30);
+    settingsButton   = new ActionButton("openSettings", ":/res/icons/buttons/settings20.png", 30, this);
     settingsButton->setAccessibleName("IconButton");
     settingsButton->setTriggerMode(TriggerMode::PressTrigger);
-    exitButton       = new ActionButton("exit", ":/res/icons/buttons/close16.png", 30);
+    exitButton       = new ActionButton("exit", ":/res/icons/buttons/close16.png", 30, this);
     exitButton->setAccessibleName("IconButton");
     exitButton->setTriggerMode(TriggerMode::PressTrigger);
-    folderViewButton = new ActionButton("folderView", ":/res/icons/buttons/folderview20.png", 30);
+    folderViewButton = new ActionButton("folderView", ":/res/icons/buttons/folderview20.png", 30, this);
     folderViewButton->setAccessibleName("IconButton");
     folderViewButton->setTriggerMode(TriggerMode::PressTrigger);
-    //exitFullscreenButton = new IconButton("ToggleFullscreen", ":/res/icons/buttons/exit-fullscreen.png", QSize(30, 30));
 
     buttonsLayout.setDirection(QBoxLayout::BottomToTop);
     buttonsLayout.setSpacing(0);
@@ -24,7 +23,6 @@ MainPanel::MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *pa
     buttonsLayout.addWidget(settingsButton);
     buttonsLayout.addWidget(openButton);
     buttonsLayout.addStretch(0);
-    //buttonsLayout.addWidget(&exitFullscreenButton);
     buttonsLayout.addWidget(folderViewButton);
     buttonsLayout.addWidget(exitButton);
 
@@ -35,6 +33,13 @@ MainPanel::MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *pa
 
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+}
+
+MainPanel::~MainPanel() {
+    delete openButton;
+    delete settingsButton;
+    delete exitButton;
+    delete folderViewButton;
 }
 
 void MainPanel::setHeight(int newHeight) {
@@ -56,7 +61,6 @@ void MainPanel::setPosition(PanelHPosition newPosition) {
 
 void MainPanel::setExitButtonEnabled(bool mode) {
     exitButton->setHidden(!mode);
-    //exitFullscreenButton.setHidden(!mode);
 }
 
 void MainPanel::readSettings() {

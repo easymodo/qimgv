@@ -363,6 +363,9 @@ void MainWindow::showDefault() {
 }
 
 void MainWindow::showSaveDialog(QString filePath) {
+    if(mainPanel)
+        mainPanel->hide();
+
     const QString imagesFilter = settings->supportedFormatsString();
     filePath = QFileDialog::getSaveFileName(this, tr("Save File"),
                                             filePath,
@@ -372,6 +375,13 @@ void MainWindow::showSaveDialog(QString filePath) {
 }
 
 void MainWindow::showOpenDialog() {
+    // Looks like there is a bug in qt with native file dialogs
+    // It hangs at exec() when there is a panel visible
+    // Works fine otherwise, or with builtin qt dialogs
+    // will try to investigate later
+    if(mainPanel)
+        mainPanel->hide();
+
     QFileDialog dialog(this);
     QStringList imageFilter;
     imageFilter.append(settings->supportedFormatsString());
@@ -383,6 +393,7 @@ void MainWindow::showOpenDialog() {
     dialog.setWindowModality(Qt::ApplicationModal);
     connect(&dialog, SIGNAL(fileSelected(QString)),
             this, SIGNAL(opened(QString)));
+
     dialog.exec();
 }
 
@@ -394,6 +405,9 @@ void MainWindow::showResizeDialog(QSize initialSize) {
 }
 
 void MainWindow::showSettings() {
+    if(mainPanel)
+        mainPanel->hide();
+
     SettingsDialog settingsDialog(this);
     settingsDialog.exec();
 }
