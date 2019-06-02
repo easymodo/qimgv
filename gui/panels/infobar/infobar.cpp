@@ -16,11 +16,10 @@ InfoBar::~InfoBar()
     delete ui;
 }
 
-void InfoBar::setInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize) {
-    ui->index->setText(QString::number(fileIndex + 1) + "/" + QString::number(fileCount));
+void InfoBar::setInfo(QString position, QString fileName, QString info) {
+    ui->index->setText(position);
     ui->path->setText(fileName);
-    ui->resolution->setText(QString::number(imageSize.width()) + " x " + QString::number(imageSize.height()));
-    ui->size->setText(QString::number(fileSize / 1024) + " KB");
+    ui->info->setText(info);
 }
 
 void InfoBar::paintEvent(QPaintEvent *event) {

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>471</width>
-    <height>20</height>
+    <height>26</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -46,14 +46,14 @@
    <item>
     <widget class="QLabel" name="index">
      <property name="text">
-      <string>index</string>
+      <string> </string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QLabel" name="path">
      <property name="text">
-      <string>path</string>
+      <string> </string>
      </property>
     </widget>
    </item>
@@ -71,16 +71,9 @@
     </spacer>
    </item>
    <item>
-    <widget class="QLabel" name="resolution">
+    <widget class="QLabel" name="info">
      <property name="text">
-      <string>res</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="size">
-     <property name="text">
-      <string>size</string>
+      <string> </string>
      </property>
     </widget>
    </item>

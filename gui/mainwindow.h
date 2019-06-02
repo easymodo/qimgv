@@ -90,7 +90,7 @@ private:
     void applyWindowedBackground();
     void applyFullscreenBackground();
     void mouseDoubleClickEvent(QMouseEvent *event);
-    void hidePanel();
+
 private slots:
     void updateCurrentDisplay();
     void readSettings();

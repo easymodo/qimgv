@@ -545,16 +545,25 @@ void MainWindow::closeFullScreenOrExit() {
 }
 
 void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize) {
-    QString title = fileName;
+    QString posString;
+    if(fileCount)
+        posString = "[ " + QString::number(fileIndex + 1) + "/" + QString::number(fileCount) + " ]";
+    QString resString;
+    if(imageSize.width())
+        resString = QString::number(imageSize.width()) + " x " + QString::number(imageSize.height());
+    QString sizeString;
+    if(fileSize)
+        sizeString = QString::number(fileSize / 1024) + " KiB";
+
+    QString windowTitle = fileName;
     if(settings->windowTitleExtendedInfo()) {
-        title.prepend("[ " + QString::number(fileIndex + 1) + "/" + QString::number(fileCount) + " ]  ");
-        title.append("  -  " + QString::number(imageSize.width()) + " x " + QString::number(imageSize.height()));
-        //title.append(" " + QString::number(fileSize / 1024) + " KB");
-        // — -
+        windowTitle.prepend(posString + "  ");
+        if(!resString.isEmpty())
+            windowTitle.append("  -  " + resString);
     }
-    infoBarFullscreen->setText(title); // temporary
-    setWindowTitle(title);
-    infoBarWindowed->setInfo(fileIndex, fileCount, fileName, imageSize, fileSize);
+    infoBarFullscreen->setText(windowTitle); // temporary
+    setWindowTitle(windowTitle);
+    infoBarWindowed->setInfo(posString, fileName, resString + "  " + sizeString);
 }
 
 std::shared_ptr<DirectoryViewWrapper> MainWindow::getFolderView() {

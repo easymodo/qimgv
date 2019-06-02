@@ -16,7 +16,7 @@ public:
     ~InfoBar();
 
 public slots:
-    void setInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize);
+    void setInfo(QString position, QString fileName, QString info);
 protected:
     void paintEvent(QPaintEvent *event);
 private:

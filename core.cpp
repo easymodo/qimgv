@@ -271,6 +271,7 @@ void Core::onFileRemoved(QString fileName, int index) {
     if(model->currentFileName() == fileName) {
         if(!model->itemCount()) {
             mw->closeImage();
+            updateInfoString();
         } else {
             if(!model->setIndexAsync(index))
                 model->setIndexAsync(--index);
