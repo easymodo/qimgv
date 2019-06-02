@@ -3,7 +3,18 @@
 Settings *settings = nullptr;
 
 Settings::Settings(QObject *parent) : QObject(parent) {
-#ifdef IS_PORTABLE
+#ifdef __linux__
+    QString genericCacheLocation = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation);
+    if(genericCacheLocation.isEmpty())
+        genericCacheLocation = QDir::homePath() + "/.cache";
+    mCacheDir = new QDir(genericCacheLocation + "/" + QApplication::applicationName());
+    mCacheDir->mkpath(mCacheDir->absolutePath());
+    mThumbnailDir = new QDir(mCacheDir->absolutePath() + "/thumbnails");
+    mThumbnailDir->mkpath(mThumbnailDir->absolutePath());
+    QSettings::setDefaultFormat(QSettings::NativeFormat);
+    s = new QSettings();
+    state = new QSettings(QCoreApplication::organizationName(), "savedState");
+#else
     mCacheDir = new QDir(QApplication::applicationDirPath() + "/cache");
     mCacheDir->mkpath(mCacheDir->absolutePath());
     mThumbnailDir = new QDir(QApplication::applicationDirPath() + "/thumbnails");
@@ -12,14 +23,6 @@ Settings::Settings(QObject *parent) : QObject(parent) {
     mConfDir->mkpath(QApplication::applicationDirPath() + "/conf");
     s = new QSettings(mConfDir->absolutePath() + "/qimgv.ini", QSettings::IniFormat);
     state = new QSettings(mConfDir->absolutePath() + "/savedState.ini", QSettings::IniFormat);
-#else
-    mCacheDir = new QDir(QDir::homePath() + "/.cache/qimgv");
-    mCacheDir->mkpath(mCacheDir->absolutePath());
-    mThumbnailDir = new QDir(QDir::homePath() + "/.cache/qimgv/thumbnails");
-    mThumbnailDir->mkpath(mThumbnailDir->absolutePath());
-    QSettings::setDefaultFormat(QSettings::NativeFormat);
-    s = new QSettings();
-    state = new QSettings(QCoreApplication::organizationName(), "savedState");
 #endif
 }
 
