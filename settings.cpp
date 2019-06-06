@@ -324,7 +324,7 @@ void Settings::setAccentColor(QColor color) {
 }
 //------------------------------------------------------------------------------
 QColor Settings::highlightColor() {
-    return settings->s->value("highlightColor", QColor(109, 120, 100)).value<QColor>();
+    return settings->s->value("highlightColor", QColor(103, 125, 83)).value<QColor>();
 }
 
 void Settings::setHighlightColor(QColor color) {

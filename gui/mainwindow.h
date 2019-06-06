@@ -112,7 +112,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
 signals:
     void opened(QString);
-    void fullscreenStatusChanged(bool);
+    void fullscreenStateChanged(bool);
     void copyRequested(QString);
     void moveRequested(QString);
     void resizeRequested(QSize);

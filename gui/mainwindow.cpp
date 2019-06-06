@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&windowMoveTimer, SIGNAL(timeout()),
             this, SLOT(updateCurrentDisplay()));
 
-    connect(this, SIGNAL(fullscreenStatusChanged(bool)),
+    connect(this, SIGNAL(fullscreenStateChanged(bool)),
             this, SLOT(adaptToWindowState()));
 
     readSettings();
@@ -213,14 +213,12 @@ void MainWindow::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
     viewerWidget->onScalingFinished(std::move(scaled));
 }
 
-void MainWindow::updateCurrentDisplay() {
-    currentDisplay = desktopWidget->screenNumber(this);
-}
-
 void MainWindow::saveWindowGeometry() {
     #ifdef __linux__
-        settings->setWindowGeometry(QRect(pos(), size()));
-        //settings->setWindowGeometry(geometry());
+        // Some Qt versions ago this one was misbehaving under kde,
+        // but now looks like it's the other way around..
+        settings->setWindowGeometry(geometry());
+        //settings->setWindowGeometry(QRect(pos(), size()));
     #else
          settings->setWindowGeometry(QRect(pos(), size()));
     #endif
@@ -230,7 +228,12 @@ void MainWindow::restoreWindowGeometry() {
     QRect geometry = settings->windowGeometry();
     this->resize(geometry.size());
     this->move(geometry.x(), geometry.y());
+    qDebug() << "restoring to: " << geometry << ",  result: " << this->geometry() << this->pos() << this->window()->pos();
     updateCurrentDisplay();
+}
+
+void MainWindow::updateCurrentDisplay() {
+    currentDisplay = desktopWidget->screenNumber(this);
 }
 
 void MainWindow::saveCurrentDisplay() {
@@ -432,7 +435,7 @@ void MainWindow::showFullScreen() {
                    desktopWidget->screenGeometry(currentDisplay).y());
     }
     QWidget::showFullScreen();
-    emit fullscreenStatusChanged(true);
+    emit fullscreenStateChanged(true);
 }
 
 void MainWindow::showWindowed() {
@@ -441,7 +444,7 @@ void MainWindow::showWindowed() {
     restoreWindowGeometry();
     //QWidget::activateWindow();
     //QWidget::raise();
-    emit fullscreenStatusChanged(false);
+    emit fullscreenStateChanged(false);
 }
 
 // passes the side panel all needed info about current image
@@ -616,6 +619,7 @@ void MainWindow::showError(QString text) {
 }
 
 void MainWindow::readSettings() {
+    qDebug() << "readSettings()";
     panelPosition = settings->panelPosition();
     panelEnabled = settings->panelEnabled();
     panelFullscreenOnly = settings->panelFullscreenOnly();
@@ -645,6 +649,7 @@ void MainWindow::applyFullscreenBackground() {
 
 // changes ui elements according to fullscreen state
 void MainWindow::adaptToWindowState() {
+    qDebug() << "adaptToWindowState()";
     if(panelEnabled)
         mainPanel->hide();
     if(isFullScreen()) { //-------------------------------------- fullscreen ---
