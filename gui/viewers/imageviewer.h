@@ -68,6 +68,7 @@ public slots:
     void show();
     void hide();
 
+    void toggleTransparencyGrid();
 protected:
     virtual void paintEvent(QPaintEvent* event);
     virtual void mousePressEvent(QMouseEvent *event);
@@ -78,6 +79,7 @@ protected:
 private slots:
     void nextFrame();
     void requestScaling();
+    void requestScaling(bool force);
 
 private:
     std::unique_ptr<QPixmap> pixmap;
@@ -87,7 +89,7 @@ private:
     QRect drawingRect;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
     QSize mSourceSize;
-    bool mouseWrapping, checkboardGridEnabled, expandImage, smoothAnimatedImages;
+    bool mouseWrapping, transparencyGridEnabled, expandImage, smoothAnimatedImages;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_DISTANCE = 250;

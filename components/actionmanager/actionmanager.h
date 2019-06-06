@@ -105,6 +105,7 @@ signals:
     void copyPathClipboard();
     void renameFile();
     void contextMenu();
+    void toggleTransparencyGrid();
 };
 
 extern ActionManager *actionManager;

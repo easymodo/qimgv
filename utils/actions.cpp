@@ -69,5 +69,6 @@ void Actions::init() {
     mActions.insert("copyPathClipboard", QVersionNumber(0,7,80));
     mActions.insert("renameFile", QVersionNumber(0,7,80));
     mActions.insert("contextMenu", QVersionNumber(0,7,81));
+    mActions.insert("toggleTransparencyGrid", QVersionNumber(0,7,82));
 }
 

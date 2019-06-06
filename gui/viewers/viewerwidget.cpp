@@ -23,6 +23,8 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     imageViewer->hide();
     connect(imageViewer.get(), SIGNAL(scalingRequested(QSize)),
             this, SIGNAL(scalingRequested(QSize)));
+    connect(this, SIGNAL(toggleTransparencyGrid()),
+            imageViewer.get(), SLOT(toggleTransparencyGrid()));
 
     videoPlayer.reset(new VideoPlayerInitProxy(this));
     videoPlayer->hide();

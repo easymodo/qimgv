@@ -145,6 +145,7 @@ signals:
     void enableDocumentView();
     void setDirectoryPath(QString);
     void toggleFolderView();
+    void toggleTransparencyGrid();
 
 public slots:
     void showDefault();

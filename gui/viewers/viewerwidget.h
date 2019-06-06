@@ -63,6 +63,7 @@ signals:
     void fitWindow();
     void fitWidth();
     void fitOriginal();
+    void toggleTransparencyGrid();
 
 public slots:
     bool showVideo(Clip *clip);
@@ -87,6 +88,7 @@ public slots:
     void showContextMenu();
     void hideContextMenu();
     void showContextMenu(QPoint pos);
+
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);

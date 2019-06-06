@@ -125,6 +125,9 @@ void MainWindow::setupUi() {
     connect(this, SIGNAL(frameStepBack()),
             viewerWidget.get(), SLOT(frameStepBack()));
 
+    connect(this, SIGNAL(toggleTransparencyGrid()),
+            viewerWidget.get(), SIGNAL(toggleTransparencyGrid()));
+
     connect(this, SIGNAL(enableFolderView()),
             mainPanel, SLOT(hide()));
     connect(this, SIGNAL(enableFolderView()),
@@ -228,7 +231,6 @@ void MainWindow::restoreWindowGeometry() {
     QRect geometry = settings->windowGeometry();
     this->resize(geometry.size());
     this->move(geometry.x(), geometry.y());
-    qDebug() << "restoring to: " << geometry << ",  result: " << this->geometry() << this->pos() << this->window()->pos();
     updateCurrentDisplay();
 }
 
@@ -619,7 +621,6 @@ void MainWindow::showError(QString text) {
 }
 
 void MainWindow::readSettings() {
-    qDebug() << "readSettings()";
     panelPosition = settings->panelPosition();
     panelEnabled = settings->panelEnabled();
     panelFullscreenOnly = settings->panelFullscreenOnly();
@@ -649,7 +650,6 @@ void MainWindow::applyFullscreenBackground() {
 
 // changes ui elements according to fullscreen state
 void MainWindow::adaptToWindowState() {
-    qDebug() << "adaptToWindowState()";
     if(panelEnabled)
         mainPanel->hide();
     if(isFullScreen()) { //-------------------------------------- fullscreen ---

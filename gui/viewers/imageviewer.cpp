@@ -5,7 +5,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     pixmap(nullptr),
     movie(nullptr),
     mouseWrapping(false),
-    checkboardGridEnabled(false),
+    transparencyGridEnabled(false),
     expandImage(false),
     smoothAnimatedImages(true),
     mouseInteraction(MOUSE_NONE),
@@ -74,7 +74,7 @@ void ImageViewer::displayAnimation(std::unique_ptr<QMovie> _movie) {
         pixmap = std::unique_ptr<QPixmap>(new QPixmap());
         *pixmap = movie->currentPixmap().transformed(transform, Qt::SmoothTransformation);
         readjust(pixmap->size(), pixmap->rect());
-        if(settings->transparencyGrid())
+        if(transparencyGridEnabled)
             drawTransparencyGrid();
         startAnimation();
     }
@@ -86,7 +86,7 @@ void ImageViewer::displayImage(std::unique_ptr<QPixmap> _pixmap) {
     if(_pixmap) {
         pixmap = std::move(_pixmap);
         readjust(pixmap->size(), pixmap->rect());
-        if(settings->transparencyGrid())
+        if(transparencyGridEnabled)
             drawTransparencyGrid();
         update();
         // filter out unnecessary scale event on startup
@@ -126,7 +126,7 @@ void ImageViewer::replacePixmap(std::unique_ptr<QPixmap> newFrame) {
     if(!movie && newFrame->size() != drawingRect.size())
         return;
     pixmap = std::move(newFrame);
-    if(checkboardGridEnabled)
+    if(transparencyGridEnabled)
         drawTransparencyGrid();
     update();
 }
@@ -160,7 +160,14 @@ void ImageViewer::readSettings() {
     updateMaxScale();
     setFitMode(settings->imageFitMode());
     mouseWrapping = settings->mouseWrapping();
-    checkboardGridEnabled = settings->transparencyGrid();
+    transparencyGridEnabled = settings->transparencyGrid();
+}
+
+// temporary override till application restart
+void ImageViewer::toggleTransparencyGrid() {
+    transparencyGridEnabled = !transparencyGridEnabled;
+    // request a new one as the grid is baked into the current pixmap for performance reasons
+    requestScaling(true);
 }
 
 void ImageViewer::setExpandImage(bool mode) {
@@ -256,11 +263,18 @@ void ImageViewer::setScale(float scale) {
 // ###################  RESIZE  #####################
 // ##################################################
 
-void ImageViewer::requestScaling() {
-    if(!pixmap)
+// ignore animation frames
+// we scale them right here in the main thread because qpixmaps
+// ..also to avoid multithreading headaches
+void ImageViewer::requestScaling(bool force) {
+    if(!pixmap || movie)
         return;
-    if(pixmap->size() != drawingRect.size() && !movie)
+    if(pixmap->size() != drawingRect.size() || force)
         emit scalingRequested(drawingRect.size());
+}
+
+void ImageViewer::requestScaling() {
+    requestScaling(false);
 }
 
 void ImageViewer::drawTransparencyGrid() {
