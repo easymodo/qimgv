@@ -36,16 +36,16 @@
     <number>7</number>
    </property>
    <property name="leftMargin">
-    <number>10</number>
+    <number>14</number>
    </property>
    <property name="topMargin">
-    <number>8</number>
-   </property>
-   <property name="rightMargin">
     <number>10</number>
    </property>
+   <property name="rightMargin">
+    <number>14</number>
+   </property>
    <property name="bottomMargin">
-    <number>8</number>
+    <number>10</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0">
@@ -193,68 +193,6 @@
     </layout>
    </item>
    <item>
-    <widget class="QPushButton" name="seekLeftButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>36</width>
-       <height>36</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>36</width>
-       <height>36</height>
-      </size>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="accessibleName">
-      <string>Button</string>
-     </property>
-     <property name="text">
-      <string>L</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="seekRightButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>36</width>
-       <height>36</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>36</width>
-       <height>36</height>
-      </size>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="accessibleName">
-      <string>Button</string>
-     </property>
-     <property name="text">
-      <string>R</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -264,7 +202,7 @@
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>5</width>
+       <width>4</width>
        <height>10</height>
       </size>
      </property>
@@ -281,13 +219,13 @@
      <property name="minimumSize">
       <size>
        <width>200</width>
-       <height>20</height>
+       <height>28</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>200</width>
-       <height>20</height>
+       <height>28</height>
       </size>
      </property>
      <property name="focusPolicy">

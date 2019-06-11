@@ -67,7 +67,7 @@ protected:
     int mThumbnailSize, selectedIndex;
     int offscreenPreloadArea = 3000;
 
-    const int SCROLL_UPDATE_RATE = 8;
+    const int SCROLL_UPDATE_RATE = 7;
     const float SCROLL_SPEED_MULTIPLIER = 2.5f;
     const int SCROLL_ANIMATION_SPEED = 140;
 

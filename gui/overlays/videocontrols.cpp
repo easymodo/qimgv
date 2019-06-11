@@ -16,12 +16,12 @@ VideoControls::VideoControls(OverlayContainerWidget *parent) :
 
     lastVideoPosition = -1;
 
-    ui->seekLeftButton->setVisible(false);
-    ui->seekRightButton->setVisible(false);
+    //ui->seekLeftButton->setVisible(false);
+    //ui->seekRightButton->setVisible(false);
 
     connect(ui->pauseButton, SIGNAL(pressed()), this, SIGNAL(pause()));
-    connect(ui->seekLeftButton, SIGNAL(pressed()), this, SIGNAL(seekLeft()));
-    connect(ui->seekRightButton, SIGNAL(pressed()), this, SIGNAL(seekRight()));
+    //connect(ui->seekLeftButton, SIGNAL(pressed()), this, SIGNAL(seekLeft()));
+    //connect(ui->seekRightButton, SIGNAL(pressed()), this, SIGNAL(seekRight()));
     connect(ui->prevFrameButton, SIGNAL(pressed()), this, SIGNAL(prevFrame()));
     connect(ui->nextFrameButton, SIGNAL(pressed()), this, SIGNAL(nextFrame()));
     connect(ui->seekBar, SIGNAL(sliderMovedX(int)), this, SIGNAL(seek(int)));
