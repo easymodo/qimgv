@@ -7,7 +7,7 @@ FolderGridView::FolderGridView(QWidget *parent)
       shiftedIndex(-1),
       mShowLabels(false)
 {
-    offscreenPreloadArea = 2000;
+    offscreenPreloadArea = 2300;
     this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
     this->scene.setBackgroundBrush(QColor(47,47,48)); //#2f2f30 TODO: use qss??
     setupLayout();

@@ -3,6 +3,7 @@
 ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     : QGraphicsView(parent),
       orientation(orient),
+      blockThumbnailLoading(false),
       mThumbnailSize(120),
       selectedIndex(-1)
 {
@@ -20,14 +21,9 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     //this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
 
     /* scrolling-related things */
-    timeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
-    timeLine->setEasingCurve(QEasingCurve::OutSine);
-    timeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
-
-    // delay timer for wheel scroll
-    scrollTimer.setSingleShot(true);
-    scrollTimer.setInterval(40);
-    connect(&scrollTimer, SIGNAL(timeout()), this, SIGNAL(scrolled()));
+    scrollTimeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
+    scrollTimeLine->setEasingCurve(QEasingCurve::OutSine);
+    scrollTimeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
 
     connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
     loadTimer.setInterval(static_cast<const int>(LOAD_DELAY));
@@ -37,36 +33,35 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
         this->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scrollBar = this->horizontalScrollBar();
-        connect(timeLine, SIGNAL(frameChanged(int)),
+        connect(scrollTimeLine, SIGNAL(frameChanged(int)),
                 this, SLOT(centerOnX(int)), Qt::UniqueConnection);
     } else {
         this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         scrollBar = this->verticalScrollBar();
-        connect(timeLine, SIGNAL(frameChanged(int)),
+        connect(scrollTimeLine, SIGNAL(frameChanged(int)),
                 this, SLOT(centerOnY(int)), Qt::UniqueConnection);
     }
 
     scrollBar->setContextMenuPolicy(Qt::NoContextMenu);
 
     // on scrolling animation finish
-    connect(timeLine, SIGNAL(finished()), this, SIGNAL(scrolled()));
-    // on manual scrollbar drag
-    connect(scrollBar, SIGNAL(sliderMoved(int)), &scrollTimer, SLOT(start()));
-    connect(this, SIGNAL(scrolled()), this, SLOT(loadVisibleThumbnailsDelayed()));
-
-    connect(scrollBar, SIGNAL(actionTriggered(int)), this, SLOT(onSliderAction(int)));
+    connect(scrollTimeLine, SIGNAL(finished()), this, SLOT(onSmoothScrollEnd()));
+    connect(scrollBar, SIGNAL(valueChanged(int)), this, SLOT(onValueChanged(int)));
 }
 
-void ThumbnailView::onSliderAction(int action) {
-    // catch AddPage / SubPage clicks
-    if(action == 3 || action == 4) {
-        loadVisibleThumbnails();
-    }
+void ThumbnailView::onSmoothScrollEnd() {
+    blockThumbnailLoading = false;
+    loadVisibleThumbnails();
+}
+
+void ThumbnailView::onValueChanged(int value) {
+    Q_UNUSED(value)
+    loadVisibleThumbnails();
 }
 
 void ThumbnailView::setDirectoryPath(QString path) {
-
+    Q_UNUSED(path)
 }
 
 void ThumbnailView::showEvent(QShowEvent *event) {
@@ -133,8 +128,7 @@ void ThumbnailView::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
 
 void ThumbnailView::loadVisibleThumbnails() {
     loadTimer.stop();
-    //qDebug() << "load";
-    if(isVisible()) {
+    if(isVisible() && !blockThumbnailLoading) {
         QRectF visibleRect = mapToScene(viewport()->geometry()).boundingRect();
         // grow rectangle to cover nearby offscreen items
         visibleRect.adjust(-offscreenPreloadArea, -offscreenPreloadArea,
@@ -150,8 +144,6 @@ void ThumbnailView::loadVisibleThumbnails() {
             }
         }
         if(loadList.count()) {
-            //qDebug() << "requested: " << loadList.count() << " items";
-            //qDebug() << loadList;
             emit thumbnailsRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize));
         }
     }
@@ -175,8 +167,8 @@ void ThumbnailView::centerOnY(int dy) {
 }
 
 void ThumbnailView::resetViewport() {
-    if(timeLine->state() == QTimeLine::Running)
-        timeLine->stop();
+    if(scrollTimeLine->state() == QTimeLine::Running)
+        scrollTimeLine->stop();
     scrollBar->setValue(0);
 }
 
@@ -244,8 +236,8 @@ void ThumbnailView::wheelEvent(QWheelEvent *event) {
 }
 
 void ThumbnailView::scrollPrecise(int delta) {
-    if(timeLine->state() == QTimeLine::Running)
-        timeLine->stop();
+    if(scrollTimeLine->state() == QTimeLine::Running)
+        scrollTimeLine->stop();
     // ignore if we reached boundaries
     if( (delta > 0 && atSceneStart()) || (delta < 0 && atSceneEnd()) )
         return;
@@ -271,16 +263,17 @@ void ThumbnailView::scrollSmooth(int angleDelta) {
     }
     bool redirect = false;
     int newEndFrame = center - static_cast<int>(angleDelta * SCROLL_SPEED_MULTIPLIER);
-    if( (newEndFrame < center && center < timeLine->endFrame()) || (newEndFrame > center && center > timeLine->endFrame()) )
+    if( (newEndFrame < center && center < scrollTimeLine->endFrame()) || (newEndFrame > center && center > scrollTimeLine->endFrame()) )
     {
         redirect = true;
     }
-    if(timeLine->state() == QTimeLine::Running && !redirect) {
-        newEndFrame = timeLine->endFrame() - static_cast<int>(angleDelta * SCROLL_SPEED_MULTIPLIER * 1.3f);
+    if(scrollTimeLine->state() == QTimeLine::Running && !redirect) {
+        newEndFrame = scrollTimeLine->endFrame() - static_cast<int>(angleDelta * SCROLL_SPEED_MULTIPLIER * 1.3f);
     }
-    timeLine->stop();
-    timeLine->setFrameRange(center, newEndFrame);
-    timeLine->start();
+    scrollTimeLine->stop();
+    blockThumbnailLoading = true;
+    scrollTimeLine->setFrameRange(center, newEndFrame);
+    scrollTimeLine->start();
 }
 
 void ThumbnailView::mousePressEvent(QMouseEvent *event) {

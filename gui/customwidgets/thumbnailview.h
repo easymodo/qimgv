@@ -47,7 +47,6 @@ public slots:
     virtual void removeItem(int index) Q_DECL_OVERRIDE;
 
 signals:
-    void scrolled();
     void thumbnailPressed(int) Q_DECL_OVERRIDE;
     void thumbnailsRequested(QList<int>, int) Q_DECL_OVERRIDE;
 
@@ -57,12 +56,13 @@ private:
     void scrollPrecise(int pixelDelta);
     void scrollSmooth(int angleDelta);
     QTimer loadTimer, scrollTimer;
+    bool blockThumbnailLoading;
 
 protected:
     QGraphicsScene scene;
     QList<ThumbnailWidget*> thumbnails;
     QScrollBar *scrollBar;
-    QTimeLine *timeLine;
+    QTimeLine *scrollTimeLine;
     QPointF viewportCenter;
     int mThumbnailSize, selectedIndex;
     int offscreenPreloadArea = 3000;
@@ -91,7 +91,8 @@ protected:
 private slots:
     void centerOnX(int);
     void centerOnY(int);
-    void onSliderAction(int action);
+    void onValueChanged(int value);
+    void onSmoothScrollEnd();
 };
 
 #endif // THUMBNAILVIEW_H
