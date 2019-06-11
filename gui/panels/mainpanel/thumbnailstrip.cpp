@@ -110,28 +110,6 @@ void ThumbnailStrip::setThumbnailSize(int newSize) {
     }
 }
 
-//  reimplement is base
-/*
-void ThumbnailStrip::removeItemAt(int pos) {
-    lock();
-    if(checkRange(pos)) {
-        if(pos == current)
-            current = -1;
-        ThumbnailLabel *thumb = thumbnails.takeAt(pos);
-        scene.removeItem(thumb);
-        // move items left
-        ThumbnailLabel *tmp;
-        for(int i = pos; i < thumbnails.count(); i++) {
-            tmp = thumbnails.at(i);
-            tmp->moveBy(-tmp->boundingRect().width(), 0);
-            tmp->setLabelNum(i);
-        }
-        updateSceneRect();
-    }
-    unlock();
-}
-*/
-
 // resizes thumbnailSize to fit new widget size
 // TODO: find some way to make this trigger while hidden
 void ThumbnailStrip::resizeEvent(QResizeEvent *event) {

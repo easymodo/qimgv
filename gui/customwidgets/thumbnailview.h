@@ -91,6 +91,7 @@ protected:
 private slots:
     void centerOnX(int);
     void centerOnY(int);
+    void onSliderAction(int action);
 };
 
 #endif // THUMBNAILVIEW_H
