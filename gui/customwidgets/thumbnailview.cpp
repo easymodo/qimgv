@@ -54,6 +54,15 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     // on manual scrollbar drag
     connect(scrollBar, SIGNAL(sliderMoved(int)), &scrollTimer, SLOT(start()));
     connect(this, SIGNAL(scrolled()), this, SLOT(loadVisibleThumbnailsDelayed()));
+
+    connect(scrollBar, SIGNAL(actionTriggered(int)), this, SLOT(onSliderAction(int)));
+}
+
+void ThumbnailView::onSliderAction(int action) {
+    // catch AddPage / SubPage clicks
+    if(action == 3 || action == 4) {
+        loadVisibleThumbnails();
+    }
 }
 
 void ThumbnailView::setDirectoryPath(QString path) {
