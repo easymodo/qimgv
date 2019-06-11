@@ -34,6 +34,11 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->showLabelsButton, SIGNAL(toggled(bool)), this, SLOT(onShowLabelsButtonToggled(bool)));
     ui->thumbnailGrid->setThumbnailSize(settings->folderViewIconSize());
     ui->thumbnailGrid->setShowLabels(settings->showThumbnailLabels());
+
+    QSizePolicy sp_retain = sizePolicy();
+    sp_retain.setRetainSizeWhenHidden(true);
+    setSizePolicy(sp_retain);
+    hide();
 }
 
 void FolderView::onShowLabelsChanged(bool mode) {
@@ -121,4 +126,8 @@ void FolderView::paintEvent(QPaintEvent *) {
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void FolderView::resizeEvent(QResizeEvent *event) {
+
 }

@@ -322,7 +322,9 @@ void FolderGridView::fitToContents() {
 }
 
 void FolderGridView::resizeEvent(QResizeEvent *event) {
-    QGraphicsView::resizeEvent(event);
-    fitToContents();
-    loadVisibleThumbnailsDelayed();
+    if(this->isVisible()) {
+        QGraphicsView::resizeEvent(event);
+        fitToContents();
+        loadVisibleThumbnailsDelayed();
+    }
 }

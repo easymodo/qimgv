@@ -50,6 +50,7 @@
 
 #include <QGraphicsLayout>
 #include <QDebug>
+#include <QElapsedTimer>
 
 struct GridInfo {
     GridInfo(int _columns, int _rows, qreal _height) {

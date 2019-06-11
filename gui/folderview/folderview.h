@@ -36,6 +36,7 @@ protected:
     void focusInEvent(QFocusEvent *event) Q_DECL_OVERRIDE;
     void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
 
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
 protected slots:
     void onShowLabelsChanged(bool mode);
     void onShowLabelsButtonToggled(bool mode);

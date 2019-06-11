@@ -99,7 +99,6 @@ void FlowLayout::insertItem(int index, QGraphicsLayoutItem *item) {
         index = m_items.count();
     m_items.insert(index, item);
     invalidate();
-    //activate();
 }
 
 int FlowLayout::count() const
@@ -139,57 +138,59 @@ void FlowLayout::setGeometry(const QRectF &geom)
     m_rows = gInfo.rows;
 }
 
+// this assumes every item is of the same size
 GridInfo FlowLayout::doLayout(const QRectF &geom, bool applyNewGeometry) const {
-    qreal left, top, right, bottom;
-    getContentsMargins(&left, &top, &right, &bottom);
-    const qreal maxw = geom.width() - left - right;
+    QElapsedTimer t;
+    t.start();
+
+    qreal leftMargin, topMargin, rightMargin, bottomMargin;
+    getContentsMargins(&leftMargin, &topMargin, &rightMargin, &bottomMargin);
+
+    const qreal maxRowWidth = geom.width() - leftMargin - rightMargin;
     int centerOffset = 0;
 
     qreal x = 0;
     qreal y = 0;
-    qreal maxRowHeight = 0;
-    QSizeF pref;
+
+    QSizeF itemSize;
 
     int columns = m_items.count();
     int rows = 0;
     if(columns)
         rows = 1;
 
-    // calculate offset for centering
     if(m_items.count()) {
+        // calculate offset for centering
         const qreal itemWidth = m_items.at(0)->effectiveSizeHint(Qt::PreferredSize).width();
-        int maxCols = (int)maxw / itemWidth;
+        int maxCols = static_cast<int>(maxRowWidth / itemWidth);
         if(m_items.count() >= maxCols)
-            centerOffset = static_cast<int>(fmod(maxw, itemWidth) / 2);
+            centerOffset = static_cast<int>(fmod(maxRowWidth, itemWidth) / 2);
+
+        QGraphicsLayoutItem *item = m_items.at(0);
+        itemSize = item->effectiveSizeHint(Qt::PreferredSize);
     }
 
     for (int i = 0; i < m_items.count(); ++i) {
-        QGraphicsLayoutItem *item = m_items.at(i);
-        pref = item->effectiveSizeHint(Qt::PreferredSize);
-        maxRowHeight = qMax(maxRowHeight, pref.height());
-
         qreal next_x;
-        next_x = x + pref.width();
-        if (next_x > maxw) {
-            if (x == 0) {
-                pref.setWidth(maxw);
+        next_x = x + itemSize.width();
+        if (next_x > maxRowWidth) {
+            if(x == 0) {
+                itemSize.setWidth(maxRowWidth);
             } else {
                 x = 0;
-                next_x = pref.width();
+                next_x = itemSize.width();
                 if(rows == 1)
                     columns = i;
                 rows++;
             }
-            y += maxRowHeight + spacing(Qt::Vertical);
-            maxRowHeight = 0;
+            y += itemSize.height() + spacing(Qt::Vertical);
         }
-
-        if (applyNewGeometry)
-            item->setGeometry(QRectF(QPointF(left + x + centerOffset, top + y), pref));
+        if(applyNewGeometry)
+            m_items.at(i)->setGeometry(QRectF(QPointF(leftMargin + x + centerOffset, topMargin + y), itemSize));
         x = next_x + spacing(Qt::Horizontal);
     }
-    maxRowHeight = qMax(maxRowHeight, pref.height());
-    return GridInfo(columns, rows, top + y + maxRowHeight + bottom);
+    //qDebug() << "elapsed: " << t.elapsed();
+    return GridInfo(columns, rows, topMargin + y + itemSize.height() + bottomMargin);
 }
 
 QSizeF FlowLayout::minSize(const QSizeF &constraint) const
