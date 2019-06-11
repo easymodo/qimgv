@@ -71,7 +71,7 @@ protected:
     const float SCROLL_SPEED_MULTIPLIER = 2.5f;
     const int SCROLL_ANIMATION_SPEED = 140;
 
-    const uint LOAD_DELAY = 200;
+    const uint LOAD_DELAY = 150;
 
     bool atSceneStart();
     bool atSceneEnd();

@@ -206,7 +206,7 @@ void FolderGridView::selectIndex(int index) {
     ThumbnailWidget *thumb = thumbnails.at(selectedIndex);
     thumb->setHighlighted(true, false);
     ensureVisible(thumb, 0, 0);
-    loadVisibleThumbnails();
+    loadVisibleThumbnailsDelayed();
 }
 
 void FolderGridView::setupLayout() {
