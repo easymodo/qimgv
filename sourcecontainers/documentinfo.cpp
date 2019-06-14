@@ -100,13 +100,13 @@ void DocumentInfo::detectType() {
         // in case we encounter an actual audio/x-riff
         if(QString::compare(fileInfo.completeSuffix(), "webp", Qt::CaseInsensitive) == 0) {
             mExtension = "webp";
-            mImageType = ANIMATED;
+            mImageType = detectAnimatedWebP() ? ANIMATED : STATIC;
         }
     // TODO: parse header to find out if it supports animation.
     // treat all webp as animated for now.
     } else if(mimeName == "image/webp") {
         mExtension = "webp";
-        mImageType = ANIMATED;
+        mImageType = detectAnimatedWebP() ? ANIMATED : STATIC;
     } else if(mimeName == "image/bmp") {
         mExtension = "bmp";
         mImageType = STATIC;
@@ -126,6 +126,28 @@ bool DocumentInfo::detectAPNG() {
         return header.contains("acTL");
     }
     return false;
+}
+
+bool DocumentInfo::detectAnimatedWebP() {
+    QFile f(fileInfo.filePath());
+    bool result = false;
+    if(f.open(QFile::ReadOnly)) {
+        QDataStream in(&f);
+        in.skipRawData(12);
+        char *buf = static_cast<char*>(malloc(5));
+        buf[4] = '\0';
+        in.readRawData(buf, 4);
+        if(strcmp(buf, "VP8X") == 0) {
+            in.skipRawData(4);
+            char flags;
+            in.readRawData(&flags, 1);
+            if(flags & (1 << 1)) {
+                result = true;
+            }
+        }
+        free(buf);
+    }
+    return result;
 }
 
 void DocumentInfo::loadExifOrientation() {

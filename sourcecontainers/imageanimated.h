@@ -21,6 +21,7 @@ public:
     bool isEditable();
     bool isEdited();
 
+    int frameCount();
 public slots:
     bool save();
     bool save(QString destPath);
@@ -31,6 +32,9 @@ signals:
 private:
     void load();
     QSize mSize;
+    int mFrameCount;
+    std::unique_ptr<QMovie> movie;
+    void loadMovie();
 };
 
 #endif // IMAGEANIMATED_H

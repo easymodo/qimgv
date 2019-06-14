@@ -23,12 +23,23 @@ ImageAnimated::~ImageAnimated() {
 }
 
 void ImageAnimated::load() {
-    if(isLoaded()) {
+    if(isLoaded())
         return;
-    }
-    QPixmap pixmap(mPath, mDocInfo->extension());
-    mSize = pixmap.size();
+    loadMovie();
     mLoaded = true;
+}
+
+void ImageAnimated::loadMovie() {
+    movie.reset(new QMovie());
+    movie->setFileName(mPath);
+    movie->setFormat(mDocInfo->extension());
+    movie->jumpToFrame(0);
+    mSize = movie->frameRect().size();
+    mFrameCount = movie->frameCount();
+}
+
+int ImageAnimated::frameCount() {
+    return mFrameCount;
 }
 
 // TODO: overwrite (self included)
@@ -68,11 +79,9 @@ std::shared_ptr<const QImage> ImageAnimated::getImage() {
 }
 
 std::unique_ptr<QMovie> ImageAnimated::getMovie() {
-    std::unique_ptr<QMovie> movie(new QMovie());
-    movie->setFileName(mPath);
-    movie->setFormat(mDocInfo->extension());
-    movie->jumpToFrame(0);
-    return movie;
+    if(movie == nullptr)
+        loadMovie();
+    return std::move(movie);
 }
 
 int ImageAnimated::height() {

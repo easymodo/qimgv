@@ -45,6 +45,7 @@ private:
     void detectType();
     void loadExifOrientation();
     bool detectAPNG();
+    bool detectAnimatedWebP();
 };
 
 #endif // DOCUMENTINFO_H
