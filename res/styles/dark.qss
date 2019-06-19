@@ -134,10 +134,8 @@
 /*----------------------------------------------------------------------------*/
 
 FloatingWidget {
-    background-color: #222223;
-    /*border: 1px solid #323334; */
-    /*border: 1px solid #3a3b3c;*/
-    border: 1px solid #1a1a1b;
+    background-color: #1f1f20;
+    border: 1px solid #1f1f20;
     border-radius: 2px;
 }
 /*----------------------------------------------------------------------------*/
@@ -182,22 +180,22 @@ FloatingMessage QLabel {
 /*----------------------------------------------------------------------------*/
 
 SidePanel {
-    background-color: #1a1a1b;
+    background-color: #1f1f20;
     border-left: 2px solid #373738;
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QGroupBox {
-    color: #86888a;
+    color: #97999b;
     background-color: #2f2f30;
-    border: 1px solid #19191a;
+    border: 1px solid #1d1d1e;
     border-radius: 2px;
     padding: 6px 10px 8px 10px;
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QSpinBox, QDoubleSpinBox {
-    background-color: #1a1a1b;
-    color: #86888a;
-    border: 1px solid #19191a;
+    color: #97999b;
+    background-color: #1f1f20;
+    border: 1px solid #1d1d1e;
     border-radius: 2px;
     padding: 2 0 2 0;
 }
@@ -219,9 +217,9 @@ SidePanel QLabel {
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QComboBox {
-    background-color: #1a1a1b;
-    color: #86888a;
-    border: 1px solid #19191a;
+    color: #97999b;
+    background-color: #1f1f20;
+    border: 1px solid #1d1d1e;
     border-radius: 2px;
     padding: 2 0 2 0;
 }
@@ -237,7 +235,7 @@ SidePanel QComboBox::drop-down {
 }
 
 SidePanel QComboBox QAbstractItemView {
-    background-color: #222223;
+    background-color: #1f1f20;
     selection-background-color: #323334;
     selection-color: #86888a;
     border: 1px solid #323334;
@@ -264,7 +262,6 @@ VideoControls QLabel {
 /*----------------------------------------------------------------------------*/
 VideoControls QSlider {
     border: 4px solid #2f2f30;
-    /*border-radius: 2px;*/
     margin: 1px;
 }
 
@@ -459,8 +456,8 @@ ThumbnailView QScrollBar::sub-line {
 /*----------------------------------------------------------------------------*/
 
 ContextMenu {
-    background-color: #222223;
-    border: 1px solid #1a1a1b;
+    background-color: #1f1f20;
+    border: 1px solid #1f1f20;
     border-radius: 2px;
 }
 /*----------------------------------------------------------------------------*/
@@ -494,9 +491,7 @@ ControlsOverlay {
 }
 
 [accessibleName="InfoBar"] {
-    background-color: #222223;
-    /*border-top: 1px solid #1a1a1b;*/
-    /*margin-top: 1px;*/
+    background-color: #1f1f20;
 }
 
 [accessibleName="InfoBar"] QLabel {
