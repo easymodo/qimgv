@@ -35,6 +35,7 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent* event);
 
     void keyPressEvent(QKeyEvent *event);
+    void resizeEvent(QResizeEvent *event);
 private:
     QWidget *viewer;
     QPoint startPos, endPos, moveStartPos, resizeAnchor;

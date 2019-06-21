@@ -192,11 +192,13 @@ void MainWindow::closeImage() {
 void MainWindow::showImage(std::unique_ptr<QPixmap> pixmap) {
     centralWidget->showDocumentView();
     viewerWidget->showImage(std::move(pixmap));
+    updateCropPanelData();
 }
 
 void MainWindow::showAnimation(std::unique_ptr<QMovie> movie) {
     centralWidget->showDocumentView();
     viewerWidget->showAnimation(std::move(movie));
+    updateCropPanelData();
 }
 
 void MainWindow::showVideo(Clip *clip) {
@@ -345,11 +347,11 @@ void MainWindow::dropEvent(QDropEvent *event) {
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
-    OverlayContainerWidget::resizeEvent(event);
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropOverlay->setImageScale(viewerWidget->currentScale());
         cropOverlay->setImageDrawRect(viewerWidget->imageRect());
     }
+    OverlayContainerWidget::resizeEvent(event);
 }
 
 void MainWindow::leaveEvent(QEvent *event) {
@@ -449,9 +451,7 @@ void MainWindow::showWindowed() {
     emit fullscreenStateChanged(false);
 }
 
-// passes the side panel all needed info about current image
-// TODO: store this info in some kind of singleton? for easy access
-void MainWindow::setupSidePanelData() {
+void MainWindow::updateCropPanelData() {
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropPanel->setImageRealSize(viewerWidget->sourceSize());
         cropOverlay->setImageDrawRect(viewerWidget->imageRect());
@@ -499,7 +499,7 @@ void MainWindow::showCropPanel() {
         viewerWidget->fitWindow();
         viewerWidget->disableInteraction();
         // feed the panel current image info
-        setupSidePanelData();
+        updateCropPanelData();
     }
 }
 

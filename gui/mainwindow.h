@@ -173,7 +173,7 @@ public slots:
     void closeFullScreenOrExit();
     void close();
     void triggerCropPanel();
-    void setupSidePanelData();
+    void updateCropPanelData();
     void showSaveOverlay();
     void hideSaveOverlay();
     void showChangelogWindow();

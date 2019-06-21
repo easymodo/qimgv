@@ -71,7 +71,6 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(saveRequested()), this, SLOT(saveImageToDisk()));
     connect(mw, SIGNAL(saveRequested(QString)), this, SLOT(saveImageToDisk(QString)));
     connect(mw, SIGNAL(discardEditsRequested()), this, SLOT(discardEdits()));
-    connect(this, SIGNAL(modelIndexChanged(int)), mw, SLOT(setupSidePanelData()));
 
     // scaling
     connect(mw, SIGNAL(scalingRequested(QSize)),

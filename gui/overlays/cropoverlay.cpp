@@ -544,6 +544,13 @@ void CropOverlay::keyPressEvent(QKeyEvent *event) {
     }
 }
 
+void CropOverlay::resizeEvent(QResizeEvent *event) {
+    updateSelectionDrawRect();
+    updateHandlePositions();
+    update();
+    QWidget::resizeEvent(event);
+}
+
 void CropOverlay::recalculateGeometry() {
     setGeometry(0,0, containerSize().width(), containerSize().height());
     // recreate buffer with a new size
