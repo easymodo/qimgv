@@ -5,16 +5,16 @@ MainPanel::MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *pa
     buttonsWidget.setAccessibleName("panelButtonsWidget");
 
     openButton       = new ActionButton("open", ":/res/icons/buttons/open20.png", 30, this);
-    openButton->setAccessibleName("IconButton");
+    openButton->setAccessibleName("PanelButtonSmall");
     openButton->setTriggerMode(TriggerMode::PressTrigger);
     settingsButton   = new ActionButton("openSettings", ":/res/icons/buttons/settings20.png", 30, this);
-    settingsButton->setAccessibleName("IconButton");
+    settingsButton->setAccessibleName("PanelButtonSmall");
     settingsButton->setTriggerMode(TriggerMode::PressTrigger);
     exitButton       = new ActionButton("exit", ":/res/icons/buttons/close16.png", 30, this);
-    exitButton->setAccessibleName("IconButton");
+    exitButton->setAccessibleName("PanelButtonSmall");
     exitButton->setTriggerMode(TriggerMode::PressTrigger);
     folderViewButton = new ActionButton("folderView", ":/res/icons/buttons/folderview20.png", 30, this);
-    folderViewButton->setAccessibleName("IconButton");
+    folderViewButton->setAccessibleName("PanelButtonSmall");
     folderViewButton->setTriggerMode(TriggerMode::PressTrigger);
 
     buttonsLayout.setDirection(QBoxLayout::BottomToTop);

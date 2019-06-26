@@ -82,7 +82,7 @@
         </size>
        </property>
        <property name="accessibleName">
-        <string>IconButton</string>
+        <string>PanelButtonSmall</string>
        </property>
        <property name="text">
         <string/>
@@ -102,7 +102,7 @@
         </size>
        </property>
        <property name="accessibleName">
-        <string>IconButton</string>
+        <string>PanelButtonSmall</string>
        </property>
        <property name="text">
         <string/>
@@ -122,7 +122,7 @@
         </size>
        </property>
        <property name="accessibleName">
-        <string>IconButton</string>
+        <string>PanelButtonSmall</string>
        </property>
        <property name="text">
         <string/>
@@ -142,7 +142,7 @@
         </size>
        </property>
        <property name="accessibleName">
-        <string>IconButton</string>
+        <string>PanelButtonSmall</string>
        </property>
        <property name="text">
         <string/>
@@ -162,7 +162,7 @@
         </size>
        </property>
        <property name="accessibleName">
-        <string>IconButton</string>
+        <string>PanelButtonSmall</string>
        </property>
        <property name="text">
         <string/>

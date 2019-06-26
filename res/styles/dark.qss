@@ -1,8 +1,7 @@
 /*----------------------------------------------------------------------------*/
-/* Widgets */
-/*----------------------------------------------------------------------------*/
+/* Buttons */
 
-[accessibleName="Button"] {
+[accessibleName="Button"], [accessibleName="ButtonSetLeft"], [accessibleName="ButtonSetRight"] {
     color: #97999b;
     background-color: #2f2f30;
     border: 1px solid #1d1d1e;
@@ -10,63 +9,29 @@
     padding: 7px 10px 7px 10px;
 }
 
-[accessibleName="Button"]:hover {
+[accessibleName="Button"]:hover, [accessibleName="ButtonSetLeft"]:hover, [accessibleName="ButtonSetRight"]:hover {
     background-color: #373738;
     color: #9c9ea0;
 }
 
-[accessibleName="Button"]:pressed {
+[accessibleName="Button"]:pressed, [accessibleName="ButtonSetLeft"]:pressed, [accessibleName="ButtonSetRight"]:pressed {
     background-color: #2a2a2b;
     color: #86888a;
 }
-/*----------------------------------------------------------------------------*/
-/* ##### button set left ##### */
 
 [accessibleName="ButtonSetLeft"] {
-    color: #97999b;
-    background-color: #2f2f30;
-    border: 1px solid #1d1d1e;
-    border-top-left-radius: 2px;
-    border-bottom-left-radius: 2px;
-    padding: 7px 10px 7px 10px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
 }
-
-[accessibleName="ButtonSetLeft"]:hover {
-    background-color: #373738;
-    color: #9c9ea0;
-}
-
-[accessibleName="ButtonSetLeft"]:pressed {
-    background-color: #2a2a2b;
-    color: #86888a;
-}
-
-/*----------------------------------------------------------------------------*/
-/* ### right ### */
 
 [accessibleName="ButtonSetRight"] {
-    color: #97999b;
-    background-color: #2f2f30;
-    border: 1px solid #1d1d1e;
     border-left: 0px;
-    border-top-right-radius: 2px;
-    border-bottom-right-radius: 2px;
-    padding: 7px 10px 7px 10px;
-}
-
-[accessibleName="ButtonSetRight"]:hover {
-    background-color: #373738;
-    color: #9c9ea0;
-}
-
-[accessibleName="ButtonSetRight"]:pressed {
-    background-color: #2a2a2b;
-    color: #86888a;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
 }
 
 /*----------------------------------------------------------------------------*/
 [accessibleName="CheckableButton"] {
-    color: #666669;
     border-radius: 2px;
     padding: 7px 10px 7px 10px;
     margin: 2px;
@@ -75,56 +40,46 @@
 [accessibleName="CheckableButton"]:hover {
     background-color: #2f2f30;
     border: 1px solid #19191a;
-    color: #666669;
 }
 
-[accessibleName="CheckableButton"]:pressed {
+[accessibleName="CheckableButton"]:pressed, [accessibleName="CheckableButton"]:checked {
     background-color: #373738;
     border: 1px solid #1a1a1b;
-    color: #97999b;
-}
-
-[accessibleName="CheckableButton"]:checked {
-    background-color: #373738;
-    border: 1px solid #1a1a1b;
-    color: #97999b;
 }
 
 /*----------------------------------------------------------------------------*/
 [accessibleName="PanelButton"] {
-    padding: 7px 7px 7px 7px;
-    border-radius: 2px;
+    padding: 7px;
     margin: 2px;
-    color: #97999b;
+    border-radius: 2px;
 }
 
 [accessibleName="PanelButton"]:hover {
     background-color: #373738;
     border: 1px solid #1a1a1b;
-    color: #9c9ea0;
 }
 
 [accessibleName="PanelButton"]:pressed {
     background-color: #2f2f30;
     border: 1px solid #19191a;
-    color: #86888a;
 }
 
 /*----------------------------------------------------------------------------*/
 
-[accessibleName="IconButton"] {
-    padding: 7px 7px 7px 7px;
+[accessibleName="PanelButtonSmall"] {
+    padding: 7px;
     border-radius: 1px;
-    color: #bebebe; /*#86888a;*/
     border: 1px solid transparent;
 }
 
-[accessibleName="IconButton"]:hover {
-    background-color: #323334;
-    border: 1px solid #323334;
+[accessibleName="PanelButtonSmall"]:hover {
+    background-color: #373738;
+    border: 1px solid #373738;
 }
+
 /*----------------------------------------------------------------------------*/
 /* panel buttons holder widget */
+
 [accessibleName="panelButtonsWidget"] {
     background-color: #1a1a1b;
 }
@@ -134,20 +89,19 @@
 /*----------------------------------------------------------------------------*/
 
 FloatingWidget {
-    background-color: #1f1f20;
-    border: 1px solid #1f1f20;
+    background-color: #232324;
+    border: 1px solid #232324;
     border-radius: 2px;
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="OverlayHeaderWidget"] {
-
     border-top-left-radius: 1px;
     border-top-right-radius: 1px;
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="OverlayHeaderLabel"] {
-    color: #bebebe;
-    padding: 4px 4px 4px 4px;
+    color: #86888a;
+    padding: 4px;
 }
 /*----------------------------------------------------------------------------*/
 /* Close button */
@@ -155,9 +109,7 @@ FloatingWidget {
     background-color: transparent;
     border: 2px solid transparent;
     border-bottom-left-radius: 2px;
-    color: #bebebe;
-    font: bold;
-    padding: 4px 4px 4px 4px;
+    padding: 4px;
 }
 
 [accessibleName="OverlayCloseButton"]:hover {
@@ -180,7 +132,7 @@ FloatingMessage QLabel {
 /*----------------------------------------------------------------------------*/
 
 SidePanel {
-    background-color: #1f1f20;
+    background-color: #232324;
     border-left: 2px solid #373738;
 }
 /*----------------------------------------------------------------------------*/
@@ -194,7 +146,7 @@ SidePanel QGroupBox {
 /*----------------------------------------------------------------------------*/
 SidePanel QSpinBox, QDoubleSpinBox {
     color: #97999b;
-    background-color: #1f1f20;
+    background-color: #232324;
     border: 1px solid #1d1d1e;
     border-radius: 2px;
     padding: 2 0 2 0;
@@ -218,7 +170,7 @@ SidePanel QLabel {
 /*----------------------------------------------------------------------------*/
 SidePanel QComboBox {
     color: #97999b;
-    background-color: #1f1f20;
+    background-color: #232324;
     border: 1px solid #1d1d1e;
     border-radius: 2px;
     padding: 2 0 2 0;
@@ -234,8 +186,9 @@ SidePanel QComboBox::drop-down {
     border: 0px;
 }
 
+/* dropdown menus */
 SidePanel QComboBox QAbstractItemView {
-    background-color: #1f1f20;
+    background-color: #232324;
     selection-background-color: #323334;
     selection-color: #86888a;
     border: 1px solid #323334;
@@ -256,7 +209,7 @@ ChangelogWindow QTextBrowser {
 /*----------------------------------------------------------------------------*/
 
 VideoControls QLabel {
-    color: #97999b;
+    color: #bebebe;
     font: bold;
 }
 /*----------------------------------------------------------------------------*/
@@ -272,7 +225,7 @@ VideoControls QSlider::groove:horizontal {
 VideoControls QSlider::handle:horizontal {
     height: 0px;
     width:  1px;
-    background: #707070;
+    background: #aeaeae;
 }
 
 VideoControls QSlider::add-page:horizontal {
@@ -280,7 +233,7 @@ VideoControls QSlider::add-page:horizontal {
 }
 
 VideoControls QSlider::sub-page:horizontal {
-    background: #707070;
+    background: #aeaeae;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -456,13 +409,9 @@ ThumbnailView QScrollBar::sub-line {
 /*----------------------------------------------------------------------------*/
 
 ContextMenu {
-    background-color: #1f1f20;
-    border: 1px solid #1f1f20;
+    background-color: #232324;
+    border: 1px solid #232324;
     border-radius: 2px;
-}
-/*----------------------------------------------------------------------------*/
-ContextMenu QLabel {
-    color: #323334;
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="MenuItem"] {
@@ -491,7 +440,7 @@ ControlsOverlay {
 }
 
 [accessibleName="InfoBar"] {
-    background-color: #1f1f20;
+    background-color: #232324;
 }
 
 [accessibleName="InfoBar"] QLabel {

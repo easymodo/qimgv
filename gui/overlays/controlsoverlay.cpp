@@ -4,11 +4,11 @@ ControlsOverlay::ControlsOverlay(OverlayContainerWidget *parent) :
     OverlayWidget(parent)
 {
     folderViewButton = new ActionButton("folderView", ":/res/icons/buttons/folderview20.png", 30);
-    folderViewButton->setAccessibleName("IconButton");
+    folderViewButton->setAccessibleName("PanelButtonSmall");
     settingsButton = new ActionButton("openSettings", ":/res/icons/buttons/settings20.png", 30);
-    settingsButton->setAccessibleName("IconButton");
+    settingsButton->setAccessibleName("PanelButtonSmall");
     closeButton = new ActionButton("exit", ":/res/icons/buttons/close16.png", 30);
-    closeButton->setAccessibleName("IconButton");
+    closeButton->setAccessibleName("PanelButtonSmall");
 
     QWidget *horizontalLineWidget = new QWidget;
     horizontalLineWidget->setFixedSize(5, 22);
