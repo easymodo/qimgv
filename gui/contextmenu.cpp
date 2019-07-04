@@ -74,6 +74,13 @@ ContextMenu::ContextMenu(QWidget *parent) :
     ui->settings->setText("Settings");
     ui->settings->setIcon(QIcon(":/res/icons/buttons/settings16.png"));
     // -------------------------------------------------------------------------
+    reservedKeys << "Up"
+                 << "Down"
+                 //<< "Left"
+                 //<< "Right"
+                 << "Return"
+                 << "escape";
+
     connect(this, SIGNAL(pressed()), this, SLOT(hide()));
 }
 
@@ -106,4 +113,27 @@ void ContextMenu::paintEvent(QPaintEvent *event) {
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void ContextMenu::keyPressEvent(QKeyEvent *event) {
+    quint32 nativeScanCode = event->nativeScanCode();
+    QString key = actionManager->keyForNativeScancode(nativeScanCode);
+
+    if(reservedKeys.contains(key)) {
+        if(key == "Up") {
+            // TODO
+            //selectUp();
+        }
+        if(key == "Down") {
+            //selectDown();
+        }
+        if(key == "escape") {
+            hide();
+        }
+        if(key == "Return") {
+            //currentEntry->activate();
+        }
+    } else {
+        actionManager->processEvent(event);
+    }
 }

@@ -322,9 +322,14 @@ void ViewerWidget::showContextMenu() {
 void ViewerWidget::showContextMenu(QPoint pos) {
     if(isVisible() && interactionEnabled()) {
         if(!contextMenu)
-            contextMenu.reset(new ContextMenu());
+            contextMenu.reset(new ContextMenu(this));
         contextMenu->setImageEntriesEnabled(isDisplaying());
-        contextMenu->showAt(pos);
+        if(!contextMenu->isVisible()) {
+            contextMenu->showAt(pos);
+        } else {
+            contextMenu->hide();
+        }
+
     }
 }
 

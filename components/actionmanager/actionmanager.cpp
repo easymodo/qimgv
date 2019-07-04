@@ -72,6 +72,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("Ctrl+Shift+C", "copyPathClipboard");
     actionManager->defaults.insert("F2", "renameFile");
     actionManager->defaults.insert("RMB", "contextMenu");
+    actionManager->defaults.insert("menu", "contextMenu");
 }
 //------------------------------------------------------------------------------
 void ActionManager::initShortcuts() {

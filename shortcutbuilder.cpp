@@ -56,6 +56,7 @@ QString ShortcutBuilder::processMouseEvent(QMouseEvent *event) {
 }
 //------------------------------------------------------------------------------
 QString ShortcutBuilder::processKeyEvent(QKeyEvent *event) {
+    //qDebug() << event->nativeScanCode();
     QString sequence;
     if(event->type() == QEvent::KeyPress) {
         sequence = inputMap->keys().value(event->nativeScanCode());

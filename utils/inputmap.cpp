@@ -167,6 +167,7 @@ void InputMap::initKeyMap() {
     keyMap.insert(22, "backspace");
     keyMap.insert(110, "home");
     keyMap.insert(115, "end");
+    keyMap.insert(135, "menu");
 #endif
 }
 

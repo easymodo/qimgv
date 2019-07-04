@@ -1,4 +1,4 @@
-#-------------------------------------------------
+    #-------------------------------------------------
 #
 # Project created by QtCreator 2014-08-18T10:07:13
 #
@@ -21,7 +21,7 @@ QMAKE_CXXFLAGS_RELEASE -= -O1
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
-CONFIG += WITH_MPV
+#CONFIG += WITH_MPV
 CONFIG += WITH_KDE_BLUR
 
 # video support

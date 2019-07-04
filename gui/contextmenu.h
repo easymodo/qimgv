@@ -23,10 +23,12 @@ public slots:
 private:
     Ui::ContextMenu *ui;
     QTimer mTimer;
+    QStringList reservedKeys;
 
 protected:
     void paintEvent(QPaintEvent *);
 
+    void keyPressEvent(QKeyEvent *event);
 };
 
 #endif // CONTEXTMENU_H
