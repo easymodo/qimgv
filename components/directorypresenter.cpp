@@ -75,17 +75,23 @@ void DirectoryPresenter::disconnectAllViews() {
 
 void DirectoryPresenter::disconnectView(std::shared_ptr<DirectoryViewWrapper> view) {
     // remove items, disconnect
+    Q_UNUSED(view);
 }
 
 //------------------------------------------------------------------------------
 
 void DirectoryPresenter::onFileRemoved(QString fileName, int index) {
+    Q_UNUSED(fileName);
+
     for(int i=0; i<views.count(); i++) {
         views.at(i)->removeItem(index);
     }
 }
 
 void DirectoryPresenter::onFileRenamed(QString from, QString to) {
+    Q_UNUSED(from);
+    Q_UNUSED(to);
+
     //mw->removeThumbnail(oldIndex);
     //mw->addThumbnail(newIndex);
 }
@@ -99,7 +105,7 @@ void DirectoryPresenter::onFileAdded(QString fileName) {
 }
 
 void DirectoryPresenter::onFileModified(QString fileName) {
-
+    Q_UNUSED(fileName);
 }
 
 void DirectoryPresenter::reloadModel() {

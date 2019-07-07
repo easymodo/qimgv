@@ -74,8 +74,7 @@ void ScriptEditorDialog::onNameChanged(QString name) {
 
 void ScriptEditorDialog::selectScriptPath() {
     QFileDialog dialog;
-    QString file;
-    file = dialog.getOpenFileName(this, "Select a shell script", "", "Shell script (*.sh)");
+    auto file = dialog.getOpenFileName(this, "Select a shell script", "", "Shell script (*.sh)");
     if(!file.isEmpty()) {
         ui->pathLineEdit->setText(file + " %file%");
     }

@@ -68,9 +68,9 @@ QString ShortcutBuilder::processKeyEvent(QKeyEvent *event) {
 }
 //------------------------------------------------------------------------------
 QString ShortcutBuilder::modifierKeys(QEvent *event){
-    QKeyEvent   *keyEvent   = dynamic_cast<QKeyEvent *>(event);
-    QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>(event);
-    QWheelEvent *wheelEvent = dynamic_cast<QWheelEvent *>(event);
+    auto keyEvent   = dynamic_cast<QKeyEvent *>(event);
+    auto mouseEvent = dynamic_cast<QMouseEvent *>(event);
+    auto wheelEvent = dynamic_cast<QWheelEvent *>(event);
     QString mods;
     QMapIterator<QString, Qt::KeyboardModifier> i(inputMap->modifiers());
     while(i.hasNext()) {

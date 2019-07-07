@@ -84,9 +84,8 @@ bool ImageStatic::setEditedImage(std::unique_ptr<const QImage> imageEditedNew) {
         imageEdited = std::move(imageEditedNew);
         mEdited = true;
         return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
 bool ImageStatic::discardEditedImage() {

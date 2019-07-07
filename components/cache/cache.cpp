@@ -16,6 +16,9 @@ bool Cache::insert(std::shared_ptr<Image> img) {
             return true;
         }
     }
+
+    // TODO: what state returns here ??
+    return true;
 }
 
 void Cache::remove(QString name) {
@@ -38,27 +41,24 @@ std::shared_ptr<Image> Cache::get(QString name) {
     if(items.contains(name)) {
         CacheItem *item = items.value(name);
         return item->getContents();
-    } else {
-        return nullptr;
     }
+    return nullptr;
 }
 
 bool Cache::reserve(QString name) {
     if(items.contains(name)) {
         items[name]->lock();
         return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
 bool Cache::release(QString name) {
     if(items.contains(name)) {
         items[name]->unlock();
         return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
 // removes all items except the ones in list

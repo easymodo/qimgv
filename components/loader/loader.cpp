@@ -32,7 +32,8 @@ void Loader::doLoadAsync(QString path, int priority) {
     if(tasks.contains(path)) {
         return;
     }
-    LoaderRunnable *runnable = new LoaderRunnable(path);
+
+    auto runnable = new LoaderRunnable(path);
     runnable->setAutoDelete(false);
     tasks.insert(path, runnable);
 
