@@ -1,68 +1,39 @@
 #include "directorymanager.h"
-#include "watchers/directorywatcher.h"
-
-#include <QThread>
 
 namespace fs = std::filesystem;
 
 DirectoryManager::DirectoryManager() {
     currentPath = "";
-    regexpFilter.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+
+    regex.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
     collator.setNumericMode(true);
+
+    watcher = DirectoryWatcher::newInstance();
+
+    connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
+        qDebug() << "observing started";
+    });
+    connect(watcher, &DirectoryWatcher::observingStopped, this, [] () {
+        qDebug() << "observing stopped";
+    });
+    connect(watcher, &DirectoryWatcher::fileCreated, this, [this] (const QString& filename) {
+        qDebug() << "[w] file created" << filename;
+        onFileAddedExternal(filename);
+    });
+    connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
+        qDebug() << "[w] file deleted" << filename;
+        onFileRemovedExternal(filename);
+    });
+    connect(watcher, &DirectoryWatcher::fileModified, this, [this] (const QString& filename) {
+        qDebug() << "[w] file modified" << filename;
+        onFileModifiedExternal(filename);
+    });
+    connect(watcher, &DirectoryWatcher::fileRenamed, this, [this] (const QString& file1, const QString& file2) {
+        qDebug() << "[w] file renamed from" << file1 << "to" << file2;
+        onFileRenamedExternal(file1, file2);
+    });
+
     readSettings();
-}
-
-QList<QByteArray> supportedFormats() {
-    QList<QByteArray> formats = QImageReader::supportedImageFormats();
-    // looks like performance is fine with QRegularExpression
-    /*formats.removeOne("*.bw");
-    formats.removeOne("*.arw");
-    formats.removeOne("*.crw");
-    formats.removeOne("*.dng");
-    formats.removeOne("*.eps");
-    formats.removeOne("*.epsf");
-    formats.removeOne("*.epsi");
-    formats.removeOne("*.nef");
-    formats.removeOne("*.ora");
-    formats.removeOne("*.pbm");
-    formats.removeOne("*.pcx");
-    formats.removeOne("*.pgm");
-    formats.removeOne("*.pic");
-    formats.removeOne("*.ppm");
-    formats.removeOne("*.psd");
-    formats.removeOne("*.raf");
-    formats.removeOne("*.ras");
-    formats.removeOne("*.sgi");
-    formats.removeOne("*.wbmp");
-    formats.removeOne("*.xbm");
-    formats.removeOne("*.exr");
-    formats.removeOne("*.icns");
-    formats.removeOne("*.mng");
-    formats.removeOne("*.rgb");
-    formats.removeOne("*.rgba");*/
-    return formats;
-}
-
-QStringList supportedFormatsFilter() {
-    QStringList filters;
-    QList<QByteArray> formats = supportedFormats();
-    for(int i = 0; i < formats.count(); i++) {
-        filters << "*." + QString(formats.at(i));
-    }
-    return filters;
-}
-
-QString supportedFormatsRegex() {
-    QString filter;
-    QList<QByteArray> formats = supportedFormats();
-    filter.append(".*\.(");
-    for(int i = 0; i < formats.count(); i++) {
-        filter.append(QString(formats.at(i)) + "|");
-    }
-    // webm here
-    filter.chop(1);
-    filter.append(")$");
-    return filter;
 }
 
 template< typename T, typename Pred >
@@ -87,20 +58,30 @@ bool DirectoryManager::date_entry_compare_reverse(const Entry& e1, const Entry& 
     return e1.modifyTime > e2.modifyTime;
 }
 
+bool DirectoryManager::size_entry_compare(const Entry& e1, const Entry& e2) const {
+    return e1.size < e2.size;
+}
+
+bool DirectoryManager::size_entry_compare_reverse(const Entry& e1, const Entry& e2) const {
+    return e1.size > e2.size;
+}
+
 bool DirectoryManager::entryCompareString(Entry &e, QString path) {
     return (e.path == path);
 }
 
 CompareFunction DirectoryManager::compareFunction() {
-    CompareFunction cmpFn;
-    if(sortingMode == SortingMode::NAME_ASC)
-        cmpFn = &DirectoryManager::name_entry_compare;
+    CompareFunction cmpFn = &DirectoryManager::name_entry_compare;
     if(sortingMode == SortingMode::NAME_DESC)
         cmpFn = &DirectoryManager::name_entry_compare_reverse;
     if(sortingMode == SortingMode::DATE_ASC)
         cmpFn = &DirectoryManager::date_entry_compare;
     if(sortingMode == SortingMode::DATE_DESC)
         cmpFn = &DirectoryManager::date_entry_compare_reverse;
+    if(sortingMode == SortingMode::SIZE_ASC)
+        cmpFn = &DirectoryManager::size_entry_compare;
+    if(sortingMode == SortingMode::SIZE_DESC)
+        cmpFn = &DirectoryManager::size_entry_compare_reverse;
     return cmpFn;
 }
 
@@ -114,9 +95,8 @@ void DirectoryManager::readSettings() {
         sortingMode = newMode;
         sortFileList();
     }
-    mimeFilter = settings->supportedMimeTypes();
-    filter = supportedFormatsRegex();
-    regexpFilter.setPattern(filter);
+    filterRegex = settings->supportedFormatsRegex();
+    regex.setPattern(filterRegex);
 }
 
 bool DirectoryManager::setDirectory(QString path) {
@@ -133,46 +113,15 @@ bool DirectoryManager::setDirectory(QString path) {
         return false;
     }
 
-    qDebug() << "setDirectory() start";
-    QElapsedTimer t;
-    t.start();
     currentPath = path;
     generateFileList();
     sortFileList();
+
     emit directoryChanged(path);
 
-    DirectoryWatcher* watcher = DirectoryWatcher::newInstance();
     watcher->setWatchPath(path);
     watcher->observe();
-    connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
-        qDebug() << "observing started";
-    }, Qt::UniqueConnection);
 
-    connect(watcher, &DirectoryWatcher::observingStopped, this, [watcher] () {
-        qDebug() << "observing stopped";
-    }, Qt::UniqueConnection);
-
-    connect(watcher, &DirectoryWatcher::fileCreated, this, [this] (const QString& filename) {
-        qDebug() << "[w] file created" << filename;
-        onFileAddedExternal(filename);
-    }, Qt::UniqueConnection);
-
-    connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
-        qDebug() << "[w] file deleted" << filename;
-        onFileRemovedExternal(filename);
-    }, Qt::UniqueConnection);
-
-    connect(watcher, &DirectoryWatcher::fileModified, this, [this] (const QString& filename) {
-        qDebug() << "[w] file modified" << filename;
-        onFileModifiedExternal(filename);
-    }, Qt::UniqueConnection);
-
-    connect(watcher, &DirectoryWatcher::fileRenamed, this, [this] (const QString& file1, const QString& file2) {
-        qDebug() << "[w] file renamed from" << file1 << "to" << file2;
-        onFileRenamedExternal(file1, file2);
-    }, Qt::UniqueConnection);
-
-    qDebug() << "setDirectory() end.   (" << t.elapsed() << " ms)";
     return true;
 }
 
@@ -235,23 +184,22 @@ QString DirectoryManager::nextOf(QString fileName) const {
 }
 
 bool DirectoryManager::removeFile(QString fileName, bool trash) {
-    bool result = false;
-    /*if(!contains(fileName))
-        return result;
+    if(!contains(fileName))
+        return false;
     QString path = fullFilePath(fileName);
     QFile file(path);
-    int index = mFileNameList.indexOf(fileName);
-    mFileNameList.removeOne(fileName);
+    int index = indexOf(fileName);
     if(trash) {
+        entryVec.erase(entryVec.begin() + index);
         moveToTrash(path);
-        result = true;
-    } else {
-        if(file.remove())
-            result = true;
+        emit fileRemoved(fileName, index);
+        return true;
+    } else if(file.remove()) {
+        entryVec.erase(entryVec.begin() + index);
+        emit fileRemoved(fileName, index);
+        return true;
     }
-    emit fileRemoved(fileName, index);
-    */
-    return result;
+    return false;
 }
 
 #ifdef Q_OS_WIN32
@@ -384,7 +332,7 @@ bool DirectoryManager::isSupportedFile(QString path) const {
         return false;
     if(!std::filesystem::is_regular_file(path.toStdString()))
         return false;
-    if(!regexpFilter.match(path).hasMatch())
+    if(!regex.match(path).hasMatch())
         return false;
     return true;
 }
@@ -407,7 +355,7 @@ void DirectoryManager::generateFileList() {
     QRegularExpressionMatch match;
     for(const auto & entry : fs::directory_iterator(currentPath.toStdString())) {
         QString name = QString::fromStdString(entry.path().filename());
-        match = regexpFilter.match(name);
+        match = regex.match(name);
         if(match.hasMatch()) {
             entryVec.emplace_back(Entry(name, entry.file_size(), entry.last_write_time(), entry.is_directory()));
             /* It is probably worth implementing lazy loading in future.

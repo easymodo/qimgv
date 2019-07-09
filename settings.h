@@ -46,9 +46,12 @@ class Settings : public QObject
     Q_OBJECT
 public:
     static Settings* getInstance();
+    ~Settings();
     static void validate();
     QStringList supportedMimeTypes();
+    QList<QByteArray> supportedFormats();
     QString supportedFormatsString();
+    QString supportedFormatsRegex();
     bool useFastScale();
     void setUseFastScale(bool mode);
     QString lastDirectory();
@@ -84,12 +87,11 @@ public:
     void setShowThumbnailLabels(bool mode);
     PanelHPosition panelPosition();
     void setPanelPosition(PanelHPosition);
-    ~Settings();
+
     bool infiniteScrolling();
     void setInfiniteScrolling(bool mode);
     bool fullscreenTaskbarShown();
     void setFullscreenTaskbarShown(bool mode);
-    QStringList supportedFormats();
     void readShortcuts(QMap<QString, QString> &shortcuts);
     void saveShortcuts(const QMap<QString, QString> &shortcuts);
     bool panelEnabled();

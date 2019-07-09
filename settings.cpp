@@ -91,55 +91,57 @@ void Settings::setMpvBinary(QString path) {
     }
 }
 //------------------------------------------------------------------------------
-// returns list of regexps
-QStringList Settings::supportedFormats() {
-    QStringList filters;
-    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-    if(this->playWebm()) {
-        supportedFormats << "webm";
+QList<QByteArray> Settings::supportedFormats() {
+    auto formats = QImageReader::supportedImageFormats();
+    if(playWebm()) {
+        formats << "webm";
     }
-    if(this->playMp4()) {
-        supportedFormats << "mp4";
+    if(playMp4()) {
+        formats << "mp4";
     }
-    for(int i = 0; i < supportedFormats.count(); i++) {
-        filters << "*." + QString(supportedFormats.at(i));
-    }
-    return filters;
+    return formats;
 }
 //------------------------------------------------------------------------------
 // (for open/save dialogs)
 // example:  "Images (*.jpg, *.png)"
 QString Settings::supportedFormatsString() {
     QString filters;
-    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-    if(this->playWebm()) {
-        supportedFormats << "webm";
-    }
-    if(this->playMp4()) {
-        supportedFormats << "mp4";
-    }
+    auto formats = supportedFormats();
+    if(playWebm())
+        formats << "webm";
+    if(playMp4())
+        formats << "mp4";
     filters.append("Images (");
-    for(int i = 0; i < supportedFormats.count(); i++) {
-        filters.append("*." + QString(supportedFormats.at(i)) + " ");
+    for(int i = 0; i < formats.count(); i++) {
+        filters.append("*." + QString(formats.at(i)) + " ");
     }
     filters.append(")");
     return filters;
+}
+//------------------------------------------------------------------------------
+QString Settings::supportedFormatsRegex() {
+    QString filter;
+    QList<QByteArray> formats = supportedFormats();
+    filter.append(".*\.(");
+    for(int i = 0; i < formats.count(); i++) {
+        filter.append(QString(formats.at(i)) + "|");
+    }
+    filter.chop(1);
+    filter.append(")$");
+    return filter;
 }
 //------------------------------------------------------------------------------
 // returns list of mime types
 QStringList Settings::supportedMimeTypes() {
     QStringList filters;
     QList<QByteArray> mimeTypes = QImageReader::supportedMimeTypes();
-    if(this->playWebm()) {
+    if(playWebm())
         mimeTypes << "video/webm";
-    }
-    if(this->playMp4()) {
+    if(playMp4())
         mimeTypes << "video/mp4";
-    }
     for(int i = 0; i < mimeTypes.count(); i++) {
         filters << QString(mimeTypes.at(i));
     }
-    //qDebug() << filters;
     return filters;
 }
 //------------------------------------------------------------------------------

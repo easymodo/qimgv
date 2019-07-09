@@ -7,7 +7,7 @@
 #include <QString>
 #include <QSize>
 #include <QDebug>
-#include <QImageReader>
+#include <QDateTime>
 #include <QRegularExpression>
 
 #include <vector>
@@ -18,7 +18,7 @@
 //#include <experimental/filesystem>
 
 #include "settings.h"
-#include "sourcecontainers/documentinfo.h"
+#include "watchers/directorywatcher.h"
 
 #ifdef Q_OS_WIN32
 #include "windows.h"
@@ -51,7 +51,6 @@ public:
     QString path;
     std::uintmax_t size;
     std::filesystem::file_time_type modifyTime;
-    //std::time_t modifyTime;
     bool isDirectory;
 };
 
@@ -87,15 +86,13 @@ public:
     QString last();
 private:
     QString currentPath;
-    QString filter;
-    QStringList mimeFilter, nameFilter;
-    QRegularExpression regexpFilter;
+    QString filterRegex;
+    QRegularExpression regex;
     QCollator collator;
     std::vector<Entry> entryVec;
 
+    DirectoryWatcher* watcher;
     void readSettings();
-//    WatcherWindows watcher;
-    QMimeDatabase mimeDb;
     SortingMode sortingMode;
     void generateFileList();
 
@@ -110,6 +107,8 @@ private:
     bool date_entry_compare_reverse(const Entry &e1, const Entry &e2) const;
     bool entryCompareString(Entry &e, QString path);
     CompareFunction compareFunction();
+    bool size_entry_compare(const Entry &e1, const Entry &e2) const;
+    bool size_entry_compare_reverse(const Entry &e1, const Entry &e2) const;
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();
