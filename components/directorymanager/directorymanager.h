@@ -2,22 +2,15 @@
 #define DIRECTORYMANAGER_H
 
 #include <QObject>
-#include <QMimeDatabase>
-#include <QStandardPaths>
-#include <algorithm>
-#include <vector>
 #include <QCollator>
 #include <QElapsedTimer>
-#include <QUrl>
-#include <QFile>
 #include <QString>
 #include <QSize>
 #include <QDebug>
-#include <QFileInfo>
-#include <QMessageBox>
 #include <QImageReader>
 #include <QRegularExpression>
 
+#include <vector>
 #include <string>
 #include <iostream>
 #include <filesystem>

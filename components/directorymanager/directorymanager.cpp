@@ -146,32 +146,31 @@ bool DirectoryManager::setDirectory(QString path) {
     watcher->observe();
     connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
         qDebug() << "observing started";
-    });
+    }, Qt::UniqueConnection);
 
     connect(watcher, &DirectoryWatcher::observingStopped, this, [watcher] () {
         qDebug() << "observing stopped";
-    });
+    }, Qt::UniqueConnection);
 
     connect(watcher, &DirectoryWatcher::fileCreated, this, [this] (const QString& filename) {
         qDebug() << "[w] file created" << filename;
         onFileAddedExternal(filename);
-    });
+    }, Qt::UniqueConnection);
 
     connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
         qDebug() << "[w] file deleted" << filename;
         onFileRemovedExternal(filename);
-    });
+    }, Qt::UniqueConnection);
 
     connect(watcher, &DirectoryWatcher::fileModified, this, [this] (const QString& filename) {
         qDebug() << "[w] file modified" << filename;
         onFileModifiedExternal(filename);
-    });
+    }, Qt::UniqueConnection);
 
     connect(watcher, &DirectoryWatcher::fileRenamed, this, [this] (const QString& file1, const QString& file2) {
         qDebug() << "[w] file renamed from" << file1 << "to" << file2;
-        //if(isImage(this->absolutePath() + "/" + file2))
-        //    onFileRenamedExternal(file1, file2);
-    });
+        onFileRenamedExternal(file1, file2);
+    }, Qt::UniqueConnection);
 
     qDebug() << "setDirectory() end.   (" << t.elapsed() << " ms)";
     return true;
@@ -196,6 +195,7 @@ QString DirectoryManager::filePathAt(int index) const {
     return checkRange(index) ? currentPath + "/" + entryVec.at(index).path : "";
 }
 
+// dumb. maybe better to store full paths in Entry right away
 QString DirectoryManager::fullFilePath(QString fileName) const {
     return fileName.isEmpty() ? "" : currentPath + "/" + fileName;
 }
@@ -394,7 +394,7 @@ bool DirectoryManager::isEmpty() const {
 }
 
 bool DirectoryManager::contains(QString fileName) const {
-    return ( std::find(entryVec.begin(), entryVec.end(), fileName) != entryVec.end() );
+    return (std::find(entryVec.begin(), entryVec.end(), fileName) != entryVec.end());
 }
 
 // ##############################################################
@@ -405,11 +405,15 @@ void DirectoryManager::generateFileList() {
     QElapsedTimer t;
     t.start();
     QRegularExpressionMatch match;
-    for (const auto & entry : fs::directory_iterator(currentPath.toStdString())) {
+    for(const auto & entry : fs::directory_iterator(currentPath.toStdString())) {
         QString name = QString::fromStdString(entry.path().filename());
         match = regexpFilter.match(name);
         if(match.hasMatch()) {
             entryVec.emplace_back(Entry(name, entry.file_size(), entry.last_write_time(), entry.is_directory()));
+            /* It is probably worth implementing lazy loading in future.
+             * Read names only, and other stuff ondemand.
+             * This would give ~2x load speedup when we are just sorting by filename.
+             */
             //entryVec.emplace_back(Entry(name, entry.is_directory()));
         }
     }
@@ -422,6 +426,8 @@ void DirectoryManager::sortFileList() {
     sort(entryVec.begin(), entryVec.end(), std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
     qDebug() << "sortFileList() - " << entryVec.size() << " items, time: " << t.elapsed();
 }
+
+// fs watcher events
 
 void DirectoryManager::onFileRemovedExternal(QString fileName) {
     if(!contains(fileName))
@@ -444,22 +450,26 @@ void DirectoryManager::onFileAddedExternal(QString fileName) {
 }
 
 void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
-    /*int index = mFileNameList.indexOf(oldFile);
-    generateFileList(settings->sortingMode());
-    if(contains(newFile)) {
-        emit fileRenamed(oldFile, newFile);
-    } else {
-        emit fileRemoved(oldFile, index);
-    }
-    */
+    if(!contains(oldFile))
+        return;
+    // remove old one
+    int index = indexOf(oldFile);
+    entryVec.erase(entryVec.begin() + index);
+    // insert
+    QString fullPath = fullFilePath(newFile);
+    std::filesystem::directory_entry stdEntry(fullPath.toStdString());
+    Entry entry(newFile, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
+    insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
+    emit fileRenamed(oldFile, newFile);
 }
 
 void DirectoryManager::onFileModifiedExternal(QString fileName) {
-    /*if(contains(fileName)) { // file changed
-        qDebug() << "fileChange: " << fileName;
-        emit fileModified(fileName);
-    } else { // file added?
-        onFileAddedExternal(fileName);
-    }
-    */
+    if(!contains(fileName))
+        return;
+    QString fullPath = fullFilePath(fileName);
+    std::filesystem::directory_entry stdEntry(fullPath.toStdString());
+    int index = indexOf(fileName);
+    if(entryVec.at(index).modifyTime != stdEntry.last_write_time())
+        entryVec.at(index).modifyTime = stdEntry.last_write_time();
+    emit fileModified(fileName);
 }
