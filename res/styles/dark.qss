@@ -100,7 +100,7 @@ FloatingWidget {
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="OverlayHeaderLabel"] {
-    color: #86888a;
+    color: #bebebe;
     padding: 4px;
 }
 /*----------------------------------------------------------------------------*/
@@ -113,8 +113,8 @@ FloatingWidget {
 }
 
 [accessibleName="OverlayCloseButton"]:hover {
-    background-color: #323334;
-    border-color: #323334;
+    background-color: #3a3b3c;
+    border-color: #3a3b3c;
     color: #bebebe;
 }
 
@@ -189,9 +189,9 @@ SidePanel QComboBox::drop-down {
 /* dropdown menus */
 SidePanel QComboBox QAbstractItemView {
     background-color: #232324;
-    selection-background-color: #323334;
+    selection-background-color: #3a3b3c;
     selection-color: #86888a;
-    border: 1px solid #323334;
+    border: 1px solid #3a3b3c;
     color: #86888a;
 }
 
@@ -419,7 +419,7 @@ ContextMenu {
 }
 
 [accessibleName="MenuItem"]:hover {
-    background-color: #323334;
+    background-color: #3a3b3c;
 }
 
 [accessibleName="MenuItem"] QLabel {
