@@ -8,31 +8,64 @@ namespace fs = std::filesystem;
 DirectoryManager::DirectoryManager() : quickFormatDetection(true)
 {
     currentPath = "";
-    regexpFilter.setCaseSensitivity(Qt::CaseInsensitive);
+    //regexpFilter.setCaseSensitivity(Qt::CaseInsensitive);
+    regexpFilter.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
     collator.setNumericMode(true);
     readSettings();
 }
 
-QStringList supportedFormats() {
+QList<QByteArray> supportedFormats() {
+    QList<QByteArray> formats = QImageReader::supportedImageFormats();
+    // looks like performance is fine with QRegularExpression
+    /*formats.removeOne("*.bw");
+    formats.removeOne("*.arw");
+    formats.removeOne("*.crw");
+    formats.removeOne("*.dng");
+    formats.removeOne("*.eps");
+    formats.removeOne("*.epsf");
+    formats.removeOne("*.epsi");
+    formats.removeOne("*.nef");
+    formats.removeOne("*.ora");
+    formats.removeOne("*.pbm");
+    formats.removeOne("*.pcx");
+    formats.removeOne("*.pgm");
+    formats.removeOne("*.pic");
+    formats.removeOne("*.ppm");
+    formats.removeOne("*.psd");
+    formats.removeOne("*.raf");
+    formats.removeOne("*.ras");
+    formats.removeOne("*.sgi");
+    formats.removeOne("*.wbmp");
+    formats.removeOne("*.xbm");
+    formats.removeOne("*.exr");
+    formats.removeOne("*.icns");
+    formats.removeOne("*.mng");
+    formats.removeOne("*.rgb");
+    formats.removeOne("*.rgba");*/
+    return formats;
+}
+
+QStringList supportedFormatsFilter() {
     QStringList filters;
-    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-    for(int i = 0; i < supportedFormats.count(); i++) {
-        filters << "*." + QString(supportedFormats.at(i));
+    QList<QByteArray> formats = supportedFormats();
+    for(int i = 0; i < formats.count(); i++) {
+        filters << "*." + QString(formats.at(i));
     }
     return filters;
 }
 
 QString supportedFormatsRegex() {
-    QString filters;
-    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-    filters.append(".*\.(");
-    for(int i = 0; i < supportedFormats.count(); i++) {
-        filters.append(QString(supportedFormats.at(i)) + "|");
+    QString filter;
+    QList<QByteArray> formats = supportedFormats();
+    filter.append(".*\.(");
+    for(int i = 0; i < formats.count(); i++) {
+        filter.append(QString(formats.at(i)) + "|");
     }
     // webm here
-    filters.chop(1);
-    filters.append(")$");
-    return filters;
+    filter.chop(1);
+    filter.append(")$");
+    qDebug() << filter;
+    return filter;
 }
 
 template< typename T, typename Pred >
@@ -61,47 +94,16 @@ void DirectoryManager::readSettings() {
     mimeFilter = settings->supportedMimeTypes();
     filter = supportedFormatsRegex();
     regexpFilter.setPattern(filter);
-    /*
-    nameFilter = settings->supportedFormats();
-    // looks like >40 filters is a bit too much for QDir
-    // removing some exotic formats from the filter speeds things up by ~2x
-    // TODO: implement lazy directory crawling instead (gwenview does this)
-    //qDebug() << nameFilter.count() << nameFilter;
-    nameFilter.removeOne("*.bw");
-    nameFilter.removeOne("*.arw");
-    nameFilter.removeOne("*.crw");
-    nameFilter.removeOne("*.dng");
-    nameFilter.removeOne("*.eps");
-    nameFilter.removeOne("*.epsf");
-    nameFilter.removeOne("*.epsi");
-    nameFilter.removeOne("*.nef");
-    nameFilter.removeOne("*.ora");
-    nameFilter.removeOne("*.pbm");
-    nameFilter.removeOne("*.pcx");
-    nameFilter.removeOne("*.pgm");
-    nameFilter.removeOne("*.pic");
-    nameFilter.removeOne("*.ppm");
-    nameFilter.removeOne("*.psd");
-    nameFilter.removeOne("*.raf");
-    nameFilter.removeOne("*.ras");
-    nameFilter.removeOne("*.sgi");
-    nameFilter.removeOne("*.wbmp");
-    nameFilter.removeOne("*.xbm");
-    nameFilter.removeOne("*.exr");
-    nameFilter.removeOne("*.icns");
-    nameFilter.removeOne("*.mng");
-    nameFilter.removeOne("*.rgb");
-    nameFilter.removeOne("*.rgba");
-    currentDir.setNameFilters(nameFilter);
-    */
-
 }
 
 void DirectoryManager::setDirectory(QString path) {
     if(!path.isEmpty()) {
+        QElapsedTimer t;
+        qDebug() << "setDirectory() start";
         currentPath = path;
         generateFileList();
         sortFileList(settings->sortingMode());
+        t.start();
         emit directoryChanged(path);
 
         DirectoryWatcher* watcher = DirectoryWatcher::newInstance();
@@ -135,7 +137,9 @@ void DirectoryManager::setDirectory(QString path) {
             //if(isImage(this->absolutePath() + "/" + file2))
             //    onFileRenamedExternal(file1, file2);
         });
+        qDebug() << "setDirectory() end.   (" << t.elapsed() << " ms)";
     }
+
 }
 
 int DirectoryManager::indexOf(QString fileName) const {
@@ -382,11 +386,15 @@ bool DirectoryManager::contains(QString fileName) const {
 void DirectoryManager::generateFileList() {
     QElapsedTimer t;
     t.start();
+    QRegularExpressionMatch match;
     for (const auto & entry : fs::directory_iterator(currentPath.toStdString())) {
         QString name = QString::fromStdString(entry.path().filename());
-        if(regexpFilter.exactMatch(name)) {
+        match = regexpFilter.match(name);
+        if(match.hasMatch()) {
             //entryVec.emplace_back(Entry(name, entry.file_size(), entry.last_write_time(), entry.is_directory()));
             entryVec.emplace_back(Entry(name, entry.is_directory()));
+        } else {
+            qDebug() << "not matched: " << name;
         }
     }
     qDebug() << "generateFileList() - " << entryVec.size() << " items, time: " << t.elapsed();

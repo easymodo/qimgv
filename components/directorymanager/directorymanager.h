@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QMimeDatabase>
 #include <QStandardPaths>
-//#include <QDir>
 #include <algorithm>
 #include <vector>
 #include <QCollator>
@@ -17,6 +16,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QImageReader>
+#include <QRegularExpression>
 
 #include <string>
 #include <iostream>
@@ -93,7 +93,7 @@ private:
     QString currentPath;
     QString filter;
     QStringList mimeFilter, nameFilter;
-    QRegExp regexpFilter;
+    QRegularExpression regexpFilter;
     QCollator collator;
     std::vector<Entry> entryVec;
 
