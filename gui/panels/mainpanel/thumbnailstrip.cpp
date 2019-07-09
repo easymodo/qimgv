@@ -35,9 +35,6 @@ void ThumbnailStrip::ensureSelectedItemVisible() {
 }
 
 void ThumbnailStrip::addItemToLayout(ThumbnailWidget* widget, int pos) {
-    if(!checkRange(pos))
-        return;
-
     if(pos == selectedIndex)
         selectedIndex++;
     scene.addItem(widget);

@@ -8,6 +8,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       selectedIndex(-1)
 {
     setAccessibleName("thumbnailView");
+    //scene.setItemIndexMethod(QGraphicsScene::NoIndex);
     this->setMouseTracking(true);
     this->setScene(&scene);
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
@@ -70,6 +71,7 @@ void ThumbnailView::showEvent(QShowEvent *event) {
     loadVisibleThumbnails();
 }
 
+// TODO: slow
 void ThumbnailView::populate(int count) {
     if(count >= 0) {
         for(int i = thumbnails.count() - 1; i >= 0; i--) {

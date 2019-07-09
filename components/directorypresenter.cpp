@@ -30,7 +30,7 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
     model = newModel;
     // repopulate views, load thumbnails? maybe save visible item list in view
     for(int i=0; i<views.count(); i++) {
-        views.at(i)->populate(model->itemCount());
+        //views.at(i)->populate(model->itemCount());
     }
     // filesystem changes
     connect(model.get(), SIGNAL(fileRemoved(QString, int)),

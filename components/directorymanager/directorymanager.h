@@ -31,7 +31,9 @@
 #include "windows.h"
 #endif
 
-struct Entry {
+class DirectoryManager;
+class Entry {
+public:
     Entry( QString _path, std::uintmax_t _size, std::filesystem::file_time_type _modifyTime, bool _isDirectory)
         : path(_path),
           size(_size),
@@ -60,13 +62,14 @@ struct Entry {
     bool isDirectory;
 };
 
-class DirectoryManager : public QObject
-{
+typedef bool (DirectoryManager::*CompareFunction)(const Entry &e1, const Entry &e2) const;
+
+class DirectoryManager : public QObject {
     Q_OBJECT
 public:
     DirectoryManager();
     // ignored if the same dir is already opened
-    void setDirectory(QString);
+    bool setDirectory(QString);
     // returns index in file list
     // -1 if not found
     int indexOf(QString fileName) const;
@@ -75,7 +78,7 @@ public:
     QString fullFilePath(QString fileName) const;
     bool removeFile(QString fileName, bool trash);
     unsigned long fileCount() const;
-    bool isImage(QString filePath) const;
+    bool isSupportedFile(QString filePath) const;
     bool isEmpty() const;
     bool contains(QString fileName) const;
     bool checkRange(int index) const;
@@ -84,7 +87,7 @@ public:
     QString prevOf(QString fileName) const;
     QString nextOf(QString fileName) const;
     bool isDirectory(QString path) const;
-    void sortFileList(SortingMode mode);
+    void sortFileList();
     QDateTime lastModified(QString fileName) const;
 
     QString first();
@@ -100,17 +103,20 @@ private:
     void readSettings();
 //    WatcherWindows watcher;
     QMimeDatabase mimeDb;
-    bool quickFormatDetection;
-
+    SortingMode sortingMode;
     void generateFileList();
-    //void generateFileListQuick();
-    //void generateFileListDeep();
 
     void onFileAddedExternal(QString filename);
     void onFileRemovedExternal(QString);
     void onFileModifiedExternal(QString fileName);
     void onFileRenamedExternal(QString oldFile, QString newFile);
     void moveToTrash(QString file);
+    bool name_entry_compare(const Entry &e1, const Entry &e2) const;
+    bool name_entry_compare_reverse(const Entry &e1, const Entry &e2) const;
+    bool date_entry_compare(const Entry &e1, const Entry &e2) const;
+    bool date_entry_compare_reverse(const Entry &e1, const Entry &e2) const;
+    bool entryCompareString(Entry &e, QString path);
+    CompareFunction compareFunction();
 signals:
     void directoryChanged(const QString &path);
     void directorySortingChanged();
