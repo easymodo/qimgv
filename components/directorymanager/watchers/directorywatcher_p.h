@@ -8,9 +8,7 @@
 #include <QStringList>
 #include <QThread>
 #include <QtDebug>
-#include <QDir>
 #include <QTimerEvent>
-#include <QDir>
 #include <QVariant>
 #include <QSharedPointer>
 
@@ -19,13 +17,11 @@ class DirectoryWatcherPrivate : public QObject {
 public:
     explicit DirectoryWatcherPrivate(DirectoryWatcher* qq, WatcherWorker *w);
 
-    bool isFileNeeded(const QString& fileName) const;
-    
     DirectoryWatcher* q_ptr;
     QVector<QSharedPointer<WatcherEvent>> directoryEvents;
     QScopedPointer<WatcherWorker> worker;
     QScopedPointer<QThread> workerThread;
-    QDir currentDirectory;
+    QString currentDirectory;
 
 private:
     Q_DECLARE_PUBLIC(DirectoryWatcher)

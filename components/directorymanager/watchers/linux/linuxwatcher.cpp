@@ -62,7 +62,7 @@ void LinuxWatcherPrivate::dispatchFilesystemEvent(LinuxFsEvent* e) {
         bool isDirEvent = mask & IN_ISDIR;
         
         // Skip events for directories and files that isn't in filter range
-        if ( (isDirEvent || !isFileNeeded(name)) && !(mask & IN_MOVED_TO) ) {
+        if ( (isDirEvent) && !(mask & IN_MOVED_TO) ) {
             continue;
         }
 

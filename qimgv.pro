@@ -8,7 +8,7 @@ QT       += core gui widgets concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-msvc: LIBS += -luser32
+msvc: LIBS += -luser32 -lstdc++fs
 
 TARGET = qimgv
 TEMPLATE = app
@@ -21,8 +21,10 @@ QMAKE_CXXFLAGS_RELEASE -= -O1
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
+CONFIG += c++17
+
 #CONFIG += WITH_MPV
-CONFIG += WITH_KDE_BLUR
+#CONFIG += WITH_KDE_BLUR
 
 # video support
 WITH_MPV {

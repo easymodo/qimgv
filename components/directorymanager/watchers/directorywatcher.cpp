@@ -27,18 +27,6 @@ DirectoryWatcherPrivate::DirectoryWatcherPrivate(DirectoryWatcher* qq, WatcherWo
 {
 }
 
-bool DirectoryWatcherPrivate::isFileNeeded(const QString &fileName) const {
-    QStringList filters = currentDirectory.nameFilters();
-    foreach (const QString& filter, filters) {
-        QRegExp re(filter);
-        re.setPatternSyntax(QRegExp::Wildcard);
-        if (re.exactMatch(fileName)) {
-            return true;
-        }
-    }
-    return false;
-}
-
 DirectoryWatcher::~DirectoryWatcher() {
     delete d_ptr;
     d_ptr = 0;
@@ -65,25 +53,14 @@ DirectoryWatcher *DirectoryWatcher::newInstance()
     return watcher;
 }
 
-QStringList DirectoryWatcher::fileFilters() const
-{
-    Q_D(const DirectoryWatcher);
-    return d->currentDirectory.nameFilters();
-}
-
-void DirectoryWatcher::setFileFilters(const QStringList& filters) {
-    Q_D(DirectoryWatcher);
-    d->currentDirectory.setNameFilters(filters);
-}
-
 void DirectoryWatcher::setWatchPath(const QString& path) {
     Q_D(DirectoryWatcher);
-    d->currentDirectory.setPath(path);
+    d->currentDirectory = path;
 }
 
 QString DirectoryWatcher::watchPath() const {
     Q_D(const DirectoryWatcher);
-    return d->currentDirectory.absolutePath();
+    return d->currentDirectory;
 }
 
 void DirectoryWatcher::observe()
@@ -94,18 +71,13 @@ void DirectoryWatcher::observe()
         d->worker->setRunning(true);
         d->workerThread->start();
     }
-    qDebug() << TAG << "Observing path:" << d->currentDirectory.absolutePath();
+    qDebug() << TAG << "Observing path:" << d->currentDirectory;
 }
 
 void DirectoryWatcher::stopObserving()
 {
     Q_D(DirectoryWatcher);
     d->worker->setRunning(false);
-}
-
-QStringList DirectoryWatcher::fileNames() const {
-    Q_D(const DirectoryWatcher);
-    return d->currentDirectory.entryList(QDir::Files);
 }
 
 DirectoryWatcher::DirectoryWatcher(DirectoryWatcherPrivate* ptr) {

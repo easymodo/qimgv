@@ -12,11 +12,6 @@ public:
 
     virtual ~DirectoryWatcher();
 
-    QStringList fileFilters() const;
-    void setFileFilters(const QStringList& filters);
-
-    QStringList fileNames() const;
-
     virtual void setWatchPath(const QString& watchPath);
     virtual QString watchPath() const;
 

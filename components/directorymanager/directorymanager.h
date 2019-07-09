@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QMimeDatabase>
 #include <QStandardPaths>
-#include <QDir>
+//#include <QDir>
 #include <algorithm>
 #include <vector>
 #include <QCollator>
@@ -17,12 +17,48 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QImageReader>
+
+#include <string>
+#include <iostream>
+#include <filesystem>
+#include <algorithm>
+//#include <experimental/filesystem>
+
 #include "settings.h"
 #include "sourcecontainers/documentinfo.h"
 
 #ifdef Q_OS_WIN32
 #include "windows.h"
 #endif
+
+struct Entry {
+    Entry( QString _path, std::uintmax_t _size, std::filesystem::file_time_type _modifyTime, bool _isDirectory)
+        : path(_path),
+          size(_size),
+          modifyTime(_modifyTime),
+          isDirectory(_isDirectory)
+    {
+    }
+    Entry( QString _path, std::uintmax_t _size, bool _isDirectory)
+        : path(_path),
+          size(_size),
+          isDirectory(_isDirectory)
+    {
+    }
+    Entry( QString _path, bool _isDirectory)
+        : path(_path),
+          isDirectory(_isDirectory)
+    {
+    }
+    bool operator==(const QString &anotherPath) const {
+        return this->path == anotherPath;
+    }
+    QString path;
+    std::uintmax_t size;
+    std::filesystem::file_time_type modifyTime;
+    //std::time_t modifyTime;
+    bool isDirectory;
+};
 
 class DirectoryManager : public QObject
 {
@@ -34,12 +70,11 @@ public:
     // returns index in file list
     // -1 if not found
     int indexOf(QString fileName) const;
-    QStringList fileList() const;
     QString absolutePath() const;
     QString filePathAt(int index) const;
     QString fullFilePath(QString fileName) const;
     bool removeFile(QString fileName, bool trash);
-    int fileCount() const;
+    unsigned long fileCount() const;
     bool isImage(QString filePath) const;
     bool isEmpty() const;
     bool contains(QString fileName) const;
@@ -49,23 +84,25 @@ public:
     QString prevOf(QString fileName) const;
     QString nextOf(QString fileName) const;
     bool isDirectory(QString path) const;
-    void sortFileList();
     void sortFileList(SortingMode mode);
     QDateTime lastModified(QString fileName) const;
 
     QString first();
     QString last();
 private:
-    QDir currentDir;
-    QStringList mFileNameList;
+    QString currentPath;
+    QString filter;
     QStringList mimeFilter, nameFilter;
+    QRegExp regexpFilter;
+    QCollator collator;
+    std::vector<Entry> entryVec;
 
     void readSettings();
 //    WatcherWindows watcher;
     QMimeDatabase mimeDb;
     bool quickFormatDetection;
 
-    void generateFileList(SortingMode mode);
+    void generateFileList();
     //void generateFileListQuick();
     //void generateFileListDeep();
 

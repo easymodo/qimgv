@@ -3,10 +3,54 @@
 
 #include <QThread>
 
+namespace fs = std::filesystem;
+
 DirectoryManager::DirectoryManager() : quickFormatDetection(true)
 {
-    currentDir.setPath("");
+    currentPath = "";
+    regexpFilter.setCaseSensitivity(Qt::CaseInsensitive);
+    collator.setNumericMode(true);
     readSettings();
+}
+
+QStringList supportedFormats() {
+    QStringList filters;
+    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+    for(int i = 0; i < supportedFormats.count(); i++) {
+        filters << "*." + QString(supportedFormats.at(i));
+    }
+    return filters;
+}
+
+QString supportedFormatsRegex() {
+    QString filters;
+    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+    filters.append(".*\.(");
+    for(int i = 0; i < supportedFormats.count(); i++) {
+        filters.append(QString(supportedFormats.at(i)) + "|");
+    }
+    // webm here
+    filters.chop(1);
+    filters.append(")$");
+    return filters;
+}
+
+template< typename T, typename Pred >
+typename std::vector<T>::iterator
+insert_sorted( std::vector<T> & vec, T const& item, Pred pred ) {
+    return vec.insert
+        (
+           std::upper_bound( vec.begin(), vec.end(), item, pred ),
+           item
+        );
+}
+
+bool date_entry_compare(const Entry& e1, const Entry& e2) {
+    return e1.modifyTime < e2.modifyTime;
+}
+
+bool entryCompareString(Entry &e, QString path) {
+    return (e.path == path);
 }
 
 // ##############################################################
@@ -15,13 +59,14 @@ DirectoryManager::DirectoryManager() : quickFormatDetection(true)
 
 void DirectoryManager::readSettings() {
     mimeFilter = settings->supportedMimeTypes();
+    filter = supportedFormatsRegex();
+    regexpFilter.setPattern(filter);
+    /*
     nameFilter = settings->supportedFormats();
     // looks like >40 filters is a bit too much for QDir
     // removing some exotic formats from the filter speeds things up by ~2x
     // TODO: implement lazy directory crawling instead (gwenview does this)
     //qDebug() << nameFilter.count() << nameFilter;
-    QElapsedTimer t;
-    t.start();
     nameFilter.removeOne("*.bw");
     nameFilter.removeOne("*.arw");
     nameFilter.removeOne("*.crw");
@@ -48,16 +93,18 @@ void DirectoryManager::readSettings() {
     nameFilter.removeOne("*.rgb");
     nameFilter.removeOne("*.rgba");
     currentDir.setNameFilters(nameFilter);
+    */
+
 }
 
 void DirectoryManager::setDirectory(QString path) {
     if(!path.isEmpty()) {
-        currentDir.setPath(path);
-        generateFileList(settings->sortingMode());
+        currentPath = path;
+        generateFileList();
+        sortFileList(settings->sortingMode());
         emit directoryChanged(path);
 
         DirectoryWatcher* watcher = DirectoryWatcher::newInstance();
-        watcher->setFileFilters(nameFilter);
         watcher->setWatchPath(path);
         watcher->observe();
         connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
@@ -70,90 +117,97 @@ void DirectoryManager::setDirectory(QString path) {
 
         connect(watcher, &DirectoryWatcher::fileCreated, this, [this] (const QString& filename) {
             qDebug() << "[w] file created" << filename;
-            onFileAddedExternal(filename);
+            //onFileAddedExternal(filename);
         });
 
         connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
             qDebug() << "[w] file deleted" << filename;
-            onFileRemovedExternal(filename);
+            //onFileRemovedExternal(filename);
         });
 
         connect(watcher, &DirectoryWatcher::fileModified, this, [this] (const QString& filename) {
             qDebug() << "[w] file modified" << filename;
-            onFileModifiedExternal(filename);
+            //onFileModifiedExternal(filename);
         });
 
         connect(watcher, &DirectoryWatcher::fileRenamed, this, [this] (const QString& file1, const QString& file2) {
             qDebug() << "[w] file renamed from" << file1 << "to" << file2;
-            if(isImage(this->absolutePath() + "/" + file2))
-                onFileRenamedExternal(file1, file2);
+            //if(isImage(this->absolutePath() + "/" + file2))
+            //    onFileRenamedExternal(file1, file2);
         });
     }
 }
 
 int DirectoryManager::indexOf(QString fileName) const {
-    return mFileNameList.indexOf(fileName);
-}
+    //std::vector<Entry>::iterator it;
+    //it = std::find_if(entryVec.begin(), entryVec.end(), std::bind(entryCompareString, std::placeholders::_1, fileName));
+    //it = std::find(entryVec.begin(), entryVec.end(), fileName);
+    auto item = find_if(entryVec.begin(), entryVec.end(), [fileName](const Entry& e) {
+        return e.path == fileName;
+    });
 
-// full paths array
-QStringList DirectoryManager::fileList() const {
-    QStringList files = mFileNameList;
-    QString dirPath = currentDir.absolutePath() + "/";
-    for(int i = 0; i < mFileNameList.length(); i++) {
-        files.replace(i, dirPath + files.at(i));
+    if(item != entryVec.end()) {
+        return distance(entryVec.begin(), item);
     }
-    return files;
+
+    return -1;
+
+    /*find(entryVec.begin(), entryVec.end(), [fileName](const Entry& e) {
+        return e.path == fileName;
+    });
+    */
 }
 
 QString DirectoryManager::absolutePath() const {
-    return currentDir.absolutePath();
+    return currentPath;
 }
 
 QString DirectoryManager::filePathAt(int index) const {
-    return checkRange(index) ? currentDir.absolutePath() + "/" + mFileNameList.at(index) : "";
+    return checkRange(index) ? currentPath + "/" + entryVec.at(index).path : "";
+    //return checkRange(index) ? currentPath + "/" + mFileNameList.at(index) : "";
 }
 
 QString DirectoryManager::fullFilePath(QString fileName) const {
-    return fileName.isEmpty() ? "" : currentDir.absolutePath() + "/" + fileName;
+    return fileName.isEmpty() ? "" : currentPath + "/" + fileName;
 }
 
 QString DirectoryManager::fileNameAt(int index) const {
-    return checkRange(index) ? mFileNameList.at(index) : "";
+    return checkRange(index) ? entryVec.at(index).path : "";
 }
 
 QString DirectoryManager::first() {
     QString fileName = "";
-    if(mFileNameList.count())
-        fileName = mFileNameList.at(0);
+    if(entryVec.size())
+        fileName = entryVec.front().path;
     return fileName;
 }
 
 QString DirectoryManager::last() {
     QString fileName = "";
-    if(mFileNameList.count())
-        fileName = mFileNameList.at(mFileNameList.count() - 1);
+    if(entryVec.size())
+        fileName = entryVec.back().path;
     return fileName;
 }
 
 QString DirectoryManager::prevOf(QString fileName) const {
     QString prevFileName = "";
-    int currentIndex = mFileNameList.indexOf(fileName);
+    int currentIndex = indexOf(fileName);
     if(currentIndex > 0)
-        prevFileName = mFileNameList.at(currentIndex - 1);
+        prevFileName = entryVec.at(currentIndex - 1).path;
     return prevFileName;
 }
 
 QString DirectoryManager::nextOf(QString fileName) const {
     QString nextFileName = "";
-    int currentIndex = mFileNameList.indexOf(fileName);
-    if(currentIndex >= 0 && currentIndex < mFileNameList.count() - 1)
-        nextFileName = mFileNameList.at(currentIndex + 1);
+    int currentIndex = indexOf(fileName);
+    if(currentIndex >= 0 && currentIndex < entryVec.size() - 1)
+        nextFileName = entryVec.at(currentIndex + 1).path;
     return nextFileName;
 }
 
 bool DirectoryManager::removeFile(QString fileName, bool trash) {
     bool result = false;
-    if(!contains(fileName))
+    /*if(!contains(fileName))
         return result;
     QString path = fullFilePath(fileName);
     QFile file(path);
@@ -167,6 +221,7 @@ bool DirectoryManager::removeFile(QString fileName, bool trash) {
             result = true;
     }
     emit fileRemoved(fileName, index);
+    */
     return result;
 }
 
@@ -268,7 +323,7 @@ void DirectoryManager::moveToTrash(QString file) {
 #endif
 
 bool DirectoryManager::checkRange(int index) const {
-    return index >= 0 && index < mFileNameList.length();
+    return index >= 0 && index < (int)entryVec.size();
 }
 
 bool DirectoryManager::copyTo(QString destDirectory, QString fileName) {
@@ -277,8 +332,8 @@ bool DirectoryManager::copyTo(QString destDirectory, QString fileName) {
     return QFile::copy(fullFilePath(fileName), destDirectory + "/" + fileName);
 }
 
-int DirectoryManager::fileCount() const {
-    return mFileNameList.length();
+unsigned long DirectoryManager::fileCount() const {
+    return entryVec.size();
 }
 
 bool DirectoryManager::isDirectory(QString path) const {
@@ -312,11 +367,11 @@ bool DirectoryManager::isImage(QString filePath) const {
 }
 
 bool DirectoryManager::isEmpty() const {
-    return mFileNameList.empty();
+    return entryVec.empty();
 }
 
 bool DirectoryManager::contains(QString fileName) const {
-    return mFileNameList.contains(fileName, Qt::CaseSensitive);
+    return ( std::find(entryVec.begin(), entryVec.end(), fileName) != entryVec.end() );
 }
 
 // ##############################################################
@@ -324,57 +379,51 @@ bool DirectoryManager::contains(QString fileName) const {
 // ##############################################################
 
 // generates a sorted file list
-void DirectoryManager::generateFileList(SortingMode mode) {
-    // special case for natural sorting
-    if(mode == SortingMode::NAME_ASC || mode == SortingMode::NAME_DESC) {
-        currentDir.setSorting(QDir::NoSort);
-        mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
-        QCollator collator;
-        collator.setNumericMode(true);
-        if(mode == SortingMode::NAME_ASC)
-            std::sort(mFileNameList.begin(), mFileNameList.end(), collator);
-        else
-            std::sort(mFileNameList.rbegin(), mFileNameList.rend(), collator);
-        return;
-    }
-    // use QDir's sorting otherwise
-    if(mode == SortingMode::DATE_ASC)
-        currentDir.setSorting(QDir::Time);
-    if(mode == SortingMode::DATE_DESC)
-        currentDir.setSorting(QDir::Time | QDir::Reversed);
-    if(mode == SortingMode::SIZE_ASC)
-        currentDir.setSorting(QDir::Size);
-    if(mode == SortingMode::SIZE_DESC)
-        currentDir.setSorting(QDir::Size | QDir::Reversed);
-    mFileNameList = currentDir.entryList(QDir::Files | QDir::Hidden);
-}
-/*
-// Filter by mime type. Basically opens every file in a folder
-// and checks what's inside. Very slow.
-void DirectoryManager::generateFileListDeep() {
-    currentDir.setNameFilters(QStringList("*"));
-    mFileNameList.clear();
-    QStringList unfiltered = currentDir.entryList(QDir::Files | QDir::Hidden);
-
-    for(int i = 0; i < unfiltered.count(); i++) {
-        QString filePath = currentDir.absolutePath() + "/" + unfiltered.at(i);
-        if(isImage(filePath)) {
-            mFileNameList.append(unfiltered.at(i));
+void DirectoryManager::generateFileList() {
+    QElapsedTimer t;
+    t.start();
+    for (const auto & entry : fs::directory_iterator(currentPath.toStdString())) {
+        QString name = QString::fromStdString(entry.path().filename());
+        if(regexpFilter.exactMatch(name)) {
+            //entryVec.emplace_back(Entry(name, entry.file_size(), entry.last_write_time(), entry.is_directory()));
+            entryVec.emplace_back(Entry(name, entry.is_directory()));
         }
     }
+    qDebug() << "generateFileList() - " << entryVec.size() << " items, time: " << t.elapsed();
 }
-*/
+
+void DirectoryManager::sortFileList(SortingMode mode) {
+    QElapsedTimer t;
+    t.start();
+    if(mode == SortingMode::NAME_ASC) {
+        std::sort(entryVec.begin(), entryVec.end(), [this](const Entry &e1, const Entry &e2)
+        {
+            return collator.compare(e1.path, e2.path) < 0;
+        });
+    }
+    if(mode == SortingMode::NAME_DESC) {
+        std::sort(entryVec.begin(), entryVec.end(), [this](const Entry &e1, const Entry &e2)
+        {
+            return collator.compare(e1.path, e2.path) > 0;
+        });
+    }
+    if(mode == SortingMode::DATE_ASC) {
+        std::sort(entryVec.begin(), entryVec.end(), date_entry_compare);
+    }
+    qDebug() << "sortFileList() - " << entryVec.size() << " items, time: " << t.elapsed();
+}
 
 void DirectoryManager::onFileRemovedExternal(QString fileName) {
-    if(contains(fileName)) {
+    /*if(contains(fileName)) {
         int index = mFileNameList.indexOf(fileName);
         mFileNameList.removeOne(fileName);
         emit fileRemoved(fileName, index);
     }
+    */
 }
 
 void DirectoryManager::onFileAddedExternal(QString fileName) {
-    if(contains(fileName)) { // file changed
+    /*if(contains(fileName)) { // file changed
         qDebug() << "DirectoryManager::onFileAddedExternal - file already in list " << fileName;
     } else { // file added
         // TODO: fast sorted inserts
@@ -382,23 +431,26 @@ void DirectoryManager::onFileAddedExternal(QString fileName) {
         //sortFileList();
         emit fileAdded(fileName);
     }
+    */
 }
 
 void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
-    int index = mFileNameList.indexOf(oldFile);
+    /*int index = mFileNameList.indexOf(oldFile);
     generateFileList(settings->sortingMode());
     if(contains(newFile)) {
         emit fileRenamed(oldFile, newFile);
     } else {
         emit fileRemoved(oldFile, index);
     }
+    */
 }
 
 void DirectoryManager::onFileModifiedExternal(QString fileName) {
-    if(contains(fileName)) { // file changed
+    /*if(contains(fileName)) { // file changed
         qDebug() << "fileChange: " << fileName;
         emit fileModified(fileName);
     } else { // file added?
         onFileAddedExternal(fileName);
     }
+    */
 }
