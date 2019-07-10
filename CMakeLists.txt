@@ -1,16 +1,28 @@
 cmake_minimum_required(VERSION 3.0)
+
 project(qimgv)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE "Release")
 
 # COMPILE FLAGS
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -lstdc++fs -O3")
+
+# check requirements for std::filesystem
+if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.0)
+    message(FATAL_ERROR "\n!!! THIS PROJECT REQUIRES GCC 8 OR LATER !!!\n"
+                    "If you already have gcc 8+ you can force it like this:\n"
+                    "CC=gcc-8 CXX=g++-8 cmake ......")
+    # force gcc 8
+    #set(CMAKE_C_COMPILER "gcc-8")
+    #set(CMAKE_CXX_COMPILER "g++-8")
+endif()
 
 # AUTOMOC
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 
 # USER OPTIONS
 # Usage: cmake -DVIDEO_SUPPORT=ON [...]
@@ -36,17 +48,14 @@ include(CMake/SRC_SourceContainers.cmake)
 include(CMake/SRC_Utils.cmake)
 include(CMake/SRC_Gui.cmake)
 
-
 # ADD RESOURCES
 QT5_ADD_RESOURCES(RES resources.qrc)
-
 
 # ADD EXECUTABLE
 add_executable(qimgv ${SRC} ${SRC_Components} ${SRC_SourceContainers} ${SRC_Utils} ${SRC_Gui} ${RES})
 
-
 # LINK STUFF
-target_link_libraries(qimgv Qt5::Core Qt5::Widgets Qt5::Concurrent)
+target_link_libraries(qimgv Qt5::Core Qt5::Widgets Qt5::Concurrent stdc++fs)
 
 # OPTION DEFINITIONS, LINKING
 if(KDE_SUPPORT)
@@ -57,7 +66,6 @@ if(VIDEO_SUPPORT)
     target_link_libraries(qimgv mpv)
     add_definitions(-DUSE_MPV)
 endif()
-
 
 ## INSTALLATION
 
