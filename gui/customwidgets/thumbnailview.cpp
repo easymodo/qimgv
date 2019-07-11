@@ -201,10 +201,7 @@ bool ThumbnailView::atSceneEnd() {
 }
 
 bool ThumbnailView::checkRange(int pos) {
-    if(pos >= 0 && pos < thumbnails.count())
-        return true;
-    else
-        return false;
+    return pos >= 0 && pos < thumbnails.count();
 }
 
 void ThumbnailView::updateLayout() {

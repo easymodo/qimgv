@@ -11,11 +11,7 @@ QString ThumbnailCache::thumbnailPath(QString id) {
 bool ThumbnailCache::exists(QString id) {
     QString filePath = thumbnailPath(id);
     QFileInfo file(filePath);
-    if(file.exists() && file.isReadable()) {
-        return true;
-    } else {
-        return false;
-    }
+    return file.exists() && file.isReadable();
 }
 
 void ThumbnailCache::saveThumbnail(QImage *image, QString id) {

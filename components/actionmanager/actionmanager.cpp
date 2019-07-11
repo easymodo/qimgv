@@ -121,9 +121,8 @@ void ActionManager::removeAllShortcuts(QString actionName) {
 QString ActionManager::keyForNativeScancode(quint32 scanCode) {
     if(inputMap->keys().contains(scanCode)) {
         return inputMap->keys()[scanCode];
-    } else {
-        return "";
     }
+    return "";
 }
 //------------------------------------------------------------------------------
 void ActionManager::resetDefaults() {
@@ -183,10 +182,7 @@ bool ActionManager::invokeAction(const QString &actionName) {
 }
 //------------------------------------------------------------------------------
 bool ActionManager::invokeActionForShortcut(const QString &shortcut) {
-    if(shortcut.isEmpty())
-        return false;
-
-    if(shortcuts.contains(shortcut)) {
+    if(!shortcut.isEmpty() && shortcuts.contains(shortcut)) {
         return invokeAction(actionManager->shortcuts[shortcut]);
     }
     return false;

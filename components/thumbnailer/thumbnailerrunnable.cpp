@@ -35,7 +35,7 @@ void ThumbnailerRunnable::run() {
                 thumbnailCache->saveThumbnail(image.get(), thumbnailId);
         }
     }
-    QPixmap *tmpPixmap = new QPixmap(image->size());
+    auto && tmpPixmap = new QPixmap(image->size());
     *tmpPixmap = QPixmap::fromImage(*image);
     tmpPixmap->setDevicePixelRatio(qApp->devicePixelRatio());
 
