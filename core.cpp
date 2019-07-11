@@ -140,6 +140,9 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(renameFile()), this, SLOT(renameRequested()));
     connect(actionManager, SIGNAL(contextMenu()), mw, SLOT(showContextMenu()));
     connect(actionManager, SIGNAL(toggleTransparencyGrid()), mw, SIGNAL(toggleTransparencyGrid()));
+    connect(actionManager, SIGNAL(sortByName()), this, SLOT(sortByName()));
+    connect(actionManager, SIGNAL(sortByTime()), this, SLOT(sortByTime()));
+    connect(actionManager, SIGNAL(sortBySize()), this, SLOT(sortBySize()));
 }
 
 void Core::onUpdate() {
@@ -436,6 +439,36 @@ void Core::saveImageToDisk(QString filePath) {
     else
         mw->showError("Could not save file.");
     mw->hideSaveOverlay();
+}
+
+void Core::sortByName() {
+    if(model->sortingMode() == SortingMode::NAME) {
+        model->setSortingMode(SortingMode::NAME_DESC);
+        mw->showMessage("Sorting: By Name (desc.)");
+    } else {
+        model->setSortingMode(SortingMode::NAME);
+        mw->showMessage("Sorting: By Name");
+    }
+}
+
+void Core::sortByTime() {
+    if(model->sortingMode() == SortingMode::TIME) {
+        model->setSortingMode(SortingMode::TIME_DESC);
+        mw->showMessage("Sorting: By Time (desc.)");
+    } else {
+        model->setSortingMode(SortingMode::TIME);
+        mw->showMessage("Sorting: By Time");
+    }
+}
+
+void Core::sortBySize() {
+    if(model->sortingMode() == SortingMode::SIZE) {
+        model->setSortingMode(SortingMode::SIZE_DESC);
+        mw->showMessage("Sorting: By Size (desc.)");
+    } else {
+        model->setSortingMode(SortingMode::SIZE);
+        mw->showMessage("Sorting: By Size");
+    }
 }
 
 void Core::runScript(const QString &scriptName) {

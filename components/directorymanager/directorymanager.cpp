@@ -73,15 +73,15 @@ bool DirectoryManager::entryCompareString(Entry &e, QString path) {
 
 CompareFunction DirectoryManager::compareFunction() {
     CompareFunction cmpFn = &DirectoryManager::name_entry_compare;
-    if(sortingMode == SortingMode::NAME_DESC)
+    if(mSortingMode == SortingMode::NAME_DESC)
         cmpFn = &DirectoryManager::name_entry_compare_reverse;
-    if(sortingMode == SortingMode::DATE_ASC)
+    if(mSortingMode == SortingMode::TIME)
         cmpFn = &DirectoryManager::date_entry_compare;
-    if(sortingMode == SortingMode::DATE_DESC)
+    if(mSortingMode == SortingMode::TIME_DESC)
         cmpFn = &DirectoryManager::date_entry_compare_reverse;
-    if(sortingMode == SortingMode::SIZE_ASC)
+    if(mSortingMode == SortingMode::SIZE)
         cmpFn = &DirectoryManager::size_entry_compare;
-    if(sortingMode == SortingMode::SIZE_DESC)
+    if(mSortingMode == SortingMode::SIZE_DESC)
         cmpFn = &DirectoryManager::size_entry_compare_reverse;
     return cmpFn;
 }
@@ -93,14 +93,7 @@ CompareFunction DirectoryManager::compareFunction() {
 void DirectoryManager::readSettings() {
     filterRegex = settings->supportedFormatsRegex();
     regex.setPattern(filterRegex);
-    SortingMode newMode = settings->sortingMode();
-    if(newMode != sortingMode) {
-        sortingMode = newMode;
-        if(entryVec.size() > 1) {
-            sortFileList();
-            emit sortingChanged();
-        }
-    }
+    setSortingMode(settings->sortingMode());
 }
 
 bool DirectoryManager::setDirectory(QString path) {
@@ -376,6 +369,20 @@ void DirectoryManager::sortFileList() {
     t.start();
     sort(entryVec.begin(), entryVec.end(), std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
     qDebug() << "sortFileList() - " << entryVec.size() << " items, time: " << t.elapsed();
+}
+
+void DirectoryManager::setSortingMode(SortingMode mode) {
+    if(mode != mSortingMode) {
+        mSortingMode = mode;
+        if(entryVec.size() > 1) {
+            sortFileList();
+            emit sortingChanged();
+        }
+    }
+}
+
+SortingMode DirectoryManager::sortingMode() {
+    return mSortingMode;
 }
 
 // fs watcher events

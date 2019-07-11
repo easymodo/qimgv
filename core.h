@@ -98,6 +98,9 @@ private slots:
     void copyPathClipboard();
     void renameCurrentFile(QString newName);
     void renameRequested();
+    void sortByName();
+    void sortByTime();
+    void sortBySize();
 };
 
 #endif // CORE_H

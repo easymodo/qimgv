@@ -70,5 +70,8 @@ void Actions::init() {
     mActions.insert("renameFile", QVersionNumber(0,7,80));
     mActions.insert("contextMenu", QVersionNumber(0,7,81));
     mActions.insert("toggleTransparencyGrid", QVersionNumber(0,7,82));
+    mActions.insert("sortByName", QVersionNumber(0,7,83));
+    mActions.insert("sortByTime", QVersionNumber(0,7,83));
+    mActions.insert("sortBySize", QVersionNumber(0,7,83));
 }
 

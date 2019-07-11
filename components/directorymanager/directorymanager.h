@@ -84,6 +84,8 @@ public:
 
     QString first();
     QString last();
+    void setSortingMode(SortingMode mode);
+    SortingMode sortingMode();
 private:
     QString currentPath;
     QString filterRegex;
@@ -93,7 +95,7 @@ private:
 
     DirectoryWatcher* watcher;
     void readSettings();
-    SortingMode sortingMode;
+    SortingMode mSortingMode;
     void generateFileList();
 
     void onFileAddedExternal(QString filename);

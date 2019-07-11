@@ -48,6 +48,8 @@ public:
     std::shared_ptr<Image> getItem(QString fileName);
     void updateItem(QString fileName, std::shared_ptr<Image> img);
     int currentIndex();
+    void setSortingMode(SortingMode mode);
+    SortingMode sortingMode();
 signals:
     void fileRemoved(QString fileName, int index);
     void fileRenamed(QString from, QString to);

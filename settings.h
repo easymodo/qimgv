@@ -16,11 +16,11 @@
 #include "utils/script.h"
 
 enum SortingMode {
-    NAME_ASC,
+    NAME,
     NAME_DESC,
-    DATE_ASC,
-    DATE_DESC,
-    SIZE_ASC,
+    TIME,
+    TIME_DESC,
+    SIZE,
     SIZE_DESC
 };
 

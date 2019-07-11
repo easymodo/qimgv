@@ -364,7 +364,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-420</y>
                 <width>387</width>
                 <height>859</height>
                </rect>
@@ -1080,12 +1080,12 @@
                    </item>
                    <item>
                     <property name="text">
-                     <string>Date</string>
+                     <string>Time</string>
                     </property>
                    </item>
                    <item>
                     <property name="text">
-                     <string>Date (desc.)</string>
+                     <string>Time (desc.)</string>
                     </property>
                    </item>
                    <item>
@@ -2411,8 +2411,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>400</width>
-                <height>439</height>
+                <width>349</width>
+                <height>211</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2756,8 +2756,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>400</width>
-                <height>439</height>
+                <width>256</width>
+                <height>222</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">

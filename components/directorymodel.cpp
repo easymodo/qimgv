@@ -42,6 +42,14 @@ int DirectoryModel::currentIndex() {
     return dirManager.indexOf(mCurrentFileName);
 }
 
+SortingMode DirectoryModel::sortingMode() {
+    return dirManager.sortingMode();
+}
+
+void DirectoryModel::setSortingMode(SortingMode mode) {
+    dirManager.setSortingMode(mode);
+}
+
 QString DirectoryModel::fileNameAt(int index) {
     return dirManager.fileNameAt(index);
 }

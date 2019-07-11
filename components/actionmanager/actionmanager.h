@@ -106,6 +106,9 @@ signals:
     void renameFile();
     void contextMenu();
     void toggleTransparencyGrid();
+    void sortByName();
+    void sortByTime();
+    void sortBySize();
 };
 
 extern ActionManager *actionManager;
