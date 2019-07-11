@@ -289,7 +289,7 @@ void Core::onFileRenamed(QString from, QString to) {
 }
 
 void Core::onFileAdded(QString fileName) {
-    Q_UNUSED(fileName);
+    Q_UNUSED(fileName)
     // update file count
     updateInfoString();
 }
@@ -553,7 +553,7 @@ void Core::jumpToLast() {
 }
 
 void Core::onLoadFailed(QString path) {
-    Q_UNUSED(path);
+    Q_UNUSED(path)
     /*mw->showMessage("Load failed: " + path);
     QString currentPath = model->fullFilePath(model->currentFileName);
     if(path == currentPath)
