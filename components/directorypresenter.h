@@ -12,7 +12,7 @@ public:
     explicit DirectoryPresenter(QObject *parent = nullptr);
 
     void setModel(std::shared_ptr<DirectoryModel> newModel);
-    void removeModel();
+    void unsetModel();
 
 signals:
     void generateThumbnails(QList<int>, int);
@@ -29,6 +29,8 @@ private slots:
     void onFileRenamed(QString from, QString to);
     void onFileAdded(QString fileName);
     void onFileModified(QString fileName);
+
+    void onModelSortingChanged();
 
     void reloadModel();
     void onThumbnailReady(std::shared_ptr<Thumbnail>);

@@ -3,7 +3,7 @@
 DirectoryPresenter::DirectoryPresenter(QObject *parent) : QObject(parent) {
 }
 
-void DirectoryPresenter::removeModel() {
+void DirectoryPresenter::unsetModel() {
     disconnect(model.get(), SIGNAL(fileRemoved(QString, int)),
                this, SLOT(onFileRemoved(QString, int)));
     disconnect(model.get(), SIGNAL(fileAdded(QString)),
@@ -14,6 +14,8 @@ void DirectoryPresenter::removeModel() {
                this, SLOT(onFileRenamed(QString, QString)));
     disconnect(model.get(), SIGNAL(directoryChanged(QString)),
                this, SLOT(reloadModel()));
+    disconnect(model.get(), SIGNAL(sortingChanged()),
+               this, SLOT(onModelSortingChanged()));
     disconnect(model.get(), &DirectoryModel::thumbnailReady,
                this,  &DirectoryPresenter::onThumbnailReady);
     disconnect(model.get(), SIGNAL(indexChanged(int)),
@@ -24,7 +26,7 @@ void DirectoryPresenter::removeModel() {
 
 void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
     if(model)
-        removeModel();
+        unsetModel();
     if(!newModel)
         return;
     model = newModel;
@@ -47,6 +49,9 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
 
     connect(model.get(), SIGNAL(directoryChanged(QString)),
             this, SLOT(reloadModel()), Qt::UniqueConnection);
+
+    connect(model.get(), SIGNAL(sortingChanged()),
+            this, SLOT(onModelSortingChanged()), Qt::UniqueConnection);
 
     connect(this,        &DirectoryPresenter::generateThumbnails,
             model.get(), &DirectoryModel::generateThumbnails, Qt::UniqueConnection);
@@ -95,11 +100,16 @@ void DirectoryPresenter::onFileAdded(QString fileName) {
     for(int i=0; i<views.count(); i++) {
         views.at(i)->insertItem(index);
     }
-    setCurrentIndex(model->indexOf(model->currentFileName()));
+    setCurrentIndex(model->currentIndex());
 }
 
 void DirectoryPresenter::onFileModified(QString fileName) {
 
+}
+
+void DirectoryPresenter::onModelSortingChanged() {
+    reloadModel();
+    setCurrentIndex(model->indexOf(model->currentFileName()));
 }
 
 void DirectoryPresenter::reloadModel() {

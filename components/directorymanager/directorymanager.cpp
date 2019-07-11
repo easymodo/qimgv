@@ -34,6 +34,7 @@ DirectoryManager::DirectoryManager() {
     });
 
     readSettings();
+    connect(settings, &Settings::settingsChanged, this, &DirectoryManager::readSettings);
 }
 
 template< typename T, typename Pred >
@@ -90,13 +91,16 @@ CompareFunction DirectoryManager::compareFunction() {
 // ##############################################################
 
 void DirectoryManager::readSettings() {
+    filterRegex = settings->supportedFormatsRegex();
+    regex.setPattern(filterRegex);
     SortingMode newMode = settings->sortingMode();
     if(newMode != sortingMode) {
         sortingMode = newMode;
-        sortFileList();
+        if(entryVec.size() > 1) {
+            sortFileList();
+            emit sortingChanged();
+        }
     }
-    filterRegex = settings->supportedFormatsRegex();
-    regex.setPattern(filterRegex);
 }
 
 bool DirectoryManager::setDirectory(QString path) {
@@ -112,7 +116,6 @@ bool DirectoryManager::setDirectory(QString path) {
         qDebug() << "[DirectoryManager] Error - path is not a directory.";
         return false;
     }
-
     currentPath = path;
     generateFileList();
     sortFileList();

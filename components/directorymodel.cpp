@@ -9,6 +9,7 @@ DirectoryModel::DirectoryModel(QObject *parent) : QObject(parent) {
     connect(&dirManager, &DirectoryManager::fileModified,this, &DirectoryModel::fileModified);
     connect(&dirManager, &DirectoryManager::fileRenamed, this, &DirectoryModel::fileRenamed);
     connect(&dirManager, &DirectoryManager::directoryChanged, this, &DirectoryModel::directoryChanged);
+    connect(&dirManager, &DirectoryManager::sortingChanged, this, &DirectoryModel::onSortingChanged);
     connect(&loader, &Loader::loadFinished, this, &DirectoryModel::onItemReady);
     connect(thumbnailer, &Thumbnailer::thumbnailReady, this, &DirectoryModel::thumbnailReady);
     connect(this, &DirectoryModel::generateThumbnails, thumbnailer, &Thumbnailer::generateThumbnails);
@@ -35,6 +36,10 @@ int DirectoryModel::itemCount() const {
 
 int DirectoryModel::indexOf(QString fileName) {
     return dirManager.indexOf(fileName);
+}
+
+int DirectoryModel::currentIndex() {
+    return dirManager.indexOf(mCurrentFileName);
 }
 
 QString DirectoryModel::fileNameAt(int index) {
@@ -196,6 +201,16 @@ void DirectoryModel::onItemReady(std::shared_ptr<Image> img) {
             preload(dirManager.nextOf(mCurrentFileName));
         }
     }
+}
+
+void DirectoryModel::onSortingChanged() {
+    trimCache();
+    int index = dirManager.indexOf(mCurrentFileName);
+    if(settings->usePreloader()) {
+        preload(dirManager.prevOf(mCurrentFileName));
+        preload(dirManager.nextOf(mCurrentFileName));
+    }
+    emit sortingChanged();
 }
 
 std::shared_ptr<Image> DirectoryModel::getItemAt(int index) {

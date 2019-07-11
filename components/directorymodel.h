@@ -47,12 +47,14 @@ public:
     std::shared_ptr<Image> getItemAt(int index);
     std::shared_ptr<Image> getItem(QString fileName);
     void updateItem(QString fileName, std::shared_ptr<Image> img);
+    int currentIndex();
 signals:
     void fileRemoved(QString fileName, int index);
     void fileRenamed(QString from, QString to);
     void fileAdded(QString fileName);
     void fileModified(QString fileName);
     void directoryChanged(QString);
+    void sortingChanged();
     void indexChanged(int index);
     // returns current item
     void itemReady(std::shared_ptr<Image> img);
@@ -72,6 +74,7 @@ private:
 
 private slots:
     void onItemReady(std::shared_ptr<Image> img);
+    void onSortingChanged();
 };
 
 #endif // DIRECTORYMODEL_H

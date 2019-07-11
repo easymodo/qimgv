@@ -84,9 +84,10 @@ void Core::connectComponents() {
     connect(model.get(), SIGNAL(fileModified(QString)), this, SLOT(onFileModified(QString)));
     connect(model.get(), SIGNAL(fileRenamed(QString, QString)), this, SLOT(onFileRenamed(QString, QString)));
 
-    connect(model.get(), SIGNAL(indexChanged(int)), this, SLOT(onModelIndexChanged(int)));
     connect(model.get(), SIGNAL(itemReady(std::shared_ptr<Image>)), this, SLOT(onModelItemReady(std::shared_ptr<Image>)));
     connect(model.get(), SIGNAL(itemUpdated(std::shared_ptr<Image>)), this, SLOT(onModelItemUpdated(std::shared_ptr<Image>)));
+    connect(model.get(), SIGNAL(indexChanged(int)), this, SLOT(updateInfoString()));
+    connect(model.get(), SIGNAL(sortingChanged()), this, SLOT(updateInfoString()));
 }
 
 void Core::initActions() {
@@ -556,11 +557,6 @@ void Core::onLoadFailed(QString path) {
     if(path == currentPath)
         mw->closeImage();
         */
-}
-
-void Core::onModelIndexChanged(int index) {
-    updateInfoString();
-    emit modelIndexChanged(index);
 }
 
 void Core::onModelItemReady(std::shared_ptr<Image> img) {
