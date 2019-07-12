@@ -96,5 +96,7 @@
         <file>res/icons/buttons/success16@2x.png</file>
         <file>res/icons/buttons/success16.png</file>
         <file>res/icons/buttons/sorting-mode16.png</file>
+        <file>res/icons/buttons/arrow_down.png</file>
+        <file>res/icons/buttons/arrow_up.png</file>
     </qresource>
 </RCC>

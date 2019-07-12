@@ -2,6 +2,7 @@
 #define FOLDERVIEW_H
 
 #include <QWidget>
+#include <QStyledItemDelegate>
 #include "gui/idirectoryview.h"
 #include "gui/directoryviewwrapper.h"
 #include "gui/folderview/foldergridview.h"
