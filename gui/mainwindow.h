@@ -142,16 +142,16 @@ signals:
     void seekVideoLeft();
     void frameStep();
     void frameStepBack();
-    void enableFolderView();
     void enableDocumentView();
     void setDirectoryPath(QString);
-    void toggleFolderView();
     void toggleTransparencyGrid();
 
 public slots:
     void showDefault();
     void showCropPanel();
     void hideCropPanel();
+    void toggleFolderView();
+    void enableFolderView();
     void showOpenDialog();
     void showSaveDialog(QString filePath);
     void showResizeDialog(QSize initialSize);

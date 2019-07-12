@@ -132,9 +132,9 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(seekBackVideo()), mw, SIGNAL(seekVideoLeft()));
     connect(actionManager, SIGNAL(frameStep()), mw, SIGNAL(frameStep()));
     connect(actionManager, SIGNAL(frameStepBack()), mw, SIGNAL(frameStepBack()));
-    connect(actionManager, SIGNAL(folderView()), mw, SIGNAL(enableFolderView()));
+    connect(actionManager, SIGNAL(folderView()), mw, SLOT(enableFolderView()));
     connect(actionManager, SIGNAL(documentView()), mw, SIGNAL(enableDocumentView()));
-    connect(actionManager, SIGNAL(toggleFolderView()), mw, SIGNAL(toggleFolderView()));
+    connect(actionManager, SIGNAL(toggleFolderView()), mw, SLOT(toggleFolderView()));
     connect(actionManager, SIGNAL(reloadImage()), this, SLOT(reloadImage()));
     connect(actionManager, SIGNAL(copyFileClipboard()), this, SLOT(copyFileClipboard()));
     connect(actionManager, SIGNAL(copyPathClipboard()), this, SLOT(copyPathClipboard()));

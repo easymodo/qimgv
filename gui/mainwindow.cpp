@@ -128,15 +128,6 @@ void MainWindow::setupUi() {
     connect(this, SIGNAL(toggleTransparencyGrid()),
             viewerWidget.get(), SIGNAL(toggleTransparencyGrid()));
 
-    connect(this, SIGNAL(enableFolderView()),
-            mainPanel, SLOT(hide()));
-    connect(this, SIGNAL(enableFolderView()),
-            this, SLOT(hideCropPanel()));
-    connect(this, SIGNAL(enableFolderView()),
-            copyOverlay, SLOT(hide()));
-    connect(this, SIGNAL(enableFolderView()),
-            centralWidget.get(), SLOT(showFolderView()));
-
     connect(this, SIGNAL(enableDocumentView()),
             centralWidget.get(), SLOT(showDocumentView()));
 
@@ -145,9 +136,20 @@ void MainWindow::setupUi() {
 
     connect(folderView.get(), SIGNAL(sortingSelected(SortingMode)),
             this, SIGNAL(sortingSelected(SortingMode)));
+}
 
-    connect(this, SIGNAL(toggleFolderView()),
-            centralWidget.get(), SLOT(toggleViewMode()));
+void MainWindow::toggleFolderView() {
+    hideCropPanel();
+    copyOverlay->hide();
+    mainPanel->hide();
+    centralWidget->toggleViewMode();
+}
+
+void MainWindow::enableFolderView() {
+    hideCropPanel();
+    copyOverlay->hide();
+    mainPanel->hide();
+    centralWidget->showFolderView();
 }
 
 void MainWindow::fitWindow() {
