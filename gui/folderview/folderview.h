@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QStyledItemDelegate>
+#include <QAbstractItemView>
 #include "gui/idirectoryview.h"
 #include "gui/directoryviewwrapper.h"
 #include "gui/folderview/foldergridview.h"

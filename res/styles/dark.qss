@@ -84,7 +84,7 @@ F/*----------------------------------------------------------------------------*
     color: #aeaeae;
     border: 2px solid #2f2f30;
     border-radius: 2px;
-    padding: 4px;
+    padding: 5px 11px 5px 5px;
     margin-top: 5px;
     margin-bottom: 5px;
     margin-left: 2px;
@@ -100,6 +100,12 @@ F/*----------------------------------------------------------------------------*
 /* hides the default down arrow */
 [accessibleName="PanelComboBox"]::drop-down {
     border: 0px;
+    width: 0px;
+}
+
+[accessibleName="PanelComboBox"]::down-arrow {
+    image: none;
+    width: 0px;
 }
 
 [accessibleName="PanelComboBox"] QAbstractItemView {

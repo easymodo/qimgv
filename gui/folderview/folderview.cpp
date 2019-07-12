@@ -35,20 +35,7 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->sortingComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onSortingSelected(int)));
 
     ui->sortingComboBox->setItemDelegate(new QStyledItemDelegate(ui->sortingComboBox));
-
-    ui->sortingComboBox->setItemIcon(0, QIcon(":/res/icons/buttons/arrow_up.png"));
-    ui->sortingComboBox->setItemIcon(1, QIcon(":/res/icons/buttons/arrow_down.png"));
-    ui->sortingComboBox->setItemIcon(2, QIcon(":/res/icons/buttons/arrow_up.png"));
-    ui->sortingComboBox->setItemIcon(3, QIcon(":/res/icons/buttons/arrow_down.png"));
-    ui->sortingComboBox->setItemIcon(4, QIcon(":/res/icons/buttons/arrow_up.png"));
-    ui->sortingComboBox->setItemIcon(5, QIcon(":/res/icons/buttons/arrow_down.png"));
-
-
-    /*ui->sortingComboBox->setEditable(true);
-    ui->sortingComboBox->lineEdit()->setDisabled(true);
-    ui->sortingComboBox->lineEdit()->setReadOnly(true);
-    ui->sortingComboBox->lineEdit()->setAlignment(Qt::AlignCenter);
-    */
+    ui->sortingComboBox->view()->setTextElideMode(Qt::ElideNone);
 
     ui->thumbnailGrid->setThumbnailSize(settings->folderViewIconSize());
     ui->thumbnailGrid->setShowLabels(settings->showThumbnailLabels());

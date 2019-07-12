@@ -161,80 +161,6 @@
        </spacer>
       </item>
       <item>
-       <widget class="QComboBox" name="sortingComboBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="contextMenuPolicy">
-         <enum>Qt::NoContextMenu</enum>
-        </property>
-        <property name="accessibleName">
-         <string>PanelComboBox</string>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
-        </property>
-        <property name="frame">
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text">
-          <string>Name</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Name</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Time</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Time</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Size</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Size</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Maximum</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>12</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <property name="spacing">
          <number>6</number>
@@ -324,6 +250,116 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Maximum</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>12</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QComboBox" name="sortingComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::NoContextMenu</enum>
+        </property>
+        <property name="accessibleName">
+         <string>PanelComboBox</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Name  </string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources.qrc">
+           <normaloff>:/res/icons/buttons/arrow_up.png</normaloff>
+           <selectedoff>:/res/icons/buttons/arrow_up.png</selectedoff>
+           <selectedon>:/res/icons/buttons/arrow_up.png</selectedon>:/res/icons/buttons/arrow_up.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Name </string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources.qrc">
+           <normaloff>:/res/icons/buttons/arrow_down.png</normaloff>
+           <selectedoff>:/res/icons/buttons/arrow_down.png</selectedoff>
+           <selectedon>:/res/icons/buttons/arrow_down.png</selectedon>:/res/icons/buttons/arrow_down.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Time </string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources.qrc">
+           <normaloff>:/res/icons/buttons/arrow_up.png</normaloff>
+           <selectedoff>:/res/icons/buttons/arrow_up.png</selectedoff>
+           <selectedon>:/res/icons/buttons/arrow_up.png</selectedon>:/res/icons/buttons/arrow_up.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Time </string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources.qrc">
+           <normaloff>:/res/icons/buttons/arrow_down.png</normaloff>
+           <selectedoff>:/res/icons/buttons/arrow_down.png</selectedoff>
+           <selectedon>:/res/icons/buttons/arrow_down.png</selectedon>:/res/icons/buttons/arrow_down.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Size </string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources.qrc">
+           <normaloff>:/res/icons/buttons/arrow_up.png</normaloff>
+           <selectedoff>:/res/icons/buttons/arrow_up.png</selectedoff>
+           <selectedon>:/res/icons/buttons/arrow_up.png</selectedon>:/res/icons/buttons/arrow_up.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Size </string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources.qrc">
+           <normaloff>:/res/icons/buttons/arrow_down.png</normaloff>
+           <selectedoff>:/res/icons/buttons/arrow_down.png</selectedoff>
+           <selectedon>:/res/icons/buttons/arrow_down.png</selectedon>:/res/icons/buttons/arrow_down.png</iconset>
+         </property>
+        </item>
+       </widget>
       </item>
       <item>
        <spacer name="horizontalSpacer_2">
