@@ -246,7 +246,6 @@ void ThumbnailView::scrollPrecise(int delta) {
     } else {
         centerOnY(static_cast<int>(viewportCenter.y() - delta));
     }
-    scrollTimer.start();
 }
 
 void ThumbnailView::scrollSmooth(int angleDelta) {

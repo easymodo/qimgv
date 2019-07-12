@@ -55,7 +55,7 @@ private:
 
     void scrollPrecise(int pixelDelta);
     void scrollSmooth(int angleDelta);
-    QTimer loadTimer, scrollTimer;
+    QTimer loadTimer;
     bool blockThumbnailLoading;
 
 protected:
