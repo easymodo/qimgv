@@ -5,7 +5,7 @@
 #include "gui/folderview/folderview.h"
 #include "gui/viewers/documentwidget.h"
 
-enum CentralWidgetViewMode {
+enum ViewMode {
     MODE_DOCUMENT,
     MODE_FOLDERVIEW
 };
@@ -16,7 +16,7 @@ class CentralWidget : public QStackedWidget
 public:
     explicit CentralWidget(std::shared_ptr<DocumentWidget> _docWidget, std::shared_ptr<FolderView> _folderView, QWidget *parent = nullptr);
 
-    CentralWidgetViewMode viewMode();
+    ViewMode currentViewMode();
 signals:
 
 public slots:
@@ -27,7 +27,7 @@ public slots:
 private:
     std::shared_ptr<DocumentWidget> documentView;
     std::shared_ptr<FolderView> folderView;
-    CentralWidgetViewMode mode;
+    ViewMode mode;
 };
 
 #endif // CENTRALWIDGET_H

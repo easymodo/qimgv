@@ -32,8 +32,10 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->thumbnailGrid, SIGNAL(thumbnailSizeChanged(int)), this, SLOT(onThumbnailSizeChanged(int)));
     connect(ui->thumbnailGrid, SIGNAL(showLabelsChanged(bool)), this, SLOT(onShowLabelsChanged(bool)));
     connect(ui->showLabelsButton, SIGNAL(toggled(bool)), this, SLOT(onShowLabelsButtonToggled(bool)));
+    connect(ui->sortingComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onSortingSelected(int)));
     ui->thumbnailGrid->setThumbnailSize(settings->folderViewIconSize());
     ui->thumbnailGrid->setShowLabels(settings->showThumbnailLabels());
+    onSortingChanged(settings->sortingMode());
 
     QSizePolicy sp_retain = sizePolicy();
     sp_retain.setRetainSizeWhenHidden(true);
@@ -57,6 +59,17 @@ void FolderView::onThumbnailSizeChanged(int newSize) {
 
 void FolderView::onZoomSliderValueChanged(int value) {
     ui->thumbnailGrid->setThumbnailSize(value * ui->thumbnailGrid->ZOOM_STEP);
+}
+
+// changed by user via combobox
+void FolderView::onSortingSelected(int mode) {
+    emit sortingSelected(static_cast<SortingMode>(mode));
+}
+
+void FolderView::onSortingChanged(SortingMode mode) {
+    ui->sortingComboBox->blockSignals(true);
+    ui->sortingComboBox->setCurrentIndex(static_cast<int>(mode));
+    ui->sortingComboBox->blockSignals(false);
 }
 
 FolderView::~FolderView() {

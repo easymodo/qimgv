@@ -39,6 +39,6 @@ void CentralWidget::toggleViewMode() {
     (mode == MODE_DOCUMENT) ? showFolderView() : showDocumentView();
 }
 
-CentralWidgetViewMode CentralWidget::viewMode() {
+ViewMode CentralWidget::currentViewMode() {
     return mode;
 }

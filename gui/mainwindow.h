@@ -121,6 +121,7 @@ signals:
     void saveAsClicked();
     void saveRequested();
     void saveRequested(QString);
+    void sortingSelected(SortingMode);
 
     // thumbnails
     void setCurrentIndex(int);
@@ -184,6 +185,7 @@ public slots:
     void switchFitMode();
     void closeImage();
     void showContextMenu();
+    void onSortingChanged(SortingMode);
 };
 
 #endif // MainWindow_H

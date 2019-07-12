@@ -55,7 +55,6 @@ int main(int argc, char *argv[]) {
     QTranslator translator;
     translator.load(a.applicationName() + "_" + QLocale::system().name());
     a.installTranslator(&translator);
-    qDebug() << a.applicationName() + "_" + QLocale::system().name();
 
     // get arguments
     QString arg1;

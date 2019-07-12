@@ -31,12 +31,13 @@ public slots:
     void addItem();
     void setExitButtonEnabled(bool mode);
 
+    void onSortingChanged(SortingMode mode);
 protected:
     void wheelEvent(QWheelEvent *event) Q_DECL_OVERRIDE;
     void focusInEvent(QFocusEvent *event) Q_DECL_OVERRIDE;
     void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
-
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+
 protected slots:
     void onShowLabelsChanged(bool mode);
     void onShowLabelsButtonToggled(bool mode);
@@ -46,8 +47,11 @@ protected slots:
 signals:
     void thumbnailPressed(int) Q_DECL_OVERRIDE;
     void thumbnailsRequested(QList<int>, int) Q_DECL_OVERRIDE;
+    void sortingSelected(SortingMode);
 
 private slots:
+    void onSortingSelected(int);
+
 private:
     Ui::FolderView *ui;
     std::shared_ptr<DirectoryViewWrapper> mWrapper;

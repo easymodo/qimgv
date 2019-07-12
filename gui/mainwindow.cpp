@@ -143,9 +143,11 @@ void MainWindow::setupUi() {
     connect(this, SIGNAL(setDirectoryPath(QString)),
             folderView.get(), SLOT(setDirectoryPath(QString)));
 
+    connect(folderView.get(), SIGNAL(sortingSelected(SortingMode)),
+            this, SIGNAL(sortingSelected(SortingMode)));
+
     connect(this, SIGNAL(toggleFolderView()),
             centralWidget.get(), SLOT(toggleViewMode()));
-
 }
 
 void MainWindow::fitWindow() {
@@ -208,6 +210,20 @@ void MainWindow::showVideo(Clip *clip) {
 
 void MainWindow::showContextMenu() {
     viewerWidget->showContextMenu();
+}
+
+void MainWindow::onSortingChanged(SortingMode mode) {
+    folderView.get()->onSortingChanged(mode);
+    if(centralWidget.get()->currentViewMode() == ViewMode::MODE_DOCUMENT) {
+        switch(mode) {
+            case SortingMode::NAME:      showMessage("Sorting: By Name");              break;
+            case SortingMode::NAME_DESC: showMessage("Sorting: By Name (desc.)");      break;
+            case SortingMode::TIME:      showMessage("Sorting: By Time");              break;
+            case SortingMode::TIME_DESC: showMessage("Sorting: By Time (desc.)");      break;
+            case SortingMode::SIZE:      showMessage("Sorting: By File Size");         break;
+            case SortingMode::SIZE_DESC: showMessage("Sorting: By File Size (desc.)"); break;
+        }
+    }
 }
 
 bool MainWindow::isCropPanelActive() {
@@ -486,7 +502,7 @@ void MainWindow::triggerCropPanel() {
 }
 
 void MainWindow::showCropPanel() {
-    if(centralWidget->viewMode() == MODE_FOLDERVIEW)
+    if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
         return;
 
     if(activeSidePanel != SIDEPANEL_CROP) {
@@ -516,7 +532,7 @@ void MainWindow::triggerCopyOverlay() {
     if(!viewerWidget->isDisplaying())
         return;
 
-    if(centralWidget->viewMode() == MODE_FOLDERVIEW)
+    if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
         return;
     if(copyOverlay->operationMode() == OVERLAY_COPY) {
         copyOverlay->isHidden()?copyOverlay->show():copyOverlay->hide();
@@ -530,7 +546,7 @@ void MainWindow::triggerMoveOverlay() {
     if(!viewerWidget->isDisplaying())
         return;
 
-    if(centralWidget->viewMode() == MODE_FOLDERVIEW)
+    if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
         return;
     if(copyOverlay->operationMode() == OVERLAY_MOVE) {
         copyOverlay->isHidden()?copyOverlay->show():copyOverlay->hide();

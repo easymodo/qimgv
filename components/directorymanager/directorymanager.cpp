@@ -11,25 +11,25 @@ DirectoryManager::DirectoryManager() {
     watcher = DirectoryWatcher::newInstance();
 
     connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
-        qDebug() << "observing started";
+        //qDebug() << "observing started";
     });
     connect(watcher, &DirectoryWatcher::observingStopped, this, [] () {
-        qDebug() << "observing stopped";
+        //qDebug() << "observing stopped";
     });
     connect(watcher, &DirectoryWatcher::fileCreated, this, [this] (const QString& filename) {
-        qDebug() << "[w] file created" << filename;
+        //qDebug() << "[w] file created" << filename;
         onFileAddedExternal(filename);
     });
     connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
-        qDebug() << "[w] file deleted" << filename;
+        //qDebug() << "[w] file deleted" << filename;
         onFileRemovedExternal(filename);
     });
     connect(watcher, &DirectoryWatcher::fileModified, this, [this] (const QString& filename) {
-        qDebug() << "[w] file modified" << filename;
+        //qDebug() << "[w] file modified" << filename;
         onFileModifiedExternal(filename);
     });
     connect(watcher, &DirectoryWatcher::fileRenamed, this, [this] (const QString& file1, const QString& file2) {
-        qDebug() << "[w] file renamed from" << file1 << "to" << file2;
+        //qDebug() << "[w] file renamed from" << file1 << "to" << file2;
         onFileRenamedExternal(file1, file2);
     });
 
@@ -248,16 +248,16 @@ void DirectoryManager::moveToTrash(QString file) {
             }
         }
         if( TrashPath.isEmpty() )
-            qDebug() << "Cant detect trash folder";
+            qDebug() << "Can`t detect trash folder";
         TrashPathInfo = TrashPath + "/info";
         TrashPathFiles = TrashPath + "/files";
         if( !QDir( TrashPathInfo ).exists() || !QDir( TrashPathFiles ).exists() )
-            qDebug() << "Trash doesnt looks like FreeDesktop.org Trash specification";
+            qDebug() << "Trash doesn`t look like FreeDesktop.org Trash specification";
         TrashInitialized = true;
     }
     QFileInfo original( file );
     if( !original.exists() )
-        qDebug() << "File doesnt exists, cant move to trash";
+        qDebug() << "File doesn`t exist, cant move to trash";
     QString info;
     info += "[Trash Info]\nPath=";
     info += original.absoluteFilePath();
@@ -361,14 +361,14 @@ void DirectoryManager::generateFileList() {
             //entryVec.emplace_back(Entry(name, entry.is_directory()));
         }
     }
-    qDebug() << "generateFileList() - " << entryVec.size() << " items, time: " << t.elapsed();
+    //qDebug() << "generateFileList() - " << entryVec.size() << " items, time: " << t.elapsed();
 }
 
 void DirectoryManager::sortFileList() {
     QElapsedTimer t;
     t.start();
     sort(entryVec.begin(), entryVec.end(), std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
-    qDebug() << "sortFileList() - " << entryVec.size() << " items, time: " << t.elapsed();
+    //qDebug() << "sortFileList() - " << entryVec.size() << " items, time: " << t.elapsed();
 }
 
 void DirectoryManager::setSortingMode(SortingMode mode) {

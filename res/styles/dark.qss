@@ -78,6 +78,47 @@
 }
 
 /*----------------------------------------------------------------------------*/
+
+[accessibleName="PanelComboBox"] {
+    background-color: #2f2f30;
+    color: #aeaeae;
+    border: 2px solid #2f2f30;
+    border-radius: 2px;
+    padding: 4px 8px 4px 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 2px;
+    margin-right:2px;
+
+}
+
+[accessibleName="PanelComboBox"]:hover {
+    background-color: #373738;
+    border-color: #373738;
+}
+
+[accessibleName="PanelComboBox"]::down-arrow {
+    border: 0px;
+    margin-right: 8px;
+    image: url(:/res/icons/buttons/sorting-mode16.png);
+}
+
+[accessibleName="PanelComboBox"]::drop-down {
+    border: 0px;
+}
+
+[accessibleName="PanelComboBox"] QAbstractItemView {
+    padding: 5px;
+    background-color: #232324;
+    selection-background-color: #373738;
+    selection-color: #aeaeae;
+    border: 1px solid #3a3b3c;
+    color: #aeaeae;
+}
+
+
+
+/*----------------------------------------------------------------------------*/
 /* panel buttons holder widget */
 
 [accessibleName="panelButtonsWidget"] {
@@ -173,7 +214,7 @@ SidePanel QComboBox {
     background-color: #232324;
     border: 1px solid #1d1d1e;
     border-radius: 2px;
-    padding: 2 0 2 0;
+    padding: 4px 8px 4px 8px;
 }
 
 SidePanel QComboBox::down-arrow {
@@ -193,6 +234,7 @@ SidePanel QComboBox QAbstractItemView {
     selection-color: #86888a;
     border: 1px solid #3a3b3c;
     color: #86888a;
+    padding: 5px;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -392,16 +434,6 @@ ThumbnailView QScrollBar::add-line {
 ThumbnailView QScrollBar::sub-line {
     width: 0px;
     height: 0px;
-}
-
-/*----------------------------------------------------------------------------*/
-/* Nicer combobox */
-/*----------------------------------------------------------------------------*/
-
-.QComboBox {
-    min-height: 20px;
-    padding-left: 5px;
-    padding-right: 3px;
 }
 
 /*----------------------------------------------------------------------------*/

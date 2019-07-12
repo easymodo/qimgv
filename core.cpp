@@ -71,6 +71,7 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(saveRequested()), this, SLOT(saveImageToDisk()));
     connect(mw, SIGNAL(saveRequested(QString)), this, SLOT(saveImageToDisk(QString)));
     connect(mw, SIGNAL(discardEditsRequested()), this, SLOT(discardEdits()));
+    connect(mw, SIGNAL(sortingSelected(SortingMode)), this, SLOT(sortBy(SortingMode)));
 
     // scaling
     connect(mw, SIGNAL(scalingRequested(QSize)),
@@ -230,6 +231,10 @@ void Core::copyPathClipboard() {
 
 void Core::renameRequested() {
     renameCurrentFile("new.png");
+}
+
+void Core::sortBy(SortingMode mode) {
+    model->setSortingMode(mode);
 }
 
 void Core::renameCurrentFile(QString newName) {
@@ -442,33 +447,27 @@ void Core::saveImageToDisk(QString filePath) {
 }
 
 void Core::sortByName() {
-    if(model->sortingMode() == SortingMode::NAME) {
-        model->setSortingMode(SortingMode::NAME_DESC);
-        mw->showMessage("Sorting: By Name (desc.)");
-    } else {
-        model->setSortingMode(SortingMode::NAME);
-        mw->showMessage("Sorting: By Name");
-    }
+    auto mode = SortingMode::NAME;
+    if(model->sortingMode() == mode)
+        mode = SortingMode::NAME_DESC;
+    model->setSortingMode(mode);
+    mw->onSortingChanged(mode);
 }
 
 void Core::sortByTime() {
-    if(model->sortingMode() == SortingMode::TIME) {
-        model->setSortingMode(SortingMode::TIME_DESC);
-        mw->showMessage("Sorting: By Time (desc.)");
-    } else {
-        model->setSortingMode(SortingMode::TIME);
-        mw->showMessage("Sorting: By Time");
-    }
+    auto mode = SortingMode::TIME;
+    if(model->sortingMode() == mode)
+        mode = SortingMode::TIME_DESC;
+    model->setSortingMode(mode);
+    mw->onSortingChanged(mode);
 }
 
 void Core::sortBySize() {
-    if(model->sortingMode() == SortingMode::SIZE) {
-        model->setSortingMode(SortingMode::SIZE_DESC);
-        mw->showMessage("Sorting: By Size (desc.)");
-    } else {
-        model->setSortingMode(SortingMode::SIZE);
-        mw->showMessage("Sorting: By Size");
-    }
+    auto mode = SortingMode::SIZE;
+    if(model->sortingMode() == mode)
+        mode = SortingMode::SIZE_DESC;
+    model->setSortingMode(mode);
+    mw->onSortingChanged(mode);
 }
 
 void Core::runScript(const QString &scriptName) {
