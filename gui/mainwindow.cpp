@@ -155,7 +155,7 @@ void MainWindow::enableFolderView() {
 void MainWindow::fitWindow() {
     if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitWindow();
-        showMessageFitWindow();
+        //showMessageFitWindow();
     } else {
         showMessage("Zoom temporary disabled");
     }
@@ -164,7 +164,7 @@ void MainWindow::fitWindow() {
 void MainWindow::fitWidth() {
     if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitWidth();
-        showMessageFitWidth();
+        //showMessageFitWidth();
     } else {
         showMessage("Zoom temporary disabled");
     }
@@ -173,7 +173,7 @@ void MainWindow::fitWidth() {
 void MainWindow::fitOriginal() {
     if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitOriginal();
-        showMessageFitOriginal();
+        //showMessageFitOriginal();
     } else {
         showMessage("Zoom temporary disabled");
     }
