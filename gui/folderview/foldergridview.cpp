@@ -282,6 +282,15 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
     }
 }
 
+void FolderGridView::mousePressEvent(QMouseEvent *event) {
+    event->accept();
+    ThumbnailView::mousePressEvent(event);
+}
+
+void FolderGridView::mouseReleaseEvent(QMouseEvent *event) {
+
+}
+
 void FolderGridView::wheelEvent(QWheelEvent *event) {
     if(event->modifiers().testFlag(Qt::ControlModifier)) {
         if(event->delta() > 0)

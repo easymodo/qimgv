@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     : OverlayContainerWidget(parent),
       currentDisplay(0),
       desktopWidget(nullptr),
-      bgOpacity(1.0f),
+      bgOpacity(1.0),
       panelEnabled(false),
       panelFullscreenOnly(false),
       activeSidePanel(SIDEPANEL_NONE),
@@ -594,7 +594,6 @@ std::shared_ptr<DirectoryViewWrapper> MainWindow::getFolderView() {
 }
 
 std::shared_ptr<DirectoryViewWrapper> MainWindow::getThumbnailPanel() {
-    //return thumbnailStrip;
     return this->thumbnailStrip->wrapper();
 }
 
@@ -635,7 +634,7 @@ void MainWindow::showWarning(QString text) {
 }
 
 void MainWindow::showError(QString text) {
-    floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_ERROR, 1800);
+    floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_ERROR, 2500);
 }
 
 void MainWindow::readSettings() {

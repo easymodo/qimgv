@@ -59,6 +59,8 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     void wheelEvent(QWheelEvent *event);
 
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 signals:
     void thumbnailSizeChanged(int);
     void showLabelsChanged(bool);

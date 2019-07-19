@@ -514,27 +514,34 @@ void Core::reset() {
 }
 
 void Core::loadPath(QString path) {
-    if(path.startsWith("file://", Qt::CaseInsensitive)) {
+    if(path.startsWith("file://", Qt::CaseInsensitive))
         path.remove(0, 7);
+
+    QFileInfo fileInfo(path);
+    QString directoryPath;
+    if(fileInfo.isDir()) {
+        directoryPath = QDir(path).absolutePath();
+    } else if(fileInfo.isFile()) {
+        directoryPath = fileInfo.absolutePath();
+    } else {
+        mw->showError("Could not open path: " + path);
+        qDebug() << "Could not open path: " << path;
+        return;
     }
-    QFileInfo info(path);
-    QString directoryPath = info.absolutePath();
+    // set model dir if needed
     if(model->absolutePath() != directoryPath) {
         this->reset();
         settings->setLastDirectory(directoryPath);
         model->setDirectory(directoryPath);
         mw->setDirectoryPath(directoryPath);
     }
-    if(info.isFile()) {
-        model->setIndex(model->indexOf(info.fileName()));
-    } else if(info.isDir()) {
+    // load file / folderview
+    if(fileInfo.isFile()) {
+        model->setIndex(model->indexOf(fileInfo.fileName()));
+    } else {
         //todo: set index without loading actual file?
         model->setIndex(0);
         mw->enableFolderView();
-
-    } else {
-        mw->showError("Could not open path: " + path);
-        qDebug() << "Could not open path: " << path;
     }
 }
 
