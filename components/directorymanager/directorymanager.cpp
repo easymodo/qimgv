@@ -353,7 +353,17 @@ void DirectoryManager::generateFileList() {
         QString name = QString::fromStdString(entry.path().filename());
         match = regex.match(name);
         if(match.hasMatch()) {
-            entryVec.emplace_back(Entry(name, entry.file_size(), entry.last_write_time(), entry.is_directory()));
+            Entry newEntry;
+            try {
+                newEntry.path = name;
+                newEntry.size = entry.file_size();
+                newEntry.modifyTime = entry.last_write_time();
+                newEntry.isDirectory = entry.is_directory();
+            } catch (const std::filesystem::__cxx11::filesystem_error &err) {
+                qDebug() << "[DirectoryManager]" << err.what();
+                continue;
+            }
+            entryVec.emplace_back(newEntry);
             /* It is probably worth implementing lazy loading in future.
              * Read names only, and other stuff ondemand.
              * This would give ~2x load speedup when we are just sorting by filename.

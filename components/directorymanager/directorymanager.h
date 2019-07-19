@@ -27,6 +27,7 @@
 class DirectoryManager;
 class Entry {
 public:
+    Entry() { }
     Entry( QString _path, std::uintmax_t _size, std::filesystem::file_time_type _modifyTime, bool _isDirectory)
         : path(_path),
           size(_size),
