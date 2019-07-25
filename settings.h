@@ -18,10 +18,10 @@
 enum SortingMode {
     NAME,
     NAME_DESC,
-    TIME,
-    TIME_DESC,
     SIZE,
-    SIZE_DESC
+    SIZE_DESC,
+    TIME,
+    TIME_DESC
 };
 
 enum ImageFitMode {

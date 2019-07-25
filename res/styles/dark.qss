@@ -34,17 +34,20 @@
 [accessibleName="CheckableButton"] {
     border-radius: 2px;
     padding: 7px 10px 7px 10px;
-    margin: 2px;
+    margin-top:    4px;
+    margin-bottom: 4px;
+    margin-left:   2px;
+    margin-right:  2px;
 }
 
 [accessibleName="CheckableButton"]:hover {
-    background-color: #2f2f30;
-    border: 1px solid #19191a;
+    background-color: #373738;
+    border: 1px solid #1a1a1b;
 }
 
 [accessibleName="CheckableButton"]:pressed, [accessibleName="CheckableButton"]:checked {
-    background-color: #373738;
-    border: 1px solid #1a1a1b;
+    background-color: #2f2f30;
+    border: 1px solid #19191a;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -82,9 +85,11 @@
 [accessibleName="PanelComboBox"] {
     background-color: #2f2f30;
     color: #aeaeae;
+
     border: 2px solid #2f2f30;
     border-radius: 2px;
-    padding: 5px 11px 5px 5px;
+
+    padding: 5px 8px 5px 5px;
     margin-top: 5px;
     margin-bottom: 5px;
     margin-left: 2px;
@@ -97,15 +102,14 @@
     border-color: #373738;
 }
 
-/* hides the default down arrow */
-[accessibleName="PanelComboBox"]::drop-down {
+[accessibleName="PanelComboBox"]::down-arrow {
     border: 0px;
-    width: 0px;
+    margin-right: 5px;
+    image: url(:/res/icons/buttons/sorting-mode16.png);
 }
 
-[accessibleName="PanelComboBox"]::down-arrow {
-    image: none;
-    width: 0px;
+[accessibleName="PanelComboBox"]::drop-down {
+    border: 0px;
 }
 
 [accessibleName="PanelComboBox"] QAbstractItemView {

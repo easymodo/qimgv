@@ -214,42 +214,42 @@
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QPushButton" name="showLabelsButton">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>38</width>
-            <height>38</height>
-           </size>
-          </property>
-          <property name="accessibleName">
-           <string>CheckableButton</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../../resources.qrc">
-            <normaloff>:/res/icons/buttons/labels.png</normaloff>:/res/icons/buttons/labels.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="showLabelsButton">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>38</width>
+          <height>38</height>
+         </size>
+        </property>
+        <property name="accessibleName">
+         <string>CheckableButton</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/res/icons/buttons/labels.png</normaloff>:/res/icons/buttons/labels.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item>
        <spacer name="horizontalSpacer_3">
@@ -291,72 +291,36 @@
          </size>
         </property>
         <property name="frame">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <item>
          <property name="text">
-          <string>Name  </string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../resources.qrc">
-           <normaloff>:/res/icons/buttons/arrow_up.png</normaloff>
-           <selectedoff>:/res/icons/buttons/arrow_up.png</selectedoff>
-           <selectedon>:/res/icons/buttons/arrow_up.png</selectedon>:/res/icons/buttons/arrow_up.png</iconset>
+          <string>Name (A - Z)</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Name </string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../resources.qrc">
-           <normaloff>:/res/icons/buttons/arrow_down.png</normaloff>
-           <selectedoff>:/res/icons/buttons/arrow_down.png</selectedoff>
-           <selectedon>:/res/icons/buttons/arrow_down.png</selectedon>:/res/icons/buttons/arrow_down.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Time </string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../resources.qrc">
-           <normaloff>:/res/icons/buttons/arrow_up.png</normaloff>
-           <selectedoff>:/res/icons/buttons/arrow_up.png</selectedoff>
-           <selectedon>:/res/icons/buttons/arrow_up.png</selectedon>:/res/icons/buttons/arrow_up.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Time </string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../resources.qrc">
-           <normaloff>:/res/icons/buttons/arrow_down.png</normaloff>
-           <selectedoff>:/res/icons/buttons/arrow_down.png</selectedoff>
-           <selectedon>:/res/icons/buttons/arrow_down.png</selectedon>:/res/icons/buttons/arrow_down.png</iconset>
+          <string>Name (Z - A)</string>
          </property>
         </item>
         <item>
          <property name="text">
           <string>Size </string>
          </property>
-         <property name="icon">
-          <iconset resource="../../resources.qrc">
-           <normaloff>:/res/icons/buttons/arrow_up.png</normaloff>
-           <selectedoff>:/res/icons/buttons/arrow_up.png</selectedoff>
-           <selectedon>:/res/icons/buttons/arrow_up.png</selectedon>:/res/icons/buttons/arrow_up.png</iconset>
+        </item>
+        <item>
+         <property name="text">
+          <string>Size (desc.)</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Size </string>
+          <string>Oldest</string>
          </property>
-         <property name="icon">
-          <iconset resource="../../resources.qrc">
-           <normaloff>:/res/icons/buttons/arrow_down.png</normaloff>
-           <selectedoff>:/res/icons/buttons/arrow_down.png</selectedoff>
-           <selectedon>:/res/icons/buttons/arrow_down.png</selectedon>:/res/icons/buttons/arrow_down.png</iconset>
+        </item>
+        <item>
+         <property name="text">
+          <string>Newest</string>
          </property>
         </item>
        </widget>
