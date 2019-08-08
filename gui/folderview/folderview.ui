@@ -474,7 +474,11 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="FolderGridView" name="thumbnailGrid"/>
+      <widget class="FolderGridView" name="thumbnailGrid">
+       <property name="optimizationFlags">
+        <set>QGraphicsView::DontClipPainter</set>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

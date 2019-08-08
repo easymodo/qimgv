@@ -283,12 +283,11 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
 }
 
 void FolderGridView::mousePressEvent(QMouseEvent *event) {
-    event->accept();
     ThumbnailView::mousePressEvent(event);
 }
 
 void FolderGridView::mouseReleaseEvent(QMouseEvent *event) {
-
+    event->ignore();
 }
 
 void FolderGridView::wheelEvent(QWheelEvent *event) {

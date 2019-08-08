@@ -282,5 +282,5 @@ void ThumbnailView::mousePressEvent(QMouseEvent *event) {
             return;
         }
     }
-    QGraphicsView::mousePressEvent(event);
+    event->ignore();
 }
