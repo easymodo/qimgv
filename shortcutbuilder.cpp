@@ -42,16 +42,17 @@ QString ShortcutBuilder::processMouseEvent(QMouseEvent *event) {
         sequence = "XButton2";
 
     sequence.prepend(modifierKeys(event));
-    if(event->type() == QEvent::MouseButtonDblClick)
-    {
+
+    if(event->type() == QEvent::MouseButtonDblClick) {
         sequence.append("_DoubleClick");
         return sequence;
-    } else if((event->type() == QEvent::MouseButtonPress   && event->button() != Qt::MiddleButton) ||
-              (event->type() == QEvent::MouseButtonRelease && event->button() == Qt::MiddleButton))
+    }
+    if((event->type() == QEvent::MouseButtonPress   && event->button() != Qt::RightButton) ||
+       (event->type() == QEvent::MouseButtonRelease && event->button() == Qt::RightButton))
     {
-        // Press event for middle button is reserved for zooming, use release instead
         return sequence;
     }
+
     return "";
 }
 //------------------------------------------------------------------------------

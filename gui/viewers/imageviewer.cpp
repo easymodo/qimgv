@@ -22,6 +22,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     posAnimation->setDuration(animationSpeed);
     animationTimer = new QTimer(this);
     animationTimer->setSingleShot(true);
+    zoomThreshold = static_cast<int>(devicePixelRatioF() * 4.);
     readSettings();
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
@@ -334,7 +335,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
     }
     mouseMoveStartPos = event->pos();
     mousePressPos = mouseMoveStartPos;
-    if(event->button() & Qt::MiddleButton) {
+    if(event->button() & Qt::RightButton) {
         setZoomPoint(event->pos() * devicePixelRatioF());
     } else {
         QWidget::mousePressEvent(event);
@@ -351,9 +352,9 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
         }
         mouseInteraction = MOUSE_DRAG;
         mouseWrapping ? mouseDragWrapping(event) : mouseDrag(event);
-    } else if(event->buttons() & Qt::MiddleButton && mouseInteraction != MOUSE_DRAG) {
+    } else if(event->buttons() & Qt::RightButton && mouseInteraction != MOUSE_DRAG) {
         // filter out possible mouse jitter by ignoring low delta drags
-        if(mouseInteraction == MOUSE_ZOOM || abs(mousePressPos.y() - event->pos().y()) > ZOOM_THRESHOLD) {
+        if(mouseInteraction == MOUSE_ZOOM || abs(mousePressPos.y() - event->pos().y()) > zoomThreshold) {
             if(cursor().shape() != Qt::SizeVerCursor) {
                 setCursor(Qt::SizeVerCursor);
             }

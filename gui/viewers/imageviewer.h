@@ -94,7 +94,8 @@ private:
     const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_DISTANCE = 250;
     const int animationSpeed = 150;
-    const int ZOOM_THRESHOLD = 4; // pixels
+    // how many px you can move while holding RMB until it counts as a zoom attempt
+    int zoomThreshold = 4;
     float maxScaleLimit = 4.0;
     float maxResolutionLimit = 75.0; // in megapixels
     float mOpacity;
