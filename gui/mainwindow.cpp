@@ -238,10 +238,10 @@ void MainWindow::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
 
 void MainWindow::saveWindowGeometry() {
     #ifdef __linux__
-        // Some Qt versions ago this one was misbehaving under kde,
-        // but now looks like it's the other way around..
+    if(this->isHidden())
+        settings->setWindowGeometry(QRect(pos(), size()));
+    else
         settings->setWindowGeometry(geometry());
-        //settings->setWindowGeometry(QRect(pos(), size()));
     #else
          settings->setWindowGeometry(QRect(pos(), size()));
     #endif
