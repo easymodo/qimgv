@@ -16,12 +16,12 @@
 #include "utils/script.h"
 
 enum SortingMode {
-    NAME,
-    NAME_DESC,
-    SIZE,
-    SIZE_DESC,
-    TIME,
-    TIME_DESC
+    SORT_NAME,
+    SORT_NAME_DESC,
+    SORT_SIZE,
+    SORT_SIZE_DESC,
+    SORT_TIME,
+    SORT_TIME_DESC
 };
 
 enum ImageFitMode {

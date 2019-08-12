@@ -448,25 +448,25 @@ void Core::saveImageToDisk(QString filePath) {
 }
 
 void Core::sortByName() {
-    auto mode = SortingMode::NAME;
+    auto mode = SortingMode::SORT_NAME;
     if(model->sortingMode() == mode)
-        mode = SortingMode::NAME_DESC;
+        mode = SortingMode::SORT_NAME_DESC;
     model->setSortingMode(mode);
     mw->onSortingChanged(mode);
 }
 
 void Core::sortByTime() {
-    auto mode = SortingMode::TIME;
+    auto mode = SortingMode::SORT_TIME;
     if(model->sortingMode() == mode)
-        mode = SortingMode::TIME_DESC;
+        mode = SortingMode::SORT_TIME_DESC;
     model->setSortingMode(mode);
     mw->onSortingChanged(mode);
 }
 
 void Core::sortBySize() {
-    auto mode = SortingMode::SIZE;
+    auto mode = SortingMode::SORT_SIZE;
     if(model->sortingMode() == mode)
-        mode = SortingMode::SIZE_DESC;
+        mode = SortingMode::SORT_SIZE_DESC;
     model->setSortingMode(mode);
     mw->onSortingChanged(mode);
 }

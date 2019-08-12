@@ -73,15 +73,15 @@ bool DirectoryManager::entryCompareString(Entry &e, QString path) {
 
 CompareFunction DirectoryManager::compareFunction() {
     CompareFunction cmpFn = &DirectoryManager::name_entry_compare;
-    if(mSortingMode == SortingMode::NAME_DESC)
+    if(mSortingMode == SortingMode::SORT_NAME_DESC)
         cmpFn = &DirectoryManager::name_entry_compare_reverse;
-    if(mSortingMode == SortingMode::TIME)
+    if(mSortingMode == SortingMode::SORT_TIME)
         cmpFn = &DirectoryManager::date_entry_compare;
-    if(mSortingMode == SortingMode::TIME_DESC)
+    if(mSortingMode == SortingMode::SORT_TIME_DESC)
         cmpFn = &DirectoryManager::date_entry_compare_reverse;
-    if(mSortingMode == SortingMode::SIZE)
+    if(mSortingMode == SortingMode::SORT_SIZE)
         cmpFn = &DirectoryManager::size_entry_compare;
-    if(mSortingMode == SortingMode::SIZE_DESC)
+    if(mSortingMode == SortingMode::SORT_SIZE_DESC)
         cmpFn = &DirectoryManager::size_entry_compare_reverse;
     return cmpFn;
 }

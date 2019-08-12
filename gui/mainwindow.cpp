@@ -219,12 +219,12 @@ void MainWindow::onSortingChanged(SortingMode mode) {
     folderView.get()->onSortingChanged(mode);
     if(centralWidget.get()->currentViewMode() == ViewMode::MODE_DOCUMENT) {
         switch(mode) {
-            case SortingMode::NAME:      showMessage("Sorting: By Name");              break;
-            case SortingMode::NAME_DESC: showMessage("Sorting: By Name (desc.)");      break;
-            case SortingMode::TIME:      showMessage("Sorting: By Time");              break;
-            case SortingMode::TIME_DESC: showMessage("Sorting: By Time (desc.)");      break;
-            case SortingMode::SIZE:      showMessage("Sorting: By File Size");         break;
-            case SortingMode::SIZE_DESC: showMessage("Sorting: By File Size (desc.)"); break;
+            case SortingMode::SORT_NAME:      showMessage("Sorting: By Name");              break;
+            case SortingMode::SORT_NAME_DESC: showMessage("Sorting: By Name (desc.)");      break;
+            case SortingMode::SORT_TIME:      showMessage("Sorting: By Time");              break;
+            case SortingMode::SORT_TIME_DESC: showMessage("Sorting: By Time (desc.)");      break;
+            case SortingMode::SORT_SIZE:      showMessage("Sorting: By File Size");         break;
+            case SortingMode::SORT_SIZE_DESC: showMessage("Sorting: By File Size (desc.)"); break;
         }
     }
 }

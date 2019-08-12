@@ -223,7 +223,7 @@ void Settings::setBlurBackground(bool mode) {
 //------------------------------------------------------------------------------
 void Settings::setSortingMode(SortingMode mode) {
     if(mode >= 6)
-        mode = SortingMode::NAME;
+        mode = SortingMode::SORT_NAME;
     settings->s->setValue("sortingMode", mode);
 }
 
