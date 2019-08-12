@@ -23,6 +23,8 @@ QMAKE_CXXFLAGS_RELEASE *= -O3
 
 CONFIG += c++17
 
+LIBS += -lexiv2
+
 #CONFIG += WITH_MPV
 #CONFIG += WITH_KDE_BLUR
 
@@ -62,6 +64,7 @@ PORTABLE {
 }
 
 SOURCES += \
+    gui/overlays/imageinfooverlay.cpp \
     main.cpp \
     core.cpp \
     components/actionmanager/actionmanager.cpp \
@@ -181,6 +184,7 @@ HEADERS += \
     gui/overlays/controlsoverlay.h \
     gui/overlays/cropoverlay.h \
     gui/overlays/floatingmessage.h \
+    gui/overlays/imageinfooverlay.h \
     gui/overlays/infooverlay.h \
     gui/overlays/mapoverlay.h \
     gui/panels/mainpanel/mainpanel.h \
@@ -251,6 +255,7 @@ HEADERS += \
 FORMS += \
     gui/dialogs/settingsdialog.ui \
     gui/dialogs/resizedialog.ui \
+    gui/overlays/imageinfooverlay.ui \
     gui/panels/croppanel/croppanel.ui \
     gui/panels/sidepanel/sidepanel.ui \
     gui/overlays/copyoverlay.ui \

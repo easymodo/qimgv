@@ -73,6 +73,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("F2", "renameFile");
     actionManager->defaults.insert("RMB", "contextMenu");
     actionManager->defaults.insert("menu", "contextMenu");
+    actionManager->defaults.insert("I", "toggleImageInfo");
 }
 //------------------------------------------------------------------------------
 void ActionManager::initShortcuts() {

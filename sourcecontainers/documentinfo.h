@@ -12,6 +12,12 @@
 #include <cstring>
 #include "utils/stuff.h"
 
+#include <exiv2/exiv2.hpp>
+
+#include <iostream>
+#include <iomanip>
+#include <cassert>
+
 #include <QImageReader>
 
 enum DocumentType { NONE, STATIC, ANIMATED, VIDEO };
@@ -34,6 +40,9 @@ public:
 
     QDateTime lastModified() const;
     void refresh();
+    void loadExifInfo();
+    QMap<QString, QString> getExifTags();
+
 private:
     QFileInfo fileInfo;
     DocumentType mImageType;
@@ -46,6 +55,7 @@ private:
     void loadExifOrientation();
     bool detectAPNG();
     bool detectAnimatedWebP();
+    QMap<QString, QString> exifTags;
 };
 
 #endif // DOCUMENTINFO_H

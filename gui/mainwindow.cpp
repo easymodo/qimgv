@@ -69,6 +69,7 @@ void MainWindow::setupUi() {
     saveOverlay = new SaveConfirmOverlay(docWidget.get());
 
     copyOverlay = new CopyOverlay(this);
+    imageInfoOverlay = new ImageInfoOverlay(this);
     changelogWindow = new ChangelogWindow(this);
     sidePanel = new SidePanel(this);
 
@@ -226,6 +227,13 @@ void MainWindow::onSortingChanged(SortingMode mode) {
             case SortingMode::SIZE_DESC: showMessage("Sorting: By File Size (desc.)"); break;
         }
     }
+}
+
+void MainWindow::toggleImageInfoOverlay() {
+    if(imageInfoOverlay->isHidden())
+        imageInfoOverlay->show();
+    else
+        imageInfoOverlay->hide();
 }
 
 bool MainWindow::isCropPanelActive() {
@@ -587,6 +595,10 @@ void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, 
     infoBarFullscreen->setText(windowTitle); // temporary
     setWindowTitle(windowTitle);
     infoBarWindowed->setInfo(posString, fileName, resString + "  " + sizeString);
+}
+
+void MainWindow::setExifInfo(QMap<QString, QString> info) {
+    imageInfoOverlay->setExifInfo(info);
 }
 
 std::shared_ptr<DirectoryViewWrapper> MainWindow::getFolderView() {

@@ -171,6 +171,15 @@ FloatingWidget {
     color: #bebebe;
 }
 
+FloatingWidget QLabel {
+    color: #bebebe;
+}
+
+FloatingWidget QTableWidget {
+    background-color: #232324;
+    color: #bebebe;
+}
+
 /*----------------------------------------------------------------------------*/
 /* Notifications */
 /*----------------------------------------------------------------------------*/

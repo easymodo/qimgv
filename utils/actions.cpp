@@ -73,5 +73,6 @@ void Actions::init() {
     mActions.insert("sortByName", QVersionNumber(0,7,83));
     mActions.insert("sortByTime", QVersionNumber(0,7,83));
     mActions.insert("sortBySize", QVersionNumber(0,7,83));
+    mActions.insert("toggleImageInfo", QVersionNumber(0,7,84));
 }
 

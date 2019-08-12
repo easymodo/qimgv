@@ -19,6 +19,7 @@
 #include "gui/overlays/cropoverlay.h"
 #include "gui/overlays/copyoverlay.h"
 #include "gui/overlays/changelogwindow.h"
+#include "gui/overlays/imageinfooverlay.h"
 #include "gui/dialogs/resizedialog.h"
 #include "gui/centralwidget.h"
 #include "components/actionmanager/actionmanager.h"
@@ -48,6 +49,7 @@ public:
     void showVideo(Clip *clip);
 
     void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize);
+    void setExifInfo(QMap<QString, QString>);
     std::shared_ptr<DirectoryViewWrapper> getFolderView();
     std::shared_ptr<DirectoryViewWrapper> getThumbnailPanel();
 private:
@@ -73,6 +75,8 @@ private:
     ChangelogWindow *changelogWindow;
 
     CopyOverlay *copyOverlay;
+
+    ImageInfoOverlay *imageInfoOverlay;
 
     ControlsOverlay *controlsOverlay;
     InfoOverlay *infoBarFullscreen;
@@ -186,6 +190,7 @@ public slots:
     void closeImage();
     void showContextMenu();
     void onSortingChanged(SortingMode);
+    void toggleImageInfoOverlay();
 };
 
 #endif // MainWindow_H

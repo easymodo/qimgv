@@ -57,6 +57,10 @@ private:
     void scrollSmooth(int angleDelta);
     QTimer loadTimer;
     bool blockThumbnailLoading;
+    // let's say mouse wheel scroll always sends angleDelta = 120
+    // then we can treat anything smaller as a touchpad scroll
+    // TODO: tune this value
+    const int SMOOTH_SCROLL_THRESHOLD = 120;
 
 protected:
     QGraphicsScene scene;

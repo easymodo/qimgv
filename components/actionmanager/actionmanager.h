@@ -109,6 +109,7 @@ signals:
     void sortByName();
     void sortByTime();
     void sortBySize();
+    void toggleImageInfo();
 };
 
 extern ActionManager *actionManager;

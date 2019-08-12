@@ -229,6 +229,8 @@ void ThumbnailView::wheelEvent(QWheelEvent *event) {
     } else {
         if(pixelDelta)
             scrollPrecise(pixelDelta);
+        else if(abs(angleDelta) < SMOOTH_SCROLL_THRESHOLD)
+            scrollPrecise(angleDelta);
         else if(angleDelta)
             scrollSmooth(angleDelta);
     }

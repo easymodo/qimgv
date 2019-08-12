@@ -144,6 +144,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(sortByName()), this, SLOT(sortByName()));
     connect(actionManager, SIGNAL(sortByTime()), this, SLOT(sortByTime()));
     connect(actionManager, SIGNAL(sortBySize()), this, SLOT(sortBySize()));
+    connect(actionManager, SIGNAL(toggleImageInfo()), mw, SLOT(toggleImageInfoOverlay()));
 }
 
 void Core::onUpdate() {
@@ -631,6 +632,7 @@ void Core::displayImage(std::shared_ptr<Image> img) {
         mw->showVideo(video->getClip());
     }
     img->isEdited() ? mw->showSaveOverlay() : mw->hideSaveOverlay();
+    mw->setExifInfo(img->getExifTags());
 }
 
 void Core::updateInfoString() {
