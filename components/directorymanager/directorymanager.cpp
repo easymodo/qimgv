@@ -350,7 +350,7 @@ void DirectoryManager::generateFileList() {
     t.start();
     QRegularExpressionMatch match;
     for(const auto & entry : fs::directory_iterator(currentPath.toStdString())) {
-        QString name = QString::fromStdString(entry.path().filename());
+        QString name = QString::fromStdString(entry.path().filename().string());
         match = regex.match(name);
         if(match.hasMatch()) {
             Entry newEntry;
