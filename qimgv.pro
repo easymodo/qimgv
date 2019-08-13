@@ -23,10 +23,22 @@ QMAKE_CXXFLAGS_RELEASE *= -O3
 
 CONFIG += c++17
 
-LIBS += -lexiv2
-
+#CONFIG += WITH_EXIV2
 #CONFIG += WITH_MPV
 #CONFIG += WITH_KDE_BLUR
+
+# support tags
+WITH_EXIV2 {
+    unix {
+        LIBS += -lexiv2
+    }
+    windows {
+        # static libs for EXIV2
+        LIBS += -L"C:/msys64/mingw32/lib/" -lexiv2 -lexiv2-xmp -liconv -lexpat -lz -lpsapi
+        # dynamic
+        #LIBS += -L"C:/msys64/mingw32/lib/" -lexiv2.dll
+    }
+}
 
 # video support
 WITH_MPV {

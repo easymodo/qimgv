@@ -12,11 +12,14 @@
 #include <cstring>
 #include "utils/stuff.h"
 
-#include <exiv2/exiv2.hpp>
+#ifdef WITH_EXIV2
 
+#include <exiv2/exiv2.hpp>
 #include <iostream>
 #include <iomanip>
 #include <cassert>
+
+#endif
 
 #include <QImageReader>
 

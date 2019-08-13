@@ -151,67 +151,81 @@ bool DocumentInfo::detectAnimatedWebP() {
 }
 
 void DocumentInfo::loadExifInfo() {
+    exifTags.clear();
     loadExifOrientation();
-
+#ifdef WITH_EXIV2
     try {
-        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(fileInfo.filePath().toStdString());
+        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(fileInfo.filePath().toStdWString());
         assert(image.get() != 0);
         image->readMetadata();
         Exiv2::ExifData &exifData = image->exifData();
-        if(exifData.empty()) {
+        if(exifData.empty())
             return;
-        }
-        exifTags.clear();
 
         Exiv2::ExifKey make("Exif.Image.Make");
-        exifTags.insert("Make", QString::fromStdString(exifData.findKey(make)->value().toString()));
-
         Exiv2::ExifKey model("Exif.Image.Model");
-        exifTags.insert("Model", QString::fromStdString(exifData.findKey(model)->value().toString()));
-
         Exiv2::ExifKey dateTime("Exif.Image.DateTime");
-        exifTags.insert("Date/Time", QString::fromStdString(exifData.findKey(dateTime)->value().toString()));
-
         Exiv2::ExifKey exposureTime("Exif.Photo.ExposureTime");
-        exifTags.insert("Exposure time", QString::fromStdString(exifData.findKey(exposureTime)->value().toString()));
-
         Exiv2::ExifKey fnumber("Exif.Photo.FNumber");
-        exifTags.insert("F Number", QString::fromStdString(exifData.findKey(fnumber)->value().toString()));
-
         Exiv2::ExifKey isoSpeedRatings("Exif.Photo.ISOSpeedRatings");
-        exifTags.insert("ISO Speed ratings", QString::fromStdString(exifData.findKey(isoSpeedRatings)->value().toString()));
-
         Exiv2::ExifKey flash("Exif.Photo.Flash");
-        exifTags.insert("Flash", QString::fromStdString(exifData.findKey(flash)->value().toString()));
-
         Exiv2::ExifKey focalLength("Exif.Photo.FocalLength");
-        exifTags.insert("Focal Length", QString::fromStdString(exifData.findKey(focalLength)->value().toString()));
 
-      //Exiv2::ExifData::const_iterator end = exifData.end();
-      /*for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i) {
-            const char* tn = i->typeName();
-            std::cout << std::setw(44) << std::setfill(' ') << std::left
-                      << i->key() << " "
-                      << "0x" << std::setw(4) << std::setfill('0') << std::right
-                      << std::hex << i->tag() << " "
-                      << std::setw(9) << std::setfill(' ') << std::left
-                      << (tn ? tn : "Unknown") << " "
-                      << std::dec << std::setw(3)
-                      << std::setfill(' ') << std::right
-                      << i->count() << "  "
-                      << std::dec << i->value()
-                      << "\n";
-            return;
+        Exiv2::ExifData::const_iterator it;
+
+        it = exifData.findKey(make);
+        if(it != exifData.end() /* && it->count() */)
+            exifTags.insert("Make", QString::fromStdString(it->value().toString()));
+
+        it = exifData.findKey(model);
+        if(it != exifData.end())
+            exifTags.insert("Model", QString::fromStdString(it->value().toString()));
+
+        it = exifData.findKey(dateTime);
+        if(it != exifData.end())
+            exifTags.insert("Date/Time", QString::fromStdString(it->value().toString()));
+
+        it = exifData.findKey(exposureTime);
+        if(it != exifData.end()) {
+            Exiv2::Rational r = it->toRational();
+            if(r.first < r.second) {
+                qreal exp = round(static_cast<qreal>(r.second) / r.first);
+                exifTags.insert("ExposureTime", "1/" + QString::number(exp) + " sec");
+            } else {
+                qreal exp = round(static_cast<qreal>(r.first) / r.second);
+                exifTags.insert("ExposureTime", QString::number(exp) + " sec");
+            }
         }
-        */
+
+        it = exifData.findKey(fnumber);
+        if(it != exifData.end()) {
+            Exiv2::Rational r = it->toRational();
+            qreal fn = static_cast<qreal>(r.first) / r.second;
+            exifTags.insert("F Number", "f/" + QString::number(fn, 'g', 3));
+        }
+
+        it = exifData.findKey(isoSpeedRatings);
+        if(it != exifData.end())
+            exifTags.insert("ISO Speed ratings", QString::fromStdString(it->value().toString()));
+
+        it = exifData.findKey(flash);
+        if(it != exifData.end())
+            exifTags.insert("Flash", QString::fromStdString(it->value().toString()));
+
+        it = exifData.findKey(focalLength);
+        if(it != exifData.end()) {
+            Exiv2::Rational r = it->toRational();
+            qreal fn = static_cast<qreal>(r.first) / r.second;
+            exifTags.insert("Focal Length", QString::number(fn, 'g', 3) + " mm");
+        }
+
         return;
     }
-    //catch (std::exception& e) {
-    //catch (Exiv2::AnyError& e) {
     catch (Exiv2::Error& e) {
         std::cout << "Caught Exiv2 exception '" << e.what() << "'\n";
         return;
     }
+#endif
 }
 
 QMap<QString, QString> DocumentInfo::getExifTags() {
