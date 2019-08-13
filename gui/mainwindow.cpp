@@ -143,6 +143,7 @@ void MainWindow::toggleFolderView() {
     hideCropPanel();
     copyOverlay->hide();
     mainPanel->hide();
+    imageInfoOverlay->hide();
     centralWidget->toggleViewMode();
 }
 
@@ -150,6 +151,7 @@ void MainWindow::enableFolderView() {
     hideCropPanel();
     copyOverlay->hide();
     mainPanel->hide();
+    imageInfoOverlay->hide();
     centralWidget->showFolderView();
 }
 
@@ -230,6 +232,8 @@ void MainWindow::onSortingChanged(SortingMode mode) {
 }
 
 void MainWindow::toggleImageInfoOverlay() {
+    if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
+        return;
     if(imageInfoOverlay->isHidden())
         imageInfoOverlay->show();
     else
@@ -576,25 +580,31 @@ void MainWindow::closeFullScreenOrExit() {
 }
 
 void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize) {
-    QString posString;
-    if(fileCount)
-        posString = "[ " + QString::number(fileIndex + 1) + "/" + QString::number(fileCount) + " ]";
-    QString resString;
-    if(imageSize.width())
-        resString = QString::number(imageSize.width()) + " x " + QString::number(imageSize.height());
-    QString sizeString;
-    if(fileSize)
-        sizeString = QString::number(fileSize / 1024) + " KiB";
+    if(fileName.isEmpty()) {
+        setWindowTitle(qApp->applicationName());
+        infoBarFullscreen->setText("No file opened."); // temporary
+        infoBarWindowed->setInfo("", "No file opened.", "");
+    } else {
+        QString posString;
+        if(fileCount)
+            posString = "[ " + QString::number(fileIndex + 1) + "/" + QString::number(fileCount) + " ]";
+        QString resString;
+        if(imageSize.width())
+            resString = QString::number(imageSize.width()) + " x " + QString::number(imageSize.height());
+        QString sizeString;
+        if(fileSize)
+            sizeString = QString::number(fileSize / 1024) + " KiB";
 
-    QString windowTitle = fileName;
-    if(settings->windowTitleExtendedInfo()) {
-        windowTitle.prepend(posString + "  ");
-        if(!resString.isEmpty())
-            windowTitle.append("  -  " + resString);
+        QString windowTitle = fileName;
+        if(settings->windowTitleExtendedInfo()) {
+            windowTitle.prepend(posString + "  ");
+            if(!resString.isEmpty())
+                windowTitle.append("  -  " + resString);
+        }
+        infoBarFullscreen->setText(windowTitle); // temporary
+        setWindowTitle(windowTitle);
+        infoBarWindowed->setInfo(posString, fileName, resString + "  " + sizeString);
     }
-    infoBarFullscreen->setText(windowTitle); // temporary
-    setWindowTitle(windowTitle);
-    infoBarWindowed->setInfo(posString, fileName, resString + "  " + sizeString);
 }
 
 void MainWindow::setExifInfo(QMap<QString, QString> info) {

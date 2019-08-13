@@ -25,7 +25,6 @@ QDataStream& operator>>(QDataStream& in, Script& v) {
 }
 
 int main(int argc, char *argv[]) {
-
     // I'm not sure what this does but "1" breaks the UI
     // Huge widgets but tiny fonts
     qputenv("QT_AUTO_SCREEN_SCALE_FACTOR","0");

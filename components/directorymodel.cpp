@@ -4,7 +4,7 @@ DirectoryModel::DirectoryModel(QObject *parent) : QObject(parent) {
     thumbnailer = new Thumbnailer(&dirManager); // remove pointers
     scaler = new Scaler(&cache);
 
-    connect(&dirManager, &DirectoryManager::fileRemoved, this, &DirectoryModel::fileRemoved);
+    connect(&dirManager, &DirectoryManager::fileRemoved, this, &DirectoryModel::onFileRemoved);
     connect(&dirManager, &DirectoryManager::fileAdded, this, &DirectoryModel::fileAdded);
     connect(&dirManager, &DirectoryManager::fileModified,this, &DirectoryModel::fileModified);
     connect(&dirManager, &DirectoryManager::fileRenamed, this, &DirectoryModel::fileRenamed);
@@ -219,6 +219,12 @@ void DirectoryModel::onSortingChanged() {
         preload(dirManager.nextOf(mCurrentFileName));
     }
     emit sortingChanged();
+}
+
+void DirectoryModel::onFileRemoved(QString fileName, int index) {
+    if(!dirManager.fileCount())
+        mCurrentFileName = "";
+    emit fileRemoved(fileName, index);
 }
 
 std::shared_ptr<Image> DirectoryModel::getItemAt(int index) {

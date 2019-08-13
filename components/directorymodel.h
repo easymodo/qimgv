@@ -77,6 +77,7 @@ private:
 private slots:
     void onItemReady(std::shared_ptr<Image> img);
     void onSortingChanged();
+    void onFileRemoved(QString fileName, int index);
 };
 
 #endif // DIRECTORYMODEL_H

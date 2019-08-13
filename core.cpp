@@ -276,15 +276,12 @@ void Core::removeFile(QString fileName, bool trash) {
 
 void Core::onFileRemoved(QString fileName, int index) {
     model->cache.remove(fileName);
-//    mw->removeThumbnail(index);
     // removing current file. try switching to another
-    if(model->currentFileName() == fileName) {
-        if(!model->itemCount()) {
-            mw->closeImage();
-        } else {
-            if(!model->setIndexAsync(index))
-                model->setIndexAsync(--index);
-        }
+    if(!model->itemCount()) {
+        mw->closeImage();
+    } else if(model->currentFileName() == fileName) {
+        if(!model->setIndexAsync(index))
+            model->setIndexAsync(--index);
     }
     updateInfoString();
 }

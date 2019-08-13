@@ -9,10 +9,10 @@ InfoBar::InfoBar(QWidget *parent) :
     ui(new Ui::InfoBar)
 {
     ui->setupUi(this);
+    ui->path->setText("No file opened.");
 }
 
-InfoBar::~InfoBar()
-{
+InfoBar::~InfoBar() {
     delete ui;
 }
 
