@@ -6,6 +6,7 @@ ImageInfoOverlay::ImageInfoOverlay(OverlayContainerWidget *parent) :
     ui(new Ui::ImageInfoOverlay)
 {
     ui->setupUi(this);
+    hide();
     ui->tableWidget->setColumnWidth(0, 120);
     ui->tableWidget->setColumnWidth(1, 142);
     this->setPosition(FloatingWidgetPosition::RIGHT);

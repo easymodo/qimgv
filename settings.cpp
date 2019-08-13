@@ -334,7 +334,7 @@ void Settings::setHighlightColor(QColor color) {
 }
 //------------------------------------------------------------------------------
 bool Settings::fullscreenMode() {
-    return settings->s->value("openInFullscreen", true).toBool();
+    return settings->s->value("openInFullscreen", false).toBool();
 }
 
 void Settings::setFullscreenMode(bool mode) {
@@ -350,7 +350,7 @@ void Settings::setPanelEnabled(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::panelFullscreenOnly() {
-    return settings->s->value("panelFullscreenOnly", false).toBool();
+    return settings->s->value("panelFullscreenOnly", true).toBool();
 }
 
 void Settings::setPanelFullscreenOnly(bool mode) {
@@ -624,7 +624,7 @@ void Settings::setInfoBarFullscreen(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::infoBarWindowed() {
-    return settings->s->value("infoBarWindowed", false).toBool();
+    return settings->s->value("infoBarWindowed", true).toBool();
 }
 
 void Settings::setInfoBarWindowed(bool mode) {
@@ -632,7 +632,7 @@ void Settings::setInfoBarWindowed(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::windowTitleExtendedInfo() {
-    return settings->s->value("windowTitleExtendedInfo", true).toBool();
+    return settings->s->value("windowTitleExtendedInfo", false).toBool();
 }
 
 void Settings::setWindowTitleExtendedInfo(bool mode) {
