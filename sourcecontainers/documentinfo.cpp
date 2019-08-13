@@ -153,9 +153,14 @@ bool DocumentInfo::detectAnimatedWebP() {
 void DocumentInfo::loadExifInfo() {
     exifTags.clear();
     loadExifOrientation();
-#ifdef WITH_EXIV2
+#ifdef USE_EXIV2
     try {
-        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(fileInfo.filePath().toStdWString());
+        std::unique_ptr<Exiv2::Image> image;
+#ifdef Q_OS_WIN32
+        image = Exiv2::ImageFactory::open(fileInfo.filePath().toStdWString());
+#else
+        image = Exiv2::ImageFactory::open(fileInfo.filePath().toStdString());
+#endif
         assert(image.get() != 0);
         image->readMetadata();
         Exiv2::ExifData &exifData = image->exifData();

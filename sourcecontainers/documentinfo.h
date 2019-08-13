@@ -12,7 +12,7 @@
 #include <cstring>
 #include "utils/stuff.h"
 
-#ifdef WITH_EXIV2
+#ifdef USE_EXIV2
 
 #include <exiv2/exiv2.hpp>
 #include <iostream>

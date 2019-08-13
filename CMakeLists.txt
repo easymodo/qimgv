@@ -13,7 +13,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -lstdc++fs -O3")
 if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.0)
     message(FATAL_ERROR "\n!!! THIS PROJECT REQUIRES GCC 8 OR LATER !!!\n"
                     "If you already have gcc 8+ you can force it like this:\n"
-                    "CC=gcc-8 CXX=g++-8 cmake ......")
+                    "CC=gcc-8 CXX=g++-8 cmake [......]")
     # force gcc 8
     #set(CMAKE_C_COMPILER "gcc-8")
     #set(CMAKE_CXX_COMPILER "g++-8")
@@ -26,6 +26,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # USER OPTIONS
 # Usage: cmake -DVIDEO_SUPPORT=ON [...]
+option(EXIV2 "For reading/writing exif tags" ON)
 option(VIDEO_SUPPORT "Enable video support" OFF)
 option(KDE_SUPPORT "Support blur when using KDE" OFF)
 
@@ -35,9 +36,18 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
+
+if(EXIV2)
+    find_package(Exiv2 REQUIRED)
+    if(NOT ${EXIV2_FOUND})
+        message(FATAL_ERROR "** Unable to locate Exiv2... is it installed?")
+    endif()
+endif()
+
 if(KDE_SUPPORT) # do i also need one for mpv?
     find_package(KF5WindowSystem REQUIRED)
 endif()
+
 
 # INCLUDE SOURCES
 file(GLOB SRC *.cpp)
@@ -58,6 +68,10 @@ add_executable(qimgv ${SRC} ${SRC_Components} ${SRC_SourceContainers} ${SRC_Util
 target_link_libraries(qimgv Qt5::Core Qt5::Widgets Qt5::Concurrent stdc++fs)
 
 # OPTION DEFINITIONS, LINKING
+if(EXIV2)
+    target_link_libraries(qimgv exiv2)
+    add_definitions(-DUSE_EXIV2)
+endif()
 if(KDE_SUPPORT)
     target_link_libraries(qimgv KF5::WindowSystem)
     add_definitions(-DUSE_KDE_BLUR)
@@ -66,6 +80,7 @@ if(VIDEO_SUPPORT)
     target_link_libraries(qimgv mpv)
     add_definitions(-DUSE_MPV)
 endif()
+
 
 ## INSTALLATION
 

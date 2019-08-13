@@ -23,12 +23,13 @@ QMAKE_CXXFLAGS_RELEASE *= -O3
 
 CONFIG += c++17
 
-#CONFIG += WITH_EXIV2
+CONFIG += WITH_EXIV2
 #CONFIG += WITH_MPV
 #CONFIG += WITH_KDE_BLUR
 
 # support tags
 WITH_EXIV2 {
+    DEFINES += USE_EXIV2
     unix {
         LIBS += -lexiv2
     }
