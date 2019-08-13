@@ -1,4 +1,4 @@
-qimgv | Current version: 0.7.3
+qimgv | Current version: 0.8
 =====
 Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
 
@@ -36,12 +36,14 @@ Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
 | Goto last image  | End |
 | Zoom in  | Ctrl+MouseWheel / Crtl+Up |
 | Zoom out  | Ctrl+MouseWheel / Crtl+Down |
+| Zoom | Hold right mouse btn & move up / down |
 | Fit mode: window | 1 |
 | Fit mode: width | 2 |
 | Fit mode: 1:1 (no scaling) | 3 |
 | Switch fit modes  | Space |
 | Toggle fullscreen mode  | DoubleClick / F / F11 |
 | Exit fullscreen mode | Esc |
+| Show image info  | I |
 | Crop image  | X |
 | Resize image  | R |
 | Rotate left  | Ctrl+L |
@@ -56,7 +58,9 @@ Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
 | Settings  | Ctrl+P |
 | Exit application | Esc / Ctrl+Q / Alt+X / MiddleClick |
 
-Note: you can configure every shortcut listed above by going to __Settings > Controls__
+... and more.
+
+Note: you can configure every shortcut by going to __Settings > Controls__
 
 ## User interface
 
@@ -111,7 +115,7 @@ If you are linux user, install the latest [QtApng by Skycoder42](https://github.
 
 ### RAW support
 
-Viewing raw is supported via [qtraw plugin](https://github.com/mardy/qtraw). It is not included in windows release at the time.
+Viewing raw is supported via [qtraw plugin](https://gitlab.com/mardy/qtraw). It is not included in windows release at the time.
 
 ## Installation instructions
 
@@ -143,7 +147,7 @@ _Fedora:_
 sudo dnf install git cmake make qt5 qt5-devel gcc-c++ qt5-devel
 ```
 	
-__2. _(Optional)_ Dependencies for video playback ( libmpv >= 0.22, mpv )__
+__1.1. _(Optional)_ Dependencies for video playback ( libmpv >= 0.22, mpv )__
   	
 _Ubuntu & derivatives:_
      
@@ -158,29 +162,43 @@ Enable RPMFusion [https://rpmfusion.org/Configuration](https://rpmfusion.org/Con
 ```
 sudo dnf install mpv mpv-libs-devel
 ```
+
+__1.2. _(Optional)_ Dependency for kde integration ( libkf5windowsystem-dev )__
+
+_Ubuntu & derivatives:_
+     
+```
+sudo apt install libkf5windowsystem-dev
+```
+_Fedora_:
+	
+```
+dnf install kf5-kwindowsystem
+```
 		
 __2. Build__
 ```
 git clone https://github.com/easymodo/qimgv.git
 cd qimgv && mkdir -p build && cd build
 ```
+Choose one of the following (depending on optional features you want):
 
 2a. Regular build
 
 ```
-cmake -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make -j4
+cmake -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make
 ```
 
 2b. Build with __video support__ (note: negatively affects startup speed)
 
 ```
-cmake -DVIDEO_SUPPORT=ON -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make -j4
+cmake -DVIDEO_SUPPORT=ON -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make
 ```
 
 2c. Build with better __KDE support__
 
 ```
-cmake -DKDE_SUPPORT=ON -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make -j4
+cmake -DKDE_SUPPORT=ON -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make
 ```
 
 __3. Install__

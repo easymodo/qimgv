@@ -151,17 +151,17 @@ void Core::onUpdate() {
     QVersionNumber lastVer = settings->lastVersion();
     actionManager->resetDefaultsFromVersion(lastVer);
     actionManager->saveShortcuts();
-    settings->setLastVersion(appVersion);
     qDebug() << "Updated: " << settings->lastVersion().toString() << ">" << appVersion.toString();
     // TODO: finish changelogs
     //if(settings->showChangelogs())
     //    mw->showChangelogWindow();
-    mw->showMessage("Updated: "+settings->lastVersion().toString()+" > "+appVersion.toString());
+    mw->showMessage("Updated: " + settings->lastVersion().toString() + " > " + appVersion.toString(), 4000);
+    settings->setLastVersion(appVersion);
 }
 
 void Core::onFirstRun() {
     //mw->showSomeSortOfWelcomeScreen();
-    mw->showMessage("Welcome to qimgv version " + appVersion.toString() + "!", 3000);
+    mw->showMessage("Welcome to qimgv version " + appVersion.toString() + "!", 4000);
     settings->setFirstRun(false);
 }
 
