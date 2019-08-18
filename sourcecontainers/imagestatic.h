@@ -6,6 +6,7 @@
 #include <QSemaphore>
 #include "image.h"
 #include "utils/imagelib.h"
+#include <QIcon>
 
 class ImageStatic : public Image {
 public:
@@ -32,6 +33,8 @@ public slots:
 private:
     void load();
     std::shared_ptr<const QImage> image, imageEdited;
+    void loadGeneric();
+    void loadICO();
 };
 
 #endif // QIMAGESTATIC_H

@@ -46,6 +46,10 @@ DocumentType DocumentInfo::type() const {
     return mImageType;
 }
 
+QMimeType DocumentInfo::mimeType() const {
+    return mMimeType;
+}
+
 const char *DocumentInfo::extension() const {
     return mExtension;
 }
@@ -72,8 +76,8 @@ int DocumentInfo::exifOrientation() const {
 // TODO: this is just bad
 void DocumentInfo::detectType() {
     QMimeDatabase mimeDb;
-    QMimeType mimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
-    QString mimeName = mimeType.name();
+    mMimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
+    QString mimeName = mMimeType.name();
 
     if(mimeName == "video/webm") {
         mExtension = "webm";

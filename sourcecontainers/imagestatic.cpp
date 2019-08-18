@@ -21,9 +21,32 @@ void ImageStatic::load() {
     if(isLoaded()) {
         return;
     }
+    if(mDocInfo->mimeType().name() == "image/vnd.microsoft.icon")
+        loadICO();
+    else
+        loadGeneric();
+}
+
+
+void ImageStatic::loadGeneric() {
     std::unique_ptr<const QImage> img(new QImage(mPath, mDocInfo->extension()));
-    img = ImageLib::exifRotated(std::move(img), this->mDocInfo.get()->exifOrientation());
+    img = ImageLib::exifRotated(std::move(img), mDocInfo.get()->exifOrientation());
     // set image
+    image = std::move(img);
+    mLoaded = true;
+}
+
+// TODO: move this out somewhere to use in other places
+void ImageStatic::loadICO() {
+    // Big brain code. It's mostly for small ico files so whatever. I'm not patching Qt for this.
+    QIcon icon(mPath);
+    QList<QSize> sizes = icon.availableSizes();
+    QSize maxSize(0, 0);
+    for(auto sz : sizes)
+        if(maxSize.width() < sz.width())
+            maxSize = sz;
+    QPixmap iconPix = icon.pixmap(maxSize);
+    std::unique_ptr<const QImage> img(new QImage(iconPix.toImage()));
     image = std::move(img);
     mLoaded = true;
 }

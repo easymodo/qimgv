@@ -36,6 +36,7 @@ public:
     QString baseName() const;
     int fileSize() const;
     DocumentType type() const;
+    QMimeType mimeType() const;
 
     // file extension (guessed from mime-type)
     const char* extension() const;
@@ -59,6 +60,7 @@ private:
     bool detectAPNG();
     bool detectAnimatedWebP();
     QMap<QString, QString> exifTags;
+    QMimeType mMimeType;
 };
 
 #endif // DOCUMENTINFO_H
