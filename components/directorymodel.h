@@ -52,7 +52,7 @@ public:
     SortingMode sortingMode();
 signals:
     void fileRemoved(QString fileName, int index);
-    void fileRenamed(QString from, QString to);
+    void fileRenamed(QString from, int indexFrom, QString to, int indexTo);
     void fileAdded(QString fileName);
     void fileModified(QString fileName);
     void directoryChanged(QString);

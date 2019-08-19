@@ -74,7 +74,7 @@ private slots:
     void copyFile(QString destDirectory);
     void removeFile(QString fileName, bool trash);
     void onFileRemoved(QString fileName, int index);
-    void onFileRenamed(QString from, QString to);
+    void onFileRenamed(QString from, int indexFrom, QString to, int indexTo);
     void onFileAdded(QString fileName);
     void onFileModified(QString fileName);
     void showResizeDialog();

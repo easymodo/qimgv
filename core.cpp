@@ -84,7 +84,7 @@ void Core::connectComponents() {
     connect(model.get(), SIGNAL(fileRemoved(QString, int)), this, SLOT(onFileRemoved(QString, int)));
     connect(model.get(), SIGNAL(fileAdded(QString)), this, SLOT(onFileAdded(QString)));
     connect(model.get(), SIGNAL(fileModified(QString)), this, SLOT(onFileModified(QString)));
-    connect(model.get(), SIGNAL(fileRenamed(QString, QString)), this, SLOT(onFileRenamed(QString, QString)));
+    connect(model.get(), SIGNAL(fileRenamed(QString, int, QString, int)), this, SLOT(onFileRenamed(QString, int, QString, int)));
 
     connect(model.get(), SIGNAL(itemReady(std::shared_ptr<Image>)), this, SLOT(onModelItemReady(std::shared_ptr<Image>)));
     connect(model.get(), SIGNAL(itemUpdated(std::shared_ptr<Image>)), this, SLOT(onModelItemUpdated(std::shared_ptr<Image>)));
@@ -283,11 +283,11 @@ void Core::onFileRemoved(QString fileName, int index) {
     updateInfoString();
 }
 
-void Core::onFileRenamed(QString from, QString to) {
+void Core::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
     model->cache.remove(from);
     if(model->currentFileName() == from) {
         model->cache.clear(); // ? do it in the model itself
-        model->setIndexAsync(model->indexOf(to));
+        model->setIndexAsync(indexTo);
     }
 }
 

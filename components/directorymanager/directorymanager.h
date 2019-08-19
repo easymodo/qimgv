@@ -118,7 +118,7 @@ signals:
     void fileRemoved(QString, int);
     void fileModified(QString);
     void fileAdded(QString);
-    void fileRenamed(QString from, QString to);
+    void fileRenamed(QString from, int indexFrom, QString to, int indexTo);
 };
 
 #endif // DIRECTORYMANAGER_H

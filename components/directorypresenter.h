@@ -26,7 +26,7 @@ public slots:
     void loadByIndex(int);
 private slots:
     void onFileRemoved(QString fileName, int index);
-    void onFileRenamed(QString from, QString to);
+    void onFileRenamed(QString from, int indexFrom, QString to, int indexTo);
     void onFileAdded(QString fileName);
     void onFileModified(QString fileName);
 

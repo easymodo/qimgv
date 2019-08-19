@@ -183,7 +183,7 @@
           <string>ButtonSetLeft</string>
          </property>
          <property name="text">
-          <string>OK</string>
+          <string>Rename</string>
          </property>
         </widget>
        </item>

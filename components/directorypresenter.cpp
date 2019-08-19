@@ -10,8 +10,8 @@ void DirectoryPresenter::unsetModel() {
                this, SLOT(onFileAdded(QString)));
     disconnect(model.get(), SIGNAL(fileModified(QString)),
                this, SLOT(onFileModified(QString)));
-    disconnect(model.get(), SIGNAL(fileRenamed(QString, QString)),
-               this, SLOT(onFileRenamed(QString, QString)));
+    disconnect(model.get(), SIGNAL(fileRenamed(QString, int, QString, int)),
+               this, SLOT(onFileRenamed(QString, int, QString, int)));
     disconnect(model.get(), SIGNAL(directoryChanged(QString)),
                this, SLOT(reloadModel()));
     disconnect(model.get(), SIGNAL(sortingChanged()),
@@ -41,8 +41,8 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
             this, SLOT(onFileAdded(QString)), Qt::UniqueConnection);
     connect(model.get(), SIGNAL(fileModified(QString)),
             this, SLOT(onFileModified(QString)), Qt::UniqueConnection);
-    connect(model.get(), SIGNAL(fileRenamed(QString, QString)),
-            this, SLOT(onFileRenamed(QString, QString)), Qt::UniqueConnection);
+    connect(model.get(), SIGNAL(fileRenamed(QString, int, QString, int)),
+            this, SLOT(onFileRenamed(QString, int, QString, int)), Qt::UniqueConnection);
 
     connect(model.get(), SIGNAL(indexChanged(int)),
             this, SLOT(setCurrentIndex(int)), Qt::UniqueConnection);
@@ -93,12 +93,15 @@ void DirectoryPresenter::onFileRemoved(QString fileName, int index) {
     }
 }
 
-void DirectoryPresenter::onFileRenamed(QString from, QString to) {
+void DirectoryPresenter::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
     Q_UNUSED(from)
     Q_UNUSED(to)
 
-    //mw->removeThumbnail(oldIndex);
-    //mw->addThumbnail(newIndex);
+    for(int i=0; i<views.count(); i++) {
+        views.at(i)->removeItem(indexFrom);
+        views.at(i)->insertItem(indexTo);
+    }
+    setCurrentIndex(model->currentIndex());
 }
 
 void DirectoryPresenter::onFileAdded(QString fileName) {
