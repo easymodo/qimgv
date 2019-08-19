@@ -20,6 +20,7 @@
 #include "gui/overlays/copyoverlay.h"
 #include "gui/overlays/changelogwindow.h"
 #include "gui/overlays/imageinfooverlay.h"
+#include "gui/overlays/renameoverlay.h"
 #include "gui/dialogs/resizedialog.h"
 #include "gui/centralwidget.h"
 #include "components/actionmanager/actionmanager.h"
@@ -76,6 +77,8 @@ private:
 
     CopyOverlay *copyOverlay;
 
+    RenameOverlay *renameOverlay;
+
     ImageInfoOverlay *imageInfoOverlay;
 
     ControlsOverlay *controlsOverlay;
@@ -120,6 +123,7 @@ signals:
     void copyRequested(QString);
     void moveRequested(QString);
     void resizeRequested(QSize);
+    void renameRequested(QString);
     void cropRequested(QRect);
     void discardEditsRequested();
     void saveAsClicked();
@@ -191,6 +195,7 @@ public slots:
     void showContextMenu();
     void onSortingChanged(SortingMode);
     void toggleImageInfoOverlay();
+    void toggleRenameOverlay();
 };
 
 #endif // MainWindow_H

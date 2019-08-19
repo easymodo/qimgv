@@ -72,6 +72,7 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(saveRequested(QString)), this, SLOT(saveImageToDisk(QString)));
     connect(mw, SIGNAL(discardEditsRequested()), this, SLOT(discardEdits()));
     connect(mw, SIGNAL(sortingSelected(SortingMode)), this, SLOT(sortBy(SortingMode)));
+    connect(mw, &MainWindow::renameRequested, this, &Core::renameCurrentFile);
 
     // scaling
     connect(mw, SIGNAL(scalingRequested(QSize)),
@@ -138,7 +139,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(reloadImage()), this, SLOT(reloadImage()));
     connect(actionManager, SIGNAL(copyFileClipboard()), this, SLOT(copyFileClipboard()));
     connect(actionManager, SIGNAL(copyPathClipboard()), this, SLOT(copyPathClipboard()));
-    connect(actionManager, SIGNAL(renameFile()), this, SLOT(renameRequested()));
+    connect(actionManager, SIGNAL(renameFile()), this, SLOT(showRenameDialog()));
     connect(actionManager, SIGNAL(contextMenu()), mw, SLOT(showContextMenu()));
     connect(actionManager, SIGNAL(toggleTransparencyGrid()), mw, SIGNAL(toggleTransparencyGrid()));
     connect(actionManager, SIGNAL(sortByName()), this, SLOT(sortByName()));
@@ -228,10 +229,6 @@ void Core::copyPathClipboard() {
         return;
     QApplication::clipboard()->setText(model->currentFilePath());
     mw->showMessage("Path copied");
-}
-
-void Core::renameRequested() {
-    renameCurrentFile("new.png");
 }
 
 void Core::sortBy(SortingMode mode) {
@@ -466,6 +463,12 @@ void Core::sortBySize() {
         mode = SortingMode::SORT_SIZE_DESC;
     model->setSortingMode(mode);
     mw->onSortingChanged(mode);
+}
+
+void Core::showRenameDialog() {
+    if(!model->itemCount())
+        return;
+    mw->toggleRenameOverlay();
 }
 
 void Core::runScript(const QString &scriptName) {

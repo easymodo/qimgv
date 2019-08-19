@@ -78,6 +78,7 @@ PORTABLE {
 
 SOURCES += \
     gui/overlays/imageinfooverlay.cpp \
+    gui/overlays/renameoverlay.cpp \
     main.cpp \
     core.cpp \
     components/actionmanager/actionmanager.cpp \
@@ -200,6 +201,7 @@ HEADERS += \
     gui/overlays/imageinfooverlay.h \
     gui/overlays/infooverlay.h \
     gui/overlays/mapoverlay.h \
+    gui/overlays/renameoverlay.h \
     gui/panels/mainpanel/mainpanel.h \
     gui/panels/mainpanel/thumbnailstrip.h \
     gui/viewers/imageviewer.h \
@@ -269,6 +271,7 @@ FORMS += \
     gui/dialogs/settingsdialog.ui \
     gui/dialogs/resizedialog.ui \
     gui/overlays/imageinfooverlay.ui \
+    gui/overlays/renameoverlay.ui \
     gui/panels/croppanel/croppanel.ui \
     gui/panels/sidepanel/sidepanel.ui \
     gui/overlays/copyoverlay.ui \

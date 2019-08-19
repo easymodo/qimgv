@@ -69,6 +69,7 @@ void MainWindow::setupUi() {
     saveOverlay = new SaveConfirmOverlay(docWidget.get());
 
     copyOverlay = new CopyOverlay(this);
+    renameOverlay = new RenameOverlay(this);
     imageInfoOverlay = new ImageInfoOverlay(this);
     changelogWindow = new ChangelogWindow(this);
     sidePanel = new SidePanel(this);
@@ -88,6 +89,8 @@ void MainWindow::setupUi() {
             this, SIGNAL(copyRequested(QString)));
     connect(copyOverlay, SIGNAL(moveRequested(QString)),
             this, SIGNAL(moveRequested(QString)));
+
+    connect(renameOverlay, &RenameOverlay::renameRequested, this, &MainWindow::renameRequested);
     floatingMessage = new FloatingMessage(this);
     thumbnailStrip.reset(new ThumbnailStrip());
     mainPanel = new MainPanel(thumbnailStrip, this);
@@ -142,6 +145,7 @@ void MainWindow::setupUi() {
 void MainWindow::toggleFolderView() {
     hideCropPanel();
     copyOverlay->hide();
+    renameOverlay->hide();
     mainPanel->hide();
     imageInfoOverlay->hide();
     centralWidget->toggleViewMode();
@@ -150,6 +154,7 @@ void MainWindow::toggleFolderView() {
 void MainWindow::enableFolderView() {
     hideCropPanel();
     copyOverlay->hide();
+    renameOverlay->hide();
     mainPanel->hide();
     imageInfoOverlay->hide();
     centralWidget->showFolderView();
@@ -238,6 +243,15 @@ void MainWindow::toggleImageInfoOverlay() {
         imageInfoOverlay->show();
     else
         imageInfoOverlay->hide();
+}
+
+void MainWindow::toggleRenameOverlay() {
+    if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
+        return;
+    if(renameOverlay->isHidden())
+        renameOverlay->show();
+    else
+        renameOverlay->hide();
 }
 
 bool MainWindow::isCropPanelActive() {
@@ -580,6 +594,7 @@ void MainWindow::closeFullScreenOrExit() {
 }
 
 void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize) {
+    renameOverlay->setName(fileName);
     if(fileName.isEmpty()) {
         setWindowTitle(qApp->applicationName());
         infoBarFullscreen->setText("No file opened."); // temporary

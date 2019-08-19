@@ -180,6 +180,26 @@ FloatingWidget QTableWidget {
     color: #bebebe;
 }
 
+FloatingWidget QLineEdit {
+    background-color: #2f2f30;
+    color: #aeaeae;
+    border: 2px solid #2f2f30;
+    border-radius: 2px;
+    padding: 4px 8px 4px 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 2px;
+    margin-right:2px;
+}
+
+FloatingWidget QLineEdit::focus {
+    border-color: #404042;
+}
+
+FloatingWidget QLineEdit::hover {
+    border-color: #404042;
+}
+
 /*----------------------------------------------------------------------------*/
 /* Notifications */
 /*----------------------------------------------------------------------------*/
