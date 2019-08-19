@@ -138,7 +138,7 @@
       <widget class="QLineEdit" name="fileName">
        <property name="minimumSize">
         <size>
-         <width>220</width>
+         <width>250</width>
          <height>0</height>
         </size>
        </property>
@@ -179,6 +179,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="okButton">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
          <property name="accessibleName">
           <string>ButtonSetLeft</string>
          </property>
@@ -189,6 +192,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="cancelButton">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
          <property name="accessibleName">
           <string>ButtonSetRight</string>
          </property>
