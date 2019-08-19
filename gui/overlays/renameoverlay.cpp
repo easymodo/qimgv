@@ -19,6 +19,7 @@ RenameOverlay::~RenameOverlay() {
 }
 
 void RenameOverlay::show() {
+    selectName();
     FloatingWidget::show();
     QTimer::singleShot(0, ui->fileName, SLOT(setFocus()));
 }
@@ -31,6 +32,12 @@ void RenameOverlay::hide() {
 void RenameOverlay::setName(QString name) {
     ui->fileName->setText(name);
     origName = name;
+    selectName();
+}
+
+void RenameOverlay::selectName() {
+    int end = ui->fileName->text().lastIndexOf(".");
+    ui->fileName->setSelection(0, end);
 }
 
 void RenameOverlay::rename() {

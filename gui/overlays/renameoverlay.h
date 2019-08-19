@@ -37,6 +37,7 @@ private slots:
 private:
     Ui::RenameOverlay *ui;
     QString origName;
+    void selectName();
 };
 
 #endif // RENAMEOVERLAY_H
