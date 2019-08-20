@@ -15,7 +15,7 @@ public:
 
     virtual void run() override;
 
-Q_SIGNALS:
+signals:
     void fileEvent(LinuxFsEvent* event);
 
 private:

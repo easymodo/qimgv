@@ -11,10 +11,10 @@ DirectoryManager::DirectoryManager() {
     watcher = DirectoryWatcher::newInstance();
 
     connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
-        //qDebug() << "observing started";
+        qDebug() << "observing started";
     });
     connect(watcher, &DirectoryWatcher::observingStopped, this, [] () {
-        //qDebug() << "observing stopped";
+        qDebug() << "observing stopped";
     });
     connect(watcher, &DirectoryWatcher::fileCreated, this, [this] (const QString& filename) {
         qDebug() << "[w] file created" << filename;

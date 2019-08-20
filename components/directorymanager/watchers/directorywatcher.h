@@ -34,6 +34,8 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(DirectoryWatcher)
+
+
 };
 
 #endif // DIRECTORYWATCHER_H

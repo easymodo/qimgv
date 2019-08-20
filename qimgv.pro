@@ -1,4 +1,4 @@
-    #-------------------------------------------------
+#-------------------------------------------------
 #
 # Project created by QtCreator 2014-08-18T10:07:13
 #
@@ -23,7 +23,7 @@ QMAKE_CXXFLAGS_RELEASE *= -O3
 
 CONFIG += c++17
 
-#CONFIG += WITH_EXIV2
+CONFIG += WITH_EXIV2
 #CONFIG += WITH_MPV
 #CONFIG += WITH_KDE_BLUR
 
@@ -303,14 +303,14 @@ unix {
 }
 
 windows {
-#    SOURCES += \
-#        components/directorymanager/watchers/windows/windowsdirectorywatcher.cpp \
-#        components/directorymanager/watchers/windows/windowswatcherworker.cpp
+    SOURCES += \
+        components/directorymanager/watchers/windows/windowswatcher.cpp \
+        components/directorymanager/watchers/windows/windowsworker.cpp
 
-#    HEADERS += \
-#        components/directorymanager/watchers/windows/windowsdirectorywatcher_p.h \
-#        components/directorymanager/watchers/windows/windowsdirectorywatcher.h \
-#        components/directorymanager/watchers/windows/windowswatcherbackgroundworker.h
+    HEADERS += \
+        components/directorymanager/watchers/windows/windowswatcher.h \
+        components/directorymanager/watchers/windows/windowsworker.h \
+        components/directorymanager/watchers/windows/windowswatcher_p.h
 }
 
 DISTFILES += \

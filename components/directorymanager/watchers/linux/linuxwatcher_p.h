@@ -10,8 +10,7 @@
 
 class LinuxFsEvent;
 
-class LinuxWatcherPrivate : public DirectoryWatcherPrivate
-{
+class LinuxWatcherPrivate : public DirectoryWatcherPrivate {
     Q_OBJECT
 public:
     explicit LinuxWatcherPrivate(LinuxWatcher* qq = 0);

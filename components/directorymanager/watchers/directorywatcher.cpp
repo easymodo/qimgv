@@ -5,8 +5,7 @@
 #ifdef __linux__
 #include "linux/linuxwatcher.h"
 #elif _WIN32
-#include "dummywatcher.h"
-//#include "windows/windowsdirectorywatcher.h"
+#include "windows/windowswatcher.h"
 #elif __unix__
 // TODO: implement this
 #include "dummywatcher.h"
@@ -29,7 +28,7 @@ DirectoryWatcherPrivate::DirectoryWatcherPrivate(DirectoryWatcher* qq, WatcherWo
 
 DirectoryWatcher::~DirectoryWatcher() {
     delete d_ptr;
-    d_ptr = 0;
+    d_ptr = nullptr;
 }
 
 // Move this function to some creational class
@@ -40,8 +39,7 @@ DirectoryWatcher *DirectoryWatcher::newInstance()
 #ifdef __linux__
         watcher = new LinuxWatcher();
 #elif _WIN32
-        //watcher = new WindowsDirectoryWatcher();
-        watcher = new DummyWatcher();
+        watcher = new WindowsWatcher();
 #elif __unix__
         watcher = new DummyWatcher();
 #elif __APPLE__
