@@ -170,12 +170,10 @@ bool ViewerWidget::showAnimation(std::unique_ptr<QMovie> movie) {
     return true;
 }
 
-bool ViewerWidget::showVideo(Clip *clip) {
-    if(!clip)
-        return false;
+bool ViewerWidget::showVideo(QString file) {
     stopPlayback();
     enableVideoPlayer();
-    videoPlayer->openMedia(clip);
+    videoPlayer->openMedia(file);
     hideCursorTimed(false);
     return true;
 }

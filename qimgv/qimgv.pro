@@ -23,8 +23,8 @@ QMAKE_CXXFLAGS_RELEASE *= -O3
 
 CONFIG += c++17
 
-CONFIG += WITH_EXIV2
-#CONFIG += WITH_MPV
+#CONFIG += WITH_EXIV2
+CONFIG += WITH_MPV
 #CONFIG += WITH_KDE_BLUR
 
 # support tags
@@ -44,9 +44,9 @@ WITH_EXIV2 {
 # video support
 WITH_MPV {
     unix {
-        QT_CONFIG -= no-pkg-config
-        CONFIG += link_pkgconfig
-        PKGCONFIG += mpv
+        #QT_CONFIG -= no-pkg-config
+        #CONFIG += link_pkgconfig
+        #PKGCONFIG += mpv
     }
     windows {
         LIBS += -L$$PWD/mpv-dev/lib/ -llibmpv
@@ -54,13 +54,6 @@ WITH_MPV {
         DEPENDPATH += $$PWD/mpv-dev
     }
     DEFINES += USE_MPV
-    SOURCES += gui/viewers/playermpv/mpvwidget.cpp
-    SOURCES += gui/viewers/playermpv/videoplayermpv.cpp
-    HEADERS += gui/viewers/playermpv/mpvwidget.h
-    HEADERS += gui/viewers/playermpv/videoplayermpv.h
-} else {
-    SOURCES += gui/viewers/playerdummy/videoplayerdummy.cpp
-    HEADERS += gui/viewers/playerdummy/videoplayerdummy.h
 }
 
 unix {
@@ -133,7 +126,7 @@ SOURCES += \
     gui/panels/sidepanel/sidepanel.cpp \
     gui/customwidgets/spinboxinputfix.cpp \
     gui/customwidgets/sidepanelwidget.cpp \
-    gui/viewers/videoplayer.cpp \
+    qimgv_player_mpv/src/videoplayer.cpp \
     gui/overlays/saveconfirmoverlay.cpp \
     gui/customwidgets/floatingwidget.cpp \
     appversion.cpp \
@@ -228,7 +221,8 @@ HEADERS += \
     gui/panels/sidepanel/sidepanel.h \
     gui/customwidgets/spinboxinputfix.h \
     gui/customwidgets/sidepanelwidget.h \
-    gui/viewers/videoplayer.h \
+    #gui/viewers/videoplayer.h \
+    qimgv_player_mpv/src/videoplayer.h \
     gui/overlays/saveconfirmoverlay.h \
     gui/customwidgets/floatingwidget.h \
     appversion.h \

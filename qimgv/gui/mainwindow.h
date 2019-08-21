@@ -47,7 +47,7 @@ public:
     void onScalingFinished(std::unique_ptr<QPixmap>scaled);
     void showImage(std::unique_ptr<QPixmap> pixmap);
     void showAnimation(std::unique_ptr<QMovie> movie);
-    void showVideo(Clip *clip);
+    void showVideo(QString file);
 
     void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize);
     void setExifInfo(QMap<QString, QString>);

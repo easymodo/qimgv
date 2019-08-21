@@ -24,11 +24,6 @@ file(GLOB SRC_Gui ${SRC_Gui} ${dir}/*.cpp)
 
 set(dir "gui/viewers")
 file(GLOB SRC_Gui ${SRC_Gui} ${dir}/*.cpp)
-if(VIDEO_SUPPORT)
-    file(GLOB SRC_Gui ${SRC_Gui} ${dir}/playermpv/*.cpp)
-else()
-    file(GLOB SRC_Gui ${SRC_Gui} ${dir}/playerdummy/*.cpp)
-endif()
 
 set(dir "gui/folderview")
 file(GLOB SRC_Gui ${SRC_Gui} ${dir}/*.cpp)

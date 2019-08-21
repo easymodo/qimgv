@@ -5,21 +5,15 @@
 
 #include <memory>
 #include <QVBoxLayout>
-#include "gui/viewers/videoplayer.h"
-
-#ifdef USE_MPV
-#include "gui/viewers/playermpv/videoplayermpv.h"
-typedef VideoPlayerMpv VideoPlayerImpl;
-#else
-#include "gui/viewers/playerdummy/videoplayerdummy.h"
-typedef VideoPlayerDummy VideoPlayerImpl;
-#endif
+#include "videoplayer.h"
+#include <QLibrary>
+#include <QDebug>
 
 class VideoPlayerInitProxy : public VideoPlayer {
 public:
     VideoPlayerInitProxy(QWidget *parent = nullptr);
     ~VideoPlayerInitProxy();
-    bool openMedia(Clip *clip);
+    bool openMedia(QString file);
     void seek(int pos);
     void seekRelative(int pos);
     void pauseResume();
@@ -37,8 +31,9 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 private:
-    std::unique_ptr<VideoPlayerImpl> player;
-    void initPlayer();
+    QLibrary playerLib;
+    std::unique_ptr<VideoPlayer> player;
+    bool initPlayer();
     QVBoxLayout layout;
 };
 

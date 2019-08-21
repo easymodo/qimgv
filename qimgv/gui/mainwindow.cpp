@@ -213,9 +213,9 @@ void MainWindow::showAnimation(std::unique_ptr<QMovie> movie) {
     updateCropPanelData();
 }
 
-void MainWindow::showVideo(Clip *clip) {
+void MainWindow::showVideo(QString file) {
     centralWidget->showDocumentView();
-    viewerWidget->showVideo(clip);
+    viewerWidget->showVideo(file);
 }
 
 void MainWindow::showContextMenu() {

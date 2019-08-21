@@ -1,10 +1,14 @@
 #ifndef VIDEOPLAYERMPV_H
 #define VIDEOPLAYERMPV_H
 
-#include "gui/viewers/videoplayer.h"
-#include "components/actionmanager/actionmanager.h"
+#include "videoplayer.h"
 #include <QKeyEvent>
-#include "settings.h"
+
+#if defined QIMGV_PLAYER_MPV_LIBRARY
+ #define TEST_COMMON_DLLSPEC Q_DECL_EXPORT
+#else
+ #define TEST_COMMON_DLLSPEC Q_DECL_IMPORT
+#endif
 
 class MpvWidget;
 
@@ -12,7 +16,7 @@ class VideoPlayerMpv : public VideoPlayer {
     Q_OBJECT
 public:
     explicit VideoPlayerMpv(QWidget *parent = nullptr);
-    bool openMedia(Clip *clip);
+    bool openMedia(QString file);
     void setVideoUnscaled(bool mode);
 
 public slots:
@@ -33,7 +37,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-    void keyPressEvent(QKeyEvent *);
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void readSettings();
@@ -42,5 +46,7 @@ private:
     MpvWidget *m_mpv;
 
 };
+
+extern "C" TEST_COMMON_DLLSPEC VideoPlayer *CreatePlayerWidget();
 
 #endif // VIDEOPLAYERMPV_H

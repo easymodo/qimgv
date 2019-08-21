@@ -7,7 +7,8 @@
 *.kdev*
 .dir*
 *.orig
-
+build
+qrc_resources.cpp
 debug/
 release/
 *.debug

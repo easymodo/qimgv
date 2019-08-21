@@ -66,7 +66,7 @@ signals:
     void toggleTransparencyGrid();
 
 public slots:
-    bool showVideo(Clip *clip);
+    bool showVideo(QString file);
     void stopPlayback();
     void setFitMode(ImageFitMode mode);
     ImageFitMode fitMode();

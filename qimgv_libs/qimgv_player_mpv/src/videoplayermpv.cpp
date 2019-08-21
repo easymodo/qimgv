@@ -17,23 +17,19 @@ VideoPlayerMpv::VideoPlayerMpv(QWidget *parent) : VideoPlayer(parent) {
     setLayout(vl);
 
     readSettings();
-    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+    //connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
     connect(m_mpv, SIGNAL(durationChanged(int)), this, SIGNAL(durationChanged(int)));
     connect(m_mpv, SIGNAL(positionChanged(int)), this, SIGNAL(positionChanged(int)));
     connect(m_mpv, SIGNAL(videoPaused(bool)), this, SIGNAL(videoPaused(bool)));
 }
 
-bool VideoPlayerMpv::openMedia(Clip *clip) {
-    if(clip) {
-        QString file = clip->getPath();
-        if (file.isEmpty())
-            return false;
-        m_mpv->command(QStringList() << "loadfile" << file);
-        setPaused(false);
-        //qDebug() << m_mpv->size() << this->devicePixelRatioF();
-        return true;
-    }
-    return false;
+bool VideoPlayerMpv::openMedia(QString file) {
+    if(file.isEmpty())
+        return false;
+    m_mpv->command(QStringList() << "loadfile" << file);
+    setPaused(false);
+    //qDebug() << m_mpv->size() << this->devicePixelRatioF();
+    return true;
 }
 
 void VideoPlayerMpv::seek(int pos) {
@@ -83,8 +79,8 @@ void VideoPlayerMpv::paintEvent(QPaintEvent *event) {
 }
 
 void VideoPlayerMpv::readSettings() {
-    setMuted(!settings->playVideoSounds());
-    setVideoUnscaled(!settings->expandImage());
+    //setMuted(!settings->playVideoSounds());
+    //setVideoUnscaled(!settings->expandImage());
 }
 
 void VideoPlayerMpv::mousePressEvent(QMouseEvent *event) {
@@ -105,9 +101,8 @@ void VideoPlayerMpv::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void VideoPlayerMpv::keyPressEvent(QKeyEvent *event) {
-    quint32 nativeScanCode = event->nativeScanCode();
-    QString key = actionManager->keyForNativeScancode(nativeScanCode);
-    if(key == "Space") {
+    qDebug() << event->key();
+    if(event->key() == Qt::Key_Space) {
         event->accept();
         pauseResume();
     } else {
@@ -123,4 +118,8 @@ void VideoPlayerMpv::show() {
 void VideoPlayerMpv::hide() {
     this->clearFocus();
     QWidget::hide();
+}
+
+VideoPlayer *CreatePlayerWidget() {
+    return new VideoPlayerMpv();
 }

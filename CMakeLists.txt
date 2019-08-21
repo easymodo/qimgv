@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 3.0)
+# qimgv root
+cmake_minimum_required(VERSION 3.9)
 
 project(qimgv)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#todo - unset & specify in pkgbuild
 set(CMAKE_BUILD_TYPE "Release")
 
 # COMPILE FLAGS
@@ -13,7 +15,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -lstdc++fs -O3")
 if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.0)
     message(FATAL_ERROR "\n!!! THIS PROJECT REQUIRES GCC 8 OR LATER !!!\n"
                     "If you already have gcc 8+ you can force it like this:\n"
-                    "CC=gcc-8 CXX=g++-8 cmake [......]")
+                    "CC=gcc-8 CXX=g++-8 cmake [...etc]")
     # force gcc 8
     #set(CMAKE_C_COMPILER "gcc-8")
     #set(CMAKE_CXX_COMPILER "g++-8")
@@ -27,7 +29,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # USER OPTIONS
 # Usage: cmake -DVIDEO_SUPPORT=ON [...]
 option(EXIV2 "For reading/writing exif tags" ON)
-option(VIDEO_SUPPORT "Enable video support" OFF)
+option(VIDEO_SUPPORT "Enable video support" ON)
 option(KDE_SUPPORT "Support blur when using KDE" OFF)
 
 
@@ -48,66 +50,7 @@ if(KDE_SUPPORT) # do i also need one for mpv?
     find_package(KF5WindowSystem REQUIRED)
 endif()
 
+##############################################################
 
-# INCLUDE SOURCES
-file(GLOB SRC *.cpp)
-list(REMOVE_ITEM SRC moc_*.cpp)
-list(REMOVE_ITEM SRC *_automoc.cpp)
-include(CMake/SRC_Components.cmake)
-include(CMake/SRC_SourceContainers.cmake)
-include(CMake/SRC_Utils.cmake)
-include(CMake/SRC_Gui.cmake)
-
-# ADD RESOURCES
-QT5_ADD_RESOURCES(RES resources.qrc)
-
-# ADD EXECUTABLE
-add_executable(qimgv ${SRC} ${SRC_Components} ${SRC_SourceContainers} ${SRC_Utils} ${SRC_Gui} ${RES})
-
-# LINK STUFF
-target_link_libraries(qimgv Qt5::Core Qt5::Widgets Qt5::Concurrent stdc++fs)
-
-# OPTION DEFINITIONS, LINKING
-if(EXIV2)
-    target_link_libraries(qimgv exiv2)
-    add_definitions(-DUSE_EXIV2)
-endif()
-if(KDE_SUPPORT)
-    target_link_libraries(qimgv KF5::WindowSystem)
-    add_definitions(-DUSE_KDE_BLUR)
-endif()
-if(VIDEO_SUPPORT)
-    target_link_libraries(qimgv mpv)
-    add_definitions(-DUSE_MPV)
-endif()
-
-
-## INSTALLATION
-
-# binary
-install(PROGRAMS ${CMAKE_BINARY_DIR}/qimgv
-	DESTINATION bin)
-# .desktop
-install(FILES distrib/qimgv.desktop
-	DESTINATION share/applications)
-# icons
-install(FILES distrib/hicolor/16x16/apps/qimgv.png
-	DESTINATION share/icons/hicolor/16x16/apps)
-install(FILES distrib/hicolor/22x22/apps/qimgv.png
-	DESTINATION share/icons/hicolor/22x22/apps)
-install(FILES distrib/hicolor/24x24/apps/qimgv.png
-	DESTINATION share/icons/hicolor/24x24/apps)
-install(FILES distrib/hicolor/32x32/apps/qimgv.png
-	DESTINATION share/icons/hicolor/32x32/apps)
-install(FILES distrib/hicolor/36x36/apps/qimgv.png
-	DESTINATION share/icons/hicolor/36x36/apps)
-install(FILES distrib/hicolor/48x48/apps/qimgv.png
-	DESTINATION share/icons/hicolor/48x48/apps)
-install(FILES distrib/hicolor/64x64/apps/qimgv.png
-	DESTINATION share/icons/hicolor/64x64/apps)
-install(FILES distrib/hicolor/128x128/apps/qimgv.png
-	DESTINATION share/icons/hicolor/128x128/apps)
-install(FILES distrib/hicolor/256x256/apps/qimgv.png
-	DESTINATION share/icons/hicolor/256x256/apps)
-install(FILES distrib/hicolor/scalable/apps/qimgv.svg
-	DESTINATION share/icons/hicolor/scalable/apps)
+add_subdirectory(qimgv)
+add_subdirectory(qimgv_libs/qimgv_player_mpv)
