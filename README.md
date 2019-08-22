@@ -117,6 +117,7 @@ If you are linux user, install the latest [QtApng by Skycoder42](https://github.
 
 Viewing raw is supported via [qtraw plugin](https://gitlab.com/mardy/qtraw). It is not included in windows release at the time.
 
+
 ## Installation instructions
 
 ### GNU+Linux
@@ -181,11 +182,9 @@ _Fedora:_
 Enable RPMFusion [https://rpmfusion.org/Configuration](https://rpmfusion.org/Configuration).
 
 ```
-sudo dnf install git cmake make qt5 qt5-devel gcc-c++ qt5-devel mpv mpv-libs-devel
+sudo dnf install git cmake make qt5 qt5-devel gcc-c++ qt5-devel mpv mpv-libs-devel exiv2-devel
 ```
 Optional: `kf5-kwindowsystem`
-
-// fedora exiv2 package?
 		
 __Configure & install
 
