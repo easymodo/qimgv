@@ -121,95 +121,112 @@ Viewing raw is supported via [qtraw plugin](https://gitlab.com/mardy/qtraw). It 
 
 ### GNU+Linux
 
-_NOTE: by default qimgv will be built without video support. See manual install for more info._
+__Arch Linux / Manjaro / etc.:__ 
 
-__Arch:__ Available in AUR - `qimgv-git`
+AUR package: 
+
+```
+qimgv-git
+```
   
-__Gentoo:__ `emerge qimgv`
+__Ubuntu / Linux Mint / Pop!\_OS / etc.__
 
-__OpenSUSE__: `zypper install qimgv`
+```
+sudo add-apt-repository ppa:easymodo/qimgv
+sudo apt install qimgv
+```
 
-__Void linux__: `xbps-install -S qimgv`
+__Gentoo:__
+
+```
+emerge qimgv
+```
+
+__OpenSUSE__: 
+
+```
+zypper install qimgv
+```
+
+__Void linux__: 
+
+```
+xbps-install -S qimgv
+```
+
+If your favorite distro is not included refer to [Manual install] section at the end of this document.
   
-__Manual install:__
+### Window$
+
+  [Grab the latest release here.](https://github.com/easymodo/qimgv/releases)
+  
+  Windows builds are portable (everything is contained within install folder).
+  
+  Installer additionally sets up file associations.
+  
+
+### Manual install
  
-__1. Install dependencies ( git, cmake, qt >= 5.9 )__
-  
+__Install dependencies ( git, cmake, qt >= 5.9, exiv2, mpv )
+
 _Ubuntu & derivatives:_
      
 ```
-sudo apt install build-essential git cmake qt5-default
+sudo apt install build-essential git cmake qt5-default libmpv-dev
 ```
+Optional: `libkf5windowsystem-dev`
      
 _Fedora:_
 
-```
-sudo dnf install git cmake make qt5 qt5-devel gcc-c++ qt5-devel
-```
-	
-__1.1. _(Optional)_ Dependencies for video playback ( libmpv >= 0.22, mpv )__
-  	
-_Ubuntu & derivatives:_
-     
-```
-sudo apt install libmpv-dev
-```
-     
-_Fedora_:
-     
 Enable RPMFusion [https://rpmfusion.org/Configuration](https://rpmfusion.org/Configuration).
-	
-```
-sudo dnf install mpv mpv-libs-devel
-```
 
-__1.2. _(Optional)_ Dependency for kde integration ( libkf5windowsystem-dev )__
+```
+sudo dnf install git cmake make qt5 qt5-devel gcc-c++ qt5-devel mpv mpv-libs-devel
+```
+Optional: `kf5-kwindowsystem`
 
-_Ubuntu & derivatives:_
-     
-```
-sudo apt install libkf5windowsystem-dev
-```
-_Fedora_:
-	
-```
-dnf install kf5-kwindowsystem
-```
+// fedora exiv2 package?
 		
-__2. Build__
+__Configure & install
+
+Get sources
+
 ```
 git clone https://github.com/easymodo/qimgv.git
 cd qimgv && mkdir -p build && cd build
 ```
-Choose one of the following (depending on optional features you want):
 
-2a. Regular build
-
-```
-cmake -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make
-```
-
-2b. Build with __video support__ (note: negatively affects startup speed)
+Configure
 
 ```
-cmake -DVIDEO_SUPPORT=ON -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make
+cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/
 ```
 
-2c. Build with better __KDE support__
+Build
 
 ```
-cmake -DKDE_SUPPORT=ON -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_BINARY_DIR=${DIR}/ .. && make
+make -j`nproc --ignore=1`
 ```
 
-__3. Install__
+Install
 
 ```
 sudo make install
 ```
 
-### Windows
+If you get errors like "/usr/lib64 exists in filesystem" during install:
 
-  [Grab the latest release here.](https://github.com/easymodo/qimgv/releases)
-  
-  All windows builds are portable.
-  
+add `-DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib` to cmake command.
+
+### CMake build options
+
+| Option  | Default value | Description |
+| ------- | ------------- | ----------- |
+| VIDEO_SUPPORT | ON | Enables video playback via `mpv` |
+| EXIV2 | ON | Support reading exif tags via `exiv2` |
+| KDE_SUPPORT | OFF | Use some features from kde, like background blur |
+
+Usage example:
+```
+cmake ../ -DKDE_SUPPORT=ON  -DCMAKE_INSTALL_PREFIX=/usr/
+```
