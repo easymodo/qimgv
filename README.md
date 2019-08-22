@@ -168,7 +168,7 @@ If your favorite distro is not included refer to [Manual install] section at the
 
 ### Manual install
  
-__Install dependencies ( git, cmake, qt >= 5.9, exiv2, mpv )
+__Install dependencies ( git, cmake, qt >= 5.9, exiv2, mpv )__
 
 _Ubuntu & derivatives:_
      
@@ -181,12 +181,14 @@ _Fedora:_
 
 Enable RPMFusion [https://rpmfusion.org/Configuration](https://rpmfusion.org/Configuration).
 
+It is needed for video playback (mpv), but you also can build without it. See __CMake build options__ at the end.
+
 ```
 sudo dnf install git cmake make qt5 qt5-devel gcc-c++ qt5-devel mpv mpv-libs-devel exiv2-devel
 ```
 Optional: `kf5-kwindowsystem`
 		
-__Configure & install
+__Configure & install__
 
 Get sources
 
