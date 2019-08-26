@@ -2,7 +2,7 @@ qimgv | Current version: 0.8
 =====
 Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
 
-![alt tag](https://i.imgur.com/fdHKWtf.png)
+![alt tag](https://i.imgur.com/KeET1Ie.png)
 
 ## [qimgv v0.6 video overview](https://www.youtube.com/watch?v=AODRGCRPCpw)
 
