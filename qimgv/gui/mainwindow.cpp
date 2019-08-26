@@ -198,7 +198,7 @@ void MainWindow::switchFitMode() {
 
 void MainWindow::closeImage() {
     viewerWidget->closeImage();
-    infoBarFullscreen->setText("No file opened.");
+    //infoBarFullscreen->setText("No file opened.");
 }
 
 void MainWindow::showImage(std::unique_ptr<QPixmap> pixmap) {
@@ -597,7 +597,7 @@ void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, 
     renameOverlay->setName(fileName);
     if(fileName.isEmpty()) {
         setWindowTitle(qApp->applicationName());
-        infoBarFullscreen->setText("No file opened."); // temporary
+        infoBarFullscreen->setInfo("", "No file opened.", "");
         infoBarWindowed->setInfo("", "No file opened.", "");
     } else {
         QString posString;
@@ -616,7 +616,7 @@ void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, 
             if(!resString.isEmpty())
                 windowTitle.append("  -  " + resString);
         }
-        infoBarFullscreen->setText(windowTitle); // temporary
+        infoBarFullscreen->setInfo(posString, fileName, resString + "  " + sizeString);
         setWindowTitle(windowTitle);
         infoBarWindowed->setInfo(posString, fileName, resString + "  " + sizeString);
     }

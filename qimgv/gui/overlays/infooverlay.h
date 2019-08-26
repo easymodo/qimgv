@@ -1,31 +1,23 @@
 #ifndef INFOOVERLAY_H
 #define INFOOVERLAY_H
 
-#include <QPainter>
-#include <QPen>
-#include <QFontMetrics>
-#include <QDebug>
-#include "gui/customwidgets/overlaywidget.h"
+#include <QWidget>
+#include "gui/customwidgets/floatingwidget.h"
 
-class InfoOverlay : public OverlayWidget
-{
+namespace Ui {
+class InfoOverlay;
+}
+
+class InfoOverlay : public FloatingWidget {
     Q_OBJECT
+
 public:
-    InfoOverlay(OverlayContainerWidget *parent);
-    void setText(QString text);
+    explicit InfoOverlay(OverlayContainerWidget *parent = nullptr);
+    ~InfoOverlay();
 
+    void setInfo(QString pos, QString fileName, QString info);
 private:
-
-protected:
-    virtual void recalculateGeometry();
-    void paintEvent(QPaintEvent *event);
-    QString text;
-
-    QFont font;
-    QRect textRect;
-    QColor textColor, textShadowColor, bgColor;
-    int textMarginX, textMarginY;
-    QFontMetrics *fm;
+    Ui::InfoOverlay *ui;
 };
 
 #endif // INFOOVERLAY_H
