@@ -4,6 +4,8 @@
 #
 #-------------------------------------------------
 
+# !! this is old and may not work. use cmake instead
+
 QT       += core gui widgets concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets

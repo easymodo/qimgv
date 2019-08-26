@@ -75,16 +75,12 @@
         <file>res/icons/app/128@2x.png</file>
         <file>res/icons/buttons/rotate-right16@2x.png</file>
         <file>res/icons/buttons/rotate-left16@2x.png</file>
-        <file>res/icons/settings/32/preferences32.png</file>
-        <file>res/icons/settings/32/preferences32@2x.png</file>
         <file>res/icons/settings/32/scale32.png</file>
         <file>res/icons/settings/32/scale32@2x.png</file>
         <file>res/icons/settings/32/shortcuts32.png</file>
         <file>res/icons/settings/32/shortcuts32@2x.png</file>
         <file>res/icons/settings/32/terminal32.png</file>
         <file>res/icons/settings/32/terminal32@2x.png</file>
-        <file>res/icons/settings/32/tweak32.png</file>
-        <file>res/icons/settings/32/tweak32@2x.png</file>
         <file>res/icons/message/dir_end20@2x.png</file>
         <file>res/icons/message/dir_start20@2x.png</file>
         <file>res/icons/settings/32/appearance32.png</file>
@@ -98,5 +94,12 @@
         <file>res/icons/buttons/sorting-mode16.png</file>
         <file>res/icons/buttons/arrow_down.png</file>
         <file>res/icons/buttons/arrow_up.png</file>
+        <file>res/icons/settings/32/about32@2x.png</file>
+        <file>res/icons/settings/32/about32.png</file>
+        <file>res/icons/settings/32/folderview32.png</file>
+        <file>res/icons/settings/32/general32@2x.png</file>
+        <file>res/icons/settings/32/general32.png</file>
+        <file>res/icons/settings/32/advanced32.png</file>
+        <file>res/icons/settings/32/advanced32@2x.png</file>
     </qresource>
 </RCC>

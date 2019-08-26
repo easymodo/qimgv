@@ -44,11 +44,11 @@ void SettingsDialog::setupSidebar() {
     QListWidget *sideBar = ui->sideBar;
     sideBar->viewport()->setAutoFillBackground(false);
     // General
-    sideBar->item(0)->setIcon(QIcon(":/res/icons/settings/32/tweak32.png"));
+    sideBar->item(0)->setIcon(QIcon(":/res/icons/settings/32/general32.png"));
     // Appearance
     sideBar->item(1)->setIcon(QIcon(":/res/icons/settings/32/appearance32.png"));
     // FolderView
-    sideBar->item(1)->setIcon(QIcon(":/res/icons/settings/32/appearance32.png"));
+    sideBar->item(2)->setIcon(QIcon(":/res/icons/settings/32/folderview32.png"));
     // Scaling
     sideBar->item(3)->setIcon(QIcon(":/res/icons/settings/32/scale32.png"));
     // Controls
@@ -56,9 +56,9 @@ void SettingsDialog::setupSidebar() {
     // Scripts
     sideBar->item(5)->setIcon(QIcon(":/res/icons/settings/32/terminal32.png"));
     // Advanced
-    sideBar->item(6)->setIcon(QIcon(":/res/icons/settings/32/preferences32.png"));
+    sideBar->item(6)->setIcon(QIcon(":/res/icons/settings/32/advanced32.png"));
     // About
-    sideBar->item(7)->setIcon(QIcon(":/res/icons/app/32.png"));
+    sideBar->item(7)->setIcon(QIcon(":/res/icons/settings/32/about32.png"));
 
 #ifdef _WIN32
     // Not implemented on windows. Not sure if will ever be. I don't really care.
