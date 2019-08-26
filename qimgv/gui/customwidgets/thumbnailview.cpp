@@ -237,8 +237,10 @@ void ThumbnailView::wheelEvent(QWheelEvent *event) {
 }
 
 void ThumbnailView::scrollPrecise(int delta) {
-    if(scrollTimeLine->state() == QTimeLine::Running)
+    if(scrollTimeLine->state() == QTimeLine::Running) {
         scrollTimeLine->stop();
+        blockThumbnailLoading = false;
+    }
     // ignore if we reached boundaries
     if( (delta > 0 && atSceneStart()) || (delta < 0 && atSceneEnd()) )
         return;
