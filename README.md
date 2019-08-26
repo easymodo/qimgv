@@ -167,13 +167,15 @@ If your favorite distro is not included refer to [Manual install] section at the
   
 
 ### Manual install
+
+Note: in order to compile you will need gcc 8 or later!
  
-__Install dependencies ( git, cmake, qt >= 5.9, exiv2, mpv )__
+__Install dependencies ( gcc >= 8, git, cmake, qt >= 5.9, exiv2, mpv )__
 
 _Ubuntu & derivatives:_
      
 ```
-sudo apt install build-essential git cmake qt5-default libmpv-dev
+sudo apt install build-essential git cmake qt5-default libmpv-dev gcc-8 g++-8
 ```
 Optional: `libkf5windowsystem-dev`
      
@@ -218,6 +220,10 @@ sudo make install
 If you get errors like "/usr/lib64 exists in filesystem" during install:
 
 add `-DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib` to cmake command.
+
+If you get some errors related to "filesystem":
+
+add `CC=gcc-8 CXX=g++-8` to cmake command (_at the beginning_).
 
 ### CMake build options
 
