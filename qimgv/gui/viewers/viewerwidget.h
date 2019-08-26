@@ -30,8 +30,8 @@ public:
     bool showImage(std::unique_ptr<QPixmap> pixmap);
     bool showAnimation(std::unique_ptr<QMovie> movie);
     void onScalingFinished(std::unique_ptr<QPixmap> scaled);
-
     bool isDisplaying();
+
 private:
     QHBoxLayout layout;
     std::unique_ptr<ImageViewer> imageViewer;

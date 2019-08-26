@@ -21,7 +21,6 @@ void CentralWidget::showDocumentView() {
     mode = MODE_DOCUMENT;
     setCurrentIndex(0);
     widget(0)->setFocus();
-    // TODO: start playback if we can?
     documentView->viewWidget()->startPlayback();
 }
 

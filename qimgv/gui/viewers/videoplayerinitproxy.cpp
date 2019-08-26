@@ -8,9 +8,17 @@ VideoPlayerInitProxy::VideoPlayerInitProxy(QWidget *parent)
     setAttribute(Qt::WA_TranslucentBackground, true);
     layout.setContentsMargins(0,0,0,0);
     setLayout(&layout);
+    connect(settings, &Settings::settingsChanged, this, &VideoPlayerInitProxy::onSettingsChanged);
 }
 
 VideoPlayerInitProxy::~VideoPlayerInitProxy() {
+}
+
+void VideoPlayerInitProxy::onSettingsChanged() {
+    if(!player)
+        return;
+    player->setMuted(!settings->playVideoSounds());
+    player->setVideoUnscaled(!settings->expandImage());
 }
 
 inline bool VideoPlayerInitProxy::initPlayer() {
@@ -30,11 +38,15 @@ inline bool VideoPlayerInitProxy::initPlayer() {
         qDebug() << "[VideoPlayerInitProxy] Error - could not load player library";
         return false;
     }
-    qDebug() << "[VideoPlayerInitProxy] Library load success!";
+    //qDebug() << "[VideoPlayerInitProxy] Library load success!";
 #endif
+    player->setMuted(!settings->playVideoSounds());
+    player->setVideoUnscaled(!settings->expandImage());
+
     player->setParent(this);
     layout.addWidget(player.get());
     player->hide();
+    setFocusProxy(player.get());
     connect(player.get(), SIGNAL(durationChanged(int)), this, SIGNAL(durationChanged(int)));
     connect(player.get(), SIGNAL(positionChanged(int)), this, SIGNAL(positionChanged(int)));
     connect(player.get(), SIGNAL(videoPaused(bool)), this, SIGNAL(videoPaused(bool)));
@@ -96,6 +108,12 @@ void VideoPlayerInitProxy::setMuted(bool mode) {
     if(!initPlayer())
         return;
     player->setMuted(mode);
+}
+
+void VideoPlayerInitProxy::setVideoUnscaled(bool mode) {
+    if(!initPlayer())
+        return;
+    player->setVideoUnscaled(mode);
 }
 
 void VideoPlayerInitProxy::show() {

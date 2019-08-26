@@ -15,7 +15,9 @@ DocumentWidget::DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::sh
     mInfoBar = infoBar;
     mInfoBar->setParent(this);
     layout.addWidget(mInfoBar.get());
+    setFocusProxy(mViewWidget.get());
 }
+
 
 std::shared_ptr<ViewerWidget> DocumentWidget::viewWidget() {
     return mViewWidget;

@@ -11,25 +11,25 @@ DirectoryManager::DirectoryManager() {
     watcher = DirectoryWatcher::newInstance();
 
     connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
-        qDebug() << "observing started";
+    //    qDebug() << "observing started";
     });
     connect(watcher, &DirectoryWatcher::observingStopped, this, [] () {
-        qDebug() << "observing stopped";
+    //    qDebug() << "observing stopped";
     });
     connect(watcher, &DirectoryWatcher::fileCreated, this, [this] (const QString& filename) {
-        qDebug() << "[w] file created" << filename;
+    //    qDebug() << "[w] file created" << filename;
         onFileAddedExternal(filename);
     });
     connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
-        qDebug() << "[w] file deleted" << filename;
+    //    qDebug() << "[w] file deleted" << filename;
         onFileRemovedExternal(filename);
     });
     connect(watcher, &DirectoryWatcher::fileModified, this, [this] (const QString& filename) {
-        qDebug() << "[w] file modified" << filename;
+    //    qDebug() << "[w] file modified" << filename;
         onFileModifiedExternal(filename);
     });
     connect(watcher, &DirectoryWatcher::fileRenamed, this, [this] (const QString& file1, const QString& file2) {
-        qDebug() << "[w] file renamed from" << file1 << "to" << file2;
+    //    qDebug() << "[w] file renamed from" << file1 << "to" << file2;
         onFileRenamedExternal(file1, file2);
     });
 

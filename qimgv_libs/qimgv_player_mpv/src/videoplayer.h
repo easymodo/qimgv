@@ -16,6 +16,7 @@ public:
     virtual void stop() = 0;
     virtual void setPaused(bool mode) = 0;
     virtual void setMuted(bool) = 0;
+    virtual void setVideoUnscaled(bool mode) = 0;
 
 signals:
     void durationChanged(int value);

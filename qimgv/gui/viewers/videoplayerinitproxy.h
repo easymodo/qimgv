@@ -6,6 +6,7 @@
 #include <memory>
 #include <QVBoxLayout>
 #include "videoplayer.h"
+#include "settings.h"
 #include <QLibrary>
 #include <QDebug>
 
@@ -22,6 +23,7 @@ public:
     void stop();
     void setPaused(bool mode);
     void setMuted(bool);
+    void setVideoUnscaled(bool mode);
 
 public slots:
     void show();
@@ -35,6 +37,10 @@ private:
     std::unique_ptr<VideoPlayer> player;
     bool initPlayer();
     QVBoxLayout layout;
+
+private slots:
+    void onSettingsChanged();
+
 };
 
 #endif // VIDEOPLAYERMPVPROXY_H

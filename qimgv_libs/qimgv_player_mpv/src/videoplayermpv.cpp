@@ -101,7 +101,6 @@ void VideoPlayerMpv::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void VideoPlayerMpv::keyPressEvent(QKeyEvent *event) {
-    qDebug() << event->key();
     if(event->key() == Qt::Key_Space) {
         event->accept();
         pauseResume();

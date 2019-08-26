@@ -13,6 +13,8 @@ class DocumentWidget : public OverlayContainerWidget {
 public:
     DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::shared_ptr<InfoBar> infoBar, QWidget* parent = nullptr);
     std::shared_ptr<ViewerWidget> viewWidget();
+
+    void setFocus();
 private:
     QVBoxLayout layout;
     std::shared_ptr<ViewerWidget> mViewWidget;
