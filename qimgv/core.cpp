@@ -24,13 +24,10 @@ Core::Core() : QObject(), infiniteScrolling(false) {
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 
     QVersionNumber lastVersion = settings->lastVersion();
-    // If we get (0,0,0) then it is a new install; no need to run update logic.
-    // There shouldn't be any weirdness if you update 0.6.3 -> 0.7
-    // In addition there is a firstRun flag.
-    if(appVersion > lastVersion && lastVersion != QVersionNumber(0,0,0))
-        onUpdate();
     if(settings->firstRun())
         onFirstRun();
+    else if(appVersion > lastVersion)
+        onUpdate();
 }
 
 void Core::readSettings() {
@@ -164,6 +161,7 @@ void Core::onFirstRun() {
     //mw->showSomeSortOfWelcomeScreen();
     mw->showMessage("Welcome to qimgv version " + appVersion.toString() + "!", 4000);
     settings->setFirstRun(false);
+    settings->setLastVersion(appVersion);
 }
 
 void Core::rotateLeft() {
