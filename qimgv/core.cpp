@@ -536,7 +536,20 @@ void Core::loadPath(QString path) {
     }
     // load file / folderview
     if(fileInfo.isFile()) {
-        model->setIndex(model->indexOf(fileInfo.fileName()));
+        int index = model->indexOf(fileInfo.fileName());
+        // DirectoryManager only checks file extensions via regex (performance reasons)
+        // But in this case we force check mimetype
+        if(index == -1) {
+            QStringList types = settings->supportedMimeTypes();
+            QMimeDatabase db;
+            QMimeType type = db.mimeTypeForFile(fileInfo.filePath());
+            if(types.contains(type.name())) {
+                if(model->forceInsert(fileInfo.fileName())) {
+                    index = model->indexOf(fileInfo.fileName());
+                }
+            }
+        }
+        model->setIndex(index);
     } else {
         //todo: set index without loading actual file?
         model->setIndex(0);

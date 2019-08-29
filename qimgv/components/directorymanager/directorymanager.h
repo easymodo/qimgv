@@ -87,6 +87,8 @@ public:
     QString last();
     void setSortingMode(SortingMode mode);
     SortingMode sortingMode();
+    bool forceInsert(QString fileName);
+    bool isFile(QString path) const;
 private:
     QString currentPath;
     QString filterRegex;

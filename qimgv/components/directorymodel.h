@@ -50,6 +50,8 @@ public:
     int currentIndex();
     void setSortingMode(SortingMode mode);
     SortingMode sortingMode();
+    bool forceInsert(QString fileName);
+
 signals:
     void fileRemoved(QString fileName, int index);
     void fileRenamed(QString from, int indexFrom, QString to, int indexTo);

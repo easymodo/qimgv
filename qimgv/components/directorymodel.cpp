@@ -46,6 +46,10 @@ SortingMode DirectoryModel::sortingMode() {
     return dirManager.sortingMode();
 }
 
+bool DirectoryModel::forceInsert(QString fileName) {
+    return dirManager.forceInsert(fileName);
+}
+
 void DirectoryModel::setSortingMode(SortingMode mode) {
     dirManager.setSortingMode(mode);
 }

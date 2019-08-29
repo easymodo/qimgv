@@ -324,11 +324,14 @@ QDateTime DirectoryManager::lastModified(QString fileName) const {
 // TODO: what about symlinks?
 inline
 bool DirectoryManager::isSupportedFile(QString path) const {
+    return ( isFile(path) && regex.match(path).hasMatch() );
+}
+
+inline
+bool DirectoryManager::isFile(QString path) const {
     if(!std::filesystem::exists(path.toStdString()))
         return false;
     if(!std::filesystem::is_regular_file(path.toStdString()))
-        return false;
-    if(!regex.match(path).hasMatch())
         return false;
     return true;
 }
@@ -440,4 +443,15 @@ void DirectoryManager::onFileModifiedExternal(QString fileName) {
     if(entryVec.at(index).modifyTime != stdEntry.last_write_time())
         entryVec.at(index).modifyTime = stdEntry.last_write_time();
     emit fileModified(fileName);
+}
+
+bool DirectoryManager::forceInsert(QString fileName) {
+    QString fullPath = fullFilePath(fileName);
+    if(!this->isFile(fullPath) || contains(fileName))
+        return false;
+    std::filesystem::directory_entry stdEntry(fullPath.toStdString());
+    Entry entry(fileName, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
+    insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
+    emit fileAdded(fileName);
+    return true;
 }
