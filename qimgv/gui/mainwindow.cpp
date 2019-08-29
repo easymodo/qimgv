@@ -615,6 +615,8 @@ void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, 
             windowTitle.prepend(posString + "  ");
             if(!resString.isEmpty())
                 windowTitle.append("  -  " + resString);
+            if(!sizeString.isEmpty())
+                windowTitle.append("  -  " + sizeString);
         }
         infoBarFullscreen->setInfo(posString, fileName, resString + "  " + sizeString);
         setWindowTitle(windowTitle);
