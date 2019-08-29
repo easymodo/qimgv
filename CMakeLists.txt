@@ -5,8 +5,11 @@ project(qimgv)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#todo - unset & specify in pkgbuild
-#set(CMAKE_BUILD_TYPE "Release")
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+message(STATUS "Build configuration: " ${CMAKE_BUILD_TYPE})
 
 # COMPILE FLAGS
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -lstdc++fs -O3")
