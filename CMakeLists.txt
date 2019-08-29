@@ -53,4 +53,7 @@ endif()
 ##############################################################
 
 add_subdirectory(qimgv)
-add_subdirectory(qimgv_libs/qimgv_player_mpv)
+
+if(VIDEO_SUPPORT)
+    add_subdirectory(qimgv_libs/qimgv_player_mpv)
+endif()
