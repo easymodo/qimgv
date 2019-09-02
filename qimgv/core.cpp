@@ -210,15 +210,15 @@ void Core::reloadImage(QString fileName) {
 
 // TODO: also copy selection from folder view?
 void Core::copyFileClipboard() {
-    if(model->currentFileName().isEmpty())
+    if(!model || model->currentFileName().isEmpty())
         return;
-    QMimeData* mimeData = new QMimeData();
-    mimeData->setUrls({QUrl::fromLocalFile(model->currentFilePath())});
 
-    // gnome being special
-    // doesn't seem to work
-    //QByteArray gnomeFormat = QByteArray("copy\n").append(QUrl::fromLocalFile(path).toEncoded());
-    //mimeData->setData("x-special/gnome-copied-files", gnomeFormat);
+    QMimeData* mimeData = getMimeDataFor(model->getItemAt(model->currentIndex()), TARGET_CLIPBOARD);
+
+    // mimeData->text() should already contain an url
+    QByteArray gnomeFormat = QByteArray("copy\n").append(QUrl(mimeData->text()).toEncoded());
+    mimeData->setData("x-special/gnome-copied-files", gnomeFormat);
+    mimeData->setData("application/x-kde-cutselection", "0");
 
     QApplication::clipboard()->setMimeData(mimeData);
     mw->showMessage("File copied");
@@ -235,7 +235,6 @@ void Core::onDropIn(const QMimeData *mimeData, QObject* source) {
     // ignore self
     if(source == this)
         return;
-    qDebug() << mimeData->formats() << mimeData->text();
     // check for our needed mime type, here a file or a list of files
     if(mimeData->hasUrls()) {
         QStringList pathList;
@@ -259,21 +258,7 @@ void Core::onDragOut() {
     QPoint hotspot(0,0);
     QPixmap pixmap(":/res/icons/app/64.png"); // use some thumbnail here
 
-    QMimeData *mimeData = new QMimeData;
-    std::shared_ptr<Image> img = model->getItemAt(model->currentIndex());
-    if(img->type() != STATIC) {
-        // todo
-        return;
-    }
-    QString path;
-    if(img->isEdited()) {
-        path = settings->cacheDir() + "buffer.png";
-        img->getImage()->save(path, nullptr, 90);
-        mimeData->setImageData(img->getImage().get());
-    } else {
-        path = img->path();
-    }
-    mimeData->setUrls(QList<QUrl>() << QUrl::fromLocalFile(path));
+    QMimeData *mimeData = getMimeDataFor(model->getItemAt(model->currentIndex()), TARGET_DROP);
 
     mDrag = new QDrag(this);
     mDrag->setMimeData(mimeData);
@@ -281,13 +266,29 @@ void Core::onDragOut() {
     mDrag->setHotSpot(hotspot);
 
     mDrag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction, Qt::CopyAction);
-    /*if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction) {
-        child->close();
-    } else {
-        child->show();
-        child->setPixmap(pixmap);
+}
+
+QMimeData *Core::getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget target) {
+    QMimeData* mimeData = new QMimeData();
+    if(!img)
+        return mimeData;
+    QString path = img->path();
+    if(img->type() == STATIC) {
+        if(img->isEdited()) {
+            // TODO: cleanup temp files
+            // meanwhile use generic name
+            //path = settings->cacheDir() + img->baseName() + ".png";
+            path = settings->cacheDir() + "image.png";
+            // use faster compression for drag'n'drop
+            int pngQuality = (target == TARGET_DROP) ? 80 : 30;
+            img->getImage()->save(path, nullptr, pngQuality);
+        }
+        mimeData->setImageData(*img->getImage().get());
+    } else if(img->type() == ANIMATED) {
+        mimeData->setImageData(*img->getImage().get());
     }
-    */
+    mimeData->setUrls({QUrl::fromLocalFile(path)});
+    return mimeData;
 }
 
 void Core::sortBy(SortingMode mode) {

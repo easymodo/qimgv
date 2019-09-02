@@ -20,6 +20,11 @@ struct State {
     bool hasActiveImage;
 };
 
+enum MimeDataTarget {
+    TARGET_CLIPBOARD,
+    TARGET_DROP
+};
+
 class Core : public QObject {
     Q_OBJECT
 public:
@@ -56,6 +61,7 @@ private:
     void loadImagePath(QString path, bool blocking);
     void trimCache();
     QDrag *mDrag;
+    QMimeData *getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget target);
 
 private slots:
     void readSettings();

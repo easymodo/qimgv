@@ -35,6 +35,10 @@ QString Image::name() const {
     return mDocInfo->fileName();
 }
 
+QString Image::baseName() const {
+    return mDocInfo->baseName();
+}
+
 bool Image::isEdited() const {
     return mEdited;
 }

@@ -25,6 +25,7 @@ public:
     virtual bool save() = 0;
     virtual bool save(QString destPath) = 0;
     QString name() const;
+    QString baseName() const;
     bool isEdited() const;
     int fileSize() const;
     QDateTime lastModified() const;

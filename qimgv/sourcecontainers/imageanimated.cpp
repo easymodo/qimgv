@@ -72,9 +72,8 @@ std::unique_ptr<QPixmap> ImageAnimated::getPixmap() {
     return std::unique_ptr<QPixmap>(new QPixmap(mPath, mDocInfo->extension()));
 }
 
-// wait what?
 std::shared_ptr<const QImage> ImageAnimated::getImage() {
-    std::shared_ptr<const QImage> img(new QImage());
+    std::shared_ptr<const QImage> img(new QImage(mPath, mDocInfo->extension()));
     return img;
 }
 
