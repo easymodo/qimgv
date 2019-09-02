@@ -67,7 +67,7 @@ QImage* ThumbnailerRunnable::createThumbnailImage(DocumentInfo *imgInfo, int siz
     if(imgInfo->type() == VIDEO) {
         QString mpv = settings->mpvBinary();
         if(!mpv.isEmpty()) {
-            filePath = settings->tempDir() + imgInfo->baseName() + ".png";
+            filePath = settings->cacheDir() + imgInfo->baseName() + ".png";
             QString command = "\"" + mpv + "\"" + " --start=30% --frames=1 --aid=no --sid=no --no-config --load-scripts=no --no-terminal --o=\"" + filePath + "\" \"" + imgInfo->filePath() + "\"";
             QProcess process;
             process.start(command);

@@ -153,6 +153,8 @@ signals:
     void enableDocumentView();
     void setDirectoryPath(QString);
     void toggleTransparencyGrid();
+    void droppedIn(const QMimeData*, QObject*);
+    void draggedOut();
 
 public slots:
     void showDefault();

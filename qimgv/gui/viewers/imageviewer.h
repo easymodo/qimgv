@@ -41,11 +41,13 @@ public:
     void replacePixmap(std::unique_ptr<QPixmap> newFrame);
     bool isDisplaying();
 
+    bool imageFits() const;
 signals:
     void scalingRequested(QSize);
     void scaleChanged(float);
     void sourceSizeChanged(QSize);
     void imageAreaChanged(QRect);
+    void draggedOut();
 
 public slots:
     void setFitMode(ImageFitMode mode);

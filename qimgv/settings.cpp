@@ -61,11 +61,11 @@ void Settings::sync() {
     settings->state->sync();
 }
 //------------------------------------------------------------------------------
-QString Settings::cacheDir() {
+QString Settings::thumbnailCacheDir() {
     return mThumbnailDir->path() + "/";
 }
 //------------------------------------------------------------------------------
-QString Settings::tempDir() {
+QString Settings::cacheDir() {
     return mCacheDir->path() + "/";
 }
 //------------------------------------------------------------------------------

@@ -7,7 +7,7 @@
 
 #include "core.h"
 
-Core::Core() : QObject(), infiniteScrolling(false) {
+Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr) {
 #ifdef __GLIBC__
     // default value of 128k causes memory fragmentation issues
     // finding this took 3 days of my life
@@ -69,6 +69,8 @@ void Core::connectComponents() {
     connect(mw, SIGNAL(saveRequested(QString)), this, SLOT(saveImageToDisk(QString)));
     connect(mw, SIGNAL(discardEditsRequested()), this, SLOT(discardEdits()));
     connect(mw, SIGNAL(sortingSelected(SortingMode)), this, SLOT(sortBy(SortingMode)));
+    connect(mw, SIGNAL(draggedOut()), this, SLOT(onDragOut()));
+    connect(mw, SIGNAL(droppedIn(const QMimeData*, QObject*)), this, SLOT(onDropIn(const QMimeData*, QObject*)));
     connect(mw, &MainWindow::renameRequested, this, &Core::renameCurrentFile);
 
     // scaling
@@ -227,6 +229,65 @@ void Core::copyPathClipboard() {
         return;
     QApplication::clipboard()->setText(model->currentFilePath());
     mw->showMessage("Path copied");
+}
+
+void Core::onDropIn(const QMimeData *mimeData, QObject* source) {
+    // ignore self
+    if(source == this)
+        return;
+    qDebug() << mimeData->formats() << mimeData->text();
+    // check for our needed mime type, here a file or a list of files
+    if(mimeData->hasUrls()) {
+        QStringList pathList;
+        QList<QUrl> urlList = mimeData->urls();
+        // extract the local paths of the files
+        for(int i = 0; i < urlList.size() && i < 32; ++i) {
+            pathList.append(urlList.at(i).toLocalFile());
+        }
+        // try to open first file in the list
+        loadPath(pathList.first());
+    }
+}
+
+// drag'n'drop
+// drag image out of the program
+void Core::onDragOut() {
+    if(!model || !model->itemCount())
+        return;
+    qDebug() << "dragOut";
+
+    QPoint hotspot(0,0);
+    QPixmap pixmap(":/res/icons/app/64.png"); // use some thumbnail here
+
+    QMimeData *mimeData = new QMimeData;
+    std::shared_ptr<Image> img = model->getItemAt(model->currentIndex());
+    if(img->type() != STATIC) {
+        // todo
+        return;
+    }
+    QString path;
+    if(img->isEdited()) {
+        path = settings->cacheDir() + "buffer.png";
+        img->getImage()->save(path, nullptr, 90);
+        mimeData->setImageData(img->getImage().get());
+    } else {
+        path = img->path();
+    }
+    mimeData->setUrls(QList<QUrl>() << QUrl::fromLocalFile(path));
+
+    mDrag = new QDrag(this);
+    mDrag->setMimeData(mimeData);
+    mDrag->setPixmap(pixmap);
+    mDrag->setHotSpot(hotspot);
+
+    mDrag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction, Qt::CopyAction);
+    /*if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction) {
+        child->close();
+    } else {
+        child->show();
+        child->setPixmap(pixmap);
+    }
+    */
 }
 
 void Core::sortBy(SortingMode mode) {

@@ -125,7 +125,7 @@ void ViewerWidget::enableInteraction() {
         connect(this, SIGNAL(fitWindow()), imageViewer.get(), SLOT(setFitWindow()));
         connect(this, SIGNAL(fitWidth()), imageViewer.get(), SLOT(setFitWidth()));
         connect(this, SIGNAL(fitOriginal()), imageViewer.get(), SLOT(setFitOriginal()));
-        // block dragging & RMB zoom
+        connect(imageViewer.get(), SIGNAL(draggedOut()), this, SIGNAL(draggedOut()));
         imageViewer->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         mInteractionEnabled = true;
     }
@@ -142,6 +142,7 @@ void ViewerWidget::disableInteraction() {
         disconnect(this, SIGNAL(fitWindow()), imageViewer.get(), SLOT(setFitWindow()));
         disconnect(this, SIGNAL(fitWidth()), imageViewer.get(), SLOT(setFitWidth()));
         disconnect(this, SIGNAL(fitOriginal()), imageViewer.get(), SLOT(setFitOriginal()));
+        disconnect(imageViewer.get(), SIGNAL(draggedOut()), this, SIGNAL(draggedOut()));
         imageViewer->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         hideContextMenu();
         mInteractionEnabled = false;

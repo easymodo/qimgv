@@ -64,6 +64,7 @@ signals:
     void fitWidth();
     void fitOriginal();
     void toggleTransparencyGrid();
+    void draggedOut();
 
 public slots:
     bool showVideo(QString file);

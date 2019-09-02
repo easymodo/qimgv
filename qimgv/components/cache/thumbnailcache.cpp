@@ -1,7 +1,7 @@
 #include "thumbnailcache.h"
 
 ThumbnailCache::ThumbnailCache() {
-    cacheDirPath = settings->cacheDir();
+    cacheDirPath = settings->thumbnailCacheDir();
 }
 
 QString ThumbnailCache::thumbnailPath(QString id) {

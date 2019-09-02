@@ -98,6 +98,9 @@ void MainWindow::setupUi() {
     connect(viewerWidget.get(), SIGNAL(scalingRequested(QSize)),
             this, SIGNAL(scalingRequested(QSize)));
 
+    connect(viewerWidget.get(), SIGNAL(draggedOut()),
+            this, SIGNAL(draggedOut()));
+
     //  Core >> MW
     connect(this, SIGNAL(zoomIn()),
             viewerWidget.get(), SIGNAL(zoomIn()));
@@ -376,18 +379,7 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *e) {
 }
 
 void MainWindow::dropEvent(QDropEvent *event) {
-    const QMimeData *mimeData = event->mimeData();
-    // check for our needed mime type, here a file or a list of files
-    if(mimeData->hasUrls()) {
-        QStringList pathList;
-        QList<QUrl> urlList = mimeData->urls();
-        // extract the local paths of the files
-        for(int i = 0; i < urlList.size() && i < 32; ++i) {
-            pathList.append(urlList.at(i).toLocalFile());
-        }
-        // try to open first file in the list
-        emit opened(pathList.first());
-    }
+    emit droppedIn(event->mimeData(), event->source());
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {

@@ -322,6 +322,13 @@ void ImageViewer::paintEvent(QPaintEvent *event) {
     }
 }
 
+bool ImageViewer::imageFits() const {
+    if(!pixmap)
+        return true;
+    return (drawingRect.size().width()  <= width()  * devicePixelRatioF() &&
+            drawingRect.size().height() <= height() * devicePixelRatioF());
+}
+
 //  Right button zooming / dragging logic
 //  mouseMoveStartPos: stores the previous mouseMoveEvent() position,
 //                     used to calculate delta.
@@ -335,7 +342,9 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
     }
     mouseMoveStartPos = event->pos();
     mousePressPos = mouseMoveStartPos;
-    if(event->button() & Qt::RightButton) {
+    if(event->button() & Qt::LeftButton && imageFits()) {
+        emit draggedOut();
+    } else if(event->button() & Qt::RightButton) {
         setZoomPoint(event->pos() * devicePixelRatioF());
     } else {
         QWidget::mousePressEvent(event);

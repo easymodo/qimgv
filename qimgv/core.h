@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QMutex>
 #include <QClipboard>
+#include <QDrag>
 #include <malloc.h>
 #include <QFileSystemModel>
 #include "appversion.h"
@@ -54,6 +55,7 @@ private:
     void loadDirectoryPath(QString);
     void loadImagePath(QString path, bool blocking);
     void trimCache();
+    QDrag *mDrag;
 
 private slots:
     void readSettings();
@@ -102,6 +104,8 @@ private slots:
     void sortByTime();
     void sortBySize();
     void showRenameDialog();
+    void onDragOut();
+    void onDropIn(const QMimeData *mimeData, QObject* source);
 };
 
 #endif // CORE_H

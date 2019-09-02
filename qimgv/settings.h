@@ -80,7 +80,7 @@ public:
     void setPlayWebm(bool mode);
     bool playVideoSounds();
     void setPlayVideoSounds(bool mode);
-    QString cacheDir();
+    QString thumbnailCacheDir();
     QString mpvBinary();
     void setMpvBinary(QString path);
     bool showThumbnailLabels();
@@ -112,7 +112,7 @@ public:
     void setUseThumbnailCache(bool mode);
     QStringList savedPaths();
     void setSavedPaths(QStringList paths);
-    QString tempDir();
+    QString cacheDir();
     int thumbnailerThreadCount();
     void setThumbnailerThreadCount(int count);
     bool smoothUpscaling();
