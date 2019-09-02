@@ -342,9 +342,9 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
     }
     mouseMoveStartPos = event->pos();
     mousePressPos = mouseMoveStartPos;
-    if(event->button() & Qt::LeftButton && imageFits()) {
+    /*if(event->button() & Qt::LeftButton && imageFits()) {
         emit draggedOut();
-    } else if(event->button() & Qt::RightButton) {
+    } else */if(event->button() & Qt::RightButton) {
         setZoomPoint(event->pos() * devicePixelRatioF());
     } else {
         QWidget::mousePressEvent(event);
@@ -353,15 +353,39 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
 
 void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     QWidget::mouseMoveEvent(event);
-    if(!pixmap)
+    if(!pixmap || mouseInteraction == MOUSE_DRAG)
         return;
-    if(event->buttons() & Qt::LeftButton && mouseInteraction != MOUSE_ZOOM) {
-        if(cursor().shape() != Qt::ClosedHandCursor) {
-            setCursor(Qt::ClosedHandCursor);
+
+    // ---------------- DRAG / PAN -------------------
+    if(event->buttons() & Qt::LeftButton) {
+        // select which action to start
+        if(mouseInteraction == MOUSE_NONE) {
+            if(imageFits()) {
+                mouseInteraction = MOUSE_DRAG_BEGIN;
+            } else {
+                mouseInteraction = MOUSE_PAN;
+                if(cursor().shape() != Qt::ClosedHandCursor)
+                    setCursor(Qt::ClosedHandCursor);
+            }
         }
-        mouseInteraction = MOUSE_DRAG;
-        mouseWrapping ? mouseDragWrapping(event) : mouseDrag(event);
-    } else if(event->buttons() & Qt::RightButton && mouseInteraction != MOUSE_DRAG) {
+        //qDebug() << mouseInteraction;
+        // emit a signal to start dnd; set flag to ignore further mouse move events
+        if(mouseInteraction == MOUSE_DRAG_BEGIN) {
+            if( (abs(mousePressPos.x() - event->pos().x()) > dragThreshold) ||
+                 abs(mousePressPos.y() - event->pos().y()) > dragThreshold)
+            {
+                mouseInteraction = MOUSE_NONE;
+                emit draggedOut();
+            }
+        }
+        // panning
+        if(mouseInteraction == MOUSE_PAN) {
+            mouseWrapping ? mousePanWrapping(event) : mousePan(event);
+        }
+        return;
+    }
+    // ------------------- ZOOM ----------------------
+    if(event->buttons() & Qt::RightButton/* && mouseInteraction != MOUSE_PAN */) {
         // filter out possible mouse jitter by ignoring low delta drags
         if(mouseInteraction == MOUSE_ZOOM || abs(mousePressPos.y() - event->pos().y()) > zoomThreshold) {
             if(cursor().shape() != Qt::SizeVerCursor) {
@@ -370,6 +394,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
             mouseInteraction = MOUSE_ZOOM;
             mouseMoveZoom(event);
         }
+        return;
     }
 }
 
@@ -381,79 +406,75 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
     mouseInteraction = MOUSE_NONE;
 }
 
-//  Okular-like cursor drag behavior.
+//  Okular-like cursor pan behavior.
 //  TODO: looks like it's broken when you have multiple screens with
 //        different resolution (height in particular).
 //
 //  ...it is probably a bad idea to fiddle with this
 inline
-void ImageViewer::mouseDragWrapping(QMouseEvent *event) {
-    if( drawingRect.size().width()  > width()  * devicePixelRatioF() ||
-        drawingRect.size().height() > height() * devicePixelRatioF() )
-    {
-        bool wrapped = false;
-        QPoint newPos = mapToGlobal(event->pos()); //global
-        QPoint delta = mouseMoveStartPos - event->pos(); // relative
-        if(delta.x() && abs(delta.x()) < desktopSize.width() / 2) {
-            int left = drawingRect.x() - delta.x();
-            int right = left + drawingRect.width();
-            if(left <= 0 && right > width() * devicePixelRatioF()) {
-                // wrap mouse along the X axis
-                if(left+1 <= 0 && right-1 > width() * devicePixelRatioF()) {
-                    if(newPos.x() >= desktopSize.width() - 1) {
-                        newPos.setX(2);
-                        cursor().setPos(newPos);
-                        wrapped = true;
-                    } else if(newPos.x() <= 0) {
-                        newPos.setX(desktopSize.width() - 2);
-                        cursor().setPos(newPos);
-                        wrapped = true;
-                    }
+void ImageViewer::mousePanWrapping(QMouseEvent *event) {
+    if(imageFits())
+        return;
+    bool wrapped = false;
+    QPoint newPos = mapToGlobal(event->pos()); //global
+    QPoint delta = mouseMoveStartPos - event->pos(); // relative
+    if(delta.x() && abs(delta.x()) < desktopSize.width() / 2) {
+        int left = drawingRect.x() - delta.x();
+        int right = left + drawingRect.width();
+        if(left <= 0 && right > width() * devicePixelRatioF()) {
+            // wrap mouse along the X axis
+            if(left+1 <= 0 && right-1 > width() * devicePixelRatioF()) {
+                if(newPos.x() >= desktopSize.width() - 1) {
+                    newPos.setX(2);
+                    cursor().setPos(newPos);
+                    wrapped = true;
+                } else if(newPos.x() <= 0) {
+                    newPos.setX(desktopSize.width() - 2);
+                    cursor().setPos(newPos);
+                    wrapped = true;
                 }
-                // move image
-                drawingRect.moveLeft(left);
             }
+            // move image
+            drawingRect.moveLeft(left);
         }
-        if(delta.y() && abs(delta.y()) < desktopSize.height() / 2) {
-            int top = drawingRect.y() - delta.y();
-            int bottom = top + drawingRect.height();
-            if(top <= 0 && bottom > height() * devicePixelRatioF()) {
-                // wrap mouse along the Y axis
-                if(top+1 <= 0 && bottom-1 > height() * devicePixelRatioF()) {
-                    if(newPos.y() >= desktopSize.height() - 1) {
-                        newPos.setY(2);
-                        cursor().setPos(newPos);
-                        wrapped = true;
-                    } else if(newPos.y() <= 0) {
-                        newPos.setY(desktopSize.height() - 2);
-                        cursor().setPos(newPos);
-                        wrapped = true;
-                    }
-                }
-                // move image
-                drawingRect.moveTop(top);
-            }
-        }
-        if(wrapped)
-            mouseMoveStartPos = mapFromGlobal(newPos);
-        else
-            mouseMoveStartPos = event->pos();
-        update();
     }
+    if(delta.y() && abs(delta.y()) < desktopSize.height() / 2) {
+        int top = drawingRect.y() - delta.y();
+        int bottom = top + drawingRect.height();
+        if(top <= 0 && bottom > height() * devicePixelRatioF()) {
+            // wrap mouse along the Y axis
+            if(top+1 <= 0 && bottom-1 > height() * devicePixelRatioF()) {
+                if(newPos.y() >= desktopSize.height() - 1) {
+                    newPos.setY(2);
+                    cursor().setPos(newPos);
+                    wrapped = true;
+                } else if(newPos.y() <= 0) {
+                    newPos.setY(desktopSize.height() - 2);
+                    cursor().setPos(newPos);
+                    wrapped = true;
+                }
+            }
+            // move image
+            drawingRect.moveTop(top);
+        }
+    }
+    if(wrapped)
+        mouseMoveStartPos = mapFromGlobal(newPos);
+    else
+        mouseMoveStartPos = event->pos();
+    update();
 }
 
-//  simple drag behavior
+// simple pan behavior (cursor stops at the screen edges)
 inline
-void ImageViewer::mouseDrag(QMouseEvent *event) {
-    if( drawingRect.size().width()  > width()  * devicePixelRatioF() ||
-        drawingRect.size().height() > height() * devicePixelRatioF() )
-    {
-        mouseMoveStartPos -= event->pos();
-        scroll(mouseMoveStartPos.x() * devicePixelRatioF(),
-               mouseMoveStartPos.y() * devicePixelRatioF(),
-               false);
-        mouseMoveStartPos = event->pos();
-    }
+void ImageViewer::mousePan(QMouseEvent *event) {
+    if(imageFits())
+        return;
+    mouseMoveStartPos -= event->pos();
+    scroll(mouseMoveStartPos.x() * devicePixelRatioF(),
+           mouseMoveStartPos.y() * devicePixelRatioF(),
+           false);
+    mouseMoveStartPos = event->pos();
 }
 
 //  zooming while the right button is pressed

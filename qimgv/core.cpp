@@ -253,7 +253,6 @@ void Core::onDropIn(const QMimeData *mimeData, QObject* source) {
 void Core::onDragOut() {
     if(!model || !model->itemCount())
         return;
-    qDebug() << "dragOut";
 
     QPoint hotspot(0,0);
     QPixmap pixmap(":/res/icons/app/64.png"); // use some thumbnail here
@@ -283,10 +282,11 @@ QMimeData *Core::getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget targe
             int pngQuality = (target == TARGET_DROP) ? 80 : 30;
             img->getImage()->save(path, nullptr, pngQuality);
         }
-        mimeData->setImageData(*img->getImage().get());
-    } else if(img->type() == ANIMATED) {
-        mimeData->setImageData(*img->getImage().get());
     }
+    // !!! using setImageData() while doing drag'n'drop hangs Xorg !!!
+    // clipboard only!
+    if(img->type() != VIDEO && target == TARGET_CLIPBOARD)
+        mimeData->setImageData(*img->getImage().get());
     mimeData->setUrls({QUrl::fromLocalFile(path)});
     return mimeData;
 }

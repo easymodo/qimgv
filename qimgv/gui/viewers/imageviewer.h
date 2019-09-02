@@ -21,7 +21,9 @@
 
 enum MouseInteractionState {
     MOUSE_NONE,
+    MOUSE_DRAG_BEGIN,
     MOUSE_DRAG,
+    MOUSE_PAN,
     MOUSE_ZOOM
 };
 
@@ -98,6 +100,7 @@ private:
     const int animationSpeed = 150;
     // how many px you can move while holding RMB until it counts as a zoom attempt
     int zoomThreshold = 4;
+    int dragThreshold = 10;
     float maxScaleLimit = 4.0;
     float maxResolutionLimit = 75.0; // in megapixels
     float mOpacity;
@@ -125,8 +128,8 @@ private:
     int scrolledX(int dx);
     int scrolledY(int dy);
 
-    void mouseDragWrapping(QMouseEvent *event);
-    void mouseDrag(QMouseEvent *event);
+    void mousePanWrapping(QMouseEvent *event);
+    void mousePan(QMouseEvent *event);
     void mouseMoveZoom(QMouseEvent *event);
     void drawTransparencyGrid();
     void startAnimationTimer();
