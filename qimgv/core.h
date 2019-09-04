@@ -14,6 +14,7 @@
 #include "components/directorypresenter.h"
 #include "components/scriptmanager/scriptmanager.h"
 #include "gui/mainwindow.h"
+#include "utils/randomizer.h"
 
 struct State {
     State() : hasActiveImage(false) {}
@@ -63,6 +64,10 @@ private:
     QDrag *mDrag;
     QMimeData *getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget target);
 
+    Randomizer randomizer;
+    void syncRandomizer();
+
+    void attachModel(DirectoryModel *_model);
 private slots:
     void readSettings();
     void nextImage();
@@ -112,6 +117,8 @@ private slots:
     void showRenameDialog();
     void onDragOut();
     void onDropIn(const QMimeData *mimeData, QObject* source);
+    void toggleShuffle();
+    void onModelLoaded();
 };
 
 #endif // CORE_H

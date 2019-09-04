@@ -32,6 +32,8 @@ Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr) {
 
 void Core::readSettings() {
     infiniteScrolling = settings->infiniteScrolling();
+    if(settings->shuffleEnabled())
+        syncRandomizer();
 }
 
 void Core::showGui() {
@@ -45,9 +47,15 @@ void Core::initGui() {
     mw->hide();
 }
 
-void Core::initComponents() {
-    model.reset(new DirectoryModel());
+void Core::attachModel(DirectoryModel *_model) {
+    model.reset(_model);
     presenter.setModel(model);
+    if(settings->shuffleEnabled())
+        syncRandomizer();
+}
+
+void Core::initComponents() {
+    attachModel(new DirectoryModel());
 }
 
 void Core::connectComponents() {
@@ -89,6 +97,7 @@ void Core::connectComponents() {
     connect(model.get(), SIGNAL(itemUpdated(std::shared_ptr<Image>)), this, SLOT(onModelItemUpdated(std::shared_ptr<Image>)));
     connect(model.get(), SIGNAL(indexChanged(int)), this, SLOT(updateInfoString()));
     connect(model.get(), SIGNAL(sortingChanged()), this, SLOT(updateInfoString()));
+    connect(model.get(), SIGNAL(loaded(QString)), this, SLOT(onModelLoaded()));
 }
 
 void Core::initActions() {
@@ -145,6 +154,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(sortByTime()), this, SLOT(sortByTime()));
     connect(actionManager, SIGNAL(sortBySize()), this, SLOT(sortBySize()));
     connect(actionManager, SIGNAL(toggleImageInfo()), mw, SLOT(toggleImageInfoOverlay()));
+    connect(actionManager, SIGNAL(toggleShuffle()), this, SLOT(toggleShuffle()));
 }
 
 void Core::onUpdate() {
@@ -164,6 +174,30 @@ void Core::onFirstRun() {
     mw->showMessage("Welcome to qimgv version " + appVersion.toString() + "!", 4000);
     settings->setFirstRun(false);
     settings->setLastVersion(appVersion);
+}
+
+void Core::toggleShuffle() {
+    if(settings->shuffleEnabled()) {
+        settings->setShuffleEnabled(false);
+        mw->showMessage("Shuffle Disabled");
+    } else {
+        settings->setShuffleEnabled(true);
+        syncRandomizer();
+        mw->showMessage("Shuffle Enabled");
+    }
+}
+
+void Core::syncRandomizer() {
+    if(model) {
+        randomizer.setCount(model->itemCount());
+        randomizer.shuffle();
+        randomizer.setCurrent(model->currentIndex());
+    }
+}
+
+void Core::onModelLoaded() {
+    if(settings->shuffleEnabled())
+        syncRandomizer();
 }
 
 void Core::rotateLeft() {
@@ -622,6 +656,11 @@ void Core::loadPath(QString path) {
 void Core::nextImage() {
     if(model->isEmpty())
         return;
+    if(settings->shuffleEnabled()) {
+        model->setIndexAsync(randomizer.next());
+        return;
+    }
+
     int newIndex = model->indexOf(model->currentFileName()) + 1;
     if(newIndex >= model->itemCount()) {
         if(infiniteScrolling) {
@@ -638,6 +677,11 @@ void Core::nextImage() {
 void Core::prevImage() {
     if(model->isEmpty())
         return;
+    if(settings->shuffleEnabled()) {
+        model->setIndexAsync(randomizer.prev());
+        return;
+    }
+
     int newIndex = model->indexOf(model->currentFileName()) - 1;
     if(newIndex < 0) {
         if(infiniteScrolling) {

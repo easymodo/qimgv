@@ -110,6 +110,7 @@ signals:
     void sortByTime();
     void sortBySize();
     void toggleImageInfo();
+    void toggleShuffle();
 };
 
 extern ActionManager *actionManager;

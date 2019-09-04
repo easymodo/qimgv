@@ -12,7 +12,7 @@ void DirectoryPresenter::unsetModel() {
                this, SLOT(onFileModified(QString)));
     disconnect(model.get(), SIGNAL(fileRenamed(QString, int, QString, int)),
                this, SLOT(onFileRenamed(QString, int, QString, int)));
-    disconnect(model.get(), SIGNAL(directoryChanged(QString)),
+    disconnect(model.get(), SIGNAL(loaded(QString)),
                this, SLOT(reloadModel()));
     disconnect(model.get(), SIGNAL(sortingChanged()),
                this, SLOT(onModelSortingChanged()));
@@ -47,7 +47,7 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
     connect(model.get(), SIGNAL(indexChanged(int)),
             this, SLOT(setCurrentIndex(int)), Qt::UniqueConnection);
 
-    connect(model.get(), SIGNAL(directoryChanged(QString)),
+    connect(model.get(), SIGNAL(loaded(QString)),
             this, SLOT(reloadModel()), Qt::UniqueConnection);
 
     connect(model.get(), SIGNAL(sortingChanged()),

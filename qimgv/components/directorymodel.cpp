@@ -8,7 +8,7 @@ DirectoryModel::DirectoryModel(QObject *parent) : QObject(parent) {
     connect(&dirManager, &DirectoryManager::fileAdded, this, &DirectoryModel::fileAdded);
     connect(&dirManager, &DirectoryManager::fileModified,this, &DirectoryModel::fileModified);
     connect(&dirManager, &DirectoryManager::fileRenamed, this, &DirectoryModel::fileRenamed);
-    connect(&dirManager, &DirectoryManager::directoryChanged, this, &DirectoryModel::directoryChanged);
+    connect(&dirManager, &DirectoryManager::loaded, this, &DirectoryModel::loaded);
     connect(&dirManager, &DirectoryManager::sortingChanged, this, &DirectoryModel::onSortingChanged);
     connect(&loader, &Loader::loadFinished, this, &DirectoryModel::onItemReady);
     connect(thumbnailer, &Thumbnailer::thumbnailReady, this, &DirectoryModel::thumbnailReady);

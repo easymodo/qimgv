@@ -113,7 +113,7 @@ bool DirectoryManager::setDirectory(QString path) {
     generateFileList();
     sortFileList();
 
-    emit directoryChanged(path);
+    emit loaded(path);
 
     watcher->setWatchPath(path);
     watcher->observe();

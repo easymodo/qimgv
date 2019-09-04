@@ -163,6 +163,10 @@ public:
 
     bool windowTitleExtendedInfo();
     void setWindowTitleExtendedInfo(bool mode);
+
+    bool shuffleEnabled();
+    void setShuffleEnabled(bool mode);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;

@@ -74,5 +74,6 @@ void Actions::init() {
     mActions.insert("sortByTime", QVersionNumber(0,7,83));
     mActions.insert("sortBySize", QVersionNumber(0,7,83));
     mActions.insert("toggleImageInfo", QVersionNumber(0,7,84));
+    mActions.insert("toggleShuffle", QVersionNumber(0,8,3));
 }
 

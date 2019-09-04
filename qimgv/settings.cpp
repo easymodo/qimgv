@@ -638,6 +638,14 @@ bool Settings::windowTitleExtendedInfo() {
 void Settings::setWindowTitleExtendedInfo(bool mode) {
     settings->s->setValue("windowTitleExtendedInfo", mode);
 }
+
+bool Settings::shuffleEnabled() {
+    return settings->s->value("shuffleEnabled", false).toBool();
+}
+
+void Settings::setShuffleEnabled(bool mode) {
+    settings->s->setValue("shuffleEnabled", mode);
+}
 //------------------------------------------------------------------------------
 bool Settings::cursorAutohide() {
     return settings->s->value("cursorAutohiding", true).toBool();

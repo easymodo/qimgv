@@ -57,7 +57,7 @@ signals:
     void fileRenamed(QString from, int indexFrom, QString to, int indexTo);
     void fileAdded(QString fileName);
     void fileModified(QString fileName);
-    void directoryChanged(QString);
+    void loaded(QString);
     void sortingChanged();
     void indexChanged(int index);
     // returns current item

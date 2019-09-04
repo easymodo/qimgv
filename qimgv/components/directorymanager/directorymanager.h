@@ -115,7 +115,7 @@ private:
     bool size_entry_compare(const Entry &e1, const Entry &e2) const;
     bool size_entry_compare_reverse(const Entry &e1, const Entry &e2) const;
 signals:
-    void directoryChanged(const QString &path);
+    void loaded(const QString &path);
     void sortingChanged();
     void fileRemoved(QString, int);
     void fileModified(QString);
