@@ -111,6 +111,8 @@ signals:
     void sortBySize();
     void toggleImageInfo();
     void toggleShuffle();
+    void setFilterNearest();
+    void setFilterBilinear();
 };
 
 extern ActionManager *actionManager;

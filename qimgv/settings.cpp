@@ -593,17 +593,14 @@ void Settings::setExpandImage(bool mode) {
     settings->s->setValue("expandImage", mode);
 }
 //------------------------------------------------------------------------------
-/* 0: nearest
- * 1: bilinear
- */
-int Settings::scalingFilter() {
+ScalingFilter Settings::scalingFilter() {
     int mode = settings->s->value("scalingFilter", 1).toInt();
     if(mode < 0 || mode > 1)
         mode = 1;
-    return mode;
+    return static_cast<ScalingFilter>(mode);
 }
 
-void Settings::setScalingFilter(int mode) {
+void Settings::setScalingFilter(ScalingFilter mode) {
     settings->s->setValue("scalingFilter", mode);
 }
 //------------------------------------------------------------------------------

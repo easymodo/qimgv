@@ -41,6 +41,11 @@ enum PanelVPosition {
     PANEL_RIGHT
 };
 
+enum ScalingFilter {
+    FILTER_NEAREST,
+    FILTER_BILINEAR
+};
+
 class Settings : public QObject
 {
     Q_OBJECT
@@ -123,8 +128,8 @@ public:
     void setMaximumZoom(int value);
     void setExpandImage(bool mode);
     bool expandImage();
-    int scalingFilter();
-    void setScalingFilter(int mode);
+    ScalingFilter scalingFilter();
+    void setScalingFilter(ScalingFilter mode);
     bool smoothAnimatedImages();
     void setSmoothAnimatedImages(bool mode);
     bool panelFullscreenOnly();

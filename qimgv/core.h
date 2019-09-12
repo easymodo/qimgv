@@ -81,7 +81,7 @@ private slots:
     void rotateLeft();
     void rotateRight();
     void close();
-    void scalingRequest(QSize);
+    void scalingRequest(QSize, ScalingFilter);
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
     void moveFile(QString destDirectory);
     void copyFile(QString destDirectory);

@@ -84,7 +84,7 @@ void Scaler::onTaskStart(ScalerRequest req) {
     sem->acquire(1);
     running = true;
     // clear buffered flag if there were no requests after us
-    if(buffered && bufferedRequest.image == req.image && bufferedRequest.size == req.size) {
+    if(buffered && bufferedRequest == req) {
         buffered = false;
     }
     startedRequest = req;

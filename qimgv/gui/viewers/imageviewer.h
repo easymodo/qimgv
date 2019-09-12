@@ -45,7 +45,7 @@ public:
 
     bool imageFits() const;
 signals:
-    void scalingRequested(QSize);
+    void scalingRequested(QSize, ScalingFilter);
     void scaleChanged(float);
     void sourceSizeChanged(QSize);
     void imageAreaChanged(QRect);
@@ -73,6 +73,10 @@ public slots:
     void hide();
 
     void toggleTransparencyGrid();
+
+    void setFilterNearest();
+    void setFilterBilinear();
+    void setScalingFilter(ScalingFilter filter);
 protected:
     virtual void paintEvent(QPaintEvent* event);
     virtual void mousePressEvent(QMouseEvent *event);
@@ -114,6 +118,7 @@ private:
     QSize desktopSize;
 
     ImageFitMode imageFitMode;
+    ScalingFilter scalingFilter;
     void setScale(float scale);
     void updateMinScale();
     void scaleAroundZoomPoint(float oldScale);

@@ -21,10 +21,14 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
     imageViewer.reset(new ImageViewer(this));
     imageViewer->hide();
-    connect(imageViewer.get(), SIGNAL(scalingRequested(QSize)),
-            this, SIGNAL(scalingRequested(QSize)));
+    connect(imageViewer.get(), SIGNAL(scalingRequested(QSize, ScalingFilter)),
+            this, SIGNAL(scalingRequested(QSize, ScalingFilter)));
     connect(this, SIGNAL(toggleTransparencyGrid()),
             imageViewer.get(), SLOT(toggleTransparencyGrid()));
+    connect(this, SIGNAL(setFilterNearest()),
+            imageViewer.get(), SLOT(setFilterNearest()));
+    connect(this, SIGNAL(setFilterBilinear()),
+            imageViewer.get(), SLOT(setFilterBilinear()));
 
     videoPlayer.reset(new VideoPlayerInitProxy(this));
     videoPlayer->hide();

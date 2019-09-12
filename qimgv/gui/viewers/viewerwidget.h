@@ -51,7 +51,7 @@ private:
     void disableVideoPlayer();
 
 signals:
-    void scalingRequested(QSize);
+    void scalingRequested(QSize, ScalingFilter);
     void zoomIn();
     void zoomOut();
     void zoomInCursor();
@@ -65,6 +65,8 @@ signals:
     void fitOriginal();
     void toggleTransparencyGrid();
     void draggedOut();
+    void setFilterNearest();
+    void setFilterBilinear();
 
 public slots:
     bool showVideo(QString file);
@@ -89,6 +91,7 @@ public slots:
     void showContextMenu();
     void hideContextMenu();
     void showContextMenu(QPoint pos);
+
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);

@@ -14,7 +14,8 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     fitWindowScale(0.125),
     minScale(0.125),
     maxScale(maxScaleLimit),
-    imageFitMode(FIT_ORIGINAL)
+    imageFitMode(FIT_ORIGINAL),
+    scalingFilter(FILTER_BILINEAR)
 {
     setMouseTracking(true);
     posAnimation = new QPropertyAnimation(this, "drawPos");
@@ -162,6 +163,7 @@ void ImageViewer::readSettings() {
     setFitMode(settings->imageFitMode());
     mouseWrapping = settings->mouseWrapping();
     transparencyGridEnabled = settings->transparencyGrid();
+    setScalingFilter(settings->scalingFilter());
 }
 
 // temporary override till application restart
@@ -169,6 +171,29 @@ void ImageViewer::toggleTransparencyGrid() {
     transparencyGridEnabled = !transparencyGridEnabled;
     // request a new one as the grid is baked into the current pixmap for performance reasons
     requestScaling(true);
+}
+
+void ImageViewer::setScalingFilter(ScalingFilter filter) {
+    if(scalingFilter != filter) {
+        if(filter == FILTER_NEAREST)
+            setFilterNearest();
+        else if(filter == FILTER_BILINEAR)
+            setFilterBilinear();
+    }
+}
+
+void ImageViewer::setFilterNearest() {
+    if(scalingFilter != FILTER_NEAREST) {
+        scalingFilter = FILTER_NEAREST;
+        requestScaling(true);
+    }
+}
+
+void ImageViewer::setFilterBilinear() {
+    if(scalingFilter != FILTER_BILINEAR) {
+        scalingFilter = FILTER_BILINEAR;
+        requestScaling(true);
+    }
 }
 
 void ImageViewer::setExpandImage(bool mode) {
@@ -271,7 +296,7 @@ void ImageViewer::requestScaling(bool force) {
     if(!pixmap || movie)
         return;
     if(pixmap->size() != drawingRect.size() || force)
-        emit scalingRequested(drawingRect.size());
+        emit scalingRequested(drawingRect.size(), scalingFilter);
 }
 
 void ImageViewer::requestScaling() {

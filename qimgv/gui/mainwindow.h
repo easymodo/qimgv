@@ -135,7 +135,7 @@ signals:
     void setCurrentIndex(int);
     //void onThumbnailReady(int, std::shared_ptr<Thumbnail>);
     // viewerWidget
-    void scalingRequested(QSize);
+    void scalingRequested(QSize, ScalingFilter);
     void zoomIn();
     void zoomOut();
     void zoomInCursor();
@@ -198,6 +198,8 @@ public slots:
     void onSortingChanged(SortingMode);
     void toggleImageInfoOverlay();
     void toggleRenameOverlay();
+    void setFilterNearest();
+    void setFilterBilinear();
 };
 
 #endif // MainWindow_H

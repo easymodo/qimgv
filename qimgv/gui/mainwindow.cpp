@@ -95,8 +95,8 @@ void MainWindow::setupUi() {
     thumbnailStrip.reset(new ThumbnailStrip());
     mainPanel = new MainPanel(thumbnailStrip, this);
 
-    connect(viewerWidget.get(), SIGNAL(scalingRequested(QSize)),
-            this, SIGNAL(scalingRequested(QSize)));
+    connect(viewerWidget.get(), SIGNAL(scalingRequested(QSize, ScalingFilter)),
+            this, SIGNAL(scalingRequested(QSize, ScalingFilter)));
 
     connect(viewerWidget.get(), SIGNAL(draggedOut()),
             this, SIGNAL(draggedOut()));
@@ -255,6 +255,16 @@ void MainWindow::toggleRenameOverlay() {
         renameOverlay->show();
     else
         renameOverlay->hide();
+}
+
+void MainWindow::setFilterNearest() {
+    showMessage("Filter: nearest", 600);
+    viewerWidget->setFilterNearest();
+}
+
+void MainWindow::setFilterBilinear() {
+    showMessage("Filter: bilinear", 600);
+    viewerWidget->setFilterBilinear();
 }
 
 bool MainWindow::isCropPanelActive() {

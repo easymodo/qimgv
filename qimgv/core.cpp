@@ -82,8 +82,8 @@ void Core::connectComponents() {
     connect(mw, &MainWindow::renameRequested, this, &Core::renameCurrentFile);
 
     // scaling
-    connect(mw, SIGNAL(scalingRequested(QSize)),
-            this, SLOT(scalingRequest(QSize)));
+    connect(mw, SIGNAL(scalingRequested(QSize, ScalingFilter)),
+            this, SLOT(scalingRequest(QSize, ScalingFilter)));
     connect(model->scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest)),
             this, SLOT(onScalingFinished(QPixmap*,ScalerRequest)));
 
@@ -155,6 +155,8 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(sortBySize()), this, SLOT(sortBySize()));
     connect(actionManager, SIGNAL(toggleImageInfo()), mw, SLOT(toggleImageInfoOverlay()));
     connect(actionManager, SIGNAL(toggleShuffle()), this, SLOT(toggleShuffle()));
+    connect(actionManager, SIGNAL(setFilterNearest()), mw, SLOT(setFilterNearest()));
+    connect(actionManager, SIGNAL(setFilterBilinear()), mw, SLOT(setFilterBilinear()));
 }
 
 void Core::onUpdate() {
@@ -569,12 +571,12 @@ void Core::runScript(const QString &scriptName) {
     scriptManager->runScript(scriptName, model->cache.get(model->currentFileName()));
 }
 
-void Core::scalingRequest(QSize size) {
+void Core::scalingRequest(QSize size, ScalingFilter filter) {
     if(state.hasActiveImage) {
         std::shared_ptr<Image> forScale = model->cache.get(model->currentFileName());
         if(forScale) {
             QString path = model->absolutePath() + "/" + model->currentFileName();
-            model->scaler->requestScaled(ScalerRequest(forScale.get(), size, path));
+            model->scaler->requestScaled(ScalerRequest(forScale.get(), size, path, filter));
         }
     }
 }

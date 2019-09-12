@@ -192,7 +192,7 @@ void SettingsDialog::applySettings() {
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 
-    settings->setScalingFilter(ui->scalingQualityComboBox->currentIndex());
+    settings->setScalingFilter(static_cast<ScalingFilter>(ui->scalingQualityComboBox->currentIndex()));
 
     settings->setPanelPosition(static_cast<PanelHPosition>(ui->panelPositionComboBox->currentIndex()));
 
