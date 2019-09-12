@@ -53,6 +53,7 @@ public:
     void setExifInfo(QMap<QString, QString>);
     std::shared_ptr<DirectoryViewWrapper> getFolderView();
     std::shared_ptr<DirectoryViewWrapper> getThumbnailPanel();
+
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;
     QHBoxLayout layout;
@@ -200,6 +201,7 @@ public slots:
     void toggleRenameOverlay();
     void setFilterNearest();
     void setFilterBilinear();
+    void toggleScalingFilter();
 };
 
 #endif // MainWindow_H

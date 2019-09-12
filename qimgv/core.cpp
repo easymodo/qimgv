@@ -155,8 +155,7 @@ void Core::initActions() {
     connect(actionManager, SIGNAL(sortBySize()), this, SLOT(sortBySize()));
     connect(actionManager, SIGNAL(toggleImageInfo()), mw, SLOT(toggleImageInfoOverlay()));
     connect(actionManager, SIGNAL(toggleShuffle()), this, SLOT(toggleShuffle()));
-    connect(actionManager, SIGNAL(setFilterNearest()), mw, SLOT(setFilterNearest()));
-    connect(actionManager, SIGNAL(setFilterBilinear()), mw, SLOT(setFilterBilinear()));
+    connect(actionManager, SIGNAL(toggleScalingFilter()), mw, SLOT(toggleScalingFilter()));
 }
 
 void Core::onUpdate() {

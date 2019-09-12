@@ -274,6 +274,10 @@ bool ViewerWidget::isDisplaying() {
         return false;
 }
 
+ScalingFilter ViewerWidget::scalingFilter() {
+    return imageViewer->scalingFilter();
+}
+
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
     hideContextMenu();
     event->ignore();

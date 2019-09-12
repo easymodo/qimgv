@@ -31,6 +31,7 @@ public:
     bool showAnimation(std::unique_ptr<QMovie> movie);
     void onScalingFinished(std::unique_ptr<QPixmap> scaled);
     bool isDisplaying();
+    ScalingFilter scalingFilter();
 
 private:
     QHBoxLayout layout;

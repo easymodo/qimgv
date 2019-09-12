@@ -15,7 +15,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     minScale(0.125),
     maxScale(maxScaleLimit),
     imageFitMode(FIT_ORIGINAL),
-    scalingFilter(FILTER_BILINEAR)
+    mScalingFilter(FILTER_BILINEAR)
 {
     setMouseTracking(true);
     posAnimation = new QPropertyAnimation(this, "drawPos");
@@ -174,7 +174,7 @@ void ImageViewer::toggleTransparencyGrid() {
 }
 
 void ImageViewer::setScalingFilter(ScalingFilter filter) {
-    if(scalingFilter != filter) {
+    if(mScalingFilter != filter) {
         if(filter == FILTER_NEAREST)
             setFilterNearest();
         else if(filter == FILTER_BILINEAR)
@@ -183,15 +183,15 @@ void ImageViewer::setScalingFilter(ScalingFilter filter) {
 }
 
 void ImageViewer::setFilterNearest() {
-    if(scalingFilter != FILTER_NEAREST) {
-        scalingFilter = FILTER_NEAREST;
+    if(mScalingFilter != FILTER_NEAREST) {
+        mScalingFilter = FILTER_NEAREST;
         requestScaling(true);
     }
 }
 
 void ImageViewer::setFilterBilinear() {
-    if(scalingFilter != FILTER_BILINEAR) {
-        scalingFilter = FILTER_BILINEAR;
+    if(mScalingFilter != FILTER_BILINEAR) {
+        mScalingFilter = FILTER_BILINEAR;
         requestScaling(true);
     }
 }
@@ -296,7 +296,7 @@ void ImageViewer::requestScaling(bool force) {
     if(!pixmap || movie)
         return;
     if(pixmap->size() != drawingRect.size() || force)
-        emit scalingRequested(drawingRect.size(), scalingFilter);
+        emit scalingRequested(drawingRect.size(), mScalingFilter);
 }
 
 void ImageViewer::requestScaling() {
@@ -352,6 +352,10 @@ bool ImageViewer::imageFits() const {
         return true;
     return (drawingRect.size().width()  <= width()  * devicePixelRatioF() &&
             drawingRect.size().height() <= height() * devicePixelRatioF());
+}
+
+ScalingFilter ImageViewer::scalingFilter() const {
+    return mScalingFilter;
 }
 
 //  Right button zooming / dragging logic

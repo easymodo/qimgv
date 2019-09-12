@@ -257,6 +257,13 @@ void MainWindow::toggleRenameOverlay() {
         renameOverlay->hide();
 }
 
+void MainWindow::toggleScalingFilter() {
+    if(viewerWidget->scalingFilter() == FILTER_BILINEAR)
+        setFilterNearest();
+    else
+        setFilterBilinear();
+}
+
 void MainWindow::setFilterNearest() {
     showMessage("Filter: nearest", 600);
     viewerWidget->setFilterNearest();

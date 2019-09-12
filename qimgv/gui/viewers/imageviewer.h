@@ -44,6 +44,8 @@ public:
     bool isDisplaying();
 
     bool imageFits() const;
+    ScalingFilter scalingFilter() const;
+
 signals:
     void scalingRequested(QSize, ScalingFilter);
     void scaleChanged(float);
@@ -118,7 +120,8 @@ private:
     QSize desktopSize;
 
     ImageFitMode imageFitMode;
-    ScalingFilter scalingFilter;
+    ScalingFilter mScalingFilter;
+
     void setScale(float scale);
     void updateMinScale();
     void scaleAroundZoomPoint(float oldScale);
