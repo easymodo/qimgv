@@ -731,6 +731,7 @@ void MainWindow::adaptToWindowState() {
             infoBarWindowed->show();
         else
             infoBarWindowed->hide();
+        controlsOverlay->hide();
         folderView->setExitButtonEnabled(false);
         mainPanel->setExitButtonEnabled(false);
     }
