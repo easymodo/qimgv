@@ -418,11 +418,15 @@ void DirectoryManager::onFileAddedExternal(QString fileName) {
     Entry entry(fileName, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
     insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
     emit fileAdded(fileName);
+    return;
 }
 
 void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
-    if(!contains(oldFile))
+    if(!contains(oldFile)) {
+        // insert if it passes regex check
+        onFileAddedExternal(newFile);
         return;
+    }
     // remove old one
     int index = indexOf(oldFile);
     entryVec.erase(entryVec.begin() + index);
