@@ -39,6 +39,7 @@ private:
 
 public slots:
     virtual void selectIndex(int index);
+    virtual void focusOn(int index);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);

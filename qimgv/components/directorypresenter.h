@@ -35,6 +35,7 @@ private slots:
     void reloadModel();
     void onThumbnailReady(std::shared_ptr<Thumbnail>);
     void setCurrentIndex(int index);
+    void focusOn(int index);
 private:
     QList<std::shared_ptr<DirectoryViewWrapper>> views;
     std::shared_ptr<DirectoryModel> model = nullptr;

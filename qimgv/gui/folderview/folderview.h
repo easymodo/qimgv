@@ -27,6 +27,7 @@ public slots:
     virtual void populate(int) Q_DECL_OVERRIDE;
     virtual void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) Q_DECL_OVERRIDE;
     virtual void selectIndex(int) Q_DECL_OVERRIDE;
+    virtual void focusOn(int) Q_DECL_OVERRIDE;
     virtual void setDirectoryPath(QString path) Q_DECL_OVERRIDE;
     virtual void insertItem(int index) Q_DECL_OVERRIDE;
     virtual void removeItem(int index) Q_DECL_OVERRIDE;

@@ -23,6 +23,10 @@ void DirectoryViewWrapper::selectIndex(int index) {
     view->selectIndex(index);
 }
 
+void DirectoryViewWrapper::focusOn(int index) {
+    view->focusOn(index);
+}
+
 void DirectoryViewWrapper::setDirectoryPath(QString path) {
     view->setDirectoryPath(path);
 }

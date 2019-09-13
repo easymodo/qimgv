@@ -20,6 +20,8 @@ void DirectoryPresenter::unsetModel() {
                this,  &DirectoryPresenter::onThumbnailReady);
     disconnect(model.get(), SIGNAL(indexChanged(int)),
                this, SLOT(setCurrentIndex(int)));
+    disconnect(model.get(), SIGNAL(indexChanged(int)),
+               this, SLOT(focusOn(int)));
     model = nullptr;
     // also empty views?
 }
@@ -46,6 +48,9 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
 
     connect(model.get(), SIGNAL(indexChanged(int)),
             this, SLOT(setCurrentIndex(int)), Qt::UniqueConnection);
+
+    connect(model.get(), SIGNAL(indexChanged(int)),
+            this, SLOT(focusOn(int)), Qt::UniqueConnection);
 
     connect(model.get(), SIGNAL(loaded(QString)),
             this, SLOT(reloadModel()), Qt::UniqueConnection);
@@ -101,7 +106,10 @@ void DirectoryPresenter::onFileRenamed(QString from, int indexFrom, QString to, 
         views.at(i)->removeItem(indexFrom);
         views.at(i)->insertItem(indexTo);
     }
-    setCurrentIndex(model->currentIndex());
+    if(model->currentFileName() == to) {
+        setCurrentIndex(indexTo);
+        focusOn(indexTo);
+    }
 }
 
 void DirectoryPresenter::onFileAdded(QString fileName) {
@@ -119,6 +127,7 @@ void DirectoryPresenter::onFileModified(QString fileName) {
 void DirectoryPresenter::onModelSortingChanged() {
     reloadModel();
     setCurrentIndex(model->indexOf(model->currentFileName()));
+    focusOn(model->indexOf(model->currentFileName()));
 }
 
 void DirectoryPresenter::reloadModel() {
@@ -141,5 +150,11 @@ void DirectoryPresenter::loadByIndex(int index) {
 void DirectoryPresenter::setCurrentIndex(int index) {
     for(int i=0; i<views.count(); i++) {
         views.at(i)->selectIndex(index);
+    }
+}
+
+void DirectoryPresenter::focusOn(int index) {
+    for(int i=0; i<views.count(); i++) {
+        views.at(i)->focusOn(index);
     }
 }

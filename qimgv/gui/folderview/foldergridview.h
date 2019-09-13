@@ -26,6 +26,7 @@ public slots:
     void selectFirst();
     void selectLast();
     virtual void selectIndex(int index);
+    virtual void focusOn(int index);
     void pageUp();
     void pageDown();
     void zoomIn();

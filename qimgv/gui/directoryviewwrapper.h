@@ -15,6 +15,7 @@ public slots:
     void populate(int);
     void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb);
     void selectIndex(int);
+    void focusOn(int);
     void setDirectoryPath(QString path);
     void insertItem(int index);
     void removeItem(int index);

@@ -91,6 +91,7 @@ void FolderGridView::selectAbove() {
 
     if(checkRange(shiftedIndex)) {
         selectIndex(shiftedIndex);
+        focusOn(shiftedIndex);
         shiftedIndex = -1;
         return;
     }
@@ -102,6 +103,7 @@ void FolderGridView::selectAbove() {
         index = flowLayout->itemAbove(selectedIndex);
     }
     selectIndex(index);
+    focusOn(index);
 }
 
 void FolderGridView::selectBelow() {
@@ -122,6 +124,7 @@ void FolderGridView::selectBelow() {
         }
     }
     selectIndex(index);
+    focusOn(index);
 }
 
 void FolderGridView::selectNext() {
@@ -135,6 +138,7 @@ void FolderGridView::selectNext() {
         index = thumbnails.count() - 1;
 
     selectIndex(index);
+    focusOn(index);
 }
 
 void FolderGridView::selectPrev() {
@@ -148,6 +152,7 @@ void FolderGridView::selectPrev() {
         index = thumbnails.count() - 1;
 
     selectIndex(index);
+    focusOn(index);
 }
 
 void FolderGridView::pageUp() {
@@ -162,6 +167,7 @@ void FolderGridView::pageUp() {
             index = tmp;
     }
     selectIndex(index);
+    focusOn(index);
 }
 
 void FolderGridView::pageDown() {
@@ -179,6 +185,7 @@ void FolderGridView::pageDown() {
         }
     }
     selectIndex(index);
+    focusOn(index);
 }
 
 void FolderGridView::selectFirst() {
@@ -186,6 +193,7 @@ void FolderGridView::selectFirst() {
         return;
     shiftedIndex = -1;
     selectIndex(0);
+    focusOn(0);
 }
 
 void FolderGridView::selectLast() {
@@ -193,6 +201,7 @@ void FolderGridView::selectLast() {
         return;
     shiftedIndex = -1;
     selectIndex(thumbnails.count() - 1);
+    focusOn(thumbnails.count() - 1);
 }
 
 void FolderGridView::selectIndex(int index) {
@@ -205,6 +214,12 @@ void FolderGridView::selectIndex(int index) {
 
     ThumbnailWidget *thumb = thumbnails.at(selectedIndex);
     thumb->setHighlighted(true, false);
+}
+
+void FolderGridView::focusOn(int index) {
+    if(!checkRange(index))
+        return;
+    ThumbnailWidget *thumb = thumbnails.at(index);
     ensureVisible(thumb, 0, 0);
     loadVisibleThumbnailsDelayed();
 }

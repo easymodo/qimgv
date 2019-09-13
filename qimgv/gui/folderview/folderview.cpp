@@ -117,6 +117,10 @@ void FolderView::selectIndex(int index) {
     ui->thumbnailGrid->selectIndex(index);
 }
 
+void FolderView::focusOn(int index) {
+    ui->thumbnailGrid->focusOn(index);
+}
+
 void FolderView::setDirectoryPath(QString path) {
     ui->directoryPathLabel->setText(path);
 }

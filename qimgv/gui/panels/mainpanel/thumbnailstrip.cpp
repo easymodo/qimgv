@@ -83,6 +83,12 @@ void ThumbnailStrip::selectIndex(int index) {
 
     ThumbnailWidget *thumb = thumbnails.at(selectedIndex);
     thumb->setHighlighted(true, false);
+}
+
+void ThumbnailStrip::focusOn(int index) {
+    if(!checkRange(index))
+        return;
+    ThumbnailWidget *thumb = thumbnails.at(index);
     ensureVisible(thumb, 0, 0);
     loadVisibleThumbnails();
 }
