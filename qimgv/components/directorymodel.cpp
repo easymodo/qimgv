@@ -135,10 +135,11 @@ void DirectoryModel::setDirectory(QString path) {
 
 bool DirectoryModel::setIndex(int index) {
     if(index >= 0 && index < itemCount()) {
+        int oldIndex = currentIndex();
         QString newName = fileNameAt(index);
         if(mCurrentFileName != newName) {
             mCurrentFileName = fileNameAt(index);
-            emit indexChanged(index);
+            emit indexChanged(oldIndex, index);
             trimCache();
         }
         if(cache.contains(mCurrentFileName)) {
@@ -159,9 +160,10 @@ bool DirectoryModel::setIndex(int index) {
 bool DirectoryModel::setIndexAsync(int index) {
     if(index >= 0 && index < itemCount()) {
         QString newName = fileNameAt(index);
+        int oldIndex = currentIndex();
         if(mCurrentFileName != newName) {
             mCurrentFileName = fileNameAt(index);
-            emit indexChanged(index);
+            emit indexChanged(oldIndex, index);
             trimCache();
         }
         if(cache.contains(mCurrentFileName)) {

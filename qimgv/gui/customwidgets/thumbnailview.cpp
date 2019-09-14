@@ -5,7 +5,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       orientation(orient),
       blockThumbnailLoading(false),
       mThumbnailSize(120),
-      selectedIndex(-1)
+      mSelectedIndex(-1)
 {
     setAccessibleName("thumbnailView");
     //scene.setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -65,6 +65,10 @@ void ThumbnailView::setDirectoryPath(QString path) {
     Q_UNUSED(path)
 }
 
+int ThumbnailView::selectedIndex() {
+    return mSelectedIndex;
+}
+
 void ThumbnailView::showEvent(QShowEvent *event) {
     QGraphicsView::showEvent(event);
     ensureSelectedItemVisible();
@@ -86,6 +90,7 @@ void ThumbnailView::populate(int count) {
             addItemToLayout(widget, i);
         }
     }
+    mSelectedIndex = -1;
     updateLayout();
     fitSceneToContents();
     resetViewport();
@@ -97,8 +102,8 @@ void ThumbnailView::addItem() {
 
 // insert at index
 void ThumbnailView::insertItem(int index) {
-    if(index <= selectedIndex) {
-        selectedIndex++;
+    if(index <= mSelectedIndex) {
+        mSelectedIndex++;
     }
     ThumbnailWidget *widget = createThumbnailWidget();
     thumbnails.insert(index, widget);
@@ -110,10 +115,10 @@ void ThumbnailView::insertItem(int index) {
 
 void ThumbnailView::removeItem(int index) {
     if(checkRange(index)) {
-        if(index < selectedIndex) {
-            selectedIndex--;
-        } else if(index == selectedIndex) {
-            selectedIndex = -1;
+        if(index < mSelectedIndex) {
+            mSelectedIndex--;
+        } else if(index == mSelectedIndex) {
+            mSelectedIndex = -1;
         }
         removeItemFromLayout(index);
         delete thumbnails.takeAt(index);

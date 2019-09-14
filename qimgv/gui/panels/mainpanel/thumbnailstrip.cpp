@@ -35,16 +35,16 @@ void ThumbnailStrip::ensureSelectedItemVisible() {
 }
 
 void ThumbnailStrip::addItemToLayout(ThumbnailWidget* widget, int pos) {
-    if(pos == selectedIndex)
-        selectedIndex++;
+    if(pos == mSelectedIndex)
+        mSelectedIndex++;
     scene.addItem(widget);
     updateThumbnailPositions(pos, thumbnails.count() - 1);
 }
 
 void ThumbnailStrip::removeItemFromLayout(int pos) {
     if(checkRange(pos)) {
-        if(pos == selectedIndex)
-            selectedIndex = -1;
+        if(pos == mSelectedIndex)
+            mSelectedIndex = -1;
         ThumbnailWidget *thumb = thumbnails.at(pos);
         scene.removeItem(thumb);
         // move items left
@@ -77,11 +77,11 @@ void ThumbnailStrip::selectIndex(int index) {
     if(!checkRange(index))
         return;
 
-    if(checkRange(selectedIndex))
-        thumbnails.at(selectedIndex)->setHighlighted(false, false);
-    selectedIndex = index;
+    if(checkRange(mSelectedIndex))
+        thumbnails.at(mSelectedIndex)->setHighlighted(false, false);
+    mSelectedIndex = index;
 
-    ThumbnailWidget *thumb = thumbnails.at(selectedIndex);
+    ThumbnailWidget *thumb = thumbnails.at(mSelectedIndex);
     thumb->setHighlighted(true, false);
 }
 
@@ -109,7 +109,7 @@ void ThumbnailStrip::setThumbnailSize(int newSize) {
         //scene.invalidate(scene.sceneRect());
         updateThumbnailPositions(0, thumbnails.count() - 1);
         fitSceneToContents();
-        ensureThumbnailVisible(selectedIndex);
+        ensureThumbnailVisible(mSelectedIndex);
     }
 }
 

@@ -95,7 +95,7 @@ void Core::connectComponents() {
 
     connect(model.get(), SIGNAL(itemReady(std::shared_ptr<Image>)), this, SLOT(onModelItemReady(std::shared_ptr<Image>)));
     connect(model.get(), SIGNAL(itemUpdated(std::shared_ptr<Image>)), this, SLOT(onModelItemUpdated(std::shared_ptr<Image>)));
-    connect(model.get(), SIGNAL(indexChanged(int)), this, SLOT(updateInfoString()));
+    connect(model.get(), SIGNAL(indexChanged(int, int)), this, SLOT(updateInfoString()));
     connect(model.get(), SIGNAL(sortingChanged()), this, SLOT(updateInfoString()));
     connect(model.get(), SIGNAL(loaded(QString)), this, SLOT(onModelLoaded()));
 }

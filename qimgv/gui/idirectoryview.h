@@ -13,6 +13,7 @@ public:
     virtual void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) = 0;
     virtual void selectIndex(int) = 0;
     virtual void focusOn(int) = 0;
+    virtual int selectedIndex() = 0;
     virtual void setDirectoryPath(QString path) = 0;
     virtual void insertItem(int index) = 0;
     virtual void removeItem(int index) = 0;

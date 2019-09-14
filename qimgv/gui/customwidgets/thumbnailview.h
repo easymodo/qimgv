@@ -31,6 +31,7 @@ class ThumbnailView : public QGraphicsView, public IDirectoryView {
 public:
     ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent = nullptr);
     virtual void setDirectoryPath(QString path) Q_DECL_OVERRIDE;
+    virtual int selectedIndex() Q_DECL_OVERRIDE;
 
 public slots:
     void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
@@ -68,7 +69,7 @@ protected:
     QScrollBar *scrollBar;
     QTimeLine *scrollTimeLine;
     QPointF viewportCenter;
-    int mThumbnailSize, selectedIndex;
+    int mThumbnailSize, mSelectedIndex;
     int offscreenPreloadArea = 3000;
 
     const int SCROLL_UPDATE_RATE = 7;

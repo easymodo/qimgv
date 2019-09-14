@@ -18,10 +18,8 @@ void DirectoryPresenter::unsetModel() {
                this, SLOT(onModelSortingChanged()));
     disconnect(model.get(), &DirectoryModel::thumbnailReady,
                this,  &DirectoryPresenter::onThumbnailReady);
-    disconnect(model.get(), SIGNAL(indexChanged(int)),
-               this, SLOT(setCurrentIndex(int)));
-    disconnect(model.get(), SIGNAL(indexChanged(int)),
-               this, SLOT(focusOn(int)));
+    disconnect(model.get(), SIGNAL(indexChanged(int, int)),
+               this, SLOT(onIndexChanged(int, int)));
     model = nullptr;
     // also empty views?
 }
@@ -46,11 +44,8 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
     connect(model.get(), SIGNAL(fileRenamed(QString, int, QString, int)),
             this, SLOT(onFileRenamed(QString, int, QString, int)), Qt::UniqueConnection);
 
-    connect(model.get(), SIGNAL(indexChanged(int)),
-            this, SLOT(setCurrentIndex(int)), Qt::UniqueConnection);
-
-    connect(model.get(), SIGNAL(indexChanged(int)),
-            this, SLOT(focusOn(int)), Qt::UniqueConnection);
+    connect(model.get(), SIGNAL(indexChanged(int, int)),
+               this, SLOT(onIndexChanged(int, int)), Qt::UniqueConnection);
 
     connect(model.get(), SIGNAL(loaded(QString)),
             this, SLOT(reloadModel()), Qt::UniqueConnection);
@@ -103,12 +98,13 @@ void DirectoryPresenter::onFileRenamed(QString from, int indexFrom, QString to, 
     Q_UNUSED(to)
 
     for(int i=0; i<views.count(); i++) {
+        int selectedIndex = views.at(i)->selectedIndex();
         views.at(i)->removeItem(indexFrom);
         views.at(i)->insertItem(indexTo);
-    }
-    if(model->currentFileName() == to) {
-        setCurrentIndex(indexTo);
-        focusOn(indexTo);
+        if(selectedIndex == indexFrom) {
+            views.at(i)->selectIndex(indexTo);
+            views.at(i)->focusOn(indexTo);
+        }
     }
 }
 
@@ -117,7 +113,6 @@ void DirectoryPresenter::onFileAdded(QString fileName) {
     for(int i=0; i<views.count(); i++) {
         views.at(i)->insertItem(index);
     }
-    setCurrentIndex(model->currentIndex());
 }
 
 void DirectoryPresenter::onFileModified(QString fileName) {
@@ -156,5 +151,14 @@ void DirectoryPresenter::setCurrentIndex(int index) {
 void DirectoryPresenter::focusOn(int index) {
     for(int i=0; i<views.count(); i++) {
         views.at(i)->focusOn(index);
+    }
+}
+
+void DirectoryPresenter::onIndexChanged(int oldIndex, int index) {
+    for(int i=0; i<views.count(); i++) {
+        if(views.at(i)->selectedIndex() == oldIndex) {
+            views.at(i)->selectIndex(index);
+            views.at(i)->focusOn(index);
+        }
     }
 }

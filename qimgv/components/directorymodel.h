@@ -59,7 +59,7 @@ signals:
     void fileModified(QString fileName);
     void loaded(QString);
     void sortingChanged();
-    void indexChanged(int index);
+    void indexChanged(int oldIndex, int index);
     // returns current item
     void itemReady(std::shared_ptr<Image> img);
     void itemUpdated(std::shared_ptr<Image> img);

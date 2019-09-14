@@ -47,9 +47,9 @@ void FolderGridView::setShowLabels(bool mode) {
 }
 
 void FolderGridView::ensureSelectedItemVisible() {
-    if(!checkRange(selectedIndex))
+    if(!checkRange(mSelectedIndex))
         return;
-    ThumbnailWidget *thumb = thumbnails.at(selectedIndex);
+    ThumbnailWidget *thumb = thumbnails.at(mSelectedIndex);
     ensureVisible(thumb, 0, 0);
 }
 
@@ -97,10 +97,10 @@ void FolderGridView::selectAbove() {
     }
 
     int index;
-    if(!checkRange(selectedIndex)) {
+    if(!checkRange(mSelectedIndex)) {
         index = 0;
     } else {
-        index = flowLayout->itemAbove(selectedIndex);
+        index = flowLayout->itemAbove(mSelectedIndex);
     }
     selectIndex(index);
     focusOn(index);
@@ -111,15 +111,15 @@ void FolderGridView::selectBelow() {
         return;
 
     int index;
-    if(!checkRange(selectedIndex)) {
+    if(!checkRange(mSelectedIndex)) {
         index = 0;
     } else {
-        index = flowLayout->itemBelow(selectedIndex);
+        index = flowLayout->itemBelow(mSelectedIndex);
         if(!checkRange(index)) {
             // select last & remember previous
-            if(selectedIndex / flowLayout->columns() < flowLayout->rows() - 1) {
+            if(mSelectedIndex / flowLayout->columns() < flowLayout->rows() - 1) {
                 index = flowLayout->count() - 1;
-                shiftedIndex = selectedIndex;
+                shiftedIndex = mSelectedIndex;
             }
         }
     }
@@ -128,10 +128,10 @@ void FolderGridView::selectBelow() {
 }
 
 void FolderGridView::selectNext() {
-    if(!thumbnails.count() || selectedIndex == thumbnails.count() - 1)
+    if(!thumbnails.count() || mSelectedIndex == thumbnails.count() - 1)
         return;
     shiftedIndex = -1;
-    int index = selectedIndex + 1;
+    int index = mSelectedIndex + 1;
     if(index < 0)
         index = 0;
     else if(index >= thumbnails.count())
@@ -142,10 +142,10 @@ void FolderGridView::selectNext() {
 }
 
 void FolderGridView::selectPrev() {
-    if(!thumbnails.count() || selectedIndex == 0)
+    if(!thumbnails.count() || mSelectedIndex == 0)
         return;
     shiftedIndex = -1;
-    int index = selectedIndex - 1;
+    int index = mSelectedIndex - 1;
     if(index < 0)
         index = 0;
     else if(index >= thumbnails.count())
@@ -159,7 +159,7 @@ void FolderGridView::pageUp() {
     if(!thumbnails.count())
         return;
     shiftedIndex = -1;
-    int index = selectedIndex, tmp;
+    int index = mSelectedIndex, tmp;
     // 4 rows up
     for(int i = 0; i < 4; i++) {
         tmp = flowLayout->itemAbove(index);
@@ -174,7 +174,7 @@ void FolderGridView::pageDown() {
     if(!thumbnails.count())
         return;
     shiftedIndex = -1;
-    int index = selectedIndex, tmp;
+    int index = mSelectedIndex, tmp;
     // 4 rows up
     for(int i = 0; i < 4; i++) {
         tmp = flowLayout->itemBelow(index);
@@ -208,11 +208,11 @@ void FolderGridView::selectIndex(int index) {
     if(!checkRange(index))
         return;
 
-    if(checkRange(selectedIndex))
-        thumbnails.at(selectedIndex)->setHighlighted(false, false);
-    selectedIndex = index;
+    if(checkRange(mSelectedIndex))
+        thumbnails.at(mSelectedIndex)->setHighlighted(false, false);
+    mSelectedIndex = index;
 
-    ThumbnailWidget *thumb = thumbnails.at(selectedIndex);
+    ThumbnailWidget *thumb = thumbnails.at(mSelectedIndex);
     thumb->setHighlighted(true, false);
 }
 
@@ -256,7 +256,7 @@ void FolderGridView::updateLayout() {
     flowLayout->invalidate();
     flowLayout->activate();
     if(!thumbnails.count()) {
-        selectedIndex = -1;
+        mSelectedIndex = -1;
     }
 }
 
@@ -277,8 +277,8 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
             selectBelow();
         }
         if(key == "Return") {
-            if(checkRange(selectedIndex))
-                emit thumbnailPressed(selectedIndex);
+            if(checkRange(mSelectedIndex))
+                emit thumbnailPressed(mSelectedIndex);
         }
         if(key == "home") {
             selectFirst();
@@ -332,8 +332,8 @@ void FolderGridView::setThumbnailSize(int newSize) {
     }
     updateLayout();
     fitToContents();
-    if(checkRange(selectedIndex))
-        ensureVisible(thumbnails.at(selectedIndex), 0, 40);
+    if(checkRange(mSelectedIndex))
+        ensureVisible(thumbnails.at(mSelectedIndex), 0, 40);
     emit thumbnailSizeChanged(mThumbnailSize);
     loadVisibleThumbnails();
 }

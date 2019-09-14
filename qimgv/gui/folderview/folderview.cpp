@@ -117,6 +117,10 @@ void FolderView::selectIndex(int index) {
     ui->thumbnailGrid->selectIndex(index);
 }
 
+int FolderView::selectedIndex() {
+    return ui->thumbnailGrid->selectedIndex();
+}
+
 void FolderView::focusOn(int index) {
     ui->thumbnailGrid->focusOn(index);
 }

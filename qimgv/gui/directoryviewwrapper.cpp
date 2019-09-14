@@ -23,6 +23,10 @@ void DirectoryViewWrapper::selectIndex(int index) {
     view->selectIndex(index);
 }
 
+int DirectoryViewWrapper::selectedIndex() {
+    return view->selectedIndex();
+}
+
 void DirectoryViewWrapper::focusOn(int index) {
     view->focusOn(index);
 }
