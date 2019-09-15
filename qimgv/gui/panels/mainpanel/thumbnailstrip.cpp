@@ -56,6 +56,11 @@ void ThumbnailStrip::removeItemFromLayout(int pos) {
     }
 }
 
+void ThumbnailStrip::removeAll() {
+    scene.clear(); // also calls delete on all items
+    thumbnails.clear();
+}
+
 void ThumbnailStrip::updateThumbnailPositions() {
     updateThumbnailPositions(0, thumbnails.count() - 1);
 }

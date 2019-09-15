@@ -58,6 +58,15 @@ int ThumbnailWidget::thumbnailSize() {
     return mThumbnailSize;
 }
 
+void ThumbnailWidget::reset() {
+    if(thumbnail)
+        thumbnail.reset();
+    highlighted = false;
+    hovered = false;
+    isLoaded = false;
+    update();
+}
+
 void ThumbnailWidget::setDrawLabel(bool mode) {
     if(mDrawLabel != mode) {
         mDrawLabel = mode;

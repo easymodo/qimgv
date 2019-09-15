@@ -77,17 +77,24 @@ void ThumbnailView::showEvent(QShowEvent *event) {
 
 // TODO: slow
 void ThumbnailView::populate(int count) {
+    QElapsedTimer t;
+    t.start();
     if(count >= 0) {
-        for(int i = thumbnails.count() - 1; i >= 0; i--) {
-            removeItemFromLayout(i);
-        }
-        qDeleteAll(thumbnails);
-        thumbnails.clear();
-        for(int i = 0; i < count; i++) {
-            ThumbnailWidget *widget = createThumbnailWidget();
-            widget->setThumbnailSize(mThumbnailSize);
-            thumbnails.append(widget);
-            addItemToLayout(widget, i);
+        // reuse existing items
+        if(count == thumbnails.count()) {
+            QList<ThumbnailWidget*>::iterator i;
+            for (i = thumbnails.begin(); i != thumbnails.end(); ++i) {
+                (*i)->reset();
+            }
+            //qDebug() << t.elapsed();
+        } else {
+            removeAll();
+            for(int i = 0; i < count; i++) {
+                ThumbnailWidget *widget = createThumbnailWidget();
+                widget->setThumbnailSize(mThumbnailSize);
+                thumbnails.append(widget);
+                addItemToLayout(widget, i);
+            }
         }
     }
     mSelectedIndex = -1;

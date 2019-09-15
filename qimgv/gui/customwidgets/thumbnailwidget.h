@@ -40,6 +40,7 @@ public:
     void setDrawLabel(bool mode);
     void setPadding(int x, int y);
     int thumbnailSize();
+    void reset();
 
 protected slots:
     virtual void readSettings();

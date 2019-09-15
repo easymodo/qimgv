@@ -51,6 +51,7 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void addItemToLayout(ThumbnailWidget *widget, int pos);
     void removeItemFromLayout(int pos);
+    void removeAll();
     void setupLayout();
     ThumbnailWidget *createThumbnailWidget();
     void updateLayout();

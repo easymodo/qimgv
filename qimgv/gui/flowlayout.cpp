@@ -117,6 +117,12 @@ void FlowLayout::removeAt(int index)
     invalidate();
 }
 
+void FlowLayout::clear()
+{
+    m_items.clear();
+    invalidate();
+}
+
 qreal FlowLayout::spacing(Qt::Orientation o) const
 {
     return m_spacing[int(o) - 1];

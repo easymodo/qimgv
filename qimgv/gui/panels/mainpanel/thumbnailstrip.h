@@ -46,6 +46,7 @@ protected:
     void ensureThumbnailVisible(int pos);
     void addItemToLayout(ThumbnailWidget *widget, int pos);
     void removeItemFromLayout(int pos);
+    void removeAll();
     ThumbnailWidget *createThumbnailWidget();
     void ensureSelectedItemVisible();
 };

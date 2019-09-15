@@ -251,6 +251,12 @@ void FolderGridView::removeItemFromLayout(int pos) {
     flowLayout->removeAt(pos);
 }
 
+void FolderGridView::removeAll() {
+    flowLayout->clear();
+    qDeleteAll(thumbnails);
+    thumbnails.clear();
+}
+
 void FolderGridView::updateLayout() {
     shiftedIndex = -1;
     flowLayout->invalidate();
