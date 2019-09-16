@@ -208,14 +208,14 @@ void DirectoryManager::moveToTrash(QString file) {
     int l = fileinfo.absoluteFilePath().toWCharArray( from );
     Q_ASSERT( 0 <= l && l < MAX_PATH );
     from[ l ] = '\0';
-    SHFILEOPSTRUCT fileop;
+    SHFILEOPSTRUCTW fileop;
     memset( &fileop, 0, sizeof( fileop ) );
     fileop.wFunc = FO_DELETE;
     fileop.pFrom = from;
     fileop.fFlags = FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_SILENT;
-    int rv = SHFileOperation( &fileop );
+    int rv = SHFileOperationW( &fileop );
     if( 0 != rv ){
-        qDebug() << rv << QString::number( rv ).toInt( 0, 8 );
+        qDebug() << rv << QString::number( rv ).toInt( nullptr, 8 );
         qDebug() << "move to trash failed";
     }
 }

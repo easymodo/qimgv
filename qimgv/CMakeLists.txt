@@ -16,6 +16,7 @@ add_executable(qimgv ${SRC} ${SRC_Components} ${SRC_SourceContainers} ${SRC_Util
 
 # LINK STUFF
 target_link_libraries(qimgv Qt5::Core Qt5::Widgets Qt5::Concurrent stdc++fs)
+#target_link_libraries(qimgv Qt5::Core Qt5::Widgets Qt5::Concurrent Qt5::QWindowsIntegrationPlugin stdc++fs)
 
 # OPTION DEFINITIONS, LINKING
 if(EXIV2)
