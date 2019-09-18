@@ -36,6 +36,9 @@ CropOverlay::CropOverlay(OverlayContainerWidget *parent) : OverlayWidget(parent)
     ar.setX(16);
     ar.setY(9);
 
+    if(parent)
+        setContainerSize(parent->size());
+
     hide();
 }
 

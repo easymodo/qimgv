@@ -24,8 +24,12 @@ FloatingMessage::FloatingMessage(OverlayContainerWidget *parent) :
     connect(&visibilityTimer, SIGNAL(timeout()), this, SLOT(hide()));
 
     readSettings();
+
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
+
+    if(parent)
+        setContainerSize(parent->size());
 }
 
 FloatingMessage::~FloatingMessage() {

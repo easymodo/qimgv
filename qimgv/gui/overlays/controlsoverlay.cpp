@@ -33,6 +33,9 @@ ControlsOverlay::ControlsOverlay(OverlayContainerWidget *parent) :
     fadeAnimation->setStartValue(1.0f);
     fadeAnimation->setEndValue(0);
     fadeAnimation->setEasingCurve(QEasingCurve::OutQuart);
+
+    if(parent)
+        setContainerSize(parent->size());
     //this->show();
 }
 

@@ -10,6 +10,9 @@ ChangelogWindow::ChangelogWindow(OverlayContainerWidget *parent) :
     setPosition(FloatingWidgetPosition::CENTER);
     connect(ui->closeButton, SIGNAL(pressed()), this, SLOT(hide()));
     connect(ui->shutUpButton, SIGNAL(pressed()), this, SLOT(hideAndShutUp()));
+
+    if(parent)
+        setContainerSize(parent->size());
 }
 
 void ChangelogWindow::hideAndShutUp() {

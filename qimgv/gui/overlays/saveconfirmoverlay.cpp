@@ -15,6 +15,9 @@ SaveConfirmOverlay::SaveConfirmOverlay(OverlayContainerWidget *parent) :
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));
 
+    if(parent)
+        setContainerSize(parent->size());
+
     this->hide();
 }
 

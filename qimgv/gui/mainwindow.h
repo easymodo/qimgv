@@ -99,6 +99,9 @@ private:
     void applyFullscreenBackground();
     void mouseDoubleClickEvent(QMouseEvent *event);
 
+    void setupCopyOverlay();
+    void setupSaveOverlay();
+    void setupRenameOverlay();
 private slots:
     void updateCurrentDisplay();
     void readSettings();

@@ -9,6 +9,9 @@ InfoOverlay::InfoOverlay(OverlayContainerWidget *parent) :
     setPosition(FloatingWidgetPosition::TOPLEFT);
     this->setMarginX(0);
     this->setMarginY(0);
+
+    if(parent)
+        setContainerSize(parent->size());
 }
 
 InfoOverlay::~InfoOverlay()

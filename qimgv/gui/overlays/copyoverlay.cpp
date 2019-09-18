@@ -20,6 +20,9 @@ CopyOverlay::CopyOverlay(OverlayContainerWidget *parent) :
         createDefaultPaths();
     createPathWidgets();
 
+    if(parent)
+        setContainerSize(parent->size());
+
     readSettings();
     connect(settings, SIGNAL(settingsChanged()),
             this, SLOT(readSettings()));

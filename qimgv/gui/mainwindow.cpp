@@ -10,7 +10,10 @@ MainWindow::MainWindow(QWidget *parent)
       panelEnabled(false),
       panelFullscreenOnly(false),
       activeSidePanel(SIDEPANEL_NONE),
-      mainPanel(nullptr)
+      mainPanel(nullptr),
+      copyOverlay(nullptr),
+      saveOverlay(nullptr),
+      renameOverlay(nullptr)
 {
     setAttribute(Qt::WA_TranslucentBackground, true);
     this->setMinimumSize(400, 300);
@@ -57,19 +60,17 @@ void MainWindow::setupUi() {
     viewerWidget.reset(new ViewerWidget());
     infoBarWindowed.reset(new InfoBar());
     docWidget.reset(new DocumentWidget(viewerWidget, infoBarWindowed));
-    folderView.reset(new FolderView());
+
+    folderView.reset(new FolderView()); // todo
 
     centralWidget.reset(new CentralWidget(docWidget, folderView, this));
     layout.addWidget(centralWidget.get());
 
     // overlays etc.
     // this order is used while drawing
-    infoBarFullscreen = new InfoOverlay(viewerWidget.get());
-    controlsOverlay = new ControlsOverlay(docWidget.get());
-    saveOverlay = new SaveConfirmOverlay(docWidget.get());
+    infoBarFullscreen = new InfoOverlay(viewerWidget.get()); // todo
+    controlsOverlay = new ControlsOverlay(docWidget.get()); // todo
 
-    copyOverlay = new CopyOverlay(this);
-    renameOverlay = new RenameOverlay(this);
     imageInfoOverlay = new ImageInfoOverlay(this);
     changelogWindow = new ChangelogWindow(this);
     sidePanel = new SidePanel(this);
@@ -81,16 +82,8 @@ void MainWindow::setupUi() {
     connect(cropPanel, SIGNAL(crop(QRect)), this, SLOT(hideCropPanel()));
     connect(cropPanel, SIGNAL(crop(QRect)), this, SIGNAL(cropRequested(QRect)));
 
-    connect(saveOverlay, SIGNAL(saveClicked()), this, SIGNAL(saveRequested()));
-    connect(saveOverlay, SIGNAL(saveAsClicked()), this, SIGNAL(saveAsClicked()));
-    connect(saveOverlay, SIGNAL(discardClicked()), this, SIGNAL(discardEditsRequested()));
     layout.addWidget(sidePanel);
-    connect(copyOverlay, SIGNAL(copyRequested(QString)),
-            this, SIGNAL(copyRequested(QString)));
-    connect(copyOverlay, SIGNAL(moveRequested(QString)),
-            this, SIGNAL(moveRequested(QString)));
 
-    connect(renameOverlay, &RenameOverlay::renameRequested, this, &MainWindow::renameRequested);
     floatingMessage = new FloatingMessage(this);
     thumbnailStrip.reset(new ThumbnailStrip());
     mainPanel = new MainPanel(thumbnailStrip, this);
@@ -145,10 +138,33 @@ void MainWindow::setupUi() {
             this, SIGNAL(sortingSelected(SortingMode)));
 }
 
+void MainWindow::setupCopyOverlay() {
+    copyOverlay = new CopyOverlay(this);
+    connect(copyOverlay, SIGNAL(copyRequested(QString)),
+            this, SIGNAL(copyRequested(QString)));
+    connect(copyOverlay, SIGNAL(moveRequested(QString)),
+            this, SIGNAL(moveRequested(QString)));
+}
+
+void MainWindow::setupSaveOverlay() {
+    saveOverlay = new SaveConfirmOverlay(docWidget.get());
+    connect(saveOverlay, SIGNAL(saveClicked()), this, SIGNAL(saveRequested()));
+    connect(saveOverlay, SIGNAL(saveAsClicked()), this, SIGNAL(saveAsClicked()));
+    connect(saveOverlay, SIGNAL(discardClicked()), this, SIGNAL(discardEditsRequested()));
+
+}
+
+void MainWindow::setupRenameOverlay() {
+    renameOverlay = new RenameOverlay(this);
+    connect(renameOverlay, &RenameOverlay::renameRequested, this, &MainWindow::renameRequested);
+}
+
 void MainWindow::toggleFolderView() {
     hideCropPanel();
-    copyOverlay->hide();
-    renameOverlay->hide();
+    if(copyOverlay)
+        copyOverlay->hide();
+    if(renameOverlay)
+        renameOverlay->hide();
     mainPanel->hide();
     imageInfoOverlay->hide();
     centralWidget->toggleViewMode();
@@ -156,8 +172,10 @@ void MainWindow::toggleFolderView() {
 
 void MainWindow::enableFolderView() {
     hideCropPanel();
-    copyOverlay->hide();
-    renameOverlay->hide();
+    if(copyOverlay)
+        copyOverlay->hide();
+    if(renameOverlay)
+        renameOverlay->hide();
     mainPanel->hide();
     imageInfoOverlay->hide();
     centralWidget->showFolderView();
@@ -249,6 +267,8 @@ void MainWindow::toggleImageInfoOverlay() {
 }
 
 void MainWindow::toggleRenameOverlay() {
+    if(!renameOverlay)
+        setupRenameOverlay();
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
         return;
     if(renameOverlay->isHidden())
@@ -379,7 +399,8 @@ void MainWindow::close() {
         saveWindowGeometry();
     }
     saveCurrentDisplay();
-    copyOverlay->saveSettings();
+    if(copyOverlay)
+        copyOverlay->saveSettings();
     QWidget::close();
 }
 
@@ -514,10 +535,14 @@ void MainWindow::updateCropPanelData() {
 }
 
 void MainWindow::showSaveOverlay() {
+    if(!saveOverlay)
+        setupSaveOverlay();
     saveOverlay->show();
 }
 
 void MainWindow::hideSaveOverlay() {
+    if(!saveOverlay)
+        return;
     saveOverlay->hide();
 }
 
@@ -568,11 +593,13 @@ void MainWindow::hideCropPanel() {
 void MainWindow::triggerCopyOverlay() {
     if(!viewerWidget->isDisplaying())
         return;
+    if(!copyOverlay)
+        setupCopyOverlay();
 
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
         return;
     if(copyOverlay->operationMode() == OVERLAY_COPY) {
-        copyOverlay->isHidden()?copyOverlay->show():copyOverlay->hide();
+        copyOverlay->isHidden() ? copyOverlay->show() : copyOverlay->hide();
     } else {
         copyOverlay->setDialogMode(OVERLAY_COPY);
         copyOverlay->show();
@@ -582,11 +609,13 @@ void MainWindow::triggerCopyOverlay() {
 void MainWindow::triggerMoveOverlay() {
     if(!viewerWidget->isDisplaying())
         return;
+    if(!copyOverlay)
+        setupCopyOverlay();
 
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
         return;
     if(copyOverlay->operationMode() == OVERLAY_MOVE) {
-        copyOverlay->isHidden()?copyOverlay->show():copyOverlay->hide();
+        copyOverlay->isHidden() ? copyOverlay->show() : copyOverlay->hide();
     } else {
         copyOverlay->setDialogMode(OVERLAY_MOVE);
         copyOverlay->show();
@@ -603,7 +632,8 @@ void MainWindow::closeFullScreenOrExit() {
 }
 
 void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize) {
-    renameOverlay->setName(fileName);
+    if(renameOverlay) // TODO: use some global state for convenience?
+        renameOverlay->setName(fileName);
     if(fileName.isEmpty()) {
         setWindowTitle(qApp->applicationName());
         infoBarFullscreen->setInfo("", "No file opened.", "");

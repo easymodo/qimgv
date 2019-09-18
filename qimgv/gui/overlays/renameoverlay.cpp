@@ -12,6 +12,8 @@ RenameOverlay::RenameOverlay(OverlayContainerWidget *parent) :
 
     setPosition(FloatingWidgetPosition::CENTER);
     hide();
+    if(parent)
+        setContainerSize(parent->size());
 }
 
 RenameOverlay::~RenameOverlay() {

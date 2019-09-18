@@ -25,6 +25,9 @@ VideoControls::VideoControls(OverlayContainerWidget *parent) :
     connect(ui->prevFrameButton, SIGNAL(pressed()), this, SIGNAL(prevFrame()));
     connect(ui->nextFrameButton, SIGNAL(pressed()), this, SIGNAL(nextFrame()));
     connect(ui->seekBar, SIGNAL(sliderMovedX(int)), this, SIGNAL(seek(int)));
+
+    if(parent)
+        setContainerSize(parent->size());
 }
 
 VideoControls::~VideoControls() {

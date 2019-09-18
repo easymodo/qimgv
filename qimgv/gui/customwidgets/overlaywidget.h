@@ -22,13 +22,14 @@ protected:
     // called whenever container rectangle changes
     virtual void recalculateGeometry() = 0;
     void paintEvent(QPaintEvent *event);
+    void setContainerSize(QSize container);
 
 private:
     // size of whatever widget we are overlayed on
     QSize container;
 
 private slots:
-    virtual void setContainerSize(QSize container);
+    void onContainerResized(QSize container);
 };
 
 #endif // OVERLAYWIDGET_H

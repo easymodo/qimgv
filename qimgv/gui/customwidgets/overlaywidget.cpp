@@ -8,7 +8,7 @@
 
 OverlayWidget::OverlayWidget(OverlayContainerWidget *parent) : QWidget(parent) {
     this->setAccessibleName("OverlayWidget");
-    connect(parent, SIGNAL(resized(QSize)), this, SLOT(setContainerSize(QSize)));
+    connect(parent, SIGNAL(resized(QSize)), this, SLOT(onContainerResized(QSize)));
     hide();
 }
 
@@ -19,6 +19,10 @@ QSize OverlayWidget::containerSize() {
 void OverlayWidget::setContainerSize(QSize container) {
     this->container = container;
     recalculateGeometry();
+}
+
+void OverlayWidget::onContainerResized(QSize size) {
+    setContainerSize(size);
 }
 
 void OverlayWidget::paintEvent(QPaintEvent *event) {
