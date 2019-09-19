@@ -1,4 +1,4 @@
-qimgv | Current version: 0.8
+qimgv | Current version: 0.8.3
 =====
 Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
 
@@ -80,7 +80,7 @@ When you are done press C or M again to hide the panel.
 
 ### Running scripts
 
-Starting with v0.7 you can run scripts on a current image.
+You can run custom scripts on a current image.
 
 Open __Settings > Scripts__. Press Add. Here you can choose between a shell command and a shell script. 
 
@@ -115,7 +115,7 @@ If you are linux user, install the latest [QtApng by Skycoder42](https://github.
 
 ### RAW support
 
-Viewing raw is supported via [qtraw plugin](https://gitlab.com/mardy/qtraw). It is not included in windows release at the time.
+Viewing raw is supported via [qtraw plugin](https://gitlab.com/mardy/qtraw). (Included in windows qimgv package)
 
 
 ## Installation instructions
