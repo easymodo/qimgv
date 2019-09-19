@@ -160,11 +160,9 @@ void DocumentInfo::loadExifInfo() {
 #ifdef USE_EXIV2
     try {
         std::unique_ptr<Exiv2::Image> image;
-#ifdef Q_OS_WIN32
-        image = Exiv2::ImageFactory::open(fileInfo.filePath().toStdWString());
-#else
-        image = Exiv2::ImageFactory::open(fileInfo.filePath().toStdString());
-#endif
+
+        image = Exiv2::ImageFactory::open(toStdString(fileInfo.filePath()));
+
         assert(image.get() != 0);
         image->readMetadata();
         Exiv2::ExifData &exifData = image->exifData();
