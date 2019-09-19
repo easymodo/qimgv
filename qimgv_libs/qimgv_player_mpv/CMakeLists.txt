@@ -10,6 +10,15 @@ find_package(Qt5Widgets REQUIRED)
 
 include(GNUInstallDirs)
 
+if(WIN32)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/include)
+    if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
+        link_directories(${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/x86_64)
+    else()
+        link_directories(${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/x86)
+    endif()
+endif()
+
 add_library(qimgv_player_mpv SHARED
     src/videoplayer.cpp
     src/mpvwidget.cpp

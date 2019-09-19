@@ -19,6 +19,7 @@
 
 #include "settings.h"
 #include "watchers/directorywatcher.h"
+#include "utils/stuff.h"
 
 #ifdef Q_OS_WIN32
 #include "windows.h"

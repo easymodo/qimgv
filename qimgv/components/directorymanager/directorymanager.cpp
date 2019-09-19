@@ -101,11 +101,11 @@ bool DirectoryManager::setDirectory(QString path) {
         qDebug() << "[DirectoryManager] Error - path is empty.";
         return false;
     }
-    if(!std::filesystem::exists(path.toStdString())) {
+    if(!std::filesystem::exists(toStdString(path))) {
         qDebug() << "[DirectoryManager] Error - path does not exist.";
         return false;
     }
-    if(!std::filesystem::is_directory(path.toStdString())) {
+    if(!std::filesystem::is_directory(toStdString(path))) {
         qDebug() << "[DirectoryManager] Error - path is not a directory.";
         return false;
     }
@@ -329,9 +329,9 @@ bool DirectoryManager::isSupportedFile(QString path) const {
 
 inline
 bool DirectoryManager::isFile(QString path) const {
-    if(!std::filesystem::exists(path.toStdString()))
+    if(!std::filesystem::exists(toStdString(path)))
         return false;
-    if(!std::filesystem::is_regular_file(path.toStdString()))
+    if(!std::filesystem::is_regular_file(toStdString(path)))
         return false;
     return true;
 }
@@ -352,7 +352,7 @@ void DirectoryManager::generateFileList() {
     QElapsedTimer t;
     t.start();
     QRegularExpressionMatch match;
-    for(const auto & entry : fs::directory_iterator(currentPath.toStdString())) {
+    for(const auto & entry : fs::directory_iterator(toStdString(currentPath))) {
         QString name = QString::fromStdString(entry.path().filename().string());
         match = regex.match(name);
         if(match.hasMatch()) {
@@ -414,7 +414,7 @@ void DirectoryManager::onFileAddedExternal(QString fileName) {
         return;
     if(this->contains(fileName))
         return;
-    std::filesystem::directory_entry stdEntry(fullPath.toStdString());
+    std::filesystem::directory_entry stdEntry(toStdString(fullPath));
     Entry entry(fileName, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
     insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
     emit fileAdded(fileName);
@@ -432,7 +432,7 @@ void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
     entryVec.erase(entryVec.begin() + index);
     // insert
     QString fullPath = fullFilePath(newFile);
-    std::filesystem::directory_entry stdEntry(fullPath.toStdString());
+    std::filesystem::directory_entry stdEntry(toStdString(fullPath));
     Entry entry(newFile, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
     insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
     emit fileRenamed(oldFile, index, newFile, indexOf(newFile));
@@ -442,7 +442,7 @@ void DirectoryManager::onFileModifiedExternal(QString fileName) {
     if(!contains(fileName))
         return;
     QString fullPath = fullFilePath(fileName);
-    std::filesystem::directory_entry stdEntry(fullPath.toStdString());
+    std::filesystem::directory_entry stdEntry(toStdString(fullPath));
     int index = indexOf(fileName);
     if(entryVec.at(index).modifyTime != stdEntry.last_write_time())
         entryVec.at(index).modifyTime = stdEntry.last_write_time();
@@ -453,7 +453,7 @@ bool DirectoryManager::forceInsert(QString fileName) {
     QString fullPath = fullFilePath(fileName);
     if(!this->isFile(fullPath) || contains(fileName))
         return false;
-    std::filesystem::directory_entry stdEntry(fullPath.toStdString());
+    std::filesystem::directory_entry stdEntry(toStdString(fullPath));
     Entry entry(fileName, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
     insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
     emit fileAdded(fileName);

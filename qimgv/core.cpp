@@ -610,6 +610,9 @@ void Core::reset() {
 }
 
 void Core::loadPath(QString path) {
+
+    qDebug() << "loadPath(): " << path;
+
     if(path.startsWith("file://", Qt::CaseInsensitive))
         path.remove(0, 7);
 
@@ -624,6 +627,7 @@ void Core::loadPath(QString path) {
         qDebug() << "Could not open path: " << path;
         return;
     }
+    qDebug() << "directoryPath: " << directoryPath;
     // set model dir if needed
     if(model->absolutePath() != directoryPath) {
         this->reset();

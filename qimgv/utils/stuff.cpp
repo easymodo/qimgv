@@ -16,3 +16,19 @@ int probeOS() {
     return 3;
 #endif
 }
+
+StdString toStdString(QString str) {
+#ifdef WIN32
+    return str.toStdWString();
+#else
+    return str.toStdString();
+#endif
+}
+
+QString fromStdString(std::wstring str) {
+#ifdef WIN32
+    return QString::fromStdWString(str);
+#else
+    return QString::fromStdString(str);
+#endif
+}
