@@ -31,7 +31,6 @@ if(VIDEO_SUPPORT)
     add_definitions(-DUSE_MPV)
 endif()
 
-
 ## INSTALLATION
 
 install(PROGRAMS ${CMAKE_BINARY_DIR}/qimgv/qimgv

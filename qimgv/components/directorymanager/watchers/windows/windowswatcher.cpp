@@ -31,7 +31,7 @@ HANDLE WindowsWatcherPrivate::requestDirectoryHandle(const QString& path)
     HANDLE hDirectory;
 
     do {
-        hDirectory = CreateFile(
+        hDirectory = CreateFileW(
                     path.toStdWString().c_str(),
                     FILE_LIST_DIRECTORY,
                     FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,

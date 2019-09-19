@@ -8,7 +8,7 @@ static void wakeup(void *ctx) {
 }
 
 static void *get_proc_address(void *ctx, const char *name) {
-    Q_UNUSED(ctx);
+    Q_UNUSED(ctx)
     QOpenGLContext *glctx = QOpenGLContext::currentContext();
     if (!glctx)
         return nullptr;
