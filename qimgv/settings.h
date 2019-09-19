@@ -172,6 +172,8 @@ public:
     bool shuffleEnabled();
     void setShuffleEnabled(bool mode);
 
+    bool maximizedWindow();
+    void setMaximizedWindow(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;

@@ -12,7 +12,7 @@ include(CMake/SRC_UI_Files.cmake)
 QT5_ADD_RESOURCES(RES resources.qrc)
 
 # ADD EXECUTABLE
-add_executable(qimgv ${SRC} ${SRC_Components} ${SRC_SourceContainers} ${SRC_Utils} ${SRC_Gui} ${RES} ${SRC_UI_Files})
+add_executable(qimgv ${SRC} ${SRC_Components} ${SRC_SourceContainers} ${SRC_Utils} ${SRC_Gui} ${RES} ${SRC_UI_Files} qimgv.rc)
 
 # LINK STUFF
 target_link_libraries(qimgv Qt5::Core Qt5::Widgets Qt5::Concurrent stdc++fs)

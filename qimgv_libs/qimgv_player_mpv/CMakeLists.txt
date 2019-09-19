@@ -15,7 +15,7 @@ if(WIN32)
     if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
         link_directories(${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/x86_64)
     else()
-        link_directories(${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/x86)
+        link_directories(${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/i686)
     endif()
 endif()
 

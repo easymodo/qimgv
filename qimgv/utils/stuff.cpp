@@ -25,7 +25,7 @@ StdString toStdString(QString str) {
 #endif
 }
 
-QString fromStdString(std::wstring str) {
+QString fromStdString(StdString str) {
 #ifdef WIN32
     return QString::fromStdWString(str);
 #else

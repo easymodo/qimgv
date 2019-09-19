@@ -311,12 +311,15 @@ void MainWindow::saveWindowGeometry() {
     #else
          settings->setWindowGeometry(QRect(pos(), size()));
     #endif
+    settings->setMaximizedWindow(this->isMaximized());
 }
 
 void MainWindow::restoreWindowGeometry() {
     QRect geometry = settings->windowGeometry();
     this->resize(geometry.size());
     this->move(geometry.x(), geometry.y());
+    if(settings->maximizedWindow())
+        this->setWindowState(Qt::WindowMaximized);
     updateCurrentDisplay();
 }
 

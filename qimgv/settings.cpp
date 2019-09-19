@@ -341,6 +341,14 @@ void Settings::setFullscreenMode(bool mode) {
     settings->s->setValue("openInFullscreen", mode);
 }
 //------------------------------------------------------------------------------
+bool Settings::maximizedWindow() {
+    return settings->state->value("maximizedWindow", false).toBool();
+}
+
+void Settings::setMaximizedWindow(bool mode) {
+    settings->state->setValue("maximizedWindow", mode);
+}
+//------------------------------------------------------------------------------
 bool Settings::panelEnabled() {
     return settings->s->value("panelEnabled", true).toBool();
 }
