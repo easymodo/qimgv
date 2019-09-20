@@ -30,11 +30,8 @@ inline bool VideoPlayerInitProxy::initPlayer() {
 #ifdef __linux
     playerLib.setFileName("qimgv_player_mpv");
 #else
-    //playerLib.setFileName("qimgv_player_mpv");
     playerLib.setFileName("libqimgv_player_mpv.dll");
-    //playerLib.setFileName("C:/packaging/build_exiv2_mpv/libqimgv_player_mpv.dll");
 #endif
-    qDebug() << playerLib.load();
     typedef VideoPlayer* (*createPlayerWidgetFn)();
     createPlayerWidgetFn fn = (createPlayerWidgetFn) playerLib.resolve("CreatePlayerWidget");
     if(fn) {
@@ -46,9 +43,7 @@ inline bool VideoPlayerInitProxy::initPlayer() {
         qDebug() << playerLib.fileName();
         return false;
     }
-    qDebug() << "[VideoPlayerInitProxy] Library load success!";
-
-//#else
+    //qDebug() << "[VideoPlayerInitProxy] Library load success!";
 
     player->setMuted(!settings->playVideoSounds());
     player->setVideoUnscaled(!settings->expandImage());
@@ -61,7 +56,6 @@ inline bool VideoPlayerInitProxy::initPlayer() {
     connect(player.get(), SIGNAL(positionChanged(int)), this, SIGNAL(positionChanged(int)));
     connect(player.get(), SIGNAL(videoPaused(bool)), this, SIGNAL(videoPaused(bool)));
     return true;
-//#endif
 }
 
 bool VideoPlayerInitProxy::openMedia(QString file) {
