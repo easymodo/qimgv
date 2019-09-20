@@ -67,7 +67,7 @@ bool DirectoryModel::contains(QString fileName) {
 }
 
 void DirectoryModel::removeFile(QString fileName, bool trash, FileOpResult &result) {
-    QFileInfo file(fileName);
+    QFileInfo file(dirManager.directory() + "/" + fileName);
     if(!file.exists()) {
         result = FileOpResult::SOURCE_DOES_NOT_EXIST;
     } else if(!file.isWritable()) {

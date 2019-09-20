@@ -414,15 +414,15 @@ void Core::onFileModified(QString fileName) {
 void Core::outputError(const FileOpResult &error) const {
     switch (error) {
     case FileOpResult::DESTINATION_FILE_EXISTS:
-        mw->showError("Destination file exists."); break;
+        mw->showError("File already exists."); break;
     case FileOpResult::SOURCE_NOT_WRITABLE:
         mw->showError("Source file is not writable."); break;
     case FileOpResult::DESTINATION_NOT_WRITABLE:
-        mw->showError("Destination is not writable."); break;
+        mw->showError("Directory is not writable."); break;
     case FileOpResult::SOURCE_DOES_NOT_EXIST:
         mw->showError("Source file does not exist."); break;
     case FileOpResult::DESTINATION_DOES_NOT_EXIST:
-        mw->showError("Destination does not exist."); break;
+        mw->showError("Directory does not exist."); break;
     case FileOpResult::COPY_TO_SAME_DIR:
         mw->showError("Already in this directory."); break;
     case FileOpResult::OTHER_ERROR:
@@ -433,12 +433,15 @@ void Core::outputError(const FileOpResult &error) const {
 }
 
 void Core::moveFile(QString destDirectory) {
+    mw->closeImage();
     FileOpResult result;
     model->moveTo(destDirectory, model->currentFileName(), result);
-    if(result == FileOpResult::SUCCESS)
+    if(result == FileOpResult::SUCCESS) {
         mw->showMessageSuccess("File moved.");
-    else
+    } else {
+        displayImage(model->getItem(model->currentFileName()));
         outputError(result);
+    }
 }
 
 void Core::copyFile(QString destDirectory) {
