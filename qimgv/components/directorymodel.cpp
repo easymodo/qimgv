@@ -135,11 +135,6 @@ void DirectoryModel::copyTo(QString destDirectory, QString fileName, FileOpResul
         result = FileOpResult::DESTINATION_FILE_EXISTS;
         return;
     }
-    location.setFile(this->currentFilePath());
-    if(!location.isWritable()) {
-        result = FileOpResult::SOURCE_NOT_WRITABLE;
-        return;
-    }
     // copy
     if(!dirManager.copyTo(destDirectory, fileName))
         result = FileOpResult::OTHER_ERROR;
