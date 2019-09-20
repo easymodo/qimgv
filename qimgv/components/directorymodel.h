@@ -8,6 +8,17 @@
 #include "thumbnailer/thumbnailer.h"
 #include "loader/loader.h"
 
+enum FileOpResult {
+    SUCCESS,
+    DESTINATION_FILE_EXISTS,
+    SOURCE_NOT_WRITABLE,
+    DESTINATION_NOT_WRITABLE,
+    SOURCE_DOES_NOT_EXIST,
+    DESTINATION_DOES_NOT_EXIST,
+    COPY_TO_SAME_DIR,
+    OTHER_ERROR
+};
+
 class DirectoryModel : public QObject {
     Q_OBJECT
 public:
@@ -25,7 +36,7 @@ public:
     int indexOf(QString fileName);
     QString fileNameAt(int index);
     bool contains(QString fileName);
-    bool removeFile(QString fileName, bool trash);
+    void removeFile(QString fileName, bool trash, FileOpResult &result);
     bool isEmpty();
     QString nextOf(QString fileName);
     QString prevOf(QString fileName);
@@ -33,8 +44,8 @@ public:
     QString last();
     QString absolutePath();
     QDateTime lastModified(QString fileName);
-    bool copyTo(QString destDirectory, QString fileName);
-    bool moveTo(QString destDirectory, QString fileName);
+    void copyTo(QString destDirectory, QString fileName, FileOpResult &result);
+    void moveTo(QString destDirectory, QString fileName, FileOpResult &result);
     void setDirectory(QString);
 
     bool setIndex(int index);

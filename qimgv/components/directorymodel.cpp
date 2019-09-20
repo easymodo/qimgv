@@ -66,8 +66,19 @@ bool DirectoryModel::contains(QString fileName) {
     return dirManager.contains(fileName);
 }
 
-bool DirectoryModel::removeFile(QString fileName, bool trash) {
-    return dirManager.removeFile(fileName, trash);
+void DirectoryModel::removeFile(QString fileName, bool trash, FileOpResult &result) {
+    QFileInfo file(fileName);
+    if(!file.exists()) {
+        result = FileOpResult::SOURCE_DOES_NOT_EXIST;
+    } else if(!file.isWritable()) {
+        result = FileOpResult::SOURCE_NOT_WRITABLE;
+    } else {
+        if(dirManager.removeFile(fileName, trash))
+            result = FileOpResult::SUCCESS;
+        else
+            result = FileOpResult::OTHER_ERROR;
+    }
+    return;
 }
 
 bool DirectoryModel::isEmpty() {
@@ -98,37 +109,93 @@ QDateTime DirectoryModel::lastModified(QString fileName) {
     return dirManager.lastModified(fileName);
 }
 
-bool DirectoryModel::copyTo(QString destDirectory, QString fileName) {
-    return dirManager.copyTo(destDirectory, fileName);
+void DirectoryModel::copyTo(QString destDirectory, QString fileName, FileOpResult &result) {
+    // error checks
+    if(destDirectory == dirManager.directory()) {
+        result = FileOpResult::COPY_TO_SAME_DIR;
+        return;
+    }
+    if(!dirManager.contains(fileName)) { // if this happens we have a bug
+        result = FileOpResult::SOURCE_DOES_NOT_EXIST;
+        return;
+    }
+    QFileInfo location(destDirectory);
+    if(!location.exists()) {
+        result = FileOpResult::DESTINATION_DOES_NOT_EXIST;
+        return;
+    }
+    if(!location.isWritable()) {
+        result = FileOpResult::DESTINATION_NOT_WRITABLE;
+        return;
+    }
+    location.setFile(destDirectory + "/" + fileName);
+    if(location.exists()) {
+        if(!location.isWritable())
+            result = FileOpResult::DESTINATION_NOT_WRITABLE;
+        result = FileOpResult::DESTINATION_FILE_EXISTS;
+        return;
+    }
+    location.setFile(this->currentFilePath());
+    if(!location.isWritable()) {
+        result = FileOpResult::SOURCE_NOT_WRITABLE;
+        return;
+    }
+    // copy
+    if(!dirManager.copyTo(destDirectory, fileName))
+        result = FileOpResult::OTHER_ERROR;
+    return;
 }
 
-bool DirectoryModel::moveTo(QString destDirectory, QString fileName) {
-    if(!dirManager.contains(fileName)) {
-        qDebug() << "[DirectoryModel] Error: source file does not exist.";
-        return false;
+void DirectoryModel::moveTo(QString destDirectory, QString fileName, FileOpResult &result) {
+    // error checks
+    if(destDirectory == dirManager.directory()) {
+        result = FileOpResult::COPY_TO_SAME_DIR;
+        return;
     }
-    QFileInfo file(destDirectory + "/" + fileName);
-    if(file.exists()) {
-        qDebug() << "[DirectoryModel] Error: destination file already exists.";
-        //mw->showMessage("Error: destination file already exists.");
-        return false;
+    if(!dirManager.contains(fileName)) { // if this happens we have a bug
+        result = FileOpResult::SOURCE_DOES_NOT_EXIST;
+        return;
     }
+    QFileInfo location(destDirectory);
+    if(!location.exists()) {
+        result = FileOpResult::DESTINATION_DOES_NOT_EXIST;
+        return;
+    }
+    if(!location.isWritable()) {
+        result = FileOpResult::DESTINATION_NOT_WRITABLE;
+        return;
+    }
+    location.setFile(destDirectory + "/" + fileName);
+    if(location.exists()) {
+        if(!location.isWritable())
+            result = FileOpResult::DESTINATION_NOT_WRITABLE;
+        result = FileOpResult::DESTINATION_FILE_EXISTS;
+        return;
+    }
+    location.setFile(this->currentFilePath());
+    if(!location.isWritable()) {
+        result = FileOpResult::SOURCE_NOT_WRITABLE;
+        return;
+    }
+    // move
     if(dirManager.copyTo(destDirectory, fileName)) {
         // remove original file
-        if(!dirManager.removeFile(fileName, false)) {
-            // revert on failure
-            dirManager.removeFile(destDirectory + "/" + fileName, false);
-            return false;
+        if(dirManager.removeFile(fileName, false)) {
+            // OK
+            result = FileOpResult::SUCCESS;
+            return;
         }
-        //mw->showMessage("File moved to: " + destDirectory);
-        return true;
+        // revert on failure
+        result = FileOpResult::SOURCE_NOT_WRITABLE;
+        if(QFile::remove(destDirectory + "/" + fileName))
+            result = FileOpResult::OTHER_ERROR;
     } else {
-        //mw->showMessage("Error: could not write a file to " + destDirectory);
-        qDebug() << "Error: could not write a file to " << destDirectory;
-        return false;
+        // could not COPY
+        result = FileOpResult::OTHER_ERROR;
     }
+    return;
 }
-
+// -----------------------------------------------------------------------------
 void DirectoryModel::setDirectory(QString path) {
     dirManager.setDirectory(path);
 }

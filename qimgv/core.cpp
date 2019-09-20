@@ -360,9 +360,13 @@ void Core::renameCurrentFile(QString newName) {
 
 // removes file at specified index within current directory
 void Core::removeFile(QString fileName, bool trash) {
-    if(model->removeFile(fileName, trash)) {
+    FileOpResult result;
+    model->removeFile(fileName, trash, result);
+    if(result == FileOpResult::SUCCESS) {
         QString msg = trash?"Moved to trash: ":"File removed: ";
         mw->showMessage(msg + fileName);
+    } else {
+        outputError(result);
     }
 }
 
@@ -407,12 +411,43 @@ void Core::onFileModified(QString fileName) {
     }
 }
 
+void Core::outputError(const FileOpResult &error) const {
+    switch (error) {
+    case FileOpResult::DESTINATION_FILE_EXISTS:
+        mw->showError("Destination file exists."); break;
+    case FileOpResult::SOURCE_NOT_WRITABLE:
+        mw->showError("Source file is not writable."); break;
+    case FileOpResult::DESTINATION_NOT_WRITABLE:
+        mw->showError("Destination is not writable."); break;
+    case FileOpResult::SOURCE_DOES_NOT_EXIST:
+        mw->showError("Source file does not exist."); break;
+    case FileOpResult::DESTINATION_DOES_NOT_EXIST:
+        mw->showError("Destination does not exist."); break;
+    case FileOpResult::COPY_TO_SAME_DIR:
+        mw->showError("Already in this directory."); break;
+    case FileOpResult::OTHER_ERROR:
+        mw->showError("Unknown error."); break;
+    default:
+        break;
+    }
+}
+
 void Core::moveFile(QString destDirectory) {
-    model->moveTo(destDirectory, model->currentFileName());
+    FileOpResult result;
+    model->moveTo(destDirectory, model->currentFileName(), result);
+    if(result == FileOpResult::SUCCESS)
+        mw->showMessageSuccess("File moved.");
+    else
+        outputError(result);
 }
 
 void Core::copyFile(QString destDirectory) {
-    model->copyTo(destDirectory, model->currentFileName());
+    FileOpResult result;
+    model->copyTo(destDirectory, model->currentFileName(), result);
+    if(result == FileOpResult::SUCCESS)
+        mw->showMessageSuccess("File copied.");
+    else
+        outputError(result);
 }
 
 void Core::toggleCropPanel() {
