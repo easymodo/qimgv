@@ -33,6 +33,14 @@
 #include <KWindowEffects>
 #endif
 
+struct CurrentInfo {
+    int index;
+    int fileCount;
+    QString fileName;
+    QSize imageSize;
+    int fileSize;
+};
+
 enum ActiveSidePanel {
     SIDEPANEL_CROP,
     SIDEPANEL_NONE
@@ -89,6 +97,7 @@ private:
 
     PanelHPosition panelPosition;
     QPoint lastMouseMovePos;
+    CurrentInfo info;
 
     void saveWindowGeometry();
     void restoreWindowGeometry();
