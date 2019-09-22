@@ -12,22 +12,25 @@ VideoControls::VideoControls(OverlayContainerWidget *parent) :
     playIcon.addPixmap(QPixmap(":res/icons/buttons/play24.png"));
     pauseIcon.addPixmap(QPixmap(":res/icons/buttons/pause24.png"));
 
-    setPosition(FloatingWidgetPosition::BOTTOM);
-
     lastVideoPosition = -1;
 
-    //ui->seekLeftButton->setVisible(false);
-    //ui->seekRightButton->setVisible(false);
+    readSettings();
+    connect(settings, &Settings::settingsChanged, this, &VideoControls::readSettings);
 
     connect(ui->pauseButton, SIGNAL(pressed()), this, SIGNAL(pause()));
-    //connect(ui->seekLeftButton, SIGNAL(pressed()), this, SIGNAL(seekLeft()));
-    //connect(ui->seekRightButton, SIGNAL(pressed()), this, SIGNAL(seekRight()));
     connect(ui->prevFrameButton, SIGNAL(pressed()), this, SIGNAL(prevFrame()));
     connect(ui->nextFrameButton, SIGNAL(pressed()), this, SIGNAL(nextFrame()));
     connect(ui->seekBar, SIGNAL(sliderMovedX(int)), this, SIGNAL(seek(int)));
 
     if(parent)
         setContainerSize(parent->size());
+}
+
+void VideoControls::readSettings() {
+    if(settings->panelEnabled() && settings->panelPosition() == PanelHPosition::PANEL_BOTTOM)
+        setPosition(FloatingWidgetPosition::TOP);
+    else
+        setPosition(FloatingWidgetPosition::BOTTOM);
 }
 
 VideoControls::~VideoControls() {

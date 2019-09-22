@@ -2,6 +2,7 @@
 #define VIDEOCONTROLS_H
 
 #include "gui/customwidgets/floatingwidget.h"
+#include "settings.h"
 #include <QPushButton>
 
 namespace Ui {
@@ -28,6 +29,9 @@ signals:
     void seekLeft();
     void nextFrame();
     void prevFrame();
+
+private slots:
+    void readSettings();
 
 private:
     Ui::VideoControls *ui;
