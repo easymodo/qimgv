@@ -17,9 +17,9 @@ ControlsOverlay::ControlsOverlay(OverlayContainerWidget *parent) :
     layout.setContentsMargins(0,0,0,0);
     this->setContentsMargins(0,0,0,0);
     layout.setSpacing(0);
-    layout.addWidget(settingsButton);
     layout.addWidget(folderViewButton);
     layout.addWidget(horizontalLineWidget);
+    layout.addWidget(settingsButton);
     layout.addWidget(closeButton);
     setLayout(&layout);
     fitToContents();
