@@ -156,6 +156,7 @@ void MainWindow::setupSaveOverlay() {
 
 void MainWindow::setupRenameOverlay() {
     renameOverlay = new RenameOverlay(this);
+    renameOverlay->setName(info.fileName);
     connect(renameOverlay, &RenameOverlay::renameRequested, this, &MainWindow::renameRequested);
 }
 
@@ -634,25 +635,31 @@ void MainWindow::closeFullScreenOrExit() {
     }
 }
 
-void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize) {
-    if(renameOverlay) // TODO: use some global state for convenience?
-        renameOverlay->setName(fileName);
-    if(fileName.isEmpty()) {
+void MainWindow::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _imageSize, int _fileSize) {
+    info.index = _index;
+    info.fileCount = _fileCount;
+    info.fileName = _fileName;
+    info.imageSize = _imageSize;
+    info.fileSize = _fileSize;
+
+    if(renameOverlay)
+        renameOverlay->setName(info.fileName);
+    if(info.fileName.isEmpty()) {
         setWindowTitle(qApp->applicationName());
         infoBarFullscreen->setInfo("", "No file opened.", "");
         infoBarWindowed->setInfo("", "No file opened.", "");
     } else {
         QString posString;
-        if(fileCount)
-            posString = "[ " + QString::number(fileIndex + 1) + "/" + QString::number(fileCount) + " ]";
+        if(info.fileCount)
+            posString = "[ " + QString::number(info.index + 1) + "/" + QString::number(info.fileCount) + " ]";
         QString resString;
-        if(imageSize.width())
-            resString = QString::number(imageSize.width()) + " x " + QString::number(imageSize.height());
+        if(info.imageSize.width())
+            resString = QString::number(info.imageSize.width()) + " x " + QString::number(info.imageSize.height());
         QString sizeString;
-        if(fileSize)
-            sizeString = QString::number(fileSize / 1024) + " KiB";
+        if(info.fileSize)
+            sizeString = QString::number(info.fileSize / 1024) + " KiB";
 
-        QString windowTitle = fileName;
+        QString windowTitle = info.fileName;
         if(settings->windowTitleExtendedInfo()) {
             windowTitle.prepend(posString + "  ");
             if(!resString.isEmpty())
@@ -660,9 +667,9 @@ void MainWindow::setCurrentInfo(int fileIndex, int fileCount, QString fileName, 
             if(!sizeString.isEmpty())
                 windowTitle.append("  -  " + sizeString);
         }
-        infoBarFullscreen->setInfo(posString, fileName, resString + "  " + sizeString);
+        infoBarFullscreen->setInfo(posString, info.fileName, resString + "  " + sizeString);
         setWindowTitle(windowTitle);
-        infoBarWindowed->setInfo(posString, fileName, resString + "  " + sizeString);
+        infoBarWindowed->setInfo(posString, info.fileName, resString + "  " + sizeString);
     }
 }
 

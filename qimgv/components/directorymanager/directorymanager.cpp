@@ -121,6 +121,10 @@ bool DirectoryManager::setDirectory(QString path) {
     return true;
 }
 
+QString DirectoryManager::directory() {
+    return currentPath;
+}
+
 int DirectoryManager::indexOf(QString fileName) const {
     auto item = find_if(entryVec.begin(), entryVec.end(), [fileName](const Entry& e) {
         return e.path == fileName;
@@ -202,7 +206,7 @@ bool DirectoryManager::removeFile(QString fileName, bool trash) {
 void DirectoryManager::moveToTrash(QString file) {
     QFileInfo fileinfo( file );
     if( !fileinfo.exists() )
-        qDebug() << "File doesnt exists, cant move to trash";
+        return;
     WCHAR from[ MAX_PATH ];
     memset( from, 0, sizeof( from ));
     int l = fileinfo.absoluteFilePath().toWCharArray( from );

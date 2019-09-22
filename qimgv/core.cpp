@@ -360,9 +360,13 @@ void Core::renameCurrentFile(QString newName) {
 
 // removes file at specified index within current directory
 void Core::removeFile(QString fileName, bool trash) {
-    if(model->removeFile(fileName, trash)) {
+    FileOpResult result;
+    model->removeFile(fileName, trash, result);
+    if(result == FileOpResult::SUCCESS) {
         QString msg = trash?"Moved to trash: ":"File removed: ";
         mw->showMessage(msg + fileName);
+    } else {
+        outputError(result);
     }
 }
 
@@ -407,12 +411,46 @@ void Core::onFileModified(QString fileName) {
     }
 }
 
+void Core::outputError(const FileOpResult &error) const {
+    switch (error) {
+    case FileOpResult::DESTINATION_FILE_EXISTS:
+        mw->showError("File already exists."); break;
+    case FileOpResult::SOURCE_NOT_WRITABLE:
+        mw->showError("Source file is not writable."); break;
+    case FileOpResult::DESTINATION_NOT_WRITABLE:
+        mw->showError("Directory is not writable."); break;
+    case FileOpResult::SOURCE_DOES_NOT_EXIST:
+        mw->showError("Source file does not exist."); break;
+    case FileOpResult::DESTINATION_DOES_NOT_EXIST:
+        mw->showError("Directory does not exist."); break;
+    case FileOpResult::COPY_TO_SAME_DIR:
+        mw->showError("Already in this directory."); break;
+    case FileOpResult::OTHER_ERROR:
+        mw->showError("Unknown error."); break;
+    default:
+        break;
+    }
+}
+
 void Core::moveFile(QString destDirectory) {
-    model->moveTo(destDirectory, model->currentFileName());
+    mw->closeImage();
+    FileOpResult result;
+    model->moveTo(destDirectory, model->currentFileName(), result);
+    if(result == FileOpResult::SUCCESS) {
+        mw->showMessageSuccess("File moved.");
+    } else {
+        displayImage(model->getItem(model->currentFileName()));
+        outputError(result);
+    }
 }
 
 void Core::copyFile(QString destDirectory) {
-    model->copyTo(destDirectory, model->currentFileName());
+    FileOpResult result;
+    model->copyTo(destDirectory, model->currentFileName(), result);
+    if(result == FileOpResult::SUCCESS)
+        mw->showMessageSuccess("File copied.");
+    else
+        outputError(result);
 }
 
 void Core::toggleCropPanel() {
@@ -610,9 +648,6 @@ void Core::reset() {
 }
 
 void Core::loadPath(QString path) {
-
-    qDebug() << "loadPath(): " << path;
-
     if(path.startsWith("file://", Qt::CaseInsensitive))
         path.remove(0, 7);
 
@@ -627,7 +662,6 @@ void Core::loadPath(QString path) {
         qDebug() << "Could not open path: " << path;
         return;
     }
-    qDebug() << "directoryPath: " << directoryPath;
     // set model dir if needed
     if(model->absolutePath() != directoryPath) {
         this->reset();

@@ -95,6 +95,7 @@ int main(int argc, char *argv[]) {
     if(!arg1.isEmpty()) {
         core.loadPath(arg1);
     }
+    qApp->processEvents();
     core.showGui();
     return a.exec();
 }

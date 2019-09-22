@@ -159,7 +159,7 @@ void Settings::setPlayWebm(bool mode) {
 //------------------------------------------------------------------------------
 bool Settings::playMp4() {
 #ifdef USE_MPV
-    return settings->s->value("playMp4", false).toBool();
+    return settings->s->value("playMp4", true).toBool();
 #else
     return false;
 #endif

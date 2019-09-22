@@ -5,7 +5,7 @@ WindowsWorker::WindowsWorker() : WatcherWorker() {
 }
 
 void WindowsWorker::setDirectoryHandle(HANDLE hDir) {
-    qDebug() << "setHandle" << this->hDir << " -> " << hDir;
+    //qDebug() << "setHandle" << this->hDir << " -> " << hDir;
     this->hDir = hDir;
 }
 

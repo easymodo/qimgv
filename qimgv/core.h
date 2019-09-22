@@ -119,6 +119,7 @@ private slots:
     void onDropIn(const QMimeData *mimeData, QObject* source);
     void toggleShuffle();
     void onModelLoaded();
+    void outputError(const FileOpResult &error) const;
 };
 
 #endif // CORE_H
