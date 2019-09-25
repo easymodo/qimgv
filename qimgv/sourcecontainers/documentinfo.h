@@ -39,7 +39,7 @@ public:
     QMimeType mimeType() const;
 
     // file extension (guessed from mime-type)
-    const char* extension() const;
+    const char *extension() const;
     int exifOrientation() const;
 
     QDateTime lastModified() const;
@@ -51,7 +51,7 @@ private:
     QFileInfo fileInfo;
     DocumentType mImageType;
     int mOrientation;
-    const char* mExtension;
+    QString mExtension;
 
     // guesses file type from its contents
     // and sets extension

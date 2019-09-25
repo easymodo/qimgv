@@ -3,7 +3,7 @@
 DocumentInfo::DocumentInfo(QString path)
     : mImageType(NONE),
       mOrientation(0),
-      mExtension(nullptr)
+      mExtension("")
 {
     fileInfo.setFile(path);
     if(!fileInfo.isFile()) {
@@ -49,9 +49,8 @@ DocumentType DocumentInfo::type() const {
 QMimeType DocumentInfo::mimeType() const {
     return mMimeType;
 }
-
 const char *DocumentInfo::extension() const {
-    return mExtension;
+    return mExtension.toStdString().c_str();
 }
 
 QDateTime DocumentInfo::lastModified() const {
@@ -115,7 +114,7 @@ void DocumentInfo::detectType() {
         mExtension = "bmp";
         mImageType = STATIC;
     } else {
-        mExtension = fileInfo.completeSuffix().toStdString().c_str();
+        mExtension = fileInfo.completeSuffix();
         mImageType = STATIC;
     }
 }
@@ -245,8 +244,8 @@ void DocumentInfo::loadExifOrientation() {
 
     QString path = filePath();
     QImageReader *reader = nullptr;
-    if(mExtension)
-        reader = new QImageReader(path, mExtension);
+    if(!mExtension.isEmpty())
+        reader = new QImageReader(path, mExtension.toStdString().c_str());
     else
         reader = new QImageReader(path);
 
