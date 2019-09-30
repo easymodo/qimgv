@@ -77,8 +77,18 @@ void DocumentInfo::detectType() {
     QMimeDatabase mimeDb;
     mMimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
     QString mimeName = mMimeType.name();
-
-    if(mimeName == "video/webm") {
+    QString suffix = fileInfo.completeSuffix();
+    // todo: split mime-based detection vs exension-based
+    if(mimeName == "application/octet-stream") {
+        if(QString::compare(fileInfo.completeSuffix(), "webm", Qt::CaseInsensitive) == 0) {
+            mExtension = "webm";
+            mImageType = DocumentType::VIDEO;
+        }
+        if(QString::compare(fileInfo.completeSuffix(), "mp4", Qt::CaseInsensitive) == 0) {
+            mExtension = "mp4";
+            mImageType = DocumentType::VIDEO;
+        }
+    } else if(mimeName == "video/webm") {
         mExtension = "webm";
         mImageType = DocumentType::VIDEO;
     } else if(mimeName == "video/mp4") {

@@ -773,7 +773,6 @@ void Core::displayImage(std::shared_ptr<Image> img) {
         mw->showMessage("Error: could not load image.");
         return;
     }
-
     DocumentType type = img->type();
     if(type == STATIC) {
         mw->showImage(img->getPixmap());
