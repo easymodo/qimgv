@@ -3,13 +3,10 @@
 // TODO: this is pretty old. Clean up
 
 CropOverlay::CropOverlay(OverlayContainerWidget *parent) : OverlayWidget(parent),
-    viewer(parent),
     startPos(QPoint(0, 0)),
     endPos(QPoint(0, 0)),
     imageDrawRect(QRect(0, 0, 0, 0)),
     selectionRect(QRect(0, 0, 0, 0)),
-    clear(true),
-    moving(false),
     forceAspectRatio(false),
     scale(1.0f),
     drawBuffer(nullptr),
@@ -50,7 +47,7 @@ void CropOverlay::prepareDrawElements() {
 
 void CropOverlay::setImageRealSize(QSize sz) {
     imageRect.setSize(sz);
-    selectAll();
+    //selectAll();
 }
 
 void CropOverlay::setImageDrawRect(QRect imageDrawRect) {
@@ -64,19 +61,23 @@ void CropOverlay::setImageScale(float scale) {
 }
 
 void CropOverlay::clearSelection() {
-    if(!clear) {
+    if(hasSelection()) {
         startPos = QPoint(0,0);
         endPos = QPoint(0,0);
         selectionRect = QRect(0,0,0,0);
         selectionDrawRect = QRect(0,0,0,0);
-        clear = true;
         update();
         emit selectionChanged(selectionRect);
     }
 }
 
+bool CropOverlay::hasSelection() {
+    if(selectionRect.width() && selectionRect.height())
+        return true;
+    return false;
+}
+
 void CropOverlay::selectAll() {
-    clear = false;
     selectionRect = imageRect;
     updateSelectionDrawRect();
     updateHandlePositions();
@@ -94,7 +95,7 @@ void CropOverlay::setAspectRatio(QPointF ratio) {
     ar = ratio;
     setForceAspectRatio(true);
     // force resize selection area
-    if(forceAspectRatio && !clear) {
+    if(forceAspectRatio && hasSelection()) {
         resizeSelection(QPoint(0,0));
         update();
     }
@@ -106,7 +107,6 @@ void CropOverlay::show() {
         drawBuffer->setDevicePixelRatio(dpr);
     }
     QWidget::show();
-    selectAll();
 }
 
 void CropOverlay::hide() {
@@ -127,7 +127,7 @@ void CropOverlay::hide() {
 //###################################################
 void CropOverlay::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
-    if(clear) {
+    if(!hasSelection()) {
         QPainter painter(this);
         painter.setPen(Qt::NoPen);
         painter.setBrush(brushInactiveTint);
@@ -165,8 +165,6 @@ void CropOverlay::drawSelection(QPainter *painter) {
     painter->setCompositionMode(QPainter::CompositionMode_Source);
     painter->setPen(selectionOutlinePen);
     painter->setBrush(QBrush(QColor(0, 0, 0, 0)));
-    //QRect dpiAdjusted = QRect((selectionDrawRect.topLeft() - QPoint(1,1)) / dpr,
-    //                          selectionDrawRect.size() / dpr);
     painter->drawRect(selectionDrawRectDpi);
     painter->restore();
 }
@@ -264,7 +262,7 @@ void CropOverlay::setResizeAnchor(CursorAction action) {
 // TODO: flip selection rectangle
 void CropOverlay::resizeSelection(QPoint delta) {
     if(forceAspectRatio)
-        resizeSelectionAR2(delta);
+        resizeSelectionAR(delta);
     else
         resizeSelectionFree(delta);
     updateSelectionDrawRect();
@@ -272,7 +270,7 @@ void CropOverlay::resizeSelection(QPoint delta) {
 }
 
 // TODO: split this up
-void CropOverlay::resizeSelectionAR2(QPoint delta) {
+void CropOverlay::resizeSelectionAR(QPoint delta) {
     QSizeF newSz(selectionRect.size());
     QSizeF maxSz;
     /* ~JustQtThings~
@@ -419,12 +417,41 @@ void CropOverlay::mousePressEvent(QMouseEvent *event) {
         setCursorAction(cursorAction);
         setResizeAnchor(cursorAction);
         moveStartPos = event->pos();
+        // start selection!
+        if(!hasSelection()) {
+            cursorAction = SELECTION_START; // move to hovertarget??
+            QPoint point = mapPointToImage(event->pos() * dpr);
+            selectionRect.setTopLeft(point);
+            selectionRect.setBottomRight(point);
+        }
+    } else if(event->buttons() & Qt::RightButton) {
+        clearSelection();
+        cursorAction = NO_DRAG;
     }
 }
 
 // TODO: uneven movement with fractional scaling
 void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
-    if(event->buttons() & Qt::LeftButton && !clear) {
+    if(event->buttons() & Qt::LeftButton/* && hasSelection()*/) {
+        if(cursorAction == SELECTION_START) {
+            // skip if cursor hasn't been moved in some direction
+            if(event->pos().x() == moveStartPos.x() || event->pos().y() == moveStartPos.y())
+                return;
+            // determine direction
+            if(event->pos().x() > moveStartPos.x())
+                if(event->pos().y() > moveStartPos.y())
+                    cursorAction = DRAG_BOTTOMRIGHT;
+                else
+                    cursorAction = DRAG_TOPRIGHT;
+            else
+                if(event->pos().y() > moveStartPos.y())
+                    cursorAction = DRAG_BOTTOMLEFT;
+                else
+                    cursorAction = DRAG_TOPLEFT;
+        }
+        if(cursorAction == NO_DRAG || cursorAction == SELECTION_START)
+            return;
+        // continue with resizing
         QPointF delta = QPointF(event->pos() - moveStartPos) * dpr;
         if(cursorAction == DRAG_MOVE) { // moving selection
             setCursor(Qt::ClosedHandCursor);
@@ -436,10 +463,8 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
             updateSelectionDrawRect();
             updateHandlePositions();
             update();
-        } else if(cursorAction == NO_DRAG) {
-            // ignore. we should always have some selection rectangle
-
-            /*
+        /*} else if(cursorAction == NO_DRAG || cursorAction == SELECTION_START) {
+            // unneeded?
             endPos = event->pos();
             //build selection rectangle
             QPoint tl, br;
@@ -455,7 +480,7 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
             updateSelectionDrawRect();
             updateHandlePositions();
             update();
-            */
+        */
         } else { // resizing selection
             resizeSelection(delta.toPoint() / scale);
             moveStartPos = event->pos();
@@ -463,7 +488,7 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
         }
         emit selectionChanged(selectionRect);
     } else {
-        if(clear)
+        if(!hasSelection())
             setCursor(QCursor(Qt::ArrowCursor));
         else
             setCursorAction(hoverTarget(event->pos() * dpr));
@@ -471,7 +496,6 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void CropOverlay::mouseReleaseEvent(QMouseEvent *event) {
-    Q_UNUSED(event)
     cursorAction = NO_DRAG;
     setCursorAction(hoverTarget(event->pos() * dpr));
     update();
@@ -522,7 +546,6 @@ void CropOverlay::updateHandlePositions() {
 // TODO: use aspect ratio
 void CropOverlay::onSelectionOutsideChange(QRect selection) {
     if(selection.width() > 0 && selection.height() > 0) {
-        clear = false;
         QRect boundedSelection = placeInside(selection, imageRect);
         selectionRect = boundedSelection;
         updateSelectionDrawRect();
@@ -531,14 +554,15 @@ void CropOverlay::onSelectionOutsideChange(QRect selection) {
         if(selectionRect != selection)
             emit selectionChanged(selectionRect);
     } else {
-        selectAll();
+        //selectAll();
     }
 }
 
 void CropOverlay::keyPressEvent(QKeyEvent *event) {
-    if((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) && !clear) {
+    if((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) && hasSelection()) {
         emit enterPressed();
     } else if(event->key() == Qt::Key_Escape) {
+        clearSelection();
         emit escPressed();
     } else if(event->matches(QKeySequence::SelectAll)) {
         selectAll();

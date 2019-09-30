@@ -7,9 +7,20 @@
 #include <QPaintEvent>
 #include <QColor>
 
-enum CursorAction { NO_DRAG, DRAG_SELECT, DRAG_MOVE, DRAG_LEFT, DRAG_RIGHT,
-                        DRAG_TOP, DRAG_BOTTOM, DRAG_TOPLEFT,
-                        DRAG_TOPRIGHT, DRAG_BOTTOMLEFT, DRAG_BOTTOMRIGHT };
+enum CursorAction {
+    NO_DRAG,          // 0
+    SELECTION_START,  // 1
+    DRAG_SELECT,      // 2
+    DRAG_MOVE,        // 3
+    DRAG_LEFT,        // 4
+    DRAG_RIGHT,       // 5
+    DRAG_TOP,         // 6
+    DRAG_BOTTOM,      // 7
+    DRAG_TOPLEFT,     // 8
+    DRAG_TOPRIGHT,    // 9
+    DRAG_BOTTOMLEFT,  // 10
+    DRAG_BOTTOMRIGHT  // 11
+};
 
 class CropOverlay : public OverlayWidget
 {
@@ -37,10 +48,9 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     void resizeEvent(QResizeEvent *event);
 private:
-    QWidget *viewer;
     QPoint startPos, endPos, moveStartPos, resizeAnchor;
     QRect imageRect, imageDrawRect, selectionRect, selectionDrawRect, handles[8];
-    bool clear, moving, forceAspectRatio;
+    bool forceAspectRatio;
     float scale;
     QBrush brushInactiveTint, brushDarkGray, brushGray, brushLightGray;
     QRectF selectionDrawRectDpi, handlesDpi[8];
@@ -59,13 +69,14 @@ private:
     void prepareDrawElements();
     CursorAction hoverTarget(QPoint pos);
     void resizeSelection(QPoint d);
-    void resizeSelectionAR2(QPoint d);
+    void resizeSelectionAR(QPoint d);
     void resizeSelectionFree(QPoint d);
     void recalculateGeometry();
     QPoint mapPointToImage(QPoint p);
     void updateSelectionDrawRect();
     void setCursorAction(CursorAction action);
     void setResizeAnchor(CursorAction action);
+    bool hasSelection();
 public slots:
     void show();
     void hide();
