@@ -50,7 +50,7 @@ protected:
 private:
     QPoint startPos, endPos, moveStartPos, resizeAnchor;
     QRect imageRect, imageDrawRect, selectionRect, selectionDrawRect, handles[8];
-    bool forceAspectRatio;
+    bool lockAspectRatio;
     float scale;
     QBrush brushInactiveTint, brushDarkGray, brushGray, brushLightGray;
     QRectF selectionDrawRectDpi, handlesDpi[8];
@@ -83,7 +83,7 @@ public slots:
     void onSelectionOutsideChange(QRect selection);
     void selectAll();
     void setAspectRatio(QPointF);
-    void setForceAspectRatio(bool mode);
+    void setLockAspectRatio(bool mode);
 };
 
 #endif // CROPOVERLAY_H

@@ -83,7 +83,7 @@ void CropPanel::onAspectRatioSelected() {
     switch(index) {
     case 0:
     {
-        overlay->setForceAspectRatio(false);
+        overlay->setLockAspectRatio(false);
         if(realSize.height() != 0)
             newAR = QPointF(qreal(realSize.width()) / realSize.height(), 1.0);
         break;
