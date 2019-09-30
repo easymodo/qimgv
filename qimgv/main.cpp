@@ -45,15 +45,11 @@ int main(int argc, char *argv[]) {
     QGuiApplication::setDesktopFileName("qimgv.desktop");
 
     // enable translations
-    /*QTranslator qtTranslator;
-    qtTranslator.load("qt_" + QLocale::system().name(),
-                      QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    a.installTranslator(&qtTranslator);
-    */
-
+    QString localeName = QLocale::system().name();
     QTranslator translator;
-    translator.load(a.applicationName() + "_" + QLocale::system().name());
+    translator.load(":/res/translations/" + localeName);
     a.installTranslator(&translator);
+    qDebug() << "localeName: " << localeName;
 
     // get arguments
     QString arg1;

@@ -17,7 +17,10 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true"/>
+  </property>
+  <property name="accessibleName">
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -38,7 +41,7 @@
    <item>
     <widget class="QWidget" name="widget" native="true">
      <property name="accessibleName">
-      <string>OverlayHeaderWidget</string>
+      <string notr="true">OverlayHeaderWidget</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="leftMargin">
@@ -55,6 +58,9 @@
       </property>
       <item>
        <widget class="QLabel" name="headerIcon">
+        <property name="accessibleName">
+         <string notr="true"/>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -72,7 +78,7 @@
          </sizepolicy>
         </property>
         <property name="accessibleName">
-         <string>OverlayHeaderLabel</string>
+         <string notr="true">OverlayHeaderLabel</string>
         </property>
         <property name="text">
          <string>Rename file</string>
@@ -103,7 +109,7 @@
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="accessibleName">
-         <string>OverlayCloseButton</string>
+         <string notr="true">OverlayCloseButton</string>
         </property>
         <property name="text">
          <string/>
@@ -141,6 +147,9 @@
          <width>250</width>
          <height>0</height>
         </size>
+       </property>
+       <property name="accessibleName">
+        <string notr="true"/>
        </property>
       </widget>
      </item>
@@ -183,7 +192,7 @@
           <enum>Qt::NoFocus</enum>
          </property>
          <property name="accessibleName">
-          <string>ButtonSetLeft</string>
+          <string notr="true">ButtonSetLeft</string>
          </property>
          <property name="text">
           <string>Rename</string>
@@ -196,7 +205,7 @@
           <enum>Qt::NoFocus</enum>
          </property>
          <property name="accessibleName">
-          <string>ButtonSetRight</string>
+          <string notr="true">ButtonSetRight</string>
          </property>
          <property name="text">
           <string>Cancel</string>

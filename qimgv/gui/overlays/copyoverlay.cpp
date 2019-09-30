@@ -10,7 +10,7 @@ CopyOverlay::CopyOverlay(OverlayContainerWidget *parent) :
     setFadeEnabled(true);
 
     ui->headerIcon->setPixmap(QPixmap(":/res/icons/buttons/copy16.png"));
-    ui->headerLabel->setText("Copy file to...");
+    ui->headerLabel->setText(tr("Copy to..."));
     mode = OVERLAY_COPY;
 
     createShortcuts();
@@ -46,10 +46,10 @@ void CopyOverlay::setDialogMode(CopyOverlayMode _mode) {
     mode = _mode;
     if(mode == OVERLAY_COPY) {
         ui->headerIcon->setPixmap(QPixmap(":/res/icons/buttons/copy16.png"));
-        ui->headerLabel->setText("Copy file to...");
+        ui->headerLabel->setText(tr("Copy to..."));
     } else {
         ui->headerIcon->setPixmap(QPixmap(":/res/icons/buttons/move16.png"));
-        ui->headerLabel->setText("Move file to...");
+        ui->headerLabel->setText(tr("Move to..."));
     }
 }
 

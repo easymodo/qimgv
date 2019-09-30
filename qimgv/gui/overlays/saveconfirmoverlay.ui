@@ -11,7 +11,10 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true"/>
+  </property>
+  <property name="accessibleName">
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -35,7 +38,7 @@
    <item>
     <widget class="QWidget" name="widget" native="true">
      <property name="accessibleName">
-      <string>OverlayHeaderWidget</string>
+      <string notr="true">OverlayHeaderWidget</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="sizeConstraint">
@@ -55,6 +58,9 @@
       </property>
       <item>
        <widget class="QLabel" name="label_2">
+        <property name="accessibleName">
+         <string notr="true"/>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -72,7 +78,7 @@
          </sizepolicy>
         </property>
         <property name="accessibleName">
-         <string>OverlayHeaderLabel</string>
+         <string notr="true">OverlayHeaderLabel</string>
         </property>
         <property name="text">
          <string>Unsaved edits</string>
@@ -103,7 +109,7 @@
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="accessibleName">
-         <string>OverlayCloseButton</string>
+         <string notr="true">OverlayCloseButton</string>
         </property>
         <property name="text">
          <string/>
@@ -143,7 +149,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="accessibleName">
-        <string>ButtonSetLeft</string>
+        <string notr="true">ButtonSetLeft</string>
        </property>
        <property name="text">
         <string>Save</string>
@@ -156,10 +162,10 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="accessibleName">
-        <string>ButtonSetRight</string>
+        <string notr="true">ButtonSetRight</string>
        </property>
        <property name="text">
-        <string>Save As</string>
+        <string>Save as</string>
        </property>
       </widget>
      </item>
@@ -185,7 +191,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="accessibleName">
-        <string>Button</string>
+        <string notr="true">Button</string>
        </property>
        <property name="text">
         <string>Discard</string>

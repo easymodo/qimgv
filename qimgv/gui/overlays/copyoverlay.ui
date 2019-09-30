@@ -23,7 +23,10 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
+  </property>
+  <property name="accessibleName">
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -44,7 +47,7 @@
    <item>
     <widget class="QWidget" name="headerWidget" native="true">
      <property name="accessibleName">
-      <string>OverlayHeaderWidget</string>
+      <string notr="true">OverlayHeaderWidget</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="spacing">
@@ -64,8 +67,11 @@
       </property>
       <item>
        <widget class="QLabel" name="headerIcon">
+        <property name="accessibleName">
+         <string notr="true"/>
+        </property>
         <property name="text">
-         <string>icon</string>
+         <string notr="true"/>
         </property>
        </widget>
       </item>
@@ -78,10 +84,10 @@
          </sizepolicy>
         </property>
         <property name="accessibleName">
-         <string>OverlayHeaderLabel</string>
+         <string notr="true">OverlayHeaderLabel</string>
         </property>
         <property name="text">
-         <string>header</string>
+         <string notr="true"/>
         </property>
         <property name="margin">
          <number>0</number>
@@ -112,10 +118,10 @@
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="accessibleName">
-         <string>OverlayCloseButton</string>
+         <string notr="true">OverlayCloseButton</string>
         </property>
         <property name="text">
-         <string/>
+         <string notr="true"/>
         </property>
         <property name="icon">
          <iconset resource="../../resources.qrc">

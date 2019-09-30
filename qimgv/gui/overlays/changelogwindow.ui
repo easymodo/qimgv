@@ -26,7 +26,7 @@
    <enum>Qt::NoFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -47,7 +47,7 @@
    <item>
     <widget class="QLabel" name="headerLabel">
      <property name="text">
-      <string/>
+      <string notr="true"/>
      </property>
      <property name="pixmap">
       <pixmap resource="../../resources.qrc">:/res/images/changelogheader.png</pixmap>
@@ -105,10 +105,10 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="html">
-          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+          <string notr="true">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Droid Sans'; font-size:16pt; font-weight:600;&quot;&gt;Version 0.6.3&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Droid Sans'; font-size:11pt;&quot;&gt;Added flipV / flipH actions (H and V keys)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
@@ -148,7 +148,7 @@ p, li { white-space: pre-wrap; }
         <enum>Qt::StrongFocus</enum>
        </property>
        <property name="accessibleName">
-        <string>Button</string>
+        <string notr="true">Button</string>
        </property>
        <property name="text">
         <string>Close, never show changelogs</string>
@@ -164,7 +164,7 @@ p, li { white-space: pre-wrap; }
         <enum>Qt::StrongFocus</enum>
        </property>
        <property name="accessibleName">
-        <string>Button</string>
+        <string notr="true">Button</string>
        </property>
        <property name="text">
         <string>Close</string>

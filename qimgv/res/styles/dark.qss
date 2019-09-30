@@ -519,7 +519,7 @@ ContextMenu {
 }
 
 [accessibleName="MenuItemIcon"] {
-    padding: 5px;
+    margin: 5px;
 }
 
 /*----------------------------------------------------------------------------*/

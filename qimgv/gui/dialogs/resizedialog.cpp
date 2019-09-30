@@ -8,8 +8,6 @@ ResizeDialog::ResizeDialog(QSize originalSize,  QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowModality(Qt::ApplicationModal);
-    setWindowTitle("Resize image");
-
     ui->width->setFocus();
 
     this->originalSize = originalSize;
@@ -18,7 +16,7 @@ ResizeDialog::ResizeDialog(QSize originalSize,  QWidget *parent) :
     ui->width->setValue(originalSize.width());
     ui->height->setValue(originalSize.height());
 
-    ui->resetButton->setText("Reset: " +
+    ui->resetButton->setText(tr("Reset:") + " " +
                              QString::number(originalSize.width()) +
                              " x " +
                              QString::number(originalSize.height()));

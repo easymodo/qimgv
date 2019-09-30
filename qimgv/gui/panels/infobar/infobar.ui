@@ -22,10 +22,10 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>infobar</string>
+   <string notr="true"/>
   </property>
   <property name="accessibleName">
-   <string>InfoBar</string>
+   <string notr="true">InfoBar</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
@@ -45,15 +45,21 @@
    </property>
    <item>
     <widget class="QLabel" name="index">
+     <property name="accessibleName">
+      <string notr="true"/>
+     </property>
      <property name="text">
-      <string> </string>
+      <string/>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QLabel" name="path">
+     <property name="accessibleName">
+      <string notr="true"/>
+     </property>
      <property name="text">
-      <string> </string>
+      <string/>
      </property>
     </widget>
    </item>
@@ -72,8 +78,11 @@
    </item>
    <item>
     <widget class="QLabel" name="info">
+     <property name="accessibleName">
+      <string notr="true"/>
+     </property>
      <property name="text">
-      <string> </string>
+      <string/>
      </property>
     </widget>
    </item>

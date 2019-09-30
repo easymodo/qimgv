@@ -27,51 +27,51 @@ ContextMenu::ContextMenu(QWidget *parent) :
     // -------------------------------------------------------------------------
     //  entries
     ui->rotateLeft->setAction("rotateLeft");
-    ui->rotateLeft->setText("Rotate left");
+    ui->rotateLeft->setText(tr("Rotate left"));
     ui->rotateLeft->setIcon(QIcon(":/res/icons/buttons/rotate-left16.png"));
 
     ui->rotateRight->setAction("rotateRight");
-    ui->rotateRight->setText("Rotate right");
+    ui->rotateRight->setText(tr("Rotate right"));
     ui->rotateRight->setIcon(QIcon(":/res/icons/buttons/rotate-right16.png"));
 
     ui->flipH->setAction("flipH");
-    ui->flipH->setText("Flip H");
+    ui->flipH->setText(tr("Flip H"));
     ui->flipH->setIcon(QIcon(":/res/icons/buttons/flip-h16.png"));
 
     ui->flipV->setAction("flipV");
-    ui->flipV->setText("Flip V");
+    ui->flipV->setText(tr("Flip V"));
     ui->flipV->setIcon(QIcon(":/res/icons/buttons/flip-v16.png"));
 
     ui->crop->setAction("crop");
-    ui->crop->setText("Crop");
+    ui->crop->setText(tr("Crop"));
     ui->crop->setIcon(QIcon(":/res/icons/buttons/image-crop16.png"));
 
     ui->resize->setAction("resize");
-    ui->resize->setText("Resize");
+    ui->resize->setText(tr("Resize"));
     ui->resize->setIcon(QIcon(":/res/icons/buttons/view-fullscreen16.png"));
     // -------------------------------------------------------------------------
     ui->copy->setAction("copyFile");
-    ui->copy->setText("Quick copy");
+    ui->copy->setText(tr("Quick copy"));
     ui->copy->setIcon(QIcon(":/res/icons/buttons/copy16.png"));
 
     ui->move->setAction("moveFile");
-    ui->move->setText("Quick move");
+    ui->move->setText(tr("Quick move"));
     ui->move->setIcon(QIcon(":/res/icons/buttons/move16.png"));
 
     ui->trash->setAction("moveToTrash");
-    ui->trash->setText("Move to trash");
+    ui->trash->setText(tr("Move to trash"));
     ui->trash->setIcon(QIcon(":/res/icons/buttons/trash-red16.png"));
     // -------------------------------------------------------------------------
     ui->open->setAction("open");
-    ui->open->setText("Open");
+    ui->open->setText(tr("Open"));
     ui->open->setIcon(QIcon(":/res/icons/buttons/open16.png"));
 
     ui->folderView->setAction("folderView");
-    ui->folderView->setText("Folder View");
+    ui->folderView->setText(tr("Folder View"));
     ui->folderView->setIcon(QIcon(":/res/icons/buttons/folderview16.png"));
 
     ui->settings->setAction("openSettings");
-    ui->settings->setText("Settings");
+    ui->settings->setText(tr("Settings"));
     ui->settings->setIcon(QIcon(":/res/icons/buttons/settings16.png"));
     // -------------------------------------------------------------------------
     reservedKeys << "Up"

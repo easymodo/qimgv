@@ -29,7 +29,10 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true"/>
+  </property>
+  <property name="accessibleName">
+   <string notr="true"/>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
@@ -79,7 +82,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="accessibleName">
-        <string>Button</string>
+        <string notr="true">Button</string>
        </property>
        <property name="text">
         <string/>
@@ -132,7 +135,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="accessibleName">
-        <string>ButtonSetLeft</string>
+        <string notr="true">ButtonSetLeft</string>
        </property>
        <property name="text">
         <string/>
@@ -173,7 +176,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="accessibleName">
-        <string>ButtonSetRight</string>
+        <string notr="true">ButtonSetRight</string>
        </property>
        <property name="text">
         <string/>
@@ -231,6 +234,9 @@
      <property name="focusPolicy">
       <enum>Qt::NoFocus</enum>
      </property>
+     <property name="accessibleName">
+      <string notr="true"/>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -255,21 +261,21 @@
    <item>
     <widget class="QLabel" name="positionLabel">
      <property name="text">
-      <string>[pos]</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>/</string>
+      <string notr="true">/</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QLabel" name="durationLabel">
      <property name="text">
-      <string>[total]</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>

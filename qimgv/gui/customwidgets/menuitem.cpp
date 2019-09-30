@@ -3,16 +3,15 @@
 MenuItem::MenuItem(QWidget *parent)
     : QWidget(parent)
 {
-    //mLayout.setContentsMargins(11,5,11,5);
     mLayout.setContentsMargins(6,0,11,0);
     mLayout.setSpacing(3);
 
     setAccessibleName("MenuItem");
-    this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     mIconLabel.setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
     mTextLabel.setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     mShortcutLabel.setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    mIconLabel.setMinimumSize(16, 16);
+    mIconLabel.setMinimumSize(21, 21); // 5px padding from stylesheet
 
     spacer = new QSpacerItem(16, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     mIconLabel.setAttribute(Qt::WA_TransparentForMouseEvents, true);
@@ -49,11 +48,12 @@ QString MenuItem::shortcut() {
 
 void MenuItem::setPixmap(QPixmap pixmap) {
     this->mIconLabel.setPixmap(pixmap);
-    this->mIconLabel.setFixedSize(pixmap.size());
+    //this->mIconLabel.setFixedSize(pixmap.size());
 }
 
 void MenuItem::setIcon(QIcon icon) {
     this->mIconLabel.setPixmap(icon.pixmap(16,16));
+    //this->mIconLabel.setFixedSize(16,16);
 }
 
 void MenuItem::paintEvent(QPaintEvent *event) {

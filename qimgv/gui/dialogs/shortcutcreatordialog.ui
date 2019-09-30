@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>340</width>
-    <height>235</height>
+    <height>237</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>New shortcut</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -121,7 +121,7 @@
    <item>
     <widget class="KeySequenceEdit" name="sequenceEdit">
      <property name="text">
-      <string>[Enter sequence]</string>
+      <string>[Enter shortcut]</string>
      </property>
     </widget>
    </item>

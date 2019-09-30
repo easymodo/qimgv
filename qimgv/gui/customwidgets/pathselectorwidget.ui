@@ -17,7 +17,10 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true"/>
+  </property>
+  <property name="accessibleName">
+   <string notr="true"/>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
@@ -49,8 +52,11 @@
        <height>28</height>
       </size>
      </property>
+     <property name="accessibleName">
+      <string notr="true"/>
+     </property>
      <property name="text">
-      <string>[path goes here]</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
@@ -65,8 +71,11 @@
      <property name="focusPolicy">
       <enum>Qt::NoFocus</enum>
      </property>
+     <property name="accessibleName">
+      <string notr="true"/>
+     </property>
      <property name="text">
-      <string>?</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>

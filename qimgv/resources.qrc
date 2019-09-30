@@ -101,5 +101,6 @@
         <file>res/icons/settings/32/general32.png</file>
         <file>res/icons/settings/32/advanced32.png</file>
         <file>res/icons/settings/32/advanced32@2x.png</file>
+        <file>res/translations/ru_RU.qm</file>
     </qresource>
 </RCC>

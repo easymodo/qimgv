@@ -11,7 +11,10 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true"/>
+  </property>
+  <property name="accessibleName">
+   <string notr="true"/>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="sizeConstraint">
@@ -31,15 +34,21 @@
    </property>
    <item>
     <widget class="QLabel" name="textLabel">
+     <property name="accessibleName">
+      <string notr="true"/>
+     </property>
      <property name="text">
-      <string>Text</string>
+      <string/>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QLabel" name="iconLabel">
+     <property name="accessibleName">
+      <string notr="true"/>
+     </property>
      <property name="text">
-      <string>iconLabel</string>
+      <string/>
      </property>
     </widget>
    </item>

@@ -428,7 +428,6 @@ void CropOverlay::resizeSelectionFree(QPoint delta) {
         setCursorAction(cursorAction);
     }
     // crop selection so it's bounded by imageRect
-    // TODO: this is broken with zero width selection
     selectionRect = selectionRect.intersected(imageRect);
 }
 
