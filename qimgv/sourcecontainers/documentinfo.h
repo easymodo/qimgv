@@ -39,7 +39,7 @@ public:
     QMimeType mimeType() const;
 
     // file extension (guessed from mime-type)
-    const char *extension() const;
+    const char *format() const;
     int exifOrientation() const;
 
     QDateTime lastModified() const;
@@ -49,13 +49,13 @@ public:
 
 private:
     QFileInfo fileInfo;
-    DocumentType mImageType;
+    DocumentType mDocumentType;
     int mOrientation;
-    QString mExtension;
+    QString mFormat;
 
     // guesses file type from its contents
     // and sets extension
-    void detectType();
+    void detectFormat();
     void loadExifOrientation();
     bool detectAPNG();
     bool detectAnimatedWebP();

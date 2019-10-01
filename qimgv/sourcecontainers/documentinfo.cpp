@@ -1,16 +1,16 @@
 #include "documentinfo.h"
 
 DocumentInfo::DocumentInfo(QString path)
-    : mImageType(NONE),
+    : mDocumentType(NONE),
       mOrientation(0),
-      mExtension("")
+      mFormat("")
 {
     fileInfo.setFile(path);
     if(!fileInfo.isFile()) {
         qDebug() << "FileInfo: cannot open: " << path;
         return;
     }
-    detectType();
+    detectFormat();
     loadExifInfo();
 }
 
@@ -43,14 +43,14 @@ int DocumentInfo::fileSize() const {
 }
 
 DocumentType DocumentInfo::type() const {
-    return mImageType;
+    return mDocumentType;
 }
 
 QMimeType DocumentInfo::mimeType() const {
     return mMimeType;
 }
-const char *DocumentInfo::extension() const {
-    return mExtension.toStdString().c_str();
+const char *DocumentInfo::format() const {
+    return mFormat.toStdString().c_str();
 }
 
 QDateTime DocumentInfo::lastModified() const {
@@ -70,62 +70,49 @@ int DocumentInfo::exifOrientation() const {
 // ##############################################################
 // ####################### PRIVATE METHODS ######################
 // ##############################################################
-
-// detect correct file extension
-// TODO: this is just bad
-void DocumentInfo::detectType() {
+void DocumentInfo::detectFormat() {
+    if(mDocumentType != NONE)
+        return;
     QMimeDatabase mimeDb;
     mMimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
     QString mimeName = mMimeType.name();
-    QString suffix = fileInfo.completeSuffix();
-    // todo: split mime-based detection vs exension-based
-    if(mimeName == "application/octet-stream") {
-        if(QString::compare(fileInfo.completeSuffix(), "webm", Qt::CaseInsensitive) == 0) {
-            mExtension = "webm";
-            mImageType = DocumentType::VIDEO;
-        }
-        if(QString::compare(fileInfo.completeSuffix(), "mp4", Qt::CaseInsensitive) == 0) {
-            mExtension = "mp4";
-            mImageType = DocumentType::VIDEO;
-        }
-    } else if(mimeName == "video/webm") {
-        mExtension = "webm";
-        mImageType = DocumentType::VIDEO;
-    } else if(mimeName == "video/mp4") {
-        mExtension = "mp4";
-        mImageType = DocumentType::VIDEO;
-    } else if(mimeName == "image/jpeg") {
-        mExtension = "jpg";
-        mImageType = STATIC;
+    QString suffix = fileInfo.completeSuffix().toLower();
+    if(mimeName == "image/jpeg") {
+        mFormat = "jpg";
+        mDocumentType = STATIC;
     } else if(mimeName == "image/png") {
         if(QImageReader::supportedImageFormats().contains("apng") && detectAPNG()) {
-            mExtension = "apng";
-            mImageType = ANIMATED;
+            mFormat = "apng";
+            mDocumentType = ANIMATED;
         } else {
-            mExtension = "png";
-            mImageType = STATIC;
+            mFormat = "png";
+            mDocumentType = STATIC;
         }
     } else if(mimeName == "image/gif") {
-        mExtension = "gif";
-        mImageType = ANIMATED;
-    // webp is incorrectly(?) detected as audio/x-riff on my windows pc
-    } else if(mimeName == "audio/x-riff") {
-        // in case we encounter an actual audio/x-riff
-        if(QString::compare(fileInfo.completeSuffix(), "webp", Qt::CaseInsensitive) == 0) {
-            mExtension = "webp";
-            mImageType = detectAnimatedWebP() ? ANIMATED : STATIC;
-        }
-    // TODO: parse header to find out if it supports animation.
-    // treat all webp as animated for now.
-    } else if(mimeName == "image/webp") {
-        mExtension = "webp";
-        mImageType = detectAnimatedWebP() ? ANIMATED : STATIC;
+        mFormat = "gif";
+        mDocumentType = ANIMATED;
+    } else if(mimeName == "image/webp" || (mimeName == "audio/x-riff" && suffix == "webp")) {
+        mFormat = "webp";
+        mDocumentType = detectAnimatedWebP() ? ANIMATED : STATIC;
     } else if(mimeName == "image/bmp") {
-        mExtension = "bmp";
-        mImageType = STATIC;
+        mFormat = "bmp";
+        mDocumentType = STATIC;
+    } else if(mimeName == "video/webm") {
+        mFormat = "webm";
+        mDocumentType = DocumentType::VIDEO;
+    } else if(mimeName == "video/mp4") {
+        mFormat = "mp4";
+        mDocumentType = DocumentType::VIDEO;
+    } else if(mimeName == "application/octet-stream") {
+        // it's possible for some downloaded videos to not have a correct mimetype
+        if(suffix == "webm" || suffix == "mp4") {
+            mFormat = suffix;
+            mDocumentType = DocumentType::VIDEO;
+        }
     } else {
-        mExtension = fileInfo.completeSuffix();
-        mImageType = STATIC;
+        // just try to open via suffix if all of the above fails
+        mFormat = fileInfo.completeSuffix();
+        mDocumentType = STATIC;
     }
 }
 
@@ -249,13 +236,13 @@ QMap<QString, QString> DocumentInfo::getExifTags() {
 }
 
 void DocumentInfo::loadExifOrientation() {
-    if(mImageType == VIDEO || mImageType == NONE)
+    if(mDocumentType == VIDEO || mDocumentType == NONE)
         return;
 
     QString path = filePath();
     QImageReader *reader = nullptr;
-    if(!mExtension.isEmpty())
-        reader = new QImageReader(path, mExtension.toStdString().c_str());
+    if(!mFormat.isEmpty())
+        reader = new QImageReader(path, mFormat.toStdString().c_str());
     else
         reader = new QImageReader(path);
 

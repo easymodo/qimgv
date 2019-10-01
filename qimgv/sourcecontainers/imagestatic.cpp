@@ -29,7 +29,7 @@ void ImageStatic::load() {
 
 
 void ImageStatic::loadGeneric() {
-    std::unique_ptr<const QImage> img(new QImage(mPath, mDocInfo->extension()));
+    std::unique_ptr<const QImage> img(new QImage(mPath, mDocInfo->format()));
     img = ImageLib::exifRotated(std::move(img), mDocInfo.get()->exifOrientation());
     // set image
     image = std::move(img);

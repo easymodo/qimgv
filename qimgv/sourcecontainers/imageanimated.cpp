@@ -32,7 +32,7 @@ void ImageAnimated::load() {
 void ImageAnimated::loadMovie() {
     movie.reset(new QMovie());
     movie->setFileName(mPath);
-    movie->setFormat(mDocInfo->extension());
+    movie->setFormat(mDocInfo->format());
     movie->jumpToFrame(0);
     mSize = movie->frameRect().size();
     mFrameCount = movie->frameCount();
@@ -69,11 +69,11 @@ bool ImageAnimated::save() {
 
 // in case of gif returns current frame
 std::unique_ptr<QPixmap> ImageAnimated::getPixmap() {
-    return std::unique_ptr<QPixmap>(new QPixmap(mPath, mDocInfo->extension()));
+    return std::unique_ptr<QPixmap>(new QPixmap(mPath, mDocInfo->format()));
 }
 
 std::shared_ptr<const QImage> ImageAnimated::getImage() {
-    std::shared_ptr<const QImage> img(new QImage(mPath, mDocInfo->extension()));
+    std::shared_ptr<const QImage> img(new QImage(mPath, mDocInfo->format()));
     return img;
 }
 

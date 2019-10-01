@@ -46,9 +46,9 @@ int main(int argc, char *argv[]) {
 
     // enable translations
     QString localeName = QLocale::system().name();
-    QTranslator translator;
-    translator.load(":/res/translations/" + localeName);
-    a.installTranslator(&translator);
+    //QTranslator translator;
+    //translator.load(":/res/translations/" + localeName);
+    //a.installTranslator(&translator);
     qDebug() << "localeName: " << localeName;
 
     // get arguments
