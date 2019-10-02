@@ -38,15 +38,16 @@ VideoControls::~VideoControls() {
 }
 
 void VideoControls::setDurationSeconds(int time) {
-    int hours   = time / 3600;
-    int minutes = time / 60;
-    int seconds = time % 60;
+    int _time = time;
+    int hours   = _time / 3600;
+    _time -= hours * 3600;
+    int minutes = _time / 60;
+    int seconds = _time - minutes * 60;
     //qDebug() << "total:" << hours << ":" << minutes << ":" << seconds;
     QString str = QString("%1").arg(minutes, 2, 10, QChar('0')) + ":" +
                   QString("%1").arg(seconds, 2, 10, QChar('0'));
     if(hours)
-        str.append(QString("%1").arg(hours, 2, 10, QChar('0')) + ":");
-
+        str.prepend(QString("%1").arg(hours, 2, 10, QChar('0')) + ":");
     ui->seekBar->setRange(0, time);
     ui->durationLabel->setText(str);
     recalculateGeometry();
@@ -54,14 +55,16 @@ void VideoControls::setDurationSeconds(int time) {
 
 void VideoControls::setPositionSeconds(int time) {
     if(time != lastVideoPosition) {
-        int hours   = time / 3600;
-        int minutes = time / 60;
-        int seconds = time % 60;
+        int _time = time;
+        int hours   = _time / 3600;
+        _time -= hours * 3600;
+        int minutes = _time / 60;
+        int seconds = _time - minutes * 60;
         //qDebug() << hours << ":" << minutes << ":" << seconds;
         QString str = QString("%1").arg(minutes, 2, 10, QChar('0')) + ":" +
                       QString("%1").arg(seconds, 2, 10, QChar('0'));
         if(hours)
-            str.append(QString("%1").arg(hours, 2, 10, QChar('0')) + ":");
+            str.prepend(QString("%1").arg(hours, 2, 10, QChar('0')) + ":");
 
         ui->positionLabel->setText(str);
         ui->seekBar->blockSignals(true);
