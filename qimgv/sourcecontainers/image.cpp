@@ -43,7 +43,7 @@ bool Image::isEdited() const {
     return mEdited;
 }
 
-int Image::fileSize() const {
+qint64 Image::fileSize() const {
     return mDocInfo->fileSize();
 }
 

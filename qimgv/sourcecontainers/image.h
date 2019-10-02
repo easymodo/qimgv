@@ -27,7 +27,7 @@ public:
     QString name() const;
     QString baseName() const;
     bool isEdited() const;
-    int fileSize() const;
+    qint64 fileSize() const;
     QDateTime lastModified() const;
     QMap<QString, QString> getExifTags();
 

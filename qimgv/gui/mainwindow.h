@@ -38,7 +38,7 @@ struct CurrentInfo {
     int fileCount;
     QString fileName;
     QSize imageSize;
-    int fileSize;
+    qint64 fileSize;
 };
 
 enum ActiveSidePanel {
@@ -57,7 +57,7 @@ public:
     void showAnimation(std::unique_ptr<QMovie> movie);
     void showVideo(QString file);
 
-    void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, int fileSize);
+    void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, qint64 fileSize);
     void setExifInfo(QMap<QString, QString>);
     std::shared_ptr<DirectoryViewWrapper> getFolderView();
     std::shared_ptr<DirectoryViewWrapper> getThumbnailPanel();

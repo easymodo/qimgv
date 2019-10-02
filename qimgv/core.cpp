@@ -784,7 +784,7 @@ void Core::displayImage(std::shared_ptr<Image> img) {
 
 void Core::updateInfoString() {
     QSize imageSize(0,0);
-    int fileSize = 0;
+    qint64 fileSize = 0;
     std::shared_ptr<Image> img = model->cache.get(model->currentFileName());
     if(img) {
         imageSize = img->size();

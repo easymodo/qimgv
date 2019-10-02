@@ -34,7 +34,7 @@ public:
     QString filePath() const;
     QString fileName() const;
     QString baseName() const;
-    int fileSize() const;
+    qint64 fileSize() const;
     DocumentType type() const;
     QMimeType mimeType() const;
 

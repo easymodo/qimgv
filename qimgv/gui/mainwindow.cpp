@@ -602,7 +602,7 @@ void MW::closeFullScreenOrExit() {
     }
 }
 
-void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _imageSize, int _fileSize) {
+void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _imageSize, qint64 _fileSize) {
     info.index = _index;
     info.fileCount = _fileCount;
     info.fileName = _fileName;
@@ -623,8 +623,9 @@ void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _im
         if(info.imageSize.width())
             resString = QString::number(info.imageSize.width()) + " x " + QString::number(info.imageSize.height());
         QString sizeString;
-        if(info.fileSize)
-            sizeString = QString::number(info.fileSize / 1024) + " KiB";
+        if(info.fileSize) {
+            sizeString = QString::number(info.fileSize / 1024) + " KB";
+        }
 
         QString windowTitle = info.fileName;
         if(settings->windowTitleExtendedInfo()) {
