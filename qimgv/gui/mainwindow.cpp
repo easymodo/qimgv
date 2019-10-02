@@ -624,7 +624,11 @@ void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _im
             resString = QString::number(info.imageSize.width()) + " x " + QString::number(info.imageSize.height());
         QString sizeString;
         if(info.fileSize) {
-            sizeString = QString::number(info.fileSize / 1024) + " KB";
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+            sizeString = QString::number(info.fileSize / 1024) + " KiB";
+#else
+            sizeString = this->locale().formattedDataSize(info.fileSize, 1);
+#endif
         }
 
         QString windowTitle = info.fileName;
