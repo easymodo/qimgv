@@ -46,11 +46,11 @@ enum ActiveSidePanel {
     SIDEPANEL_NONE
 };
 
-class MainWindow : public OverlayContainerWidget
+class MW : public OverlayContainerWidget
 {
     Q_OBJECT
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MW(QWidget *parent = nullptr);
     bool isCropPanelActive();
     void onScalingFinished(std::unique_ptr<QPixmap>scaled);
     void showImage(std::unique_ptr<QPixmap> pixmap);
@@ -141,12 +141,9 @@ signals:
     void discardEditsRequested();
     void saveAsClicked();
     void saveRequested();
-    void saveRequested(QString);
+    void saveAsRequested(QString);
     void sortingSelected(SortingMode);
 
-    // thumbnails
-    void setCurrentIndex(int);
-    //void onThumbnailReady(int, std::shared_ptr<Thumbnail>);
     // viewerWidget
     void scalingRequested(QSize, ScalingFilter);
     void zoomIn();

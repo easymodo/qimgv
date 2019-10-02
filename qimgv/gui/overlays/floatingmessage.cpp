@@ -22,12 +22,11 @@ FloatingMessage::FloatingMessage(OverlayContainerWidget *parent) :
     setIcon(FloatingMessageIcon::NO_ICON);
 
     this->setAccessibleName("FloatingMessage");
-    connect(&visibilityTimer, SIGNAL(timeout()), this, SLOT(hide()));
+    connect(&visibilityTimer, &QTimer::timeout, this, &FloatingMessage::hide);
 
     readSettings();
 
-    connect(settings, SIGNAL(settingsChanged()),
-            this, SLOT(readSettings()));
+    connect(settings, &Settings::settingsChanged, this, &FloatingMessage::readSettings);
 
     if(parent)
         setContainerSize(parent->size());

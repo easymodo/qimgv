@@ -45,7 +45,7 @@ private:
     void onFirstRun();
 
     // ui stuff
-    MainWindow *mw;
+    MW *mw;
 
     State state;
     bool infiniteScrolling;

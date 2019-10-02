@@ -26,7 +26,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     scrollTimeLine->setEasingCurve(QEasingCurve::OutSine);
     scrollTimeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
 
-    connect(&loadTimer, SIGNAL(timeout()), this, SLOT(loadVisibleThumbnails()));
+    connect(&loadTimer, &QTimer::timeout, this, &ThumbnailView::loadVisibleThumbnails);
     loadTimer.setInterval(static_cast<const int>(LOAD_DELAY));
     loadTimer.setSingleShot(true);
 
@@ -34,31 +34,23 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
         this->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scrollBar = this->horizontalScrollBar();
-        connect(scrollTimeLine, SIGNAL(frameChanged(int)),
-                this, SLOT(centerOnX(int)), Qt::UniqueConnection);
+        connect(scrollTimeLine, &QTimeLine::frameChanged, this, &ThumbnailView::centerOnX);
     } else {
         this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         scrollBar = this->verticalScrollBar();
-        connect(scrollTimeLine, SIGNAL(frameChanged(int)),
-                this, SLOT(centerOnY(int)), Qt::UniqueConnection);
+        connect(scrollTimeLine, &QTimeLine::frameChanged, this, &ThumbnailView::centerOnY);
     }
 
     scrollBar->setContextMenuPolicy(Qt::NoContextMenu);
 
-    // on scrolling animation finish
-    connect(scrollTimeLine, SIGNAL(finished()), this, SLOT(onSmoothScrollEnd()));
-    connect(scrollBar, SIGNAL(valueChanged(int)), this, SLOT(onValueChanged(int)));
-}
-
-void ThumbnailView::onSmoothScrollEnd() {
-    blockThumbnailLoading = false;
-    loadVisibleThumbnails();
-}
-
-void ThumbnailView::onValueChanged(int value) {
-    Q_UNUSED(value)
-    loadVisibleThumbnails();
+    connect(scrollTimeLine, &QTimeLine::finished, [this]() {
+        blockThumbnailLoading = false;
+        loadVisibleThumbnails();
+    });
+    connect(scrollBar, &QScrollBar::valueChanged, [this]() {
+        loadVisibleThumbnails();
+    });
 }
 
 void ThumbnailView::setDirectoryPath(QString path) {

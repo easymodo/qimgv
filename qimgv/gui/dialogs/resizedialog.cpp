@@ -23,15 +23,15 @@ ResizeDialog::ResizeDialog(QSize originalSize,  QWidget *parent) :
 
     QDesktopWidget desktopWidget;
     desktopSize = desktopWidget.screenGeometry(desktopWidget.primaryScreen()).size();
-    connect(ui->width, SIGNAL(valueChanged(int)), this, SLOT(widthChanged(int)));
-    connect(ui->height, SIGNAL(valueChanged(int)), this, SLOT(heightChanged(int)));
-    connect(ui->keepAspectRatio, SIGNAL(toggled(bool)), this, SLOT(onAspectRatioCheckbox()));
-    connect(ui->resComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setCommonResolution(int)));
-    connect(ui->fitDesktopButton, SIGNAL(pressed()), this, SLOT(fitDesktop()));
-    connect(ui->fillDesktopButton, SIGNAL(pressed()), this, SLOT(fillDesktop()));
-    connect(ui->resetButton, SIGNAL(pressed()), this, SLOT(reset()));
-    connect(ui->cancelButton, SIGNAL(pressed()), this, SLOT(reject()));
-    connect(ui->okButton, SIGNAL(pressed()), this, SLOT(sizeSelect()));
+    connect(ui->width,  qOverload<int>(&QSpinBox::valueChanged), this, &ResizeDialog::widthChanged);
+    connect(ui->height, qOverload<int>(&QSpinBox::valueChanged), this, &ResizeDialog::heightChanged);
+    connect(ui->keepAspectRatio, &QCheckBox::toggled, this, &ResizeDialog::onAspectRatioCheckbox);
+    connect(ui->resComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &ResizeDialog::setCommonResolution);
+    connect(ui->fitDesktopButton, &QPushButton::pressed, this, &ResizeDialog::fitDesktop);
+    connect(ui->fillDesktopButton, &QPushButton::pressed, this, &ResizeDialog::fillDesktop);
+    connect(ui->resetButton, &QPushButton::pressed, this, &ResizeDialog::reset);
+    connect(ui->cancelButton, &QPushButton::pressed, this, &ResizeDialog::reject);
+    connect(ui->okButton, &QPushButton::pressed, this, &ResizeDialog::sizeSelect);
 }
 
 ResizeDialog::~ResizeDialog() {

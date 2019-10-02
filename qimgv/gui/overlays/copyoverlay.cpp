@@ -24,8 +24,7 @@ CopyOverlay::CopyOverlay(OverlayContainerWidget *parent) :
         setContainerSize(parent->size());
 
     readSettings();
-    connect(settings, SIGNAL(settingsChanged()),
-            this, SLOT(readSettings()));
+    connect(settings, &Settings::settingsChanged, this, &CopyOverlay::readSettings);
 }
 
 CopyOverlay::~CopyOverlay() {
@@ -68,13 +67,12 @@ void CopyOverlay::removePathWidgets() {
 
 void CopyOverlay::createPathWidgets() {
     removePathWidgets();
-    int count = paths.length()>maxPathCount?maxPathCount:paths.length();
+    int count = (paths.length() > maxPathCount) ? maxPathCount : paths.length();
     for(int i = 0; i < count; i++) {
         PathSelectorMenuItem *item = new PathSelectorMenuItem(this);
         item->setDirectory(paths.at(i));
         item->setShortcutText(shortcuts.key(i));
-        connect(item, SIGNAL(directorySelected(QString)),
-                this, SLOT(requestFileOperation(QString)));
+        connect(item, &PathSelectorMenuItem::directorySelected, this, &CopyOverlay::requestFileOperation);
         pathWidgets.append(item);
         ui->pathSelectorsLayout->addWidget(item);
     }
@@ -90,13 +88,6 @@ void CopyOverlay::requestFileOperation(QString path) {
         emit copyRequested(path);
     else
         emit moveRequested(path);
-}
-
-void CopyOverlay::requestFileOperation(int fieldNumber) {
-    if(mode == OVERLAY_COPY)
-        emit copyRequested(pathWidgets.at(fieldNumber)->directory());
-    else
-        emit moveRequested(pathWidgets.at(fieldNumber)->directory());
 }
 
 void CopyOverlay::readSettings() {
@@ -127,7 +118,7 @@ void CopyOverlay::keyPressEvent(QKeyEvent *event) {
     QString key = actionManager->keyForNativeScancode(event->nativeScanCode());
     if(shortcuts.contains(key)) {
         event->accept();
-        requestFileOperation(shortcuts[key]);
+        requestFileOperation(pathWidgets.at(shortcuts[key])->directory());
     } else {
         event->ignore();
     }

@@ -14,7 +14,9 @@ FloatingWidget::FloatingWidget(OverlayContainerWidget *parent)
     fadeAnimation->setStartValue(1.0f);
     fadeAnimation->setEndValue(0.0f);
     fadeAnimation->setEasingCurve(QEasingCurve::OutQuad);
-    connect(fadeAnimation, SIGNAL(finished()), this, SLOT(onFadeEnd()), Qt::UniqueConnection);
+    connect(fadeAnimation, &QPropertyAnimation::finished, [this]() {
+        QWidget::hide();
+    });
 }
 
 FloatingWidget::~FloatingWidget() {
@@ -67,10 +69,6 @@ void FloatingWidget::hide() {
     } else {
         QWidget::hide();
     }
-}
-
-void FloatingWidget::onFadeEnd() {
-    QWidget::hide();
 }
 
 void FloatingWidget::recalculateGeometry() {

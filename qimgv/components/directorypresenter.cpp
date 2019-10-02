@@ -4,22 +4,15 @@ DirectoryPresenter::DirectoryPresenter(QObject *parent) : QObject(parent) {
 }
 
 void DirectoryPresenter::unsetModel() {
-    disconnect(model.get(), SIGNAL(fileRemoved(QString, int)),
-               this, SLOT(onFileRemoved(QString, int)));
-    disconnect(model.get(), SIGNAL(fileAdded(QString)),
-               this, SLOT(onFileAdded(QString)));
-    disconnect(model.get(), SIGNAL(fileModified(QString)),
-               this, SLOT(onFileModified(QString)));
-    disconnect(model.get(), SIGNAL(fileRenamed(QString, int, QString, int)),
-               this, SLOT(onFileRenamed(QString, int, QString, int)));
-    disconnect(model.get(), SIGNAL(loaded(QString)),
-               this, SLOT(reloadModel()));
-    disconnect(model.get(), SIGNAL(sortingChanged()),
-               this, SLOT(onModelSortingChanged()));
-    disconnect(model.get(), &DirectoryModel::thumbnailReady,
-               this,  &DirectoryPresenter::onThumbnailReady);
-    disconnect(model.get(), SIGNAL(indexChanged(int, int)),
-               this, SLOT(onIndexChanged(int, int)));
+    disconnect(model.get(), &DirectoryModel::fileRemoved,    this, &DirectoryPresenter::onFileRemoved);
+    disconnect(model.get(), &DirectoryModel::fileAdded,      this, &DirectoryPresenter::onFileAdded);
+    disconnect(model.get(), &DirectoryModel::fileModified,   this, &DirectoryPresenter::onFileModified);
+    disconnect(model.get(), &DirectoryModel::fileRenamed,    this, &DirectoryPresenter::onFileRenamed);
+    disconnect(model.get(), &DirectoryModel::indexChanged,   this, &DirectoryPresenter::onIndexChanged);
+    disconnect(model.get(), &DirectoryModel::loaded,         this, &DirectoryPresenter::reloadModel);
+    disconnect(model.get(), &DirectoryModel::sortingChanged, this, &DirectoryPresenter::onModelSortingChanged);
+    disconnect(model.get(), &DirectoryModel::thumbnailReady, this, &DirectoryPresenter::onThumbnailReady);
+    disconnect(this, &DirectoryPresenter::generateThumbnails, model.get(), &DirectoryModel::generateThumbnails);
     model = nullptr;
     // also empty views?
 }
@@ -35,28 +28,15 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
         views.at(i)->populate(model->itemCount());
     }
     // filesystem changes
-    connect(model.get(), SIGNAL(fileRemoved(QString, int)),
-            this, SLOT(onFileRemoved(QString, int)), Qt::UniqueConnection);
-    connect(model.get(), SIGNAL(fileAdded(QString)),
-            this, SLOT(onFileAdded(QString)), Qt::UniqueConnection);
-    connect(model.get(), SIGNAL(fileModified(QString)),
-            this, SLOT(onFileModified(QString)), Qt::UniqueConnection);
-    connect(model.get(), SIGNAL(fileRenamed(QString, int, QString, int)),
-            this, SLOT(onFileRenamed(QString, int, QString, int)), Qt::UniqueConnection);
-
-    connect(model.get(), SIGNAL(indexChanged(int, int)),
-               this, SLOT(onIndexChanged(int, int)), Qt::UniqueConnection);
-
-    connect(model.get(), SIGNAL(loaded(QString)),
-            this, SLOT(reloadModel()), Qt::UniqueConnection);
-
-    connect(model.get(), SIGNAL(sortingChanged()),
-            this, SLOT(onModelSortingChanged()), Qt::UniqueConnection);
-
-    connect(this,        &DirectoryPresenter::generateThumbnails,
-            model.get(), &DirectoryModel::generateThumbnails, Qt::UniqueConnection);
-    connect(model.get(), &DirectoryModel::thumbnailReady,
-            this,        &DirectoryPresenter::onThumbnailReady, Qt::UniqueConnection);
+    connect(model.get(), &DirectoryModel::fileRemoved,    this, &DirectoryPresenter::onFileRemoved);
+    connect(model.get(), &DirectoryModel::fileAdded,      this, &DirectoryPresenter::onFileAdded);
+    connect(model.get(), &DirectoryModel::fileModified,   this, &DirectoryPresenter::onFileModified);
+    connect(model.get(), &DirectoryModel::fileRenamed,    this, &DirectoryPresenter::onFileRenamed);
+    connect(model.get(), &DirectoryModel::indexChanged,   this, &DirectoryPresenter::onIndexChanged);
+    connect(model.get(), &DirectoryModel::loaded,         this, &DirectoryPresenter::reloadModel);
+    connect(model.get(), &DirectoryModel::sortingChanged, this, &DirectoryPresenter::onModelSortingChanged);
+    connect(model.get(), &DirectoryModel::thumbnailReady, this, &DirectoryPresenter::onThumbnailReady);
+    connect(this, &DirectoryPresenter::generateThumbnails, model.get(), &DirectoryModel::generateThumbnails);
 }
 
 void DirectoryPresenter::connectView(std::shared_ptr<DirectoryViewWrapper> view) {
@@ -65,10 +45,8 @@ void DirectoryPresenter::connectView(std::shared_ptr<DirectoryViewWrapper> view)
         if(model)
             view->populate(model->itemCount());
         // todo: connect to presenter only!! passthrough signals / slots
-        connect(view.get(), &DirectoryViewWrapper::thumbnailPressed,
-                this, &DirectoryPresenter::loadByIndex, Qt::UniqueConnection);
-        connect(view.get(), &DirectoryViewWrapper::thumbnailsRequested,
-                this, &DirectoryPresenter::generateThumbnails, Qt::UniqueConnection);
+        connect(view.get(), &DirectoryViewWrapper::thumbnailPressed,    this, &DirectoryPresenter::loadByIndex);
+        connect(view.get(), &DirectoryViewWrapper::thumbnailsRequested, this, &DirectoryPresenter::generateThumbnails);
     }
 }
 

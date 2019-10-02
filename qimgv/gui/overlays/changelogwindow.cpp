@@ -8,8 +8,8 @@ ChangelogWindow::ChangelogWindow(OverlayContainerWidget *parent) :
     ui->setupUi(this);
     hide();
     setPosition(FloatingWidgetPosition::CENTER);
-    connect(ui->closeButton, SIGNAL(pressed()), this, SLOT(hide()));
-    connect(ui->shutUpButton, SIGNAL(pressed()), this, SLOT(hideAndShutUp()));
+    connect(ui->closeButton, &QPushButton::pressed,  this, &ChangelogWindow::hide);
+    connect(ui->shutUpButton, &QPushButton::pressed, this, &ChangelogWindow::hideAndShutUp);
 
     if(parent)
         setContainerSize(parent->size());

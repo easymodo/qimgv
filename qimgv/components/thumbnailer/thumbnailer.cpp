@@ -28,17 +28,11 @@ void Thumbnailer::generateThumbnails(QList<int> indexes, int size) {
 }
 
 void Thumbnailer::startThumbnailerThread(QString filePath, int size) {
-    ThumbnailerRunnable *thumbnailerRunnable = new ThumbnailerRunnable(
-                                                thumbnailCache,
-                                                filePath,
-                                                size,
-                                                settings->squareThumbnails());
-    connect(thumbnailerRunnable, SIGNAL(taskStart(QString, int)),
-            this, SLOT(onTaskStart(QString, int)));
-    connect(thumbnailerRunnable, SIGNAL(taskEnd(std::shared_ptr<Thumbnail>, QString)),
-            this, SLOT(onTaskEnd(std::shared_ptr<Thumbnail>, QString)));
-    thumbnailerRunnable->setAutoDelete(true);
-    pool->start(thumbnailerRunnable);
+    auto runnable = new ThumbnailerRunnable(thumbnailCache, filePath, size, settings->squareThumbnails());
+    connect(runnable, &ThumbnailerRunnable::taskStart, this, &Thumbnailer::onTaskStart);
+    connect(runnable, &ThumbnailerRunnable::taskEnd, this, &Thumbnailer::onTaskEnd);
+    runnable->setAutoDelete(true);
+    pool->start(runnable);
 }
 
 void Thumbnailer::onTaskStart(QString path, int size) {

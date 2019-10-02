@@ -9,8 +9,7 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle(tr("New script"));
     ui->keywordsLabel->setText(tr("Keywords:") + " %file%");
-    connect(ui->nameLineEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(onNameChanged(QString)));
+    connect(ui->nameLineEdit, &QLineEdit::textChanged, this, &ScriptEditorDialog::onNameChanged);
     this->onNameChanged(ui->nameLineEdit->text());
 }
 
@@ -23,8 +22,7 @@ ScriptEditorDialog::ScriptEditorDialog(QString name, Script script, QWidget *par
     this->setWindowTitle(tr("Edit script"));
     this->onNameChanged(ui->nameLineEdit->text());
     editTarget = name;
-    connect(ui->nameLineEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(onNameChanged(QString)));
+    connect(ui->nameLineEdit, &QLineEdit::textChanged, this, &ScriptEditorDialog::onNameChanged);
     ui->nameLineEdit->setText(name);
     ui->pathLineEdit->setText(script.command);
     ui->blockingCheckBox->setChecked(script.blocking);

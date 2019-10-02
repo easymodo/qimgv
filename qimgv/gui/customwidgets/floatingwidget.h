@@ -50,7 +50,6 @@ private slots:
     void setOpacity(qreal opacity);
     qreal opacity() const;
 
-    void onFadeEnd();
 protected:
     virtual void recalculateGeometry();
     FloatingWidgetPosition position;

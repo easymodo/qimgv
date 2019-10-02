@@ -21,10 +21,6 @@ private:
     void processEvent(QEvent *e);
     QString mSequence;
 
-private slots:
-    void enterEditMode();
-    void exitEditMode();
-
 signals:
     void edited();
 };

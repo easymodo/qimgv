@@ -40,8 +40,8 @@ SlidePanel::SlidePanel(OverlayContainerWidget *parent)
     timeline.setUpdateInterval(16);
 #endif
 
-    connect(&timeline, SIGNAL(frameChanged(int)), this, SLOT(animationUpdate(int)));
-    connect(&timeline, SIGNAL(finished()), this, SLOT(onAnimationFinish()));
+    connect(&timeline, &QTimeLine::frameChanged, this, &SlidePanel::animationUpdate);
+    connect(&timeline, &QTimeLine::finished, this, &SlidePanel::onAnimationFinish);
 
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);

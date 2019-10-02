@@ -21,7 +21,7 @@ Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr) {
     connectComponents();
     initActions();
     readSettings();
-    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+    connect(settings, &Settings::settingsChanged, this, &Core::readSettings);
 
     QVersionNumber lastVersion = settings->lastVersion();
     if(settings->firstRun())
@@ -43,7 +43,7 @@ void Core::showGui() {
 
 // create MainWindow and all widgets
 void Core::initGui() {
-    mw = new MainWindow();
+    mw = new MW();
     mw->hide();
 }
 
@@ -62,100 +62,90 @@ void Core::connectComponents() {
     presenter.connectView(mw->getFolderView());
     presenter.connectView(mw->getThumbnailPanel());
 
-    /*connect(&model->loader, SIGNAL(loadFinished(std::shared_ptr<Image>)),
-            this, SLOT(onLoadFinished(std::shared_ptr<Image>)));
-    connect(&model->loader, SIGNAL(loadFailed(QString)),
-            this, SLOT(onLoadFailed(QString)));
-    */
-    connect(mw, SIGNAL(opened(QString)), this, SLOT(loadPath(QString)));
-    connect(mw, SIGNAL(copyRequested(QString)), this, SLOT(copyFile(QString)));
-    connect(mw, SIGNAL(moveRequested(QString)), this, SLOT(moveFile(QString)));
-    connect(mw, SIGNAL(resizeRequested(QSize)), this, SLOT(resize(QSize)));
-    connect(mw, SIGNAL(cropRequested(QRect)), this, SLOT(crop(QRect)));
-    connect(mw, SIGNAL(saveAsClicked()), this, SLOT(requestSavePath()));
-    connect(mw, SIGNAL(saveRequested()), this, SLOT(saveImageToDisk()));
-    connect(mw, SIGNAL(saveRequested(QString)), this, SLOT(saveImageToDisk(QString)));
-    connect(mw, SIGNAL(discardEditsRequested()), this, SLOT(discardEdits()));
-    connect(mw, SIGNAL(sortingSelected(SortingMode)), this, SLOT(sortBy(SortingMode)));
-    connect(mw, SIGNAL(draggedOut()), this, SLOT(onDragOut()));
-    connect(mw, SIGNAL(droppedIn(const QMimeData*, QObject*)), this, SLOT(onDropIn(const QMimeData*, QObject*)));
-    connect(mw, &MainWindow::renameRequested, this, &Core::renameCurrentFile);
+    connect(mw, &MW::opened,                this, &Core::loadPath);
+    connect(mw, &MW::droppedIn,             this, &Core::onDropIn);
+    connect(mw, &MW::draggedOut,            this, &Core::onDragOut);
+    connect(mw, &MW::copyRequested,         this, &Core::copyFile);
+    connect(mw, &MW::moveRequested,         this, &Core::moveFile);
+    connect(mw, &MW::cropRequested,         this, &Core::crop);
+    connect(mw, &MW::saveAsClicked,         this, &Core::requestSavePath);
+    connect(mw, &MW::saveRequested,         this, qOverload<>(&Core::saveImageToDisk));
+    connect(mw, &MW::saveAsRequested,       this, qOverload<QString>(&Core::saveImageToDisk));
+    connect(mw, &MW::resizeRequested,       this, &Core::resize);
+    connect(mw, &MW::renameRequested,       this, &Core::renameCurrentFile);
+    connect(mw, &MW::sortingSelected,       this, &Core::sortBy);
+    connect(mw, &MW::discardEditsRequested, this, &Core::discardEdits);
 
-    // scaling
-    connect(mw, SIGNAL(scalingRequested(QSize, ScalingFilter)),
-            this, SLOT(scalingRequest(QSize, ScalingFilter)));
-    connect(model->scaler, SIGNAL(scalingFinished(QPixmap*,ScalerRequest)),
-            this, SLOT(onScalingFinished(QPixmap*,ScalerRequest)));
+    connect(mw, &MW::scalingRequested, this, &Core::scalingRequest);
+    connect(model->scaler, &Scaler::scalingFinished, this, &Core::onScalingFinished);
 
-    // filesystem changes
-    connect(model.get(), SIGNAL(fileRemoved(QString, int)), this, SLOT(onFileRemoved(QString, int)));
-    connect(model.get(), SIGNAL(fileAdded(QString)), this, SLOT(onFileAdded(QString)));
-    connect(model.get(), SIGNAL(fileModified(QString)), this, SLOT(onFileModified(QString)));
-    connect(model.get(), SIGNAL(fileRenamed(QString, int, QString, int)), this, SLOT(onFileRenamed(QString, int, QString, int)));
-
-    connect(model.get(), SIGNAL(itemReady(std::shared_ptr<Image>)), this, SLOT(onModelItemReady(std::shared_ptr<Image>)));
-    connect(model.get(), SIGNAL(itemUpdated(std::shared_ptr<Image>)), this, SLOT(onModelItemUpdated(std::shared_ptr<Image>)));
-    connect(model.get(), SIGNAL(indexChanged(int, int)), this, SLOT(updateInfoString()));
-    connect(model.get(), SIGNAL(sortingChanged()), this, SLOT(updateInfoString()));
-    connect(model.get(), SIGNAL(loaded(QString)), this, SLOT(onModelLoaded()));
+    connect(model.get(), &DirectoryModel::fileAdded,      this, &Core::onFileAdded);
+    connect(model.get(), &DirectoryModel::fileRemoved,    this, &Core::onFileRemoved);
+    connect(model.get(), &DirectoryModel::fileRenamed,    this, &Core::onFileRenamed);
+    connect(model.get(), &DirectoryModel::fileModified,   this, &Core::onFileModified);
+    connect(model.get(), &DirectoryModel::loaded,         this, &Core::onModelLoaded);
+    connect(model.get(), &DirectoryModel::itemReady,      this, &Core::onModelItemReady);
+    connect(model.get(), &DirectoryModel::itemUpdated,    this, &Core::onModelItemUpdated);
+    connect(model.get(), &DirectoryModel::indexChanged,   this, &Core::updateInfoString);
+    connect(model.get(), &DirectoryModel::sortingChanged, this, &Core::updateInfoString);
 }
 
 void Core::initActions() {
-    connect(actionManager, SIGNAL(nextImage()), this, SLOT(nextImage()));
-    connect(actionManager, SIGNAL(prevImage()), this, SLOT(prevImage()));
-    connect(actionManager, SIGNAL(fitWindow()), mw, SLOT(fitWindow()));
-    connect(actionManager, SIGNAL(fitWidth()), mw, SLOT(fitWidth()));
-    connect(actionManager, SIGNAL(fitNormal()), mw, SLOT(fitOriginal()));
-    connect(actionManager, SIGNAL(toggleFitMode()), mw, SLOT(switchFitMode()));
-    connect(actionManager, SIGNAL(toggleFullscreen()), mw, SLOT(triggerFullScreen()));
-    connect(actionManager, SIGNAL(zoomIn()), mw, SIGNAL(zoomIn()));
-    connect(actionManager, SIGNAL(zoomOut()), mw, SIGNAL(zoomOut()));
-    connect(actionManager, SIGNAL(zoomInCursor()), mw, SIGNAL(zoomInCursor()));
-    connect(actionManager, SIGNAL(zoomOutCursor()), mw, SIGNAL(zoomOutCursor()));
-    connect(actionManager, SIGNAL(scrollUp()), mw, SIGNAL(scrollUp()));
-    connect(actionManager, SIGNAL(scrollDown()), mw, SIGNAL(scrollDown()));
-    connect(actionManager, SIGNAL(scrollLeft()), mw, SIGNAL(scrollLeft()));
-    connect(actionManager, SIGNAL(scrollRight()), mw, SIGNAL(scrollRight()));
-    connect(actionManager, SIGNAL(resize()), this, SLOT(showResizeDialog()));
-    connect(actionManager, SIGNAL(flipH()), this, SLOT(flipH()));
-    connect(actionManager, SIGNAL(flipV()), this, SLOT(flipV()));
-    connect(actionManager, SIGNAL(rotateLeft()), this, SLOT(rotateLeft()));
-    connect(actionManager, SIGNAL(rotateRight()), this, SLOT(rotateRight()));
-    connect(actionManager, SIGNAL(openSettings()), mw, SLOT(showSettings()));
-    connect(actionManager, SIGNAL(crop()), this, SLOT(toggleCropPanel()));
-    //connect(actionManager, SIGNAL(setWallpaper()), this, SLOT(slotSelectWallpaper()));
-    connect(actionManager, SIGNAL(open()), mw, SLOT(showOpenDialog()));
-    connect(actionManager, SIGNAL(save()), this, SLOT(saveImageToDisk()));
-    connect(actionManager, SIGNAL(saveAs()), this, SLOT(requestSavePath()));
-    connect(actionManager, SIGNAL(exit()), this, SLOT(close()));
-    connect(actionManager, SIGNAL(closeFullScreenOrExit()), mw, SLOT(closeFullScreenOrExit()));
-    connect(actionManager, SIGNAL(removeFile()), this, SLOT(removeFilePermanent()));
-    connect(actionManager, SIGNAL(moveToTrash()), this, SLOT(moveToTrash()));
-    connect(actionManager, SIGNAL(copyFile()), mw, SLOT(triggerCopyOverlay()));
-    connect(actionManager, SIGNAL(moveFile()), mw, SLOT(triggerMoveOverlay()));
-    connect(actionManager, SIGNAL(jumpToFirst()), this, SLOT(jumpToFirst()));
-    connect(actionManager, SIGNAL(jumpToLast()), this, SLOT(jumpToLast()));
-    connect(actionManager, SIGNAL(runScript(const QString&)), this, SLOT(runScript(const QString&)));
-    connect(actionManager, SIGNAL(pauseVideo()), mw, SIGNAL(pauseVideo()));
-    connect(actionManager, SIGNAL(seekVideo()), mw, SIGNAL(seekVideoRight()));
-    connect(actionManager, SIGNAL(seekBackVideo()), mw, SIGNAL(seekVideoLeft()));
-    connect(actionManager, SIGNAL(frameStep()), mw, SIGNAL(frameStep()));
-    connect(actionManager, SIGNAL(frameStepBack()), mw, SIGNAL(frameStepBack()));
-    connect(actionManager, SIGNAL(folderView()), mw, SLOT(enableFolderView()));
-    connect(actionManager, SIGNAL(documentView()), mw, SIGNAL(enableDocumentView()));
-    connect(actionManager, SIGNAL(toggleFolderView()), mw, SLOT(toggleFolderView()));
-    connect(actionManager, SIGNAL(reloadImage()), this, SLOT(reloadImage()));
-    connect(actionManager, SIGNAL(copyFileClipboard()), this, SLOT(copyFileClipboard()));
-    connect(actionManager, SIGNAL(copyPathClipboard()), this, SLOT(copyPathClipboard()));
-    connect(actionManager, SIGNAL(renameFile()), this, SLOT(showRenameDialog()));
-    connect(actionManager, SIGNAL(contextMenu()), mw, SLOT(showContextMenu()));
-    connect(actionManager, SIGNAL(toggleTransparencyGrid()), mw, SIGNAL(toggleTransparencyGrid()));
-    connect(actionManager, SIGNAL(sortByName()), this, SLOT(sortByName()));
-    connect(actionManager, SIGNAL(sortByTime()), this, SLOT(sortByTime()));
-    connect(actionManager, SIGNAL(sortBySize()), this, SLOT(sortBySize()));
-    connect(actionManager, SIGNAL(toggleImageInfo()), mw, SLOT(toggleImageInfoOverlay()));
-    connect(actionManager, SIGNAL(toggleShuffle()), this, SLOT(toggleShuffle()));
-    connect(actionManager, SIGNAL(toggleScalingFilter()), mw, SLOT(toggleScalingFilter()));
+    connect(actionManager, &ActionManager::nextImage, this, &Core::nextImage);
+    connect(actionManager, &ActionManager::prevImage, this, &Core::prevImage);
+    connect(actionManager, &ActionManager::fitWindow, mw, &MW::fitWindow);
+    connect(actionManager, &ActionManager::fitWidth, mw, &MW::fitWidth);
+    connect(actionManager, &ActionManager::fitNormal, mw, &MW::fitOriginal);
+    connect(actionManager, &ActionManager::toggleFitMode, mw, &MW::switchFitMode);
+    connect(actionManager, &ActionManager::toggleFullscreen, mw, &MW::triggerFullScreen);
+    connect(actionManager, &ActionManager::zoomIn, mw, &MW::zoomIn);
+    connect(actionManager, &ActionManager::zoomOut, mw, &MW::zoomOut);
+    connect(actionManager, &ActionManager::zoomInCursor, mw, &MW::zoomInCursor);
+    connect(actionManager, &ActionManager::zoomOutCursor, mw, &MW::zoomOutCursor);
+    connect(actionManager, &ActionManager::scrollUp, mw, &MW::scrollUp);
+    connect(actionManager, &ActionManager::scrollDown, mw, &MW::scrollDown);
+    connect(actionManager, &ActionManager::scrollLeft, mw, &MW::scrollLeft);
+    connect(actionManager, &ActionManager::scrollRight, mw, &MW::scrollRight);
+    connect(actionManager, &ActionManager::resize, this, &Core::showResizeDialog);
+    connect(actionManager, &ActionManager::flipH, this, &Core::flipH);
+    connect(actionManager, &ActionManager::flipV, this, &Core::flipV);
+    connect(actionManager, &ActionManager::rotateLeft, this, &Core::rotateLeft);
+    connect(actionManager, &ActionManager::rotateRight, this, &Core::rotateRight);
+    connect(actionManager, &ActionManager::openSettings, mw, &MW::showSettings);
+    connect(actionManager, &ActionManager::crop, this, &Core::toggleCropPanel);
+    //connect(actionManager, &ActionManager::setWallpaper, this, &Core::slotSelectWallpaper);
+    connect(actionManager, &ActionManager::open, mw, &MW::showOpenDialog);
+    connect(actionManager, &ActionManager::save, this, qOverload<>(&Core::saveImageToDisk));
+    connect(actionManager, &ActionManager::saveAs, this, &Core::requestSavePath);
+    connect(actionManager, &ActionManager::exit, this, &Core::close);
+    connect(actionManager, &ActionManager::closeFullScreenOrExit, mw, &MW::closeFullScreenOrExit);
+    connect(actionManager, &ActionManager::removeFile, this, qOverload<>(&Core::removeFilePermanent));
+    connect(actionManager, &ActionManager::moveToTrash, this, qOverload<>(&Core::moveToTrash));
+    connect(actionManager, &ActionManager::copyFile, mw, &MW::triggerCopyOverlay);
+    connect(actionManager, &ActionManager::moveFile, mw, &MW::triggerMoveOverlay);
+    connect(actionManager, &ActionManager::jumpToFirst, this, &Core::jumpToFirst);
+    connect(actionManager, &ActionManager::jumpToLast, this, &Core::jumpToLast);
+    connect(actionManager, &ActionManager::runScript, this, &Core::runScript);
+    connect(actionManager, &ActionManager::pauseVideo, mw, &MW::pauseVideo);
+    connect(actionManager, &ActionManager::seekVideo, mw, &MW::seekVideoRight);
+    connect(actionManager, &ActionManager::seekBackVideo, mw, &MW::seekVideoLeft);
+    connect(actionManager, &ActionManager::frameStep, mw, &MW::frameStep);
+    connect(actionManager, &ActionManager::frameStepBack, mw, &MW::frameStepBack);
+    connect(actionManager, &ActionManager::folderView, mw, &MW::enableFolderView);
+    connect(actionManager, &ActionManager::documentView, mw, &MW::enableDocumentView);
+    connect(actionManager, &ActionManager::toggleFolderView, mw, &MW::toggleFolderView);
+    connect(actionManager, &ActionManager::reloadImage, this, qOverload<>(&Core::reloadImage));
+    connect(actionManager, &ActionManager::copyFileClipboard, this, &Core::copyFileClipboard);
+    connect(actionManager, &ActionManager::copyPathClipboard, this, &Core::copyPathClipboard);
+    connect(actionManager, &ActionManager::renameFile, this, &Core::showRenameDialog);
+    connect(actionManager, &ActionManager::contextMenu, mw, &MW::showContextMenu);
+    connect(actionManager, &ActionManager::toggleTransparencyGrid, mw, &MW::toggleTransparencyGrid);
+    connect(actionManager, &ActionManager::sortByName, this, &Core::sortByName);
+    connect(actionManager, &ActionManager::sortByTime, this, &Core::sortByTime);
+    connect(actionManager, &ActionManager::sortBySize, this, &Core::sortBySize);
+    connect(actionManager, &ActionManager::toggleImageInfo, mw, &MW::toggleImageInfoOverlay);
+    connect(actionManager, &ActionManager::toggleShuffle, this, &Core::toggleShuffle);
+    connect(actionManager, &ActionManager::toggleScalingFilter, mw, &MW::toggleScalingFilter);
 }
 
 void Core::onUpdate() {
@@ -383,6 +373,8 @@ void Core::onFileRemoved(QString fileName, int index) {
 }
 
 void Core::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
+    Q_UNUSED(indexFrom)
+    Q_UNUSED(to)
     model->cache.remove(from);
     if(model->currentFileName() == from) {
         model->cache.clear(); // ? do it in the model itself

@@ -31,8 +31,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
     setupSidebar();
 
-    connect(this, SIGNAL(settingsChanged()),
-            settings, SLOT(sendChangeNotification()));
+    connect(this, &SettingsDialog::settingsChanged, settings, &Settings::sendChangeNotification);
     readSettings();
 }
 

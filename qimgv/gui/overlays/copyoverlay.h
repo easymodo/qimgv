@@ -41,7 +41,6 @@ protected:
 
 private slots:
     void requestFileOperation(QString path);
-    void requestFileOperation(int fieldNumber);
     void readSettings();
 
 private:

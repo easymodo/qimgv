@@ -17,10 +17,10 @@ VideoControls::VideoControls(OverlayContainerWidget *parent) :
     readSettings();
     connect(settings, &Settings::settingsChanged, this, &VideoControls::readSettings);
 
-    connect(ui->pauseButton, SIGNAL(pressed()), this, SIGNAL(pause()));
-    connect(ui->prevFrameButton, SIGNAL(pressed()), this, SIGNAL(prevFrame()));
-    connect(ui->nextFrameButton, SIGNAL(pressed()), this, SIGNAL(nextFrame()));
-    connect(ui->seekBar, SIGNAL(sliderMovedX(int)), this, SIGNAL(seek(int)));
+    connect(ui->pauseButton, &QPushButton::pressed, this, &VideoControls::pause);
+    connect(ui->seekBar, &VideoSlider::sliderMovedX, this, &VideoControls::seek);
+    connect(ui->prevFrameButton, &QPushButton::pressed, this, &VideoControls::prevFrame);
+    connect(ui->nextFrameButton, &QPushButton::pressed, this, &VideoControls::nextFrame);
 
     if(parent)
         setContainerSize(parent->size());

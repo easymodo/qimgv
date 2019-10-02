@@ -25,8 +25,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     animationTimer->setSingleShot(true);
     zoomThreshold = static_cast<int>(devicePixelRatioF() * 4.);
     readSettings();
-    connect(settings, SIGNAL(settingsChanged()),
-            this, SLOT(readSettings()));
+    connect(settings, &Settings::settingsChanged, this, &ImageViewer::readSettings);
     desktopSize = QApplication::desktop()->size();
 }
 
@@ -36,7 +35,7 @@ ImageViewer::~ImageViewer() {
 void ImageViewer::startAnimation() {
     if(movie) {
         stopAnimation();
-        connect(animationTimer, SIGNAL(timeout()), this, SLOT(nextFrame()));
+        connect(animationTimer, &QTimer::timeout, this, &ImageViewer::nextFrame, Qt::UniqueConnection);
         startAnimationTimer();
     }
 }
@@ -44,7 +43,7 @@ void ImageViewer::startAnimation() {
 void ImageViewer::stopAnimation() {
     if(movie) {
         animationTimer->stop();
-        disconnect(animationTimer, SIGNAL(timeout()), this, SLOT(nextFrame()));
+        disconnect(animationTimer, &QTimer::timeout, this, &ImageViewer::nextFrame);
         movie->jumpToFrame(0);
     }
 }

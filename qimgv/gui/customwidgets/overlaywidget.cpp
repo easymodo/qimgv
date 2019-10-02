@@ -8,7 +8,7 @@
 
 OverlayWidget::OverlayWidget(OverlayContainerWidget *parent) : QWidget(parent) {
     this->setAccessibleName("OverlayWidget");
-    connect(parent, SIGNAL(resized(QSize)), this, SLOT(onContainerResized(QSize)));
+    connect(parent, &OverlayContainerWidget::resized, this, &OverlayWidget::onContainerResized);
     hide();
 }
 

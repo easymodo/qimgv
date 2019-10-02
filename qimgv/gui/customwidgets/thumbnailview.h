@@ -97,8 +97,7 @@ protected:
 private slots:
     void centerOnX(int);
     void centerOnY(int);
-    void onValueChanged(int value);
-    void onSmoothScrollEnd();
+
 };
 
 #endif // THUMBNAILVIEW_H

@@ -20,12 +20,10 @@ Scaler::Scaler(Cache *_cache, QObject *parent)
     pool->setMaxThreadCount(1);
     runnable = new ScalerRunnable();
     runnable->setAutoDelete(false);
-    connect(this, SIGNAL(startBufferedRequest()), this, SLOT(slotStartBufferedRequest()), Qt::DirectConnection);
-    connect(runnable, SIGNAL(started(ScalerRequest)),
-            this, SLOT(onTaskStart(ScalerRequest)), Qt::DirectConnection);
-    connect(runnable, SIGNAL(finished(QImage*,ScalerRequest)),
-            this, SLOT(onTaskFinish(QImage*,ScalerRequest)), Qt::DirectConnection);
-    connect(this, SIGNAL(acceptScalingResult(QImage*,ScalerRequest)), this, SLOT(slotForwardScaledResult(QImage*,ScalerRequest)), Qt::QueuedConnection);
+    connect(this, &Scaler::startBufferedRequest, this, &Scaler::slotStartBufferedRequest, Qt::DirectConnection);
+    connect(runnable, &ScalerRunnable::started, this, &Scaler::onTaskStart, Qt::DirectConnection);
+    connect(runnable, &ScalerRunnable::finished, this, &Scaler::onTaskFinish, Qt::DirectConnection);
+    connect(this, &Scaler::acceptScalingResult, this, &Scaler::slotForwardScaledResult, Qt::QueuedConnection);
 }
 
 void Scaler::requestScaled(ScalerRequest req) {

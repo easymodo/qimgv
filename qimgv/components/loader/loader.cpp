@@ -36,9 +36,7 @@ void Loader::doLoadAsync(QString path, int priority) {
     auto runnable = new LoaderRunnable(path);
     runnable->setAutoDelete(false);
     tasks.insert(path, runnable);
-
-    connect(runnable, SIGNAL(finished(std::shared_ptr<Image>, QString)),
-            this, SLOT(onLoadFinished(std::shared_ptr<Image>, QString)), Qt::UniqueConnection);
+    connect(runnable, &LoaderRunnable::finished, this, &Loader::onLoadFinished, Qt::UniqueConnection);
     pool->start(runnable, priority);
 }
 

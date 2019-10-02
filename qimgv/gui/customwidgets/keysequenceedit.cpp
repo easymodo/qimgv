@@ -1,8 +1,7 @@
 #include "keysequenceedit.h"
 
 KeySequenceEdit::KeySequenceEdit(QWidget *parent) : QPushButton(parent), mSequence("") {
-    setText("[Enter sequence]");
-    connect(this, SIGNAL(pressed()), this, SLOT(enterEditMode()));
+    setText(tr("[Enter sequence]"));
 }
 
 QString KeySequenceEdit::sequence() {
@@ -33,13 +32,3 @@ void KeySequenceEdit::processEvent(QEvent *e) {
         emit edited();
     }
 }
-
-void KeySequenceEdit::enterEditMode() {
-
-}
-
-void KeySequenceEdit::exitEditMode() {
-
-}
-
-

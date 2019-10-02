@@ -2,7 +2,7 @@
 
 // TODO: nuke this and rewrite
 
-MainWindow::MainWindow(QWidget *parent)
+MW::MW(QWidget *parent)
     : OverlayContainerWidget(parent),
       currentDisplay(0),
       desktopWidget(nullptr),
@@ -34,133 +34,103 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupUi();
 
-    connect(settings, SIGNAL(settingsChanged()),
-            this, SLOT(readSettings()));
-
-    connect(&windowMoveTimer, SIGNAL(timeout()),
-            this, SLOT(updateCurrentDisplay()));
-
-    connect(this, SIGNAL(fullscreenStateChanged(bool)),
-            this, SLOT(adaptToWindowState()));
+    connect(settings, &Settings::settingsChanged, this, &MW::readSettings);
+    connect(&windowMoveTimer, &QTimer::timeout, this, &MW::updateCurrentDisplay);
+    connect(this, &MW::fullscreenStateChanged, this, &MW::adaptToWindowState);
 
     readSettings();
     currentDisplay = settings->lastDisplay();
     restoreWindowGeometry();
 }
 
-/*                                                                         |-- [ImageViewer]
- *                                   |-- [DocumentWidget]--[ViewerWidget]--|
- * [MainWindow] -- [CentralWidget] --|                                     |-- [VideoPlayer]
- *                                   |-- [FolderView]
+/*                                                             |--[ImageViewer]
+ *                        |--[DocumentWidget]--[ViewerWidget]--|
+ * [MW]--[CentralWidget]--|                                    |--[VideoPlayer]
+ *                        |--[FolderView]
  *
  *  (not counting floating widgets)
  *  ViewerWidget exists for input handling reasons (correct overlay hover handling)
  */
-void MainWindow::setupUi() {
+void MW::setupUi() {
     viewerWidget.reset(new ViewerWidget());
     infoBarWindowed.reset(new InfoBar());
     docWidget.reset(new DocumentWidget(viewerWidget, infoBarWindowed));
-
-    folderView.reset(new FolderView()); // todo
-
+    folderView.reset(new FolderView());
     centralWidget.reset(new CentralWidget(docWidget, folderView, this));
+
     layout.addWidget(centralWidget.get());
 
     // overlays etc.
     // this order is used while drawing
-    infoBarFullscreen = new InfoOverlay(viewerWidget.get()); // todo
-    controlsOverlay = new ControlsOverlay(docWidget.get()); // todo
+    infoBarFullscreen = new InfoOverlay(viewerWidget.get());
+    controlsOverlay = new ControlsOverlay(docWidget.get());
 
     imageInfoOverlay = new ImageInfoOverlay(this);
     changelogWindow = new ChangelogWindow(this);
     sidePanel = new SidePanel(this);
 
-    // TODO: do something about this spaghetti
+    layout.addWidget(sidePanel);
+
     cropOverlay = new CropOverlay(viewerWidget.get());
     cropPanel = new CropPanel(cropOverlay, this);
-    connect(cropPanel, SIGNAL(cancel()), this, SLOT(hideCropPanel()));
-    connect(cropPanel, SIGNAL(crop(QRect)), this, SLOT(hideCropPanel()));
-    connect(cropPanel, SIGNAL(crop(QRect)), this, SIGNAL(cropRequested(QRect)));
 
-    layout.addWidget(sidePanel);
+    connect(cropPanel, &CropPanel::cancel, this, &MW::hideCropPanel);
+    connect(cropPanel, &CropPanel::crop,   this, &MW::hideCropPanel);
+    connect(cropPanel, &CropPanel::crop,   this, &MW::cropRequested);
 
     floatingMessage = new FloatingMessage(this);
     thumbnailStrip.reset(new ThumbnailStrip());
     mainPanel = new MainPanel(thumbnailStrip, this);
 
-    connect(viewerWidget.get(), SIGNAL(scalingRequested(QSize, ScalingFilter)),
-            this, SIGNAL(scalingRequested(QSize, ScalingFilter)));
+    connect(viewerWidget.get(), &ViewerWidget::scalingRequested, this, &MW::scalingRequested);
+    connect(viewerWidget.get(), &ViewerWidget::draggedOut,       this, &MW::draggedOut);
 
-    connect(viewerWidget.get(), SIGNAL(draggedOut()),
-            this, SIGNAL(draggedOut()));
+    connect(this, &MW::zoomIn,        viewerWidget.get(), &ViewerWidget::zoomIn);
+    connect(this, &MW::zoomOut,       viewerWidget.get(), &ViewerWidget::zoomOut);
+    connect(this, &MW::zoomInCursor,  viewerWidget.get(), &ViewerWidget::zoomInCursor);
+    connect(this, &MW::zoomOutCursor, viewerWidget.get(), &ViewerWidget::zoomOutCursor);
 
-    //  Core >> MW
-    connect(this, SIGNAL(zoomIn()),
-            viewerWidget.get(), SIGNAL(zoomIn()));
-    connect(this, SIGNAL(zoomOut()),
-            viewerWidget.get(), SIGNAL(zoomOut()));
-    connect(this, SIGNAL(zoomInCursor()),
-            viewerWidget.get(), SIGNAL(zoomInCursor()));
-    connect(this, SIGNAL(zoomOutCursor()),
-            viewerWidget.get(), SIGNAL(zoomOutCursor()));
+    connect(this, &MW::scrollUp,    viewerWidget.get(), &ViewerWidget::scrollUp);
+    connect(this, &MW::scrollDown,  viewerWidget.get(), &ViewerWidget::scrollDown);
+    connect(this, &MW::scrollLeft,  viewerWidget.get(), &ViewerWidget::scrollLeft);
+    connect(this, &MW::scrollRight, viewerWidget.get(), &ViewerWidget::scrollRight);
 
-    connect(this, SIGNAL(scrollUp()),
-            viewerWidget.get(), SIGNAL(scrollUp()));
-    connect(this, SIGNAL(scrollDown()),
-            viewerWidget.get(), SIGNAL(scrollDown()));
-    connect(this, SIGNAL(scrollLeft()),
-            viewerWidget.get(), SIGNAL(scrollLeft()));
-    connect(this, SIGNAL(scrollRight()),
-            viewerWidget.get(), SIGNAL(scrollRight()));
-    connect(this, SIGNAL(pauseVideo()),
-            viewerWidget.get(), SLOT(pauseVideo()));
-    connect(this, SIGNAL(stopPlayback()),
-            viewerWidget.get(), SLOT(stopPlayback()));
-    connect(this, SIGNAL(seekVideoRight()),
-            viewerWidget.get(), SLOT(seekVideoRight()));
-    connect(this, SIGNAL(seekVideoLeft()),
-            viewerWidget.get(), SLOT(seekVideoLeft()));
-    connect(this, SIGNAL(frameStep()),
-            viewerWidget.get(), SLOT(frameStep()));
-    connect(this, SIGNAL(frameStepBack()),
-            viewerWidget.get(), SLOT(frameStepBack()));
+    connect(this, &MW::pauseVideo,     viewerWidget.get(), &ViewerWidget::pauseVideo);
+    connect(this, &MW::stopPlayback,   viewerWidget.get(), &ViewerWidget::stopPlayback);
+    connect(this, &MW::seekVideoRight, viewerWidget.get(), &ViewerWidget::seekVideoRight);
+    connect(this, &MW::seekVideoLeft,  viewerWidget.get(), &ViewerWidget::seekVideoLeft);
+    connect(this, &MW::frameStep,      viewerWidget.get(), &ViewerWidget::frameStep);
+    connect(this, &MW::frameStepBack,  viewerWidget.get(), &ViewerWidget::frameStepBack);
 
-    connect(this, SIGNAL(toggleTransparencyGrid()),
-            viewerWidget.get(), SIGNAL(toggleTransparencyGrid()));
+    connect(this, &MW::toggleTransparencyGrid, viewerWidget.get(), &ViewerWidget::toggleTransparencyGrid);
 
-    connect(this, SIGNAL(enableDocumentView()),
-            centralWidget.get(), SLOT(showDocumentView()));
+    connect(this, &MW::enableDocumentView, centralWidget.get(), &CentralWidget::showDocumentView);
 
-    connect(this, SIGNAL(setDirectoryPath(QString)),
-            folderView.get(), SLOT(setDirectoryPath(QString)));
-
-    connect(folderView.get(), SIGNAL(sortingSelected(SortingMode)),
-            this, SIGNAL(sortingSelected(SortingMode)));
+    connect(this, &MW::setDirectoryPath, folderView.get(), &FolderView::setDirectoryPath);
+    connect(folderView.get(), &FolderView::sortingSelected, this, &MW::sortingSelected);
 }
 
-void MainWindow::setupCopyOverlay() {
+void MW::setupCopyOverlay() {
     copyOverlay = new CopyOverlay(this);
-    connect(copyOverlay, SIGNAL(copyRequested(QString)),
-            this, SIGNAL(copyRequested(QString)));
-    connect(copyOverlay, SIGNAL(moveRequested(QString)),
-            this, SIGNAL(moveRequested(QString)));
+    connect(copyOverlay, &CopyOverlay::copyRequested, this, &MW::copyRequested);
+    connect(copyOverlay, &CopyOverlay::moveRequested, this, &MW::moveRequested);
 }
 
-void MainWindow::setupSaveOverlay() {
+void MW::setupSaveOverlay() {
     saveOverlay = new SaveConfirmOverlay(docWidget.get());
-    connect(saveOverlay, SIGNAL(saveClicked()), this, SIGNAL(saveRequested()));
-    connect(saveOverlay, SIGNAL(saveAsClicked()), this, SIGNAL(saveAsClicked()));
-    connect(saveOverlay, SIGNAL(discardClicked()), this, SIGNAL(discardEditsRequested()));
+    connect(saveOverlay, &SaveConfirmOverlay::saveClicked,    this, &MW::saveRequested);
+    connect(saveOverlay, &SaveConfirmOverlay::saveAsClicked,  this, &MW::saveAsClicked);
+    connect(saveOverlay, &SaveConfirmOverlay::discardClicked, this, &MW::discardEditsRequested);
 
 }
 
-void MainWindow::setupRenameOverlay() {
+void MW::setupRenameOverlay() {
     renameOverlay = new RenameOverlay(this);
     renameOverlay->setName(info.fileName);
-    connect(renameOverlay, &RenameOverlay::renameRequested, this, &MainWindow::renameRequested);
+    connect(renameOverlay, &RenameOverlay::renameRequested, this, &MW::renameRequested);
 }
 
-void MainWindow::toggleFolderView() {
+void MW::toggleFolderView() {
     hideCropPanel();
     if(copyOverlay)
         copyOverlay->hide();
@@ -171,7 +141,7 @@ void MainWindow::toggleFolderView() {
     centralWidget->toggleViewMode();
 }
 
-void MainWindow::enableFolderView() {
+void MW::enableFolderView() {
     hideCropPanel();
     if(copyOverlay)
         copyOverlay->hide();
@@ -182,7 +152,7 @@ void MainWindow::enableFolderView() {
     centralWidget->showFolderView();
 }
 
-void MainWindow::fitWindow() {
+void MW::fitWindow() {
     if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitWindow();
         //showMessageFitWindow();
@@ -191,7 +161,7 @@ void MainWindow::fitWindow() {
     }
 }
 
-void MainWindow::fitWidth() {
+void MW::fitWidth() {
     if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitWidth();
         //showMessageFitWidth();
@@ -200,7 +170,7 @@ void MainWindow::fitWidth() {
     }
 }
 
-void MainWindow::fitOriginal() {
+void MW::fitOriginal() {
     if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitOriginal();
         //showMessageFitOriginal();
@@ -211,40 +181,40 @@ void MainWindow::fitOriginal() {
 
 // switch between 1:1 and Fit All
 // TODO: move to viewerWidget?
-void MainWindow::switchFitMode() {
+void MW::switchFitMode() {
     if(viewerWidget->fitMode() == FIT_WINDOW)
         viewerWidget->setFitMode(FIT_ORIGINAL);
     else
         viewerWidget->setFitMode(FIT_WINDOW);
 }
 
-void MainWindow::closeImage() {
+void MW::closeImage() {
     viewerWidget->closeImage();
     //infoBarFullscreen->setText("No file opened.");
 }
 
-void MainWindow::showImage(std::unique_ptr<QPixmap> pixmap) {
+void MW::showImage(std::unique_ptr<QPixmap> pixmap) {
     centralWidget->showDocumentView();
     viewerWidget->showImage(std::move(pixmap));
     updateCropPanelData();
 }
 
-void MainWindow::showAnimation(std::unique_ptr<QMovie> movie) {
+void MW::showAnimation(std::unique_ptr<QMovie> movie) {
     centralWidget->showDocumentView();
     viewerWidget->showAnimation(std::move(movie));
     updateCropPanelData();
 }
 
-void MainWindow::showVideo(QString file) {
+void MW::showVideo(QString file) {
     centralWidget->showDocumentView();
     viewerWidget->showVideo(file);
 }
 
-void MainWindow::showContextMenu() {
+void MW::showContextMenu() {
     viewerWidget->showContextMenu();
 }
 
-void MainWindow::onSortingChanged(SortingMode mode) {
+void MW::onSortingChanged(SortingMode mode) {
     folderView.get()->onSortingChanged(mode);
     if(centralWidget.get()->currentViewMode() == ViewMode::MODE_DOCUMENT) {
         switch(mode) {
@@ -258,7 +228,7 @@ void MainWindow::onSortingChanged(SortingMode mode) {
     }
 }
 
-void MainWindow::toggleImageInfoOverlay() {
+void MW::toggleImageInfoOverlay() {
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
         return;
     if(imageInfoOverlay->isHidden())
@@ -267,7 +237,7 @@ void MainWindow::toggleImageInfoOverlay() {
         imageInfoOverlay->hide();
 }
 
-void MainWindow::toggleRenameOverlay() {
+void MW::toggleRenameOverlay() {
     if(!renameOverlay)
         setupRenameOverlay();
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
@@ -278,32 +248,32 @@ void MainWindow::toggleRenameOverlay() {
         renameOverlay->hide();
 }
 
-void MainWindow::toggleScalingFilter() {
+void MW::toggleScalingFilter() {
     if(viewerWidget->scalingFilter() == FILTER_BILINEAR)
         setFilterNearest();
     else
         setFilterBilinear();
 }
 
-void MainWindow::setFilterNearest() {
+void MW::setFilterNearest() {
     showMessage("Filter: nearest", 600);
     viewerWidget->setFilterNearest();
 }
 
-void MainWindow::setFilterBilinear() {
+void MW::setFilterBilinear() {
     showMessage("Filter: bilinear", 600);
     viewerWidget->setFilterBilinear();
 }
 
-bool MainWindow::isCropPanelActive() {
+bool MW::isCropPanelActive() {
     return (activeSidePanel == SIDEPANEL_CROP);
 }
 
-void MainWindow::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
+void MW::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
     viewerWidget->onScalingFinished(std::move(scaled));
 }
 
-void MainWindow::saveWindowGeometry() {
+void MW::saveWindowGeometry() {
     #ifdef __linux__
     if(this->isHidden())
         settings->setWindowGeometry(QRect(pos(), size()));
@@ -315,7 +285,7 @@ void MainWindow::saveWindowGeometry() {
     settings->setMaximizedWindow(this->isMaximized());
 }
 
-void MainWindow::restoreWindowGeometry() {
+void MW::restoreWindowGeometry() {
     QRect geometry = settings->windowGeometry();
     this->resize(geometry.size());
     this->move(geometry.x(), geometry.y());
@@ -324,11 +294,11 @@ void MainWindow::restoreWindowGeometry() {
     updateCurrentDisplay();
 }
 
-void MainWindow::updateCurrentDisplay() {
+void MW::updateCurrentDisplay() {
     currentDisplay = desktopWidget->screenNumber(this);
 }
 
-void MainWindow::saveCurrentDisplay() {
+void MW::saveCurrentDisplay() {
     settings->setLastDisplay(desktopWidget->screenNumber(this));
 }
 
@@ -336,7 +306,7 @@ void MainWindow::saveCurrentDisplay() {
 //######################### EVENTS ############################
 //#############################################################
 
-void MainWindow::mouseMoveEvent(QMouseEvent *event) {
+void MW::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() != Qt::NoButton) {
         lastMouseMovePos = event->pos();
         return;
@@ -362,7 +332,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event) {
     event->ignore();
 }
 
-bool MainWindow::event(QEvent *event) {
+bool MW::event(QEvent *event) {
     if(event->type() == QEvent::Move)
         windowMoveTimer.start();
     return QWidget::event(event);
@@ -370,34 +340,34 @@ bool MainWindow::event(QEvent *event) {
 }
 
 // hook up to actionManager
-void MainWindow::keyPressEvent(QKeyEvent *event) {
+void MW::keyPressEvent(QKeyEvent *event) {
     event->accept();
     actionManager->processEvent(event);
 }
 
-void MainWindow::wheelEvent(QWheelEvent *event) {
+void MW::wheelEvent(QWheelEvent *event) {
     event->accept();
     actionManager->processEvent(event);
 }
 
-void MainWindow::mousePressEvent(QMouseEvent *event) {
+void MW::mousePressEvent(QMouseEvent *event) {
     event->accept();
     actionManager->processEvent(event);
 }
 
-void MainWindow::mouseReleaseEvent(QMouseEvent *event) {
+void MW::mouseReleaseEvent(QMouseEvent *event) {
     event->accept();
     actionManager->processEvent(event);
 }
 
-void MainWindow::mouseDoubleClickEvent(QMouseEvent *event) {
+void MW::mouseDoubleClickEvent(QMouseEvent *event) {
     event->accept();
     QMouseEvent *fakePressEvent = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), event->button(), event->buttons(), event->modifiers());
     actionManager->processEvent(fakePressEvent);
     actionManager->processEvent(event);
 }
 
-void MainWindow::close() {
+void MW::close() {
     this->hide();
     if(!isFullScreen()) {
         saveWindowGeometry();
@@ -408,23 +378,23 @@ void MainWindow::close() {
     QWidget::close();
 }
 
-void MainWindow::closeEvent(QCloseEvent *event) {
+void MW::closeEvent(QCloseEvent *event) {
     // catch the close event when user presses X on the window itself
     event->accept();
     actionManager->invokeAction("exit");
 }
 
-void MainWindow::dragEnterEvent(QDragEnterEvent *e) {
+void MW::dragEnterEvent(QDragEnterEvent *e) {
     if(e->mimeData()->hasUrls()) {
         e->acceptProposedAction();
     }
 }
 
-void MainWindow::dropEvent(QDropEvent *event) {
+void MW::dropEvent(QDropEvent *event) {
     emit droppedIn(event->mimeData(), event->source());
 }
 
-void MainWindow::resizeEvent(QResizeEvent *event) {
+void MW::resizeEvent(QResizeEvent *event) {
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropOverlay->setImageScale(viewerWidget->currentScale());
         cropOverlay->setImageDrawRect(viewerWidget->imageRect());
@@ -432,13 +402,13 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
     OverlayContainerWidget::resizeEvent(event);
 }
 
-void MainWindow::leaveEvent(QEvent *event) {
+void MW::leaveEvent(QEvent *event) {
     QWidget::leaveEvent(event);
     if(mainPanel)
         mainPanel->hideAnimated();
 }
 
-void MainWindow::showDefault() {
+void MW::showDefault() {
     if(!this->isVisible()) {
         if(settings->fullscreenMode())
             showFullScreen();
@@ -447,7 +417,7 @@ void MainWindow::showDefault() {
     }
 }
 
-void MainWindow::showSaveDialog(QString filePath) {
+void MW::showSaveDialog(QString filePath) {
     if(mainPanel)
         mainPanel->hide();
 
@@ -456,10 +426,10 @@ void MainWindow::showSaveDialog(QString filePath) {
                                             filePath,
                                             imagesFilter);
     if(!filePath.isEmpty())
-        emit saveRequested(filePath);
+        emit saveAsRequested(filePath);
 }
 
-void MainWindow::showOpenDialog() {
+void MW::showOpenDialog() {
     // Looks like there is a bug in qt with native file dialogs
     // It hangs at exec() when there is a panel visible
     // Works fine otherwise, or with builtin qt dialogs
@@ -476,20 +446,17 @@ void MainWindow::showOpenDialog() {
     dialog.setNameFilters(imageFilter);
     dialog.setWindowTitle("Open image");
     dialog.setWindowModality(Qt::ApplicationModal);
-    connect(&dialog, SIGNAL(fileSelected(QString)),
-            this, SIGNAL(opened(QString)));
-
+    connect(&dialog, &QFileDialog::fileSelected, this, &MW::opened);
     dialog.exec();
 }
 
-void MainWindow::showResizeDialog(QSize initialSize) {
+void MW::showResizeDialog(QSize initialSize) {
     ResizeDialog dialog(initialSize, this);
-    connect(&dialog, SIGNAL(sizeSelected(QSize)),
-            this, SIGNAL(resizeRequested(QSize)));
+    connect(&dialog, &ResizeDialog::sizeSelected, this, &MW::resizeRequested);
     dialog.exec();
 }
 
-void MainWindow::showSettings() {
+void MW::showSettings() {
     if(mainPanel)
         mainPanel->hide();
 
@@ -497,7 +464,7 @@ void MainWindow::showSettings() {
     settingsDialog.exec();
 }
 
-void MainWindow::triggerFullScreen() {
+void MW::triggerFullScreen() {
     if(!isFullScreen()) {
         showFullScreen();
     } else {
@@ -505,7 +472,7 @@ void MainWindow::triggerFullScreen() {
     }
 }
 
-void MainWindow::showFullScreen() {
+void MW::showFullScreen() {
     //do not save immediately on application start
     if(!isHidden())
         saveWindowGeometry();
@@ -520,7 +487,7 @@ void MainWindow::showFullScreen() {
     emit fullscreenStateChanged(true);
 }
 
-void MainWindow::showWindowed() {
+void MW::showWindowed() {
     QWidget::show();
     QWidget::showNormal();
     restoreWindowGeometry();
@@ -529,7 +496,7 @@ void MainWindow::showWindowed() {
     emit fullscreenStateChanged(false);
 }
 
-void MainWindow::updateCropPanelData() {
+void MW::updateCropPanelData() {
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropPanel->setImageRealSize(viewerWidget->sourceSize());
         cropOverlay->setImageDrawRect(viewerWidget->imageRect());
@@ -538,28 +505,28 @@ void MainWindow::updateCropPanelData() {
     }
 }
 
-void MainWindow::showSaveOverlay() {
+void MW::showSaveOverlay() {
     if(!saveOverlay)
         setupSaveOverlay();
     saveOverlay->show();
 }
 
-void MainWindow::hideSaveOverlay() {
+void MW::hideSaveOverlay() {
     if(!saveOverlay)
         return;
     saveOverlay->hide();
 }
 
-void MainWindow::showChangelogWindow() {
+void MW::showChangelogWindow() {
     changelogWindow->show();
 }
 
-void MainWindow::showChangelogWindow(QString text) {
+void MW::showChangelogWindow(QString text) {
     changelogWindow->setText(text);
     changelogWindow->show();
 }
 
-void MainWindow::triggerCropPanel() {
+void MW::triggerCropPanel() {
     if(activeSidePanel != SIDEPANEL_CROP) {
         showCropPanel();
     } else {
@@ -567,7 +534,7 @@ void MainWindow::triggerCropPanel() {
     }
 }
 
-void MainWindow::showCropPanel() {
+void MW::showCropPanel() {
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
         return;
 
@@ -585,7 +552,7 @@ void MainWindow::showCropPanel() {
     }
 }
 
-void MainWindow::hideCropPanel() {
+void MW::hideCropPanel() {
     sidePanel->hide();
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropOverlay->hide();
@@ -594,7 +561,7 @@ void MainWindow::hideCropPanel() {
     activeSidePanel = SIDEPANEL_NONE;
 }
 
-void MainWindow::triggerCopyOverlay() {
+void MW::triggerCopyOverlay() {
     if(!viewerWidget->isDisplaying())
         return;
     if(!copyOverlay)
@@ -610,7 +577,7 @@ void MainWindow::triggerCopyOverlay() {
     }
 }
 
-void MainWindow::triggerMoveOverlay() {
+void MW::triggerMoveOverlay() {
     if(!viewerWidget->isDisplaying())
         return;
     if(!copyOverlay)
@@ -627,7 +594,7 @@ void MainWindow::triggerMoveOverlay() {
 }
 
 // quit fullscreen or exit the program
-void MainWindow::closeFullScreenOrExit() {
+void MW::closeFullScreenOrExit() {
     if(this->isFullScreen()) {
         this->showWindowed();
     } else {
@@ -635,7 +602,7 @@ void MainWindow::closeFullScreenOrExit() {
     }
 }
 
-void MainWindow::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _imageSize, int _fileSize) {
+void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _imageSize, int _fileSize) {
     info.index = _index;
     info.fileCount = _fileCount;
     info.fileName = _fileName;
@@ -673,59 +640,59 @@ void MainWindow::setCurrentInfo(int _index, int _fileCount, QString _fileName, Q
     }
 }
 
-void MainWindow::setExifInfo(QMap<QString, QString> info) {
+void MW::setExifInfo(QMap<QString, QString> info) {
     imageInfoOverlay->setExifInfo(info);
 }
 
-std::shared_ptr<DirectoryViewWrapper> MainWindow::getFolderView() {
+std::shared_ptr<DirectoryViewWrapper> MW::getFolderView() {
     return folderView->wrapper();
 }
 
-std::shared_ptr<DirectoryViewWrapper> MainWindow::getThumbnailPanel() {
+std::shared_ptr<DirectoryViewWrapper> MW::getThumbnailPanel() {
     return this->thumbnailStrip->wrapper();
 }
 
-void MainWindow::showMessageDirectoryEnd() {
+void MW::showMessageDirectoryEnd() {
     floatingMessage->showMessage("", FloatingWidgetPosition::RIGHT, FloatingMessageIcon::ICON_RIGHT_EDGE, 400);
 }
 
-void MainWindow::showMessageDirectoryStart() {
+void MW::showMessageDirectoryStart() {
     floatingMessage->showMessage("", FloatingWidgetPosition::LEFT, FloatingMessageIcon::ICON_LEFT_EDGE, 400);
 }
 
-void MainWindow::showMessageFitWindow() {
+void MW::showMessageFitWindow() {
     floatingMessage->showMessage("Fit Window", FloatingMessageIcon::NO_ICON, 350);
 }
 
-void MainWindow::showMessageFitWidth() {
+void MW::showMessageFitWidth() {
     floatingMessage->showMessage("Fit Width", FloatingMessageIcon::NO_ICON, 350);
 }
 
-void MainWindow::showMessageFitOriginal() {
+void MW::showMessageFitOriginal() {
     floatingMessage->showMessage("Fit 1:1", FloatingMessageIcon::NO_ICON, 350);
 }
 
-void MainWindow::showMessage(QString text) {
+void MW::showMessage(QString text) {
     floatingMessage->showMessage(text,  FloatingMessageIcon::NO_ICON, 1500);
 }
 
-void MainWindow::showMessage(QString text, int duration) {
+void MW::showMessage(QString text, int duration) {
     floatingMessage->showMessage(text, FloatingMessageIcon::NO_ICON, duration);
 }
 
-void MainWindow::showMessageSuccess(QString text) {
+void MW::showMessageSuccess(QString text) {
     floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_SUCCESS, 1500);
 }
 
-void MainWindow::showWarning(QString text) {
+void MW::showWarning(QString text) {
     floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_WARNING, 1500);
 }
 
-void MainWindow::showError(QString text) {
+void MW::showError(QString text) {
     floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_ERROR, 2500);
 }
 
-void MainWindow::readSettings() {
+void MW::readSettings() {
     panelPosition = settings->panelPosition();
     panelEnabled = settings->panelEnabled();
     panelFullscreenOnly = settings->panelFullscreenOnly();
@@ -734,7 +701,7 @@ void MainWindow::readSettings() {
     adaptToWindowState();
 }
 
-void MainWindow::applyWindowedBackground() {
+void MW::applyWindowedBackground() {
     bgColor = settings->backgroundColor();
     bgOpacity = settings->backgroundOpacity();
 #ifdef USE_KDE_BLUR
@@ -745,7 +712,7 @@ void MainWindow::applyWindowedBackground() {
 #endif
 }
 
-void MainWindow::applyFullscreenBackground() {
+void MW::applyFullscreenBackground() {
     bgColor = settings->backgroundColorFullscreen();
     bgOpacity = 1.0;
 #ifdef USE_KDE_BLUR
@@ -754,7 +721,7 @@ void MainWindow::applyFullscreenBackground() {
 }
 
 // changes ui elements according to fullscreen state
-void MainWindow::adaptToWindowState() {
+void MW::adaptToWindowState() {
     if(panelEnabled)
         mainPanel->hide();
     if(isFullScreen()) { //-------------------------------------- fullscreen ---
@@ -784,7 +751,7 @@ void MainWindow::adaptToWindowState() {
     }
 }
 
-void MainWindow::paintEvent(QPaintEvent *event) {
+void MW::paintEvent(QPaintEvent *event) {
     QPainter p(this);
     p.setOpacity(bgOpacity);
     p.setBrush(QBrush(bgColor));

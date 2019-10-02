@@ -16,9 +16,6 @@ public slots:
 protected:
     virtual void onPress() Q_DECL_OVERRIDE;
 
-private slots:
-    void showDirectoryChooser();
-
 signals:
     void directorySelected(QString);
 

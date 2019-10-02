@@ -23,16 +23,14 @@ FolderView::FolderView(QWidget *parent) :
     ui->zoomSlider->setSingleStep(1);
     ui->zoomSlider->setPageStep(1);
 
-    connect(ui->thumbnailGrid, SIGNAL(thumbnailPressed(int)),
-            this, SIGNAL(thumbnailPressed(int)));
-    connect(ui->thumbnailGrid, SIGNAL(thumbnailsRequested(QList<int>, int)),
-            this, SIGNAL(thumbnailsRequested(QList<int>, int)));
+    connect(ui->thumbnailGrid, &FolderGridView::thumbnailPressed,     this, &FolderView::thumbnailPressed);
+    connect(ui->thumbnailGrid, &FolderGridView::thumbnailsRequested,  this, &FolderView::thumbnailsRequested);
+    connect(ui->thumbnailGrid, &FolderGridView::thumbnailSizeChanged, this, &FolderView::onThumbnailSizeChanged);
+    connect(ui->thumbnailGrid, &FolderGridView::showLabelsChanged,    this, &FolderView::onShowLabelsChanged);
 
-    connect(ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(onZoomSliderValueChanged(int)));
-    connect(ui->thumbnailGrid, SIGNAL(thumbnailSizeChanged(int)), this, SLOT(onThumbnailSizeChanged(int)));
-    connect(ui->thumbnailGrid, SIGNAL(showLabelsChanged(bool)), this, SLOT(onShowLabelsChanged(bool)));
-    connect(ui->showLabelsButton, SIGNAL(toggled(bool)), this, SLOT(onShowLabelsButtonToggled(bool)));
-    connect(ui->sortingComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onSortingSelected(int)));
+    connect(ui->zoomSlider, &QSlider::valueChanged, this, &FolderView::onZoomSliderValueChanged);
+    connect(ui->sortingComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &FolderView::onSortingSelected);
+    connect(ui->showLabelsButton, &QPushButton::toggled, this, &FolderView::onShowLabelsButtonToggled);
 
     ui->sortingComboBox->setItemDelegate(new QStyledItemDelegate(ui->sortingComboBox));
     ui->sortingComboBox->view()->setTextElideMode(Qt::ElideNone);

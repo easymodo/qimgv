@@ -6,14 +6,13 @@ SaveConfirmOverlay::SaveConfirmOverlay(OverlayContainerWidget *parent) :
     ui(new Ui::SaveConfirmOverlay)
 {
     ui->setupUi(this);
-    connect(ui->saveButton, SIGNAL(clicked()), this, SIGNAL(saveClicked()));
-    connect(ui->saveAsButton, SIGNAL(clicked()), this, SIGNAL(saveAsClicked()));
-    connect(ui->discardButton, SIGNAL(clicked()), this, SIGNAL(discardClicked()));
+    connect(ui->saveButton,    &QPushButton::clicked, this, &SaveConfirmOverlay::saveClicked);
+    connect(ui->saveAsButton,  &QPushButton::clicked, this, &SaveConfirmOverlay::saveAsClicked);
+    connect(ui->discardButton, &QPushButton::clicked, this, &SaveConfirmOverlay::discardClicked);
     this->setFocusPolicy(Qt::NoFocus);
 
     readSettings();
-    connect(settings, SIGNAL(settingsChanged()),
-            this, SLOT(readSettings()));
+    connect(settings, &Settings::settingsChanged, this, &SaveConfirmOverlay::readSettings);
 
     if(parent)
         setContainerSize(parent->size());

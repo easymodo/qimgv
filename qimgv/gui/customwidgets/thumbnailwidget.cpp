@@ -30,7 +30,7 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
 
     setThumbnailSize(100);
     readSettings();
-    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
+    connect(settings, &Settings::settingsChanged, this, &ThumbnailWidget::readSettings);
 }
 
 void ThumbnailWidget::readSettings() {
