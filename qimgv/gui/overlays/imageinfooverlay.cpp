@@ -5,7 +5,6 @@ ImageInfoOverlay::ImageInfoOverlay(OverlayContainerWidget *parent) :
     FloatingWidget(parent),
     ui(new Ui::ImageInfoOverlay)
 {
-    qDebug() << "INIT: imageinfooverlay";
     ui->setupUi(this);
     ui->tableWidget->setColumnWidth(0, 120);
     ui->tableWidget->setColumnWidth(1, 142);

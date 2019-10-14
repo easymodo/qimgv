@@ -5,11 +5,8 @@ FolderView::FolderView(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::FolderView)
 {
-    qDebug() << "INIT: folderview";
     ui->setupUi(this);
-
     mWrapper.reset(new DirectoryViewWrapper(this));
-
     ui->openButton->setAction("open");
     ui->settingsButton->setAction("openSettings");
     ui->exitButton->setAction("exit");

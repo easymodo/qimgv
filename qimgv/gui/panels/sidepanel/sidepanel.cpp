@@ -6,7 +6,6 @@ SidePanel::SidePanel(QWidget *parent) :
     ui(new Ui::SidePanel),
     mWidget(nullptr)
 {
-    qDebug() << "INIT: sidepanel";
     ui->setupUi(this);
     this->setObjectName("SidePanel");
     this->hide();

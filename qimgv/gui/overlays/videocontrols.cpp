@@ -5,7 +5,6 @@ VideoControls::VideoControls(OverlayContainerWidget *parent) :
     FloatingWidget(parent),
     ui(new Ui::VideoControls)
 {
-    qDebug() << "INIT: videocontrols";
     ui->setupUi(this);
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     hide();

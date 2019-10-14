@@ -5,7 +5,6 @@ CopyOverlay::CopyOverlay(OverlayContainerWidget *parent) :
     FloatingWidget(parent),
     ui(new Ui::CopyOverlay)
 {
-    qDebug() << "INIT: copyoverlay";
     ui->setupUi(this);
     hide();
     setFadeEnabled(true);

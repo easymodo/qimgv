@@ -8,7 +8,6 @@ InfoBar::InfoBar(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::InfoBar)
 {
-    qDebug() << "INIT: infobar";
     ui->setupUi(this);
     ui->path->setText("No file opened.");
 }

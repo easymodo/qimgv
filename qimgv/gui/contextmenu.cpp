@@ -5,7 +5,6 @@ ContextMenu::ContextMenu(QWidget *parent) :
     ClickableWidget(parent),
     ui(new Ui::ContextMenu)
 {
-    qDebug() << "INIT: contextmenu";
     ui->setupUi(this);
     setWindowFlags(Qt::Popup); // TODO: fix transparency on windows
     setAttribute(Qt::WA_TranslucentBackground, true);

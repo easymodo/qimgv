@@ -349,10 +349,7 @@ bool DirectoryManager::contains(QString fileName) const {
 // ###################### PRIVATE METHODS #######################
 // ##############################################################
 void DirectoryManager::generateFileList() {
-    //qApp->processEvents();
     entryVec.clear();
-    QElapsedTimer t;
-    t.start();
     QRegularExpressionMatch match;
     for(const auto & entry : fs::directory_iterator(toStdString(currentPath))) {
         QString name = QString::fromStdString(entry.path().filename().string());
@@ -376,15 +373,10 @@ void DirectoryManager::generateFileList() {
             //entryVec.emplace_back(Entry(name, entry.is_directory()));
         }
     }
-    //qApp->processEvents();
-    //qDebug() << "generateFileList() - " << entryVec.size() << " items, time: " << t.elapsed();
 }
 
 void DirectoryManager::sortFileList() {
-    QElapsedTimer t;
-    t.start();
     sort(entryVec.begin(), entryVec.end(), std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
-    //qDebug() << "sortFileList() - " << entryVec.size() << " items, time: " << t.elapsed();
 }
 
 void DirectoryManager::setSortingMode(SortingMode mode) {

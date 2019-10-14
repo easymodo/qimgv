@@ -2,8 +2,6 @@
 
 // TODO: nuke this and rewrite
 
-QElapsedTimer t;
-
 MW::MW(QWidget *parent)
     : OverlayContainerWidget(parent),
       currentDisplay(0),
@@ -22,7 +20,6 @@ MW::MW(QWidget *parent)
       cropPanel(nullptr),
       cropOverlay(nullptr)
 {
-    t.start();
     setAttribute(Qt::WA_TranslucentBackground, true);
     this->setMinimumSize(400, 300);
     layout.setContentsMargins(0,0,0,0);
@@ -39,10 +36,7 @@ MW::MW(QWidget *parent)
     desktopWidget = QApplication::desktop();
     windowMoveTimer.setSingleShot(true);
     windowMoveTimer.setInterval(150);
-    qApp->processEvents();
     setupUi();
-    qApp->processEvents();
-    qDebug() << "# MW::setupUI() " << t.elapsed();
 
     connect(settings, &Settings::settingsChanged, this, &MW::readSettings);
     connect(&windowMoveTimer, &QTimer::timeout, this, &MW::updateCurrentDisplay);
@@ -63,76 +57,43 @@ MW::MW(QWidget *parent)
  */
 void MW::setupUi() {
     viewerWidget.reset(new ViewerWidget(this));
-
     infoBarWindowed.reset(new InfoBarProxy(this));
-
     docWidget.reset(new DocumentWidget(viewerWidget, infoBarWindowed));
-
     folderView.reset(new FolderViewProxy(this));
     connect(this, &MW::setDirectoryPath, folderView.get(), &FolderViewProxy::setDirectoryPath);
     connect(folderView.get(), &FolderViewProxy::sortingSelected, this, &MW::sortingSelected);
-
     centralWidget.reset(new CentralWidget(docWidget, folderView, this));
-
     layout.addWidget(centralWidget.get());
-    qApp->processEvents();
-    qDebug() << "# 6" << t.elapsed();
-
     controlsOverlay = new ControlsOverlay(docWidget.get());
-    qApp->processEvents();
-    qDebug() << "# 7" << t.elapsed();
-
     infoBarFullscreen = new InfoOverlayProxyWrapper(viewerWidget.get());
-    qApp->processEvents();
-    qDebug() << "# 8" << t.elapsed();
-
     //changelogWindow = new ChangelogWindow(this);
     sidePanel = new SidePanel(this);
     layout.addWidget(sidePanel);
-    qDebug() << "# 9" << t.elapsed();
-
-    //qApp->processEvents();
-    qDebug() << "# 10" << t.elapsed();
-
     thumbnailStrip.reset(new ThumbnailStrip());
-    //qApp->processEvents();
-    qDebug() << "# 11" << t.elapsed();
-
     mainPanel = new MainPanel(thumbnailStrip, this);
-    //qApp->processEvents();
-    qDebug() << "# 12" << t.elapsed();
-
     imageInfoOverlay = new ImageInfoOverlayProxyWrapper(this);
-
     connect(viewerWidget.get(), &ViewerWidget::scalingRequested, this, &MW::scalingRequested);
     connect(viewerWidget.get(), &ViewerWidget::draggedOut,       this, &MW::draggedOut);
-
     connect(this, &MW::zoomIn,        viewerWidget.get(), &ViewerWidget::zoomIn);
     connect(this, &MW::zoomOut,       viewerWidget.get(), &ViewerWidget::zoomOut);
     connect(this, &MW::zoomInCursor,  viewerWidget.get(), &ViewerWidget::zoomInCursor);
     connect(this, &MW::zoomOutCursor, viewerWidget.get(), &ViewerWidget::zoomOutCursor);
-
     connect(this, &MW::scrollUp,    viewerWidget.get(), &ViewerWidget::scrollUp);
     connect(this, &MW::scrollDown,  viewerWidget.get(), &ViewerWidget::scrollDown);
     connect(this, &MW::scrollLeft,  viewerWidget.get(), &ViewerWidget::scrollLeft);
     connect(this, &MW::scrollRight, viewerWidget.get(), &ViewerWidget::scrollRight);
-
     connect(this, &MW::pauseVideo,     viewerWidget.get(), &ViewerWidget::pauseVideo);
     connect(this, &MW::stopPlayback,   viewerWidget.get(), &ViewerWidget::stopPlayback);
     connect(this, &MW::seekVideoRight, viewerWidget.get(), &ViewerWidget::seekVideoRight);
     connect(this, &MW::seekVideoLeft,  viewerWidget.get(), &ViewerWidget::seekVideoLeft);
     connect(this, &MW::frameStep,      viewerWidget.get(), &ViewerWidget::frameStep);
     connect(this, &MW::frameStepBack,  viewerWidget.get(), &ViewerWidget::frameStepBack);
-
     connect(this, &MW::toggleTransparencyGrid, viewerWidget.get(), &ViewerWidget::toggleTransparencyGrid);
-
     connect(this, &MW::enableDocumentView, centralWidget.get(), &CentralWidget::showDocumentView);
 }
 
 void MW::setupFullUi() {
     setupCropPanel();
-    //setupCopyOverlay();
-    //setupSaveOverlay();
     setupFloatingMessage();
     infoBarWindowed->init();
     infoBarFullscreen->init();
@@ -148,7 +109,6 @@ void MW::setupCropPanel() {
         return;
     cropOverlay = new CropOverlay(viewerWidget.get());
     cropPanel = new CropPanel(cropOverlay, this);
-
     connect(cropPanel, &CropPanel::cancel, this, &MW::hideCropPanel);
     connect(cropPanel, &CropPanel::crop,   this, &MW::hideCropPanel);
     connect(cropPanel, &CropPanel::crop,   this, &MW::cropRequested);

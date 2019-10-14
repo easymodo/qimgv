@@ -6,7 +6,6 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) :
     ui(new Ui::ScriptEditorDialog),
     editMode(false)
 {
-    qDebug() << "INIT: scripteditordialog";
     ui->setupUi(this);
     this->setWindowTitle(tr("New script"));
     ui->keywordsLabel->setText(tr("Keywords:") + " %file%");

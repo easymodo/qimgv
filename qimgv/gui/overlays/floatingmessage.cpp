@@ -6,7 +6,6 @@ FloatingMessage::FloatingMessage(OverlayContainerWidget *parent) :
     preferredPosition(FloatingWidgetPosition::BOTTOM),
     ui(new Ui::FloatingMessage)
 {
-    qDebug() << "INIT: floatingmessage";
     ui->setupUi(this);
     hideDelay = 700;
 

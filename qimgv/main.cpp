@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
     //QTranslator translator;
     //translator.load(":/res/translations/" + localeName);
     //a.installTranslator(&translator);
-    qDebug() << "localeName: " << localeName;
+    //qDebug() << "localeName: " << localeName;
 
     // get arguments
     QString arg1;
@@ -90,16 +90,21 @@ int main(int argc, char *argv[]) {
     t.start();
 
     Core core;
-    qApp->processEvents();
-    qDebug() << "Core + MW: " << t.elapsed();
+
+    //qApp->processEvents();
+    //qDebug() << "Core + MW init: " << t.elapsed() << "ms";
+
     // assume 1st arg is the filename
     if(!arg1.isEmpty()) {
         core.loadPath(arg1);
     }
-    qApp->processEvents(); // !!
-    core.showGui();
+    // wait for event queue to catch up before showing window
+    // this avoid white background flicker
     qApp->processEvents();
-    qDebug() << "showGui(): " << t.elapsed();
+    core.showGui();
+
+    //qApp->processEvents();
+    //qDebug() << "showGui: " << t.elapsed() << "ms";
 
     return a.exec();
 }
