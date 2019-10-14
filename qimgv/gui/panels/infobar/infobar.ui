@@ -45,21 +45,19 @@
    </property>
    <item>
     <widget class="QLabel" name="index">
-     <property name="accessibleName">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string/>
+     <property name="font">
+      <font>
+       <family>Source Code Pro Medium</family>
+      </font>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QLabel" name="path">
-     <property name="accessibleName">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string/>
+     <property name="font">
+      <font>
+       <family>Source Code Pro Medium</family>
+      </font>
      </property>
     </widget>
    </item>
@@ -78,11 +76,10 @@
    </item>
    <item>
     <widget class="QLabel" name="info">
-     <property name="accessibleName">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string/>
+     <property name="font">
+      <font>
+       <family>Source Code Pro Medium</family>
+      </font>
      </property>
     </widget>
    </item>

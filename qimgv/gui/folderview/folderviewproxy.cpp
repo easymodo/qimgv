@@ -18,15 +18,16 @@ void FolderViewProxy::init() {
     this->setFocusProxy(folderView.get());
     this->setLayout(&layout);
     folderView->show();
-    // wait till layout stuff happens
-    // before calling focusOn()
-    qApp->processEvents();
 
     // apply buffer
-    folderView->setDirectoryPath(stateBuf.directory);
+    if(!stateBuf.directory.isEmpty())
+        folderView->setDirectoryPath(stateBuf.directory);
     folderView->setExitButtonEnabled(stateBuf.exitBtn);
     folderView->populate(stateBuf.itemCount);
     folderView->selectIndex(stateBuf.selectedIndex);
+    // wait till layout stuff happens
+    // before calling focusOn()
+    qApp->processEvents();
     folderView->focusOn(stateBuf.selectedIndex);
     folderView->onSortingChanged(stateBuf.sortingMode);
 

@@ -72,6 +72,7 @@ void MW::setupUi() {
     thumbnailStrip.reset(new ThumbnailStrip());
     mainPanel = new MainPanel(thumbnailStrip, this);
     imageInfoOverlay = new ImageInfoOverlayProxyWrapper(this);
+    floatingMessage = new FloatingMessageProxy(this);
     connect(viewerWidget.get(), &ViewerWidget::scalingRequested, this, &MW::scalingRequested);
     connect(viewerWidget.get(), &ViewerWidget::draggedOut,       this, &MW::draggedOut);
     connect(this, &MW::zoomIn,        viewerWidget.get(), &ViewerWidget::zoomIn);
@@ -94,14 +95,8 @@ void MW::setupUi() {
 
 void MW::setupFullUi() {
     setupCropPanel();
-    setupFloatingMessage();
     infoBarWindowed->init();
     infoBarFullscreen->init();
-}
-
-void MW::setupFloatingMessage() {
-    if(!floatingMessage)
-        floatingMessage = new FloatingMessage(this);
 }
 
 void MW::setupCropPanel() {

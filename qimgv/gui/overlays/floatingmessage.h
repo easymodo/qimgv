@@ -26,9 +26,8 @@ public:
     FloatingMessage(OverlayContainerWidget *parent);
     ~FloatingMessage();
     void showMessage(QString text, FloatingMessageIcon icon, int fadeDuration);
-    void setIcon(FloatingMessageIcon icon);
-
     void showMessage(QString text, FloatingWidgetPosition position, FloatingMessageIcon icon, int duration);
+
 public slots:
     void show();
     void setText(QString text);
@@ -38,11 +37,13 @@ private:
     int hideDelay;
     FloatingWidgetPosition preferredPosition;
     Ui::FloatingMessage *ui;
-
     void doShowMessage(QString text, FloatingMessageIcon icon, int duration);
+    void setIcon(FloatingMessageIcon icon);
+
 protected:
     void mousePressEvent(QMouseEvent *event);
     QIcon iconLeftEdge, iconRightEdge, iconSuccess, iconWarning, iconError;
+
 private slots:
     void readSettings();
 };

@@ -10,7 +10,7 @@
 #include "gui/viewers/viewerwidget.h"
 #include "gui/overlays/controlsoverlay.h"
 #include "gui/overlays/infooverlayproxy.h"
-#include "gui/overlays/floatingmessage.h"
+#include "gui/overlays/floatingmessageproxy.h"
 #include "gui/overlays/saveconfirmoverlay.h"
 #include "gui/panels/mainpanel/thumbnailstrip.h"
 #include "gui/panels/mainpanel/mainpanel.h"
@@ -95,7 +95,7 @@ private:
     ControlsOverlay *controlsOverlay;
     InfoOverlayProxyWrapper *infoBarFullscreen;
     std::shared_ptr<InfoBarProxy> infoBarWindowed;
-    FloatingMessage *floatingMessage;
+    FloatingMessageProxy *floatingMessage;
 
     PanelHPosition panelPosition;
     QPoint lastMouseMovePos;
@@ -114,7 +114,6 @@ private:
     void setupCopyOverlay();
     void setupSaveOverlay();
     void setupRenameOverlay();
-    void setupFloatingMessage();
 
 private slots:
     void updateCurrentDisplay();
