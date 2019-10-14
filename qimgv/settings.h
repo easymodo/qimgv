@@ -59,8 +59,6 @@ public:
     QString supportedFormatsRegex();
     bool useFastScale();
     void setUseFastScale(bool mode);
-    QString lastDirectory();
-    void setLastDirectory(QString path);
     unsigned int lastFilePosition();
     void setLastFilePosition(unsigned int pos);
     unsigned int mainPanelSize();

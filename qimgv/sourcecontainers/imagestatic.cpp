@@ -77,7 +77,7 @@ bool ImageStatic::save() {
 
 std::unique_ptr<QPixmap> ImageStatic::getPixmap() {
     std::unique_ptr<QPixmap> pix(new QPixmap());
-    isEdited()?pix->convertFromImage(*imageEdited):pix->convertFromImage(*image);
+    isEdited()?pix->convertFromImage(*imageEdited):pix->convertFromImage(*image, Qt::NoFormatConversion);
     return pix;
 }
 

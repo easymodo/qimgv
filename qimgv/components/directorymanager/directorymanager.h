@@ -64,7 +64,7 @@ public:
     DirectoryManager();
     // ignored if the same dir is already opened
     bool setDirectory(QString);
-    QString directory();
+    QString directory() const;
     // returns index in file list
     // -1 if not found
     int indexOf(QString fileName) const;

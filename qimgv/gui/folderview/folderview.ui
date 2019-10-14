@@ -81,8 +81,8 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
-          <height>0</height>
+          <width>22</width>
+          <height>22</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -94,18 +94,8 @@
         <property name="accessibleName">
          <string>PanelButton</string>
         </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../../resources.qrc">
-          <normaloff>:/res/icons/buttons/open16.png</normaloff>:/res/icons/buttons/open16.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
+        <property name="pixmap">
+         <pixmap resource="../../resources.qrc">:/res/icons/buttons/open16.png</pixmap>
         </property>
        </widget>
       </item>
@@ -223,11 +213,11 @@
        </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="showLabelsButton">
+       <widget class="ActionButton" name="showLabelsButton">
         <property name="minimumSize">
          <size>
-          <width>0</width>
-          <height>0</height>
+          <width>22</width>
+          <height>22</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -239,20 +229,10 @@
         <property name="accessibleName">
          <string>CheckableButton</string>
         </property>
-        <property name="text">
-         <string/>
+        <property name="pixmap">
+         <pixmap resource="../../resources.qrc">:/res/icons/buttons/labels.png</pixmap>
         </property>
-        <property name="icon">
-         <iconset resource="../../resources.qrc">
-          <normaloff>:/res/icons/buttons/labels.png</normaloff>:/res/icons/buttons/labels.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="checkable">
+        <property name="checkable" stdset="0">
          <bool>true</bool>
         </property>
        </widget>
@@ -289,12 +269,6 @@
         </property>
         <property name="accessibleName">
          <string>PanelComboBox</string>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
         </property>
         <property name="frame">
          <bool>true</bool>
@@ -357,8 +331,8 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
-          <height>0</height>
+          <width>22</width>
+          <height>22</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -370,18 +344,8 @@
         <property name="accessibleName">
          <string>PanelButton</string>
         </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../../resources.qrc">
-          <normaloff>:/res/icons/buttons/document-view16.png</normaloff>:/res/icons/buttons/document-view16.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
+        <property name="pixmap">
+         <pixmap resource="../../resources.qrc">:/res/icons/buttons/document-view16.png</pixmap>
         </property>
        </widget>
       </item>
@@ -395,8 +359,8 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
-          <height>0</height>
+          <width>22</width>
+          <height>22</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -408,18 +372,8 @@
         <property name="accessibleName">
          <string>PanelButton</string>
         </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../../resources.qrc">
-          <normaloff>:/res/icons/buttons/settings16.png</normaloff>:/res/icons/buttons/settings16.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
+        <property name="pixmap">
+         <pixmap resource="../../resources.qrc">:/res/icons/buttons/settings16.png</pixmap>
         </property>
        </widget>
       </item>
@@ -433,8 +387,8 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
-          <height>0</height>
+          <width>22</width>
+          <height>22</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -446,18 +400,8 @@
         <property name="accessibleName">
          <string>PanelButton</string>
         </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../../resources.qrc">
-          <normaloff>:/res/icons/buttons/close16.png</normaloff>:/res/icons/buttons/close16.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
+        <property name="pixmap">
+         <pixmap resource="../../resources.qrc">:/res/icons/buttons/close16.png</pixmap>
         </property>
        </widget>
       </item>
@@ -492,7 +436,7 @@
  <customwidgets>
   <customwidget>
    <class>ActionButton</class>
-   <extends>QPushButton</extends>
+   <extends>QLabel</extends>
    <header>gui/customwidgets/actionbutton.h</header>
   </customwidget>
   <customwidget>

@@ -5,6 +5,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SettingsDialog)
 {
+    qDebug() << "INIT: settingsdialog";
     ui->setupUi(this);
     this->setWindowTitle("Preferences — " + qApp->applicationName());
     ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);

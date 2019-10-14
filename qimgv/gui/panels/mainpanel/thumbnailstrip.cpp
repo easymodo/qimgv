@@ -7,6 +7,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
       panelSize(100),
       thumbnailSpacing(0)
 {
+    qDebug() << "INIT: thumbnailstrip";
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
     setupLayout();

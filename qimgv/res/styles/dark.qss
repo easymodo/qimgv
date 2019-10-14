@@ -33,7 +33,7 @@
 /*----------------------------------------------------------------------------*/
 [accessibleName="CheckableButton"] {
     border-radius: 2px;
-    padding: 7px 10px 7px 10px;
+    padding:       7px;
     margin-top:    4px;
     margin-bottom: 4px;
     margin-left:   2px;
@@ -45,14 +45,14 @@
     border: 1px solid #1a1a1b;
 }
 
-[accessibleName="CheckableButton"]:pressed, [accessibleName="CheckableButton"]:checked {
+[accessibleName="CheckableButton"]:pressed, [accessibleName="CheckableButton"][checked="true"] {
     background-color: #2f2f30;
     border: 1px solid #19191a;
 }
 
 /*----------------------------------------------------------------------------*/
 [accessibleName="PanelButton"] {
-    padding: 7px;
+    padding: 9px;
     margin: 2px;
     border-radius: 2px;
 }
@@ -66,11 +66,10 @@
     background-color: #2f2f30;
     border: 1px solid #19191a;
 }
-
 /*----------------------------------------------------------------------------*/
 
 [accessibleName="PanelButtonSmall"] {
-    padding: 7px;
+    padding: 4px;
     border-radius: 1px;
     border: 1px solid transparent;
 }
@@ -341,9 +340,14 @@ VideoControls QSlider::sub-page:horizontal {
 /* File copy - move window */
 /*----------------------------------------------------------------------------*/
 
+PathSelectorMenuItem [accessibleName="MenuItemIcon"] {
+    padding: 5px;
+}
+
 PathSelectorMenuItem [accessibleName="MenuItemIcon"]:hover {
     background-color: #646669;
 }
+
 
 /*----------------------------------------------------------------------------*/
 /* Video background. Pretty sure this doesn't work.. */
@@ -518,7 +522,7 @@ ContextMenu {
     color: #707070;
 }
 
-[accessibleName="MenuItemIcon"] {
+ContextMenu [accessibleName="MenuItemIcon"] {
     margin: 5px;
 }
 
@@ -527,10 +531,10 @@ ControlsOverlay {
     background-color: #1a1a1b;
 }
 
-[accessibleName="InfoBar"] {
+InfoBar {
     background-color: #232324;
 }
 
-[accessibleName="InfoBar"] QLabel {
+InfoBar QLabel {
     color: #aeaeae;
 }

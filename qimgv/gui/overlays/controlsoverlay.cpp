@@ -3,6 +3,7 @@
 ControlsOverlay::ControlsOverlay(OverlayContainerWidget *parent) :
     OverlayWidget(parent)
 {
+    qDebug() << "INIT: controlsoverlay";
     folderViewButton = new ActionButton("folderView", ":/res/icons/buttons/folderview20.png", 30);
     folderViewButton->setAccessibleName("PanelButtonSmall");
     settingsButton = new ActionButton("openSettings", ":/res/icons/buttons/settings20.png", 30);

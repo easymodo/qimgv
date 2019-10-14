@@ -2,6 +2,8 @@
 
 // TODO: nuke this and rewrite
 
+QElapsedTimer t;
+
 MW::MW(QWidget *parent)
     : OverlayContainerWidget(parent),
       currentDisplay(0),
@@ -13,8 +15,14 @@ MW::MW(QWidget *parent)
       mainPanel(nullptr),
       copyOverlay(nullptr),
       saveOverlay(nullptr),
-      renameOverlay(nullptr)
+      renameOverlay(nullptr),
+      infoBarFullscreen(nullptr),
+      imageInfoOverlay(nullptr),
+      floatingMessage(nullptr),
+      cropPanel(nullptr),
+      cropOverlay(nullptr)
 {
+    t.start();
     setAttribute(Qt::WA_TranslucentBackground, true);
     this->setMinimumSize(400, 300);
     layout.setContentsMargins(0,0,0,0);
@@ -31,8 +39,10 @@ MW::MW(QWidget *parent)
     desktopWidget = QApplication::desktop();
     windowMoveTimer.setSingleShot(true);
     windowMoveTimer.setInterval(150);
-
+    qApp->processEvents();
     setupUi();
+    qApp->processEvents();
+    qDebug() << "# MW::setupUI() " << t.elapsed();
 
     connect(settings, &Settings::settingsChanged, this, &MW::readSettings);
     connect(&windowMoveTimer, &QTimer::timeout, this, &MW::updateCurrentDisplay);
@@ -52,35 +62,47 @@ MW::MW(QWidget *parent)
  *  ViewerWidget exists for input handling reasons (correct overlay hover handling)
  */
 void MW::setupUi() {
-    viewerWidget.reset(new ViewerWidget());
-    infoBarWindowed.reset(new InfoBar());
+    viewerWidget.reset(new ViewerWidget(this));
+
+    infoBarWindowed.reset(new InfoBarProxy(this));
+
     docWidget.reset(new DocumentWidget(viewerWidget, infoBarWindowed));
-    folderView.reset(new FolderView());
+
+    folderView.reset(new FolderViewProxy(this));
+    connect(this, &MW::setDirectoryPath, folderView.get(), &FolderViewProxy::setDirectoryPath);
+    connect(folderView.get(), &FolderViewProxy::sortingSelected, this, &MW::sortingSelected);
+
     centralWidget.reset(new CentralWidget(docWidget, folderView, this));
 
     layout.addWidget(centralWidget.get());
+    qApp->processEvents();
+    qDebug() << "# 6" << t.elapsed();
 
-    // overlays etc.
-    // this order is used while drawing
-    infoBarFullscreen = new InfoOverlay(viewerWidget.get());
     controlsOverlay = new ControlsOverlay(docWidget.get());
+    qApp->processEvents();
+    qDebug() << "# 7" << t.elapsed();
 
-    imageInfoOverlay = new ImageInfoOverlay(this);
-    changelogWindow = new ChangelogWindow(this);
+    infoBarFullscreen = new InfoOverlayProxyWrapper(viewerWidget.get());
+    qApp->processEvents();
+    qDebug() << "# 8" << t.elapsed();
+
+    //changelogWindow = new ChangelogWindow(this);
     sidePanel = new SidePanel(this);
-
     layout.addWidget(sidePanel);
+    qDebug() << "# 9" << t.elapsed();
 
-    cropOverlay = new CropOverlay(viewerWidget.get());
-    cropPanel = new CropPanel(cropOverlay, this);
+    //qApp->processEvents();
+    qDebug() << "# 10" << t.elapsed();
 
-    connect(cropPanel, &CropPanel::cancel, this, &MW::hideCropPanel);
-    connect(cropPanel, &CropPanel::crop,   this, &MW::hideCropPanel);
-    connect(cropPanel, &CropPanel::crop,   this, &MW::cropRequested);
-
-    floatingMessage = new FloatingMessage(this);
     thumbnailStrip.reset(new ThumbnailStrip());
+    //qApp->processEvents();
+    qDebug() << "# 11" << t.elapsed();
+
     mainPanel = new MainPanel(thumbnailStrip, this);
+    //qApp->processEvents();
+    qDebug() << "# 12" << t.elapsed();
+
+    imageInfoOverlay = new ImageInfoOverlayProxyWrapper(this);
 
     connect(viewerWidget.get(), &ViewerWidget::scalingRequested, this, &MW::scalingRequested);
     connect(viewerWidget.get(), &ViewerWidget::draggedOut,       this, &MW::draggedOut);
@@ -105,9 +127,31 @@ void MW::setupUi() {
     connect(this, &MW::toggleTransparencyGrid, viewerWidget.get(), &ViewerWidget::toggleTransparencyGrid);
 
     connect(this, &MW::enableDocumentView, centralWidget.get(), &CentralWidget::showDocumentView);
+}
 
-    connect(this, &MW::setDirectoryPath, folderView.get(), &FolderView::setDirectoryPath);
-    connect(folderView.get(), &FolderView::sortingSelected, this, &MW::sortingSelected);
+void MW::setupFullUi() {
+    setupCropPanel();
+    //setupCopyOverlay();
+    //setupSaveOverlay();
+    setupFloatingMessage();
+    infoBarWindowed->init();
+    infoBarFullscreen->init();
+}
+
+void MW::setupFloatingMessage() {
+    if(!floatingMessage)
+        floatingMessage = new FloatingMessage(this);
+}
+
+void MW::setupCropPanel() {
+    if(cropPanel)
+        return;
+    cropOverlay = new CropOverlay(viewerWidget.get());
+    cropPanel = new CropPanel(cropOverlay, this);
+
+    connect(cropPanel, &CropPanel::cancel, this, &MW::hideCropPanel);
+    connect(cropPanel, &CropPanel::crop,   this, &MW::hideCropPanel);
+    connect(cropPanel, &CropPanel::crop,   this, &MW::cropRequested);
 }
 
 void MW::setupCopyOverlay() {
@@ -190,7 +234,6 @@ void MW::switchFitMode() {
 
 void MW::closeImage() {
     viewerWidget->closeImage();
-    //infoBarFullscreen->setText("No file opened.");
 }
 
 void MW::showImage(std::unique_ptr<QPixmap> pixmap) {
@@ -429,7 +472,7 @@ void MW::showSaveDialog(QString filePath) {
         emit saveAsRequested(filePath);
 }
 
-void MW::showOpenDialog() {
+void MW::showOpenDialog(QString path) {
     // Looks like there is a bug in qt with native file dialogs
     // It hangs at exec() when there is a panel visible
     // Works fine otherwise, or with builtin qt dialogs
@@ -441,8 +484,7 @@ void MW::showOpenDialog() {
     QStringList imageFilter;
     imageFilter.append(settings->supportedFormatsString());
     imageFilter.append("All Files (*)");
-    QString lastDir = settings->lastDirectory();
-    dialog.setDirectory(lastDir);
+    dialog.setDirectory(path);
     dialog.setNameFilters(imageFilter);
     dialog.setWindowTitle("Open image");
     dialog.setWindowModality(Qt::ApplicationModal);
@@ -497,7 +539,7 @@ void MW::showWindowed() {
 }
 
 void MW::updateCropPanelData() {
-    if(activeSidePanel == SIDEPANEL_CROP) {
+    if(cropPanel && activeSidePanel == SIDEPANEL_CROP) {
         cropPanel->setImageRealSize(viewerWidget->sourceSize());
         cropOverlay->setImageDrawRect(viewerWidget->imageRect());
         cropOverlay->setImageScale(viewerWidget->currentScale());
@@ -608,7 +650,6 @@ void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _im
     info.fileName = _fileName;
     info.imageSize = _imageSize;
     info.fileSize = _fileSize;
-
     if(renameOverlay)
         renameOverlay->setName(info.fileName);
     if(info.fileName.isEmpty()) {
@@ -639,14 +680,16 @@ void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _im
             if(!sizeString.isEmpty())
                 windowTitle.append("  -  " + sizeString);
         }
-        infoBarFullscreen->setInfo(posString, info.fileName, resString + "  " + sizeString);
         setWindowTitle(windowTitle);
+        infoBarFullscreen->setInfo(posString, info.fileName, resString + "  " + sizeString);
         infoBarWindowed->setInfo(posString, info.fileName, resString + "  " + sizeString);
     }
 }
 
+// TODO!!! buffer this in mw
 void MW::setExifInfo(QMap<QString, QString> info) {
-    imageInfoOverlay->setExifInfo(info);
+    if(imageInfoOverlay)
+        imageInfoOverlay->setExifInfo(info);
 }
 
 std::shared_ptr<DirectoryViewWrapper> MW::getFolderView() {

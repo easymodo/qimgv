@@ -11,4 +11,3 @@ void VideoPlayer::show() {
 void VideoPlayer::hide() {
     QWidget::hide();
 }
-

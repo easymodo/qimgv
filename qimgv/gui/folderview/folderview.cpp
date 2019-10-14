@@ -5,6 +5,7 @@ FolderView::FolderView(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::FolderView)
 {
+    qDebug() << "INIT: folderview";
     ui->setupUi(this);
 
     mWrapper.reset(new DirectoryViewWrapper(this));
@@ -13,6 +14,7 @@ FolderView::FolderView(QWidget *parent) :
     ui->settingsButton->setAction("openSettings");
     ui->exitButton->setAction("exit");
     ui->docViewButton->setAction("documentView");
+    ui->showLabelsButton->setCheckable(true);
 
     int min = ui->thumbnailGrid->THUMBNAIL_SIZE_MIN;
     int max = ui->thumbnailGrid->THUMBNAIL_SIZE_MAX;
@@ -30,23 +32,28 @@ FolderView::FolderView(QWidget *parent) :
 
     connect(ui->zoomSlider, &QSlider::valueChanged, this, &FolderView::onZoomSliderValueChanged);
     connect(ui->sortingComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &FolderView::onSortingSelected);
-    connect(ui->showLabelsButton, &QPushButton::toggled, this, &FolderView::onShowLabelsButtonToggled);
+    connect(ui->showLabelsButton, &ActionButton::toggled, this, &FolderView::onShowLabelsButtonToggled);
 
     ui->sortingComboBox->setItemDelegate(new QStyledItemDelegate(ui->sortingComboBox));
     ui->sortingComboBox->view()->setTextElideMode(Qt::ElideNone);
 
-    ui->thumbnailGrid->setThumbnailSize(settings->folderViewIconSize());
-    ui->thumbnailGrid->setShowLabels(settings->showThumbnailLabels());
-    onSortingChanged(settings->sortingMode());
+    readSettings();
 
     QSizePolicy sp_retain = sizePolicy();
     sp_retain.setRetainSizeWhenHidden(true);
     setSizePolicy(sp_retain);
+    connect(settings, &Settings::settingsChanged, this, &FolderView::readSettings);
     hide();
 }
 
+void FolderView::readSettings() {
+    ui->thumbnailGrid->setThumbnailSize(settings->folderViewIconSize());
+    ui->thumbnailGrid->setShowLabels(settings->showThumbnailLabels());
+    onSortingChanged(settings->sortingMode());
+}
+
 void FolderView::onShowLabelsChanged(bool mode) {
-    ui->showLabelsButton->setChecked(mode);
+    //ui->showLabelsButton->setChecked(mode);
     settings->setShowThumbnailLabels(mode);
 }
 

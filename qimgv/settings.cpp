@@ -250,14 +250,6 @@ void Settings::setUseFastScale(bool mode) {
     settings->s->setValue("useFastScale", mode);
 }
 //------------------------------------------------------------------------------
-QString Settings::lastDirectory() {
-    return settings->state->value("lastDir", QDir::homePath()).toString();
-}
-
-void Settings::setLastDirectory(QString path) {
-    settings->state->setValue("lastDir", path);
-}
-//------------------------------------------------------------------------------
 unsigned int Settings::lastFilePosition() {
     bool ok = true;
     unsigned int pos = settings->state->value("lastFilePosition", "0").toUInt(&ok);

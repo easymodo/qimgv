@@ -1,17 +1,20 @@
 #include "actionbutton.h"
 
 ActionButton::ActionButton(QWidget *parent)
-    : QPushButton(parent),
-      mTriggerMode(TriggerMode::ClickTrigger)
+    : ClickableLabel(parent),
+      mTriggerMode(TriggerMode::ClickTrigger),
+      checkable(false)
 {
     this->setContentsMargins(0,0,0,0);
+    this->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     this->setFocusPolicy(Qt::NoFocus);
+    this->setProperty("checked", false);
 }
 
 ActionButton::ActionButton(QString _actionName, QString _iconPath, QWidget *parent)
     :  ActionButton(parent)
 {
-    this->setIcon(QIcon(_iconPath));
+    setPixmap(QPixmap(_iconPath));
     setAction(_actionName);
 }
 
@@ -26,10 +29,11 @@ void ActionButton::setAction(QString _actionName) {
     actionName = _actionName;
 }
 
-void ActionButton::setIcon(QIcon icon) {
-    QPushButton::setIcon(icon);
-    setIconSize(icon.availableSizes().first());
+/*
+void ActionButton::setPixmap(QPixmap icon) {
+    //setIconSize(icon.availableSizes().first());
 }
+*/
 
 void ActionButton::setTriggerMode(TriggerMode mode) {
     mTriggerMode = mode;
@@ -39,14 +43,25 @@ TriggerMode ActionButton::triggerMode() {
     return mTriggerMode;
 }
 
+void ActionButton::setCheckable(bool mode) {
+    checkable = mode;
+}
+
 void ActionButton::mousePressEvent(QMouseEvent *event) {
-    QPushButton::mousePressEvent(event);
+    ClickableLabel::mousePressEvent(event);
     if(mTriggerMode == TriggerMode::PressTrigger && event->button() == Qt::LeftButton)
         actionManager->invokeAction(actionName);
 }
 
 void ActionButton::mouseReleaseEvent(QMouseEvent *event) {
-    QPushButton::mouseReleaseEvent(event);
+    ClickableLabel::mouseReleaseEvent(event);
     if(mTriggerMode == TriggerMode::ClickTrigger && rect().contains(event->pos()) && event->button() == Qt::LeftButton)
         actionManager->invokeAction(actionName);
+    if(checkable) {
+        bool mode = !this->property("checked").toBool();
+        setProperty("checked", mode);
+        style()->unpolish(this);
+        style()->polish(this);
+        emit toggled(mode);
+    }
 }

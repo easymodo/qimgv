@@ -6,6 +6,7 @@ FloatingMessage::FloatingMessage(OverlayContainerWidget *parent) :
     preferredPosition(FloatingWidgetPosition::BOTTOM),
     ui(new Ui::FloatingMessage)
 {
+    qDebug() << "INIT: floatingmessage";
     ui->setupUi(this);
     hideDelay = 700;
 
@@ -15,11 +16,12 @@ FloatingMessage::FloatingMessage(OverlayContainerWidget *parent) :
     setFadeEnabled(true);
     setFadeDuration(300);
 
-    iconLeftEdge = QIcon(":/res/icons/message/dir_start20.png");
-    iconRightEdge = QIcon(":/res/icons/message/dir_end20.png");
-    iconSuccess = QIcon(":/res/icons/buttons/success16.png");
+    //iconLeftEdge = QIcon("C:/source/qimgv/qimgv/res/icons/buttons/copy16.png");
+    //iconLeftEdge = QIcon(":/res/icons/message/dir_start20.png");
+    //iconRightEdge = QIcon(":/res/icons/message/dir_end20.png");
+    //iconSuccess = QIcon(":/res/icons/buttons/success16.png");
     //iconError = QIcon(":/res/icons/buttons/error16.png");
-    setIcon(FloatingMessageIcon::NO_ICON);
+    //setIcon(FloatingMessageIcon::NO_ICON);
 
     this->setAccessibleName("FloatingMessage");
     connect(&visibilityTimer, &QTimer::timeout, this, &FloatingMessage::hide);

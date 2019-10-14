@@ -5,6 +5,7 @@ RenameOverlay::RenameOverlay(OverlayContainerWidget *parent) :
     FloatingWidget(parent),
     ui(new Ui::RenameOverlay)
 {
+    qDebug() << "INIT: renameoverlay";
     ui->setupUi(this);
     connect(ui->cancelButton, &QPushButton::clicked, this, &RenameOverlay::onCancel);
     connect(ui->closeButton,  &QPushButton::clicked, this, &RenameOverlay::hide);

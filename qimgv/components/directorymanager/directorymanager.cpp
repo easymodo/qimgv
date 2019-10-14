@@ -112,16 +112,13 @@ bool DirectoryManager::setDirectory(QString path) {
     currentPath = path;
     generateFileList();
     sortFileList();
-
     emit loaded(path);
-
     watcher->setWatchPath(path);
     watcher->observe();
-
     return true;
 }
 
-QString DirectoryManager::directory() {
+QString DirectoryManager::directory() const {
     return currentPath;
 }
 
@@ -352,6 +349,7 @@ bool DirectoryManager::contains(QString fileName) const {
 // ###################### PRIVATE METHODS #######################
 // ##############################################################
 void DirectoryManager::generateFileList() {
+    //qApp->processEvents();
     entryVec.clear();
     QElapsedTimer t;
     t.start();
@@ -378,6 +376,7 @@ void DirectoryManager::generateFileList() {
             //entryVec.emplace_back(Entry(name, entry.is_directory()));
         }
     }
+    //qApp->processEvents();
     //qDebug() << "generateFileList() - " << entryVec.size() << " items, time: " << t.elapsed();
 }
 

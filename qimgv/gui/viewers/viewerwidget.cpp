@@ -11,7 +11,8 @@ ViewerWidget::ViewerWidget(QWidget *parent)
       videoPlayer(nullptr),
       contextMenu(nullptr),
       currentWidget(UNSET),
-      mInteractionEnabled(false)
+      mInteractionEnabled(false),
+      videoControls(nullptr)
 {
     setAttribute(Qt::WA_TranslucentBackground, true);
     setMouseTracking(true);
@@ -29,18 +30,18 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
     videoPlayer.reset(new VideoPlayerInitProxy(this));
     videoPlayer->hide();
-    videoControls = new VideoControls(this);
+    videoControls = new VideoControlsProxyWrapper(this);
 
-    connect(videoPlayer.get(), &VideoPlayer::durationChanged, videoControls, &VideoControls::setDurationSeconds);
-    connect(videoPlayer.get(), &VideoPlayer::positionChanged, videoControls, &VideoControls::setPositionSeconds);
-    connect(videoPlayer.get(), &VideoPlayer::videoPaused,     videoControls, &VideoControls::onVideoPaused);
+    connect(videoPlayer.get(), &VideoPlayer::durationChanged, videoControls, &VideoControlsProxyWrapper::setDurationSeconds);
+    connect(videoPlayer.get(), &VideoPlayer::positionChanged, videoControls, &VideoControlsProxyWrapper::setPositionSeconds);
+    connect(videoPlayer.get(), &VideoPlayer::videoPaused,     videoControls, &VideoControlsProxyWrapper::onVideoPaused);
 
-    connect(videoControls, &VideoControls::pause,     this, &ViewerWidget::pauseVideo);
-    connect(videoControls, &VideoControls::seekLeft,  this, &ViewerWidget::seekVideoLeft);
-    connect(videoControls, &VideoControls::seekRight, this, &ViewerWidget::seekVideoRight);
-    connect(videoControls, &VideoControls::seek,      this, &ViewerWidget::seekVideo);
-    connect(videoControls, &VideoControls::nextFrame, this, &ViewerWidget::frameStep);
-    connect(videoControls, &VideoControls::prevFrame, this, &ViewerWidget::frameStepBack);
+    connect(videoControls, &VideoControlsProxyWrapper::pause,     this, &ViewerWidget::pauseVideo);
+    connect(videoControls, &VideoControlsProxyWrapper::seekLeft,  this, &ViewerWidget::seekVideoLeft);
+    connect(videoControls, &VideoControlsProxyWrapper::seekRight, this, &ViewerWidget::seekVideoRight);
+    connect(videoControls, &VideoControlsProxyWrapper::seek,      this, &ViewerWidget::seekVideo);
+    connect(videoControls, &VideoControlsProxyWrapper::nextFrame, this, &ViewerWidget::frameStep);
+    connect(videoControls, &VideoControlsProxyWrapper::prevFrame, this, &ViewerWidget::frameStepBack);
 
     enableImageViewer();
     enableInteraction();
@@ -103,7 +104,8 @@ void ViewerWidget::disableImageViewer() {
 void ViewerWidget::disableVideoPlayer() {
     if(currentWidget == VIDEOPLAYER) {
         currentWidget = UNSET;
-        videoControls->hide();
+        if(videoControls)
+            videoControls->hide();
         videoPlayer->setPaused(true);
         videoPlayer->hide();
         layout.removeWidget(videoPlayer.get());
@@ -334,7 +336,6 @@ void ViewerWidget::showContextMenu(QPoint pos) {
         } else {
             contextMenu->hide();
         }
-
     }
 }
 

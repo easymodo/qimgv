@@ -6,6 +6,7 @@ ResizeDialog::ResizeDialog(QSize originalSize,  QWidget *parent) :
     ui(new Ui::ResizeDialog),
     lastEdited(0)
 {
+    qDebug() << "INIT: resizedialog";
     ui->setupUi(this);
     setWindowModality(Qt::ApplicationModal);
     ui->width->setFocus();

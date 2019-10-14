@@ -6,6 +6,7 @@ ShortcutCreatorDialog::ShortcutCreatorDialog(QWidget *parent) :
     ui(new Ui::ShortcutCreatorDialog),
     shortcut("")
 {
+    qDebug() << "INIT: shortcutcreatordialog";
     ui->setupUi(this);
     setWindowTitle("Create shortcut");
     actionList = appActions->getList();

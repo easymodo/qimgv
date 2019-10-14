@@ -5,6 +5,7 @@ VideoControls::VideoControls(OverlayContainerWidget *parent) :
     FloatingWidget(parent),
     ui(new Ui::VideoControls)
 {
+    qDebug() << "INIT: videocontrols";
     ui->setupUi(this);
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     hide();
@@ -43,7 +44,6 @@ void VideoControls::setDurationSeconds(int time) {
     _time -= hours * 3600;
     int minutes = _time / 60;
     int seconds = _time - minutes * 60;
-    //qDebug() << "total:" << hours << ":" << minutes << ":" << seconds;
     QString str = QString("%1").arg(minutes, 2, 10, QChar('0')) + ":" +
                   QString("%1").arg(seconds, 2, 10, QChar('0'));
     if(hours)
@@ -60,7 +60,6 @@ void VideoControls::setPositionSeconds(int time) {
         _time -= hours * 3600;
         int minutes = _time / 60;
         int seconds = _time - minutes * 60;
-        //qDebug() << hours << ":" << minutes << ":" << seconds;
         QString str = QString("%1").arg(minutes, 2, 10, QChar('0')) + ":" +
                       QString("%1").arg(seconds, 2, 10, QChar('0'));
         if(hours)

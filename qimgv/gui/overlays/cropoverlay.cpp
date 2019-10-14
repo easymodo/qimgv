@@ -12,6 +12,7 @@ CropOverlay::CropOverlay(OverlayContainerWidget *parent) : OverlayWidget(parent)
     drawBuffer(nullptr),
     cursorAction(NO_DRAG)
 {
+    qDebug() << "INIT: cropoverlay";
     setMouseTracking(true);
     dpr = devicePixelRatioF();
     handleSize = static_cast<int>(8 * dpr);
@@ -49,7 +50,7 @@ void CropOverlay::prepareDrawElements() {
 //------------------------------------------------------------------------------
 void CropOverlay::setImageRealSize(QSize sz) {
     imageRect.setSize(sz);
-    //selectAll();
+    clearSelection();
 }
 
 //------------------------------------------------------------------------------

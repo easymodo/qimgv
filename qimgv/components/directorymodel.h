@@ -63,6 +63,7 @@ public:
     SortingMode sortingMode();
     bool forceInsert(QString fileName);
 
+    QString directory();
 signals:
     void fileRemoved(QString fileName, int index);
     void fileRenamed(QString from, int indexFrom, QString to, int indexTo);

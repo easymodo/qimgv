@@ -56,6 +56,7 @@ signals:
 private slots:
     void onSortingSelected(int);
 
+    void readSettings();
 private:
     Ui::FolderView *ui;
     std::shared_ptr<DirectoryViewWrapper> mWrapper;

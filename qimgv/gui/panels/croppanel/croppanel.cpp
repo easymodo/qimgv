@@ -6,6 +6,7 @@ CropPanel::CropPanel(CropOverlay *_overlay, QWidget *parent) :
     ui(new Ui::CropPanel),
     overlay(_overlay)
 {
+    qDebug() << "INIT: croppanel";
     ui->setupUi(this);
     setFocusPolicy(Qt::NoFocus);
 

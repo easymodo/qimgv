@@ -14,8 +14,7 @@ InfoOverlay::InfoOverlay(OverlayContainerWidget *parent) :
         setContainerSize(parent->size());
 }
 
-InfoOverlay::~InfoOverlay()
-{
+InfoOverlay::~InfoOverlay() {
     delete ui;
 }
 

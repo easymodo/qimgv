@@ -1,6 +1,6 @@
 #include "centralwidget.h"
 
-CentralWidget::CentralWidget(std::shared_ptr<DocumentWidget> _docWidget, std::shared_ptr<FolderView> _folderView, QWidget *parent)
+CentralWidget::CentralWidget(std::shared_ptr<DocumentWidget> _docWidget, std::shared_ptr<FolderViewProxy> _folderView, QWidget *parent)
     : QStackedWidget(parent),
       documentView(_docWidget),
       folderView(_folderView)
@@ -11,7 +11,8 @@ CentralWidget::CentralWidget(std::shared_ptr<DocumentWidget> _docWidget, std::sh
 
     // docWidget - 0, folderView - 1
     addWidget(documentView.get());
-    addWidget(folderView.get());
+    if(folderView)
+        addWidget(folderView.get());
     showDocumentView();
 }
 
@@ -30,6 +31,7 @@ void CentralWidget::showFolderView() {
 
     mode = MODE_FOLDERVIEW;
     setCurrentIndex(1);
+    widget(1)->show();
     widget(1)->setFocus();
     documentView->viewWidget()->stopPlayback();
 }

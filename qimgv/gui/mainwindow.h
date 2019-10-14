@@ -9,7 +9,7 @@
 #include "gui/customwidgets/overlaycontainerwidget.h"
 #include "gui/viewers/viewerwidget.h"
 #include "gui/overlays/controlsoverlay.h"
-#include "gui/overlays/infooverlay.h"
+#include "gui/overlays/infooverlayproxy.h"
 #include "gui/overlays/floatingmessage.h"
 #include "gui/overlays/saveconfirmoverlay.h"
 #include "gui/panels/mainpanel/thumbnailstrip.h"
@@ -19,7 +19,7 @@
 #include "gui/overlays/cropoverlay.h"
 #include "gui/overlays/copyoverlay.h"
 #include "gui/overlays/changelogwindow.h"
-#include "gui/overlays/imageinfooverlay.h"
+#include "gui/overlays/imageinfooverlayproxywrapper.h"
 #include "gui/overlays/renameoverlay.h"
 #include "gui/dialogs/resizedialog.h"
 #include "gui/centralwidget.h"
@@ -27,6 +27,8 @@
 #include "settings.h"
 #include "gui/dialogs/settingsdialog.h"
 #include "gui/viewers/documentwidget.h"
+#include "gui/folderview/folderviewproxy.h"
+#include "gui/panels/infobar/infobarproxy.h"
 #include <QApplication>
 
 #ifdef USE_KDE_BLUR
@@ -73,7 +75,7 @@ private:
     qreal bgOpacity;
     bool panelEnabled, panelFullscreenOnly, cropPanelActive, showInfoBarFullscreen, showInfoBarWindowed;
     std::shared_ptr<DocumentWidget> docWidget;
-    std::shared_ptr<FolderView> folderView;
+    std::shared_ptr<FolderViewProxy> folderView;
     std::shared_ptr<CentralWidget> centralWidget;
     ActiveSidePanel activeSidePanel;
     std::shared_ptr<ThumbnailStrip> thumbnailStrip;
@@ -88,11 +90,11 @@ private:
 
     RenameOverlay *renameOverlay;
 
-    ImageInfoOverlay *imageInfoOverlay;
+    ImageInfoOverlayProxyWrapper *imageInfoOverlay;
 
     ControlsOverlay *controlsOverlay;
-    InfoOverlay *infoBarFullscreen;
-    std::shared_ptr<InfoBar> infoBarWindowed;
+    InfoOverlayProxyWrapper *infoBarFullscreen;
+    std::shared_ptr<InfoBarProxy> infoBarWindowed;
     FloatingMessage *floatingMessage;
 
     PanelHPosition panelPosition;
@@ -108,9 +110,12 @@ private:
     void applyFullscreenBackground();
     void mouseDoubleClickEvent(QMouseEvent *event);
 
+    void setupCropPanel();
     void setupCopyOverlay();
     void setupSaveOverlay();
     void setupRenameOverlay();
+    void setupFloatingMessage();
+
 private slots:
     void updateCurrentDisplay();
     void readSettings();
@@ -167,12 +172,14 @@ signals:
     void draggedOut();
 
 public slots:
+    void setupFullUi();
+
     void showDefault();
     void showCropPanel();
     void hideCropPanel();
     void toggleFolderView();
     void enableFolderView();
-    void showOpenDialog();
+    void showOpenDialog(QString path);
     void showSaveDialog(QString filePath);
     void showResizeDialog(QSize initialSize);
     void showSettings();

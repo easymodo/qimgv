@@ -39,6 +39,10 @@ void Core::readSettings() {
 void Core::showGui() {
     if(mw && !mw->isVisible())
         mw->showDefault();
+    // TODO: this is unreliable.
+    // how to make it wait until a window is shown?
+    qApp->processEvents();
+    QTimer::singleShot(15, mw, SLOT(setupFullUi()));
 }
 
 // create MainWindow and all widgets
@@ -114,7 +118,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::openSettings, mw, &MW::showSettings);
     connect(actionManager, &ActionManager::crop, this, &Core::toggleCropPanel);
     //connect(actionManager, &ActionManager::setWallpaper, this, &Core::slotSelectWallpaper);
-    connect(actionManager, &ActionManager::open, mw, &MW::showOpenDialog);
+    connect(actionManager, &ActionManager::open, this, &Core::showOpenDialog);
     connect(actionManager, &ActionManager::save, this, qOverload<>(&Core::saveImageToDisk));
     connect(actionManager, &ActionManager::saveAs, this, &Core::requestSavePath);
     connect(actionManager, &ActionManager::exit, this, &Core::close);
@@ -424,6 +428,10 @@ void Core::outputError(const FileOpResult &error) const {
     }
 }
 
+void Core::showOpenDialog() {
+    mw->showOpenDialog(model->directory());
+}
+
 void Core::moveFile(QString destDirectory) {
     mw->closeImage();
     FileOpResult result;
@@ -657,7 +665,6 @@ void Core::loadPath(QString path) {
     // set model dir if needed
     if(model->absolutePath() != directoryPath) {
         this->reset();
-        settings->setLastDirectory(directoryPath);
         model->setDirectory(directoryPath);
         mw->setDirectoryPath(directoryPath);
     }
@@ -760,7 +767,6 @@ void Core::onModelItemUpdated(std::shared_ptr<Image> img) {
 
 void Core::displayImage(std::shared_ptr<Image> img) {
     state.hasActiveImage = true;
-
     if(!img) {
         mw->showMessage("Error: could not load image.");
         return;

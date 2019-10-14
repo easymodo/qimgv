@@ -120,6 +120,7 @@ private slots:
     void toggleShuffle();
     void onModelLoaded();
     void outputError(const FileOpResult &error) const;
+    void showOpenDialog();
 };
 
 #endif // CORE_H

@@ -5,6 +5,7 @@ SaveConfirmOverlay::SaveConfirmOverlay(OverlayContainerWidget *parent) :
     FloatingWidget(parent),
     ui(new Ui::SaveConfirmOverlay)
 {
+    qDebug() << "INIT: saveconfirmoverlay";
     ui->setupUi(this);
     connect(ui->saveButton,    &QPushButton::clicked, this, &SaveConfirmOverlay::saveClicked);
     connect(ui->saveAsButton,  &QPushButton::clicked, this, &SaveConfirmOverlay::saveAsClicked);

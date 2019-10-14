@@ -2,6 +2,7 @@
 #define INFOBAR_H
 
 #include <QWidget>
+#include <QDebug>
 
 namespace Ui {
 class InfoBar;

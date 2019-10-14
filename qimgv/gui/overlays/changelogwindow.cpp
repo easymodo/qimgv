@@ -5,6 +5,7 @@ ChangelogWindow::ChangelogWindow(OverlayContainerWidget *parent) :
     FloatingWidget(parent),
     ui(new Ui::ChangelogWindow)
 {
+    qDebug() << "INIT: changelogwindow";
     ui->setupUi(this);
     hide();
     setPosition(FloatingWidgetPosition::CENTER);

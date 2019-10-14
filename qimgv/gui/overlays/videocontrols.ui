@@ -87,6 +87,10 @@
        <property name="text">
         <string/>
        </property>
+       <property name="icon">
+        <iconset resource="../../resources.qrc">
+         <normaloff>:/res/icons/buttons/play24.png</normaloff>:/res/icons/buttons/play24.png</iconset>
+       </property>
        <property name="iconSize">
         <size>
          <width>24</width>
@@ -136,9 +140,6 @@
        </property>
        <property name="accessibleName">
         <string notr="true">ButtonSetLeft</string>
-       </property>
-       <property name="text">
-        <string/>
        </property>
        <property name="icon">
         <iconset resource="../../resources.qrc">
@@ -269,6 +270,9 @@
     <widget class="QLabel" name="label">
      <property name="text">
       <string notr="true">/</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>

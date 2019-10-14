@@ -195,6 +195,10 @@ void DirectoryModel::setDirectory(QString path) {
     dirManager.setDirectory(path);
 }
 
+QString DirectoryModel::directory() {
+    return dirManager.directory();
+}
+
 bool DirectoryModel::setIndex(int index) {
     if(index >= 0 && index < itemCount()) {
         int oldIndex = currentIndex();

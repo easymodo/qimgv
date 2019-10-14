@@ -2,6 +2,7 @@
 #define SIDEPANEL_H
 
 #include <QWidget>
+#include <QDebug>
 #include <QStyleOption>
 #include <QPainter>
 #include <QVBoxLayout>
