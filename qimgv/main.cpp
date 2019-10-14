@@ -91,20 +91,20 @@ int main(int argc, char *argv[]) {
 
     Core core;
 
-    //qApp->processEvents();
-    //qDebug() << "Core + MW init: " << t.elapsed() << "ms";
+    qApp->processEvents();
+    qDebug() << "Core + MW init: " << t.elapsed() << "ms";
 
     // assume 1st arg is the filename
     if(!arg1.isEmpty()) {
         core.loadPath(arg1);
     }
     // wait for event queue to catch up before showing window
-    // this avoid white background flicker
+    // this avoids white background flicker
     qApp->processEvents();
     core.showGui();
 
-    //qApp->processEvents();
-    //qDebug() << "showGui: " << t.elapsed() << "ms";
+    qApp->processEvents();
+    qDebug() << "showGui: " << t.elapsed() << "ms";
 
     return a.exec();
 }

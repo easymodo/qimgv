@@ -7,9 +7,10 @@ RenameOverlay::RenameOverlay(OverlayContainerWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->cancelButton, &QPushButton::clicked, this, &RenameOverlay::onCancel);
-    connect(ui->closeButton,  &QPushButton::clicked, this, &RenameOverlay::hide);
+    connect(ui->closeButton,  &IconButton::clicked, this, &RenameOverlay::hide);
     connect(ui->okButton,     &QPushButton::clicked, this, &RenameOverlay::rename);
-
+    ui->closeButton->setIconPath(":res/icons/buttons/close-dim16.png");
+    ui->headerIcon->setIconPath(":res/icons/buttons/edit16.png");
     setPosition(FloatingWidgetPosition::CENTER);
     hide();
     if(parent)

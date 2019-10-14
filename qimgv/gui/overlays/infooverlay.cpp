@@ -9,7 +9,7 @@ InfoOverlay::InfoOverlay(OverlayContainerWidget *parent) :
     setPosition(FloatingWidgetPosition::TOPLEFT);
     this->setMarginX(0);
     this->setMarginY(0);
-
+    ui->nameLabel->setText("No file opened");
     if(parent)
         setContainerSize(parent->size());
 }

@@ -36,7 +36,6 @@ private slots:
 private:
     Ui::VideoControls *ui;
     int lastVideoPosition;
-    QIcon playIcon, pauseIcon;
 };
 
 #endif // VIDEOCONTROLS_H

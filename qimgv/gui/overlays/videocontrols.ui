@@ -59,7 +59,7 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QPushButton" name="pauseButton">
+      <widget class="IconButton" name="pauseButton" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -84,19 +84,6 @@
        <property name="accessibleName">
         <string notr="true">Button</string>
        </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../../resources.qrc">
-         <normaloff>:/res/icons/buttons/play24.png</normaloff>:/res/icons/buttons/play24.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>24</width>
-         <height>24</height>
-        </size>
-       </property>
       </widget>
      </item>
      <item>
@@ -116,7 +103,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="prevFrameButton">
+      <widget class="IconButton" name="prevFrameButton" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -141,20 +128,10 @@
        <property name="accessibleName">
         <string notr="true">ButtonSetLeft</string>
        </property>
-       <property name="icon">
-        <iconset resource="../../resources.qrc">
-         <normaloff>:/res/icons/buttons/skip-backwards24.png</normaloff>:/res/icons/buttons/skip-backwards24.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>24</width>
-         <height>24</height>
-        </size>
-       </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="nextFrameButton">
+      <widget class="IconButton" name="nextFrameButton" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -178,19 +155,6 @@
        </property>
        <property name="accessibleName">
         <string notr="true">ButtonSetRight</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../../resources.qrc">
-         <normaloff>:/res/icons/buttons/skip-forward24.png</normaloff>:/res/icons/buttons/skip-forward24.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>24</width>
-         <height>24</height>
-        </size>
        </property>
       </widget>
      </item>
@@ -291,9 +255,13 @@
    <extends>QSlider</extends>
    <header>gui/customwidgets/videoslider.h</header>
   </customwidget>
+  <customwidget>
+   <class>IconButton</class>
+   <extends>QWidget</extends>
+   <header>gui/customwidgets/iconbutton.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

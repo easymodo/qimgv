@@ -72,7 +72,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="ActionButton" name="openButton">
+       <widget class="ActionButton" name="openButton" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -81,8 +81,8 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>22</width>
-          <height>22</height>
+          <width>38</width>
+          <height>38</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -93,9 +93,6 @@
         </property>
         <property name="accessibleName">
          <string>PanelButton</string>
-        </property>
-        <property name="pixmap">
-         <pixmap resource="../../resources.qrc">:/res/icons/buttons/open16.png</pixmap>
         </property>
        </widget>
       </item>
@@ -213,11 +210,11 @@
        </layout>
       </item>
       <item>
-       <widget class="ActionButton" name="showLabelsButton">
+       <widget class="ActionButton" name="showLabelsButton" native="true">
         <property name="minimumSize">
          <size>
-          <width>22</width>
-          <height>22</height>
+          <width>38</width>
+          <height>38</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -228,12 +225,6 @@
         </property>
         <property name="accessibleName">
          <string>CheckableButton</string>
-        </property>
-        <property name="pixmap">
-         <pixmap resource="../../resources.qrc">:/res/icons/buttons/labels.png</pixmap>
-        </property>
-        <property name="checkable" stdset="0">
-         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -322,7 +313,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="ActionButton" name="docViewButton">
+       <widget class="ActionButton" name="docViewButton" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -331,8 +322,8 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>22</width>
-          <height>22</height>
+          <width>38</width>
+          <height>38</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -343,14 +334,11 @@
         </property>
         <property name="accessibleName">
          <string>PanelButton</string>
-        </property>
-        <property name="pixmap">
-         <pixmap resource="../../resources.qrc">:/res/icons/buttons/document-view16.png</pixmap>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="ActionButton" name="settingsButton">
+       <widget class="ActionButton" name="settingsButton" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -359,8 +347,8 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>22</width>
-          <height>22</height>
+          <width>38</width>
+          <height>38</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -371,14 +359,11 @@
         </property>
         <property name="accessibleName">
          <string>PanelButton</string>
-        </property>
-        <property name="pixmap">
-         <pixmap resource="../../resources.qrc">:/res/icons/buttons/settings16.png</pixmap>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="ActionButton" name="exitButton">
+       <widget class="ActionButton" name="exitButton" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -387,8 +372,8 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>22</width>
-          <height>22</height>
+          <width>38</width>
+          <height>38</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -399,9 +384,6 @@
         </property>
         <property name="accessibleName">
          <string>PanelButton</string>
-        </property>
-        <property name="pixmap">
-         <pixmap resource="../../resources.qrc">:/res/icons/buttons/close16.png</pixmap>
         </property>
        </widget>
       </item>
@@ -435,18 +417,17 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ActionButton</class>
-   <extends>QLabel</extends>
-   <header>gui/customwidgets/actionbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>FolderGridView</class>
    <extends>QGraphicsView</extends>
    <header>gui/folderview/foldergridview.h</header>
   </customwidget>
+  <customwidget>
+   <class>ActionButton</class>
+   <extends>QWidget</extends>
+   <header>gui/customwidgets/actionbutton.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -8,19 +8,19 @@ VideoControls::VideoControls(OverlayContainerWidget *parent) :
     ui->setupUi(this);
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     hide();
-
-    playIcon.addPixmap(QPixmap(":res/icons/buttons/play24.png"));
-    pauseIcon.addPixmap(QPixmap(":res/icons/buttons/pause24.png"));
+    ui->pauseButton->setIconPath(":res/icons/buttons/play24.png");
+    ui->prevFrameButton->setIconPath(":res/icons/buttons/skip-backwards24.png");
+    ui->nextFrameButton->setIconPath(":res/icons/buttons/skip-forward24.png");
 
     lastVideoPosition = -1;
 
     readSettings();
     connect(settings, &Settings::settingsChanged, this, &VideoControls::readSettings);
 
-    connect(ui->pauseButton, &QPushButton::pressed, this, &VideoControls::pause);
+    connect(ui->pauseButton, &IconButton::pressed, this, &VideoControls::pause);
     connect(ui->seekBar, &VideoSlider::sliderMovedX, this, &VideoControls::seek);
-    connect(ui->prevFrameButton, &QPushButton::pressed, this, &VideoControls::prevFrame);
-    connect(ui->nextFrameButton, &QPushButton::pressed, this, &VideoControls::nextFrame);
+    connect(ui->prevFrameButton, &IconButton::pressed, this, &VideoControls::prevFrame);
+    connect(ui->nextFrameButton, &IconButton::pressed, this, &VideoControls::nextFrame);
 
     if(parent)
         setContainerSize(parent->size());
@@ -75,7 +75,7 @@ void VideoControls::setPositionSeconds(int time) {
 
 void VideoControls::onVideoPaused(bool mode) {
     if(mode)
-        ui->pauseButton->setIcon(playIcon);
+        ui->pauseButton->setIconPath(":res/icons/buttons/play24.png");
     else
-        ui->pauseButton->setIcon(pauseIcon);
+        ui->pauseButton->setIconPath(":res/icons/buttons/pause24.png");
 }

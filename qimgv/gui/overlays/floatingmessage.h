@@ -42,7 +42,6 @@ private:
 
 protected:
     void mousePressEvent(QMouseEvent *event);
-    QIcon iconLeftEdge, iconRightEdge, iconSuccess, iconWarning, iconError;
 
 private slots:
     void readSettings();

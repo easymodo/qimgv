@@ -102,5 +102,10 @@
         <file>res/icons/settings/32/advanced32.png</file>
         <file>res/icons/settings/32/advanced32@2x.png</file>
         <file>res/translations/ru_RU.qm</file>
+        <file>res/icons/buttons/pause24@2x.png</file>
+        <file>res/icons/buttons/play24@2x.png</file>
+        <file>res/icons/buttons/skip-backwards24@2x.png</file>
+        <file>res/icons/buttons/skip-forward24@2x.png</file>
+        <file>res/icons/buttons/sorting-mode16@2x.png</file>
     </qresource>
 </RCC>

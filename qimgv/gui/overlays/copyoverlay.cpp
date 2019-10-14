@@ -9,7 +9,8 @@ CopyOverlay::CopyOverlay(OverlayContainerWidget *parent) :
     hide();
     setFadeEnabled(true);
 
-    ui->headerIcon->setPixmap(QPixmap(":/res/icons/buttons/copy16.png"));
+    ui->closeButton->setIconPath(":/res/icons/buttons/close-dim16.png");
+    ui->headerIcon->setIconPath(":/res/icons/buttons/copy16.png");
     ui->headerLabel->setText(tr("Copy to..."));
     mode = OVERLAY_COPY;
 
@@ -44,10 +45,10 @@ void CopyOverlay::hide() {
 void CopyOverlay::setDialogMode(CopyOverlayMode _mode) {
     mode = _mode;
     if(mode == OVERLAY_COPY) {
-        ui->headerIcon->setPixmap(QPixmap(":/res/icons/buttons/copy16.png"));
+        ui->headerIcon->setIconPath(":/res/icons/buttons/copy16.png");
         ui->headerLabel->setText(tr("Copy to..."));
     } else {
-        ui->headerIcon->setPixmap(QPixmap(":/res/icons/buttons/move16.png"));
+        ui->headerIcon->setIconPath(":/res/icons/buttons/move16.png");
         ui->headerLabel->setText(tr("Move to..."));
     }
 }

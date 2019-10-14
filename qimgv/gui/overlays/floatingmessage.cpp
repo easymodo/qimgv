@@ -15,11 +15,6 @@ FloatingMessage::FloatingMessage(OverlayContainerWidget *parent) :
     setFadeEnabled(true);
     setFadeDuration(300);
 
-    iconLeftEdge = QIcon("C:/source/qimgv/qimgv/res/icons/buttons/copy16.png");
-    iconLeftEdge = QIcon(":/res/icons/message/dir_start20.png");
-    iconRightEdge = QIcon(":/res/icons/message/dir_end20.png");
-    iconSuccess = QIcon(":/res/icons/buttons/success16.png");
-    iconError = QIcon(":/res/icons/buttons/error16.png");
     setIcon(FloatingMessageIcon::NO_ICON);
 
     this->setAccessibleName("FloatingMessage");
@@ -79,17 +74,18 @@ void FloatingMessage::setIcon(FloatingMessageIcon icon) {
             break;
         case FloatingMessageIcon::ICON_LEFT_EDGE:
             ui->iconLabel->show();
-            ui->iconLabel->setPixmap(iconLeftEdge.pixmap(20,20));
+            ui->iconLabel->setIconPath(":/res/icons/message/dir_start20.png");
             break;
         case FloatingMessageIcon::ICON_RIGHT_EDGE:
             ui->iconLabel->show();
-            ui->iconLabel->setPixmap(iconRightEdge.pixmap(20,20));
+            ui->iconLabel->setIconPath(":/res/icons/message/dir_end20.png");
             break;
         case FloatingMessageIcon::ICON_SUCCESS:
             ui->iconLabel->show();
-            ui->iconLabel->setPixmap(iconSuccess.pixmap(16,16));
+            ui->iconLabel->setIconPath(":/res/icons/buttons/success16.png");
             break;
         case FloatingMessageIcon::ICON_ERROR:
+            //ui->iconLabel->setIconPath(":/res/icons/buttons/error16.png");
             ui->iconLabel->hide();
             break;
     }

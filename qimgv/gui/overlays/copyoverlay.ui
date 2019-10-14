@@ -54,7 +54,7 @@
        <number>0</number>
       </property>
       <property name="leftMargin">
-       <number>10</number>
+       <number>0</number>
       </property>
       <property name="topMargin">
        <number>0</number>
@@ -66,36 +66,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="headerIcon">
-        <property name="accessibleName">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string notr="true"/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="headerLabel">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="accessibleName">
-         <string notr="true">OverlayHeaderLabel</string>
-        </property>
-        <property name="text">
-         <string notr="true"/>
-        </property>
-        <property name="margin">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="closeButton">
+       <widget class="IconWidget" name="headerIcon" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -114,24 +85,49 @@
           <height>32</height>
          </size>
         </property>
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="headerLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
         <property name="accessibleName">
-         <string notr="true">OverlayCloseButton</string>
+         <string notr="true">OverlayHeaderLabel</string>
         </property>
         <property name="text">
          <string notr="true"/>
         </property>
-        <property name="icon">
-         <iconset resource="../../resources.qrc">
-          <normaloff>:/res/icons/buttons/close-dim16.png</normaloff>:/res/icons/buttons/close-dim16.png</iconset>
+        <property name="margin">
+         <number>0</number>
         </property>
-        <property name="iconSize">
+       </widget>
+      </item>
+      <item>
+       <widget class="IconButton" name="closeButton" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
          <size>
-          <width>16</width>
-          <height>16</height>
+          <width>32</width>
+          <height>32</height>
          </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="accessibleName">
+         <string notr="true">OverlayCloseButton</string>
         </property>
        </widget>
       </item>
@@ -159,9 +155,21 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../../resources.qrc"/>
- </resources>
+ <customwidgets>
+  <customwidget>
+   <class>IconButton</class>
+   <extends>QWidget</extends>
+   <header>gui/customwidgets/iconbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>IconWidget</class>
+   <extends>QWidget</extends>
+   <header>gui/customwidgets/iconwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
  <connections>
   <connection>
    <sender>closeButton</sender>

@@ -74,7 +74,7 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="ActionButton" name="fitWindow">
+      <widget class="ActionButton" name="fitWindow" native="true">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -89,17 +89,11 @@
        </property>
        <property name="accessibleName">
         <string notr="true">PanelButtonSmall</string>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="../resources.qrc">:/res/icons/buttons/fit-window16.png</pixmap>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="ActionButton" name="fitWidth">
+      <widget class="ActionButton" name="fitWidth" native="true">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -114,17 +108,11 @@
        </property>
        <property name="accessibleName">
         <string notr="true">PanelButtonSmall</string>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="../resources.qrc">:/res/icons/buttons/fit-width16.png</pixmap>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="ActionButton" name="zoomOriginal">
+      <widget class="ActionButton" name="zoomOriginal" native="true">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -139,17 +127,11 @@
        </property>
        <property name="accessibleName">
         <string notr="true">PanelButtonSmall</string>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="../resources.qrc">:/res/icons/buttons/zoom-original16.png</pixmap>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="ActionButton" name="zoomIn">
+      <widget class="ActionButton" name="zoomIn" native="true">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -164,17 +146,11 @@
        </property>
        <property name="accessibleName">
         <string notr="true">PanelButtonSmall</string>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="../resources.qrc">:/res/icons/buttons/zoom-in16.png</pixmap>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="ActionButton" name="zoomOut">
+      <widget class="ActionButton" name="zoomOut" native="true">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -189,12 +165,6 @@
        </property>
        <property name="accessibleName">
         <string notr="true">PanelButtonSmall</string>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="../resources.qrc">:/res/icons/buttons/zoom-out16.png</pixmap>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -310,19 +280,18 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ActionButton</class>
-   <extends>QLabel</extends>
-   <header>gui/customwidgets/actionbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>ContextMenuItem</class>
    <extends>QWidget</extends>
    <header>gui/customwidgets/contextmenuitem.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>ActionButton</class>
+   <extends>QWidget</extends>
+   <header>gui/customwidgets/actionbutton.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
