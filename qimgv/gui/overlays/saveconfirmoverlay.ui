@@ -41,6 +41,9 @@
       <string notr="true">OverlayHeaderWidget</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <property name="sizeConstraint">
        <enum>QLayout::SetMinimumSize</enum>
       </property>
@@ -94,6 +97,9 @@
         </property>
         <property name="text">
          <string>Unsaved edits</string>
+        </property>
+        <property name="textInteractionFlags">
+         <set>Qt::NoTextInteraction</set>
         </property>
        </widget>
       </item>

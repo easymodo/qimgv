@@ -152,11 +152,6 @@ FloatingWidget {
     border-top-right-radius: 1px;
 }
 /*----------------------------------------------------------------------------*/
-[accessibleName="OverlayHeaderLabel"] {
-    color: #bebebe;
-    padding: 4px;
-}
-/*----------------------------------------------------------------------------*/
 /* Close button */
 [accessibleName="OverlayCloseButton"] {
     background-color: transparent;
