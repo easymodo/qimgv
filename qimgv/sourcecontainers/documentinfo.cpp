@@ -103,12 +103,10 @@ void DocumentInfo::detectFormat() {
     } else if(mimeName == "video/mp4") {
         mFormat = "mp4";
         mDocumentType = DocumentType::VIDEO;
-    } else if(mimeName == "application/octet-stream") {
+    } else if(mimeName == "application/octet-stream" && (suffix == "webm" || suffix == "mp4")) {
         // it's possible for some downloaded videos to not have a correct mimetype
-        if(suffix == "webm" || suffix == "mp4") {
-            mFormat = suffix;
-            mDocumentType = DocumentType::VIDEO;
-        }
+        mFormat = suffix;
+        mDocumentType = DocumentType::VIDEO;
     } else {
         // just try to open via suffix if all of the above fails
         mFormat = fileInfo.completeSuffix();
