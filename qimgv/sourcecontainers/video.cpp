@@ -21,7 +21,7 @@ void Video::load() {
     if(isLoaded()) {
         return;
     }
-    clip = new Clip(mPath, mDocInfo->format());
+    clip = new Clip(mPath, mDocInfo->format().toStdString().c_str());
     mLoaded = true;
 }
 

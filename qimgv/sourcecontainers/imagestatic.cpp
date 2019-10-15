@@ -29,7 +29,7 @@ void ImageStatic::load() {
 
 
 void ImageStatic::loadGeneric() {
-    std::unique_ptr<const QImage> img(new QImage(mPath, mDocInfo->format()));
+    std::unique_ptr<const QImage> img(new QImage(mPath, mDocInfo->format().toStdString().c_str()));
     img = ImageLib::exifRotated(std::move(img), mDocInfo.get()->exifOrientation());
     // set image
     image = std::move(img);
@@ -59,11 +59,11 @@ bool ImageStatic::save(QString destPath) {
     int quality = destPath.endsWith(".png", Qt::CaseInsensitive) ? 30 : 95;
     bool success = false;
     if(isEdited()) {
-        success = imageEdited->save(destPath, nullptr, quality);
+        success = imageEdited->save(destPath, mDocInfo->format().toStdString().c_str(), quality);
         image.swap(imageEdited);
         discardEditedImage();
     } else {
-        success = image->save(destPath, nullptr, quality);
+        success = image->save(destPath, mDocInfo->format().toStdString().c_str(), quality);
     }
     if(destPath == mPath && success) {
         mDocInfo->refresh();

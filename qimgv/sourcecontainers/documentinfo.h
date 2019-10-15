@@ -39,7 +39,7 @@ public:
     QMimeType mimeType() const;
 
     // file extension (guessed from mime-type)
-    const char *format() const;
+    QString format() const;
     int exifOrientation() const;
 
     QDateTime lastModified() const;

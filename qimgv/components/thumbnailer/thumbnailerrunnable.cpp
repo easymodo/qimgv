@@ -78,7 +78,7 @@ QImage* ThumbnailerRunnable::createThumbnailImage(DocumentInfo *imgInfo, int siz
         filePath = imgInfo->filePath();
     }
     reader.setFileName(filePath);
-    reader.setFormat(imgInfo->format());
+    reader.setFormat(imgInfo->format().toStdString().c_str());
     Qt::AspectRatioMode method = squared?
                 (Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
     QSize scaledSize = reader.size().scaled(size, size, method);

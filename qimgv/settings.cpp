@@ -93,6 +93,7 @@ void Settings::setMpvBinary(QString path) {
 //------------------------------------------------------------------------------
 QList<QByteArray> Settings::supportedFormats() {
     auto formats = QImageReader::supportedImageFormats();
+    formats << "jfif";
     if(playWebm()) {
         formats << "webm";
     }

@@ -49,8 +49,9 @@ DocumentType DocumentInfo::type() const {
 QMimeType DocumentInfo::mimeType() const {
     return mMimeType;
 }
-const char *DocumentInfo::format() const {
-    return mFormat.toStdString().c_str();
+
+QString DocumentInfo::format() const {
+    return mFormat;
 }
 
 QDateTime DocumentInfo::lastModified() const {
@@ -110,6 +111,8 @@ void DocumentInfo::detectFormat() {
     } else {
         // just try to open via suffix if all of the above fails
         mFormat = fileInfo.completeSuffix();
+        if(mFormat.compare("jfif", Qt::CaseInsensitive))
+            mFormat = "jpg";
         mDocumentType = STATIC;
     }
 }
