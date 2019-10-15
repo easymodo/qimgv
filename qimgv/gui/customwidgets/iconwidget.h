@@ -20,7 +20,7 @@ protected:
 private:
     bool hiResPixmap;
     QPixmap *pixmap;
-    qreal dpr;
+    qreal dpr, pixmapDrawScale;
 };
 
 #endif // ICONWIDGET_H

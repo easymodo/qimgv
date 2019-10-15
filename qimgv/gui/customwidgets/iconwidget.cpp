@@ -16,15 +16,19 @@ IconWidget::~IconWidget() {
 void IconWidget::setIconPath(QString path) {
     if(pixmap)
         delete pixmap;
-    // TODO: maybe 2x pixmap will look better for dpr >= 1.5?
-    if(dpr >= (2.0 - 0.001)) {
+    if(dpr >= (1.0 + 0.001)) {
         path.replace(".", "@2x.");
         hiResPixmap = true;
         pixmap = new QPixmap(path);
-        pixmap->setDevicePixelRatio(dpr);
+        if(dpr >= (2.0 - 0.001))
+            pixmapDrawScale = dpr;
+        else
+            pixmapDrawScale = 2.0;
+        pixmap->setDevicePixelRatio(pixmapDrawScale);
     } else {
         hiResPixmap = false;
         pixmap = new QPixmap(path);
+        pixmapDrawScale = dpr;
     }
     update();
 }
@@ -40,8 +44,8 @@ void IconWidget::paintEvent(QPaintEvent *event) {
         p.setRenderHint(QPainter::SmoothPixmapTransform);
         QPointF pos;
         if(hiResPixmap) {
-            pos = QPointF(width()  / 2 - pixmap->width()  / (2 * dpr),
-                          height() / 2 - pixmap->height() / (2 * dpr));
+            pos = QPointF(width()  / 2 - pixmap->width()  / (2 * pixmapDrawScale),
+                          height() / 2 - pixmap->height() / (2 * pixmapDrawScale));
         } else {
             pos = QPointF(width()  / 2 - pixmap->width()  / 2,
                           height() / 2 - pixmap->height() / 2);
