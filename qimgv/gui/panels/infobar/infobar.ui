@@ -16,11 +16,6 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="font">
-   <font>
-    <family>xos4 Terminus</family>
-   </font>
-  </property>
   <property name="windowTitle">
    <string notr="true"/>
   </property>
@@ -44,22 +39,10 @@
     <number>3</number>
    </property>
    <item>
-    <widget class="QLabel" name="index">
-     <property name="font">
-      <font>
-       <family>Source Code Pro Medium</family>
-      </font>
-     </property>
-    </widget>
+    <widget class="QLabel" name="index"/>
    </item>
    <item>
-    <widget class="QLabel" name="path">
-     <property name="font">
-      <font>
-       <family>Source Code Pro Medium</family>
-      </font>
-     </property>
-    </widget>
+    <widget class="QLabel" name="path"/>
    </item>
    <item>
     <spacer name="horizontalSpacer">
@@ -75,13 +58,7 @@
     </spacer>
    </item>
    <item>
-    <widget class="QLabel" name="info">
-     <property name="font">
-      <font>
-       <family>Source Code Pro Medium</family>
-      </font>
-     </property>
-    </widget>
+    <widget class="QLabel" name="info"/>
    </item>
   </layout>
  </widget>
