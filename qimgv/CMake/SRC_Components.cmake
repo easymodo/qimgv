@@ -22,11 +22,15 @@ set(dir "components/thumbnailer")
 file(GLOB SRC_Components ${SRC_Components} ${dir}/*.cpp)
 
 set(dir "components/directorymanager/watchers")
-if(UNIX)
+
+if(HAIKU)
+#    message(STATUS "HAIKU detected")
+elseif(UNIX)
     file(GLOB SRC_Components ${SRC_Components} ${dir}/*.cpp ${dir}/linux/*.cpp)
 elseif(WIN32)
     file(GLOB SRC_Components ${SRC_Components} ${dir}/*.cpp ${dir}/windows/*.cpp)
-endif(UNIX)
+endif(HAIKU)
+
 set(dir "components/directorymanager")
 file(GLOB SRC_Components ${SRC_Components} ${dir}/*.cpp)
 

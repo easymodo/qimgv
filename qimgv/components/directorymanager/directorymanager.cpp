@@ -8,6 +8,7 @@ DirectoryManager::DirectoryManager() {
     regex.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
     collator.setNumericMode(true);
 
+    /*
     watcher = DirectoryWatcher::newInstance();
 
     connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
@@ -32,6 +33,7 @@ DirectoryManager::DirectoryManager() {
     //    qDebug() << "[w] file renamed from" << file1 << "to" << file2;
         onFileRenamedExternal(file1, file2);
     });
+    */
 
     readSettings();
     connect(settings, &Settings::settingsChanged, this, &DirectoryManager::readSettings);
@@ -113,8 +115,8 @@ bool DirectoryManager::setDirectory(QString path) {
     generateFileList();
     sortFileList();
     emit loaded(path);
-    watcher->setWatchPath(path);
-    watcher->observe();
+    //watcher->setWatchPath(path);
+    //watcher->observe();
     return true;
 }
 
@@ -199,8 +201,8 @@ bool DirectoryManager::removeFile(QString fileName, bool trash) {
     return false;
 }
 
-#ifdef Q_OS_WIN32
 void DirectoryManager::moveToTrash(QString file) {
+#ifdef Q_OS_WIN32
     QFileInfo fileinfo( file );
     if( !fileinfo.exists() )
         return;
@@ -219,11 +221,8 @@ void DirectoryManager::moveToTrash(QString file) {
         qDebug() << rv << QString::number( rv ).toInt( nullptr, 8 );
         qDebug() << "move to trash failed";
     }
-}
-#endif
 
-#ifdef Q_OS_LINUX
-void DirectoryManager::moveToTrash(QString file) {
+#elif Q_OS_LINUX
     #ifdef QT_GUI_LIB
     bool TrashInitialized = false;
     QString TrashPath;
@@ -293,8 +292,11 @@ void DirectoryManager::moveToTrash(QString file) {
     Q_UNUSED( file );
     qDebug() << "Trash in server-mode not supported";
     #endif
-}
+
+#else
+    qDebug() << "moveToTrash(): not yet supported on this platform";
 #endif
+}
 
 bool DirectoryManager::checkRange(int index) const {
     return index >= 0 && index < (int)entryVec.size();
@@ -361,7 +363,7 @@ void DirectoryManager::generateFileList() {
                 newEntry.size = entry.file_size();
                 newEntry.modifyTime = entry.last_write_time();
                 newEntry.isDirectory = entry.is_directory();
-            } catch (const std::filesystem::__cxx11::filesystem_error &err) {
+            } catch (const std::filesystem::filesystem_error &err) {
                 qDebug() << "[DirectoryManager]" << err.what();
                 continue;
             }
