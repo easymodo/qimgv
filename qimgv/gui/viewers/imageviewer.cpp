@@ -303,7 +303,7 @@ void ImageViewer::requestScaling() {
 }
 
 void ImageViewer::drawTransparencyGrid() {
-    if(pixmap && pixmap->hasAlphaChannel()) {
+    if(pixmap && pixmap->hasAlphaChannel() && pixmap->depth() != 8) {
         QPainter painter(pixmap.get());
         painter.setCompositionMode(QPainter::CompositionMode_DestinationOver);
         QColor dark(90,90,90,255);
