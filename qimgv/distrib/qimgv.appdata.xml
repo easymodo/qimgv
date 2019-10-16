@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2019 Artem Polishchuk <ego.cordatus@gmail.com> -->
+<component type="desktop">
+  <id>qimgv</id>
+  <metadata_license>CC0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>qimgv</name>
+  <summary>Qt5 image viewer with optional video support</summary>
+  <description>
+    <p>Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
+
+Key features:
+
+- Simple UI
+- Fast
+- Easy to use
+- Fully configurable, including shortcuts
+- Basic image editing: Crop, Rotate and Resize
+- Ability to quickly copy / move images to different folders
+- Experimental video playback via libmpv
+- Ability to run shell scripts
+- A nice dark theme, should look identical on every OS / DE</p>
+  </description>
+  <provides>
+    <binary>qimgv</binary>
+  </provides>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://camo.githubusercontent.com/00793753c37237167fca0a36e46524f0db1ee612/68747470733a2f2f692e696d6775722e636f6d2f4b6545543149652e706e67</image>
+    </screenshot>
+  </screenshots>
+  <developer_name>easymodo</developer_name>
+  <url type="homepage">https://github.com/easymodo/qimgv</url>
+  <url type="bugtracker">https://github.com/easymodo/qimgv/issues</url>
+  <url type="translate">https://github.com/easymodo/qimgv/tree/master/qimgv/res/translations</url>
+</component>
