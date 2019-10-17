@@ -155,6 +155,12 @@ __Void linux__:
 xbps-install -S qimgv
 ```
 
+__Fedora__: 
+
+```
+sudo dnf install qimgv
+```
+
 If your favorite distro is not included refer to [Manual install] section at the end of this document.
   
 ### Window$
