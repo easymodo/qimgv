@@ -25,7 +25,10 @@ void KeySequenceEdit::wheelEvent(QWheelEvent *e) {
 }
 
 void KeySequenceEdit::processEvent(QEvent *e) {
-    QString tmp = ShortcutBuilder::fromEvent(e);
+    QInputEvent *inputEvent = dynamic_cast<QInputEvent *>(e);
+    if(!inputEvent)
+        return;
+    QString tmp = ShortcutBuilder::fromEvent(inputEvent);
     if(!tmp.isEmpty()) {
         mSequence = tmp;
         this->setText(mSequence);

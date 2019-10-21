@@ -8,7 +8,6 @@
 #include <QMap>
 #include <QDebug>
 #include <QStringList>
-#include "utils/inputmap.h"
 #include "utils/actions.h"
 #include "shortcutbuilder.h"
 #include "components/scriptmanager/scriptmanager.h"
@@ -25,10 +24,9 @@ class ActionManager : public QObject {
 public:
     static ActionManager* getInstance();
     ~ActionManager();
-    bool processEvent(QEvent*);
+    bool processEvent(QInputEvent*);
     void addShortcut(const QString &keys, const QString &action);
     void resetDefaults();
-    QString actionForScanCode(quint32 code);
     QString actionForShortcut(const QString &keys);
     const QString shortcutForAction(QString action);
     const QList<QString> shortcutsForAction(QString action);

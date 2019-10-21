@@ -155,10 +155,6 @@ void ActionManager::saveShortcuts() {
     settings->saveShortcuts(actionManager->shortcuts);
 }
 //------------------------------------------------------------------------------
-QString ActionManager::actionForScanCode(quint32 code) {
-    return actionManager->shortcuts[inputMap->keys()[code]];
-}
-//------------------------------------------------------------------------------
 QString ActionManager::actionForShortcut(const QString &keys) {
     return actionManager->shortcuts[keys];
 }
@@ -217,7 +213,7 @@ void ActionManager::readShortcuts() {
     actionManager->validateShortcuts();
 }
 //------------------------------------------------------------------------------
-bool ActionManager::processEvent(QEvent *event) {
+bool ActionManager::processEvent(QInputEvent *event) {
     return actionManager->invokeActionForShortcut(ShortcutBuilder::fromEvent(event));
 }
 //------------------------------------------------------------------------------

@@ -11,16 +11,16 @@ FolderGridView::FolderGridView(QWidget *parent)
     this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
     this->scene.setBackgroundBrush(QColor(47,47,48)); //#2f2f30 TODO: use qss??
     setupLayout();
-    allowedKeys << "Up"
-                << "Down"
-                << "Left"
-                << "Right"
-                << "pageUp"
-                << "pageDown"
-                << "Return"
-                << "home"
-                << "end"
-                << "delete";
+    reservedShortcuts << "Up"
+                      << "Down"
+                      << "Left"
+                      << "Right"
+                      << "pageUp"
+                      << "pageDown"
+                      << "Return"
+                      << "home"
+                      << "end"
+                      << "delete";
 }
 
 // probably unneeded
@@ -267,35 +267,35 @@ void FolderGridView::updateLayout() {
 }
 
 void FolderGridView::keyPressEvent(QKeyEvent *event) {
-    quint32 nativeScanCode = event->nativeScanCode();
-    QString key = actionManager->keyForNativeScancode(nativeScanCode);
-    if(allowedKeys.contains(key)) {
-        if(key == "Right") {
+    QString shortcut = ShortcutBuilder::fromEvent(event);
+    qDebug() << "FolderView: " << shortcut;
+    if(reservedShortcuts.contains(shortcut)) {
+        if(shortcut == "Right") {
             selectNext();
         }
-        if(key == "Left") {
+        if(shortcut == "Left") {
             selectPrev();
         }
-        if(key == "Up") {
+        if(shortcut == "Up") {
             selectAbove();
         }
-        if(key == "Down") {
+        if(shortcut == "Down") {
             selectBelow();
         }
-        if(key == "Return") {
+        if(shortcut == "Return") {
             if(checkRange(mSelectedIndex))
                 emit thumbnailPressed(mSelectedIndex);
         }
-        if(key == "home") {
+        if(shortcut == "home") {
             selectFirst();
         }
-        if(key == "end") {
+        if(shortcut == "end") {
             selectLast();
         }
-        if(key == "pageUp") {
+        if(shortcut == "pageUp") {
             pageUp();
         }
-        if(key == "pageDown") {
+        if(shortcut == "pageDown") {
             pageDown();
         }
     } else {
