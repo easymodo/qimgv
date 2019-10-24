@@ -42,6 +42,7 @@ public:
     int thumbnailSize();
     void reset();
 
+    void unsetThumbnail();
 protected slots:
     virtual void readSettings();
 

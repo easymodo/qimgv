@@ -105,6 +105,18 @@ void ThumbnailWidget::setThumbnail(std::shared_ptr<Thumbnail> _thumbnail) {
     }
 }
 
+void ThumbnailWidget::unsetThumbnail() {
+    if(thumbnail)
+        thumbnail.reset();
+    isLoaded = false;
+    /*
+    updateThumbnailDrawPosition();
+    setupLayout();
+    updateHighlightRect();
+    update();
+    */
+}
+
 void ThumbnailWidget::setupLayout() {
     nameRect = QRectF(highlightRect.left(), highlightRect.height(),
                       highlightRect.width(), textHeight * 1.7);

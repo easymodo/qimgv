@@ -268,7 +268,6 @@ void FolderGridView::updateLayout() {
 
 void FolderGridView::keyPressEvent(QKeyEvent *event) {
     QString shortcut = ShortcutBuilder::fromEvent(event);
-    qDebug() << "FolderView: " << shortcut;
     if(reservedShortcuts.contains(shortcut)) {
         if(shortcut == "Right") {
             selectNext();

@@ -142,6 +142,7 @@ void ThumbnailView::loadVisibleThumbnails() {
         QList<QGraphicsItem *>visibleItems = scene.items(visibleRect,
                                                    Qt::IntersectsItemShape,
                                                    Qt::AscendingOrder);
+        // load new previews
         QList<int> loadList;
         for(int i = 0; i < visibleItems.count(); i++) {
             ThumbnailWidget* widget = qgraphicsitem_cast<ThumbnailWidget*>(visibleItems.at(i));
@@ -151,6 +152,12 @@ void ThumbnailView::loadVisibleThumbnails() {
         }
         if(loadList.count()) {
             emit thumbnailsRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize));
+        }
+        // unload offscreen
+        for(int i = 0; i < thumbnails.count(); i++) {
+            if(!visibleItems.contains(thumbnails.at(i))) {
+                thumbnails.at(i)->unsetThumbnail();
+            }
         }
     }
 }
