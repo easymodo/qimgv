@@ -325,6 +325,8 @@ void Core::sortBy(SortingMode mode) {
 }
 
 void Core::renameCurrentFile(QString newName) {
+    if(newName == model->currentFileName())
+        return;
     QString newPath = model->fullPath(newName);
     QString currentPath = model->currentFilePath();
     bool exists = model->contains(newName);

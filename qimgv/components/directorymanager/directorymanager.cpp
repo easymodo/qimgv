@@ -422,6 +422,8 @@ void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
         onFileAddedExternal(newFile);
         return;
     }
+    if(!this->isSupportedFile(newFile))
+        return;
     // remove old one
     int index = indexOf(oldFile);
     entryVec.erase(entryVec.begin() + index);
