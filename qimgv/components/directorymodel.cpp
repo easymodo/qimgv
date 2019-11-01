@@ -136,7 +136,9 @@ void DirectoryModel::copyTo(QString destDirectory, QString fileName, FileOpResul
         return;
     }
     // copy
-    if(!dirManager.copyTo(destDirectory, fileName))
+    if(dirManager.copyTo(destDirectory, fileName))
+        result = FileOpResult::SUCCESS;
+    else
         result = FileOpResult::OTHER_ERROR;
     return;
 }
