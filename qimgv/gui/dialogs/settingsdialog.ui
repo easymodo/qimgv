@@ -1481,7 +1481,7 @@
                     <enum>QFrame::Box</enum>
                    </property>
                    <property name="text">
-                    <string/>
+                    <string notr="true"/>
                    </property>
                   </widget>
                  </item>
@@ -1489,6 +1489,48 @@
                   <widget class="QLabel" name="label_16">
                    <property name="text">
                     <string>Background color:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_6">
+                 <property name="leftMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="label_22">
+                   <property name="text">
+                    <string>Info bar text color:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="ClickableLabel" name="fullscreenTextColorLabel">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>30</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::Box</enum>
+                   </property>
+                   <property name="text">
+                    <string notr="true"/>
                    </property>
                   </widget>
                  </item>
@@ -1700,7 +1742,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>426</width>
-                <height>420</height>
+                <height>242</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2423,8 +2465,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>400</width>
-                <height>434</height>
+                <width>383</width>
+                <height>203</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2727,8 +2769,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>400</width>
-                <height>434</height>
+                <width>256</width>
+                <height>226</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -2978,8 +3020,8 @@ p, li { white-space: pre-wrap; }
    <slot>resetShortcuts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>267</x>
-     <y>30</y>
+     <x>277</x>
+     <y>23</y>
     </hint>
     <hint type="destinationlabel">
      <x>587</x>
@@ -3010,8 +3052,8 @@ p, li { white-space: pre-wrap; }
    <slot>removeShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>215</x>
-     <y>30</y>
+     <x>225</x>
+     <y>23</y>
     </hint>
     <hint type="destinationlabel">
      <x>584</x>
@@ -3026,8 +3068,8 @@ p, li { white-space: pre-wrap; }
    <slot>addShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>189</x>
-     <y>30</y>
+     <x>199</x>
+     <y>23</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -3074,8 +3116,8 @@ p, li { white-space: pre-wrap; }
    <slot>selectMpvPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>520</x>
-     <y>213</y>
+     <x>551</x>
+     <y>199</y>
     </hint>
     <hint type="destinationlabel">
      <x>596</x>
@@ -3186,8 +3228,8 @@ p, li { white-space: pre-wrap; }
    <slot>onThumbnailerThreadsSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>520</x>
-     <y>181</y>
+     <x>551</x>
+     <y>164</y>
     </hint>
     <hint type="destinationlabel">
      <x>591</x>
@@ -3203,7 +3245,7 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>569</x>
-     <y>253</y>
+     <y>264</y>
     </hint>
     <hint type="destinationlabel">
      <x>583</x>
@@ -3234,12 +3276,28 @@ p, li { white-space: pre-wrap; }
    <slot>highlightColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>463</x>
-     <y>58</y>
+     <x>269</x>
+     <y>51</y>
     </hint>
     <hint type="destinationlabel">
      <x>586</x>
      <y>44</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fullscreenTextColorLabel</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>fullscreenTextColorDialog()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>551</x>
+     <y>302</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>590</x>
+     <y>294</y>
     </hint>
    </hints>
   </connection>
@@ -3264,5 +3322,6 @@ p, li { white-space: pre-wrap; }
   <slot>fullscreenColorDialog()</slot>
   <slot>windowColorDialog()</slot>
   <slot>highlightColorDialog()</slot>
+  <slot>fullscreenTextColorDialog()</slot>
  </slots>
 </ui>

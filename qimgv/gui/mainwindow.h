@@ -8,7 +8,7 @@
 #include "gui/customwidgets/floatingwidgetcontainer.h"
 #include "gui/viewers/viewerwidget.h"
 #include "gui/overlays/controlsoverlay.h"
-#include "gui/overlays/infooverlayproxy.h"
+#include "gui/overlays/fullscreeninfooverlayproxy.h"
 #include "gui/overlays/floatingmessageproxy.h"
 #include "gui/overlays/saveconfirmoverlay.h"
 #include "gui/panels/mainpanel/thumbnailstrip.h"
@@ -18,7 +18,7 @@
 #include "gui/overlays/cropoverlay.h"
 #include "gui/overlays/copyoverlay.h"
 #include "gui/overlays/changelogwindow.h"
-#include "gui/overlays/imageinfooverlayproxywrapper.h"
+#include "gui/overlays/imageinfooverlayproxy.h"
 #include "gui/overlays/renameoverlay.h"
 #include "gui/dialogs/resizedialog.h"
 #include "gui/centralwidget.h"
@@ -89,10 +89,10 @@ private:
 
     RenameOverlay *renameOverlay;
 
-    ImageInfoOverlayProxyWrapper *imageInfoOverlay;
+    ImageInfoOverlayProxy *imageInfoOverlay;
 
     ControlsOverlay *controlsOverlay;
-    InfoOverlayProxyWrapper *infoBarFullscreen;
+    FullscreenInfoOverlayProxy *infoBarFullscreen;
     std::shared_ptr<InfoBarProxy> infoBarWindowed;
     FloatingMessageProxy *floatingMessage;
 

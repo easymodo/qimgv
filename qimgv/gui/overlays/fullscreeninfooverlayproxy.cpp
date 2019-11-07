@@ -1,27 +1,27 @@
-#include "infooverlayproxy.h"
+#include "fullscreeninfooverlayproxy.h"
 
-InfoOverlayProxyWrapper::InfoOverlayProxyWrapper(FloatingWidgetContainer *parent)
+FullscreenInfoOverlayProxy::FullscreenInfoOverlayProxy(FloatingWidgetContainer *parent)
     : container(parent),
       infoOverlay(nullptr)
 {
 }
 
-InfoOverlayProxyWrapper::~InfoOverlayProxyWrapper() {
+FullscreenInfoOverlayProxy::~FullscreenInfoOverlayProxy() {
     if(infoOverlay)
         infoOverlay->deleteLater();
 }
 
-void InfoOverlayProxyWrapper::show() {
+void FullscreenInfoOverlayProxy::show() {
     init();
     infoOverlay->show();
 }
 
-void InfoOverlayProxyWrapper::hide() {
+void FullscreenInfoOverlayProxy::hide() {
     if(infoOverlay)
         infoOverlay->hide();
 }
 
-void InfoOverlayProxyWrapper::setInfo(QString _position, QString _fileName, QString _info) {
+void FullscreenInfoOverlayProxy::setInfo(QString _position, QString _fileName, QString _info) {
     if(infoOverlay) {
         infoOverlay->setInfo(_position, _fileName, _info);
     } else {
@@ -31,10 +31,10 @@ void InfoOverlayProxyWrapper::setInfo(QString _position, QString _fileName, QStr
     }
 }
 
-void InfoOverlayProxyWrapper::init() {
+void FullscreenInfoOverlayProxy::init() {
     if(infoOverlay)
         return;
-    infoOverlay = new InfoOverlay(container);
+    infoOverlay = new FullscreenInfoOverlay(container);
     if(!stateBuf.fileName.isEmpty())
         setInfo(stateBuf.position, stateBuf.fileName, stateBuf.info);
 }

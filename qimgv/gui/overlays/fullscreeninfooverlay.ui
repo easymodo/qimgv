@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>InfoOverlay</class>
- <widget class="QWidget" name="InfoOverlay">
+ <class>FullscreenInfoOverlay</class>
+ <widget class="QWidget" name="FullscreenInfoOverlay">
   <property name="enabled">
    <bool>false</bool>
   </property>
@@ -29,7 +29,7 @@
    <string notr="true"/>
   </property>
   <property name="accessibleName">
-   <string notr="true">InfoOverlay</string>
+   <string notr="true">FullscreenInfoOverlay</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">

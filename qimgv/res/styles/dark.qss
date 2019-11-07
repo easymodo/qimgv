@@ -197,7 +197,7 @@ FloatingWidget QLineEdit::hover {
 
 /*----------------------------------------------------------------------------*/
 
-InfoOverlay {
+FullscreenInfoOverlay {
     background-color: rgba(0, 0, 0, 140);
     border-color: rgba(0, 0, 0, 100);
     border-top: 0px;
@@ -207,8 +207,8 @@ InfoOverlay {
     border-bottom-left-radius: 0px;
 }
 
-InfoOverlay QLabel {
-    color: #d2d2d2;
+FullscreenInfoOverlay QLabel {
+/*    color: #d2d2d2;  managed from settings  */
     font: bold;
 }
 

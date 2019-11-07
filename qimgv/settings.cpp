@@ -326,6 +326,14 @@ void Settings::setHighlightColor(QColor color) {
     settings->s->setValue("highlightColor", color);
 }
 //------------------------------------------------------------------------------
+QColor Settings::fullscreenInfoTextColor() {
+    return settings->s->value("fullscreenInfoTextColor", QColor(210, 210, 210)).value<QColor>();
+}
+
+void Settings::setFullscreenInfoTextColor(QColor color) {
+    settings->s->setValue("fullscreenInfoTextColor", color);
+}
+//------------------------------------------------------------------------------
 bool Settings::fullscreenMode() {
     return settings->s->value("openInFullscreen", false).toBool();
 }

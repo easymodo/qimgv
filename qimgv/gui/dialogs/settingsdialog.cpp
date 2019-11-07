@@ -10,6 +10,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->windowColorLabel->setAutoFillBackground(true);
     ui->fullscreenColorLabel->setAutoFillBackground(true);
+    ui->fullscreenTextColorLabel->setAutoFillBackground(true);
     ui->accentColorLabel->setAutoFillBackground(true);
     ui->highlightColorLabel->setAutoFillBackground(true);
     ui->aboutAppTextBrowser->viewport()->setAutoFillBackground(false);
@@ -122,6 +123,10 @@ void SettingsDialog::readSettings() {
     fullscreenColorPalette.setColor(QPalette::Window, fullscreenColor);
     ui->fullscreenColorLabel->setPalette(fullscreenColorPalette);
 
+    QColor fullscreenTextColor = settings->fullscreenInfoTextColor();
+    fullscreenTextColorPalette.setColor(QPalette::Window, fullscreenTextColor);
+    ui->fullscreenTextColorLabel->setPalette(fullscreenTextColorPalette);
+
     //accent color
     QColor accentColor = settings->accentColor();
     accentLabelPalette.setColor(QPalette::Window, accentColor);
@@ -197,6 +202,7 @@ void SettingsDialog::applySettings() {
 
     settings->setBackgroundColor(windowColorPalette.color(QPalette::Window));
     settings->setBackgroundColorFullscreen(fullscreenColorPalette.color(QPalette::Window));
+    settings->setFullscreenInfoTextColor(fullscreenTextColorPalette.color(QPalette::Window));
     settings->setAccentColor(accentLabelPalette.color(QPalette::Window));
     settings->setHighlightColor(highlightLabelPalette.color(QPalette::Window));
 
@@ -395,6 +401,19 @@ void SettingsDialog::fullscreenColorDialog() {
     delete colorDialog;
 }
 
+void SettingsDialog::fullscreenTextColorDialog() {
+    QColorDialog *colorDialog = new QColorDialog(this);
+    QColor newColor;
+    newColor = colorDialog->getColor(fullscreenTextColorPalette.color(QPalette::Window),
+                                     this,
+                                     "Fullscreen info text color");
+    if(newColor.isValid()) {
+        fullscreenTextColorPalette.setColor(QPalette::Window, newColor);
+        ui->fullscreenTextColorLabel->setPalette(fullscreenTextColorPalette);
+    }
+    delete colorDialog;
+}
+
 void SettingsDialog::accentColorDialog() {
     QColorDialog *colorDialog = new QColorDialog(this);
     QColor newColor;
@@ -439,8 +458,5 @@ void SettingsDialog::onBgOpacitySliderChanged(int value) {
 }
 
 int SettingsDialog::exec() {
-    //this->show();
-    //setMinimumSize(sizeHint());
-    //resize(sizeHint());
     return QDialog::exec();
 }

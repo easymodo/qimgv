@@ -31,7 +31,7 @@ public:
 public slots:
     int exec();
 private:
-    QPalette windowColorPalette, fullscreenColorPalette, accentLabelPalette, highlightLabelPalette;
+    QPalette windowColorPalette, fullscreenColorPalette, fullscreenTextColorPalette, accentLabelPalette, highlightLabelPalette;
     void readSettings();
     void populateShortcuts();
     void populateScripts();
@@ -72,6 +72,7 @@ private slots:
     void onBgOpacitySliderChanged(int value);
     void onThumbnailerThreadsSliderChanged(int value);
     void fullscreenColorDialog();
+    void fullscreenTextColorDialog();
 signals:
     void settingsChanged();
 };

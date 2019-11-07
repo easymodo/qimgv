@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/overlays/infooverlay.h"
+#include "gui/overlays/fullscreeninfooverlay.h"
 
 struct InfoOverlayStateBuffer {
     QString position;
@@ -8,10 +8,10 @@ struct InfoOverlayStateBuffer {
     QString info;
 };
 
-class InfoOverlayProxyWrapper {
+class FullscreenInfoOverlayProxy {
 public:
-    explicit InfoOverlayProxyWrapper(FloatingWidgetContainer *parent = nullptr);
-    ~InfoOverlayProxyWrapper();
+    explicit FullscreenInfoOverlayProxy(FloatingWidgetContainer *parent = nullptr);
+    ~FullscreenInfoOverlayProxy();
     void init();
     void show();
     void hide();
@@ -19,6 +19,6 @@ public:
 
 private:
     FloatingWidgetContainer *container;
-    InfoOverlay *infoOverlay;
+    FullscreenInfoOverlay *infoOverlay;
     InfoOverlayStateBuffer stateBuf;
 };

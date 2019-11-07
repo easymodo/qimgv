@@ -65,13 +65,13 @@ void MW::setupUi() {
     centralWidget.reset(new CentralWidget(docWidget, folderView, this));
     layout.addWidget(centralWidget.get());
     controlsOverlay = new ControlsOverlay(docWidget.get());
-    infoBarFullscreen = new InfoOverlayProxyWrapper(viewerWidget.get());
+    infoBarFullscreen = new FullscreenInfoOverlayProxy(viewerWidget.get());
     //changelogWindow = new ChangelogWindow(this);
     sidePanel = new SidePanel(this);
     layout.addWidget(sidePanel);
     thumbnailStrip.reset(new ThumbnailStrip());
     mainPanel = new MainPanel(thumbnailStrip, this);
-    imageInfoOverlay = new ImageInfoOverlayProxyWrapper(this);
+    imageInfoOverlay = new ImageInfoOverlayProxy(this);
     floatingMessage = new FloatingMessageProxy(this);
     connect(viewerWidget.get(), &ViewerWidget::scalingRequested, this, &MW::scalingRequested);
     connect(viewerWidget.get(), &ViewerWidget::draggedOut,       this, &MW::draggedOut);

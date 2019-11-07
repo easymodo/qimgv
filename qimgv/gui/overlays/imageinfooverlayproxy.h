@@ -6,10 +6,10 @@ struct ImageInfoOverlayStateBuffer {
     QMap<QString, QString> info;
 };
 
-class ImageInfoOverlayProxyWrapper {
+class ImageInfoOverlayProxy {
 public:
-    explicit ImageInfoOverlayProxyWrapper(FloatingWidgetContainer *parent = nullptr);
-    ~ImageInfoOverlayProxyWrapper();
+    explicit ImageInfoOverlayProxy(FloatingWidgetContainer *parent = nullptr);
+    ~ImageInfoOverlayProxy();
     void init();
     void show();
     void hide();
