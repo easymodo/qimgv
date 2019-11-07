@@ -6,7 +6,7 @@
 
 #include "overlaywidget.h"
 
-OverlayWidget::OverlayWidget(OverlayContainerWidget *parent) : QWidget(parent) {
+OverlayWidget::OverlayWidget(OverlayContainerWidget *parent) : QWidget(parent), mAcceptKeyboardFocus(false) {
     this->setAccessibleName("OverlayWidget");
     connect(parent, &OverlayContainerWidget::resized, this, &OverlayWidget::onContainerResized);
     hide();
@@ -31,4 +31,12 @@ void OverlayWidget::paintEvent(QPaintEvent *event) {
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+bool OverlayWidget::acceptKeyboardFocus() const {
+    return mAcceptKeyboardFocus;
+
+}
+void OverlayWidget::setAcceptKeyboardFocus(bool mode) {
+    mAcceptKeyboardFocus = mode;
 }

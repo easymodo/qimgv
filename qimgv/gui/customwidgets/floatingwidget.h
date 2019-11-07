@@ -53,7 +53,6 @@ private slots:
 protected:
     virtual void recalculateGeometry();
     FloatingWidgetPosition position;
-
 };
 
 #endif // FLOATINGWIDGET_H

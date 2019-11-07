@@ -21,6 +21,8 @@ CopyOverlay::CopyOverlay(OverlayContainerWidget *parent) :
         createDefaultPaths();
     createPathWidgets();
 
+    setAcceptKeyboardFocus(true);
+
     if(parent)
         setContainerSize(parent->size());
 

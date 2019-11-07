@@ -4,6 +4,10 @@
 #include <QWidget>
 #include <memory>
 #include <QVBoxLayout>
+#include <QDebug>
+#include <stack>
+
+class OverlayWidget;
 
 class OverlayContainerWidget : public QWidget {
     Q_OBJECT
@@ -15,6 +19,8 @@ signals:
 
 protected:
     void resizeEvent(QResizeEvent *event);
+    void focusInEvent(QFocusEvent *event);
+    std::stack<OverlayWidget> overlays;
 };
 
 #endif // OVERLAYCONTAINERWIDGET_H

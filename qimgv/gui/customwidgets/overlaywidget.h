@@ -7,6 +7,7 @@
 #define OVERLAYWIDGET_H
 
 #include "gui/customwidgets/overlaycontainerwidget.h"
+#include <memory>
 #include <QStyleOption>
 #include <QPainter>
 #include <QDebug>
@@ -17,6 +18,8 @@ class OverlayWidget : public QWidget
 public:
     explicit OverlayWidget(OverlayContainerWidget *parent);
     QSize containerSize();
+    bool acceptKeyboardFocus() const;
+    void setAcceptKeyboardFocus(bool mode);
 
 protected:
     // called whenever container rectangle changes
@@ -27,6 +30,7 @@ protected:
 private:
     // size of whatever widget we are overlayed on
     QSize container;
+    bool mAcceptKeyboardFocus;
 
 private slots:
     void onContainerResized(QSize container);

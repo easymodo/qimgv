@@ -12,6 +12,7 @@ RenameOverlay::RenameOverlay(OverlayContainerWidget *parent) :
     ui->closeButton->setIconPath(":res/icons/buttons/close-dim16.png");
     ui->headerIcon->setIconPath(":res/icons/buttons/edit16.png");
     setPosition(FloatingWidgetPosition::CENTER);
+    setAcceptKeyboardFocus(true);
     hide();
     if(parent)
         setContainerSize(parent->size());
