@@ -1,8 +1,8 @@
 #include "saveconfirmoverlay.h"
 #include "ui_saveconfirmoverlay.h"
 
-SaveConfirmOverlay::SaveConfirmOverlay(OverlayContainerWidget *parent) :
-    FloatingWidget(parent),
+SaveConfirmOverlay::SaveConfirmOverlay(FloatingWidgetContainer *parent) :
+    OverlayWidget(parent),
     ui(new Ui::SaveConfirmOverlay)
 {
     ui->setupUi(this);

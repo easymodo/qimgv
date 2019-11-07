@@ -1,6 +1,6 @@
 #include "imageinfooverlayproxywrapper.h"
 
-ImageInfoOverlayProxyWrapper::ImageInfoOverlayProxyWrapper(OverlayContainerWidget *parent)
+ImageInfoOverlayProxyWrapper::ImageInfoOverlayProxyWrapper(FloatingWidgetContainer *parent)
     : container(parent),
       overlay(nullptr)
 {

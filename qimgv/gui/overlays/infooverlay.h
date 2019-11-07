@@ -2,17 +2,17 @@
 #define INFOOVERLAY_H
 
 #include <QWidget>
-#include "gui/customwidgets/floatingwidget.h"
+#include "gui/customwidgets/overlaywidget.h"
 
 namespace Ui {
 class InfoOverlay;
 }
 
-class InfoOverlay : public FloatingWidget {
+class InfoOverlay : public OverlayWidget {
     Q_OBJECT
 
 public:
-    explicit InfoOverlay(OverlayContainerWidget *parent = nullptr);
+    explicit InfoOverlay(FloatingWidgetContainer *parent = nullptr);
     ~InfoOverlay();
 
     void setInfo(QString pos, QString fileName, QString info);

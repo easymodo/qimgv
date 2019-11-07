@@ -1,8 +1,8 @@
 #include "infooverlay.h"
 #include "ui_infooverlay.h"
 
-InfoOverlay::InfoOverlay(OverlayContainerWidget *parent) :
-    FloatingWidget(parent),
+InfoOverlay::InfoOverlay(FloatingWidgetContainer *parent) :
+    OverlayWidget(parent),
     ui(new Ui::InfoOverlay)
 {
     ui->setupUi(this);

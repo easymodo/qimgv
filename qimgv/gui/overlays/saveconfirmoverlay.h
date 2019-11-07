@@ -1,7 +1,7 @@
 #ifndef SAVECONFIRMOVERLAY_H
 #define SAVECONFIRMOVERLAY_H
 
-#include "gui/customwidgets/floatingwidget.h"
+#include "gui/customwidgets/overlaywidget.h"
 #include "settings.h"
 #include <QPushButton>
 
@@ -9,11 +9,11 @@ namespace Ui {
 class SaveConfirmOverlay;
 }
 
-class SaveConfirmOverlay : public FloatingWidget
+class SaveConfirmOverlay : public OverlayWidget
 {
     Q_OBJECT
 public:
-    explicit SaveConfirmOverlay(OverlayContainerWidget *parent = nullptr);
+    explicit SaveConfirmOverlay(FloatingWidgetContainer *parent = nullptr);
     ~SaveConfirmOverlay();
 
 signals:

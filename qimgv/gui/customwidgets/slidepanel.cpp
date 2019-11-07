@@ -1,22 +1,11 @@
-/*
- *
- * Base class for auto-hiding panels.
- * Insert widget you want to show with setWidget().
- */
-
 #include "slidepanel.h"
 
-SlidePanel::SlidePanel(OverlayContainerWidget *parent)
-    : OverlayWidget(parent),
+SlidePanel::SlidePanel(FloatingWidgetContainer *parent)
+    : FloatingWidget(parent),
       panelSize(50),
       slideAmount(40),
       mWidget(nullptr)
 {
-    // workaround for https://bugreports.qt.io/browse/QTBUG-66387
-    if( strcmp(qVersion(), "5.10.1") == 0 || strcmp(qVersion(), "5.9.4") == 0) {
-        panelVisibleOpacity = 0.999;
-    }
-
     mLayout.setSpacing(0);
     mLayout.setContentsMargins(0,0,0,0);
     this->setLayout(&mLayout);

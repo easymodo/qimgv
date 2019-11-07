@@ -3,7 +3,7 @@
 // TODO: nuke this and rewrite
 
 MW::MW(QWidget *parent)
-    : OverlayContainerWidget(parent),
+    : FloatingWidgetContainer(parent),
       currentDisplay(0),
       desktopWidget(nullptr),
       bgOpacity(1.0),
@@ -397,7 +397,7 @@ void MW::resizeEvent(QResizeEvent *event) {
         cropOverlay->setImageScale(viewerWidget->currentScale());
         cropOverlay->setImageDrawRect(viewerWidget->imageRect());
     }
-    OverlayContainerWidget::resizeEvent(event);
+    FloatingWidgetContainer::resizeEvent(event);
 }
 
 void MW::leaveEvent(QEvent *event) {
@@ -759,5 +759,5 @@ void MW::paintEvent(QPaintEvent *event) {
     p.setOpacity(bgOpacity);
     p.setBrush(QBrush(bgColor));
     p.fillRect(this->rect(), p.brush());
-    OverlayContainerWidget::paintEvent(event);
+    FloatingWidgetContainer::paintEvent(event);
 }

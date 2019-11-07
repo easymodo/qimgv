@@ -1,7 +1,7 @@
 #include "controlsoverlay.h"
 
-ControlsOverlay::ControlsOverlay(OverlayContainerWidget *parent) :
-    OverlayWidget(parent)
+ControlsOverlay::ControlsOverlay(FloatingWidgetContainer *parent) :
+    FloatingWidget(parent)
 {
     folderViewButton = new ActionButton("folderView", ":/res/icons/buttons/folderview20.png", 30);
     folderViewButton->setAccessibleName("PanelButtonSmall");
@@ -41,7 +41,7 @@ ControlsOverlay::ControlsOverlay(OverlayContainerWidget *parent) :
 
 void ControlsOverlay::show() {
     fadeEffect->setOpacity(0.0);
-    OverlayWidget::show();
+    FloatingWidget::show();
 }
 
 QSize ControlsOverlay::contentsSize() {

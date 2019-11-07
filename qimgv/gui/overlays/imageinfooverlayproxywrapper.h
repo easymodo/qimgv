@@ -9,7 +9,7 @@ struct ImageInfoOverlayStateBuffer {
 
 class ImageInfoOverlayProxyWrapper {
 public:
-    explicit ImageInfoOverlayProxyWrapper(OverlayContainerWidget *parent = nullptr);
+    explicit ImageInfoOverlayProxyWrapper(FloatingWidgetContainer *parent = nullptr);
     ~ImageInfoOverlayProxyWrapper();
     void init();
     void show();
@@ -18,7 +18,7 @@ public:
     void setExifInfo(QMap<QString, QString> info);
     bool isHidden();
 private:
-    OverlayContainerWidget *container;
+    FloatingWidgetContainer *container;
     ImageInfoOverlay *overlay;
     ImageInfoOverlayStateBuffer stateBuf;
 };

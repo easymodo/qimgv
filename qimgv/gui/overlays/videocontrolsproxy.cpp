@@ -1,6 +1,6 @@
 #include "videocontrolsproxy.h"
 
-VideoControlsProxyWrapper::VideoControlsProxyWrapper(OverlayContainerWidget *parent)
+VideoControlsProxyWrapper::VideoControlsProxyWrapper(FloatingWidgetContainer *parent)
     : container(parent),
       videoControls(nullptr)
 {

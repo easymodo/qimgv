@@ -1,8 +1,8 @@
 #include "changelogwindow.h"
 #include "ui_changelogwindow.h"
 
-ChangelogWindow::ChangelogWindow(OverlayContainerWidget *parent) :
-    FloatingWidget(parent),
+ChangelogWindow::ChangelogWindow(FloatingWidgetContainer *parent) :
+    OverlayWidget(parent),
     ui(new Ui::ChangelogWindow)
 {
     ui->setupUi(this);
@@ -50,12 +50,12 @@ void ChangelogWindow::keyPressEvent(QKeyEvent *event) {
 }
 
 void ChangelogWindow::show() {
-    FloatingWidget::show();
+    OverlayWidget::show();
     ui->closeButton->setFocus();
 }
 
 void ChangelogWindow::hide() {
     ui->closeButton->clearFocus();
     ui->shutUpButton->clearFocus();
-    FloatingWidget::hide();
+    OverlayWidget::hide();
 }

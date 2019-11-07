@@ -1,8 +1,8 @@
 #include "renameoverlay.h"
 #include "ui_renameoverlay.h"
 
-RenameOverlay::RenameOverlay(OverlayContainerWidget *parent) :
-    FloatingWidget(parent),
+RenameOverlay::RenameOverlay(FloatingWidgetContainer *parent) :
+    OverlayWidget(parent),
     ui(new Ui::RenameOverlay)
 {
     ui->setupUi(this);
@@ -24,12 +24,12 @@ RenameOverlay::~RenameOverlay() {
 
 void RenameOverlay::show() {
     selectName();
-    FloatingWidget::show();
+    OverlayWidget::show();
     QTimer::singleShot(0, ui->fileName, SLOT(setFocus()));
 }
 
 void RenameOverlay::hide() {
-    FloatingWidget::hide();
+    OverlayWidget::hide();
     ui->fileName->clearFocus();
 }
 

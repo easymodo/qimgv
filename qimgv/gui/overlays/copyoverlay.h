@@ -5,7 +5,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QKeyEvent>
-#include "gui/customwidgets/floatingwidget.h"
+#include "gui/customwidgets/overlaywidget.h"
 #include "gui/customwidgets/pathselectormenuitem.h"
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"
@@ -19,10 +19,10 @@ namespace Ui {
     class CopyOverlay;
 }
 
-class CopyOverlay : public FloatingWidget {
+class CopyOverlay : public OverlayWidget {
     Q_OBJECT
 public:
-    CopyOverlay(OverlayContainerWidget *parent);
+    CopyOverlay(FloatingWidgetContainer *parent);
     ~CopyOverlay();
     void saveSettings();    
     void setDialogMode(CopyOverlayMode _mode);

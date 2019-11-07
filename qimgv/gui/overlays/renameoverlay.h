@@ -6,19 +6,19 @@
 #include <QKeyEvent>
 #include <QTimer>
 
-#include "gui/customwidgets/floatingwidget.h"
+#include "gui/customwidgets/overlaywidget.h"
 
 
 namespace Ui {
 class RenameOverlay;
 }
 
-class RenameOverlay : public FloatingWidget
+class RenameOverlay : public OverlayWidget
 {
     Q_OBJECT
 
 public:
-    explicit RenameOverlay(OverlayContainerWidget *parent);
+    explicit RenameOverlay(FloatingWidgetContainer *parent);
     ~RenameOverlay();
 
 public slots:

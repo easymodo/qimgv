@@ -6,13 +6,13 @@
 class FloatingMessageProxy
 {
 public:
-    FloatingMessageProxy(OverlayContainerWidget *parent);
+    FloatingMessageProxy(FloatingWidgetContainer *parent);
     ~FloatingMessageProxy();
     void showMessage(QString text, FloatingMessageIcon icon, int duration);
     void showMessage(QString text, FloatingWidgetPosition position, FloatingMessageIcon icon, int duration);
     void init();
 private:
-    OverlayContainerWidget *container;
+    FloatingWidgetContainer *container;
     FloatingMessage *overlay;
 };
 

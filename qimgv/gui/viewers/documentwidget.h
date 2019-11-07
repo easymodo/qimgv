@@ -3,13 +3,13 @@
 
 #include <memory>
 #include <QVBoxLayout>
-#include "gui/customwidgets/overlaycontainerwidget.h"
+#include "gui/customwidgets/floatingwidgetcontainer.h"
 #include "gui/viewers/viewerwidget.h"
 #include "gui/panels/infobar/infobarproxy.h"
 
 // TODO: use a template here?
 
-class DocumentWidget : public OverlayContainerWidget {
+class DocumentWidget : public FloatingWidgetContainer {
 public:
     DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::shared_ptr<InfoBarProxy> infoBar, QWidget* parent = nullptr);
     std::shared_ptr<ViewerWidget> viewWidget();

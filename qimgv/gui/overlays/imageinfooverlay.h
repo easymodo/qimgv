@@ -1,19 +1,19 @@
 #ifndef IMAGEINFOOVERLAY_H
 #define IMAGEINFOOVERLAY_H
 
-#include "gui/customwidgets/floatingwidget.h"
+#include "gui/customwidgets/overlaywidget.h"
 #include <QWheelEvent>
 
 namespace Ui {
 class ImageInfoOverlay;
 }
 
-class ImageInfoOverlay : public FloatingWidget
+class ImageInfoOverlay : public OverlayWidget
 {
     Q_OBJECT
 
 public:
-    explicit ImageInfoOverlay(OverlayContainerWidget *parent = nullptr);
+    explicit ImageInfoOverlay(FloatingWidgetContainer *parent = nullptr);
     ~ImageInfoOverlay();
     void setExifInfo(QMap<QString, QString>);
 

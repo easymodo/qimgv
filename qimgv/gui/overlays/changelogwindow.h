@@ -7,7 +7,7 @@
 #include <QPushButton>
 #include <QWheelEvent>
 #include <QTextBrowser>
-#include "gui/customwidgets/floatingwidget.h"
+#include "gui/customwidgets/overlaywidget.h"
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"
 
@@ -15,10 +15,10 @@ namespace Ui {
     class ChangelogWindow;
 }
 
-class ChangelogWindow : public FloatingWidget {
+class ChangelogWindow : public OverlayWidget {
     Q_OBJECT
 public:
-    explicit ChangelogWindow(OverlayContainerWidget *parent);
+    explicit ChangelogWindow(FloatingWidgetContainer *parent);
     ~ChangelogWindow();
     void setText(QString text);
 

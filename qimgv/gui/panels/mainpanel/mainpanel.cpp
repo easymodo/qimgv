@@ -1,6 +1,6 @@
 #include "mainpanel.h"
 
-MainPanel::MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *parent) : SlideHPanel(parent) {
+MainPanel::MainPanel(std::shared_ptr<QWidget> widget, FloatingWidgetContainer *parent) : SlideHPanel(parent) {
     // buttons stuff
     buttonsWidget.setAccessibleName("panelButtonsWidget");
 

@@ -1,17 +1,20 @@
-#include "overlaycontainerwidget.h"
+#include "floatingwidgetcontainer.h"
 #include "gui/customwidgets/floatingwidget.h"
 
-OverlayContainerWidget::OverlayContainerWidget(QWidget *parent) : QWidget(parent) {
+FloatingWidgetContainer::FloatingWidgetContainer(QWidget *parent) : QWidget(parent) {
     // set focus policy so we'll receive focusInEvents
     setFocusPolicy(Qt::FocusPolicy::StrongFocus);
 }
 
-void OverlayContainerWidget::resizeEvent(QResizeEvent *event) {
+void FloatingWidgetContainer::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
     emit resized(size());
 }
 
-void OverlayContainerWidget::focusInEvent(QFocusEvent *event) {
+// give focus to the first visible overlay that wants it
+// ideally this should be a stack with the most recently shown widget at the top
+// you are not likely to have >2 overlays at the same time so this suffices
+void FloatingWidgetContainer::focusInEvent(QFocusEvent *event) {
     QWidget::focusInEvent(event);
     auto children = this->children();
     for (auto i : children) {

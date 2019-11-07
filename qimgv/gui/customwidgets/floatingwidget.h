@@ -1,58 +1,41 @@
-/* Base class for floating widgets.
- * It will automatically reposition itself according to FloatingWidgetPosition.
+/*
+ * Base class for floating panels / overlay widgets.
+ * It is not supposed to go into any kind of layout, just set parent & call show().
+ * Usage: reimplement recalculateGeometry() method, which sets the new
+ * geometry when the parent is resized.
  */
 
 #ifndef FLOATINGWIDGET_H
 #define FLOATINGWIDGET_H
 
-#include "gui/customwidgets/overlaywidget.h"
-#include <QTimeLine>
-#include <QGraphicsOpacityEffect>
-#include <QPropertyAnimation>
+#include "gui/customwidgets/floatingwidgetcontainer.h"
+#include <QStyleOption>
+#include <QPainter>
 #include <QDebug>
 
-enum FloatingWidgetPosition {
-    LEFT,
-    RIGHT,
-    BOTTOM,
-    TOP,
-    TOPLEFT,
-    TOPRIGHT,
-    BOTTOMLEFT,
-    BOTTOMRIGHT,
-    CENTER
-};
-
-class FloatingWidget : public OverlayWidget
+class FloatingWidget : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY (qreal opacity READ opacity WRITE setOpacity)
 public:
-    FloatingWidget(OverlayContainerWidget *parent);
-    ~FloatingWidget();
-    void setMarginX(int);
-    void setMarginY(int);
-    void setPosition(FloatingWidgetPosition pos);
-    void setFadeDuration(int duration);
-    void setFadeEnabled(bool mode);
-
-public slots:
-    void show();
-    void hide();
-
-private:
-    QGraphicsOpacityEffect *opacityEffect;
-    int marginX, marginY;
-    bool fadeEnabled;
-    QPropertyAnimation *fadeAnimation;
-
-private slots:
-    void setOpacity(qreal opacity);
-    qreal opacity() const;
+    explicit FloatingWidget(FloatingWidgetContainer *parent);
+    QSize containerSize();
+    bool acceptKeyboardFocus() const;
+    void setAcceptKeyboardFocus(bool mode);
 
 protected:
+    // called whenever container rectangle changes
+    // this does nothing, reimplement to use
     virtual void recalculateGeometry();
-    FloatingWidgetPosition position;
+    void paintEvent(QPaintEvent *event);
+    void setContainerSize(QSize container);
+
+private:
+    // size of whatever widget we are overlayed on
+    QSize container;
+    bool mAcceptKeyboardFocus;
+
+private slots:
+    void onContainerResized(QSize container);
 };
 
 #endif // FLOATINGWIDGET_H

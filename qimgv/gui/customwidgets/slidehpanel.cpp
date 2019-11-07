@@ -1,12 +1,6 @@
-/*
- * This panel will use sizeHint().height() from the widget it contains.
- * Width will match containerSize()Size.width()
- * TODO: implement "expand" switch.
- */
-
 #include "slidehpanel.h"
 
-SlideHPanel::SlideHPanel(OverlayContainerWidget *parent)
+SlideHPanel::SlideHPanel(FloatingWidgetContainer *parent)
     : SlidePanel(parent)
 {
     bottomMargin = 6;

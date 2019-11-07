@@ -1,3 +1,7 @@
+/* This panel will use sizeHint().height() from the widget it contains.
+ * Width will match containerSize().width()
+ */
+
 #ifndef SLIDEHPANEL_H
 #define SLIDEHPANEL_H
 
@@ -7,7 +11,7 @@ class SlideHPanel : public SlidePanel
 {
     Q_OBJECT
 public:
-    explicit SlideHPanel(OverlayContainerWidget *parent);
+    explicit SlideHPanel(FloatingWidgetContainer *parent);
     ~SlideHPanel();
     void setPosition(PanelHPosition);
     QRect triggerRect();

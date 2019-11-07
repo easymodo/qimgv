@@ -1,8 +1,8 @@
 #include "videocontrols.h"
 #include "ui_videocontrols.h"
 
-VideoControls::VideoControls(OverlayContainerWidget *parent) :
-    FloatingWidget(parent),
+VideoControls::VideoControls(FloatingWidgetContainer *parent) :
+    OverlayWidget(parent),
     ui(new Ui::VideoControls)
 {
     ui->setupUi(this);

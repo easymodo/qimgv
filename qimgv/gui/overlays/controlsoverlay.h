@@ -5,14 +5,14 @@
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 #include <QDebug>
-#include "gui/customwidgets/overlaywidget.h"
+#include "gui/customwidgets/floatingwidget.h"
 #include "gui/customwidgets/actionbutton.h"
 
-class ControlsOverlay : public OverlayWidget
+class ControlsOverlay : public FloatingWidget
 {
     Q_OBJECT
 public:
-    explicit ControlsOverlay(OverlayContainerWidget *parent);
+    explicit ControlsOverlay(FloatingWidgetContainer *parent);
 
 public slots:
     void show();

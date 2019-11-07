@@ -12,7 +12,7 @@ struct VideoControlsStateBuffer {
 class VideoControlsProxyWrapper : public QObject {
     Q_OBJECT
 public:
-    explicit VideoControlsProxyWrapper(OverlayContainerWidget *parent = nullptr);
+    explicit VideoControlsProxyWrapper(FloatingWidgetContainer *parent = nullptr);
     ~VideoControlsProxyWrapper();
     void init();
 
@@ -33,7 +33,7 @@ public slots:
     void onVideoPaused(bool);
 
 private:
-    OverlayContainerWidget *container;
+    FloatingWidgetContainer *container;
     VideoControls *videoControls;
     VideoControlsStateBuffer stateBuf;
 };

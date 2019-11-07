@@ -1,6 +1,6 @@
 #include "floatingmessageproxy.h"
 
-FloatingMessageProxy::FloatingMessageProxy(OverlayContainerWidget *parent) :
+FloatingMessageProxy::FloatingMessageProxy(FloatingWidgetContainer *parent) :
     container(parent),
     overlay(nullptr)
 {

@@ -1,7 +1,7 @@
 #ifndef VIDEOCONTROLS_H
 #define VIDEOCONTROLS_H
 
-#include "gui/customwidgets/floatingwidget.h"
+#include "gui/customwidgets/overlaywidget.h"
 #include "settings.h"
 #include <QPushButton>
 
@@ -9,12 +9,12 @@ namespace Ui {
 class VideoControls;
 }
 
-class VideoControls : public FloatingWidget
+class VideoControls : public OverlayWidget
 {
     Q_OBJECT
 
 public:
-    explicit VideoControls(OverlayContainerWidget *parent = nullptr);
+    explicit VideoControls(FloatingWidgetContainer *parent = nullptr);
     ~VideoControls();
 
 public slots:

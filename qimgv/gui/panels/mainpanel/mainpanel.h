@@ -8,7 +8,7 @@
 class MainPanel : public SlideHPanel {
     Q_OBJECT
 public:
-    MainPanel(std::shared_ptr<QWidget> widget, OverlayContainerWidget *parent);
+    MainPanel(std::shared_ptr<QWidget> widget, FloatingWidgetContainer *parent);
     ~MainPanel();
     void setHeight(int newHeight);
     void setPosition(PanelHPosition);

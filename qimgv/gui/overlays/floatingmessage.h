@@ -3,7 +3,7 @@
 
 #include <QTimer>
 #include <QLabel>
-#include "gui/customwidgets/floatingwidget.h"
+#include "gui/customwidgets/overlaywidget.h"
 #include "settings.h"
 
 namespace Ui {
@@ -20,10 +20,10 @@ enum FloatingMessageIcon {
 };
 
 
-class FloatingMessage : public FloatingWidget {
+class FloatingMessage : public OverlayWidget {
     Q_OBJECT 
 public:
-    FloatingMessage(OverlayContainerWidget *parent);
+    FloatingMessage(FloatingWidgetContainer *parent);
     ~FloatingMessage();
     void showMessage(QString text, FloatingMessageIcon icon, int fadeDuration);
     void showMessage(QString text, FloatingWidgetPosition position, FloatingMessageIcon icon, int duration);

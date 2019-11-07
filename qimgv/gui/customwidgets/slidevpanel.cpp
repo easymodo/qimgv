@@ -1,6 +1,6 @@
 #include "slidevpanel.h"
 
-SlideVPanel::SlideVPanel(OverlayContainerWidget *w)
+SlideVPanel::SlideVPanel(FloatingWidgetContainer *w)
     : SlidePanel(w)
 {
     mLayout.setContentsMargins(0,0,0,0);

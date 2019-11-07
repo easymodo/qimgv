@@ -1,3 +1,7 @@
+/* Base class for auto-hiding panels.
+ * Insert widget you want to show with setWidget().
+ */
+
 #ifndef SLIDEPANEL_H
 #define SLIDEPANEL_H
 
@@ -8,31 +12,32 @@
 #include <QGridLayout>
 #include <QTimer>
 #include <QTimeLine>
-#include "overlaywidget.h"
+#include "floatingwidget.h"
 #include "settings.h"
+#include <memory>
 #include <QDebug>
 #include <ctime>
 
-class SlidePanel : public OverlayWidget {
+class SlidePanel : public FloatingWidget {
     Q_OBJECT
 public:
-    explicit SlidePanel(OverlayContainerWidget *parent);
+    explicit SlidePanel(FloatingWidgetContainer *parent);
     ~SlidePanel();
     bool hasWidget();
     void setWidget(std::shared_ptr<QWidget> w);
     // Use visibleGeometry instead of geometry() here.
     // If this is called mid-animation then geometry() will be all wrong.
     virtual QRect triggerRect() = 0;
-
     void hideAnimated();
+
 public slots:
     void show();
     void hide();
 
 private slots:
     void onAnimationFinish();
-
     void animationUpdate(int frame);
+
 protected:
     QGridLayout mLayout;
     QGraphicsOpacityEffect *fadeEffect;
@@ -49,7 +54,6 @@ protected:
     QEasingCurve outCurve;
     const int ANIMATION_DURATION = 230;
 
-//    void mouseMoveEvent(QMouseEvent *event);
 private:
     QRect mStaticGeometry;
     qreal panelVisibleOpacity = 1.0;

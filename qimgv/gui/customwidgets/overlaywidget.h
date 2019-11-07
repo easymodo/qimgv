@@ -1,39 +1,58 @@
-/* A widget which is overlayed on top of another (usually parent).
- * Usage: implement recalculateGeometry() method, which sets the new
- * geometry depending on containerSize().
+/* Base class for floating widgets.
+ * It will automatically reposition itself according to FloatingWidgetPosition.
  */
 
 #ifndef OVERLAYWIDGET_H
 #define OVERLAYWIDGET_H
 
-#include "gui/customwidgets/overlaycontainerwidget.h"
-#include <memory>
-#include <QStyleOption>
-#include <QPainter>
+#include "gui/customwidgets/floatingwidget.h"
+#include <QTimeLine>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
 #include <QDebug>
 
-class OverlayWidget : public QWidget
+enum FloatingWidgetPosition {
+    LEFT,
+    RIGHT,
+    BOTTOM,
+    TOP,
+    TOPLEFT,
+    TOPRIGHT,
+    BOTTOMLEFT,
+    BOTTOMRIGHT,
+    CENTER
+};
+
+class OverlayWidget : public FloatingWidget
 {
     Q_OBJECT
+    Q_PROPERTY (qreal opacity READ opacity WRITE setOpacity)
 public:
-    explicit OverlayWidget(OverlayContainerWidget *parent);
-    QSize containerSize();
-    bool acceptKeyboardFocus() const;
-    void setAcceptKeyboardFocus(bool mode);
+    OverlayWidget(FloatingWidgetContainer *parent);
+    ~OverlayWidget();
+    void setMarginX(int);
+    void setMarginY(int);
+    void setPosition(FloatingWidgetPosition pos);
+    void setFadeDuration(int duration);
+    void setFadeEnabled(bool mode);
 
-protected:
-    // called whenever container rectangle changes
-    virtual void recalculateGeometry() = 0;
-    void paintEvent(QPaintEvent *event);
-    void setContainerSize(QSize container);
+public slots:
+    void show();
+    void hide();
 
 private:
-    // size of whatever widget we are overlayed on
-    QSize container;
-    bool mAcceptKeyboardFocus;
+    QGraphicsOpacityEffect *opacityEffect;
+    int marginX, marginY;
+    bool fadeEnabled;
+    QPropertyAnimation *fadeAnimation;
 
 private slots:
-    void onContainerResized(QSize container);
+    void setOpacity(qreal opacity);
+    qreal opacity() const;
+
+protected:
+    virtual void recalculateGeometry();
+    FloatingWidgetPosition position;
 };
 
 #endif // OVERLAYWIDGET_H

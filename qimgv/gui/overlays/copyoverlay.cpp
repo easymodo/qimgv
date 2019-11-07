@@ -1,8 +1,8 @@
 #include "copyoverlay.h"
 #include "ui_copyoverlay.h"
 
-CopyOverlay::CopyOverlay(OverlayContainerWidget *parent) :
-    FloatingWidget(parent),
+CopyOverlay::CopyOverlay(FloatingWidgetContainer *parent) :
+    OverlayWidget(parent),
     ui(new Ui::CopyOverlay)
 {
     ui->setupUi(this);
@@ -35,7 +35,7 @@ CopyOverlay::~CopyOverlay() {
 }
 
 void CopyOverlay::show() {
-    FloatingWidget::show();
+    OverlayWidget::show();
     setFocus();
 }
 

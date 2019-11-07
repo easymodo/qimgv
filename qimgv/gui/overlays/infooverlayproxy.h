@@ -11,7 +11,7 @@ struct InfoOverlayStateBuffer {
 
 class InfoOverlayProxyWrapper {
 public:
-    explicit InfoOverlayProxyWrapper(OverlayContainerWidget *parent = nullptr);
+    explicit InfoOverlayProxyWrapper(FloatingWidgetContainer *parent = nullptr);
     ~InfoOverlayProxyWrapper();
     void init();
     void show();
@@ -19,7 +19,7 @@ public:
     void setInfo(QString position, QString fileName, QString info);
 
 private:
-    OverlayContainerWidget *container;
+    FloatingWidgetContainer *container;
     InfoOverlay *infoOverlay;
     InfoOverlayStateBuffer stateBuf;
 };

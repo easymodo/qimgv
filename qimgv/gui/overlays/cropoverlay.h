@@ -1,7 +1,7 @@
 #ifndef CROPOVERLAY_H
 #define CROPOVERLAY_H
 
-#include "gui/customwidgets/overlaywidget.h"
+#include "gui/customwidgets/floatingwidget.h"
 #include <QDebug>
 #include <QPainter>
 #include <QPaintEvent>
@@ -22,11 +22,11 @@ enum CursorAction {
     DRAG_BOTTOMRIGHT  // 11
 };
 
-class CropOverlay : public OverlayWidget
+class CropOverlay : public FloatingWidget
 {
     Q_OBJECT
 public:
-    explicit CropOverlay(OverlayContainerWidget *parent = nullptr);
+    explicit CropOverlay(FloatingWidgetContainer *parent = nullptr);
     void setImageDrawRect(QRect);
     void setImageRealSize(QSize);
     void setButtonText(QString text);

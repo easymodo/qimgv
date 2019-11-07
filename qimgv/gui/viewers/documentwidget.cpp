@@ -1,7 +1,7 @@
 #include "documentwidget.h"
 
 DocumentWidget::DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::shared_ptr<InfoBarProxy> infoBar, QWidget *parent)
-    : OverlayContainerWidget(parent)
+    : FloatingWidgetContainer(parent)
 {
     layout.setContentsMargins(0,0,0,0);
     layout.setSpacing(0);

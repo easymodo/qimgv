@@ -6,7 +6,7 @@
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QMimeData>
-#include "gui/customwidgets/overlaycontainerwidget.h"
+#include "gui/customwidgets/floatingwidgetcontainer.h"
 #include "gui/viewers/viewerwidget.h"
 #include "gui/overlays/controlsoverlay.h"
 #include "gui/overlays/infooverlayproxy.h"
@@ -48,7 +48,7 @@ enum ActiveSidePanel {
     SIDEPANEL_NONE
 };
 
-class MW : public OverlayContainerWidget
+class MW : public FloatingWidgetContainer
 {
     Q_OBJECT
 public:

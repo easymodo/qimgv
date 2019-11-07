@@ -1,8 +1,8 @@
 #include "floatingmessage.h"
 #include "ui_floatingmessage.h"
 
-FloatingMessage::FloatingMessage(OverlayContainerWidget *parent) :
-    FloatingWidget(parent),
+FloatingMessage::FloatingMessage(FloatingWidgetContainer *parent) :
+    OverlayWidget(parent),
     preferredPosition(FloatingWidgetPosition::BOTTOM),
     ui(new Ui::FloatingMessage)
 {
@@ -98,7 +98,7 @@ void FloatingMessage::mousePressEvent(QMouseEvent *event) {
 // "blink" the widget; show then fade out immediately
 void FloatingMessage::show() {
     visibilityTimer.stop();
-    FloatingWidget::show();
+    OverlayWidget::show();
     // fade out after delay
     visibilityTimer.setInterval(hideDelay);
     visibilityTimer.start();
