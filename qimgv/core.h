@@ -1,5 +1,4 @@
-#ifndef CORE_H
-#define CORE_H
+#pragma once
 
 #include <QObject>
 #include <QDebug>
@@ -122,5 +121,3 @@ private slots:
     void outputError(const FileOpResult &error) const;
     void showOpenDialog();
 };
-
-#endif // CORE_H

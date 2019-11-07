@@ -1,5 +1,4 @@
-#ifndef IDIRECTORYVIEW_H
-#define IDIRECTORYVIEW_H
+#pragma once
 
 #include <QList>
 #include <memory>
@@ -22,5 +21,3 @@ public:
     virtual void thumbnailPressed(int) = 0;
     virtual void thumbnailsRequested(QList<int>, int) = 0;
 };
-
-#endif // IDIRECTORYVIEW_H

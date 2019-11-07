@@ -2,8 +2,7 @@
  * It will automatically reposition itself according to FloatingWidgetPosition.
  */
 
-#ifndef OVERLAYWIDGET_H
-#define OVERLAYWIDGET_H
+#pragma once
 
 #include "gui/customwidgets/floatingwidget.h"
 #include <QTimeLine>
@@ -54,5 +53,3 @@ protected:
     virtual void recalculateGeometry();
     FloatingWidgetPosition position;
 };
-
-#endif // OVERLAYWIDGET_H

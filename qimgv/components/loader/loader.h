@@ -1,5 +1,4 @@
-#ifndef NEWLOADER_H
-#define NEWLOADER_H
+#pragma once
 
 #include <QThreadPool>
 #include <QtConcurrent>
@@ -29,5 +28,3 @@ signals:
 private slots:
     void onLoadFinished(std::shared_ptr<Image>, QString);
 };
-
-#endif // NEWLOADER_H

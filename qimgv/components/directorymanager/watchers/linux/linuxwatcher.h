@@ -1,5 +1,4 @@
-#ifndef LINUXDIRECTORYWATCHER_H
-#define LINUXDIRECTORYWATCHER_H
+#pragma once
 
 #include "../directorywatcher.h"
 
@@ -15,5 +14,3 @@ public:
 private:
     Q_DECLARE_PRIVATE(LinuxWatcher)
 };
-
-#endif // LINUXDIRECTORYWATCHER_H

@@ -1,5 +1,4 @@
-#ifndef INFOBARPROXY_H
-#define INFOBARPROXY_H
+#pragma once
 
 #include "gui/panels/infobar/infobar.h"
 #include <QVBoxLayout>
@@ -25,5 +24,3 @@ private:
     InfoBar *infoBar;
     QVBoxLayout layout;
 };
-
-#endif // INFOBARPROXY_H

@@ -1,5 +1,4 @@
-#ifndef RESIZEDIALOG_H
-#define RESIZEDIALOG_H
+#pragma once
 
 #include <QDialog>
 #include <QVBoxLayout>
@@ -45,5 +44,3 @@ private slots:
 signals:
     void sizeSelected(QSize);
 };
-
-#endif // RESIZEDIALOG_H

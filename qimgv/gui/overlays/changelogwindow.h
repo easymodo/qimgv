@@ -1,5 +1,4 @@
-#ifndef CHANGELOGWINDOW_H
-#define CHANGELOGWINDOW_H
+#pragma once
 
 #include <QWidget>
 #include <QKeyEvent>
@@ -37,5 +36,3 @@ private:
 private slots:
     void hideAndShutUp();
 };
-
-#endif // CHANGELOGWINDOW_H

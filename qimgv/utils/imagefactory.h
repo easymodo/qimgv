@@ -1,5 +1,4 @@
-#ifndef IMAGEFACTORY_H
-#define IMAGEFACTORY_H
+#pragma once
 
 #include "utils/imagelib.h"
 #include "sourcecontainers/documentinfo.h"
@@ -12,5 +11,3 @@ class ImageFactory {
 public:
     static std::shared_ptr<Image> createImage(QString path);
 };
-
-#endif // IMAGEFACTORY_H

@@ -1,5 +1,4 @@
-#ifndef DUMMYWATCHER_H
-#define DUMMYWATCHER_H
+#pragma once
 
 #include "directorywatcher.h"
 
@@ -8,5 +7,3 @@ class DummyWatcher : public DirectoryWatcher
 public:
     DummyWatcher();
 };
-
-#endif // DUMMYWATCHER_H

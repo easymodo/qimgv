@@ -1,5 +1,4 @@
-#ifndef THUMBNAILER_H
-#define THUMBNAILER_H
+#pragma once
 
 #include <QThreadPool>
 #include <QtConcurrent>
@@ -32,5 +31,3 @@ private slots:
 signals:
     void thumbnailReady(std::shared_ptr<Thumbnail>);
 };
-
-#endif // THUMBNAILER_H

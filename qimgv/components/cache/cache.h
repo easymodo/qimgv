@@ -1,5 +1,4 @@
-#ifndef CACHE_H
-#define CACHE_H
+#pragma once
 
 #include <QDebug>
 #include <QMap>
@@ -27,5 +26,3 @@ public:
 private:
     QMap<QString, CacheItem*> items;
 };
-
-#endif // CACHE_H

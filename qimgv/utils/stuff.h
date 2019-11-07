@@ -1,5 +1,4 @@
-#ifndef STUFF_H
-#define STUFF_H
+#pragma once
 
 #include <QString>
 
@@ -13,5 +12,3 @@ int clamp(int x, int lower, int upper);
 int probeOS();
 StdString toStdString(QString str);
 QString fromStdString(StdString str);
-
-#endif // STUFF_H

@@ -1,5 +1,4 @@
-#ifndef IMAGEINFOOVERLAYPROXYWRAPPER_H
-#define IMAGEINFOOVERLAYPROXYWRAPPER_H
+#pragma once
 
 #include "gui/overlays/imageinfooverlay.h"
 
@@ -22,5 +21,3 @@ private:
     ImageInfoOverlay *overlay;
     ImageInfoOverlayStateBuffer stateBuf;
 };
-
-#endif // IMAGEINFOOVERLAYPROXYWRAPPER_H

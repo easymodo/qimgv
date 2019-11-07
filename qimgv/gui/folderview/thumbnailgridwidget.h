@@ -1,5 +1,4 @@
-#ifndef THUMBNAILGRIDWIDGET_H
-#define THUMBNAILGRIDWIDGET_H
+#pragma once
 
 #include "gui/customwidgets/thumbnailwidget.h"
 
@@ -25,5 +24,3 @@ private:
     bool nameFits;
     int labelSpacing;
 };
-
-#endif // THUMBNAILGRIDWIDGET_H

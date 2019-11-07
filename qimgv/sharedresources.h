@@ -1,5 +1,4 @@
-#ifndef SHAREDRESOURCES_H
-#define SHAREDRESOURCES_H
+#pragma once
 
 #include <QPixmap>
 #include <QDebug>
@@ -19,5 +18,3 @@ private:
 };
 
 extern SharedResources *shrRes;
-
-#endif // SHAREDRESOURCES_H

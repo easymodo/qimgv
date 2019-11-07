@@ -1,5 +1,4 @@
-#ifndef MPVWIDGET_H
-#define MPVWIDGET_H
+#pragma once
 
 #include <QtWidgets/QOpenGLWidget>
 #include <mpv/client.h>
@@ -51,5 +50,3 @@ private:
     mpv::qt::Handle mpv;
     mpv_opengl_cb_context *mpv_gl;
 };
-
-#endif // MPVWIDGET_H

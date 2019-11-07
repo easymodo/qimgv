@@ -1,5 +1,4 @@
-#ifndef HELPRUNNER_H
-#define HELPRUNNER_H
+#pragma once
 
 #include <QApplication>
 #include <QObject>
@@ -11,5 +10,3 @@ class HelpRunner : public QObject {
 public slots:
     void run();
 };
-
-#endif // HELPRUNNER_H

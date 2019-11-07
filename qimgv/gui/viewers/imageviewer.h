@@ -1,5 +1,4 @@
-#ifndef IMAGEVIEWER_H
-#define IMAGEVIEWER_H
+#pragma once
 
 #include <QWidget>
 #include <QDesktopWidget>
@@ -155,5 +154,3 @@ private:
     QPoint propertyDrawPos();
     void stopPosAnimation();
 };
-
-#endif // IMAGEVIEWER_H

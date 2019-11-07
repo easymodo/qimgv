@@ -1,5 +1,4 @@
-#ifndef DIRECTORYVIEWWRAPPER_H
-#define DIRECTORYVIEWWRAPPER_H
+#pragma once
 
 #include <QObject>
 #include "gui/idirectoryview.h"
@@ -29,5 +28,3 @@ private:
     IDirectoryView *view;
 
 };
-
-#endif // DIRECTORYVIEWWRAPPER_H

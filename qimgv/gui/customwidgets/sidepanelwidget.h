@@ -1,5 +1,4 @@
-#ifndef SIDEPANELWIDGET_H
-#define SIDEPANELWIDGET_H
+#pragma once
 
 #include <QObject>
 #include <QWidget>
@@ -15,5 +14,3 @@ signals:
 public slots:
     virtual void show() = 0;
 };
-
-#endif // SIDEPANELWIDGET_H

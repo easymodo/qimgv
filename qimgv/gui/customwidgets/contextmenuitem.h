@@ -1,7 +1,6 @@
 // A menu item that executes an action on press
 
-#ifndef CONTEXTMENUITEM_H
-#define CONTEXTMENUITEM_H
+#pragma once
 
 #include "gui/customwidgets/menuitem.h"
 #include "components/actionmanager/actionmanager.h"
@@ -19,5 +18,3 @@ protected:
 private:
     QString mAction;
 };
-
-#endif // CONTEXTMENUITEM_H

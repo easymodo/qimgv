@@ -1,5 +1,4 @@
-#ifndef KEYSEQUENCEEDIT_H
-#define KEYSEQUENCEEDIT_H
+#pragma once
 
 #include <QPushButton>
 #include "shortcutbuilder.h"
@@ -24,5 +23,3 @@ private:
 signals:
     void edited();
 };
-
-#endif // KEYSEQUENCEEDIT_H

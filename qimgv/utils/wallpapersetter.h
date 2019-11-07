@@ -1,5 +1,4 @@
-#ifndef WALLPAPERSETTER_H
-#define WALLPAPERSETTER_H
+#pragma once
 
 #ifdef _WIN32
 #include <windows.h>
@@ -16,5 +15,3 @@ public:
 
     static void setWallpaper(QString path);
 };
-
-#endif // WALLPAPERSETTER_H

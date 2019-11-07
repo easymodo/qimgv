@@ -1,5 +1,4 @@
-#ifndef QIMAGESTATIC_H
-#define QIMAGESTATIC_H
+#pragma once
 
 #include <QImage>
 #include <QImageWriter>
@@ -36,5 +35,3 @@ private:
     void loadGeneric();
     void loadICO();
 };
-
-#endif // QIMAGESTATIC_H

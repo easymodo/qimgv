@@ -1,5 +1,4 @@
-#ifndef INFOBAR_H
-#define INFOBAR_H
+#pragma once
 
 #include <QWidget>
 #include <QDebug>
@@ -23,5 +22,3 @@ protected:
 private:
     Ui::InfoBar *ui;
 };
-
-#endif // INFOBAR_H

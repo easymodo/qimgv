@@ -1,5 +1,4 @@
-#ifndef DOCUMENTWIDGET_H
-#define DOCUMENTWIDGET_H
+#pragma once
 
 #include <memory>
 #include <QVBoxLayout>
@@ -20,5 +19,3 @@ private:
     std::shared_ptr<ViewerWidget> mViewWidget;
     std::shared_ptr<InfoBarProxy> mInfoBar;
 };
-
-#endif // DOCUMENTWIDGET_H

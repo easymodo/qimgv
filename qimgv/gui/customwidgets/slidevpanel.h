@@ -2,8 +2,7 @@
  * Height will match containerSize().height()
  */
 
-#ifndef SLIDEVPANEL_H
-#define SLIDEVPANEL_H
+#pragma once
 
 #include "slidepanel.h"
 
@@ -20,5 +19,3 @@ protected:
     void recalculateGeometry();
     virtual void updateTriggerRect();
 };
-
-#endif // SLIDEVPANEL_H

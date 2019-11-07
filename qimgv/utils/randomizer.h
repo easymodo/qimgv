@@ -1,5 +1,4 @@
-#ifndef RANDOMIZER_H
-#define RANDOMIZER_H
+#pragma once
 
 #include <algorithm>
 #include <chrono>
@@ -28,5 +27,3 @@ private:
     void fill();
     int indexOf(int n);
 };
-
-#endif // RANDOMIZER_H

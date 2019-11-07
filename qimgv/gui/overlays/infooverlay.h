@@ -1,5 +1,4 @@
-#ifndef INFOOVERLAY_H
-#define INFOOVERLAY_H
+#pragma once
 
 #include <QWidget>
 #include "gui/customwidgets/overlaywidget.h"
@@ -19,5 +18,3 @@ public:
 private:
     Ui::InfoOverlay *ui;
 };
-
-#endif // INFOOVERLAY_H

@@ -1,5 +1,4 @@
-#ifndef INFOOVERLAYPROXY_H
-#define INFOOVERLAYPROXY_H
+#pragma once
 
 #include "gui/overlays/infooverlay.h"
 
@@ -23,5 +22,3 @@ private:
     InfoOverlay *infoOverlay;
     InfoOverlayStateBuffer stateBuf;
 };
-
-#endif // INFOOVERLAYPROXY_H

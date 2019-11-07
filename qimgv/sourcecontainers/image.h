@@ -1,5 +1,4 @@
-#ifndef IMAGE_H
-#define IMAGE_H
+#pragma once
 
 #include <QString>
 #include <QDebug>
@@ -38,5 +37,3 @@ protected:
     QString mPath;
     QSize resolution;
 };
-
-#endif // IMAGE_H

@@ -1,5 +1,4 @@
-#ifndef MainWindow_H
-#define MainWindow_H
+#pragma once
 
 #include <QObject>
 #include <QWidget>
@@ -218,5 +217,3 @@ public slots:
     void setFilterBilinear();
     void toggleScalingFilter();
 };
-
-#endif // MainWindow_H

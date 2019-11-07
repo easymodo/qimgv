@@ -2,8 +2,7 @@
  * Width will match containerSize().width()
  */
 
-#ifndef SLIDEHPANEL_H
-#define SLIDEHPANEL_H
+#pragma once
 
 #include "slidepanel.h"
 
@@ -24,5 +23,3 @@ protected:
     void recalculateGeometry();
     virtual void updateTriggerRect();
 };
-
-#endif // SLIDEHPANEL_H

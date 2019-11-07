@@ -1,5 +1,4 @@
-#ifndef ControlsOverlay_H
-#define ControlsOverlay_H
+#pragma once
 
 #include <QHBoxLayout>
 #include <QGraphicsOpacityEffect>
@@ -30,5 +29,3 @@ protected:
     void enterEvent(QEvent *event);
     void leaveEvent(QEvent *event);
 };
-
-#endif // ControlsOverlay_H

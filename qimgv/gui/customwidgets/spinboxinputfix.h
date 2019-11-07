@@ -1,7 +1,6 @@
 // this spin box ignores all keyboard input except numbers, up/down keys
 
-#ifndef SPINBOXINPUTFIX_H
-#define SPINBOXINPUTFIX_H
+#pragma once
 
 #include <QSpinBox>
 #include <QKeyEvent>
@@ -20,5 +19,3 @@ private:
 protected:
     void keyPressEvent(QKeyEvent *event);
 };
-
-#endif // SPINBOXINPUTFIX_H

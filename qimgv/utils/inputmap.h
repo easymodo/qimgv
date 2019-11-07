@@ -1,5 +1,4 @@
-#ifndef INPUTMAP_H
-#define INPUTMAP_H
+#pragma once
 
 #include <QMap>
 #include <QString>
@@ -19,5 +18,3 @@ private:
 };
 
 extern InputMap *inputMap;
-
-#endif // INPUTMAP_H

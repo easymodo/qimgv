@@ -1,5 +1,4 @@
-#ifndef VIEWERWIDGET_H
-#define VIEWERWIDGET_H
+#pragma once
 
 #include "gui/customwidgets/floatingwidgetcontainer.h"
 #include <QHBoxLayout>
@@ -100,5 +99,3 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void hideEvent(QHideEvent *event);
 };
-
-#endif // VIEWERWIDGET_H

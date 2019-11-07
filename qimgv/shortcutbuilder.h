@@ -1,5 +1,4 @@
-#ifndef SHORTCUTBUILDER_H
-#define SHORTCUTBUILDER_H
+#pragma once
 
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -18,5 +17,3 @@ private:
     static QString modifierKeys(QInputEvent *event);
     static bool isModifier(Qt::Key key);
 };
-
-#endif // SHORTCUTBUILDER_H

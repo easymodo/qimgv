@@ -1,5 +1,4 @@
-#ifndef ACTIONS_H
-#define ACTIONS_H
+#pragma once
 
 #include <QMap>
 #include <QString>
@@ -20,5 +19,3 @@ private:
 };
 
 extern Actions *appActions;
-
-#endif // ACTIONS_H

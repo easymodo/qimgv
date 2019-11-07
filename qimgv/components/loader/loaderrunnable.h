@@ -1,5 +1,4 @@
-#ifndef LOADERRUNNABLE_H
-#define LOADERRUNNABLE_H
+#pragma once
 
 #include <QObject>
 #include <QRunnable>
@@ -16,5 +15,3 @@ private:
 signals:
     void finished(std::shared_ptr<Image>, QString);
 };
-
-#endif // LOADERRUNNABLE_H

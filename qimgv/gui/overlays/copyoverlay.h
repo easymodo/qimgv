@@ -1,5 +1,4 @@
-#ifndef COPYOVERLAY_H
-#define COPYOVERLAY_H
+#pragma once
 
 #include <QGridLayout>
 #include <QPushButton>
@@ -55,5 +54,3 @@ private:
     CopyOverlayMode mode;
     void removePathWidgets();
 };
-
-#endif // COPYOVERLAY_H

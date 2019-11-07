@@ -1,5 +1,4 @@
-#ifndef LINUXFSEVENT_H
-#define LINUXFSEVENT_H
+#pragma once
 
 #include <QObject>
 
@@ -20,5 +19,3 @@ private:
     uint mDataSize;
 
 };
-
-#endif // LINUXFSEVENT_H

@@ -1,5 +1,4 @@
-#ifndef THUMBNAILWIDGET_H
-#define THUMBNAILWIDGET_H
+#pragma once
 
 #include <QGraphicsWidget>
 #include <QGraphicsItem>
@@ -73,6 +72,3 @@ protected:
     QFontMetrics *fm, *fmSmall;
     QRect drawRectCentered;
 };
-
-#endif // THUMBNAILWIDGET_H
-

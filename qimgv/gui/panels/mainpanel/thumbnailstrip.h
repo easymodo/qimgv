@@ -1,5 +1,4 @@
-#ifndef THUMBNAILSTRIP_H
-#define THUMBNAILSTRIP_H
+#pragma once
 
 #include <QApplication>
 #include <QLabel>
@@ -50,5 +49,3 @@ protected:
     ThumbnailWidget *createThumbnailWidget();
     void ensureSelectedItemVisible();
 };
-
-#endif // THUMBNAILSTRIP_H

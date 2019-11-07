@@ -1,5 +1,4 @@
-#ifndef SETTINGSDIALOG_H
-#define SETTINGSDIALOG_H
+#pragma once
 
 #include <QDialog>
 #include <QFileDialog>
@@ -76,5 +75,3 @@ private slots:
 signals:
     void settingsChanged();
 };
-
-#endif // SETTINGSDIALOG_H

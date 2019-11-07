@@ -1,5 +1,4 @@
-#ifndef VIDEOPLAYER_H
-#define VIDEOPLAYER_H
+#pragma once
 
 #include <QWidget>
 
@@ -27,5 +26,3 @@ public slots:
     virtual void show();
     virtual void hide();
 };
-
-#endif // VIDEOPLAYER_H

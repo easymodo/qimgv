@@ -1,5 +1,4 @@
-#ifndef IMAGEANIMATED_H
-#define IMAGEANIMATED_H
+#pragma once
 
 #include "image.h"
 #include <QMovie>
@@ -36,5 +35,3 @@ private:
     std::unique_ptr<QMovie> movie;
     void loadMovie();
 };
-
-#endif // IMAGEANIMATED_H

@@ -1,5 +1,4 @@
-#ifndef VIDEO_H
-#define VIDEO_H
+#pragma once
 
 #include <QImage>
 #include <QPixmap>
@@ -30,5 +29,3 @@ private:
     void load();
     Clip *clip;
 };
-
-#endif // VIDEO_H

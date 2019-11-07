@@ -1,5 +1,4 @@
-#ifndef RENAMEOVERLAY_H
-#define RENAMEOVERLAY_H
+#pragma once
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -39,5 +38,3 @@ private:
     QString origName;
     void selectName();
 };
-
-#endif // RENAMEOVERLAY_H

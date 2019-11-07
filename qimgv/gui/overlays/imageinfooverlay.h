@@ -1,5 +1,4 @@
-#ifndef IMAGEINFOOVERLAY_H
-#define IMAGEINFOOVERLAY_H
+#pragma once
 
 #include "gui/customwidgets/overlaywidget.h"
 #include <QWheelEvent>
@@ -22,5 +21,3 @@ protected:
 private:
     Ui::ImageInfoOverlay *ui;
 };
-
-#endif // IMAGEINFOOVERLAY_H

@@ -1,5 +1,4 @@
-#ifndef DIRECTORYMANAGER_H
-#define DIRECTORYMANAGER_H
+#pragma once
 
 #include <QObject>
 #include <QCollator>
@@ -124,5 +123,3 @@ signals:
     void fileAdded(QString);
     void fileRenamed(QString from, int indexFrom, QString to, int indexTo);
 };
-
-#endif // DIRECTORYMANAGER_H

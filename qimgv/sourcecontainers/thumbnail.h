@@ -1,5 +1,4 @@
-#ifndef THUMBNAIL_H
-#define THUMBNAIL_H
+#pragma once
 
 #include <QString>
 #include <QPixmap>
@@ -17,5 +16,3 @@ private:
     std::shared_ptr<const QPixmap> mPixmap;
     int mSize;
 };
-
-#endif // THUMBNAIL_H

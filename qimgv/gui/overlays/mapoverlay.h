@@ -1,5 +1,4 @@
-#ifndef MAPOVERLAY_H
-#define MAPOVERLAY_H
+#pragma once
 
 #include <QWidget>
 #include <QPainter>
@@ -74,5 +73,3 @@ private:
     class MapOverlayPrivate;
     MapOverlayPrivate* d;
 };
-
-#endif // MAPOVERLAY_H

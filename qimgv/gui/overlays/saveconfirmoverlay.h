@@ -1,5 +1,4 @@
-#ifndef SAVECONFIRMOVERLAY_H
-#define SAVECONFIRMOVERLAY_H
+#pragma once
 
 #include "gui/customwidgets/overlaywidget.h"
 #include "settings.h"
@@ -26,5 +25,3 @@ private slots:
 private:
     Ui::SaveConfirmOverlay *ui;
 };
-
-#endif // SAVECONFIRMOVERLAY_H

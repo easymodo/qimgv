@@ -1,5 +1,4 @@
-#ifndef VIDEOPLAYERMPV_H
-#define VIDEOPLAYERMPV_H
+#pragma once
 
 #include "videoplayer.h"
 #include <QKeyEvent>
@@ -48,5 +47,3 @@ private:
 };
 
 extern "C" TEST_COMMON_DLLSPEC VideoPlayer *CreatePlayerWidget();
-
-#endif // VIDEOPLAYERMPV_H

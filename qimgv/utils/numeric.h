@@ -1,6 +1,4 @@
-#ifndef NUMERIC_H
-#define NUMERIC_H
+#pragma once
 
 
 
-#endif // NUMERIC_H

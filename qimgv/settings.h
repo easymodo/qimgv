@@ -1,5 +1,4 @@
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#pragma once
 
 #include <QObject>
 #include <QSettings>
@@ -187,5 +186,3 @@ public slots:
 };
 
 extern Settings *settings;
-
-#endif // SETTINGS_H

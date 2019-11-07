@@ -1,5 +1,4 @@
-#ifndef WATCHERWORKER_H
-#define WATCHERWORKER_H
+#pragma once
 
 #include <QObject>
 
@@ -22,5 +21,3 @@ protected:
     QAtomicInt isRunning;
 
 };
-
-#endif // WATCHERWORKER_H

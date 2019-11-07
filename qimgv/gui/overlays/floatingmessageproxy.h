@@ -1,5 +1,4 @@
-#ifndef FLOATINGMESSAGEPROXY_H
-#define FLOATINGMESSAGEPROXY_H
+#pragma once
 
 #include "gui/overlays/floatingmessage.h"
 
@@ -15,5 +14,3 @@ private:
     FloatingWidgetContainer *container;
     FloatingMessage *overlay;
 };
-
-#endif // FLOATINGMESSAGEPROXY_H

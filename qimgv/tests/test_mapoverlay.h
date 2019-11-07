@@ -1,5 +1,4 @@
-#ifndef TEST_MAPOVERLAY_H
-#define TEST_MAPOVERLAY_H
+#pragma once
 
 #include <QObject>
 
@@ -20,5 +19,3 @@ private:
     MapOverlay *minimap;
     
 };
-
-#endif // TEST_MAPOVERLAY_H

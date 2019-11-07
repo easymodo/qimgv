@@ -1,6 +1,4 @@
-#ifndef IMAGELIB_H
-#define IMAGELIB_H
-
+#pragma once
 #include <QImage>
 #include <QPainter>
 #include <QPixmapCache>
@@ -32,5 +30,3 @@ class ImageLib {
         static std::unique_ptr<const QImage> exifRotated(std::unique_ptr<const QImage> src, int orientation);
         static std::unique_ptr<QImage> exifRotated(std::unique_ptr<QImage> src, int orientation);
 };
-
-#endif // IMAGELIB_H

@@ -1,5 +1,4 @@
-#ifndef THUMBNAILVIEW_H
-#define THUMBNAILVIEW_H
+#pragma once
 
 /* This class manages QGraphicsScene, ThumbnailWidget list,
  * scrolling, requesting and setting thumbnails.
@@ -99,5 +98,3 @@ private slots:
     void centerOnY(int);
 
 };
-
-#endif // THUMBNAILVIEW_H

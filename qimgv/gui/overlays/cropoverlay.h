@@ -1,5 +1,4 @@
-#ifndef CROPOVERLAY_H
-#define CROPOVERLAY_H
+#pragma once
 
 #include "gui/customwidgets/floatingwidget.h"
 #include <QDebug>
@@ -85,5 +84,3 @@ public slots:
     void setAspectRatio(QPointF);
     void setLockAspectRatio(bool mode);
 };
-
-#endif // CROPOVERLAY_H

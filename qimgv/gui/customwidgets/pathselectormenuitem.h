@@ -1,5 +1,4 @@
-#ifndef PATHSELECTORMENUITEM_H
-#define PATHSELECTORMENUITEM_H
+#pragma once
 
 #include <QFileDialog>
 #include "gui/customwidgets/menuitem.h"
@@ -22,5 +21,3 @@ signals:
 private:
     QString mDirectory;
 };
-
-#endif // PATHSELECTORMENUITEM_H

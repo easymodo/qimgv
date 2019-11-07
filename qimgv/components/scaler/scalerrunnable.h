@@ -1,5 +1,4 @@
-#ifndef SCALERRUNNABLE_H
-#define SCALERRUNNABLE_H
+#pragma once
 
 #include <QObject>
 #include <QRunnable>
@@ -25,5 +24,3 @@ private:
     ScalerRequest req;
     const float CMPL_FALLBACK_THRESHOLD = 70.0; // equivalent of ~ 5000x3500 @ 32bpp
 };
-
-#endif // SCALERRUNNABLE_H

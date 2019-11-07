@@ -1,5 +1,4 @@
-#ifndef SCRIPTEDITORDIALOG_H
-#define SCRIPTEDITORDIALOG_H
+#pragma once
 
 #include <QFileDialog>
 #include <QLabel>
@@ -33,5 +32,3 @@ private:
     bool editMode;
     QString editTarget;
 };
-
-#endif // SCRIPTEDITORDIALOG_H

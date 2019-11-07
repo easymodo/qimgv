@@ -1,5 +1,4 @@
-#ifndef FOLDERVIEWPROXY_H
-#define FOLDERVIEWPROXY_H
+#pragma once
 
 #include "gui/folderview/folderview.h"
 
@@ -45,5 +44,3 @@ private:
     QVBoxLayout layout;
     FolderViewStateBuffer stateBuf;
 };
-
-#endif // FOLDERVIEWPROXY_H

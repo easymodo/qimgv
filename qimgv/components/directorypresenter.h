@@ -1,5 +1,4 @@
-#ifndef DIRECTORYPRESENTER_H
-#define DIRECTORYPRESENTER_H
+#pragma once
 
 #include <QObject>
 #include <memory>
@@ -41,5 +40,3 @@ private:
     QList<std::shared_ptr<DirectoryViewWrapper>> views;
     std::shared_ptr<DirectoryModel> model = nullptr;
 };
-
-#endif // DIRECTORYPRESENTER_H

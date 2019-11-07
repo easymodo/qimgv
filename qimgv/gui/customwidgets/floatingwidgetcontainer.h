@@ -1,5 +1,4 @@
-#ifndef FLOATINGWIDGETCONTAINER_H
-#define FLOATINGWIDGETCONTAINER_H
+#pragma once
 
 #include <QWidget>
 #include <QVBoxLayout>
@@ -16,5 +15,3 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void focusInEvent(QFocusEvent *event);
 };
-
-#endif // FLOATINGWIDGETCONTAINER_H

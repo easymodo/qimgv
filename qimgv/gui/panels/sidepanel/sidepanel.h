@@ -1,5 +1,4 @@
-#ifndef SIDEPANEL_H
-#define SIDEPANEL_H
+#pragma once
 
 #include <QWidget>
 #include <QDebug>
@@ -33,5 +32,3 @@ private:
     Ui::SidePanel *ui;
     SidePanelWidget *mWidget;
 };
-
-#endif // SIDEPANEL_H

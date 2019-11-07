@@ -1,5 +1,4 @@
-#ifndef ICONBUTTON_H
-#define ICONBUTTON_H
+#pragma once
 
 #include "gui/customwidgets/iconwidget.h"
 #include <QMouseEvent>
@@ -21,5 +20,3 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     bool checkable;
 };
-
-#endif // ICONBUTTON_H

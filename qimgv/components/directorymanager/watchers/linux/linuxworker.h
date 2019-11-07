@@ -1,5 +1,4 @@
-#ifndef LINUXWATCHERWORKER_H
-#define LINUXWATCHERWORKER_H
+#pragma once
 
 #include "linuxfsevent.h"
 #include "../watcherworker.h"
@@ -21,5 +20,3 @@ signals:
 private:
     int fd;
 };
-
-#endif // LINUXWATCHERWORKER_H

@@ -1,5 +1,4 @@
-#ifndef SCRIPT_H
-#define SCRIPT_H
+#pragma once
 
 #include <QMetaType>
 #include <QString>
@@ -13,5 +12,3 @@ public:
 };
 
 Q_DECLARE_METATYPE(Script)
-
-#endif // SCRIPT_H

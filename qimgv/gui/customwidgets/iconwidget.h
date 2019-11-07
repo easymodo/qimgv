@@ -1,5 +1,4 @@
-#ifndef ICONWIDGET_H
-#define ICONWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <QStyleOption>
@@ -22,5 +21,3 @@ private:
     QPixmap *pixmap;
     qreal dpr, pixmapDrawScale;
 };
-
-#endif // ICONWIDGET_H

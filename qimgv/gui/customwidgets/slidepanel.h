@@ -2,8 +2,7 @@
  * Insert widget you want to show with setWidget().
  */
 
-#ifndef SLIDEPANEL_H
-#define SLIDEPANEL_H
+#pragma once
 
 #include <QtGlobal>
 #include <QTimeLine>
@@ -60,5 +59,3 @@ private:
     QPoint startPosition, endPosition;
 
 };
-
-#endif // SLIDEPANEL_H

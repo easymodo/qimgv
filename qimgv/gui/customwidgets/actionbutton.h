@@ -1,5 +1,4 @@
-#ifndef ACTIONBUTTON_H
-#define ACTIONBUTTON_H
+#pragma once
 
 #include "gui/customwidgets/iconbutton.h"
 #include "components/actionmanager/actionmanager.h"
@@ -24,5 +23,3 @@ protected:
     QString actionName;
     TriggerMode mTriggerMode;
 };
-
-#endif // ACTIONBUTTON_H

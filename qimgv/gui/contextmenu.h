@@ -1,5 +1,4 @@
-#ifndef CONTEXTMENU_H
-#define CONTEXTMENU_H
+#pragma once
 
 #include <QStyleOption>
 #include <QTimer>
@@ -30,5 +29,3 @@ protected:
 
     void keyPressEvent(QKeyEvent *event);
 };
-
-#endif // CONTEXTMENU_H

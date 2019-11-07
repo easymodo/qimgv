@@ -1,5 +1,4 @@
-#ifndef FOLDERVIEW_H
-#define FOLDERVIEW_H
+#pragma once
 
 #include <QWidget>
 #include <QStyledItemDelegate>
@@ -61,5 +60,3 @@ private:
     Ui::FolderView *ui;
     std::shared_ptr<DirectoryViewWrapper> mWrapper;
 };
-
-#endif // FOLDERVIEW_H

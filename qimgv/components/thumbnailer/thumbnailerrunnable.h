@@ -1,5 +1,4 @@
-#ifndef THUMBNAILERRUNNABLE_H
-#define THUMBNAILERRUNNABLE_H
+#pragma once
 
 #include <QRunnable>
 #include <QProcess>
@@ -34,5 +33,3 @@ signals:
     void taskStart(QString, int);
     void taskEnd(std::shared_ptr<Thumbnail>, QString);
 };
-
-#endif // THUMBNAILERRUNNABLE_H

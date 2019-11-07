@@ -1,7 +1,6 @@
 // performs lazy initialization
 
-#ifndef VIDEOPLAYERMPVPROXY_H
-#define VIDEOPLAYERMPVPROXY_H
+#pragma once
 
 #include <memory>
 #include <QVBoxLayout>
@@ -42,5 +41,3 @@ private slots:
     void onSettingsChanged();
 
 };
-
-#endif // VIDEOPLAYERMPVPROXY_H

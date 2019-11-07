@@ -1,5 +1,4 @@
-#ifndef THUMBNAILCACHE_H
-#define THUMBNAILCACHE_H
+#pragma once
 
 #include <QObject>
 #include <QDir>
@@ -28,5 +27,3 @@ private:
     QMutex mutex;
     QString cacheDirPath;
 };
-
-#endif // THUMBNAILCACHE_H

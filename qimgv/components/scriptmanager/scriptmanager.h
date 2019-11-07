@@ -1,5 +1,4 @@
-#ifndef SCRIPTMANAGER_H
-#define SCRIPTMANAGER_H
+#pragma once
 
 #include <QObject>
 #include <QKeyEvent>
@@ -40,5 +39,3 @@ private slots:
 };
 
 extern ScriptManager *scriptManager;
-
-#endif // SCRIPTMANAGER_H

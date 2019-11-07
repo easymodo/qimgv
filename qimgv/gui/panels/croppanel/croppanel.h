@@ -1,5 +1,4 @@
-#ifndef CROPPANEL_H
-#define CROPPANEL_H
+#pragma once
 
 #include <QWidget>
 #include <QScreen>
@@ -53,5 +52,3 @@ private:
     CropOverlay *overlay;
     QSize realSize;
 };
-
-#endif // CROPPANEL_H

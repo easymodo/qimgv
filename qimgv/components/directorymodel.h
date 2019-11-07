@@ -1,5 +1,4 @@
-#ifndef DIRECTORYMODEL_H
-#define DIRECTORYMODEL_H
+#pragma once
 
 #include <QObject>
 #include "cache/cache.h"
@@ -93,5 +92,3 @@ private slots:
     void onSortingChanged();
     void onFileRemoved(QString fileName, int index);
 };
-
-#endif // DIRECTORYMODEL_H

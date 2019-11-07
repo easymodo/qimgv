@@ -1,5 +1,4 @@
-#ifndef CLICKABLELABEL_H
-#define CLICKABLELABEL_H
+#pragma once
 
 #include <QWidget>
 #include <QLabel>
@@ -18,5 +17,3 @@ signals:
 protected:
     void mousePressEvent(QMouseEvent *event);
 };
-
-#endif // CLICKABLELABEL_H

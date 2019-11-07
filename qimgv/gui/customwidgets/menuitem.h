@@ -1,8 +1,7 @@
 // Base class for various menu items.
 // Displays entry name, shortcut and an icon.
 
-#ifndef MENUITEM_H
-#define MENUITEM_H
+#pragma once
 
 #include <QLabel>
 #include <QStyleOption>
@@ -35,5 +34,3 @@ protected:
     virtual void onClick();
     virtual void onPress();
 };
-
-#endif // MENUITEM_H

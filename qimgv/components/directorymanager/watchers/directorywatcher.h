@@ -1,5 +1,4 @@
-#ifndef DIRECTORYWATCHER_H
-#define DIRECTORYWATCHER_H
+#pragma once
 
 #include <QObject>
 
@@ -37,5 +36,3 @@ private:
 
 
 };
-
-#endif // DIRECTORYWATCHER_H

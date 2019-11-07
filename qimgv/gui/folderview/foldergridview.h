@@ -1,5 +1,4 @@
-#ifndef FOLDERGRIDVIEW_H
-#define FOLDERGRIDVIEW_H
+#pragma once
 
 #include <QGraphicsWidget>
 
@@ -68,5 +67,3 @@ signals:
     void thumbnailSizeChanged(int);
     void showLabelsChanged(bool);
 };
-
-#endif // FOLDERGRIDVIEW_H

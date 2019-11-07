@@ -1,5 +1,4 @@
-#ifndef SCALER_H
-#define SCALER_H
+#pragma once
 
 #include <QObject>
 #include <QThreadPool>
@@ -43,5 +42,3 @@ private:
 
     QSemaphore *sem;
 };
-
-#endif // SCALER_H

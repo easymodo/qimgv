@@ -1,5 +1,4 @@
-#ifndef VIDEOCONTROLSPROXY_H
-#define VIDEOCONTROLSPROXY_H
+#pragma once
 
 #include "gui/overlays/videocontrols.h"
 
@@ -37,5 +36,3 @@ private:
     VideoControls *videoControls;
     VideoControlsStateBuffer stateBuf;
 };
-
-#endif // VIDEOCONTROLSPROXY_H

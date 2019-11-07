@@ -1,5 +1,4 @@
-#ifndef VIDEOCONTROLS_H
-#define VIDEOCONTROLS_H
+#pragma once
 
 #include "gui/customwidgets/overlaywidget.h"
 #include "settings.h"
@@ -37,5 +36,3 @@ private:
     Ui::VideoControls *ui;
     int lastVideoPosition;
 };
-
-#endif // VIDEOCONTROLS_H

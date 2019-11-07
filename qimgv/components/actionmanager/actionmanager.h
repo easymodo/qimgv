@@ -1,5 +1,4 @@
-﻿#ifndef ACTIONMANAGER_H
-#define ACTIONMANAGER_H
+﻿#pragma once
 
 #include <QObject>
 #include <QKeyEvent>
@@ -113,6 +112,3 @@ signals:
 };
 
 extern ActionManager *actionManager;
-
-#endif // ACTIONMANAGER_H
-

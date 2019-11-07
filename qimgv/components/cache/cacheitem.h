@@ -1,5 +1,4 @@
-#ifndef CACHEITEM_H
-#define CACHEITEM_H
+#pragma once
 
 #include <QSemaphore>
 #include "sourcecontainers/image.h"
@@ -21,4 +20,3 @@ private:
     QSemaphore *sem;
 };
 
-#endif // CACHEITEM_H

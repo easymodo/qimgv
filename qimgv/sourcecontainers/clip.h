@@ -1,5 +1,4 @@
-#ifndef CLIP_H
-#define CLIP_H
+#pragma once
 
 #include <QString>
 #include <QRect>
@@ -38,7 +37,3 @@ private:
     uint srcHeight;
 
 };
-
-
-#endif // CLIP_H
-

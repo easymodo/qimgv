@@ -1,5 +1,4 @@
-#ifndef VIDEOSLIDER_H
-#define VIDEOSLIDER_H
+#pragma once
 
 #include <QSlider>
 #include <QMouseEvent>
@@ -19,5 +18,3 @@ signals:
 private:
     void setValueAtCursor(QPoint pos);
 };
-
-#endif // VIDEOSLIDER_H

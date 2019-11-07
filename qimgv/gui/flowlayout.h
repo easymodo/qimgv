@@ -48,6 +48,8 @@
 **
 ****************************************************************************/
 
+#pragma once
+
 #include <QGraphicsLayout>
 #include <QDebug>
 #include <QElapsedTimer>

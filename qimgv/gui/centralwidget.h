@@ -1,5 +1,4 @@
-#ifndef CENTRALWIDGET_H
-#define CENTRALWIDGET_H
+#pragma once
 
 #include <QStackedWidget>
 #include "gui/folderview/folderviewproxy.h"
@@ -29,5 +28,3 @@ private:
     std::shared_ptr<FolderViewProxy> folderView;
     ViewMode mode;
 };
-
-#endif // CENTRALWIDGET_H

@@ -1,5 +1,4 @@
-#ifndef SHORTCUTCREATORDIALOG_H
-#define SHORTCUTCREATORDIALOG_H
+#pragma once
 
 #include <QDialog>
 #include <QComboBox>
@@ -34,5 +33,3 @@ private:
     QString shortcut;
     QList<QString> actionList, scriptList;
 };
-
-#endif // SHORTCUTCREATORDIALOG_H

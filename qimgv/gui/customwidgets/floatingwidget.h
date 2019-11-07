@@ -5,8 +5,7 @@
  * geometry when the parent is resized.
  */
 
-#ifndef FLOATINGWIDGET_H
-#define FLOATINGWIDGET_H
+#pragma once
 
 #include "gui/customwidgets/floatingwidgetcontainer.h"
 #include <QStyleOption>
@@ -37,5 +36,3 @@ private:
 private slots:
     void onContainerResized(QSize container);
 };
-
-#endif // FLOATINGWIDGET_H

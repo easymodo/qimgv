@@ -1,5 +1,4 @@
-#ifndef MAINPANEL_H
-#define MAINPANEL_H
+#pragma once
 
 #include <QVBoxLayout>
 #include "gui/customwidgets/slidehpanel.h"
@@ -25,5 +24,3 @@ private:
 protected:
     virtual void paintEvent(QPaintEvent* event);
 };
-
-#endif // MAINPANEL_H

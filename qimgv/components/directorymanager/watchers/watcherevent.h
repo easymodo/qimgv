@@ -1,5 +1,4 @@
-#ifndef WATCHEREVENT_H
-#define WATCHEREVENT_H
+#pragma once
 
 #include <QString>
 
@@ -35,5 +34,3 @@ private:
     Type mType;
 
 };
-
-#endif // WATCHEREVENT_H

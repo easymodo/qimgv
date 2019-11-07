@@ -1,5 +1,4 @@
-#ifndef DOCUMENTINFO_H
-#define DOCUMENTINFO_H
+#pragma once
 
 #include <QString>
 #include <QSize>
@@ -62,5 +61,3 @@ private:
     QMap<QString, QString> exifTags;
     QMimeType mMimeType;
 };
-
-#endif // DOCUMENTINFO_H

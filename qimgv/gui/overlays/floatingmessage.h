@@ -1,5 +1,4 @@
-#ifndef FLOATINGMESSAGE
-#define FLOATINGMESSAGE
+#pragma once
 
 #include <QTimer>
 #include <QLabel>
@@ -46,5 +45,3 @@ protected:
 private slots:
     void readSettings();
 };
-
-#endif // FLOATINGMESSAGE
