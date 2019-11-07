@@ -94,6 +94,8 @@ QImage* ThumbnailerRunnable::createThumbnailImage(DocumentInfo *imgInfo, int siz
     else
         originalSize = reader.size();
     QImage *scaled = new QImage(reader.read());
+    // force reader to close file so it can be deleted later
+    reader.setFileName("");
     // remove temporary file in video case
     if(imgInfo->type() == VIDEO) {
         QFile tmpFile(filePath);
