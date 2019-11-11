@@ -51,19 +51,34 @@ void ImageStatic::loadICO() {
     mLoaded = true;
 }
 
+QString ImageStatic::generateHash(QString str) {
+    return QString(QCryptographicHash::hash(str.toUtf8(), QCryptographicHash::Md5).toHex());
+}
+
 // TODO: add a way to configure compression level?
 bool ImageStatic::save(QString destPath) {
+    QString tmpPath = destPath + "_" + generateHash(destPath);
     // png compression note from libpng
     // Note that tests have shown that zlib compression levels 3-6 usually perform as well
     // as level 9 for PNG images, and do considerably fewer caclulations
     int quality = destPath.endsWith(".png", Qt::CaseInsensitive) ? 30 : 95;
     bool success = false;
     if(isEdited()) {
-        success = imageEdited->save(destPath, mDocInfo->format().toStdString().c_str(), quality);
+        success = imageEdited->save(tmpPath, mDocInfo->format().toStdString().c_str(), quality);
         image.swap(imageEdited);
         discardEditedImage();
     } else {
-        success = image->save(destPath, mDocInfo->format().toStdString().c_str(), quality);
+        success = image->save(tmpPath, mDocInfo->format().toStdString().c_str(), quality);
+    }
+    // save to a temp file JUST IN CASE qt decides to corrupt the originala
+    if(success) {
+        QFile file(destPath);
+        file.remove();
+        file.setFileName(tmpPath);
+        file.rename(destPath);
+    } else {
+        QFile file(tmpPath);
+        file.remove();
     }
     if(destPath == mPath && success) {
         mDocInfo->refresh();

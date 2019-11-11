@@ -397,6 +397,11 @@ SortingMode DirectoryManager::sortingMode() {
 void DirectoryManager::onFileRemovedExternal(QString fileName) {
     if(!contains(fileName))
         return;
+
+    QFile file(fullFilePath(fileName));
+    if(file.exists())
+        return;
+
     int index = indexOf(fileName);
     entryVec.erase(entryVec.begin() + index);
     emit fileRemoved(fileName, index);
