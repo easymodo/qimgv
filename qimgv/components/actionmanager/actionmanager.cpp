@@ -63,8 +63,8 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("A", "s:TestScript2");
     actionManager->defaults.insert("Shift+Right", "seekVideo");
     actionManager->defaults.insert("Shift+Left", "seekBackVideo");
-    actionManager->defaults.insert(",", "frameStep");
-    actionManager->defaults.insert(".", "frameStepBack");
+    actionManager->defaults.insert(".", "frameStep");
+    actionManager->defaults.insert(",", "frameStepBack");
     actionManager->defaults.insert("Return", "folderView");
     actionManager->defaults.insert("backspace", "folderView");
     actionManager->defaults.insert("F5", "reloadImage");
