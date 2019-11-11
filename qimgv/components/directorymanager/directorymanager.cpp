@@ -422,13 +422,13 @@ void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
         onFileAddedExternal(newFile);
         return;
     }
-    if(!this->isSupportedFile(newFile))
+    QString fullPath = fullFilePath(newFile);
+    if(!this->isSupportedFile(fullPath))
         return;
     // remove old one
     int index = indexOf(oldFile);
     entryVec.erase(entryVec.begin() + index);
     // insert
-    QString fullPath = fullFilePath(newFile);
     std::filesystem::directory_entry stdEntry(toStdString(fullPath));
     Entry entry(newFile, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
     insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
