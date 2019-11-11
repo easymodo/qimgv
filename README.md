@@ -155,6 +155,12 @@ __Void linux__:
 xbps-install -S qimgv
 ```
 
+__Alpine Linux__:
+
+```
+apk add qimgv
+```
+
 __Fedora__: 
 
 ```
