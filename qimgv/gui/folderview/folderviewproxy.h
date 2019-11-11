@@ -26,6 +26,7 @@ public slots:
     virtual void setDirectoryPath(QString path) Q_DECL_OVERRIDE;
     virtual void insertItem(int index) Q_DECL_OVERRIDE;
     virtual void removeItem(int index) Q_DECL_OVERRIDE;
+    virtual void reloadItem(int index) Q_DECL_OVERRIDE;
     void addItem();
     void setExitButtonEnabled(bool mode);
     void onSortingChanged(SortingMode mode);
@@ -35,7 +36,7 @@ protected:
 
 signals:
     void thumbnailPressed(int);
-    void thumbnailsRequested(QList<int>, int);
+    void thumbnailsRequested(QList<int>, int, bool);
     void sortingSelected(SortingMode);
 
 private:

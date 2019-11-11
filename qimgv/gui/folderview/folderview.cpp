@@ -148,6 +148,10 @@ void FolderView::removeItem(int index) {
     ui->thumbnailGrid->removeItem(index);
 }
 
+void FolderView::reloadItem(int index) {
+    ui->thumbnailGrid->reloadItem(index);
+}
+
 // prevent passthrough to parent
 void FolderView::wheelEvent(QWheelEvent *event) {
     event->accept();

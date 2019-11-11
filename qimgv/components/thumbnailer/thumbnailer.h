@@ -5,6 +5,7 @@
 #include "components/directorymanager/directorymanager.h"
 #include "components/thumbnailer/thumbnailerrunnable.h"
 #include "components/cache/thumbnailcache.h"
+#include "components/cache/cache.h"
 #include "settings.h"
 
 class Thumbnailer : public QObject
@@ -15,12 +16,12 @@ public:
     void clearTasks();
 
 public slots:
-    void generateThumbnails(QList<int> indexes, int size);
+    void generateThumbnails(QList<int> indexes, int size, bool forceRegenerate);
 
 private:
     ThumbnailCache *thumbnailCache;
     QThreadPool *pool;
-    void startThumbnailerThread(QString filePath, int size);
+    void startThumbnailerThread(QString filePath, int size, bool forceGenerate);
     DirectoryManager *dm;
     QMultiMap<QString, int> runningTasks;
 

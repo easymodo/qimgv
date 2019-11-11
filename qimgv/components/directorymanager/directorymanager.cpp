@@ -98,7 +98,6 @@ void DirectoryManager::readSettings() {
 
 bool DirectoryManager::setDirectory(QString path) {
     if(path.isEmpty()) {
-        qDebug() << "[DirectoryManager] Error - path is empty.";
         return false;
     }
     if(!std::filesystem::exists(toStdString(path))) {
@@ -408,7 +407,7 @@ void DirectoryManager::onFileAddedExternal(QString fileName) {
     if(!this->isSupportedFile(fullPath))
         return;
     if(this->contains(fileName))
-        return;
+        onFileModifiedExternal(fileName);
     std::filesystem::directory_entry stdEntry(toStdString(fullPath));
     Entry entry(fileName, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
     insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
@@ -418,8 +417,10 @@ void DirectoryManager::onFileAddedExternal(QString fileName) {
 
 void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
     if(!contains(oldFile)) {
-        // insert if it passes regex check
-        onFileAddedExternal(newFile);
+        if(contains(newFile))
+            onFileModifiedExternal(newFile);
+        else
+            onFileAddedExternal(newFile);
         return;
     }
     QString fullPath = fullFilePath(newFile);

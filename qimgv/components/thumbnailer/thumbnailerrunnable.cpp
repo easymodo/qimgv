@@ -1,33 +1,39 @@
 #include "thumbnailerrunnable.h"
 
-ThumbnailerRunnable::ThumbnailerRunnable(ThumbnailCache* _thumbnailCache, QString _path, int _size, bool _squared) :
+// TODO: this turned into a spaghetti. nuke and rewrite
+
+ThumbnailerRunnable::ThumbnailerRunnable(ThumbnailCache* _thumbnailCache, QString _path, int _size, bool _squared, bool _forceGenerate) :
     path(_path),
     size(_size),
     squared(_squared),
+    forceGenerate(_forceGenerate),
     thumbnailCache(_thumbnailCache)
 {
 }
 
 void ThumbnailerRunnable::run() {
-    // TODO: replace raw pointers with c++11 ones
     emit taskStart(path, size);
     DocumentInfo imgInfo(path);
     QString tmpName = imgInfo.fileName();
     QString thumbnailId = generateIdString();
     std::unique_ptr<QImage> image;
-    if(settings->useThumbnailCache())
+
+    if(!forceGenerate && settings->useThumbnailCache())
         image.reset(thumbnailCache->readThumbnail(thumbnailId));
+
     if(!image) {
         image.reset(createThumbnailImage(&imgInfo, size, squared));
         image = ImageLib::exifRotated(std::move(image), imgInfo.exifOrientation());
+
         // put in image info
         image.get()->setText("originalWidth", QString::number(originalSize.width()));
         image.get()->setText("originalHeight", QString::number(originalSize.height()));
-        if(imgInfo.type() == ANIMATED) {
+
+        if(imgInfo.type() == ANIMATED)
             image.get()->setText("label", " [a]");
-        } else if(imgInfo.type() == VIDEO) {
+        else if(imgInfo.type() == VIDEO)
             image.get()->setText("label", " [v]");
-        }
+
         if(settings->useThumbnailCache()) {
             // save thumbnail if it makes sense
             // FIXME: avoid too much i/o
@@ -71,7 +77,7 @@ QImage* ThumbnailerRunnable::createThumbnailImage(DocumentInfo *imgInfo, int siz
             QString command = "\"" + mpv + "\"" + " --start=30% --frames=1 --aid=no --sid=no --no-config --load-scripts=no --no-terminal --o=\"" + filePath + "\" \"" + imgInfo->filePath() + "\"";
             QProcess process;
             process.start(command);
-            bool success = process.waitForFinished(3000);
+            process.waitForFinished(3000);
             process.close();
         }
     } else {
@@ -89,9 +95,7 @@ QImage* ThumbnailerRunnable::createThumbnailImage(DocumentInfo *imgInfo, int siz
         clip.moveCenter(scaledRect.center());
         reader.setScaledClipRect(clip);
     }
-    if(!reader.supportsOption(QImageIOHandler::Size))
-        qDebug() << imgInfo->fileName() << " - ImageFormat does not support Size option.";
-    else
+    if(reader.supportsOption(QImageIOHandler::Size))
         originalSize = reader.size();
     QImage *scaled = new QImage(reader.read());
     // force reader to close file so it can be deleted later

@@ -19,10 +19,11 @@ public slots:
     void setDirectoryPath(QString path);
     void insertItem(int index);
     void removeItem(int index);
+    void reloadItem(int index);
 
 signals:
     void thumbnailPressed(int);
-    void thumbnailsRequested(QList<int>, int);
+    void thumbnailsRequested(QList<int>, int, bool);
 
 private:
     IDirectoryView *view;

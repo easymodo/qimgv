@@ -16,8 +16,9 @@ public:
     virtual void setDirectoryPath(QString path) = 0;
     virtual void insertItem(int index) = 0;
     virtual void removeItem(int index) = 0;
+    virtual void reloadItem(int index) = 0;
 
 //signals
     virtual void thumbnailPressed(int) = 0;
-    virtual void thumbnailsRequested(QList<int>, int) = 0;
+    virtual void thumbnailsRequested(QList<int>, int, bool) = 0;
 };

@@ -15,20 +15,20 @@ void Thumbnailer::clearTasks() {
     pool->waitForDone();
 }
 
-void Thumbnailer::generateThumbnails(QList<int> indexes, int size) {
+void Thumbnailer::generateThumbnails(QList<int> indexes, int size, bool forceGenerate) {
     pool->clear();
     for(int i = 0; i < indexes.count(); i++) {
         if(!dm->checkRange(indexes[i]))
             continue;
         QString filePath = dm->filePathAt(indexes[i]);
-        if(!runningTasks.contains(filePath,  size)) {
-            startThumbnailerThread(filePath, size);
+        if(!runningTasks.contains(filePath, size)) {
+            startThumbnailerThread(filePath, size, forceGenerate);
         }
     }
 }
 
-void Thumbnailer::startThumbnailerThread(QString filePath, int size) {
-    auto runnable = new ThumbnailerRunnable(thumbnailCache, filePath, size, settings->squareThumbnails());
+void Thumbnailer::startThumbnailerThread(QString filePath, int size, bool forceGenerate) {
+    auto runnable = new ThumbnailerRunnable(thumbnailCache, filePath, size, settings->squareThumbnails(), forceGenerate);
     connect(runnable, &ThumbnailerRunnable::taskStart, this, &Thumbnailer::onTaskStart);
     connect(runnable, &ThumbnailerRunnable::taskEnd, this, &Thumbnailer::onTaskEnd);
     runnable->setAutoDelete(true);

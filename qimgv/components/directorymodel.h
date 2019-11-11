@@ -24,7 +24,6 @@ public:
     explicit DirectoryModel(QObject *parent = nullptr);
     ~DirectoryModel();
 
-    Cache cache;
     Scaler *scaler;
 
     QString currentFileName();
@@ -49,6 +48,7 @@ public:
 
     bool setIndex(int index);
     bool setIndexAsync(int index);
+    void unload(int index);
 
     bool loaderBusy();
 
@@ -63,6 +63,10 @@ public:
     bool forceInsert(QString fileName);
 
     QString directory();
+    void unload(QString fileName);
+    bool isLoaded(int index);
+    bool isLoaded(QString fileName);
+    void reload(QString fileName);
 signals:
     void fileRemoved(QString fileName, int index);
     void fileRenamed(QString from, int indexFrom, QString to, int indexTo);
@@ -73,14 +77,15 @@ signals:
     void indexChanged(int oldIndex, int index);
     // returns current item
     void itemReady(std::shared_ptr<Image> img);
-    void itemUpdated(std::shared_ptr<Image> img);
+    void itemUpdated(QString fileName);
 
-    void generateThumbnails(QList<int> indexes, int size);
+    void generateThumbnails(QList<int> indexes, int size, bool);
     void thumbnailReady(std::shared_ptr<Thumbnail>);
 
 private:
     DirectoryManager dirManager;
     Loader loader;
+    Cache cache;
     Thumbnailer *thumbnailer;
     void preload(QString fileName);
     void trimCache();
@@ -91,4 +96,6 @@ private slots:
     void onItemReady(std::shared_ptr<Image> img);
     void onSortingChanged();
     void onFileRemoved(QString fileName, int index);
+    void onFileRenamed(QString from, int indexFrom, QString to, int indexTo);
+    void onFileModified(QString fileName);
 };

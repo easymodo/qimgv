@@ -16,7 +16,7 @@ class ThumbnailerRunnable : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    ThumbnailerRunnable(ThumbnailCache* _cache, QString _path, int _size, bool _squared);
+    ThumbnailerRunnable(ThumbnailCache* _cache, QString _path, int _size, bool _squared, bool _forceGenerate);
     ~ThumbnailerRunnable();
     void run();
 
@@ -25,7 +25,7 @@ private:
     QImage* createThumbnailImage(DocumentInfo *img, int size, bool squared);
     QString path;
     int size;
-    bool squared;
+    bool squared, forceGenerate;
     ThumbnailCache* thumbnailCache;
     QSize originalSize;
 

@@ -126,6 +126,16 @@ void ThumbnailView::removeItem(int index) {
     }
 }
 
+void ThumbnailView::reloadItem(int index) {
+    if(!checkRange(index))
+        return;
+    auto thumb = thumbnails.at(index);
+    if(thumb->isLoaded) {
+        thumb->unsetThumbnail();
+        emit thumbnailsRequested(QList<int>() << index, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize), true);
+    }
+}
+
 void ThumbnailView::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
     if(thumb && thumb->size() == floor(mThumbnailSize * qApp->devicePixelRatio()) && checkRange(pos)) {
         thumbnails.at(pos)->setThumbnail(thumb);
@@ -151,7 +161,7 @@ void ThumbnailView::loadVisibleThumbnails() {
             }
         }
         if(loadList.count()) {
-            emit thumbnailsRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize));
+            emit thumbnailsRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize), false);
         }
         // unload offscreen
         for(int i = 0; i < thumbnails.count(); i++) {

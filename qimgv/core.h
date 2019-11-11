@@ -59,7 +59,6 @@ private:
     void displayImage(std::shared_ptr<Image>);
     void loadDirectoryPath(QString);
     void loadImagePath(QString path, bool blocking);
-    void trimCache();
     QDrag *mDrag;
     QMimeData *getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget target);
 
@@ -74,9 +73,8 @@ private slots:
     void jumpToFirst();
     void jumpToLast();
     void onModelItemReady(std::shared_ptr<Image>);
-    void onModelItemUpdated(std::shared_ptr<Image>);
+    void onModelItemUpdated(QString fileName);
     void onLoadFailed(QString path); //
-    void clearCache();
     void rotateLeft();
     void rotateRight();
     void close();

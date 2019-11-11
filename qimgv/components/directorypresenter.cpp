@@ -96,7 +96,10 @@ void DirectoryPresenter::onFileAdded(QString fileName) {
 }
 
 void DirectoryPresenter::onFileModified(QString fileName) {
-    Q_UNUSED(fileName)
+    int index = model->indexOf(fileName);
+    for(int i=0; i<views.count(); i++) {
+        views.at(i)->reloadItem(index);
+    }
 }
 
 void DirectoryPresenter::onModelSortingChanged() {

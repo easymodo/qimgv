@@ -208,8 +208,7 @@ void Core::close() {
 }
 
 void Core::removeFilePermanent() {
-    if(state.hasActiveImage)
-        removeFilePermanent(model->currentFileName());
+    removeFilePermanent(model->currentFileName());
 }
 
 void Core::removeFilePermanent(QString fileName) {
@@ -217,8 +216,7 @@ void Core::removeFilePermanent(QString fileName) {
 }
 
 void Core::moveToTrash() {
-    if(state.hasActiveImage)
-        moveToTrash(model->currentFileName());
+    moveToTrash(model->currentFileName());
 }
 
 void Core::moveToTrash(QString fileName) {
@@ -230,16 +228,14 @@ void Core::reloadImage() {
 }
 
 void Core::reloadImage(QString fileName) {
-    if(!model->contains(fileName))
+    if(model->isEmpty())
         return;
-    model->cache.remove(fileName);
-    if(model->currentFileName() == fileName)
-        loadPath(model->currentFilePath());
+    model->reload(fileName);
 }
 
 // TODO: also copy selection from folder view?
 void Core::copyFileClipboard() {
-    if(!model || model->currentFileName().isEmpty())
+    if(model->isEmpty())
         return;
 
     QMimeData* mimeData = getMimeDataFor(model->getItemAt(model->currentIndex()), TARGET_CLIPBOARD);
@@ -254,7 +250,7 @@ void Core::copyFileClipboard() {
 }
 
 void Core::copyPathClipboard() {
-    if(model->currentFileName().isEmpty())
+    if(model->isEmpty())
         return;
     QApplication::clipboard()->setText(model->currentFilePath());
     mw->showMessage("Path copied");
@@ -280,7 +276,7 @@ void Core::onDropIn(const QMimeData *mimeData, QObject* source) {
 // drag'n'drop
 // drag image out of the program
 void Core::onDragOut() {
-    if(!model || !model->itemCount())
+    if(model->isEmpty())
         return;
 
     QPoint hotspot(0,0);
@@ -325,7 +321,7 @@ void Core::sortBy(SortingMode mode) {
 }
 
 void Core::renameCurrentFile(QString newName) {
-    if(newName == model->currentFileName())
+    if(!model->itemCount() || newName == model->currentFileName())
         return;
     QString newPath = model->fullPath(newName);
     QString currentPath = model->currentFilePath();
@@ -356,6 +352,9 @@ void Core::renameCurrentFile(QString newName) {
 
 // removes file at specified index within current directory
 void Core::removeFile(QString fileName, bool trash) {
+    if(model->isEmpty())
+        return;
+
     FileOpResult result;
     model->removeFile(fileName, trash, result);
     if(result == FileOpResult::SUCCESS) {
@@ -367,25 +366,13 @@ void Core::removeFile(QString fileName, bool trash) {
 }
 
 void Core::onFileRemoved(QString fileName, int index) {
-    model->cache.remove(fileName);
-    // removing current file. try switching to another
-    if(!model->itemCount()) {
+    if(model->isEmpty()) {
         mw->closeImage();
-    } else if(model->currentFileName() == fileName) {
-        if(!model->setIndexAsync(index))
-            model->setIndexAsync(--index);
+        updateInfoString();
     }
-    updateInfoString();
 }
 
 void Core::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
-    Q_UNUSED(indexFrom)
-    Q_UNUSED(to)
-    model->cache.remove(from);
-    if(model->currentFileName() == from) {
-        model->cache.clear(); // ? do it in the model itself
-        model->setIndexAsync(indexTo);
-    }
 }
 
 void Core::onFileAdded(QString fileName) {
@@ -395,18 +382,10 @@ void Core::onFileAdded(QString fileName) {
 }
 
 void Core::onFileModified(QString fileName) {
-    if(model->cache.contains(fileName)) {
-        QDateTime modTime = model->lastModified(fileName);
-        std::shared_ptr<Image> img = model->cache.get(fileName);
-        if(modTime.isValid() && modTime > img->lastModified()) {
-            if(fileName == model->currentFileName()) {
-                mw->showMessage("File changed on disk. Reloading.");
-                reloadImage(fileName);
-            } else {
-                model->cache.remove(fileName);
-            }
-        }
-    }
+    Q_UNUSED(fileName)
+    // this fires even when the image is edited from qimgv, so no need to notify
+    //if(fileName == model->currentFileName())
+    //    mw->showMessage("File changed on disk. Reloading.");
 }
 
 void Core::outputError(const FileOpResult &error) const {
@@ -435,6 +414,8 @@ void Core::showOpenDialog() {
 }
 
 void Core::moveFile(QString destDirectory) {
+    if(model->isEmpty())
+        return;
     mw->closeImage();
     FileOpResult result;
     model->moveTo(destDirectory, model->currentFileName(), result);
@@ -447,6 +428,8 @@ void Core::moveFile(QString destDirectory) {
 }
 
 void Core::copyFile(QString destDirectory) {
+    if(model->isEmpty())
+        return;
     FileOpResult result;
     model->copyTo(destDirectory, model->currentFileName(), result);
     if(result == FileOpResult::SUCCESS)
@@ -456,6 +439,8 @@ void Core::copyFile(QString destDirectory) {
 }
 
 void Core::toggleCropPanel() {
+    if(model->isEmpty())
+        return;
     if(mw->isCropPanelActive()) {
         mw->triggerCropPanel();
     } else if(state.hasActiveImage) {
@@ -464,21 +449,22 @@ void Core::toggleCropPanel() {
 }
 
 void Core::requestSavePath() {
-    if(state.hasActiveImage) {
-        mw->showSaveDialog(model->currentFilePath());
-    }
+    if(model->isEmpty())
+        return;
+    mw->showSaveDialog(model->currentFilePath());
 }
 
 void Core::showResizeDialog() {
-    if(state.hasActiveImage) {
-        mw->showResizeDialog(model->cache.get(model->currentFileName())->size());
-    }
+    if(model->isEmpty())
+        return;
+    auto img = model->getItem(model->currentFileName());
+    mw->showResizeDialog(img->size());
 }
 
 // all editing operations should be done in the main thread
 // do an access wrapper with edit function as argument?
 void Core::resize(QSize size) {
-    if(!state.hasActiveImage)
+    if(model->isEmpty())
         return;
     std::shared_ptr<Image> img = model->getItem(model->currentFileName());
     if(img && img->type() == STATIC) {
@@ -492,7 +478,7 @@ void Core::resize(QSize size) {
 }
 
 void Core::flipH() {
-    if(!state.hasActiveImage)
+    if(model->isEmpty())
         return;
     std::shared_ptr<Image> img = model->getItem(model->currentFileName());
     if(img && img->type() == STATIC) {
@@ -506,7 +492,7 @@ void Core::flipH() {
 }
 
 void Core::flipV() {
-    if(!state.hasActiveImage)
+    if(model->isEmpty())
         return;
     std::shared_ptr<Image> img = model->getItem(model->currentFileName());
     if(img && img->type() == STATIC) {
@@ -520,7 +506,7 @@ void Core::flipV() {
 }
 
 void Core::crop(QRect rect) {
-    if(!state.hasActiveImage)
+    if(model->isEmpty())
         return;
     std::shared_ptr<Image> img = model->getItem(model->currentFileName());
     if(img && img->type() == STATIC) {
@@ -534,8 +520,9 @@ void Core::crop(QRect rect) {
 }
 
 void Core::rotateByDegrees(int degrees) {
-    if(!state.hasActiveImage)
+    if(model->isEmpty())
         return;
+
     std::shared_ptr<Image> img = model->getItem(model->currentFileName());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
@@ -548,8 +535,9 @@ void Core::rotateByDegrees(int degrees) {
 }
 
 void Core::discardEdits() {
-    if(!state.hasActiveImage)
+    if(model->isEmpty())
         return;
+
     std::shared_ptr<Image> img = model->getItem(model->currentFileName());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
@@ -561,12 +549,13 @@ void Core::discardEdits() {
 
 // move saving logic away from Image container itself
 void Core::saveImageToDisk() {
-    if(state.hasActiveImage)
-        saveImageToDisk(model->currentFilePath());
+    if(model->isEmpty())
+        return;
+    saveImageToDisk(model->currentFilePath());
 }
 
 void Core::saveImageToDisk(QString filePath) {
-    if(!state.hasActiveImage)
+    if(model->isEmpty())
         return;
     std::shared_ptr<Image> img = model->getItem(model->currentFileName());
     if(img->save(filePath))
@@ -601,18 +590,20 @@ void Core::sortBySize() {
 }
 
 void Core::showRenameDialog() {
-    if(!model->itemCount())
+    if(model->isEmpty())
         return;
     mw->toggleRenameOverlay();
 }
 
 void Core::runScript(const QString &scriptName) {
-    scriptManager->runScript(scriptName, model->cache.get(model->currentFileName()));
+    if(model->isEmpty())
+        return;
+    scriptManager->runScript(scriptName, model->getItem(model->currentFileName()));
 }
 
 void Core::scalingRequest(QSize size, ScalingFilter filter) {
     if(state.hasActiveImage) {
-        std::shared_ptr<Image> forScale = model->cache.get(model->currentFileName());
+        std::shared_ptr<Image> forScale = model->getItem(model->currentFileName());
         if(forScale) {
             QString path = model->absolutePath() + "/" + model->currentFileName();
             model->scaler->requestScaled(ScalerRequest(forScale.get(), size, path, filter));
@@ -629,24 +620,11 @@ void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
     }
 }
 
-void Core::trimCache() {
-    QList<QString> list;
-    list << model->prevOf(model->currentFileName());
-    list << model->currentFileName();
-    list << model->nextOf(model->currentFileName());
-    model->cache.trimTo(list);
-}
-
-void Core::clearCache() {
-    model->cache.clear();
-}
-
 // reset state; clear cache; etc
 void Core::reset() {
     state.hasActiveImage = false;
-    model->currentFileName() = "";
+    model->setDirectory("");
     //viewerWidget->unset();
-    this->clearCache();
 }
 
 void Core::loadPath(QString path) {
@@ -736,17 +714,17 @@ void Core::prevImage() {
 }
 
 void Core::jumpToFirst() {
-    if(!model->isEmpty()) {
-        model->setIndexAsync(0);
-        mw->showMessageDirectoryStart();
-    }
+    if(model->isEmpty())
+        return;
+    model->setIndexAsync(0);
+    mw->showMessageDirectoryStart();
 }
 
 void Core::jumpToLast() {
-    if(!model->isEmpty()) {
-        model->setIndexAsync(model->itemCount() - 1);
-        mw->showMessageDirectoryEnd();
-    }
+    if(model->isEmpty())
+        return;
+    model->setIndexAsync(model->itemCount() - 1);
+    mw->showMessageDirectoryEnd();
 }
 
 void Core::onLoadFailed(QString path) {
@@ -763,8 +741,8 @@ void Core::onModelItemReady(std::shared_ptr<Image> img) {
     updateInfoString();
 }
 
-void Core::onModelItemUpdated(std::shared_ptr<Image> img) {
-    onModelItemReady(img);
+void Core::onModelItemUpdated(QString fileName) {
+    onModelItemReady(model->getItem(fileName));
 }
 
 void Core::displayImage(std::shared_ptr<Image> img) {
@@ -793,7 +771,7 @@ void Core::displayImage(std::shared_ptr<Image> img) {
 void Core::updateInfoString() {
     QSize imageSize(0,0);
     qint64 fileSize = 0;
-    std::shared_ptr<Image> img = model->cache.get(model->currentFileName());
+    std::shared_ptr<Image> img = model->getItem(model->currentFileName());
     if(img) {
         imageSize = img->size();
         fileSize  = img->fileSize();

@@ -100,6 +100,11 @@ void FolderViewProxy::removeItem(int index) {
     }
 }
 
+void FolderViewProxy::reloadItem(int index) {
+    if(folderView)
+        folderView->reloadItem(index);
+}
+
 void FolderViewProxy::addItem() {
     if(folderView) {
         folderView->addItem();

@@ -14,7 +14,7 @@ public:
     void unsetModel();
 
 signals:
-    void generateThumbnails(QList<int>, int);
+    void generateThumbnails(QList<int>, int, bool);
 
 public slots:
     void connectView(std::shared_ptr<DirectoryViewWrapper>);
@@ -36,6 +36,7 @@ private slots:
     void setCurrentIndex(int index);
     void focusOn(int index);
     void onIndexChanged(int oldIndex, int index);
+
 private:
     QList<std::shared_ptr<DirectoryViewWrapper>> views;
     std::shared_ptr<DirectoryModel> model = nullptr;

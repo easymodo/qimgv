@@ -6,7 +6,7 @@ DirectoryViewWrapper::DirectoryViewWrapper(QObject *parent) : QObject(parent) {
     Q_ASSERT(view);
 
     connect(parent, SIGNAL(thumbnailPressed(int)), this, SIGNAL(thumbnailPressed(int)));
-    connect(parent, SIGNAL(thumbnailsRequested(QList<int>, int)), this, SIGNAL(thumbnailsRequested(QList<int>, int)));
+    connect(parent, SIGNAL(thumbnailsRequested(QList<int>, int, bool)), this, SIGNAL(thumbnailsRequested(QList<int>, int, bool)));
 }
 
 void DirectoryViewWrapper::populate(int count) {
@@ -39,4 +39,8 @@ void DirectoryViewWrapper::insertItem(int index) {
 
 void DirectoryViewWrapper::removeItem(int index) {
     view->removeItem(index);
+}
+
+void DirectoryViewWrapper::reloadItem(int index) {
+    view->reloadItem(index);
 }

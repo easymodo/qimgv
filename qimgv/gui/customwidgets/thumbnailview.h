@@ -45,10 +45,11 @@ public slots:
     virtual void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) Q_DECL_OVERRIDE;
     virtual void insertItem(int index) Q_DECL_OVERRIDE;
     virtual void removeItem(int index) Q_DECL_OVERRIDE;
+    virtual void reloadItem(int index) Q_DECL_OVERRIDE;
 
 signals:
     void thumbnailPressed(int) Q_DECL_OVERRIDE;
-    void thumbnailsRequested(QList<int>, int) Q_DECL_OVERRIDE;
+    void thumbnailsRequested(QList<int>, int, bool) Q_DECL_OVERRIDE;
 
 private:
     ThumbnailViewOrientation orientation;

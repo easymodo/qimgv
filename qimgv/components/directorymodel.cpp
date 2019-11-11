@@ -1,13 +1,13 @@
 #include "directorymodel.h"
 
 DirectoryModel::DirectoryModel(QObject *parent) : QObject(parent) {
-    thumbnailer = new Thumbnailer(&dirManager); // remove pointers
+    thumbnailer = new Thumbnailer(&dirManager);
     scaler = new Scaler(&cache);
 
     connect(&dirManager, &DirectoryManager::fileRemoved, this, &DirectoryModel::onFileRemoved);
     connect(&dirManager, &DirectoryManager::fileAdded, this, &DirectoryModel::fileAdded);
-    connect(&dirManager, &DirectoryManager::fileModified,this, &DirectoryModel::fileModified);
-    connect(&dirManager, &DirectoryManager::fileRenamed, this, &DirectoryModel::fileRenamed);
+    connect(&dirManager, &DirectoryManager::fileModified,this, &DirectoryModel::onFileModified);
+    connect(&dirManager, &DirectoryManager::fileRenamed, this, &DirectoryModel::onFileRenamed);
     connect(&dirManager, &DirectoryManager::loaded, this, &DirectoryModel::loaded);
     connect(&dirManager, &DirectoryManager::sortingChanged, this, &DirectoryModel::onSortingChanged);
     connect(&loader, &Loader::loadFinished, this, &DirectoryModel::onItemReady);
@@ -194,6 +194,8 @@ void DirectoryModel::moveTo(QString destDirectory, QString fileName, FileOpResul
 }
 // -----------------------------------------------------------------------------
 void DirectoryModel::setDirectory(QString path) {
+    cache.clear();
+    mCurrentFileName = "";
     dirManager.setDirectory(path);
 }
 
@@ -202,50 +204,74 @@ QString DirectoryModel::directory() {
 }
 
 bool DirectoryModel::setIndex(int index) {
-    if(index >= 0 && index < itemCount()) {
-        int oldIndex = currentIndex();
-        QString newName = fileNameAt(index);
-        if(mCurrentFileName != newName) {
-            mCurrentFileName = fileNameAt(index);
-            emit indexChanged(oldIndex, index);
-            trimCache();
-        }
-        if(cache.contains(mCurrentFileName)) {
-            if(settings->usePreloader()) {
-                preload(dirManager.prevOf(mCurrentFileName));
-                preload(dirManager.nextOf(mCurrentFileName));
-            }
-        } else {
-            auto img = loader.load(fullPath(mCurrentFileName));
-            cache.insert(img);
-        }
-        emit itemReady(cache.get(mCurrentFileName));
-        return true;
+    if(index < 0 || index >= itemCount())
+        return false;
+
+    int oldIndex = currentIndex();
+    QString newName = fileNameAt(index);
+    if(mCurrentFileName != newName) {
+        mCurrentFileName = fileNameAt(index);
+        emit indexChanged(oldIndex, index);
+        trimCache();
     }
-    return false;
+
+    cache.remove(mCurrentFileName);
+
+    mCurrentFileName = newName;
+    auto img = loader.load(fullPath(mCurrentFileName));
+    cache.insert(img);
+
+    emit itemReady(cache.get(mCurrentFileName));
+    if(settings->usePreloader()) {
+        preload(dirManager.prevOf(mCurrentFileName));
+        preload(dirManager.nextOf(mCurrentFileName));
+    }
+    return true;
 }
 
 bool DirectoryModel::setIndexAsync(int index) {
-    if(index >= 0 && index < itemCount()) {
-        QString newName = fileNameAt(index);
-        int oldIndex = currentIndex();
-        if(mCurrentFileName != newName) {
-            mCurrentFileName = fileNameAt(index);
-            emit indexChanged(oldIndex, index);
-            trimCache();
-        }
-        if(cache.contains(mCurrentFileName)) {
-            emit itemReady(cache.get(mCurrentFileName));
-            if(settings->usePreloader()) {
-                preload(dirManager.prevOf(mCurrentFileName));
-                preload(dirManager.nextOf(mCurrentFileName));
-            }
-        } else {
-            loader.loadAsyncPriority(fullPath(mCurrentFileName));
-        }
-        return true;
+    if(index < 0 || index >= itemCount())
+        return false;
+    QString newName = fileNameAt(index);
+    int oldIndex = currentIndex();
+    if(mCurrentFileName != newName) {
+        mCurrentFileName = fileNameAt(index);
+        emit indexChanged(oldIndex, index);
+        trimCache();
     }
-    return false;
+    if(cache.contains(mCurrentFileName)) {
+        emit itemReady(cache.get(mCurrentFileName));
+        if(settings->usePreloader()) {
+            preload(dirManager.prevOf(mCurrentFileName));
+            preload(dirManager.nextOf(mCurrentFileName));
+        }
+    } else {
+        loader.loadAsyncPriority(fullPath(mCurrentFileName));
+    }
+    return true;
+}
+
+void DirectoryModel::reload(QString fileName) {
+    if(!contains(fileName))
+        return;
+    cache.remove(fileName);
+    if(dirManager.contains(fileName)) {
+        auto img = loader.load(fullPath(mCurrentFileName));
+        cache.insert(img);
+        if(fileName == mCurrentFileName)
+            emit itemReady(img);
+    }
+}
+
+void DirectoryModel::unload(int index) {
+    QString fileName = this->fileNameAt(index);
+    if(!fileName.isEmpty() && fileName != mCurrentFileName)
+        cache.remove(fileName);
+}
+
+void DirectoryModel::unload(QString fileName) {
+    if(!fileName.isEmpty() && fileName != mCurrentFileName)
+        cache.remove(fileName);
 }
 
 bool DirectoryModel::loaderBusy() {
@@ -268,13 +294,12 @@ void DirectoryModel::onItemReady(std::shared_ptr<Image> img) {
     if(!img)
         return;
     bool isRelevant = (img->name() == mCurrentFileName)
-            || (img->name() == prevOf(mCurrentFileName))
-            || (img->name() == nextOf(mCurrentFileName));
+                   || (img->name() == prevOf(mCurrentFileName))
+                   || (img->name() == nextOf(mCurrentFileName));
     if(isRelevant) {
-        // maybe force insert into the cache? we already loaded it anyway
-        if(!cache.insert(img)) {
-            img = cache.get(img->name());
-        }
+        // force insert
+        cache.remove(img->name());
+        cache.insert(img);
     }
     if(img->name() == mCurrentFileName) {
         emit itemReady(img);
@@ -287,7 +312,6 @@ void DirectoryModel::onItemReady(std::shared_ptr<Image> img) {
 
 void DirectoryModel::onSortingChanged() {
     trimCache();
-    int index = dirManager.indexOf(mCurrentFileName);
     if(settings->usePreloader()) {
         preload(dirManager.prevOf(mCurrentFileName));
         preload(dirManager.nextOf(mCurrentFileName));
@@ -295,10 +319,49 @@ void DirectoryModel::onSortingChanged() {
     emit sortingChanged();
 }
 
+void DirectoryModel::onFileModified(QString fileName) {
+    QDateTime modTime = lastModified(fileName);
+    auto img = getItem(fileName);
+    if(modTime.isValid()) {
+        if(modTime > img->lastModified()) {
+            if(fileName == mCurrentFileName) {
+                reload(fileName);
+            } else {
+                unload(fileName);
+            }
+        }
+        emit fileModified(fileName);
+    }
+}
+
 void DirectoryModel::onFileRemoved(QString fileName, int index) {
-    if(!dirManager.fileCount())
+    unload(fileName);
+    if(!dirManager.fileCount()) {
         mCurrentFileName = "";
-    emit fileRemoved(fileName, index);
+        emit fileRemoved(fileName, index);
+    } else {
+        emit fileRemoved(fileName, index);
+        if(mCurrentFileName == fileName)
+            if(!setIndexAsync(index))
+                setIndexAsync(--index);
+    }
+}
+
+void DirectoryModel::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
+    unload(from);
+    if(mCurrentFileName == from) {
+        cache.clear();
+        setIndex(indexTo);
+    }
+    emit fileRenamed(from, indexFrom, to, indexTo);
+}
+
+bool DirectoryModel::isLoaded(int index) {
+    return cache.contains(fileNameAt(index));
+}
+
+bool DirectoryModel::isLoaded(QString fileName) {
+    return cache.contains(fileName);
 }
 
 std::shared_ptr<Image> DirectoryModel::getItemAt(int index) {
@@ -307,20 +370,18 @@ std::shared_ptr<Image> DirectoryModel::getItemAt(int index) {
 
 // returns cached image
 // if image is not cached, loads it in the main thread
-// for async access use setIndex(int)
+// for async access use setIndexAsync(int)
 std::shared_ptr<Image> DirectoryModel::getItem(QString fileName) {
     std::shared_ptr<Image> img = cache.get(fileName);
-    if(!img) {
+    if(!img)
         img = loader.load(fullPath(fileName));
-
-    }
     return img;
 }
 
 void DirectoryModel::updateItem(QString fileName, std::shared_ptr<Image> img) {
     if(dirManager.contains(fileName)) {
         cache.insert(img);
-        emit itemUpdated(img);
+        emit itemUpdated(fileName);
     }
 }
 
