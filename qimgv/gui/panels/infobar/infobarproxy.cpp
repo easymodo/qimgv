@@ -2,7 +2,7 @@
 
 InfoBarProxy::InfoBarProxy(QWidget *parent) : QWidget(parent), infoBar(nullptr) {
     setAccessibleName("InfoBarProxy");
-    this->setMaximumHeight(30);
+    this->setMaximumHeight(26);
     layout.setContentsMargins(0,0,0,0);
     setLayout(&layout);
 }

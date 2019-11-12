@@ -638,7 +638,7 @@ void Settings::setInfoBarFullscreen(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::infoBarWindowed() {
-    return settings->s->value("infoBarWindowed", false).toBool();
+    return settings->s->value("infoBarWindowed", true).toBool();
 }
 
 void Settings::setInfoBarWindowed(bool mode) {
@@ -646,7 +646,7 @@ void Settings::setInfoBarWindowed(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::windowTitleExtendedInfo() {
-    return settings->s->value("windowTitleExtendedInfo", true).toBool();
+    return settings->s->value("windowTitleExtendedInfo", false).toBool();
 }
 
 void Settings::setWindowTitleExtendedInfo(bool mode) {
