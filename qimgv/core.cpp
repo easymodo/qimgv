@@ -614,7 +614,7 @@ void Core::scalingRequest(QSize size, ScalingFilter filter) {
         std::shared_ptr<Image> forScale = model->getItem(model->currentFileName());
         if(forScale) {
             QString path = model->absolutePath() + "/" + model->currentFileName();
-            model->scaler->requestScaled(ScalerRequest(forScale.get(), size, path, filter));
+            model->scaler->requestScaled(ScalerRequest(forScale, size, path, filter));
         }
     }
 }
