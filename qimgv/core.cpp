@@ -418,7 +418,7 @@ void Core::showOpenDialog() {
 }
 
 void Core::showDirectory() {
-    QDesktopServices::openUrl(QUrl(model->directory()));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(model->directory()));
 }
 
 void Core::moveFile(QString destDirectory) {
