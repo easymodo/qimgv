@@ -243,6 +243,14 @@ void Settings::setPlayVideoSounds(bool mode) {
     settings->s->setValue("playVideoSounds", mode);
 }
 //------------------------------------------------------------------------------
+void Settings::setVolume(int vol) {
+    settings->state->setValue("volume", vol);
+}
+
+int Settings::volume() {
+    return settings->state->value("volume", 100).toInt();
+}
+//------------------------------------------------------------------------------
 bool Settings::useFastScale() {
     return settings->s->value("useFastScale", "true").toBool();
 }

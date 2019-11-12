@@ -11,16 +11,18 @@ VideoControls::VideoControls(FloatingWidgetContainer *parent) :
     ui->pauseButton->setIconPath(":res/icons/buttons/play24.png");
     ui->prevFrameButton->setIconPath(":res/icons/buttons/skip-backwards24.png");
     ui->nextFrameButton->setIconPath(":res/icons/buttons/skip-forward24.png");
+    ui->muteButton->setIconPath(":/res/icons/buttons/mute-on24.png");
+    ui->muteButton->setAction("toggleMute");
 
     lastVideoPosition = -1;
 
     readSettings();
     connect(settings, &Settings::settingsChanged, this, &VideoControls::readSettings);
 
-    connect(ui->pauseButton, &IconButton::pressed, this, &VideoControls::pause);
+    connect(ui->pauseButton, &IconButton::clicked, this, &VideoControls::pause);
     connect(ui->seekBar, &VideoSlider::sliderMovedX, this, &VideoControls::seek);
-    connect(ui->prevFrameButton, &IconButton::pressed, this, &VideoControls::prevFrame);
-    connect(ui->nextFrameButton, &IconButton::pressed, this, &VideoControls::nextFrame);
+    connect(ui->prevFrameButton, &IconButton::clicked, this, &VideoControls::prevFrame);
+    connect(ui->nextFrameButton, &IconButton::clicked, this, &VideoControls::nextFrame);
 
     if(parent)
         setContainerSize(parent->size());
@@ -39,7 +41,7 @@ VideoControls::~VideoControls() {
 
 void VideoControls::setDurationSeconds(int time) {
     int _time = time;
-    int hours   = _time / 3600;
+    int hours = _time / 3600;
     _time -= hours * 3600;
     int minutes = _time / 60;
     int seconds = _time - minutes * 60;
@@ -55,7 +57,7 @@ void VideoControls::setDurationSeconds(int time) {
 void VideoControls::setPositionSeconds(int time) {
     if(time != lastVideoPosition) {
         int _time = time;
-        int hours   = _time / 3600;
+        int hours = _time / 3600;
         _time -= hours * 3600;
         int minutes = _time / 60;
         int seconds = _time - minutes * 60;
@@ -78,4 +80,11 @@ void VideoControls::onVideoPaused(bool mode) {
         ui->pauseButton->setIconPath(":res/icons/buttons/play24.png");
     else
         ui->pauseButton->setIconPath(":res/icons/buttons/pause24.png");
+}
+
+void VideoControls::onVideoMuted(bool mode) {
+    if(mode)
+        ui->muteButton->setIconPath(":res/icons/buttons/mute-on24.png");
+    else
+        ui->muteButton->setIconPath(":res/icons/buttons/mute-off24.png");
 }

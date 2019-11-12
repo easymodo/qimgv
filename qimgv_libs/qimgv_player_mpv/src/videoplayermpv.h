@@ -17,6 +17,7 @@ public:
     explicit VideoPlayerMpv(QWidget *parent = nullptr);
     bool openMedia(QString file);
     void setVideoUnscaled(bool mode);
+    int volume();
 
 public slots:
     void seek(int pos);
@@ -27,6 +28,10 @@ public slots:
     void stop();
     void setPaused(bool mode);
     void setMuted(bool);
+    bool muted();
+    void volumeUp();
+    void volumeDown();
+    void setVolume(int);
     void show();
     void hide();
 

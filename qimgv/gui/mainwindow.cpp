@@ -89,6 +89,9 @@ void MW::setupUi() {
     connect(this, &MW::seekVideoLeft,  viewerWidget.get(), &ViewerWidget::seekVideoLeft);
     connect(this, &MW::frameStep,      viewerWidget.get(), &ViewerWidget::frameStep);
     connect(this, &MW::frameStepBack,  viewerWidget.get(), &ViewerWidget::frameStepBack);
+    connect(this, &MW::toggleMute,  viewerWidget.get(), &ViewerWidget::toggleMute);
+    connect(this, &MW::volumeUp,  viewerWidget.get(), &ViewerWidget::volumeUp);
+    connect(this, &MW::volumeDown,  viewerWidget.get(), &ViewerWidget::volumeDown);
     connect(this, &MW::toggleTransparencyGrid, viewerWidget.get(), &ViewerWidget::toggleTransparencyGrid);
     connect(this, &MW::enableDocumentView, centralWidget.get(), &CentralWidget::showDocumentView);
 }

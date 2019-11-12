@@ -107,5 +107,7 @@
         <file>res/icons/buttons/skip-backwards24@2x.png</file>
         <file>res/icons/buttons/skip-forward24@2x.png</file>
         <file>res/icons/buttons/sorting-mode16@2x.png</file>
+        <file>res/icons/buttons/mute-off24.png</file>
+        <file>res/icons/buttons/mute-on24.png</file>
     </qresource>
 </RCC>

@@ -6,6 +6,7 @@ struct VideoControlsStateBuffer {
     int durationSeconds = 0;
     int positionSeconds = 0;
     bool videoPaused = true;
+    bool videoMuted = true;
 };
 
 class VideoControlsProxyWrapper : public QObject {
@@ -30,6 +31,7 @@ public slots:
     void setDurationSeconds(int);
     void setPositionSeconds(int);
     void onVideoPaused(bool);
+    void onVideoMuted(bool);
 
 private:
     FloatingWidgetContainer *container;

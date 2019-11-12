@@ -14,7 +14,13 @@
     color: #9c9ea0;
 }
 
-[accessibleName="Button"]:pressed, [accessibleName="ButtonSetLeft"]:pressed, [accessibleName="ButtonSetRight"]:pressed {
+/* TODO: fix me */
+[accessibleName="Button"]:pressed,
+[accessibleName="Button"][pressed="true"],
+[accessibleName="ButtonSetLeft"]:pressed,
+[accessibleName="ButtonSetLeft"][pressed="true"],
+[accessibleName="ButtonSetRight"]:pressed,
+[accessibleName="ButtonSetRight"][pressed="true"] {
     background-color: #2a2a2b;
     color: #86888a;
 }
@@ -45,7 +51,9 @@
     border: 1px solid #1a1a1b;
 }
 
-[accessibleName="CheckableButton"]:pressed, [accessibleName="CheckableButton"][checked="true"] {
+[accessibleName="CheckableButton"]:pressed,
+[accessibleName="CheckableButton"][pressed="true"],
+[accessibleName="CheckableButton"][checked="true"]{
     background-color: #2f2f30;
     border: 1px solid #19191a;
 }
@@ -62,7 +70,8 @@
     border: 1px solid #1a1a1b;
 }
 
-[accessibleName="PanelButton"]:pressed {
+[accessibleName="PanelButton"]:pressed,
+[accessibleName="PanelButton"][pressed="true"] {
     background-color: #2f2f30;
     border: 1px solid #19191a;
 }

@@ -20,6 +20,7 @@ public slots:
     void setDurationSeconds(int);
     void setPositionSeconds(int);
     void onVideoPaused(bool);
+    void onVideoMuted(bool);
 
 signals:
     void pause();

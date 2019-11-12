@@ -163,6 +163,9 @@ signals:
     void seekVideoLeft();
     void frameStep();
     void frameStepBack();
+    void toggleMute();
+    void volumeUp();
+    void volumeDown();
     void enableDocumentView();
     void setDirectoryPath(QString);
     void toggleTransparencyGrid();

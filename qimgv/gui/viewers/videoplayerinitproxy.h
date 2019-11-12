@@ -22,6 +22,11 @@ public:
     void stop();
     void setPaused(bool mode);
     void setMuted(bool);
+    bool muted();
+    void volumeUp();
+    void volumeDown();
+    void setVolume(int);
+    int volume();
     void setVideoUnscaled(bool mode);
 
 public slots:

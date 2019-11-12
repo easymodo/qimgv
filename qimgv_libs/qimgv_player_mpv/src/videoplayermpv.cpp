@@ -67,6 +67,26 @@ void VideoPlayerMpv::setMuted(bool mode) {
     m_mpv->setMuted(mode);
 }
 
+bool VideoPlayerMpv::muted() {
+    return m_mpv->muted();
+}
+
+void VideoPlayerMpv::volumeUp() {
+    m_mpv->setVolume(m_mpv->volume() + 5);
+}
+
+void VideoPlayerMpv::volumeDown() {
+    m_mpv->setVolume(m_mpv->volume() - 5);
+}
+
+void VideoPlayerMpv::setVolume(int vol) {
+    m_mpv->setVolume(vol);
+}
+
+int VideoPlayerMpv::volume() {
+    return m_mpv->volume();
+}
+
 void VideoPlayerMpv::setVideoUnscaled(bool mode) {
     if(mode)
         m_mpv->setOption("video-unscaled", "downscale-big");

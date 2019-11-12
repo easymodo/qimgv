@@ -110,6 +110,9 @@ signals:
     void toggleShuffle();
     void toggleScalingFilter();
     void showDirectory();
+    void toggleMute();
+    void volumeUp();
+    void volumeDown();
 };
 
 extern ActionManager *actionManager;

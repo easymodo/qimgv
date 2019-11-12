@@ -26,6 +26,7 @@ void VideoControlsProxyWrapper::init() {
     videoControls->setDurationSeconds(stateBuf.durationSeconds);
     videoControls->setPositionSeconds(stateBuf.positionSeconds);
     videoControls->onVideoPaused(stateBuf.videoPaused);
+    videoControls->onVideoMuted(stateBuf.videoMuted);
 }
 
 void VideoControlsProxyWrapper::show() {
@@ -59,6 +60,14 @@ void VideoControlsProxyWrapper::onVideoPaused(bool _mode) {
         videoControls->onVideoPaused(_mode);
     } else {
         stateBuf.videoPaused = _mode;
+    }
+}
+
+void VideoControlsProxyWrapper::onVideoMuted(bool _mode) {
+    if(videoControls) {
+        videoControls->onVideoMuted(_mode);
+    } else {
+        stateBuf.videoMuted = _mode;
     }
 }
 

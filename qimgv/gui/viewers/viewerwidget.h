@@ -86,6 +86,9 @@ public slots:
     void seekVideoRight();
     void frameStep();
     void frameStepBack();
+    void toggleMute();
+    void volumeUp();
+    void volumeDown();
 
     void startPlayback();
     void showContextMenu();

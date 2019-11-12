@@ -151,6 +151,9 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::toggleShuffle, this, &Core::toggleShuffle);
     connect(actionManager, &ActionManager::toggleScalingFilter, mw, &MW::toggleScalingFilter);
     connect(actionManager, &ActionManager::showDirectory, this, &Core::showDirectory);
+    connect(actionManager, &ActionManager::toggleMute, mw, &MW::toggleMute);
+    connect(actionManager, &ActionManager::volumeUp, mw, &MW::volumeUp);
+    connect(actionManager, &ActionManager::volumeDown, mw, &MW::volumeDown);
 }
 
 void Core::onUpdate() {

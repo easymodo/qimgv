@@ -156,6 +156,22 @@ void MpvWidget::setMuted(bool mode) {
         mpv::qt::set_option_variant(mpv, "mute", "no");
 }
 
+bool MpvWidget::muted() {
+    return mpv::qt::get_property_variant(mpv, "mute").toBool();
+}
+
+int MpvWidget::volume() {
+    return mpv::qt::get_property_variant(mpv, "volume").toInt();
+}
+
+void MpvWidget::setVolume(int vol) {
+    if(vol < 0)
+        vol = 0;
+    else if(vol > 100)
+        vol = 100;
+    mpv::qt::set_property_variant(mpv, "volume", vol);
+}
+
 void MpvWidget::setRepeat(bool mode) {
     if(mode)
         mpv::qt::set_option_variant(mpv, "loop-file", "inf");

@@ -29,6 +29,9 @@ public:
     }
     void setMuted(bool mode);
     void setRepeat(bool mode);
+    bool muted();
+    int volume();
+    void setVolume(int vol);
 signals:
     void durationChanged(int value);
     void positionChanged(int value);

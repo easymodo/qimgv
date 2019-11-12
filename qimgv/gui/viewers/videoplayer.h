@@ -15,6 +15,11 @@ public:
     virtual void stop() = 0;
     virtual void setPaused(bool mode) = 0;
     virtual void setMuted(bool) = 0;
+    virtual bool muted() = 0;
+    virtual void volumeUp() = 0;
+    virtual void volumeDown() = 0;
+    virtual void setVolume(int) = 0;
+    virtual int volume() = 0;
     virtual void setVideoUnscaled(bool mode) = 0;
 
 signals:

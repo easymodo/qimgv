@@ -11,12 +11,12 @@ public:
     void setCheckable(bool mode);
 
 signals:
-    void pressed();
     void clicked();
     void toggled(bool);
 
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-    bool checkable;
+    bool mCheckable, mChecked, mPressed;
+    void mouseMoveEvent(QMouseEvent *event);
 };

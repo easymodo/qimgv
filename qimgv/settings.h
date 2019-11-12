@@ -82,6 +82,8 @@ public:
     void setPlayWebm(bool mode);
     bool playVideoSounds();
     void setPlayVideoSounds(bool mode);
+    void setVolume(int vol);
+    int volume();
     QString thumbnailCacheDir();
     QString mpvBinary();
     void setMpvBinary(QString path);

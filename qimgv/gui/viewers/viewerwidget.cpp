@@ -263,6 +263,25 @@ void ViewerWidget::frameStepBack() {
         videoPlayer.get()->frameStepBack();
 }
 
+void ViewerWidget::toggleMute() {
+    if(currentWidget == VIDEOPLAYER) {
+        videoPlayer->setMuted(!videoPlayer->muted());
+        videoControls->onVideoMuted(videoPlayer->muted());
+    }
+}
+
+void ViewerWidget::volumeUp() {
+    if(currentWidget == VIDEOPLAYER) {
+        videoPlayer->volumeUp();
+    }
+}
+
+void ViewerWidget::volumeDown() {
+    if(currentWidget == VIDEOPLAYER) {
+        videoPlayer->volumeDown();
+    }
+}
+
 bool ViewerWidget::isDisplaying() {
     if(currentWidget == IMAGEVIEWER && imageViewer->isDisplaying())
         return true;

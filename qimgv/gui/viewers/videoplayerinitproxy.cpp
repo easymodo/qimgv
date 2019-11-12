@@ -47,6 +47,7 @@ inline bool VideoPlayerInitProxy::initPlayer() {
 
     player->setMuted(!settings->playVideoSounds());
     player->setVideoUnscaled(!settings->expandImage());
+    player->setVolume(settings->volume());
 
     player->setParent(this);
     layout.addWidget(player.get());
@@ -110,6 +111,38 @@ void VideoPlayerInitProxy::setMuted(bool mode) {
     if(!initPlayer())
         return;
     player->setMuted(mode);
+}
+
+bool VideoPlayerInitProxy::muted() {
+    if(!initPlayer())
+        return true;
+    return player->muted();
+}
+
+void VideoPlayerInitProxy::volumeUp() {
+    if(!initPlayer())
+        return;
+    player->volumeUp();
+    settings->setVolume(player->volume());
+}
+
+void VideoPlayerInitProxy::volumeDown() {
+    if(!initPlayer())
+        return;
+    player->volumeDown();
+    settings->setVolume(player->volume());
+}
+
+void VideoPlayerInitProxy::setVolume(int vol) {
+    if(!initPlayer())
+        return;
+    player->setVolume(vol);
+}
+
+int VideoPlayerInitProxy::volume() {
+    if(!initPlayer())
+        return 0;
+    return player->volume();
 }
 
 void VideoPlayerInitProxy::setVideoUnscaled(bool mode) {
