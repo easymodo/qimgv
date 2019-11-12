@@ -150,6 +150,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::toggleImageInfo, mw, &MW::toggleImageInfoOverlay);
     connect(actionManager, &ActionManager::toggleShuffle, this, &Core::toggleShuffle);
     connect(actionManager, &ActionManager::toggleScalingFilter, mw, &MW::toggleScalingFilter);
+    connect(actionManager, &ActionManager::showDirectory, this, &Core::showDirectory);
 }
 
 void Core::onUpdate() {
@@ -411,6 +412,10 @@ void Core::outputError(const FileOpResult &error) const {
 
 void Core::showOpenDialog() {
     mw->showOpenDialog(model->directory());
+}
+
+void Core::showDirectory() {
+    QDesktopServices::openUrl(QUrl(model->directory()));
 }
 
 void Core::moveFile(QString destDirectory) {

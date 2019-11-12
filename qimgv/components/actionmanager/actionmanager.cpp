@@ -75,6 +75,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("menu", "contextMenu");
     actionManager->defaults.insert("I", "toggleImageInfo");
     actionManager->defaults.insert("S", "toggleShuffle");
+    actionManager->defaults.insert("Ctrl+D", "showDirectory");
 }
 //------------------------------------------------------------------------------
 void ActionManager::initShortcuts() {

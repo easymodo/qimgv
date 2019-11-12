@@ -7,6 +7,7 @@
 #include <QDrag>
 #include <malloc.h>
 #include <QFileSystemModel>
+#include <QDesktopServices>
 #include "appversion.h"
 #include "settings.h"
 #include "components/directorymodel.h"
@@ -118,4 +119,5 @@ private slots:
     void onModelLoaded();
     void outputError(const FileOpResult &error) const;
     void showOpenDialog();
+    void showDirectory();
 };

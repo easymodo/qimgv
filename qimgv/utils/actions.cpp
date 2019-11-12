@@ -76,5 +76,6 @@ void Actions::init() {
     mActions.insert("toggleImageInfo", QVersionNumber(0,7,84));
     mActions.insert("toggleShuffle", QVersionNumber(0,8,3));
     mActions.insert("toggleScalingFilter", QVersionNumber(0,8,3));
+    mActions.insert("showDirectory", QVersionNumber(0,8,7));
 }
 

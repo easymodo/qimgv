@@ -109,6 +109,7 @@ signals:
     void toggleImageInfo();
     void toggleShuffle();
     void toggleScalingFilter();
+    void showDirectory();
 };
 
 extern ActionManager *actionManager;

@@ -70,7 +70,7 @@ bool ImageStatic::save(QString destPath) {
     } else {
         success = image->save(tmpPath, mDocInfo->format().toStdString().c_str(), quality);
     }
-    // save to a temp file JUST IN CASE qt decides to corrupt the originala
+    // save to a temp file JUST IN CASE qt decides to corrupt the original
     if(success) {
         QFile file(destPath);
         file.remove();

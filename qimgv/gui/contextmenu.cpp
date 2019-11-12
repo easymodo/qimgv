@@ -79,6 +79,13 @@ ContextMenu::ContextMenu(QWidget *parent) :
     ui->settings->setText(tr("Settings"));
     ui->settings->setIcon(QIcon(":/res/icons/buttons/settings16.png"));
     // -------------------------------------------------------------------------
+    ui->showLocation->setAction("showDirectory");
+    ui->showLocation->setText(tr("Show directory"));
+    ui->showLocation->setIcon(QIcon(":/res/icons/buttons/folder16.png"));
+    // -------------------------------------------------------------------------
+    // force resize to fit new menuitem width
+    this->adjustSize();
+    // -------------------------------------------------------------------------
     reservedKeys << "Up"
                  << "Down"
                  //<< "Left"

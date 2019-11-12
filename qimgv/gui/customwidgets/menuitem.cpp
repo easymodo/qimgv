@@ -40,6 +40,7 @@ QString MenuItem::text() {
 
 void MenuItem::setShortcutText(QString text) {
     this->mShortcutLabel.setText(text);
+    this->adjustSize();
 }
 
 QString MenuItem::shortcut() {
