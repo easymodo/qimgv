@@ -1,4 +1,4 @@
-qimgv | Current version: 0.8.6
+qimgv | Current version: 0.8.7
 =====
 Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
 
@@ -48,6 +48,7 @@ Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
 | Resize image  | R |
 | Rotate left  | Ctrl+L |
 | Rotate Right  | Ctrl+R |
+| Open containing directory | Ctrl+D |
 | Quick copy  | C |
 | Quick move  | M |
 | Move to trash | Delete |
@@ -169,7 +170,7 @@ sudo dnf install qimgv
 
 If your favorite distro is not included refer to [Manual install] section at the end of this document.
   
-### Window$
+### Windows builds
 
   [Grab the latest release here.](https://github.com/easymodo/qimgv/releases)
   
@@ -229,13 +230,19 @@ Install
 sudo make install
 ```
 
-If you get errors like "/usr/lib64 exists in filesystem" during install:
+### Possible build issues
+
+- If you get errors like "/usr/lib64 exists in filesystem" during install:
 
 add `-DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib` to cmake command.
 
-If you get some errors related to "filesystem":
+- If you get some errors like "std::filesystem not found":
 
-add `CC=gcc-8 CXX=g++-8` to cmake command (_at the beginning_).
+qimgv needs a compiler with c++17 support - for example gcc 8.0+ (every recent distro has it)
+
+If you have multiple version of gcc installed you _might_ need to specify a which version for `cmake` to use, for example 
+
+`CC=gcc-8 CXX=g++-8 cmake [........]`
 
 ### CMake build options
 
