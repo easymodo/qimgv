@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
     // init
     // needed for mpv
 #ifndef _MSC_VER
-    std::setlocale(LC_NUMERIC, "C");
+    setlocale(LC_NUMERIC, "C");
 #endif
     qRegisterMetaTypeStreamOperators<Script>("Script");
 

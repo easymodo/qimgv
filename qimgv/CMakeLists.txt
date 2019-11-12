@@ -15,7 +15,10 @@ QT5_ADD_RESOURCES(RES resources.qrc)
 add_executable(qimgv ${SRC} ${SRC_Components} ${SRC_SourceContainers} ${SRC_Utils} ${SRC_Gui} ${RES} ${SRC_UI_Files} qimgv.rc)
 
 # LINK STUFF
-target_link_libraries(qimgv Qt5::Core Qt5::Widgets Qt5::Concurrent stdc++fs)
+target_link_libraries(qimgv Qt5::Core Qt5::Widgets Qt5::Concurrent)
+if(USING_LIBSTDCXX)
+    target_link_libraries(qimgv stdc++fs)
+endif()
 #target_link_libraries(qimgv Qt5::Core Qt5::Widgets Qt5::Concurrent Qt5::QWindowsIntegrationPlugin stdc++fs)
 
 # OPTION DEFINITIONS, LINKING
