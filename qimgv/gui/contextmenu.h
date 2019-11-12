@@ -4,13 +4,12 @@
 #include <QTimer>
 #include <QPainter>
 #include "components/actionmanager/actionmanager.h"
-#include "gui/customwidgets/iconbutton.h"
 
 namespace Ui {
 class ContextMenu;
 }
 
-class ContextMenu : public IconButton {
+class ContextMenu : public QWidget {
     Q_OBJECT
 public:
     explicit ContextMenu(QWidget *parent = nullptr);
@@ -25,7 +24,7 @@ private:
     QStringList reservedKeys;
 
 protected:
+    void mousePressEvent(QMouseEvent*);
     void paintEvent(QPaintEvent *);
-
     void keyPressEvent(QKeyEvent *event);
 };

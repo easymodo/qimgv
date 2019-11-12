@@ -2,7 +2,7 @@
 #include "ui_contextmenu.h"
 
 ContextMenu::ContextMenu(QWidget *parent) :
-    IconButton(parent),
+    QWidget(parent),
     ui(new Ui::ContextMenu)
 {
     ui->setupUi(this);
@@ -92,8 +92,6 @@ ContextMenu::ContextMenu(QWidget *parent) :
                  //<< "Right"
                  << "Return"
                  << "escape";
-
-    connect(this, SIGNAL(pressed()), this, SLOT(hide()));
 }
 
 ContextMenu::~ContextMenu() {
@@ -117,6 +115,11 @@ void ContextMenu::showAt(QPoint pos) {
     geom.moveTopLeft(pos);
     setGeometry(geom);
     show();
+}
+
+void ContextMenu::mousePressEvent(QMouseEvent *event) {
+    QWidget::mousePressEvent(event);
+    hide();
 }
 
 void ContextMenu::paintEvent(QPaintEvent *event) {
