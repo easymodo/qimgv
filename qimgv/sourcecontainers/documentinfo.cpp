@@ -111,7 +111,7 @@ void DocumentInfo::detectFormat() {
     } else {
         // just try to open via suffix if all of the above fails
         mFormat = fileInfo.completeSuffix();
-        if(mFormat.compare("jfif", Qt::CaseInsensitive))
+        if(mFormat.compare("jfif", Qt::CaseInsensitive) == 0)
             mFormat = "jpg";
         mDocumentType = STATIC;
     }
