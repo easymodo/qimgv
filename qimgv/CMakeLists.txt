@@ -64,7 +64,7 @@ install(FILES distrib/qimgv.desktop
 # icons
 foreach(icon IN ITEMS 16x16 22x22 24x24 32x32 36x36 48x48 64x64 128x128 256x256)
     install(FILES distrib/hicolor/${icon}/apps/qimgv.png DESTINATION
-        ${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/hicolor/${icon}/apps/qimgv.png)
+        ${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/hicolor/${icon}/apps)
 endforeach()
 install(FILES distrib/hicolor/scalable/apps/qimgv.svg
     DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/hicolor/scalable/apps)
