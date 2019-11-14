@@ -12,8 +12,14 @@ project(qimgv
 #endif()
 message(STATUS "Build configuration: " ${CMAKE_BUILD_TYPE})
 
-# COMPILE FLAGS
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -lstdc++fs -O3")
+# detect if libstdc++ is in use to know if libstdc++fs should be linked
+include(CheckCXXSourceCompiles)
+check_cxx_source_compiles("#include <iostream>
+    #ifndef __GLIBCXX__
+    #error not using libstdc+++
+    #endif
+    int main() { return 0; }"
+    USING_LIBSTDCXX)
 
 # check requirements for std::filesystem
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND

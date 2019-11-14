@@ -123,7 +123,7 @@ QString Settings::supportedFormatsString() {
 QString Settings::supportedFormatsRegex() {
     QString filter;
     QList<QByteArray> formats = supportedFormats();
-    filter.append(".*\.(");
+    filter.append(".*\\.(");
     for(int i = 0; i < formats.count(); i++) {
         filter.append(QString(formats.at(i)) + "|");
     }

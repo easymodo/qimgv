@@ -360,7 +360,7 @@ void DirectoryManager::generateFileList() {
                 newEntry.size = entry.file_size();
                 newEntry.modifyTime = entry.last_write_time();
                 newEntry.isDirectory = entry.is_directory();
-            } catch (const std::filesystem::__cxx11::filesystem_error &err) {
+            } catch (const std::filesystem::filesystem_error &err) {
                 qDebug() << "[DirectoryManager]" << err.what();
                 continue;
             }

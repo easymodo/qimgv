@@ -35,8 +35,8 @@ protected:
     void showEvent(QShowEvent *event) override;
 
 signals:
-    void thumbnailPressed(int);
-    void thumbnailsRequested(QList<int>, int, bool);
+    void thumbnailPressed(int) override;
+    void thumbnailsRequested(QList<int>, int, bool) override;
     void sortingSelected(SortingMode);
 
 private:
