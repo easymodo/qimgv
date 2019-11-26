@@ -17,6 +17,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     imageFitMode(FIT_ORIGINAL),
     mScalingFilter(FILTER_BILINEAR)
 {
+    setFocusPolicy(Qt::NoFocus);
     setMouseTracking(true);
     posAnimation = new QPropertyAnimation(this, "drawPos");
     posAnimation->setEasingCurve(QEasingCurve::OutCubic);

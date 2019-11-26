@@ -76,7 +76,6 @@ void ViewerWidget::enableImageViewer() {
         disableVideoPlayer();
         layout.addWidget(imageViewer.get());
         imageViewer->show();
-        setFocusProxy(imageViewer.get());
         currentWidget = IMAGEVIEWER;
     }
 }
@@ -87,7 +86,6 @@ void ViewerWidget::enableVideoPlayer() {
         disableImageViewer();
         layout.addWidget(videoPlayer.get());
         videoPlayer->show();
-        setFocusProxy(videoPlayer.get());
         currentWidget = VIDEOPLAYER;
     }
 }

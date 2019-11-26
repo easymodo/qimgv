@@ -17,6 +17,9 @@ VideoPlayerMpv::VideoPlayerMpv(QWidget *parent) : VideoPlayer(parent) {
     vl->addWidget(m_mpv);
     setLayout(vl);
 
+    setFocusPolicy(Qt::NoFocus);
+    m_mpv->setFocusPolicy(Qt::NoFocus);
+
     readSettings();
     //connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
     connect(m_mpv, SIGNAL(durationChanged(int)), this, SIGNAL(durationChanged(int)));
