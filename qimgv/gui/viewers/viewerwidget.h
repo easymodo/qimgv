@@ -35,7 +35,7 @@ public:
 private:
     QHBoxLayout layout;
     std::unique_ptr<ImageViewer> imageViewer;
-    std::unique_ptr<VideoPlayer> videoPlayer;
+    std::unique_ptr<VideoPlayerInitProxy> videoPlayer;
     std::unique_ptr<ContextMenu> contextMenu;
     VideoControlsProxyWrapper *videoControls;
 

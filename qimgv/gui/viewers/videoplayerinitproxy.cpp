@@ -21,6 +21,10 @@ void VideoPlayerInitProxy::onSettingsChanged() {
     player->setVideoUnscaled(!settings->expandImage());
 }
 
+std::shared_ptr<VideoPlayer> VideoPlayerInitProxy::getPlayer() {
+    return player;
+}
+
 inline bool VideoPlayerInitProxy::initPlayer() {
 #ifndef USE_MPV
     return false;

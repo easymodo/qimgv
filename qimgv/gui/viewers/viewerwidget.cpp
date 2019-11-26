@@ -319,10 +319,9 @@ void ViewerWidget::hideCursorTimed(bool restartTimer) {
 
 void ViewerWidget::hideCursor() {
     cursorTimer.stop();
-    // checking overlays explicitly is a bit ugly
-    // todo: find a better solution without reparenting
-    // maybe keep a list of pointers in OverlayContainerWidget on overlay attach?
-    if(this->underMouse() && !videoControls->underMouse() && isDisplaying()) {
+    // only hide when we are under viewer or player widget
+    QWidget *w = qApp->widgetAt(QCursor::pos());
+    if(w && (w == imageViewer.get() || w == videoPlayer->getPlayer().get()) && isDisplaying()) {
         if(settings->cursorAutohide())
             setCursor(QCursor(Qt::BlankCursor));
         videoControls->hide(); // todo: separate
