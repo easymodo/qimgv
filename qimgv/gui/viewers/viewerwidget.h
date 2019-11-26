@@ -101,4 +101,6 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void hideEvent(QHideEvent *event);
+
+    void keyPressEvent(QKeyEvent *event);
 };

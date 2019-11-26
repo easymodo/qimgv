@@ -367,3 +367,12 @@ void ViewerWidget::hideEvent(QHideEvent *event) {
     QWidget::hideEvent(event);
     hideContextMenu();
 }
+
+void ViewerWidget::keyPressEvent(QKeyEvent *event) {
+    if(currentWidget == VIDEOPLAYER && event->key() == Qt::Key_Space) {
+        event->accept();
+        videoPlayer->pauseResume();
+    } else {
+        event->ignore();
+    }
+}

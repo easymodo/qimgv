@@ -25,6 +25,11 @@ MW::MW(QWidget *parent)
     layout.setContentsMargins(0,0,0,0);
     layout.setSpacing(0);
 
+    // do not steal focus when clicked
+    // this is just a container. accept key events only
+    // via passthrough from child widgets
+    setFocusPolicy(Qt::NoFocus);
+
     this->setLayout(&layout);
 
     setWindowTitle(QCoreApplication::applicationName() + " " +
@@ -113,13 +118,13 @@ void MW::setupCropPanel() {
 }
 
 void MW::setupCopyOverlay() {
-    copyOverlay = new CopyOverlay(this);
+    copyOverlay = new CopyOverlay(viewerWidget.get());
     connect(copyOverlay, &CopyOverlay::copyRequested, this, &MW::copyRequested);
     connect(copyOverlay, &CopyOverlay::moveRequested, this, &MW::moveRequested);
 }
 
 void MW::setupSaveOverlay() {
-    saveOverlay = new SaveConfirmOverlay(docWidget.get());
+    saveOverlay = new SaveConfirmOverlay(viewerWidget.get());
     connect(saveOverlay, &SaveConfirmOverlay::saveClicked,    this, &MW::saveRequested);
     connect(saveOverlay, &SaveConfirmOverlay::saveAsClicked,  this, &MW::saveAsClicked);
     connect(saveOverlay, &SaveConfirmOverlay::discardClicked, this, &MW::discardEditsRequested);
@@ -127,7 +132,7 @@ void MW::setupSaveOverlay() {
 }
 
 void MW::setupRenameOverlay() {
-    renameOverlay = new RenameOverlay(this);
+    renameOverlay = new RenameOverlay(viewerWidget.get());
     renameOverlay->setName(info.fileName);
     connect(renameOverlay, &RenameOverlay::renameRequested, this, &MW::renameRequested);
 }

@@ -10,6 +10,7 @@ VideoPlayerMpv::VideoPlayerMpv(QWidget *parent) : VideoPlayer(parent) {
     setAttribute(Qt::WA_TranslucentBackground, true);
     setMouseTracking(true);
 
+
     m_mpv = new MpvWidget(this);
     QVBoxLayout *vl = new QVBoxLayout();
     vl->setContentsMargins(0,0,0,0);
@@ -105,7 +106,7 @@ void VideoPlayerMpv::readSettings() {
 
 void VideoPlayerMpv::mousePressEvent(QMouseEvent *event) {
     QWidget::mousePressEvent(event);
-    event->ignore();
+    event->accept();
     if(event->button() == Qt::LeftButton)
         this->pauseResume();
 }
@@ -120,22 +121,11 @@ void VideoPlayerMpv::mouseReleaseEvent(QMouseEvent *event) {
     event->ignore();
 }
 
-void VideoPlayerMpv::keyPressEvent(QKeyEvent *event) {
-    if(event->key() == Qt::Key_Space) {
-        event->accept();
-        pauseResume();
-    } else {
-        event->ignore();
-    }
-}
-
 void VideoPlayerMpv::show() {
     QWidget::show();
-    this->setFocus();
 }
 
 void VideoPlayerMpv::hide() {
-    this->clearFocus();
     QWidget::hide();
 }
 
