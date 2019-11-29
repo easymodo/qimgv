@@ -1,3 +1,5 @@
+include(GNUInstallDirs)
+
 # ADD EXECUTABLE
 add_executable(qimgv
     appversion.cpp
