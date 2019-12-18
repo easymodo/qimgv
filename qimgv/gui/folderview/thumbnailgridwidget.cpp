@@ -30,16 +30,16 @@ void ThumbnailGridWidget::setupLayout() {
 
 void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
     if(isHighlighted()) {
-        //painter->fillRect(highlightRect, QColor(77,78,79));
         QPainterPath path;
         path.addRoundedRect(highlightRect, 3, 3);
         painter->fillPath(path, highlightColor);
-        //painter->drawPath(path);
     }
 }
 
 void ThumbnailGridWidget::drawThumbnail(QPainter *painter, qreal dpr, const QPixmap *pixmap) {
-    painter->fillRect(drawRectCentered.adjusted(3,3,3,3), shadowColor);
+    // draw a shadow rectangle
+    if(!thumbnail->hasAlphaChannel())
+        painter->fillRect(drawRectCentered.adjusted(3,3,3,3), shadowColor);
     painter->drawPixmap(drawRectCentered, *pixmap);
     if(isHovered()) {
         painter->fillRect(drawRectCentered, QColor(255,255,255, 18));
