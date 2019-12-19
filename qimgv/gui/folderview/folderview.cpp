@@ -55,7 +55,7 @@ void FolderView::readSettings() {
 }
 
 void FolderView::onShowLabelsChanged(bool mode) {
-    //ui->showLabelsButton->setChecked(mode);
+    ui->showLabelsButton->setChecked(mode);
     settings->setShowThumbnailLabels(mode);
 }
 
