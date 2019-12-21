@@ -94,6 +94,7 @@ protected:
     void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
+    bool eventFilter(QObject *o, QEvent *ev) Q_DECL_OVERRIDE;
 private slots:
     void centerOnX(int);
     void centerOnY(int);

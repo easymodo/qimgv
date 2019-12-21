@@ -15,8 +15,7 @@ MW::MW(QWidget *parent)
       imageInfoOverlay(nullptr),
       floatingMessage(nullptr),
       cropPanel(nullptr),
-      cropOverlay(nullptr),
-      avoidPanelFlag(false)
+      cropOverlay(nullptr)
 {
     setAttribute(Qt::WA_TranslucentBackground, true);
     this->setMinimumSize(400, 300);
@@ -721,4 +720,9 @@ void MW::paintEvent(QPaintEvent *event) {
     p.setBrush(QBrush(bgColor));
     p.fillRect(this->rect(), p.brush());
     FloatingWidgetContainer::paintEvent(event);
+}
+
+void MW::leaveEvent(QEvent *event) {
+    QWidget::leaveEvent(event);
+    viewerWidget->hidePanelAnimated();
 }

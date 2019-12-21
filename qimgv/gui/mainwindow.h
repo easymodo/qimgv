@@ -94,7 +94,6 @@ private:
     FloatingMessageProxy *floatingMessage;
 
     PanelHPosition panelPosition;
-    bool avoidPanelFlag;
     CurrentInfo info;
 
     void saveWindowGeometry();
@@ -129,6 +128,7 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     void wheelEvent(QWheelEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    void leaveEvent(QEvent *event);
 signals:
     void opened(QString);
     void fullscreenStateChanged(bool);

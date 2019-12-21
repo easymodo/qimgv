@@ -35,6 +35,7 @@ public:
     bool isDisplaying();
     ScalingFilter scalingFilter();
     void hidePanel();
+    void hidePanelAnimated();
     PanelHPosition panelPosition();
 
     bool panelEnabled();

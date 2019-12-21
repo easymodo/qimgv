@@ -43,6 +43,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     }
 
     scrollBar->setContextMenuPolicy(Qt::NoContextMenu);
+    scrollBar->installEventFilter(this);
 
     connect(scrollTimeLine, &QTimeLine::finished, [this]() {
         blockThumbnailLoading = false;
@@ -51,6 +52,14 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     connect(scrollBar, &QScrollBar::valueChanged, [this]() {
         loadVisibleThumbnails();
     });
+}
+
+bool ThumbnailView::eventFilter(QObject *o, QEvent *ev) {
+    if (o == scrollBar && ev->type() == QEvent::Wheel) {
+        this->wheelEvent(dynamic_cast<QWheelEvent*>(ev));
+        return true;
+    }
+    return QObject::eventFilter(o, ev);
 }
 
 void ThumbnailView::setDirectoryPath(QString path) {

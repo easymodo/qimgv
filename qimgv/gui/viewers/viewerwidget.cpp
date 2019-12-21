@@ -311,6 +311,10 @@ void ViewerWidget::hidePanel() {
     mainPanel->hide();
 }
 
+void ViewerWidget::hidePanelAnimated() {
+    mainPanel->hideAnimated();
+}
+
 PanelHPosition ViewerWidget::panelPosition() {
     return mainPanel->position();
 }
@@ -355,6 +359,8 @@ void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
         // leaveEvent which misfires on HiDPI (rounding error somewhere?)
         // add a few px of buffer area to avoid bugs
         // it still fcks up Fitts law as the buttons are not receiving hover on screen border
+
+        // alright this also only works when in root window. sad.
         if(!mainPanel->triggerRect().adjusted(-8,-8,8,8).contains(event->pos())) {
             mainPanel->hideAnimated();
         }
@@ -408,9 +414,11 @@ void ViewerWidget::showContextMenu(QPoint pos) {
 }
 
 void ViewerWidget::onFullscreenModeChanged(bool mode) {
-    mIsFullscreen = mode;
-    if(/*panelEnabled && */mainPanel->position() == PANEL_TOP)
+    if(mainPanel->position() == PANEL_TOP)
         mainPanel->setExitButtonEnabled(mode);
+    else
+        mainPanel->setExitButtonEnabled(false);
+    mIsFullscreen = mode;
 }
 
 void ViewerWidget::readSettings() {
@@ -453,7 +461,9 @@ void ViewerWidget::enterEvent(QEvent *event) {
 
 void ViewerWidget::leaveEvent(QEvent *event) {
     QWidget::leaveEvent(event);
-    if(mainPanel)
-        mainPanel->hideAnimated();
+    //qDebug() << cursor().pos() << this->rect();
+    // this misfires on hidpi.
+    //instead do the panel hiding in MW::leaveEvent  (it works properly in root window)
+    //mainPanel->hide();
     avoidPanelFlag = false;
 }
