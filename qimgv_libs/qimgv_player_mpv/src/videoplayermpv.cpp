@@ -108,7 +108,7 @@ void VideoPlayerMpv::readSettings() {
 }
 
 void VideoPlayerMpv::mousePressEvent(QMouseEvent *event) {
-    if(event->button() == Qt::LeftButton) {
+    if(event->button() == Qt::LeftButton && event->type() != QEvent::MouseButtonDblClick) {
         event->accept();
         this->pauseResume();
     } else {
