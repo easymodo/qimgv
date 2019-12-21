@@ -13,11 +13,12 @@ public:
     explicit SlideHPanel(FloatingWidgetContainer *parent);
     ~SlideHPanel();
     void setPosition(PanelHPosition);
+    PanelHPosition position();
     QRect triggerRect();
     void setPanelHeight(int);
 
 protected:
-    PanelHPosition position;
+    PanelHPosition mPosition;
     int bottomMargin;
     int panelHeight;
     void recalculateGeometry();

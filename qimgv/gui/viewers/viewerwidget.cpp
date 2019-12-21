@@ -10,9 +10,14 @@ ViewerWidget::ViewerWidget(QWidget *parent)
       imageViewer(nullptr),
       videoPlayer(nullptr),
       contextMenu(nullptr),
+      mainPanel(nullptr),
+      videoControls(nullptr),
       currentWidget(UNSET),
       mInteractionEnabled(false),
-      videoControls(nullptr)
+      avoidPanelFlag(false),
+      mPanelEnabled(false),
+      mPanelFullscreenOnly(false),
+      mIsFullscreen(false)
 {
     setAttribute(Qt::WA_TranslucentBackground, true);
     setMouseTracking(true);
@@ -32,6 +37,8 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     videoPlayer->hide();
     videoControls = new VideoControlsProxyWrapper(this);
 
+    mainPanel.reset(new MainPanel(this));
+
     connect(videoPlayer.get(), &VideoPlayer::durationChanged, videoControls, &VideoControlsProxyWrapper::setDurationSeconds);
     connect(videoPlayer.get(), &VideoPlayer::positionChanged, videoControls, &VideoControlsProxyWrapper::setPositionSeconds);
     connect(videoPlayer.get(), &VideoPlayer::videoPaused,     videoControls, &VideoControlsProxyWrapper::onVideoPaused);
@@ -47,6 +54,9 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     enableInteraction();
 
     connect(&cursorTimer, &QTimer::timeout, this, &ViewerWidget::hideCursor);
+
+    connect(settings, &Settings::settingsChanged, this, &ViewerWidget::readSettings);
+    readSettings();
 }
 
 QRect ViewerWidget::imageRect() {
@@ -151,6 +161,10 @@ void ViewerWidget::disableInteraction() {
 
 bool ViewerWidget::interactionEnabled() {
     return mInteractionEnabled;
+}
+
+std::shared_ptr<DirectoryViewWrapper> ViewerWidget::getPanel() {
+    return mainPanel->getWrapper();
 }
 
 bool ViewerWidget::showImage(std::unique_ptr<QPixmap> pixmap) {
@@ -293,6 +307,18 @@ ScalingFilter ViewerWidget::scalingFilter() {
     return imageViewer->scalingFilter();
 }
 
+void ViewerWidget::hidePanel() {
+    mainPanel->hide();
+}
+
+PanelHPosition ViewerWidget::panelPosition() {
+    return mainPanel->position();
+}
+
+bool ViewerWidget::panelEnabled() {
+    return mPanelEnabled;
+}
+
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
     hideContextMenu();
     event->ignore();
@@ -309,6 +335,32 @@ void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
         showCursor();
         hideCursorTimed(true);
     }
+
+    // ignore if we are doing something with the mouse (zoom / drag)
+    if(event->buttons() != Qt::NoButton) {
+        if(mainPanel->triggerRect().contains(event->pos()))
+            avoidPanelFlag = true;
+        return;
+    }
+
+    // show on hover event
+    if(mPanelEnabled && (mIsFullscreen|| !mPanelFullscreenOnly)) {
+        if(mainPanel->triggerRect().contains(event->pos()) && !avoidPanelFlag) {
+            mainPanel->show();
+        }
+    }
+
+    // fade out on leave event
+    if(!mainPanel->isHidden()) {
+        // leaveEvent which misfires on HiDPI (rounding error somewhere?)
+        // add a few px of buffer area to avoid bugs
+        // it still fcks up Fitts law as the buttons are not receiving hover on screen border
+        if(!mainPanel->triggerRect().adjusted(-8,-8,8,8).contains(event->pos())) {
+            mainPanel->hideAnimated();
+        }
+    }
+    if(!mainPanel->triggerRect().contains(event->pos()))
+        avoidPanelFlag = false;
     event->ignore();
 }
 
@@ -355,6 +407,17 @@ void ViewerWidget::showContextMenu(QPoint pos) {
     }
 }
 
+void ViewerWidget::onFullscreenModeChanged(bool mode) {
+    mIsFullscreen = mode;
+    if(/*panelEnabled && */mainPanel->position() == PANEL_TOP)
+        mainPanel->setExitButtonEnabled(mode);
+}
+
+void ViewerWidget::readSettings() {
+    mPanelEnabled = settings->panelEnabled();
+    mPanelFullscreenOnly = settings->panelFullscreenOnly();
+}
+
 void ViewerWidget::hideContextMenu() {
     if(contextMenu)
         contextMenu->hide();
@@ -372,4 +435,25 @@ void ViewerWidget::keyPressEvent(QKeyEvent *event) {
     } else {
         event->ignore();
     }
+}
+
+void ViewerWidget::enterEvent(QEvent *event) {
+    QWidget::enterEvent(event);
+
+    if(!mInteractionEnabled)
+        return;
+    // we can't track move events outside the window (without additional timer),
+    // so just hook the panel event here
+    if(mPanelEnabled && (mIsFullscreen || !mPanelFullscreenOnly)) {
+        if(mainPanel->triggerRect().contains(mapFromGlobal(cursor().pos())) && !avoidPanelFlag) {
+            mainPanel->show();
+        }
+    }
+}
+
+void ViewerWidget::leaveEvent(QEvent *event) {
+    QWidget::leaveEvent(event);
+    if(mainPanel)
+        mainPanel->hideAnimated();
+    avoidPanelFlag = false;
 }

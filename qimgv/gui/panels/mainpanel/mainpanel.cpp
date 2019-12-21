@@ -1,6 +1,6 @@
 #include "mainpanel.h"
 
-MainPanel::MainPanel(std::shared_ptr<QWidget> widget, FloatingWidgetContainer *parent) : SlideHPanel(parent) {
+MainPanel::MainPanel(FloatingWidgetContainer *parent) : SlideHPanel(parent) {
     // buttons stuff
     buttonsWidget.setAccessibleName("panelButtonsWidget");
 
@@ -29,7 +29,8 @@ MainPanel::MainPanel(std::shared_ptr<QWidget> widget, FloatingWidgetContainer *p
     buttonsWidget.setLayout(&buttonsLayout);
     mLayout.addWidget(&buttonsWidget, 0, 1);
 
-    setWidget(widget);
+    thumbnailStrip.reset(new ThumbnailStrip());
+    setWidget(thumbnailStrip);
 
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
@@ -63,6 +64,10 @@ void MainPanel::setExitButtonEnabled(bool mode) {
     exitButton->setHidden(!mode);
 }
 
+std::shared_ptr<DirectoryViewWrapper> MainPanel::getWrapper() {
+    return thumbnailStrip->wrapper();
+}
+
 void MainPanel::readSettings() {
     setHeight(static_cast<int>(settings->mainPanelSize()));
     setPosition(settings->panelPosition());
@@ -72,7 +77,7 @@ void MainPanel::readSettings() {
 void MainPanel::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
     QPainter p(this);
-    if(position == PanelHPosition::PANEL_TOP) {
+    if(mPosition == PanelHPosition::PANEL_TOP) {
         p.setPen(QColor(QColor(96, 96, 96)));
         p.drawLine(rect().bottomLeft() - QPoint(0, bottomMargin - 1), rect().bottomRight() - QPoint(0, bottomMargin - 1));
         p.setPen(QColor(QColor(40, 40, 40)));

@@ -12,7 +12,6 @@
 #include "gui/overlays/floatingmessageproxy.h"
 #include "gui/overlays/saveconfirmoverlay.h"
 #include "gui/panels/mainpanel/thumbnailstrip.h"
-#include "gui/panels/mainpanel/mainpanel.h"
 #include "gui/panels/sidepanel/sidepanel.h"
 #include "gui/panels/croppanel/croppanel.h"
 #include "gui/overlays/cropoverlay.h"
@@ -72,13 +71,11 @@ private:
 
     QColor bgColor;
     qreal bgOpacity;
-    bool panelEnabled, panelFullscreenOnly, cropPanelActive, showInfoBarFullscreen, showInfoBarWindowed;
+    bool cropPanelActive, showInfoBarFullscreen, showInfoBarWindowed;
     std::shared_ptr<DocumentWidget> docWidget;
     std::shared_ptr<FolderViewProxy> folderView;
     std::shared_ptr<CentralWidget> centralWidget;
     ActiveSidePanel activeSidePanel;
-    std::shared_ptr<ThumbnailStrip> thumbnailStrip;
-    MainPanel *mainPanel;
     SidePanel *sidePanel;
     CropPanel *cropPanel;
     CropOverlay *cropOverlay;
@@ -97,7 +94,7 @@ private:
     FloatingMessageProxy *floatingMessage;
 
     PanelHPosition panelPosition;
-    QPoint lastMouseMovePos;
+    bool avoidPanelFlag;
     CurrentInfo info;
 
     void saveWindowGeometry();
@@ -127,7 +124,6 @@ protected:
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *event);
     void resizeEvent(QResizeEvent *event);
-    void leaveEvent(QEvent *event);
 
     void mousePressEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);

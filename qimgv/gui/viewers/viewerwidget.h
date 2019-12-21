@@ -5,6 +5,7 @@
 #include "gui/viewers/imageviewer.h"
 #include "gui/viewers/videoplayerinitproxy.h"
 #include "gui/overlays/videocontrolsproxy.h"
+#include "gui/panels/mainpanel/mainpanel.h"
 #include "gui/contextmenu.h"
 
 enum CurrentWidget {
@@ -26,17 +27,23 @@ public:
     void disableInteraction();
     bool interactionEnabled();
 
+    std::shared_ptr<DirectoryViewWrapper> getPanel();
+
     bool showImage(std::unique_ptr<QPixmap> pixmap);
     bool showAnimation(std::unique_ptr<QMovie> movie);
     void onScalingFinished(std::unique_ptr<QPixmap> scaled);
     bool isDisplaying();
     ScalingFilter scalingFilter();
+    void hidePanel();
+    PanelHPosition panelPosition();
 
+    bool panelEnabled();
 private:
     QHBoxLayout layout;
     std::unique_ptr<ImageViewer> imageViewer;
     std::unique_ptr<VideoPlayerInitProxy> videoPlayer;
     std::unique_ptr<ContextMenu> contextMenu;
+    std::unique_ptr<MainPanel> mainPanel;
     VideoControlsProxyWrapper *videoControls;
 
     void enableImageViewer();
@@ -46,6 +53,7 @@ private:
     bool mInteractionEnabled;
     QTimer cursorTimer;
     const int CURSOR_HIDE_TIMEOUT_MS = 1000;
+    bool avoidPanelFlag, mPanelEnabled, mPanelFullscreenOnly, mIsFullscreen;
 
     void disableImageViewer();
     void disableVideoPlayer();
@@ -94,7 +102,8 @@ public slots:
     void showContextMenu();
     void hideContextMenu();
     void showContextMenu(QPoint pos);
-
+    void onFullscreenModeChanged(bool);
+    void readSettings();
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);
@@ -103,4 +112,6 @@ protected:
     void hideEvent(QHideEvent *event);
 
     void keyPressEvent(QKeyEvent *event);
+    void enterEvent(QEvent *event);
+    void leaveEvent(QEvent *event);
 };

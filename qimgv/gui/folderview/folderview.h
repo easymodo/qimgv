@@ -33,7 +33,7 @@ public slots:
     virtual void removeItem(int index) Q_DECL_OVERRIDE;
     virtual void reloadItem(int index) Q_DECL_OVERRIDE;
     void addItem();
-    void setExitButtonEnabled(bool mode);
+    void onFullscreenModeChanged(bool mode);
 
     void onSortingChanged(SortingMode mode);
 protected:

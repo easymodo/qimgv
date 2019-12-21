@@ -103,7 +103,7 @@ void FolderView::hide() {
     ui->thumbnailGrid->clearFocus();
 }
 
-void FolderView::setExitButtonEnabled(bool mode) {
+void FolderView::onFullscreenModeChanged(bool mode) {
     ui->exitButton->setHidden(!mode);
 }
 
