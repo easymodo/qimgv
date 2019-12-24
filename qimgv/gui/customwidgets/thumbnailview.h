@@ -31,6 +31,7 @@ public:
     ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent = nullptr);
     virtual void setDirectoryPath(QString path) Q_DECL_OVERRIDE;
     virtual int selectedIndex() Q_DECL_OVERRIDE;
+    int itemCount();
 
 public slots:
     void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
