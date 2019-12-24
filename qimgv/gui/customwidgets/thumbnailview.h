@@ -65,8 +65,6 @@ private:
     // TODO: tune this value
     const int SMOOTH_SCROLL_THRESHOLD = 120;
 
-    //void p_set_index(int index);
-
 protected:
     QGraphicsScene scene;
     QList<ThumbnailWidget*> thumbnails;
