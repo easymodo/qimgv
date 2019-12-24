@@ -37,7 +37,6 @@ private:
     std::shared_ptr<DirectoryViewWrapper> mWrapper;
 
 public slots:
-    virtual void selectIndex(int index);
     virtual void focusOn(int index);
 
 protected:
@@ -48,4 +47,5 @@ protected:
     void removeAll();
     ThumbnailWidget *createThumbnailWidget();
     void ensureSelectedItemVisible();
+    bool eventFilter(QObject *o, QEvent *ev);
 };

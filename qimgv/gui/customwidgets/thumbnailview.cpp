@@ -59,23 +59,6 @@ bool ThumbnailView::eventFilter(QObject *o, QEvent *ev) {
         if(ev->type() == QEvent::Wheel) {
             this->wheelEvent(dynamic_cast<QWheelEvent*>(ev));
             return true;
-        } else if(ev->type() == QEvent::Paint) {
-            QPainter p(scrollBar);
-
-            /*
-            int left = ((qreal)(selectedIndex()) / itemCount()) * scrollBar->width();
-            int itemWidth = scrollBar->width() / itemCount();
-            QRect itemRect(left, 2, itemWidth, scrollBar->height() - 4);
-            p.fillRect(itemRect, QBrush(Qt::darkGray));
-            */
-
-            int indicatorWidth = 2;
-            qreal itemCenter = (qreal)(selectedIndex() + 0.5) / itemCount();
-            QRect indicator(scrollBar->width() * itemCenter - indicatorWidth, 0, indicatorWidth, scrollBar->height());
-            p.setOpacity(0.6f);
-            p.fillRect(indicator, QBrush(settings->accentColor()));
-            p.setOpacity(1.0f);
-            return false;
         }
     }
     return QObject::eventFilter(o, ev);
@@ -83,6 +66,18 @@ bool ThumbnailView::eventFilter(QObject *o, QEvent *ev) {
 
 void ThumbnailView::setDirectoryPath(QString path) {
     Q_UNUSED(path)
+}
+
+void ThumbnailView::selectIndex(int index) {
+    if(!checkRange(index))
+        return;
+
+    if(checkRange(mSelectedIndex))
+        thumbnails.at(mSelectedIndex)->setHighlighted(false);
+    mSelectedIndex = index;
+
+    ThumbnailWidget *thumb = thumbnails.at(mSelectedIndex);
+    thumb->setHighlighted(true);
 }
 
 int ThumbnailView::selectedIndex() {

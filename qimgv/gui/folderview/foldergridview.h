@@ -24,7 +24,6 @@ public slots:
 
     void selectFirst();
     void selectLast();
-    virtual void selectIndex(int index);
     virtual void focusOn(int index);
     void pageUp();
     void pageDown();
@@ -63,6 +62,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 
+    bool eventFilter(QObject *o, QEvent *ev);
 signals:
     void thumbnailSizeChanged(int);
     void showLabelsChanged(bool);

@@ -23,6 +23,26 @@ FolderGridView::FolderGridView(QWidget *parent)
                       << "delete";
 }
 
+bool FolderGridView::eventFilter(QObject *o, QEvent *ev) {
+    if (o == scrollBar) {
+        if(ev->type() == QEvent::Paint) {
+            if(mSelectedIndex < 0)
+                return false;
+            QPainter p(scrollBar);
+            ThumbnailWidget *thumb = thumbnails.at(mSelectedIndex);
+            int indicatorSize = 2;
+            qreal itemCenter = (thumb->pos().y() + (thumb->height() / 2)) / scene.height();
+            QRect indicator;
+            indicator = QRect(0, scrollBar->height() * itemCenter - indicatorSize, scrollBar->width(), indicatorSize);
+            p.setOpacity(0.6f);
+            p.fillRect(indicator, QBrush(settings->accentColor()));
+            p.setOpacity(1.0f);
+            return false;
+        }
+    }
+    return ThumbnailView::eventFilter(o, ev);
+}
+
 // probably unneeded
 void FolderGridView::show() {
     ThumbnailView::show();
@@ -202,18 +222,6 @@ void FolderGridView::selectLast() {
     shiftedIndex = -1;
     selectIndex(thumbnails.count() - 1);
     focusOn(thumbnails.count() - 1);
-}
-
-void FolderGridView::selectIndex(int index) {
-    if(!checkRange(index))
-        return;
-
-    if(checkRange(mSelectedIndex))
-        thumbnails.at(mSelectedIndex)->setHighlighted(false, false);
-    mSelectedIndex = index;
-
-    ThumbnailWidget *thumb = thumbnails.at(mSelectedIndex);
-    thumb->setHighlighted(true, false);
 }
 
 void FolderGridView::focusOn(int index) {

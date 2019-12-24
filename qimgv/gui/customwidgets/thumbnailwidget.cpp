@@ -135,7 +135,7 @@ void ThumbnailWidget::updateHighlightRect() {
     highlightRect = QRectF(paddingX, 0, width() - paddingX * 2, paddingY);
 }
 
-void ThumbnailWidget::setHighlighted(bool mode, bool smooth) {
+void ThumbnailWidget::setHighlighted(bool mode) {
     if(highlighted != mode) {
         highlighted = mode;
         update();

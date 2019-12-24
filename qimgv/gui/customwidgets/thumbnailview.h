@@ -30,7 +30,8 @@ class ThumbnailView : public QGraphicsView, public IDirectoryView {
 public:
     ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent = nullptr);
     virtual void setDirectoryPath(QString path) Q_DECL_OVERRIDE;
-    virtual int selectedIndex() Q_DECL_OVERRIDE;
+    void selectIndex(int);
+    int selectedIndex();
     int itemCount();
 
 public slots:
@@ -63,6 +64,8 @@ private:
     // then we can treat anything smaller as a touchpad scroll
     // TODO: tune this value
     const int SMOOTH_SCROLL_THRESHOLD = 120;
+
+    //void p_set_index(int index);
 
 protected:
     QGraphicsScene scene;

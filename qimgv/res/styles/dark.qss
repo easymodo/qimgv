@@ -462,9 +462,8 @@ ThumbnailView QScrollBar::handle:horizontal:hover {
 }
 
 ThumbnailView QScrollBar:vertical {
-    width: 18px;
+    width: 14px;
     background-color: transparent;
-    margin-left: 4px;
 }
 
 ThumbnailView QScrollBar::handle:vertical {

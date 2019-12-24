@@ -22,9 +22,8 @@ public:
     bool isLoaded;
     void setThumbnail(std::shared_ptr<Thumbnail> _thumbnail);
 
-    void setHighlighted(bool x, bool smooth);
+    void setHighlighted(bool x);
     bool isHighlighted();
-    void setOpacity(qreal amount, bool smooth);
 
     virtual QRectF boundingRect() const Q_DECL_OVERRIDE;
 

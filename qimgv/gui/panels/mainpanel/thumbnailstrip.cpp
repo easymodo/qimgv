@@ -9,8 +9,29 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
 {
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
+    scrollBar->installEventFilter(this);
     setupLayout();
     mWrapper.reset(new DirectoryViewWrapper(this));
+}
+
+bool ThumbnailStrip::eventFilter(QObject *o, QEvent *ev) {
+    if (o == scrollBar) {
+        if(ev->type() == QEvent::Paint) {
+            QPainter p(scrollBar);
+            int indicatorSize = 2;
+            qreal itemCenter = (qreal)(selectedIndex() + 0.5) / itemCount();
+            QRect indicator;
+            if(scrollBar->orientation() == Qt::Horizontal)
+                indicator = QRect(scrollBar->width() * itemCenter - indicatorSize, 0, indicatorSize, scrollBar->height());
+            else
+                indicator = QRect(0, scrollBar->height() * itemCenter - indicatorSize, scrollBar->width(), indicatorSize);
+            p.setOpacity(0.6f);
+            p.fillRect(indicator, QBrush(settings->accentColor()));
+            p.setOpacity(1.0f);
+            return false;
+        }
+    }
+    return ThumbnailView::eventFilter(o, ev);
 }
 
 std::shared_ptr<DirectoryViewWrapper> ThumbnailStrip::wrapper() {
@@ -76,18 +97,6 @@ void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
         tmp = thumbnails.at(i);
         tmp->setPos(i * thumbWidth, 0);
     }
-}
-
-void ThumbnailStrip::selectIndex(int index) {
-    if(!checkRange(index))
-        return;
-
-    if(checkRange(mSelectedIndex))
-        thumbnails.at(mSelectedIndex)->setHighlighted(false, false);
-    mSelectedIndex = index;
-
-    ThumbnailWidget *thumb = thumbnails.at(mSelectedIndex);
-    thumb->setHighlighted(true, false);
 }
 
 void ThumbnailStrip::focusOn(int index) {
