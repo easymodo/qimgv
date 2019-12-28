@@ -93,6 +93,9 @@ int ThumbnailView::itemCount() {
 
 void ThumbnailView::showEvent(QShowEvent *event) {
     QGraphicsView::showEvent(event);
+    // ensure we are properly resized
+    qApp->processEvents();
+    updateScrollbarIndicator();
     ensureSelectedItemVisible();
     loadVisibleThumbnails();
 }

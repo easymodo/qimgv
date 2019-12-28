@@ -19,7 +19,6 @@ void ThumbnailStrip::updateScrollbarIndicator() {
         indicator = QRect(scrollBar->width() * itemCenter - indicatorSize, 0, indicatorSize, scrollBar->height());
     else
         indicator = QRect(0, scrollBar->height() * itemCenter - indicatorSize, scrollBar->width(), indicatorSize);
-    scrollBar->update(indicator);
 }
 
 std::shared_ptr<DirectoryViewWrapper> ThumbnailStrip::wrapper() {

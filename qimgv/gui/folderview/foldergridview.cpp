@@ -29,7 +29,6 @@ void FolderGridView::updateScrollbarIndicator() {
     ThumbnailWidget *thumb = thumbnails.at(selectedIndex());
     qreal itemCenter = (thumb->pos().y() + (thumb->height() / 2)) / scene.height();
     indicator = QRect(0, scrollBar->height() * itemCenter - indicatorSize, scrollBar->width(), indicatorSize);
-    scrollBar->update(indicator);
 }
 
 // probably unneeded
