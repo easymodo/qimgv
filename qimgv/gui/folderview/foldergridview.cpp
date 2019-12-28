@@ -23,24 +23,13 @@ FolderGridView::FolderGridView(QWidget *parent)
                       << "delete";
 }
 
-bool FolderGridView::eventFilter(QObject *o, QEvent *ev) {
-    if (o == scrollBar) {
-        if(ev->type() == QEvent::Paint) {
-            if(mSelectedIndex < 0)
-                return false;
-            QPainter p(scrollBar);
-            ThumbnailWidget *thumb = thumbnails.at(mSelectedIndex);
-            int indicatorSize = 2;
-            qreal itemCenter = (thumb->pos().y() + (thumb->height() / 2)) / scene.height();
-            QRect indicator;
-            indicator = QRect(0, scrollBar->height() * itemCenter - indicatorSize, scrollBar->width(), indicatorSize);
-            p.setOpacity(0.6f);
-            p.fillRect(indicator, QBrush(settings->accentColor()));
-            p.setOpacity(1.0f);
-            return false;
-        }
-    }
-    return ThumbnailView::eventFilter(o, ev);
+void FolderGridView::updateScrollbarIndicator() {
+    if(selectedIndex() < 0)
+        return;
+    ThumbnailWidget *thumb = thumbnails.at(selectedIndex());
+    qreal itemCenter = (thumb->pos().y() + (thumb->height() / 2)) / scene.height();
+    indicator = QRect(0, scrollBar->height() * itemCenter - indicatorSize, scrollBar->width(), indicatorSize);
+    scrollBar->update(indicator);
 }
 
 // probably unneeded
@@ -67,9 +56,9 @@ void FolderGridView::setShowLabels(bool mode) {
 }
 
 void FolderGridView::ensureSelectedItemVisible() {
-    if(!checkRange(mSelectedIndex))
+    if(!checkRange(selectedIndex()))
         return;
-    ThumbnailWidget *thumb = thumbnails.at(mSelectedIndex);
+    ThumbnailWidget *thumb = thumbnails.at(selectedIndex());
     ensureVisible(thumb, 0, 0);
 }
 
@@ -117,10 +106,10 @@ void FolderGridView::selectAbove() {
     }
 
     int index;
-    if(!checkRange(mSelectedIndex)) {
+    if(!checkRange(selectedIndex())) {
         index = 0;
     } else {
-        index = flowLayout->itemAbove(mSelectedIndex);
+        index = flowLayout->itemAbove(selectedIndex());
     }
     selectIndex(index);
     focusOn(index);
@@ -131,15 +120,15 @@ void FolderGridView::selectBelow() {
         return;
 
     int index;
-    if(!checkRange(mSelectedIndex)) {
+    if(!checkRange(selectedIndex())) {
         index = 0;
     } else {
-        index = flowLayout->itemBelow(mSelectedIndex);
+        index = flowLayout->itemBelow(selectedIndex());
         if(!checkRange(index)) {
             // select last & remember previous
-            if(mSelectedIndex / flowLayout->columns() < flowLayout->rows() - 1) {
+            if(selectedIndex() / flowLayout->columns() < flowLayout->rows() - 1) {
                 index = flowLayout->count() - 1;
-                shiftedIndex = mSelectedIndex;
+                shiftedIndex = selectedIndex();
             }
         }
     }
@@ -148,10 +137,10 @@ void FolderGridView::selectBelow() {
 }
 
 void FolderGridView::selectNext() {
-    if(!thumbnails.count() || mSelectedIndex == thumbnails.count() - 1)
+    if(!thumbnails.count() || selectedIndex() == thumbnails.count() - 1)
         return;
     shiftedIndex = -1;
-    int index = mSelectedIndex + 1;
+    int index = selectedIndex() + 1;
     if(index < 0)
         index = 0;
     else if(index >= thumbnails.count())
@@ -162,10 +151,10 @@ void FolderGridView::selectNext() {
 }
 
 void FolderGridView::selectPrev() {
-    if(!thumbnails.count() || mSelectedIndex == 0)
+    if(!thumbnails.count() || selectedIndex() == 0)
         return;
     shiftedIndex = -1;
-    int index = mSelectedIndex - 1;
+    int index = selectedIndex() - 1;
     if(index < 0)
         index = 0;
     else if(index >= thumbnails.count())
@@ -179,7 +168,7 @@ void FolderGridView::pageUp() {
     if(!thumbnails.count())
         return;
     shiftedIndex = -1;
-    int index = mSelectedIndex, tmp;
+    int index = selectedIndex(), tmp;
     // 4 rows up
     for(int i = 0; i < 4; i++) {
         tmp = flowLayout->itemAbove(index);
@@ -194,7 +183,7 @@ void FolderGridView::pageDown() {
     if(!thumbnails.count())
         return;
     shiftedIndex = -1;
-    int index = mSelectedIndex, tmp;
+    int index = selectedIndex(), tmp;
     // 4 rows up
     for(int i = 0; i < 4; i++) {
         tmp = flowLayout->itemBelow(index);
@@ -269,9 +258,6 @@ void FolderGridView::updateLayout() {
     shiftedIndex = -1;
     flowLayout->invalidate();
     flowLayout->activate();
-    if(!thumbnails.count()) {
-        mSelectedIndex = -1;
-    }
 }
 
 void FolderGridView::keyPressEvent(QKeyEvent *event) {
@@ -290,8 +276,8 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
             selectBelow();
         }
         if(shortcut == "Return") {
-            if(checkRange(mSelectedIndex))
-                emit thumbnailPressed(mSelectedIndex);
+            if(checkRange(selectedIndex()))
+                emit thumbnailPressed(selectedIndex());
         }
         if(shortcut == "home") {
             selectFirst();
@@ -345,8 +331,8 @@ void FolderGridView::setThumbnailSize(int newSize) {
     }
     updateLayout();
     fitToContents();
-    if(checkRange(mSelectedIndex))
-        ensureVisible(thumbnails.at(mSelectedIndex), 0, 40);
+    if(checkRange(selectedIndex()))
+        ensureVisible(thumbnails.at(selectedIndex()), 0, 40);
     emit thumbnailSizeChanged(mThumbnailSize);
     loadVisibleThumbnails();
 }

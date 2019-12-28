@@ -41,11 +41,11 @@ public slots:
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);
+    virtual void updateScrollbarIndicator();
     void ensureThumbnailVisible(int pos);
     void addItemToLayout(ThumbnailWidget *widget, int pos);
     void removeItemFromLayout(int pos);
     void removeAll();
     ThumbnailWidget *createThumbnailWidget();
     void ensureSelectedItemVisible();
-    bool eventFilter(QObject *o, QEvent *ev);
 };

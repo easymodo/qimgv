@@ -8,18 +8,13 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       mSelectedIndex(-1)
 {
     setAccessibleName("thumbnailView");
-    //scene.setItemIndexMethod(QGraphicsScene::NoIndex);
     this->setMouseTracking(true);
     this->setScene(&scene);
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-    //setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     this->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing, true);
     this->setOptimizationFlag(QGraphicsView::DontSavePainterState, true);
     setRenderHint(QPainter::Antialiasing, false);
     setRenderHint(QPainter::SmoothPixmapTransform, false);
-    //setAttribute(Qt::WA_OpaquePaintEvent, true);
-    // breaks panel animation
-    //this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
 
     /* scrolling-related things */
     scrollTimeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
@@ -59,7 +54,14 @@ bool ThumbnailView::eventFilter(QObject *o, QEvent *ev) {
         if(ev->type() == QEvent::Wheel) {
             this->wheelEvent(dynamic_cast<QWheelEvent*>(ev));
             return true;
+        } else if(ev->type() == QEvent::Paint) {
+            QPainter p(scrollBar);
+            p.setOpacity(0.6f);
+            p.fillRect(indicator, QBrush(settings->accentColor()));
+            p.setOpacity(1.0f);
+            return false;
         }
+
     }
     return QObject::eventFilter(o, ev);
 }
@@ -78,6 +80,7 @@ void ThumbnailView::selectIndex(int index) {
 
     ThumbnailWidget *thumb = thumbnails.at(mSelectedIndex);
     thumb->setHighlighted(true);
+    updateScrollbarIndicator();
 }
 
 int ThumbnailView::selectedIndex() {
@@ -94,10 +97,7 @@ void ThumbnailView::showEvent(QShowEvent *event) {
     loadVisibleThumbnails();
 }
 
-// TODO: slow
 void ThumbnailView::populate(int count) {
-    QElapsedTimer t;
-    t.start();
     if(count >= 0) {
         // reuse existing items
         if(count == thumbnails.count()) {
@@ -105,7 +105,6 @@ void ThumbnailView::populate(int count) {
             for (i = thumbnails.begin(); i != thumbnails.end(); ++i) {
                 (*i)->reset();
             }
-            //qDebug() << t.elapsed();
         } else {
             removeAll();
             for(int i = 0; i < count; i++) {
@@ -136,6 +135,7 @@ void ThumbnailView::insertItem(int index) {
     addItemToLayout(widget, index);
     updateLayout();
     fitSceneToContents();
+    updateScrollbarIndicator();
     loadVisibleThumbnails();
 }
 
@@ -148,8 +148,9 @@ void ThumbnailView::removeItem(int index) {
         }
         removeItemFromLayout(index);
         delete thumbnails.takeAt(index);
-        loadVisibleThumbnails();
         fitSceneToContents();
+        updateScrollbarIndicator();
+        loadVisibleThumbnails();
     }
 }
 
@@ -335,4 +336,9 @@ void ThumbnailView::mousePressEvent(QMouseEvent *event) {
         }
     }
     event->ignore();
+}
+
+void ThumbnailView::resizeEvent(QResizeEvent *event) {
+    QGraphicsView::resizeEvent(event);
+    updateScrollbarIndicator();
 }

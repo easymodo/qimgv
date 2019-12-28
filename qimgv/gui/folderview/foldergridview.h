@@ -47,6 +47,7 @@ private slots:
 
 protected:
     void resizeEvent(QResizeEvent *event);
+    virtual void updateScrollbarIndicator();
     void addItemToLayout(ThumbnailWidget *widget, int pos);
     void removeItemFromLayout(int pos);
     void removeAll();
@@ -62,7 +63,6 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 
-    bool eventFilter(QObject *o, QEvent *ev);
 signals:
     void thumbnailSizeChanged(int);
     void showLabelsChanged(bool);

@@ -65,14 +65,19 @@ private:
     // TODO: tune this value
     const int SMOOTH_SCROLL_THRESHOLD = 120;
 
+    int mSelectedIndex;
+
 protected:
     QGraphicsScene scene;
     QList<ThumbnailWidget*> thumbnails;
     QScrollBar *scrollBar;
     QTimeLine *scrollTimeLine;
     QPointF viewportCenter;
-    int mThumbnailSize, mSelectedIndex;
+    int mThumbnailSize;
     int offscreenPreloadArea = 3000;
+
+    QRect indicator;
+    const int indicatorSize = 2;
 
     const int SCROLL_UPDATE_RATE = 7;
     const float SCROLL_SPEED_MULTIPLIER = 2.5f;
@@ -92,11 +97,13 @@ protected:
     virtual void updateLayout();
     virtual void fitSceneToContents();
     virtual void ensureSelectedItemVisible() = 0;
+    virtual void updateScrollbarIndicator() = 0;
 
     void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
     bool eventFilter(QObject *o, QEvent *ev) Q_DECL_OVERRIDE;
+    void resizeEvent(QResizeEvent *event);
 private slots:
     void centerOnX(int);
     void centerOnY(int);

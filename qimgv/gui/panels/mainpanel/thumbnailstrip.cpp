@@ -9,29 +9,17 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
 {
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
-    scrollBar->installEventFilter(this);
     setupLayout();
     mWrapper.reset(new DirectoryViewWrapper(this));
 }
 
-bool ThumbnailStrip::eventFilter(QObject *o, QEvent *ev) {
-    if (o == scrollBar) {
-        if(ev->type() == QEvent::Paint) {
-            QPainter p(scrollBar);
-            int indicatorSize = 2;
-            qreal itemCenter = (qreal)(selectedIndex() + 0.5) / itemCount();
-            QRect indicator;
-            if(scrollBar->orientation() == Qt::Horizontal)
-                indicator = QRect(scrollBar->width() * itemCenter - indicatorSize, 0, indicatorSize, scrollBar->height());
-            else
-                indicator = QRect(0, scrollBar->height() * itemCenter - indicatorSize, scrollBar->width(), indicatorSize);
-            p.setOpacity(0.6f);
-            p.fillRect(indicator, QBrush(settings->accentColor()));
-            p.setOpacity(1.0f);
-            return false;
-        }
-    }
-    return ThumbnailView::eventFilter(o, ev);
+void ThumbnailStrip::updateScrollbarIndicator() {
+    qreal itemCenter = (qreal)(selectedIndex() + 0.5) / itemCount();
+    if(scrollBar->orientation() == Qt::Horizontal)
+        indicator = QRect(scrollBar->width() * itemCenter - indicatorSize, 0, indicatorSize, scrollBar->height());
+    else
+        indicator = QRect(0, scrollBar->height() * itemCenter - indicatorSize, scrollBar->width(), indicatorSize);
+    scrollBar->update(indicator);
 }
 
 std::shared_ptr<DirectoryViewWrapper> ThumbnailStrip::wrapper() {
@@ -56,16 +44,12 @@ void ThumbnailStrip::ensureSelectedItemVisible() {
 }
 
 void ThumbnailStrip::addItemToLayout(ThumbnailWidget* widget, int pos) {
-    if(pos == mSelectedIndex)
-        mSelectedIndex++;
     scene.addItem(widget);
     updateThumbnailPositions(pos, thumbnails.count() - 1);
 }
 
 void ThumbnailStrip::removeItemFromLayout(int pos) {
     if(checkRange(pos)) {
-        if(pos == mSelectedIndex)
-            mSelectedIndex = -1;
         ThumbnailWidget *thumb = thumbnails.at(pos);
         scene.removeItem(thumb);
         // move items left
@@ -123,7 +107,7 @@ void ThumbnailStrip::setThumbnailSize(int newSize) {
         //scene.invalidate(scene.sceneRect());
         updateThumbnailPositions(0, thumbnails.count() - 1);
         fitSceneToContents();
-        ensureThumbnailVisible(mSelectedIndex);
+        ensureThumbnailVisible(selectedIndex());
     }
 }
 
@@ -131,7 +115,7 @@ void ThumbnailStrip::setThumbnailSize(int newSize) {
 // TODO: find some way to make this trigger while hidden
 void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
-    QWidget::resizeEvent(event);
+    ThumbnailView::resizeEvent(event);
     if(event->oldSize().height() != height())
         updateThumbnailSize();
     if(event->oldSize().width() < width())
