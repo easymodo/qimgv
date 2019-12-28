@@ -180,6 +180,8 @@ public:
     bool keepFitMode();
     void setKeepFitMode(bool mode);
 
+    int expandLimit();
+    void setExpandLimit(int value);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;

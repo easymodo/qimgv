@@ -159,6 +159,7 @@ void ImageViewer::scrollRight() {
 void ImageViewer::readSettings() {
     smoothAnimatedImages = settings->smoothAnimatedImages();
     expandImage = settings->expandImage();
+    expandLimit = static_cast<float>(settings->expandLimit());
     maxResolutionLimit = static_cast<float>(settings->maxZoomedResolution());
     maxScaleLimit = static_cast<float>(settings->maximumZoom());
     updateMinScale();
@@ -227,6 +228,8 @@ void ImageViewer::updateFitWindowScale() {
     } else {
         fitWindowScale = newMinScaleY;
     }
+    if(expandLimit && fitWindowScale > expandLimit)
+        fitWindowScale = expandLimit;
 }
 
 bool ImageViewer::sourceImageFits() {
@@ -544,12 +547,14 @@ void ImageViewer::fitWidth() {
     if(!pixmap)
         return;
     float scale = (float)width() * devicePixelRatioF() / mSourceSize.width();
+    if(expandLimit && scale > expandLimit)
+        scale = expandLimit;
     if(!expandImage && scale > 1.0f) {
         fitNormal();
     } else {
         setScale(scale);
         centerImage();
-        if(drawingRect.height() > height()*devicePixelRatioF())
+        if(drawingRect.height() > height() * devicePixelRatioF())
             drawingRect.moveTop(0);
         update();
     }

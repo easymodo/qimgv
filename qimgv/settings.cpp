@@ -618,6 +618,14 @@ void Settings::setExpandImage(bool mode) {
     settings->s->setValue("expandImage", mode);
 }
 //------------------------------------------------------------------------------
+int Settings::expandLimit() {
+    return settings->s->value("expandLimit", 2).toInt();
+}
+
+void Settings::setExpandLimit(int value) {
+    settings->s->setValue("expandLimit", value);
+}
+//------------------------------------------------------------------------------
 ScalingFilter Settings::scalingFilter() {
     int mode = settings->s->value("scalingFilter", 1).toInt();
     if(mode < 0 || mode > 1)

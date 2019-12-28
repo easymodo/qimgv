@@ -95,16 +95,20 @@ void SettingsDialog::readSettings() {
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
     // ##### scaling #####
-    setting = settings->useFastScale();
-    ui->scalingQualityComboBox->setCurrentIndex(setting ? 1 : 0);
+    ui->scalingQualityComboBox->setCurrentIndex(settings->useFastScale() ? 1 : 0);
+
+    ui->expandLimitSlider->setValue(settings->expandLimit());
+    onExpandLimitSliderChanged(ui->expandLimitSlider->value());
+
     ui->maxZoomSlider->setValue(settings->maximumZoom());
-    onMaxZoomSliderChanged(settings->maximumZoom());
+    onMaxZoomSliderChanged(ui->maxZoomSlider->value());
+
     ui->maxZoomResSlider->setValue(settings->maxZoomedResolution());
-    onMaxZoomResolutionSliderChanged(settings->maxZoomedResolution());
+    onMaxZoomResolutionSliderChanged(ui->maxZoomResSlider->value());
 
     // thumbnailer threads
     ui->thumbnailerThreadsSlider->setValue(settings->thumbnailerThreadCount());
-    onThumbnailerThreadsSliderChanged(settings->thumbnailerThreadCount());
+    onThumbnailerThreadsSliderChanged(ui->thumbnailerThreadsSlider->value());
 
     // ##### fit mode #####
     int fitMode = settings->imageFitMode();
@@ -221,6 +225,7 @@ void SettingsDialog::applySettings() {
         settings->setMainPanelSize(thumbSizeCustom);
     }
 
+    settings->setExpandLimit(ui->expandLimitSlider->value());
     settings->setMaximumZoom(ui->maxZoomSlider->value());
     settings->setMaxZoomedResolution(ui->maxZoomResSlider->value());
     settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
@@ -440,6 +445,13 @@ void SettingsDialog::highlightColorDialog() {
         ui->highlightColorLabel->setPalette(highlightLabelPalette);
     }
     delete colorDialog;
+}
+
+void SettingsDialog::onExpandLimitSliderChanged(int value) {
+    if(value == 0)
+        ui->expandLimitLabel->setText("none");
+    else
+        ui->expandLimitLabel->setText(QString::number(value) + "x");
 }
 
 void SettingsDialog::onMaxZoomSliderChanged(int value) {

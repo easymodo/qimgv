@@ -73,6 +73,7 @@ private slots:
     void onThumbnailerThreadsSliderChanged(int value);
     void fullscreenColorDialog();
     void fullscreenTextColorDialog();
+    void onExpandLimitSliderChanged(int value);
 signals:
     void settingsChanged();
 };

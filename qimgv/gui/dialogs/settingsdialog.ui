@@ -12,8 +12,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>590</width>
-    <height>500</height>
+    <width>640</width>
+    <height>560</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,8 +24,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>590</width>
-    <height>500</height>
+    <width>630</width>
+    <height>550</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -325,7 +325,7 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>400</width>
+           <width>440</width>
            <height>0</height>
           </size>
          </property>
@@ -364,9 +364,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>386</width>
-                <height>952</height>
+                <y>-123</y>
+                <width>426</width>
+                <height>1007</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -722,25 +722,10 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="0" colspan="2">
-                  <widget class="QCheckBox" name="expandImageCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>Expand smaller images to fill the window (except for 1:1 fit mode).</string>
-                   </property>
+                 <item row="1" column="0">
+                  <widget class="QCheckBox" name="keepFitModeCheckBox">
                    <property name="text">
-                    <string>Expand smaller images</string>
+                    <string>Keep fit mode between images</string>
                    </property>
                   </widget>
                  </item>
@@ -775,14 +760,118 @@
                    </item>
                   </widget>
                  </item>
-                 <item row="1" column="0">
-                  <widget class="QCheckBox" name="keepFitModeCheckBox">
-                   <property name="text">
-                    <string>Keep fit mode between images</string>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
+               </item>
+               <item>
+                <widget class="QFrame" name="frame_4">
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_8">
+                  <item>
+                   <widget class="QCheckBox" name="expandImageCheckBox">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="toolTip">
+                     <string>Expand smaller images to fill the window (except for 1:1 fit mode).</string>
+                    </property>
+                    <property name="text">
+                     <string>Expand smaller images</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_9">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_24">
+                      <property name="text">
+                       <string>Expand limit</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_11">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="expandLimitLabel">
+                      <property name="text">
+                       <string>[explimit]</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSlider" name="expandLimitSlider">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>180</width>
+                        <height>25</height>
+                       </size>
+                      </property>
+                      <property name="minimum">
+                       <number>0</number>
+                      </property>
+                      <property name="maximum">
+                       <number>4</number>
+                      </property>
+                      <property name="pageStep">
+                       <number>1</number>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="tickPosition">
+                       <enum>QSlider::TicksBelow</enum>
+                      </property>
+                      <property name="tickInterval">
+                       <number>1</number>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
                </item>
                <item>
                 <spacer name="verticalSpacer_8">
@@ -1181,8 +1270,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>325</width>
-                <height>390</height>
+                <width>440</width>
+                <height>494</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -1748,8 +1837,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>426</width>
-                <height>242</height>
+                <width>440</width>
+                <height>494</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2979,8 +3068,8 @@ p, li { white-space: pre-wrap; }
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>577</x>
-     <y>487</y>
+     <x>627</x>
+     <y>547</y>
     </hint>
     <hint type="destinationlabel">
      <x>383</x>
@@ -2995,8 +3084,8 @@ p, li { white-space: pre-wrap; }
    <slot>applySettingsAndClose()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>405</x>
-     <y>487</y>
+     <x>455</x>
+     <y>547</y>
     </hint>
     <hint type="destinationlabel">
      <x>132</x>
@@ -3011,8 +3100,8 @@ p, li { white-space: pre-wrap; }
    <slot>applySettings()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>491</x>
-     <y>487</y>
+     <x>541</x>
+     <y>547</y>
     </hint>
     <hint type="destinationlabel">
      <x>137</x>
@@ -3027,7 +3116,7 @@ p, li { white-space: pre-wrap; }
    <slot>resetShortcuts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>277</x>
+     <x>287</x>
      <y>23</y>
     </hint>
     <hint type="destinationlabel">
@@ -3043,8 +3132,8 @@ p, li { white-space: pre-wrap; }
    <slot>accentColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>569</x>
-     <y>55</y>
+     <x>619</x>
+     <y>65</y>
     </hint>
     <hint type="destinationlabel">
      <x>33</x>
@@ -3059,7 +3148,7 @@ p, li { white-space: pre-wrap; }
    <slot>removeShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>225</x>
+     <x>235</x>
      <y>23</y>
     </hint>
     <hint type="destinationlabel">
@@ -3075,7 +3164,7 @@ p, li { white-space: pre-wrap; }
    <slot>addShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>199</x>
+     <x>209</x>
      <y>23</y>
     </hint>
     <hint type="destinationlabel">
@@ -3251,8 +3340,8 @@ p, li { white-space: pre-wrap; }
    <slot>fullscreenColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>569</x>
-     <y>264</y>
+     <x>619</x>
+     <y>275</y>
     </hint>
     <hint type="destinationlabel">
      <x>583</x>
@@ -3267,8 +3356,8 @@ p, li { white-space: pre-wrap; }
    <slot>windowColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>569</x>
-     <y>137</y>
+     <x>619</x>
+     <y>142</y>
     </hint>
     <hint type="destinationlabel">
      <x>582</x>
@@ -3283,8 +3372,8 @@ p, li { white-space: pre-wrap; }
    <slot>highlightColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>269</x>
-     <y>51</y>
+     <x>619</x>
+     <y>65</y>
     </hint>
     <hint type="destinationlabel">
      <x>586</x>
@@ -3299,12 +3388,28 @@ p, li { white-space: pre-wrap; }
    <slot>fullscreenTextColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>551</x>
-     <y>302</y>
+     <x>619</x>
+     <y>311</y>
     </hint>
     <hint type="destinationlabel">
      <x>590</x>
      <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>expandLimitSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>onExpandLimitSliderChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>585</x>
+     <y>452</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>639</x>
+     <y>488</y>
     </hint>
    </hints>
   </connection>
@@ -3330,5 +3435,6 @@ p, li { white-space: pre-wrap; }
   <slot>windowColorDialog()</slot>
   <slot>highlightColorDialog()</slot>
   <slot>fullscreenTextColorDialog()</slot>
+  <slot>onExpandLimitSliderChanged(int)</slot>
  </slots>
 </ui>
