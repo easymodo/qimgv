@@ -90,6 +90,7 @@ void SettingsDialog::readSettings() {
     ui->showInfoBarWindowed->setChecked(settings->infoBarWindowed());
     ui->showExtendedInfoTitle->setChecked(settings->windowTitleExtendedInfo());
     ui->cursorAutohideCheckBox->setChecked(settings->cursorAutohide());
+    ui->keepFitModeCheckBox->setChecked(settings->keepFitMode());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -193,6 +194,7 @@ void SettingsDialog::applySettings() {
     settings->setInfoBarWindowed(ui->showInfoBarWindowed->isChecked());
     settings->setWindowTitleExtendedInfo(ui->showExtendedInfoTitle->isChecked());
     settings->setCursorAutohide(ui->cursorAutohideCheckBox->isChecked());
+    settings->setKeepFitMode(ui->keepFitModeCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 

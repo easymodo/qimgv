@@ -8,13 +8,14 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     transparencyGridEnabled(false),
     expandImage(false),
     smoothAnimatedImages(true),
+    keepFitMode(false),
     mouseInteraction(MOUSE_NONE),
-    mOpacity(1.0f),
     mCurrentScale(1.0),
     fitWindowScale(0.125),
     minScale(0.125),
     maxScale(maxScaleLimit),
-    imageFitMode(FIT_ORIGINAL),
+    imageFitMode(FIT_WINDOW),
+    imageFitModeDefault(FIT_WINDOW),
     mScalingFilter(FILTER_BILINEAR)
 {
     setFocusPolicy(Qt::NoFocus);
@@ -118,7 +119,9 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     updateMinScale();
     updateMaxScale();
     setScale(1.0f);
-    if(imageFitMode == FIT_FREE)
+    if(!keepFitMode)
+        imageFitMode = imageFitModeDefault;
+    else if(imageFitMode == FIT_FREE)
         imageFitMode = FIT_WINDOW;
     applyFitMode();
 }
@@ -160,7 +163,9 @@ void ImageViewer::readSettings() {
     maxScaleLimit = static_cast<float>(settings->maximumZoom());
     updateMinScale();
     updateMaxScale();
-    setFitMode(settings->imageFitMode());
+    keepFitMode = settings->keepFitMode();
+    imageFitModeDefault = settings->imageFitMode();
+    setFitMode(imageFitModeDefault);
     mouseWrapping = settings->mouseWrapping();
     transparencyGridEnabled = settings->transparencyGrid();
     setScalingFilter(settings->scalingFilter());
@@ -334,7 +339,6 @@ void ImageViewer::drawTransparencyGrid() {
 void ImageViewer::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QPainter painter(this);
-    painter.setOpacity(mOpacity);
     if(movie && smoothAnimatedImages)
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(pixmap) {

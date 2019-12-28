@@ -366,7 +366,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>386</width>
-                <height>921</height>
+                <height>952</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -722,6 +722,28 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="2" column="0" colspan="2">
+                  <widget class="QCheckBox" name="expandImageCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Expand smaller images to fill the window (except for 1:1 fit mode).</string>
+                   </property>
+                   <property name="text">
+                    <string>Expand smaller images</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="0" column="1">
                   <widget class="QComboBox" name="fitModeComboBox">
                    <property name="sizePolicy">
@@ -753,25 +775,10 @@
                    </item>
                   </widget>
                  </item>
-                 <item row="1" column="0" colspan="2">
-                  <widget class="QCheckBox" name="expandImageCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>Expand smaller images to fill the window (except for 1:1 fit mode).</string>
-                   </property>
+                 <item row="1" column="0">
+                  <widget class="QCheckBox" name="keepFitModeCheckBox">
                    <property name="text">
-                    <string>Expand smaller images</string>
+                    <string>Keep fit mode between images</string>
                    </property>
                   </widget>
                  </item>
@@ -1174,8 +1181,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>400</width>
-                <height>434</height>
+                <width>325</width>
+                <height>390</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">

@@ -342,6 +342,14 @@ void Settings::setFullscreenInfoTextColor(QColor color) {
     settings->s->setValue("fullscreenInfoTextColor", color);
 }
 //------------------------------------------------------------------------------
+bool Settings::keepFitMode() {
+    return settings->s->value("keepFitMode", false).toBool();
+}
+
+void Settings::setKeepFitMode(bool mode) {
+    settings->s->setValue("keepFitMode", mode);
+}
+//------------------------------------------------------------------------------
 bool Settings::fullscreenMode() {
     return settings->s->value("openInFullscreen", false).toBool();
 }

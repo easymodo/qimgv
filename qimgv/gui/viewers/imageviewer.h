@@ -98,7 +98,7 @@ private:
     QRect drawingRect;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
     QSize mSourceSize;
-    bool mouseWrapping, transparencyGridEnabled, expandImage, smoothAnimatedImages;
+    bool mouseWrapping, transparencyGridEnabled, expandImage, smoothAnimatedImages, keepFitMode;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_DISTANCE = 250;
@@ -108,7 +108,6 @@ private:
     int dragThreshold = 10;
     float maxScaleLimit = 4.0;
     float maxResolutionLimit = 75.0; // in megapixels
-    float mOpacity;
 
     float mCurrentScale;
     float fitWindowScale;
@@ -118,7 +117,7 @@ private:
     QPointF zoomDrawRectPoint; // [0-1, 0-1]
     QSize desktopSize;
 
-    ImageFitMode imageFitMode;
+    ImageFitMode imageFitMode, imageFitModeDefault;
     ScalingFilter mScalingFilter;
 
     void setScale(float scale);

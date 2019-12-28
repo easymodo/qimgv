@@ -173,8 +173,13 @@ public:
 
     bool maximizedWindow();
     void setMaximizedWindow(bool mode);
+
     QColor fullscreenInfoTextColor();
     void setFullscreenInfoTextColor(QColor color);
+
+    bool keepFitMode();
+    void setKeepFitMode(bool mode);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;
