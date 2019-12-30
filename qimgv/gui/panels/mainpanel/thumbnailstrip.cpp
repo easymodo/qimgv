@@ -16,9 +16,9 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
 void ThumbnailStrip::updateScrollbarIndicator() {
     qreal itemCenter = (qreal)(selectedIndex() + 0.5) / itemCount();
     if(scrollBar->orientation() == Qt::Horizontal)
-        indicator = QRect(scrollBar->width() * itemCenter - indicatorSize, 0, indicatorSize, scrollBar->height());
+        indicator = QRect(scrollBar->width() * itemCenter - indicatorSize, 2, indicatorSize, scrollBar->height() - 4);
     else
-        indicator = QRect(0, scrollBar->height() * itemCenter - indicatorSize, scrollBar->width(), indicatorSize);
+        indicator = QRect(2, scrollBar->height() * itemCenter - indicatorSize, scrollBar->width() - 4, indicatorSize);
 }
 
 std::shared_ptr<DirectoryViewWrapper> ThumbnailStrip::wrapper() {

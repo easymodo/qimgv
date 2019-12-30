@@ -56,8 +56,8 @@ bool ThumbnailView::eventFilter(QObject *o, QEvent *ev) {
             return true;
         } else if(ev->type() == QEvent::Paint) {
             QPainter p(scrollBar);
-            p.setOpacity(0.6f);
-            p.fillRect(indicator, QBrush(settings->accentColor()));
+            p.setOpacity(0.3f);
+            p.fillRect(indicator, QBrush(Qt::gray));
             p.setOpacity(1.0f);
             return false;
         }
