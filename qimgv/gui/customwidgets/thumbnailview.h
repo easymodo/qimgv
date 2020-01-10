@@ -56,8 +56,6 @@ signals:
 private:
     ThumbnailViewOrientation orientation;
 
-    void scrollPrecise(int pixelDelta);
-    void scrollSmooth(int angleDelta);
     QTimer loadTimer;
     bool blockThumbnailLoading;
     // let's say mouse wheel scroll always sends angleDelta = 120
@@ -88,6 +86,9 @@ protected:
     bool atSceneStart();
     bool atSceneEnd();
 
+    void scrollPrecise(int pixelDelta);
+    void scrollSmooth(int angleDelta);
+
     bool checkRange(int pos);
 
     virtual ThumbnailWidget *createThumbnailWidget() = 0;
@@ -104,6 +105,7 @@ protected:
 
     bool eventFilter(QObject *o, QEvent *ev) Q_DECL_OVERRIDE;
     void resizeEvent(QResizeEvent *event);
+    void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration);
 private slots:
     void centerOnX(int);
     void centerOnY(int);

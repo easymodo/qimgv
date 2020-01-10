@@ -39,6 +39,8 @@ private:
     int shiftedIndex;
     bool mShowLabels;
 
+    void scrollToCurrent();
+    void scrollToItem(int index);
 private slots:
     void selectAbove();
     void selectBelow();

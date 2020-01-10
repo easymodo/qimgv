@@ -111,7 +111,7 @@ void FolderGridView::selectAbove() {
         index = flowLayout->itemAbove(selectedIndex());
     }
     selectIndex(index);
-    focusOn(index);
+    scrollToCurrent();
 }
 
 void FolderGridView::selectBelow() {
@@ -131,8 +131,9 @@ void FolderGridView::selectBelow() {
             }
         }
     }
+
     selectIndex(index);
-    focusOn(index);
+    scrollToCurrent();
 }
 
 void FolderGridView::selectNext() {
@@ -146,7 +147,7 @@ void FolderGridView::selectNext() {
         index = thumbnails.count() - 1;
 
     selectIndex(index);
-    focusOn(index);
+    scrollToCurrent();
 }
 
 void FolderGridView::selectPrev() {
@@ -160,7 +161,7 @@ void FolderGridView::selectPrev() {
         index = thumbnails.count() - 1;
 
     selectIndex(index);
-    focusOn(index);
+    scrollToCurrent();
 }
 
 void FolderGridView::pageUp() {
@@ -175,7 +176,7 @@ void FolderGridView::pageUp() {
             index = tmp;
     }
     selectIndex(index);
-    focusOn(index);
+    scrollToCurrent();
 }
 
 void FolderGridView::pageDown() {
@@ -192,8 +193,8 @@ void FolderGridView::pageDown() {
             index = thumbnails.count() - 1;
         }
     }
-    selectIndex(index);
-    focusOn(index);
+    selectIndex(index);    
+    scrollToCurrent();
 }
 
 void FolderGridView::selectFirst() {
@@ -201,7 +202,7 @@ void FolderGridView::selectFirst() {
         return;
     shiftedIndex = -1;
     selectIndex(0);
-    focusOn(0);
+    scrollToCurrent();
 }
 
 void FolderGridView::selectLast() {
@@ -209,9 +210,36 @@ void FolderGridView::selectLast() {
         return;
     shiftedIndex = -1;
     selectIndex(thumbnails.count() - 1);
-    focusOn(thumbnails.count() - 1);
+    scrollToCurrent();
 }
 
+void FolderGridView::scrollToCurrent() {
+    scrollToItem(selectedIndex());
+}
+
+void FolderGridView::scrollToItem(int index) {
+    if(!checkRange(index))
+        return;
+
+    ThumbnailWidget *item = thumbnails.at(index);
+
+    QRectF sceneRect = mapToScene(viewport()->rect()).boundingRect();
+    QRectF itemRect = item->mapRectToScene(item->rect());
+
+    bool visible = sceneRect.contains(itemRect);
+    if(!visible) {
+        int delta = 0;
+        // UP
+        if(itemRect.top() >= sceneRect.top())
+            delta = sceneRect.bottom() - itemRect.bottom();
+        // DOWN
+        else
+            delta = sceneRect.top() - itemRect.top();
+        scrollSmooth(delta);
+    }
+}
+
+// same as scrollToItem minus the animation
 void FolderGridView::focusOn(int index) {
     if(!checkRange(index))
         return;
@@ -346,6 +374,7 @@ void FolderGridView::resizeEvent(QResizeEvent *event) {
     if(this->isVisible()) {
         ThumbnailView::resizeEvent(event);
         fitToContents();
+        focusOn(selectedIndex());
         loadVisibleThumbnailsDelayed();
     }
 }

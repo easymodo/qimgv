@@ -85,6 +85,7 @@ public:
     int rows();
     int columns();
     void clear();
+
 protected:
     QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
 
