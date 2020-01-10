@@ -692,3 +692,11 @@ bool Settings::firstRun() {
 void Settings::setFirstRun(bool mode) {
     settings->s->setValue("firstRun", mode);
 }
+//------------------------------------------------------------------------------
+bool Settings::scrollbarIndicator() {
+    return settings->s->value("scrollbarIndicator", true).toBool();
+}
+
+void Settings::setScrollbarIndicator(bool mode) {
+    settings->s->setValue("scrollbarIndicator", mode);
+}

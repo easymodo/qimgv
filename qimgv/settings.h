@@ -182,6 +182,8 @@ public:
 
     int expandLimit();
     void setExpandLimit(int value);
+    bool scrollbarIndicator();
+    void setScrollbarIndicator(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;
