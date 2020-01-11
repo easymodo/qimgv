@@ -5,7 +5,8 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       orientation(orient),
       blockThumbnailLoading(false),
       mThumbnailSize(120),
-      mSelectedIndex(-1)
+      mSelectedIndex(-1),
+      scrollTimeLine(nullptr)
 {
     setAccessibleName("thumbnailView");
     this->setMouseTracking(true);
@@ -16,10 +17,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     setRenderHint(QPainter::Antialiasing, false);
     setRenderHint(QPainter::SmoothPixmapTransform, false);
 
-    /* scrolling-related things */
-    scrollTimeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
-    scrollTimeLine->setEasingCurve(QEasingCurve::OutSine);
-    scrollTimeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
+    createScrollTimeLine();
 
     connect(&loadTimer, &QTimer::timeout, this, &ThumbnailView::loadVisibleThumbnails);
     loadTimer.setInterval(static_cast<const int>(LOAD_DELAY));
@@ -40,11 +38,27 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     scrollBar->setContextMenuPolicy(Qt::NoContextMenu);
     scrollBar->installEventFilter(this);
 
-    connect(scrollTimeLine, &QTimeLine::finished, [this]() {
-        blockThumbnailLoading = false;
+    connect(scrollBar, &QScrollBar::valueChanged, [this]() {
         loadVisibleThumbnails();
     });
-    connect(scrollBar, &QScrollBar::valueChanged, [this]() {
+}
+
+void ThumbnailView::createScrollTimeLine() {
+    if(scrollTimeLine) {
+        scrollTimeLine->stop();
+        scrollTimeLine->deleteLater();
+    }
+    /* scrolling-related things */
+    scrollTimeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
+    scrollTimeLine->setEasingCurve(QEasingCurve::OutSine);
+    scrollTimeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
+    if(orientation == THUMBNAILVIEW_HORIZONTAL) {
+        connect(scrollTimeLine, &QTimeLine::frameChanged, this, &ThumbnailView::centerOnX);
+    } else {
+        connect(scrollTimeLine, &QTimeLine::frameChanged, this, &ThumbnailView::centerOnY);
+    }
+    connect(scrollTimeLine, &QTimeLine::finished, [this]() {
+        blockThumbnailLoading = false;
         loadVisibleThumbnails();
     });
 }
@@ -307,15 +321,14 @@ void ThumbnailView::scrollPrecise(int delta) {
 void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration) {
     viewportCenter = mapToScene(viewport()->rect().center());
     // ignore if we reached boundaries
-    if( (delta > 0 && atSceneStart()) || (delta < 0 && atSceneEnd()) )
+    if( (delta > 0 && atSceneStart()) || (delta < 0 && atSceneEnd()) ) {
         return;
-
-    int center;
-    if(orientation == THUMBNAILVIEW_HORIZONTAL) {
-        center = static_cast<int>(viewportCenter.x());
-    } else {
-        center = static_cast<int>(viewportCenter.y());
     }
+    int center;
+    if(orientation == THUMBNAILVIEW_HORIZONTAL)
+        center = static_cast<int>(viewportCenter.x());
+    else
+        center = static_cast<int>(viewportCenter.y());
     bool redirect = false;
     int newEndFrame = center - static_cast<int>(delta * multiplier);
     if( (newEndFrame < center && center < scrollTimeLine->endFrame()) || (newEndFrame > center && center > scrollTimeLine->endFrame()) )
@@ -323,10 +336,17 @@ void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration
         redirect = true;
     }
     if(scrollTimeLine->state() == QTimeLine::Running && !redirect) {
-        newEndFrame = scrollTimeLine->endFrame() - static_cast<int>(delta * multiplier * acceleration);
+        if(scrollTimeLine->endFrame() == center) {
+            /* QTimeLine has this weird issue when it is already finished (at the last frame)
+             * but is stuck in the running state. So we just create a new one.
+             */
+            createScrollTimeLine();
+        } else {
+            scrollTimeLine->stop();
+        }
     }
-    scrollTimeLine->stop();
-    blockThumbnailLoading = true;
+
+    //blockThumbnailLoading = true;
     scrollTimeLine->setFrameRange(center, newEndFrame);
     scrollTimeLine->start();
 }

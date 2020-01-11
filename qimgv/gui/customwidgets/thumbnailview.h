@@ -40,6 +40,8 @@ public slots:
     int thumbnailSize();
     void loadVisibleThumbnails();
     void loadVisibleThumbnailsDelayed();
+    void scrollPrecise(int delta);
+    void scrollSmooth(int delta);
 
     void addItem();
 
@@ -65,6 +67,7 @@ private:
 
     int mSelectedIndex;
 
+    void createScrollTimeLine();
 protected:
     QGraphicsScene scene;
     QList<ThumbnailWidget*> thumbnails;
@@ -79,15 +82,12 @@ protected:
 
     const int SCROLL_UPDATE_RATE = 7;
     const float SCROLL_SPEED_MULTIPLIER = 2.5f;
-    const int SCROLL_ANIMATION_SPEED = 140;
+    const int SCROLL_ANIMATION_SPEED = 120;
 
     const uint LOAD_DELAY = 150;
 
     bool atSceneStart();
     bool atSceneEnd();
-
-    void scrollPrecise(int pixelDelta);
-    void scrollSmooth(int angleDelta);
 
     bool checkRange(int pos);
 
@@ -109,5 +109,4 @@ protected:
 private slots:
     void centerOnX(int);
     void centerOnY(int);
-
 };
