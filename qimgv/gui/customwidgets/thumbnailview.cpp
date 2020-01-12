@@ -297,7 +297,7 @@ void ThumbnailView::wheelEvent(QWheelEvent *event) {
         else if(abs(angleDelta) < SMOOTH_SCROLL_THRESHOLD)
             scrollPrecise(angleDelta);
         else if(angleDelta)
-            scrollSmooth(angleDelta, SCROLL_SPEED_MULTIPLIER, 1.3f);
+            scrollSmooth(angleDelta, SCROLL_SPEED_MULTIPLIER, SCROLL_SPEED_ACCELERATION, true);
     }
 }
 
@@ -318,7 +318,7 @@ void ThumbnailView::scrollPrecise(int delta) {
     }
 }
 
-void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration) {
+void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration, bool additive) {
     viewportCenter = mapToScene(viewport()->rect().center());
     // ignore if we reached boundaries
     if( (delta > 0 && atSceneStart()) || (delta < 0 && atSceneEnd()) ) {
@@ -331,28 +331,32 @@ void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration
         center = static_cast<int>(viewportCenter.y());
     bool redirect = false;
     int newEndFrame = center - static_cast<int>(delta * multiplier);
-    if( (newEndFrame < center && center < scrollTimeLine->endFrame()) || (newEndFrame > center && center > scrollTimeLine->endFrame()) )
+    if( (newEndFrame < center && center < scrollTimeLine->endFrame()) ||
+        (newEndFrame > center && center > scrollTimeLine->endFrame()) )
     {
         redirect = true;
     }
-    if(scrollTimeLine->state() == QTimeLine::Running && !redirect) {
-        if(scrollTimeLine->endFrame() == center) {
-            /* QTimeLine has this weird issue when it is already finished (at the last frame)
-             * but is stuck in the running state. So we just create a new one.
-             */
+    if(scrollTimeLine->state() == QTimeLine::Running) {
+        int oldEndFrame = scrollTimeLine->endFrame();
+        // QTimeLine has this weird issue when it is already finished (at the last frame)
+        // but is stuck in the running state. So we just create a new one.
+        if(oldEndFrame == center)
             createScrollTimeLine();
-        } else {
-            scrollTimeLine->stop();
-        }
+        if(!redirect && additive)
+            newEndFrame = oldEndFrame - static_cast<int>(delta * multiplier * acceleration);
     }
-
+    scrollTimeLine->stop();
     //blockThumbnailLoading = true;
     scrollTimeLine->setFrameRange(center, newEndFrame);
     scrollTimeLine->start();
 }
 
+void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration) {
+    scrollSmooth(delta, multiplier, acceleration, false);
+}
+
 void ThumbnailView::scrollSmooth(int angleDelta) {
-    scrollSmooth(angleDelta, 1.0, 1.0);
+    scrollSmooth(angleDelta, 1.0, 1.0, false);
 }
 
 void ThumbnailView::mousePressEvent(QMouseEvent *event) {

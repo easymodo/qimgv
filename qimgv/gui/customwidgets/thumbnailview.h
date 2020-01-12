@@ -40,8 +40,6 @@ public slots:
     int thumbnailSize();
     void loadVisibleThumbnails();
     void loadVisibleThumbnailsDelayed();
-    void scrollPrecise(int delta);
-    void scrollSmooth(int delta);
 
     void addItem();
 
@@ -82,6 +80,7 @@ protected:
 
     const int SCROLL_UPDATE_RATE = 7;
     const float SCROLL_SPEED_MULTIPLIER = 2.5f;
+    const float SCROLL_SPEED_ACCELERATION = 1.5f;
     const int SCROLL_ANIMATION_SPEED = 120;
 
     const uint LOAD_DELAY = 150;
@@ -105,7 +104,10 @@ protected:
 
     bool eventFilter(QObject *o, QEvent *ev) Q_DECL_OVERRIDE;
     void resizeEvent(QResizeEvent *event);
+    void scrollPrecise(int delta);
+    void scrollSmooth(int delta);
     void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration);
+    void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration, bool additive);
 private slots:
     void centerOnX(int);
     void centerOnY(int);
