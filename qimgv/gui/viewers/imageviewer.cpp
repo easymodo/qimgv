@@ -16,8 +16,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     maxScale(maxScaleLimit),
     imageFitMode(FIT_WINDOW),
     imageFitModeDefault(FIT_WINDOW),
-    mScalingFilter(FILTER_BILINEAR),
-    mouseZoomMethod(ZOOM_DEFAULT)
+    mScalingFilter(FILTER_BILINEAR)
 {
     setFocusPolicy(Qt::NoFocus);
     setMouseTracking(true);
@@ -163,7 +162,6 @@ void ImageViewer::readSettings() {
     expandLimit = static_cast<float>(settings->expandLimit());
     maxResolutionLimit = static_cast<float>(settings->maxZoomedResolution());
     maxScaleLimit = static_cast<float>(settings->maximumZoom());
-    mouseZoomMethod = settings->mouseZoomMethod();
     updateMinScale();
     updateMaxScale();
     keepFitMode = settings->keepFitMode();
@@ -421,7 +419,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
         return;
     }
     // ------------------- ZOOM ----------------------
-    if(event->buttons() & Qt::RightButton && mouseZoomMethod == ZOOM_DEFAULT) {
+    if(event->buttons() & Qt::RightButton) {
         // filter out possible mouse jitter by ignoring low delta drags
         if(mouseInteraction == MOUSE_ZOOM || abs(mousePressPos.y() - event->pos().y()) > zoomThreshold) {
             if(cursor().shape() != Qt::SizeVerCursor) {
@@ -443,7 +441,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void ImageViewer::wheelEvent(QWheelEvent *event) {
-    if(mouseZoomMethod == ZOOM_ALTERNATIVE && event->buttons() & Qt::RightButton) {
+    if(event->buttons() & Qt::RightButton) {
         mouseInteraction = MOUSE_ZOOM;
         int angleDelta = event->angleDelta().ry();
         if(angleDelta > 0)

@@ -121,7 +121,6 @@ private:
 
     ImageFitMode imageFitMode, imageFitModeDefault;
     ScalingFilter mScalingFilter;
-    MouseZoomMethod mouseZoomMethod;
 
     void setScale(float scale);
     void updateMinScale();

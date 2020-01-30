@@ -95,9 +95,6 @@ void SettingsDialog::readSettings() {
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
-    int mouseZoomMethod = clamp(settings->mouseZoomMethod(), 0, 1);
-    ui->mouseZoomMethodComboBox->setCurrentIndex(mouseZoomMethod);
-
     // ##### scaling #####
     ui->scalingQualityComboBox->setCurrentIndex(settings->useFastScale() ? 1 : 0);
 
@@ -206,8 +203,6 @@ void SettingsDialog::applySettings() {
     settings->setScrollbarIndicator(ui->scrollbarIndicatorCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
-
-    settings->setMouseZoomMethod(static_cast<MouseZoomMethod>(ui->mouseZoomMethodComboBox->currentIndex()));
 
     settings->setScalingFilter(static_cast<ScalingFilter>(ui->scalingQualityComboBox->currentIndex()));
 

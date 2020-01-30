@@ -700,14 +700,3 @@ bool Settings::scrollbarIndicator() {
 void Settings::setScrollbarIndicator(bool mode) {
     settings->s->setValue("scrollbarIndicator", mode);
 }
-//------------------------------------------------------------------------------
-MouseZoomMethod Settings::mouseZoomMethod() {
-    int mode = settings->s->value("mouseZoomMethod", 0).toInt();
-    if(mode < 0 || mode > 1)
-        mode = 0;
-    return static_cast<MouseZoomMethod>(mode);
-}
-
-void Settings::setMouseZoomMethod(MouseZoomMethod mode) {
-    settings->s->setValue("mouseZoomMethod", mode);
-}
