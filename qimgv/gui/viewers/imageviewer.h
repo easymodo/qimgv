@@ -85,6 +85,7 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void resizeEvent(QResizeEvent* event);
 
+    void wheelEvent(QWheelEvent *event);
 private slots:
     void nextFrame();
     void requestScaling();
@@ -120,6 +121,7 @@ private:
 
     ImageFitMode imageFitMode, imageFitModeDefault;
     ScalingFilter mScalingFilter;
+    MouseZoomMethod mouseZoomMethod;
 
     void setScale(float scale);
     void updateMinScale();

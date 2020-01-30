@@ -45,6 +45,11 @@ enum ScalingFilter {
     FILTER_BILINEAR
 };
 
+enum MouseZoomMethod {
+    ZOOM_DEFAULT,
+    ZOOM_ALTERNATIVE
+};
+
 class Settings : public QObject
 {
     Q_OBJECT
@@ -184,6 +189,10 @@ public:
     void setExpandLimit(int value);
     bool scrollbarIndicator();
     void setScrollbarIndicator(bool mode);
+
+    MouseZoomMethod mouseZoomMethod();
+    void setMouseZoomMethod(MouseZoomMethod mode);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;

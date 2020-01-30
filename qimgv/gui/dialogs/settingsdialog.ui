@@ -333,7 +333,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1844,8 +1844,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>426</width>
-                <height>242</height>
+                <width>440</width>
+                <height>494</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2443,17 +2443,44 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="label_21">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Tip: You can zoom image by moving a cursor while holding right mouse button&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <layout class="QHBoxLayout" name="horizontalLayout_8">
+             <property name="leftMargin">
+              <number>0</number>
              </property>
-             <property name="wordWrap">
-              <bool>true</bool>
+             <property name="topMargin">
+              <number>0</number>
              </property>
-             <property name="textInteractionFlags">
-              <set>Qt::NoTextInteraction</set>
-             </property>
-            </widget>
+             <item>
+              <widget class="QLabel" name="label_21">
+               <property name="text">
+                <string>Mouse zoom method:</string>
+               </property>
+               <property name="textFormat">
+                <enum>Qt::PlainText</enum>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::NoTextInteraction</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="mouseZoomMethodComboBox">
+               <item>
+                <property name="text">
+                 <string>Hold RMB &amp; move</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Hold RMB &amp; scroll</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>

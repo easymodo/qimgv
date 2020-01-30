@@ -16,7 +16,8 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     maxScale(maxScaleLimit),
     imageFitMode(FIT_WINDOW),
     imageFitModeDefault(FIT_WINDOW),
-    mScalingFilter(FILTER_BILINEAR)
+    mScalingFilter(FILTER_BILINEAR),
+    mouseZoomMethod(ZOOM_DEFAULT)
 {
     setFocusPolicy(Qt::NoFocus);
     setMouseTracking(true);
@@ -162,6 +163,7 @@ void ImageViewer::readSettings() {
     expandLimit = static_cast<float>(settings->expandLimit());
     maxResolutionLimit = static_cast<float>(settings->maxZoomedResolution());
     maxScaleLimit = static_cast<float>(settings->maximumZoom());
+    mouseZoomMethod = settings->mouseZoomMethod();
     updateMinScale();
     updateMaxScale();
     keepFitMode = settings->keepFitMode();
@@ -378,9 +380,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
     }
     mouseMoveStartPos = event->pos();
     mousePressPos = mouseMoveStartPos;
-    /*if(event->button() & Qt::LeftButton && imageFits()) {
-        emit draggedOut();
-    } else */if(event->button() & Qt::RightButton) {
+    if(event->button() & Qt::RightButton) {
         setZoomPoint(event->pos() * devicePixelRatioF());
     } else {
         QWidget::mousePressEvent(event);
@@ -421,7 +421,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
         return;
     }
     // ------------------- ZOOM ----------------------
-    if(event->buttons() & Qt::RightButton/* && mouseInteraction != MOUSE_PAN */) {
+    if(event->buttons() & Qt::RightButton && mouseZoomMethod == ZOOM_DEFAULT) {
         // filter out possible mouse jitter by ignoring low delta drags
         if(mouseInteraction == MOUSE_ZOOM || abs(mousePressPos.y() - event->pos().y()) > zoomThreshold) {
             if(cursor().shape() != Qt::SizeVerCursor) {
@@ -440,6 +440,20 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
         QWidget::mouseReleaseEvent(event);
     }
     mouseInteraction = MOUSE_NONE;
+}
+
+void ImageViewer::wheelEvent(QWheelEvent *event) {
+    if(mouseZoomMethod == ZOOM_ALTERNATIVE && event->buttons() & Qt::RightButton) {
+        mouseInteraction = MOUSE_ZOOM;
+        int angleDelta = event->angleDelta().ry();
+        if(angleDelta > 0)
+            zoomInCursor();
+        else if(angleDelta < 0)
+            zoomOutCursor();
+        event->accept();
+    } else {
+        QWidget::wheelEvent(event);
+    }
 }
 
 //  Okular-like cursor pan behavior.
