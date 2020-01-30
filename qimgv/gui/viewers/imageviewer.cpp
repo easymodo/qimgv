@@ -162,6 +162,7 @@ void ImageViewer::readSettings() {
     expandLimit = static_cast<float>(settings->expandLimit());
     maxResolutionLimit = static_cast<float>(settings->maxZoomedResolution());
     maxScaleLimit = static_cast<float>(settings->maximumZoom());
+    zoomStep = settings->zoomStep();
     updateMinScale();
     updateMaxScale();
     keepFitMode = settings->keepFitMode();
@@ -800,7 +801,7 @@ void ImageViewer::zoomOutCursor() {
 void ImageViewer::doZoomIn() {
     if(!pixmap)
         return;
-    float newScale = mCurrentScale * 1.1f;
+    float newScale = mCurrentScale * (1.0f + zoomStep);
     if(newScale == mCurrentScale) //skip if minScale
         return;
     if(newScale > maxScale)
@@ -813,7 +814,7 @@ void ImageViewer::doZoomIn() {
 void ImageViewer::doZoomOut() {
     if(!pixmap)
         return;
-    float newScale = mCurrentScale * 0.9f;
+    float newScale = mCurrentScale * (1.0f - zoomStep);
     if(newScale == mCurrentScale) //skip if maxScale
         return;
     if(newScale < minScale - FLT_EPSILON)

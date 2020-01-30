@@ -185,6 +185,8 @@ public:
     bool scrollbarIndicator();
     void setScrollbarIndicator(bool mode);
 
+    qreal zoomStep();
+    void setZoomStep(qreal value);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 210;

@@ -67,7 +67,6 @@ void SettingsDialog::setupSidebar() {
 }
 
 void SettingsDialog::readSettings() {
-    bool setting;
     ui->infiniteScrollingCheckBox->setChecked(settings->infiniteScrolling());
     ui->playWebmCheckBox->setChecked(settings->playWebm());
     ui->playMp4CheckBox->setChecked(settings->playMp4());
@@ -97,6 +96,9 @@ void SettingsDialog::readSettings() {
 
     // ##### scaling #####
     ui->scalingQualityComboBox->setCurrentIndex(settings->useFastScale() ? 1 : 0);
+
+    ui->zoomStepSlider->setValue(static_cast<int>(settings->zoomStep() * 10));
+    onZoomStepSliderChanged(ui->zoomStepSlider->value());
 
     ui->expandLimitSlider->setValue(settings->expandLimit());
     onExpandLimitSliderChanged(ui->expandLimitSlider->value());
@@ -227,6 +229,7 @@ void SettingsDialog::applySettings() {
         settings->setMainPanelSize(thumbSizeCustom);
     }
 
+    settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value()) / 10);
     settings->setExpandLimit(ui->expandLimitSlider->value());
     settings->setMaximumZoom(ui->maxZoomSlider->value());
     settings->setMaxZoomedResolution(ui->maxZoomResSlider->value());
@@ -454,6 +457,10 @@ void SettingsDialog::onExpandLimitSliderChanged(int value) {
         ui->expandLimitLabel->setText("none");
     else
         ui->expandLimitLabel->setText(QString::number(value) + "x");
+}
+
+void SettingsDialog::onZoomStepSliderChanged(int value) {
+    ui->zoomStepLabel->setText("0." + QString::number(value) + "x");
 }
 
 void SettingsDialog::onMaxZoomSliderChanged(int value) {

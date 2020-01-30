@@ -110,6 +110,7 @@ private:
     float expandLimit = 2.0;
     float maxScaleLimit = 4.0;
     float maxResolutionLimit = 75.0; // in megapixels
+    qreal zoomStep = 0.1;
 
     float mCurrentScale;
     float fitWindowScale;
