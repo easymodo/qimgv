@@ -103,7 +103,7 @@ private:
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_DISTANCE = 250;
-    const int animationSpeed = 150;
+    const int SCROLL_ANIMATION_SPEED = 120;
     // how many px you can move while holding RMB until it counts as a zoom attempt
     int zoomThreshold = 4;
     int dragThreshold = 10;

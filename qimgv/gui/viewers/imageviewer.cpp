@@ -21,8 +21,8 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     setFocusPolicy(Qt::NoFocus);
     setMouseTracking(true);
     posAnimation = new QPropertyAnimation(this, "drawPos");
-    posAnimation->setEasingCurve(QEasingCurve::OutCubic);
-    posAnimation->setDuration(animationSpeed);
+    posAnimation->setEasingCurve(QEasingCurve::OutSine);
+    posAnimation->setDuration(SCROLL_ANIMATION_SPEED);
     animationTimer = new QTimer(this);
     animationTimer->setSingleShot(true);
     zoomThreshold = static_cast<int>(devicePixelRatioF() * 4.);
