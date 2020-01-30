@@ -5,6 +5,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       orientation(orient),
       blockThumbnailLoading(false),
       mCropThumbnails(false),
+      mDrawScrollbarIndicator(true),
       mThumbnailSize(120),
       mSelectedIndex(-1),
       scrollTimeLine(nullptr)
@@ -69,7 +70,7 @@ bool ThumbnailView::eventFilter(QObject *o, QEvent *ev) {
         if(ev->type() == QEvent::Wheel) {
             this->wheelEvent(dynamic_cast<QWheelEvent*>(ev));
             return true;
-        } else if(ev->type() == QEvent::Paint) {
+        } else if(ev->type() == QEvent::Paint && mDrawScrollbarIndicator) {
             QPainter p(scrollBar);
             p.setOpacity(0.3f);
             p.fillRect(indicator, QBrush(Qt::gray));
@@ -188,6 +189,10 @@ void ThumbnailView::setCropThumbnails(bool mode) {
         mCropThumbnails = mode;
         loadVisibleThumbnails();
     }
+}
+
+void ThumbnailView::setDrawScrollbarIndicator(bool mode) {
+    mDrawScrollbarIndicator = mode;
 }
 
 void ThumbnailView::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {

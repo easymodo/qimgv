@@ -63,7 +63,7 @@ private:
     // TODO: tune this value
     const int SMOOTH_SCROLL_THRESHOLD = 120;
 
-    int mSelectedIndex;
+    int mSelectedIndex, mDrawScrollbarIndicator;
 
     bool mCropThumbnails;
 
@@ -102,6 +102,7 @@ protected:
     virtual void updateScrollbarIndicator() = 0;
 
     void setCropThumbnails(bool);
+    void setDrawScrollbarIndicator(bool mode);
 
     void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;

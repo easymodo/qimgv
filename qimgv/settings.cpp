@@ -693,14 +693,6 @@ void Settings::setFirstRun(bool mode) {
     settings->s->setValue("firstRun", mode);
 }
 //------------------------------------------------------------------------------
-bool Settings::scrollbarIndicator() {
-    return settings->s->value("scrollbarIndicator", true).toBool();
-}
-
-void Settings::setScrollbarIndicator(bool mode) {
-    settings->s->setValue("scrollbarIndicator", mode);
-}
-//------------------------------------------------------------------------------
 qreal Settings::zoomStep() {
     bool ok = false;
     qreal value = settings->s->value("zoomStep", 0.2).toReal(&ok);

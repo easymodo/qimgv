@@ -1698,13 +1698,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0">
-                  <widget class="QCheckBox" name="scrollbarIndicatorCheckBox">
-                   <property name="text">
-                    <string>Show current file position on scrollbar</string>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
                </item>
                <item>
@@ -1844,8 +1837,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>440</width>
-                <height>494</height>
+                <width>426</width>
+                <height>293</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">

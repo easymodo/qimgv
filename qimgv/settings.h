@@ -182,8 +182,6 @@ public:
 
     int expandLimit();
     void setExpandLimit(int value);
-    bool scrollbarIndicator();
-    void setScrollbarIndicator(bool mode);
 
     qreal zoomStep();
     void setZoomStep(qreal value);
