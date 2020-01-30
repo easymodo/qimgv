@@ -6,7 +6,8 @@ DirectoryViewWrapper::DirectoryViewWrapper(QObject *parent) : QObject(parent) {
     Q_ASSERT(view);
 
     connect(parent, SIGNAL(thumbnailPressed(int)), this, SIGNAL(thumbnailPressed(int)));
-    connect(parent, SIGNAL(thumbnailsRequested(QList<int>, int, bool)), this, SIGNAL(thumbnailsRequested(QList<int>, int, bool)));
+    connect(parent, SIGNAL(thumbnailsRequested(QList<int>, int, bool, bool)),
+            this,   SIGNAL(thumbnailsRequested(QList<int>, int, bool, bool)));
 }
 
 void DirectoryViewWrapper::populate(int count) {

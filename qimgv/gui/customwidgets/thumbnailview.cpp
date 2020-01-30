@@ -4,6 +4,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     : QGraphicsView(parent),
       orientation(orient),
       blockThumbnailLoading(false),
+      mCropThumbnails(false),
       mThumbnailSize(120),
       mSelectedIndex(-1),
       scrollTimeLine(nullptr)
@@ -177,13 +178,27 @@ void ThumbnailView::reloadItem(int index) {
     auto thumb = thumbnails.at(index);
     if(thumb->isLoaded) {
         thumb->unsetThumbnail();
-        emit thumbnailsRequested(QList<int>() << index, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize), true);
+        emit thumbnailsRequested(QList<int>() << index, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize), mCropThumbnails, true);
+    }
+}
+
+void ThumbnailView::setCropThumbnails(bool mode) {
+    if(mode != mCropThumbnails) {
+        unloadAllThumbnails();
+        mCropThumbnails = mode;
+        loadVisibleThumbnails();
     }
 }
 
 void ThumbnailView::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
     if(thumb && thumb->size() == floor(mThumbnailSize * qApp->devicePixelRatio()) && checkRange(pos)) {
         thumbnails.at(pos)->setThumbnail(thumb);
+    }
+}
+
+void ThumbnailView::unloadAllThumbnails() {
+    for(int i = 0; i < thumbnails.count(); i++) {
+        thumbnails.at(i)->unsetThumbnail();
     }
 }
 
@@ -195,8 +210,8 @@ void ThumbnailView::loadVisibleThumbnails() {
         visibleRect.adjust(-offscreenPreloadArea, -offscreenPreloadArea,
                            offscreenPreloadArea, offscreenPreloadArea);
         QList<QGraphicsItem *>visibleItems = scene.items(visibleRect,
-                                                   Qt::IntersectsItemShape,
-                                                   Qt::AscendingOrder);
+                                                         Qt::IntersectsItemShape,
+                                                         Qt::AscendingOrder);
         // load new previews
         QList<int> loadList;
         for(int i = 0; i < visibleItems.count(); i++) {
@@ -206,7 +221,7 @@ void ThumbnailView::loadVisibleThumbnails() {
             }
         }
         if(loadList.count()) {
-            emit thumbnailsRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize), false);
+            emit thumbnailsRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize), mCropThumbnails, false);
         }
         // unload offscreen
         for(int i = 0; i < thumbnails.count(); i++) {

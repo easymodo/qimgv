@@ -38,6 +38,7 @@ private:
 
 public slots:
     virtual void focusOn(int index);
+    void readSettings();
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);

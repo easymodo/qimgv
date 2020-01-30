@@ -36,7 +36,7 @@ protected:
 
 signals:
     void thumbnailPressed(int) override;
-    void thumbnailsRequested(QList<int>, int, bool) override;
+    void thumbnailsRequested(QList<int>, int, bool, bool) override;
     void sortingSelected(SortingMode);
 
 private:

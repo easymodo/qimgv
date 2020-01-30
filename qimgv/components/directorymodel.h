@@ -79,7 +79,7 @@ signals:
     void itemReady(std::shared_ptr<Image> img);
     void itemUpdated(QString fileName);
 
-    void generateThumbnails(QList<int> indexes, int size, bool);
+    void generateThumbnails(QList<int> indexes, int size, bool, bool);
     void thumbnailReady(std::shared_ptr<Thumbnail>);
 
 private:

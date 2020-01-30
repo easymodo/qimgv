@@ -16,12 +16,12 @@ public:
     void clearTasks();
 
 public slots:
-    void generateThumbnails(QList<int> indexes, int size, bool forceRegenerate);
+    void generateThumbnails(QList<int> indexes, int size, bool cropSquare, bool forceRegenerate);
 
 private:
     ThumbnailCache *thumbnailCache;
     QThreadPool *pool;
-    void startThumbnailerThread(QString filePath, int size, bool forceGenerate);
+    void startThumbnailerThread(QString filePath, int size, bool cropSquare, bool forceGenerate);
     DirectoryManager *dm;
     QMultiMap<QString, int> runningTasks;
 

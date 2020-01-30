@@ -23,7 +23,7 @@ public slots:
 
 signals:
     void thumbnailPressed(int);
-    void thumbnailsRequested(QList<int>, int, bool);
+    void thumbnailsRequested(QList<int>, int, bool, bool);
 
 private:
     IDirectoryView *view;

@@ -51,7 +51,7 @@ public slots:
 
 signals:
     void thumbnailPressed(int) Q_DECL_OVERRIDE;
-    void thumbnailsRequested(QList<int>, int, bool) Q_DECL_OVERRIDE;
+    void thumbnailsRequested(QList<int>, int, bool, bool) Q_DECL_OVERRIDE;
 
 private:
     ThumbnailViewOrientation orientation;
@@ -64,6 +64,8 @@ private:
     const int SMOOTH_SCROLL_THRESHOLD = 120;
 
     int mSelectedIndex;
+
+    bool mCropThumbnails;
 
     void createScrollTimeLine();
 protected:
@@ -99,6 +101,8 @@ protected:
     virtual void ensureSelectedItemVisible() = 0;
     virtual void updateScrollbarIndicator() = 0;
 
+    void setCropThumbnails(bool);
+
     void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
@@ -108,6 +112,7 @@ protected:
     void scrollSmooth(int delta);
     void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration);
     void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration, bool additive);
+    void unloadAllThumbnails();
 private slots:
     void centerOnX(int);
     void centerOnY(int);

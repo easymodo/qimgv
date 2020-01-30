@@ -20,5 +20,5 @@ public:
 
 //signals
     virtual void thumbnailPressed(int) = 0;
-    virtual void thumbnailsRequested(QList<int>, int, bool) = 0;
+    virtual void thumbnailsRequested(QList<int>, int, bool, bool) = 0;
 };

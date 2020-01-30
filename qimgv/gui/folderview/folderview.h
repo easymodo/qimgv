@@ -50,7 +50,7 @@ protected slots:
 
 signals:
     void thumbnailPressed(int) Q_DECL_OVERRIDE;
-    void thumbnailsRequested(QList<int>, int, bool) Q_DECL_OVERRIDE;
+    void thumbnailsRequested(QList<int>, int, bool, bool) Q_DECL_OVERRIDE;
     void sortingSelected(SortingMode);
 
 private slots:

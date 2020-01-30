@@ -11,6 +11,9 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     this->setFocusPolicy(Qt::NoFocus);
     setupLayout();
     mWrapper.reset(new DirectoryViewWrapper(this));
+
+    readSettings();
+    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
 void ThumbnailStrip::updateScrollbarIndicator() {
@@ -88,6 +91,10 @@ void ThumbnailStrip::focusOn(int index) {
     ThumbnailWidget *thumb = thumbnails.at(index);
     ensureVisible(thumb, 0, 0);
     loadVisibleThumbnails();
+}
+
+void ThumbnailStrip::readSettings() {
+    setCropThumbnails(settings->squareThumbnails());
 }
 
 void ThumbnailStrip::ensureThumbnailVisible(int pos) {
