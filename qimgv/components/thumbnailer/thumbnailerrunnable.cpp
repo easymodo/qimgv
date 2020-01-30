@@ -74,7 +74,9 @@ QImage* ThumbnailerRunnable::createThumbnailImage(DocumentInfo *imgInfo, int siz
         QString mpv = settings->mpvBinary();
         if(!mpv.isEmpty()) {
             filePath = settings->cacheDir() + imgInfo->baseName() + ".png";
-            QString command = "\"" + mpv + "\"" + " --start=30% --frames=1 --aid=no --sid=no --no-config --load-scripts=no --no-terminal --o=\"" + filePath + "\" \"" + imgInfo->filePath() + "\"";
+            QString filePathEsc = filePath;
+            filePathEsc.replace("%", "%%");
+            QString command = "\"" + mpv + "\" --start=30% --frames=1 --aid=no --sid=no --no-config --load-scripts=no --no-terminal --o=\"" + filePathEsc + "\" \"" + imgInfo->filePath() + "\"";
             QProcess process;
             process.start(command);
             process.waitForFinished(3000);
