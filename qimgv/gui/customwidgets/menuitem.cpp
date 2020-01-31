@@ -11,7 +11,7 @@ MenuItem::MenuItem(QWidget *parent)
     mIconLabel.setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
     mTextLabel.setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     mShortcutLabel.setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    mIconLabel.setMinimumSize(21, 21); // 5px padding from stylesheet
+    mIconLabel.setMinimumSize(26, 26); // 5px padding from stylesheet
 
     spacer = new QSpacerItem(16, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     mIconLabel.setAttribute(Qt::WA_TransparentForMouseEvents, true);
