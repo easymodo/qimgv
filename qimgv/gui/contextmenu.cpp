@@ -15,19 +15,19 @@ ContextMenu::ContextMenu(QWidget *parent) :
     // setup actions
     // top zoom buttons
     ui->zoomIn->setAction("zoomIn");
-    ui->zoomIn->setIconPath(":res/icons/buttons/zoom-in16.png");
+    ui->zoomIn->setIconPath(":res/icons/buttons/zoom-in18.png");
     ui->zoomIn->setTriggerMode(TriggerMode::PressTrigger);
     ui->zoomOut->setAction("zoomOut");
-    ui->zoomOut->setIconPath(":res/icons/buttons/zoom-out16.png");
+    ui->zoomOut->setIconPath(":res/icons/buttons/zoom-out18.png");
     ui->zoomOut->setTriggerMode(TriggerMode::PressTrigger);
     ui->zoomOriginal->setAction("fitNormal");
-    ui->zoomOriginal->setIconPath(":res/icons/buttons/zoom-original16.png");
+    ui->zoomOriginal->setIconPath(":res/icons/buttons/zoom-original18.png");
     ui->zoomOriginal->setTriggerMode(TriggerMode::PressTrigger);
     ui->fitWidth->setAction("fitWidth");
-    ui->fitWidth->setIconPath(":res/icons/buttons/fit-width16.png");
+    ui->fitWidth->setIconPath(":res/icons/buttons/fit-width18.png");
     ui->fitWidth->setTriggerMode(TriggerMode::PressTrigger);
     ui->fitWindow->setAction("fitWindow");
-    ui->fitWindow->setIconPath(":res/icons/buttons/fit-window16.png");
+    ui->fitWindow->setIconPath(":res/icons/buttons/fit-window18.png");
     ui->fitWindow->setTriggerMode(TriggerMode::PressTrigger);
     // -------------------------------------------------------------------------
     //  entries

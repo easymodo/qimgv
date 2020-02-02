@@ -18,11 +18,11 @@
         <file>res/icons/buttons/rotate-left16.png</file>
         <file>res/icons/buttons/rotate-right16.png</file>
         <file>res/icons/buttons/view-fullscreen16.png</file>
-        <file>res/icons/buttons/zoom-in16.png</file>
-        <file>res/icons/buttons/zoom-original16.png</file>
-        <file>res/icons/buttons/zoom-out16.png</file>
-        <file>res/icons/buttons/fit-width16.png</file>
-        <file>res/icons/buttons/fit-window16.png</file>
+        <file>res/icons/buttons/zoom-in18.png</file>
+        <file>res/icons/buttons/zoom-original18.png</file>
+        <file>res/icons/buttons/zoom-out18.png</file>
+        <file>res/icons/buttons/fit-width18.png</file>
+        <file>res/icons/buttons/fit-window18.png</file>
         <file>res/icons/buttons/flip-v16.png</file>
         <file>res/icons/buttons/folderview16.png</file>
         <file>res/icons/buttons/settings16.png</file>
@@ -48,8 +48,8 @@
         <file>res/icons/buttons/document-view16@2x.png</file>
         <file>res/icons/buttons/dropDownArrow@2x.png</file>
         <file>res/icons/buttons/edit16@2x.png</file>
-        <file>res/icons/buttons/fit-width16@2x.png</file>
-        <file>res/icons/buttons/fit-window16@2x.png</file>
+        <file>res/icons/buttons/fit-width18@2x.png</file>
+        <file>res/icons/buttons/fit-window18@2x.png</file>
         <file>res/icons/buttons/flip-h16@2x.png</file>
         <file>res/icons/buttons/flip-v16@2x.png</file>
         <file>res/icons/buttons/folderview16@2x.png</file>
@@ -63,9 +63,9 @@
         <file>res/icons/buttons/trash-red16@2x.png</file>
         <file>res/icons/buttons/trash16@2x.png</file>
         <file>res/icons/buttons/view-fullscreen16@2x.png</file>
-        <file>res/icons/buttons/zoom-in16@2x.png</file>
-        <file>res/icons/buttons/zoom-original16@2x.png</file>
-        <file>res/icons/buttons/zoom-out16@2x.png</file>
+        <file>res/icons/buttons/zoom-in18@2x.png</file>
+        <file>res/icons/buttons/zoom-original18@2x.png</file>
+        <file>res/icons/buttons/zoom-out18@2x.png</file>
         <file>res/icons/qt22@2x.png</file>
         <file>res/icons/app/16@2x.png</file>
         <file>res/icons/app/22@2x.png</file>

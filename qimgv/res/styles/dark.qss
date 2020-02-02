@@ -170,18 +170,18 @@ FloatingWidget {
 }
 
 [accessibleName="OverlayCloseButton"]:hover {
-    background-color: #3a3b3c;
-    border-color: #3a3b3c;
-    color: #bebebe;
+    background-color: #3e3e3e;
+    border-color: #3e3e3e;
+    color: #c8c8c8;
 }
 
 FloatingWidget QLabel {
-    color: #bebebe;
+    color: #c8c8c8;
 }
 
 FloatingWidget QTableWidget {
     background-color: #232324;
-    color: #bebebe;
+    color: #c8c8c8;
 }
 
 FloatingWidget QLineEdit {
@@ -217,7 +217,7 @@ FullscreenInfoOverlay {
 }
 
 FullscreenInfoOverlay QLabel {
-/*    color: #d2d2d2;  managed from settings  */
+/*    color: #c8c8c8;  managed from settings  */
     font: bold;
 }
 
@@ -292,9 +292,9 @@ SidePanel QComboBox::drop-down {
 /* dropdown menus */
 SidePanel QComboBox QAbstractItemView {
     background-color: #232324;
-    selection-background-color: #3a3b3c;
+    selection-background-color: #3e3e3e;
     selection-color: #86888a;
-    border: 1px solid #3a3b3c;
+    border: 1px solid #3e3e3e;
     color: #86888a;
     padding: 5px;
 }
@@ -313,7 +313,7 @@ ChangelogWindow QTextBrowser {
 /*----------------------------------------------------------------------------*/
 
 VideoControls QLabel {
-    color: #bebebe;
+    color: #c8c8c8;
     font: bold;
 }
 /*----------------------------------------------------------------------------*/
@@ -510,15 +510,15 @@ ContextMenu {
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="MenuItem"] {
-    color: #bebebe;
+    color: #c8c8c8;
 }
 
 [accessibleName="MenuItem"]:hover {
-    background-color: #3a3b3c;
+    background-color: #3e3e3e;
 }
 
 [accessibleName="MenuItem"] QLabel {
-    color: #bebebe;
+    color: #c8c8c8;
 }
 
 [accessibleName="MenuItem"] QLabel:disabled {
