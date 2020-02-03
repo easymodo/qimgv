@@ -71,6 +71,7 @@ void SlidePanel::show() {
         fadeEffect->setOpacity(panelVisibleOpacity);
         setProperty("pos", startPosition);
         QWidget::show();
+        QWidget::raise();
     } else {
         qDebug() << "Warning: Trying to show panel containing no widget!";
     }
