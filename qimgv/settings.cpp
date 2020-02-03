@@ -51,7 +51,7 @@ void Settings::validate() {
             qDebug() << "Settings: error reading thumbnail size (int conversion failed).";
             qDebug() << "Settings: setting default size.";
             ok = true;
-            settings->s->setValue("mainPanelSize", 160);
+            settings->s->setValue("mainPanelSize", 230);
         }
     }
 }
@@ -654,7 +654,7 @@ void Settings::setInfoBarFullscreen(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::infoBarWindowed() {
-    return settings->s->value("infoBarWindowed", true).toBool();
+    return settings->s->value("infoBarWindowed", false).toBool();
 }
 
 void Settings::setInfoBarWindowed(bool mode) {
@@ -662,7 +662,7 @@ void Settings::setInfoBarWindowed(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::windowTitleExtendedInfo() {
-    return settings->s->value("windowTitleExtendedInfo", false).toBool();
+    return settings->s->value("windowTitleExtendedInfo", true).toBool();
 }
 
 void Settings::setWindowTitleExtendedInfo(bool mode) {

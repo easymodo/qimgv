@@ -187,7 +187,7 @@ public:
     void setZoomStep(qreal value);
 private:
     explicit Settings(QObject *parent = nullptr);
-    const unsigned int mainPanelSizeDefault = 210;
+    const unsigned int mainPanelSizeDefault = 230;
     QSettings *s, *state;
     QDir *mCacheDir, *mThumbnailDir, *mConfDir;
 
