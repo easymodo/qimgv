@@ -521,7 +521,7 @@ ContextMenu {
 }
 
 ContextMenu [accessibleName="MenuItemIcon"] {
-    margin: 5px;
+    /* margin: 5px; */
 }
 
 /*----------------------------------------------------------------------------*/
