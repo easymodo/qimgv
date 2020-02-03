@@ -57,7 +57,7 @@ QString ShortcutBuilder::processMouseEvent(QMouseEvent *event) {
 }
 //------------------------------------------------------------------------------
 QString ShortcutBuilder::processKeyEvent(QKeyEvent *event) {
-#if defined(__linux__) || defined(WIN32)
+#if defined(__linux__) || defined(_WIN32)
     const bool useNativeScanCodes = true;
 #else
     const bool useNativeScanCodes = false;
