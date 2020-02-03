@@ -17,7 +17,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->versionLabel->setText("" + QApplication::applicationVersion());
     ui->qtVersionLabel->setText(qVersion());
     ui->appIconLabel->setPixmap(QIcon(":/res/icons/app/22.png").pixmap(22,22));
-    ui->qtIconLabel->setPixmap(QIcon(":/res/icons/qt22.png").pixmap(22,16));
+    ui->qtIconLabel->setPixmap(QIcon(":/res/icons/other/qt22.png").pixmap(22,16));
 
 #ifndef USE_KDE_BLUR
     ui->blurBackgroundCheckBox->setEnabled(false);
