@@ -3,6 +3,8 @@
 #include <QWidget>
 #include <QScreen>
 #include <QStyleOption>
+#include <QStyledItemDelegate>
+#include <QAbstractItemView>
 #include <QPainter>
 #include <QtGlobal>
 #include "gui/customwidgets/sidepanelwidget.h"

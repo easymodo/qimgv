@@ -8,15 +8,15 @@ FolderView::FolderView(QWidget *parent) :
     ui->setupUi(this);
     mWrapper.reset(new DirectoryViewWrapper(this));
     ui->openButton->setAction("open");
-    ui->openButton->setIconPath(":res/icons/buttons/open16.png");
+    ui->openButton->setIconPath(":res/icons/buttons/panel/open16.png");
     ui->settingsButton->setAction("openSettings");
-    ui->settingsButton->setIconPath(":res/icons/buttons/settings16.png");
+    ui->settingsButton->setIconPath(":res/icons/buttons/panel/settings16.png");
     ui->exitButton->setAction("exit");
-    ui->exitButton->setIconPath(":res/icons/buttons/close16.png");
+    ui->exitButton->setIconPath(":res/icons/buttons/panel/close16.png");
     ui->docViewButton->setAction("documentView");
-    ui->docViewButton->setIconPath(":res/icons/buttons/document-view16.png");
+    ui->docViewButton->setIconPath(":res/icons/buttons/panel/document-view16.png");
     ui->showLabelsButton->setCheckable(true);
-    ui->showLabelsButton->setIconPath(":res/icons/buttons/labels.png");
+    ui->showLabelsButton->setIconPath(":res/icons/buttons/panel/labels.png");
 
     int min = ui->thumbnailGrid->THUMBNAIL_SIZE_MIN;
     int max = ui->thumbnailGrid->THUMBNAIL_SIZE_MAX;

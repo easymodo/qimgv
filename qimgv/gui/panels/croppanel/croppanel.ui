@@ -50,10 +50,10 @@
       <string notr="true"/>
      </property>
      <property name="text">
-      <string/>
+      <string notr="true"/>
      </property>
      <property name="pixmap">
-      <pixmap resource="../../../resources.qrc">:/res/images/cropheader.png</pixmap>
+      <pixmap resource="../../../resources.qrc">:/res/icons/other/image-crop48.png</pixmap>
      </property>
     </widget>
    </item>

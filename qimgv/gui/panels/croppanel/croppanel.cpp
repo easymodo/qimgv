@@ -9,6 +9,9 @@ CropPanel::CropPanel(CropOverlay *_overlay, QWidget *parent) :
     ui->setupUi(this);
     setFocusPolicy(Qt::NoFocus);
 
+    ui->ARcomboBox->setItemDelegate(new QStyledItemDelegate(ui->ARcomboBox));
+    ui->ARcomboBox->view()->setTextElideMode(Qt::ElideNone);
+
     hide();
 
     connect(ui->cancelButton, SIGNAL(clicked()), this, SIGNAL(cancel()));
