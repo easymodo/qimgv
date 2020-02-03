@@ -594,14 +594,6 @@ void Settings::setMaxZoomedResolution(int value) {
     settings->s->setValue("maximumZoomResolution", value);
 }
 //------------------------------------------------------------------------------
-int Settings::maximumZoom() {
-    return settings->s->value("maximumZoom", 8).toInt();
-}
-
-void Settings::setMaximumZoom(int value) {
-    settings->s->setValue("maximumZoom", value);
-}
-//------------------------------------------------------------------------------
 int Settings::folderViewIconSize() {
     return settings->s->value("folderViewIconSize", 120).toInt();
 }

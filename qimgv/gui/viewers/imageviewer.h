@@ -108,7 +108,7 @@ private:
     int zoomThreshold = 4;
     int dragThreshold = 10;
     float expandLimit = 2.0;
-    float maxScaleLimit = 4.0;
+    float maxScaleLimit = 999.0;
     float maxResolutionLimit = 75.0; // in megapixels
     qreal zoomStep = 0.1;
 

@@ -102,9 +102,6 @@ void SettingsDialog::readSettings() {
     ui->expandLimitSlider->setValue(settings->expandLimit());
     onExpandLimitSliderChanged(ui->expandLimitSlider->value());
 
-    ui->maxZoomSlider->setValue(settings->maximumZoom());
-    onMaxZoomSliderChanged(ui->maxZoomSlider->value());
-
     ui->maxZoomResSlider->setValue(settings->maxZoomedResolution());
     onMaxZoomResolutionSliderChanged(ui->maxZoomResSlider->value());
 
@@ -229,7 +226,6 @@ void SettingsDialog::applySettings() {
 
     settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value()) / 10);
     settings->setExpandLimit(ui->expandLimitSlider->value());
-    settings->setMaximumZoom(ui->maxZoomSlider->value());
     settings->setMaxZoomedResolution(ui->maxZoomResSlider->value());
     settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
 
@@ -459,10 +455,6 @@ void SettingsDialog::onExpandLimitSliderChanged(int value) {
 
 void SettingsDialog::onZoomStepSliderChanged(int value) {
     ui->zoomStepLabel->setText("0." + QString::number(value) + "x");
-}
-
-void SettingsDialog::onMaxZoomSliderChanged(int value) {
-    ui->maxZoomLabel->setText(QString::number(value) + "x");
 }
 
 void SettingsDialog::onMaxZoomResolutionSliderChanged(int value) {

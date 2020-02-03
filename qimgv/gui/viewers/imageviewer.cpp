@@ -161,7 +161,6 @@ void ImageViewer::readSettings() {
     expandImage = settings->expandImage();
     expandLimit = static_cast<float>(settings->expandLimit());
     maxResolutionLimit = static_cast<float>(settings->maxZoomedResolution());
-    maxScaleLimit = static_cast<float>(settings->maximumZoom());
     zoomStep = settings->zoomStep();
     updateMinScale();
     updateMaxScale();
@@ -259,8 +258,7 @@ void ImageViewer::updateMinScale() {
         minScale = fitWindowScale;
 }
 
-// limit maxScale to MAX_SCALE_LIMIT
-// then further limit to not exceed MAX_RESOLUTION
+// limit maxScale to MAX_SCALE_LIMIT derived from MAX_RESOLUTION
 // so we dont go full retard on memory consumption
 void ImageViewer::updateMaxScale() {
     maxScale = maxScaleLimit;
