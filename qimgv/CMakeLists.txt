@@ -45,7 +45,7 @@ if(WIN32) # Check if we are on Windows
     if(MSVC) # Check if we are using the Visual Studio compiler
         set_target_properties(qimgv PROPERTIES WIN32_EXECUTABLE ON)
         target_link_options(qimgv PRIVATE "/ENTRY:mainCRTStartup")
-    elseif(CMAKE_COMPILER_ID STREQUAL "GNU")
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         target_compile_options(qimgv PRIVATE "-mwindows") # Not tested
     else()
         message(SEND_ERROR "You are using an unsupported Windows compiler! (Not MSVC or GCC)")
