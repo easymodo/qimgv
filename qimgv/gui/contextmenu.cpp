@@ -86,12 +86,6 @@ ContextMenu::ContextMenu(QWidget *parent) :
     // force resize to fit new menuitem width
     this->adjustSize();
     // -------------------------------------------------------------------------
-    reservedKeys << "Up"
-                 << "Down"
-                 //<< "Left"
-                 //<< "Right"
-                 << "Return"
-                 << "escape";
 }
 
 ContextMenu::~ContextMenu() {
@@ -133,22 +127,12 @@ void ContextMenu::paintEvent(QPaintEvent *event) {
 void ContextMenu::keyPressEvent(QKeyEvent *event) {
     quint32 nativeScanCode = event->nativeScanCode();
     QString key = actionManager->keyForNativeScancode(nativeScanCode);
-
-    if(reservedKeys.contains(key)) {
-        if(key == "Up") {
-            // TODO
-            //selectUp();
-        }
-        if(key == "Down") {
-            //selectDown();
-        }
-        if(key == "escape") {
-            hide();
-        }
-        if(key == "Return") {
-            //currentEntry->activate();
-        }
-    } else {
+    // todo: keyboard navigation
+    if(key == "Up") {}
+    if(key == "Down") {}
+    if(key == "Esc")
+        hide();
+    if(key == "Enter") {}
+    else
         actionManager->processEvent(event);
-    }
 }

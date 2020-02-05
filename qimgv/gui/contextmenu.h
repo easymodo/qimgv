@@ -21,7 +21,6 @@ public slots:
 private:
     Ui::ContextMenu *ui;
     QTimer mTimer;
-    QStringList reservedKeys;
 
 protected:
     void mousePressEvent(QMouseEvent*);

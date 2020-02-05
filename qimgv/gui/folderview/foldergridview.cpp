@@ -15,16 +15,6 @@ FolderGridView::FolderGridView(QWidget *parent)
     setDrawScrollbarIndicator(false);
 
     setupLayout();
-    reservedShortcuts << "Up"
-                      << "Down"
-                      << "Left"
-                      << "Right"
-                      << "pageUp"
-                      << "pageDown"
-                      << "Return"
-                      << "home"
-                      << "end"
-                      << "delete";
 }
 
 void FolderGridView::updateScrollbarIndicator() {
@@ -293,38 +283,26 @@ void FolderGridView::updateLayout() {
 
 void FolderGridView::keyPressEvent(QKeyEvent *event) {
     QString shortcut = ShortcutBuilder::fromEvent(event);
-    if(reservedShortcuts.contains(shortcut)) {
-        if(shortcut == "Right") {
-            selectNext();
-        }
-        if(shortcut == "Left") {
-            selectPrev();
-        }
-        if(shortcut == "Up") {
-            selectAbove();
-        }
-        if(shortcut == "Down") {
-            selectBelow();
-        }
-        if(shortcut == "Return") {
-            if(checkRange(selectedIndex()))
-                emit thumbnailPressed(selectedIndex());
-        }
-        if(shortcut == "home") {
-            selectFirst();
-        }
-        if(shortcut == "end") {
-            selectLast();
-        }
-        if(shortcut == "pageUp") {
-            pageUp();
-        }
-        if(shortcut == "pageDown") {
-            pageDown();
-        }
-    } else {
+    if(shortcut == "Right")
+        selectNext();
+    else if(shortcut == "Left")
+        selectPrev();
+    else if(shortcut == "Up")
+        selectAbove();
+    else if(shortcut == "Down")
+        selectBelow();
+    else if(shortcut == "Enter")
+        emit thumbnailPressed(selectedIndex());
+    else if(shortcut == "Home")
+        selectFirst();
+    else if(shortcut == "End")
+        selectLast();
+    else if(shortcut == "PgUp")
+        pageUp();
+    else if(shortcut == "PgDown")
+        pageDown();
+    else
         event->ignore();
-    }
 }
 
 void FolderGridView::mousePressEvent(QMouseEvent *event) {

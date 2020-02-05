@@ -35,7 +35,6 @@ public slots:
 private:
     FlowLayout *flowLayout;
     QGraphicsWidget holderWidget;
-    QStringList reservedShortcuts;
     int shiftedIndex;
     bool mShowLabels;
 
