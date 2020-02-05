@@ -42,6 +42,8 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("Ctrl+WheelUp", "zoomOutCursor");
     actionManager->defaults.insert("Ctrl+Up", "zoomIn");
     actionManager->defaults.insert("Ctrl+Down", "zoomOut");
+    actionManager->defaults.insert("+", "zoomIn");
+    actionManager->defaults.insert("-", "zoomOut");
     actionManager->defaults.insert("Up", "scrollUp");
     actionManager->defaults.insert("Down", "scrollDown");
     actionManager->defaults.insert("Ctrl+O", "open");
@@ -76,6 +78,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("I", "toggleImageInfo");
     actionManager->defaults.insert("S", "toggleShuffle");
     actionManager->defaults.insert("Ctrl+D", "showDirectory");
+
 }
 //------------------------------------------------------------------------------
 void ActionManager::initShortcuts() {
