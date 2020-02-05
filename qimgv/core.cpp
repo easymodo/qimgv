@@ -158,6 +158,12 @@ void Core::initActions() {
 
 void Core::onUpdate() {
     QVersionNumber lastVer = settings->lastVersion();
+
+    // TEMP
+    if(lastVer < QVersionNumber(0,8,9))
+        actionManager->resetDefaults();
+    //
+
     actionManager->resetDefaultsFromVersion(lastVer);
     actionManager->saveShortcuts();
     qDebug() << "Updated: " << settings->lastVersion().toString() << ">" << appVersion.toString();

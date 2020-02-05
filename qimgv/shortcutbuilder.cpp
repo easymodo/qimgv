@@ -57,40 +57,13 @@ QString ShortcutBuilder::processMouseEvent(QMouseEvent *event) {
 }
 //------------------------------------------------------------------------------
 QString ShortcutBuilder::processKeyEvent(QKeyEvent *event) {
-#if defined(__linux__) || defined(_WIN32)
-    const bool useNativeScanCodes = true;
-#else
-    const bool useNativeScanCodes = false;
-#endif
-    // ignore event if the key itself is a modifier
-    if(isModifier(Qt::Key(event->key())))
+    if(event->type() != QEvent::KeyPress || isModifier(Qt::Key(event->key())))
         return "";
-    QString sequence;
-    if(event->type() == QEvent::KeyPress) {
-        if(useNativeScanCodes) {
-            // layout-independent method
-            // -------------------------
-            sequence = inputMap->keys().value(event->nativeScanCode());
-        } else {
-            // layout-dependent method
-            // -------------------------
-            // this works for standard keys (numbers, CAPS, Enter etc.)
-            // as well as for char keys typed in english layout
-            sequence = QVariant::fromValue(Qt::Key(event->key())).toString();
-            if(!sequence.isEmpty()) {
-                // remove "Key_" at the beginning
-                sequence.remove(0,4);
-            } else {
-                // got an unknown key (usually something from non-eng layout)
-                // use it's text value instead
-                sequence = QKeySequence(event->key()).toString();
-            }
-        }
-        if(!sequence.isEmpty()) {
-            sequence.prepend(modifierKeys(event));
-        }
-    }
-    return sequence;
+#if defined(__linux__) || defined(_WIN32)
+    return fromEventNativeScanCode(event);
+#else
+    return fromEventText(event);
+#endif
 }
 //------------------------------------------------------------------------------
 QString ShortcutBuilder::modifierKeys(QInputEvent *event){
@@ -116,4 +89,49 @@ bool ShortcutBuilder::isModifier(Qt::Key key) {
         return true;
     }
     return false;
+}
+//------------------------------------------------------------------------------
+QString ShortcutBuilder::fromEventNativeScanCode(QKeyEvent *event) {
+    // layout-independent method (mostly)
+    // -------------------------
+    // Still has some issues like when you use two layouts
+    // where on the same button you have a letter on one layout and some symbol on the other.
+    // I'm leaving this as-is because trying to fix all layouts will turn into a mess real quick.
+    // You can always just add the same keybind using your alt. layout if it doesnt work.
+    QString sequence = inputMap->keys().value(event->nativeScanCode());
+
+    //qDebug() << "keyMap.insert(" << event->nativeScanCode() << ","<< QKeySequence(event->key()).toString() << ");";
+
+    if(sequence.isEmpty())
+        return sequence;
+
+    QChar keyChr = event->text()[0];
+
+    bool useUppercaseChr = event->modifiers().testFlag(Qt::ShiftModifier) && !(keyChr.isLetter() || !keyChr.isPrint() || keyChr.isSpace());
+    if(useUppercaseChr) {
+        sequence = event->text();
+    } else if(!sequence.isEmpty()) {
+        sequence.prepend(modifierKeys(event));
+    }
+    //qDebug() << "RESULT:" << sequence;
+    return sequence;
+}
+//------------------------------------------------------------------------------
+QString ShortcutBuilder::fromEventText(QKeyEvent *event) {
+    // layout-dependent method
+    // -------------------------
+    // Works on platforms for which there is no native scancode support from Qt.
+    // Keybinds will work only on the same layout they were added (except non-printables).
+    QString sequence = QVariant::fromValue(Qt::Key(event->key())).toString();
+    if(!sequence.isEmpty()) {
+        // remove "Key_" at the beginning
+        sequence.remove(0,4);
+    } else {
+        // got an unknown key (usually something from non-eng layout)
+        // use it's text value instead
+        sequence = QKeySequence(event->key()).toString();
+    }
+    if(!sequence.isEmpty())
+        sequence.prepend(modifierKeys(event));
+    return sequence;
 }
