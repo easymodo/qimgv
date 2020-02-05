@@ -152,6 +152,32 @@ void ActionManager::resetDefaultsFromVersion(QVersionNumber lastVer) {
     }
 }
 //------------------------------------------------------------------------------
+void ActionManager::fixLegacyShortcutsV089() {
+    QMap<QString, QString> shortcutsNew;
+    QString keyBuf;
+    QMapIterator<QString, QString> i(shortcuts);
+    while(i.hasNext()) {
+        i.next();
+        keyBuf = i.key();
+        // replace with correct key names
+        keyBuf.replace("Return", "Enter");
+        keyBuf.replace("delete", "Del");
+        keyBuf.replace("escape", "Esc");
+        keyBuf.replace("pageUp", "PgUp");
+        keyBuf.replace("pageDown", "PgDown");
+        keyBuf.replace("pageBack", "PgBack");
+        keyBuf.replace("pageForward", "PgForward");
+        keyBuf.replace("~", "`");
+        keyBuf.replace("backspace", "Backspace");
+        keyBuf.replace("home", "Home");
+        keyBuf.replace("end", "End");
+        keyBuf.replace("menu", "Menu");
+        qDebug() << "[ActionManager] inserting:" << keyBuf << "=>" << i.value();
+        shortcutsNew.insert(keyBuf, i.value());
+    }
+    shortcuts = shortcutsNew;
+}
+//------------------------------------------------------------------------------
 void ActionManager::saveShortcuts() {
     settings->saveShortcuts(actionManager->shortcuts);
 }

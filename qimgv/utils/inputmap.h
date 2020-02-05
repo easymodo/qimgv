@@ -13,7 +13,7 @@ public:
 private:
     void initKeyMap();
     void initModMap();
-    QMultiMap<quint32, QString> keyMap;
+    QMap<quint32, QString> keyMap;
     QMap<QString, Qt::KeyboardModifier> modMap;
 };
 

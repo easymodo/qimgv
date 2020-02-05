@@ -141,6 +141,8 @@ void InputMap::initKeyMap() {
     // special
     //keyMap.insert( ?? , "Wake Up" ); // "Fn" key on thinkpad
     keyMap.insert( 86 , "<" ); // near left shift (iso layout)
+    //keyMap.insert(??, "PgBack");
+    //keyMap.insert(??, "PgForward");
 #elif defined __linux__
     // linux keymap for qimgv
 
@@ -195,7 +197,7 @@ void InputMap::initKeyMap() {
     keyMap.insert( 33 , "P" );
     keyMap.insert( 34 , "[" );
     keyMap.insert( 35 , "]" );
-    keyMap.insert( 36 , "Return" ); // Qt outputs "Return" here and "Enter" on numpad
+    keyMap.insert( 36 , "Enter" ); // Qt outputs "Return" here and "Enter" on numpad
     keyMap.insert( 119 , "Del" );
     keyMap.insert( 115 , "End" );
     keyMap.insert( 117 , "PgDown" );
@@ -257,6 +259,8 @@ void InputMap::initKeyMap() {
     // special
     keyMap.insert( 151 , "Wake Up" ); // "Fn" key on thinkpad
     keyMap.insert( 94 , "<" ); // near left shift (iso layout)
+    keyMap.insert(166, "PgBack");
+    keyMap.insert(167, "PgForward");
 #endif
 }
 

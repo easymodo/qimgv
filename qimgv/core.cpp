@@ -159,10 +159,8 @@ void Core::initActions() {
 void Core::onUpdate() {
     QVersionNumber lastVer = settings->lastVersion();
 
-    // TEMP
     if(lastVer < QVersionNumber(0,8,9))
-        actionManager->resetDefaults();
-    //
+        actionManager->fixLegacyShortcutsV089();
 
     actionManager->resetDefaultsFromVersion(lastVer);
     actionManager->saveShortcuts();
