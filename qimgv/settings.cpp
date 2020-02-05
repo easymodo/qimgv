@@ -595,7 +595,7 @@ void Settings::setMaxZoomedResolution(int value) {
 }
 //------------------------------------------------------------------------------
 int Settings::folderViewIconSize() {
-    return settings->s->value("folderViewIconSize", 120).toInt();
+    return settings->s->value("folderViewIconSize", 175).toInt();
 }
 
 void Settings::setFolderViewIconSize(int value) {
