@@ -632,7 +632,8 @@ void Core::runScript(const QString &scriptName) {
 }
 
 void Core::scalingRequest(QSize size, ScalingFilter filter) {
-    if(state.hasActiveImage) {
+    // filter out an unnecessary scale request at statup
+    if(mw->isVisible() && state.hasActiveImage) {
         std::shared_ptr<Image> forScale = model->getItem(model->currentFileName());
         if(forScale) {
             QString path = model->absolutePath() + "/" + model->currentFileName();

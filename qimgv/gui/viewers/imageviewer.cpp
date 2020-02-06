@@ -92,9 +92,7 @@ void ImageViewer::displayImage(std::unique_ptr<QPixmap> _pixmap) {
         if(transparencyGridEnabled)
             drawTransparencyGrid();
         update();
-        // filter out unnecessary scale event on startup
-        if(isVisible())
-            requestScaling();
+        requestScaling();
     }
 }
 

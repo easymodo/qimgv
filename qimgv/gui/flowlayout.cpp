@@ -80,6 +80,9 @@ int FlowLayout::itemBelow(int index) {
     if(index >= m_items.count() || index < 0)
         return -1;
 
+    if(sameRow(index, m_items.count() - 1))
+        return index;
+
     int indexBelow = index + m_columns;
     if(indexBelow < m_items.count())
         return indexBelow;
