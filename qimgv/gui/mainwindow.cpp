@@ -154,6 +154,14 @@ void MW::enableFolderView() {
     centralWidget->showFolderView();
 }
 
+ViewMode MW::currentViewMode() {
+    return centralWidget->currentViewMode();
+}
+
+int MW::folderViewSelection() {
+    return folderView->selectedIndex();
+}
+
 void MW::fitWindow() {
     if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitWindow();
@@ -194,20 +202,17 @@ void MW::closeImage() {
     viewerWidget->closeImage();
 }
 
-void MW::showImage(std::unique_ptr<QPixmap> pixmap) {
-    centralWidget->showDocumentView();
+void MW::setImage(std::unique_ptr<QPixmap> pixmap) {
     viewerWidget->showImage(std::move(pixmap));
     updateCropPanelData();
 }
 
-void MW::showAnimation(std::unique_ptr<QMovie> movie) {
-    centralWidget->showDocumentView();
+void MW::setAnimation(std::unique_ptr<QMovie> movie) {
     viewerWidget->showAnimation(std::move(movie));
     updateCropPanelData();
 }
 
-void MW::showVideo(QString file) {
-    centralWidget->showDocumentView();
+void MW::setVideo(QString file) {
     viewerWidget->showVideo(file);
 }
 

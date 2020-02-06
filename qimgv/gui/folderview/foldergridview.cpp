@@ -18,7 +18,7 @@ FolderGridView::FolderGridView(QWidget *parent)
 }
 
 void FolderGridView::updateScrollbarIndicator() {
-    if(selectedIndex() < 0)
+    if(!thumbnails.count())
         return;
     ThumbnailWidget *thumb = thumbnails.at(selectedIndex());
     qreal itemCenter = (thumb->pos().y() + (thumb->height() / 2)) / scene.height();

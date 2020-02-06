@@ -53,14 +53,17 @@ public:
     explicit MW(QWidget *parent = nullptr);
     bool isCropPanelActive();
     void onScalingFinished(std::unique_ptr<QPixmap>scaled);
-    void showImage(std::unique_ptr<QPixmap> pixmap);
-    void showAnimation(std::unique_ptr<QMovie> movie);
-    void showVideo(QString file);
+    void setImage(std::unique_ptr<QPixmap> pixmap);
+    void setAnimation(std::unique_ptr<QMovie> movie);
+    void setVideo(QString file);
 
     void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, qint64 fileSize);
     void setExifInfo(QMap<QString, QString>);
     std::shared_ptr<DirectoryViewWrapper> getFolderView();
     std::shared_ptr<DirectoryViewWrapper> getThumbnailPanel();
+
+    ViewMode currentViewMode();
+    int folderViewSelection();
 
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;

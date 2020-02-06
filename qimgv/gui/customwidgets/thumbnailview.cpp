@@ -92,6 +92,7 @@ void ThumbnailView::selectIndex(int index) {
 
     if(checkRange(mSelectedIndex))
         thumbnails.at(mSelectedIndex)->setHighlighted(false);
+
     mSelectedIndex = index;
 
     ThumbnailWidget *thumb = thumbnails.at(mSelectedIndex);
@@ -160,14 +161,17 @@ void ThumbnailView::insertItem(int index) {
 
 void ThumbnailView::removeItem(int index) {
     if(checkRange(index)) {
-        if(index < mSelectedIndex) {
-            mSelectedIndex--;
-        } else if(index == mSelectedIndex) {
-            mSelectedIndex = -1;
-        }
         removeItemFromLayout(index);
         delete thumbnails.takeAt(index);
         fitSceneToContents();
+        if(index < mSelectedIndex) {
+            selectIndex(mSelectedIndex - 1);
+        } else if(index == mSelectedIndex) {
+            if(mSelectedIndex >= thumbnails.count())
+                selectIndex(thumbnails.count() - 1);
+            else
+                selectIndex(mSelectedIndex);
+        }
         updateScrollbarIndicator();
         loadVisibleThumbnails();
     }
