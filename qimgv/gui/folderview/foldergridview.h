@@ -35,7 +35,7 @@ public slots:
 private:
     FlowLayout *flowLayout;
     QGraphicsWidget holderWidget;
-    int shiftedIndex;
+    int shiftedCol;
     bool mShowLabels;
 
     void scrollToCurrent();
@@ -45,7 +45,7 @@ private slots:
     void selectBelow();
     void selectNext();
     void selectPrev();
-
+    void onThumbnailPressed();
 protected:
     void resizeEvent(QResizeEvent *event);
     virtual void updateScrollbarIndicator();
