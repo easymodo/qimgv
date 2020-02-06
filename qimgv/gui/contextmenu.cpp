@@ -102,6 +102,7 @@ void ContextMenu::setImageEntriesEnabled(bool mode) {
     ui->copy->setEnabled(mode);
     ui->move->setEnabled(mode);
     ui->trash->setEnabled(mode);
+    ui->showLocation->setEnabled(mode);
 }
 
 void ContextMenu::showAt(QPoint pos) {

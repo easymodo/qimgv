@@ -30,6 +30,7 @@ protected:
     void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    bool eventFilter(QObject *o, QEvent *ev) Q_DECL_OVERRIDE;
 
     virtual void onClick();
     virtual void onPress();

@@ -13,6 +13,8 @@ MenuItem::MenuItem(QWidget *parent)
     mShortcutLabel.setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     mIconLabel.setMinimumSize(26, 26); // 5px padding from stylesheet
 
+    mIconLabel.installEventFilter(this);
+
     spacer = new QSpacerItem(16, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     mIconLabel.setAttribute(Qt::WA_TransparentForMouseEvents, true);
     mIconLabel.setAccessibleName("MenuItemIcon");
@@ -28,6 +30,18 @@ MenuItem::MenuItem(QWidget *parent)
 
 MenuItem::~MenuItem() {
     delete spacer;
+}
+
+bool MenuItem::eventFilter(QObject *watched, QEvent *event) {
+    if(watched == &mIconLabel && event->type() == QEvent::Paint)
+    {
+        QLabel * label = dynamic_cast<QLabel*>(watched);
+        QPainter painter(label);
+        QPixmap pixmap = label->pixmap()->scaled(label->size());
+        label->style()->drawItemPixmap(&painter, label->rect(), Qt::AlignHCenter | Qt::AlignVCenter, *label->pixmap());
+        return true;
+    }
+    return false;
 }
 
 void MenuItem::setText(QString text) {
