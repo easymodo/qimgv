@@ -376,8 +376,8 @@ void Core::removeFile(QString fileName, bool trash) {
 void Core::onFileRemoved(QString fileName, int index) {
     if(model->isEmpty()) {
         mw->closeImage();
-        updateInfoString();
     }
+    updateInfoString();
 }
 
 void Core::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
@@ -386,15 +386,14 @@ void Core::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
 void Core::onFileAdded(QString fileName) {
     Q_UNUSED(fileName)
     // update file count
-    qDebug() << model->currentFileName() << fileName;
     updateInfoString();
 }
 
 void Core::onFileModified(QString fileName) {
     Q_UNUSED(fileName)
     // this fires even when the image is edited from qimgv, so no need to notify
-    //if(fileName == model->currentFileName())
-    //    mw->showMessage("File changed on disk. Reloading.");
+    if(fileName == model->currentFileName())
+        mw->showMessage("File changed.");
 }
 
 void Core::outputError(const FileOpResult &error) const {

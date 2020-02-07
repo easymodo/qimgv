@@ -15,9 +15,8 @@
 
 // TODO: this may break event order.
 // Implement a proper queue.
-#define EVENT_MOVE_TIMEOUT      500 // ms
 #define EVENT_MODIFY_TIMEOUT    500 // ms
-#define EVENT_DELETE_TIMEOUT    100 // ms
+#define EVENT_DELETE_TIMEOUT    50 // ms
 
 LinuxWatcherPrivate::LinuxWatcherPrivate(LinuxWatcher* qq) :
     DirectoryWatcherPrivate(qq, new LinuxWorker()),
@@ -118,29 +117,18 @@ void LinuxWatcherPrivate::handleDeleteEvent(const QString &name) {
 void LinuxWatcherPrivate::handleCreateEvent(const QString &name, uint cookie) {
     Q_Q(LinuxWatcher);
 
-    int eventIndex = indexOfWatcherEvent(cookie);
-    if (eventIndex == -1) {
-        emit q->fileCreated(name);
-    } else {
-        // file is just being overwritten so we emit a modify event instead of create
-        auto watcherEvent = watcherEvents.takeAt(eventIndex);
-        killTimer(watcherEvent->timerId());
-        emit q->fileModified(name);
-    }
+    emit q->fileCreated(name);
 }
 
 void LinuxWatcherPrivate::handleMovedFromEvent(const QString &name, uint cookie) {
-    int timerId = startTimer(EVENT_MOVE_TIMEOUT);
-    // Save timer id to find out later which event timer is running
-    auto event = new WatcherEvent(name, cookie, timerId, WatcherEvent::MovedFrom);
-    watcherEvents.append(QSharedPointer<WatcherEvent>(event));
+    Q_Q(LinuxWatcher);
+    emit q->fileDeleted(name);
 }
 
 void LinuxWatcherPrivate::handleMovedToEvent(const QString &name, uint cookie) {
     Q_Q(LinuxWatcher);
-
     // Check if file waiting to be renamed
-    int eventIndex = indexOfWatcherEvent(cookie);
+    int eventIndex = indexOfWatcherEvent(name);
     if (eventIndex == -1) {
         // No one event waiting for rename so this is a new file
         emit q->fileCreated(name);
@@ -149,7 +137,7 @@ void LinuxWatcherPrivate::handleMovedToEvent(const QString &name, uint cookie) {
         auto watcherEvent = watcherEvents.takeAt(eventIndex);
         // Kill associated timer
         killTimer(watcherEvent->timerId());
-        emit q->fileRenamed(watcherEvent->name(), name);
+        emit q->fileModified(name);
     }
 }
 
@@ -163,15 +151,11 @@ void LinuxWatcherPrivate::timerEvent(QTimerEvent *timerEvent) {
 
         if (watcherEvent->timerId() == timerEvent->timerId()) {
             int type = watcherEvent->type();
-            if (type == WatcherEvent::MovedFrom) {
-                // Rename event didn't happen so treat this event as remove event
-                emit q->fileDeleted(watcherEvent->name());
-            } else if (type == WatcherEvent::Modify) {
+            if(type == WatcherEvent::Modify) {
                 emit q->fileModified(watcherEvent->name());
             } else if (type == WatcherEvent::Delete) {
                 emit q->fileDeleted(watcherEvent->name());
             }
-
             watcherEvents.removeAt(i);
             break;
         }

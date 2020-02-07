@@ -97,6 +97,14 @@ void FolderViewProxy::removeItem(int index) {
         folderView->removeItem(index);
     } else {
         stateBuf.itemCount--;
+        if(index < stateBuf.selectedIndex) {
+            stateBuf.selectedIndex--;
+        } else if(index == stateBuf.selectedIndex) {
+            if(stateBuf.selectedIndex >= stateBuf.itemCount)
+                stateBuf.selectedIndex = stateBuf.itemCount - 1;
+            else
+                stateBuf.selectedIndex = index;
+        }
     }
 }
 
