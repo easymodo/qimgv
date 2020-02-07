@@ -17,19 +17,19 @@ DirectoryManager::DirectoryManager() {
     //    qDebug() << "observing stopped";
     });
     connect(watcher, &DirectoryWatcher::fileCreated, this, [this] (const QString& filename) {
-    //    qDebug() << "[w] file created" << filename;
+        //qDebug() << "[w] file created" << filename;
         onFileAddedExternal(filename);
     });
     connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
-    //    qDebug() << "[w] file deleted" << filename;
+        //qDebug() << "[w] file deleted" << filename;
         onFileRemovedExternal(filename);
     });
     connect(watcher, &DirectoryWatcher::fileModified, this, [this] (const QString& filename) {
-    //    qDebug() << "[w] file modified" << filename;
+        //qDebug() << "[w] file modified" << filename;
         onFileModifiedExternal(filename);
     });
     connect(watcher, &DirectoryWatcher::fileRenamed, this, [this] (const QString& file1, const QString& file2) {
-    //    qDebug() << "[w] file renamed from" << file1 << "to" << file2;
+        //qDebug() << "[w] file renamed from" << file1 << "to" << file2;
         onFileRenamedExternal(file1, file2);
     });
 
@@ -429,8 +429,10 @@ void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
         return;
     }
     QString fullPath = fullFilePath(newFile);
-    if(!this->isSupportedFile(fullPath))
+    if(!this->isSupportedFile(fullPath)) {
+        onFileRemovedExternal(oldFile);
         return;
+    }
     // remove old one
     int index = indexOf(oldFile);
     entryVec.erase(entryVec.begin() + index);

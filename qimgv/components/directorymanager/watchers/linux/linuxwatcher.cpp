@@ -17,6 +17,7 @@
 // Implement a proper queue.
 #define EVENT_MOVE_TIMEOUT      500 // ms
 #define EVENT_MODIFY_TIMEOUT    500 // ms
+#define EVENT_DELETE_TIMEOUT    100 // ms
 
 LinuxWatcherPrivate::LinuxWatcherPrivate(LinuxWatcher* qq) :
     DirectoryWatcherPrivate(qq, new LinuxWorker()),
@@ -69,7 +70,7 @@ void LinuxWatcherPrivate::dispatchFilesystemEvent(LinuxFsEvent* e) {
         if (mask & IN_MODIFY) {
             handleModifyEvent(name);
         } else if (mask & IN_CREATE) {
-            handleCreateEvent(name);
+            handleCreateEvent(name, cookie);
         } else if (mask & IN_DELETE) {
             handleDeleteEvent(name);
         } else if (mask & IN_MOVED_FROM) {
@@ -84,7 +85,7 @@ void LinuxWatcherPrivate::handleModifyEvent(const QString &name) {
     // Find the same event in the list by file name
     int eventIndex = indexOfWatcherEvent(name);
     if (eventIndex == -1) {
-        // This is this first modify event for the current file
+        // This is a first modify event for the current file
         int timerId = startTimer(EVENT_MODIFY_TIMEOUT);
         auto event = new WatcherEvent(name, timerId, WatcherEvent::Modify);
         watcherEvents.append(QSharedPointer<WatcherEvent>(event));
@@ -99,12 +100,33 @@ void LinuxWatcherPrivate::handleModifyEvent(const QString &name) {
 
 void LinuxWatcherPrivate::handleDeleteEvent(const QString &name) {
     Q_Q(LinuxWatcher);
-    emit q->fileDeleted(name);
+    int eventIndex = indexOfWatcherEvent(name);
+    if (eventIndex == -1) {
+        // This is a first delete event for the current file
+        int timerId = startTimer(EVENT_DELETE_TIMEOUT);
+        auto event = new WatcherEvent(name, timerId, WatcherEvent::Delete);
+        watcherEvents.append(QSharedPointer<WatcherEvent>(event));
+    } else {
+        auto event = watcherEvents.at(eventIndex);
+        // Restart timer again
+        killTimer(event->timerId());
+        int timerId = startTimer(EVENT_DELETE_TIMEOUT);
+        event->setTimerId(timerId);
+    }
 }
 
-void LinuxWatcherPrivate::handleCreateEvent(const QString &name) {
+void LinuxWatcherPrivate::handleCreateEvent(const QString &name, uint cookie) {
     Q_Q(LinuxWatcher);
-    emit q->fileCreated(name);
+
+    int eventIndex = indexOfWatcherEvent(cookie);
+    if (eventIndex == -1) {
+        emit q->fileCreated(name);
+    } else {
+        // file is just being overwritten so we emit a modify event instead of create
+        auto watcherEvent = watcherEvents.takeAt(eventIndex);
+        killTimer(watcherEvent->timerId());
+        emit q->fileModified(name);
+    }
 }
 
 void LinuxWatcherPrivate::handleMovedFromEvent(const QString &name, uint cookie) {
@@ -146,6 +168,8 @@ void LinuxWatcherPrivate::timerEvent(QTimerEvent *timerEvent) {
                 emit q->fileDeleted(watcherEvent->name());
             } else if (type == WatcherEvent::Modify) {
                 emit q->fileModified(watcherEvent->name());
+            } else if (type == WatcherEvent::Delete) {
+                emit q->fileDeleted(watcherEvent->name());
             }
 
             watcherEvents.removeAt(i);

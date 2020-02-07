@@ -5,7 +5,7 @@ DirectoryModel::DirectoryModel(QObject *parent) : QObject(parent) {
     scaler = new Scaler(&cache);
 
     connect(&dirManager, &DirectoryManager::fileRemoved, this, &DirectoryModel::onFileRemoved);
-    connect(&dirManager, &DirectoryManager::fileAdded, this, &DirectoryModel::fileAdded);
+    connect(&dirManager, &DirectoryManager::fileAdded, this, &DirectoryModel::onFileAdded);
     connect(&dirManager, &DirectoryManager::fileModified,this, &DirectoryModel::onFileModified);
     connect(&dirManager, &DirectoryManager::fileRenamed, this, &DirectoryModel::onFileRenamed);
     connect(&dirManager, &DirectoryManager::loaded, this, &DirectoryModel::loaded);
@@ -317,6 +317,12 @@ void DirectoryModel::onSortingChanged() {
         preload(dirManager.nextOf(mCurrentFileName));
     }
     emit sortingChanged();
+}
+
+void DirectoryModel::onFileAdded(QString fileName) {
+    if(mCurrentFileName == "")
+        setIndex(indexOf(fileName));
+    emit fileAdded(fileName);
 }
 
 void DirectoryModel::onFileModified(QString fileName) {

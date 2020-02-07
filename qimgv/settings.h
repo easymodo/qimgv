@@ -185,6 +185,8 @@ public:
 
     qreal zoomStep();
     void setZoomStep(qreal value);
+    int JPEGSaveQuality();
+    void setJPEGSaveQuality(int value);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

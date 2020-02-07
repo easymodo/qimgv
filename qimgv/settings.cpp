@@ -618,6 +618,15 @@ void Settings::setExpandLimit(int value) {
     settings->s->setValue("expandLimit", value);
 }
 //------------------------------------------------------------------------------
+int Settings::JPEGSaveQuality() {
+    int quality = std::clamp(settings->s->value("JPEGSaveQuality", 95).toInt(), 0, 100);
+    return quality;
+}
+
+void Settings::setJPEGSaveQuality(int value) {
+    settings->s->setValue("JPEGSaveQuality", value);
+}
+//------------------------------------------------------------------------------
 ScalingFilter Settings::scalingFilter() {
     int mode = settings->s->value("scalingFilter", 1).toInt();
     if(mode < 0 || mode > 1)

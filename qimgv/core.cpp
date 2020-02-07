@@ -386,6 +386,7 @@ void Core::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
 void Core::onFileAdded(QString fileName) {
     Q_UNUSED(fileName)
     // update file count
+    qDebug() << model->currentFileName() << fileName;
     updateInfoString();
 }
 

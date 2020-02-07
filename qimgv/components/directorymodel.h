@@ -95,6 +95,7 @@ private:
 private slots:
     void onItemReady(std::shared_ptr<Image> img);
     void onSortingChanged();
+    void onFileAdded(QString fileName);
     void onFileRemoved(QString fileName, int index);
     void onFileRenamed(QString from, int indexFrom, QString to, int indexTo);
     void onFileModified(QString fileName);

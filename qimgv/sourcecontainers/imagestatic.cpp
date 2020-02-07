@@ -55,20 +55,26 @@ QString ImageStatic::generateHash(QString str) {
     return QString(QCryptographicHash::hash(str.toUtf8(), QCryptographicHash::Md5).toHex());
 }
 
-// TODO: add a way to configure compression level?
+// TODO: move saving to directorymodel
 bool ImageStatic::save(QString destPath) {
     QString tmpPath = destPath + "_" + generateHash(destPath);
+    QFileInfo fi(destPath);
+    QString ext = fi.suffix();
     // png compression note from libpng
     // Note that tests have shown that zlib compression levels 3-6 usually perform as well
     // as level 9 for PNG images, and do considerably fewer caclulations
-    int quality = destPath.endsWith(".png", Qt::CaseInsensitive) ? 30 : 95;
+    int quality = 95;
+    if(ext.compare("png", Qt::CaseInsensitive) == 0)
+        quality = 30;
+    else if(ext.compare("jpg", Qt::CaseInsensitive) == 0 || ext.compare("jpeg", Qt::CaseInsensitive) == 0)
+        quality = settings->JPEGSaveQuality();
     bool success = false;
     if(isEdited()) {
-        success = imageEdited->save(tmpPath, mDocInfo->format().toStdString().c_str(), quality);
+        success = imageEdited->save(tmpPath, ext.toStdString().c_str(), quality);
         image.swap(imageEdited);
         discardEditedImage();
     } else {
-        success = image->save(tmpPath, mDocInfo->format().toStdString().c_str(), quality);
+        success = image->save(tmpPath, ext.toStdString().c_str(), quality);
     }
     // save to a temp file JUST IN CASE qt decides to corrupt the original
     if(success) {

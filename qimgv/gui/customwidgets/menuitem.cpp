@@ -33,11 +33,9 @@ MenuItem::~MenuItem() {
 }
 
 bool MenuItem::eventFilter(QObject *watched, QEvent *event) {
-    if(watched == &mIconLabel && event->type() == QEvent::Paint)
-    {
+    if(watched == &mIconLabel && event->type() == QEvent::Paint) {
         QLabel * label = dynamic_cast<QLabel*>(watched);
         QPainter painter(label);
-        QPixmap pixmap = label->pixmap()->scaled(label->size());
         label->style()->drawItemPixmap(&painter, label->rect(), Qt::AlignHCenter | Qt::AlignVCenter, *label->pixmap());
         return true;
     }

@@ -8,7 +8,8 @@ public:
         None,
         MovedFrom,
         MovedTo,
-        Modify
+        Modify,
+        Delete
     };
 
     WatcherEvent(const QString &name,int timerId, Type type = None);

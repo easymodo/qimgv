@@ -99,6 +99,9 @@ void SettingsDialog::readSettings() {
     ui->zoomStepSlider->setValue(static_cast<int>(settings->zoomStep() * 10));
     onZoomStepSliderChanged(ui->zoomStepSlider->value());
 
+    ui->JPEGQualitySlider->setValue(settings->JPEGSaveQuality());
+    onJPEGQualitySliderChanged(ui->JPEGQualitySlider->value());
+
     ui->expandLimitSlider->setValue(settings->expandLimit());
     onExpandLimitSliderChanged(ui->expandLimitSlider->value());
 
@@ -224,6 +227,7 @@ void SettingsDialog::applySettings() {
         settings->setMainPanelSize(thumbSizeCustom);
     }
 
+    settings->setJPEGSaveQuality(ui->JPEGQualitySlider->value());
     settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value()) / 10);
     settings->setExpandLimit(ui->expandLimitSlider->value());
     settings->setMaxZoomedResolution(ui->maxZoomResSlider->value());
@@ -451,6 +455,10 @@ void SettingsDialog::onExpandLimitSliderChanged(int value) {
         ui->expandLimitLabel->setText("none");
     else
         ui->expandLimitLabel->setText(QString::number(value) + "x");
+}
+
+void SettingsDialog::onJPEGQualitySliderChanged(int value) {
+    ui->JPEGQualityLabel->setText(QString::number(value) + "%");
 }
 
 void SettingsDialog::onZoomStepSliderChanged(int value) {

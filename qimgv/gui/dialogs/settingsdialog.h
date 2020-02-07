@@ -74,6 +74,7 @@ private slots:
     void fullscreenTextColorDialog();
     void onExpandLimitSliderChanged(int value);
     void onZoomStepSliderChanged(int value);
+    void onJPEGQualitySliderChanged(int value);
 signals:
     void settingsChanged();
 };

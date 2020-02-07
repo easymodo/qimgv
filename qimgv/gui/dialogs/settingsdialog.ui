@@ -1270,8 +1270,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>440</width>
-                <height>494</height>
+                <width>325</width>
+                <height>390</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -1837,8 +1837,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>440</width>
-                <height>494</height>
+                <width>407</width>
+                <height>240</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2551,8 +2551,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>383</width>
-                <height>203</height>
+                <width>440</width>
+                <height>494</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2602,23 +2602,7 @@
                  <property name="bottomMargin">
                   <number>0</number>
                  </property>
-                 <item row="0" column="0">
-                  <widget class="QCheckBox" name="enableSmoothScrollCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="toolTip">
-                    <string>Turn this off if you are using a touchpad with libinput driver.</string>
-                   </property>
-                   <property name="text">
-                    <string>Enable smooth scrolling</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="0">
+                 <item row="4" column="0">
                   <layout class="QHBoxLayout" name="horizontalLayout">
                    <property name="leftMargin">
                     <number>0</number>
@@ -2686,6 +2670,22 @@
                    </item>
                   </layout>
                  </item>
+                 <item row="0" column="0">
+                  <widget class="QCheckBox" name="enableSmoothScrollCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Turn this off if you are using a touchpad with libinput driver.</string>
+                   </property>
+                   <property name="text">
+                    <string>Enable smooth scrolling</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="1" column="0">
                   <widget class="QCheckBox" name="usePreloaderCheckBox">
                    <property name="sizePolicy">
@@ -2702,7 +2702,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="0">
+                 <item row="3" column="0">
                   <widget class="QCheckBox" name="useThumbnailCacheCheckBox">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
@@ -2718,7 +2718,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="0">
+                 <item row="5" column="0">
                   <layout class="QHBoxLayout" name="horizontalLayout_7">
                    <item>
                     <widget class="QLabel" name="mpvLabel">
@@ -2786,6 +2786,74 @@
                      </property>
                      <property name="text">
                       <string>...</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="2" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_10">
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_3">
+                     <property name="text">
+                      <string>JPEG save quality:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_7">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="JPEGQualityLabel">
+                     <property name="text">
+                      <string>q</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSlider" name="JPEGQualitySlider">
+                     <property name="minimumSize">
+                      <size>
+                       <width>180</width>
+                       <height>25</height>
+                      </size>
+                     </property>
+                     <property name="minimum">
+                      <number>0</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100</number>
+                     </property>
+                     <property name="pageStep">
+                      <number>5</number>
+                     </property>
+                     <property name="value">
+                      <number>95</number>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="tickPosition">
+                      <enum>QSlider::TicksBelow</enum>
+                     </property>
+                     <property name="tickInterval">
+                      <number>10</number>
                      </property>
                     </widget>
                    </item>
@@ -3106,8 +3174,8 @@ p, li { white-space: pre-wrap; }
    <slot>resetShortcuts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>627</x>
-     <y>57</y>
+     <x>287</x>
+     <y>23</y>
     </hint>
     <hint type="destinationlabel">
      <x>587</x>
@@ -3122,7 +3190,7 @@ p, li { white-space: pre-wrap; }
    <slot>accentColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>619</x>
+     <x>504</x>
      <y>65</y>
     </hint>
     <hint type="destinationlabel">
@@ -3138,8 +3206,8 @@ p, li { white-space: pre-wrap; }
    <slot>removeShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>355</x>
-     <y>57</y>
+     <x>235</x>
+     <y>23</y>
     </hint>
     <hint type="destinationlabel">
      <x>584</x>
@@ -3154,8 +3222,8 @@ p, li { white-space: pre-wrap; }
    <slot>addShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>269</x>
-     <y>57</y>
+     <x>209</x>
+     <y>23</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -3170,8 +3238,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMaxZoomResolutionSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>550</x>
-     <y>219</y>
+     <x>575</x>
+     <y>178</y>
     </hint>
     <hint type="destinationlabel">
      <x>597</x>
@@ -3186,8 +3254,8 @@ p, li { white-space: pre-wrap; }
    <slot>selectMpvPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>551</x>
-     <y>199</y>
+     <x>618</x>
+     <y>232</y>
     </hint>
     <hint type="destinationlabel">
      <x>596</x>
@@ -3202,8 +3270,8 @@ p, li { white-space: pre-wrap; }
    <slot>onBgOpacitySliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>568</x>
-     <y>169</y>
+     <x>503</x>
+     <y>174</y>
     </hint>
     <hint type="destinationlabel">
      <x>621</x>
@@ -3218,8 +3286,8 @@ p, li { white-space: pre-wrap; }
    <slot>addScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>269</x>
-     <y>72</y>
+     <x>216</x>
+     <y>30</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
@@ -3234,8 +3302,8 @@ p, li { white-space: pre-wrap; }
    <slot>removeScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>441</x>
-     <y>72</y>
+     <x>281</x>
+     <y>30</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -3250,8 +3318,8 @@ p, li { white-space: pre-wrap; }
    <slot>editScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>355</x>
-     <y>72</y>
+     <x>249</x>
+     <y>30</y>
     </hint>
     <hint type="destinationlabel">
      <x>2</x>
@@ -3266,8 +3334,8 @@ p, li { white-space: pre-wrap; }
    <slot>editScript(QListWidgetItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>457</x>
-     <y>120</y>
+     <x>288</x>
+     <y>40</y>
     </hint>
     <hint type="destinationlabel">
      <x>118</x>
@@ -3298,8 +3366,8 @@ p, li { white-space: pre-wrap; }
    <slot>onThumbnailerThreadsSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>551</x>
-     <y>164</y>
+     <x>618</x>
+     <y>197</y>
     </hint>
     <hint type="destinationlabel">
      <x>591</x>
@@ -3314,8 +3382,8 @@ p, li { white-space: pre-wrap; }
    <slot>fullscreenColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>619</x>
-     <y>275</y>
+     <x>504</x>
+     <y>283</y>
     </hint>
     <hint type="destinationlabel">
      <x>583</x>
@@ -3330,7 +3398,7 @@ p, li { white-space: pre-wrap; }
    <slot>windowColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>619</x>
+     <x>504</x>
      <y>142</y>
     </hint>
     <hint type="destinationlabel">
@@ -3346,8 +3414,8 @@ p, li { white-space: pre-wrap; }
    <slot>highlightColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>619</x>
-     <y>65</y>
+     <x>279</x>
+     <y>51</y>
     </hint>
     <hint type="destinationlabel">
      <x>586</x>
@@ -3362,7 +3430,7 @@ p, li { white-space: pre-wrap; }
    <slot>fullscreenTextColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>619</x>
+     <x>504</x>
      <y>311</y>
     </hint>
     <hint type="destinationlabel">
@@ -3394,12 +3462,28 @@ p, li { white-space: pre-wrap; }
    <slot>onZoomStepSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>494</x>
-     <y>274</y>
+     <x>576</x>
+     <y>233</y>
     </hint>
     <hint type="destinationlabel">
      <x>634</x>
      <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>JPEGQualitySlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>onJPEGQualitySliderChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>123</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>642</x>
+     <y>110</y>
     </hint>
    </hints>
   </connection>
@@ -3427,5 +3511,6 @@ p, li { white-space: pre-wrap; }
   <slot>fullscreenTextColorDialog()</slot>
   <slot>onExpandLimitSliderChanged(int)</slot>
   <slot>onZoomStepSliderChanged(int)</slot>
+  <slot>onJPEGQualitySliderChanged(int)</slot>
  </slots>
 </ui>
