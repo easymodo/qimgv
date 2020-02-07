@@ -377,9 +377,15 @@ void ViewerWidget::hideCursorTimed(bool restartTimer) {
 
 void ViewerWidget::hideCursor() {
     cursorTimer.stop();
+    // ignore if we have something else open like settings window
+    if(!isDisplaying() || !isActiveWindow())
+        return;
+    // ignore when menu is up
+    if(contextMenu && contextMenu->isVisible())
+        return;
     // only hide when we are under viewer or player widget
     QWidget *w = qApp->widgetAt(QCursor::pos());
-    if(w && (w == imageViewer.get() || w == videoPlayer->getPlayer().get()) && isDisplaying()) {
+    if(w && (w == imageViewer.get() || w == videoPlayer->getPlayer().get())) {
         if(settings->cursorAutohide())
             setCursor(QCursor(Qt::BlankCursor));
         videoControls->hide(); // todo: separate
