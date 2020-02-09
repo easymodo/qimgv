@@ -20,7 +20,7 @@ public:
 
     void handleModifyEvent(const QString& name);
     void handleDeleteEvent(const QString& name);
-    void handleCreateEvent(const QString& name, uint cookie);
+    void handleCreateEvent(const QString& name);
     void handleMovedFromEvent(const QString& name, uint cookie);
     void handleMovedToEvent(const QString& name, uint cookie);
 

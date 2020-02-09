@@ -15,8 +15,8 @@
 
 // TODO: this may break event order.
 // Implement a proper queue.
+#define EVENT_MOVE_TIMEOUT      500 // ms
 #define EVENT_MODIFY_TIMEOUT    500 // ms
-#define EVENT_DELETE_TIMEOUT    50 // ms
 
 LinuxWatcherPrivate::LinuxWatcherPrivate(LinuxWatcher* qq) :
     DirectoryWatcherPrivate(qq, new LinuxWorker()),
@@ -69,7 +69,7 @@ void LinuxWatcherPrivate::dispatchFilesystemEvent(LinuxFsEvent* e) {
         if (mask & IN_MODIFY) {
             handleModifyEvent(name);
         } else if (mask & IN_CREATE) {
-            handleCreateEvent(name, cookie);
+            handleCreateEvent(name);
         } else if (mask & IN_DELETE) {
             handleDeleteEvent(name);
         } else if (mask & IN_MOVED_FROM) {
@@ -84,7 +84,7 @@ void LinuxWatcherPrivate::handleModifyEvent(const QString &name) {
     // Find the same event in the list by file name
     int eventIndex = indexOfWatcherEvent(name);
     if (eventIndex == -1) {
-        // This is a first modify event for the current file
+        // This is this first modify event for the current file
         int timerId = startTimer(EVENT_MODIFY_TIMEOUT);
         auto event = new WatcherEvent(name, timerId, WatcherEvent::Modify);
         watcherEvents.append(QSharedPointer<WatcherEvent>(event));
@@ -99,36 +99,26 @@ void LinuxWatcherPrivate::handleModifyEvent(const QString &name) {
 
 void LinuxWatcherPrivate::handleDeleteEvent(const QString &name) {
     Q_Q(LinuxWatcher);
-    int eventIndex = indexOfWatcherEvent(name);
-    if (eventIndex == -1) {
-        // This is a first delete event for the current file
-        int timerId = startTimer(EVENT_DELETE_TIMEOUT);
-        auto event = new WatcherEvent(name, timerId, WatcherEvent::Delete);
-        watcherEvents.append(QSharedPointer<WatcherEvent>(event));
-    } else {
-        auto event = watcherEvents.at(eventIndex);
-        // Restart timer again
-        killTimer(event->timerId());
-        int timerId = startTimer(EVENT_DELETE_TIMEOUT);
-        event->setTimerId(timerId);
-    }
+    emit q->fileDeleted(name);
 }
 
-void LinuxWatcherPrivate::handleCreateEvent(const QString &name, uint cookie) {
+void LinuxWatcherPrivate::handleCreateEvent(const QString &name) {
     Q_Q(LinuxWatcher);
-
     emit q->fileCreated(name);
 }
 
 void LinuxWatcherPrivate::handleMovedFromEvent(const QString &name, uint cookie) {
-    Q_Q(LinuxWatcher);
-    emit q->fileDeleted(name);
+    int timerId = startTimer(EVENT_MOVE_TIMEOUT);
+    // Save timer id to find out later which event timer is running
+    auto event = new WatcherEvent(name, cookie, timerId, WatcherEvent::MovedFrom);
+    watcherEvents.append(QSharedPointer<WatcherEvent>(event));
 }
 
 void LinuxWatcherPrivate::handleMovedToEvent(const QString &name, uint cookie) {
     Q_Q(LinuxWatcher);
+
     // Check if file waiting to be renamed
-    int eventIndex = indexOfWatcherEvent(name);
+    int eventIndex = indexOfWatcherEvent(cookie);
     if (eventIndex == -1) {
         // No one event waiting for rename so this is a new file
         emit q->fileCreated(name);
@@ -137,7 +127,7 @@ void LinuxWatcherPrivate::handleMovedToEvent(const QString &name, uint cookie) {
         auto watcherEvent = watcherEvents.takeAt(eventIndex);
         // Kill associated timer
         killTimer(watcherEvent->timerId());
-        emit q->fileModified(name);
+        emit q->fileRenamed(watcherEvent->name(), name);
     }
 }
 
@@ -151,11 +141,13 @@ void LinuxWatcherPrivate::timerEvent(QTimerEvent *timerEvent) {
 
         if (watcherEvent->timerId() == timerEvent->timerId()) {
             int type = watcherEvent->type();
-            if(type == WatcherEvent::Modify) {
-                emit q->fileModified(watcherEvent->name());
-            } else if (type == WatcherEvent::Delete) {
+            if (type == WatcherEvent::MovedFrom) {
+                // Rename event didn't happen so treat this event as remove event
                 emit q->fileDeleted(watcherEvent->name());
+            } else if (type == WatcherEvent::Modify) {
+                emit q->fileModified(watcherEvent->name());
             }
+
             watcherEvents.removeAt(i);
             break;
         }

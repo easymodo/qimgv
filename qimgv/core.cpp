@@ -332,6 +332,7 @@ void Core::renameCurrentFile(QString newName) {
     if(!model->itemCount() || newName == model->currentFileName())
         return;
     QString newPath = model->fullPath(newName);
+    QString oldName = model->currentFileName();
     QString currentPath = model->currentFilePath();
     bool exists = model->contains(newName);
     QFile replaceMe(newPath);
@@ -342,6 +343,7 @@ void Core::renameCurrentFile(QString newName) {
             return;
         }
     }
+    qDebug() <<"zz";
     // do the renaming
     QFile file(currentPath);
     if(file.exists() && file.rename(newPath)) {
@@ -392,8 +394,8 @@ void Core::onFileAdded(QString fileName) {
 void Core::onFileModified(QString fileName) {
     Q_UNUSED(fileName)
     // this fires even when the image is edited from qimgv, so no need to notify
-    if(fileName == model->currentFileName())
-        mw->showMessage("File changed.");
+    //if(fileName == model->currentFileName())
+        //mw->showMessage("File changed.");
 }
 
 void Core::outputError(const FileOpResult &error) const {
@@ -463,7 +465,7 @@ void Core::toggleCropPanel() {
 void Core::requestSavePath() {
     if(model->isEmpty())
         return;
-    mw->showSaveDialog(model->currentFilePath());
+    mw->showSaveDialog(model->fullPath(selectedFileName()));
 }
 
 void Core::showResizeDialog() {
