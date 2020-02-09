@@ -343,7 +343,6 @@ void Core::renameCurrentFile(QString newName) {
             return;
         }
     }
-    qDebug() <<"zz";
     // do the renaming
     QFile file(currentPath);
     if(file.exists() && file.rename(newPath)) {
