@@ -69,13 +69,18 @@ bool ImageStatic::save(QString destPath) {
     else if(ext.compare("jpg", Qt::CaseInsensitive) == 0 || ext.compare("jpeg", Qt::CaseInsensitive) == 0)
         quality = settings->JPEGSaveQuality();
 
-    bool success = false, originalExists = false;
+    bool skipBackup = false, success = false, originalExists = false;
+
+    if(ext.compare(destPath, mDocInfo->filePath(), Qt::CaseInsensitive) == 0)
+        skipBackup = true;
 
     if(QFile::exists(mDocInfo->filePath()))
         originalExists = true;
     // backup the original file
-    if(originalExists && !QFile::copy(mDocInfo->filePath(), tmpPath)) {
-        return false;
+    if(!skipBackup) {
+        if(originalExists && !QFile::copy(mDocInfo->filePath(), tmpPath)) {
+            return false;
+        }
     }
     if(isEdited()) {
         success = imageEdited->save(destPath, ext.toStdString().c_str(), quality);
@@ -84,14 +89,16 @@ bool ImageStatic::save(QString destPath) {
     } else {
         success = image->save(destPath, ext.toStdString().c_str(), quality);
     }
-    // remove the backup
-    if(success) {
-        QFile file(tmpPath);
-        file.remove();
-    } else if(originalExists) {
-        // revert on fail
-        QFile::copy(tmpPath, mDocInfo->filePath());
-        QFile::remove(tmpPath);
+    if(!skipBackup) {
+        // remove the backup
+        if(success) {
+            QFile file(tmpPath);
+            file.remove();
+        } else if(originalExists) {
+            // revert on fail
+            QFile::copy(tmpPath, mDocInfo->filePath());
+            QFile::remove(tmpPath);
+        }
     }
     if(destPath == mPath && success) {
         mDocInfo->refresh();

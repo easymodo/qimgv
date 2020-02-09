@@ -428,19 +428,25 @@ void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
             onFileAddedExternal(newFile);
         return;
     }
+
     QString fullPath = fullFilePath(newFile);
     if(!this->isSupportedFile(fullPath)) {
         onFileRemovedExternal(oldFile);
         return;
     }
-    // remove old one
-    int index = indexOf(oldFile);
-    entryVec.erase(entryVec.begin() + index);
+    if(contains(newFile)) {
+        int replaceIndex = indexOf(newFile);
+        entryVec.erase(entryVec.begin() + replaceIndex);
+        emit fileRemoved(newFile, replaceIndex);
+    }
+    // remove the old one
+    int oldIndex = indexOf(oldFile);
+    entryVec.erase(entryVec.begin() + oldIndex);
     // insert
     std::filesystem::directory_entry stdEntry(toStdString(fullPath));
     Entry entry(newFile, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
     insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
-    emit fileRenamed(oldFile, index, newFile, indexOf(newFile));
+    emit fileRenamed(oldFile, oldIndex, newFile, indexOf(newFile));
 }
 
 void DirectoryManager::onFileModifiedExternal(QString fileName) {
