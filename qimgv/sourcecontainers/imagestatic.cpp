@@ -68,23 +68,30 @@ bool ImageStatic::save(QString destPath) {
         quality = 30;
     else if(ext.compare("jpg", Qt::CaseInsensitive) == 0 || ext.compare("jpeg", Qt::CaseInsensitive) == 0)
         quality = settings->JPEGSaveQuality();
-    bool success = false;
+
+    bool success = false, originalExists = false;
+
+    if(QFile::exists(mDocInfo->filePath()))
+        originalExists = true;
+    // backup the original file
+    if(originalExists && !QFile::copy(mDocInfo->filePath(), tmpPath)) {
+        return false;
+    }
     if(isEdited()) {
-        success = imageEdited->save(tmpPath, ext.toStdString().c_str(), quality);
+        success = imageEdited->save(destPath, ext.toStdString().c_str(), quality);
         image.swap(imageEdited);
         discardEditedImage();
     } else {
-        success = image->save(tmpPath, ext.toStdString().c_str(), quality);
+        success = image->save(destPath, ext.toStdString().c_str(), quality);
     }
-    // save to a temp file JUST IN CASE qt decides to corrupt the original
+    // remove the backup
     if(success) {
-        QFile file(destPath);
-        file.remove();
-        file.setFileName(tmpPath);
-        file.rename(destPath);
-    } else {
         QFile file(tmpPath);
         file.remove();
+    } else if(originalExists) {
+        // revert on fail
+        QFile::copy(tmpPath, mDocInfo->filePath());
+        QFile::remove(tmpPath);
     }
     if(destPath == mPath && success) {
         mDocInfo->refresh();
