@@ -187,7 +187,7 @@ If your favorite distro is not included refer to [Manual install] section at the
 
 Note: in order to compile you will need gcc 8 or later!
  
-__Install dependencies ( gcc >= 8, git, cmake, qt >= 5.9, exiv2, mpv )__
+__Install dependencies ( `gcc` >= 8, `git`, `cmake` >= 3.13, `qt` >= 5.9, `exiv2`, `mpv` )__
 
 _Ubuntu & derivatives:_
      
