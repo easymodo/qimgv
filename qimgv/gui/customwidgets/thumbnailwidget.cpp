@@ -165,11 +165,11 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     if(isHighlighted())
         drawHighlight(painter);
     if(!thumbnail) {
-        QPixmap* loadingIcon = shrRes->loadingIcon72();
+        QPixmap* loadingIcon = shrRes->getPixmap(ShrIcon::SHR_ICON_LOADING, dpr);
         drawIcon(painter, dpr, loadingIcon);
     } else {
         if(thumbnail->pixmap().get()->width() == 0) {
-            QPixmap* errorIcon = shrRes->loadingErrorIcon72();
+            QPixmap* errorIcon = shrRes->getPixmap(ShrIcon::SHR_ICON_ERROR, dpr);
             drawIcon(painter, dpr, errorIcon);
         } else {
             drawThumbnail(painter, dpr, thumbnail->pixmap().get());
@@ -213,8 +213,8 @@ void ThumbnailWidget::drawThumbnail(QPainter* painter, qreal dpr, const QPixmap 
 }
 
 void ThumbnailWidget::drawIcon(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
-    QPointF pos = QPointF(width()  / 2 - pixmap->width()  / (2 * dpr),
-                          height() / 2 - pixmap->height() / (2 * dpr));
+    QPointF pos = QPointF(width()  / 2 - pixmap->width()  / (2 * pixmap->devicePixelRatioF()),
+                          height() / 2 - pixmap->height() / (2 * pixmap->devicePixelRatioF()));
     painter->drawPixmap(pos, *pixmap);
 }
 

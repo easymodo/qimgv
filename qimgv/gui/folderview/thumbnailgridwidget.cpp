@@ -125,7 +125,7 @@ void ThumbnailGridWidget::updateThumbnailDrawPosition() {
 }
 
 void ThumbnailGridWidget::drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap) {
-    QPointF drawPosCentered(width()  / 2 - pixmap->width()  / (2 * dpr),
-                            height() / 2 - pixmap->height() / (2 * dpr));
+    QPointF drawPosCentered(width()  / 2 - pixmap->width()  / (2 * pixmap->devicePixelRatioF()),
+                            height() / 2 - pixmap->height() / (2 * pixmap->devicePixelRatioF()));
     painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));
 }

@@ -3,6 +3,11 @@
 #include <QPixmap>
 #include <QDebug>
 
+enum ShrIcon {
+    SHR_ICON_ERROR,
+    SHR_ICON_LOADING
+};
+
 class SharedResources
 {
 public:
@@ -10,11 +15,10 @@ public:
     static SharedResources* getInstance();
     ~SharedResources();
 
-    QPixmap* loadingIcon72();
-
-    QPixmap *loadingErrorIcon72();
+    QPixmap *getPixmap(ShrIcon icon, qreal dpr);
 private:
-    QPixmap *mLoadingIcon72 = nullptr, *mLoadingErrorIcon72 = nullptr;
+    QPixmap *mLoadingIcon72 = nullptr;
+    QPixmap *mLoadingErrorIcon72 = nullptr;
 };
 
 extern SharedResources *shrRes;

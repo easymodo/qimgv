@@ -126,5 +126,7 @@
         <file>res/icons/buttons/panel/close16@2x.png</file>
         <file>res/icons/other/image-crop48.png</file>
         <file>res/icons/other/image-crop48@2x.png</file>
+        <file>res/icons/other/loading-error72@2x.png</file>
+        <file>res/icons/other/loading72@2x.png</file>
     </qresource>
 </RCC>
