@@ -15,13 +15,13 @@ SpinBoxInputFix::SpinBoxInputFix(QWidget *parent) : QSpinBox(parent) {
                 << "Down"
                 << "Left"
                 << "Right"
-                << "pageUp"
-                << "pageDown"
-                << "Return"
-                << "home"
-                << "end"
-                << "delete"
-                << "backspace";
+                << "PgUp"
+                << "PgDown"
+                << "Enter"
+                << "Home"
+                << "End"
+                << "Del"
+                << "Backspace";
 }
 
 void SpinBoxInputFix::keyPressEvent(QKeyEvent *event) {

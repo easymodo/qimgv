@@ -104,7 +104,7 @@ void DocumentInfo::detectFormat() {
     } else if(mimeName == "video/mp4") {
         mFormat = "mp4";
         mDocumentType = DocumentType::VIDEO;
-    } else if(mimeName == "application/octet-stream" && (suffix == "webm" || suffix == "mp4")) {
+    } else if(suffix == "webm" || suffix == "mp4") {
         // it's possible for some downloaded videos to not have a correct mimetype
         mFormat = suffix;
         mDocumentType = DocumentType::VIDEO;
@@ -115,6 +115,7 @@ void DocumentInfo::detectFormat() {
             mFormat = "jpg";
         mDocumentType = STATIC;
     }
+    //qDebug() << mFormat << mDocumentType << mimeName;
 }
 
 inline

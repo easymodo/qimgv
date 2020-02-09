@@ -12,8 +12,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>590</width>
-    <height>500</height>
+    <width>640</width>
+    <height>560</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,8 +24,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>590</width>
-    <height>500</height>
+    <width>630</width>
+    <height>550</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -325,7 +325,7 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>400</width>
+           <width>440</width>
            <height>0</height>
           </size>
          </property>
@@ -365,8 +365,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>386</width>
-                <height>921</height>
+                <width>426</width>
+                <height>1007</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -722,6 +722,13 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="1" column="0">
+                  <widget class="QCheckBox" name="keepFitModeCheckBox">
+                   <property name="text">
+                    <string>Keep fit mode between images</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="0" column="1">
                   <widget class="QComboBox" name="fitModeComboBox">
                    <property name="sizePolicy">
@@ -753,29 +760,118 @@
                    </item>
                   </widget>
                  </item>
-                 <item row="1" column="0" colspan="2">
-                  <widget class="QCheckBox" name="expandImageCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>Expand smaller images to fill the window (except for 1:1 fit mode).</string>
-                   </property>
-                   <property name="text">
-                    <string>Expand smaller images</string>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
+               </item>
+               <item>
+                <widget class="QFrame" name="frame_4">
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_8">
+                  <item>
+                   <widget class="QCheckBox" name="expandImageCheckBox">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="toolTip">
+                     <string>Expand smaller images to fill the window (except for 1:1 fit mode).</string>
+                    </property>
+                    <property name="text">
+                     <string>Expand smaller images</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_9">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_24">
+                      <property name="text">
+                       <string>Expand limit</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_11">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="expandLimitLabel">
+                      <property name="text">
+                       <string>[explimit]</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSlider" name="expandLimitSlider">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>180</width>
+                        <height>25</height>
+                       </size>
+                      </property>
+                      <property name="minimum">
+                       <number>0</number>
+                      </property>
+                      <property name="maximum">
+                       <number>4</number>
+                      </property>
+                      <property name="pageStep">
+                       <number>1</number>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="tickPosition">
+                       <enum>QSlider::TicksBelow</enum>
+                      </property>
+                      <property name="tickInterval">
+                       <number>1</number>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
                </item>
                <item>
                 <spacer name="verticalSpacer_8">
@@ -1174,8 +1270,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>400</width>
-                <height>434</height>
+                <width>325</width>
+                <height>390</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -1741,8 +1837,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>426</width>
-                <height>242</height>
+                <width>407</width>
+                <height>240</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1792,151 +1888,6 @@
                  <property name="bottomMargin">
                   <number>0</number>
                  </property>
-                 <item row="1" column="0">
-                  <widget class="QCheckBox" name="smoothUpscalingCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>When unchecked, nearest neighbor algorithm will be used for upscaling.</string>
-                   </property>
-                   <property name="text">
-                    <string>Smooth upscaling</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QCheckBox" name="smoothAnimatedImagesCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>Smooth animated images</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="0">
-                  <widget class="QFrame" name="frame_2">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
-                   </property>
-                   <layout class="QVBoxLayout" name="verticalLayout_14">
-                    <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_17">
-                      <item>
-                       <widget class="QLabel" name="label_3">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>0</height>
-                         </size>
-                        </property>
-                        <property name="text">
-                         <string>Max zoom level:</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <spacer name="horizontalSpacer_7">
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                         <enum>QSizePolicy::Expanding</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>20</width>
-                          <height>20</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                      <item>
-                       <widget class="QLabel" name="maxZoomLabel">
-                        <property name="text">
-                         <string>maxZoom</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QSlider" name="maxZoomSlider">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="minimumSize">
-                         <size>
-                          <width>180</width>
-                          <height>25</height>
-                         </size>
-                        </property>
-                        <property name="minimum">
-                         <number>1</number>
-                        </property>
-                        <property name="maximum">
-                         <number>8</number>
-                        </property>
-                        <property name="singleStep">
-                         <number>1</number>
-                        </property>
-                        <property name="pageStep">
-                         <number>1</number>
-                        </property>
-                        <property name="value">
-                         <number>4</number>
-                        </property>
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="tickPosition">
-                         <enum>QSlider::TicksBelow</enum>
-                        </property>
-                        <property name="tickInterval">
-                         <number>1</number>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </item>
-                   </layout>
-                  </widget>
-                 </item>
                  <item row="0" column="0">
                   <layout class="QHBoxLayout" name="horizontalLayout_5">
                    <item>
@@ -2004,7 +1955,29 @@
                    </item>
                   </layout>
                  </item>
-                 <item row="4" column="0">
+                 <item row="1" column="0">
+                  <widget class="QCheckBox" name="smoothUpscalingCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>When unchecked, nearest neighbor algorithm will be used for upscaling.</string>
+                   </property>
+                   <property name="text">
+                    <string>Smooth upscaling</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
                   <widget class="QFrame" name="frame">
                    <property name="minimumSize">
                     <size>
@@ -2149,6 +2122,116 @@
                        </widget>
                       </item>
                      </layout>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QCheckBox" name="smoothAnimatedImagesCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Smooth animated images</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QFrame" name="frame_5">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="baseSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_8">
+                    <item>
+                     <widget class="QLabel" name="label_25">
+                      <property name="text">
+                       <string>Zoom step:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_12">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>47</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="zoomStepLabel">
+                      <property name="text">
+                       <string>zoomStep</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSlider" name="zoomStepSlider">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>180</width>
+                        <height>25</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>180</width>
+                        <height>25</height>
+                       </size>
+                      </property>
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>5</number>
+                      </property>
+                      <property name="pageStep">
+                       <number>1</number>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="tickPosition">
+                       <enum>QSlider::TicksBelow</enum>
+                      </property>
+                      <property name="tickInterval">
+                       <number>1</number>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </widget>
@@ -2342,7 +2425,10 @@
            <item>
             <widget class="QLabel" name="label_21">
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Tip: You can zoom image by moving a cursor while holding right mouse button&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>Tip: you can zoom image by holding RMB and then moving or scrolling</string>
+             </property>
+             <property name="textFormat">
+              <enum>Qt::PlainText</enum>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -2465,8 +2551,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>383</width>
-                <height>203</height>
+                <width>440</width>
+                <height>494</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2516,23 +2602,7 @@
                  <property name="bottomMargin">
                   <number>0</number>
                  </property>
-                 <item row="0" column="0">
-                  <widget class="QCheckBox" name="enableSmoothScrollCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="toolTip">
-                    <string>Turn this off if you are using a touchpad with libinput driver.</string>
-                   </property>
-                   <property name="text">
-                    <string>Enable smooth scrolling</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="0">
+                 <item row="4" column="0">
                   <layout class="QHBoxLayout" name="horizontalLayout">
                    <property name="leftMargin">
                     <number>0</number>
@@ -2600,6 +2670,22 @@
                    </item>
                   </layout>
                  </item>
+                 <item row="0" column="0">
+                  <widget class="QCheckBox" name="enableSmoothScrollCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Turn this off if you are using a touchpad with libinput driver.</string>
+                   </property>
+                   <property name="text">
+                    <string>Enable smooth scrolling</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="1" column="0">
                   <widget class="QCheckBox" name="usePreloaderCheckBox">
                    <property name="sizePolicy">
@@ -2616,7 +2702,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="0">
+                 <item row="3" column="0">
                   <widget class="QCheckBox" name="useThumbnailCacheCheckBox">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
@@ -2632,7 +2718,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="0">
+                 <item row="5" column="0">
                   <layout class="QHBoxLayout" name="horizontalLayout_7">
                    <item>
                     <widget class="QLabel" name="mpvLabel">
@@ -2705,6 +2791,74 @@
                    </item>
                   </layout>
                  </item>
+                 <item row="2" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_10">
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_3">
+                     <property name="text">
+                      <string>JPEG save quality:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_7">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="JPEGQualityLabel">
+                     <property name="text">
+                      <string>q</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSlider" name="JPEGQualitySlider">
+                     <property name="minimumSize">
+                      <size>
+                       <width>180</width>
+                       <height>25</height>
+                      </size>
+                     </property>
+                     <property name="minimum">
+                      <number>0</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100</number>
+                     </property>
+                     <property name="pageStep">
+                      <number>5</number>
+                     </property>
+                     <property name="value">
+                      <number>95</number>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="tickPosition">
+                      <enum>QSlider::TicksBelow</enum>
+                     </property>
+                     <property name="tickInterval">
+                      <number>10</number>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
                 </layout>
                </item>
                <item>
@@ -2769,8 +2923,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>256</width>
-                <height>226</height>
+                <width>440</width>
+                <height>494</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -2972,8 +3126,8 @@ p, li { white-space: pre-wrap; }
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>577</x>
-     <y>487</y>
+     <x>627</x>
+     <y>547</y>
     </hint>
     <hint type="destinationlabel">
      <x>383</x>
@@ -2988,8 +3142,8 @@ p, li { white-space: pre-wrap; }
    <slot>applySettingsAndClose()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>405</x>
-     <y>487</y>
+     <x>455</x>
+     <y>547</y>
     </hint>
     <hint type="destinationlabel">
      <x>132</x>
@@ -3004,8 +3158,8 @@ p, li { white-space: pre-wrap; }
    <slot>applySettings()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>491</x>
-     <y>487</y>
+     <x>541</x>
+     <y>547</y>
     </hint>
     <hint type="destinationlabel">
      <x>137</x>
@@ -3020,7 +3174,7 @@ p, li { white-space: pre-wrap; }
    <slot>resetShortcuts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>277</x>
+     <x>287</x>
      <y>23</y>
     </hint>
     <hint type="destinationlabel">
@@ -3036,8 +3190,8 @@ p, li { white-space: pre-wrap; }
    <slot>accentColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>569</x>
-     <y>55</y>
+     <x>504</x>
+     <y>65</y>
     </hint>
     <hint type="destinationlabel">
      <x>33</x>
@@ -3052,7 +3206,7 @@ p, li { white-space: pre-wrap; }
    <slot>removeShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>225</x>
+     <x>235</x>
      <y>23</y>
     </hint>
     <hint type="destinationlabel">
@@ -3068,28 +3222,12 @@ p, li { white-space: pre-wrap; }
    <slot>addShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>199</x>
+     <x>209</x>
      <y>23</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
      <y>84</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>maxZoomSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>SettingsDialog</receiver>
-   <slot>onMaxZoomSliderChanged(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>550</x>
-     <y>166</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>595</x>
-     <y>99</y>
     </hint>
    </hints>
   </connection>
@@ -3100,8 +3238,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMaxZoomResolutionSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>550</x>
-     <y>219</y>
+     <x>575</x>
+     <y>178</y>
     </hint>
     <hint type="destinationlabel">
      <x>597</x>
@@ -3116,8 +3254,8 @@ p, li { white-space: pre-wrap; }
    <slot>selectMpvPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>551</x>
-     <y>199</y>
+     <x>618</x>
+     <y>232</y>
     </hint>
     <hint type="destinationlabel">
      <x>596</x>
@@ -3132,8 +3270,8 @@ p, li { white-space: pre-wrap; }
    <slot>onBgOpacitySliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>568</x>
-     <y>169</y>
+     <x>503</x>
+     <y>174</y>
     </hint>
     <hint type="destinationlabel">
      <x>621</x>
@@ -3148,7 +3286,7 @@ p, li { white-space: pre-wrap; }
    <slot>addScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>196</x>
+     <x>216</x>
      <y>30</y>
     </hint>
     <hint type="destinationlabel">
@@ -3164,7 +3302,7 @@ p, li { white-space: pre-wrap; }
    <slot>removeScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>261</x>
+     <x>281</x>
      <y>30</y>
     </hint>
     <hint type="destinationlabel">
@@ -3180,7 +3318,7 @@ p, li { white-space: pre-wrap; }
    <slot>editScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>229</x>
+     <x>249</x>
      <y>30</y>
     </hint>
     <hint type="destinationlabel">
@@ -3196,7 +3334,7 @@ p, li { white-space: pre-wrap; }
    <slot>editScript(QListWidgetItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>268</x>
+     <x>288</x>
      <y>40</y>
     </hint>
     <hint type="destinationlabel">
@@ -3228,8 +3366,8 @@ p, li { white-space: pre-wrap; }
    <slot>onThumbnailerThreadsSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>551</x>
-     <y>164</y>
+     <x>618</x>
+     <y>197</y>
     </hint>
     <hint type="destinationlabel">
      <x>591</x>
@@ -3244,8 +3382,8 @@ p, li { white-space: pre-wrap; }
    <slot>fullscreenColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>569</x>
-     <y>264</y>
+     <x>504</x>
+     <y>283</y>
     </hint>
     <hint type="destinationlabel">
      <x>583</x>
@@ -3260,8 +3398,8 @@ p, li { white-space: pre-wrap; }
    <slot>windowColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>569</x>
-     <y>137</y>
+     <x>504</x>
+     <y>142</y>
     </hint>
     <hint type="destinationlabel">
      <x>582</x>
@@ -3276,7 +3414,7 @@ p, li { white-space: pre-wrap; }
    <slot>highlightColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>269</x>
+     <x>279</x>
      <y>51</y>
     </hint>
     <hint type="destinationlabel">
@@ -3292,12 +3430,60 @@ p, li { white-space: pre-wrap; }
    <slot>fullscreenTextColorDialog()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>551</x>
-     <y>302</y>
+     <x>504</x>
+     <y>311</y>
     </hint>
     <hint type="destinationlabel">
      <x>590</x>
      <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>expandLimitSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>onExpandLimitSliderChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>585</x>
+     <y>452</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>639</x>
+     <y>488</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>zoomStepSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>onZoomStepSliderChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>576</x>
+     <y>233</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>634</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>JPEGQualitySlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>onJPEGQualitySliderChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>123</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>642</x>
+     <y>110</y>
     </hint>
    </hints>
   </connection>
@@ -3323,5 +3509,8 @@ p, li { white-space: pre-wrap; }
   <slot>windowColorDialog()</slot>
   <slot>highlightColorDialog()</slot>
   <slot>fullscreenTextColorDialog()</slot>
+  <slot>onExpandLimitSliderChanged(int)</slot>
+  <slot>onZoomStepSliderChanged(int)</slot>
+  <slot>onJPEGQualitySliderChanged(int)</slot>
  </slots>
 </ui>

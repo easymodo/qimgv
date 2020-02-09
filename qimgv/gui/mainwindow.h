@@ -12,7 +12,6 @@
 #include "gui/overlays/floatingmessageproxy.h"
 #include "gui/overlays/saveconfirmoverlay.h"
 #include "gui/panels/mainpanel/thumbnailstrip.h"
-#include "gui/panels/mainpanel/mainpanel.h"
 #include "gui/panels/sidepanel/sidepanel.h"
 #include "gui/panels/croppanel/croppanel.h"
 #include "gui/overlays/cropoverlay.h"
@@ -54,14 +53,17 @@ public:
     explicit MW(QWidget *parent = nullptr);
     bool isCropPanelActive();
     void onScalingFinished(std::unique_ptr<QPixmap>scaled);
-    void showImage(std::unique_ptr<QPixmap> pixmap);
-    void showAnimation(std::unique_ptr<QMovie> movie);
-    void showVideo(QString file);
+    void setImage(std::unique_ptr<QPixmap> pixmap);
+    void setAnimation(std::unique_ptr<QMovie> movie);
+    void setVideo(QString file);
 
     void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, qint64 fileSize);
     void setExifInfo(QMap<QString, QString>);
     std::shared_ptr<DirectoryViewWrapper> getFolderView();
     std::shared_ptr<DirectoryViewWrapper> getThumbnailPanel();
+
+    ViewMode currentViewMode();
+    int folderViewSelection();
 
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;
@@ -72,13 +74,11 @@ private:
 
     QColor bgColor;
     qreal bgOpacity;
-    bool panelEnabled, panelFullscreenOnly, cropPanelActive, showInfoBarFullscreen, showInfoBarWindowed;
+    bool cropPanelActive, showInfoBarFullscreen, showInfoBarWindowed;
     std::shared_ptr<DocumentWidget> docWidget;
     std::shared_ptr<FolderViewProxy> folderView;
     std::shared_ptr<CentralWidget> centralWidget;
     ActiveSidePanel activeSidePanel;
-    std::shared_ptr<ThumbnailStrip> thumbnailStrip;
-    MainPanel *mainPanel;
     SidePanel *sidePanel;
     CropPanel *cropPanel;
     CropOverlay *cropOverlay;
@@ -97,7 +97,6 @@ private:
     FloatingMessageProxy *floatingMessage;
 
     PanelHPosition panelPosition;
-    QPoint lastMouseMovePos;
     CurrentInfo info;
 
     void saveWindowGeometry();
@@ -127,12 +126,12 @@ protected:
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *event);
     void resizeEvent(QResizeEvent *event);
-    void leaveEvent(QEvent *event);
 
     void mousePressEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void wheelEvent(QWheelEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    void leaveEvent(QEvent *event);
 signals:
     void opened(QString);
     void fullscreenStateChanged(bool);

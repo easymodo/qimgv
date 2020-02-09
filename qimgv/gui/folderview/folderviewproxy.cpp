@@ -22,7 +22,7 @@ void FolderViewProxy::init() {
     // apply buffer
     if(!stateBuf.directory.isEmpty())
         folderView->setDirectoryPath(stateBuf.directory);
-    folderView->setExitButtonEnabled(stateBuf.exitBtn);
+    folderView->onFullscreenModeChanged(stateBuf.fullscreenMode);
     folderView->populate(stateBuf.itemCount);
     folderView->selectIndex(stateBuf.selectedIndex);
     // wait till layout stuff happens
@@ -97,6 +97,14 @@ void FolderViewProxy::removeItem(int index) {
         folderView->removeItem(index);
     } else {
         stateBuf.itemCount--;
+        if(index < stateBuf.selectedIndex) {
+            stateBuf.selectedIndex--;
+        } else if(index == stateBuf.selectedIndex) {
+            if(stateBuf.selectedIndex >= stateBuf.itemCount)
+                stateBuf.selectedIndex = stateBuf.itemCount - 1;
+            else
+                stateBuf.selectedIndex = index;
+        }
     }
 }
 
@@ -113,11 +121,11 @@ void FolderViewProxy::addItem() {
     }
 }
 
-void FolderViewProxy::setExitButtonEnabled(bool mode) {
+void FolderViewProxy::onFullscreenModeChanged(bool mode) {
     if(folderView) {
-        folderView->setExitButtonEnabled(mode);
+        folderView->onFullscreenModeChanged(mode);
     } else {
-        stateBuf.exitBtn = mode;
+        stateBuf.fullscreenMode = mode;
     }
 }
 

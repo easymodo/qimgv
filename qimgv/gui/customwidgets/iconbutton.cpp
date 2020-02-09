@@ -12,6 +12,15 @@ void IconButton::setCheckable(bool mode) {
     mCheckable = mode;
 }
 
+void IconButton::setChecked(bool mode) {
+    if(mCheckable && mode != mChecked) {
+        mChecked = mode;
+        setProperty("checked", mChecked);
+        style()->unpolish(this);
+        style()->polish(this);
+    }
+}
+
 void IconButton::mousePressEvent(QMouseEvent *event) {
     Q_UNUSED(event)
     mPressed = true;
@@ -24,10 +33,7 @@ void IconButton::mouseReleaseEvent(QMouseEvent *event) {
     Q_UNUSED(event)
     mPressed = false;
     if(mCheckable) {
-        mChecked = !this->property("checked").toBool();
-        setProperty("checked", mChecked);
-        style()->unpolish(this);
-        style()->polish(this);
+        setChecked(!this->property("checked").toBool());
         emit toggled(mChecked);
     } else {
         emit clicked();

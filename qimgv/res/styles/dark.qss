@@ -93,11 +93,9 @@
 [accessibleName="PanelComboBox"] {
     background-color: #2f2f30;
     color: #aeaeae;
-
     border: 2px solid #2f2f30;
     border-radius: 2px;
-
-    padding: 5px 8px 5px 5px;
+    padding: 2px 8px 2px 5px;
     margin-top: 5px;
     margin-bottom: 5px;
     margin-left: 2px;
@@ -107,13 +105,13 @@
 
 [accessibleName="PanelComboBox"]:hover {
     background-color: #373738;
-    border-color: #373738;
+    border-color: #373738;oco
 }
 
 [accessibleName="PanelComboBox"]::down-arrow {
     border: 0px;
-    margin-right: 5px;
-    image: url(:/res/icons/buttons/sorting-mode16.png);
+    margin-right: 8px;
+    image: url(:/res/icons/other/sorting-mode16.png);
 }
 
 [accessibleName="PanelComboBox"]::drop-down {
@@ -123,7 +121,7 @@
 [accessibleName="PanelComboBox"] QAbstractItemView {
     padding: 5px 0px;
     background-color: #232324;
-    border: 1px solid #373738;
+    border: 1px solid #3e3e3e;
     outline: 0px;
 }
 
@@ -132,11 +130,12 @@
     border-radius: 1px;
     padding: 1px 4px;
     color: #aeaeae;
+    min-height: 22px;
 }
 
 [accessibleName="PanelComboBox"] QAbstractItemView::item:selected {
-    background-color: #373738;
-    border-color: #373738;
+    background-color: #3e3e3e;
+    border-color: #3e3e3e;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -170,18 +169,18 @@ FloatingWidget {
 }
 
 [accessibleName="OverlayCloseButton"]:hover {
-    background-color: #3a3b3c;
-    border-color: #3a3b3c;
-    color: #bebebe;
+    background-color: #3e3e3e;
+    border-color: #3e3e3e;
+    color: #c8c8c8;
 }
 
 FloatingWidget QLabel {
-    color: #bebebe;
+    color: #c8c8c8;
 }
 
 FloatingWidget QTableWidget {
     background-color: #232324;
-    color: #bebebe;
+    color: #c8c8c8;
 }
 
 FloatingWidget QLineEdit {
@@ -217,7 +216,7 @@ FullscreenInfoOverlay {
 }
 
 FullscreenInfoOverlay QLabel {
-/*    color: #d2d2d2;  managed from settings  */
+/*    color: #c8c8c8;  managed from settings  */
     font: bold;
 }
 
@@ -282,7 +281,7 @@ SidePanel QComboBox {
 SidePanel QComboBox::down-arrow {
     border: 0px;
     margin-right: 8px;
-    image: url(:/res/icons/buttons/dropDownArrow.png);
+    image: url(:/res/icons/other/dropDownArrow.png);
 }
 
 SidePanel QComboBox::drop-down {
@@ -291,12 +290,23 @@ SidePanel QComboBox::drop-down {
 
 /* dropdown menus */
 SidePanel QComboBox QAbstractItemView {
+    padding: 5px 0px;
     background-color: #232324;
-    selection-background-color: #3a3b3c;
-    selection-color: #86888a;
-    border: 1px solid #3a3b3c;
-    color: #86888a;
-    padding: 5px;
+    border: 1px solid #3e3e3e;
+    outline: 0px;
+}
+
+SidePanel QComboBox QAbstractItemView::item {
+    border: 1px solid #232324;
+    border-radius: 1px;
+    padding: 1px 4px;
+    color: #aeaeae;
+    min-height: 22px;
+}
+
+SidePanel QComboBox QAbstractItemView::item:selected {
+    background-color: #3e3e3e;
+    border-color: #3e3e3e;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -313,7 +323,7 @@ ChangelogWindow QTextBrowser {
 /*----------------------------------------------------------------------------*/
 
 VideoControls QLabel {
-    color: #bebebe;
+    color: #c8c8c8;
     font: bold;
 }
 /*----------------------------------------------------------------------------*/
@@ -388,10 +398,11 @@ FolderView {
 /*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewPathBar"] {
     background-color: #2f2f30;
+    /*color: #aeaeae;*/
     color: #aeaeae;
     border: 2px solid #2f2f30;
     border-radius: 2px;
-    padding: 4px 8px 4px 8px;
+    padding: 2px 6px 2px 6px;
     margin-top: 5px;
     margin-bottom: 5px;
     margin-left: 2px;
@@ -402,7 +413,6 @@ FolderView {
 [accessibleName="FolderViewSlider"]::groove:horizontal {
     border: 1px solid #2f2f30;
     height: 6px;
-    border-radius: 2px;
     margin: 0 12px;
 }
 
@@ -410,28 +420,26 @@ FolderView {
     background: #2f2f30;
     border: 1px solid #2f2f30;
     height: 6px;
-    border-radius: 2px;
 }
 
 [accessibleName="FolderViewSlider"]::add-page:horizontal {
     background: #2f2f30;
     border: 1px solid #2f2f30;
     height: 6px;
-    border-radius: 2px;
 }
 
 [accessibleName="FolderViewSlider"]::handle:horizontal {
     background: #5c5e60;
-    border: 1px solid #626567;
+    border: 1px solid #5c5e60;
     width: 12px;
     height: 12px;
-    border-radius: 2px;
+    border-radius: 1px;
     margin: -4px -12px;
 }
 
 [accessibleName="FolderViewSlider"]::handle:horizontal:hover {
     background: #6f7274;
-    border: 1px solid #75797b;
+    border-color: #6f7274;
 }
 /*----------------------------------------------------------------------------*/
 
@@ -446,40 +454,29 @@ ThumbnailView QScrollBar:horizontal {
 
 ThumbnailView QScrollBar::handle:horizontal {
     background-color: #5c5e60;
-    border: 1px solid;
-    border-top-color: #626567;
-    border-bottom-color: #5c5e60;
-    border-right-color: #5e6163;
-    border-left-color: #5e6163;
+    border: 1px solid #5c5e60;
     min-width: 60px;
-    border-top-right-radius: 1px;
-    border-top-left-radius: 1px;
 }
 
 ThumbnailView QScrollBar::handle:horizontal:hover {
     background-color: #6f7274;
-    border-color: #75797b;
+    border-color: #6f7274;
 }
 
 ThumbnailView QScrollBar:vertical {
-    width: 18px;
+    width: 14px;
     background-color: transparent;
-    margin-left: 4px;
 }
 
 ThumbnailView QScrollBar::handle:vertical {
     background-color: #5c5e60;
-    border: 1px solid;
-    border-left-color: #626567;
-    border-right-color: #5c5e60;
-    border-top-color: #5e6163;
-    border-bottom-color: #626567;
+    border: 1px solid #5c5e60;
     min-height: 60px;
 }
 
 ThumbnailView QScrollBar::handle:vertical:hover {
     background-color: #6f7274;
-    border-color: #75797b;
+    border-color: #6f7274;
 }
 
 ThumbnailView QScrollBar::sub-page {
@@ -510,16 +507,13 @@ ContextMenu {
     border-radius: 2px;
 }
 /*----------------------------------------------------------------------------*/
-[accessibleName="MenuItem"] {
-    color: #bebebe;
-}
-
 [accessibleName="MenuItem"]:hover {
-    background-color: #3a3b3c;
+    background-color: #3e3e3e;
 }
 
 [accessibleName="MenuItem"] QLabel {
-    color: #bebebe;
+    color: #c8c8c8;
+    /* color: #aeaeae; too dim? */
 }
 
 [accessibleName="MenuItem"] QLabel:disabled {
@@ -527,7 +521,7 @@ ContextMenu {
 }
 
 ContextMenu [accessibleName="MenuItemIcon"] {
-    margin: 5px;
+    /* margin: 5px; */
 }
 
 /*----------------------------------------------------------------------------*/

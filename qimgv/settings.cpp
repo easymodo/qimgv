@@ -51,7 +51,7 @@ void Settings::validate() {
             qDebug() << "Settings: error reading thumbnail size (int conversion failed).";
             qDebug() << "Settings: setting default size.";
             ok = true;
-            settings->s->setValue("mainPanelSize", 160);
+            settings->s->setValue("mainPanelSize", 230);
         }
     }
 }
@@ -342,6 +342,14 @@ void Settings::setFullscreenInfoTextColor(QColor color) {
     settings->s->setValue("fullscreenInfoTextColor", color);
 }
 //------------------------------------------------------------------------------
+bool Settings::keepFitMode() {
+    return settings->s->value("keepFitMode", false).toBool();
+}
+
+void Settings::setKeepFitMode(bool mode) {
+    settings->s->setValue("keepFitMode", mode);
+}
+//------------------------------------------------------------------------------
 bool Settings::fullscreenMode() {
     return settings->s->value("openInFullscreen", false).toBool();
 }
@@ -586,16 +594,8 @@ void Settings::setMaxZoomedResolution(int value) {
     settings->s->setValue("maximumZoomResolution", value);
 }
 //------------------------------------------------------------------------------
-int Settings::maximumZoom() {
-    return settings->s->value("maximumZoom", 8).toInt();
-}
-
-void Settings::setMaximumZoom(int value) {
-    settings->s->setValue("maximumZoom", value);
-}
-//------------------------------------------------------------------------------
 int Settings::folderViewIconSize() {
-    return settings->s->value("folderViewIconSize", 120).toInt();
+    return settings->s->value("folderViewIconSize", 175).toInt();
 }
 
 void Settings::setFolderViewIconSize(int value) {
@@ -608,6 +608,23 @@ bool Settings::expandImage() {
 
 void Settings::setExpandImage(bool mode) {
     settings->s->setValue("expandImage", mode);
+}
+//------------------------------------------------------------------------------
+int Settings::expandLimit() {
+    return settings->s->value("expandLimit", 2).toInt();
+}
+
+void Settings::setExpandLimit(int value) {
+    settings->s->setValue("expandLimit", value);
+}
+//------------------------------------------------------------------------------
+int Settings::JPEGSaveQuality() {
+    int quality = std::clamp(settings->s->value("JPEGSaveQuality", 95).toInt(), 0, 100);
+    return quality;
+}
+
+void Settings::setJPEGSaveQuality(int value) {
+    settings->s->setValue("JPEGSaveQuality", value);
 }
 //------------------------------------------------------------------------------
 ScalingFilter Settings::scalingFilter() {
@@ -638,7 +655,7 @@ void Settings::setInfoBarFullscreen(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::infoBarWindowed() {
-    return settings->s->value("infoBarWindowed", true).toBool();
+    return settings->s->value("infoBarWindowed", false).toBool();
 }
 
 void Settings::setInfoBarWindowed(bool mode) {
@@ -646,7 +663,7 @@ void Settings::setInfoBarWindowed(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::windowTitleExtendedInfo() {
-    return settings->s->value("windowTitleExtendedInfo", false).toBool();
+    return settings->s->value("windowTitleExtendedInfo", true).toBool();
 }
 
 void Settings::setWindowTitleExtendedInfo(bool mode) {
@@ -675,4 +692,24 @@ bool Settings::firstRun() {
 
 void Settings::setFirstRun(bool mode) {
     settings->s->setValue("firstRun", mode);
+}
+//------------------------------------------------------------------------------
+qreal Settings::zoomStep() {
+    bool ok = false;
+    qreal value = settings->s->value("zoomStep", 0.2).toReal(&ok);
+    if(!ok)
+        return 0.5;
+    if(value > 0.5)
+        return 0.5;
+    if(value < 0.1)
+        return 0.1;
+    return value;
+}
+
+void Settings::setZoomStep(qreal value) {
+    if(value > 0.5)
+        value = 0.5;
+    else if(value < 0.1)
+        value = 0.1;
+    settings->s->setValue("zoomStep", value);
 }

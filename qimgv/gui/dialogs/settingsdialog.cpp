@@ -17,7 +17,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->versionLabel->setText("" + QApplication::applicationVersion());
     ui->qtVersionLabel->setText(qVersion());
     ui->appIconLabel->setPixmap(QIcon(":/res/icons/app/22.png").pixmap(22,22));
-    ui->qtIconLabel->setPixmap(QIcon(":/res/icons/qt22.png").pixmap(22,16));
+    ui->qtIconLabel->setPixmap(QIcon(":/res/icons/other/qt22.png").pixmap(22,16));
 
 #ifndef USE_KDE_BLUR
     ui->blurBackgroundCheckBox->setEnabled(false);
@@ -67,7 +67,6 @@ void SettingsDialog::setupSidebar() {
 }
 
 void SettingsDialog::readSettings() {
-    bool setting;
     ui->infiniteScrollingCheckBox->setChecked(settings->infiniteScrolling());
     ui->playWebmCheckBox->setChecked(settings->playWebm());
     ui->playMp4CheckBox->setChecked(settings->playMp4());
@@ -90,20 +89,28 @@ void SettingsDialog::readSettings() {
     ui->showInfoBarWindowed->setChecked(settings->infoBarWindowed());
     ui->showExtendedInfoTitle->setChecked(settings->windowTitleExtendedInfo());
     ui->cursorAutohideCheckBox->setChecked(settings->cursorAutohide());
+    ui->keepFitModeCheckBox->setChecked(settings->keepFitMode());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
     // ##### scaling #####
-    setting = settings->useFastScale();
-    ui->scalingQualityComboBox->setCurrentIndex(setting ? 1 : 0);
-    ui->maxZoomSlider->setValue(settings->maximumZoom());
-    onMaxZoomSliderChanged(settings->maximumZoom());
+    ui->scalingQualityComboBox->setCurrentIndex(settings->useFastScale() ? 1 : 0);
+
+    ui->zoomStepSlider->setValue(static_cast<int>(settings->zoomStep() * 10));
+    onZoomStepSliderChanged(ui->zoomStepSlider->value());
+
+    ui->JPEGQualitySlider->setValue(settings->JPEGSaveQuality());
+    onJPEGQualitySliderChanged(ui->JPEGQualitySlider->value());
+
+    ui->expandLimitSlider->setValue(settings->expandLimit());
+    onExpandLimitSliderChanged(ui->expandLimitSlider->value());
+
     ui->maxZoomResSlider->setValue(settings->maxZoomedResolution());
-    onMaxZoomResolutionSliderChanged(settings->maxZoomedResolution());
+    onMaxZoomResolutionSliderChanged(ui->maxZoomResSlider->value());
 
     // thumbnailer threads
     ui->thumbnailerThreadsSlider->setValue(settings->thumbnailerThreadCount());
-    onThumbnailerThreadsSliderChanged(settings->thumbnailerThreadCount());
+    onThumbnailerThreadsSliderChanged(ui->thumbnailerThreadsSlider->value());
 
     // ##### fit mode #####
     int fitMode = settings->imageFitMode();
@@ -193,6 +200,7 @@ void SettingsDialog::applySettings() {
     settings->setInfoBarWindowed(ui->showInfoBarWindowed->isChecked());
     settings->setWindowTitleExtendedInfo(ui->showExtendedInfoTitle->isChecked());
     settings->setCursorAutohide(ui->cursorAutohideCheckBox->isChecked());
+    settings->setKeepFitMode(ui->keepFitModeCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 
@@ -219,7 +227,9 @@ void SettingsDialog::applySettings() {
         settings->setMainPanelSize(thumbSizeCustom);
     }
 
-    settings->setMaximumZoom(ui->maxZoomSlider->value());
+    settings->setJPEGSaveQuality(ui->JPEGQualitySlider->value());
+    settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value()) / 10);
+    settings->setExpandLimit(ui->expandLimitSlider->value());
     settings->setMaxZoomedResolution(ui->maxZoomResSlider->value());
     settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
 
@@ -440,8 +450,19 @@ void SettingsDialog::highlightColorDialog() {
     delete colorDialog;
 }
 
-void SettingsDialog::onMaxZoomSliderChanged(int value) {
-    ui->maxZoomLabel->setText(QString::number(value) + "x");
+void SettingsDialog::onExpandLimitSliderChanged(int value) {
+    if(value == 0)
+        ui->expandLimitLabel->setText("none");
+    else
+        ui->expandLimitLabel->setText(QString::number(value) + "x");
+}
+
+void SettingsDialog::onJPEGQualitySliderChanged(int value) {
+    ui->JPEGQualityLabel->setText(QString::number(value) + "%");
+}
+
+void SettingsDialog::onZoomStepSliderChanged(int value) {
+    ui->zoomStepLabel->setText("0." + QString::number(value) + "x");
 }
 
 void SettingsDialog::onMaxZoomResolutionSliderChanged(int value) {

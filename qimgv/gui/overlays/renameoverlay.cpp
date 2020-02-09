@@ -9,8 +9,8 @@ RenameOverlay::RenameOverlay(FloatingWidgetContainer *parent) :
     connect(ui->cancelButton, &QPushButton::clicked, this, &RenameOverlay::onCancel);
     connect(ui->closeButton,  &IconButton::clicked, this, &RenameOverlay::hide);
     connect(ui->okButton,     &QPushButton::clicked, this, &RenameOverlay::rename);
-    ui->closeButton->setIconPath(":res/icons/buttons/close-dim16.png");
-    ui->headerIcon->setIconPath(":res/icons/buttons/edit16.png");
+    ui->closeButton->setIconPath(":res/icons/overlay/close-dim16.png");
+    ui->headerIcon->setIconPath(":res/icons/overlay/edit16.png");
     setPosition(FloatingWidgetPosition::CENTER);
     setAcceptKeyboardFocus(true);
     hide();

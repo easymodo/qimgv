@@ -7,10 +7,7 @@ MW::MW(QWidget *parent)
       currentDisplay(0),
       desktopWidget(nullptr),
       bgOpacity(1.0),
-      panelEnabled(false),
-      panelFullscreenOnly(false),
       activeSidePanel(SIDEPANEL_NONE),
-      mainPanel(nullptr),
       copyOverlay(nullptr),
       saveOverlay(nullptr),
       renameOverlay(nullptr),
@@ -24,6 +21,11 @@ MW::MW(QWidget *parent)
     this->setMinimumSize(400, 300);
     layout.setContentsMargins(0,0,0,0);
     layout.setSpacing(0);
+
+    // do not steal focus when clicked
+    // this is just a container. accept key events only
+    // via passthrough from child widgets
+    setFocusPolicy(Qt::NoFocus);
 
     this->setLayout(&layout);
 
@@ -69,8 +71,7 @@ void MW::setupUi() {
     //changelogWindow = new ChangelogWindow(this);
     sidePanel = new SidePanel(this);
     layout.addWidget(sidePanel);
-    thumbnailStrip.reset(new ThumbnailStrip());
-    mainPanel = new MainPanel(thumbnailStrip, this);
+    //mainPanel = new MainPanel(thumbnailStrip, viewerWidget.get());
     imageInfoOverlay = new ImageInfoOverlayProxy(this);
     floatingMessage = new FloatingMessageProxy(this);
     connect(viewerWidget.get(), &ViewerWidget::scalingRequested, this, &MW::scalingRequested);
@@ -113,21 +114,20 @@ void MW::setupCropPanel() {
 }
 
 void MW::setupCopyOverlay() {
-    copyOverlay = new CopyOverlay(this);
+    copyOverlay = new CopyOverlay(viewerWidget.get());
     connect(copyOverlay, &CopyOverlay::copyRequested, this, &MW::copyRequested);
     connect(copyOverlay, &CopyOverlay::moveRequested, this, &MW::moveRequested);
 }
 
 void MW::setupSaveOverlay() {
-    saveOverlay = new SaveConfirmOverlay(docWidget.get());
+    saveOverlay = new SaveConfirmOverlay(viewerWidget.get());
     connect(saveOverlay, &SaveConfirmOverlay::saveClicked,    this, &MW::saveRequested);
     connect(saveOverlay, &SaveConfirmOverlay::saveAsClicked,  this, &MW::saveAsClicked);
     connect(saveOverlay, &SaveConfirmOverlay::discardClicked, this, &MW::discardEditsRequested);
-
 }
 
 void MW::setupRenameOverlay() {
-    renameOverlay = new RenameOverlay(this);
+    renameOverlay = new RenameOverlay(viewerWidget.get());
     renameOverlay->setName(info.fileName);
     connect(renameOverlay, &RenameOverlay::renameRequested, this, &MW::renameRequested);
 }
@@ -138,7 +138,7 @@ void MW::toggleFolderView() {
         copyOverlay->hide();
     if(renameOverlay)
         renameOverlay->hide();
-    mainPanel->hide();
+    viewerWidget->hidePanel();
     imageInfoOverlay->hide();
     centralWidget->toggleViewMode();
 }
@@ -149,9 +149,17 @@ void MW::enableFolderView() {
         copyOverlay->hide();
     if(renameOverlay)
         renameOverlay->hide();
-    mainPanel->hide();
+    viewerWidget->hidePanel();
     imageInfoOverlay->hide();
     centralWidget->showFolderView();
+}
+
+ViewMode MW::currentViewMode() {
+    return centralWidget->currentViewMode();
+}
+
+int MW::folderViewSelection() {
+    return folderView->selectedIndex();
 }
 
 void MW::fitWindow() {
@@ -194,20 +202,17 @@ void MW::closeImage() {
     viewerWidget->closeImage();
 }
 
-void MW::showImage(std::unique_ptr<QPixmap> pixmap) {
-    centralWidget->showDocumentView();
+void MW::setImage(std::unique_ptr<QPixmap> pixmap) {
     viewerWidget->showImage(std::move(pixmap));
     updateCropPanelData();
 }
 
-void MW::showAnimation(std::unique_ptr<QMovie> movie) {
-    centralWidget->showDocumentView();
+void MW::setAnimation(std::unique_ptr<QMovie> movie) {
     viewerWidget->showAnimation(std::move(movie));
     updateCropPanelData();
 }
 
-void MW::showVideo(QString file) {
-    centralWidget->showDocumentView();
+void MW::setVideo(QString file) {
     viewerWidget->showVideo(file);
 }
 
@@ -308,28 +313,6 @@ void MW::saveCurrentDisplay() {
 //#############################################################
 
 void MW::mouseMoveEvent(QMouseEvent *event) {
-    if(event->buttons() != Qt::NoButton) {
-        lastMouseMovePos = event->pos();
-        return;
-    }
-    // show on hover event
-    if(panelEnabled && (isFullScreen() || !panelFullscreenOnly)) {
-        if( mainPanel->triggerRect().contains(event->pos()) && !mainPanel->triggerRect().contains(lastMouseMovePos))
-        {
-            mainPanel->show();
-        }
-    }
-    // fade out on leave event
-    if(!mainPanel->isHidden()) {
-        // leaveEvent which misfires on HiDPI (rounding error somewhere?)
-        // add a few px of buffer area to avoid bugs
-        // it still fcks up Fitts law as the buttons are not receiving hover on screen border
-        if(!mainPanel->triggerRect().adjusted(-8,-8,8,8).contains(event->pos()))
-        {
-            mainPanel->hideAnimated();
-        }
-    }
-    lastMouseMovePos = event->pos();
     event->ignore();
 }
 
@@ -337,7 +320,6 @@ bool MW::event(QEvent *event) {
     if(event->type() == QEvent::Move)
         windowMoveTimer.start();
     return QWidget::event(event);
-    //return (actionManager->processEvent(event)) ? true : QWidget::event(event);
 }
 
 // hook up to actionManager
@@ -403,12 +385,6 @@ void MW::resizeEvent(QResizeEvent *event) {
     FloatingWidgetContainer::resizeEvent(event);
 }
 
-void MW::leaveEvent(QEvent *event) {
-    QWidget::leaveEvent(event);
-    if(mainPanel)
-        mainPanel->hideAnimated();
-}
-
 void MW::showDefault() {
     if(!this->isVisible()) {
         if(settings->fullscreenMode())
@@ -419,8 +395,7 @@ void MW::showDefault() {
 }
 
 void MW::showSaveDialog(QString filePath) {
-    if(mainPanel)
-        mainPanel->hide();
+    viewerWidget->hidePanel();
 
     const QString imagesFilter = settings->supportedFormatsString();
     filePath = QFileDialog::getSaveFileName(this, tr("Save File"),
@@ -431,12 +406,7 @@ void MW::showSaveDialog(QString filePath) {
 }
 
 void MW::showOpenDialog(QString path) {
-    // Looks like there is a bug in qt with native file dialogs
-    // It hangs at exec() when there is a panel visible
-    // Works fine otherwise, or with builtin qt dialogs
-    // will try to investigate later
-    if(mainPanel)
-        mainPanel->hide();
+    viewerWidget->hidePanel();
 
     QFileDialog dialog(this);
     QStringList imageFilter;
@@ -457,8 +427,7 @@ void MW::showResizeDialog(QSize initialSize) {
 }
 
 void MW::showSettings() {
-    if(mainPanel)
-        mainPanel->hide();
+    viewerWidget->hidePanel();
 
     SettingsDialog settingsDialog(this);
     settingsDialog.exec();
@@ -539,7 +508,7 @@ void MW::showCropPanel() {
         return;
 
     if(activeSidePanel != SIDEPANEL_CROP) {
-        (mainPanel)->hide();
+        viewerWidget->hidePanel();
         sidePanel->setWidget(cropPanel);
         sidePanel->show();
         cropOverlay->show();
@@ -655,7 +624,7 @@ std::shared_ptr<DirectoryViewWrapper> MW::getFolderView() {
 }
 
 std::shared_ptr<DirectoryViewWrapper> MW::getThumbnailPanel() {
-    return this->thumbnailStrip->wrapper();
+    return viewerWidget->getPanel();
 }
 
 void MW::showMessageDirectoryEnd() {
@@ -699,9 +668,6 @@ void MW::showError(QString text) {
 }
 
 void MW::readSettings() {
-    panelPosition = settings->panelPosition();
-    panelEnabled = settings->panelEnabled();
-    panelFullscreenOnly = settings->panelFullscreenOnly();
     showInfoBarFullscreen = settings->infoBarFullscreen();
     showInfoBarWindowed = settings->infoBarWindowed();
     adaptToWindowState();
@@ -728,8 +694,7 @@ void MW::applyFullscreenBackground() {
 
 // changes ui elements according to fullscreen state
 void MW::adaptToWindowState() {
-    if(panelEnabled)
-        mainPanel->hide();
+    viewerWidget->hidePanel();
     if(isFullScreen()) { //-------------------------------------- fullscreen ---
         applyFullscreenBackground();
         infoBarWindowed->hide();
@@ -737,10 +702,7 @@ void MW::adaptToWindowState() {
             infoBarFullscreen->show();
         else
             infoBarFullscreen->hide();
-        folderView->setExitButtonEnabled(true);
-        if(panelEnabled && panelPosition == PANEL_TOP)
-            mainPanel->setExitButtonEnabled(true);
-        if(panelPosition == PANEL_BOTTOM || !panelEnabled)
+        if(viewerWidget->panelPosition() == PANEL_BOTTOM || !viewerWidget->panelEnabled())
             controlsOverlay->show();
         else
             controlsOverlay->hide();
@@ -752,9 +714,9 @@ void MW::adaptToWindowState() {
         else
             infoBarWindowed->hide();
         controlsOverlay->hide();
-        folderView->setExitButtonEnabled(false);
-        mainPanel->setExitButtonEnabled(false);
     }
+    folderView->onFullscreenModeChanged(isFullScreen());
+    viewerWidget->onFullscreenModeChanged(isFullScreen());
 }
 
 void MW::paintEvent(QPaintEvent *event) {
@@ -763,4 +725,9 @@ void MW::paintEvent(QPaintEvent *event) {
     p.setBrush(QBrush(bgColor));
     p.fillRect(this->rect(), p.brush());
     FloatingWidgetContainer::paintEvent(event);
+}
+
+void MW::leaveEvent(QEvent *event) {
+    QWidget::leaveEvent(event);
+    viewerWidget->hidePanelAnimated();
 }

@@ -37,11 +37,12 @@ private:
     std::shared_ptr<DirectoryViewWrapper> mWrapper;
 
 public slots:
-    virtual void selectIndex(int index);
     virtual void focusOn(int index);
+    void readSettings();
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);
+    virtual void updateScrollbarIndicator();
     void ensureThumbnailVisible(int pos);
     void addItemToLayout(ThumbnailWidget *widget, int pos);
     void removeItemFromLayout(int pos);

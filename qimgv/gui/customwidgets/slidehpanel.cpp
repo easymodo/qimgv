@@ -25,12 +25,16 @@ void SlideHPanel::setPanelHeight(int newHeight) {
 }
 
 void SlideHPanel::setPosition(PanelHPosition p) {
-    position = p;
+    mPosition = p;
     recalculateGeometry();
 }
 
+PanelHPosition SlideHPanel::position() {
+    return mPosition;
+}
+
 void SlideHPanel::recalculateGeometry() {
-    if(position == PANEL_TOP) {
+    if(mPosition == PANEL_TOP) {
         setAnimationRange(QPoint(0,0),
                           QPoint(0,0) - QPoint(0, slideAmount));
         saveStaticGeometry(QRect(QPoint(0, 0),

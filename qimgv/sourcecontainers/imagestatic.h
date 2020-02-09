@@ -6,6 +6,7 @@
 #include <QCryptographicHash>
 #include "image.h"
 #include "utils/imagelib.h"
+#include <settings.h>
 #include <QIcon>
 
 class ImageStatic : public Image {

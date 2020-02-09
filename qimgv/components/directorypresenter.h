@@ -14,7 +14,7 @@ public:
     void unsetModel();
 
 signals:
-    void generateThumbnails(QList<int>, int, bool);
+    void generateThumbnails(QList<int>, int, bool, bool);
 
 public slots:
     void connectView(std::shared_ptr<DirectoryViewWrapper>);

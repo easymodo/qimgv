@@ -5,7 +5,7 @@ ThumbnailCache::ThumbnailCache() {
 }
 
 QString ThumbnailCache::thumbnailPath(QString id) {
-    return QString(cacheDirPath + id + ".jpg");
+    return QString(cacheDirPath + id + ".png");
 }
 
 bool ThumbnailCache::exists(QString id) {
@@ -15,37 +15,24 @@ bool ThumbnailCache::exists(QString id) {
 }
 
 void ThumbnailCache::saveThumbnail(QImage *image, QString id) {
-    //mutex.lock();
     if(image) {
         QString filePath = thumbnailPath(id);
-        //qDebug() << "saving thumnbail as: " << filePath;
-        if(!image->save(filePath, "JPG", 96)) {
-            qDebug() << "could not save thumbnail to " << filePath;
-        }
+        image->save(filePath, "PNG", 15);
     }
-    //mutex.unlock();
 }
 
 QImage *ThumbnailCache::readThumbnail(QString id) {
-    //mutex.lock();
     QString filePath = thumbnailPath(id);
     QFileInfo file(filePath);
     if(file.exists() && file.isReadable()) {
         QImage *thumb = new QImage();
         if(thumb->load(filePath)) {
-            //qDebug() << filePath << "succesfully loaded";
-            //mutex.unlock();
             return thumb;
         } else {
             delete thumb;
-            //qDebug() << "file exists but does not appear to be a valid image(expected jpg file): " << filePath;
-            //mutex.unlock();
             return nullptr;
         }
-        //qDebug() << "reading thumbnail:" << filePath;
     } else {
-        //qDebug() << "thumbnail does not exist:" << filePath;
-        //mutex.unlock();
         return nullptr;
     }
 }

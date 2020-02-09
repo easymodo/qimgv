@@ -139,11 +139,7 @@ void DirectoryPresenter::focusOn(int index) {
 
 void DirectoryPresenter::onIndexChanged(int oldIndex, int index) {
     for(int i=0; i<views.count(); i++) {
-        if(views.at(i)->selectedIndex() == oldIndex ||
-           views.at(i)->selectedIndex() == -1)
-        {
-            views.at(i)->selectIndex(index);
-            views.at(i)->focusOn(index);
-        }
+        views.at(i)->selectIndex(index);
+        views.at(i)->focusOn(index);
     }
 }

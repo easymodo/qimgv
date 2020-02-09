@@ -10,11 +10,15 @@ VideoPlayerMpv::VideoPlayerMpv(QWidget *parent) : VideoPlayer(parent) {
     setAttribute(Qt::WA_TranslucentBackground, true);
     setMouseTracking(true);
 
+
     m_mpv = new MpvWidget(this);
     QVBoxLayout *vl = new QVBoxLayout();
     vl->setContentsMargins(0,0,0,0);
     vl->addWidget(m_mpv);
     setLayout(vl);
+
+    setFocusPolicy(Qt::NoFocus);
+    m_mpv->setFocusPolicy(Qt::NoFocus);
 
     readSettings();
     //connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
@@ -104,10 +108,13 @@ void VideoPlayerMpv::readSettings() {
 }
 
 void VideoPlayerMpv::mousePressEvent(QMouseEvent *event) {
-    QWidget::mousePressEvent(event);
-    event->ignore();
-    if(event->button() == Qt::LeftButton)
+    if(event->button() == Qt::LeftButton && event->type() != QEvent::MouseButtonDblClick) {
+        event->accept();
         this->pauseResume();
+    } else {
+        QWidget::mousePressEvent(event);
+        event->ignore();
+    }
 }
 
 void VideoPlayerMpv::mouseMoveEvent(QMouseEvent *event) {
@@ -120,22 +127,11 @@ void VideoPlayerMpv::mouseReleaseEvent(QMouseEvent *event) {
     event->ignore();
 }
 
-void VideoPlayerMpv::keyPressEvent(QKeyEvent *event) {
-    if(event->key() == Qt::Key_Space) {
-        event->accept();
-        pauseResume();
-    } else {
-        event->ignore();
-    }
-}
-
 void VideoPlayerMpv::show() {
     QWidget::show();
-    this->setFocus();
 }
 
 void VideoPlayerMpv::hide() {
-    this->clearFocus();
     QWidget::hide();
 }
 

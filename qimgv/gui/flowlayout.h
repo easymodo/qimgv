@@ -85,6 +85,10 @@ public:
     int rows();
     int columns();
     void clear();
+
+    int columnOf(int index);
+    bool sameRow(int one, int two);
+
 protected:
     QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
 

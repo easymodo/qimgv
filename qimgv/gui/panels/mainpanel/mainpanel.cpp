@@ -1,19 +1,19 @@
 #include "mainpanel.h"
 
-MainPanel::MainPanel(std::shared_ptr<QWidget> widget, FloatingWidgetContainer *parent) : SlideHPanel(parent) {
+MainPanel::MainPanel(FloatingWidgetContainer *parent) : SlideHPanel(parent) {
     // buttons stuff
     buttonsWidget.setAccessibleName("panelButtonsWidget");
 
-    openButton       = new ActionButton("open", ":/res/icons/buttons/open20.png", 30, this);
+    openButton       = new ActionButton("open", ":/res/icons/buttons/panel/open20.png", 30, this);
     openButton->setAccessibleName("PanelButtonSmall");
     openButton->setTriggerMode(TriggerMode::PressTrigger);
-    settingsButton   = new ActionButton("openSettings", ":/res/icons/buttons/settings20.png", 30, this);
+    settingsButton   = new ActionButton("openSettings", ":/res/icons/buttons/panel/settings20.png", 30, this);
     settingsButton->setAccessibleName("PanelButtonSmall");
     settingsButton->setTriggerMode(TriggerMode::PressTrigger);
-    exitButton       = new ActionButton("exit", ":/res/icons/buttons/close16.png", 30, this);
+    exitButton       = new ActionButton("exit", ":/res/icons/buttons/panel/close16.png", 30, this);
     exitButton->setAccessibleName("PanelButtonSmall");
     exitButton->setTriggerMode(TriggerMode::PressTrigger);
-    folderViewButton = new ActionButton("folderView", ":/res/icons/buttons/folderview20.png", 30, this);
+    folderViewButton = new ActionButton("folderView", ":/res/icons/buttons/panel/folderview20.png", 30, this);
     folderViewButton->setAccessibleName("PanelButtonSmall");
     folderViewButton->setTriggerMode(TriggerMode::PressTrigger);
 
@@ -29,7 +29,8 @@ MainPanel::MainPanel(std::shared_ptr<QWidget> widget, FloatingWidgetContainer *p
     buttonsWidget.setLayout(&buttonsLayout);
     mLayout.addWidget(&buttonsWidget, 0, 1);
 
-    setWidget(widget);
+    thumbnailStrip.reset(new ThumbnailStrip());
+    setWidget(thumbnailStrip);
 
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
@@ -63,6 +64,10 @@ void MainPanel::setExitButtonEnabled(bool mode) {
     exitButton->setHidden(!mode);
 }
 
+std::shared_ptr<DirectoryViewWrapper> MainPanel::getWrapper() {
+    return thumbnailStrip->wrapper();
+}
+
 void MainPanel::readSettings() {
     setHeight(static_cast<int>(settings->mainPanelSize()));
     setPosition(settings->panelPosition());
@@ -72,7 +77,7 @@ void MainPanel::readSettings() {
 void MainPanel::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
     QPainter p(this);
-    if(position == PanelHPosition::PANEL_TOP) {
+    if(mPosition == PanelHPosition::PANEL_TOP) {
         p.setPen(QColor(QColor(96, 96, 96)));
         p.drawLine(rect().bottomLeft() - QPoint(0, bottomMargin - 1), rect().bottomRight() - QPoint(0, bottomMargin - 1));
         p.setPen(QColor(QColor(40, 40, 40)));

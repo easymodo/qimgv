@@ -10,9 +10,11 @@ public:
     QString name();
     QString label();
     int size();
+    bool hasAlphaChannel();
     std::shared_ptr<const QPixmap> pixmap();
 private:
     QString mName, mLabel;
     std::shared_ptr<const QPixmap> mPixmap;
     int mSize;
+    bool mHasAlphaChannel;
 };

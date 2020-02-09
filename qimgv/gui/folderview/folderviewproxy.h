@@ -7,7 +7,7 @@ struct FolderViewStateBuffer {
     int selectedIndex = -1;
     int itemCount;
     SortingMode sortingMode;
-    bool exitBtn;
+    bool fullscreenMode;
 };
 
 class FolderViewProxy : public QWidget, public IDirectoryView {
@@ -28,7 +28,7 @@ public slots:
     virtual void removeItem(int index) Q_DECL_OVERRIDE;
     virtual void reloadItem(int index) Q_DECL_OVERRIDE;
     void addItem();
-    void setExitButtonEnabled(bool mode);
+    void onFullscreenModeChanged(bool mode);
     void onSortingChanged(SortingMode mode);
 
 protected:
@@ -36,7 +36,7 @@ protected:
 
 signals:
     void thumbnailPressed(int) override;
-    void thumbnailsRequested(QList<int>, int, bool) override;
+    void thumbnailsRequested(QList<int>, int, bool, bool) override;
     void sortingSelected(SortingMode);
 
 private:

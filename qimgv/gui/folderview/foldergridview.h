@@ -24,7 +24,6 @@ public slots:
 
     void selectFirst();
     void selectLast();
-    virtual void selectIndex(int index);
     virtual void focusOn(int index);
     void pageUp();
     void pageDown();
@@ -36,18 +35,20 @@ public slots:
 private:
     FlowLayout *flowLayout;
     QGraphicsWidget holderWidget;
-    QStringList reservedShortcuts;
-    int shiftedIndex;
+    int shiftedCol;
     bool mShowLabels;
 
+    void scrollToCurrent();
+    void scrollToItem(int index);
 private slots:
     void selectAbove();
     void selectBelow();
     void selectNext();
     void selectPrev();
-
+    void onThumbnailPressed();
 protected:
     void resizeEvent(QResizeEvent *event);
+    virtual void updateScrollbarIndicator();
     void addItemToLayout(ThumbnailWidget *widget, int pos);
     void removeItemFromLayout(int pos);
     void removeAll();

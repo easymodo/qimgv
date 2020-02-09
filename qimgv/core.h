@@ -57,7 +57,7 @@ private:
 
     void rotateByDegrees(int degrees);
     void reset();
-    void displayImage(std::shared_ptr<Image>);
+    void guiDisplayImage(std::shared_ptr<Image>);
     void loadDirectoryPath(QString);
     void loadImagePath(QString path, bool blocking);
     QDrag *mDrag;
@@ -67,6 +67,8 @@ private:
     void syncRandomizer();
 
     void attachModel(DirectoryModel *_model);
+    QString selectedFileName();
+    void guiSetImage(std::shared_ptr<Image> img);
 private slots:
     void readSettings();
     void nextImage();

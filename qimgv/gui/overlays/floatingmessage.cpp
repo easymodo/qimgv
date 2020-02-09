@@ -74,18 +74,18 @@ void FloatingMessage::setIcon(FloatingMessageIcon icon) {
             break;
         case FloatingMessageIcon::ICON_LEFT_EDGE:
             ui->iconLabel->show();
-            ui->iconLabel->setIconPath(":/res/icons/message/dir_start20.png");
+            ui->iconLabel->setIconPath(":/res/icons/notifications/dir_start20.png");
             break;
         case FloatingMessageIcon::ICON_RIGHT_EDGE:
             ui->iconLabel->show();
-            ui->iconLabel->setIconPath(":/res/icons/message/dir_end20.png");
+            ui->iconLabel->setIconPath(":/res/icons/notifications/dir_end20.png");
             break;
         case FloatingMessageIcon::ICON_SUCCESS:
             ui->iconLabel->show();
-            ui->iconLabel->setIconPath(":/res/icons/buttons/success16.png");
+            ui->iconLabel->setIconPath(":/res/icons/notifications/success16.png");
             break;
         case FloatingMessageIcon::ICON_ERROR:
-            //ui->iconLabel->setIconPath(":/res/icons/buttons/error16.png");
+            //ui->iconLabel->setIconPath(":/res/icons/notifications/error16.png");
             ui->iconLabel->hide();
             break;
     }

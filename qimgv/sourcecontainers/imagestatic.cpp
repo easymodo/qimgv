@@ -55,30 +55,50 @@ QString ImageStatic::generateHash(QString str) {
     return QString(QCryptographicHash::hash(str.toUtf8(), QCryptographicHash::Md5).toHex());
 }
 
-// TODO: add a way to configure compression level?
+// TODO: move saving to directorymodel
 bool ImageStatic::save(QString destPath) {
     QString tmpPath = destPath + "_" + generateHash(destPath);
+    QFileInfo fi(destPath);
+    QString ext = fi.suffix();
     // png compression note from libpng
     // Note that tests have shown that zlib compression levels 3-6 usually perform as well
     // as level 9 for PNG images, and do considerably fewer caclulations
-    int quality = destPath.endsWith(".png", Qt::CaseInsensitive) ? 30 : 95;
-    bool success = false;
+    int quality = 95;
+    if(ext.compare("png", Qt::CaseInsensitive) == 0)
+        quality = 30;
+    else if(ext.compare("jpg", Qt::CaseInsensitive) == 0 || ext.compare("jpeg", Qt::CaseInsensitive) == 0)
+        quality = settings->JPEGSaveQuality();
+
+    bool skipBackup = false, success = false, originalExists = false;
+
+    if(ext.compare(destPath, mDocInfo->filePath(), Qt::CaseInsensitive) == 0)
+        skipBackup = true;
+
+    if(QFile::exists(mDocInfo->filePath()))
+        originalExists = true;
+    // backup the original file
+    if(!skipBackup) {
+        if(originalExists && !QFile::copy(mDocInfo->filePath(), tmpPath)) {
+            return false;
+        }
+    }
     if(isEdited()) {
-        success = imageEdited->save(tmpPath, mDocInfo->format().toStdString().c_str(), quality);
+        success = imageEdited->save(destPath, ext.toStdString().c_str(), quality);
         image.swap(imageEdited);
         discardEditedImage();
     } else {
-        success = image->save(tmpPath, mDocInfo->format().toStdString().c_str(), quality);
+        success = image->save(destPath, ext.toStdString().c_str(), quality);
     }
-    // save to a temp file JUST IN CASE qt decides to corrupt the original
-    if(success) {
-        QFile file(destPath);
-        file.remove();
-        file.setFileName(tmpPath);
-        file.rename(destPath);
-    } else {
-        QFile file(tmpPath);
-        file.remove();
+    if(!skipBackup) {
+        // remove the backup
+        if(success) {
+            QFile file(tmpPath);
+            file.remove();
+        } else if(originalExists) {
+            // revert on fail
+            QFile::copy(tmpPath, mDocInfo->filePath());
+            QFile::remove(tmpPath);
+        }
     }
     if(destPath == mPath && success) {
         mDocInfo->refresh();

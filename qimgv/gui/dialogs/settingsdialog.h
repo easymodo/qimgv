@@ -67,12 +67,14 @@ private slots:
     void removeShortcut();
     void resetShortcuts();
     void selectMpvPath();
-    void onMaxZoomSliderChanged(int value);
     void onMaxZoomResolutionSliderChanged(int value);
     void onBgOpacitySliderChanged(int value);
     void onThumbnailerThreadsSliderChanged(int value);
     void fullscreenColorDialog();
     void fullscreenTextColorDialog();
+    void onExpandLimitSliderChanged(int value);
+    void onZoomStepSliderChanged(int value);
+    void onJPEGQualitySliderChanged(int value);
 signals:
     void settingsChanged();
 };

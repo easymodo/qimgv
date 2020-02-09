@@ -173,11 +173,23 @@ public:
 
     bool maximizedWindow();
     void setMaximizedWindow(bool mode);
+
     QColor fullscreenInfoTextColor();
     void setFullscreenInfoTextColor(QColor color);
+
+    bool keepFitMode();
+    void setKeepFitMode(bool mode);
+
+    int expandLimit();
+    void setExpandLimit(int value);
+
+    qreal zoomStep();
+    void setZoomStep(qreal value);
+    int JPEGSaveQuality();
+    void setJPEGSaveQuality(int value);
 private:
     explicit Settings(QObject *parent = nullptr);
-    const unsigned int mainPanelSizeDefault = 210;
+    const unsigned int mainPanelSizeDefault = 230;
     QSettings *s, *state;
     QDir *mCacheDir, *mThumbnailDir, *mConfDir;
 

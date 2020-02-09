@@ -42,6 +42,8 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("Ctrl+WheelUp", "zoomOutCursor");
     actionManager->defaults.insert("Ctrl+Up", "zoomIn");
     actionManager->defaults.insert("Ctrl+Down", "zoomOut");
+    actionManager->defaults.insert("+", "zoomIn");
+    actionManager->defaults.insert("-", "zoomOut");
     actionManager->defaults.insert("Up", "scrollUp");
     actionManager->defaults.insert("Down", "scrollDown");
     actionManager->defaults.insert("Ctrl+O", "open");
@@ -52,30 +54,31 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("Ctrl+P", "openSettings");
     actionManager->defaults.insert("Alt+X", "exit");
     actionManager->defaults.insert("Ctrl+Q", "exit");
-    actionManager->defaults.insert("escape", "closeFullScreenOrExit");
-    actionManager->defaults.insert("delete", "moveToTrash");
-    actionManager->defaults.insert("Shift+delete", "removeFile");
+    actionManager->defaults.insert("Esc", "closeFullScreenOrExit");
+    actionManager->defaults.insert("Del", "moveToTrash");
+    actionManager->defaults.insert("Shift+Del", "removeFile");
     actionManager->defaults.insert("C", "copyFile");
     actionManager->defaults.insert("M", "moveFile");
-    actionManager->defaults.insert("home", "jumpToFirst");
-    actionManager->defaults.insert("end", "jumpToLast");
+    actionManager->defaults.insert("Home", "jumpToFirst");
+    actionManager->defaults.insert("End", "jumpToLast");
     actionManager->defaults.insert("S", "s:TestScript");
     actionManager->defaults.insert("A", "s:TestScript2");
     actionManager->defaults.insert("Shift+Right", "seekVideo");
     actionManager->defaults.insert("Shift+Left", "seekBackVideo");
-    actionManager->defaults.insert(".", "frameStep");
     actionManager->defaults.insert(",", "frameStepBack");
-    actionManager->defaults.insert("Return", "folderView");
-    actionManager->defaults.insert("backspace", "folderView");
+    actionManager->defaults.insert(".", "frameStep");
+    actionManager->defaults.insert("Enter", "folderView");
+    actionManager->defaults.insert("Backspace", "folderView");
     actionManager->defaults.insert("F5", "reloadImage");
     actionManager->defaults.insert("Ctrl+C", "copyFileClipboard");
     actionManager->defaults.insert("Ctrl+Shift+C", "copyPathClipboard");
     actionManager->defaults.insert("F2", "renameFile");
     actionManager->defaults.insert("RMB", "contextMenu");
-    actionManager->defaults.insert("menu", "contextMenu");
+    actionManager->defaults.insert("Menu", "contextMenu");
     actionManager->defaults.insert("I", "toggleImageInfo");
     actionManager->defaults.insert("S", "toggleShuffle");
     actionManager->defaults.insert("Ctrl+D", "showDirectory");
+
 }
 //------------------------------------------------------------------------------
 void ActionManager::initShortcuts() {
@@ -150,6 +153,32 @@ void ActionManager::resetDefaultsFromVersion(QVersionNumber lastVer) {
             }
         }
     }
+}
+//------------------------------------------------------------------------------
+void ActionManager::fixLegacyShortcutsV089() {
+    QMap<QString, QString> shortcutsNew;
+    QString keyBuf;
+    QMapIterator<QString, QString> i(shortcuts);
+    while(i.hasNext()) {
+        i.next();
+        keyBuf = i.key();
+        // replace with correct key names
+        keyBuf.replace("Return", "Enter");
+        keyBuf.replace("delete", "Del");
+        keyBuf.replace("escape", "Esc");
+        keyBuf.replace("pageUp", "PgUp");
+        keyBuf.replace("pageDown", "PgDown");
+        keyBuf.replace("pageBack", "PgBack");
+        keyBuf.replace("pageForward", "PgForward");
+        keyBuf.replace("~", "`");
+        keyBuf.replace("backspace", "Backspace");
+        keyBuf.replace("home", "Home");
+        keyBuf.replace("end", "End");
+        keyBuf.replace("menu", "Menu");
+        qDebug() << "[ActionManager] inserting:" << keyBuf << "=>" << i.value();
+        shortcutsNew.insert(keyBuf, i.value());
+    }
+    shortcuts = shortcutsNew;
 }
 //------------------------------------------------------------------------------
 void ActionManager::saveShortcuts() {

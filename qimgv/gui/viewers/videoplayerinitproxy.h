@@ -28,6 +28,7 @@ public:
     void setVolume(int);
     int volume();
     void setVideoUnscaled(bool mode);
+    std::shared_ptr<VideoPlayer> getPlayer();
 
 public slots:
     void show();
@@ -38,7 +39,7 @@ protected:
 
 private:
     QLibrary playerLib;
-    std::unique_ptr<VideoPlayer> player;
+    std::shared_ptr<VideoPlayer> player;
     bool initPlayer();
     QVBoxLayout layout;
 

@@ -30,7 +30,9 @@ class ThumbnailView : public QGraphicsView, public IDirectoryView {
 public:
     ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent = nullptr);
     virtual void setDirectoryPath(QString path) Q_DECL_OVERRIDE;
-    virtual int selectedIndex() Q_DECL_OVERRIDE;
+    void selectIndex(int);
+    int selectedIndex();
+    int itemCount();
 
 public slots:
     void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
@@ -49,13 +51,11 @@ public slots:
 
 signals:
     void thumbnailPressed(int) Q_DECL_OVERRIDE;
-    void thumbnailsRequested(QList<int>, int, bool) Q_DECL_OVERRIDE;
+    void thumbnailsRequested(QList<int>, int, bool, bool) Q_DECL_OVERRIDE;
 
 private:
     ThumbnailViewOrientation orientation;
 
-    void scrollPrecise(int pixelDelta);
-    void scrollSmooth(int angleDelta);
     QTimer loadTimer;
     bool blockThumbnailLoading;
     // let's say mouse wheel scroll always sends angleDelta = 120
@@ -63,18 +63,27 @@ private:
     // TODO: tune this value
     const int SMOOTH_SCROLL_THRESHOLD = 120;
 
+    int mSelectedIndex, mDrawScrollbarIndicator;
+
+    bool mCropThumbnails;
+
+    void createScrollTimeLine();
 protected:
     QGraphicsScene scene;
     QList<ThumbnailWidget*> thumbnails;
     QScrollBar *scrollBar;
     QTimeLine *scrollTimeLine;
     QPointF viewportCenter;
-    int mThumbnailSize, mSelectedIndex;
+    int mThumbnailSize;
     int offscreenPreloadArea = 3000;
+
+    QRect indicator;
+    const int indicatorSize = 2;
 
     const int SCROLL_UPDATE_RATE = 7;
     const float SCROLL_SPEED_MULTIPLIER = 2.5f;
-    const int SCROLL_ANIMATION_SPEED = 140;
+    const float SCROLL_SPEED_ACCELERATION = 1.5f;
+    const int SCROLL_ANIMATION_SPEED = 120;
 
     const uint LOAD_DELAY = 150;
 
@@ -90,12 +99,22 @@ protected:
     virtual void updateLayout();
     virtual void fitSceneToContents();
     virtual void ensureSelectedItemVisible() = 0;
+    virtual void updateScrollbarIndicator() = 0;
+
+    void setCropThumbnails(bool);
+    void setDrawScrollbarIndicator(bool mode);
 
     void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
+    bool eventFilter(QObject *o, QEvent *ev) Q_DECL_OVERRIDE;
+    void resizeEvent(QResizeEvent *event);
+    void scrollPrecise(int delta);
+    void scrollSmooth(int delta);
+    void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration);
+    void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration, bool additive);
+    void unloadAllThumbnails();
 private slots:
     void centerOnX(int);
     void centerOnY(int);
-
 };

@@ -8,19 +8,21 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent),
     transparencyGridEnabled(false),
     expandImage(false),
     smoothAnimatedImages(true),
+    keepFitMode(false),
     mouseInteraction(MOUSE_NONE),
-    mOpacity(1.0f),
     mCurrentScale(1.0),
     fitWindowScale(0.125),
     minScale(0.125),
     maxScale(maxScaleLimit),
-    imageFitMode(FIT_ORIGINAL),
+    imageFitMode(FIT_WINDOW),
+    imageFitModeDefault(FIT_WINDOW),
     mScalingFilter(FILTER_BILINEAR)
 {
+    setFocusPolicy(Qt::NoFocus);
     setMouseTracking(true);
     posAnimation = new QPropertyAnimation(this, "drawPos");
-    posAnimation->setEasingCurve(QEasingCurve::OutCubic);
-    posAnimation->setDuration(animationSpeed);
+    posAnimation->setEasingCurve(QEasingCurve::OutSine);
+    posAnimation->setDuration(SCROLL_ANIMATION_SPEED);
     animationTimer = new QTimer(this);
     animationTimer->setSingleShot(true);
     zoomThreshold = static_cast<int>(devicePixelRatioF() * 4.);
@@ -90,9 +92,7 @@ void ImageViewer::displayImage(std::unique_ptr<QPixmap> _pixmap) {
         if(transparencyGridEnabled)
             drawTransparencyGrid();
         update();
-        // filter out unnecessary scale event on startup
-        if(isVisible())
-            requestScaling();
+        requestScaling();
     }
 }
 
@@ -117,7 +117,9 @@ void ImageViewer::readjust(QSize _sourceSize, QRect _drawingRect) {
     updateMinScale();
     updateMaxScale();
     setScale(1.0f);
-    if(imageFitMode == FIT_FREE)
+    if(!keepFitMode)
+        imageFitMode = imageFitModeDefault;
+    else if(imageFitMode == FIT_FREE)
         imageFitMode = FIT_WINDOW;
     applyFitMode();
 }
@@ -155,11 +157,14 @@ void ImageViewer::scrollRight() {
 void ImageViewer::readSettings() {
     smoothAnimatedImages = settings->smoothAnimatedImages();
     expandImage = settings->expandImage();
+    expandLimit = static_cast<float>(settings->expandLimit());
     maxResolutionLimit = static_cast<float>(settings->maxZoomedResolution());
-    maxScaleLimit = static_cast<float>(settings->maximumZoom());
+    zoomStep = settings->zoomStep();
     updateMinScale();
     updateMaxScale();
-    setFitMode(settings->imageFitMode());
+    keepFitMode = settings->keepFitMode();
+    imageFitModeDefault = settings->imageFitMode();
+    setFitMode(imageFitModeDefault);
     mouseWrapping = settings->mouseWrapping();
     transparencyGridEnabled = settings->transparencyGrid();
     setScalingFilter(settings->scalingFilter());
@@ -221,6 +226,8 @@ void ImageViewer::updateFitWindowScale() {
     } else {
         fitWindowScale = newMinScaleY;
     }
+    if(expandLimit && fitWindowScale > expandLimit)
+        fitWindowScale = expandLimit;
 }
 
 bool ImageViewer::sourceImageFits() {
@@ -249,8 +256,7 @@ void ImageViewer::updateMinScale() {
         minScale = fitWindowScale;
 }
 
-// limit maxScale to MAX_SCALE_LIMIT
-// then further limit to not exceed MAX_RESOLUTION
+// limit maxScale to MAX_SCALE_LIMIT derived from MAX_RESOLUTION
 // so we dont go full retard on memory consumption
 void ImageViewer::updateMaxScale() {
     maxScale = maxScaleLimit;
@@ -333,7 +339,6 @@ void ImageViewer::drawTransparencyGrid() {
 void ImageViewer::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QPainter painter(this);
-    painter.setOpacity(mOpacity);
     if(movie && smoothAnimatedImages)
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     if(pixmap) {
@@ -370,9 +375,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
     }
     mouseMoveStartPos = event->pos();
     mousePressPos = mouseMoveStartPos;
-    /*if(event->button() & Qt::LeftButton && imageFits()) {
-        emit draggedOut();
-    } else */if(event->button() & Qt::RightButton) {
+    if(event->button() & Qt::RightButton) {
         setZoomPoint(event->pos() * devicePixelRatioF());
     } else {
         QWidget::mousePressEvent(event);
@@ -413,7 +416,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
         return;
     }
     // ------------------- ZOOM ----------------------
-    if(event->buttons() & Qt::RightButton/* && mouseInteraction != MOUSE_PAN */) {
+    if(event->buttons() & Qt::RightButton) {
         // filter out possible mouse jitter by ignoring low delta drags
         if(mouseInteraction == MOUSE_ZOOM || abs(mousePressPos.y() - event->pos().y()) > zoomThreshold) {
             if(cursor().shape() != Qt::SizeVerCursor) {
@@ -432,6 +435,20 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
         QWidget::mouseReleaseEvent(event);
     }
     mouseInteraction = MOUSE_NONE;
+}
+
+void ImageViewer::wheelEvent(QWheelEvent *event) {
+    if(event->buttons() & Qt::RightButton) {
+        mouseInteraction = MOUSE_ZOOM;
+        int angleDelta = event->angleDelta().ry();
+        if(angleDelta > 0)
+            zoomInCursor();
+        else if(angleDelta < 0)
+            zoomOutCursor();
+        event->accept();
+    } else {
+        QWidget::wheelEvent(event);
+    }
 }
 
 //  Okular-like cursor pan behavior.
@@ -539,12 +556,14 @@ void ImageViewer::fitWidth() {
     if(!pixmap)
         return;
     float scale = (float)width() * devicePixelRatioF() / mSourceSize.width();
+    if(expandLimit && scale > expandLimit)
+        scale = expandLimit;
     if(!expandImage && scale > 1.0f) {
         fitNormal();
     } else {
         setScale(scale);
         centerImage();
-        if(drawingRect.height() > height()*devicePixelRatioF())
+        if(drawingRect.height() > height() * devicePixelRatioF())
             drawingRect.moveTop(0);
         update();
     }
@@ -778,7 +797,7 @@ void ImageViewer::zoomOutCursor() {
 void ImageViewer::doZoomIn() {
     if(!pixmap)
         return;
-    float newScale = mCurrentScale * 1.1f;
+    float newScale = mCurrentScale * (1.0f + zoomStep);
     if(newScale == mCurrentScale) //skip if minScale
         return;
     if(newScale > maxScale)
@@ -791,7 +810,7 @@ void ImageViewer::doZoomIn() {
 void ImageViewer::doZoomOut() {
     if(!pixmap)
         return;
-    float newScale = mCurrentScale * 0.9f;
+    float newScale = mCurrentScale * (1.0f - zoomStep);
     if(newScale == mCurrentScale) //skip if maxScale
         return;
     if(newScale < minScale - FLT_EPSILON)

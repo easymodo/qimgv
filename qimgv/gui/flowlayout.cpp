@@ -72,17 +72,34 @@ int FlowLayout::itemAbove(int index) {
     int indexAbove = index - m_columns;
     if(indexAbove >= 0)
         return indexAbove;
-    return -1;
+    else
+        return index;
 }
 
 int FlowLayout::itemBelow(int index) {
     if(index >= m_items.count() || index < 0)
         return -1;
 
+    if(sameRow(index, m_items.count() - 1))
+        return index;
+
     int indexBelow = index + m_columns;
     if(indexBelow < m_items.count())
         return indexBelow;
-    return -1;
+    else
+        return m_items.count() - 1;
+}
+
+bool FlowLayout::sameRow(int one, int two) {
+    return ((one / m_columns) == (two / m_columns));
+}
+
+int FlowLayout::columnOf(int index) {
+    if(index >= m_items.count() || index < 0)
+        return -1;
+
+    int col = index % m_columns;
+    return col;
 }
 
 int FlowLayout::rows() {

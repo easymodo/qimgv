@@ -17,19 +17,19 @@ DirectoryManager::DirectoryManager() {
     //    qDebug() << "observing stopped";
     });
     connect(watcher, &DirectoryWatcher::fileCreated, this, [this] (const QString& filename) {
-    //    qDebug() << "[w] file created" << filename;
+        //qDebug() << "[w] file created" << filename;
         onFileAddedExternal(filename);
     });
     connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
-    //    qDebug() << "[w] file deleted" << filename;
+        //qDebug() << "[w] file deleted" << filename;
         onFileRemovedExternal(filename);
     });
     connect(watcher, &DirectoryWatcher::fileModified, this, [this] (const QString& filename) {
-    //    qDebug() << "[w] file modified" << filename;
+        //qDebug() << "[w] file modified" << filename;
         onFileModifiedExternal(filename);
     });
     connect(watcher, &DirectoryWatcher::fileRenamed, this, [this] (const QString& file1, const QString& file2) {
-    //    qDebug() << "[w] file renamed from" << file1 << "to" << file2;
+        //qDebug() << "[w] file renamed from" << file1 << "to" << file2;
         onFileRenamedExternal(file1, file2);
     });
 
@@ -428,17 +428,25 @@ void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
             onFileAddedExternal(newFile);
         return;
     }
+
     QString fullPath = fullFilePath(newFile);
-    if(!this->isSupportedFile(fullPath))
+    if(!this->isSupportedFile(fullPath)) {
+        onFileRemovedExternal(oldFile);
         return;
-    // remove old one
-    int index = indexOf(oldFile);
-    entryVec.erase(entryVec.begin() + index);
+    }
+    if(contains(newFile)) {
+        int replaceIndex = indexOf(newFile);
+        entryVec.erase(entryVec.begin() + replaceIndex);
+        emit fileRemoved(newFile, replaceIndex);
+    }
+    // remove the old one
+    int oldIndex = indexOf(oldFile);
+    entryVec.erase(entryVec.begin() + oldIndex);
     // insert
     std::filesystem::directory_entry stdEntry(toStdString(fullPath));
     Entry entry(newFile, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
     insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
-    emit fileRenamed(oldFile, index, newFile, indexOf(newFile));
+    emit fileRenamed(oldFile, oldIndex, newFile, indexOf(newFile));
 }
 
 void DirectoryManager::onFileModifiedExternal(QString fileName) {

@@ -158,6 +158,10 @@ void Core::initActions() {
 
 void Core::onUpdate() {
     QVersionNumber lastVer = settings->lastVersion();
+
+    if(lastVer < QVersionNumber(0,8,9))
+        actionManager->fixLegacyShortcutsV089();
+
     actionManager->resetDefaultsFromVersion(lastVer);
     actionManager->saveShortcuts();
     qDebug() << "Updated: " << settings->lastVersion().toString() << ">" << appVersion.toString();
@@ -212,7 +216,7 @@ void Core::close() {
 }
 
 void Core::removeFilePermanent() {
-    removeFilePermanent(model->currentFileName());
+    removeFilePermanent(this->selectedFileName());
 }
 
 void Core::removeFilePermanent(QString fileName) {
@@ -220,7 +224,7 @@ void Core::removeFilePermanent(QString fileName) {
 }
 
 void Core::moveToTrash() {
-    moveToTrash(model->currentFileName());
+    moveToTrash(this->selectedFileName());
 }
 
 void Core::moveToTrash(QString fileName) {
@@ -228,7 +232,7 @@ void Core::moveToTrash(QString fileName) {
 }
 
 void Core::reloadImage() {
-    reloadImage(model->currentFileName());
+    reloadImage(this->selectedFileName());
 }
 
 void Core::reloadImage(QString fileName) {
@@ -242,7 +246,7 @@ void Core::copyFileClipboard() {
     if(model->isEmpty())
         return;
 
-    QMimeData* mimeData = getMimeDataFor(model->getItemAt(model->currentIndex()), TARGET_CLIPBOARD);
+    QMimeData* mimeData = getMimeDataFor(model->getItem(this->selectedFileName()), TARGET_CLIPBOARD);
 
     // mimeData->text() should already contain an url
     QByteArray gnomeFormat = QByteArray("copy\n").append(QUrl(mimeData->text()).toEncoded());
@@ -256,7 +260,7 @@ void Core::copyFileClipboard() {
 void Core::copyPathClipboard() {
     if(model->isEmpty())
         return;
-    QApplication::clipboard()->setText(model->currentFilePath());
+    QApplication::clipboard()->setText(model->fullPath(this->selectedFileName()));
     mw->showMessage("Path copied");
 }
 
@@ -328,6 +332,7 @@ void Core::renameCurrentFile(QString newName) {
     if(!model->itemCount() || newName == model->currentFileName())
         return;
     QString newPath = model->fullPath(newName);
+    QString oldName = model->currentFileName();
     QString currentPath = model->currentFilePath();
     bool exists = model->contains(newName);
     QFile replaceMe(newPath);
@@ -362,7 +367,7 @@ void Core::removeFile(QString fileName, bool trash) {
     FileOpResult result;
     model->removeFile(fileName, trash, result);
     if(result == FileOpResult::SUCCESS) {
-        QString msg = trash?"Moved to trash: ":"File removed: ";
+        QString msg = trash ? "Moved to trash: " : "File removed: ";
         mw->showMessage(msg + fileName);
     } else {
         outputError(result);
@@ -372,8 +377,8 @@ void Core::removeFile(QString fileName, bool trash) {
 void Core::onFileRemoved(QString fileName, int index) {
     if(model->isEmpty()) {
         mw->closeImage();
-        updateInfoString();
     }
+    updateInfoString();
 }
 
 void Core::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
@@ -389,7 +394,7 @@ void Core::onFileModified(QString fileName) {
     Q_UNUSED(fileName)
     // this fires even when the image is edited from qimgv, so no need to notify
     //if(fileName == model->currentFileName())
-    //    mw->showMessage("File changed on disk. Reloading.");
+        //mw->showMessage("File changed.");
 }
 
 void Core::outputError(const FileOpResult &error) const {
@@ -426,11 +431,11 @@ void Core::moveFile(QString destDirectory) {
         return;
     mw->closeImage();
     FileOpResult result;
-    model->moveTo(destDirectory, model->currentFileName(), result);
+    model->moveTo(destDirectory, this->selectedFileName(), result);
     if(result == FileOpResult::SUCCESS) {
         mw->showMessageSuccess("File moved.");
     } else {
-        displayImage(model->getItem(model->currentFileName()));
+        guiSetImage(model->getItem(this->selectedFileName()));
         outputError(result);
     }
 }
@@ -439,7 +444,7 @@ void Core::copyFile(QString destDirectory) {
     if(model->isEmpty())
         return;
     FileOpResult result;
-    model->copyTo(destDirectory, model->currentFileName(), result);
+    model->copyTo(destDirectory, this->selectedFileName(), result);
     if(result == FileOpResult::SUCCESS)
         mw->showMessageSuccess("File copied.");
     else
@@ -459,13 +464,13 @@ void Core::toggleCropPanel() {
 void Core::requestSavePath() {
     if(model->isEmpty())
         return;
-    mw->showSaveDialog(model->currentFilePath());
+    mw->showSaveDialog(model->fullPath(selectedFileName()));
 }
 
 void Core::showResizeDialog() {
     if(model->isEmpty())
         return;
-    auto img = model->getItem(model->currentFileName());
+    auto img = model->getItem(this->selectedFileName());
     mw->showResizeDialog(img->size());
 }
 
@@ -474,12 +479,14 @@ void Core::showResizeDialog() {
 void Core::resize(QSize size) {
     if(model->isEmpty())
         return;
-    std::shared_ptr<Image> img = model->getItem(model->currentFileName());
+    std::shared_ptr<Image> img = model->getItem(this->selectedFileName());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::scaled(imgStatic->getImage(), size, 1)));
-        model->updateItem(model->currentFileName(), img);
+        model->updateItem(this->selectedFileName(), img);
+        if(mw->currentViewMode() == MODE_FOLDERVIEW)
+            img->save();
     } else {
         mw->showMessage("Editing gifs/video is unsupported.");
     }
@@ -488,12 +495,14 @@ void Core::resize(QSize size) {
 void Core::flipH() {
     if(model->isEmpty())
         return;
-    std::shared_ptr<Image> img = model->getItem(model->currentFileName());
+    std::shared_ptr<Image> img = model->getItem(this->selectedFileName());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::flippedH(imgStatic->getImage())));
-        model->updateItem(model->currentFileName(), img);
+        model->updateItem(this->selectedFileName(), img);
+        if(mw->currentViewMode() == MODE_FOLDERVIEW)
+            img->save();
     } else {
         mw->showMessage("Editing gifs/video is unsupported.");
     }
@@ -502,19 +511,21 @@ void Core::flipH() {
 void Core::flipV() {
     if(model->isEmpty())
         return;
-    std::shared_ptr<Image> img = model->getItem(model->currentFileName());
+    std::shared_ptr<Image> img = model->getItem(this->selectedFileName());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::flippedV(imgStatic->getImage())));
-        model->updateItem(model->currentFileName(), img);
+        model->updateItem(this->selectedFileName(), img);
+        if(mw->currentViewMode() == MODE_FOLDERVIEW)
+            img->save();
     } else {
         mw->showMessage("Editing gifs/video is unsupported.");
     }
 }
 
 void Core::crop(QRect rect) {
-    if(model->isEmpty())
+    if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
     std::shared_ptr<Image> img = model->getItem(model->currentFileName());
     if(img && img->type() == STATIC) {
@@ -531,12 +542,15 @@ void Core::rotateByDegrees(int degrees) {
     if(model->isEmpty())
         return;
 
-    std::shared_ptr<Image> img = model->getItem(model->currentFileName());
+    QString fileName = this->selectedFileName();
+    std::shared_ptr<Image> img = model->getItem(fileName);
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::rotated(imgStatic->getImage(), degrees)));
-        model->updateItem(model->currentFileName(), img);
+        model->updateItem(fileName, img);
+        if(mw->currentViewMode() == MODE_FOLDERVIEW)
+            img->save();
     } else {
         mw->showMessage("Editing gifs/video is unsupported.");
     }
@@ -546,28 +560,37 @@ void Core::discardEdits() {
     if(model->isEmpty())
         return;
 
-    std::shared_ptr<Image> img = model->getItem(model->currentFileName());
+    std::shared_ptr<Image> img = model->getItem(this->selectedFileName());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->discardEditedImage();
-        model->updateItem(model->currentFileName(), img);
+        model->updateItem(this->selectedFileName(), img);
     }
     mw->hideSaveOverlay();
+}
+
+QString Core::selectedFileName() {
+    if(!model)
+        return "";
+    else if(mw->currentViewMode() == MODE_FOLDERVIEW)
+        return model->fileNameAt(mw->folderViewSelection());
+    else
+        return model->currentFileName();
 }
 
 // move saving logic away from Image container itself
 void Core::saveImageToDisk() {
     if(model->isEmpty())
         return;
-    saveImageToDisk(model->currentFilePath());
+    saveImageToDisk(model->fullPath(this->selectedFileName()));
 }
 
 void Core::saveImageToDisk(QString filePath) {
     if(model->isEmpty())
         return;
-    std::shared_ptr<Image> img = model->getItem(model->currentFileName());
+    std::shared_ptr<Image> img = model->getItem(this->selectedFileName());
     if(img->save(filePath))
-        mw->showMessageSuccess("File saved.");
+        mw->showMessageSuccess("File saved: " + filePath);
     else
         mw->showError("Could not save file.");
     mw->hideSaveOverlay();
@@ -606,11 +629,12 @@ void Core::showRenameDialog() {
 void Core::runScript(const QString &scriptName) {
     if(model->isEmpty())
         return;
-    scriptManager->runScript(scriptName, model->getItem(model->currentFileName()));
+    scriptManager->runScript(scriptName, model->getItem(selectedFileName()));
 }
 
 void Core::scalingRequest(QSize size, ScalingFilter filter) {
-    if(state.hasActiveImage) {
+    // filter out an unnecessary scale request at statup
+    if(mw->isVisible() && state.hasActiveImage) {
         std::shared_ptr<Image> forScale = model->getItem(model->currentFileName());
         if(forScale) {
             QString path = model->absolutePath() + "/" + model->currentFileName();
@@ -680,7 +704,7 @@ void Core::loadPath(QString path) {
 }
 
 void Core::nextImage() {
-    if(model->isEmpty())
+    if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
     if(settings->shuffleEnabled()) {
         model->setIndexAsync(randomizer.next());
@@ -701,7 +725,7 @@ void Core::nextImage() {
 }
 
 void Core::prevImage() {
-    if(model->isEmpty())
+    if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
     if(settings->shuffleEnabled()) {
         model->setIndexAsync(randomizer.prev());
@@ -745,15 +769,22 @@ void Core::onLoadFailed(QString path) {
 }
 
 void Core::onModelItemReady(std::shared_ptr<Image> img) {
-    displayImage(img);
+    guiDisplayImage(img);
     updateInfoString();
 }
 
 void Core::onModelItemUpdated(QString fileName) {
-    onModelItemReady(model->getItem(fileName));
+    if(mw->currentViewMode() == MODE_DOCUMENT) {
+        guiDisplayImage(model->getItem(fileName));
+        updateInfoString();
+    } else { // folderview
+        guiSetImage(model->getItem(fileName));
+        if(fileName == model->currentFileName())
+            updateInfoString();
+    }
 }
 
-void Core::displayImage(std::shared_ptr<Image> img) {
+void Core::guiSetImage(std::shared_ptr<Image> img) {
     state.hasActiveImage = true;
     if(!img) {
         mw->showMessage("Error: could not load image.");
@@ -761,19 +792,24 @@ void Core::displayImage(std::shared_ptr<Image> img) {
     }
     DocumentType type = img->type();
     if(type == STATIC) {
-        mw->showImage(img->getPixmap());
+        mw->setImage(img->getPixmap());
     } else if(type == ANIMATED) {
         auto animated = dynamic_cast<ImageAnimated *>(img.get());
-        mw->showAnimation(animated->getMovie());
+        mw->setAnimation(animated->getMovie());
     } else if(type == VIDEO) {
         auto video = dynamic_cast<Video *>(img.get());
         // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
         // affects only initial startup (e.g. we open webm from file manager)
         showGui();
-        mw->showVideo(video->getClip()->getPath());
+        mw->setVideo(video->getClip()->getPath());
     }
     img->isEdited() ? mw->showSaveOverlay() : mw->hideSaveOverlay();
     mw->setExifInfo(img->getExifTags());
+}
+
+void Core::guiDisplayImage(std::shared_ptr<Image> img) {
+    guiSetImage(img);
+    mw->enableDocumentView();
 }
 
 void Core::updateInfoString() {

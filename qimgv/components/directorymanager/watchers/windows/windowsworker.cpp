@@ -30,7 +30,7 @@ void WindowsWorker::run() {
         bPending = ReadDirectoryChangesW(hDir,
                                          &buffer[0],
                                          buffer.size(),
-                                         TRUE,
+                                         FALSE,
                                          FILE_ACTION_ADDED | FILE_ACTION_REMOVED | FILE_NOTIFY_CHANGE_FILE_NAME | FILE_ACTION_MODIFIED,
                                          &dwBytes,
                                          &ovl,
