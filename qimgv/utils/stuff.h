@@ -2,7 +2,7 @@
 
 #include <QString>
 
-#ifdef WIN32
+#ifdef _WIN32
     #define StdString std::wstring
 #else
     #define StdString std::string
