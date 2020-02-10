@@ -38,4 +38,4 @@ endif()
 
 target_compile_definitions(qimgv_player_mpv PRIVATE QIMGV_PLAYER_MPV_LIBRARY)
 
-install(TARGETS qimgv_player_mpv)
+install(TARGETS qimgv_player_mpv LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
