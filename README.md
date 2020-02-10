@@ -219,7 +219,7 @@ cd qimgv && mkdir -p build && cd build
 Configure
 
 ```
-cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib
+cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_INSTALL_LIBDIR=lib
 ```
 
 Build
