@@ -57,7 +57,8 @@ elseif(NOT UNIX)
 endif()
 
 ## INSTALLATION
-install(TARGETS qimgv)
+install(TARGETS qimgv
+    DESTINATION bin)
 
 # .desktop
 install(FILES distrib/qimgv.desktop
