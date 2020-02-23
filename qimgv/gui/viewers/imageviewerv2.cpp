@@ -9,10 +9,12 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     smoothAnimatedImages(true),
     smoothUpscaling(true),
     forceFastScale(false),
+    keepFitMode(false),
     mouseInteraction(MouseInteractionState::MOUSE_NONE),
     minScale(0.01f),
     maxScale(500.0f),
-    imageFitMode(FIT_ORIGINAL),
+    imageFitMode(FIT_WINDOW),
+    imageFitModeDefault(FIT_WINDOW),
     mScalingFilter(FILTER_BILINEAR),
     scene(nullptr)
 {
@@ -70,11 +72,13 @@ void ImageViewerV2::readSettings() {
     smoothUpscaling = settings->smoothUpscaling();
     expandImage = settings->expandImage();
     expandLimit = static_cast<float>(settings->expandLimit());
+    keepFitMode = settings->keepFitMode();
+    imageFitModeDefault = settings->imageFitMode();
     zoomStep = settings->zoomStep();
     transparencyGridEnabled = settings->transparencyGrid();
     scene->setBackgroundBrush(settings->backgroundColor());
     setScalingFilter(settings->scalingFilter());
-    setFitMode(settings->imageFitMode());
+    setFitMode(imageFitModeDefault);
 }
 
 void ImageViewerV2::startAnimation() {
@@ -135,6 +139,8 @@ void ImageViewerV2::displayAnimation(std::unique_ptr<QMovie> _movie) {
         *newFrame = movie->currentPixmap();
         updatePixmap(std::move(newFrame));
 
+        if(!keepFitMode)
+                imageFitMode = imageFitModeDefault;
         if(imageFitMode == FIT_FREE)
             imageFitMode = FIT_WINDOW;
         applyFitMode();
@@ -166,6 +172,8 @@ void ImageViewerV2::displayImage(std::unique_ptr<QPixmap> _pixmap) {
         // always scale from center
         pixmapItem.setTransformOriginPoint(pixmapItem.boundingRect().center());
 
+        if(!keepFitMode)
+                imageFitMode = imageFitModeDefault;
         if(imageFitMode == FIT_FREE)
             imageFitMode = FIT_WINDOW;
         applyFitMode();

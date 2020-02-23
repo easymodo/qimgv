@@ -101,7 +101,7 @@ private:
     QTimer *animationTimer;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
     qreal mCurrentScale;
-    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale;
+    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_UPDATE_RATE = 7;
@@ -118,7 +118,7 @@ private:
     float expandLimit;
     QPair<QPointF, QPoint> zoomAnchor; // [pixmap coords, viewport coords]
 
-    ImageFitMode imageFitMode;
+    ImageFitMode imageFitMode, imageFitModeDefault;
     ScalingFilter mScalingFilter;
 
     void zoomAnchored(float oldScale);
