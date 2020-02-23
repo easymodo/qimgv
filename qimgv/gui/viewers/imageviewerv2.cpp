@@ -496,23 +496,21 @@ void ImageViewerV2::fitWidth() {
     if(!pixmap)
         return;
     float scaleX = (float)viewport()->width()  * devicePixelRatioF() / pixmap->width();
-    if((scaleX < 1.0f) || expandImage) {
-        // scaling to window
-        swapToOriginalPixmap();
-        // stretch to fill width
-        if(scaleX > expandLimit)
-            scaleX = expandLimit;
-        doZoom(scaleX);
-        centerIfNecessary();
-        // just center somewhere at the top then do snap
+    if(!expandImage && scaleX > 1.0f)
+        scaleX = 1.0f;
+    swapToOriginalPixmap();
+    if(scaleX > expandLimit)
+        scaleX = expandLimit;
+    doZoom(scaleX);
+    centerIfNecessary();
+    // just center somewhere at the top then do snap
+    if(scaledSize().height() > viewport()->height() * devicePixelRatioF()) {
         QPointF centerTarget = mapToScene(viewport()->rect()).boundingRect().center();
         centerTarget.setY(0);
         centerOn(centerTarget);
         snapToEdges();
-        requestScaling();
-    } else {
-        fitNormal();
     }
+    requestScaling();
 }
 
 void ImageViewerV2::fitWindow() {
