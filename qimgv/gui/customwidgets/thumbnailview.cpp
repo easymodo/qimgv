@@ -12,6 +12,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
 {
     setAccessibleName("thumbnailView");
     this->setMouseTracking(true);
+    this->setAcceptDrops(false);
     this->setScene(&scene);
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     this->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing, true);

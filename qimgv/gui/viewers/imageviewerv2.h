@@ -101,7 +101,7 @@ private:
     QTimer *animationTimer;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
     qreal mCurrentScale;
-    bool mouseWrapping, transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale;
+    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_UPDATE_RATE = 7;
@@ -136,7 +136,7 @@ private:
     void reset();
     void applyFitMode();
 
-    QTimeLine *scrollTimeLine;
+    QTimeLine *scrollTimeLineX, *scrollTimeLineY;
     void stopPosAnimation();
     QPointF sceneRoundPos(QPointF scenePoint) const;
     QRectF sceneRoundRect(QRectF sceneRect) const;
@@ -146,4 +146,6 @@ private:
     void updatePixmap(std::unique_ptr<QPixmap> newPixmap);
     bool scaledImageFits() const;
     Qt::TransformationMode selectTransformationMode();
+    void centerIfNecessary();
+    void snapToEdges();
 };
