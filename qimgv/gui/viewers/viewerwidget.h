@@ -2,7 +2,7 @@
 
 #include "gui/customwidgets/floatingwidgetcontainer.h"
 #include <QHBoxLayout>
-#include "gui/viewers/imageviewer.h"
+#include "gui/viewers/imageviewerv2.h"
 #include "gui/viewers/videoplayerinitproxy.h"
 #include "gui/overlays/videocontrolsproxy.h"
 #include "gui/panels/mainpanel/mainpanel.h"
@@ -41,7 +41,7 @@ public:
     bool panelEnabled();
 private:
     QHBoxLayout layout;
-    std::unique_ptr<ImageViewer> imageViewer;
+    std::unique_ptr<ImageViewerV2> imageViewer;
     std::unique_ptr<VideoPlayerInitProxy> videoPlayer;
     std::unique_ptr<ContextMenu> contextMenu;
     std::unique_ptr<MainPanel> mainPanel;

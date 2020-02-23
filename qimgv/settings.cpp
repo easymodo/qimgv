@@ -694,6 +694,14 @@ void Settings::setFirstRun(bool mode) {
     settings->s->setValue("firstRun", mode);
 }
 //------------------------------------------------------------------------------
+bool Settings::useOpenGL() {
+    return settings->s->value("useOpenGL", false).toBool();
+}
+
+void Settings::setUseOpenGL(bool mode) {
+    settings->s->setValue("useOpenGL", mode);
+}
+//------------------------------------------------------------------------------
 qreal Settings::zoomStep() {
     bool ok = false;
     qreal value = settings->s->value("zoomStep", 0.2).toReal(&ok);

@@ -90,6 +90,7 @@ void SettingsDialog::readSettings() {
     ui->showExtendedInfoTitle->setChecked(settings->windowTitleExtendedInfo());
     ui->cursorAutohideCheckBox->setChecked(settings->cursorAutohide());
     ui->keepFitModeCheckBox->setChecked(settings->keepFitMode());
+    ui->useOpenGLCheckBox->setChecked(settings->useOpenGL());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -104,9 +105,6 @@ void SettingsDialog::readSettings() {
 
     ui->expandLimitSlider->setValue(settings->expandLimit());
     onExpandLimitSliderChanged(ui->expandLimitSlider->value());
-
-    ui->maxZoomResSlider->setValue(settings->maxZoomedResolution());
-    onMaxZoomResolutionSliderChanged(ui->maxZoomResSlider->value());
 
     // thumbnailer threads
     ui->thumbnailerThreadsSlider->setValue(settings->thumbnailerThreadCount());
@@ -201,6 +199,7 @@ void SettingsDialog::applySettings() {
     settings->setWindowTitleExtendedInfo(ui->showExtendedInfoTitle->isChecked());
     settings->setCursorAutohide(ui->cursorAutohideCheckBox->isChecked());
     settings->setKeepFitMode(ui->keepFitModeCheckBox->isChecked());
+    settings->setUseOpenGL(ui->useOpenGLCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 
@@ -230,7 +229,6 @@ void SettingsDialog::applySettings() {
     settings->setJPEGSaveQuality(ui->JPEGQualitySlider->value());
     settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value()) / 10);
     settings->setExpandLimit(ui->expandLimitSlider->value());
-    settings->setMaxZoomedResolution(ui->maxZoomResSlider->value());
     settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
 
     applyShortcuts();
@@ -463,11 +461,6 @@ void SettingsDialog::onJPEGQualitySliderChanged(int value) {
 
 void SettingsDialog::onZoomStepSliderChanged(int value) {
     ui->zoomStepLabel->setText("0." + QString::number(value) + "x");
-}
-
-void SettingsDialog::onMaxZoomResolutionSliderChanged(int value) {
-    ui->maxZoomResLabel->setText(QString::number(value) + " Mpx");
-    ui->maxZoomResInfoLabel->setText("<small><i>Max. memory usage: ~" + QString::number(value * 4) + "MB @ 32bpp</i></small>");
 }
 
 void SettingsDialog::onThumbnailerThreadsSliderChanged(int value) {

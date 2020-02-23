@@ -23,17 +23,20 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     setMouseTracking(true);
 
     layout.setContentsMargins(0, 0, 0, 0);
+    layout.setSpacing(0);
     this->setLayout(&layout);
 
-    imageViewer.reset(new ImageViewer(this));
+    imageViewer.reset(new ImageViewerV2(this));
+    layout.addWidget(imageViewer.get());
     imageViewer->hide();
 
-    connect(imageViewer.get(), &ImageViewer::scalingRequested, this, &ViewerWidget::scalingRequested);
-    connect(this, &ViewerWidget::toggleTransparencyGrid, imageViewer.get(), &ImageViewer::toggleTransparencyGrid);
-    connect(this, &ViewerWidget::setFilterNearest,       imageViewer.get(), &ImageViewer::setFilterNearest);
-    connect(this, &ViewerWidget::setFilterBilinear,      imageViewer.get(), &ImageViewer::setFilterBilinear);
+    connect(imageViewer.get(), &ImageViewerV2::scalingRequested, this, &ViewerWidget::scalingRequested);
+    connect(this, &ViewerWidget::toggleTransparencyGrid, imageViewer.get(), &ImageViewerV2::toggleTransparencyGrid);
+    connect(this, &ViewerWidget::setFilterNearest,       imageViewer.get(), &ImageViewerV2::setFilterNearest);
+    connect(this, &ViewerWidget::setFilterBilinear,      imageViewer.get(), &ImageViewerV2::setFilterBilinear);
 
     videoPlayer.reset(new VideoPlayerInitProxy(this));
+    layout.addWidget(videoPlayer.get());
     videoPlayer->hide();
     videoControls = new VideoControlsProxyWrapper(this);
 
@@ -84,7 +87,6 @@ QSize ViewerWidget::sourceSize() {
 void ViewerWidget::enableImageViewer() {
     if(currentWidget != IMAGEVIEWER) {
         disableVideoPlayer();
-        layout.addWidget(imageViewer.get());
         imageViewer->show();
         currentWidget = IMAGEVIEWER;
     }
@@ -94,7 +96,6 @@ void ViewerWidget::enableImageViewer() {
 void ViewerWidget::enableVideoPlayer() {
     if(currentWidget != VIDEOPLAYER) {
         disableImageViewer();
-        layout.addWidget(videoPlayer.get());
         videoPlayer->show();
         currentWidget = VIDEOPLAYER;
     }
@@ -105,7 +106,6 @@ void ViewerWidget::disableImageViewer() {
         currentWidget = UNSET;
         imageViewer->closeImage();
         imageViewer->hide();
-        layout.removeWidget(imageViewer.get());
     }
 }
 
@@ -116,24 +116,23 @@ void ViewerWidget::disableVideoPlayer() {
             videoControls->hide();
         videoPlayer->setPaused(true);
         videoPlayer->hide();
-        layout.removeWidget(videoPlayer.get());
     }
 }
 
 void ViewerWidget::enableInteraction() {
     if(!mInteractionEnabled) {
-        connect(this, &ViewerWidget::zoomIn,        imageViewer.get(), &ImageViewer::zoomIn);
-        connect(this, &ViewerWidget::zoomOut,       imageViewer.get(), &ImageViewer::zoomOut);
-        connect(this, &ViewerWidget::zoomInCursor,  imageViewer.get(), &ImageViewer::zoomInCursor);
-        connect(this, &ViewerWidget::zoomOutCursor, imageViewer.get(), &ImageViewer::zoomOutCursor);
-        connect(this, &ViewerWidget::scrollUp,      imageViewer.get(), &ImageViewer::scrollUp);
-        connect(this, &ViewerWidget::scrollDown,    imageViewer.get(), &ImageViewer::scrollDown);
-        connect(this, &ViewerWidget::scrollLeft,    imageViewer.get(), &ImageViewer::scrollLeft);
-        connect(this, &ViewerWidget::scrollRight,   imageViewer.get(), &ImageViewer::scrollRight);
-        connect(this, &ViewerWidget::fitWindow,     imageViewer.get(), &ImageViewer::setFitWindow);
-        connect(this, &ViewerWidget::fitWidth,      imageViewer.get(), &ImageViewer::setFitWidth);
-        connect(this, &ViewerWidget::fitOriginal,   imageViewer.get(), &ImageViewer::setFitOriginal);
-        connect(imageViewer.get(), &ImageViewer::draggedOut, this, &ViewerWidget::draggedOut);
+        connect(this, &ViewerWidget::zoomIn,        imageViewer.get(), &ImageViewerV2::zoomIn);
+        connect(this, &ViewerWidget::zoomOut,       imageViewer.get(), &ImageViewerV2::zoomOut);
+        connect(this, &ViewerWidget::zoomInCursor,  imageViewer.get(), &ImageViewerV2::zoomInCursor);
+        connect(this, &ViewerWidget::zoomOutCursor, imageViewer.get(), &ImageViewerV2::zoomOutCursor);
+        connect(this, &ViewerWidget::scrollUp,      imageViewer.get(), &ImageViewerV2::scrollUp);
+        connect(this, &ViewerWidget::scrollDown,    imageViewer.get(), &ImageViewerV2::scrollDown);
+        connect(this, &ViewerWidget::scrollLeft,    imageViewer.get(), &ImageViewerV2::scrollLeft);
+        connect(this, &ViewerWidget::scrollRight,   imageViewer.get(), &ImageViewerV2::scrollRight);
+        connect(this, &ViewerWidget::fitWindow,     imageViewer.get(), &ImageViewerV2::setFitWindow);
+        connect(this, &ViewerWidget::fitWidth,      imageViewer.get(), &ImageViewerV2::setFitWidth);
+        connect(this, &ViewerWidget::fitOriginal,   imageViewer.get(), &ImageViewerV2::setFitOriginal);
+        connect(imageViewer.get(), &ImageViewerV2::draggedOut, this, &ViewerWidget::draggedOut);
         imageViewer->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         mInteractionEnabled = true;
     }
@@ -141,18 +140,18 @@ void ViewerWidget::enableInteraction() {
 
 void ViewerWidget::disableInteraction() {
     if(mInteractionEnabled) {
-        disconnect(this, &ViewerWidget::zoomIn,        imageViewer.get(), &ImageViewer::zoomIn);
-        disconnect(this, &ViewerWidget::zoomOut,       imageViewer.get(), &ImageViewer::zoomOut);
-        disconnect(this, &ViewerWidget::zoomInCursor,  imageViewer.get(), &ImageViewer::zoomInCursor);
-        disconnect(this, &ViewerWidget::zoomOutCursor, imageViewer.get(), &ImageViewer::zoomOutCursor);
-        disconnect(this, &ViewerWidget::scrollUp,      imageViewer.get(), &ImageViewer::scrollUp);
-        disconnect(this, &ViewerWidget::scrollDown,    imageViewer.get(), &ImageViewer::scrollDown);
-        disconnect(this, &ViewerWidget::scrollLeft,    imageViewer.get(), &ImageViewer::scrollLeft);
-        disconnect(this, &ViewerWidget::scrollRight,   imageViewer.get(), &ImageViewer::scrollRight);
-        disconnect(this, &ViewerWidget::fitWindow,     imageViewer.get(), &ImageViewer::setFitWindow);
-        disconnect(this, &ViewerWidget::fitWidth,      imageViewer.get(), &ImageViewer::setFitWidth);
-        disconnect(this, &ViewerWidget::fitOriginal,   imageViewer.get(), &ImageViewer::setFitOriginal);
-        disconnect(imageViewer.get(), &ImageViewer::draggedOut, this, &ViewerWidget::draggedOut);
+        disconnect(this, &ViewerWidget::zoomIn,        imageViewer.get(), &ImageViewerV2::zoomIn);
+        disconnect(this, &ViewerWidget::zoomOut,       imageViewer.get(), &ImageViewerV2::zoomOut);
+        disconnect(this, &ViewerWidget::zoomInCursor,  imageViewer.get(), &ImageViewerV2::zoomInCursor);
+        disconnect(this, &ViewerWidget::zoomOutCursor, imageViewer.get(), &ImageViewerV2::zoomOutCursor);
+        disconnect(this, &ViewerWidget::scrollUp,      imageViewer.get(), &ImageViewerV2::scrollUp);
+        disconnect(this, &ViewerWidget::scrollDown,    imageViewer.get(), &ImageViewerV2::scrollDown);
+        disconnect(this, &ViewerWidget::scrollLeft,    imageViewer.get(), &ImageViewerV2::scrollLeft);
+        disconnect(this, &ViewerWidget::scrollRight,   imageViewer.get(), &ImageViewerV2::scrollRight);
+        disconnect(this, &ViewerWidget::fitWindow,     imageViewer.get(), &ImageViewerV2::setFitWindow);
+        disconnect(this, &ViewerWidget::fitWidth,      imageViewer.get(), &ImageViewerV2::setFitWidth);
+        disconnect(this, &ViewerWidget::fitOriginal,   imageViewer.get(), &ImageViewerV2::setFitOriginal);
+        disconnect(imageViewer.get(), &ImageViewerV2::draggedOut, this, &ViewerWidget::draggedOut);
         imageViewer->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         hideContextMenu();
         mInteractionEnabled = false;
@@ -231,7 +230,7 @@ ImageFitMode ViewerWidget::fitMode() {
 }
 
 void ViewerWidget::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
-    imageViewer->replacePixmap(std::move(scaled));
+    imageViewer->setScaledPixmap(std::move(scaled));
 }
 
 void ViewerWidget::closeImage() {
@@ -385,7 +384,7 @@ void ViewerWidget::hideCursor() {
         return;
     // only hide when we are under viewer or player widget
     QWidget *w = qApp->widgetAt(QCursor::pos());
-    if(w && (w == imageViewer.get() || w == videoPlayer->getPlayer().get())) {
+    if(w && (w == imageViewer.get()->viewport() || w == videoPlayer->getPlayer().get())) {
         if(settings->cursorAutohide())
             setCursor(QCursor(Qt::BlankCursor));
         videoControls->hide(); // todo: separate

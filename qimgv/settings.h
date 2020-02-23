@@ -187,6 +187,8 @@ public:
     void setZoomStep(qreal value);
     int JPEGSaveQuality();
     void setJPEGSaveQuality(int value);
+    bool useOpenGL();
+    void setUseOpenGL(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;
