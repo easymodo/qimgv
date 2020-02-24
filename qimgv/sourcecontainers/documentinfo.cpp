@@ -78,7 +78,6 @@ void DocumentInfo::detectFormat() {
     mMimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
     QString mimeName = mMimeType.name();
     QString suffix = fileInfo.completeSuffix().toLower();
-    qDebug ()<< fileInfo.fileName() << mimeName;
     if(mimeName == "image/jpeg") {
         mFormat = "jpg";
         mDocumentType = STATIC;

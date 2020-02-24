@@ -670,6 +670,8 @@ void ImageViewerV2::zoomAnchored(float newScale) {
 void ImageViewerV2::zoomIn() {
     setZoomAnchor(viewport()->rect().center() * devicePixelRatioF());
     zoomAnchored(currentScale() * (1.0f + zoomStep));
+    centerIfNecessary();
+    snapToEdges();
     imageFitMode = FIT_FREE;
 }
 
@@ -677,6 +679,8 @@ void ImageViewerV2::zoomIn() {
 void ImageViewerV2::zoomOut() {
     setZoomAnchor(viewport()->rect().center() * devicePixelRatioF());
     zoomAnchored(currentScale() * (1.0f - zoomStep));
+    centerIfNecessary();
+    snapToEdges();
     imageFitMode = FIT_FREE;
 }
 
@@ -722,6 +726,7 @@ void ImageViewerV2::zoomInCursor() {
     }
     imageFitMode = FIT_FREE;
     centerIfNecessary();
+    snapToEdges();
 }
 
 void ImageViewerV2::zoomOutCursor() {
@@ -733,6 +738,7 @@ void ImageViewerV2::zoomOutCursor() {
     }
     imageFitMode = FIT_FREE;
     centerIfNecessary();
+    snapToEdges();
 }
 
 void ImageViewerV2::doZoom(float newScale) {
