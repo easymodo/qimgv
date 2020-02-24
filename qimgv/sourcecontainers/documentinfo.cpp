@@ -78,6 +78,7 @@ void DocumentInfo::detectFormat() {
     mMimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
     QString mimeName = mMimeType.name();
     QString suffix = fileInfo.completeSuffix().toLower();
+    qDebug ()<< fileInfo.fileName() << mimeName;
     if(mimeName == "image/jpeg") {
         mFormat = "jpg";
         mDocumentType = STATIC;
@@ -227,7 +228,11 @@ void DocumentInfo::loadExifInfo() {
         return;
     }
     catch (Exiv2::Error& e) {
-        std::cout << "Caught Exiv2 exception '" << e.what() << "'\n";
+        //std::cout << "Caught Exiv2 exception '" << e.what() << "'\n";
+        return;
+    }
+    catch (Exiv2::BasicError<CharType> e) {
+        //std::cout << "Caught BasicError Exiv2 exception '" << e.what() << "'\n";
         return;
     }
 #endif
