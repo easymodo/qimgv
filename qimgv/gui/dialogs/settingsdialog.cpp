@@ -30,6 +30,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->novideoInfoLabel->setHidden(true);
 #endif
 
+#ifdef USE_OPENCV
+    ui->scalingQualityComboBox->addItem("Bilinear+sharpen (OpenCV)");
+    ui->scalingQualityComboBox->addItem("Bicubic (OpenCV)");
+    ui->scalingQualityComboBox->addItem("Bicubic+sharpen (OpenCV)");
+#endif
+
     setupSidebar();
 
     connect(this, &SettingsDialog::settingsChanged, settings, &Settings::sendChangeNotification);

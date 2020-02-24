@@ -16,6 +16,9 @@ add_subdirectory(components)
 add_subdirectory(sourcecontainers)
 add_subdirectory(gui)
 add_subdirectory(utils)
+if(OPENCV_SUPPORT)
+    add_subdirectory(3rdparty/QtOpenCV)
+endif()
 
 # C++ STANDARD
 target_compile_features(qimgv PRIVATE cxx_std_17)
@@ -39,6 +42,13 @@ endif()
 if(VIDEO_SUPPORT)
     target_compile_definitions(qimgv PRIVATE USE_MPV)
 endif()
+if(OPENCV_SUPPORT)
+    target_link_libraries(qimgv PRIVATE ${OpenCV_LIBS})
+    #link_directories(${OpenCV_LIB_DIR})
+    target_compile_definitions(qimgv PRIVATE USE_OPENCV)
+endif()
+
+target_link_libraries(qimgv PRIVATE freeimage)
 
 # generate proper GUI program on specified platform
 if(WIN32) # Check if we are on Windows

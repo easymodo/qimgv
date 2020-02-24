@@ -255,7 +255,7 @@ void MW::toggleRenameOverlay() {
 }
 
 void MW::toggleScalingFilter() {
-    if(viewerWidget->scalingFilter() == FILTER_BILINEAR)
+    if(viewerWidget->scalingFilter() == QI_FILTER_BILINEAR)
         setFilterNearest();
     else
         setFilterBilinear();

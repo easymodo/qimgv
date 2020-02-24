@@ -629,7 +629,11 @@ void Settings::setJPEGSaveQuality(int value) {
 //------------------------------------------------------------------------------
 ScalingFilter Settings::scalingFilter() {
     int mode = settings->s->value("scalingFilter", 1).toInt();
-    if(mode < 0 || mode > 1)
+#ifndef USE_OPENCV
+    if(mode > 2)
+        mode = 1;
+#endif
+    if(mode < 0 || mode > 4)
         mode = 1;
     return static_cast<ScalingFilter>(mode);
 }

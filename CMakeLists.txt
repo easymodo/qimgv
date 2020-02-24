@@ -42,6 +42,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Usage: cmake -DVIDEO_SUPPORT=ON [...]
 option(EXIV2 "For reading/writing exif tags" ON)
 option(VIDEO_SUPPORT "Enable video support" ON)
+option(OPENCV_SUPPORT "Enable HQ scaling via OpenCV" OFF)
 option(KDE_SUPPORT "Support blur when using KDE" OFF)
 
 # FIND PACKAGES
@@ -54,6 +55,11 @@ endif()
 
 if(KDE_SUPPORT)
     find_package(KF5WindowSystem REQUIRED)
+endif()
+
+if(OPENCV_SUPPORT)
+    find_package(PkgConfig REQUIRED)
+    find_package(OpenCV REQUIRED)
 endif()
 
 ##############################################################

@@ -41,8 +41,11 @@ enum PanelVPosition {
 };
 
 enum ScalingFilter {
-    FILTER_NEAREST,
-    FILTER_BILINEAR
+    QI_FILTER_NEAREST,
+    QI_FILTER_BILINEAR,
+    QI_FILTER_CV_BILINEAR_SHARPEN,
+    QI_FILTER_CV_CUBIC,
+    QI_FILTER_CV_CUBIC_SHARPEN
 };
 
 class Settings : public QObject

@@ -252,6 +252,7 @@ If you have multiple version of gcc installed you _might_ need to specify a whic
 
 | Option  | Default value | Description |
 | ------- | ------------- | ----------- |
+| OPENCV_SUPPORT | OFF | Enables high quality scaling options |
 | VIDEO_SUPPORT | ON | Enables video playback via `mpv` |
 | EXIV2 | ON | Support reading exif tags via `exiv2` |
 | KDE_SUPPORT | OFF | Use some features from kde, like background blur |

@@ -15,7 +15,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     maxScale(500.0f),
     imageFitMode(FIT_WINDOW),
     imageFitModeDefault(FIT_WINDOW),
-    mScalingFilter(FILTER_BILINEAR),
+    mScalingFilter(QI_FILTER_BILINEAR),
     scene(nullptr)
 {
     if(settings->useOpenGL())
@@ -161,7 +161,7 @@ void ImageViewerV2::displayImage(std::unique_ptr<QPixmap> _pixmap) {
         pixmapItem.setPixmap(*pixmap);
 
         Qt::TransformationMode mode = Qt::SmoothTransformation;
-        if(mScalingFilter == FILTER_NEAREST)
+        if(mScalingFilter == QI_FILTER_NEAREST)
             mode = Qt::FastTransformation;
         pixmapItem.setTransformationMode(mode);
 
@@ -245,17 +245,18 @@ void ImageViewerV2::toggleTransparencyGrid() {
 }
 
 void ImageViewerV2::setScalingFilter(ScalingFilter filter) {
-    if(mScalingFilter != filter) {
-        if(filter == FILTER_NEAREST)
-            setFilterNearest();
-        else if(filter == FILTER_BILINEAR)
-            setFilterBilinear();
-    }
+    if(mScalingFilter == filter)
+        return;
+    mScalingFilter = filter;
+    pixmapItem.setTransformationMode(selectTransformationMode());
+    if(mScalingFilter == QI_FILTER_NEAREST)
+        swapToOriginalPixmap();
+    requestScaling();
 }
 
 void ImageViewerV2::setFilterNearest() {
-    if(mScalingFilter != FILTER_NEAREST) {
-        mScalingFilter = FILTER_NEAREST;
+    if(mScalingFilter != QI_FILTER_NEAREST) {
+        mScalingFilter = QI_FILTER_NEAREST;
         pixmapItem.setTransformationMode(selectTransformationMode());
         swapToOriginalPixmap();
         requestScaling();
@@ -263,8 +264,8 @@ void ImageViewerV2::setFilterNearest() {
 }
 
 void ImageViewerV2::setFilterBilinear() {
-    if(mScalingFilter != FILTER_BILINEAR) {
-        mScalingFilter = FILTER_BILINEAR;
+    if(mScalingFilter != QI_FILTER_BILINEAR) {
+        mScalingFilter = QI_FILTER_BILINEAR;
         pixmapItem.setTransformationMode(selectTransformationMode());
         requestScaling();
     }
@@ -279,7 +280,7 @@ Qt::TransformationMode ImageViewerV2::selectTransformationMode() {
         if(!smoothAnimatedImages || (pixmapItem.scale() > 1.0f && !smoothUpscaling))
             mode = Qt::FastTransformation;
     } else {
-        if((pixmapItem.scale() > 1.0f && !smoothUpscaling) || mScalingFilter == FILTER_NEAREST)
+        if((pixmapItem.scale() > 1.0f && !smoothUpscaling) || mScalingFilter == QI_FILTER_NEAREST)
             mode = Qt::FastTransformation;
     }
     return mode;

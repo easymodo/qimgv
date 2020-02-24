@@ -483,7 +483,7 @@ void Core::resize(QSize size) {
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                    ImageLib::scaled(imgStatic->getImage(), size, 1)));
+                    ImageLib::scaled(imgStatic->getImage(), size, QI_FILTER_BILINEAR)));
         model->updateItem(this->selectedFileName(), img);
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
             img->save();
