@@ -508,8 +508,8 @@ void ImageViewerV2::fitWidth() {
         QPointF centerTarget = mapToScene(viewport()->rect()).boundingRect().center();
         centerTarget.setY(0);
         centerOn(centerTarget);
-        snapToEdges();
     }
+    snapToEdges();
     requestScaling();
 }
 
