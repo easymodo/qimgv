@@ -59,7 +59,7 @@ endif()
 
 if(OPENCV_SUPPORT)
     find_package(PkgConfig REQUIRED)
-    find_package(OpenCV REQUIRED)
+    find_package(OpenCV REQUIRED core imgproc)
 endif()
 
 ##############################################################
