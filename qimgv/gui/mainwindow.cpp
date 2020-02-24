@@ -1,4 +1,4 @@
-﻿#include "mainwindow.h"
+#include "mainwindow.h"
 
 // TODO: nuke this and rewrite
 
@@ -36,12 +36,12 @@ MW::MW(QWidget *parent)
     this->setAcceptDrops(true);
     this->setAccessibleName("mainwindow");
     desktopWidget = QApplication::desktop();
-    windowMoveTimer.setSingleShot(true);
-    windowMoveTimer.setInterval(150);
+    windowGeometryChangeTimer.setSingleShot(true);
+    windowGeometryChangeTimer.setInterval(30);
     setupUi();
 
     connect(settings, &Settings::settingsChanged, this, &MW::readSettings);
-    connect(&windowMoveTimer, &QTimer::timeout, this, &MW::updateCurrentDisplay);
+    connect(&windowGeometryChangeTimer, &QTimer::timeout, this, &MW::onWindowGeometryChanged);
     connect(this, &MW::fullscreenStateChanged, this, &MW::adaptToWindowState);
 
     readSettings();
@@ -280,21 +280,25 @@ void MW::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
 }
 
 void MW::saveWindowGeometry() {
+    if(this->windowState() == Qt::WindowNoState) {
     #ifdef __linux__
-    if(this->isHidden())
-        settings->setWindowGeometry(QRect(pos(), size()));
-    else
-        settings->setWindowGeometry(geometry());
+        if(this->isHidden())
+            windowedGeometry = QRect(pos(), size());
+        else
+            windowedGeometry = geometry();
     #else
-         settings->setWindowGeometry(QRect(pos(), size()));
+        windowedGeometry = QRect(pos(), size());
     #endif
-    settings->setMaximizedWindow(this->isMaximized());
+    }
+    settings->setWindowGeometry(windowedGeometry);
+    if(!isFullScreen())
+        settings->setMaximizedWindow(this->isMaximized());
 }
 
 void MW::restoreWindowGeometry() {
-    QRect geometry = settings->windowGeometry();
-    this->resize(geometry.size());
-    this->move(geometry.x(), geometry.y());
+    windowedGeometry = settings->windowGeometry();
+    this->resize(windowedGeometry.size());
+    this->move(windowedGeometry.x(), windowedGeometry.y());
     if(settings->maximizedWindow())
         this->setWindowState(Qt::WindowMaximized);
     updateCurrentDisplay();
@@ -302,6 +306,11 @@ void MW::restoreWindowGeometry() {
 
 void MW::updateCurrentDisplay() {
     currentDisplay = desktopWidget->screenNumber(this);
+}
+
+void MW::onWindowGeometryChanged() {
+    saveWindowGeometry();
+    updateCurrentDisplay();
 }
 
 void MW::saveCurrentDisplay() {
@@ -317,8 +326,8 @@ void MW::mouseMoveEvent(QMouseEvent *event) {
 }
 
 bool MW::event(QEvent *event) {
-    if(event->type() == QEvent::Move)
-        windowMoveTimer.start();
+    if(event->type() == QEvent::Move || event->type() == QEvent::Resize)
+        windowGeometryChangeTimer.start();
     return QWidget::event(event);
 }
 
@@ -352,9 +361,9 @@ void MW::mouseDoubleClickEvent(QMouseEvent *event) {
 
 void MW::close() {
     this->hide();
-    if(!isFullScreen()) {
+    //if(!isFullScreen()) {
         saveWindowGeometry();
-    }
+    //}
     saveCurrentDisplay();
     if(copyOverlay)
         copyOverlay->saveSettings();
@@ -457,9 +466,9 @@ void MW::showFullScreen() {
 }
 
 void MW::showWindowed() {
-    QWidget::show();
     QWidget::showNormal();
     restoreWindowGeometry();
+    QWidget::show();
     //QWidget::activateWindow();
     //QWidget::raise();
     emit fullscreenStateChanged(false);

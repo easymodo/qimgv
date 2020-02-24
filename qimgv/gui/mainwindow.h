@@ -68,7 +68,7 @@ public:
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;
     QHBoxLayout layout;
-    QTimer windowMoveTimer;
+    QTimer windowGeometryChangeTimer;
     int currentDisplay;
     QDesktopWidget *desktopWidget;
 
@@ -84,6 +84,7 @@ private:
     CropOverlay *cropOverlay;
     SaveConfirmOverlay *saveOverlay;
     ChangelogWindow *changelogWindow;
+    QRect windowedGeometry;
 
     CopyOverlay *copyOverlay;
 
@@ -118,6 +119,7 @@ private slots:
     void readSettings();
     void adaptToWindowState();
 
+    void onWindowGeometryChanged();
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     bool event(QEvent *event);
@@ -132,6 +134,7 @@ protected:
     void wheelEvent(QWheelEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void leaveEvent(QEvent *event);
+
 signals:
     void opened(QString);
     void fullscreenStateChanged(bool);
