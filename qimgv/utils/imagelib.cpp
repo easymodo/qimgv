@@ -170,9 +170,9 @@ QImage* ImageLib::scaled_CV(std::shared_ptr<const QImage> source, QSize destSize
     } else { // downscale
         float scale = (float)destSize.width() / source->width();
         if(scale < 0.5f && filter != cv::INTER_NEAREST) {
-            filter = cv::INTER_AREA;
             if(filter == cv::INTER_CUBIC)
                 sharpen = 1;
+            filter = cv::INTER_AREA;
         }
         cv::Mat dstMat(destSizeCv, srcMat.type());
         cv::resize(srcMat, dstMat, destSizeCv, 0, 0, filter);
@@ -180,7 +180,7 @@ QImage* ImageLib::scaled_CV(std::shared_ptr<const QImage> source, QSize destSize
             *dest = QtOcv::mat2Image(dstMat);
         } else {
             // todo: tweak this
-            double amount = 0.;//0.25 * sharpen;
+            double amount = 0.25 * sharpen;
             // unsharp mask
             cv::Mat dstMat_sharpened;
             cv::GaussianBlur(dstMat, dstMat_sharpened, cv::Size(0, 0), 2);
@@ -188,7 +188,7 @@ QImage* ImageLib::scaled_CV(std::shared_ptr<const QImage> source, QSize destSize
             *dest = QtOcv::mat2Image(dstMat_sharpened);
         }
     }
-    qDebug() << "Filter:" << filter << " " << source->size() << " -> " << (float)destSize.width() / source->width() << ": " << t.elapsed() << " ms.";
+    qDebug() << "Filter:" << filter << " sharpen=" << sharpen << " source size:" << source->size() << "->" << (float)destSize.width() / source->width() << ": " << t.elapsed() << " ms.";
     return dest;
 }
 #endif
