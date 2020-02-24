@@ -169,8 +169,11 @@ QImage* ImageLib::scaled_CV(std::shared_ptr<const QImage> source, QSize destSize
         *dest = QtOcv::mat2Image(dstMat);
     } else { // downscale
         float scale = (float)destSize.width() / source->width();
-        if(scale < 0.5f && filter != cv::INTER_NEAREST)
+        if(scale < 0.5f && filter != cv::INTER_NEAREST) {
             filter = cv::INTER_AREA;
+            if(filter == cv::INTER_CUBIC)
+                sharpen = 1;
+        }
         cv::Mat dstMat(destSizeCv, srcMat.type());
         cv::resize(srcMat, dstMat, destSizeCv, 0, 0, filter);
         if(!sharpen || filter == cv::INTER_NEAREST) {
