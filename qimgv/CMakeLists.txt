@@ -48,8 +48,6 @@ if(OPENCV_SUPPORT)
     target_compile_definitions(qimgv PRIVATE USE_OPENCV)
 endif()
 
-target_link_libraries(qimgv PRIVATE freeimage)
-
 # generate proper GUI program on specified platform
 if(WIN32) # Check if we are on Windows
     if(MSVC) # Check if we are using the Visual Studio compiler
