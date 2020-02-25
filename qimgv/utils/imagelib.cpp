@@ -126,6 +126,8 @@ QImage *ImageLib::cropped(QRect newRect, QRect targetRes, bool upscaled) {
 */
 
 QImage* ImageLib::scaled(std::shared_ptr<const QImage> source, QSize destSize, ScalingFilter filter) {
+    if(source->format() == QImage::Format_Indexed8 && filter > 1)
+        filter = QI_FILTER_BILINEAR;
     switch (filter) {
         case QI_FILTER_NEAREST:
             return scaled_Qt(source, destSize, false);
