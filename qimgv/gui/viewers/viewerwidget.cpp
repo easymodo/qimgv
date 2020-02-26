@@ -31,6 +31,7 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     imageViewer->hide();
 
     connect(imageViewer.get(), &ImageViewerV2::scalingRequested, this, &ViewerWidget::scalingRequested);
+    connect(imageViewer.get(), &ImageViewerV2::scaleChanged, this, &ViewerWidget::onScaleChanged);
     connect(this, &ViewerWidget::toggleTransparencyGrid, imageViewer.get(), &ImageViewerV2::toggleTransparencyGrid);
     connect(this, &ViewerWidget::setFilterNearest,       imageViewer.get(), &ImageViewerV2::setFilterNearest);
     connect(this, &ViewerWidget::setFilterBilinear,      imageViewer.get(), &ImageViewerV2::setFilterBilinear);
@@ -39,6 +40,9 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     layout.addWidget(videoPlayer.get());
     videoPlayer->hide();
     videoControls = new VideoControlsProxyWrapper(this);
+
+    // tmp no wrapper
+    zoomIndicator = new ZoomIndicatorOverlayProxy(this);
 
     mainPanel.reset(new MainPanel(this));
 
@@ -106,6 +110,7 @@ void ViewerWidget::disableImageViewer() {
         currentWidget = UNSET;
         imageViewer->closeImage();
         imageViewer->hide();
+        zoomIndicator->hide();
     }
 }
 
@@ -116,6 +121,20 @@ void ViewerWidget::disableVideoPlayer() {
             videoControls->hide();
         videoPlayer->setPaused(true);
         videoPlayer->hide();
+    }
+}
+
+void ViewerWidget::onScaleChanged(qreal scale) {
+    if(!this->isVisible())
+        return;
+    if(scale != 1.0f) {
+        zoomIndicator->setScale(scale);
+        if(settings->zoomIndicatorMode() == ZoomIndicatorMode::INDICATOR_ENABLED)
+            zoomIndicator->show();
+        else if((settings->zoomIndicatorMode() == ZoomIndicatorMode::INDICATOR_AUTOHIDE))
+            zoomIndicator->show(1500);
+    } else {
+        zoomIndicator->hide();
     }
 }
 

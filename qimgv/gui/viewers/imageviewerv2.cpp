@@ -39,7 +39,6 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     animationTimer->setSingleShot(true);
     zoomThreshold = static_cast<int>(devicePixelRatioF() * 4.);
 
-
     pixmapItem.setTransformationMode(Qt::SmoothTransformation);
     pixmapItem.setScale(1.0f);
     pixmapItemScaled.setScale(1.0f);
@@ -749,6 +748,7 @@ void ImageViewerV2::doZoom(float newScale) {
     pixmapItem.setScale(newScale);
     pixmapItem.setTransformationMode(selectTransformationMode());
     swapToOriginalPixmap();
+    emit scaleChanged(newScale);
     requestScaling();
 }
 

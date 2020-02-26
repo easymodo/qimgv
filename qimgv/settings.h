@@ -48,6 +48,12 @@ enum ScalingFilter {
     QI_FILTER_CV_CUBIC_SHARPEN
 };
 
+enum ZoomIndicatorMode {
+    INDICATOR_DISABLED,
+    INDICATOR_AUTOHIDE,
+    INDICATOR_ENABLED
+};
+
 class Settings : public QObject
 {
     Q_OBJECT
@@ -192,6 +198,8 @@ public:
     void setJPEGSaveQuality(int value);
     bool useOpenGL();
     void setUseOpenGL(bool mode);
+    void setZoomIndicatorMode(ZoomIndicatorMode mode);
+    ZoomIndicatorMode zoomIndicatorMode();
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

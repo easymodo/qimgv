@@ -29,8 +29,10 @@ class OverlayWidget : public FloatingWidget
 public:
     OverlayWidget(FloatingWidgetContainer *parent);
     ~OverlayWidget();
-    void setMarginX(int);
-    void setMarginY(int);
+    void setHorizontalMargin(int);
+    void setVerticalMargin(int);
+    int horizontalMargin();
+    int verticalMargin();
     void setPosition(FloatingWidgetPosition pos);
     void setFadeDuration(int duration);
     void setFadeEnabled(bool mode);
@@ -38,10 +40,11 @@ public:
 public slots:
     void show();
     void hide();
+    void hideAnimated();
 
 private:
     QGraphicsOpacityEffect *opacityEffect;
-    int marginX, marginY;
+    int mHorizontalMargin, mVerticalMargin;
     bool fadeEnabled;
     QPropertyAnimation *fadeAnimation;
 

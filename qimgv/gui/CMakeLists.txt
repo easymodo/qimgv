@@ -48,6 +48,8 @@ target_sources(qimgv PRIVATE
     overlays/saveconfirmoverlay.cpp
     overlays/videocontrols.cpp
     overlays/videocontrolsproxy.cpp
+    overlays/zoomindicatoroverlay.cpp
+    overlays/zoomindicatoroverlayproxy.cpp
 
     panels/croppanel/croppanel.cpp
     panels/mainpanel/mainpanel.cpp

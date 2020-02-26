@@ -22,7 +22,7 @@
 [accessibleName="ButtonSetRight"]:pressed,
 [accessibleName="ButtonSetRight"][pressed="true"] {
     background-color: #2a2a2b;
-    color: #86888a;
+    color: #8a8a8a;
 }
 
 [accessibleName="ButtonSetLeft"] {
@@ -206,8 +206,8 @@ FloatingWidget QLineEdit::hover {
 /*----------------------------------------------------------------------------*/
 
 FullscreenInfoOverlay {
-    background-color: rgba(0, 0, 0, 140);
-    border-color: rgba(0, 0, 0, 100);
+    background-color: rgba(15, 15, 15, 170);
+    border-color: rgba(15, 15, 15, 120);
     border-top: 0px;
     border-left: 0px;
     border-top-left-radius: 0px;
@@ -217,7 +217,7 @@ FullscreenInfoOverlay {
 
 FullscreenInfoOverlay QLabel {
 /*    color: #c8c8c8;  managed from settings  */
-    font: bold;
+/*    font: bold;*/
 }
 
 /*----------------------------------------------------------------------------*/
@@ -267,7 +267,7 @@ SidePanel QSpinBox::down-button, QDoubleSpinBox::down-button {
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QLabel {
-    color: #86888a;
+    color: #8a8a8a;
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QComboBox {
@@ -315,7 +315,7 @@ SidePanel QComboBox QAbstractItemView::item:selected {
 
 ChangelogWindow QTextBrowser {
     background-color: #1a1a1b;
-    color: #86888a;
+    color: #8a8a8a;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -528,11 +528,25 @@ ContextMenu [accessibleName="MenuItemIcon"] {
 ControlsOverlay {
     background-color: #1a1a1b;
 }
-
+/*----------------------------------------------------------------------------*/
 InfoBar {
     background-color: #232324;
 }
 
 InfoBar QLabel {
     color: #aeaeae;
+}
+
+/*----------------------------------------------------------------------------*/
+ZoomIndicatorOverlay {
+    background-color: rgba(15, 15, 15, 190);
+    border-color: rgba(15, 15, 15, 120);
+    border-left: 0px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+ZoomIndicatorOverlay QLabel {
+    color: #aeaeae;
+    /*font: bold;*/
 }

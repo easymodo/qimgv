@@ -47,7 +47,7 @@ public:
 
 signals:
     virtual void scalingRequested(QSize, ScalingFilter);
-    virtual void scaleChanged(float);
+    virtual void scaleChanged(qreal);
     virtual void sourceSizeChanged(QSize);
     virtual void imageAreaChanged(QRect);
     virtual void draggedOut();
@@ -100,7 +100,6 @@ private:
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
     QTimer *animationTimer;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
-    qreal mCurrentScale;
     bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;

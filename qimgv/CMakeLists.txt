@@ -44,7 +44,6 @@ if(VIDEO_SUPPORT)
 endif()
 if(OPENCV_SUPPORT)
     target_link_libraries(qimgv PRIVATE ${OpenCV_LIBS})
-    #link_directories(${OpenCV_LIB_DIR})
     target_compile_definitions(qimgv PRIVATE USE_OPENCV)
 endif()
 

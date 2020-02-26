@@ -730,3 +730,15 @@ void Settings::setZoomStep(qreal value) {
         value = 0.1;
     settings->s->setValue("zoomStep", value);
 }
+//------------------------------------------------------------------------------
+void Settings::setZoomIndicatorMode(ZoomIndicatorMode mode) {
+    settings->s->setValue("zoomIndicatorMode", mode);
+}
+
+ZoomIndicatorMode Settings::zoomIndicatorMode() {
+    int mode = settings->s->value("zoomIndicatorMode", 0).toInt();
+    if(mode < 0 || mode > 2)
+        mode = 0;
+    return static_cast<ZoomIndicatorMode>(mode);
+}
+

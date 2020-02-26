@@ -5,6 +5,7 @@
 #include "gui/viewers/imageviewerv2.h"
 #include "gui/viewers/videoplayerinitproxy.h"
 #include "gui/overlays/videocontrolsproxy.h"
+#include "gui/overlays/zoomindicatoroverlayproxy.h"
 #include "gui/panels/mainpanel/mainpanel.h"
 #include "gui/contextmenu.h"
 
@@ -46,6 +47,7 @@ private:
     std::unique_ptr<ContextMenu> contextMenu;
     std::unique_ptr<MainPanel> mainPanel;
     VideoControlsProxyWrapper *videoControls;
+    ZoomIndicatorOverlayProxy *zoomIndicator;
 
     void enableImageViewer();
     void enableVideoPlayer();
@@ -58,6 +60,9 @@ private:
 
     void disableImageViewer();
     void disableVideoPlayer();
+
+private slots:
+    void onScaleChanged(qreal);
 
 signals:
     void scalingRequested(QSize, ScalingFilter);
