@@ -68,7 +68,7 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
 QRect ViewerWidget::imageRect() {
     if(imageViewer && currentWidget == IMAGEVIEWER)
-        return imageViewer->imageRect();
+        return imageViewer->scaledRect();
     else
         return QRect(0,0,0,0);
 }

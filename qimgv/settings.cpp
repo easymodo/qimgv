@@ -741,4 +741,11 @@ ZoomIndicatorMode Settings::zoomIndicatorMode() {
         mode = 0;
     return static_cast<ZoomIndicatorMode>(mode);
 }
+//------------------------------------------------------------------------------
+void Settings::setCenterIn1to1Mode(bool mode) {
+    settings->s->setValue("centerIn1to1Mode", mode);
+}
 
+bool Settings::centerIn1to1Mode() {
+    return settings->s->value("centerIn1to1Mode", true).toBool();
+}

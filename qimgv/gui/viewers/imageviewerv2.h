@@ -31,7 +31,7 @@ public:
     ImageViewerV2(QWidget* parent = nullptr);
     ~ImageViewerV2();
     virtual ImageFitMode fitMode() const;
-    virtual QRect imageRect() const;
+    virtual QRect scaledRect() const;
     virtual float currentScale() const;
     virtual QSize sourceSize() const;
     virtual void displayImage(std::unique_ptr<QPixmap> _pixmap);
@@ -100,7 +100,7 @@ private:
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
     QTimer *animationTimer;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
-    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode;
+    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, center1to1;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_UPDATE_RATE = 7;

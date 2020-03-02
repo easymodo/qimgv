@@ -364,9 +364,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-117</y>
+                <y>0</y>
                 <width>426</width>
-                <height>993</height>
+                <height>1022</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -909,6 +909,13 @@
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <widget class="QCheckBox" name="centerIn1to1ModeCheckBox">
+                    <property name="text">
+                     <string>Center images in 1:1 mode</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -1309,8 +1316,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>440</width>
-                <height>496</height>
+                <width>307</width>
+                <height>381</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -1876,8 +1883,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>440</width>
-                <height>496</height>
+                <width>381</width>
+                <height>176</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">

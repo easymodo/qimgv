@@ -200,6 +200,8 @@ public:
     void setUseOpenGL(bool mode);
     void setZoomIndicatorMode(ZoomIndicatorMode mode);
     ZoomIndicatorMode zoomIndicatorMode();
+    void setCenterIn1to1Mode(bool mode);
+    bool centerIn1to1Mode();
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

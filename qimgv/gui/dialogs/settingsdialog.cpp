@@ -98,6 +98,7 @@ void SettingsDialog::readSettings() {
     ui->cursorAutohideCheckBox->setChecked(settings->cursorAutohide());
     ui->keepFitModeCheckBox->setChecked(settings->keepFitMode());
     ui->useOpenGLCheckBox->setChecked(settings->useOpenGL());
+    ui->centerIn1to1ModeCheckBox->setChecked(settings->centerIn1to1Mode());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -208,6 +209,7 @@ void SettingsDialog::applySettings() {
     settings->setCursorAutohide(ui->cursorAutohideCheckBox->isChecked());
     settings->setKeepFitMode(ui->keepFitModeCheckBox->isChecked());
     settings->setUseOpenGL(ui->useOpenGLCheckBox->isChecked());
+    settings->setCenterIn1to1Mode(ui->centerIn1to1ModeCheckBox->isChecked());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 

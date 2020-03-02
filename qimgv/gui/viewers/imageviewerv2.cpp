@@ -10,6 +10,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     smoothUpscaling(true),
     forceFastScale(false),
     keepFitMode(false),
+    center1to1(true),
     mouseInteraction(MouseInteractionState::MOUSE_NONE),
     minScale(0.01f),
     maxScale(500.0f),
@@ -75,6 +76,7 @@ void ImageViewerV2::readSettings() {
     imageFitModeDefault = settings->imageFitMode();
     zoomStep = settings->zoomStep();
     transparencyGridEnabled = settings->transparencyGrid();
+    center1to1 = settings->centerIn1to1Mode();
     scene->setBackgroundBrush(settings->backgroundColor());
     setScalingFilter(settings->scalingFilter());
     setFitMode(imageFitModeDefault);
@@ -544,7 +546,13 @@ void ImageViewerV2::fitNormal() {
         return;
     swapToOriginalPixmap();
     doZoom(1.0f);
-    centerOnPixmap();
+    if(center1to1) {
+        centerOnPixmap();
+    } else {
+        centerOn(QPointF(0,0));
+        centerIfNecessary();
+        snapToEdges();
+    }
 }
 
 void ImageViewerV2::setFitMode(ImageFitMode newMode) {
@@ -697,7 +705,7 @@ void ImageViewerV2::centerIfNecessary() {
 }
 
 void ImageViewerV2::snapToEdges() {
-    QRect imgRect = imageRect();
+    QRect imgRect = scaledRect();
     // current vport center
     QPointF centerTarget = mapToScene(viewport()->rect()).boundingRect().center();
     qreal xShift = 0;
@@ -777,7 +785,7 @@ QSize ImageViewerV2::scaledSize() const {
 }
 
 // in viewport coords
-QRect ImageViewerV2::imageRect() const {
+QRect ImageViewerV2::scaledRect() const {
     QRectF pixmapSceneRect = pixmapItem.mapRectToScene(pixmapItem.boundingRect());
     return QRect(mapFromScene(pixmapSceneRect.topLeft()),
                  mapFromScene(pixmapSceneRect.bottomRight()));
