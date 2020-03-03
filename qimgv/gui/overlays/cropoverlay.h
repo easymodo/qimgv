@@ -36,7 +36,7 @@ signals:
     void positionChanged(float x, float y);
     void selectionChanged(QRect);
     void escPressed();
-    void crop();
+    void cropDefault();
     void cropSave();
 
 protected:

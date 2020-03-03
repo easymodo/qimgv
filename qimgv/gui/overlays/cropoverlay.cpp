@@ -618,7 +618,7 @@ void CropOverlay::keyPressEvent(QKeyEvent *event) {
         if(event->modifiers() == Qt::ShiftModifier)
             emit cropSave();
         else
-            emit crop();
+            emit cropDefault();
     } else if(event->key() == Qt::Key_Escape) {
         clearSelection();
         emit escPressed();

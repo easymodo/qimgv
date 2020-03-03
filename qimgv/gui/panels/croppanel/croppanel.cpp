@@ -40,7 +40,7 @@ CropPanel::CropPanel(CropOverlay *_overlay, QWidget *parent) :
     connect(this, SIGNAL(aspectRatioChanged(QPointF)),
             overlay, SLOT(setAspectRatio(QPointF)));
     connect(overlay, SIGNAL(escPressed()), this, SIGNAL(cancel()));
-    connect(overlay, SIGNAL(crop()), this, SLOT(doCrop()));
+    connect(overlay, SIGNAL(cropDefault()), this, SLOT(doCropDefaultAction()));
     connect(overlay, SIGNAL(cropSave()), this, SLOT(doCropSave()));
     connect(this, SIGNAL(selectAll()), overlay, SLOT(selectAll()));
 }
