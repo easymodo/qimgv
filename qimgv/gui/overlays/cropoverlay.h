@@ -36,7 +36,8 @@ signals:
     void positionChanged(float x, float y);
     void selectionChanged(QRect);
     void escPressed();
-    void enterPressed();
+    void crop();
+    void cropSave();
 
 protected:
     virtual void paintEvent(QPaintEvent *event);

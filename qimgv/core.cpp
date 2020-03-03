@@ -72,6 +72,7 @@ void Core::connectComponents() {
     connect(mw, &MW::copyRequested,         this, &Core::copyFile);
     connect(mw, &MW::moveRequested,         this, &Core::moveFile);
     connect(mw, &MW::cropRequested,         this, &Core::crop);
+    connect(mw, &MW::cropAndSaveRequested,  this, &Core::cropAndSave);
     connect(mw, &MW::saveAsClicked,         this, &Core::requestSavePath);
     connect(mw, &MW::saveRequested,         this, qOverload<>(&Core::saveImageToDisk));
     connect(mw, &MW::saveAsRequested,       this, qOverload<QString>(&Core::saveImageToDisk));
@@ -524,18 +525,25 @@ void Core::flipV() {
     }
 }
 
-void Core::crop(QRect rect) {
+bool Core::crop(QRect rect) {
     if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
-        return;
+        return false;
     std::shared_ptr<Image> img = model->getItem(model->currentFileName());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::cropped(imgStatic->getImage(), rect)));
         model->updateItem(model->currentFileName(), img);
+        return true;
     } else {
         mw->showMessage("Editing gifs/video is unsupported.");
+        return false;
     }
+}
+
+void Core::cropAndSave(QRect rect) {
+    if(crop(rect))
+        saveImageToDisk();
 }
 
 void Core::rotateByDegrees(int degrees) {
@@ -590,7 +598,7 @@ void Core::saveImageToDisk(QString filePath) {
         return;
     std::shared_ptr<Image> img = model->getItem(this->selectedFileName());
     if(img->save(filePath))
-        mw->showMessageSuccess("File saved: " + filePath);
+        mw->showMessageSuccess("File saved.");
     else
         mw->showError("Could not save file.");
     mw->hideSaveOverlay();

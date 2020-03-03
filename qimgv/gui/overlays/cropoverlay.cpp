@@ -615,7 +615,10 @@ void CropOverlay::onSelectionOutsideChange(QRect selection) {
 //------------------------------------------------------------------------------
 void CropOverlay::keyPressEvent(QKeyEvent *event) {
     if((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) && hasSelection()) {
-        emit enterPressed();
+        if(event->modifiers() == Qt::ShiftModifier)
+            emit cropSave();
+        else
+            emit crop();
     } else if(event->key() == Qt::Key_Escape) {
         clearSelection();
         emit escPressed();

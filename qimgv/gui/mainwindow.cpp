@@ -111,6 +111,8 @@ void MW::setupCropPanel() {
     connect(cropPanel, &CropPanel::cancel, this, &MW::hideCropPanel);
     connect(cropPanel, &CropPanel::crop,   this, &MW::hideCropPanel);
     connect(cropPanel, &CropPanel::crop,   this, &MW::cropRequested);
+    connect(cropPanel, &CropPanel::cropAndSave, this, &MW::hideCropPanel);
+    connect(cropPanel, &CropPanel::cropAndSave, this, &MW::cropAndSaveRequested);
 }
 
 void MW::setupCopyOverlay() {

@@ -14,8 +14,17 @@ CropPanel::CropPanel(CropOverlay *_overlay, QWidget *parent) :
 
     hide();
 
+    if(settings->defaultCropAction() == ACTION_CROP)
+        setFocusCropBtn();
+    else
+        setFocusCropSaveBtn();
+
+    connect(ui->cropButton, &PushButtonFocusInd::rightPressed, this, &CropPanel::setFocusCropBtn);
+    connect(ui->cropSaveButton, &PushButtonFocusInd::rightPressed, this, &CropPanel::setFocusCropSaveBtn);
+
     connect(ui->cancelButton, SIGNAL(clicked()), this, SIGNAL(cancel()));
-    connect(ui->cropButton, SIGNAL(clicked()), this, SLOT(onCropClicked()));
+    connect(ui->cropButton, SIGNAL(clicked()), this, SLOT(doCrop()));
+    connect(ui->cropSaveButton, SIGNAL(clicked()), this, SLOT(doCropSave()));
     connect(ui->width, SIGNAL(valueChanged(int)), this, SLOT(onSelectionChange()));
     connect(ui->height, SIGNAL(valueChanged(int)), this, SLOT(onSelectionChange()));
     connect(ui->posX, SIGNAL(valueChanged(int)), this, SLOT(onSelectionChange()));
@@ -31,12 +40,12 @@ CropPanel::CropPanel(CropOverlay *_overlay, QWidget *parent) :
     connect(this, SIGNAL(aspectRatioChanged(QPointF)),
             overlay, SLOT(setAspectRatio(QPointF)));
     connect(overlay, SIGNAL(escPressed()), this, SIGNAL(cancel()));
-    connect(overlay, SIGNAL(enterPressed()), this, SLOT(onCropClicked()));
+    connect(overlay, SIGNAL(crop()), this, SLOT(doCrop()));
+    connect(overlay, SIGNAL(cropSave()), this, SLOT(doCropSave()));
     connect(this, SIGNAL(selectAll()), overlay, SLOT(selectAll()));
 }
 
-CropPanel::~CropPanel()
-{
+CropPanel::~CropPanel() {
     delete ui;
 }
 
@@ -51,11 +60,27 @@ void CropPanel::setImageRealSize(QSize sz) {
     onAspectRatioSelected();
 }
 
-void CropPanel::onCropClicked() {
+void CropPanel::doCropDefaultAction() {
+    if(settings->defaultCropAction() == ACTION_CROP)
+        doCrop();
+    else
+        doCropSave();
+}
+
+void CropPanel::doCrop() {
     QRect target(ui->posX->value(), ui->posY->value(),
                  ui->width->value(), ui->height->value());
     if(target.width() > 0 && target.height() > 0 && target.size() != realSize)
         emit crop(target);
+    else
+        emit cancel();
+}
+
+void CropPanel::doCropSave() {
+    QRect target(ui->posX->value(), ui->posY->value(),
+                 ui->width->value(), ui->height->value());
+    if(target.width() > 0 && target.height() > 0 && target.size() != realSize)
+        emit cropAndSave(target);
     else
         emit cancel();
 }
@@ -150,6 +175,18 @@ void CropPanel::onAspectRatioSelected() {
         overlay->setAspectRatio(newAR);
 }
 
+void CropPanel::setFocusCropBtn() {
+    settings->setDefaultCropAction(ACTION_CROP);
+    ui->cropSaveButton->setHighlighted(false);
+    ui->cropButton->setHighlighted(true);
+}
+
+void CropPanel::setFocusCropSaveBtn() {
+    settings->setDefaultCropAction(ACTION_CROP_SAVE);
+    ui->cropSaveButton->setHighlighted(true);
+    ui->cropButton->setHighlighted(false);
+}
+
 // update input box values
 void CropPanel::onSelectionOutsideChange(QRect rect) {
     ui->width->blockSignals(true);
@@ -183,7 +220,10 @@ void CropPanel::show() {
 
 void CropPanel::keyPressEvent(QKeyEvent *event) {
     if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
-        emit onCropClicked();
+        if(event->modifiers() == Qt::ShiftModifier)
+            doCropSave();
+        else
+            doCropDefaultAction();
     } else if(event->key() == Qt::Key_Escape) {
         emit cancel();
     } else if(event->matches(QKeySequence::SelectAll)) {

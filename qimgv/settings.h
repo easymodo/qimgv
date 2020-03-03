@@ -54,6 +54,11 @@ enum ZoomIndicatorMode {
     INDICATOR_ENABLED
 };
 
+enum DefaultCropAction {
+    ACTION_CROP,
+    ACTION_CROP_SAVE
+};
+
 class Settings : public QObject
 {
     Q_OBJECT
@@ -202,6 +207,8 @@ public:
     ZoomIndicatorMode zoomIndicatorMode();
     void setCenterIn1to1Mode(bool mode);
     bool centerIn1to1Mode();
+    void setDefaultCropAction(DefaultCropAction mode);
+    DefaultCropAction defaultCropAction();
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

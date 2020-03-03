@@ -749,3 +749,14 @@ void Settings::setCenterIn1to1Mode(bool mode) {
 bool Settings::centerIn1to1Mode() {
     return settings->s->value("centerIn1to1Mode", true).toBool();
 }
+
+void Settings::setDefaultCropAction(DefaultCropAction mode) {
+    settings->s->setValue("defaultCropAction", mode);
+}
+
+DefaultCropAction Settings::defaultCropAction() {
+    int mode = settings->s->value("defaultCropAction", 0).toInt();
+    if(mode < 0 || mode > 1)
+        mode = 0;
+    return static_cast<DefaultCropAction>(mode);
+}

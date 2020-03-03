@@ -94,7 +94,8 @@ private slots:
     void resize(QSize size);
     void flipH();
     void flipV();
-    void crop(QRect rect);
+    bool crop(QRect rect);
+    void cropAndSave(QRect rect);
     void discardEdits();
     void toggleCropPanel();
     void requestSavePath();

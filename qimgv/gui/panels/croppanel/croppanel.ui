@@ -471,15 +471,18 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
-      <number>5</number>
+      <number>0</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
      <item>
-      <widget class="QPushButton" name="cropButton">
+      <widget class="PushButtonFocusInd" name="cropButton">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="accessibleName">
-        <string notr="true">Button</string>
+        <string notr="true">ButtonSetLeft</string>
        </property>
        <property name="text">
         <string>Crop</string>
@@ -487,16 +490,32 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="cancelButton">
+      <widget class="PushButtonFocusInd" name="cropSaveButton">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="accessibleName">
-        <string notr="true">Button</string>
+        <string notr="true">ButtonSetRight</string>
        </property>
        <property name="text">
-        <string>Cancel</string>
+        <string>Crop_save</string>
        </property>
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="cancelButton">
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="accessibleName">
+      <string notr="true">Button</string>
+     </property>
+     <property name="text">
+      <string>Cancel</string>
+     </property>
+    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer">
@@ -519,7 +538,21 @@
    <extends>QSpinBox</extends>
    <header>gui/customwidgets/spinboxinputfix.h</header>
   </customwidget>
+  <customwidget>
+   <class>PushButtonFocusInd</class>
+   <extends>QPushButton</extends>
+   <header>gui/customwidgets/pushbuttonfocusind.h</header>
+  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>width</tabstop>
+  <tabstop>height</tabstop>
+  <tabstop>posX</tabstop>
+  <tabstop>posY</tabstop>
+  <tabstop>ARcomboBox</tabstop>
+  <tabstop>ARX</tabstop>
+  <tabstop>ARY</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../resources.qrc"/>
  </resources>
