@@ -87,19 +87,35 @@ QImage* ThumbnailerRunnable::createThumbnailImage(DocumentInfo *imgInfo, int siz
     }
     reader.setFileName(filePath);
     reader.setFormat(imgInfo->format().toStdString().c_str());
-    Qt::AspectRatioMode method = squared?
+    Qt::AspectRatioMode ARMode = squared?
                 (Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
-    QSize scaledSize = reader.size().scaled(size, size, method);
-    reader.setScaledSize(scaledSize);
-    if(squared) {
-        QRect clip(0, 0, size, size);
-        QRect scaledRect(QPoint(0,0), scaledSize);
-        clip.moveCenter(scaledRect.center());
-        reader.setScaledClipRect(clip);
-    }
-    if(reader.supportsOption(QImageIOHandler::Size))
+    QImage *result = nullptr;
+    if(reader.supportsOption(QImageIOHandler::Size)) { // resize during via QImageReader
+        QSize scaledSize = reader.size().scaled(size, size, ARMode);
+        reader.setScaledSize(scaledSize);
+        if(squared) {
+            QRect clip(0, 0, size, size);
+            QRect scaledRect(QPoint(0,0), scaledSize);
+            clip.moveCenter(scaledRect.center());
+            reader.setScaledClipRect(clip);
+        }
         originalSize = reader.size();
-    QImage *scaled = new QImage(reader.read());
+        result = new QImage(reader.read());
+    } else { // scale & crop manually
+        QImage *fullSize = new QImage(reader.read());
+        originalSize = fullSize->size();
+        QSize scaledSize = fullSize->size().scaled(size, size, ARMode);
+        if(squared) {
+            QRect clip(0, 0, size, size);
+            QRect scaledRect(QPoint(0,0), scaledSize);
+            clip.moveCenter(scaledRect.center());
+            QImage scaled = QImage(fullSize->scaled(scaledSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            result = ImageLib::cropped(&scaled, clip);
+        } else {
+            result = new QImage(fullSize->scaled(scaledSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        }
+        delete fullSize;
+    }
     // force reader to close file so it can be deleted later
     reader.setFileName("");
     // remove temporary file in video case
@@ -107,7 +123,7 @@ QImage* ThumbnailerRunnable::createThumbnailImage(DocumentInfo *imgInfo, int siz
         QFile tmpFile(filePath);
         tmpFile.remove();
     }
-    return scaled;
+    return result;
 }
 
 ThumbnailerRunnable::~ThumbnailerRunnable() {
