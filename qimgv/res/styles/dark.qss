@@ -6,7 +6,7 @@
     background-color: #2f2f30;
     border: 1px solid #1d1d1e;
     border-radius: 2px;
-    padding: 7px 10px 7px 10px;
+    padding: 7px 12px 7px 12px;
 }
 
 [accessibleName="Button"]:hover, [accessibleName="ButtonSetLeft"]:hover, [accessibleName="ButtonSetRight"]:hover {

@@ -34,8 +34,18 @@ void PushButtonFocusInd::mouseReleaseEvent(QMouseEvent *event) {
 void PushButtonFocusInd::paintEvent(QPaintEvent *event) {
     QPushButton::paintEvent(event);
     if(mIsHighlighted) {
-        QPainter p(this);
-        p.setPen(QColor(98,98,100, 170));
-        p.drawLine(10, height() - 5, width() - 10, height() - 5);
+        QPainter painter(this);
+        QPointF p1(4, 4);
+        QPointF p2(13, 4);
+        QPointF p3(4, 13);
+        QPainterPath path(p1);
+        path.lineTo(p2);
+        path.lineTo(p3);
+        painter.fillPath(path, QColor(112,112,112, 180));
     }
 }
+
+
+
+
+

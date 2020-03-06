@@ -80,12 +80,6 @@
       </property>
       <item>
        <widget class="QLabel" name="label_6">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
         <property name="text">
          <string>Size</string>
         </property>
@@ -192,12 +186,6 @@
       </property>
       <item>
        <widget class="QLabel" name="label_7">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
         <property name="text">
          <string>Position</string>
         </property>
@@ -304,12 +292,6 @@
       </property>
       <item>
        <widget class="QLabel" name="label_5">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
         <property name="text">
          <string>Aspect Ratio</string>
         </property>
@@ -534,14 +516,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>SpinBoxInputFix</class>
-   <extends>QSpinBox</extends>
-   <header>gui/customwidgets/spinboxinputfix.h</header>
-  </customwidget>
-  <customwidget>
    <class>PushButtonFocusInd</class>
    <extends>QPushButton</extends>
    <header>gui/customwidgets/pushbuttonfocusind.h</header>
+  </customwidget>
+  <customwidget>
+   <class>SpinBoxInputFix</class>
+   <extends>QSpinBox</extends>
+   <header>gui/customwidgets/spinboxinputfix.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
