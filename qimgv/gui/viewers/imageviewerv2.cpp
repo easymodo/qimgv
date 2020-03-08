@@ -10,7 +10,6 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     smoothUpscaling(true),
     forceFastScale(false),
     keepFitMode(false),
-    center1to1(true),
     mouseInteraction(MouseInteractionState::MOUSE_NONE),
     minScale(0.01f),
     maxScale(500.0f),
@@ -76,7 +75,7 @@ void ImageViewerV2::readSettings() {
     imageFitModeDefault = settings->imageFitMode();
     zoomStep = settings->zoomStep();
     transparencyGridEnabled = settings->transparencyGrid();
-    center1to1 = settings->centerIn1to1Mode();
+    focusIn1to1 = settings->focusPointIn1to1Mode();
     scene->setBackgroundBrush(settings->backgroundColor());
     setScalingFilter(settings->scalingFilter());
     setFitMode(imageFitModeDefault);
@@ -544,15 +543,17 @@ void ImageViewerV2::fitWindow() {
 void ImageViewerV2::fitNormal() {
     if(!pixmap)
         return;
-    swapToOriginalPixmap();
-    doZoom(1.0f);
-    if(center1to1) {
-        centerOnPixmap();
-    } else {
-        centerOn(QPointF(0,0));
-        centerIfNecessary();
-        snapToEdges();
-    }
+    if(focusIn1to1 == FOCUS_CENTER)
+        setZoomAnchor(viewport()->rect().center() * devicePixelRatioF());
+    else if(focusIn1to1 == FOCUS_TOPLEFT)
+        setZoomAnchor(QPoint(0,0));
+    else if(focusIn1to1 == FOCUS_TOPRIGHT)
+        setZoomAnchor(QPoint(2000000,0));
+    else
+        setZoomAnchor(mapFromGlobal(cursor().pos()) * devicePixelRatioF());
+    zoomAnchored(1.0f);
+    centerIfNecessary();
+    snapToEdges();
 }
 
 void ImageViewerV2::setFitMode(ImageFitMode newMode) {

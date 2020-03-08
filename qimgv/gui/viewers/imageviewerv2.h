@@ -100,7 +100,7 @@ private:
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
     QTimer *animationTimer;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
-    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, center1to1;
+    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_UPDATE_RATE = 7;
@@ -118,9 +118,10 @@ private:
     QPair<QPointF, QPoint> zoomAnchor; // [pixmap coords, viewport coords]
 
     ImageFitMode imageFitMode, imageFitModeDefault;
+    ImageFocusPoint focusIn1to1;
     ScalingFilter mScalingFilter;
 
-    void zoomAnchored(float oldScale);
+    void zoomAnchored(float newScale);
     void fitNormal();
     void fitWidth();
     void fitWindow();

@@ -742,12 +742,15 @@ ZoomIndicatorMode Settings::zoomIndicatorMode() {
     return static_cast<ZoomIndicatorMode>(mode);
 }
 //------------------------------------------------------------------------------
-void Settings::setCenterIn1to1Mode(bool mode) {
-    settings->s->setValue("centerIn1to1Mode", mode);
+void Settings::setFocusPointIn1to1Mode(ImageFocusPoint mode) {
+    settings->s->setValue("focusPointIn1to1Mode", mode);
 }
 
-bool Settings::centerIn1to1Mode() {
-    return settings->s->value("centerIn1to1Mode", true).toBool();
+ImageFocusPoint Settings::focusPointIn1to1Mode() {
+    int mode = settings->s->value("focusPointIn1to1Mode", 2).toInt();
+    if(mode < 0 || mode > 3)
+        mode = 2;
+    return static_cast<ImageFocusPoint>(mode);
 }
 
 void Settings::setDefaultCropAction(DefaultCropAction mode) {

@@ -59,6 +59,13 @@ enum DefaultCropAction {
     ACTION_CROP_SAVE
 };
 
+enum ImageFocusPoint {
+    FOCUS_TOPLEFT,
+    FOCUS_TOPRIGHT,
+    FOCUS_CENTER,
+    FOCUS_CURSOR
+};
+
 class Settings : public QObject
 {
     Q_OBJECT
@@ -205,8 +212,8 @@ public:
     void setUseOpenGL(bool mode);
     void setZoomIndicatorMode(ZoomIndicatorMode mode);
     ZoomIndicatorMode zoomIndicatorMode();
-    void setCenterIn1to1Mode(bool mode);
-    bool centerIn1to1Mode();
+    void setFocusPointIn1to1Mode(ImageFocusPoint mode);
+    ImageFocusPoint focusPointIn1to1Mode();
     void setDefaultCropAction(DefaultCropAction mode);
     DefaultCropAction defaultCropAction();
 private:

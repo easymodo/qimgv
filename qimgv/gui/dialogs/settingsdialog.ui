@@ -364,9 +364,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-144</y>
                 <width>426</width>
-                <height>1022</height>
+                <height>1028</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -756,6 +756,47 @@
                 </layout>
                </item>
                <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_11">
+                 <property name="leftMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>9</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="label_26">
+                   <property name="text">
+                    <string>Focus in 1:1 mode</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="focusPointIn1to1ModeComboBox">
+                   <item>
+                    <property name="text">
+                     <string>Top left</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Top right</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Center</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>At cursor</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_13">
                  <property name="leftMargin">
                   <number>9</number>
@@ -906,13 +947,6 @@
                    <widget class="QCheckBox" name="keepFitModeCheckBox">
                     <property name="text">
                      <string>Keep fit mode between images</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="centerIn1to1ModeCheckBox">
-                    <property name="text">
-                     <string>Center images in 1:1 mode</string>
                     </property>
                    </widget>
                   </item>
