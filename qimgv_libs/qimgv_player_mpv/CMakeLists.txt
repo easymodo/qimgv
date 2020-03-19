@@ -15,7 +15,8 @@ include(GNUInstallDirs)
 add_library(qimgv_player_mpv SHARED
     src/videoplayer.cpp
     src/mpvwidget.cpp
-    src/videoplayermpv.cpp)
+    src/videoplayermpv.cpp
+    src/qthelper.hpp)
 
 target_compile_features(qimgv_player_mpv PRIVATE cxx_std_11)
 
