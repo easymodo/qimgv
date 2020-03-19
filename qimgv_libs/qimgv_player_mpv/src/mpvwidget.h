@@ -3,7 +3,7 @@
 #include <QtWidgets/QOpenGLWidget>
 #include <mpv/client.h>
 #include <mpv/opengl_cb.h>
-#include <mpv/qthelper.hpp>
+#include "qthelper.hpp"
 #include <QDebug>
 #include <ctime>
 #include <QSurfaceFormat>
