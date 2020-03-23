@@ -21,7 +21,8 @@ enum MouseInteractionState {
     MOUSE_DRAG_BEGIN,
     MOUSE_DRAG,
     MOUSE_PAN,
-    MOUSE_ZOOM
+    MOUSE_ZOOM,
+    MOUSE_WHEEL_ZOOM
 };
 
 class ImageViewerV2 : public QGraphicsView
@@ -98,7 +99,7 @@ private:
     std::unique_ptr<QPixmap> pixmapScaled;
     std::unique_ptr<QMovie> movie;
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
-    QTimer *animationTimer;
+    QTimer *animationTimer, *scaleTimer;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
     bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode;
     MouseInteractionState mouseInteraction;

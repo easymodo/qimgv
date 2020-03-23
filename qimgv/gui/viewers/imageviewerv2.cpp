@@ -23,7 +23,6 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
 
     this->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
     setFocusPolicy(Qt::NoFocus);
-    setMouseTracking(true);
     setAcceptDrops(false);
 
     dpr = this->devicePixelRatioF();
@@ -39,6 +38,10 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
 
     animationTimer = new QTimer(this);
     animationTimer->setSingleShot(true);
+
+    scaleTimer = new QTimer(this);
+    scaleTimer->setSingleShot(true);
+    scaleTimer->setInterval(80);
     zoomThreshold = static_cast<int>(devicePixelRatioF() * 4.);
 
     pixmapItem.setTransformationMode(Qt::SmoothTransformation);
@@ -60,6 +63,10 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
 
     connect(scrollTimeLineX, &QTimeLine::frameChanged, this, &ImageViewerV2::scrollToX);
     connect(scrollTimeLineY, &QTimeLine::frameChanged, this, &ImageViewerV2::scrollToY);
+
+    QObject::connect(scaleTimer, &QTimer::timeout, [this]() {
+        this->requestScaling();
+    });
 
     readSettings();
     connect(settings, &Settings::settingsChanged, this, &ImageViewerV2::readSettings);
@@ -181,6 +188,7 @@ void ImageViewerV2::displayImage(std::unique_ptr<QPixmap> _pixmap) {
         if(imageFitMode == FIT_FREE)
             imageFitMode = FIT_WINDOW;
         applyFitMode();
+        requestScaling();
 
         if(transparencyGridEnabled)
             drawTransparencyGrid();
@@ -208,7 +216,6 @@ void ImageViewerV2::closeImage() {
 }
 
 void ImageViewerV2::setScaledPixmap(std::unique_ptr<QPixmap> newFrame) {
-    qDebug() << newFrame->size() << scaledSize() << scaledRect();
     if(!movie && newFrame->size() != scaledSize() * dpr)
         return;
 
@@ -294,6 +301,7 @@ Qt::TransformationMode ImageViewerV2::selectTransformationMode() {
 void ImageViewerV2::setExpandImage(bool mode) {
     expandImage = mode;
     applyFitMode();
+    requestScaling();
 }
 
 void ImageViewerV2::show() {
@@ -308,11 +316,10 @@ void ImageViewerV2::hide() {
 }
 
 void ImageViewerV2::requestScaling() {
-    if(!pixmap || movie || (!smoothUpscaling && pixmapItem.scale() >= 1.0f))
+    if(!pixmap || pixmapItem.scale() == 1.0f || (!smoothUpscaling && pixmapItem.scale() >= 1.0f) || movie)
         return;
     // request "real" scaling when graphicsscene scaling is insufficient
     // (it uses a single pass bilinear which is sharp but produces artifacts on low zoom levels)
-    qDebug() << "_________" << scaledSize() * dpr << " " << QSizeF(scaledSize()) * dpr << " " << scene->itemsBoundingRect();
     if(currentScale() < FAST_SCALE_THRESHOLD)
         emit scalingRequested(scaledSize() * dpr, mScalingFilter);
 }
@@ -389,9 +396,8 @@ void ImageViewerV2::mousePressEvent(QMouseEvent *event) {
 }
 
 void ImageViewerV2::mouseMoveEvent(QMouseEvent *event) {
-    event->ignore();
     QGraphicsView::mouseMoveEvent(event);
-    if(!pixmap || mouseInteraction == MouseInteractionState::MOUSE_DRAG)
+    if(!pixmap || mouseInteraction == MouseInteractionState::MOUSE_DRAG || mouseInteraction == MouseInteractionState::MOUSE_WHEEL_ZOOM)
         return;
 
     if(event->buttons() & Qt::LeftButton) {
@@ -453,9 +459,11 @@ void ImageViewerV2::mouseReleaseEvent(QMouseEvent *event) {
     mouseInteraction = MouseInteractionState::MOUSE_NONE;
 }
 
+// warning for future me:
+// for some reason in qgraphicsview wheelEvent is followed by moveEvent (wtf?)
 void ImageViewerV2::wheelEvent(QWheelEvent *event) {
     if(event->buttons() & Qt::RightButton) {
-        mouseInteraction = MOUSE_ZOOM;
+        mouseInteraction = MOUSE_WHEEL_ZOOM;
         int angleDelta = event->angleDelta().ry();
         if(angleDelta > 0)
             zoomInCursor();
@@ -515,7 +523,6 @@ void ImageViewerV2::fitWidth() {
         centerOn(centerTarget);
     }
     snapToEdges();
-    requestScaling();
 }
 
 void ImageViewerV2::fitWindow() {
@@ -538,7 +545,6 @@ void ImageViewerV2::fitWindow() {
             newScale = expandLimit;
         doZoom(newScale);
         centerOnPixmap();
-        requestScaling();
     } else {
         fitNormal();
     }
@@ -560,12 +566,6 @@ void ImageViewerV2::fitNormal() {
     snapToEdges();
 }
 
-void ImageViewerV2::setFitMode(ImageFitMode newMode) {
-    stopPosAnimation();
-    imageFitMode = newMode;
-    applyFitMode();
-}
-
 void ImageViewerV2::applyFitMode() {
     switch(imageFitMode) {
         case FIT_ORIGINAL:
@@ -582,16 +582,31 @@ void ImageViewerV2::applyFitMode() {
     }
 }
 
+// public, sends scale request
+void ImageViewerV2::setFitMode(ImageFitMode newMode) {
+    if(scaleTimer->isActive())
+        scaleTimer->stop();
+    stopPosAnimation();
+    imageFitMode = newMode;
+    applyFitMode();
+    requestScaling();
+}
+
+// public, sends scale request
 void ImageViewerV2::setFitOriginal() {
     setFitMode(FIT_ORIGINAL);
 }
 
+// public, sends scale request
 void ImageViewerV2::setFitWidth() {
     setFitMode(FIT_WIDTH);
+    requestScaling();
 }
 
+// public, sends scale request
 void ImageViewerV2::setFitWindow() {
     setFitMode(FIT_WINDOW);
+    requestScaling();
 }
 
 void ImageViewerV2::resizeEvent(QResizeEvent *event) {
@@ -607,7 +622,9 @@ void ImageViewerV2::resizeEvent(QResizeEvent *event) {
             applyFitMode();
         }
         update();
-        requestScaling();
+        if(scaleTimer->isActive())
+            scaleTimer->stop();
+        scaleTimer->start();
     }
 }
 
@@ -677,6 +694,7 @@ void ImageViewerV2::zoomAnchored(float newScale) {
     // we do this in viewport coordinates to avoid any rounding errors
     QPointF diff = zoomAnchor.second - mapFromScene(pixmapItem.mapToScene(zoomAnchor.first));
     centerOn(vportCenter - diff);
+    requestScaling();
  }
 
 // zoom in around viewport center
@@ -731,6 +749,7 @@ void ImageViewerV2::snapToEdges() {
 }
 
 void ImageViewerV2::zoomInCursor() {
+    qDebug() << "zoomin";
     if(underMouse()) {
         setZoomAnchor(mapFromGlobal(cursor().pos()));
         zoomAnchored(currentScale() * (1.0f + zoomStep));
@@ -762,7 +781,6 @@ void ImageViewerV2::doZoom(float newScale) {
     pixmapItem.setTransformationMode(selectTransformationMode());
     swapToOriginalPixmap();
     emit scaleChanged(newScale);
-    requestScaling();
 }
 
 ImageFitMode ImageViewerV2::fitMode() const {

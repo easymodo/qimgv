@@ -1,7 +1,7 @@
 #include "imagelib.h"
 
 
-QString type2str(int type) {
+/*QString type2str(int type) {
   QString r;
 
   uchar depth = type & CV_MAT_DEPTH_MASK;
@@ -23,6 +23,7 @@ QString type2str(int type) {
 
   return r;
 }
+*/
 
 QImage *ImageLib::rotated(const QImage *src, int grad) {
     QImage *img = new QImage();
