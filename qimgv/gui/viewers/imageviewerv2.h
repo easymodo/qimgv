@@ -111,7 +111,7 @@ private:
     // how many px you can move while holding RMB until it counts as a zoom attempt
     int zoomThreshold = 4;
     int dragThreshold = 10;
-    qreal zoomStep = 0.1;
+    qreal zoomStep = 0.1, dpr;
     float minScale;
     float maxScale;
     float expandLimit;
