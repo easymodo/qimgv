@@ -555,10 +555,8 @@ void ImageViewerV2::fitNormal() {
         return;
     if(focusIn1to1 == FOCUS_CENTER)
         setZoomAnchor(viewport()->rect().center());
-    else if(focusIn1to1 == FOCUS_TOPLEFT)
-        setZoomAnchor(QPoint(0,0));
-    else if(focusIn1to1 == FOCUS_TOPRIGHT)
-        setZoomAnchor(QPoint(2000000,0));
+    else if(focusIn1to1 == FOCUS_TOP)
+        setZoomAnchor(QPoint(viewport()->rect().center().x(), 0));
     else
         setZoomAnchor(mapFromGlobal(cursor().pos()));
     zoomAnchored(1.0f);

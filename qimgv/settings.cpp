@@ -747,9 +747,9 @@ void Settings::setFocusPointIn1to1Mode(ImageFocusPoint mode) {
 }
 
 ImageFocusPoint Settings::focusPointIn1to1Mode() {
-    int mode = settings->s->value("focusPointIn1to1Mode", 2).toInt();
-    if(mode < 0 || mode > 3)
-        mode = 2;
+    int mode = settings->s->value("focusPointIn1to1Mode", 1).toInt();
+    if(mode < 0 || mode > 2)
+        mode = 1;
     return static_cast<ImageFocusPoint>(mode);
 }
 

@@ -60,8 +60,7 @@ enum DefaultCropAction {
 };
 
 enum ImageFocusPoint {
-    FOCUS_TOPLEFT,
-    FOCUS_TOPRIGHT,
+    FOCUS_TOP,
     FOCUS_CENTER,
     FOCUS_CURSOR
 };
