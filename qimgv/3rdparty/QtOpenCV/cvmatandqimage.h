@@ -83,6 +83,8 @@ QImage mat2Image(const cv::Mat &mat, MatColorOrder order=MCO_BGR, QImage::Format
 cv::Mat image2Mat_shared(const QImage &img, MatColorOrder *order=0);
 QImage mat2Image_shared(const cv::Mat &mat, QImage::Format formatHint = QImage::Format_Invalid);
 
+bool isSupported(QImage::Format format);
+
 } //namespace QtOcv
 
 #endif // CVMATANDQIMAGE_H

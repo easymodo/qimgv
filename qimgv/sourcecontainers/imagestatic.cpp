@@ -31,8 +31,16 @@ void ImageStatic::load() {
 void ImageStatic::loadGeneric() {
     std::unique_ptr<const QImage> img(new QImage(mPath, mDocInfo->format().toStdString().c_str()));
     img = ImageLib::exifRotated(std::move(img), mDocInfo.get()->exifOrientation());
-    // set image
-    image = std::move(img);
+    // scaling this format via qt results in transparent background
+    // it rare enough so lets just convert it to the closest working thing
+    if(img->format() == QImage::Format_Mono) {
+        QImage *imgConverted = new QImage();
+        *imgConverted = img->convertToFormat(QImage::Format_Grayscale8);
+        image.reset(imgConverted);
+    } else {
+        // set image
+        image = std::move(img);
+    }
     mLoaded = true;
 }
 

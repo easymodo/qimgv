@@ -151,7 +151,7 @@ QImage *ImageLib::cropped(QRect newRect, QRect targetRes, bool upscaled) {
 */
 
 QImage* ImageLib::scaled(std::shared_ptr<const QImage> source, QSize destSize, ScalingFilter filter) {
-    if(source->format() == QImage::Format_Indexed8 && filter > 1)
+    if(filter > 1 && !QtOcv::isSupported(source->format()))
         filter = QI_FILTER_BILINEAR;
     switch (filter) {
         case QI_FILTER_NEAREST:
@@ -215,7 +215,7 @@ QImage* ImageLib::scaled_CV(std::shared_ptr<const QImage> source, QSize destSize
             *dest = QtOcv::mat2Image(dstMat_sharpened);
         }
     }
-    qDebug() << "Filter:" << filter << " sharpen=" << sharpen << " source size:" << source->size() << "->" << (float)destSize.width() / source->width() << ": " << t.elapsed() << " ms.";
+    //qDebug() << "Filter:" << filter << " sharpen=" << sharpen << " source size:" << source->size() << "->" << (float)destSize.width() / source->width() << ": " << t.elapsed() << " ms.";
     return dest;
 }
 #endif

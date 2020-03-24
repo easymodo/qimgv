@@ -749,7 +749,6 @@ void ImageViewerV2::snapToEdges() {
 }
 
 void ImageViewerV2::zoomInCursor() {
-    qDebug() << "zoomin";
     if(underMouse()) {
         setZoomAnchor(mapFromGlobal(cursor().pos()));
         zoomAnchored(currentScale() * (1.0f + zoomStep));

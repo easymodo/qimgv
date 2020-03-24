@@ -414,4 +414,22 @@ QImage mat2Image_shared(const cv::Mat &mat, QImage::Format formatHint)
     return img;
 }
 
+// todo: 64, mono
+bool isSupported(QImage::Format format) {
+    if(format == QImage::Format_RGB888 ||
+       //format == QImage::Format_Indexed8 || // result is grayscale which may be wrong
+       //format == QImage::Format_Alpha8 ||
+       format == QImage::Format_Grayscale8 ||
+       format == QImage::Format_RGB32  ||
+       format == QImage::Format_ARGB32 ||
+       format == QImage::Format_ARGB32_Premultiplied ||
+       format == QImage::Format_RGBX8888 ||
+       format == QImage::Format_RGBA8888 ||
+       format == QImage::Format_RGBA8888_Premultiplied)
+    {
+        return true;
+    }
+    return false;
+}
+
 } //namespace QtOcv
