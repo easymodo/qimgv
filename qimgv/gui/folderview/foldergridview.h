@@ -45,7 +45,7 @@ private slots:
     void selectBelow();
     void selectNext();
     void selectPrev();
-    void onThumbnailPressed();
+    void onitemSelected();
 protected:
     void resizeEvent(QResizeEvent *event);
     virtual void updateScrollbarIndicator();

@@ -31,9 +31,10 @@ void FolderViewProxy::init() {
     folderView->focusOn(stateBuf.selectedIndex);
     folderView->onSortingChanged(stateBuf.sortingMode);
 
-    connect(folderView.get(), &FolderView::thumbnailPressed, this, &FolderViewProxy::thumbnailPressed);
+    connect(folderView.get(), &FolderView::itemSelected, this, &FolderViewProxy::itemSelected);
     connect(folderView.get(), &FolderView::thumbnailsRequested, this, &FolderViewProxy::thumbnailsRequested);
     connect(folderView.get(), &FolderView::sortingSelected, this, &FolderViewProxy::sortingSelected);
+    connect(folderView.get(), &FolderView::directorySelected, this, &FolderViewProxy::directorySelected);
 }
 
 std::shared_ptr<DirectoryViewWrapper> FolderViewProxy::wrapper() {

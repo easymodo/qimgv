@@ -61,12 +61,10 @@ QString MenuItem::shortcut() {
 
 void MenuItem::setPixmap(QPixmap pixmap) {
     this->mIconLabel.setPixmap(pixmap);
-    //this->mIconLabel.setFixedSize(pixmap.size());
 }
 
 void MenuItem::setIcon(QIcon icon) {
     this->mIconLabel.setPixmap(icon.pixmap(16,16));
-    //this->mIconLabel.setFixedSize(16,16);
 }
 
 void MenuItem::paintEvent(QPaintEvent *event) {

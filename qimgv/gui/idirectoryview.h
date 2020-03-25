@@ -19,6 +19,6 @@ public:
     virtual void reloadItem(int index) = 0;
 
 //signals
-    virtual void thumbnailPressed(int) = 0;
+    virtual void itemSelected(int) = 0;
     virtual void thumbnailsRequested(QList<int>, int, bool, bool) = 0;
 };

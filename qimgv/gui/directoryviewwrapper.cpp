@@ -5,7 +5,7 @@ DirectoryViewWrapper::DirectoryViewWrapper(QObject *parent) : QObject(parent) {
     view = dynamic_cast<IDirectoryView*>(parent);
     Q_ASSERT(view);
 
-    connect(parent, SIGNAL(thumbnailPressed(int)), this, SIGNAL(thumbnailPressed(int)));
+    connect(parent, SIGNAL(itemSelected(int)), this, SIGNAL(itemSelected(int)));
     connect(parent, SIGNAL(thumbnailsRequested(QList<int>, int, bool, bool)),
             this,   SIGNAL(thumbnailsRequested(QList<int>, int, bool, bool)));
 }

@@ -35,9 +35,10 @@ protected:
     void showEvent(QShowEvent *event) override;
 
 signals:
-    void thumbnailPressed(int) override;
+    void itemSelected(int) override;
     void thumbnailsRequested(QList<int>, int, bool, bool) override;
     void sortingSelected(SortingMode);
+    void directorySelected(QString);
 
 private:
     std::shared_ptr<FolderView> folderView;

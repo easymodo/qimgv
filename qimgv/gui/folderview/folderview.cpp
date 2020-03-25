@@ -7,6 +7,23 @@ FolderView::FolderView(QWidget *parent) :
 {
     ui->setupUi(this);
     mWrapper.reset(new DirectoryViewWrapper(this));
+
+    dirModel = new FileSystemModelCustom(this);
+    dirModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
+    ui->directoryTreeView->setModel(dirModel);
+
+    QHeaderView* header = ui->directoryTreeView->header();
+
+    header->hideSection(1); // size
+    header->hideSection(2); // type
+    header->hideSection(3); // mod date
+
+#ifndef _WIN32
+    dirModel->setRootPath(QDir::homePath());
+    QModelIndex idx = dirModel->index(dirModel->rootPath());
+    ui->directoryTreeView->setRootIndex(idx);
+#endif
+
     ui->openButton->setAction("open");
     ui->openButton->setIconPath(":res/icons/buttons/panel/open16.png");
     ui->settingsButton->setAction("openSettings");
@@ -27,7 +44,7 @@ FolderView::FolderView(QWidget *parent) :
     ui->zoomSlider->setSingleStep(1);
     ui->zoomSlider->setPageStep(1);
 
-    connect(ui->thumbnailGrid, &FolderGridView::thumbnailPressed,     this, &FolderView::thumbnailPressed);
+    connect(ui->thumbnailGrid, &FolderGridView::itemSelected,     this, &FolderView::itemSelected);
     connect(ui->thumbnailGrid, &FolderGridView::thumbnailsRequested,  this, &FolderView::thumbnailsRequested);
     connect(ui->thumbnailGrid, &FolderGridView::thumbnailSizeChanged, this, &FolderView::onThumbnailSizeChanged);
     connect(ui->thumbnailGrid, &FolderGridView::showLabelsChanged,    this, &FolderView::onShowLabelsChanged);
@@ -133,7 +150,21 @@ void FolderView::focusOn(int index) {
 }
 
 void FolderView::setDirectoryPath(QString path) {
+    //dirModel->setRootPath(path);
+    //QModelIndex idx = dirModel->index(dirModel->rootPath());
+    //ui->directoryTreeView->setRootIndex(idx);
+
+    QModelIndex index = dirModel->index(path);
+
     ui->directoryPathLabel->setText(path);
+    dirModel->index(path);
+    ui->directoryTreeView->expand(index);
+    ui->directoryTreeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+}
+
+void FolderView::onTreeViewClicked(QModelIndex index) {
+    QString path = dirModel->fileInfo(index).absoluteFilePath();
+    emit directorySelected(dirModel->fileInfo(index).absoluteFilePath());
 }
 
 void FolderView::addItem() {

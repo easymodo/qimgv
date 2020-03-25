@@ -22,7 +22,7 @@ public slots:
     void reloadItem(int index);
 
 signals:
-    void thumbnailPressed(int);
+    void itemSelected(int);
     void thumbnailsRequested(QList<int>, int, bool, bool);
 
 private:

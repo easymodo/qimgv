@@ -13,13 +13,14 @@ FolderGridView::FolderGridView(QWidget *parent)
 
     // turn this off until [multi]selection is implemented
     setDrawScrollbarIndicator(false);
+    setSelectMode(SELECT_BY_DOUBLECLICK);
 
     setupLayout();
-    connect(this, &ThumbnailView::thumbnailPressed,
-            this, &FolderGridView::onThumbnailPressed);
+    connect(this, &ThumbnailView::itemSelected,
+            this, &FolderGridView::onitemSelected);
 }
 
-void FolderGridView::onThumbnailPressed() {
+void FolderGridView::onitemSelected() {
     shiftedCol = -1;
 }
 
@@ -209,6 +210,7 @@ void FolderGridView::setupLayout() {
     setFrameShape(QFrame::NoFrame);
     scene.addItem(&holderWidget);
     holderWidget.setLayout(flowLayout);
+    holderWidget.setContentsMargins(0,0,0,0);
 }
 
 ThumbnailWidget* FolderGridView::createThumbnailWidget() {
@@ -251,7 +253,7 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
     else if(shortcut == "Down")
         selectBelow();
     else if(shortcut == "Enter")
-        emit thumbnailPressed(selectedIndex());
+        emit itemSelected(selectedIndex());
     else if(shortcut == "Home")
         selectFirst();
     else if(shortcut == "End")
@@ -306,9 +308,9 @@ void FolderGridView::setThumbnailSize(int newSize) {
 }
 
 void FolderGridView::fitToContents() {
-    holderWidget.setMinimumSize(size() - QSize(scrollBar->width(), 0));
-    holderWidget.setMaximumSize(size() - QSize(scrollBar->width(), 0));
+    holderWidget.setGeometry(0,0, width() - scrollBar->width(), height());
     fitSceneToContents();
+    qDebug() << holderWidget.geometry() << this->sceneRect();
 }
 
 void FolderGridView::resizeEvent(QResizeEvent *event) {

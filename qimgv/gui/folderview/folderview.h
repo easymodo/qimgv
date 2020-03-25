@@ -3,9 +3,11 @@
 #include <QWidget>
 #include <QStyledItemDelegate>
 #include <QAbstractItemView>
+#include <QFileSystemModel>
 #include "gui/idirectoryview.h"
 #include "gui/directoryviewwrapper.h"
 #include "gui/folderview/foldergridview.h"
+#include "gui/folderview/filesystemmodelcustom.h"
 #include "gui/customwidgets/actionbutton.h"
 
 namespace Ui {
@@ -49,15 +51,18 @@ protected slots:
     void onZoomSliderValueChanged(int value);
 
 signals:
-    void thumbnailPressed(int) Q_DECL_OVERRIDE;
+    void itemSelected(int) Q_DECL_OVERRIDE;
     void thumbnailsRequested(QList<int>, int, bool, bool) Q_DECL_OVERRIDE;
     void sortingSelected(SortingMode);
+    void directorySelected(QString path);
 
 private slots:
     void onSortingSelected(int);
-
     void readSettings();
+
+    void onTreeViewClicked(QModelIndex index);
 private:
     Ui::FolderView *ui;
+    FileSystemModelCustom *dirModel;
     std::shared_ptr<DirectoryViewWrapper> mWrapper;
 };

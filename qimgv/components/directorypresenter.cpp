@@ -45,7 +45,7 @@ void DirectoryPresenter::connectView(std::shared_ptr<DirectoryViewWrapper> view)
         if(model)
             view->populate(model->itemCount());
         // todo: connect to presenter only!! passthrough signals / slots
-        connect(view.get(), &DirectoryViewWrapper::thumbnailPressed,    this, &DirectoryPresenter::loadByIndex);
+        connect(view.get(), &DirectoryViewWrapper::itemSelected,    this, &DirectoryPresenter::loadByIndex);
         connect(view.get(), &DirectoryViewWrapper::thumbnailsRequested, this, &DirectoryPresenter::generateThumbnails);
     }
 }

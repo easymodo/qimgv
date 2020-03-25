@@ -70,6 +70,7 @@ target_sources(qimgv PRIVATE
     folderview/folderview.cpp
     folderview/folderviewproxy.cpp
     folderview/thumbnailgridwidget.cpp
+    folderview/filesystemmodelcustom.cpp
 )
 
 # UI Files

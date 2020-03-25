@@ -25,6 +25,11 @@ enum ThumbnailViewOrientation {
     THUMBNAILVIEW_VERTICAL
 };
 
+enum ThumbnailSelectMode {
+    SELECT_BY_PRESS,
+    SELECT_BY_DOUBLECLICK
+};
+
 class ThumbnailView : public QGraphicsView, public IDirectoryView {
     Q_OBJECT
 public:
@@ -34,6 +39,7 @@ public:
     int selectedIndex();
     int itemCount();
 
+    void setSelectMode(ThumbnailSelectMode mode);
 public slots:
     void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
     void resetViewport();
@@ -50,7 +56,7 @@ public slots:
     virtual void reloadItem(int index) Q_DECL_OVERRIDE;
 
 signals:
-    void thumbnailPressed(int) Q_DECL_OVERRIDE;
+    void itemSelected(int) Q_DECL_OVERRIDE;
     void thumbnailsRequested(QList<int>, int, bool, bool) Q_DECL_OVERRIDE;
 
 private:
@@ -66,6 +72,7 @@ private:
     int mSelectedIndex, mDrawScrollbarIndicator;
 
     bool mCropThumbnails;
+    ThumbnailSelectMode selectMode;
 
     void createScrollTimeLine();
 protected:
@@ -114,6 +121,7 @@ protected:
     void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration);
     void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration, bool additive);
     void unloadAllThumbnails();
+    void mouseDoubleClickEvent(QMouseEvent *event);
 private slots:
     void centerOnX(int);
     void centerOnY(int);

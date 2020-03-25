@@ -40,7 +40,6 @@ void IconWidget::paintEvent(QPaintEvent *event) {
     opt.init(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
     if(pixmap) {
-        //p.fillRect(rect(), QBrush(QColor(100,100,200,255)));
         p.setRenderHint(QPainter::SmoothPixmapTransform);
         QPointF pos;
         if(hiResPixmap) {
