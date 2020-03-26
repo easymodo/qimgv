@@ -36,8 +36,8 @@ public slots:
     virtual void reloadItem(int index) Q_DECL_OVERRIDE;
     void addItem();
     void onFullscreenModeChanged(bool mode);
-
     void onSortingChanged(SortingMode mode);
+
 protected:
     void wheelEvent(QWheelEvent *event) Q_DECL_OVERRIDE;
     void focusInEvent(QFocusEvent *event) Q_DECL_OVERRIDE;
@@ -56,12 +56,15 @@ signals:
     void sortingSelected(SortingMode);
     void directorySelected(QString path);
     void draggedOut(int index);
+    void copyUrlsRequested(QList<QUrl>, QString path);
+    void moveUrlsRequested(QList<QUrl>, QString path);
 
 private slots:
     void onSortingSelected(int);
     void readSettings();
 
     void onTreeViewClicked(QModelIndex index);
+    void onDroppedIn(QList<QUrl>, QModelIndex index);
 private:
     Ui::FolderView *ui;
     FileSystemModelCustom *dirModel;

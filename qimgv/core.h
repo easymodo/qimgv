@@ -83,8 +83,10 @@ private slots:
     void close();
     void scalingRequest(QSize, ScalingFilter);
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
-    void moveFile(QString destDirectory);
-    void copyFile(QString destDirectory);
+    void copyCurrentFile(QString destDirectory);
+    void moveCurrentFile(QString destDirectory);
+    void copyUrls(QList<QUrl> urls, QString destDirectory);
+    void moveUrls(QList<QUrl> urls, QString destDirectory);
     void removeFile(QString fileName, bool trash);
     void onFileRemoved(QString fileName, int index);
     void onFileRenamed(QString from, int indexFrom, QString to, int indexTo);

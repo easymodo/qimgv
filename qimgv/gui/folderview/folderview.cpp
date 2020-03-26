@@ -54,6 +54,8 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->sortingComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &FolderView::onSortingSelected);
     connect(ui->showLabelsButton, &ActionButton::toggled, this, &FolderView::onShowLabelsButtonToggled);
 
+    connect(ui->directoryTreeView, &TreeViewCustom::droppedIn, this, &FolderView::onDroppedIn);
+
     ui->sortingComboBox->setItemDelegate(new QStyledItemDelegate(ui->sortingComboBox));
     ui->sortingComboBox->view()->setTextElideMode(Qt::ElideNone);
 
@@ -70,6 +72,10 @@ void FolderView::readSettings() {
     ui->thumbnailGrid->setThumbnailSize(settings->folderViewIconSize());
     ui->thumbnailGrid->setShowLabels(settings->showThumbnailLabels());
     onSortingChanged(settings->sortingMode());
+}
+
+void FolderView::onDroppedIn(QList<QUrl> urls, QModelIndex index) {
+    emit moveUrlsRequested(urls, dirModel->filePath(index));
 }
 
 void FolderView::onShowLabelsChanged(bool mode) {

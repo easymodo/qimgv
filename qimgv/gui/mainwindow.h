@@ -140,6 +140,8 @@ signals:
     void fullscreenStateChanged(bool);
     void copyRequested(QString);
     void moveRequested(QString);
+    void copyUrlsRequested(QList<QUrl>, QString);
+    void moveUrlsRequested(QList<QUrl>, QString);
     void resizeRequested(QSize);
     void renameRequested(QString);
     void cropRequested(QRect);

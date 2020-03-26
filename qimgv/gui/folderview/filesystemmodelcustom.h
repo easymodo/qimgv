@@ -10,6 +10,8 @@ public:
     FileSystemModelCustom(QObject *parent = nullptr);
     QVariant data(const QModelIndex &index, int role) const override;
 
+protected:
+    Qt::ItemFlags flags(const QModelIndex &index) const;
 private:
     QPixmap folderIcon;
 };

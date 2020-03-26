@@ -68,8 +68,10 @@ void Core::connectComponents() {
 
     connect(mw, &MW::opened,                this, &Core::loadPath);
     connect(mw, &MW::droppedIn,             this, &Core::onDropIn);
-    connect(mw, &MW::copyRequested,         this, &Core::copyFile);
-    connect(mw, &MW::moveRequested,         this, &Core::moveFile);
+    connect(mw, &MW::copyRequested,         this, &Core::copyCurrentFile);
+    connect(mw, &MW::moveRequested,         this, &Core::moveCurrentFile);
+    connect(mw, &MW::copyUrlsRequested,     this, &Core::copyUrls);
+    connect(mw, &MW::moveUrlsRequested,     this, &Core::moveUrls);
     connect(mw, &MW::cropRequested,         this, &Core::crop);
     connect(mw, &MW::cropAndSaveRequested,  this, &Core::cropAndSave);
     connect(mw, &MW::saveAsClicked,         this, &Core::requestSavePath);
@@ -432,7 +434,7 @@ void Core::showDirectory() {
     QDesktopServices::openUrl(QUrl::fromLocalFile(model->directory()));
 }
 
-void Core::moveFile(QString destDirectory) {
+void Core::moveCurrentFile(QString destDirectory) {
     if(model->isEmpty())
         return;
     mw->closeImage();
@@ -446,7 +448,27 @@ void Core::moveFile(QString destDirectory) {
     }
 }
 
-void Core::copyFile(QString destDirectory) {
+void Core::copyUrls(QList<QUrl> urls, QString destDirectory) {
+    if(model->isEmpty())
+        return;
+    FileOpResult result;
+    QList<QUrl>::iterator i;
+    for(i = urls.begin(); i != urls.end(); ++i) {
+        model->copyTo(destDirectory, (*i).fileName(), result);
+    }
+}
+
+void Core::moveUrls(QList<QUrl> urls, QString destDirectory) {
+    if(model->isEmpty())
+        return;
+    FileOpResult result;
+    QList<QUrl>::iterator i;
+    for(i = urls.begin(); i != urls.end(); ++i) {
+        model->moveTo(destDirectory, (*i).fileName(), result);
+    }
+}
+
+void Core::copyCurrentFile(QString destDirectory) {
     if(model->isEmpty())
         return;
     FileOpResult result;

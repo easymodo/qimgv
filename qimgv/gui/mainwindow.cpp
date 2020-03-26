@@ -66,6 +66,9 @@ void MW::setupUi() {
     connect(folderView.get(), &FolderViewProxy::sortingSelected, this, &MW::sortingSelected);
     connect(folderView.get(), &FolderViewProxy::directorySelected, this, &MW::opened);
     connect(folderView.get(), &FolderViewProxy::draggedOut, this, qOverload<int>(&MW::draggedOut));
+    connect(folderView.get(), &FolderViewProxy::copyUrlsRequested, this, &MW::copyUrlsRequested);
+    connect(folderView.get(), &FolderViewProxy::moveUrlsRequested, this, &MW::moveUrlsRequested);
+
     centralWidget.reset(new CentralWidget(docWidget, folderView, this));
     layout.addWidget(centralWidget.get());
     controlsOverlay = new ControlsOverlay(docWidget.get());
