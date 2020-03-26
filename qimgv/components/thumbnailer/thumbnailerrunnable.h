@@ -13,22 +13,21 @@
 #include <memory>
 #include <QImageWriter>
 
-class ThumbnailerRunnable : public QObject, public QRunnable
-{
+class ThumbnailerRunnable : public QObject, public QRunnable {
     Q_OBJECT
 public:
-    ThumbnailerRunnable(ThumbnailCache* _cache, QString _path, int _size, bool _squared, bool _forceGenerate);
+    ThumbnailerRunnable(ThumbnailCache* _cache, QString _path, int _size, bool _crop, bool _force);
     ~ThumbnailerRunnable();
     void run();
-
+    static std::shared_ptr<Thumbnail> generate(ThumbnailCache *cache, QString path, int size, bool crop, bool force);
 private:
-    QString generateIdString();
-    QImage* createThumbnailImage(DocumentInfo *img, int size, bool squared);
+    static QString generateIdString(QString path, int size, bool crop);
+    static std::pair<QImage*, QSize> createThumbnail(QUrl path, const char* format, int size, bool crop);
+    static std::pair<QImage*, QSize> createVideoThumbnail(QUrl path, int size, bool crop);
     QString path;
     int size;
-    bool squared, forceGenerate;
-    ThumbnailCache* thumbnailCache;
-    QSize originalSize;
+    bool crop, force;
+    ThumbnailCache* cache = nullptr;
 
 signals:
     void taskStart(QString, int);

@@ -10,9 +10,12 @@ FolderView::FolderView(QWidget *parent) :
 
     dirModel = new FileSystemModelCustom(this);
     dirModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
-    ui->directoryTreeView->setModel(dirModel);
+    ui->dirTreeView->setModel(dirModel);
 
-    QHeaderView* header = ui->directoryTreeView->header();
+    // tmp
+    ui->bookmarksListView->setModel(dirModel);
+
+    QHeaderView* header = ui->dirTreeView->header();
 
     header->hideSection(1); // size
     header->hideSection(2); // type
@@ -21,7 +24,9 @@ FolderView::FolderView(QWidget *parent) :
 #ifndef _WIN32
     dirModel->setRootPath(QDir::homePath());
     QModelIndex idx = dirModel->index(dirModel->rootPath());
-    ui->directoryTreeView->setRootIndex(idx);
+    ui->dirTreeView->setRootIndex(idx);
+
+    ui->bookmarksListView->setRootIndex(idx);
 #endif
 
     ui->openButton->setAction("open");
@@ -54,7 +59,7 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->sortingComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &FolderView::onSortingSelected);
     connect(ui->showLabelsButton, &ActionButton::toggled, this, &FolderView::onShowLabelsButtonToggled);
 
-    connect(ui->directoryTreeView, &TreeViewCustom::droppedIn, this, &FolderView::onDroppedIn);
+    connect(ui->dirTreeView, &TreeViewCustom::droppedIn, this, &FolderView::onDroppedIn);
 
     ui->sortingComboBox->setItemDelegate(new QStyledItemDelegate(ui->sortingComboBox));
     ui->sortingComboBox->view()->setTextElideMode(Qt::ElideNone);
@@ -159,14 +164,14 @@ void FolderView::focusOn(int index) {
 void FolderView::setDirectoryPath(QString path) {
     //dirModel->setRootPath(path);
     //QModelIndex idx = dirModel->index(dirModel->rootPath());
-    //ui->directoryTreeView->setRootIndex(idx);
+    //ui->dirTreeView->setRootIndex(idx);
 
     QModelIndex index = dirModel->index(path);
 
     ui->directoryPathLabel->setText(path);
     dirModel->index(path);
-    ui->directoryTreeView->expand(index);
-    ui->directoryTreeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    ui->dirTreeView->expand(index);
+    ui->dirTreeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
 }
 
 void FolderView::onTreeViewClicked(QModelIndex index) {

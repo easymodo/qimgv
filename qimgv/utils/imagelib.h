@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <memory>
 #include <QElapsedTimer>
+#include <QProcess>
+#include "sourcecontainers/documentinfo.h"
 #include "settings.h"
 
 #ifdef USE_OPENCV

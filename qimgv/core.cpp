@@ -296,16 +296,17 @@ void Core::onDragOut(int index) {
         return;
 
     QPoint hotspot(0,0);
-    QPixmap pixmap(":/res/icons/app/64.png"); // use some thumbnail here
-
     QMimeData *mimeData = getMimeDataFor(model->getItemAt(index), TARGET_DROP);
+
+    auto thumb = Thumbnailer::getThumbnail(model->filePathAt(index), 100);
 
     mDrag = new QDrag(this);
     mDrag->setMimeData(mimeData);
-    mDrag->setPixmap(pixmap);
-    mDrag->setHotSpot(hotspot);
+    //mDrag->setHotSpot(hotspot);
 
     mDrag->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction, Qt::CopyAction);
+
+    mDrag->setPixmap(*thumb->pixmap().get());
 }
 
 QMimeData *Core::getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget target) {
@@ -318,7 +319,7 @@ QMimeData *Core::getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget targe
             // TODO: cleanup temp files
             // meanwhile use generic name
             //path = settings->cacheDir() + img->baseName() + ".png";
-            path = settings->cacheDir() + "image.png";
+            path = settings->tmpDir() + "image.png";
             // use faster compression for drag'n'drop
             int pngQuality = (target == TARGET_DROP) ? 80 : 30;
             img->getImage()->save(path, nullptr, pngQuality);

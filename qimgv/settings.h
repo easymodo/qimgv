@@ -136,7 +136,7 @@ public:
     void setUseThumbnailCache(bool mode);
     QStringList savedPaths();
     void setSavedPaths(QStringList paths);
-    QString cacheDir();
+    QString tmpDir();
     int thumbnailerThreadCount();
     void setThumbnailerThreadCount(int count);
     bool smoothUpscaling();
@@ -219,7 +219,7 @@ private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;
     QSettings *s, *state;
-    QDir *mCacheDir, *mThumbnailDir, *mConfDir;
+    QDir *mTmpDir, *mThumbCacheDir, *mConfDir;
 
 signals:
     void settingsChanged();

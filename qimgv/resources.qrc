@@ -128,5 +128,12 @@
         <file>res/icons/other/image-crop48@2x.png</file>
         <file>res/icons/other/loading-error72@2x.png</file>
         <file>res/icons/other/loading72@2x.png</file>
+        <file>res/icons/app/16.png</file>
+        <file>res/icons/app/44.png</file>
+        <file>res/icons/app/24.png</file>
+        <file>res/icons/app/64.png</file>
+        <file>res/icons/app/128.png</file>
+        <file>res/icons/app/36.png</file>
+        <file>res/icons/app/256.png</file>
     </qresource>
 </RCC>

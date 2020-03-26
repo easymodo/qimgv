@@ -7,10 +7,10 @@ Settings::Settings(QObject *parent) : QObject(parent) {
     QString genericCacheLocation = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation);
     if(genericCacheLocation.isEmpty())
         genericCacheLocation = QDir::homePath() + "/.cache";
-    mCacheDir = new QDir(genericCacheLocation + "/" + QApplication::applicationName());
-    mCacheDir->mkpath(mCacheDir->absolutePath());
-    mThumbnailDir = new QDir(mCacheDir->absolutePath() + "/thumbnails");
-    mThumbnailDir->mkpath(mThumbnailDir->absolutePath());
+    mTmpDir = new QDir(genericCacheLocation + "/" + QApplication::applicationName());
+    mTmpDir->mkpath(mTmpDir->absolutePath());
+    mThumbCacheDir = new QDir(mTmpDir->absolutePath() + "/thumbnails");
+    mThumbCacheDir->mkpath(mThumbCacheDir->absolutePath());
     QSettings::setDefaultFormat(QSettings::NativeFormat);
     s = new QSettings();
     state = new QSettings(QCoreApplication::organizationName(), "savedState");
@@ -27,8 +27,8 @@ Settings::Settings(QObject *parent) : QObject(parent) {
 }
 
 Settings::~Settings() {
-    delete mThumbnailDir;
-    delete mCacheDir;
+    delete mThumbCacheDir;
+    delete mTmpDir;
     delete s;
     delete state;
 }
@@ -62,11 +62,11 @@ void Settings::sync() {
 }
 //------------------------------------------------------------------------------
 QString Settings::thumbnailCacheDir() {
-    return mThumbnailDir->path() + "/";
+    return mThumbCacheDir->path() + "/";
 }
 //------------------------------------------------------------------------------
-QString Settings::cacheDir() {
-    return mCacheDir->path() + "/";
+QString Settings::tmpDir() {
+    return mTmpDir->path() + "/";
 }
 //------------------------------------------------------------------------------
 QString Settings::mpvBinary() {

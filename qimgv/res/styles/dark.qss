@@ -446,53 +446,44 @@ FolderView {
 ThumbnailLabel {
     background-color: #1a1a1b;
 }
+
 /*----------------------------------------------------------------------------*/
-ThumbnailView QScrollBar:horizontal {
+
+ThumbnailStrip QScrollBar:horizontal {
     height: 12px;
     background-color: transparent;
 }
 
-ThumbnailView QScrollBar::handle:horizontal {
+ThumbnailStrip QScrollBar::handle:horizontal {
     background-color: #5c5e60;
     border: 1px solid #5c5e60;
     min-width: 60px;
 }
 
-ThumbnailView QScrollBar::handle:horizontal:hover {
+ThumbnailStrip QScrollBar::handle:horizontal:hover {
     background-color: #6f7274;
     border-color: #6f7274;
 }
 
-ThumbnailView QScrollBar:vertical {
+ThumbnailStrip QScrollBar:vertical {
     width: 12px;
     background-color: transparent;
 }
 
-ThumbnailView QScrollBar::handle:vertical {
-    background-color: #5c5e60;
-    border: 1px solid #5c5e60;
-    min-height: 60px;
-}
-
-ThumbnailView QScrollBar::handle:vertical:hover {
-    background-color: #6f7274;
-    border-color: #6f7274;
-}
-
-ThumbnailView QScrollBar::sub-page {
+ThumbnailStrip QScrollBar::sub-page {
     background: none;
 }
 
-ThumbnailView QScrollBar::add-page {
+ThumbnailStrip QScrollBar::add-page {
     background: none;
 }
 
-ThumbnailView QScrollBar::add-line {
+ThumbnailStrip QScrollBar::add-line {
     width: 0px;
     height: 0px;
 }
 
-ThumbnailView QScrollBar::sub-line {
+ThumbnailStrip QScrollBar::sub-line {
     width: 0px;
     height: 0px;
 }
@@ -552,73 +543,120 @@ ZoomIndicatorOverlay QLabel {
 }
 
 /*----------------------------------------------------------------------------*/
-/* TreeView */
+/* FolderView scrollbars */
 /*----------------------------------------------------------------------------*/
 
-QTreeView {
-    background-color: #373737;
-    color: #c8c8c8;
-}
-
-QTreeView::item {
-    margin-right: 40px;
-    border: 1px solid transparent;
-    border-radius: 2px;
-}
-
-QTreeView::item:hover {
-    background-color: #464646;
-    border-color: #464646;
-}
-
-QTreeView::item:selected {
-    color: #c8c8c8;
-}
-
-QTreeView::item:selected:active{
-    background-color: #545454;
-    border-color: #545454;
-}
-
-QTreeView::item:selected:!active {
-    background-color: #545454;
-    border-color: #545454;
-}
-
-/* ------------------------------------- */
-
-QTreeView QScrollBar:vertical {
+FolderView QScrollBar:vertical {
     width: 12px;
     background-color: transparent;
 }
 
-QTreeView QScrollBar::handle:vertical {
+FolderView QScrollBar::handle:vertical {
     background-color: #5c5e60;
     border: 1px solid #5c5e60;
     min-height: 60px;
 }
 
-QTreeView QScrollBar::handle:vertical:hover {
+FolderView  QScrollBar::handle:vertical:hover {
     background-color: #6f7274;
     border-color: #6f7274;
 }
 
-QTreeView QScrollBar::sub-page {
+FolderView QScrollBar::sub-page {
     background: none;
 }
 
-QTreeView QScrollBar::add-page {
+FolderView QScrollBar::add-page {
     background: none;
 }
 
-QTreeView QScrollBar::add-line {
+FolderView QScrollBar::add-line {
     width: 0px;
     height: 0px;
 }
 
-QTreeView QScrollBar::sub-line {
+FolderView QScrollBar::sub-line {
     width: 0px;
     height: 0px;
 }
 
+/*----------------------------------------------------------------------------*/
+/* TreeView */
+/*----------------------------------------------------------------------------*/
 
+FolderView QTreeView {
+    background-color: #373737;
+    color: #c8c8c8;
+}
+
+FolderView QTreeView::item {
+    margin-right: 40px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+}
+
+FolderView QTreeView::item:hover {
+    background-color: #464646;
+    border-color: #464646;
+}
+
+FolderView QTreeView::item:selected {
+    color: #c8c8c8;
+}
+
+FolderView QTreeView::item:selected:active{
+    background-color: #545454;
+    border-color: #545454;
+}
+
+FolderView QTreeView::item:selected:!active {
+    background-color: #545454;
+    border-color: #545454;
+}
+
+/*----------------------------------------------------------------------------*/
+/* ListView */
+/*----------------------------------------------------------------------------*/
+
+FolderView QListView {
+    background-color: #373737;
+    color: #c8c8c8;
+}
+
+FolderView QListView::item {
+    margin-right: 40px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+}
+
+FolderView QListView::item:hover {
+    background-color: #464646;
+    border-color: #464646;
+}
+
+FolderView QListView::item:selected {
+    color: #c8c8c8;
+}
+
+FolderView QListView::item:selected:active{
+    background-color: #545454;
+    border-color: #545454;
+}
+
+FolderView QListView::item:selected:!active {
+    background-color: #545454;
+    border-color: #545454;
+}
+
+/*----------------------------------------------------------------------------*/
+/* places panel (bg) */
+/*----------------------------------------------------------------------------*/
+
+[accessibleName="PlacesPanel"] {
+    background-color: #373737;
+}
+
+[accessibleName="PlacesPanel"] QLabel {
+    color: #aeaeae;
+    font: bold;
+}

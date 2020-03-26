@@ -221,4 +221,3 @@ QImage* ImageLib::scaled_CV(std::shared_ptr<const QImage> source, QSize destSize
     return dest;
 }
 #endif
-

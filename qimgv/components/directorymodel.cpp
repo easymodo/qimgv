@@ -58,6 +58,10 @@ QString DirectoryModel::fileNameAt(int index) {
     return dirManager.fileNameAt(index);
 }
 
+QString DirectoryModel::filePathAt(int index) {
+    return dirManager.filePathAt(index);
+}
+
 QString DirectoryModel::fullPath(QString fileName) {
     return dirManager.fullFilePath(fileName);
 }

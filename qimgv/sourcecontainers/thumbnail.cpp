@@ -1,6 +1,6 @@
 #include "thumbnail.h"
 
-Thumbnail::Thumbnail(QString _name, QString _label, int _size, std::shared_ptr<const QPixmap> _pixmap)
+Thumbnail::Thumbnail(QString _name, QString _label, int _size, std::shared_ptr<QPixmap> _pixmap)
     : mName(_name),
       mLabel(_label),
       mPixmap(_pixmap),
@@ -26,6 +26,6 @@ bool Thumbnail::hasAlphaChannel() {
     return mHasAlphaChannel;
 }
 
-std::shared_ptr<const QPixmap> Thumbnail::pixmap() {
+std::shared_ptr<QPixmap> Thumbnail::pixmap() {
     return mPixmap;
 }
