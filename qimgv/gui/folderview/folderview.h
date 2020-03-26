@@ -55,6 +55,7 @@ signals:
     void thumbnailsRequested(QList<int>, int, bool, bool) Q_DECL_OVERRIDE;
     void sortingSelected(SortingMode);
     void directorySelected(QString path);
+    void draggedOut(int index);
 
 private slots:
     void onSortingSelected(int);

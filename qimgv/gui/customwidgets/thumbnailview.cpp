@@ -8,6 +8,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       mDrawScrollbarIndicator(true),
       mThumbnailSize(120),
       selectMode(SELECT_BY_PRESS),
+      mDragTarget(-1),
       mSelectedIndex(-1),
       scrollTimeLine(nullptr)
 {
@@ -138,6 +139,7 @@ void ThumbnailView::populate(int count) {
         }
     }
     mSelectedIndex = -1;
+    mDragTarget = -1;
     updateLayout();
     fitSceneToContents();
     resetViewport();
@@ -392,21 +394,41 @@ void ThumbnailView::scrollSmooth(int angleDelta) {
 }
 
 void ThumbnailView::mousePressEvent(QMouseEvent *event) {
+    dragStartPos = QPointF(0,0);
+    mDragTarget = -1;
     ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
     if(item) {
+        int index = thumbnails.indexOf(item);
         if(event->button() == Qt::LeftButton) {
             if(selectMode == SELECT_BY_PRESS) {
-                emit itemSelected(thumbnails.indexOf(item));
+                emit itemSelected(index);
                 return;
             } else {
-                selectIndex(thumbnails.indexOf(item));
+                selectIndex(index);
+                dragStartPos = event->pos();
+                mDragTarget = index;
             }
         } else if(event->button() == Qt::RightButton) {
-            selectIndex(thumbnails.indexOf(item));
+            selectIndex(index);
             return;
         }
     }
-    event->ignore();
+    QGraphicsView::mousePressEvent(event);
+}
+
+void ThumbnailView::mouseMoveEvent(QMouseEvent *event) {
+    QGraphicsView::mouseMoveEvent(event);
+    if(event->buttons() != Qt::LeftButton || mDragTarget == -1)
+        return;
+    if(QLineF(dragStartPos, event->pos()).length() >= 40) {
+        emit draggedOut(mDragTarget);
+        mDragTarget = -1;
+    }
+}
+
+void ThumbnailView::mouseReleaseEvent(QMouseEvent *event) {
+    QGraphicsView::mouseReleaseEvent(event);
+    mDragTarget = -1;
 }
 
 void ThumbnailView::mouseDoubleClickEvent(QMouseEvent *event) {

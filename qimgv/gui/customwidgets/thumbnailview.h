@@ -58,6 +58,7 @@ public slots:
 signals:
     void itemSelected(int) Q_DECL_OVERRIDE;
     void thumbnailsRequested(QList<int>, int, bool, bool) Q_DECL_OVERRIDE;
+    void draggedOut(int index);
 
 private:
     ThumbnailViewOrientation orientation;
@@ -69,10 +70,12 @@ private:
     // TODO: tune this value
     const int SMOOTH_SCROLL_THRESHOLD = 120;
 
-    int mSelectedIndex, mDrawScrollbarIndicator;
+    int mSelectedIndex, mDrawScrollbarIndicator, mDragTarget;
 
     bool mCropThumbnails;
     ThumbnailSelectMode selectMode;
+    QPointF dragStartPos;
+    ThumbnailWidget* dragTarget;
 
     void createScrollTimeLine();
 protected:
@@ -122,6 +125,9 @@ protected:
     void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration, bool additive);
     void unloadAllThumbnails();
     void mouseDoubleClickEvent(QMouseEvent *event);
+
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 private slots:
     void centerOnX(int);
     void centerOnY(int);

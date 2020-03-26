@@ -39,6 +39,7 @@ signals:
     void thumbnailsRequested(QList<int>, int, bool, bool) override;
     void sortingSelected(SortingMode);
     void directorySelected(QString);
+    void draggedOut(int);
 
 private:
     std::shared_ptr<FolderView> folderView;

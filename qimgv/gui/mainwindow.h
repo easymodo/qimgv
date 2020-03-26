@@ -174,6 +174,7 @@ signals:
     void toggleTransparencyGrid();
     void droppedIn(const QMimeData*, QObject*);
     void draggedOut();
+    void draggedOut(int);
 
 public slots:
     void setupFullUi();

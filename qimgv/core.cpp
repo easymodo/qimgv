@@ -68,7 +68,6 @@ void Core::connectComponents() {
 
     connect(mw, &MW::opened,                this, &Core::loadPath);
     connect(mw, &MW::droppedIn,             this, &Core::onDropIn);
-    connect(mw, &MW::draggedOut,            this, &Core::onDragOut);
     connect(mw, &MW::copyRequested,         this, &Core::copyFile);
     connect(mw, &MW::moveRequested,         this, &Core::moveFile);
     connect(mw, &MW::cropRequested,         this, &Core::crop);
@@ -80,6 +79,8 @@ void Core::connectComponents() {
     connect(mw, &MW::renameRequested,       this, &Core::renameCurrentFile);
     connect(mw, &MW::sortingSelected,       this, &Core::sortBy);
     connect(mw, &MW::discardEditsRequested, this, &Core::discardEdits);
+    connect(mw, qOverload<>(&MW::draggedOut),    this, qOverload<>(&Core::onDragOut));
+    connect(mw, qOverload<int>(&MW::draggedOut), this, qOverload<int>(&Core::onDragOut));
 
     connect(mw, &MW::scalingRequested, this, &Core::scalingRequest);
     connect(model->scaler, &Scaler::scalingFinished, this, &Core::onScalingFinished);
@@ -285,20 +286,24 @@ void Core::onDropIn(const QMimeData *mimeData, QObject* source) {
 // drag'n'drop
 // drag image out of the program
 void Core::onDragOut() {
+    onDragOut(model->currentIndex());
+}
+
+void Core::onDragOut(int index) {
     if(model->isEmpty())
         return;
 
     QPoint hotspot(0,0);
     QPixmap pixmap(":/res/icons/app/64.png"); // use some thumbnail here
 
-    QMimeData *mimeData = getMimeDataFor(model->getItemAt(model->currentIndex()), TARGET_DROP);
+    QMimeData *mimeData = getMimeDataFor(model->getItemAt(index), TARGET_DROP);
 
     mDrag = new QDrag(this);
     mDrag->setMimeData(mimeData);
     mDrag->setPixmap(pixmap);
     mDrag->setHotSpot(hotspot);
 
-    mDrag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction, Qt::CopyAction);
+    mDrag->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction, Qt::CopyAction);
 }
 
 QMimeData *Core::getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget target) {

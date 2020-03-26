@@ -56,13 +56,10 @@ protected:
     ThumbnailWidget *createThumbnailWidget();
     void updateLayout();
     void ensureSelectedItemVisible();
-    void fitToContents();
+    virtual void fitSceneToContents() override;
 
     void keyPressEvent(QKeyEvent *event);
     void wheelEvent(QWheelEvent *event);
-
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
 
 signals:
     void thumbnailSizeChanged(int);

@@ -50,7 +50,7 @@ void FolderGridView::setShowLabels(bool mode) {
         thumbnails.at(i)->setDrawLabel(mShowLabels);
     }
     updateLayout();
-    fitToContents();
+    fitSceneToContents();
     ensureSelectedItemVisible();
     emit showLabelsChanged(mShowLabels);
 }
@@ -266,14 +266,6 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
         event->ignore();
 }
 
-void FolderGridView::mousePressEvent(QMouseEvent *event) {
-    ThumbnailView::mousePressEvent(event);
-}
-
-void FolderGridView::mouseReleaseEvent(QMouseEvent *event) {
-    event->ignore();
-}
-
 void FolderGridView::wheelEvent(QWheelEvent *event) {
     if(event->modifiers().testFlag(Qt::ControlModifier)) {
         if(event->delta() > 0)
@@ -300,23 +292,25 @@ void FolderGridView::setThumbnailSize(int newSize) {
         thumbnails.at(i)->setThumbnailSize(newSize);
     }
     updateLayout();
-    fitToContents();
+    fitSceneToContents();
     if(checkRange(selectedIndex()))
         ensureVisible(thumbnails.at(selectedIndex()), 0, 40);
     emit thumbnailSizeChanged(mThumbnailSize);
     loadVisibleThumbnails();
 }
 
-void FolderGridView::fitToContents() {
-    holderWidget.setGeometry(0,0, width() - scrollBar->width(), height());
-    fitSceneToContents();
-    qDebug() << holderWidget.geometry() << this->sceneRect();
+void FolderGridView::fitSceneToContents() {
+    if(scrollBar->isVisible())
+        holderWidget.setGeometry(0,0, width() - scrollBar->width(), height());
+    else
+        holderWidget.setGeometry(0,0, width(), height());
+    ThumbnailView::fitSceneToContents();
 }
 
 void FolderGridView::resizeEvent(QResizeEvent *event) {
     if(this->isVisible()) {
         ThumbnailView::resizeEvent(event);
-        fitToContents();
+        fitSceneToContents();
         focusOn(selectedIndex());
         loadVisibleThumbnailsDelayed();
     }

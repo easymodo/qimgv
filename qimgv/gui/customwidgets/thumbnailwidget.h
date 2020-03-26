@@ -39,8 +39,8 @@ public:
     void setPadding(int x, int y);
     int thumbnailSize();
     void reset();
-
     void unsetThumbnail();
+
 protected slots:
     virtual void readSettings();
 

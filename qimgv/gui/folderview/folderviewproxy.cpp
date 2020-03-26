@@ -35,6 +35,7 @@ void FolderViewProxy::init() {
     connect(folderView.get(), &FolderView::thumbnailsRequested, this, &FolderViewProxy::thumbnailsRequested);
     connect(folderView.get(), &FolderView::sortingSelected, this, &FolderViewProxy::sortingSelected);
     connect(folderView.get(), &FolderView::directorySelected, this, &FolderViewProxy::directorySelected);
+    connect(folderView.get(), &FolderView::draggedOut, this, &FolderViewProxy::draggedOut);
 }
 
 std::shared_ptr<DirectoryViewWrapper> FolderViewProxy::wrapper() {

@@ -13,13 +13,10 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     textHeight(5)
 {
     setAttribute(Qt::WA_OpaquePaintEvent, true);
-    // ! this breaks HiDPI !
-    //setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     setAcceptHoverEvents(true);
     nameColor.setRgb(20, 20, 20, 255);
     qreal fntSz = font.pointSizeF();
     if(fntSz > 0) {
-        //font.setPointSizeF(font.pointSizeF() * 0.9);
         fontSmall.setPointSizeF(fontSmall.pointSizeF() * 0.85);
     }
     font.setBold(true);
