@@ -21,10 +21,9 @@ signals:
     void generateThumbnails(QList<int>, int, bool, bool);
 
 public slots:
-
     void disconnectAllViews();
-
     void loadByIndex(int);
+
 private slots:
     void onFileRemoved(QString fileName, int index);
     void onFileRenamed(QString from, int indexFrom, QString to, int indexTo);
@@ -39,6 +38,7 @@ private slots:
     void focusOn(int index);
     void onIndexChanged(int oldIndex, int index);
 
+    void populateViews();
 private:
     std::shared_ptr<FolderViewProxy> folderView = nullptr;
     std::shared_ptr<ThumbnailStrip> thumbPanel = nullptr;

@@ -47,11 +47,7 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
     if(!newModel)
         return;
     model = newModel;
-    // repopulate views, load thumbnails? maybe save visible item list in view
-    if(folderView)
-        folderView->populate(model->itemCount());
-    if(thumbPanel)
-        thumbPanel->populate(model->itemCount());
+    populateViews();
 
     // filesystem changes
     connect(model.get(), &DirectoryModel::fileRemoved,    this, &DirectoryPresenter::onFileRemoved);
@@ -63,6 +59,19 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
     connect(model.get(), &DirectoryModel::sortingChanged, this, &DirectoryPresenter::onModelSortingChanged);
     connect(model.get(), &DirectoryModel::thumbnailReady, this, &DirectoryPresenter::onThumbnailReady);
     connect(this, &DirectoryPresenter::generateThumbnails, model.get(), &DirectoryModel::generateThumbnails);
+}
+
+void DirectoryPresenter::reloadModel() {
+    populateViews();
+}
+
+void DirectoryPresenter::populateViews() {
+    if(!model)
+        return;
+    if(folderView)
+        folderView->populate(model->itemCount());
+    if(thumbPanel)
+        thumbPanel->populate(model->itemCount());
 }
 
 void DirectoryPresenter::disconnectAllViews() {
@@ -128,11 +137,6 @@ void DirectoryPresenter::onModelSortingChanged() {
     reloadModel();
     setCurrentIndex(model->indexOf(model->currentFileName()));
     focusOn(model->indexOf(model->currentFileName()));
-}
-
-void DirectoryPresenter::reloadModel() {
-    if(model)
-        setModel(model);
 }
 
 void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb) {
