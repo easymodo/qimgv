@@ -143,6 +143,7 @@ void ThumbnailView::populate(int count) {
     updateLayout();
     fitSceneToContents();
     resetViewport();
+    loadVisibleThumbnails();
 }
 
 void ThumbnailView::addItem() {
@@ -229,9 +230,8 @@ void ThumbnailView::loadVisibleThumbnails() {
         QList<int> loadList;
         for(int i = 0; i < visibleItems.count(); i++) {
             ThumbnailWidget* widget = qgraphicsitem_cast<ThumbnailWidget*>(visibleItems.at(i));
-            if(!widget->isLoaded) {
+            if(widget && !widget->isLoaded)
                 loadList.append(thumbnails.indexOf(widget));
-            }
         }
         if(loadList.count()) {
             emit thumbnailsRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize), mCropThumbnails, false);

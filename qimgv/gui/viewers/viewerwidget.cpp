@@ -181,8 +181,8 @@ bool ViewerWidget::interactionEnabled() {
     return mInteractionEnabled;
 }
 
-std::shared_ptr<DirectoryViewWrapper> ViewerWidget::getPanel() {
-    return mainPanel->getWrapper();
+std::shared_ptr<ThumbnailStrip> ViewerWidget::getThumbPanel() {
+    return mainPanel->getThumbnailStrip();
 }
 
 bool ViewerWidget::showImage(std::unique_ptr<QPixmap> pixmap) {

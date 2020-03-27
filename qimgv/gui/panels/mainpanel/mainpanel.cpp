@@ -64,8 +64,8 @@ void MainPanel::setExitButtonEnabled(bool mode) {
     exitButton->setHidden(!mode);
 }
 
-std::shared_ptr<DirectoryViewWrapper> MainPanel::getWrapper() {
-    return thumbnailStrip->wrapper();
+std::shared_ptr<ThumbnailStrip> MainPanel::getThumbnailStrip() {
+    return thumbnailStrip;
 }
 
 void MainPanel::readSettings() {

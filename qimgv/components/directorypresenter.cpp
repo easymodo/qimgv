@@ -17,6 +17,30 @@ void DirectoryPresenter::unsetModel() {
     // also empty views?
 }
 
+void DirectoryPresenter::setFolderView(std::shared_ptr<FolderViewProxy> view) {
+    if(folderView)
+        return;
+    folderView = view;
+    if(model)
+        folderView->populate(model->itemCount());
+    connect(folderView.get(), &FolderViewProxy::itemSelected,
+            this, &DirectoryPresenter::loadByIndex);
+    connect(folderView.get(), &FolderViewProxy::thumbnailsRequested,
+            this, &DirectoryPresenter::generateThumbnails);
+}
+
+void DirectoryPresenter::setThumbPanel(std::shared_ptr<ThumbnailStrip> view) {
+    if(thumbPanel)
+        return;
+    thumbPanel = view;
+    if(model)
+        view->populate(model->itemCount());
+    connect(thumbPanel.get(), &ThumbnailStrip::itemSelected,
+            this, &DirectoryPresenter::loadByIndex);
+    connect(thumbPanel.get(), &ThumbnailStrip::thumbnailsRequested,
+            this, &DirectoryPresenter::generateThumbnails);
+}
+
 void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
     if(model)
         unsetModel();
@@ -24,9 +48,11 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
         return;
     model = newModel;
     // repopulate views, load thumbnails? maybe save visible item list in view
-    for(int i=0; i<views.count(); i++) {
-        views.at(i)->populate(model->itemCount());
-    }
+    if(folderView)
+        folderView->populate(model->itemCount());
+    if(thumbPanel)
+        thumbPanel->populate(model->itemCount());
+
     // filesystem changes
     connect(model.get(), &DirectoryModel::fileRemoved,    this, &DirectoryPresenter::onFileRemoved);
     connect(model.get(), &DirectoryModel::fileAdded,      this, &DirectoryPresenter::onFileAdded);
@@ -39,26 +65,8 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
     connect(this, &DirectoryPresenter::generateThumbnails, model.get(), &DirectoryModel::generateThumbnails);
 }
 
-void DirectoryPresenter::connectView(std::shared_ptr<DirectoryViewWrapper> view) {
-    if(view && !views.contains(view)) {
-        views.append(view);
-        if(model)
-            view->populate(model->itemCount());
-        // todo: connect to presenter only!! passthrough signals / slots
-        connect(view.get(), &DirectoryViewWrapper::itemSelected,    this, &DirectoryPresenter::loadByIndex);
-        connect(view.get(), &DirectoryViewWrapper::thumbnailsRequested, this, &DirectoryPresenter::generateThumbnails);
-    }
-}
-
 void DirectoryPresenter::disconnectAllViews() {
-    for(int i=0; i<views.count(); i++) {
-        disconnectView(views.at(i));
-    }
-}
-
-void DirectoryPresenter::disconnectView(std::shared_ptr<DirectoryViewWrapper> view) {
-    // remove items, disconnect
-    Q_UNUSED(view)
+   // todo
 }
 
 //------------------------------------------------------------------------------
@@ -66,40 +74,54 @@ void DirectoryPresenter::disconnectView(std::shared_ptr<DirectoryViewWrapper> vi
 void DirectoryPresenter::onFileRemoved(QString fileName, int index) {
     Q_UNUSED(fileName)
 
-    for(int i=0; i<views.count(); i++) {
-        views.at(i)->removeItem(index);
-    }
+    if(folderView)
+        folderView->removeItem(index);
+    if(thumbPanel)
+        thumbPanel->removeItem(index);
 }
 
 void DirectoryPresenter::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
     Q_UNUSED(from)
     Q_UNUSED(to)
 
-    for(int i=0; i<views.count(); i++) {
-        int selectedIndex = views.at(i)->selectedIndex();
-        views.at(i)->removeItem(indexFrom);
-        views.at(i)->insertItem(indexTo);
+    if(folderView) {
+        int selectedIndex = folderView->selectedIndex();
+        folderView->removeItem(indexFrom);
+        folderView->insertItem(indexTo);
         if(selectedIndex == indexFrom ||
            selectedIndex == -1)
         {
-            views.at(i)->selectIndex(indexTo);
-            views.at(i)->focusOn(indexTo);
+            folderView->selectIndex(indexTo);
+            folderView->focusOn(indexTo);
+        }
+    }
+    if(thumbPanel) {
+        int selectedIndex = thumbPanel->selectedIndex();
+        thumbPanel->removeItem(indexFrom);
+        thumbPanel->insertItem(indexTo);
+        if(selectedIndex == indexFrom ||
+           selectedIndex == -1)
+        {
+            thumbPanel->selectIndex(indexTo);
+            thumbPanel->focusOn(indexTo);
         }
     }
 }
 
 void DirectoryPresenter::onFileAdded(QString fileName) {
     int index = model->indexOf(fileName);
-    for(int i=0; i<views.count(); i++) {
-        views.at(i)->insertItem(index);
-    }
+    if(folderView)
+        folderView->insertItem(index);
+    if(thumbPanel)
+        thumbPanel->insertItem(index);
 }
 
 void DirectoryPresenter::onFileModified(QString fileName) {
     int index = model->indexOf(fileName);
-    for(int i=0; i<views.count(); i++) {
-        views.at(i)->reloadItem(index);
-    }
+    if(folderView)
+        folderView->reloadItem(index);
+    if(thumbPanel)
+        thumbPanel->reloadItem(index);
 }
 
 void DirectoryPresenter::onModelSortingChanged() {
@@ -115,9 +137,10 @@ void DirectoryPresenter::reloadModel() {
 
 void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb) {
     int index = model->indexOf(thumb->name());
-    for(int i=0; i<views.count(); i++) {
-        views.at(i)->setThumbnail(index, thumb);
-    }
+    if(folderView)
+        folderView->setThumbnail(index, thumb);
+    if(thumbPanel)
+        thumbPanel->setThumbnail(index, thumb);
 }
 
 void DirectoryPresenter::loadByIndex(int index) {
@@ -126,20 +149,26 @@ void DirectoryPresenter::loadByIndex(int index) {
 
 // tmp -- ?
 void DirectoryPresenter::setCurrentIndex(int index) {
-    for(int i=0; i<views.count(); i++) {
-        views.at(i)->selectIndex(index);
-    }
+    if(folderView)
+        folderView->selectIndex(index);
+    if(thumbPanel)
+        thumbPanel->selectIndex(index);
 }
 
 void DirectoryPresenter::focusOn(int index) {
-    for(int i=0; i<views.count(); i++) {
-        views.at(i)->focusOn(index);
-    }
+    if(folderView)
+        folderView->focusOn(index);
+    if(thumbPanel)
+        thumbPanel->focusOn(index);
 }
 
 void DirectoryPresenter::onIndexChanged(int oldIndex, int index) {
-    for(int i=0; i<views.count(); i++) {
-        views.at(i)->selectIndex(index);
-        views.at(i)->focusOn(index);
+    if(folderView)  {
+        folderView->selectIndex(index);
+        folderView->focusOn(index);
+    }
+    if(thumbPanel) {
+        thumbPanel->selectIndex(index);
+        thumbPanel->focusOn(index);
     }
 }

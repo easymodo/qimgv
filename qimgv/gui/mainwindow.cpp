@@ -633,12 +633,12 @@ void MW::setExifInfo(QMap<QString, QString> info) {
         imageInfoOverlay->setExifInfo(info);
 }
 
-std::shared_ptr<DirectoryViewWrapper> MW::getFolderView() {
-    return folderView->wrapper();
+std::shared_ptr<FolderViewProxy> MW::getFolderView() {
+    return folderView;
 }
 
-std::shared_ptr<DirectoryViewWrapper> MW::getThumbnailPanel() {
-    return viewerWidget->getPanel();
+std::shared_ptr<ThumbnailStrip> MW::getThumbnailPanel() {
+    return viewerWidget->getThumbPanel();
 }
 
 void MW::showMessageDirectoryEnd() {

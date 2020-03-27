@@ -28,7 +28,7 @@ public:
     void disableInteraction();
     bool interactionEnabled();
 
-    std::shared_ptr<DirectoryViewWrapper> getPanel();
+    std::shared_ptr<ThumbnailStrip> getThumbPanel();
 
     bool showImage(std::unique_ptr<QPixmap> pixmap);
     bool showAnimation(std::unique_ptr<QMovie> movie);
@@ -45,7 +45,7 @@ private:
     std::unique_ptr<ImageViewerV2> imageViewer;
     std::unique_ptr<VideoPlayerInitProxy> videoPlayer;
     std::unique_ptr<ContextMenu> contextMenu;
-    std::unique_ptr<MainPanel> mainPanel;
+    std::shared_ptr<MainPanel> mainPanel;
     VideoControlsProxyWrapper *videoControls;
     ZoomIndicatorOverlayProxy *zoomIndicator;
 

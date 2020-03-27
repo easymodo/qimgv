@@ -6,7 +6,6 @@ FolderView::FolderView(QWidget *parent) :
     ui(new Ui::FolderView)
 {
     ui->setupUi(this);
-    mWrapper.reset(new DirectoryViewWrapper(this));
 
     dirModel = new FileSystemModelCustom(this);
     dirModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
@@ -139,10 +138,6 @@ void FolderView::onSortingChanged(SortingMode mode) {
 
 FolderView::~FolderView() {
     delete ui;
-}
-
-std::shared_ptr<DirectoryViewWrapper> FolderView::wrapper() {
-    return mWrapper;
 }
 
 // probably unneeded

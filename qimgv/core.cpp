@@ -63,8 +63,8 @@ void Core::initComponents() {
 }
 
 void Core::connectComponents() {
-    presenter.connectView(mw->getFolderView());
-    presenter.connectView(mw->getThumbnailPanel());
+    presenter.setFolderView(mw->getFolderView());
+    //presenter.setThumbPanel(mw->getThumbnailPanel());
 
     connect(mw, &MW::opened,                this, &Core::loadPath);
     connect(mw, &MW::droppedIn,             this, &Core::onDropIn);
@@ -729,8 +729,6 @@ void Core::loadPath(QString path) {
         }
         model->setIndex(index);
     } else {
-        //todo: set index without loading actual file?
-        model->setIndex(0);
         mw->enableFolderView();
     }
 }

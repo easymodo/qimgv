@@ -2,7 +2,8 @@
 
 #include <QObject>
 #include <memory>
-#include "gui/directoryviewwrapper.h"
+#include "gui/folderview/folderviewproxy.h"
+#include "gui/panels/mainpanel/thumbnailstrip.h"
 #include "directorymodel.h"
 
 class DirectoryPresenter : public QObject {
@@ -13,14 +14,15 @@ public:
     void setModel(std::shared_ptr<DirectoryModel> newModel);
     void unsetModel();
 
+    void setFolderView(std::shared_ptr<FolderViewProxy>);
+    void setThumbPanel(std::shared_ptr<ThumbnailStrip>);
+
 signals:
     void generateThumbnails(QList<int>, int, bool, bool);
 
 public slots:
-    void connectView(std::shared_ptr<DirectoryViewWrapper>);
 
     void disconnectAllViews();
-    void disconnectView(std::shared_ptr<DirectoryViewWrapper>);
 
     void loadByIndex(int);
 private slots:
@@ -38,6 +40,8 @@ private slots:
     void onIndexChanged(int oldIndex, int index);
 
 private:
-    QList<std::shared_ptr<DirectoryViewWrapper>> views;
+    std::shared_ptr<FolderViewProxy> folderView = nullptr;
+    std::shared_ptr<ThumbnailStrip> thumbPanel = nullptr;
+
     std::shared_ptr<DirectoryModel> model = nullptr;
 };

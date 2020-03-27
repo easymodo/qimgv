@@ -15,7 +15,6 @@ class FolderViewProxy : public QWidget, public IDirectoryView {
 public:
     FolderViewProxy(QWidget *parent = nullptr);
     void init();
-    std::shared_ptr<DirectoryViewWrapper> wrapper();
 
 public slots:
     virtual void populate(int) Q_DECL_OVERRIDE;
@@ -36,7 +35,7 @@ protected:
 
 signals:
     void itemSelected(int) override;
-    void thumbnailsRequested(QList<int>, int, bool, bool) override;
+    void thumbnailsRequested(QList<int>, int, bool, bool);
     void sortingSelected(SortingMode);
     void directorySelected(QString);
     void draggedOut(int);
@@ -45,7 +44,6 @@ signals:
 
 private:
     std::shared_ptr<FolderView> folderView;
-    std::shared_ptr<DirectoryViewWrapper> mWrapper;
     QVBoxLayout layout;
     FolderViewStateBuffer stateBuf;
 };

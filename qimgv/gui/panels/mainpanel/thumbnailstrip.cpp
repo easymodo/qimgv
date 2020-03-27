@@ -10,7 +10,6 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
     setupLayout();
-    mWrapper.reset(new DirectoryViewWrapper(this));
 
     readSettings();
     connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
@@ -22,10 +21,6 @@ void ThumbnailStrip::updateScrollbarIndicator() {
         indicator = QRect(scrollBar->width() * itemCenter - indicatorSize, 2, indicatorSize, scrollBar->height() - 4);
     else
         indicator = QRect(2, scrollBar->height() * itemCenter - indicatorSize, scrollBar->width() - 4, indicatorSize);
-}
-
-std::shared_ptr<DirectoryViewWrapper> ThumbnailStrip::wrapper() {
-    return mWrapper;
 }
 
 //  no layout; manual item positioning

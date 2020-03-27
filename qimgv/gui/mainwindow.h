@@ -59,8 +59,8 @@ public:
 
     void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, qint64 fileSize);
     void setExifInfo(QMap<QString, QString>);
-    std::shared_ptr<DirectoryViewWrapper> getFolderView();
-    std::shared_ptr<DirectoryViewWrapper> getThumbnailPanel();
+    std::shared_ptr<FolderViewProxy> getFolderView();
+    std::shared_ptr<ThumbnailStrip> getThumbnailPanel();
 
     ViewMode currentViewMode();
     int folderViewSelection();

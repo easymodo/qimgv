@@ -6,7 +6,6 @@ FolderViewProxy::FolderViewProxy(QWidget *parent)
 {
     stateBuf.sortingMode = settings->sortingMode();
     layout.setContentsMargins(0,0,0,0);
-    mWrapper.reset(new DirectoryViewWrapper(this));
 }
 
 void FolderViewProxy::init() {
@@ -17,6 +16,15 @@ void FolderViewProxy::init() {
     layout.addWidget(folderView.get());
     this->setFocusProxy(folderView.get());
     this->setLayout(&layout);
+
+    connect(folderView.get(), &FolderView::itemSelected, this, &FolderViewProxy::itemSelected);
+    connect(folderView.get(), &FolderView::thumbnailsRequested, this, &FolderViewProxy::thumbnailsRequested);
+    connect(folderView.get(), &FolderView::sortingSelected, this, &FolderViewProxy::sortingSelected);
+    connect(folderView.get(), &FolderView::directorySelected, this, &FolderViewProxy::directorySelected);
+    connect(folderView.get(), &FolderView::draggedOut, this, &FolderViewProxy::draggedOut);
+    connect(folderView.get(), &FolderView::copyUrlsRequested, this, &FolderViewProxy::copyUrlsRequested);
+    connect(folderView.get(), &FolderView::moveUrlsRequested, this, &FolderViewProxy::moveUrlsRequested);
+
     folderView->show();
 
     // apply buffer
@@ -30,18 +38,6 @@ void FolderViewProxy::init() {
     qApp->processEvents();
     folderView->focusOn(stateBuf.selectedIndex);
     folderView->onSortingChanged(stateBuf.sortingMode);
-
-    connect(folderView.get(), &FolderView::itemSelected, this, &FolderViewProxy::itemSelected);
-    connect(folderView.get(), &FolderView::thumbnailsRequested, this, &FolderViewProxy::thumbnailsRequested);
-    connect(folderView.get(), &FolderView::sortingSelected, this, &FolderViewProxy::sortingSelected);
-    connect(folderView.get(), &FolderView::directorySelected, this, &FolderViewProxy::directorySelected);
-    connect(folderView.get(), &FolderView::draggedOut, this, &FolderViewProxy::draggedOut);
-    connect(folderView.get(), &FolderView::copyUrlsRequested, this, &FolderViewProxy::copyUrlsRequested);
-    connect(folderView.get(), &FolderView::moveUrlsRequested, this, &FolderViewProxy::moveUrlsRequested);
-}
-
-std::shared_ptr<DirectoryViewWrapper> FolderViewProxy::wrapper() {
-    return mWrapper;
 }
 
 void FolderViewProxy::populate(int count) {

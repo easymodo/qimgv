@@ -5,7 +5,6 @@
 #include <QAbstractItemView>
 #include <QFileSystemModel>
 #include "gui/idirectoryview.h"
-#include "gui/directoryviewwrapper.h"
 #include "gui/folderview/foldergridview.h"
 #include "gui/folderview/filesystemmodelcustom.h"
 #include "gui/customwidgets/actionbutton.h"
@@ -19,8 +18,6 @@ class FolderView : public QWidget, public IDirectoryView {
 public:
     explicit FolderView(QWidget *parent = nullptr);
     ~FolderView();
-
-    std::shared_ptr<DirectoryViewWrapper> wrapper();
 
 public slots:
     void show();
@@ -72,5 +69,4 @@ private slots:
 private:
     Ui::FolderView *ui;
     FileSystemModelCustom *dirModel;
-    std::shared_ptr<DirectoryViewWrapper> mWrapper;
 };

@@ -19,6 +19,9 @@ public:
     ThumbnailWidget(QGraphicsItem *parent = nullptr);
     ~ThumbnailWidget() Q_DECL_OVERRIDE;
 
+    enum { Type = UserType + 1 };
+    int type() const { return Type; }
+
     bool isLoaded;
     void setThumbnail(std::shared_ptr<Thumbnail> _thumbnail);
 

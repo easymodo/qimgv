@@ -3,7 +3,6 @@
 target_sources(qimgv PRIVATE
     centralwidget.cpp
     contextmenu.cpp
-    directoryviewwrapper.cpp
     flowlayout.cpp
     idirectoryview.cpp
     mainwindow.cpp
