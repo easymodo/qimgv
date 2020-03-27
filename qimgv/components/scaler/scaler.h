@@ -9,8 +9,7 @@
 #include "scalerrequest.h"
 #include "scalerrunnable.h"
 
-class Scaler : public QObject
-{
+class Scaler : public QObject {
     Q_OBJECT
 public:
     explicit Scaler(Cache *_cache, QObject *parent = nullptr);

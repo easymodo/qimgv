@@ -117,7 +117,7 @@ bool DirectoryManager::setDirectory(QString path) {
     return true;
 }
 
-QString DirectoryManager::directory() const {
+QString DirectoryManager::directoryPath() const {
     return currentPath;
 }
 
@@ -299,11 +299,12 @@ bool DirectoryManager::checkRange(int index) const {
     return index >= 0 && index < (int)entryVec.size();
 }
 
+/*
 bool DirectoryManager::copyTo(QString destDirectory, QString fileName) {
     if(!contains(fileName))
         return false;
     return QFile::copy(fullFilePath(fileName), destDirectory + "/" + fileName);
-}
+}*/
 
 unsigned long DirectoryManager::fileCount() const {
     return entryVec.size();

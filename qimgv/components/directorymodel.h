@@ -30,7 +30,7 @@ public:
     QString currentFilePath();
     QString fullPath(QString fileName);
 
-    int itemCount() const;
+    int fileCount() const;
     int indexOf(QString fileName);
     QString fileNameAt(int index);
     bool contains(QString fileName);
@@ -62,7 +62,7 @@ public:
     SortingMode sortingMode();
     bool forceInsert(QString fileName);
 
-    QString directory();
+    QString directoryPath();
     void unload(QString fileName);
     bool isLoaded(int index);
     bool isLoaded(QString fileName);

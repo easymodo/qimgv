@@ -196,7 +196,7 @@ void Core::toggleShuffle() {
 
 void Core::syncRandomizer() {
     if(model) {
-        randomizer.setCount(model->itemCount());
+        randomizer.setCount(model->fileCount());
         randomizer.shuffle();
         randomizer.setCurrent(model->currentIndex());
     }
@@ -334,7 +334,7 @@ void Core::sortBy(SortingMode mode) {
 }
 
 void Core::renameCurrentFile(QString newName) {
-    if(!model->itemCount() || newName == model->currentFileName())
+    if(!model->fileCount() || newName == model->currentFileName())
         return;
     QString newPath = model->fullPath(newName);
     QString oldName = model->currentFileName();
@@ -424,11 +424,11 @@ void Core::outputError(const FileOpResult &error) const {
 }
 
 void Core::showOpenDialog() {
-    mw->showOpenDialog(model->directory());
+    mw->showOpenDialog(model->directoryPath());
 }
 
 void Core::showDirectory() {
-    QDesktopServices::openUrl(QUrl::fromLocalFile(model->directory()));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
 }
 
 void Core::moveCurrentFile(QString destDirectory) {
@@ -446,6 +446,7 @@ void Core::moveCurrentFile(QString destDirectory) {
 }
 
 void Core::copyUrls(QList<QUrl> urls, QString destDirectory) {
+    qDebug() << "copy";
     if(model->isEmpty())
         return;
     FileOpResult result;
@@ -742,7 +743,7 @@ void Core::nextImage() {
     }
 
     int newIndex = model->indexOf(model->currentFileName()) + 1;
-    if(newIndex >= model->itemCount()) {
+    if(newIndex >= model->fileCount()) {
         if(infiniteScrolling) {
             newIndex = 0;
         } else {
@@ -765,7 +766,7 @@ void Core::prevImage() {
     int newIndex = model->indexOf(model->currentFileName()) - 1;
     if(newIndex < 0) {
         if(infiniteScrolling) {
-            newIndex = model->itemCount() - 1;
+            newIndex = model->fileCount() - 1;
         } else {
             if(!model->loaderBusy())
                 mw->showMessageDirectoryStart();
@@ -785,7 +786,7 @@ void Core::jumpToFirst() {
 void Core::jumpToLast() {
     if(model->isEmpty())
         return;
-    model->setIndexAsync(model->itemCount() - 1);
+    model->setIndexAsync(model->fileCount() - 1);
     mw->showMessageDirectoryEnd();
 }
 
@@ -852,7 +853,7 @@ void Core::updateInfoString() {
         fileSize  = img->fileSize();
     }
     mw->setCurrentInfo(model->indexOf(model->currentFileName()),
-                       model->itemCount(),
+                       model->fileCount(),
                        model->currentFileName(),
                        imageSize,
                        fileSize);

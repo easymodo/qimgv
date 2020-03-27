@@ -22,7 +22,7 @@ void DirectoryPresenter::setFolderView(std::shared_ptr<FolderViewProxy> view) {
         return;
     folderView = view;
     if(model)
-        folderView->populate(model->itemCount());
+        folderView->populate(model->fileCount());
     connect(folderView.get(), &FolderViewProxy::itemSelected,
             this, &DirectoryPresenter::loadByIndex);
     connect(folderView.get(), &FolderViewProxy::thumbnailsRequested,
@@ -34,7 +34,7 @@ void DirectoryPresenter::setThumbPanel(std::shared_ptr<ThumbnailStrip> view) {
         return;
     thumbPanel = view;
     if(model)
-        view->populate(model->itemCount());
+        view->populate(model->fileCount());
     connect(thumbPanel.get(), &ThumbnailStrip::itemSelected,
             this, &DirectoryPresenter::loadByIndex);
     connect(thumbPanel.get(), &ThumbnailStrip::thumbnailsRequested,
@@ -69,9 +69,9 @@ void DirectoryPresenter::populateViews() {
     if(!model)
         return;
     if(folderView)
-        folderView->populate(model->itemCount());
+        folderView->populate(model->fileCount());
     if(thumbPanel)
-        thumbPanel->populate(model->itemCount());
+        thumbPanel->populate(model->fileCount());
 }
 
 void DirectoryPresenter::disconnectAllViews() {
