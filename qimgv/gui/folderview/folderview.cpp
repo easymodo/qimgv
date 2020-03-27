@@ -182,15 +182,11 @@ void FolderView::focusOn(int index) {
 }
 
 void FolderView::setDirectoryPath(QString path) {
-    //dirModel->setRootPath(path);
-    //QModelIndex idx = dirModel->index(dirModel->rootPath());
-    //ui->dirTreeView->setRootIndex(idx);
-
     QModelIndex index = dirModel->index(path);
 
     ui->directoryPathLabel->setText(path);
     dirModel->index(path);
-    ui->dirTreeView->expand(index);
+    ui->dirTreeView->scrollTo(index); //  expand only works for already visible rows
     ui->dirTreeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
 }
 
