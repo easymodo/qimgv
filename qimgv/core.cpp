@@ -295,18 +295,14 @@ void Core::onDragOut(int index) {
     if(model->isEmpty())
         return;
 
-    QPoint hotspot(0,0);
     QMimeData *mimeData = getMimeDataFor(model->getItemAt(index), TARGET_DROP);
-
     auto thumb = Thumbnailer::getThumbnail(model->filePathAt(index), 100);
-
     mDrag = new QDrag(this);
     mDrag->setMimeData(mimeData);
-    //mDrag->setHotSpot(hotspot);
+    mDrag->setPixmap(*thumb->pixmap().get());
 
     mDrag->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction, Qt::CopyAction);
 
-    mDrag->setPixmap(*thumb->pixmap().get());
 }
 
 QMimeData *Core::getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget target) {

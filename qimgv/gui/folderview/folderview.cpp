@@ -12,11 +12,7 @@ FolderView::FolderView(QWidget *parent) :
     dirModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
     ui->dirTreeView->setModel(dirModel);
 
-    // tmp
-    ui->bookmarksListView->setModel(dirModel);
-
     QHeaderView* header = ui->dirTreeView->header();
-
     header->hideSection(1); // size
     header->hideSection(2); // type
     header->hideSection(3); // mod date
@@ -25,8 +21,6 @@ FolderView::FolderView(QWidget *parent) :
     dirModel->setRootPath(QDir::homePath());
     QModelIndex idx = dirModel->index(dirModel->rootPath());
     ui->dirTreeView->setRootIndex(idx);
-
-    ui->bookmarksListView->setRootIndex(idx);
 #endif
 
     ui->openButton->setAction("open");
@@ -39,6 +33,8 @@ FolderView::FolderView(QWidget *parent) :
     ui->docViewButton->setIconPath(":res/icons/buttons/panel/document-view16.png");
     ui->showLabelsButton->setCheckable(true);
     ui->showLabelsButton->setIconPath(":res/icons/buttons/panel/labels.png");
+    ui->togglePlacesPanelButton->setCheckable(true);
+    ui->togglePlacesPanelButton->setIconPath(":res/icons/buttons/panel/toggle-panel20.png");
 
     int min = ui->thumbnailGrid->THUMBNAIL_SIZE_MIN;
     int max = ui->thumbnailGrid->THUMBNAIL_SIZE_MAX;
@@ -58,6 +54,7 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->zoomSlider, &QSlider::valueChanged, this, &FolderView::onZoomSliderValueChanged);
     connect(ui->sortingComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &FolderView::onSortingSelected);
     connect(ui->showLabelsButton, &ActionButton::toggled, this, &FolderView::onShowLabelsButtonToggled);
+    connect(ui->togglePlacesPanelButton, &ActionButton::toggled, this, &FolderView::onPlacesPanelButtonChecked);
 
     connect(ui->dirTreeView, &TreeViewCustom::droppedIn, this, &FolderView::onDroppedIn);
 
@@ -76,7 +73,35 @@ FolderView::FolderView(QWidget *parent) :
 void FolderView::readSettings() {
     ui->thumbnailGrid->setThumbnailSize(settings->folderViewIconSize());
     ui->thumbnailGrid->setShowLabels(settings->showThumbnailLabels());
+
+    ui->togglePlacesPanelButton->setChecked(settings->placesPanel());
+    setPlacesPanel(settings->placesPanel());
+
     onSortingChanged(settings->sortingMode());
+}
+
+void FolderView::onPlacesPanelButtonChecked(bool mode) {
+    setPlacesPanel(mode);
+    settings->setPlacesPanel(mode);
+}
+
+void FolderView::setPlacesPanel(bool mode) {
+    if(width() >= 600)
+        ui->placesPanel->setVisible(mode);
+}
+
+void FolderView::toggleBookmarks() {
+    if(ui->bookmarksTreeView->isVisible())
+        ui->bookmarksTreeView->hide();
+    else
+        ui->bookmarksTreeView->show();
+}
+
+void FolderView::toggleFilesystemView() {
+    if(ui->dirTreeView->isVisible())
+        ui->dirTreeView->hide();
+    else
+        ui->dirTreeView->show();
 }
 
 void FolderView::onDroppedIn(QList<QUrl> urls, QModelIndex index) {
@@ -208,5 +233,14 @@ void FolderView::paintEvent(QPaintEvent *) {
 }
 
 void FolderView::resizeEvent(QResizeEvent *event) {
-
+    Q_UNUSED(event)
+    if(!ui->togglePlacesPanelButton->isChecked())
+        return;
+    if(width() < 600) {
+        if(ui->placesPanel->isVisible())
+            ui->placesPanel->setVisible(false);
+    } else {
+        if(!ui->placesPanel->isVisible())
+            ui->placesPanel->setVisible(true);
+    }
 }

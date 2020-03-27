@@ -567,6 +567,14 @@ void Settings::setSavedPaths(QStringList paths) {
     settings->state->setValue("savedPaths", paths);
 }
 //------------------------------------------------------------------------------
+bool Settings::placesPanel() {
+    return settings->state->value("placesPanel", true).toBool();
+}
+
+void Settings::setPlacesPanel(bool mode) {
+    settings->state->setValue("placesPanel", mode);
+}
+//------------------------------------------------------------------------------
 int Settings::thumbnailerThreadCount() {
     int count = settings->s->value("thumbnailerThreads", 2).toInt();
     if(count < 1)

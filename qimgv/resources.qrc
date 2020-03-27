@@ -135,5 +135,7 @@
         <file>res/icons/app/128.png</file>
         <file>res/icons/app/36.png</file>
         <file>res/icons/app/256.png</file>
+        <file>res/icons/buttons/panel/toggle-panel20@2x.png</file>
+        <file>res/icons/buttons/panel/toggle-panel20.png</file>
     </qresource>
 </RCC>

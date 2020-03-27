@@ -72,6 +72,31 @@
        <number>0</number>
       </property>
       <item>
+       <widget class="ActionButton" name="togglePlacesPanelButton" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>38</width>
+          <height>38</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>38</width>
+          <height>38</height>
+         </size>
+        </property>
+        <property name="accessibleName">
+         <string notr="true">CheckableButton</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="ActionButton" name="openButton" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -97,57 +122,16 @@
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="directoryPathLabel">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="accessibleName">
-           <string>FolderViewPathBar</string>
-          </property>
-          <property name="text">
-           <string>No directory opened</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
         <property name="sizeType">
-         <enum>QSizePolicy::MinimumExpanding</enum>
+         <enum>QSizePolicy::Expanding</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>10</width>
+          <width>12</width>
           <height>20</height>
          </size>
         </property>
@@ -400,10 +384,22 @@
      </property>
      <item>
       <widget class="QWidget" name="placesPanel" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
-         <width>0</width>
+         <width>260</width>
          <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>260</width>
+         <height>16777215</height>
         </size>
        </property>
        <property name="accessibleName">
@@ -412,6 +408,9 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <property name="spacing">
          <number>6</number>
+        </property>
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
         </property>
         <property name="leftMargin">
          <number>8</number>
@@ -426,30 +425,27 @@
          <number>8</number>
         </property>
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="ClickableLabel" name="bookmarksLabel">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
           <property name="text">
            <string>BOOKMARKS</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QListView" name="bookmarksListView">
+         <widget class="TreeViewCustom" name="bookmarksTreeView">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>200</height>
-           </size>
-          </property>
           <property name="maximumSize">
            <size>
-            <width>280</width>
-            <height>16777215</height>
+            <width>16777215</width>
+            <height>40</height>
            </size>
           </property>
           <property name="frameShape">
@@ -464,28 +460,25 @@
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
           </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
+          <property name="verticalScrollMode">
+           <enum>QAbstractItemView::ScrollPerItem</enum>
           </property>
-          <property name="movement">
-           <enum>QListView::Static</enum>
-          </property>
-          <property name="resizeMode">
-           <enum>QListView::Adjust</enum>
-          </property>
-          <property name="layoutMode">
-           <enum>QListView::SinglePass</enum>
-          </property>
-          <property name="viewMode">
-           <enum>QListView::ListMode</enum>
-          </property>
-          <property name="uniformItemSizes">
+          <property name="uniformRowHeights">
            <bool>true</bool>
           </property>
+          <property name="headerHidden">
+           <bool>true</bool>
+          </property>
+          <property name="expandsOnDoubleClick">
+           <bool>false</bool>
+          </property>
+          <attribute name="headerVisible">
+           <bool>false</bool>
+          </attribute>
          </widget>
         </item>
         <item>
-         <spacer name="verticalSpacer">
+         <spacer name="placesPanelSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
@@ -495,13 +488,16 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>20</height>
+            <height>10</height>
            </size>
           </property>
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label_2">
+         <widget class="ClickableLabel" name="directoriesLabel">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
           <property name="text">
            <string>FILESYSTEM</string>
           </property>
@@ -515,10 +511,10 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="maximumSize">
+          <property name="minimumSize">
            <size>
-            <width>280</width>
-            <height>16777215</height>
+            <width>1</width>
+            <height>1</height>
            </size>
           </property>
           <property name="frameShape">
@@ -533,18 +529,59 @@
           <property name="sizeAdjustPolicy">
            <enum>QAbstractScrollArea::AdjustToContents</enum>
           </property>
+          <property name="uniformRowHeights">
+           <bool>true</bool>
+          </property>
           <property name="headerHidden">
            <bool>true</bool>
           </property>
           <property name="expandsOnDoubleClick">
            <bool>true</bool>
           </property>
-          <attribute name="headerDefaultSectionSize">
-           <number>300</number>
-          </attribute>
-          <attribute name="headerStretchLastSection">
+          <attribute name="headerVisible">
            <bool>false</bool>
           </attribute>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="directoryPathLabel">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="accessibleName">
+           <string>FolderViewPathBar</string>
+          </property>
+          <property name="text">
+           <string>No directory opened</string>
+          </property>
          </widget>
         </item>
        </layout>
@@ -594,6 +631,14 @@
    <extends>QTreeView</extends>
    <header>gui/folderview/treeviewcustom.h</header>
   </customwidget>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>gui/customwidgets/clickablelabel.h</header>
+   <slots>
+    <signal>clicked()</signal>
+   </slots>
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections>
@@ -604,8 +649,8 @@
    <slot>onTreeViewClicked(QModelIndex)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>97</x>
-     <y>111</y>
+     <x>106</x>
+     <y>298</y>
     </hint>
     <hint type="destinationlabel">
      <x>11</x>
@@ -613,8 +658,42 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>bookmarksLabel</sender>
+   <signal>clicked()</signal>
+   <receiver>FolderView</receiver>
+   <slot>toggleBookmarks()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>54</x>
+     <y>58</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-5</x>
+     <y>63</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>directoriesLabel</sender>
+   <signal>clicked()</signal>
+   <receiver>FolderView</receiver>
+   <slot>toggleFilesystemView()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>35</x>
+     <y>172</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-10</x>
+     <y>166</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onTreeViewClicked(QModelIndex)</slot>
+  <slot>toggleBookmarks()</slot>
+  <slot>toggleFilesystemView()</slot>
  </slots>
 </ui>

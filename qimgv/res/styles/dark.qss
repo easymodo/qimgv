@@ -590,7 +590,7 @@ FolderView QTreeView {
 }
 
 FolderView QTreeView::item {
-    margin-right: 40px;
+    margin-right: 8px;
     border: 1px solid transparent;
     border-radius: 2px;
 }
@@ -610,40 +610,6 @@ FolderView QTreeView::item:selected:active{
 }
 
 FolderView QTreeView::item:selected:!active {
-    background-color: #545454;
-    border-color: #545454;
-}
-
-/*----------------------------------------------------------------------------*/
-/* ListView */
-/*----------------------------------------------------------------------------*/
-
-FolderView QListView {
-    background-color: #373737;
-    color: #c8c8c8;
-}
-
-FolderView QListView::item {
-    margin-right: 40px;
-    border: 1px solid transparent;
-    border-radius: 2px;
-}
-
-FolderView QListView::item:hover {
-    background-color: #464646;
-    border-color: #464646;
-}
-
-FolderView QListView::item:selected {
-    color: #c8c8c8;
-}
-
-FolderView QListView::item:selected:active{
-    background-color: #545454;
-    border-color: #545454;
-}
-
-FolderView QListView::item:selected:!active {
     background-color: #545454;
     border-color: #545454;
 }

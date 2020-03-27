@@ -12,6 +12,10 @@ void IconButton::setCheckable(bool mode) {
     mCheckable = mode;
 }
 
+bool IconButton::isChecked() {
+    return mChecked;
+}
+
 void IconButton::setChecked(bool mode) {
     if(mCheckable && mode != mChecked) {
         mChecked = mode;

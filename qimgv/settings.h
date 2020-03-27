@@ -215,6 +215,8 @@ public:
     ImageFocusPoint focusPointIn1to1Mode();
     void setDefaultCropAction(DefaultCropAction mode);
     DefaultCropAction defaultCropAction();
+    bool placesPanel();
+    void setPlacesPanel(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;
