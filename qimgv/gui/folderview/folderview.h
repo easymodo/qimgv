@@ -4,9 +4,11 @@
 #include <QStyledItemDelegate>
 #include <QAbstractItemView>
 #include <QFileSystemModel>
+#include <QFileDialog>
 #include "gui/idirectoryview.h"
 #include "gui/folderview/foldergridview.h"
 #include "gui/folderview/filesystemmodelcustom.h"
+#include "gui/folderview/bookmarkswidget.h"
 #include "gui/customwidgets/actionbutton.h"
 
 namespace Ui {
@@ -34,6 +36,7 @@ public slots:
     void addItem();
     void onFullscreenModeChanged(bool mode);
     void onSortingChanged(SortingMode mode);
+
 
 protected:
     void wheelEvent(QWheelEvent *event) Q_DECL_OVERRIDE;
@@ -66,6 +69,9 @@ private slots:
     void toggleFilesystemView();
     void setPlacesPanel(bool mode);
     void onPlacesPanelButtonChecked(bool mode);
+    void onBookmarkClicked(QString dirPath);
+    void newBookmark();
+
 private:
     Ui::FolderView *ui;
     FileSystemModelCustom *dirModel;

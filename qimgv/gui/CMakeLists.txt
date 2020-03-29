@@ -71,6 +71,8 @@ target_sources(qimgv PRIVATE
     folderview/thumbnailgridwidget.cpp
     folderview/filesystemmodelcustom.cpp
     folderview/treeviewcustom.cpp
+    folderview/bookmarkswidget.cpp
+    folderview/bookmarksitem.cpp
 )
 
 # UI Files

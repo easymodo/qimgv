@@ -11,6 +11,7 @@ class TreeViewCustom : public QTreeView
     Q_OBJECT
 public:
     TreeViewCustom(QWidget *parent = nullptr);
+    virtual QSize minimumSizeHint() const override;
 
 signals:
     void droppedIn(QList<QUrl>, QModelIndex);

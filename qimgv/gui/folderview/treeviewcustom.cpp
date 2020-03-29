@@ -17,3 +17,8 @@ void TreeViewCustom::dragEnterEvent(QDragEnterEvent *event) {
         event->acceptProposedAction();
     }
 }
+
+QSize TreeViewCustom::minimumSizeHint() const {
+    QSize sz(QTreeView::minimumSizeHint().width(), 0);
+    return sz;
+}

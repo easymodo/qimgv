@@ -7,6 +7,7 @@ FolderView::FolderView(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // ------- filesystem view --------
     dirModel = new FileSystemModelCustom(this);
     dirModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
     ui->dirTreeView->setModel(dirModel);
@@ -21,6 +22,7 @@ FolderView::FolderView(QWidget *parent) :
     QModelIndex idx = dirModel->index(dirModel->rootPath());
     ui->dirTreeView->setRootIndex(idx);
 #endif
+    // -------------------------------
 
     ui->openButton->setAction("open");
     ui->openButton->setIconPath(":res/icons/buttons/panel/open16.png");
@@ -34,6 +36,7 @@ FolderView::FolderView(QWidget *parent) :
     ui->showLabelsButton->setIconPath(":res/icons/buttons/panel/labels.png");
     ui->togglePlacesPanelButton->setCheckable(true);
     ui->togglePlacesPanelButton->setIconPath(":res/icons/buttons/panel/toggle-panel20.png");
+    ui->newBookmarkButton->setIconPath(":res/icons/buttons/add-new12.png");
 
     int min = ui->thumbnailGrid->THUMBNAIL_SIZE_MIN;
     int max = ui->thumbnailGrid->THUMBNAIL_SIZE_MAX;
@@ -49,6 +52,10 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->thumbnailGrid, &FolderGridView::thumbnailSizeChanged, this, &FolderView::onThumbnailSizeChanged);
     connect(ui->thumbnailGrid, &FolderGridView::showLabelsChanged,    this, &FolderView::onShowLabelsChanged);
     connect(ui->thumbnailGrid, &FolderGridView::draggedOut,     this, &FolderView::draggedOut);
+
+    connect(ui->bookmarksWidget, &BookmarksWidget::bookmarkClicked, this, &FolderView::onBookmarkClicked);
+
+    connect(ui->newBookmarkButton, &IconButton::clicked, this, &FolderView::newBookmark);
 
     connect(ui->zoomSlider, &QSlider::valueChanged, this, &FolderView::onZoomSliderValueChanged);
     connect(ui->sortingComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &FolderView::onSortingSelected);
@@ -90,10 +97,10 @@ void FolderView::setPlacesPanel(bool mode) {
 }
 
 void FolderView::toggleBookmarks() {
-    if(ui->bookmarksTreeView->isVisible())
-        ui->bookmarksTreeView->hide();
+    if(ui->bookmarksWidget->isVisible())
+        ui->bookmarksWidget->hide();
     else
-        ui->bookmarksTreeView->show();
+        ui->bookmarksWidget->show();
 }
 
 void FolderView::toggleFilesystemView() {
@@ -194,6 +201,25 @@ void FolderView::onTreeViewClicked(QModelIndex index) {
     QString path = dirModel->fileInfo(index).absoluteFilePath();
     emit directorySelected(dirModel->fileInfo(index).absoluteFilePath());
 }
+
+void FolderView::onBookmarkClicked(QString dirPath) {
+    emit directorySelected(dirPath);
+}
+
+void FolderView::newBookmark() {
+    QString dirPath;
+
+    QFileDialog dialog(this);
+    dialog.setDirectory(QDir::homePath());
+    dialog.setWindowTitle("Select directory");
+    dialog.setWindowModality(Qt::ApplicationModal);
+    dialog.setFileMode(QFileDialog::Directory);
+    dialog.setOption(QFileDialog::ShowDirsOnly);
+    dialog.setOption(QFileDialog::DontResolveSymlinks);
+    connect(&dialog, &QFileDialog::fileSelected, ui->bookmarksWidget, &BookmarksWidget::addBookmark);
+    dialog.exec();
+}
+
 
 void FolderView::addItem() {
     ui->thumbnailGrid->addItem();

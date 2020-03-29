@@ -615,6 +615,25 @@ FolderView QTreeView::item:selected:!active {
 }
 
 /*----------------------------------------------------------------------------*/
+/* bookmarks widget */
+/*----------------------------------------------------------------------------*/
+
+BookmarksItem {
+
+    border: 1px solid transparent;
+    border-radius: 2px;
+}
+
+BookmarksItem:hover {
+    background-color: #464646;
+    border-color: #464646;
+}
+
+BookmarksItem QLabel {
+    color: #c8c8c8;
+}
+
+/*----------------------------------------------------------------------------*/
 /* places panel (bg) */
 /*----------------------------------------------------------------------------*/
 
@@ -622,7 +641,15 @@ FolderView QTreeView::item:selected:!active {
     background-color: #373737;
 }
 
-[accessibleName="PlacesPanel"] QLabel {
+[accessibleName="PanelSectionHeader"] {
     color: #aeaeae;
     font: bold;
+}
+
+[accessibleName="PanelSectionHeader"]:hover {
+    color: #c8c8c8;
+}
+
+[accessibleName="BookmarksWidget"] {
+    background-color: blue;
 }
