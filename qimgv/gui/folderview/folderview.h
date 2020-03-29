@@ -71,6 +71,7 @@ private slots:
     void onPlacesPanelButtonChecked(bool mode);
     void onBookmarkClicked(QString dirPath);
     void newBookmark();
+    void fsTreeScrollToCurrent();
 
 private:
     Ui::FolderView *ui;

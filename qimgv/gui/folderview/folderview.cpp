@@ -189,12 +189,27 @@ void FolderView::focusOn(int index) {
 }
 
 void FolderView::setDirectoryPath(QString path) {
-    QModelIndex index = dirModel->index(path);
-
+    if(ui->dirTreeView->currentIndex().data() == path)
+        return;
     ui->directoryPathLabel->setText(path);
-    dirModel->index(path);
-    ui->dirTreeView->scrollTo(index); //  expand only works for already visible rows
-    ui->dirTreeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+
+    QModelIndex targetIndex = dirModel->index(path);
+    bool keepExpand = ui->dirTreeView->isExpanded(targetIndex);
+
+    ui->dirTreeView->collapseAll();
+    ui->dirTreeView->setCurrentIndex(targetIndex);
+
+    if(keepExpand)
+        ui->dirTreeView->expand(targetIndex);
+
+    // ok, i'm done with this shit. none of the "solutions" work
+    // just do scrollTo after a delay and hope that model is loaded by then
+    // larger than ~150ms becomes too noticeable
+    QTimer::singleShot(150, this, &FolderView::fsTreeScrollToCurrent);
+}
+
+void FolderView::fsTreeScrollToCurrent() {
+    ui->dirTreeView->scrollTo(ui->dirTreeView->currentIndex());
 }
 
 void FolderView::onTreeViewClicked(QModelIndex index) {
@@ -219,7 +234,6 @@ void FolderView::newBookmark() {
     connect(&dialog, &QFileDialog::fileSelected, ui->bookmarksWidget, &BookmarksWidget::addBookmark);
     dialog.exec();
 }
-
 
 void FolderView::addItem() {
     ui->thumbnailGrid->addItem();
