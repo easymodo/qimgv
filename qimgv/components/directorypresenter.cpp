@@ -7,10 +7,11 @@ void DirectoryPresenter::unsetModel() {
     disconnect(model.get(), &DirectoryModel::fileRemoved,    this, &DirectoryPresenter::onFileRemoved);
     disconnect(model.get(), &DirectoryModel::fileAdded,      this, &DirectoryPresenter::onFileAdded);
     disconnect(model.get(), &DirectoryModel::fileModified,   this, &DirectoryPresenter::onFileModified);
+    disconnect(model.get(), &DirectoryModel::fileModifiedInternal,   this, &DirectoryPresenter::onFileModified);
     disconnect(model.get(), &DirectoryModel::fileRenamed,    this, &DirectoryPresenter::onFileRenamed);
-    disconnect(model.get(), &DirectoryModel::indexChanged,   this, &DirectoryPresenter::onIndexChanged);
-    disconnect(model.get(), &DirectoryModel::loaded,         this, &DirectoryPresenter::reloadModel);
-    disconnect(model.get(), &DirectoryModel::sortingChanged, this, &DirectoryPresenter::onModelSortingChanged);
+    //disconnect(model.get(), &DirectoryModel::indexChanged,   this, &DirectoryPresenter::onIndexChanged);
+    //disconnect(model.get(), &DirectoryModel::loaded,         this, &DirectoryPresenter::reloadModel);
+    //disconnect(model.get(), &DirectoryModel::sortingChanged, this, &DirectoryPresenter::onModelSortingChanged);
     disconnect(model.get(), &DirectoryModel::thumbnailReady, this, &DirectoryPresenter::onThumbnailReady);
     disconnect(this, &DirectoryPresenter::generateThumbnails, model.get(), &DirectoryModel::generateThumbnails);
     model = nullptr;
@@ -24,7 +25,7 @@ void DirectoryPresenter::setFolderView(std::shared_ptr<FolderViewProxy> view) {
     if(model)
         folderView->populate(model->itemCount());
     connect(folderView.get(), &FolderViewProxy::itemSelected,
-            this, &DirectoryPresenter::loadByIndex);
+            this, &DirectoryPresenter::itemSelected);
     connect(folderView.get(), &FolderViewProxy::thumbnailsRequested,
             this, &DirectoryPresenter::generateThumbnails);
 }
@@ -36,7 +37,7 @@ void DirectoryPresenter::setThumbPanel(std::shared_ptr<ThumbnailStrip> view) {
     if(model)
         view->populate(model->itemCount());
     connect(thumbPanel.get(), &ThumbnailStrip::itemSelected,
-            this, &DirectoryPresenter::loadByIndex);
+            this, &DirectoryPresenter::itemSelected);
     connect(thumbPanel.get(), &ThumbnailStrip::thumbnailsRequested,
             this, &DirectoryPresenter::generateThumbnails);
 }
@@ -53,10 +54,11 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
     connect(model.get(), &DirectoryModel::fileRemoved,    this, &DirectoryPresenter::onFileRemoved);
     connect(model.get(), &DirectoryModel::fileAdded,      this, &DirectoryPresenter::onFileAdded);
     connect(model.get(), &DirectoryModel::fileModified,   this, &DirectoryPresenter::onFileModified);
+    connect(model.get(), &DirectoryModel::fileModifiedInternal,   this, &DirectoryPresenter::onFileModified);
     connect(model.get(), &DirectoryModel::fileRenamed,    this, &DirectoryPresenter::onFileRenamed);
-    connect(model.get(), &DirectoryModel::indexChanged,   this, &DirectoryPresenter::onIndexChanged);
-    connect(model.get(), &DirectoryModel::loaded,         this, &DirectoryPresenter::reloadModel);
-    connect(model.get(), &DirectoryModel::sortingChanged, this, &DirectoryPresenter::onModelSortingChanged);
+    //connect(model.get(), &DirectoryModel::indexChanged,   this, &DirectoryPresenter::onIndexChanged);
+    //connect(model.get(), &DirectoryModel::loaded,         this, &DirectoryPresenter::reloadModel);
+    //connect(model.get(), &DirectoryModel::sortingChanged, this, &DirectoryPresenter::onModelSortingChanged);
     connect(model.get(), &DirectoryModel::thumbnailReady, this, &DirectoryPresenter::onThumbnailReady);
     connect(this, &DirectoryPresenter::generateThumbnails, model.get(), &DirectoryModel::generateThumbnails);
 }
@@ -135,8 +137,8 @@ void DirectoryPresenter::onFileModified(QString fileName) {
 
 void DirectoryPresenter::onModelSortingChanged() {
     reloadModel();
-    setCurrentIndex(model->indexOf(model->currentFileName()));
-    focusOn(model->indexOf(model->currentFileName()));
+    //setCurrentIndex(model->indexOf(model->currentFileName()));
+    //focusOn(model->indexOf(model->currentFileName()));
 }
 
 void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb) {
@@ -147,9 +149,9 @@ void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb) {
         thumbPanel->setThumbnail(index, thumb);
 }
 
-void DirectoryPresenter::loadByIndex(int index) {
-    model->setIndexAsync(index);
-}
+//void DirectoryPresenter::onItemSelected(int index) {
+//    model->setIndexAsync(index);
+//}
 
 // tmp -- ?
 void DirectoryPresenter::setCurrentIndex(int index) {
@@ -166,7 +168,7 @@ void DirectoryPresenter::focusOn(int index) {
         thumbPanel->focusOn(index);
 }
 
-void DirectoryPresenter::onIndexChanged(int oldIndex, int index) {
+void DirectoryPresenter::selectAndFocus(int index) {
     if(folderView)  {
         folderView->selectIndex(index);
         folderView->focusOn(index);
@@ -175,4 +177,9 @@ void DirectoryPresenter::onIndexChanged(int oldIndex, int index) {
         thumbPanel->selectIndex(index);
         thumbPanel->focusOn(index);
     }
+}
+
+// TODO: in future this will behave differently when the view has multi-selection (not implemented yet)
+void DirectoryPresenter::onIndexChanged(int index) {
+    this->selectAndFocus(index);
 }

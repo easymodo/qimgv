@@ -17,8 +17,8 @@
 #include "utils/randomizer.h"
 
 struct State {
-    State() : hasActiveImage(false) {}
-    bool hasActiveImage;
+    bool hasActiveImage = false;
+    QString currentFileName = "";
 };
 
 enum MimeDataTarget {
@@ -57,7 +57,6 @@ private:
 
     void rotateByDegrees(int degrees);
     void reset();
-    void guiDisplayImage(std::shared_ptr<Image>);
     void loadDirectoryPath(QString);
     void loadImagePath(QString path, bool blocking);
     QDrag *mDrag;
@@ -126,4 +125,9 @@ private slots:
     void outputError(const FileOpResult &error) const;
     void showOpenDialog();
     void showDirectory();
+    void onDirectoryViewItemSelected(int index);
+    bool loadIndex(int index, bool async, bool preload);
+    void enableDocumentView();
+    void enableFolderView();
+    void toggleFolderView();
 };

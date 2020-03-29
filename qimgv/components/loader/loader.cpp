@@ -14,6 +14,10 @@ bool Loader::isBusy() {
     return (tasks.count() != 0);
 }
 
+bool Loader::isLoading(QString path) {
+    return tasks.contains(path);
+}
+
 std::shared_ptr<Image> Loader::load(QString path) {
     return ImageFactory::createImage(path);
 }
