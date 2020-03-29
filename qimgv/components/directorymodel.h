@@ -26,8 +26,6 @@ public:
 
     Scaler *scaler;
 
-    //QString currentFileName();
-    //QString currentFilePath();
     QString fullPath(QString fileName);
 
     void load(QString fileName, bool asyncHint);
@@ -49,8 +47,6 @@ public:
     void moveTo(QString destDir, QUrl srcUrl, FileOpResult &result);
     void setDirectory(QString);
 
-    //bool setIndex(int index);
-    //bool setIndexAsync(int index);
     void unload(int index);
 
     bool loaderBusy();
@@ -65,7 +61,7 @@ public:
     SortingMode sortingMode();
     bool forceInsert(QString fileName);
 
-    QString directory();
+    QString directoryPath();
     void unload(QString fileName);
     bool isLoaded(int index);
     bool isLoaded(QString fileName);

@@ -59,7 +59,7 @@ bool DirectoryModel::contains(QString fileName) {
 }
 
 void DirectoryModel::removeFile(QString fileName, bool trash, FileOpResult &result) {
-    QFileInfo file(dirManager.directory() + "/" + fileName);
+    QFileInfo file(directoryPath() + "/" + fileName);
     if(!file.exists()) {
         result = FileOpResult::SOURCE_DOES_NOT_EXIST;
     } else if(!file.isWritable()) {
@@ -104,7 +104,7 @@ QDateTime DirectoryModel::lastModified(QString fileName) {
 void DirectoryModel::copyTo(QString destDir, QUrl srcUrl, FileOpResult &result) {
     QString srcName = srcUrl.fileName();
     // error checks
-    if(destDir == dirManager.directory()) {
+    if(destDir == dirManager.directoryPath()) {
         result = FileOpResult::COPY_TO_SAME_DIR;
         return;
     }
@@ -139,7 +139,7 @@ void DirectoryModel::copyTo(QString destDir, QUrl srcUrl, FileOpResult &result) 
 void DirectoryModel::moveTo(QString destDir, QUrl srcUrl, FileOpResult &result) {
     QString srcName = srcUrl.fileName();
     // error checks
-    if(destDir == dirManager.directory()) {
+    if(destDir == dirManager.directoryPath()) {
         result = FileOpResult::COPY_TO_SAME_DIR;
         return;
     }
@@ -192,8 +192,8 @@ void DirectoryModel::setDirectory(QString path) {
     dirManager.setDirectory(path);
 }
 
-QString DirectoryModel::directory() {
-    return dirManager.directory();
+QString DirectoryModel::directoryPath() {
+    return dirManager.directoryPath();
 }
 
 void DirectoryModel::unload(int index) {
@@ -220,7 +220,7 @@ bool DirectoryModel::loaderBusy() {
 }
 
 std::shared_ptr<Image> DirectoryModel::itemAt(int index) {
-    return cache.get(dirManager.fileNameAt(index));
+    return cache.get(fileNameAt(index));
 }
 
 void DirectoryModel::onItemReady(std::shared_ptr<Image> img) {
@@ -279,7 +279,7 @@ bool DirectoryModel::isLoaded(QString fileName) {
 }
 
 std::shared_ptr<Image> DirectoryModel::getItemAt(int index) {
-    return getItem(dirManager.fileNameAt(index));
+    return getItem(fileNameAt(index));
 }
 
 // returns cached image
@@ -293,7 +293,7 @@ std::shared_ptr<Image> DirectoryModel::getItem(QString fileName) {
 }
 
 void DirectoryModel::updateItem(QString fileName, std::shared_ptr<Image> img) {
-    if(dirManager.contains(fileName)) {
+    if(contains(fileName)) {
         cache.insert(img);
         emit itemUpdated(fileName);
     }

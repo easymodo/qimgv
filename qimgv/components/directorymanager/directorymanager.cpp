@@ -117,7 +117,7 @@ bool DirectoryManager::setDirectory(QString path) {
     return true;
 }
 
-QString DirectoryManager::directory() const {
+QString DirectoryManager::directoryPath() const {
     return currentPath;
 }
 

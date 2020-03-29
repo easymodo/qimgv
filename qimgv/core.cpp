@@ -458,11 +458,11 @@ void Core::outputError(const FileOpResult &error) const {
 }
 
 void Core::showOpenDialog() {
-    mw->showOpenDialog(model->directory());
+    mw->showOpenDialog(model->directoryPath());
 }
 
 void Core::showDirectory() {
-    QDesktopServices::openUrl(QUrl::fromLocalFile(model->directory()));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
 }
 
 void Core::moveCurrentFile(QString destDirectory) {
@@ -798,7 +798,6 @@ void Core::nextImage() {
         loadIndex(randomizer.next(), true, false);
         return;
     }
-
     int newIndex = model->indexOf(state.currentFileName) + 1;
     if(newIndex >= model->itemCount()) {
         if(infiniteScrolling) {

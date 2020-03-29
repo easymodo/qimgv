@@ -422,10 +422,11 @@ bool isSupported(QImage::Format format) {
        format == QImage::Format_Grayscale8 ||
        format == QImage::Format_RGB32  ||
        format == QImage::Format_ARGB32 ||
-       format == QImage::Format_ARGB32_Premultiplied ||
-       format == QImage::Format_RGBX8888 ||
+       format == QImage::Format_ARGB32_Premultiplied
+       // TODO: RGBA8888 has swapped channels. other xxx8888 probably too
+       /*format == QImage::Format_RGBX8888 ||
        format == QImage::Format_RGBA8888 ||
-       format == QImage::Format_RGBA8888_Premultiplied)
+       format == QImage::Format_RGBA8888_Premultiplied*/)
     {
         return true;
     }
