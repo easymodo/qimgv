@@ -76,7 +76,8 @@ private slots:
     void jumpToLast();
     void onModelItemReady(std::shared_ptr<Image>);
     void onModelItemUpdated(QString fileName);
-    void onLoadFailed(QString path); //
+    void onModelSortingChanged(SortingMode mode);
+    void onLoadFailed(QString path);
     void rotateLeft();
     void rotateRight();
     void close();
