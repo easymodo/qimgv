@@ -97,7 +97,7 @@ void Core::connectComponents() {
     connect(model.get(), &DirectoryModel::loaded,         this, &Core::onModelLoaded);
     connect(model.get(), &DirectoryModel::itemReady,      this, &Core::onModelItemReady);
     connect(model.get(), &DirectoryModel::itemUpdated,    this, &Core::onModelItemUpdated);
-    connect(model.get(), &DirectoryModel::sortingChanged, this, &Core::updateInfoString);
+    connect(model.get(), &DirectoryModel::sortingChanged, this, &Core::onModelSortingChanged);
 }
 
 void Core::initActions() {
@@ -420,6 +420,9 @@ void Core::onFileRemoved(QString fileName, int index) {
 }
 
 void Core::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
+    if(state.currentFileName == from) {
+        loadIndex(indexTo, true, settings->usePreloader());
+    }
 }
 
 void Core::onFileAdded(QString fileName) {
@@ -432,8 +435,6 @@ void Core::onFileAdded(QString fileName) {
 
 void Core::onFileModified(QString fileName) {
     Q_UNUSED(fileName)
-    //if(fileName == state.currentFileName)
-    //    reloadImage();
 }
 
 void Core::outputError(const FileOpResult &error) const {
@@ -667,7 +668,6 @@ void Core::sortByName() {
     if(model->sortingMode() == mode)
         mode = SortingMode::SORT_NAME_DESC;
     model->setSortingMode(mode);
-    mw->onSortingChanged(mode);
 }
 
 void Core::sortByTime() {
@@ -675,7 +675,6 @@ void Core::sortByTime() {
     if(model->sortingMode() == mode)
         mode = SortingMode::SORT_TIME_DESC;
     model->setSortingMode(mode);
-    mw->onSortingChanged(mode);
 }
 
 void Core::sortBySize() {
@@ -683,7 +682,6 @@ void Core::sortBySize() {
     if(model->sortingMode() == mode)
         mode = SortingMode::SORT_SIZE_DESC;
     model->setSortingMode(mode);
-    mw->onSortingChanged(mode);
 }
 
 void Core::showRenameDialog() {
@@ -868,6 +866,12 @@ void Core::onModelItemUpdated(QString fileName) {
         guiSetImage(model->getItem(fileName));
         updateInfoString();
     }
+}
+
+void Core::onModelSortingChanged(SortingMode mode) {
+    mw->onSortingChanged(mode);
+    presenter.reloadModel();
+    presenter.onIndexChanged(0);
 }
 
 void Core::guiSetImage(std::shared_ptr<Image> img) {

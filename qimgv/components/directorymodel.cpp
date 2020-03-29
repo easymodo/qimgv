@@ -232,12 +232,7 @@ void DirectoryModel::onItemReady(std::shared_ptr<Image> img) {
 }
 
 void DirectoryModel::onSortingChanged() {
-    //trimCache();
-    if(settings->usePreloader()) {
-     //   preload(dirManager.prevOf(mCurrentFileName));
-     //   preload(dirManager.nextOf(mCurrentFileName));
-    }
-    emit sortingChanged();
+    emit sortingChanged(sortingMode());
 }
 
 void DirectoryModel::onFileAdded(QString fileName) {

@@ -32,8 +32,6 @@ signals:
 
 public slots:
     void disconnectAllViews();
-    //void loadByIndex(int);
-    void onModelSortingChanged();
     void reloadModel();
 
 private slots:
@@ -46,6 +44,5 @@ private slots:
 private:
     std::shared_ptr<FolderViewProxy> folderView = nullptr;
     std::shared_ptr<ThumbnailStrip> thumbPanel = nullptr;
-
     std::shared_ptr<DirectoryModel> model = nullptr;
 };
