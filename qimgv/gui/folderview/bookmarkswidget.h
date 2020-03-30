@@ -7,8 +7,7 @@
 #include <QVBoxLayout>
 #include "settings.h"
 
-class BookmarksWidget : public QWidget
-{
+class BookmarksWidget : public QWidget {
     Q_OBJECT
 
 public:
@@ -22,6 +21,7 @@ public slots:
 private slots:
     void readSettings();
 
+    void saveBookmarks();
 signals:
     void bookmarkClicked(QString dirPath);
 

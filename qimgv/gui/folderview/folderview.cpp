@@ -79,10 +79,11 @@ FolderView::FolderView(QWidget *parent) :
 void FolderView::readSettings() {
     ui->thumbnailGrid->setThumbnailSize(settings->folderViewIconSize());
     ui->thumbnailGrid->setShowLabels(settings->showThumbnailLabels());
-
     ui->togglePlacesPanelButton->setChecked(settings->placesPanel());
-    setPlacesPanel(settings->placesPanel());
 
+    setPlacesPanel(settings->placesPanel());
+    ui->bookmarksWidget->setVisible(settings->placesPanelBookmarksExpanded());
+    ui->dirTreeView->setVisible(settings->placesPanelTreeExpanded());
     onSortingChanged(settings->sortingMode());
 }
 
@@ -101,6 +102,7 @@ void FolderView::toggleBookmarks() {
         ui->bookmarksWidget->hide();
     else
         ui->bookmarksWidget->show();
+    settings->setPlacesPanelBookmarksExpanded(ui->bookmarksWidget->isVisible());
 }
 
 void FolderView::toggleFilesystemView() {
@@ -108,6 +110,7 @@ void FolderView::toggleFilesystemView() {
         ui->dirTreeView->hide();
     else
         ui->dirTreeView->show();
+    settings->setPlacesPanelTreeExpanded(ui->dirTreeView->isVisible());
 }
 
 void FolderView::onDroppedIn(QList<QUrl> urls, QModelIndex index) {

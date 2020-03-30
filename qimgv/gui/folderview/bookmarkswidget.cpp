@@ -13,7 +13,15 @@ BookmarksWidget::~BookmarksWidget() {
 }
 
 void BookmarksWidget::readSettings() {
-    addBookmark(QDir::homePath());
+    QStringList _paths = settings->bookmarks();
+    for(auto path : _paths)
+        addBookmark(path);
+    if(_paths.empty())
+        addBookmark(QDir::homePath());
+}
+
+void BookmarksWidget::saveBookmarks() {
+    settings->setBookmarks(paths);
 }
 
 void BookmarksWidget::addBookmark(QString dirPath) {
@@ -25,6 +33,7 @@ void BookmarksWidget::addBookmark(QString dirPath) {
     layout.addWidget(item);
     connect(item, &BookmarksItem::clicked, this, &BookmarksWidget::bookmarkClicked);
     connect(item, &BookmarksItem::removeClicked, this, &BookmarksWidget::removeBookmark);
+    saveBookmarks();
 }
 
 void BookmarksWidget::removeBookmark(QString dirPath) {
@@ -36,6 +45,7 @@ void BookmarksWidget::removeBookmark(QString dirPath) {
             disconnect(w, &BookmarksItem::removeClicked, this, &BookmarksWidget::removeBookmark);
             w->deleteLater();
             paths.removeAll(dirPath);
+            saveBookmarks();
             break;
         }
     }

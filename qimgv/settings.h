@@ -218,6 +218,12 @@ public:
     bool placesPanel();
     void setPlacesPanel(bool mode);
 
+    QStringList bookmarks();
+    void setBookmarks(QStringList paths);
+    bool placesPanelBookmarksExpanded();
+    void setPlacesPanelBookmarksExpanded(bool mode);
+    bool placesPanelTreeExpanded();
+    void setPlacesPanelTreeExpanded(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

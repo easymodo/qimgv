@@ -567,12 +567,36 @@ void Settings::setSavedPaths(QStringList paths) {
     settings->state->setValue("savedPaths", paths);
 }
 //------------------------------------------------------------------------------
+QStringList Settings::bookmarks() {
+    return settings->state->value("bookmarks").toStringList();
+}
+
+void Settings::setBookmarks(QStringList paths) {
+    settings->state->setValue("bookmarks", paths);
+}
+//------------------------------------------------------------------------------
 bool Settings::placesPanel() {
     return settings->state->value("placesPanel", true).toBool();
 }
 
 void Settings::setPlacesPanel(bool mode) {
     settings->state->setValue("placesPanel", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::placesPanelBookmarksExpanded() {
+    return settings->state->value("placesPanelBookmarksExpanded", true).toBool();
+}
+
+void Settings::setPlacesPanelBookmarksExpanded(bool mode) {
+    settings->state->setValue("placesPanelBookmarksExpanded", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::placesPanelTreeExpanded() {
+    return settings->state->value("placesPanelTreeExpanded", true).toBool();
+}
+
+void Settings::setPlacesPanelTreeExpanded(bool mode) {
+    settings->state->setValue("placesPanelTreeExpanded", mode);
 }
 //------------------------------------------------------------------------------
 int Settings::thumbnailerThreadCount() {
