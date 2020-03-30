@@ -436,7 +436,7 @@
            <number>0</number>
           </property>
           <property name="rightMargin">
-           <number>0</number>
+           <number>3</number>
           </property>
           <property name="bottomMargin">
            <number>0</number>
@@ -461,15 +461,18 @@
            <widget class="IconButton" name="newBookmarkButton" native="true">
             <property name="minimumSize">
              <size>
-              <width>16</width>
-              <height>16</height>
+              <width>22</width>
+              <height>22</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>16</width>
-              <height>16</height>
+              <width>22</width>
+              <height>22</height>
              </size>
+            </property>
+            <property name="accessibleName">
+             <string>PlacesPanelButton</string>
             </property>
            </widget>
           </item>

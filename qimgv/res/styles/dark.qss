@@ -653,3 +653,22 @@ BookmarksItem QLabel {
 [accessibleName="BookmarksWidget"] {
     background-color: blue;
 }
+
+/*----------------------------------------------------------------------------*/
+/* places panel buttons */
+/*----------------------------------------------------------------------------*/
+
+[accessibleName="PlacesPanelButton"] {
+    border-radius: 2px;
+}
+
+[accessibleName="PlacesPanelButton"]:hover {
+    background-color: #545454;
+    border: 1px solid #545454;
+}
+
+[accessibleName="PlacesPanelButton"]:pressed,
+[accessibleName="PlacesPanelButton"][pressed="true"] {
+    background-color: #464646;
+    border: 1px solid #464646;
+}
