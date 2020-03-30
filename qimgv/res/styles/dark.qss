@@ -662,3 +662,20 @@ BookmarksItem QLabel {
     color: #aeaeae;
     padding: 4px 6px 4px 6px;
 }
+/*----------------------------------------------------------------------------*/
+
+QTreeView::branch:has-siblings:!adjoins-item {
+        background: transparent;
+}
+
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings {
+        border-image: none;
+        image: url(:/res/icons/other/collapsed.png)
+}
+
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings  {
+        border-image: none;
+        image: url(:/res/icons/other/expanded.png)
+}
