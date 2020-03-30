@@ -3,6 +3,7 @@
 BookmarksItem::BookmarksItem(QString _dirName, QString _dirPath, QWidget *parent)
     : QWidget(parent), dirName(_dirName), dirPath(_dirPath)
 {
+    setAcceptDrops(true);
     dirNameLabel.setText(dirName);
 
     spacer = new QSpacerItem(16, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
@@ -51,14 +52,6 @@ void BookmarksItem::paintEvent(QPaintEvent *event) {
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-void BookmarksItem::enterEvent(QEvent *event) {
-    //removeIconLabel.show();
-}
-
-void BookmarksItem::leaveEvent(QEvent *event) {
-    //removeIconLabel.hide();
-}
-
 bool BookmarksItem::eventFilter(QObject *watched, QEvent *event) {
     if(event->type() == QEvent::Paint) {
         if(watched == &folderIconLabel) {
@@ -69,4 +62,22 @@ bool BookmarksItem::eventFilter(QObject *watched, QEvent *event) {
         }
     }
     return false;
+}
+
+void BookmarksItem::dropEvent(QDropEvent *event) {
+    emit droppedIn(event->mimeData()->urls(), dirPath);
+}
+
+void BookmarksItem::dragEnterEvent(QDragEnterEvent *event) {
+    if(event->mimeData()->hasUrls()) {
+        event->acceptProposedAction();
+    }
+    setProperty("hover", true);
+    update();
+}
+
+void BookmarksItem::dragLeaveEvent(QDragLeaveEvent *event) {
+    Q_UNUSED(event)
+    setProperty("hover", false);
+    update();
 }

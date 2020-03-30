@@ -1,6 +1,7 @@
 #include "bookmarkswidget.h"
 
 BookmarksWidget::BookmarksWidget(QWidget *parent) : QWidget(parent) {
+    setAcceptDrops(true);
     setContentsMargins(0,0,0,0);
     layout.setContentsMargins(0,0,0,0);
     layout.setSpacing(0);
@@ -33,6 +34,7 @@ void BookmarksWidget::addBookmark(QString dirPath) {
     layout.addWidget(item);
     connect(item, &BookmarksItem::clicked, this, &BookmarksWidget::bookmarkClicked);
     connect(item, &BookmarksItem::removeClicked, this, &BookmarksWidget::removeBookmark);
+    connect(item, &BookmarksItem::droppedIn, this, &BookmarksWidget::droppedIn);
     saveBookmarks();
 }
 
@@ -43,10 +45,23 @@ void BookmarksWidget::removeBookmark(QString dirPath) {
             layout.removeWidget(w);
             disconnect(w, &BookmarksItem::clicked, this, &BookmarksWidget::bookmarkClicked);
             disconnect(w, &BookmarksItem::removeClicked, this, &BookmarksWidget::removeBookmark);
+            disconnect(w, &BookmarksItem::droppedIn, this, &BookmarksWidget::droppedIn);
             w->deleteLater();
             paths.removeAll(dirPath);
             saveBookmarks();
             break;
         }
+    }
+}
+
+void BookmarksWidget::dropEvent(QDropEvent *event) {
+//    QModelIndex dropIndex = indexAt(event->pos());
+//    if(dropIndex.isValid())
+//        emit droppedIn(event->mimeData()->urls(), dropIndex);
+}
+
+void BookmarksWidget::dragEnterEvent(QDragEnterEvent *event) {
+    if(event->mimeData()->hasUrls()) {
+        event->acceptProposedAction();
     }
 }

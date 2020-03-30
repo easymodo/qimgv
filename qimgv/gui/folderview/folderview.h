@@ -64,7 +64,8 @@ private slots:
     void readSettings();
 
     void onTreeViewClicked(QModelIndex index);
-    void onDroppedIn(QList<QUrl>, QModelIndex index);
+    void onDroppedInByIndex(QList<QUrl>, QModelIndex index);
+    void onDroppedIn(QList<QUrl>, QString dirPath);
     void toggleBookmarks();
     void toggleFilesystemView();
     void setPlacesPanel(bool mode);

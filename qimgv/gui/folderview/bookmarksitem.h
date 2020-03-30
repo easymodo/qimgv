@@ -6,6 +6,7 @@
 #include <QStyleOption>
 #include <QHBoxLayout>
 #include <QSpacerItem>
+#include <QMimeData>
 #include <QLabel>
 #include "gui/customwidgets/iconbutton.h"
 #include "gui/customwidgets/clickablelabel.h"
@@ -20,14 +21,16 @@ public:
 signals:
     void clicked(QString dirPath);
     void removeClicked(QString dirPath);
+    void droppedIn(QList<QUrl> urls, QString dirPath);
 
 protected:
-    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event) override;
     bool eventFilter(QObject *o, QEvent *ev) Q_DECL_OVERRIDE;
 
     void paintEvent(QPaintEvent *event) override;
-    void enterEvent(QEvent *event) override;
-    void leaveEvent(QEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragLeaveEvent(QDragLeaveEvent *event) override;
 
 private slots:
     void onRemoveClicked();

@@ -5,6 +5,7 @@
 #include "gui/folderview/bookmarksitem.h"
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QMimeData>
 #include "settings.h"
 
 class BookmarksWidget : public QWidget {
@@ -24,7 +25,11 @@ private slots:
     void saveBookmarks();
 signals:
     void bookmarkClicked(QString dirPath);
+    void droppedIn(QList<QUrl> urls, QString dirPath);
 
+protected:
+    void dropEvent(QDropEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
 private:
     QVBoxLayout layout;
     QStringList paths;

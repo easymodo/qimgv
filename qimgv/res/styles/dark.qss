@@ -396,20 +396,6 @@ FolderView {
     border-bottom: 1px solid #1a1a1b;
 }
 /*----------------------------------------------------------------------------*/
-[accessibleName="FolderViewPathBar"] {
-    background-color: #2f2f30;
-    /*color: #aeaeae;*/
-    color: #aeaeae;
-    border: 2px solid #2f2f30;
-    border-radius: 2px;
-    padding: 2px 6px 2px 6px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin-left: 2px;
-    margin-right:2px;
-}
-
-/*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewSlider"]::groove:horizontal {
     border: 1px solid #2f2f30;
     height: 6px;
@@ -619,7 +605,6 @@ FolderView QTreeView::item:selected:!active {
 /*----------------------------------------------------------------------------*/
 
 BookmarksItem {
-
     border: 1px solid transparent;
     border-radius: 2px;
 }
@@ -671,4 +656,12 @@ BookmarksItem QLabel {
 [accessibleName="PlacesPanelButton"][pressed="true"] {
     background-color: #464646;
     border: 1px solid #464646;
+}
+/*----------------------------------------------------------------------------*/
+[accessibleName="FolderViewPathBar"] {
+    background-color: #464646;
+    border: 1px solid #464646;
+    border-radius: 2px;
+    color: #aeaeae;
+    padding: 4px 6px 4px 6px;
 }
