@@ -3,6 +3,8 @@
 BookmarksItem::BookmarksItem(QString _dirName, QString _dirPath, QWidget *parent)
     : QWidget(parent), dirName(_dirName), dirPath(_dirPath)
 {
+    this->setContentsMargins(0,0,0,0);
+    layout.setContentsMargins(4,6,4,6);
     setAcceptDrops(true);
     dirNameLabel.setText(dirName);
 

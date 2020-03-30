@@ -8,6 +8,7 @@ add_executable(qimgv
     settings.cpp
     sharedresources.cpp
     shortcutbuilder.cpp
+    proxystyle.cpp
     resources.qrc
     qimgv.rc)
 

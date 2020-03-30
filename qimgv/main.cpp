@@ -6,6 +6,7 @@
 #include "utils/actions.h"
 #include "utils/helprunner.h"
 #include "sharedresources.h"
+#include "proxystyle.h"
 #include "core.h"
 
 void saveSettings() {
@@ -41,6 +42,8 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
     QCoreApplication::setApplicationVersion(appVersion.normalized().toString());
+
+    a.setStyle(new ProxyStyle);
 
     QGuiApplication::setDesktopFileName("qimgv.desktop");
 

@@ -15,10 +15,10 @@ Settings::Settings(QObject *parent) : QObject(parent) {
     s = new QSettings();
     state = new QSettings(QCoreApplication::organizationName(), "savedState");
 #else
-    mCacheDir = new QDir(QApplication::applicationDirPath() + "/cache");
-    mCacheDir->mkpath(mCacheDir->absolutePath());
-    mThumbnailDir = new QDir(QApplication::applicationDirPath() + "/thumbnails");
-    mThumbnailDir->mkpath(mThumbnailDir->absolutePath());
+    mTmpDir = new QDir(QApplication::applicationDirPath() + "/cache");
+    mTmpDir->mkpath(mTmpDir->absolutePath());
+    mThumbCacheDir = new QDir(QApplication::applicationDirPath() + "/thumbnails");
+    mThumbCacheDir->mkpath(mThumbCacheDir->absolutePath());
     mConfDir = new QDir(QApplication::applicationDirPath() + "/conf");
     mConfDir->mkpath(QApplication::applicationDirPath() + "/conf");
     s = new QSettings(mConfDir->absolutePath() + "/qimgv.ini", QSettings::IniFormat);

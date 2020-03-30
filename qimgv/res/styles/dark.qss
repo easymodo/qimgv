@@ -89,6 +89,9 @@
 }
 
 /*----------------------------------------------------------------------------*/
+QComboBox QAbstractItemView {
+    outline: 0px;
+}
 
 [accessibleName="PanelComboBox"] {
     background-color: #2f2f30;
@@ -122,7 +125,6 @@
     padding: 5px 0px;
     background-color: #232324;
     border: 1px solid #3e3e3e;
-    outline: 0px;
 }
 
 [accessibleName="PanelComboBox"] QAbstractItemView::item {
@@ -293,7 +295,6 @@ SidePanel QComboBox QAbstractItemView {
     padding: 5px 0px;
     background-color: #232324;
     border: 1px solid #3e3e3e;
-    outline: 0px;
 }
 
 SidePanel QComboBox QAbstractItemView::item {
@@ -633,10 +634,6 @@ BookmarksItem QLabel {
 
 [accessibleName="PanelSectionHeader"]:hover {
     color: #c8c8c8;
-}
-
-[accessibleName="BookmarksWidget"] {
-    background-color: blue;
 }
 
 /*----------------------------------------------------------------------------*/
