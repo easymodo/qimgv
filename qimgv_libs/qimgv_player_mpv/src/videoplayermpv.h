@@ -34,6 +34,7 @@ public slots:
     void setVolume(int);
     void show();
     void hide();
+    void setLoopPlayback(bool mode);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -41,6 +42,9 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+
+signals:
+    void playbackFinished();
 
 private slots:
     void readSettings();

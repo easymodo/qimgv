@@ -60,6 +60,7 @@ inline bool VideoPlayerInitProxy::initPlayer() {
     connect(player.get(), SIGNAL(durationChanged(int)), this, SIGNAL(durationChanged(int)));
     connect(player.get(), SIGNAL(positionChanged(int)), this, SIGNAL(positionChanged(int)));
     connect(player.get(), SIGNAL(videoPaused(bool)), this, SIGNAL(videoPaused(bool)));
+    connect(player.get(), SIGNAL(playbackFinished()), this, SIGNAL(playbackFinished()));
     return true;
 }
 
@@ -153,6 +154,12 @@ void VideoPlayerInitProxy::setVideoUnscaled(bool mode) {
     if(!initPlayer())
         return;
     player->setVideoUnscaled(mode);
+}
+
+void VideoPlayerInitProxy::setLoopPlayback(bool mode) {
+    if(!initPlayer())
+        return;
+    player->setLoopPlayback(mode);
 }
 
 void VideoPlayerInitProxy::show() {

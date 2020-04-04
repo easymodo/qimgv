@@ -32,9 +32,11 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
     connect(imageViewer.get(), &ImageViewerV2::scalingRequested, this, &ViewerWidget::scalingRequested);
     connect(imageViewer.get(), &ImageViewerV2::scaleChanged, this, &ViewerWidget::onScaleChanged);
+    connect(imageViewer.get(), &ImageViewerV2::playbackFinished, this, &ViewerWidget::onAnimationPlaybackFinished);
     connect(this, &ViewerWidget::toggleTransparencyGrid, imageViewer.get(), &ImageViewerV2::toggleTransparencyGrid);
     connect(this, &ViewerWidget::setFilterNearest,       imageViewer.get(), &ImageViewerV2::setFilterNearest);
     connect(this, &ViewerWidget::setFilterBilinear,      imageViewer.get(), &ImageViewerV2::setFilterBilinear);
+
 
     videoPlayer.reset(new VideoPlayerInitProxy(this));
     layout.addWidget(videoPlayer.get());
@@ -49,6 +51,7 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     connect(videoPlayer.get(), &VideoPlayer::durationChanged, videoControls, &VideoControlsProxyWrapper::setDurationSeconds);
     connect(videoPlayer.get(), &VideoPlayer::positionChanged, videoControls, &VideoControlsProxyWrapper::setPositionSeconds);
     connect(videoPlayer.get(), &VideoPlayer::videoPaused,     videoControls, &VideoControlsProxyWrapper::onVideoPaused);
+    connect(videoPlayer.get(), &VideoPlayer::playbackFinished, this, &ViewerWidget::onVideoPlaybackFinished);
 
     connect(videoControls, &VideoControlsProxyWrapper::pause,     this, &ViewerWidget::pauseVideo);
     connect(videoControls, &VideoControlsProxyWrapper::seekLeft,  this, &ViewerWidget::seekVideoLeft);
@@ -136,6 +139,16 @@ void ViewerWidget::onScaleChanged(qreal scale) {
     } else {
         zoomIndicator->hide();
     }
+}
+
+void ViewerWidget::onVideoPlaybackFinished() {
+    if(currentWidget == VIDEOPLAYER)
+        emit playbackFinished();
+}
+
+void ViewerWidget::onAnimationPlaybackFinished() {
+    if(currentWidget == IMAGEVIEWER)
+        emit playbackFinished();
 }
 
 void ViewerWidget::enableInteraction() {
@@ -448,6 +461,11 @@ void ViewerWidget::onFullscreenModeChanged(bool mode) {
 void ViewerWidget::readSettings() {
     mPanelEnabled = settings->panelEnabled();
     mPanelFullscreenOnly = settings->panelFullscreenOnly();
+}
+
+void ViewerWidget::setLoopPlayback(bool mode) {
+    imageViewer->setLoopPlayback(mode);
+    videoPlayer->setLoopPlayback(mode);
 }
 
 void ViewerWidget::hideContextMenu() {

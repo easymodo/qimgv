@@ -598,6 +598,17 @@ bool Settings::placesPanelTreeExpanded() {
 void Settings::setPlacesPanelTreeExpanded(bool mode) {
     settings->state->setValue("placesPanelTreeExpanded", mode);
 }
+
+void Settings::setSlideshowInterval(int ms) {
+    settings->s->setValue("slideshowInterval", ms);
+}
+
+int Settings::slideshowInterval() {
+    int interval = settings->s->value("slideshowInterval", 3000).toInt();
+    if(interval <= 0)
+        interval = 3000;
+    return interval;
+}
 //------------------------------------------------------------------------------
 int Settings::thumbnailerThreadCount() {
     int count = settings->s->value("thumbnailerThreads", 2).toInt();

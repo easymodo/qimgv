@@ -21,11 +21,13 @@ public:
     virtual void setVolume(int) = 0;
     virtual int volume() = 0;
     virtual void setVideoUnscaled(bool mode) = 0;
+    virtual void setLoopPlayback(bool mode) = 0;
 
 signals:
     void durationChanged(int value);
     void positionChanged(int value);
     void videoPaused(bool);
+    void playbackFinished();
 
 public slots:
     virtual void show();

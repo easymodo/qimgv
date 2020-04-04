@@ -10,6 +10,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     smoothUpscaling(true),
     forceFastScale(false),
     keepFitMode(false),
+    loopPlayback(true),
     mouseInteraction(MouseInteractionState::MOUSE_NONE),
     minScale(0.01f),
     maxScale(500.0f),
@@ -64,6 +65,8 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     connect(scrollTimeLineX, &QTimeLine::frameChanged, this, &ImageViewerV2::scrollToX);
     connect(scrollTimeLineY, &QTimeLine::frameChanged, this, &ImageViewerV2::scrollToY);
 
+    connect(animationTimer, &QTimer::timeout, this, &ImageViewerV2::nextFrame, Qt::UniqueConnection);
+
     QObject::connect(scaleTimer, &QTimer::timeout, [this]() {
         this->requestScaling();
     });
@@ -91,36 +94,32 @@ void ImageViewerV2::readSettings() {
 }
 
 void ImageViewerV2::startAnimation() {
-    if(movie) {
+    if(movie && movie->frameCount() > 1) {
         stopAnimation();
-        connect(animationTimer, &QTimer::timeout, this, &ImageViewerV2::nextFrame, Qt::UniqueConnection);
-        startAnimationTimer();
+        movie->jumpToFrame(0);
+        animationTimer->start(movie->nextFrameDelay());
     }
 }
 
 void ImageViewerV2::stopAnimation() {
     if(movie) {
         animationTimer->stop();
-        disconnect(animationTimer, &QTimer::timeout, this, &ImageViewerV2::nextFrame);
-        movie->jumpToFrame(0);
     }
 }
 void ImageViewerV2::nextFrame() {
     if(movie) {
-        if(!movie->jumpToNextFrame()) {
-            movie->jumpToFrame(0);
-        }
-        if(movie->frameCount() > 1) {
-            startAnimationTimer();
+        bool jumpFailed = !movie->jumpToNextFrame();
+        if(movie->currentFrameNumber() == movie->frameCount() - 1) {
+            if(!loopPlayback || jumpFailed) {
+                emit playbackFinished();
+                return;
+            } else {
+                movie->jumpToFrame(0);
+            }
         }
         std::unique_ptr<QPixmap> newFrame(new QPixmap());
         *newFrame = movie->currentPixmap();
         updatePixmap(std::move(newFrame));
-    }
-}
-
-void ImageViewerV2::startAnimationTimer() {
-    if(animationTimer && movie) {
         animationTimer->start(movie->nextFrameDelay());
     }
 }
@@ -264,6 +263,12 @@ void ImageViewerV2::setScalingFilter(ScalingFilter filter) {
     if(mScalingFilter == QI_FILTER_NEAREST)
         swapToOriginalPixmap();
     requestScaling();
+}
+
+void ImageViewerV2::setLoopPlayback(bool mode) {
+    if(movie && mode && loopPlayback != mode)
+        startAnimation();
+    loopPlayback = mode;
 }
 
 void ImageViewerV2::setFilterNearest() {

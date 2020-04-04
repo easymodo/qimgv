@@ -7,7 +7,7 @@
 
 #include "core.h"
 
-Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr) {
+Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr), slideshow(false) {
 #ifdef __GLIBC__
     // default value of 128k causes memory fragmentation issues
     // finding this took 3 days of my life
@@ -21,6 +21,7 @@ Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr) {
     connectComponents();
     initActions();
     readSettings();
+    slideshowTimer.setSingleShot(true);
     connect(settings, &Settings::settingsChanged, this, &Core::readSettings);
 
     QVersionNumber lastVersion = settings->lastVersion();
@@ -32,6 +33,7 @@ Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr) {
 
 void Core::readSettings() {
     infiniteScrolling = settings->infiniteScrolling();
+    slideshowTimer.setInterval(settings->slideshowInterval());
     if(settings->shuffleEnabled())
         syncRandomizer();
 }
@@ -87,6 +89,8 @@ void Core::connectComponents() {
     connect(mw, qOverload<>(&MW::draggedOut),    this, qOverload<>(&Core::onDragOut));
     connect(mw, qOverload<int>(&MW::draggedOut), this, qOverload<int>(&Core::onDragOut));
 
+    connect(mw, &MW::playbackFinished, this, &Core::onPlaybackFinished);
+
     connect(mw, &MW::scalingRequested, this, &Core::scalingRequest);
     connect(model->scaler, &Scaler::scalingFinished, this, &Core::onScalingFinished);
 
@@ -98,6 +102,8 @@ void Core::connectComponents() {
     connect(model.get(), &DirectoryModel::itemReady,      this, &Core::onModelItemReady);
     connect(model.get(), &DirectoryModel::itemUpdated,    this, &Core::onModelItemUpdated);
     connect(model.get(), &DirectoryModel::sortingChanged, this, &Core::onModelSortingChanged);
+
+    connect(&slideshowTimer, &QTimer::timeout, this, &Core::nextImageSlideshow);
 }
 
 void Core::initActions() {
@@ -160,6 +166,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::toggleMute, mw, &MW::toggleMute);
     connect(actionManager, &ActionManager::volumeUp, mw, &MW::volumeUp);
     connect(actionManager, &ActionManager::volumeDown, mw, &MW::volumeDown);
+    connect(actionManager, &ActionManager::toggleSlideshow, this, &Core::toggleSlideshow);
 }
 
 void Core::onUpdate() {
@@ -193,6 +200,37 @@ void Core::toggleShuffle() {
         settings->setShuffleEnabled(true);
         syncRandomizer();
         mw->showMessage("Shuffle Enabled");
+    }
+}
+
+void Core::toggleSlideshow() {
+    if(slideshow) {
+        slideshow = false;
+        mw->showMessage("Slideshow: OFF");
+        mw->setLoopPlayback(true);
+        slideshowTimer.stop();
+    } else {
+        slideshow = true;
+        mw->showMessage("Slideshow: ON");
+        mw->setLoopPlayback(false);
+        enableDocumentView();
+        startSlideshowTimer();
+    }
+    updateInfoString();
+}
+
+void Core::stopSlideshow() {
+    if(slideshow) {
+        slideshow = false;
+        mw->setLoopPlayback(true);
+        slideshowTimer.stop();
+        updateInfoString();
+    }
+}
+
+void Core::onPlaybackFinished() {
+    if(slideshow) {
+        nextImageSlideshow();
     }
 }
 
@@ -256,21 +294,25 @@ void Core::reloadImage(QString fileName) {
 }
 
 void Core::enableFolderView() {
+    if(mw->currentViewMode() == MODE_FOLDERVIEW)
+        return;
+    stopSlideshow();
     mw->enableFolderView();
 }
 
 void Core::enableDocumentView() {
+    if(mw->currentViewMode() == MODE_DOCUMENT)
+        return;
     mw->enableDocumentView();
     if(model && model->itemCount() && state.currentFileName == "")
         loadIndex(0, false, settings->usePreloader());
 }
 
 void Core::toggleFolderView() {
-    mw->toggleFolderView();
-    if(mw->currentViewMode() == MODE_DOCUMENT) {
-        if(model && model->itemCount() && state.currentFileName == "")
-            loadIndex(0, false, settings->usePreloader());
-    }
+    if(mw->currentViewMode() == MODE_FOLDERVIEW)
+        enableDocumentView();
+    else
+        enableFolderView();
 }
 
 // TODO: also copy selection from folder view?
@@ -727,6 +769,7 @@ void Core::loadPath(QString path) {
     if(path.startsWith("file://", Qt::CaseInsensitive))
         path.remove(0, 7);
 
+    stopSlideshow();
     QFileInfo fileInfo(path);
     QString directoryPath;
     if(fileInfo.isDir()) {
@@ -792,6 +835,7 @@ bool Core::loadIndex(int index, bool async, bool preload) {
 void Core::nextImage() {
     if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
+    stopSlideshow();
     if(settings->shuffleEnabled()) {
         loadIndex(randomizer.next(), true, false);
         return;
@@ -812,6 +856,7 @@ void Core::nextImage() {
 void Core::prevImage() {
     if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
+    stopSlideshow();
     if(settings->shuffleEnabled()) {
         loadIndex(randomizer.prev(), true, false);
         return;
@@ -830,9 +875,44 @@ void Core::prevImage() {
     loadIndex(newIndex, true, settings->usePreloader());
 }
 
+void Core::nextImageSlideshow() {
+    if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
+        return;
+    if(settings->shuffleEnabled()) {
+        loadIndex(randomizer.next(), false, false);
+    } else {
+        int newIndex = model->indexOf(state.currentFileName) + 1;
+        if(newIndex >= model->itemCount()) {
+            if(infiniteScrolling) {
+                newIndex = 0;
+            } else {
+                stopSlideshow();
+                mw->showMessage("End of directory.");
+                return;
+            }
+        }
+        loadIndex(newIndex, false, true);
+    }
+    startSlideshowTimer();
+}
+
+void Core::startSlideshowTimer() {
+    // start timer only for static images or single frame gifs
+    // for proper gifs and video we get a playbackFinished() signal
+    auto img = model->getItem(state.currentFileName);
+    if(img->type() == STATIC) {
+        slideshowTimer.start();
+    } else if(img->type() == ANIMATED) {
+        auto anim = dynamic_cast<ImageAnimated *>(img.get());
+        if(anim && anim->frameCount() <= 1)
+            slideshowTimer.start();
+    }
+}
+
 void Core::jumpToFirst() {
     if(model->isEmpty())
         return;
+    stopSlideshow();
     loadIndex(0, true, settings->usePreloader());
     mw->showMessageDirectoryStart();
 }
@@ -840,6 +920,7 @@ void Core::jumpToFirst() {
 void Core::jumpToLast() {
     if(model->isEmpty())
         return;
+    stopSlideshow();
     loadIndex(model->itemCount() - 1, true, settings->usePreloader());
     mw->showMessageDirectoryEnd();
 }
@@ -910,5 +991,6 @@ void Core::updateInfoString() {
                        model->itemCount(),
                        state.currentFileName,
                        imageSize,
-                       fileSize);
+                       fileSize,
+                       slideshow);
 }

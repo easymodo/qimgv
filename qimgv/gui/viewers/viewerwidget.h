@@ -63,6 +63,8 @@ private:
 
 private slots:
     void onScaleChanged(qreal);
+    void onVideoPlaybackFinished();
+    void onAnimationPlaybackFinished();
 
 signals:
     void scalingRequested(QSize, ScalingFilter);
@@ -81,6 +83,7 @@ signals:
     void draggedOut();
     void setFilterNearest();
     void setFilterBilinear();
+    void playbackFinished();
 
 public slots:
     bool showVideo(QString file);
@@ -110,6 +113,7 @@ public slots:
     void showContextMenu(QPoint pos);
     void onFullscreenModeChanged(bool);
     void readSettings();
+    void setLoopPlayback(bool mode);
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);

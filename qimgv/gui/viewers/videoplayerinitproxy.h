@@ -28,6 +28,7 @@ public:
     void setVolume(int);
     int volume();
     void setVideoUnscaled(bool mode);
+    void setLoopPlayback(bool mode);
     std::shared_ptr<VideoPlayer> getPlayer();
 
 public slots:
@@ -45,5 +46,8 @@ private:
 
 private slots:
     void onSettingsChanged();
+
+signals:
+    void playbackFinished();
 
 };
