@@ -130,7 +130,7 @@ private slots:
     void onModelLoaded();
     void outputError(const FileOpResult &error) const;
     void showOpenDialog();
-    void showDirectory();
+    void showInDirectory();
     void onDirectoryViewItemSelected(int index);
     bool loadIndex(int index, bool async, bool preload);
     void enableDocumentView();

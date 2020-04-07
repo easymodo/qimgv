@@ -162,7 +162,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::toggleImageInfo, mw, &MW::toggleImageInfoOverlay);
     connect(actionManager, &ActionManager::toggleShuffle, this, &Core::toggleShuffle);
     connect(actionManager, &ActionManager::toggleScalingFilter, mw, &MW::toggleScalingFilter);
-    connect(actionManager, &ActionManager::showDirectory, this, &Core::showDirectory);
+    connect(actionManager, &ActionManager::showInDirectory, this, &Core::showInDirectory);
     connect(actionManager, &ActionManager::toggleMute, mw, &MW::toggleMute);
     connect(actionManager, &ActionManager::volumeUp, mw, &MW::volumeUp);
     connect(actionManager, &ActionManager::volumeDown, mw, &MW::volumeDown);
@@ -504,8 +504,37 @@ void Core::showOpenDialog() {
     mw->showOpenDialog(model->directoryPath());
 }
 
-void Core::showDirectory() {
+void Core::showInDirectory() {
+    if(!model)
+        return;
+#ifdef __linux__
     QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
+#endif
+
+#ifdef __WIN32
+    if(mw->currentViewMode() == MODE_DOCUMENT && !state.currentFileName.isEmpty()) {
+        QStringList args;
+        args << "/select," << QDir::toNativeSeparators(model->fullPath(state.currentFileName));
+        qDebug() << args;
+        QProcess::startDetached("explorer", args);
+    } else {
+        QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
+    }
+#endif
+/*
+#ifdef Q_WS_MAC
+    QStringList args;
+    args << "-e";
+    args << "tell application \"Finder\"";
+    args << "-e";
+    args << "activate";
+    args << "-e";
+    args << "select POSIX file \""+filePath+"\"";
+    args << "-e";
+    args << "end tell";
+    QProcess::startDetached("osascript", args);
+#endif
+*/
 }
 
 void Core::moveCurrentFile(QString destDirectory) {

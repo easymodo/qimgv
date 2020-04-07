@@ -76,10 +76,10 @@ void Actions::init() {
     mActions.insert("toggleImageInfo", QVersionNumber(0,7,84));
     mActions.insert("toggleShuffle", QVersionNumber(0,8,3));
     mActions.insert("toggleScalingFilter", QVersionNumber(0,8,3));
-    mActions.insert("showDirectory", QVersionNumber(0,8,7));
     mActions.insert("toggleMute", QVersionNumber(0,8,7));
     mActions.insert("volumeUp", QVersionNumber(0,8,7));
     mActions.insert("volumeDown", QVersionNumber(0,8,7));
     mActions.insert("toggleSlideshow", QVersionNumber(0,8,81));
+    mActions.insert("showInDirectory", QVersionNumber(0,8,82));
 }
 
