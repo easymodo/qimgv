@@ -25,6 +25,7 @@ VideoPlayerMpv::VideoPlayerMpv(QWidget *parent) : VideoPlayer(parent) {
     connect(m_mpv, SIGNAL(durationChanged(int)), this, SIGNAL(durationChanged(int)));
     connect(m_mpv, SIGNAL(positionChanged(int)), this, SIGNAL(positionChanged(int)));
     connect(m_mpv, SIGNAL(videoPaused(bool)), this, SIGNAL(videoPaused(bool)));
+    connect(m_mpv, SIGNAL(playbackFinished()), this, SIGNAL(playbackFinished()));
 }
 
 bool VideoPlayerMpv::openMedia(QString file) {
@@ -133,6 +134,10 @@ void VideoPlayerMpv::show() {
 
 void VideoPlayerMpv::hide() {
     QWidget::hide();
+}
+
+void VideoPlayerMpv::setLoopPlayback(bool mode) {
+    m_mpv->setRepeat(mode);
 }
 
 VideoPlayer *CreatePlayerWidget() {

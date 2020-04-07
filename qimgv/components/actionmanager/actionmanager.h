@@ -114,6 +114,7 @@ signals:
     void toggleMute();
     void volumeUp();
     void volumeDown();
+    void toggleSlideshow();
 };
 
 extern ActionManager *actionManager;

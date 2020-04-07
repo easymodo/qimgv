@@ -224,6 +224,10 @@ public:
     void setPlacesPanelBookmarksExpanded(bool mode);
     bool placesPanelTreeExpanded();
     void setPlacesPanelTreeExpanded(bool mode);
+
+    void setSlideshowInterval(int ms);
+    int slideshowInterval();
+
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

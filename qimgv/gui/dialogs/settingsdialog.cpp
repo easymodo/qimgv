@@ -99,6 +99,7 @@ void SettingsDialog::readSettings() {
     ui->keepFitModeCheckBox->setChecked(settings->keepFitMode());
     ui->useOpenGLCheckBox->setChecked(settings->useOpenGL());
     ui->focusPointIn1to1ModeComboBox->setCurrentIndex(settings->focusPointIn1to1Mode());
+    ui->slideshowIntervalSpinBox->setValue(settings->slideshowInterval());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -210,6 +211,7 @@ void SettingsDialog::applySettings() {
     settings->setKeepFitMode(ui->keepFitModeCheckBox->isChecked());
     settings->setUseOpenGL(ui->useOpenGLCheckBox->isChecked());
     settings->setFocusPointIn1to1Mode(static_cast<ImageFocusPoint>(ui->focusPointIn1to1ModeComboBox->currentIndex()));
+    settings->setSlideshowInterval(ui->slideshowIntervalSpinBox->value());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 

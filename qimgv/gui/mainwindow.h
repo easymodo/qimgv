@@ -57,7 +57,7 @@ public:
     void setAnimation(std::unique_ptr<QMovie> movie);
     void setVideo(QString file);
 
-    void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, qint64 fileSize);
+    void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, qint64 fileSize, bool slideshow);
     void setExifInfo(QMap<QString, QString>);
     std::shared_ptr<FolderViewProxy> getFolderView();
     std::shared_ptr<ThumbnailStrip> getThumbnailPanel();
@@ -177,6 +177,8 @@ signals:
     void droppedIn(const QMimeData*, QObject*);
     void draggedOut();
     void draggedOut(int);
+    void setLoopPlayback(bool);
+    void playbackFinished();
 
 public slots:
     void setupFullUi();

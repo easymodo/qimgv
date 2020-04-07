@@ -79,6 +79,7 @@ void MW::setupUi() {
     floatingMessage = new FloatingMessageProxy(this);
     connect(viewerWidget.get(), &ViewerWidget::scalingRequested, this, &MW::scalingRequested);
     connect(viewerWidget.get(), &ViewerWidget::draggedOut, this, qOverload<>(&MW::draggedOut));
+    connect(viewerWidget.get(), &ViewerWidget::playbackFinished, this, &MW::playbackFinished);
     connect(this, &MW::zoomIn,        viewerWidget.get(), &ViewerWidget::zoomIn);
     connect(this, &MW::zoomOut,       viewerWidget.get(), &ViewerWidget::zoomOut);
     connect(this, &MW::zoomInCursor,  viewerWidget.get(), &ViewerWidget::zoomInCursor);
@@ -98,6 +99,7 @@ void MW::setupUi() {
     connect(this, &MW::volumeDown,  viewerWidget.get(), &ViewerWidget::volumeDown);
     connect(this, &MW::toggleTransparencyGrid, viewerWidget.get(), &ViewerWidget::toggleTransparencyGrid);
     connect(this, &MW::enableDocumentView, centralWidget.get(), &CentralWidget::showDocumentView);
+    connect(this, &MW::setLoopPlayback,  viewerWidget.get(), &ViewerWidget::setLoopPlayback);
 }
 
 void MW::setupFullUi() {
@@ -585,7 +587,7 @@ void MW::closeFullScreenOrExit() {
     }
 }
 
-void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _imageSize, qint64 _fileSize) {
+void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _imageSize, qint64 _fileSize, bool slideshow) {
     info.index = _index;
     info.fileCount = _fileCount;
     info.fileName = _fileName;
@@ -621,6 +623,8 @@ void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _im
             if(!sizeString.isEmpty())
                 windowTitle.append("  -  " + sizeString);
         }
+        if(slideshow)
+            windowTitle.append(" — slideshow");
         setWindowTitle(windowTitle);
         infoBarFullscreen->setInfo(posString, info.fileName, resString + "  " + sizeString);
         infoBarWindowed->setInfo(posString, info.fileName, resString + "  " + sizeString);

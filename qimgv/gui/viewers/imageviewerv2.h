@@ -52,6 +52,7 @@ signals:
     virtual void sourceSizeChanged(QSize);
     virtual void imageAreaChanged(QRect);
     virtual void draggedOut();
+    void playbackFinished();
 
 public slots:
     virtual void setFitMode(ImageFitMode mode);
@@ -79,6 +80,7 @@ public slots:
     virtual void setFilterNearest();
     virtual void setFilterBilinear();
     virtual void setScalingFilter(ScalingFilter filter);
+    void setLoopPlayback(bool mode);
 
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
@@ -101,7 +103,7 @@ private:
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
     QTimer *animationTimer, *scaleTimer;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
-    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode;
+    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, loopPlayback;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_UPDATE_RATE = 7;
@@ -133,7 +135,6 @@ private:
     void mousePan(QMouseEvent *event);
     void mouseMoveZoom(QMouseEvent *event);
     void drawTransparencyGrid();
-    void startAnimationTimer();
     void reset();
     void applyFitMode();
 

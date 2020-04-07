@@ -48,7 +48,7 @@ private:
     MW *mw;
 
     State state;
-    bool infiniteScrolling;
+    bool infiniteScrolling, slideshow;
 
     // components
     std::shared_ptr<DirectoryModel> model;
@@ -68,10 +68,15 @@ private:
     void attachModel(DirectoryModel *_model);
     QString selectedFileName();
     void guiSetImage(std::shared_ptr<Image> img);
+    QTimer slideshowTimer;
+
+    void startSlideshowTimer();
+    void stopSlideshow();
 private slots:
     void readSettings();
     void nextImage();
     void prevImage();
+    void nextImageSlideshow();
     void jumpToFirst();
     void jumpToLast();
     void onModelItemReady(std::shared_ptr<Image>);
@@ -131,4 +136,6 @@ private slots:
     void enableDocumentView();
     void enableFolderView();
     void toggleFolderView();
+    void toggleSlideshow();
+    void onPlaybackFinished();
 };

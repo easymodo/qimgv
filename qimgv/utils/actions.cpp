@@ -80,5 +80,6 @@ void Actions::init() {
     mActions.insert("toggleMute", QVersionNumber(0,8,7));
     mActions.insert("volumeUp", QVersionNumber(0,8,7));
     mActions.insert("volumeDown", QVersionNumber(0,8,7));
+    mActions.insert("toggleSlideshow", QVersionNumber(0,8,81));
 }
 

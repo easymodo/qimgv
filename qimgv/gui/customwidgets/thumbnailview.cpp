@@ -304,12 +304,17 @@ void ThumbnailView::updateLayout() {
 
 // fit scene to it's contents size
 void ThumbnailView::fitSceneToContents() {
+    QPointF center;
     if(this->orientation == THUMBNAILVIEW_VERTICAL) {
         int height = qMax((int)scene.itemsBoundingRect().height(), this->height());
         scene.setSceneRect(QRectF(0,0, this->width(), height));
+        center = mapToScene(viewport()->rect().center());
+        centerOn(0, center.y());
     } else {
         int width = qMax((int)scene.itemsBoundingRect().width(), this->width());
         scene.setSceneRect(QRectF(0,0, width, this->height()));
+        center = mapToScene(viewport()->rect().center());
+        centerOn(center.x(), 0);
     }
 }
 

@@ -32,9 +32,11 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
     connect(imageViewer.get(), &ImageViewerV2::scalingRequested, this, &ViewerWidget::scalingRequested);
     connect(imageViewer.get(), &ImageViewerV2::scaleChanged, this, &ViewerWidget::onScaleChanged);
+    connect(imageViewer.get(), &ImageViewerV2::playbackFinished, this, &ViewerWidget::onAnimationPlaybackFinished);
     connect(this, &ViewerWidget::toggleTransparencyGrid, imageViewer.get(), &ImageViewerV2::toggleTransparencyGrid);
     connect(this, &ViewerWidget::setFilterNearest,       imageViewer.get(), &ImageViewerV2::setFilterNearest);
     connect(this, &ViewerWidget::setFilterBilinear,      imageViewer.get(), &ImageViewerV2::setFilterBilinear);
+
 
     videoPlayer.reset(new VideoPlayerInitProxy(this));
     layout.addWidget(videoPlayer.get());
@@ -49,6 +51,7 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     connect(videoPlayer.get(), &VideoPlayer::durationChanged, videoControls, &VideoControlsProxyWrapper::setDurationSeconds);
     connect(videoPlayer.get(), &VideoPlayer::positionChanged, videoControls, &VideoControlsProxyWrapper::setPositionSeconds);
     connect(videoPlayer.get(), &VideoPlayer::videoPaused,     videoControls, &VideoControlsProxyWrapper::onVideoPaused);
+    connect(videoPlayer.get(), &VideoPlayer::playbackFinished, this, &ViewerWidget::onVideoPlaybackFinished);
 
     connect(videoControls, &VideoControlsProxyWrapper::pause,     this, &ViewerWidget::pauseVideo);
     connect(videoControls, &VideoControlsProxyWrapper::seekLeft,  this, &ViewerWidget::seekVideoLeft);
@@ -136,6 +139,16 @@ void ViewerWidget::onScaleChanged(qreal scale) {
     } else {
         zoomIndicator->hide();
     }
+}
+
+void ViewerWidget::onVideoPlaybackFinished() {
+    if(currentWidget == VIDEOPLAYER)
+        emit playbackFinished();
+}
+
+void ViewerWidget::onAnimationPlaybackFinished() {
+    if(currentWidget == IMAGEVIEWER)
+        emit playbackFinished();
 }
 
 void ViewerWidget::enableInteraction() {
@@ -385,6 +398,20 @@ void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
     }
     if(!mainPanel->triggerRect().contains(event->pos()))
         avoidPanelFlag = false;
+
+    if(currentWidget == VIDEOPLAYER) {
+        QRect vcontrolsRect;
+        if(mainPanel->position() == PANEL_TOP)
+            vcontrolsRect = QRect(0, height() - 160, width(), height());
+        else
+            vcontrolsRect = QRect(0, 0, width(), 160);
+
+        if(vcontrolsRect.contains(event->pos()))
+            videoControls->show();
+        else
+            videoControls->hide();
+    }
+
     event->ignore();
 }
 
@@ -402,11 +429,12 @@ void ViewerWidget::hideCursor() {
     if(contextMenu && contextMenu->isVisible())
         return;
     // only hide when we are under viewer or player widget
-    QWidget *w = qApp->widgetAt(QCursor::pos());
-    if(w && (w == imageViewer.get()->viewport() || w == videoPlayer->getPlayer().get())) {
-        if(settings->cursorAutohide())
+    if(settings->cursorAutohide()) {
+        QWidget *w = qApp->widgetAt(QCursor::pos());
+        if(w && (w == imageViewer.get()->viewport() || w == videoPlayer->getPlayer().get())) {
             setCursor(QCursor(Qt::BlankCursor));
-        videoControls->hide(); // todo: separate
+            videoControls->hide();
+        }
     }
 }
 
@@ -414,9 +442,6 @@ void ViewerWidget::showCursor() {
     cursorTimer.stop();
     if(cursor().shape() == Qt::BlankCursor)
         setCursor(QCursor(Qt::ArrowCursor));
-    if(currentWidget == VIDEOPLAYER) {
-        videoControls->show();
-    }
 }
 
 void ViewerWidget::showContextMenu() {
@@ -448,6 +473,11 @@ void ViewerWidget::onFullscreenModeChanged(bool mode) {
 void ViewerWidget::readSettings() {
     mPanelEnabled = settings->panelEnabled();
     mPanelFullscreenOnly = settings->panelFullscreenOnly();
+}
+
+void ViewerWidget::setLoopPlayback(bool mode) {
+    imageViewer->setLoopPlayback(mode);
+    videoPlayer->setLoopPlayback(mode);
 }
 
 void ViewerWidget::hideContextMenu() {
@@ -490,4 +520,6 @@ void ViewerWidget::leaveEvent(QEvent *event) {
     //instead do the panel hiding in MW::leaveEvent  (it works properly in root window)
     //mainPanel->hide();
     avoidPanelFlag = false;
+
+    videoControls->hide();
 }
