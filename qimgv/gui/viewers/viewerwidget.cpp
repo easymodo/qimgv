@@ -398,6 +398,20 @@ void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
     }
     if(!mainPanel->triggerRect().contains(event->pos()))
         avoidPanelFlag = false;
+
+    if(currentWidget == VIDEOPLAYER) {
+        QRect vcontrolsRect;
+        if(mainPanel->position() == PANEL_TOP)
+            vcontrolsRect = QRect(0, height() - 160, width(), height());
+        else
+            vcontrolsRect = QRect(0, 0, width(), 160);
+
+        if(vcontrolsRect.contains(event->pos()))
+            videoControls->show();
+        else
+            videoControls->hide();
+    }
+
     event->ignore();
 }
 
@@ -415,11 +429,12 @@ void ViewerWidget::hideCursor() {
     if(contextMenu && contextMenu->isVisible())
         return;
     // only hide when we are under viewer or player widget
-    QWidget *w = qApp->widgetAt(QCursor::pos());
-    if(w && (w == imageViewer.get()->viewport() || w == videoPlayer->getPlayer().get())) {
-        if(settings->cursorAutohide())
+    if(settings->cursorAutohide()) {
+        QWidget *w = qApp->widgetAt(QCursor::pos());
+        if(w && (w == imageViewer.get()->viewport() || w == videoPlayer->getPlayer().get())) {
             setCursor(QCursor(Qt::BlankCursor));
-        videoControls->hide(); // todo: separate
+            videoControls->hide();
+        }
     }
 }
 
@@ -427,9 +442,6 @@ void ViewerWidget::showCursor() {
     cursorTimer.stop();
     if(cursor().shape() == Qt::BlankCursor)
         setCursor(QCursor(Qt::ArrowCursor));
-    if(currentWidget == VIDEOPLAYER) {
-        videoControls->show();
-    }
 }
 
 void ViewerWidget::showContextMenu() {
@@ -508,4 +520,6 @@ void ViewerWidget::leaveEvent(QEvent *event) {
     //instead do the panel hiding in MW::leaveEvent  (it works properly in root window)
     //mainPanel->hide();
     avoidPanelFlag = false;
+
+    videoControls->hide();
 }
