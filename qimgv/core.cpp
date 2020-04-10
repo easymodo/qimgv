@@ -512,13 +512,13 @@ void Core::showInDirectory() {
 #endif
 
 #ifdef __WIN32
-    if(mw->currentViewMode() == MODE_DOCUMENT && !state.currentFileName.isEmpty()) {
-        QStringList args;
-        args << "/select," << QDir::toNativeSeparators(model->fullPath(state.currentFileName));
-        qDebug() << args;
-        QProcess::startDetached("explorer", args);
-    } else {
+    QString fileName = this->selectedFileName();
+    if(fileName.isEmpty()) {
         QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
+    } else {
+        QStringList args;
+        args << "/select," << QDir::toNativeSeparators(model->fullPath(fileName));
+        QProcess::startDetached("explorer", args);
     }
 #endif
 /*
