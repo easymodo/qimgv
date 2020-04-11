@@ -202,6 +202,7 @@ void FolderView::setDirectoryPath(QString path) {
     if(ui->dirTreeView->currentIndex().data() == path)
         return;
     ui->directoryPathLabel->setText(path);
+    ui->bookmarksWidget->onPathChanged(path);
 
     QModelIndex targetIndex = dirModel->index(path);
     bool keepExpand = ui->dirTreeView->isExpanded(targetIndex);

@@ -18,6 +18,9 @@ public:
     explicit BookmarksItem(QString _dirName, QString _dirPath, QWidget *parent = nullptr);
     QString path();
 
+public slots:
+    void setHighlighted(bool mode);
+
 signals:
     void clicked(QString dirPath);
     void removeClicked(QString dirPath);
@@ -42,6 +45,7 @@ private:
     QLabel dirNameLabel;
     QSpacerItem *spacer;
     QHBoxLayout layout;
+    bool mHighlighted;
 };
 
 #endif // BOOKMARKSITEM_H

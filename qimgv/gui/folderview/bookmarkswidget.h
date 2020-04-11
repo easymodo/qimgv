@@ -19,6 +19,7 @@ public slots:
     void addBookmark(QString directoryPath);
 
     void removeBookmark(QString dirPath);
+    void onPathChanged(QString path);
 private slots:
     void readSettings();
 
@@ -33,6 +34,7 @@ protected:
 private:
     QVBoxLayout layout;
     QStringList paths;
+    QString highlightedPath;
 };
 
 #endif // BOOKMARKSWIDGET_H

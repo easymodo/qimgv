@@ -1,7 +1,7 @@
 #include "bookmarksitem.h"
 
 BookmarksItem::BookmarksItem(QString _dirName, QString _dirPath, QWidget *parent)
-    : QWidget(parent), dirName(_dirName), dirPath(_dirPath)
+    : QWidget(parent), dirName(_dirName), dirPath(_dirPath), mHighlighted(false)
 {
     this->setContentsMargins(0,0,0,0);
     layout.setContentsMargins(4,6,4,6);
@@ -34,6 +34,15 @@ BookmarksItem::BookmarksItem(QString _dirName, QString _dirPath, QWidget *parent
 
 QString BookmarksItem::path() {
     return dirPath;
+}
+
+void BookmarksItem::setHighlighted(bool mode) {
+    if(mode != mHighlighted) {
+        mHighlighted = mode;
+        setProperty("highlighted", mHighlighted);
+        style()->unpolish(this);
+        style()->polish(this);
+    }
 }
 
 void BookmarksItem::mouseReleaseEvent(QMouseEvent *event) {

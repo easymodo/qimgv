@@ -1,6 +1,6 @@
 #include "bookmarkswidget.h"
 
-BookmarksWidget::BookmarksWidget(QWidget *parent) : QWidget(parent) {
+BookmarksWidget::BookmarksWidget(QWidget *parent) : QWidget(parent), highlightedPath("") {
     setAcceptDrops(true);
     setContentsMargins(0,0,0,0);
     layout.setContentsMargins(0,0,0,0);
@@ -42,6 +42,8 @@ void BookmarksWidget::removeBookmark(QString dirPath) {
     for(int i = 0; i < layout.count(); i++) {
         auto w = dynamic_cast<BookmarksItem*>(layout.itemAt(i)->widget());
         if(w && w->path() == dirPath) {
+            if(highlightedPath == dirPath)
+                highlightedPath = "";
             layout.removeWidget(w);
             disconnect(w, &BookmarksItem::clicked, this, &BookmarksWidget::bookmarkClicked);
             disconnect(w, &BookmarksItem::removeClicked, this, &BookmarksWidget::removeBookmark);
@@ -51,6 +53,22 @@ void BookmarksWidget::removeBookmark(QString dirPath) {
             saveBookmarks();
             break;
         }
+    }
+}
+
+void BookmarksWidget::onPathChanged(QString path) {
+    if(highlightedPath == path)
+        return;
+    if(paths.contains(highlightedPath)) {
+        int currentIndex = paths.indexOf(highlightedPath);
+        auto w = dynamic_cast<BookmarksItem*>(layout.itemAt(currentIndex)->widget());
+        w->setHighlighted(false);
+    }
+    if(paths.contains(path)) {
+        int newIndex = paths.indexOf(path);
+        auto w = dynamic_cast<BookmarksItem*>(layout.itemAt(newIndex)->widget());
+        w->setHighlighted(true);
+        highlightedPath = path;
     }
 }
 
