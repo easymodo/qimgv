@@ -23,9 +23,10 @@ void VideoControlsProxyWrapper::init() {
     connect(videoControls, &VideoControls::nextFrame, this, &VideoControlsProxyWrapper::nextFrame);
     connect(videoControls, &VideoControls::prevFrame, this, &VideoControlsProxyWrapper::prevFrame);
 
-    videoControls->setDurationSeconds(stateBuf.durationSeconds);
-    videoControls->setPositionSeconds(stateBuf.positionSeconds);
-    videoControls->onVideoPaused(stateBuf.videoPaused);
+    videoControls->setMode(stateBuf.mode);
+    videoControls->setPlaybackDuration(stateBuf.duration);
+    videoControls->setPlaybackPosition(stateBuf.position);
+    videoControls->onPlaybackPaused(stateBuf.paused);
     videoControls->onVideoMuted(stateBuf.videoMuted);
 }
 
@@ -39,27 +40,35 @@ void VideoControlsProxyWrapper::hide() {
         videoControls->hide();
 }
 
-void VideoControlsProxyWrapper::setDurationSeconds(int _duration) {
+void VideoControlsProxyWrapper::setPlaybackDuration(int _duration) {
     if(videoControls) {
-        videoControls->setDurationSeconds(_duration);
+        videoControls->setPlaybackDuration(_duration);
     } else {
-        stateBuf.durationSeconds = _duration;
+        stateBuf.duration = _duration;
     }
 }
 
-void VideoControlsProxyWrapper::setPositionSeconds(int _position) {
+void VideoControlsProxyWrapper::setPlaybackPosition(int _position) {
     if(videoControls) {
-        videoControls->setPositionSeconds(_position);
+        videoControls->setPlaybackPosition(_position);
     } else {
-        stateBuf.positionSeconds = _position;
+        stateBuf.position = _position;
     }
 }
 
-void VideoControlsProxyWrapper::onVideoPaused(bool _mode) {
+void VideoControlsProxyWrapper::setMode(PlaybackMode _mode) {
     if(videoControls) {
-        videoControls->onVideoPaused(_mode);
+        videoControls->setMode(_mode);
     } else {
-        stateBuf.videoPaused = _mode;
+        stateBuf.mode = _mode;
+    }
+}
+
+void VideoControlsProxyWrapper::onPlaybackPaused(bool _mode) {
+    if(videoControls) {
+        videoControls->onPlaybackPaused(_mode);
+    } else {
+        stateBuf.paused = _mode;
     }
 }
 

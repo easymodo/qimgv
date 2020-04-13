@@ -61,6 +61,7 @@ private:
     void disableImageViewer();
     void disableVideoPlayer();
 
+    QRect videoControlsArea();
 private slots:
     void onScaleChanged(qreal);
     void onVideoPlaybackFinished();
@@ -96,11 +97,11 @@ public slots:
     void hideCursorTimed(bool restartTimer);
 
     // video control
-    void pauseVideo();
-    void seekVideo(int pos);
-    void seekVideoRelative(int pos);
-    void seekVideoLeft();
-    void seekVideoRight();
+    void pauseResumePlayback();
+    void seek(int pos);
+    void seekRelative(int pos);
+    void seekLeft();
+    void seekRight();
     void frameStep();
     void frameStepBack();
     void toggleMute();

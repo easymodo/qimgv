@@ -3,10 +3,11 @@
 #include "gui/overlays/videocontrols.h"
 
 struct VideoControlsStateBuffer {
-    int durationSeconds = 0;
-    int positionSeconds = 0;
-    bool videoPaused = true;
+    int duration = 0;
+    int position = 0;
+    bool paused = true;
     bool videoMuted = true;
+    PlaybackMode mode;
 };
 
 class VideoControlsProxyWrapper : public QObject {
@@ -28,9 +29,10 @@ signals:
     void prevFrame();
 
 public slots:
-    void setDurationSeconds(int);
-    void setPositionSeconds(int);
-    void onVideoPaused(bool);
+    void setPlaybackDuration(int);
+    void setPlaybackPosition(int);
+    void setMode(PlaybackMode);
+    void onPlaybackPaused(bool);
     void onVideoMuted(bool);
 
 private:

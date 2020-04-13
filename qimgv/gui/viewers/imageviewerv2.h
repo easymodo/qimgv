@@ -43,16 +43,21 @@ public:
     virtual bool imageFits() const;
     virtual ScalingFilter scalingFilter() const;
     virtual QWidget *widget();
+    bool hasAnimation() const;
 
     QSize scaledSize() const;
 
+    void pauseResume();
 signals:
-    virtual void scalingRequested(QSize, ScalingFilter);
-    virtual void scaleChanged(qreal);
-    virtual void sourceSizeChanged(QSize);
-    virtual void imageAreaChanged(QRect);
-    virtual void draggedOut();
+    void scalingRequested(QSize, ScalingFilter);
+    void scaleChanged(qreal);
+    void sourceSizeChanged(QSize);
+    void imageAreaChanged(QRect);
+    void draggedOut();
     void playbackFinished();
+    void animationPaused(bool);
+    void frameChanged(int);
+    void durationChanged(int);
 
 public slots:
     virtual void setFitMode(ImageFitMode mode);
@@ -82,6 +87,10 @@ public slots:
     virtual void setScalingFilter(ScalingFilter filter);
     void setLoopPlayback(bool mode);
 
+    void nextFrame();
+    void prevFrame();
+
+    void seek(int frame);
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent* event);
@@ -89,8 +98,9 @@ protected:
     virtual void resizeEvent(QResizeEvent* event);
     void wheelEvent(QWheelEvent *event);
 
+protected slots:
+    void onAnimationTimer();
 private slots:
-    void nextFrame();
     void requestScaling();
     void scrollToX(int x);
     void scrollToY(int y);

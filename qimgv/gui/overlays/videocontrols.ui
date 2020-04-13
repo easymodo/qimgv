@@ -256,7 +256,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="separatorLabel">
      <property name="text">
       <string notr="true">/</string>
      </property>

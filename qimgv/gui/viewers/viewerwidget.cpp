@@ -48,15 +48,12 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
     mainPanel.reset(new MainPanel(this));
 
-    connect(videoPlayer.get(), &VideoPlayer::durationChanged, videoControls, &VideoControlsProxyWrapper::setDurationSeconds);
-    connect(videoPlayer.get(), &VideoPlayer::positionChanged, videoControls, &VideoControlsProxyWrapper::setPositionSeconds);
-    connect(videoPlayer.get(), &VideoPlayer::videoPaused,     videoControls, &VideoControlsProxyWrapper::onVideoPaused);
     connect(videoPlayer.get(), &VideoPlayer::playbackFinished, this, &ViewerWidget::onVideoPlaybackFinished);
 
-    connect(videoControls, &VideoControlsProxyWrapper::pause,     this, &ViewerWidget::pauseVideo);
-    connect(videoControls, &VideoControlsProxyWrapper::seekLeft,  this, &ViewerWidget::seekVideoLeft);
-    connect(videoControls, &VideoControlsProxyWrapper::seekRight, this, &ViewerWidget::seekVideoRight);
-    connect(videoControls, &VideoControlsProxyWrapper::seek,      this, &ViewerWidget::seekVideo);
+    connect(videoControls, &VideoControlsProxyWrapper::pause,     this, &ViewerWidget::pauseResumePlayback);
+    connect(videoControls, &VideoControlsProxyWrapper::seekLeft,  this, &ViewerWidget::seekLeft);
+    connect(videoControls, &VideoControlsProxyWrapper::seekRight, this, &ViewerWidget::seekRight);
+    connect(videoControls, &VideoControlsProxyWrapper::seek,      this, &ViewerWidget::seek);
     connect(videoControls, &VideoControlsProxyWrapper::nextFrame, this, &ViewerWidget::frameStep);
     connect(videoControls, &VideoControlsProxyWrapper::prevFrame, this, &ViewerWidget::frameStepBack);
 
@@ -94,6 +91,10 @@ QSize ViewerWidget::sourceSize() {
 void ViewerWidget::enableImageViewer() {
     if(currentWidget != IMAGEVIEWER) {
         disableVideoPlayer();
+        videoControls->setMode(PLAYBACK_ANIMATION);
+        connect(imageViewer.get(), &ImageViewerV2::durationChanged, videoControls, &VideoControlsProxyWrapper::setPlaybackDuration);
+        connect(imageViewer.get(), &ImageViewerV2::frameChanged,    videoControls, &VideoControlsProxyWrapper::setPlaybackPosition);
+        connect(imageViewer.get(), &ImageViewerV2::animationPaused, videoControls, &VideoControlsProxyWrapper::onPlaybackPaused);
         imageViewer->show();
         currentWidget = IMAGEVIEWER;
     }
@@ -103,6 +104,10 @@ void ViewerWidget::enableImageViewer() {
 void ViewerWidget::enableVideoPlayer() {
     if(currentWidget != VIDEOPLAYER) {
         disableImageViewer();
+        videoControls->setMode(PLAYBACK_VIDEO);
+        connect(videoPlayer.get(), &VideoPlayer::durationChanged, videoControls, &VideoControlsProxyWrapper::setPlaybackDuration);
+        connect(videoPlayer.get(), &VideoPlayer::positionChanged, videoControls, &VideoControlsProxyWrapper::setPlaybackPosition);
+        connect(videoPlayer.get(), &VideoPlayer::videoPaused,     videoControls, &VideoControlsProxyWrapper::onPlaybackPaused);
         videoPlayer->show();
         currentWidget = VIDEOPLAYER;
     }
@@ -114,14 +119,19 @@ void ViewerWidget::disableImageViewer() {
         imageViewer->closeImage();
         imageViewer->hide();
         zoomIndicator->hide();
+        disconnect(imageViewer.get(), &ImageViewerV2::durationChanged, videoControls, &VideoControlsProxyWrapper::setPlaybackDuration);
+        disconnect(imageViewer.get(), &ImageViewerV2::frameChanged,    videoControls, &VideoControlsProxyWrapper::setPlaybackPosition);
+        disconnect(imageViewer.get(), &ImageViewerV2::animationPaused, videoControls, &VideoControlsProxyWrapper::onPlaybackPaused);
     }
 }
 
 void ViewerWidget::disableVideoPlayer() {
     if(currentWidget == VIDEOPLAYER) {
         currentWidget = UNSET;
-        if(videoControls)
-            videoControls->hide();
+        //videoControls->hide();
+        disconnect(videoPlayer.get(), &VideoPlayer::durationChanged, videoControls, &VideoControlsProxyWrapper::setPlaybackDuration);
+        disconnect(videoPlayer.get(), &VideoPlayer::positionChanged, videoControls, &VideoControlsProxyWrapper::setPlaybackPosition);
+        disconnect(videoPlayer.get(), &VideoPlayer::videoPaused,     videoControls, &VideoControlsProxyWrapper::onPlaybackPaused);
         videoPlayer->setPaused(true);
         videoPlayer->hide();
     }
@@ -202,6 +212,7 @@ bool ViewerWidget::showImage(std::unique_ptr<QPixmap> pixmap) {
     if(!pixmap)
         return false;
     stopPlayback();
+    videoControls->hide();
     enableImageViewer();
     imageViewer->displayImage(std::move(pixmap));
     hideCursorTimed(false);
@@ -227,7 +238,7 @@ bool ViewerWidget::showVideo(QString file) {
 }
 
 void ViewerWidget::stopPlayback() {
-    if(currentWidget == IMAGEVIEWER) {
+    if(currentWidget == IMAGEVIEWER && imageViewer->hasAnimation()) {
         imageViewer->stopAnimation();
     }
     if(currentWidget == VIDEOPLAYER) {
@@ -238,7 +249,7 @@ void ViewerWidget::stopPlayback() {
 }
 
 void ViewerWidget::startPlayback() {
-    if(currentWidget == IMAGEVIEWER) {
+    if(currentWidget == IMAGEVIEWER && imageViewer->hasAnimation()) {
         imageViewer->startAnimation();
     }
     if(currentWidget == VIDEOPLAYER) {
@@ -271,27 +282,33 @@ void ViewerWidget::closeImage() {
     showCursor();
 }
 
-void ViewerWidget::pauseVideo() {
+void ViewerWidget::pauseResumePlayback() {
     if(currentWidget == VIDEOPLAYER)
         videoPlayer.get()->pauseResume();
+    else if(imageViewer->hasAnimation())
+        imageViewer->pauseResume();
 }
 
-void ViewerWidget::seekVideo(int pos) {
-    if(currentWidget == VIDEOPLAYER)
+void ViewerWidget::seek(int pos) {
+    if(currentWidget == VIDEOPLAYER) {
         videoPlayer.get()->seek(pos);
+    } else if(imageViewer->hasAnimation()) {
+        imageViewer->stopAnimation();
+        imageViewer->seek(pos);
+    }
 }
 
-void ViewerWidget::seekVideoRelative(int pos) {
+void ViewerWidget::seekRelative(int pos) {
     if(currentWidget == VIDEOPLAYER)
         videoPlayer.get()->seekRelative(pos);
 }
 
-void ViewerWidget::seekVideoLeft() {
+void ViewerWidget::seekLeft() {
     if(currentWidget == VIDEOPLAYER)
         videoPlayer.get()->seekRelative(-10);
 }
 
-void ViewerWidget::seekVideoRight() {
+void ViewerWidget::seekRight() {
     if(currentWidget == VIDEOPLAYER)
         videoPlayer.get()->seekRelative(10);
 }
@@ -299,11 +316,19 @@ void ViewerWidget::seekVideoRight() {
 void ViewerWidget::frameStep() {
     if(currentWidget == VIDEOPLAYER)
         videoPlayer.get()->frameStep();
+    else if(imageViewer->hasAnimation()) {
+        imageViewer->stopAnimation();
+        imageViewer->nextFrame();
+    }
 }
 
 void ViewerWidget::frameStepBack() {
     if(currentWidget == VIDEOPLAYER)
         videoPlayer.get()->frameStepBack();
+    else if(imageViewer->hasAnimation()) {
+        imageViewer->stopAnimation();
+        imageViewer->prevFrame();
+    }
 }
 
 void ViewerWidget::toggleMute() {
@@ -328,7 +353,7 @@ void ViewerWidget::volumeDown() {
 bool ViewerWidget::isDisplaying() {
     if(currentWidget == IMAGEVIEWER && imageViewer->isDisplaying())
         return true;
-    if(currentWidget == VIDEOPLAYER /*&& imageViewer->isDisplaying()*/) // todo
+    if(currentWidget == VIDEOPLAYER)
         return true;
     else
         return false;
@@ -399,14 +424,8 @@ void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
     if(!mainPanel->triggerRect().contains(event->pos()))
         avoidPanelFlag = false;
 
-    if(currentWidget == VIDEOPLAYER) {
-        QRect vcontrolsRect;
-        if(mainPanel->position() == PANEL_TOP)
-            vcontrolsRect = QRect(0, height() - 160, width(), height());
-        else
-            vcontrolsRect = QRect(0, 0, width(), 160);
-
-        if(vcontrolsRect.contains(event->pos()))
+    if(currentWidget == VIDEOPLAYER || imageViewer->hasAnimation()) {
+        if(videoControlsArea().contains(event->pos()))
             videoControls->show();
         else
             videoControls->hide();
@@ -432,10 +451,21 @@ void ViewerWidget::hideCursor() {
     if(settings->cursorAutohide()) {
         QWidget *w = qApp->widgetAt(QCursor::pos());
         if(w && (w == imageViewer.get()->viewport() || w == videoPlayer->getPlayer().get())) {
-            setCursor(QCursor(Qt::BlankCursor));
-            videoControls->hide();
+            if(!videoControlsArea().contains(mapFromGlobal(QCursor::pos()))) {
+                setCursor(QCursor(Qt::BlankCursor));
+                videoControls->hide();
+            }
         }
     }
+}
+
+QRect ViewerWidget::videoControlsArea() {
+    QRect vcontrolsRect;
+    if(mainPanel->position() == PANEL_TOP)
+        vcontrolsRect = QRect(0, height() - 160, width(), height());
+    else
+        vcontrolsRect = QRect(0, 0, width(), 160);
+    return vcontrolsRect;
 }
 
 void ViewerWidget::showCursor() {

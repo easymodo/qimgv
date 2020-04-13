@@ -14,7 +14,7 @@ VideoControls::VideoControls(FloatingWidgetContainer *parent) :
     ui->muteButton->setIconPath(":/res/icons/buttons/videocontrols/mute-on24.png");
     ui->muteButton->setAction("toggleMute");
 
-    lastVideoPosition = -1;
+    lastPosition = -1;
 
     readSettings();
     connect(settings, &Settings::settingsChanged, this, &VideoControls::readSettings);
@@ -39,43 +39,58 @@ VideoControls::~VideoControls() {
     delete ui;
 }
 
-void VideoControls::setDurationSeconds(int time) {
-    int _time = time;
-    int hours = _time / 3600;
-    _time -= hours * 3600;
-    int minutes = _time / 60;
-    int seconds = _time - minutes * 60;
-    QString str = QString("%1").arg(minutes, 2, 10, QChar('0')) + ":" +
-                  QString("%1").arg(seconds, 2, 10, QChar('0'));
-    if(hours)
-        str.prepend(QString("%1").arg(hours, 2, 10, QChar('0')) + ":");
-    ui->seekBar->setRange(0, time);
-    ui->durationLabel->setText(str);
-    recalculateGeometry();
+void VideoControls::setMode(PlaybackMode _mode) {
+    mode = _mode;
+    ui->muteButton->setVisible( (mode == PLAYBACK_VIDEO) );
 }
 
-void VideoControls::setPositionSeconds(int time) {
-    if(time != lastVideoPosition) {
-        int _time = time;
+void VideoControls::setPlaybackDuration(int duration) {
+    QString durationStr;
+    if(mode == PLAYBACK_VIDEO) {
+        int _time = duration;
         int hours = _time / 3600;
         _time -= hours * 3600;
         int minutes = _time / 60;
         int seconds = _time - minutes * 60;
-        QString str = QString("%1").arg(minutes, 2, 10, QChar('0')) + ":" +
+        durationStr = QString("%1").arg(minutes, 2, 10, QChar('0')) + ":" +
                       QString("%1").arg(seconds, 2, 10, QChar('0'));
         if(hours)
-            str.prepend(QString("%1").arg(hours, 2, 10, QChar('0')) + ":");
-
-        ui->positionLabel->setText(str);
-        ui->seekBar->blockSignals(true);
-        ui->seekBar->setValue(time);
-        ui->seekBar->blockSignals(false);
-        recalculateGeometry();
+            durationStr.prepend(QString("%1").arg(hours, 2, 10, QChar('0')) + ":");
+    } else {
+        durationStr = QString::number(duration);
     }
-    lastVideoPosition = time;
+    ui->seekBar->setRange(0, duration);
+    ui->durationLabel->setText(durationStr);
+    ui->positionLabel->setText(durationStr);
+    recalculateGeometry();
+    ui->positionLabel->setText("");
 }
 
-void VideoControls::onVideoPaused(bool mode) {
+void VideoControls::setPlaybackPosition(int position) {
+    if(position == lastPosition)
+        return;
+    QString positionStr;
+    if(mode == PLAYBACK_VIDEO) {
+        int _time = position;
+        int hours = _time / 3600;
+        _time -= hours * 3600;
+        int minutes = _time / 60;
+        int seconds = _time - minutes * 60;
+        positionStr = QString("%1").arg(minutes, 2, 10, QChar('0')) + ":" +
+                      QString("%1").arg(seconds, 2, 10, QChar('0'));
+        if(hours)
+            positionStr.prepend(QString("%1").arg(hours, 2, 10, QChar('0')) + ":");
+    } else {
+        positionStr = QString::number(position);
+    }
+    ui->positionLabel->setText(positionStr);
+    ui->seekBar->blockSignals(true);
+    ui->seekBar->setValue(position);
+    ui->seekBar->blockSignals(false);
+    lastPosition = position;
+}
+
+void VideoControls::onPlaybackPaused(bool mode) {
     if(mode)
         ui->pauseButton->setIconPath(":res/icons/buttons/videocontrols/play24.png");
     else

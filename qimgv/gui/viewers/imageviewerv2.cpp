@@ -65,7 +65,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     connect(scrollTimeLineX, &QTimeLine::frameChanged, this, &ImageViewerV2::scrollToX);
     connect(scrollTimeLineY, &QTimeLine::frameChanged, this, &ImageViewerV2::scrollToY);
 
-    connect(animationTimer, &QTimer::timeout, this, &ImageViewerV2::nextFrame, Qt::UniqueConnection);
+    connect(animationTimer, &QTimer::timeout, this, &ImageViewerV2::onAnimationTimer, Qt::UniqueConnection);
 
     QObject::connect(scaleTimer, &QTimer::timeout, [this]() {
         this->requestScaling();
@@ -96,32 +96,70 @@ void ImageViewerV2::readSettings() {
 void ImageViewerV2::startAnimation() {
     if(movie && movie->frameCount() > 1) {
         stopAnimation();
-        movie->jumpToFrame(0);
+        emit animationPaused(false);
+        //movie->jumpToFrame(0);
+        //emit frameChanged(0);
         animationTimer->start(movie->nextFrameDelay());
     }
 }
 
 void ImageViewerV2::stopAnimation() {
     if(movie) {
+        emit animationPaused(true);
         animationTimer->stop();
     }
 }
-void ImageViewerV2::nextFrame() {
+
+void ImageViewerV2::pauseResume() {
     if(movie) {
-        bool jumpFailed = !movie->jumpToNextFrame();
-        if(movie->currentFrameNumber() == movie->frameCount() - 1) {
-            if(!loopPlayback || jumpFailed) {
-                emit playbackFinished();
-                return;
-            } else {
-                movie->jumpToFrame(0);
-            }
-        }
-        std::unique_ptr<QPixmap> newFrame(new QPixmap());
-        *newFrame = movie->currentPixmap();
-        updatePixmap(std::move(newFrame));
-        animationTimer->start(movie->nextFrameDelay());
+        if(animationTimer->isActive())
+            stopAnimation();
+        else
+            startAnimation();
     }
+}
+
+void ImageViewerV2::onAnimationTimer() {
+    if(!movie)
+        return;
+    if(movie->currentFrameNumber() == movie->frameCount() - 1) {
+        if(!loopPlayback) {
+            emit animationPaused(true);
+            emit playbackFinished();
+            return;
+        } else {
+            movie->jumpToFrame(1); // 0 doesnt work??
+        }
+    } else {
+        movie->jumpToNextFrame();
+    }
+    emit frameChanged(movie->currentFrameNumber());
+    std::unique_ptr<QPixmap> newFrame(new QPixmap());
+    *newFrame = movie->currentPixmap();
+    updatePixmap(std::move(newFrame));
+    animationTimer->start(movie->nextFrameDelay());
+}
+
+void ImageViewerV2::nextFrame() {
+    if(!movie || movie->currentFrameNumber() == movie->frameCount() - 1)
+        return;
+    seek(movie->currentFrameNumber() + 1);
+}
+
+void ImageViewerV2::prevFrame() {
+    if(!movie || movie->currentFrameNumber() == 0)
+        return;
+    seek(movie->currentFrameNumber() - 1);
+}
+
+void ImageViewerV2::seek(int frame) {
+    if(!movie || frame < 0 || frame >= movie->frameCount())
+        return;
+    movie->jumpToFrame(frame);
+    emit frameChanged(movie->currentFrameNumber());
+    std::unique_ptr<QPixmap> newFrame(new QPixmap());
+    *newFrame = movie->currentPixmap();
+    updatePixmap(std::move(newFrame));
 }
 
 void ImageViewerV2::updatePixmap(std::unique_ptr<QPixmap> newPixmap) {
@@ -141,12 +179,15 @@ void ImageViewerV2::displayAnimation(std::unique_ptr<QMovie> _movie) {
     if(_movie && _movie->isValid()) {
         reset();
         movie = std::move(_movie);
+        movie->setCacheMode(QMovie::CacheAll);
         movie->jumpToFrame(0);
         Qt::TransformationMode mode = smoothAnimatedImages ? Qt::SmoothTransformation : Qt::FastTransformation;
         pixmapItem.setTransformationMode(mode);
         std::unique_ptr<QPixmap> newFrame(new QPixmap());
         *newFrame = movie->currentPixmap();
         updatePixmap(std::move(newFrame));
+        emit durationChanged(movie->frameCount());
+        emit frameChanged(0);
 
         if(!keepFitMode)
                 imageFitMode = imageFitModeDefault;
@@ -156,6 +197,7 @@ void ImageViewerV2::displayAnimation(std::unique_ptr<QMovie> _movie) {
 
         if(transparencyGridEnabled)
             drawTransparencyGrid();
+
         startAnimation();
     }
 }
@@ -378,6 +420,10 @@ ScalingFilter ImageViewerV2::scalingFilter() const {
 
 QWidget *ImageViewerV2::widget() {
     return this;
+}
+
+bool ImageViewerV2::hasAnimation() const {
+    return (movie != nullptr);
 }
 
 //  Right button zooming / dragging logic
