@@ -521,6 +521,19 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
         else if(angleDelta < 0)
             zoomOutCursor();
         event->accept();
+    } else if(event->modifiers() == Qt::NoModifier) {
+        event->accept();
+        QPoint pixelDelta = event->pixelDelta();
+        QPoint angleDelta = event->angleDelta();
+        if(pixelDelta != QPoint(0,0)) {
+            horizontalScrollBar()->setValue(horizontalScrollBar()->value() - pixelDelta.x());
+            verticalScrollBar()->setValue(verticalScrollBar()->value() - pixelDelta.y());
+        } else {
+            horizontalScrollBar()->setValue(horizontalScrollBar()->value() - angleDelta.x());
+            verticalScrollBar()->setValue(verticalScrollBar()->value() - angleDelta.y());
+        }
+        centerIfNecessary();
+        snapToEdges();
     } else {
         event->ignore();
         QWidget::wheelEvent(event);
