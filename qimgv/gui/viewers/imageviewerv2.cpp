@@ -514,23 +514,57 @@ void ImageViewerV2::mouseReleaseEvent(QMouseEvent *event) {
 // for some reason in qgraphicsview wheelEvent is followed by moveEvent (wtf?)
 void ImageViewerV2::wheelEvent(QWheelEvent *event) {
     if(event->buttons() & Qt::RightButton) {
+        event->accept();
         mouseInteraction = MOUSE_WHEEL_ZOOM;
         int angleDelta = event->angleDelta().ry();
         if(angleDelta > 0)
             zoomInCursor();
         else if(angleDelta < 0)
             zoomOutCursor();
-        event->accept();
     } else if(event->modifiers() == Qt::NoModifier) {
         event->accept();
         QPoint pixelDelta = event->pixelDelta();
         QPoint angleDelta = event->angleDelta();
         if(pixelDelta != QPoint(0,0)) {
+            stopPosAnimation();
             horizontalScrollBar()->setValue(horizontalScrollBar()->value() - pixelDelta.x());
             verticalScrollBar()->setValue(verticalScrollBar()->value() - pixelDelta.y());
-        } else {
-            horizontalScrollBar()->setValue(horizontalScrollBar()->value() - angleDelta.x());
-            verticalScrollBar()->setValue(verticalScrollBar()->value() - angleDelta.y());
+        } else if (angleDelta != QPoint(0,0)) {
+            // looks messy, just testing. maybe move out into some Scroller class? thumbView uses the same logic
+            if(angleDelta.y() && !(angleDelta.y() % 120)) {
+                int delta;
+                if(angleDelta.y() > 0)
+                    delta = SCROLL_DISTANCE;
+                else
+                    delta = -SCROLL_DISTANCE;
+                bool redirect = false;
+                int currentYPos = verticalScrollBar()->value();
+                int newEndFrame = currentYPos - static_cast<int>(delta);
+                if( (newEndFrame < currentYPos && currentYPos < scrollTimeLineY->endFrame()) ||
+                    (newEndFrame > currentYPos && currentYPos > scrollTimeLineY->endFrame()) )
+                {
+                    redirect = true;
+                }
+
+                if(scrollTimeLineY->state() == QTimeLine::Running) {
+                    int oldEndFrame = scrollTimeLineY->endFrame();
+                    // QTimeLine has this weird issue when it is already finished (at the last frame)
+                    // but is stuck in the running state. So we just create a new one.
+                    //if(oldEndFrame == currentYPos)
+                    //    createScrollTimeLine();
+                    if(!redirect/* && additive*/)
+                        newEndFrame = oldEndFrame - static_cast<int>(delta * 1.3f/* * multiplier * acceleration*/);
+                }
+                scrollTimeLineX->stop();
+                scrollTimeLineY->stop();
+                //blockThumbnailLoading = true;
+                scrollTimeLineY->setFrameRange(currentYPos, newEndFrame);
+                scrollTimeLineY->start();
+            } else {
+                stopPosAnimation();
+                horizontalScrollBar()->setValue(horizontalScrollBar()->value() - angleDelta.x());
+                verticalScrollBar()->setValue(verticalScrollBar()->value() - angleDelta.y());
+            }
         }
         centerIfNecessary();
         snapToEdges();
