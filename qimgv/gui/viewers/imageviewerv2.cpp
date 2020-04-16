@@ -33,7 +33,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     scrollTimeLineY->setDuration(ANIMATION_SPEED);
     scrollTimeLineY->setUpdateInterval(SCROLL_UPDATE_RATE);
     scrollTimeLineX = new QTimeLine();
-    scrollTimeLineX->setEasingCurve(QEasingCurve::Linear);
+    scrollTimeLineX->setEasingCurve(QEasingCurve::OutSine);
     scrollTimeLineX->setDuration(ANIMATION_SPEED);
     scrollTimeLineX->setUpdateInterval(SCROLL_UPDATE_RATE);
 
@@ -530,6 +530,8 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
             stopPosAnimation();
             horizontalScrollBar()->setValue(horizontalScrollBar()->value() - pixelDelta.x());
             verticalScrollBar()->setValue(verticalScrollBar()->value() - pixelDelta.y());
+            centerIfNecessary();
+            snapToEdges();
         } else if(angleDelta != QPoint(0,0)) { // mouse wheel & (windows) touchpad
             // wheel usually sends angleDelta = 120 / 240 / ...
             // there doesnt seem to be a way to detect event source except this
