@@ -43,6 +43,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     scaleTimer = new QTimer(this);
     scaleTimer->setSingleShot(true);
     scaleTimer->setInterval(80);
+
     zoomThreshold = static_cast<int>(devicePixelRatioF() * 4.);
 
     pixmapItem.setTransformationMode(Qt::SmoothTransformation);
@@ -536,14 +537,15 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
         } else if(angleDelta != QPoint(0,0)) { // mouse wheel & (windows) touchpad
             // wheel usually sends angleDelta = 120 / 240 / ...
             // there doesnt seem to be a way to detect event source except this
-            // downside is that every now and then a touchpad may send a delta=120 and it will be mishandled
             // this issue is windows only as both linux touchpad drivers send pixelDelta instead
+            // as a workaround we use QElapsedTimer to guess where the event came from
             bool isWheel = angleDelta.y() && !(angleDelta.y() % 120);
-            if(isWheel) {
+            if(isWheel && lastTouchpadScroll.elapsed() > 100) {
                 if(settings->imageScrolling() == SCROLL_BY_TRACKPAD_AND_WHEEL)
                     scroll(0, -angleDelta.y(), true);
                 else
                     QWidget::wheelEvent(event);
+                return; // return immediately so we wont restart the scroll timer
             } else if(settings->imageScrolling() != ImageScrolling::SCROLL_NONE) {
                 stopPosAnimation();
                 horizontalScrollBar()->setValue(horizontalScrollBar()->value() - angleDelta.x());
@@ -551,6 +553,7 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                 centerIfNecessary();
                 snapToEdges();
             }
+            lastTouchpadScroll.restart();
         }
     } else {
         event->ignore();

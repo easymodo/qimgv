@@ -5,7 +5,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
-
+#include <QElapsedTimer>
 #include <QWheelEvent>
 #include <QTimeLine>
 #include <QScrollBar>
@@ -131,6 +131,8 @@ private:
     float maxScale;
     float expandLimit;
     QPair<QPointF, QPoint> zoomAnchor; // [pixmap coords, viewport coords]
+
+    QElapsedTimer lastTouchpadScroll;
 
     ImageFitMode imageFitMode, imageFitModeDefault;
     ImageFocusPoint focusIn1to1;
