@@ -33,7 +33,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     scrollTimeLineY->setDuration(ANIMATION_SPEED);
     scrollTimeLineY->setUpdateInterval(SCROLL_UPDATE_RATE);
     scrollTimeLineX = new QTimeLine();
-    scrollTimeLineX->setEasingCurve(QEasingCurve::OutSine);
+    scrollTimeLineX->setEasingCurve(QEasingCurve::Linear);
     scrollTimeLineX->setDuration(ANIMATION_SPEED);
     scrollTimeLineX->setUpdateInterval(SCROLL_UPDATE_RATE);
 
@@ -525,49 +525,30 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
         event->accept();
         QPoint pixelDelta = event->pixelDelta();
         QPoint angleDelta = event->angleDelta();
-        if(pixelDelta != QPoint(0,0)) {
+        // high-precision touchpad
+        if(pixelDelta != QPoint(0,0) && settings->imageScrolling() != ImageScrolling::SCROLL_NONE) {
             stopPosAnimation();
             horizontalScrollBar()->setValue(horizontalScrollBar()->value() - pixelDelta.x());
             verticalScrollBar()->setValue(verticalScrollBar()->value() - pixelDelta.y());
-        } else if (angleDelta != QPoint(0,0)) {
-            // looks messy, just testing. maybe move out into some Scroller class? thumbView uses the same logic
-            if(angleDelta.y() && !(angleDelta.y() % 120)) {
-                int delta;
-                if(angleDelta.y() > 0)
-                    delta = SCROLL_DISTANCE;
+        } else if(angleDelta != QPoint(0,0)) { // mouse wheel & (windows) touchpad
+            // wheel usually sends angleDelta = 120 / 240 / ...
+            // there doesnt seem to be a way to detect event source except this
+            // downside is that every now and then a touchpad may send a delta=120 and it will be mishandled
+            // this issue is windows only as both linux touchpad drivers send pixelDelta instead
+            bool isWheel = angleDelta.y() && !(angleDelta.y() % 120);
+            if(isWheel) {
+                if(settings->imageScrolling() == SCROLL_BY_TRACKPAD_AND_WHEEL)
+                    scroll(0, -angleDelta.y(), true);
                 else
-                    delta = -SCROLL_DISTANCE;
-                bool redirect = false;
-                int currentYPos = verticalScrollBar()->value();
-                int newEndFrame = currentYPos - static_cast<int>(delta);
-                if( (newEndFrame < currentYPos && currentYPos < scrollTimeLineY->endFrame()) ||
-                    (newEndFrame > currentYPos && currentYPos > scrollTimeLineY->endFrame()) )
-                {
-                    redirect = true;
-                }
-
-                if(scrollTimeLineY->state() == QTimeLine::Running) {
-                    int oldEndFrame = scrollTimeLineY->endFrame();
-                    // QTimeLine has this weird issue when it is already finished (at the last frame)
-                    // but is stuck in the running state. So we just create a new one.
-                    //if(oldEndFrame == currentYPos)
-                    //    createScrollTimeLine();
-                    if(!redirect/* && additive*/)
-                        newEndFrame = oldEndFrame - static_cast<int>(delta * 1.3f/* * multiplier * acceleration*/);
-                }
-                scrollTimeLineX->stop();
-                scrollTimeLineY->stop();
-                //blockThumbnailLoading = true;
-                scrollTimeLineY->setFrameRange(currentYPos, newEndFrame);
-                scrollTimeLineY->start();
-            } else {
+                    QWidget::wheelEvent(event);
+            } else if(settings->imageScrolling() != ImageScrolling::SCROLL_NONE) {
                 stopPosAnimation();
                 horizontalScrollBar()->setValue(horizontalScrollBar()->value() - angleDelta.x());
                 verticalScrollBar()->setValue(verticalScrollBar()->value() - angleDelta.y());
+                centerIfNecessary();
+                snapToEdges();
             }
         }
-        centerIfNecessary();
-        snapToEdges();
     } else {
         event->ignore();
         QWidget::wheelEvent(event);
@@ -737,32 +718,82 @@ void ImageViewerV2::stopPosAnimation() {
 
 inline
 void ImageViewerV2::scroll(int dx, int dy, bool smooth) {
-    stopPosAnimation();
     if(smooth) {
-        if(dx) {
-            scrollTimeLineX->setStartFrame(horizontalScrollBar()->value());
-            scrollTimeLineX->setEndFrame(horizontalScrollBar()->value() + dx);
-            scrollTimeLineX->start();
-        }
-        if(dy) {
-            scrollTimeLineY->setStartFrame(verticalScrollBar()->value());
-            scrollTimeLineY->setEndFrame(verticalScrollBar()->value() + dy);
-            scrollTimeLineY->start();
-        }
+        scrollSmooth(dx, dy);
     } else {
-        horizontalScrollBar()->setValue(horizontalScrollBar()->value() + dx);
-        verticalScrollBar()->setValue(verticalScrollBar()->value() + dy);
-        centerIfNecessary();
-        snapToEdges();
+        scrollPrecise(dx, dy);
     }
 }
 
+void ImageViewerV2::scrollSmooth(int dx, int dy) {
+    if(dx) {
+        int delta;
+        if(dx < 0)
+            delta = SCROLL_DISTANCE;
+        else
+            delta = -SCROLL_DISTANCE;
+        bool redirect = false;
+        int currentXPos = horizontalScrollBar()->value();
+        int newEndFrame = currentXPos - static_cast<int>(delta);
+        if( (newEndFrame < currentXPos && currentXPos < scrollTimeLineX->endFrame()) ||
+            (newEndFrame > currentXPos && currentXPos > scrollTimeLineX->endFrame()) )
+        {
+            redirect = true;
+        }
+        if(scrollTimeLineX->state() == QTimeLine::Running) {
+            int oldEndFrame = scrollTimeLineX->endFrame();
+            //if(oldEndFrame == currentYPos)
+            //    createScrollTimeLine();
+            if(!redirect)
+                newEndFrame = oldEndFrame - static_cast<int>(delta * SCROLL_SPEED_MILTIPLIER);
+        }
+        scrollTimeLineX->stop();
+        scrollTimeLineX->setFrameRange(currentXPos, newEndFrame);
+        scrollTimeLineX->start();
+    }
+    if(dy) {
+        int delta;
+        if(dy < 0)
+            delta = SCROLL_DISTANCE;
+        else
+            delta = -SCROLL_DISTANCE;
+        bool redirect = false;
+        int currentYPos = verticalScrollBar()->value();
+        int newEndFrame = currentYPos - static_cast<int>(delta);
+        if( (newEndFrame < currentYPos && currentYPos < scrollTimeLineY->endFrame()) ||
+            (newEndFrame > currentYPos && currentYPos > scrollTimeLineY->endFrame()) )
+        {
+            redirect = true;
+        }
+        if(scrollTimeLineY->state() == QTimeLine::Running) {
+            int oldEndFrame = scrollTimeLineY->endFrame();
+            //if(oldEndFrame == currentYPos)
+            //    createScrollTimeLine();
+            if(!redirect)
+                newEndFrame = oldEndFrame - static_cast<int>(delta * SCROLL_SPEED_MILTIPLIER);
+        }
+        scrollTimeLineY->stop();
+        scrollTimeLineY->setFrameRange(currentYPos, newEndFrame);
+        scrollTimeLineY->start();
+    }
+}
+
+void ImageViewerV2::scrollPrecise(int dx, int dy) {
+    stopPosAnimation();
+    horizontalScrollBar()->setValue(horizontalScrollBar()->value() + dx);
+    verticalScrollBar()->setValue(verticalScrollBar()->value() + dy);
+    centerIfNecessary();
+    snapToEdges();
+}
+
+// used by scrollTimeLine
 void ImageViewerV2::scrollToX(int x) {
     horizontalScrollBar()->setValue(x);
     centerIfNecessary();
     snapToEdges();
 }
 
+// used by scrollTimeLine
 void ImageViewerV2::scrollToY(int y) {
     verticalScrollBar()->setValue(y);
     centerIfNecessary();

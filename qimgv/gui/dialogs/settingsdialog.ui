@@ -12,8 +12,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>560</height>
+    <width>650</width>
+    <height>634</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,8 +24,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>630</width>
-    <height>550</height>
+    <width>640</width>
+    <height>620</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -333,7 +333,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -364,9 +364,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-558</y>
-                <width>426</width>
-                <height>1092</height>
+                <y>0</y>
+                <width>423</width>
+                <height>1083</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1380,8 +1380,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>307</width>
-                <height>381</height>
+                <width>440</width>
+                <height>566</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -1947,8 +1947,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>381</width>
-                <height>176</height>
+                <width>440</width>
+                <height>566</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2253,6 +2253,96 @@
             </widget>
            </item>
            <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_12">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="label_28">
+               <property name="text">
+                <string>Scroll image with</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="imageScrollingComboBox">
+               <item>
+                <property name="text">
+                 <string>None</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Touchpad</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Touchpad &amp; Mouse Wheel</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_30">
+             <property name="font">
+              <font>
+               <italic>true</italic>
+              </font>
+             </property>
+             <property name="text">
+              <string>Setting this to &quot;Mouse Wheel&quot; will override any shortcut it's bound to</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_18">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>9</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_29">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Shortcuts</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="Line" name="line_16">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
               <widget class="QPushButton" name="pushButton_2">
@@ -2365,38 +2455,6 @@
                <string>Shortcut</string>
               </property>
              </column>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_15">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>4</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_21">
-             <property name="text">
-              <string>Tip: you can zoom image by holding RMB and then moving or scrolling</string>
-             </property>
-             <property name="textFormat">
-              <enum>Qt::PlainText</enum>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::NoTextInteraction</set>
-             </property>
             </widget>
            </item>
           </layout>
@@ -2512,8 +2570,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>373</width>
-                <height>255</height>
+                <width>352</width>
+                <height>259</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2892,7 +2950,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>256</width>
-                <height>224</height>
+                <height>225</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -2952,18 +3010,18 @@
                   <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;This is a fast and easy to use image viewer&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;Features video support via libmpv&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600; font-style:italic;&quot;&gt;Github page:&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-style:italic;&quot;&gt; &lt;/span&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;https://github.com/easymodo/qimgv&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600; font-style:italic;&quot;&gt;Main developer:&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-style:italic;&quot;&gt; easymodo (easymodofrf@gmail.com)&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv/graphs/contributors&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;Contributors&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;OpenCV enabled builds use &lt;/span&gt;&lt;a href=&quot;https://github.com/dbzhang800/QtOpenCV&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#007af4;&quot;&gt;QtOpenCV&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt; by dbzhang800&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;qimgv is licensed under &lt;/span&gt;&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.en.html&quot;&gt;&lt;span style=&quot; font-family:'Droid Sans'; font-size:10pt; text-decoration: underline; color:#007af4;&quot;&gt;GNU GPL Version 3&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;Report any issues / request features &lt;/span&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv/issues&quot;&gt;&lt;span style=&quot; font-family:'Droid Sans'; font-size:10pt; text-decoration: underline; color:#007af4;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This is a fast and easy to use image viewer&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Features video support via libmpv&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic;&quot;&gt;Github page:&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-style:italic;&quot;&gt; &lt;/span&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv&quot;&gt;&lt;span style=&quot; font-size:10pt; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;https://github.com/easymodo/qimgv&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic;&quot;&gt;Main developer:&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-style:italic;&quot;&gt; easymodo (easymodofrf@gmail.com)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv/graphs/contributors&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;Contributors&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;OpenCV enabled builds use &lt;/span&gt;&lt;a href=&quot;https://github.com/dbzhang800/QtOpenCV&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:10pt; text-decoration: underline; color:#007af4;&quot;&gt;QtOpenCV&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; by dbzhang800&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;qimgv is licensed under &lt;/span&gt;&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.en.html&quot;&gt;&lt;span style=&quot; font-family:'Droid Sans'; font-size:10pt; text-decoration: underline; color:#007af4;&quot;&gt;GNU GPL Version 3&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Report any issues / request features &lt;/span&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv/issues&quot;&gt;&lt;span style=&quot; font-family:'Droid Sans'; font-size:10pt; text-decoration: underline; color:#007af4;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="acceptRichText">
                   <bool>true</bool>

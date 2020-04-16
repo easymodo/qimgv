@@ -65,6 +65,12 @@ enum ImageFocusPoint {
     FOCUS_CURSOR
 };
 
+enum ImageScrolling {
+    SCROLL_NONE,
+    SCROLL_BY_TRACKPAD,
+    SCROLL_BY_TRACKPAD_AND_WHEEL
+};
+
 class Settings : public QObject
 {
     Q_OBJECT
@@ -228,6 +234,8 @@ public:
     void setSlideshowInterval(int ms);
     int slideshowInterval();
 
+    ImageScrolling imageScrolling();
+    void setImageScrolling(ImageScrolling mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

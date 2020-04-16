@@ -806,3 +806,14 @@ DefaultCropAction Settings::defaultCropAction() {
         mode = 0;
     return static_cast<DefaultCropAction>(mode);
 }
+
+ImageScrolling Settings::imageScrolling() {
+    int mode = settings->s->value("imageScrolling", 1).toInt();
+    if(mode < 0 || mode > 2)
+        mode = 0;
+    return static_cast<ImageScrolling>(mode);
+}
+
+void Settings::setImageScrolling(ImageScrolling mode) {
+    settings->s->setValue("imageScrolling", mode);
+}

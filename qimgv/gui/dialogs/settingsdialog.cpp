@@ -100,6 +100,7 @@ void SettingsDialog::readSettings() {
     ui->useOpenGLCheckBox->setChecked(settings->useOpenGL());
     ui->focusPointIn1to1ModeComboBox->setCurrentIndex(settings->focusPointIn1to1Mode());
     ui->slideshowIntervalSpinBox->setValue(settings->slideshowInterval());
+    ui->imageScrollingComboBox->setCurrentIndex(settings->imageScrolling());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -216,6 +217,8 @@ void SettingsDialog::applySettings() {
     settings->setMpvBinary(ui->mpvLineEdit->text());
 
     settings->setScalingFilter(static_cast<ScalingFilter>(ui->scalingQualityComboBox->currentIndex()));
+
+    settings->setImageScrolling(static_cast<ImageScrolling>(ui->imageScrollingComboBox->currentIndex()));
 
     settings->setPanelPosition(static_cast<PanelHPosition>(ui->panelPositionComboBox->currentIndex()));
 
