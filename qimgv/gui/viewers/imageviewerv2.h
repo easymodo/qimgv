@@ -98,6 +98,7 @@ protected:
     virtual void resizeEvent(QResizeEvent* event);
     void wheelEvent(QWheelEvent *event);
 
+    void showEvent(QShowEvent *event);
 protected slots:
     void onAnimationTimer();
 private slots:

@@ -247,6 +247,7 @@ void ImageViewerV2::reset() {
     pixmap.reset();
     stopAnimation();
     movie.reset(nullptr);
+    centerOn(sceneRect().center());
     // when this view is not in focus this it won't update the background
     // so we force it here
     viewport()->update();
@@ -353,7 +354,7 @@ void ImageViewerV2::setExpandImage(bool mode) {
 
 void ImageViewerV2::show() {
     setMouseTracking(false);
-    QWidget::show();
+    QGraphicsView::show();
     setMouseTracking(true);
 }
 
@@ -557,6 +558,15 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
     }
 }
 
+void ImageViewerV2::showEvent(QShowEvent *event) {
+    QGraphicsView::showEvent(event);
+    // ensure we are properly resized
+    qApp->processEvents();
+    // reapply fitmode to fix viewport position
+    if(imageFitMode == FIT_ORIGINAL)
+        applyFitMode();
+}
+
 // simple pan behavior (cursor stops at the screen edges)
 inline
 void ImageViewerV2::mousePan(QMouseEvent *event) {
@@ -634,15 +644,24 @@ void ImageViewerV2::fitWindow() {
 void ImageViewerV2::fitNormal() {
     if(!pixmap)
         return;
-    if(focusIn1to1 == FOCUS_CENTER)
-        setZoomAnchor(viewport()->rect().center());
-    else if(focusIn1to1 == FOCUS_TOP)
-        setZoomAnchor(QPoint(viewport()->rect().center().x(), 0));
-    else
-        setZoomAnchor(mapFromGlobal(cursor().pos()));
-    zoomAnchored(1.0f);
-    centerIfNecessary();
-    snapToEdges();
+    if(focusIn1to1 == FOCUS_TOP) {
+        doZoom(1.0f);
+        centerIfNecessary();
+        if(scaledSize().height() > viewport()->height()) {
+            QPointF centerTarget = sceneRect().center();
+            centerTarget.setY(0);
+            centerOn(centerTarget);
+        }
+        snapToEdges();
+    } else {
+        if(focusIn1to1 == FOCUS_CENTER)
+            setZoomAnchor(viewport()->rect().center());
+        else
+            setZoomAnchor(mapFromGlobal(cursor().pos()));
+        zoomAnchored(1.0f);
+        centerIfNecessary();
+        snapToEdges();
+    }
 }
 
 void ImageViewerV2::applyFitMode() {
