@@ -309,7 +309,7 @@ void ThumbnailView::fitSceneToContents() {
         int height = qMax((int)scene.itemsBoundingRect().height(), this->height());
         scene.setSceneRect(QRectF(0,0, this->width(), height));
         center = mapToScene(viewport()->rect().center());
-        centerOn(0, center.y());
+        centerOn(0, center.y() + 1);
     } else {
         int width = qMax((int)scene.itemsBoundingRect().width(), this->width());
         scene.setSceneRect(QRectF(0,0, width, this->height()));
