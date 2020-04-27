@@ -74,6 +74,7 @@ private slots:
     void newBookmark();
     void fsTreeScrollToCurrent();
 
+    void onSplitterMoved();
 private:
     Ui::FolderView *ui;
     FileSystemModelCustom *dirModel;

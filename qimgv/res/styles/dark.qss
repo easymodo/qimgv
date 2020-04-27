@@ -684,3 +684,8 @@ QTreeView::branch:open:has-children:has-siblings  {
         border-image: none;
         image: url(:/res/icons/other/expanded.png)
 }
+
+/*----------------------------------------------------------------------------*/
+[accessibleName="FolderViewSplitter"]::handle {
+    background-color: #2f2f30;
+}

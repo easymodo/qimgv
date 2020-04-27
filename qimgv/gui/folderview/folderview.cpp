@@ -49,6 +49,8 @@ FolderView::FolderView(QWidget *parent) :
     ui->zoomSlider->setSingleStep(1);
     ui->zoomSlider->setPageStep(1);
 
+    ui->splitter->setStretchFactor(1, 50);
+
     connect(ui->thumbnailGrid, &FolderGridView::itemSelected,     this, &FolderView::itemSelected);
     connect(ui->thumbnailGrid, &FolderGridView::thumbnailsRequested,  this, &FolderView::thumbnailsRequested);
     connect(ui->thumbnailGrid, &FolderGridView::thumbnailSizeChanged, this, &FolderView::onThumbnailSizeChanged);
@@ -70,12 +72,15 @@ FolderView::FolderView(QWidget *parent) :
     ui->sortingComboBox->setItemDelegate(new QStyledItemDelegate(ui->sortingComboBox));
     ui->sortingComboBox->view()->setTextElideMode(Qt::ElideNone);
 
+    connect(ui->splitter, &QSplitter::splitterMoved, this, &FolderView::onSplitterMoved);
+
     readSettings();
 
     QSizePolicy sp_retain = sizePolicy();
     sp_retain.setRetainSizeWhenHidden(true);
     setSizePolicy(sp_retain);
     connect(settings, &Settings::settingsChanged, this, &FolderView::readSettings);
+
     hide();
 }
 
@@ -87,7 +92,16 @@ void FolderView::readSettings() {
     setPlacesPanel(settings->placesPanel());
     ui->bookmarksWidget->setVisible(settings->placesPanelBookmarksExpanded());
     ui->dirTreeView->setVisible(settings->placesPanelTreeExpanded());
+
+    QList<int> sizes;
+    sizes << settings->placesPanelWidth() << 1;
+    ui->splitter->setSizes(sizes);
+
     onSortingChanged(settings->sortingMode());
+}
+
+void FolderView::onSplitterMoved() {
+    settings->setPlacesPanelWidth(ui->placesPanel->width());
 }
 
 void FolderView::onPlacesPanelButtonChecked(bool mode) {

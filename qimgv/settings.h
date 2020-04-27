@@ -236,6 +236,10 @@ public:
 
     ImageScrolling imageScrolling();
     void setImageScrolling(ImageScrolling mode);
+
+    int placesPanelWidth();
+    void setPlacesPanelWidth(int width);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

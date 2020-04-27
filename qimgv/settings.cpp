@@ -598,7 +598,15 @@ bool Settings::placesPanelTreeExpanded() {
 void Settings::setPlacesPanelTreeExpanded(bool mode) {
     settings->state->setValue("placesPanelTreeExpanded", mode);
 }
+//------------------------------------------------------------------------------
+int Settings::placesPanelWidth() {
+    return settings->state->value("placesPanelWidth", 260).toInt();
+}
 
+void Settings::setPlacesPanelWidth(int width) {
+    settings->state->setValue("placesPanelWidth", width);
+}
+//------------------------------------------------------------------------------
 void Settings::setSlideshowInterval(int ms) {
     settings->s->setValue("slideshowInterval", ms);
 }
