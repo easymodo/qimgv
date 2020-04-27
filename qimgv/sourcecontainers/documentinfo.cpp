@@ -3,7 +3,8 @@
 DocumentInfo::DocumentInfo(QString path)
     : mDocumentType(NONE),
       mOrientation(0),
-      mFormat("")
+      mFormat(""),
+      exifLoaded(false)
 {
     fileInfo.setFile(path);
     if(!fileInfo.isFile()) {
@@ -11,7 +12,6 @@ DocumentInfo::DocumentInfo(QString path)
         return;
     }
     detectFormat();
-    loadExifInfo();
 }
 
 DocumentInfo::~DocumentInfo() {
@@ -153,6 +153,9 @@ bool DocumentInfo::detectAnimatedWebP() {
 }
 
 void DocumentInfo::loadExifInfo() {
+    if(exifLoaded)
+        return;
+    exifLoaded = true;
     exifTags.clear();
     loadExifOrientation();
 #ifdef USE_EXIV2
@@ -238,6 +241,8 @@ void DocumentInfo::loadExifInfo() {
 }
 
 QMap<QString, QString> DocumentInfo::getExifTags() {
+    if(!exifLoaded)
+        loadExifInfo();
     return exifTags;
 }
 

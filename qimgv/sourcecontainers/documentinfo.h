@@ -51,6 +51,7 @@ private:
     DocumentType mDocumentType;
     int mOrientation;
     QString mFormat;
+    bool exifLoaded;
 
     // guesses file type from its contents
     // and sets extension
