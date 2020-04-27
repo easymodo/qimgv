@@ -449,7 +449,7 @@ void ImageViewerV2::mousePressEvent(QMouseEvent *event) {
 }
 
 void ImageViewerV2::mouseMoveEvent(QMouseEvent *event) {
-    QGraphicsView::mouseMoveEvent(event);
+    QWidget::mouseMoveEvent(event);
     if(!pixmap || mouseInteraction == MouseInteractionState::MOUSE_DRAG || mouseInteraction == MouseInteractionState::MOUSE_WHEEL_ZOOM)
         return;
 
