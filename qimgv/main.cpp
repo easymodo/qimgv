@@ -97,8 +97,10 @@ int main(int argc, char *argv[]) {
     //qApp->processEvents();
     //qDebug() << "Core + MW init: " << t.elapsed() << "ms";
 
-    // assume 1st arg is the filename
-    if(!arg1.isEmpty()) {
+    if(arg1.isEmpty()) {
+        core.loadPath(QDir::homePath());
+    } else {
+        // assume 1st arg is the filename
         core.loadPath(arg1);
     }
     // wait for event queue to catch up before showing window
