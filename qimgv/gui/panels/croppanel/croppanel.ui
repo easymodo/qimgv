@@ -480,7 +480,7 @@
         <string notr="true">ButtonSetRight</string>
        </property>
        <property name="text">
-        <string>Crop_save</string>
+        <string>Crop &amp;&amp; Save</string>
        </property>
       </widget>
      </item>
