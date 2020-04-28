@@ -712,6 +712,8 @@ void ImageViewerV2::setFitWindow() {
 
 void ImageViewerV2::resizeEvent(QResizeEvent *event) {
     QGraphicsView::resizeEvent(event);
+    // reset this so we won't generate unnecessary drag'n'drop event
+    mousePressPos = mapFromGlobal(cursor().pos());
     // Qt emits some unnecessary resizeEvents on startup
     // so we try to ignore them
     if(parentWidget()->isVisible()) {

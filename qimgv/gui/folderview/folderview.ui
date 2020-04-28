@@ -250,12 +250,12 @@
         </property>
         <item>
          <property name="text">
-          <string>Name (A - Z)</string>
+          <string>A - Z</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Name (Z - A)</string>
+          <string>Z - A</string>
          </property>
         </item>
         <item>
@@ -265,7 +265,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Size (desc.)</string>
+          <string>Size (desc)</string>
          </property>
         </item>
         <item>
