@@ -63,6 +63,7 @@ void BookmarksWidget::onPathChanged(QString path) {
         int currentIndex = paths.indexOf(highlightedPath);
         auto w = dynamic_cast<BookmarksItem*>(layout.itemAt(currentIndex)->widget());
         w->setHighlighted(false);
+        highlightedPath = "";
     }
     if(paths.contains(path)) {
         int newIndex = paths.indexOf(path);
