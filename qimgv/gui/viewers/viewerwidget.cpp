@@ -294,7 +294,7 @@ void ViewerWidget::seek(int pos) {
         videoPlayer.get()->seek(pos);
     } else if(imageViewer->hasAnimation()) {
         imageViewer->stopAnimation();
-        imageViewer->seek(pos);
+        imageViewer->showAnimationFrame(pos);
     }
 }
 

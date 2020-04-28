@@ -124,12 +124,13 @@ void ImageViewerV2::onAnimationTimer() {
     if(!movie)
         return;
     if(movie->currentFrameNumber() == movie->frameCount() - 1) {
+        // last frame
         if(!loopPlayback) {
             emit animationPaused(true);
             emit playbackFinished();
             return;
         } else {
-            movie->jumpToFrame(1); // 0 doesnt work??
+            movie->jumpToFrame(0);
         }
     } else {
         movie->jumpToNextFrame();
@@ -144,23 +145,34 @@ void ImageViewerV2::onAnimationTimer() {
 void ImageViewerV2::nextFrame() {
     if(!movie || movie->currentFrameNumber() == movie->frameCount() - 1)
         return;
-    seek(movie->currentFrameNumber() + 1);
+    showAnimationFrame(movie->currentFrameNumber() + 1);
 }
 
 void ImageViewerV2::prevFrame() {
     if(!movie || movie->currentFrameNumber() == 0)
         return;
-    seek(movie->currentFrameNumber() - 1);
+    showAnimationFrame(movie->currentFrameNumber() - 1);
 }
 
-void ImageViewerV2::seek(int frame) {
+bool ImageViewerV2::showAnimationFrame(int frame) {
     if(!movie || frame < 0 || frame >= movie->frameCount())
-        return;
-    movie->jumpToFrame(frame);
+        return false;
+    if(movie->currentFrameNumber() == frame)
+        return true;
+    // at the first glance this may seem retarded
+    // because it is
+    // unfortunately i dont see a *better* way to do seeking with QMovie
+    // QMovie::CacheAll is buggy and memory inefficient
+    if(frame < movie->currentFrameNumber())
+        movie->jumpToFrame(0);
+    while(frame != movie->currentFrameNumber()) {
+        movie->jumpToNextFrame();
+    }
     emit frameChanged(movie->currentFrameNumber());
     std::unique_ptr<QPixmap> newFrame(new QPixmap());
     *newFrame = movie->currentPixmap();
     updatePixmap(std::move(newFrame));
+    return true;
 }
 
 void ImageViewerV2::updatePixmap(std::unique_ptr<QPixmap> newPixmap) {
@@ -180,7 +192,6 @@ void ImageViewerV2::displayAnimation(std::unique_ptr<QMovie> _movie) {
     if(_movie && _movie->isValid()) {
         reset();
         movie = std::move(_movie);
-        movie->setCacheMode(QMovie::CacheAll);
         movie->jumpToFrame(0);
         Qt::TransformationMode mode = smoothAnimatedImages ? Qt::SmoothTransformation : Qt::FastTransformation;
         pixmapItem.setTransformationMode(mode);

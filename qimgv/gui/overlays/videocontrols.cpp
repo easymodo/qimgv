@@ -59,7 +59,7 @@ void VideoControls::setPlaybackDuration(int duration) {
     } else {
         durationStr = QString::number(duration);
     }
-    ui->seekBar->setRange(0, duration);
+    ui->seekBar->setRange(0, duration - 1);
     ui->durationLabel->setText(durationStr);
     ui->positionLabel->setText(durationStr);
     recalculateGeometry();
@@ -81,7 +81,7 @@ void VideoControls::setPlaybackPosition(int position) {
         if(hours)
             positionStr.prepend(QString("%1").arg(hours, 2, 10, QChar('0')) + ":");
     } else {
-        positionStr = QString::number(position);
+        positionStr = QString::number(position + 1);
     }
     ui->positionLabel->setText(positionStr);
     ui->seekBar->blockSignals(true);

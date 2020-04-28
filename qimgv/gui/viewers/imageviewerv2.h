@@ -90,7 +90,7 @@ public slots:
     void nextFrame();
     void prevFrame();
 
-    void seek(int frame);
+    bool showAnimationFrame(int frame);
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent* event);
