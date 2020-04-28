@@ -22,7 +22,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     if(settings->useOpenGL())
         setViewport(new QOpenGLWidget);
 
-    this->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
     setFocusPolicy(Qt::NoFocus);
     setAcceptDrops(false);
 
@@ -43,6 +43,8 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     scaleTimer = new QTimer(this);
     scaleTimer->setSingleShot(true);
     scaleTimer->setInterval(80);
+
+    lastTouchpadScroll.start();
 
     zoomThreshold = static_cast<int>(devicePixelRatioF() * 4.);
 
