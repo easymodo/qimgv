@@ -873,9 +873,9 @@ void ImageViewerV2::centerIfNecessary() {
         return;
     QSize sz = scaledSize();
     QPointF centerTarget = mapToScene(viewport()->rect()).boundingRect().center();
-    if(sz.width() < viewport()->width())
+    if(sz.width() <= viewport()->width())
         centerTarget.setX(sceneRect().center().x());
-    if(sz.height() < viewport()->height())
+    if(sz.height() <= viewport()->height())
         centerTarget.setY(sceneRect().center().y());
     centerOn(centerTarget);
 }
@@ -947,8 +947,10 @@ QPointF ImageViewerV2::sceneRoundPos(QPointF scenePoint) const {
 // rounds a rect in scene coordinates so it stays on the same spot on viewport
 // the result is what's actually drawn on screen (incl. size)
 QRectF ImageViewerV2::sceneRoundRect(QRectF sceneRect) const {
+    QRectF rounded = QRectF(sceneRoundPos(sceneRect.topLeft()),
+                            sceneRect.size());
     return QRectF(sceneRoundPos(sceneRect.topLeft()),
-                  sceneRoundPos(sceneRect.bottomRight()));
+                  sceneRect.size());
 }
 
 // size as it appears on screen (rounded)
