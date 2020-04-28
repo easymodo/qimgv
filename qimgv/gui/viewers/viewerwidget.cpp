@@ -451,7 +451,7 @@ void ViewerWidget::hideCursor() {
     if(settings->cursorAutohide()) {
         QWidget *w = qApp->widgetAt(QCursor::pos());
         if(w && (w == imageViewer.get()->viewport() || w == videoPlayer->getPlayer().get())) {
-            if(!videoControlsArea().contains(mapFromGlobal(QCursor::pos()))) {
+            if(!videoControls->isVisible() || !videoControlsArea().contains(mapFromGlobal(QCursor::pos()))) {
                 setCursor(QCursor(Qt::BlankCursor));
                 videoControls->hide();
             }

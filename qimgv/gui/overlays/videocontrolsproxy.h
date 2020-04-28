@@ -20,6 +20,8 @@ public:
     void show();
     void hide();
     bool underMouse();
+    bool isVisible();
+
 signals:
     void pause();
     void seek(int pos);

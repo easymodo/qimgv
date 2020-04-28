@@ -83,3 +83,7 @@ void VideoControlsProxyWrapper::onVideoMuted(bool _mode) {
 bool VideoControlsProxyWrapper::underMouse() {
     return videoControls ? videoControls->underMouse() : false;
 }
+
+bool VideoControlsProxyWrapper::isVisible() {
+    return videoControls ? videoControls->isVisible() : false;
+}
