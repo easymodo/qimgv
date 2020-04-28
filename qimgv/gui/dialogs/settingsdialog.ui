@@ -12,7 +12,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>650</width>
+    <width>680</width>
     <height>634</height>
    </rect>
   </property>
@@ -24,7 +24,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>640</width>
+    <width>680</width>
     <height>620</height>
    </size>
   </property>
@@ -51,7 +51,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_22" stretch="0,0">
+    <layout class="QHBoxLayout" name="horizontalLayout_22" stretch="0,10">
      <property name="topMargin">
       <number>0</number>
      </property>
@@ -88,7 +88,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>400</width>
+           <width>175</width>
            <height>16777215</height>
           </size>
          </property>
@@ -111,7 +111,7 @@
           <bool>false</bool>
          </property>
          <property name="defaultDropAction">
-          <enum>Qt::CopyAction</enum>
+          <enum>Qt::IgnoreAction</enum>
          </property>
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
@@ -325,7 +325,7 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>440</width>
+           <width>480</width>
            <height>0</height>
           </size>
          </property>
@@ -365,7 +365,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>423</width>
+                <width>463</width>
                 <height>1083</height>
                </rect>
               </property>
@@ -1380,8 +1380,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>440</width>
-                <height>566</height>
+                <width>280</width>
+                <height>393</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -1947,8 +1947,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>440</width>
-                <height>566</height>
+                <width>365</width>
+                <height>182</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
