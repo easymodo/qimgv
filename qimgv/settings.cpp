@@ -21,7 +21,7 @@ Settings::Settings(QObject *parent) : QObject(parent) {
     mThumbCacheDir->mkpath(mThumbCacheDir->absolutePath());
     mConfDir = new QDir(QApplication::applicationDirPath() + "/conf");
     mConfDir->mkpath(QApplication::applicationDirPath() + "/conf");
-    s = new QSettings(mConfDir->absolutePath() + "/qimgv.ini", QSettings::IniFormat);
+    s = new QSettings(mConfDir->absolutePath() + "/" + qApp->applicationName() + ".ini", QSettings::IniFormat);
     state = new QSettings(mConfDir->absolutePath() + "/savedState.ini", QSettings::IniFormat);
 #endif
 }
@@ -327,7 +327,7 @@ void Settings::setAccentColor(QColor color) {
 }
 //------------------------------------------------------------------------------
 QColor Settings::highlightColor() {
-    return settings->s->value("highlightColor", QColor(90, 89, 103)).value<QColor>();
+    return settings->s->value("highlightColor", QColor(90, 90, 90)).value<QColor>();
 }
 
 void Settings::setHighlightColor(QColor color) {
@@ -637,16 +637,8 @@ void Settings::setSmoothUpscaling(bool mode) {
     settings->s->setValue("smoothUpscaling", mode);
 }
 //------------------------------------------------------------------------------
-int Settings::maxZoomedResolution() {
-    return settings->s->value("maximumZoomResolution", 75).toInt();
-}
-
-void Settings::setMaxZoomedResolution(int value) {
-    settings->s->setValue("maximumZoomResolution", value);
-}
-//------------------------------------------------------------------------------
 int Settings::folderViewIconSize() {
-    return settings->s->value("folderViewIconSize", 175).toInt();
+    return settings->s->value("folderViewIconSize", 150).toInt();
 }
 
 void Settings::setFolderViewIconSize(int value) {
