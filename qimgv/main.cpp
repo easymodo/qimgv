@@ -38,14 +38,14 @@ int main(int argc, char *argv[]) {
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     QApplication a(argc, argv);
-    QCoreApplication::setOrganizationName("greenpepper software");
+    QCoreApplication::setOrganizationName("qimgv");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
     QCoreApplication::setApplicationVersion(appVersion.normalized().toString());
 
     a.setStyle(new ProxyStyle);
 
-    QGuiApplication::setDesktopFileName("qimgv.desktop");
+    QGuiApplication::setDesktopFileName(QCoreApplication::applicationName() + ".desktop");
 
     // enable translations
     QString localeName = QLocale::system().name();

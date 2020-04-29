@@ -187,7 +187,7 @@ void Core::onUpdate() {
 
 void Core::onFirstRun() {
     //mw->showSomeSortOfWelcomeScreen();
-    mw->showMessage("Welcome to qimgv version " + appVersion.toString() + "!", 4000);
+    mw->showMessage("Welcome to " + qApp->applicationName() + " version " + appVersion.toString() + "!", 4000);
     settings->setFirstRun(false);
     settings->setLastVersion(appVersion);
 }
