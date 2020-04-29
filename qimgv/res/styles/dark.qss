@@ -580,6 +580,7 @@ FolderView QTreeView::item {
     margin-right: 8px;
     border: 1px solid transparent;
     border-radius: 2px;
+    min-height: 24px;
 }
 
 FolderView QTreeView::item:hover {
@@ -605,7 +606,7 @@ FolderView QTreeView::branch:has-siblings:!adjoins-item,
 FolderView QTreeView::branch:closed:has-children,
 FolderView QTreeView::branch:open:has-children
 {
-        background: #373737;
+    background: #373737;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -695,4 +696,13 @@ QTreeView::branch:open:has-children:has-siblings  {
 /*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewSplitter"]::handle {
     background-color: #2f2f30;
+}
+
+/*----------------------------------------------------------------------------*/
+SettingsDialog QPushButton {
+    min-height: 20px;
+}
+
+SettingsDialog QComboBox {
+    min-height: 20px;
 }
