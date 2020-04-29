@@ -133,7 +133,11 @@ void ViewerWidget::disableVideoPlayer() {
         disconnect(videoPlayer.get(), &VideoPlayer::positionChanged, videoControls, &VideoControlsProxyWrapper::setPlaybackPosition);
         disconnect(videoPlayer.get(), &VideoPlayer::videoPaused,     videoControls, &VideoControlsProxyWrapper::onPlaybackPaused);
         videoPlayer->setPaused(true);
-        videoPlayer->hide();
+        // even after calling hide() the player sends a few video frames
+        // which paints over the imageviewer, causing corruption
+        // so we do not HIDE it, but rather just cover it by imageviewer's widget
+        // seems to work fine, might even feel a bit snappier
+        //videoPlayer->hide();
     }
 }
 
