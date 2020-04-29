@@ -128,7 +128,7 @@ std::pair<QImage*, QSize> ThumbnailerRunnable::createVideoThumbnail(QUrl path, i
     QString command = "\"" + settings->mpvBinary() + "\" --start=30% --frames=1 --aid=no --sid=no --no-config --load-scripts=no --no-terminal --o=\"" + tmpFilePathEsc + "\" \"" + path.toString() + "\"";
     QProcess process;
     process.start(command);
-    process.waitForFinished(3000);
+    process.waitForFinished(8000);
     process.close();
 
     reader.setFileName(tmpFilePath);
