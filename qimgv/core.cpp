@@ -175,6 +175,11 @@ void Core::onUpdate() {
     if(lastVer < QVersionNumber(0,8,9))
         actionManager->fixLegacyShortcutsV089();
 
+#ifdef USE_OPENCV
+    if(lastVer < QVersionNumber(0,9,0))
+        settings->setScalingFilter(QI_FILTER_CV_CUBIC);
+#endif
+
     actionManager->resetDefaultsFromVersion(lastVer);
     actionManager->saveShortcuts();
     qDebug() << "Updated: " << settings->lastVersion().toString() << ">" << appVersion.toString();
