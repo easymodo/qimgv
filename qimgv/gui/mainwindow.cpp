@@ -758,10 +758,12 @@ void MW::adaptToWindowState() {
 }
 
 void MW::paintEvent(QPaintEvent *event) {
+    /*
     QPainter p(this);
     p.setOpacity(bgOpacity);
     p.setBrush(QBrush(bgColor));
     p.fillRect(this->rect(), p.brush());
+    */
     FloatingWidgetContainer::paintEvent(event);
 }
 
