@@ -7,7 +7,7 @@
 
 class ScalerRequest {
 public:
-    ScalerRequest() : image(nullptr), size(QSize(0,0)), filter(FILTER_BILINEAR) { }
+    ScalerRequest() : image(nullptr), size(QSize(0,0)), filter(QI_FILTER_BILINEAR) { }
     ScalerRequest(std::shared_ptr<Image> _image, QSize _size, QString _string, ScalingFilter _filter) : image(_image), size(_size), string(_string), filter(_filter) {}
     std::shared_ptr<Image> image;
     QSize size;

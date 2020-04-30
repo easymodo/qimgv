@@ -1,5 +1,30 @@
 #include "imagelib.h"
 
+
+/*QString type2str(int type) {
+  QString r;
+
+  uchar depth = type & CV_MAT_DEPTH_MASK;
+  uchar chans = 1 + (type >> CV_CN_SHIFT);
+
+  switch ( depth ) {
+    case CV_8U:  r = "8U"; break;
+    case CV_8S:  r = "8S"; break;
+    case CV_16U: r = "16U"; break;
+    case CV_16S: r = "16S"; break;
+    case CV_32S: r = "32S"; break;
+    case CV_32F: r = "32F"; break;
+    case CV_64F: r = "64F"; break;
+    default:     r = "User"; break;
+  }
+
+  r += "C";
+  r += (chans+'0');
+
+  return r;
+}
+*/
+
 QImage *ImageLib::rotated(const QImage *src, int grad) {
     QImage *img = new QImage();
     QTransform transform;
@@ -125,23 +150,24 @@ QImage *ImageLib::cropped(QRect newRect, QRect targetRes, bool upscaled) {
 }
 */
 
-/* 0: nearest
- * 1: bilinear
- */
-
-QImage* ImageLib::scaled(std::shared_ptr<const QImage> source, QSize destSize, int method) {
-    switch (method) {
-        case 0:
+QImage* ImageLib::scaled(std::shared_ptr<const QImage> source, QSize destSize, ScalingFilter filter) {
+#ifdef USE_OPENCV
+    if(filter > 1 && !QtOcv::isSupported(source->format()))
+        filter = QI_FILTER_BILINEAR;
+#endif
+    switch (filter) {
+        case QI_FILTER_NEAREST:
             return scaled_Qt(source, destSize, false);
-        case 1:
+        case QI_FILTER_BILINEAR:
             return scaled_Qt(source, destSize, true);
-        /*case 2:
-            return scale_FreeImage(source, destSize, FILTER_BICUBIC);
-        case 3:
-            return scale_FreeImage(source, destSize, FILTER_CATMULLROM);
-        case 4:
-            return scale_FreeImage(source, destSize, FILTER_LANCZOS3);
-            */
+#ifdef USE_OPENCV
+        case QI_FILTER_CV_BILINEAR_SHARPEN:
+            return scaled_CV(source, destSize, cv::INTER_LINEAR, 0);
+        case QI_FILTER_CV_CUBIC:
+            return scaled_CV(source, destSize, cv::INTER_CUBIC, 0);
+        case QI_FILTER_CV_CUBIC_SHARPEN:
+            return scaled_CV(source, destSize, cv::INTER_CUBIC, 1);
+#endif
         default:
             return scaled_Qt(source, destSize, true);
     }
@@ -151,27 +177,47 @@ QImage* ImageLib::scaled_Qt(std::shared_ptr<const QImage> source, QSize destSize
     QImage *dest = new QImage();
     Qt::TransformationMode mode = smooth ? Qt::SmoothTransformation : Qt::FastTransformation;
     *dest = source->scaled(destSize.width(), destSize.height(), Qt::IgnoreAspectRatio, mode);
-    return dest;
-}
 
-/*
-QImage* ImageLib::scale_FreeImage(const QImage *source, QSize destSize, FREE_IMAGE_FILTER filter) {
-    FIBITMAP *fiOrig = FreeImage_ConvertFromRawBitsEx(false, (BYTE*)source->bits(),
-                                                      FIT_BITMAP,
-                                                      source->width(),
-                                                      source->height(),
-                                                      source->bytesPerLine(),
-                                                      source->depth(),
-                                                      FI_RGBA_RED_MASK,
-                                                      FI_RGBA_GREEN_MASK,
-                                                      FI_RGBA_BLUE_MASK);
-    QImage *dest = new QImage(destSize, source->format());
-    FIBITMAP *fiScaled = FreeImage_Rescale(fiOrig, dest->width(), dest->height(), filter);
-    FreeImage_Unload(fiOrig);
-    int pitch = FreeImage_GetPitch(fiScaled);
-    int height = FreeImage_GetHeight(fiScaled);
-    memcpy( dest->bits(), FreeImage_GetBits(fiScaled), pitch * height );
-    FreeImage_Unload(fiScaled);
+
     return dest;
 }
-*/
+#ifdef USE_OPENCV
+// this probably leaks, needs checking
+QImage* ImageLib::scaled_CV(std::shared_ptr<const QImage> source, QSize destSize, cv::InterpolationFlags filter, int sharpen) {
+    QElapsedTimer t;
+    t.start();
+    cv::Mat srcMat = QtOcv::image2Mat_shared(*source.get());
+    cv::Size destSizeCv(destSize.width(), destSize.height());
+    QImage *dest = new QImage();
+    if(destSize == source->size()) {
+        // TODO: should this return a copy?
+        //result.reset(new StaticImageContainer(std::make_shared<cv::Mat>(srcMat)));
+    } else if(destSize.width() > source.get()->width()) { // upscale
+        cv::Mat dstMat(destSizeCv, srcMat.type());
+        cv::resize(srcMat, dstMat, destSizeCv, 0, 0, filter);
+        *dest = QtOcv::mat2Image(dstMat);
+    } else { // downscale
+        float scale = (float)destSize.width() / source->width();
+        if(scale < 0.5f && filter != cv::INTER_NEAREST) {
+            if(filter == cv::INTER_CUBIC)
+                sharpen = 1;
+            filter = cv::INTER_AREA;
+        }
+        cv::Mat dstMat(destSizeCv, srcMat.type());
+        cv::resize(srcMat, dstMat, destSizeCv, 0, 0, filter);
+        if(!sharpen || filter == cv::INTER_NEAREST) {
+            *dest = QtOcv::mat2Image(dstMat);
+        } else {
+            // todo: tweak this
+            double amount = 0.25 * sharpen;
+            // unsharp mask
+            cv::Mat dstMat_sharpened;
+            cv::GaussianBlur(dstMat, dstMat_sharpened, cv::Size(0, 0), 2);
+            cv::addWeighted(dstMat, 1.0 + amount, dstMat_sharpened, -amount, 0, dstMat_sharpened);
+            *dest = QtOcv::mat2Image(dstMat_sharpened);
+        }
+    }
+    //qDebug() << "Filter:" << filter << " sharpen=" << sharpen << " source size:" << source->size() << "->" << (float)destSize.width() / source->width() << ": " << t.elapsed() << " ms.";
+    return dest;
+}
+#endif

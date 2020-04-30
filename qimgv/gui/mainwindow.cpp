@@ -1,4 +1,4 @@
-﻿#include "mainwindow.h"
+#include "mainwindow.h"
 
 // TODO: nuke this and rewrite
 
@@ -36,12 +36,12 @@ MW::MW(QWidget *parent)
     this->setAcceptDrops(true);
     this->setAccessibleName("mainwindow");
     desktopWidget = QApplication::desktop();
-    windowMoveTimer.setSingleShot(true);
-    windowMoveTimer.setInterval(150);
+    windowGeometryChangeTimer.setSingleShot(true);
+    windowGeometryChangeTimer.setInterval(30);
     setupUi();
 
     connect(settings, &Settings::settingsChanged, this, &MW::readSettings);
-    connect(&windowMoveTimer, &QTimer::timeout, this, &MW::updateCurrentDisplay);
+    connect(&windowGeometryChangeTimer, &QTimer::timeout, this, &MW::onWindowGeometryChanged);
     connect(this, &MW::fullscreenStateChanged, this, &MW::adaptToWindowState);
 
     readSettings();
@@ -62,20 +62,23 @@ void MW::setupUi() {
     infoBarWindowed.reset(new InfoBarProxy(this));
     docWidget.reset(new DocumentWidget(viewerWidget, infoBarWindowed));
     folderView.reset(new FolderViewProxy(this));
-    connect(this, &MW::setDirectoryPath, folderView.get(), &FolderViewProxy::setDirectoryPath);
     connect(folderView.get(), &FolderViewProxy::sortingSelected, this, &MW::sortingSelected);
+    connect(folderView.get(), &FolderViewProxy::directorySelected, this, &MW::opened);
+    connect(folderView.get(), &FolderViewProxy::draggedOut, this, qOverload<int>(&MW::draggedOut));
+    connect(folderView.get(), &FolderViewProxy::copyUrlsRequested, this, &MW::copyUrlsRequested);
+    connect(folderView.get(), &FolderViewProxy::moveUrlsRequested, this, &MW::moveUrlsRequested);
+
     centralWidget.reset(new CentralWidget(docWidget, folderView, this));
     layout.addWidget(centralWidget.get());
     controlsOverlay = new ControlsOverlay(docWidget.get());
     infoBarFullscreen = new FullscreenInfoOverlayProxy(viewerWidget.get());
-    //changelogWindow = new ChangelogWindow(this);
     sidePanel = new SidePanel(this);
     layout.addWidget(sidePanel);
-    //mainPanel = new MainPanel(thumbnailStrip, viewerWidget.get());
     imageInfoOverlay = new ImageInfoOverlayProxy(this);
     floatingMessage = new FloatingMessageProxy(this);
     connect(viewerWidget.get(), &ViewerWidget::scalingRequested, this, &MW::scalingRequested);
-    connect(viewerWidget.get(), &ViewerWidget::draggedOut,       this, &MW::draggedOut);
+    connect(viewerWidget.get(), &ViewerWidget::draggedOut, this, qOverload<>(&MW::draggedOut));
+    connect(viewerWidget.get(), &ViewerWidget::playbackFinished, this, &MW::playbackFinished);
     connect(this, &MW::zoomIn,        viewerWidget.get(), &ViewerWidget::zoomIn);
     connect(this, &MW::zoomOut,       viewerWidget.get(), &ViewerWidget::zoomOut);
     connect(this, &MW::zoomInCursor,  viewerWidget.get(), &ViewerWidget::zoomInCursor);
@@ -84,10 +87,10 @@ void MW::setupUi() {
     connect(this, &MW::scrollDown,  viewerWidget.get(), &ViewerWidget::scrollDown);
     connect(this, &MW::scrollLeft,  viewerWidget.get(), &ViewerWidget::scrollLeft);
     connect(this, &MW::scrollRight, viewerWidget.get(), &ViewerWidget::scrollRight);
-    connect(this, &MW::pauseVideo,     viewerWidget.get(), &ViewerWidget::pauseVideo);
+    connect(this, &MW::pauseVideo,     viewerWidget.get(), &ViewerWidget::pauseResumePlayback);
     connect(this, &MW::stopPlayback,   viewerWidget.get(), &ViewerWidget::stopPlayback);
-    connect(this, &MW::seekVideoRight, viewerWidget.get(), &ViewerWidget::seekVideoRight);
-    connect(this, &MW::seekVideoLeft,  viewerWidget.get(), &ViewerWidget::seekVideoLeft);
+    connect(this, &MW::seekVideoRight, viewerWidget.get(), &ViewerWidget::seekRight);
+    connect(this, &MW::seekVideoLeft,  viewerWidget.get(), &ViewerWidget::seekLeft);
     connect(this, &MW::frameStep,      viewerWidget.get(), &ViewerWidget::frameStep);
     connect(this, &MW::frameStepBack,  viewerWidget.get(), &ViewerWidget::frameStepBack);
     connect(this, &MW::toggleMute,  viewerWidget.get(), &ViewerWidget::toggleMute);
@@ -95,6 +98,7 @@ void MW::setupUi() {
     connect(this, &MW::volumeDown,  viewerWidget.get(), &ViewerWidget::volumeDown);
     connect(this, &MW::toggleTransparencyGrid, viewerWidget.get(), &ViewerWidget::toggleTransparencyGrid);
     connect(this, &MW::enableDocumentView, centralWidget.get(), &CentralWidget::showDocumentView);
+    connect(this, &MW::setLoopPlayback,  viewerWidget.get(), &ViewerWidget::setLoopPlayback);
 }
 
 void MW::setupFullUi() {
@@ -111,6 +115,8 @@ void MW::setupCropPanel() {
     connect(cropPanel, &CropPanel::cancel, this, &MW::hideCropPanel);
     connect(cropPanel, &CropPanel::crop,   this, &MW::hideCropPanel);
     connect(cropPanel, &CropPanel::crop,   this, &MW::cropRequested);
+    connect(cropPanel, &CropPanel::cropAndSave, this, &MW::hideCropPanel);
+    connect(cropPanel, &CropPanel::cropAndSave, this, &MW::cropAndSaveRequested);
 }
 
 void MW::setupCopyOverlay() {
@@ -152,6 +158,7 @@ void MW::enableFolderView() {
     viewerWidget->hidePanel();
     imageInfoOverlay->hide();
     centralWidget->showFolderView();
+    onInfoUpdated();
 }
 
 ViewMode MW::currentViewMode() {
@@ -199,6 +206,7 @@ void MW::switchFitMode() {
 }
 
 void MW::closeImage() {
+    info.fileName = "";
     viewerWidget->closeImage();
 }
 
@@ -234,6 +242,13 @@ void MW::onSortingChanged(SortingMode mode) {
     }
 }
 
+void MW::setDirectoryPath(QString path) {
+    closeImage();
+    info.directory = path;
+    folderView->setDirectoryPath(path);
+    onInfoUpdated();
+}
+
 void MW::toggleImageInfoOverlay() {
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
         return;
@@ -255,7 +270,7 @@ void MW::toggleRenameOverlay() {
 }
 
 void MW::toggleScalingFilter() {
-    if(viewerWidget->scalingFilter() == FILTER_BILINEAR)
+    if(viewerWidget->scalingFilter() == QI_FILTER_BILINEAR)
         setFilterNearest();
     else
         setFilterBilinear();
@@ -280,21 +295,25 @@ void MW::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
 }
 
 void MW::saveWindowGeometry() {
+    if(this->windowState() == Qt::WindowNoState) {
     #ifdef __linux__
-    if(this->isHidden())
-        settings->setWindowGeometry(QRect(pos(), size()));
-    else
-        settings->setWindowGeometry(geometry());
+        if(this->isHidden())
+            windowedGeometry = QRect(pos(), size());
+        else
+            windowedGeometry = geometry();
     #else
-         settings->setWindowGeometry(QRect(pos(), size()));
+        windowedGeometry = QRect(pos(), size());
     #endif
-    settings->setMaximizedWindow(this->isMaximized());
+    }
+    settings->setWindowGeometry(windowedGeometry);
+    if(!isFullScreen())
+        settings->setMaximizedWindow(this->isMaximized());
 }
 
 void MW::restoreWindowGeometry() {
-    QRect geometry = settings->windowGeometry();
-    this->resize(geometry.size());
-    this->move(geometry.x(), geometry.y());
+    windowedGeometry = settings->windowGeometry();
+    this->resize(windowedGeometry.size());
+    this->move(windowedGeometry.x(), windowedGeometry.y());
     if(settings->maximizedWindow())
         this->setWindowState(Qt::WindowMaximized);
     updateCurrentDisplay();
@@ -302,6 +321,11 @@ void MW::restoreWindowGeometry() {
 
 void MW::updateCurrentDisplay() {
     currentDisplay = desktopWidget->screenNumber(this);
+}
+
+void MW::onWindowGeometryChanged() {
+    saveWindowGeometry();
+    updateCurrentDisplay();
 }
 
 void MW::saveCurrentDisplay() {
@@ -317,8 +341,8 @@ void MW::mouseMoveEvent(QMouseEvent *event) {
 }
 
 bool MW::event(QEvent *event) {
-    if(event->type() == QEvent::Move)
-        windowMoveTimer.start();
+    if(event->type() == QEvent::Move || event->type() == QEvent::Resize)
+        windowGeometryChangeTimer.start();
     return QWidget::event(event);
 }
 
@@ -352,9 +376,9 @@ void MW::mouseDoubleClickEvent(QMouseEvent *event) {
 
 void MW::close() {
     this->hide();
-    if(!isFullScreen()) {
+    //if(!isFullScreen()) {
         saveWindowGeometry();
-    }
+    //}
     saveCurrentDisplay();
     if(copyOverlay)
         copyOverlay->saveSettings();
@@ -457,9 +481,9 @@ void MW::showFullScreen() {
 }
 
 void MW::showWindowed() {
-    QWidget::show();
     QWidget::showNormal();
     restoreWindowGeometry();
+    QWidget::show();
     //QWidget::activateWindow();
     //QWidget::raise();
     emit fullscreenStateChanged(false);
@@ -571,35 +595,47 @@ void MW::closeFullScreenOrExit() {
     }
 }
 
-void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _imageSize, qint64 _fileSize) {
+void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _imageSize, qint64 _fileSize, bool slideshow) {
     info.index = _index;
     info.fileCount = _fileCount;
     info.fileName = _fileName;
     info.imageSize = _imageSize;
     info.fileSize = _fileSize;
+    info.slideshow = slideshow;
+    onInfoUpdated();
+}
+
+// todo: nuke and rewrite
+void MW::onInfoUpdated() {
+    QString posString;
+    if(info.fileCount)
+        posString = "[ " + QString::number(info.index + 1) + "/" + QString::number(info.fileCount) + " ]";
+    QString resString;
+    if(info.imageSize.width())
+        resString = QString::number(info.imageSize.width()) + " x " + QString::number(info.imageSize.height());
+    QString sizeString;
+    if(info.fileSize) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+        sizeString = QString::number(info.fileSize / 1024) + " KiB";
+#else
+        sizeString = this->locale().formattedDataSize(info.fileSize, 1);
+#endif
+    }
+
     if(renameOverlay)
         renameOverlay->setName(info.fileName);
-    if(info.fileName.isEmpty()) {
-        setWindowTitle(qApp->applicationName());
+
+    QString windowTitle;
+    if(centralWidget->currentViewMode() == MODE_FOLDERVIEW) {
+        windowTitle = info.directory + " — " + qApp->applicationName();
+        infoBarFullscreen->setInfo("", "No file opened.", "");
+        infoBarWindowed->setInfo("", "No file opened.", "");
+    } else if(info.fileName.isEmpty()) {
+        windowTitle = qApp->applicationName();
         infoBarFullscreen->setInfo("", "No file opened.", "");
         infoBarWindowed->setInfo("", "No file opened.", "");
     } else {
-        QString posString;
-        if(info.fileCount)
-            posString = "[ " + QString::number(info.index + 1) + "/" + QString::number(info.fileCount) + " ]";
-        QString resString;
-        if(info.imageSize.width())
-            resString = QString::number(info.imageSize.width()) + " x " + QString::number(info.imageSize.height());
-        QString sizeString;
-        if(info.fileSize) {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-            sizeString = QString::number(info.fileSize / 1024) + " KiB";
-#else
-            sizeString = this->locale().formattedDataSize(info.fileSize, 1);
-#endif
-        }
-
-        QString windowTitle = info.fileName;
+        windowTitle = info.fileName;
         if(settings->windowTitleExtendedInfo()) {
             windowTitle.prepend(posString + "  ");
             if(!resString.isEmpty())
@@ -607,10 +643,12 @@ void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _im
             if(!sizeString.isEmpty())
                 windowTitle.append("  -  " + sizeString);
         }
-        setWindowTitle(windowTitle);
+        if(info.slideshow)
+            windowTitle.append(" — slideshow");
         infoBarFullscreen->setInfo(posString, info.fileName, resString + "  " + sizeString);
         infoBarWindowed->setInfo(posString, info.fileName, resString + "  " + sizeString);
     }
+    setWindowTitle(windowTitle);
 }
 
 // TODO!!! buffer this in mw
@@ -619,12 +657,12 @@ void MW::setExifInfo(QMap<QString, QString> info) {
         imageInfoOverlay->setExifInfo(info);
 }
 
-std::shared_ptr<DirectoryViewWrapper> MW::getFolderView() {
-    return folderView->wrapper();
+std::shared_ptr<FolderViewProxy> MW::getFolderView() {
+    return folderView;
 }
 
-std::shared_ptr<DirectoryViewWrapper> MW::getThumbnailPanel() {
-    return viewerWidget->getPanel();
+std::shared_ptr<ThumbnailStrip> MW::getThumbnailPanel() {
+    return viewerWidget->getThumbPanel();
 }
 
 void MW::showMessageDirectoryEnd() {
@@ -720,10 +758,12 @@ void MW::adaptToWindowState() {
 }
 
 void MW::paintEvent(QPaintEvent *event) {
+    /*
     QPainter p(this);
     p.setOpacity(bgOpacity);
     p.setBrush(QBrush(bgColor));
     p.fillRect(this->rect(), p.brush());
+    */
     FloatingWidgetContainer::paintEvent(event);
 }
 

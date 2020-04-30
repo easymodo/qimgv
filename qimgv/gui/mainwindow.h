@@ -37,8 +37,10 @@ struct CurrentInfo {
     int index;
     int fileCount;
     QString fileName;
+    QString directory;
     QSize imageSize;
     qint64 fileSize;
+    bool slideshow;
 };
 
 enum ActiveSidePanel {
@@ -57,10 +59,10 @@ public:
     void setAnimation(std::unique_ptr<QMovie> movie);
     void setVideo(QString file);
 
-    void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, qint64 fileSize);
+    void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, qint64 fileSize, bool slideshow);
     void setExifInfo(QMap<QString, QString>);
-    std::shared_ptr<DirectoryViewWrapper> getFolderView();
-    std::shared_ptr<DirectoryViewWrapper> getThumbnailPanel();
+    std::shared_ptr<FolderViewProxy> getFolderView();
+    std::shared_ptr<ThumbnailStrip> getThumbnailPanel();
 
     ViewMode currentViewMode();
     int folderViewSelection();
@@ -68,7 +70,7 @@ public:
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;
     QHBoxLayout layout;
-    QTimer windowMoveTimer;
+    QTimer windowGeometryChangeTimer;
     int currentDisplay;
     QDesktopWidget *desktopWidget;
 
@@ -84,6 +86,7 @@ private:
     CropOverlay *cropOverlay;
     SaveConfirmOverlay *saveOverlay;
     ChangelogWindow *changelogWindow;
+    QRect windowedGeometry;
 
     CopyOverlay *copyOverlay;
 
@@ -118,6 +121,8 @@ private slots:
     void readSettings();
     void adaptToWindowState();
 
+    void onWindowGeometryChanged();
+    void onInfoUpdated();
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     bool event(QEvent *event);
@@ -132,14 +137,18 @@ protected:
     void wheelEvent(QWheelEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void leaveEvent(QEvent *event);
+
 signals:
     void opened(QString);
     void fullscreenStateChanged(bool);
     void copyRequested(QString);
     void moveRequested(QString);
+    void copyUrlsRequested(QList<QUrl>, QString);
+    void moveUrlsRequested(QList<QUrl>, QString);
     void resizeRequested(QSize);
     void renameRequested(QString);
     void cropRequested(QRect);
+    void cropAndSaveRequested(QRect);
     void discardEditsRequested();
     void saveAsClicked();
     void saveRequested();
@@ -166,10 +175,12 @@ signals:
     void volumeUp();
     void volumeDown();
     void enableDocumentView();
-    void setDirectoryPath(QString);
     void toggleTransparencyGrid();
     void droppedIn(const QMimeData*, QObject*);
     void draggedOut();
+    void draggedOut(int);
+    void setLoopPlayback(bool);
+    void playbackFinished();
 
 public slots:
     void setupFullUi();
@@ -218,4 +229,5 @@ public slots:
     void setFilterNearest();
     void setFilterBilinear();
     void toggleScalingFilter();
+    void setDirectoryPath(QString path);
 };

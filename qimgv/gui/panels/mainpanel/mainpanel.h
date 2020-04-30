@@ -13,7 +13,7 @@ public:
     void setHeight(int newHeight);
     void setPosition(PanelHPosition);
     void setExitButtonEnabled(bool mode);
-    std::shared_ptr<DirectoryViewWrapper> getWrapper();
+    std::shared_ptr<ThumbnailStrip> getThumbnailStrip();
 
 private slots:
     void readSettings();

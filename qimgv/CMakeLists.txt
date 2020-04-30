@@ -8,6 +8,7 @@ add_executable(qimgv
     settings.cpp
     sharedresources.cpp
     shortcutbuilder.cpp
+    proxystyle.cpp
     resources.qrc
     qimgv.rc)
 
@@ -16,6 +17,9 @@ add_subdirectory(components)
 add_subdirectory(sourcecontainers)
 add_subdirectory(gui)
 add_subdirectory(utils)
+if(OPENCV_SUPPORT)
+    add_subdirectory(3rdparty/QtOpenCV)
+endif()
 
 # C++ STANDARD
 target_compile_features(qimgv PRIVATE cxx_std_17)
@@ -38,6 +42,10 @@ if(KDE_SUPPORT)
 endif()
 if(VIDEO_SUPPORT)
     target_compile_definitions(qimgv PRIVATE USE_MPV)
+endif()
+if(OPENCV_SUPPORT)
+    target_link_libraries(qimgv PRIVATE ${OpenCV_LIBS})
+    target_compile_definitions(qimgv PRIVATE USE_OPENCV)
 endif()
 
 # generate proper GUI program on specified platform

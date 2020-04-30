@@ -41,8 +41,34 @@ enum PanelVPosition {
 };
 
 enum ScalingFilter {
-    FILTER_NEAREST,
-    FILTER_BILINEAR
+    QI_FILTER_NEAREST,
+    QI_FILTER_BILINEAR,
+    QI_FILTER_CV_BILINEAR_SHARPEN,
+    QI_FILTER_CV_CUBIC,
+    QI_FILTER_CV_CUBIC_SHARPEN
+};
+
+enum ZoomIndicatorMode {
+    INDICATOR_DISABLED,
+    INDICATOR_AUTOHIDE,
+    INDICATOR_ENABLED
+};
+
+enum DefaultCropAction {
+    ACTION_CROP,
+    ACTION_CROP_SAVE
+};
+
+enum ImageFocusPoint {
+    FOCUS_TOP,
+    FOCUS_CENTER,
+    FOCUS_CURSOR
+};
+
+enum ImageScrolling {
+    SCROLL_NONE,
+    SCROLL_BY_TRACKPAD,
+    SCROLL_BY_TRACKPAD_AND_WHEEL
 };
 
 class Settings : public QObject
@@ -116,7 +142,7 @@ public:
     void setUseThumbnailCache(bool mode);
     QStringList savedPaths();
     void setSavedPaths(QStringList paths);
-    QString cacheDir();
+    QString tmpDir();
     int thumbnailerThreadCount();
     void setThumbnailerThreadCount(int count);
     bool smoothUpscaling();
@@ -187,11 +213,38 @@ public:
     void setZoomStep(qreal value);
     int JPEGSaveQuality();
     void setJPEGSaveQuality(int value);
+    bool useOpenGL();
+    void setUseOpenGL(bool mode);
+    void setZoomIndicatorMode(ZoomIndicatorMode mode);
+    ZoomIndicatorMode zoomIndicatorMode();
+    void setFocusPointIn1to1Mode(ImageFocusPoint mode);
+    ImageFocusPoint focusPointIn1to1Mode();
+    void setDefaultCropAction(DefaultCropAction mode);
+    DefaultCropAction defaultCropAction();
+    bool placesPanel();
+    void setPlacesPanel(bool mode);
+
+    QStringList bookmarks();
+    void setBookmarks(QStringList paths);
+    bool placesPanelBookmarksExpanded();
+    void setPlacesPanelBookmarksExpanded(bool mode);
+    bool placesPanelTreeExpanded();
+    void setPlacesPanelTreeExpanded(bool mode);
+
+    void setSlideshowInterval(int ms);
+    int slideshowInterval();
+
+    ImageScrolling imageScrolling();
+    void setImageScrolling(ImageScrolling mode);
+
+    int placesPanelWidth();
+    void setPlacesPanelWidth(int width);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;
     QSettings *s, *state;
-    QDir *mCacheDir, *mThumbnailDir, *mConfDir;
+    QDir *mTmpDir, *mThumbCacheDir, *mConfDir;
 
 signals:
     void settingsChanged();

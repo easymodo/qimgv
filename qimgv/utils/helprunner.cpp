@@ -16,6 +16,9 @@ void HelpRunner::run() {
 #ifdef USE_KDE_BLUR
     features << "USE_KDE_BLUR";
 #endif
+#ifdef USE_OPENCVR
+    features << "USE_OPENCV";
+#endif
     qDebug() << "\nEnabled build options:";
     if(!features.count())
         qDebug() << "   --";

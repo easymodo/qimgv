@@ -13,15 +13,16 @@ class Thumbnailer : public QObject
     Q_OBJECT
 public:
     explicit Thumbnailer(DirectoryManager *_dm);
+    static std::shared_ptr<Thumbnail> getThumbnail(QString filePath, int size);
     void clearTasks();
 
 public slots:
-    void generateThumbnails(QList<int> indexes, int size, bool cropSquare, bool forceRegenerate);
+    void generateThumbnails(QList<int> indexes, int size, bool crop, bool force);
 
 private:
-    ThumbnailCache *thumbnailCache;
+    ThumbnailCache *cache;
     QThreadPool *pool;
-    void startThumbnailerThread(QString filePath, int size, bool cropSquare, bool forceGenerate);
+    void startThumbnailerThread(QString filePath, int size, bool crop, bool force);
     DirectoryManager *dm;
     QMultiMap<QString, int> runningTasks;
 

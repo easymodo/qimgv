@@ -6,6 +6,7 @@
 #include "utils/actions.h"
 #include "utils/helprunner.h"
 #include "sharedresources.h"
+#include "proxystyle.h"
 #include "core.h"
 
 void saveSettings() {
@@ -37,12 +38,14 @@ int main(int argc, char *argv[]) {
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     QApplication a(argc, argv);
-    QCoreApplication::setOrganizationName("greenpepper software");
+    QCoreApplication::setOrganizationName("qimgv");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
     QCoreApplication::setApplicationVersion(appVersion.normalized().toString());
 
-    QGuiApplication::setDesktopFileName("qimgv.desktop");
+    a.setStyle(new ProxyStyle);
+
+    QGuiApplication::setDesktopFileName(QCoreApplication::applicationName() + ".desktop");
 
     // enable translations
     QString localeName = QLocale::system().name();
@@ -94,8 +97,10 @@ int main(int argc, char *argv[]) {
     //qApp->processEvents();
     //qDebug() << "Core + MW init: " << t.elapsed() << "ms";
 
-    // assume 1st arg is the filename
-    if(!arg1.isEmpty()) {
+    if(arg1.isEmpty()) {
+        core.loadPath(QDir::homePath());
+    } else {
+        // assume 1st arg is the filename
         core.loadPath(arg1);
     }
     // wait for event queue to catch up before showing window

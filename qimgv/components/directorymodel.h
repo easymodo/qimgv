@@ -26,9 +26,10 @@ public:
 
     Scaler *scaler;
 
-    QString currentFileName();
-    QString currentFilePath();
     QString fullPath(QString fileName);
+
+    void load(QString fileName, bool asyncHint);
+    void preload(QString fileName);
 
     int itemCount() const;
     int indexOf(QString fileName);
@@ -42,12 +43,10 @@ public:
     QString last();
     QString absolutePath();
     QDateTime lastModified(QString fileName);
-    void copyTo(QString destDirectory, QString fileName, FileOpResult &result);
-    void moveTo(QString destDirectory, QString fileName, FileOpResult &result);
+    void copyTo(QString destDir, QUrl srcUrl, FileOpResult &result);
+    void moveTo(QString destDir, QUrl srcUrl, FileOpResult &result);
     void setDirectory(QString);
 
-    bool setIndex(int index);
-    bool setIndexAsync(int index);
     void unload(int index);
 
     bool loaderBusy();
@@ -57,23 +56,26 @@ public:
     std::shared_ptr<Image> getItemAt(int index);
     std::shared_ptr<Image> getItem(QString fileName);
     void updateItem(QString fileName, std::shared_ptr<Image> img);
-    int currentIndex();
+
     void setSortingMode(SortingMode mode);
     SortingMode sortingMode();
     bool forceInsert(QString fileName);
 
-    QString directory();
+    QString directoryPath();
     void unload(QString fileName);
     bool isLoaded(int index);
     bool isLoaded(QString fileName);
     void reload(QString fileName);
+    QString filePathAt(int index);
+    void unloadExcept(QString fileName, bool keepNearby);
 signals:
     void fileRemoved(QString fileName, int index);
     void fileRenamed(QString from, int indexFrom, QString to, int indexTo);
     void fileAdded(QString fileName);
     void fileModified(QString fileName);
+    void fileModifiedInternal(QString fileName);
     void loaded(QString);
-    void sortingChanged();
+    void sortingChanged(SortingMode);
     void indexChanged(int oldIndex, int index);
     // returns current item
     void itemReady(std::shared_ptr<Image> img);
@@ -87,10 +89,7 @@ private:
     Loader loader;
     Cache cache;
     Thumbnailer *thumbnailer;
-    void preload(QString fileName);
-    void trimCache();
-
-    QString mCurrentFileName;
+    void trimCache(QString currentFileName);
 
 private slots:
     void onItemReady(std::shared_ptr<Image> img);

@@ -195,7 +195,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="okButton">
+        <widget class="PushButtonFocusInd" name="okButton">
          <property name="focusPolicy">
           <enum>Qt::NoFocus</enum>
          </property>
@@ -238,6 +238,11 @@
    <extends>QWidget</extends>
    <header>gui/customwidgets/iconwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PushButtonFocusInd</class>
+   <extends>QPushButton</extends>
+   <header>gui/customwidgets/pushbuttonfocusind.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

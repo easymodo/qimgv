@@ -128,5 +128,24 @@
         <file>res/icons/other/image-crop48@2x.png</file>
         <file>res/icons/other/loading-error72@2x.png</file>
         <file>res/icons/other/loading72@2x.png</file>
+        <file>res/icons/app/16.png</file>
+        <file>res/icons/app/44.png</file>
+        <file>res/icons/app/24.png</file>
+        <file>res/icons/app/64.png</file>
+        <file>res/icons/app/128.png</file>
+        <file>res/icons/app/36.png</file>
+        <file>res/icons/app/256.png</file>
+        <file>res/icons/buttons/panel/toggle-panel20@2x.png</file>
+        <file>res/icons/buttons/panel/toggle-panel20.png</file>
+        <file>res/icons/buttons/add-new12.png</file>
+        <file>res/icons/buttons/add-new12@2x.png</file>
+        <file>res/icons/buttons/remove12.png</file>
+        <file>res/icons/buttons/remove12@2x.png</file>
+        <file>res/icons/other/expanded.png</file>
+        <file>res/icons/other/collapsed.png</file>
+        <file>res/icons/buttons/root12.png</file>
+        <file>res/icons/buttons/root12@2x.png</file>
+        <file>res/icons/buttons/home12@2x.png</file>
+        <file>res/icons/buttons/home12.png</file>
     </qresource>
 </RCC>

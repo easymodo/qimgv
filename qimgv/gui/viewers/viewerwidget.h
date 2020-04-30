@@ -2,9 +2,10 @@
 
 #include "gui/customwidgets/floatingwidgetcontainer.h"
 #include <QHBoxLayout>
-#include "gui/viewers/imageviewer.h"
+#include "gui/viewers/imageviewerv2.h"
 #include "gui/viewers/videoplayerinitproxy.h"
 #include "gui/overlays/videocontrolsproxy.h"
+#include "gui/overlays/zoomindicatoroverlayproxy.h"
 #include "gui/panels/mainpanel/mainpanel.h"
 #include "gui/contextmenu.h"
 
@@ -27,7 +28,7 @@ public:
     void disableInteraction();
     bool interactionEnabled();
 
-    std::shared_ptr<DirectoryViewWrapper> getPanel();
+    std::shared_ptr<ThumbnailStrip> getThumbPanel();
 
     bool showImage(std::unique_ptr<QPixmap> pixmap);
     bool showAnimation(std::unique_ptr<QMovie> movie);
@@ -41,11 +42,12 @@ public:
     bool panelEnabled();
 private:
     QHBoxLayout layout;
-    std::unique_ptr<ImageViewer> imageViewer;
+    std::unique_ptr<ImageViewerV2> imageViewer;
     std::unique_ptr<VideoPlayerInitProxy> videoPlayer;
     std::unique_ptr<ContextMenu> contextMenu;
-    std::unique_ptr<MainPanel> mainPanel;
+    std::shared_ptr<MainPanel> mainPanel;
     VideoControlsProxyWrapper *videoControls;
+    ZoomIndicatorOverlayProxy *zoomIndicator;
 
     void enableImageViewer();
     void enableVideoPlayer();
@@ -58,6 +60,12 @@ private:
 
     void disableImageViewer();
     void disableVideoPlayer();
+
+    QRect videoControlsArea();
+private slots:
+    void onScaleChanged(qreal);
+    void onVideoPlaybackFinished();
+    void onAnimationPlaybackFinished();
 
 signals:
     void scalingRequested(QSize, ScalingFilter);
@@ -76,6 +84,7 @@ signals:
     void draggedOut();
     void setFilterNearest();
     void setFilterBilinear();
+    void playbackFinished();
 
 public slots:
     bool showVideo(QString file);
@@ -88,11 +97,11 @@ public slots:
     void hideCursorTimed(bool restartTimer);
 
     // video control
-    void pauseVideo();
-    void seekVideo(int pos);
-    void seekVideoRelative(int pos);
-    void seekVideoLeft();
-    void seekVideoRight();
+    void pauseResumePlayback();
+    void seek(int pos);
+    void seekRelative(int pos);
+    void seekLeft();
+    void seekRight();
     void frameStep();
     void frameStepBack();
     void toggleMute();
@@ -105,6 +114,7 @@ public slots:
     void showContextMenu(QPoint pos);
     void onFullscreenModeChanged(bool);
     void readSettings();
+    void setLoopPlayback(bool mode);
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);

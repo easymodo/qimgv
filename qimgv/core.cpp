@@ -7,7 +7,7 @@
 
 #include "core.h"
 
-Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr) {
+Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr), slideshow(false) {
 #ifdef __GLIBC__
     // default value of 128k causes memory fragmentation issues
     // finding this took 3 days of my life
@@ -21,6 +21,7 @@ Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr) {
     connectComponents();
     initActions();
     readSettings();
+    slideshowTimer.setSingleShot(true);
     connect(settings, &Settings::settingsChanged, this, &Core::readSettings);
 
     QVersionNumber lastVersion = settings->lastVersion();
@@ -32,6 +33,7 @@ Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr) {
 
 void Core::readSettings() {
     infiniteScrolling = settings->infiniteScrolling();
+    slideshowTimer.setInterval(settings->slideshowInterval());
     if(settings->shuffleEnabled())
         syncRandomizer();
 }
@@ -63,15 +65,20 @@ void Core::initComponents() {
 }
 
 void Core::connectComponents() {
-    presenter.connectView(mw->getFolderView());
-    presenter.connectView(mw->getThumbnailPanel());
+    presenter.setFolderView(mw->getFolderView());
+    presenter.setThumbPanel(mw->getThumbnailPanel());
+
+    connect(&presenter, &DirectoryPresenter::itemSelected,
+            this, &Core::onDirectoryViewItemSelected);
 
     connect(mw, &MW::opened,                this, &Core::loadPath);
     connect(mw, &MW::droppedIn,             this, &Core::onDropIn);
-    connect(mw, &MW::draggedOut,            this, &Core::onDragOut);
-    connect(mw, &MW::copyRequested,         this, &Core::copyFile);
-    connect(mw, &MW::moveRequested,         this, &Core::moveFile);
+    connect(mw, &MW::copyRequested,         this, &Core::copyCurrentFile);
+    connect(mw, &MW::moveRequested,         this, &Core::moveCurrentFile);
+    connect(mw, &MW::copyUrlsRequested,     this, &Core::copyUrls);
+    connect(mw, &MW::moveUrlsRequested,     this, &Core::moveUrls);
     connect(mw, &MW::cropRequested,         this, &Core::crop);
+    connect(mw, &MW::cropAndSaveRequested,  this, &Core::cropAndSave);
     connect(mw, &MW::saveAsClicked,         this, &Core::requestSavePath);
     connect(mw, &MW::saveRequested,         this, qOverload<>(&Core::saveImageToDisk));
     connect(mw, &MW::saveAsRequested,       this, qOverload<QString>(&Core::saveImageToDisk));
@@ -79,6 +86,10 @@ void Core::connectComponents() {
     connect(mw, &MW::renameRequested,       this, &Core::renameCurrentFile);
     connect(mw, &MW::sortingSelected,       this, &Core::sortBy);
     connect(mw, &MW::discardEditsRequested, this, &Core::discardEdits);
+    connect(mw, qOverload<>(&MW::draggedOut),    this, qOverload<>(&Core::onDragOut));
+    connect(mw, qOverload<int>(&MW::draggedOut), this, qOverload<int>(&Core::onDragOut));
+
+    connect(mw, &MW::playbackFinished, this, &Core::onPlaybackFinished);
 
     connect(mw, &MW::scalingRequested, this, &Core::scalingRequest);
     connect(model->scaler, &Scaler::scalingFinished, this, &Core::onScalingFinished);
@@ -90,8 +101,9 @@ void Core::connectComponents() {
     connect(model.get(), &DirectoryModel::loaded,         this, &Core::onModelLoaded);
     connect(model.get(), &DirectoryModel::itemReady,      this, &Core::onModelItemReady);
     connect(model.get(), &DirectoryModel::itemUpdated,    this, &Core::onModelItemUpdated);
-    connect(model.get(), &DirectoryModel::indexChanged,   this, &Core::updateInfoString);
-    connect(model.get(), &DirectoryModel::sortingChanged, this, &Core::updateInfoString);
+    connect(model.get(), &DirectoryModel::sortingChanged, this, &Core::onModelSortingChanged);
+
+    connect(&slideshowTimer, &QTimer::timeout, this, &Core::nextImageSlideshow);
 }
 
 void Core::initActions() {
@@ -135,9 +147,9 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::seekBackVideo, mw, &MW::seekVideoLeft);
     connect(actionManager, &ActionManager::frameStep, mw, &MW::frameStep);
     connect(actionManager, &ActionManager::frameStepBack, mw, &MW::frameStepBack);
-    connect(actionManager, &ActionManager::folderView, mw, &MW::enableFolderView);
-    connect(actionManager, &ActionManager::documentView, mw, &MW::enableDocumentView);
-    connect(actionManager, &ActionManager::toggleFolderView, mw, &MW::toggleFolderView);
+    connect(actionManager, &ActionManager::folderView, this, &Core::enableFolderView);
+    connect(actionManager, &ActionManager::documentView, this, &Core::enableDocumentView);
+    connect(actionManager, &ActionManager::toggleFolderView, this, &Core::toggleFolderView);
     connect(actionManager, &ActionManager::reloadImage, this, qOverload<>(&Core::reloadImage));
     connect(actionManager, &ActionManager::copyFileClipboard, this, &Core::copyFileClipboard);
     connect(actionManager, &ActionManager::copyPathClipboard, this, &Core::copyPathClipboard);
@@ -150,10 +162,11 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::toggleImageInfo, mw, &MW::toggleImageInfoOverlay);
     connect(actionManager, &ActionManager::toggleShuffle, this, &Core::toggleShuffle);
     connect(actionManager, &ActionManager::toggleScalingFilter, mw, &MW::toggleScalingFilter);
-    connect(actionManager, &ActionManager::showDirectory, this, &Core::showDirectory);
+    connect(actionManager, &ActionManager::showInDirectory, this, &Core::showInDirectory);
     connect(actionManager, &ActionManager::toggleMute, mw, &MW::toggleMute);
     connect(actionManager, &ActionManager::volumeUp, mw, &MW::volumeUp);
     connect(actionManager, &ActionManager::volumeDown, mw, &MW::volumeDown);
+    connect(actionManager, &ActionManager::toggleSlideshow, this, &Core::toggleSlideshow);
 }
 
 void Core::onUpdate() {
@@ -174,7 +187,7 @@ void Core::onUpdate() {
 
 void Core::onFirstRun() {
     //mw->showSomeSortOfWelcomeScreen();
-    mw->showMessage("Welcome to qimgv version " + appVersion.toString() + "!", 4000);
+    mw->showMessage("Welcome to " + qApp->applicationName() + " version " + appVersion.toString() + "!", 4000);
     settings->setFirstRun(false);
     settings->setLastVersion(appVersion);
 }
@@ -190,17 +203,56 @@ void Core::toggleShuffle() {
     }
 }
 
+void Core::toggleSlideshow() {
+    if(slideshow) {
+        slideshow = false;
+        mw->showMessage("Slideshow: OFF");
+        mw->setLoopPlayback(true);
+        slideshowTimer.stop();
+    } else {
+        slideshow = true;
+        mw->showMessage("Slideshow: ON");
+        mw->setLoopPlayback(false);
+        enableDocumentView();
+        startSlideshowTimer();
+    }
+    updateInfoString();
+}
+
+void Core::stopSlideshow() {
+    if(slideshow) {
+        slideshow = false;
+        mw->setLoopPlayback(true);
+        slideshowTimer.stop();
+        updateInfoString();
+    }
+}
+
+void Core::onPlaybackFinished() {
+    if(slideshow) {
+        nextImageSlideshow();
+    }
+}
+
 void Core::syncRandomizer() {
     if(model) {
         randomizer.setCount(model->itemCount());
         randomizer.shuffle();
-        randomizer.setCurrent(model->currentIndex());
+        randomizer.setCurrent(model->indexOf(state.currentFileName));
     }
 }
 
 void Core::onModelLoaded() {
+    presenter.reloadModel();
+    //state.currentFileName = model->fileNameAt(0);
     if(settings->shuffleEnabled())
         syncRandomizer();
+}
+
+void Core::onDirectoryViewItemSelected(int index) {
+    // we aren`t using async load so it won't flicker with empty view
+    mw->enableDocumentView();
+    loadIndex(index, false, settings->usePreloader());
 }
 
 void Core::rotateLeft() {
@@ -239,6 +291,28 @@ void Core::reloadImage(QString fileName) {
     if(model->isEmpty())
         return;
     model->reload(fileName);
+}
+
+void Core::enableFolderView() {
+    if(mw->currentViewMode() == MODE_FOLDERVIEW)
+        return;
+    stopSlideshow();
+    mw->enableFolderView();
+}
+
+void Core::enableDocumentView() {
+    if(mw->currentViewMode() == MODE_DOCUMENT)
+        return;
+    mw->enableDocumentView();
+    if(model && model->itemCount() && state.currentFileName == "")
+        loadIndex(0, false, settings->usePreloader());
+}
+
+void Core::toggleFolderView() {
+    if(mw->currentViewMode() == MODE_FOLDERVIEW)
+        enableDocumentView();
+    else
+        enableFolderView();
 }
 
 // TODO: also copy selection from folder view?
@@ -284,20 +358,21 @@ void Core::onDropIn(const QMimeData *mimeData, QObject* source) {
 // drag'n'drop
 // drag image out of the program
 void Core::onDragOut() {
+    onDragOut(model->indexOf(state.currentFileName));
+}
+
+void Core::onDragOut(int index) {
     if(model->isEmpty())
         return;
 
-    QPoint hotspot(0,0);
-    QPixmap pixmap(":/res/icons/app/64.png"); // use some thumbnail here
-
-    QMimeData *mimeData = getMimeDataFor(model->getItemAt(model->currentIndex()), TARGET_DROP);
-
+    QMimeData *mimeData = getMimeDataFor(model->getItemAt(index), TARGET_DROP);
+    auto thumb = Thumbnailer::getThumbnail(model->filePathAt(index), 100);
     mDrag = new QDrag(this);
     mDrag->setMimeData(mimeData);
-    mDrag->setPixmap(pixmap);
-    mDrag->setHotSpot(hotspot);
+    mDrag->setPixmap(*thumb->pixmap().get());
 
-    mDrag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction, Qt::CopyAction);
+    mDrag->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction, Qt::CopyAction);
+
 }
 
 QMimeData *Core::getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget target) {
@@ -310,7 +385,7 @@ QMimeData *Core::getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget targe
             // TODO: cleanup temp files
             // meanwhile use generic name
             //path = settings->cacheDir() + img->baseName() + ".png";
-            path = settings->cacheDir() + "image.png";
+            path = settings->tmpDir() + "image.png";
             // use faster compression for drag'n'drop
             int pngQuality = (target == TARGET_DROP) ? 80 : 30;
             img->getImage()->save(path, nullptr, pngQuality);
@@ -329,11 +404,11 @@ void Core::sortBy(SortingMode mode) {
 }
 
 void Core::renameCurrentFile(QString newName) {
-    if(!model->itemCount() || newName == model->currentFileName())
+    if(!model->itemCount() || newName == state.currentFileName)
         return;
     QString newPath = model->fullPath(newName);
-    QString oldName = model->currentFileName();
-    QString currentPath = model->currentFilePath();
+    QString oldName = state.currentFileName;
+    QString currentPath = model->fullPath(state.currentFileName);
     bool exists = model->contains(newName);
     QFile replaceMe(newPath);
     // move existing file so we can revert if something fails
@@ -377,24 +452,31 @@ void Core::removeFile(QString fileName, bool trash) {
 void Core::onFileRemoved(QString fileName, int index) {
     if(model->isEmpty()) {
         mw->closeImage();
+        state.hasActiveImage = false;
+        state.currentFileName = "";
+    } else if(state.currentFileName == fileName) {
+        if(!loadIndex(index, true, settings->usePreloader()))
+            loadIndex(--index, true, settings->usePreloader());
     }
     updateInfoString();
 }
 
 void Core::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
+    if(state.currentFileName == from) {
+        loadIndex(indexTo, true, settings->usePreloader());
+    }
 }
 
 void Core::onFileAdded(QString fileName) {
     Q_UNUSED(fileName)
     // update file count
     updateInfoString();
+    if(model->itemCount() == 1 && state.currentFileName == "")
+        loadIndex(0, false, settings->usePreloader());
 }
 
 void Core::onFileModified(QString fileName) {
     Q_UNUSED(fileName)
-    // this fires even when the image is edited from qimgv, so no need to notify
-    //if(fileName == model->currentFileName())
-        //mw->showMessage("File changed.");
 }
 
 void Core::outputError(const FileOpResult &error) const {
@@ -419,32 +501,81 @@ void Core::outputError(const FileOpResult &error) const {
 }
 
 void Core::showOpenDialog() {
-    mw->showOpenDialog(model->directory());
+    mw->showOpenDialog(model->directoryPath());
 }
 
-void Core::showDirectory() {
-    QDesktopServices::openUrl(QUrl::fromLocalFile(model->directory()));
+void Core::showInDirectory() {
+    if(!model)
+        return;
+#ifdef __linux__
+    QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
+#endif
+
+#ifdef __WIN32
+    QString fileName = this->selectedFileName();
+    if(fileName.isEmpty()) {
+        QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
+    } else {
+        QStringList args;
+        args << "/select," << QDir::toNativeSeparators(model->fullPath(fileName));
+        QProcess::startDetached("explorer", args);
+    }
+#endif
+/*
+#ifdef Q_WS_MAC
+    QStringList args;
+    args << "-e";
+    args << "tell application \"Finder\"";
+    args << "-e";
+    args << "activate";
+    args << "-e";
+    args << "select POSIX file \""+filePath+"\"";
+    args << "-e";
+    args << "end tell";
+    QProcess::startDetached("osascript", args);
+#endif
+*/
 }
 
-void Core::moveFile(QString destDirectory) {
+void Core::moveCurrentFile(QString destDirectory) {
     if(model->isEmpty())
         return;
     mw->closeImage();
     FileOpResult result;
-    model->moveTo(destDirectory, this->selectedFileName(), result);
+    model->moveTo(destDirectory, model->fullPath(selectedFileName()), result);
     if(result == FileOpResult::SUCCESS) {
         mw->showMessageSuccess("File moved.");
     } else {
-        guiSetImage(model->getItem(this->selectedFileName()));
+        guiSetImage(model->getItem(selectedFileName()));
         outputError(result);
     }
 }
 
-void Core::copyFile(QString destDirectory) {
+void Core::copyUrls(QList<QUrl> urls, QString destDirectory) {
     if(model->isEmpty())
         return;
     FileOpResult result;
-    model->copyTo(destDirectory, this->selectedFileName(), result);
+    QList<QUrl>::iterator i;
+    for(i = urls.begin(); i != urls.end(); ++i) {
+        model->copyTo(destDirectory, model->fullPath((*i).fileName()), result);
+    }
+}
+
+void Core::moveUrls(QList<QUrl> urls, QString destDirectory) {
+    if(model->isEmpty())
+        return;
+    FileOpResult result;
+    QList<QUrl>::iterator i;
+    for(i = urls.begin(); i != urls.end(); ++i) {
+        model->moveTo(destDirectory, model->fullPath((*i).fileName()), result);
+    }
+}
+
+void Core::copyCurrentFile(QString destDirectory) {
+    if(model->isEmpty())
+        return;
+    FileOpResult result;
+    model->copyTo(destDirectory, model->fullPath(selectedFileName()), result);
     if(result == FileOpResult::SUCCESS)
         mw->showMessageSuccess("File copied.");
     else
@@ -483,7 +614,7 @@ void Core::resize(QSize size) {
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                    ImageLib::scaled(imgStatic->getImage(), size, 1)));
+                    ImageLib::scaled(imgStatic->getImage(), size, QI_FILTER_BILINEAR)));
         model->updateItem(this->selectedFileName(), img);
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
             img->save();
@@ -524,18 +655,25 @@ void Core::flipV() {
     }
 }
 
-void Core::crop(QRect rect) {
+bool Core::crop(QRect rect) {
     if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
-        return;
-    std::shared_ptr<Image> img = model->getItem(model->currentFileName());
+        return false;
+    std::shared_ptr<Image> img = model->getItem(state.currentFileName);
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::cropped(imgStatic->getImage(), rect)));
-        model->updateItem(model->currentFileName(), img);
+        model->updateItem(state.currentFileName, img);
+        return true;
     } else {
         mw->showMessage("Editing gifs/video is unsupported.");
+        return false;
     }
+}
+
+void Core::cropAndSave(QRect rect) {
+    if(crop(rect))
+        saveImageToDisk();
 }
 
 void Core::rotateByDegrees(int degrees) {
@@ -575,7 +713,7 @@ QString Core::selectedFileName() {
     else if(mw->currentViewMode() == MODE_FOLDERVIEW)
         return model->fileNameAt(mw->folderViewSelection());
     else
-        return model->currentFileName();
+        return state.currentFileName;
 }
 
 // move saving logic away from Image container itself
@@ -590,7 +728,7 @@ void Core::saveImageToDisk(QString filePath) {
         return;
     std::shared_ptr<Image> img = model->getItem(this->selectedFileName());
     if(img->save(filePath))
-        mw->showMessageSuccess("File saved: " + filePath);
+        mw->showMessageSuccess("File saved.");
     else
         mw->showError("Could not save file.");
     mw->hideSaveOverlay();
@@ -601,7 +739,6 @@ void Core::sortByName() {
     if(model->sortingMode() == mode)
         mode = SortingMode::SORT_NAME_DESC;
     model->setSortingMode(mode);
-    mw->onSortingChanged(mode);
 }
 
 void Core::sortByTime() {
@@ -609,7 +746,6 @@ void Core::sortByTime() {
     if(model->sortingMode() == mode)
         mode = SortingMode::SORT_TIME_DESC;
     model->setSortingMode(mode);
-    mw->onSortingChanged(mode);
 }
 
 void Core::sortBySize() {
@@ -617,7 +753,6 @@ void Core::sortBySize() {
     if(model->sortingMode() == mode)
         mode = SortingMode::SORT_SIZE_DESC;
     model->setSortingMode(mode);
-    mw->onSortingChanged(mode);
 }
 
 void Core::showRenameDialog() {
@@ -635,9 +770,9 @@ void Core::runScript(const QString &scriptName) {
 void Core::scalingRequest(QSize size, ScalingFilter filter) {
     // filter out an unnecessary scale request at statup
     if(mw->isVisible() && state.hasActiveImage) {
-        std::shared_ptr<Image> forScale = model->getItem(model->currentFileName());
+        std::shared_ptr<Image> forScale = model->getItem(state.currentFileName);
         if(forScale) {
-            QString path = model->absolutePath() + "/" + model->currentFileName();
+            QString path = model->absolutePath() + "/" + state.currentFileName;
             model->scaler->requestScaled(ScalerRequest(forScale, size, path, filter));
         }
     }
@@ -645,7 +780,7 @@ void Core::scalingRequest(QSize size, ScalingFilter filter) {
 
 // TODO: don't use connect? otherwise there is no point using unique_ptr
 void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
-    if(state.hasActiveImage /* TODO: a better fix > */ && req.string == model->currentFilePath()) {
+    if(state.hasActiveImage /* TODO: a better fix > */ && req.string == model->fullPath(state.currentFileName)) {
         mw->onScalingFinished(std::unique_ptr<QPixmap>(scaled));
     } else {
         delete scaled;
@@ -655,14 +790,15 @@ void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
 // reset state; clear cache; etc
 void Core::reset() {
     state.hasActiveImage = false;
+    state.currentFileName = "";
     model->setDirectory("");
-    //viewerWidget->unset();
 }
 
 void Core::loadPath(QString path) {
     if(path.startsWith("file://", Qt::CaseInsensitive))
         path.remove(0, 7);
 
+    stopSlideshow();
     QFileInfo fileInfo(path);
     QString directoryPath;
     if(fileInfo.isDir()) {
@@ -695,23 +831,45 @@ void Core::loadPath(QString path) {
                 }
             }
         }
-        model->setIndex(index);
+        mw->enableDocumentView();
+        loadIndex(index, false, settings->usePreloader());
     } else {
-        //todo: set index without loading actual file?
-        model->setIndex(0);
         mw->enableFolderView();
+        presenter.selectAndFocus(0);
     }
+}
+
+bool Core::loadIndex(int index, bool async, bool preload) {
+    if(!model)
+        return false;
+    QString newName = model->fileNameAt(index);
+    if(newName.isEmpty())
+        return false;
+
+    state.currentFileName = newName;
+
+    model->unloadExcept(newName, preload);
+    model->load(newName, async);
+
+    if(preload) {
+        model->preload(model->nextOf(newName));
+        model->preload(model->prevOf(newName));
+    }
+
+    presenter.onIndexChanged(index);
+    updateInfoString();
+    return true;
 }
 
 void Core::nextImage() {
     if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
+    stopSlideshow();
     if(settings->shuffleEnabled()) {
-        model->setIndexAsync(randomizer.next());
+        loadIndex(randomizer.next(), true, false);
         return;
     }
-
-    int newIndex = model->indexOf(model->currentFileName()) + 1;
+    int newIndex = model->indexOf(state.currentFileName) + 1;
     if(newIndex >= model->itemCount()) {
         if(infiniteScrolling) {
             newIndex = 0;
@@ -721,18 +879,19 @@ void Core::nextImage() {
             return;
         }
     }
-    model->setIndexAsync(newIndex);
+    loadIndex(newIndex, true, settings->usePreloader());
 }
 
 void Core::prevImage() {
     if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
+    stopSlideshow();
     if(settings->shuffleEnabled()) {
-        model->setIndexAsync(randomizer.prev());
+        loadIndex(randomizer.prev(), true, false);
         return;
     }
 
-    int newIndex = model->indexOf(model->currentFileName()) - 1;
+    int newIndex = model->indexOf(state.currentFileName) - 1;
     if(newIndex < 0) {
         if(infiniteScrolling) {
             newIndex = model->itemCount() - 1;
@@ -742,20 +901,56 @@ void Core::prevImage() {
             return;
         }
     }
-    model->setIndexAsync(newIndex);
+    loadIndex(newIndex, true, settings->usePreloader());
+}
+
+void Core::nextImageSlideshow() {
+    if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
+        return;
+    if(settings->shuffleEnabled()) {
+        loadIndex(randomizer.next(), false, false);
+    } else {
+        int newIndex = model->indexOf(state.currentFileName) + 1;
+        if(newIndex >= model->itemCount()) {
+            if(infiniteScrolling) {
+                newIndex = 0;
+            } else {
+                stopSlideshow();
+                mw->showMessage("End of directory.");
+                return;
+            }
+        }
+        loadIndex(newIndex, false, true);
+    }
+    startSlideshowTimer();
+}
+
+void Core::startSlideshowTimer() {
+    // start timer only for static images or single frame gifs
+    // for proper gifs and video we get a playbackFinished() signal
+    auto img = model->getItem(state.currentFileName);
+    if(img->type() == STATIC) {
+        slideshowTimer.start();
+    } else if(img->type() == ANIMATED) {
+        auto anim = dynamic_cast<ImageAnimated *>(img.get());
+        if(anim && anim->frameCount() <= 1)
+            slideshowTimer.start();
+    }
 }
 
 void Core::jumpToFirst() {
     if(model->isEmpty())
         return;
-    model->setIndexAsync(0);
+    stopSlideshow();
+    loadIndex(0, true, settings->usePreloader());
     mw->showMessageDirectoryStart();
 }
 
 void Core::jumpToLast() {
     if(model->isEmpty())
         return;
-    model->setIndexAsync(model->itemCount() - 1);
+    stopSlideshow();
+    loadIndex(model->itemCount() - 1, true, settings->usePreloader());
     mw->showMessageDirectoryEnd();
 }
 
@@ -769,19 +964,24 @@ void Core::onLoadFailed(QString path) {
 }
 
 void Core::onModelItemReady(std::shared_ptr<Image> img) {
-    guiDisplayImage(img);
-    updateInfoString();
+    if(img->name() == state.currentFileName) {
+        guiSetImage(img);
+        updateInfoString();
+        model->unloadExcept(state.currentFileName, settings->usePreloader());
+    }
 }
 
 void Core::onModelItemUpdated(QString fileName) {
-    if(mw->currentViewMode() == MODE_DOCUMENT) {
-        guiDisplayImage(model->getItem(fileName));
-        updateInfoString();
-    } else { // folderview
+    if(fileName == state.currentFileName) {
         guiSetImage(model->getItem(fileName));
-        if(fileName == model->currentFileName())
-            updateInfoString();
+        updateInfoString();
     }
+}
+
+void Core::onModelSortingChanged(SortingMode mode) {
+    mw->onSortingChanged(mode);
+    presenter.reloadModel();
+    presenter.onIndexChanged(0);
 }
 
 void Core::guiSetImage(std::shared_ptr<Image> img) {
@@ -807,23 +1007,19 @@ void Core::guiSetImage(std::shared_ptr<Image> img) {
     mw->setExifInfo(img->getExifTags());
 }
 
-void Core::guiDisplayImage(std::shared_ptr<Image> img) {
-    guiSetImage(img);
-    mw->enableDocumentView();
-}
-
 void Core::updateInfoString() {
     QSize imageSize(0,0);
     qint64 fileSize = 0;
 
-    if(model->isLoaded(model->currentFileName())) {
-        auto img = model->getItem(model->currentFileName());
+    if(model->isLoaded(state.currentFileName)) {
+        auto img = model->getItem(state.currentFileName);
         imageSize = img->size();
         fileSize  = img->fileSize();
     }
-    mw->setCurrentInfo(model->indexOf(model->currentFileName()),
+    mw->setCurrentInfo(model->indexOf(state.currentFileName),
                        model->itemCount(),
-                       model->currentFileName(),
+                       state.currentFileName,
                        imageSize,
-                       fileSize);
+                       fileSize,
+                       slideshow);
 }

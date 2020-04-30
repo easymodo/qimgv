@@ -54,9 +54,8 @@ void CropOverlay::setImageRealSize(QSize sz) {
 
 //------------------------------------------------------------------------------
 void CropOverlay::setImageDrawRect(QRect imageDrawRect) {
-    if(this->imageDrawRect != imageDrawRect) {
-        this->imageDrawRect = imageDrawRect;
-    }
+    this->imageDrawRect.setTopLeft(imageDrawRect.topLeft() * dpr);
+    this->imageDrawRect.setBottomRight(imageDrawRect.bottomRight() * dpr);
 }
 
 //------------------------------------------------------------------------------
@@ -615,7 +614,10 @@ void CropOverlay::onSelectionOutsideChange(QRect selection) {
 //------------------------------------------------------------------------------
 void CropOverlay::keyPressEvent(QKeyEvent *event) {
     if((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) && hasSelection()) {
-        emit enterPressed();
+        if(event->modifiers() == Qt::ShiftModifier)
+            emit cropSave();
+        else
+            emit cropDefault();
     } else if(event->key() == Qt::Key_Escape) {
         clearSelection();
         emit escPressed();

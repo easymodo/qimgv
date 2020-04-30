@@ -63,7 +63,7 @@ public:
     DirectoryManager();
     // ignored if the same dir is already opened
     bool setDirectory(QString);
-    QString directory() const;
+    QString directoryPath() const;
     // returns index in file list
     // -1 if not found
     int indexOf(QString fileName) const;
@@ -76,7 +76,6 @@ public:
     bool isEmpty() const;
     bool contains(QString fileName) const;
     bool checkRange(int index) const;
-    bool copyTo(QString destDirectory, QString fileName);
     QString fileNameAt(int index) const;
     QString prevOf(QString fileName) const;
     QString nextOf(QString fileName) const;
@@ -90,6 +89,7 @@ public:
     SortingMode sortingMode();
     bool forceInsert(QString fileName);
     bool isFile(QString path) const;
+    bool copyTo(QString destDirectory, QString fileName);
 private:
     QString currentPath;
     QString filterRegex;

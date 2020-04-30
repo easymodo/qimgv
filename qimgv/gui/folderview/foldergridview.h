@@ -45,7 +45,7 @@ private slots:
     void selectBelow();
     void selectNext();
     void selectPrev();
-    void onThumbnailPressed();
+    void onitemSelected();
 protected:
     void resizeEvent(QResizeEvent *event);
     virtual void updateScrollbarIndicator();
@@ -56,13 +56,10 @@ protected:
     ThumbnailWidget *createThumbnailWidget();
     void updateLayout();
     void ensureSelectedItemVisible();
-    void fitToContents();
+    virtual void fitSceneToContents() override;
 
     void keyPressEvent(QKeyEvent *event);
     void wheelEvent(QWheelEvent *event);
-
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
 
 signals:
     void thumbnailSizeChanged(int);

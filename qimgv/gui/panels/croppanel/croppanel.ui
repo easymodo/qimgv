@@ -80,12 +80,6 @@
       </property>
       <item>
        <widget class="QLabel" name="label_6">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
         <property name="text">
          <string>Size</string>
         </property>
@@ -192,12 +186,6 @@
       </property>
       <item>
        <widget class="QLabel" name="label_7">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
         <property name="text">
          <string>Position</string>
         </property>
@@ -304,12 +292,6 @@
       </property>
       <item>
        <widget class="QLabel" name="label_5">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
         <property name="text">
          <string>Aspect Ratio</string>
         </property>
@@ -471,15 +453,18 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
-      <number>5</number>
+      <number>0</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
      <item>
-      <widget class="QPushButton" name="cropButton">
+      <widget class="PushButtonFocusInd" name="cropButton">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="accessibleName">
-        <string notr="true">Button</string>
+        <string notr="true">ButtonSetLeft</string>
        </property>
        <property name="text">
         <string>Crop</string>
@@ -487,16 +472,32 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="cancelButton">
+      <widget class="PushButtonFocusInd" name="cropSaveButton">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="accessibleName">
-        <string notr="true">Button</string>
+        <string notr="true">ButtonSetRight</string>
        </property>
        <property name="text">
-        <string>Cancel</string>
+        <string>Crop &amp;&amp; Save</string>
        </property>
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="cancelButton">
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="accessibleName">
+      <string notr="true">Button</string>
+     </property>
+     <property name="text">
+      <string>Cancel</string>
+     </property>
+    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer">
@@ -515,11 +516,25 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>PushButtonFocusInd</class>
+   <extends>QPushButton</extends>
+   <header>gui/customwidgets/pushbuttonfocusind.h</header>
+  </customwidget>
+  <customwidget>
    <class>SpinBoxInputFix</class>
    <extends>QSpinBox</extends>
    <header>gui/customwidgets/spinboxinputfix.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>width</tabstop>
+  <tabstop>height</tabstop>
+  <tabstop>posX</tabstop>
+  <tabstop>posY</tabstop>
+  <tabstop>ARcomboBox</tabstop>
+  <tabstop>ARX</tabstop>
+  <tabstop>ARY</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../resources.qrc"/>
  </resources>

@@ -7,11 +7,14 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       mCropThumbnails(false),
       mDrawScrollbarIndicator(true),
       mThumbnailSize(120),
+      selectMode(SELECT_BY_PRESS),
+      mDragTarget(-1),
       mSelectedIndex(-1),
       scrollTimeLine(nullptr)
 {
     setAccessibleName("thumbnailView");
     this->setMouseTracking(true);
+    this->setAcceptDrops(false);
     this->setScene(&scene);
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     this->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing, true);
@@ -136,9 +139,11 @@ void ThumbnailView::populate(int count) {
         }
     }
     mSelectedIndex = -1;
+    mDragTarget = -1;
     updateLayout();
     fitSceneToContents();
     resetViewport();
+    loadVisibleThumbnails();
 }
 
 void ThumbnailView::addItem() {
@@ -225,9 +230,8 @@ void ThumbnailView::loadVisibleThumbnails() {
         QList<int> loadList;
         for(int i = 0; i < visibleItems.count(); i++) {
             ThumbnailWidget* widget = qgraphicsitem_cast<ThumbnailWidget*>(visibleItems.at(i));
-            if(!widget->isLoaded) {
+            if(widget && !widget->isLoaded)
                 loadList.append(thumbnails.indexOf(widget));
-            }
         }
         if(loadList.count()) {
             emit thumbnailsRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize), mCropThumbnails, false);
@@ -300,7 +304,18 @@ void ThumbnailView::updateLayout() {
 
 // fit scene to it's contents size
 void ThumbnailView::fitSceneToContents() {
-    scene.setSceneRect(scene.itemsBoundingRect());
+    QPointF center;
+    if(this->orientation == THUMBNAILVIEW_VERTICAL) {
+        int height = qMax((int)scene.itemsBoundingRect().height(), this->height());
+        scene.setSceneRect(QRectF(0,0, this->width(), height));
+        center = mapToScene(viewport()->rect().center());
+        centerOn(0, center.y() + 1);
+    } else {
+        int width = qMax((int)scene.itemsBoundingRect().width(), this->width());
+        scene.setSceneRect(QRectF(0,0, width, this->height()));
+        center = mapToScene(viewport()->rect().center());
+        centerOn(center.x(), 0);
+    }
 }
 
 //################### scrolling ######################
@@ -384,11 +399,51 @@ void ThumbnailView::scrollSmooth(int angleDelta) {
 }
 
 void ThumbnailView::mousePressEvent(QMouseEvent *event) {
-    if(event->button() == Qt::LeftButton) {
-        ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
-        if(item) {
-            emit thumbnailPressed(thumbnails.indexOf(item));
+    dragStartPos = QPointF(0,0);
+    mDragTarget = -1;
+    ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
+    if(item) {
+        int index = thumbnails.indexOf(item);
+        if(event->button() == Qt::LeftButton) {
+            if(selectMode == SELECT_BY_PRESS) {
+                emit itemSelected(index);
+                return;
+            } else {
+                selectIndex(index);
+                dragStartPos = event->pos();
+                mDragTarget = index;
+            }
+        } else if(event->button() == Qt::RightButton) {
+            selectIndex(index);
             return;
+        }
+    }
+    QGraphicsView::mousePressEvent(event);
+}
+
+void ThumbnailView::mouseMoveEvent(QMouseEvent *event) {
+    QGraphicsView::mouseMoveEvent(event);
+    if(event->buttons() != Qt::LeftButton || mDragTarget == -1)
+        return;
+    if(QLineF(dragStartPos, event->pos()).length() >= 40) {
+        emit draggedOut(mDragTarget);
+        mDragTarget = -1;
+    }
+}
+
+void ThumbnailView::mouseReleaseEvent(QMouseEvent *event) {
+    QGraphicsView::mouseReleaseEvent(event);
+    mDragTarget = -1;
+}
+
+void ThumbnailView::mouseDoubleClickEvent(QMouseEvent *event) {
+    if(selectMode == SELECT_BY_DOUBLECLICK) {
+        if(event->button() == Qt::LeftButton) {
+            ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
+            if(item) {
+                emit itemSelected(thumbnails.indexOf(item));
+                return;
+            }
         }
     }
     event->ignore();
@@ -397,4 +452,8 @@ void ThumbnailView::mousePressEvent(QMouseEvent *event) {
 void ThumbnailView::resizeEvent(QResizeEvent *event) {
     QGraphicsView::resizeEvent(event);
     updateScrollbarIndicator();
+}
+
+void ThumbnailView::setSelectMode(ThumbnailSelectMode mode) {
+    selectMode = mode;
 }

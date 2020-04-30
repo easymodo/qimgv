@@ -7,28 +7,28 @@ Settings::Settings(QObject *parent) : QObject(parent) {
     QString genericCacheLocation = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation);
     if(genericCacheLocation.isEmpty())
         genericCacheLocation = QDir::homePath() + "/.cache";
-    mCacheDir = new QDir(genericCacheLocation + "/" + QApplication::applicationName());
-    mCacheDir->mkpath(mCacheDir->absolutePath());
-    mThumbnailDir = new QDir(mCacheDir->absolutePath() + "/thumbnails");
-    mThumbnailDir->mkpath(mThumbnailDir->absolutePath());
+    mTmpDir = new QDir(genericCacheLocation + "/" + QApplication::applicationName());
+    mTmpDir->mkpath(mTmpDir->absolutePath());
+    mThumbCacheDir = new QDir(mTmpDir->absolutePath() + "/thumbnails");
+    mThumbCacheDir->mkpath(mThumbCacheDir->absolutePath());
     QSettings::setDefaultFormat(QSettings::NativeFormat);
     s = new QSettings();
     state = new QSettings(QCoreApplication::organizationName(), "savedState");
 #else
-    mCacheDir = new QDir(QApplication::applicationDirPath() + "/cache");
-    mCacheDir->mkpath(mCacheDir->absolutePath());
-    mThumbnailDir = new QDir(QApplication::applicationDirPath() + "/thumbnails");
-    mThumbnailDir->mkpath(mThumbnailDir->absolutePath());
+    mTmpDir = new QDir(QApplication::applicationDirPath() + "/cache");
+    mTmpDir->mkpath(mTmpDir->absolutePath());
+    mThumbCacheDir = new QDir(QApplication::applicationDirPath() + "/thumbnails");
+    mThumbCacheDir->mkpath(mThumbCacheDir->absolutePath());
     mConfDir = new QDir(QApplication::applicationDirPath() + "/conf");
     mConfDir->mkpath(QApplication::applicationDirPath() + "/conf");
-    s = new QSettings(mConfDir->absolutePath() + "/qimgv.ini", QSettings::IniFormat);
+    s = new QSettings(mConfDir->absolutePath() + "/" + qApp->applicationName() + ".ini", QSettings::IniFormat);
     state = new QSettings(mConfDir->absolutePath() + "/savedState.ini", QSettings::IniFormat);
 #endif
 }
 
 Settings::~Settings() {
-    delete mThumbnailDir;
-    delete mCacheDir;
+    delete mThumbCacheDir;
+    delete mTmpDir;
     delete s;
     delete state;
 }
@@ -62,11 +62,11 @@ void Settings::sync() {
 }
 //------------------------------------------------------------------------------
 QString Settings::thumbnailCacheDir() {
-    return mThumbnailDir->path() + "/";
+    return mThumbCacheDir->path() + "/";
 }
 //------------------------------------------------------------------------------
-QString Settings::cacheDir() {
-    return mCacheDir->path() + "/";
+QString Settings::tmpDir() {
+    return mTmpDir->path() + "/";
 }
 //------------------------------------------------------------------------------
 QString Settings::mpvBinary() {
@@ -319,7 +319,7 @@ void Settings::setBackgroundColorFullscreen(QColor color) {
 }
 //------------------------------------------------------------------------------
 QColor Settings::accentColor() {
-    return settings->s->value("accentColor", QColor(134, 170, 103)).value<QColor>();
+    return settings->s->value("accentColor", QColor(70, 117, 170)).value<QColor>();
 }
 
 void Settings::setAccentColor(QColor color) {
@@ -327,7 +327,7 @@ void Settings::setAccentColor(QColor color) {
 }
 //------------------------------------------------------------------------------
 QColor Settings::highlightColor() {
-    return settings->s->value("highlightColor", QColor(90, 89, 103)).value<QColor>();
+    return settings->s->value("highlightColor", QColor(70, 117, 170)).value<QColor>();
 }
 
 void Settings::setHighlightColor(QColor color) {
@@ -567,6 +567,57 @@ void Settings::setSavedPaths(QStringList paths) {
     settings->state->setValue("savedPaths", paths);
 }
 //------------------------------------------------------------------------------
+QStringList Settings::bookmarks() {
+    return settings->state->value("bookmarks").toStringList();
+}
+
+void Settings::setBookmarks(QStringList paths) {
+    settings->state->setValue("bookmarks", paths);
+}
+//------------------------------------------------------------------------------
+bool Settings::placesPanel() {
+    return settings->state->value("placesPanel", true).toBool();
+}
+
+void Settings::setPlacesPanel(bool mode) {
+    settings->state->setValue("placesPanel", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::placesPanelBookmarksExpanded() {
+    return settings->state->value("placesPanelBookmarksExpanded", true).toBool();
+}
+
+void Settings::setPlacesPanelBookmarksExpanded(bool mode) {
+    settings->state->setValue("placesPanelBookmarksExpanded", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::placesPanelTreeExpanded() {
+    return settings->state->value("placesPanelTreeExpanded", true).toBool();
+}
+
+void Settings::setPlacesPanelTreeExpanded(bool mode) {
+    settings->state->setValue("placesPanelTreeExpanded", mode);
+}
+//------------------------------------------------------------------------------
+int Settings::placesPanelWidth() {
+    return settings->state->value("placesPanelWidth", 260).toInt();
+}
+
+void Settings::setPlacesPanelWidth(int width) {
+    settings->state->setValue("placesPanelWidth", width);
+}
+//------------------------------------------------------------------------------
+void Settings::setSlideshowInterval(int ms) {
+    settings->s->setValue("slideshowInterval", ms);
+}
+
+int Settings::slideshowInterval() {
+    int interval = settings->s->value("slideshowInterval", 3000).toInt();
+    if(interval <= 0)
+        interval = 3000;
+    return interval;
+}
+//------------------------------------------------------------------------------
 int Settings::thumbnailerThreadCount() {
     int count = settings->s->value("thumbnailerThreads", 2).toInt();
     if(count < 1)
@@ -586,16 +637,8 @@ void Settings::setSmoothUpscaling(bool mode) {
     settings->s->setValue("smoothUpscaling", mode);
 }
 //------------------------------------------------------------------------------
-int Settings::maxZoomedResolution() {
-    return settings->s->value("maximumZoomResolution", 75).toInt();
-}
-
-void Settings::setMaxZoomedResolution(int value) {
-    settings->s->setValue("maximumZoomResolution", value);
-}
-//------------------------------------------------------------------------------
 int Settings::folderViewIconSize() {
-    return settings->s->value("folderViewIconSize", 175).toInt();
+    return settings->s->value("folderViewIconSize", 150).toInt();
 }
 
 void Settings::setFolderViewIconSize(int value) {
@@ -628,8 +671,17 @@ void Settings::setJPEGSaveQuality(int value) {
 }
 //------------------------------------------------------------------------------
 ScalingFilter Settings::scalingFilter() {
-    int mode = settings->s->value("scalingFilter", 1).toInt();
-    if(mode < 0 || mode > 1)
+    int defaultFilter = 1;
+#ifdef USE_OPENCV
+    // default to a nicer QI_FILTER_CV_CUBIC
+    defaultFilter = 3;
+#endif
+    int mode = settings->s->value("scalingFilter", defaultFilter).toInt();
+#ifndef USE_OPENCV
+    if(mode > 2)
+        mode = 1;
+#endif
+    if(mode < 0 || mode > 4)
         mode = 1;
     return static_cast<ScalingFilter>(mode);
 }
@@ -694,6 +746,14 @@ void Settings::setFirstRun(bool mode) {
     settings->s->setValue("firstRun", mode);
 }
 //------------------------------------------------------------------------------
+bool Settings::useOpenGL() {
+    return settings->s->value("useOpenGL", false).toBool();
+}
+
+void Settings::setUseOpenGL(bool mode) {
+    settings->s->setValue("useOpenGL", mode);
+}
+//------------------------------------------------------------------------------
 qreal Settings::zoomStep() {
     bool ok = false;
     qreal value = settings->s->value("zoomStep", 0.2).toReal(&ok);
@@ -712,4 +772,48 @@ void Settings::setZoomStep(qreal value) {
     else if(value < 0.1)
         value = 0.1;
     settings->s->setValue("zoomStep", value);
+}
+//------------------------------------------------------------------------------
+void Settings::setZoomIndicatorMode(ZoomIndicatorMode mode) {
+    settings->s->setValue("zoomIndicatorMode", mode);
+}
+
+ZoomIndicatorMode Settings::zoomIndicatorMode() {
+    int mode = settings->s->value("zoomIndicatorMode", 0).toInt();
+    if(mode < 0 || mode > 2)
+        mode = 0;
+    return static_cast<ZoomIndicatorMode>(mode);
+}
+//------------------------------------------------------------------------------
+void Settings::setFocusPointIn1to1Mode(ImageFocusPoint mode) {
+    settings->s->setValue("focusPointIn1to1Mode", mode);
+}
+
+ImageFocusPoint Settings::focusPointIn1to1Mode() {
+    int mode = settings->s->value("focusPointIn1to1Mode", 1).toInt();
+    if(mode < 0 || mode > 2)
+        mode = 1;
+    return static_cast<ImageFocusPoint>(mode);
+}
+
+void Settings::setDefaultCropAction(DefaultCropAction mode) {
+    settings->s->setValue("defaultCropAction", mode);
+}
+
+DefaultCropAction Settings::defaultCropAction() {
+    int mode = settings->s->value("defaultCropAction", 0).toInt();
+    if(mode < 0 || mode > 1)
+        mode = 0;
+    return static_cast<DefaultCropAction>(mode);
+}
+
+ImageScrolling Settings::imageScrolling() {
+    int mode = settings->s->value("imageScrolling", 1).toInt();
+    if(mode < 0 || mode > 2)
+        mode = 0;
+    return static_cast<ImageScrolling>(mode);
+}
+
+void Settings::setImageScrolling(ImageScrolling mode) {
+    settings->s->setValue("imageScrolling", mode);
 }

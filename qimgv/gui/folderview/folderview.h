@@ -3,9 +3,12 @@
 #include <QWidget>
 #include <QStyledItemDelegate>
 #include <QAbstractItemView>
+#include <QFileSystemModel>
+#include <QFileDialog>
 #include "gui/idirectoryview.h"
-#include "gui/directoryviewwrapper.h"
 #include "gui/folderview/foldergridview.h"
+#include "gui/folderview/filesystemmodelcustom.h"
+#include "gui/folderview/bookmarkswidget.h"
 #include "gui/customwidgets/actionbutton.h"
 
 namespace Ui {
@@ -17,8 +20,6 @@ class FolderView : public QWidget, public IDirectoryView {
 public:
     explicit FolderView(QWidget *parent = nullptr);
     ~FolderView();
-
-    std::shared_ptr<DirectoryViewWrapper> wrapper();
 
 public slots:
     void show();
@@ -34,8 +35,9 @@ public slots:
     virtual void reloadItem(int index) Q_DECL_OVERRIDE;
     void addItem();
     void onFullscreenModeChanged(bool mode);
-
     void onSortingChanged(SortingMode mode);
+
+
 protected:
     void wheelEvent(QWheelEvent *event) Q_DECL_OVERRIDE;
     void focusInEvent(QFocusEvent *event) Q_DECL_OVERRIDE;
@@ -49,15 +51,33 @@ protected slots:
     void onZoomSliderValueChanged(int value);
 
 signals:
-    void thumbnailPressed(int) Q_DECL_OVERRIDE;
+    void itemSelected(int) Q_DECL_OVERRIDE;
     void thumbnailsRequested(QList<int>, int, bool, bool) Q_DECL_OVERRIDE;
     void sortingSelected(SortingMode);
+    void directorySelected(QString path);
+    void draggedOut(int index);
+    void copyUrlsRequested(QList<QUrl>, QString path);
+    void moveUrlsRequested(QList<QUrl>, QString path);
 
 private slots:
     void onSortingSelected(int);
-
     void readSettings();
+
+    void onTreeViewClicked(QModelIndex index);
+    void onDroppedInByIndex(QList<QUrl>, QModelIndex index);
+    void onDroppedIn(QList<QUrl>, QString dirPath);
+    void toggleBookmarks();
+    void toggleFilesystemView();
+    void setPlacesPanel(bool mode);
+    void onPlacesPanelButtonChecked(bool mode);
+    void onBookmarkClicked(QString dirPath);
+    void newBookmark();
+    void fsTreeScrollToCurrent();
+
+    void onSplitterMoved();
+    void onHomeBtn();
+    void onRootBtn();
 private:
     Ui::FolderView *ui;
-    std::shared_ptr<DirectoryViewWrapper> mWrapper;
+    FileSystemModelCustom *dirModel;
 };

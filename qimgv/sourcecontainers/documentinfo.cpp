@@ -3,7 +3,8 @@
 DocumentInfo::DocumentInfo(QString path)
     : mDocumentType(NONE),
       mOrientation(0),
-      mFormat("")
+      mFormat(""),
+      exifLoaded(false)
 {
     fileInfo.setFile(path);
     if(!fileInfo.isFile()) {
@@ -11,7 +12,6 @@ DocumentInfo::DocumentInfo(QString path)
         return;
     }
     detectFormat();
-    loadExifInfo();
 }
 
 DocumentInfo::~DocumentInfo() {
@@ -153,6 +153,9 @@ bool DocumentInfo::detectAnimatedWebP() {
 }
 
 void DocumentInfo::loadExifInfo() {
+    if(exifLoaded)
+        return;
+    exifLoaded = true;
     exifTags.clear();
     loadExifOrientation();
 #ifdef USE_EXIV2
@@ -227,13 +230,19 @@ void DocumentInfo::loadExifInfo() {
         return;
     }
     catch (Exiv2::Error& e) {
-        std::cout << "Caught Exiv2 exception '" << e.what() << "'\n";
+        //std::cout << "Caught Exiv2 exception '" << e.what() << "'\n";
+        return;
+    }
+    catch (Exiv2::BasicError<CharType> e) {
+        //std::cout << "Caught BasicError Exiv2 exception '" << e.what() << "'\n";
         return;
     }
 #endif
 }
 
 QMap<QString, QString> DocumentInfo::getExifTags() {
+    if(!exifLoaded)
+        loadExifInfo();
     return exifTags;
 }
 

@@ -117,6 +117,8 @@ void MpvWidget::handle_mpv_event(mpv_event *event) {
             if(prop->format == MPV_FORMAT_DOUBLE) {
                 double time = *reinterpret_cast<double*>(prop->data);
                 emit durationChanged(static_cast<int>(time));
+            } else if(prop->format == MPV_FORMAT_NONE) {
+                emit playbackFinished();
             }
         } else if(strcmp(prop->name, "pause") == 0) {
             int mode = *reinterpret_cast<int*>(prop->data);

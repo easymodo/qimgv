@@ -6,15 +6,15 @@
 
 class Thumbnail {
 public:
-    Thumbnail(QString _name, QString _label, int _size, std::shared_ptr<const QPixmap> _pixmap);
+    Thumbnail(QString _name, QString _label, int _size, std::shared_ptr<QPixmap> _pixmap);
     QString name();
     QString label();
     int size();
     bool hasAlphaChannel();
-    std::shared_ptr<const QPixmap> pixmap();
+    std::shared_ptr<QPixmap> pixmap();
 private:
     QString mName, mLabel;
-    std::shared_ptr<const QPixmap> mPixmap;
+    std::shared_ptr<QPixmap> mPixmap;
     int mSize;
     bool mHasAlphaChannel;
 };

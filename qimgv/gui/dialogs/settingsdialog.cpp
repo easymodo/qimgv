@@ -30,6 +30,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->novideoInfoLabel->setHidden(true);
 #endif
 
+#ifdef USE_OPENCV
+    ui->scalingQualityComboBox->addItem("Bilinear+sharpen (OpenCV)");
+    ui->scalingQualityComboBox->addItem("Bicubic (OpenCV)");
+    ui->scalingQualityComboBox->addItem("Bicubic+sharpen (OpenCV)");
+#endif
+
     setupSidebar();
 
     connect(this, &SettingsDialog::settingsChanged, settings, &Settings::sendChangeNotification);
@@ -85,11 +91,16 @@ void SettingsDialog::readSettings() {
     ui->bgOpacitySlider->setValue(static_cast<int>(settings->backgroundOpacity() * 100));
     ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
+    ui->zoomIndicatorComboBox->setCurrentIndex(settings->zoomIndicatorMode());
     ui->showInfoBarFullscreen->setChecked(settings->infoBarFullscreen());
     ui->showInfoBarWindowed->setChecked(settings->infoBarWindowed());
     ui->showExtendedInfoTitle->setChecked(settings->windowTitleExtendedInfo());
     ui->cursorAutohideCheckBox->setChecked(settings->cursorAutohide());
     ui->keepFitModeCheckBox->setChecked(settings->keepFitMode());
+    ui->useOpenGLCheckBox->setChecked(settings->useOpenGL());
+    ui->focusPointIn1to1ModeComboBox->setCurrentIndex(settings->focusPointIn1to1Mode());
+    ui->slideshowIntervalSpinBox->setValue(settings->slideshowInterval());
+    ui->imageScrollingComboBox->setCurrentIndex(settings->imageScrolling());
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -104,9 +115,6 @@ void SettingsDialog::readSettings() {
 
     ui->expandLimitSlider->setValue(settings->expandLimit());
     onExpandLimitSliderChanged(ui->expandLimitSlider->value());
-
-    ui->maxZoomResSlider->setValue(settings->maxZoomedResolution());
-    onMaxZoomResolutionSliderChanged(ui->maxZoomResSlider->value());
 
     // thumbnailer threads
     ui->thumbnailerThreadsSlider->setValue(settings->thumbnailerThreadCount());
@@ -196,15 +204,21 @@ void SettingsDialog::applySettings() {
     settings->setBackgroundOpacity(static_cast<qreal>(ui->bgOpacitySlider->value()) / 100);
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
+    settings->setZoomIndicatorMode(static_cast<ZoomIndicatorMode>(ui->zoomIndicatorComboBox->currentIndex()));
     settings->setInfoBarFullscreen(ui->showInfoBarFullscreen->isChecked());
     settings->setInfoBarWindowed(ui->showInfoBarWindowed->isChecked());
     settings->setWindowTitleExtendedInfo(ui->showExtendedInfoTitle->isChecked());
     settings->setCursorAutohide(ui->cursorAutohideCheckBox->isChecked());
     settings->setKeepFitMode(ui->keepFitModeCheckBox->isChecked());
+    settings->setUseOpenGL(ui->useOpenGLCheckBox->isChecked());
+    settings->setFocusPointIn1to1Mode(static_cast<ImageFocusPoint>(ui->focusPointIn1to1ModeComboBox->currentIndex()));
+    settings->setSlideshowInterval(ui->slideshowIntervalSpinBox->value());
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 
     settings->setScalingFilter(static_cast<ScalingFilter>(ui->scalingQualityComboBox->currentIndex()));
+
+    settings->setImageScrolling(static_cast<ImageScrolling>(ui->imageScrollingComboBox->currentIndex()));
 
     settings->setPanelPosition(static_cast<PanelHPosition>(ui->panelPositionComboBox->currentIndex()));
 
@@ -230,7 +244,6 @@ void SettingsDialog::applySettings() {
     settings->setJPEGSaveQuality(ui->JPEGQualitySlider->value());
     settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value()) / 10);
     settings->setExpandLimit(ui->expandLimitSlider->value());
-    settings->setMaxZoomedResolution(ui->maxZoomResSlider->value());
     settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
 
     applyShortcuts();
@@ -463,11 +476,6 @@ void SettingsDialog::onJPEGQualitySliderChanged(int value) {
 
 void SettingsDialog::onZoomStepSliderChanged(int value) {
     ui->zoomStepLabel->setText("0." + QString::number(value) + "x");
-}
-
-void SettingsDialog::onMaxZoomResolutionSliderChanged(int value) {
-    ui->maxZoomResLabel->setText(QString::number(value) + " Mpx");
-    ui->maxZoomResInfoLabel->setText("<small><i>Max. memory usage: ~" + QString::number(value * 4) + "MB @ 32bpp</i></small>");
 }
 
 void SettingsDialog::onThumbnailerThreadsSliderChanged(int value) {

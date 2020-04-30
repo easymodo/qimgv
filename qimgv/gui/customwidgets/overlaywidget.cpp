@@ -2,8 +2,8 @@
 
 OverlayWidget::OverlayWidget(FloatingWidgetContainer *parent)
     : FloatingWidget(parent),
-      marginX(20),
-      marginY(35),
+      mHorizontalMargin(20),
+      mVerticalMargin(35),
       fadeEnabled(false)
 {
     opacityEffect = new QGraphicsOpacityEffect(this);
@@ -33,14 +33,22 @@ void OverlayWidget::setOpacity(qreal opacity) {
     update();
 }
 
-void OverlayWidget::setMarginX(int margin) {
-    marginX = margin;
+void OverlayWidget::setHorizontalMargin(int margin) {
+    mHorizontalMargin = margin;
     recalculateGeometry();
 }
 
-void OverlayWidget::setMarginY(int margin) {
-    marginY = margin;
+void OverlayWidget::setVerticalMargin(int margin) {
+    mVerticalMargin = margin;
     recalculateGeometry();
+}
+
+int OverlayWidget::horizontalMargin() {
+    return mHorizontalMargin;
+}
+
+int OverlayWidget::verticalMargin() {
+    return mVerticalMargin;
 }
 
 void OverlayWidget::setPosition(FloatingWidgetPosition pos) {
@@ -62,7 +70,7 @@ void OverlayWidget::show() {
     QWidget::show();
 }
 
-void OverlayWidget::hide() {
+void OverlayWidget::hideAnimated() {
     if(fadeEnabled && !this->isHidden()) {
         fadeAnimation->stop();
         fadeAnimation->start(QPropertyAnimation::KeepWhenStopped);
@@ -70,42 +78,46 @@ void OverlayWidget::hide() {
         QWidget::hide();
     }
 }
+void OverlayWidget::hide() {
+    fadeAnimation->stop();
+    QWidget::hide();
+}
 
 void OverlayWidget::recalculateGeometry() {
     QRect newRect = QRect(QPoint(0,0), sizeHint());
     QPoint pos(0, 0);
     switch (position) {
         case FloatingWidgetPosition::LEFT:
-            pos.setX(marginX);
+            pos.setX(mHorizontalMargin);
             pos.setY( (containerSize().height() - newRect.height()) / 2);
             break;
         case FloatingWidgetPosition::RIGHT:
-            pos.setX(containerSize().width() - newRect.width() - marginX);
+            pos.setX(containerSize().width() - newRect.width() - mHorizontalMargin);
             pos.setY( (containerSize().height() - newRect.height()) / 2);
             break;
         case FloatingWidgetPosition::BOTTOM:
             pos.setX( (containerSize().width() - newRect.width()) / 2);
-            pos.setY(containerSize().height() - newRect.height() - marginY);
+            pos.setY(containerSize().height() - newRect.height() - mVerticalMargin);
             break;
         case FloatingWidgetPosition::TOP:
             pos.setX( (containerSize().width() - newRect.width()) / 2);
-            pos.setY(marginY);
+            pos.setY(mVerticalMargin);
             break;
         case FloatingWidgetPosition::TOPLEFT:
-            pos.setX(marginX);
-            pos.setY(marginY);
+            pos.setX(mHorizontalMargin);
+            pos.setY(mVerticalMargin);
             break;
         case FloatingWidgetPosition::TOPRIGHT:
-            pos.setX(containerSize().width() - newRect.width() - marginX);
-            pos.setY(marginY);
+            pos.setX(containerSize().width() - newRect.width() - mHorizontalMargin);
+            pos.setY(mVerticalMargin);
             break;
         case FloatingWidgetPosition::BOTTOMLEFT:
-            pos.setX(marginX);
-            pos.setY(containerSize().height() - newRect.height() - marginY);
+            pos.setX(mHorizontalMargin);
+            pos.setY(containerSize().height() - newRect.height() - mVerticalMargin);
             break;
         case FloatingWidgetPosition::BOTTOMRIGHT:
-            pos.setX(containerSize().width() - newRect.width() - marginX);
-            pos.setY(containerSize().height() - newRect.height() - marginY);
+            pos.setX(containerSize().width() - newRect.width() - mHorizontalMargin);
+            pos.setY(containerSize().height() - newRect.height() - mVerticalMargin);
             break;
         case FloatingWidgetPosition::CENTER:
             pos.setX( (containerSize().width() - newRect.width()) / 2);

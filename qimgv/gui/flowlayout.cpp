@@ -188,7 +188,6 @@ GridInfo FlowLayout::doLayout(const QRectF &geom, bool applyNewGeometry) const {
         int maxCols = static_cast<int>(maxRowWidth / itemWidth);
         if(m_items.count() >= maxCols)
             centerOffset = static_cast<int>(fmod(maxRowWidth, itemWidth) / 2);
-
         QGraphicsLayoutItem *item = m_items.at(0);
         itemSize = item->effectiveSizeHint(Qt::PreferredSize);
     }

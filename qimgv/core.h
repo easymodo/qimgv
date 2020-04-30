@@ -17,8 +17,8 @@
 #include "utils/randomizer.h"
 
 struct State {
-    State() : hasActiveImage(false) {}
-    bool hasActiveImage;
+    bool hasActiveImage = false;
+    QString currentFileName = "";
 };
 
 enum MimeDataTarget {
@@ -48,7 +48,7 @@ private:
     MW *mw;
 
     State state;
-    bool infiniteScrolling;
+    bool infiniteScrolling, slideshow;
 
     // components
     std::shared_ptr<DirectoryModel> model;
@@ -57,7 +57,6 @@ private:
 
     void rotateByDegrees(int degrees);
     void reset();
-    void guiDisplayImage(std::shared_ptr<Image>);
     void loadDirectoryPath(QString);
     void loadImagePath(QString path, bool blocking);
     QDrag *mDrag;
@@ -69,22 +68,30 @@ private:
     void attachModel(DirectoryModel *_model);
     QString selectedFileName();
     void guiSetImage(std::shared_ptr<Image> img);
+    QTimer slideshowTimer;
+
+    void startSlideshowTimer();
+    void stopSlideshow();
 private slots:
     void readSettings();
     void nextImage();
     void prevImage();
+    void nextImageSlideshow();
     void jumpToFirst();
     void jumpToLast();
     void onModelItemReady(std::shared_ptr<Image>);
     void onModelItemUpdated(QString fileName);
-    void onLoadFailed(QString path); //
+    void onModelSortingChanged(SortingMode mode);
+    void onLoadFailed(QString path);
     void rotateLeft();
     void rotateRight();
     void close();
     void scalingRequest(QSize, ScalingFilter);
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
-    void moveFile(QString destDirectory);
-    void copyFile(QString destDirectory);
+    void copyCurrentFile(QString destDirectory);
+    void moveCurrentFile(QString destDirectory);
+    void copyUrls(QList<QUrl> urls, QString destDirectory);
+    void moveUrls(QList<QUrl> urls, QString destDirectory);
     void removeFile(QString fileName, bool trash);
     void onFileRemoved(QString fileName, int index);
     void onFileRenamed(QString from, int indexFrom, QString to, int indexTo);
@@ -94,7 +101,8 @@ private slots:
     void resize(QSize size);
     void flipH();
     void flipV();
-    void crop(QRect rect);
+    bool crop(QRect rect);
+    void cropAndSave(QRect rect);
     void discardEdits();
     void toggleCropPanel();
     void requestSavePath();
@@ -116,10 +124,18 @@ private slots:
     void sortBySize();
     void showRenameDialog();
     void onDragOut();
+    void onDragOut(int index);
     void onDropIn(const QMimeData *mimeData, QObject* source);
     void toggleShuffle();
     void onModelLoaded();
     void outputError(const FileOpResult &error) const;
     void showOpenDialog();
-    void showDirectory();
+    void showInDirectory();
+    void onDirectoryViewItemSelected(int index);
+    bool loadIndex(int index, bool async, bool preload);
+    void enableDocumentView();
+    void enableFolderView();
+    void toggleFolderView();
+    void toggleSlideshow();
+    void onPlaybackFinished();
 };

@@ -9,9 +9,11 @@ class IconButton : public IconWidget
 public:
     explicit IconButton(QWidget *parent = nullptr);
     void setCheckable(bool mode);
+    bool isChecked();
 
 public slots:
     void setChecked(bool mode);
+
 signals:
     void clicked();
     void toggled(bool);

@@ -13,13 +13,14 @@ FolderGridView::FolderGridView(QWidget *parent)
 
     // turn this off until [multi]selection is implemented
     setDrawScrollbarIndicator(false);
+    setSelectMode(SELECT_BY_DOUBLECLICK);
 
     setupLayout();
-    connect(this, &ThumbnailView::thumbnailPressed,
-            this, &FolderGridView::onThumbnailPressed);
+    connect(this, &ThumbnailView::itemSelected,
+            this, &FolderGridView::onitemSelected);
 }
 
-void FolderGridView::onThumbnailPressed() {
+void FolderGridView::onitemSelected() {
     shiftedCol = -1;
 }
 
@@ -49,7 +50,7 @@ void FolderGridView::setShowLabels(bool mode) {
         thumbnails.at(i)->setDrawLabel(mShowLabels);
     }
     updateLayout();
-    fitToContents();
+    fitSceneToContents();
     ensureSelectedItemVisible();
     emit showLabelsChanged(mShowLabels);
 }
@@ -209,6 +210,7 @@ void FolderGridView::setupLayout() {
     setFrameShape(QFrame::NoFrame);
     scene.addItem(&holderWidget);
     holderWidget.setLayout(flowLayout);
+    holderWidget.setContentsMargins(0,0,0,0);
 }
 
 ThumbnailWidget* FolderGridView::createThumbnailWidget() {
@@ -251,7 +253,7 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
     else if(shortcut == "Down")
         selectBelow();
     else if(shortcut == "Enter")
-        emit thumbnailPressed(selectedIndex());
+        emit itemSelected(selectedIndex());
     else if(shortcut == "Home")
         selectFirst();
     else if(shortcut == "End")
@@ -262,14 +264,6 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
         pageDown();
     else
         event->ignore();
-}
-
-void FolderGridView::mousePressEvent(QMouseEvent *event) {
-    ThumbnailView::mousePressEvent(event);
-}
-
-void FolderGridView::mouseReleaseEvent(QMouseEvent *event) {
-    event->ignore();
 }
 
 void FolderGridView::wheelEvent(QWheelEvent *event) {
@@ -298,24 +292,26 @@ void FolderGridView::setThumbnailSize(int newSize) {
         thumbnails.at(i)->setThumbnailSize(newSize);
     }
     updateLayout();
-    fitToContents();
+    fitSceneToContents();
     if(checkRange(selectedIndex()))
         ensureVisible(thumbnails.at(selectedIndex()), 0, 40);
     emit thumbnailSizeChanged(mThumbnailSize);
     loadVisibleThumbnails();
 }
 
-void FolderGridView::fitToContents() {
-    holderWidget.setMinimumSize(size() - QSize(scrollBar->width(), 0));
-    holderWidget.setMaximumSize(size() - QSize(scrollBar->width(), 0));
-    fitSceneToContents();
+void FolderGridView::fitSceneToContents() {
+    if(scrollBar->isVisible())
+        holderWidget.setGeometry(0,0, width() - scrollBar->width(), height());
+    else
+        holderWidget.setGeometry(0,0, width(), height());
+    ThumbnailView::fitSceneToContents();
 }
 
 void FolderGridView::resizeEvent(QResizeEvent *event) {
     if(this->isVisible()) {
         ThumbnailView::resizeEvent(event);
-        fitToContents();
-        focusOn(selectedIndex());
+        fitSceneToContents();
+        //focusOn(selectedIndex());
         loadVisibleThumbnailsDelayed();
     }
 }

@@ -3,7 +3,6 @@
 target_sources(qimgv PRIVATE
     centralwidget.cpp
     contextmenu.cpp
-    directoryviewwrapper.cpp
     flowlayout.cpp
     idirectoryview.cpp
     mainwindow.cpp
@@ -27,6 +26,7 @@ target_sources(qimgv PRIVATE
     customwidgets/thumbnailview.cpp
     customwidgets/thumbnailwidget.cpp
     customwidgets/videoslider.cpp
+    customwidgets/pushbuttonfocusind.cpp
 
     dialogs/resizedialog.cpp
     dialogs/scripteditordialog.cpp
@@ -48,6 +48,8 @@ target_sources(qimgv PRIVATE
     overlays/saveconfirmoverlay.cpp
     overlays/videocontrols.cpp
     overlays/videocontrolsproxy.cpp
+    overlays/zoomindicatoroverlay.cpp
+    overlays/zoomindicatoroverlayproxy.cpp
 
     panels/croppanel/croppanel.cpp
     panels/mainpanel/mainpanel.cpp
@@ -58,7 +60,7 @@ target_sources(qimgv PRIVATE
     panels/infobar/infobarproxy.cpp
 
     viewers/documentwidget.cpp
-    viewers/imageviewer.cpp
+    viewers/imageviewerv2.cpp
     viewers/videoplayer.cpp
     viewers/videoplayerinitproxy.cpp
     viewers/viewerwidget.cpp
@@ -67,6 +69,10 @@ target_sources(qimgv PRIVATE
     folderview/folderview.cpp
     folderview/folderviewproxy.cpp
     folderview/thumbnailgridwidget.cpp
+    folderview/filesystemmodelcustom.cpp
+    folderview/treeviewcustom.cpp
+    folderview/bookmarkswidget.cpp
+    folderview/bookmarksitem.cpp
 )
 
 # UI Files
