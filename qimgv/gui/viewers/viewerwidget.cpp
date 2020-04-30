@@ -497,6 +497,7 @@ void ViewerWidget::showContextMenu(QPoint pos) {
 }
 
 void ViewerWidget::onFullscreenModeChanged(bool mode) {
+    imageViewer->onFullscreenModeChanged(mode);
     if(mainPanel->position() == PANEL_TOP)
         mainPanel->setExitButtonEnabled(mode);
     else

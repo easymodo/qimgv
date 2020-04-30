@@ -91,6 +91,7 @@ public slots:
     void prevFrame();
 
     bool showAnimationFrame(int frame);
+    void onFullscreenModeChanged(bool mode);
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent* event);
@@ -114,7 +115,7 @@ private:
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
     QTimer *animationTimer, *scaleTimer;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
-    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, loopPlayback;
+    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, loopPlayback, mIsFullscreen;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_UPDATE_RATE = 7;

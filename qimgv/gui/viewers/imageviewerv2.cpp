@@ -11,6 +11,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     forceFastScale(false),
     keepFitMode(false),
     loopPlayback(true),
+    mIsFullscreen(false),
     mouseInteraction(MouseInteractionState::MOUSE_NONE),
     minScale(0.01f),
     maxScale(500.0f),
@@ -91,9 +92,18 @@ void ImageViewerV2::readSettings() {
     zoomStep = settings->zoomStep();
     transparencyGridEnabled = settings->transparencyGrid();
     focusIn1to1 = settings->focusPointIn1to1Mode();
-    scene->setBackgroundBrush(settings->backgroundColor());
+    // set bg color
+    onFullscreenModeChanged(mIsFullscreen);
     setScalingFilter(settings->scalingFilter());
     setFitMode(imageFitModeDefault);
+}
+
+void ImageViewerV2::onFullscreenModeChanged(bool mode) {
+    mIsFullscreen = mode;
+    if(mode)
+        scene->setBackgroundBrush(settings->backgroundColorFullscreen());
+    else
+        scene->setBackgroundBrush(settings->backgroundColor());
 }
 
 void ImageViewerV2::startAnimation() {
