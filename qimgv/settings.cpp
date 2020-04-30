@@ -319,7 +319,7 @@ void Settings::setBackgroundColorFullscreen(QColor color) {
 }
 //------------------------------------------------------------------------------
 QColor Settings::accentColor() {
-    return settings->s->value("accentColor", QColor(134, 170, 103)).value<QColor>();
+    return settings->s->value("accentColor", QColor(70, 117, 170)).value<QColor>();
 }
 
 void Settings::setAccentColor(QColor color) {
@@ -327,7 +327,7 @@ void Settings::setAccentColor(QColor color) {
 }
 //------------------------------------------------------------------------------
 QColor Settings::highlightColor() {
-    return settings->s->value("highlightColor", QColor(90, 90, 90)).value<QColor>();
+    return settings->s->value("highlightColor", QColor(70, 117, 170)).value<QColor>();
 }
 
 void Settings::setHighlightColor(QColor color) {
