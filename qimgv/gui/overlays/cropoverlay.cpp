@@ -54,9 +54,8 @@ void CropOverlay::setImageRealSize(QSize sz) {
 
 //------------------------------------------------------------------------------
 void CropOverlay::setImageDrawRect(QRect imageDrawRect) {
-    if(this->imageDrawRect != imageDrawRect) {
-        this->imageDrawRect = imageDrawRect;
-    }
+    this->imageDrawRect.setTopLeft(imageDrawRect.topLeft() * dpr);
+    this->imageDrawRect.setBottomRight(imageDrawRect.bottomRight() * dpr);
 }
 
 //------------------------------------------------------------------------------
