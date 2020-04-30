@@ -71,93 +71,93 @@ bool VideoPlayerInitProxy::openMedia(QString file) {
 }
 
 void VideoPlayerInitProxy::seek(int pos) {
-    if(!initPlayer())
+    if(!player)
         return;
     player->seek(pos);
 }
 
 void VideoPlayerInitProxy::seekRelative(int pos) {
-    if(!initPlayer())
+    if(!player)
         return;
     player->seekRelative(pos);
 }
 
 void VideoPlayerInitProxy::pauseResume() {
-    if(!initPlayer())
+    if(!player)
         return;
     player->pauseResume();
 }
 
 void VideoPlayerInitProxy::frameStep() {
-    if(!initPlayer())
+    if(!player)
         return;
     player->frameStep();
 }
 
 void VideoPlayerInitProxy::frameStepBack() {
-    if(!initPlayer())
+    if(!player)
         return;
     player->frameStepBack();
 }
 
 void VideoPlayerInitProxy::stop() {
-    if(!initPlayer())
+    if(!player)
         return;
     player->stop();
 }
 
 void VideoPlayerInitProxy::setPaused(bool mode) {
-    if(!initPlayer())
+    if(!player)
         return;
     player->setPaused(mode);
 }
 
 void VideoPlayerInitProxy::setMuted(bool mode) {
-    if(!initPlayer())
+    if(!player)
         return;
     player->setMuted(mode);
 }
 
 bool VideoPlayerInitProxy::muted() {
-    if(!initPlayer())
+    if(!player)
         return true;
     return player->muted();
 }
 
 void VideoPlayerInitProxy::volumeUp() {
-    if(!initPlayer())
+    if(!player)
         return;
     player->volumeUp();
     settings->setVolume(player->volume());
 }
 
 void VideoPlayerInitProxy::volumeDown() {
-    if(!initPlayer())
+    if(!player)
         return;
     player->volumeDown();
     settings->setVolume(player->volume());
 }
 
 void VideoPlayerInitProxy::setVolume(int vol) {
-    if(!initPlayer())
+    if(!player)
         return;
     player->setVolume(vol);
 }
 
 int VideoPlayerInitProxy::volume() {
-    if(!initPlayer())
+    if(!player)
         return 0;
     return player->volume();
 }
 
 void VideoPlayerInitProxy::setVideoUnscaled(bool mode) {
-    if(!initPlayer())
+    if(!player)
         return;
     player->setVideoUnscaled(mode);
 }
 
 void VideoPlayerInitProxy::setLoopPlayback(bool mode) {
-    if(!initPlayer())
+    if(!player)
         return;
     player->setLoopPlayback(mode);
 }

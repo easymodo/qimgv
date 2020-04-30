@@ -508,6 +508,7 @@ void ViewerWidget::onFullscreenModeChanged(bool mode) {
 void ViewerWidget::readSettings() {
     mPanelEnabled = settings->panelEnabled();
     mPanelFullscreenOnly = settings->panelFullscreenOnly();
+    videoControls->onVideoMuted(!settings->playVideoSounds());
 }
 
 void ViewerWidget::setLoopPlayback(bool mode) {
