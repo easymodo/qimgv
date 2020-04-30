@@ -1,4 +1,4 @@
-qimgv | Current version: 0.8.9
+qimgv | Current version: 0.9.0
 =====
 Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
 
@@ -19,6 +19,8 @@ Main window & panel        |  Folder view   |  Settings window
 - Easy to use
 
 - Fully configurable, including shortcuts
+
+- High quality scaling
 
 - Basic image editing: Crop, Rotate and Resize
 
@@ -53,6 +55,8 @@ Main window & panel        |  Folder view   |  Settings window
 | Rotate left  | Ctrl+L |
 | Rotate Right  | Ctrl+R |
 | Open containing directory | Ctrl+D |
+| Slideshow mode | ~ |
+| Shuffle mode | S |
 | Quick copy  | C |
 | Quick move  | M |
 | Move to trash | Delete |
@@ -112,11 +116,27 @@ You can put it in `qimgv.desktop` file to make it permanent. Using values less t
 
 qimgv should also obey the global scale factor set in kde's systemsettings.
 
+### High quality scaling
+
+qimgv supports nicer scaling filters when compiled with `opencv` support (ON by default, might vary depending on your distribution). Filter options are available in __Settings > Scaling__. `Bicubic` or `bilinear+sharpen` is recommended.
+
 ### APNG support
 
 APNG is supported via third-party qt plugin. (Included in windows qimgv package)
  
 If you are linux user, install the latest [QtApng by Skycoder42](https://github.com/Skycoder42/QtApng).
+
+### HEIF / HEIC support
+
+Apple's `heif` format is supported via third-party qt plugin. Included in windows qimgv package.
+
+See [github.com/jakar/qt-heif-image-plugin](https://github.com/jakar/qt-heif-image-plugin)
+
+### AVIF support
+
+qimgv can open `avif` files via third-party qt plugin.
+
+See [github.com/novomesk/qt-avif-image-plugin](https://github.com/novomesk/qt-avif-image-plugin)
 
 ### RAW support
 
@@ -187,7 +207,7 @@ If your favorite distro is not included refer to [Manual install] section at the
 
 Note: in order to compile you will need gcc 8 or later!
  
-__Install dependencies ( `gcc` >= 8, `git`, `cmake` >= 3.13, `qt` >= 5.9, `exiv2`, `mpv` )__
+__Install dependencies ( `gcc` >= 8, `git`, `cmake` >= 3.13, `qt` >= 5.9, `exiv2`, `mpv`, `opencv (core and imgproc` )__
 
 _Ubuntu & derivatives:_
      
@@ -252,9 +272,9 @@ If you have multiple version of gcc installed you _might_ need to specify a whic
 
 | Option  | Default value | Description |
 | ------- | ------------- | ----------- |
-| OPENCV_SUPPORT | OFF | Enables high quality scaling options |
 | VIDEO_SUPPORT | ON | Enables video playback via `mpv` |
 | EXIV2 | ON | Support reading exif tags via `exiv2` |
+| OPENCV_SUPPORT | ON | Enables high quality scaling options |
 | KDE_SUPPORT | OFF | Use some features from kde, like background blur |
 
 Usage example:
