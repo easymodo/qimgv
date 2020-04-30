@@ -71,6 +71,11 @@ enum ImageScrolling {
     SCROLL_BY_TRACKPAD_AND_WHEEL
 };
 
+enum ViewMode {
+    MODE_DOCUMENT,
+    MODE_FOLDERVIEW
+};
+
 class Settings : public QObject
 {
     Q_OBJECT
@@ -240,6 +245,8 @@ public:
     int placesPanelWidth();
     void setPlacesPanelWidth(int width);
 
+    ViewMode defaultViewMode();
+    void setDefaultViewMode(ViewMode mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

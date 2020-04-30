@@ -97,11 +97,11 @@ int main(int argc, char *argv[]) {
     //qApp->processEvents();
     //qDebug() << "Core + MW init: " << t.elapsed() << "ms";
 
-    if(arg1.isEmpty()) {
-        core.loadPath(QDir::homePath());
-    } else {
+    if(!arg1.isEmpty()) {
         // assume 1st arg is the filename
         core.loadPath(arg1);
+    } else if(settings->defaultViewMode() == MODE_FOLDERVIEW) {
+        core.loadPath(QDir::homePath());
     }
     // wait for event queue to catch up before showing window
     // this avoids white background flicker

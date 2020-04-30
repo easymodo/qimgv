@@ -3,11 +3,8 @@
 #include <QStackedWidget>
 #include "gui/folderview/folderviewproxy.h"
 #include "gui/viewers/documentwidget.h"
+#include "settings.h"
 
-enum ViewMode {
-    MODE_DOCUMENT,
-    MODE_FOLDERVIEW
-};
 
 class CentralWidget : public QStackedWidget
 {

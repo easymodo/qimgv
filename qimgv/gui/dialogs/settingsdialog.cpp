@@ -102,6 +102,11 @@ void SettingsDialog::readSettings() {
     ui->slideshowIntervalSpinBox->setValue(settings->slideshowInterval());
     ui->imageScrollingComboBox->setCurrentIndex(settings->imageScrolling());
 
+    if(settings->defaultViewMode() == MODE_FOLDERVIEW)
+        ui->startInFolderViewCheckBox->setChecked(true);
+    else
+        ui->startInFolderViewCheckBox->setChecked(false);
+
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
     // ##### scaling #####
@@ -213,6 +218,11 @@ void SettingsDialog::applySettings() {
     settings->setUseOpenGL(ui->useOpenGLCheckBox->isChecked());
     settings->setFocusPointIn1to1Mode(static_cast<ImageFocusPoint>(ui->focusPointIn1to1ModeComboBox->currentIndex()));
     settings->setSlideshowInterval(ui->slideshowIntervalSpinBox->value());
+
+    if(ui->startInFolderViewCheckBox->isChecked())
+        settings->setDefaultViewMode(MODE_FOLDERVIEW);
+    else
+        settings->setDefaultViewMode(MODE_DOCUMENT);
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
 
