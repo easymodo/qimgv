@@ -37,8 +37,10 @@ struct CurrentInfo {
     int index;
     int fileCount;
     QString fileName;
+    QString directory;
     QSize imageSize;
     qint64 fileSize;
+    bool slideshow;
 };
 
 enum ActiveSidePanel {
@@ -120,6 +122,7 @@ private slots:
     void adaptToWindowState();
 
     void onWindowGeometryChanged();
+    void onInfoUpdated();
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     bool event(QEvent *event);
@@ -172,7 +175,6 @@ signals:
     void volumeUp();
     void volumeDown();
     void enableDocumentView();
-    void setDirectoryPath(QString);
     void toggleTransparencyGrid();
     void droppedIn(const QMimeData*, QObject*);
     void draggedOut();
@@ -227,4 +229,5 @@ public slots:
     void setFilterNearest();
     void setFilterBilinear();
     void toggleScalingFilter();
+    void setDirectoryPath(QString path);
 };

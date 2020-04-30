@@ -62,7 +62,6 @@ void MW::setupUi() {
     infoBarWindowed.reset(new InfoBarProxy(this));
     docWidget.reset(new DocumentWidget(viewerWidget, infoBarWindowed));
     folderView.reset(new FolderViewProxy(this));
-    connect(this, &MW::setDirectoryPath, folderView.get(), &FolderViewProxy::setDirectoryPath);
     connect(folderView.get(), &FolderViewProxy::sortingSelected, this, &MW::sortingSelected);
     connect(folderView.get(), &FolderViewProxy::directorySelected, this, &MW::opened);
     connect(folderView.get(), &FolderViewProxy::draggedOut, this, qOverload<int>(&MW::draggedOut));
@@ -159,6 +158,7 @@ void MW::enableFolderView() {
     viewerWidget->hidePanel();
     imageInfoOverlay->hide();
     centralWidget->showFolderView();
+    onInfoUpdated();
 }
 
 ViewMode MW::currentViewMode() {
@@ -206,6 +206,7 @@ void MW::switchFitMode() {
 }
 
 void MW::closeImage() {
+    info.fileName = "";
     viewerWidget->closeImage();
 }
 
@@ -239,6 +240,13 @@ void MW::onSortingChanged(SortingMode mode) {
             case SortingMode::SORT_SIZE_DESC: showMessage("Sorting: By File Size (desc.)"); break;
         }
     }
+}
+
+void MW::setDirectoryPath(QString path) {
+    closeImage();
+    info.directory = path;
+    folderView->setDirectoryPath(path);
+    onInfoUpdated();
 }
 
 void MW::toggleImageInfoOverlay() {
@@ -593,29 +601,41 @@ void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _im
     info.fileName = _fileName;
     info.imageSize = _imageSize;
     info.fileSize = _fileSize;
+    info.slideshow = slideshow;
+    onInfoUpdated();
+}
+
+// todo: nuke and rewrite
+void MW::onInfoUpdated() {
+    QString posString;
+    if(info.fileCount)
+        posString = "[ " + QString::number(info.index + 1) + "/" + QString::number(info.fileCount) + " ]";
+    QString resString;
+    if(info.imageSize.width())
+        resString = QString::number(info.imageSize.width()) + " x " + QString::number(info.imageSize.height());
+    QString sizeString;
+    if(info.fileSize) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+        sizeString = QString::number(info.fileSize / 1024) + " KiB";
+#else
+        sizeString = this->locale().formattedDataSize(info.fileSize, 1);
+#endif
+    }
+
     if(renameOverlay)
         renameOverlay->setName(info.fileName);
-    if(info.fileName.isEmpty()) {
-        setWindowTitle(qApp->applicationName());
+
+    QString windowTitle;
+    if(centralWidget->currentViewMode() == MODE_FOLDERVIEW) {
+        windowTitle = info.directory + " — " + qApp->applicationName();
+        infoBarFullscreen->setInfo("", "No file opened.", "");
+        infoBarWindowed->setInfo("", "No file opened.", "");
+    } else if(info.fileName.isEmpty()) {
+        windowTitle = qApp->applicationName();
         infoBarFullscreen->setInfo("", "No file opened.", "");
         infoBarWindowed->setInfo("", "No file opened.", "");
     } else {
-        QString posString;
-        if(info.fileCount)
-            posString = "[ " + QString::number(info.index + 1) + "/" + QString::number(info.fileCount) + " ]";
-        QString resString;
-        if(info.imageSize.width())
-            resString = QString::number(info.imageSize.width()) + " x " + QString::number(info.imageSize.height());
-        QString sizeString;
-        if(info.fileSize) {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-            sizeString = QString::number(info.fileSize / 1024) + " KiB";
-#else
-            sizeString = this->locale().formattedDataSize(info.fileSize, 1);
-#endif
-        }
-
-        QString windowTitle = info.fileName;
+        windowTitle = info.fileName;
         if(settings->windowTitleExtendedInfo()) {
             windowTitle.prepend(posString + "  ");
             if(!resString.isEmpty())
@@ -623,12 +643,12 @@ void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _im
             if(!sizeString.isEmpty())
                 windowTitle.append("  -  " + sizeString);
         }
-        if(slideshow)
+        if(info.slideshow)
             windowTitle.append(" — slideshow");
-        setWindowTitle(windowTitle);
         infoBarFullscreen->setInfo(posString, info.fileName, resString + "  " + sizeString);
         infoBarWindowed->setInfo(posString, info.fileName, resString + "  " + sizeString);
     }
+    setWindowTitle(windowTitle);
 }
 
 // TODO!!! buffer this in mw
