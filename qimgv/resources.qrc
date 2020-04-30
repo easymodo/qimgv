@@ -143,5 +143,9 @@
         <file>res/icons/buttons/remove12@2x.png</file>
         <file>res/icons/other/expanded.png</file>
         <file>res/icons/other/collapsed.png</file>
+        <file>res/icons/buttons/root12.png</file>
+        <file>res/icons/buttons/root12@2x.png</file>
+        <file>res/icons/buttons/home12@2x.png</file>
+        <file>res/icons/buttons/home12.png</file>
     </qresource>
 </RCC>

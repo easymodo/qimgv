@@ -38,7 +38,10 @@ FolderView::FolderView(QWidget *parent) :
     ui->showLabelsButton->setIconPath(":res/icons/buttons/panel/labels.png");
     ui->togglePlacesPanelButton->setCheckable(true);
     ui->togglePlacesPanelButton->setIconPath(":res/icons/buttons/panel/toggle-panel20.png");
+
     ui->newBookmarkButton->setIconPath(":res/icons/buttons/add-new12.png");
+    ui->homeButton->setIconPath(":res/icons/buttons/home12.png");
+    ui->rootButton->setIconPath(":res/icons/buttons/root12.png");
 
     int min = ui->thumbnailGrid->THUMBNAIL_SIZE_MIN;
     int max = ui->thumbnailGrid->THUMBNAIL_SIZE_MAX;
@@ -60,6 +63,8 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->bookmarksWidget, &BookmarksWidget::bookmarkClicked, this, &FolderView::onBookmarkClicked);
 
     connect(ui->newBookmarkButton, &IconButton::clicked, this, &FolderView::newBookmark);
+    connect(ui->homeButton, &IconButton::clicked, this, &FolderView::onHomeBtn);
+    connect(ui->rootButton, &IconButton::clicked, this, &FolderView::onRootBtn);
 
     connect(ui->zoomSlider, &QSlider::valueChanged, this, &FolderView::onZoomSliderValueChanged);
     connect(ui->sortingComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &FolderView::onSortingSelected);
@@ -212,9 +217,31 @@ void FolderView::focusOn(int index) {
     ui->thumbnailGrid->focusOn(index);
 }
 
+void FolderView::onHomeBtn() {
+    emit directorySelected(QDir::homePath());
+}
+
+void FolderView::onRootBtn() {
+    emit directorySelected("/");
+}
+
 void FolderView::setDirectoryPath(QString path) {
+#ifdef __linux
+    if(path.startsWith(QDir::homePath())) {
+        if(dirModel->rootPath() != QDir::homePath()) {
+            dirModel->setRootPath(QDir::homePath());
+            QModelIndex idx = dirModel->index(dirModel->rootPath());
+            ui->dirTreeView->setRootIndex(idx);
+        }
+    } else {
+        dirModel->setRootPath("/");
+        QModelIndex idx = dirModel->index(dirModel->rootPath());
+        ui->dirTreeView->setRootIndex(idx);
+    }
+#endif
     if(ui->dirTreeView->currentIndex().data() == path)
         return;
+
     ui->directoryPathLabel->setText(path);
     ui->bookmarksWidget->onPathChanged(path);
 

@@ -75,6 +75,8 @@ private slots:
     void fsTreeScrollToCurrent();
 
     void onSplitterMoved();
+    void onHomeBtn();
+    void onRootBtn();
 private:
     Ui::FolderView *ui;
     FileSystemModelCustom *dirModel;
