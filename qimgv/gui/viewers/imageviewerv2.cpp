@@ -24,6 +24,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
         setViewport(new QOpenGLWidget);
 
     setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
+    this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
     setFocusPolicy(Qt::NoFocus);
     setAcceptDrops(false);
 
@@ -99,11 +100,16 @@ void ImageViewerV2::readSettings() {
 }
 
 void ImageViewerV2::onFullscreenModeChanged(bool mode) {
+    QColor bgColor;
     mIsFullscreen = mode;
-    if(mode)
-        scene->setBackgroundBrush(settings->backgroundColorFullscreen());
-    else
-        scene->setBackgroundBrush(settings->backgroundColor());
+    if(mode) {
+        bgColor = settings->backgroundColorFullscreen();
+        bgColor.setAlphaF(1.0);
+    } else {
+        bgColor = settings->backgroundColor();
+        bgColor.setAlphaF(settings->backgroundOpacity());
+    }
+    scene->setBackgroundBrush(bgColor);
 }
 
 void ImageViewerV2::startAnimation() {
