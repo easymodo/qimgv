@@ -21,7 +21,11 @@ void LinuxWorker::setDescriptor(int desc) {
 
 void LinuxWorker::run() {
     emit started();
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    isRunning.store(true);
+#else
     isRunning.storeRelaxed(true);
+#endif
 
     if (fd == -1) {
         qDebug() << TAG << "File descriptor isn't set! Stopping";
