@@ -43,7 +43,7 @@ public:
 
     QDateTime lastModified() const;
     void refresh();
-    void loadExifInfo();
+    void loadExifTags();
     QMap<QString, QString> getExifTags();
 
 private:

@@ -116,6 +116,7 @@ void DocumentInfo::detectFormat() {
         mDocumentType = STATIC;
     }
     //qDebug() << mFormat << mDocumentType << mimeName;
+    loadExifOrientation();
 }
 
 inline
@@ -152,12 +153,11 @@ bool DocumentInfo::detectAnimatedWebP() {
     return result;
 }
 
-void DocumentInfo::loadExifInfo() {
+void DocumentInfo::loadExifTags() {
     if(exifLoaded)
         return;
     exifLoaded = true;
     exifTags.clear();
-    loadExifOrientation();
 #ifdef USE_EXIV2
     try {
         std::unique_ptr<Exiv2::Image> image;
@@ -242,7 +242,7 @@ void DocumentInfo::loadExifInfo() {
 
 QMap<QString, QString> DocumentInfo::getExifTags() {
     if(!exifLoaded)
-        loadExifInfo();
+        loadExifTags();
     return exifTags;
 }
 
