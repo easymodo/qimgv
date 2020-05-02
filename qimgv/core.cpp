@@ -444,12 +444,23 @@ void Core::removeFile(QString fileName, bool trash) {
     if(model->isEmpty())
         return;
 
+    bool reopen = false;
+    std::shared_ptr<Image> img;
+    if(state.currentFileName == fileName) {
+        img = model->getItem(fileName);
+        if(img->type() == ANIMATED || img->type() == VIDEO) {
+            mw->closeImage();
+            reopen = true;
+        }
+    }
     FileOpResult result;
     model->removeFile(fileName, trash, result);
     if(result == FileOpResult::SUCCESS) {
         QString msg = trash ? "Moved to trash: " : "File removed: ";
         mw->showMessage(msg + fileName);
     } else {
+        if(reopen)
+            guiSetImage(img);
         outputError(result);
     }
 }

@@ -106,7 +106,7 @@ private:
     void onFileRemovedExternal(QString);
     void onFileModifiedExternal(QString fileName);
     void onFileRenamedExternal(QString oldFile, QString newFile);
-    void moveToTrash(QString file);
+    bool moveToTrash(QString file);
     bool name_entry_compare(const Entry &e1, const Entry &e2) const;
     bool name_entry_compare_reverse(const Entry &e1, const Entry &e2) const;
     bool date_entry_compare(const Entry &e1, const Entry &e2) const;

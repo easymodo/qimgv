@@ -186,10 +186,11 @@ bool DirectoryManager::removeFile(QString fileName, bool trash) {
     QFile file(path);
     int index = indexOf(fileName);
     if(trash) {
-        entryVec.erase(entryVec.begin() + index);
-        moveToTrash(path);
-        emit fileRemoved(fileName, index);
-        return true;
+        if(moveToTrash(path)) {
+            entryVec.erase(entryVec.begin() + index);
+            emit fileRemoved(fileName, index);
+            return true;
+        }
     } else if(file.remove()) {
         entryVec.erase(entryVec.begin() + index);
         emit fileRemoved(fileName, index);
@@ -199,10 +200,10 @@ bool DirectoryManager::removeFile(QString fileName, bool trash) {
 }
 
 #ifdef Q_OS_WIN32
-void DirectoryManager::moveToTrash(QString file) {
+bool DirectoryManager::moveToTrash(QString file) {
     QFileInfo fileinfo( file );
     if( !fileinfo.exists() )
-        return;
+        return false;
     WCHAR from[ MAX_PATH ];
     memset( from, 0, sizeof( from ));
     int l = fileinfo.absoluteFilePath().toWCharArray( from );
@@ -217,12 +218,14 @@ void DirectoryManager::moveToTrash(QString file) {
     if( 0 != rv ){
         qDebug() << rv << QString::number( rv ).toInt( nullptr, 8 );
         qDebug() << "move to trash failed";
+        return false;
     }
+    return true;
 }
 #endif
 
 #ifdef Q_OS_LINUX
-void DirectoryManager::moveToTrash(QString file) {
+bool DirectoryManager::moveToTrash(QString file) {
     #ifdef QT_GUI_LIB
     bool TrashInitialized = false;
     QString TrashPath;
@@ -292,6 +295,7 @@ void DirectoryManager::moveToTrash(QString file) {
     Q_UNUSED( file );
     qDebug() << "Trash in server-mode not supported";
     #endif
+    return true;
 }
 #endif
 
