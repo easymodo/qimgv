@@ -296,7 +296,10 @@ void MW::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
 void MW::saveWindowGeometry() {
     if(this->windowState() == Qt::WindowNoState) {
     #ifdef __linux__
-        windowedGeometry = geometry();
+        if(this->isHidden())
+            windowedGeometry = QRect(pos(), size());
+        else
+            windowedGeometry = geometry();
     #else
         windowedGeometry = QRect(pos(), size());
     #endif
