@@ -76,7 +76,7 @@ private:
 
     QColor bgColor;
     qreal bgOpacity;
-    bool cropPanelActive, showInfoBarFullscreen, showInfoBarWindowed;
+    bool cropPanelActive, showInfoBarFullscreen, showInfoBarWindowed, maximized;
     std::shared_ptr<DocumentWidget> docWidget;
     std::shared_ptr<FolderViewProxy> folderView;
     std::shared_ptr<CentralWidget> centralWidget;

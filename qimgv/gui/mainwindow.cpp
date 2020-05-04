@@ -7,6 +7,7 @@ MW::MW(QWidget *parent)
       currentDisplay(0),
       desktopWidget(nullptr),
       bgOpacity(1.0),
+      maximized(false),
       activeSidePanel(SIDEPANEL_NONE),
       copyOverlay(nullptr),
       saveOverlay(nullptr),
@@ -46,6 +47,7 @@ MW::MW(QWidget *parent)
 
     readSettings();
     currentDisplay = settings->lastDisplay();
+    maximized = settings->maximizedWindow();
     restoreWindowGeometry();
 }
 
@@ -172,7 +174,6 @@ int MW::folderViewSelection() {
 void MW::fitWindow() {
     if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitWindow();
-        //showMessageFitWindow();
     } else {
         showMessage("Zoom temporary disabled");
     }
@@ -181,7 +182,6 @@ void MW::fitWindow() {
 void MW::fitWidth() {
     if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitWidth();
-        //showMessageFitWidth();
     } else {
         showMessage("Zoom temporary disabled");
     }
@@ -190,7 +190,6 @@ void MW::fitWidth() {
 void MW::fitOriginal() {
     if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitOriginal();
-        //showMessageFitOriginal();
     } else {
         showMessage("Zoom temporary disabled");
     }
@@ -306,10 +305,10 @@ void MW::saveWindowGeometry() {
     #endif
     }
     settings->setWindowGeometry(windowedGeometry);
-    if(!isFullScreen())
-        settings->setMaximizedWindow(this->isMaximized());
+    settings->setMaximizedWindow(maximized);
 }
 
+// does not apply fullscreen; window size / maximized state only
 void MW::restoreWindowGeometry() {
     windowedGeometry = settings->windowGeometry();
     this->resize(windowedGeometry.size());
@@ -341,6 +340,10 @@ void MW::mouseMoveEvent(QMouseEvent *event) {
 }
 
 bool MW::event(QEvent *event) {
+    // only save maximized state if we are already visible
+    // this filter out out events while the window is still being set up
+    if(event->type() == QEvent::WindowStateChange && this->isVisible() && !this->isFullScreen())
+        maximized = isMaximized();
     if(event->type() == QEvent::Move || event->type() == QEvent::Resize)
         windowGeometryChangeTimer.start();
     return QWidget::event(event);
@@ -376,9 +379,7 @@ void MW::mouseDoubleClickEvent(QMouseEvent *event) {
 
 void MW::close() {
     this->hide();
-    //if(!isFullScreen()) {
-        saveWindowGeometry();
-    //}
+    saveWindowGeometry();
     saveCurrentDisplay();
     if(copyOverlay)
         copyOverlay->saveSettings();
@@ -481,11 +482,10 @@ void MW::showFullScreen() {
 }
 
 void MW::showWindowed() {
-    QWidget::showNormal();
+    if(isFullScreen())
+        QWidget::showNormal();
     restoreWindowGeometry();
     QWidget::show();
-    //QWidget::activateWindow();
-    //QWidget::raise();
     emit fullscreenStateChanged(false);
 }
 
