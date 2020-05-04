@@ -88,6 +88,8 @@ void ImageViewerV2::readSettings() {
     smoothUpscaling = settings->smoothUpscaling();
     expandImage = settings->expandImage();
     expandLimit = static_cast<float>(settings->expandLimit());
+    if(expandLimit < 1.0f)
+        expandLimit = maxScale;
     keepFitMode = settings->keepFitMode();
     imageFitModeDefault = settings->imageFitMode();
     zoomStep = settings->zoomStep();
