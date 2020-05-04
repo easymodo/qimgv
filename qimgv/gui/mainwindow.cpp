@@ -296,10 +296,7 @@ void MW::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
 void MW::saveWindowGeometry() {
     if(this->windowState() == Qt::WindowNoState) {
     #ifdef __linux__
-        if(this->isHidden())
-            windowedGeometry = QRect(pos(), size());
-        else
-            windowedGeometry = geometry();
+        windowedGeometry = geometry();
     #else
         windowedGeometry = QRect(pos(), size());
     #endif
@@ -378,9 +375,9 @@ void MW::mouseDoubleClickEvent(QMouseEvent *event) {
 }
 
 void MW::close() {
-    this->hide();
     saveWindowGeometry();
     saveCurrentDisplay();
+    this->hide();
     if(copyOverlay)
         copyOverlay->saveSettings();
     QWidget::close();
