@@ -44,7 +44,7 @@ void Core::showGui() {
     // TODO: this is unreliable.
     // how to make it wait until a window is shown?
     qApp->processEvents();
-    QTimer::singleShot(15, mw, SLOT(setupFullUi()));
+    QTimer::singleShot(50, mw, SLOT(setupFullUi()));
 }
 
 // create MainWindow and all widgets

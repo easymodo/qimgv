@@ -12,11 +12,19 @@ FullscreenInfoOverlayProxy::~FullscreenInfoOverlayProxy() {
 }
 
 void FullscreenInfoOverlayProxy::show() {
+    stateBuf.showImmediately = true;
     init();
-    infoOverlay->show();
+}
+
+void FullscreenInfoOverlayProxy::showWhenReady() {
+    if(!infoOverlay)
+        stateBuf.showImmediately = true;
+    else
+        infoOverlay->show();
 }
 
 void FullscreenInfoOverlayProxy::hide() {
+    stateBuf.showImmediately = false;
     if(infoOverlay)
         infoOverlay->hide();
 }
@@ -37,4 +45,6 @@ void FullscreenInfoOverlayProxy::init() {
     infoOverlay = new FullscreenInfoOverlay(container);
     if(!stateBuf.fileName.isEmpty())
         setInfo(stateBuf.position, stateBuf.fileName, stateBuf.info);
+    if(stateBuf.showImmediately)
+        infoOverlay->show();
 }

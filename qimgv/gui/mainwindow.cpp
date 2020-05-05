@@ -478,6 +478,8 @@ void MW::showFullScreen() {
                    desktopWidget->screenGeometry(currentDisplay).y());
     }
     QWidget::showFullScreen();
+    // try to repaint sooner
+    qApp->processEvents();
     emit fullscreenStateChanged(true);
 }
 
@@ -486,6 +488,8 @@ void MW::showWindowed() {
         QWidget::showNormal();
     restoreWindowGeometry();
     QWidget::show();
+    // try to repaint sooner
+    qApp->processEvents();
     emit fullscreenStateChanged(false);
 }
 
@@ -737,9 +741,9 @@ void MW::adaptToWindowState() {
         applyFullscreenBackground();
         infoBarWindowed->hide();
         if(showInfoBarFullscreen)
-            infoBarFullscreen->show();
+            infoBarFullscreen->showWhenReady();
         else
-            infoBarFullscreen->hide();
+            infoBarFullscreen->hide();    
         if(viewerWidget->panelPosition() == PANEL_BOTTOM || !viewerWidget->panelEnabled())
             controlsOverlay->show();
         else

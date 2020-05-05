@@ -6,6 +6,7 @@ struct InfoOverlayStateBuffer {
     QString position;
     QString fileName;
     QString info;
+    bool showImmediately = false;
 };
 
 class FullscreenInfoOverlayProxy {
@@ -14,6 +15,7 @@ public:
     ~FullscreenInfoOverlayProxy();
     void init();
     void show();
+    void showWhenReady();
     void hide();
     void setInfo(QString position, QString fileName, QString info);
 
