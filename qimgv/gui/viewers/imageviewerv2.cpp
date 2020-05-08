@@ -15,6 +15,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     mouseInteraction(MouseInteractionState::MOUSE_NONE),
     minScale(0.01f),
     maxScale(500.0f),
+    fitWindowScale(0.125f),
     imageFitMode(FIT_WINDOW),
     imageFitModeDefault(FIT_WINDOW),
     mScalingFilter(QI_FILTER_BILINEAR),
@@ -97,6 +98,7 @@ void ImageViewerV2::readSettings() {
     focusIn1to1 = settings->focusPointIn1to1Mode();
     // set bg color
     onFullscreenModeChanged(mIsFullscreen);
+    updateMinScale();
     setScalingFilter(settings->scalingFilter());
     setFitMode(imageFitModeDefault);
 }
@@ -221,6 +223,7 @@ void ImageViewerV2::displayAnimation(std::unique_ptr<QMovie> _movie) {
         emit durationChanged(movie->frameCount());
         emit frameChanged(0);
 
+        updateMinScale();
         if(!keepFitMode)
                 imageFitMode = imageFitModeDefault;
         if(imageFitMode == FIT_FREE)
@@ -256,6 +259,7 @@ void ImageViewerV2::displayImage(std::unique_ptr<QPixmap> _pixmap) {
         // always scale from center
         pixmapItem.setTransformOriginPoint(pixmapItem.boundingRect().center());
 
+        updateMinScale();
         if(!keepFitMode)
                 imageFitMode = imageFitModeDefault;
         if(imageFitMode == FIT_FREE)
@@ -380,6 +384,7 @@ Qt::TransformationMode ImageViewerV2::selectTransformationMode() {
 
 void ImageViewerV2::setExpandImage(bool mode) {
     expandImage = mode;
+    updateMinScale();
     applyFitMode();
     requestScaling();
 }
@@ -431,7 +436,6 @@ void ImageViewerV2::drawTransparencyGrid() {
     */
 }
 
-// todo remove this?
 bool ImageViewerV2::imageFits() const {
     if(!pixmap)
         return true;
@@ -630,6 +634,30 @@ void ImageViewerV2::mouseMoveZoom(QMouseEvent *event) {
     requestScaling();
 }
 
+// scale at which current image fills the window
+void ImageViewerV2::updateFitWindowScale() {
+    float newMinScaleX = (float) viewport()->width()  * devicePixelRatioF() / pixmap->width();
+    float newMinScaleY = (float) viewport()->height() * devicePixelRatioF() / pixmap->height();
+    if(newMinScaleX < newMinScaleY) {
+        fitWindowScale = newMinScaleX;
+    } else {
+        fitWindowScale = newMinScaleY;
+    }
+    if(expandImage && fitWindowScale > expandLimit)
+        fitWindowScale = expandLimit;
+}
+
+// limit min scale to window size
+void ImageViewerV2::updateMinScale() {
+    if(!pixmap)
+        return;
+    updateFitWindowScale();
+    if(imageFits())
+        minScale = 1.0f;
+    else
+        minScale = fitWindowScale;
+}
+
 void ImageViewerV2::fitWidth() {
     if(!pixmap)
         return;
@@ -653,25 +681,13 @@ void ImageViewerV2::fitWidth() {
 void ImageViewerV2::fitWindow() {
     if(!pixmap)
         return;
-    float scaleX = (float)viewport()->width()  * devicePixelRatioF() / pixmap->width();
-    float scaleY = (float)viewport()->height() * devicePixelRatioF() / pixmap->height();
-    if((scaleX < 1.0f) || (scaleY < 1.0f) || expandImage) {
+    if(imageFits() && !expandImage) {
+        fitNormal();
+    } else {
         // scaling to window
         swapToOriginalPixmap();
-        float newScale;
-        if(scaleX < scaleY) {
-            // stretch to fill width
-            newScale = scaleX;
-        } else {
-            // stretch to fill height
-            newScale = scaleY;
-        }
-        if(newScale > expandLimit)
-            newScale = expandLimit;
-        doZoom(newScale);
+        doZoom(fitWindowScale);
         centerOnPixmap();
-    } else {
-        fitNormal();
     }
 }
 
@@ -749,6 +765,7 @@ void ImageViewerV2::resizeEvent(QResizeEvent *event) {
     // so we try to ignore them
     if(parentWidget()->isVisible()) {
         stopPosAnimation();
+        updateMinScale();
         if(imageFitMode == FIT_FREE || imageFitMode == FIT_ORIGINAL) {
             centerIfNecessary();
             snapToEdges();
@@ -959,7 +976,7 @@ void ImageViewerV2::zoomOutCursor() {
 void ImageViewerV2::doZoom(float newScale) {
     if(!pixmap)
         return;
-    newScale = qBound(0.01f, newScale, 500.0f);
+    newScale = qBound(minScale, newScale, 500.0f);
     pixmapItem.setScale(newScale);
     pixmapItem.setTransformationMode(selectTransformationMode());
     swapToOriginalPixmap();

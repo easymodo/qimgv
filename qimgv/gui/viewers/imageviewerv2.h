@@ -128,9 +128,7 @@ private:
     int zoomThreshold = 4;
     int dragThreshold = 10;
     qreal zoomStep = 0.1, dpr;
-    float minScale;
-    float maxScale;
-    float expandLimit;
+    float minScale, maxScale, fitWindowScale, expandLimit;
     QPair<QPointF, QPoint> zoomAnchor; // [pixmap coords, viewport coords]
 
     QElapsedTimer lastTouchpadScroll;
@@ -167,4 +165,6 @@ private:
     void snapToEdges();
     void scrollSmooth(int dx, int dy);
     void scrollPrecise(int dx, int dy);
+    void updateFitWindowScale();
+    void updateMinScale();
 };
