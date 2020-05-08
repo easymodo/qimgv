@@ -631,7 +631,8 @@ void ImageViewerV2::mouseMoveZoom(QMouseEvent *event) {
     zoomAnchored(newScale);
     centerIfNecessary();
     snapToEdges();
-    requestScaling();
+    if(pixmapItem.scale() == fitWindowScale)
+        imageFitMode = FIT_WINDOW;
 }
 
 // scale at which current image fills the window
@@ -664,10 +665,12 @@ void ImageViewerV2::fitWidth() {
     float scaleX = (float)viewport()->width() * devicePixelRatioF() / pixmap->width();
     if(!expandImage && scaleX > 1.0f)
         scaleX = 1.0f;
-    swapToOriginalPixmap();
     if(scaleX > expandLimit)
         scaleX = expandLimit;
-    doZoom(scaleX);
+    if(currentScale() != scaleX) {
+        swapToOriginalPixmap();
+        doZoom(scaleX);
+    }
     centerIfNecessary();
     // just center somewhere at the top then do snap
     if(scaledSize().height() > viewport()->height()) {
@@ -684,9 +687,10 @@ void ImageViewerV2::fitWindow() {
     if(imageFits() && !expandImage) {
         fitNormal();
     } else {
-        // scaling to window
-        swapToOriginalPixmap();
-        doZoom(fitWindowScale);
+        if(currentScale() != fitWindowScale) {
+            swapToOriginalPixmap();
+            doZoom(fitWindowScale);
+        }
         centerOnPixmap();
     }
 }
@@ -889,13 +893,16 @@ void ImageViewerV2::setZoomAnchor(QPoint viewportPos) {
 }
 
 void ImageViewerV2::zoomAnchored(float newScale) {
-    QPointF vportCenter = mapToScene(viewport()->geometry()).boundingRect().center();
-    doZoom(newScale);
-    // calculate shift to adjust viewport center
-    // we do this in viewport coordinates to avoid any rounding errors
-    QPointF diff = zoomAnchor.second - mapFromScene(pixmapItem.mapToScene(zoomAnchor.first));
-    centerOn(vportCenter - diff);
-    requestScaling();
+    newScale = qBound(minScale, newScale, 500.0f);
+    if(currentScale() != newScale) {
+        QPointF vportCenter = mapToScene(viewport()->geometry()).boundingRect().center();
+        doZoom(newScale);
+        // calculate shift to adjust viewport center
+        // we do this in viewport coordinates to avoid any rounding errors
+        QPointF diff = zoomAnchor.second - mapFromScene(pixmapItem.mapToScene(zoomAnchor.first));
+        centerOn(vportCenter - diff);
+        requestScaling();
+    }
  }
 
 // zoom in around viewport center
@@ -905,6 +912,8 @@ void ImageViewerV2::zoomIn() {
     centerIfNecessary();
     snapToEdges();
     imageFitMode = FIT_FREE;
+    if(pixmapItem.scale() == fitWindowScale)
+        imageFitMode = FIT_WINDOW;
 }
 
 // zoom out around viewport center
@@ -914,6 +923,8 @@ void ImageViewerV2::zoomOut() {
     centerIfNecessary();
     snapToEdges();
     imageFitMode = FIT_FREE;
+    if(pixmapItem.scale() == fitWindowScale)
+        imageFitMode = FIT_WINDOW;
 }
 
 void ImageViewerV2::centerIfNecessary() {
@@ -957,6 +968,8 @@ void ImageViewerV2::zoomInCursor() {
         zoomIn();
     }
     imageFitMode = FIT_FREE;
+    if(pixmapItem.scale() == fitWindowScale)
+        imageFitMode = FIT_WINDOW;
     centerIfNecessary();
     snapToEdges();
 }
@@ -969,6 +982,8 @@ void ImageViewerV2::zoomOutCursor() {
         zoomIn();
     }
     imageFitMode = FIT_FREE;
+    if(pixmapItem.scale() == fitWindowScale)
+        imageFitMode = FIT_WINDOW;
     centerIfNecessary();
     snapToEdges();
 }
@@ -976,7 +991,6 @@ void ImageViewerV2::zoomOutCursor() {
 void ImageViewerV2::doZoom(float newScale) {
     if(!pixmap)
         return;
-    newScale = qBound(minScale, newScale, 500.0f);
     pixmapItem.setScale(newScale);
     pixmapItem.setTransformationMode(selectTransformationMode());
     swapToOriginalPixmap();
