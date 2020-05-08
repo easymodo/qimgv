@@ -43,8 +43,8 @@ public:
     QString last();
     QString absolutePath();
     QDateTime lastModified(QString fileName);
-    void copyTo(QString destDir, QUrl srcUrl, FileOpResult &result);
-    void moveTo(QString destDir, QUrl srcUrl, FileOpResult &result);
+    void copyTo(QString destDir, QFileInfo srcUrl, FileOpResult &result);
+    void moveTo(QString destDir, QFileInfo srcUrl, FileOpResult &result);
     void setDirectory(QString);
 
     void unload(int index);

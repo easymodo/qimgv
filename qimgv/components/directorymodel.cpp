@@ -101,8 +101,8 @@ QDateTime DirectoryModel::lastModified(QString fileName) {
     return dirManager.lastModified(fileName);
 }
 
-void DirectoryModel::copyTo(QString destDir, QUrl srcUrl, FileOpResult &result) {
-    QString srcName = srcUrl.fileName();
+void DirectoryModel::copyTo(QString destDir, QFileInfo srcFile, FileOpResult &result) {
+    QString srcName = srcFile.fileName();
     // error checks
     if(destDir == dirManager.directoryPath()) {
         result = FileOpResult::COPY_TO_SAME_DIR;
@@ -136,8 +136,8 @@ void DirectoryModel::copyTo(QString destDir, QUrl srcUrl, FileOpResult &result) 
     return;
 }
 
-void DirectoryModel::moveTo(QString destDir, QUrl srcUrl, FileOpResult &result) {
-    QString srcName = srcUrl.fileName();
+void DirectoryModel::moveTo(QString destDir, QFileInfo srcFile, FileOpResult &result) {
+    QString srcName = srcFile.fileName();
     // error checks
     if(destDir == dirManager.directoryPath()) {
         result = FileOpResult::COPY_TO_SAME_DIR;
@@ -147,24 +147,23 @@ void DirectoryModel::moveTo(QString destDir, QUrl srcUrl, FileOpResult &result) 
         result = FileOpResult::SOURCE_DOES_NOT_EXIST;
         return;
     }
-    QFileInfo location(destDir);
-    if(!location.exists()) {
+    QFileInfo destLocation(destDir);
+    if(!destLocation.exists()) {
         result = FileOpResult::DESTINATION_DOES_NOT_EXIST;
         return;
     }
-    if(!location.isWritable()) {
+    if(!destLocation.isWritable()) {
         result = FileOpResult::DESTINATION_NOT_WRITABLE;
         return;
     }
-    location.setFile(destDir + "/" + srcName);
-    if(location.exists()) {
-        if(!location.isWritable())
+    destLocation.setFile(destDir + "/" + srcName);
+    if(destLocation.exists()) {
+        if(!destLocation.isWritable())
             result = FileOpResult::DESTINATION_NOT_WRITABLE;
         result = FileOpResult::DESTINATION_FILE_EXISTS;
         return;
     }
-    location.setFile(srcUrl.toString());
-    if(!location.isWritable()) {
+    if(!srcFile.isWritable()) {
         result = FileOpResult::SOURCE_NOT_WRITABLE;
         return;
     }
