@@ -2,36 +2,12 @@
 
 namespace fs = std::filesystem;
 
-DirectoryManager::DirectoryManager() {
-    currentPath = "";
-
+DirectoryManager::DirectoryManager() :
+    watcher(nullptr),
+    currentPath("")
+{
     regex.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
     collator.setNumericMode(true);
-
-    watcher = DirectoryWatcher::newInstance();
-
-    connect(watcher, &DirectoryWatcher::observingStarted, this, [] () {
-    //    qDebug() << "observing started";
-    });
-    connect(watcher, &DirectoryWatcher::observingStopped, this, [] () {
-    //    qDebug() << "observing stopped";
-    });
-    connect(watcher, &DirectoryWatcher::fileCreated, this, [this] (const QString& filename) {
-        //qDebug() << "[w] file created" << filename;
-        onFileAddedExternal(filename);
-    });
-    connect(watcher, &DirectoryWatcher::fileDeleted, this, [this] (const QString& filename) {
-        //qDebug() << "[w] file deleted" << filename;
-        onFileRemovedExternal(filename);
-    });
-    connect(watcher, &DirectoryWatcher::fileModified, this, [this] (const QString& filename) {
-        //qDebug() << "[w] file modified" << filename;
-        onFileModifiedExternal(filename);
-    });
-    connect(watcher, &DirectoryWatcher::fileRenamed, this, [this] (const QString& file1, const QString& file2) {
-        //qDebug() << "[w] file renamed from" << file1 << "to" << file2;
-        onFileRenamedExternal(file1, file2);
-    });
 
     readSettings();
     connect(settings, &Settings::settingsChanged, this, &DirectoryManager::readSettings);
@@ -86,6 +62,33 @@ CompareFunction DirectoryManager::compareFunction() {
     return cmpFn;
 }
 
+void DirectoryManager::startFileWatcher() {
+    if(currentPath == "")
+        return;
+    if(!watcher)
+        watcher = DirectoryWatcher::newInstance();
+
+    connect(watcher, &DirectoryWatcher::fileCreated,  this, &DirectoryManager::onFileAddedExternal,    Qt::UniqueConnection);
+    connect(watcher, &DirectoryWatcher::fileDeleted,  this, &DirectoryManager::onFileRemovedExternal,  Qt::UniqueConnection);
+    connect(watcher, &DirectoryWatcher::fileModified, this, &DirectoryManager::onFileModifiedExternal, Qt::UniqueConnection);
+    connect(watcher, &DirectoryWatcher::fileRenamed,  this, &DirectoryManager::onFileRenamedExternal,  Qt::UniqueConnection);
+
+    watcher->setWatchPath(currentPath);
+    watcher->observe();
+}
+
+void DirectoryManager::stopFileWatcher() {
+    if(!watcher)
+        return;
+
+    watcher->stopObserving();
+
+    disconnect(watcher, &DirectoryWatcher::fileCreated,  this, &DirectoryManager::onFileAddedExternal);
+    disconnect(watcher, &DirectoryWatcher::fileDeleted,  this, &DirectoryManager::onFileRemovedExternal);
+    disconnect(watcher, &DirectoryWatcher::fileModified, this, &DirectoryManager::onFileModifiedExternal);
+    disconnect(watcher, &DirectoryWatcher::fileRenamed,  this, &DirectoryManager::onFileRenamedExternal);
+}
+
 // ##############################################################
 // ####################### PUBLIC METHODS #######################
 // ##############################################################
@@ -112,8 +115,7 @@ bool DirectoryManager::setDirectory(QString path) {
     generateFileList();
     sortFileList();
     emit loaded(path);
-    watcher->setWatchPath(path);
-    watcher->observe();
+    startFileWatcher();
     return true;
 }
 
@@ -132,10 +134,6 @@ int DirectoryManager::indexOf(QString fileName) const {
     return -1;
 }
 
-QString DirectoryManager::absolutePath() const {
-    return currentPath;
-}
-
 QString DirectoryManager::filePathAt(int index) const {
     return checkRange(index) ? currentPath + "/" + entryVec.at(index).path : "";
 }
@@ -149,14 +147,14 @@ QString DirectoryManager::fileNameAt(int index) const {
     return checkRange(index) ? entryVec.at(index).path : "";
 }
 
-QString DirectoryManager::first() {
+QString DirectoryManager::first() const {
     QString fileName = "";
     if(entryVec.size())
         fileName = entryVec.front().path;
     return fileName;
 }
 
-QString DirectoryManager::last() {
+QString DirectoryManager::last() const {
     QString fileName = "";
     if(entryVec.size())
         fileName = entryVec.back().path;
@@ -303,12 +301,6 @@ bool DirectoryManager::checkRange(int index) const {
     return index >= 0 && index < (int)entryVec.size();
 }
 
-bool DirectoryManager::copyTo(QString destDirectory, QString fileName) {
-    if(!contains(fileName))
-        return false;
-    return QFile::copy(fullFilePath(fileName), destDirectory + "/" + fileName);
-}
-
 unsigned long DirectoryManager::fileCount() const {
     return entryVec.size();
 }
@@ -392,7 +384,7 @@ void DirectoryManager::setSortingMode(SortingMode mode) {
     }
 }
 
-SortingMode DirectoryManager::sortingMode() {
+SortingMode DirectoryManager::sortingMode() const {
     return mSortingMode;
 }
 

@@ -11,7 +11,7 @@
 class Cache {
 public:
     explicit Cache();
-    bool contains(QString name);
+    bool contains(QString name) const;
     void remove(QString name);
     void clear();
 
@@ -21,7 +21,7 @@ public:
     std::shared_ptr<Image> get(QString name);
     bool release(QString name);
     bool reserve(QString name);
-    const QList<QString> keys();
+    const QList<QString> keys() const;
 
 private:
     QMap<QString, CacheItem*> items;

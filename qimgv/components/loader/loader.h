@@ -14,7 +14,7 @@ public:
     void loadAsync(QString path);
 
     void clearTasks();
-    bool isBusy();
+    bool isBusy() const;
     bool isLoading(QString path);
 private:
     QHash<QString, LoaderRunnable*> tasks;

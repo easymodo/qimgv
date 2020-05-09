@@ -10,7 +10,7 @@ void Loader::clearTasks() {
     pool->waitForDone();
 }
 
-bool Loader::isBusy() {
+bool Loader::isBusy() const {
     return (tasks.count() != 0);
 }
 

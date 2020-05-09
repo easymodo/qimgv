@@ -788,7 +788,7 @@ void Core::scalingRequest(QSize size, ScalingFilter filter) {
     if(mw->isVisible() && state.hasActiveImage) {
         std::shared_ptr<Image> forScale = model->getItem(state.currentFileName);
         if(forScale) {
-            QString path = model->absolutePath() + "/" + state.currentFileName;
+            QString path = model->directoryPath() + "/" + state.currentFileName;
             model->scaler->requestScaled(ScalerRequest(forScale, size, path, filter));
         }
     }
@@ -827,7 +827,7 @@ void Core::loadPath(QString path) {
         return;
     }
     // set model dir if needed
-    if(model->absolutePath() != directoryPath) {
+    if(model->directoryPath() != directoryPath) {
         this->reset();
         model->setDirectory(directoryPath);
         mw->setDirectoryPath(directoryPath);

@@ -3,7 +3,7 @@
 Cache::Cache() {
 }
 
-bool Cache::contains(QString name) {
+bool Cache::contains(QString name) const {
     return items.contains(name);
 }
 
@@ -74,6 +74,6 @@ void Cache::trimTo(QStringList nameList) {
     }
 }
 
-const QList<QString> Cache::keys() {
+const QList<QString> Cache::keys() const {
     return items.keys();
 }

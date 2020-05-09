@@ -64,7 +64,7 @@ QString DirectoryWatcher::watchPath() const {
 void DirectoryWatcher::observe()
 {
     Q_D(DirectoryWatcher);
-    if (!d->workerThread->isRunning()) {
+    if(!isObserving()) {
         // Reuse worker instance
         d->worker->setRunning(true);
         d->workerThread->start();
@@ -76,6 +76,12 @@ void DirectoryWatcher::stopObserving()
 {
     Q_D(DirectoryWatcher);
     d->worker->setRunning(false);
+}
+
+bool DirectoryWatcher::isObserving()
+{
+    Q_D(DirectoryWatcher);
+    return d->workerThread->isRunning();
 }
 
 DirectoryWatcher::DirectoryWatcher(DirectoryWatcherPrivate* ptr) {

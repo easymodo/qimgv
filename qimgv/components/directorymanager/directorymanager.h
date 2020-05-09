@@ -67,7 +67,6 @@ public:
     // returns index in file list
     // -1 if not found
     int indexOf(QString fileName) const;
-    QString absolutePath() const;
     QString filePathAt(int index) const;
     QString fullFilePath(QString fileName) const;
     bool removeFile(QString fileName, bool trash);
@@ -83,13 +82,13 @@ public:
     void sortFileList();
     QDateTime lastModified(QString fileName) const;
 
-    QString first();
-    QString last();
+    QString first() const;
+    QString last() const;
     void setSortingMode(SortingMode mode);
-    SortingMode sortingMode();
+    SortingMode sortingMode() const;
     bool forceInsert(QString fileName);
     bool isFile(QString path) const;
-    bool copyTo(QString destDirectory, QString fileName);
+
 private:
     QString currentPath;
     QString filterRegex;
@@ -102,10 +101,6 @@ private:
     SortingMode mSortingMode;
     void generateFileList();
 
-    void onFileAddedExternal(QString filename);
-    void onFileRemovedExternal(QString);
-    void onFileModifiedExternal(QString fileName);
-    void onFileRenamedExternal(QString oldFile, QString newFile);
     bool moveToTrash(QString file);
     bool name_entry_compare(const Entry &e1, const Entry &e2) const;
     bool name_entry_compare_reverse(const Entry &e1, const Entry &e2) const;
@@ -115,6 +110,15 @@ private:
     CompareFunction compareFunction();
     bool size_entry_compare(const Entry &e1, const Entry &e2) const;
     bool size_entry_compare_reverse(const Entry &e1, const Entry &e2) const;
+    void startFileWatcher();
+    void stopFileWatcher();
+
+private slots:
+    void onFileAddedExternal(QString filename);
+    void onFileRemovedExternal(QString);
+    void onFileModifiedExternal(QString fileName);
+    void onFileRenamedExternal(QString oldFile, QString newFile);
+
 signals:
     void loaded(const QString &path);
     void sortingChanged();
