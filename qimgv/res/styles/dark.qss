@@ -602,6 +602,7 @@ FolderView QTreeView::item:selected:!active {
     border-color: #545454;
 }
 
+QTreeView::branch,
 FolderView QTreeView::branch:has-siblings:!adjoins-item,
 FolderView QTreeView::branch:closed:has-children,
 FolderView QTreeView::branch:open:has-children
