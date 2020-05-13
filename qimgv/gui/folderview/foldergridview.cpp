@@ -8,8 +8,11 @@ FolderGridView::FolderGridView(QWidget *parent)
       mShowLabels(false)
 {
     offscreenPreloadArea = 2300;
-    this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
-    this->scene.setBackgroundBrush(QColor(47,47,48)); //#2f2f30 TODO: use qss??
+
+    // TMP - !!!SET THIS BACK TO TRUE & USE COLOR FROM SETTINGS!!!
+    // EXPENSIVE PAINT
+    this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, false);
+    this->scene.setBackgroundBrush(QColor(47,47,48, 0));
 
     // turn this off until [multi]selection is implemented
     setDrawScrollbarIndicator(false);

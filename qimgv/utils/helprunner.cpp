@@ -1,9 +1,9 @@
 #include "helprunner.h"
 
 void HelpRunner::run() {
-    qDebug().noquote() << qApp->applicationName() << qApp->applicationVersion() << "- A fast and configurable image viewer. Written in qt5.";
+    qDebug().noquote() << qApp->applicationName() << qApp->applicationVersion() << "- Fast and configurable image viewer. Written in qt5.";
     qDebug() << "Website: https://github.com/easymodo/qimgv";
-    qDebug() << "License: GNU GPL v3";
+    qDebug() << "License: GNU GPLv3";
     qDebug() << "\nUsage:";
     qDebug() << "   qimgv [options] [file or directory]";
     qDebug() << "\nOptions:";

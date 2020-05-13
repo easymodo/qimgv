@@ -83,14 +83,68 @@ int main(int argc, char *argv[]) {
 
     atexit(saveSettings);
 
-    QFile file(":/res/styles/dark.qss");
-    if(file.open(QFile::ReadOnly)) {
-        QString StyleSheet = QLatin1String(file.readAll());
-        qApp->setStyleSheet(StyleSheet);
-    }
-
     QElapsedTimer t;
     t.start();
+
+    // stylesheet
+    QFile file(":/res/styles/dark.qss");
+    if(file.open(QFile::ReadOnly)) {
+        QString styleSheet = QLatin1String(file.readAll());
+        // replace color vars -----------------------------
+
+        // text - 0.9.1
+        /*
+        styleSheet.replace("%text0%", "#c8c8c8");
+        styleSheet.replace("%text1%", "#aeaeae");
+        styleSheet.replace("%text2%", "#9c9ea0");
+        styleSheet.replace("%text3%", "#97999b");
+        styleSheet.replace("%text4%", "#8a8a8a");
+        */
+        styleSheet.replace("%text0%", "black");
+        styleSheet.replace("%text1%", "black");
+        styleSheet.replace("%text2%", "black");
+        styleSheet.replace("%text3%", "black");
+        styleSheet.replace("%text4%", "black");
+
+        // borders - 0.9.1
+        //styleSheet.replace("%border2%", "#1d1d1e");
+        //styleSheet.replace("%border3%", "#404042"); // lineedit
+
+        styleSheet.replace("%border2%", "black");
+        styleSheet.replace("%border3%", "green"); // lineedit
+
+
+        // surfaces - 0.9.1
+        /*
+        styleSheet.replace("%bg0%", "#2f2f30");
+        styleSheet.replace("%bg1%", "#232324");
+        styleSheet.replace("%bg2%", "#1a1a1b");
+        styleSheet.replace("%bg3%", "#373738");
+        styleSheet.replace("%bg4%", "#2a2a2b"); // button-pressed
+        styleSheet.replace("%bg5%", "#3e3e3e");
+        styleSheet.replace("%bg6%", "#464646"); // placesPanel-hover
+        styleSheet.replace("%bg7%", "#545454"); // placesPanel-selected
+        styleSheet.replace("%bg8%", "#5c5e60"); // scrollbar
+        styleSheet.replace("%bg9%", "#6f7274"); // scrollbar-hover
+        */
+
+        styleSheet.replace("%bg0%", "#8093e9");
+        styleSheet.replace("%bg1%", "#6e7ec8");
+        styleSheet.replace("%bg2%", "#485384");
+        styleSheet.replace("%bg3%", "#8a74d3"); // hover
+        styleSheet.replace("%bg4%", "#635398"); // button-pressed
+        styleSheet.replace("%bg5%", "#866398");
+        styleSheet.replace("%bg6%", "#986086"); // placesPanel-hover
+        styleSheet.replace("%bg7%", "#984585"); // placesPanel-selected
+        styleSheet.replace("%bg8%", "#b14b69"); // scrollbar/slider
+        styleSheet.replace("%bg9%", "#d95c81"); // scrollbar/slider-hover
+
+        // ------------------------------------------------
+        qApp->setStyleSheet(styleSheet);
+    }
+
+    //qApp->processEvents();
+    //qDebug() << "stylesheet: " << t.elapsed() << "ms";
 
     Core core;
 
