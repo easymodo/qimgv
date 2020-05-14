@@ -590,6 +590,7 @@ FolderView QTreeView::item:selected:active {
     border-color: %accent%;
 }
 
+QTreeView::branch,
 FolderView QTreeView::branch:has-siblings:!adjoins-item,
 FolderView QTreeView::branch:closed:has-children,
 FolderView QTreeView::branch:open:has-children

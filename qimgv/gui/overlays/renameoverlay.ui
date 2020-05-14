@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>311</width>
+    <width>348</width>
     <height>131</height>
    </rect>
   </property>
@@ -25,6 +25,9 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
     <number>10</number>
+   </property>
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
    </property>
    <property name="leftMargin">
     <number>1</number>
@@ -152,7 +155,7 @@
       <widget class="QLineEdit" name="fileName">
        <property name="minimumSize">
         <size>
-         <width>250</width>
+         <width>330</width>
          <height>0</height>
         </size>
        </property>
