@@ -25,6 +25,65 @@ QDataStream& operator>>(QDataStream& in, Script& v) {
     return in;
 }
 
+void loadStylesheet() {
+    // stylesheet
+    QFile file(":/res/styles/dark.qss");
+    if(file.open(QFile::ReadOnly)) {
+        QString styleSheet = QLatin1String(file.readAll());
+        // replace color vars -----------------------------
+        QColor button("#2f2f30");
+        QColor button_hover(button.lighter(115));
+        QColor button_pressed(button.darker(120));
+        QColor button_border(button.darker(145));
+
+        QColor widget("#232324");
+
+        QColor folderview("#2f2f30");
+        QColor folderview_topbar("#1a1a1b");
+        QColor folderview_sidebar("#373738");
+
+        QColor accent(settings->accentColor());
+        QColor accent_darker(accent.darker(130)); // doesn't work well with colors, needs some desaturation, or even transparency
+
+        QColor slider_groove("#2f2f30");
+        QColor slider_handle("#5c5e60");
+        QColor slider_handle_hover(slider_handle.lighter(120));
+
+        QColor transparent_overlay("#1a1a1b");  // todo - use for other stuff
+
+        // todo - tweak & reduce to ~3?
+        QColor text("#9c9ea0");
+        QColor text_light(text.lighter(110));   // previously #c8c8c8
+        QColor text_lighter(text.lighter(120)); // #aeaeae
+        QColor text_dark(text.darker(110));     // #97999b
+        QColor text_darker(text.darker(120));   // #8a8a8a
+
+        // write into stylesheet
+        styleSheet.replace("%button%", button.name());
+        styleSheet.replace("%button_hover%", button_hover.name());
+        styleSheet.replace("%button_pressed%", button_pressed.name());
+        styleSheet.replace("%button_border%", button_border.name());
+        styleSheet.replace("%widget%", widget.name());
+        styleSheet.replace("%folderview%", folderview.name());
+        styleSheet.replace("%folderview_topbar%", folderview_topbar.name());
+        styleSheet.replace("%folderview_sidebar%", folderview_sidebar.name());
+        styleSheet.replace("%accent%", accent.name());
+        styleSheet.replace("%accent_darker%", accent_darker.name());
+        styleSheet.replace("%slider_groove%", slider_groove.name());
+        styleSheet.replace("%slider_handle%", slider_handle.name());
+        styleSheet.replace("%slider_handle_hover%", slider_handle_hover.name());
+        styleSheet.replace("%transparent_overlay%", transparent_overlay.name());
+        styleSheet.replace("%text_lighter%", text_lighter.name());
+        styleSheet.replace("%text_light%", text_light.name());
+        styleSheet.replace("%text%", text.name());
+        styleSheet.replace("%text_dark%", text_dark.name());
+        styleSheet.replace("%text_darker%", text_darker.name());
+
+        // ------------------------------------------------
+        qApp->setStyleSheet(styleSheet);
+    }
+}
+
 int main(int argc, char *argv[]) {
     // I'm not sure what this does but "1" breaks the UI
     // Huge widgets but tiny fonts
@@ -86,45 +145,7 @@ int main(int argc, char *argv[]) {
     QElapsedTimer t;
     t.start();
 
-    // stylesheet
-    QFile file(":/res/styles/dark.qss");
-    if(file.open(QFile::ReadOnly)) {
-        QString styleSheet = QLatin1String(file.readAll());
-        // replace color vars -----------------------------
-
-        // variables - renamed
-        styleSheet.replace("%button%", "#2f2f30");
-        styleSheet.replace("%button-hover%", "#373738");   // derive from button - lighter
-        styleSheet.replace("%button-pressed%", "#2a2a2b"); // derive from button - darker
-
-        styleSheet.replace("%widget%", "#232324");
-
-        styleSheet.replace("%folderview%", "#2f2f30");
-        styleSheet.replace("%folderview-topbar%", "#1a1a1b");
-        styleSheet.replace("%folderview-sidebar%", "#373738");
-
-        styleSheet.replace("%accent%", "#a73b59"); // tmp - hook up to settings
-        styleSheet.replace("%accent-hover%", "#703344"); // auto derive from accent
-
-        styleSheet.replace("%slider-groove%", "#2f2f30"); // slider-groove
-
-        styleSheet.replace("%slider-handle%", "#5c5e60");
-        styleSheet.replace("%slider-handle-hover%", "#6f7274");
-
-        styleSheet.replace("%transparent-overlay%", "#1a1a1b"); // todo - use for other stuff
-
-        styleSheet.replace("%border-dark%", "#1d1d1e"); // auto derive from somewhere
-
-        // todo - derive from single color
-        styleSheet.replace("%text0%", "#c8c8c8");
-        styleSheet.replace("%text1%", "#aeaeae");
-        styleSheet.replace("%text2%", "#9c9ea0");
-        styleSheet.replace("%text3%", "#97999b");
-        styleSheet.replace("%text4%", "#8a8a8a");
-
-        // ------------------------------------------------
-        qApp->setStyleSheet(styleSheet);
-    }
+    loadStylesheet();
 
     //qApp->processEvents();
     //qDebug() << "stylesheet: " << t.elapsed() << "ms";
