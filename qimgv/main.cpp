@@ -26,60 +26,35 @@ QDataStream& operator>>(QDataStream& in, Script& v) {
 }
 
 void loadStylesheet() {
-    // stylesheet
+    // stylesheet template file
     QFile file(":/res/styles/dark.qss");
     if(file.open(QFile::ReadOnly)) {
+        auto colors = settings->colorScheme();
         QString styleSheet = QLatin1String(file.readAll());
-        // replace color vars -----------------------------
-        QColor button("#2f2f30");
-        QColor button_hover(button.lighter(115));
-        QColor button_pressed(button.darker(120));
-        QColor button_border(button.darker(145));
-
-        QColor widget("#232324");
-
-        QColor folderview("#2f2f30");
-        QColor folderview_topbar("#1a1a1b");
-        QColor folderview_sidebar("#373738");
-
-        QColor accent(settings->accentColor());
-        QColor accent_darker(accent.darker(130)); // doesn't work well with colors, needs some desaturation, or even transparency
-
-        QColor slider_groove("#2f2f30");
-        QColor slider_handle("#5c5e60");
-        QColor slider_handle_hover(slider_handle.lighter(120));
-
-        QColor transparent_overlay("#1a1a1b");  // todo - use for other stuff
-
-        // todo - tweak & reduce to ~3?
-        QColor text("#9c9ea0");
-        QColor text_light(text.lighter(110));   // previously #c8c8c8
-        QColor text_lighter(text.lighter(120)); // #aeaeae
-        QColor text_dark(text.darker(110));     // #97999b
-        QColor text_darker(text.darker(120));   // #8a8a8a
-
-        // write into stylesheet
-        styleSheet.replace("%button%", button.name());
-        styleSheet.replace("%button_hover%", button_hover.name());
-        styleSheet.replace("%button_pressed%", button_pressed.name());
-        styleSheet.replace("%button_border%", button_border.name());
-        styleSheet.replace("%widget%", widget.name());
-        styleSheet.replace("%folderview%", folderview.name());
-        styleSheet.replace("%folderview_topbar%", folderview_topbar.name());
-        styleSheet.replace("%folderview_sidebar%", folderview_sidebar.name());
-        styleSheet.replace("%accent%", accent.name());
-        styleSheet.replace("%accent_darker%", accent_darker.name());
-        styleSheet.replace("%slider_groove%", slider_groove.name());
-        styleSheet.replace("%slider_handle%", slider_handle.name());
-        styleSheet.replace("%slider_handle_hover%", slider_handle_hover.name());
-        styleSheet.replace("%transparent_overlay%", transparent_overlay.name());
-        styleSheet.replace("%text_lighter%", text_lighter.name());
-        styleSheet.replace("%text_light%", text_light.name());
-        styleSheet.replace("%text%", text.name());
-        styleSheet.replace("%text_dark%", text_dark.name());
-        styleSheet.replace("%text_darker%", text_darker.name());
-
-        // ------------------------------------------------
+        // -------------- write colors into stylesheet ---------------
+        styleSheet.replace("%button%",            colors.button.name());
+        styleSheet.replace("%button_hover%",      colors.button_hover.name());
+        styleSheet.replace("%button_pressed%",    colors.button_pressed.name());
+        styleSheet.replace("%button_border%",     colors.button_border.name());
+        styleSheet.replace("%widget%",            colors.widget.name());
+        styleSheet.replace("%widget_border%",     colors.widget_border.name());
+        styleSheet.replace("%folderview%",        colors.folderview.name());
+        styleSheet.replace("%folderview_topbar%", colors.folderview_topbar.name());
+        styleSheet.replace("%folderview_panel%",  colors.folderview_panel.name());
+        styleSheet.replace("%accent%",            colors.accent.name());
+        styleSheet.replace("%accent_darker%",     colors.accent_darker.name());
+        styleSheet.replace("%input_field_focus%", colors.input_field_focus.name());
+        styleSheet.replace("%slider_groove%",     colors.slider_groove.name());
+        styleSheet.replace("%slider_handle%",     colors.slider_handle.name());
+        styleSheet.replace("%slider_hover%",      colors.slider_hover.name());
+        styleSheet.replace("%overlay%",           colors.overlay.name());
+        styleSheet.replace("%text_lighter%",      colors.text_lighter.name());
+        styleSheet.replace("%text_light%",        colors.text_light.name());
+        styleSheet.replace("%text%",              colors.text.name());
+        styleSheet.replace("%overlay_text%",      colors.overlay_text.name());
+        styleSheet.replace("%text_dark%",         colors.text_dark.name());
+        styleSheet.replace("%text_darker%",       colors.text_darker.name());
+        // ------------------------ apply ----------------------------
         qApp->setStyleSheet(styleSheet);
     }
 }

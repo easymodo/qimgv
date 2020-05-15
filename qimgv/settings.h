@@ -76,13 +76,39 @@ enum ViewMode {
     MODE_FOLDERVIEW
 };
 
+struct ColorScheme {
+    QColor background;
+    QColor background_fullscreen;
+    QColor text_lighter;
+    QColor text_light;
+    QColor text;
+    QColor text_dark;
+    QColor text_darker;
+    QColor widget;
+    QColor widget_border;
+    QColor button;
+    QColor button_hover;
+    QColor button_pressed;
+    QColor button_border;
+    QColor accent;
+    QColor accent_darker;
+    QColor folderview;
+    QColor folderview_topbar;
+    QColor folderview_panel;
+    QColor slider_groove;
+    QColor slider_handle;
+    QColor slider_hover;
+    QColor overlay_text;
+    QColor overlay;
+    QColor input_field_focus;
+};
+
 class Settings : public QObject
 {
     Q_OBJECT
 public:
     static Settings* getInstance();
     ~Settings();
-    static void validate();
     QStringList supportedMimeTypes();
     QList<QByteArray> supportedFormats();
     QString supportedFormatsString();
@@ -95,12 +121,6 @@ public:
     void setMainPanelSize(unsigned int size);
     bool usePreloader();
     void setUsePreloader(bool mode);
-    QColor backgroundColor();
-    void setBackgroundColor(QColor color);
-    QColor accentColor();
-    void setAccentColor(QColor color);
-    QColor highlightColor();
-    void setHighlightColor(QColor color);
     bool fullscreenMode();
     void setFullscreenMode(bool mode);
     ImageFitMode imageFitMode();
@@ -184,9 +204,6 @@ public:
     bool firstRun();
     void setFirstRun(bool mode);
 
-    QColor backgroundColorFullscreen();
-    void setBackgroundColorFullscreen(QColor color);
-
     void sync();
     bool cursorAutohide();
     void setCursorAutohide(bool mode);
@@ -204,9 +221,6 @@ public:
 
     bool maximizedWindow();
     void setMaximizedWindow(bool mode);
-
-    QColor fullscreenInfoTextColor();
-    void setFullscreenInfoTextColor(QColor color);
 
     bool keepFitMode();
     void setKeepFitMode(bool mode);
@@ -247,11 +261,19 @@ public:
 
     ViewMode defaultViewMode();
     void setDefaultViewMode(ViewMode mode);
+
+    const ColorScheme& colorScheme();
+    void setColorScheme(ColorScheme &scheme);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;
-    QSettings *s, *state;
+    QSettings *s, *state, *theme;
     QDir *mTmpDir, *mThumbCacheDir, *mConfDir;
+    ColorScheme mColorScheme;
+    void loadColorScheme();
+    void saveColorScheme();
+    void createColorVariants();
 
 signals:
     void settingsChanged();

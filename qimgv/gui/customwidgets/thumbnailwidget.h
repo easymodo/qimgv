@@ -49,8 +49,8 @@ protected slots:
 
 protected:
     virtual void setupLayout();
-    virtual void drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap);
-    virtual void drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap);
+    virtual void drawThumbnail(QPainter* painter, const QPixmap *pixmap);
+    virtual void drawIcon(QPainter *painter, const QPixmap *pixmap);
     virtual void drawHighlight(QPainter *painter);
     virtual void drawHover(QPainter *painter);
     virtual void drawLabel(QPainter *painter);

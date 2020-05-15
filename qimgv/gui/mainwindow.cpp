@@ -6,7 +6,6 @@ MW::MW(QWidget *parent)
     : FloatingWidgetContainer(parent),
       currentDisplay(0),
       desktopWidget(nullptr),
-      bgOpacity(1.0),
       maximized(false),
       activeSidePanel(SIDEPANEL_NONE),
       copyOverlay(nullptr),
@@ -715,11 +714,10 @@ void MW::readSettings() {
     adaptToWindowState();
 }
 
+// todo: remove/rename?
 void MW::applyWindowedBackground() {
-    bgColor = settings->backgroundColor();
-    bgOpacity = settings->backgroundOpacity();
 #ifdef USE_KDE_BLUR
-    if(bgOpacity == 1.0)
+    if(settings->backgroundOpacity() == 1.0)
         KWindowEffects::enableBlurBehind(winId(), false);
     else
         KWindowEffects::enableBlurBehind(winId(), settings->blurBackground());
@@ -727,8 +725,6 @@ void MW::applyWindowedBackground() {
 }
 
 void MW::applyFullscreenBackground() {
-    bgColor = settings->backgroundColorFullscreen();
-    bgOpacity = 1.0;
 #ifdef USE_KDE_BLUR
     KWindowEffects::enableBlurBehind(winId(), false);
 #endif
@@ -762,12 +758,6 @@ void MW::adaptToWindowState() {
 }
 
 void MW::paintEvent(QPaintEvent *event) {
-    /*
-    QPainter p(this);
-    p.setOpacity(bgOpacity);
-    p.setBrush(QBrush(bgColor));
-    p.fillRect(this->rect(), p.brush());
-    */
     FloatingWidgetContainer::paintEvent(event);
 }
 

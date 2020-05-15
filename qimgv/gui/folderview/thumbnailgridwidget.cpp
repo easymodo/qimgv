@@ -24,7 +24,7 @@ void ThumbnailGridWidget::setupLayout() {
         nameRect = QRectF(paddingX, paddingY + mThumbnailSize + labelSpacing,
                           mThumbnailSize, fm->height());
         nameTextRect = nameRect.adjusted(4, 0, -4, 0);
-        nameFits = !(thumbnail && fm->width(thumbnail->name()) >= nameTextRect.width());
+        nameFits = !(thumbnail && fm->horizontalAdvance(thumbnail->name()) >= nameTextRect.width());
     }
 }
 
@@ -36,7 +36,7 @@ void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
     }
 }
 
-void ThumbnailGridWidget::drawThumbnail(QPainter *painter, qreal dpr, const QPixmap *pixmap) {
+void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap) {
     // draw a shadow rectangle
     if(!thumbnail->hasAlphaChannel())
         painter->fillRect(drawRectCentered.adjusted(3,3,3,3), shadowColor);
@@ -47,10 +47,11 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, qreal dpr, const QPix
 }
 
 void ThumbnailGridWidget::readSettings() {
-    highlightColor.setRgb(settings->highlightColor().rgb());
+    highlightColor = settings->colorScheme().accent;
 }
 
 void ThumbnailGridWidget::drawHover(QPainter *painter) {
+    Q_UNUSED(painter)
 }
 
 void ThumbnailGridWidget::drawLabel(QPainter *painter) {
@@ -124,7 +125,7 @@ void ThumbnailGridWidget::updateThumbnailDrawPosition() {
     }
 }
 
-void ThumbnailGridWidget::drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap) {
+void ThumbnailGridWidget::drawIcon(QPainter *painter, const QPixmap *pixmap) {
     QPointF drawPosCentered(width()  / 2 - pixmap->width()  / (2 * pixmap->devicePixelRatioF()),
                             height() / 2 - pixmap->height() / (2 * pixmap->devicePixelRatioF()));
     painter->drawPixmap(drawPosCentered, *pixmap, QRectF(QPoint(0,0), pixmap->size()));

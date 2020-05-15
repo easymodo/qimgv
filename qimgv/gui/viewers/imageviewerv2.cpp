@@ -107,10 +107,10 @@ void ImageViewerV2::onFullscreenModeChanged(bool mode) {
     QColor bgColor;
     mIsFullscreen = mode;
     if(mode) {
-        bgColor = settings->backgroundColorFullscreen();
+        bgColor = settings->colorScheme().background_fullscreen;
         bgColor.setAlphaF(1.0);
     } else {
-        bgColor = settings->backgroundColor();
+        bgColor = settings->colorScheme().background;
         bgColor.setAlphaF(settings->backgroundOpacity());
     }
     scene->setBackgroundBrush(bgColor);

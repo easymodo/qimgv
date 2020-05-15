@@ -31,7 +31,7 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
 }
 
 void ThumbnailWidget::readSettings() {
-    highlightColor.setRgb(settings->accentColor().rgb());
+    highlightColor = settings->colorScheme().accent;
 }
 
 void ThumbnailWidget::setThumbnailSize(int size) {
@@ -163,13 +163,13 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
         drawHighlight(painter);
     if(!thumbnail) {
         QPixmap* loadingIcon = shrRes->getPixmap(ShrIcon::SHR_ICON_LOADING, dpr);
-        drawIcon(painter, dpr, loadingIcon);
+        drawIcon(painter, loadingIcon);
     } else {
         if(thumbnail->pixmap().get()->width() == 0) {
             QPixmap* errorIcon = shrRes->getPixmap(ShrIcon::SHR_ICON_ERROR, dpr);
-            drawIcon(painter, dpr, errorIcon);
+            drawIcon(painter, errorIcon);
         } else {
-            drawThumbnail(painter, dpr, thumbnail->pixmap().get());
+            drawThumbnail(painter, thumbnail->pixmap().get());
         }
         if(mDrawLabel)
             drawLabel(painter);
@@ -205,11 +205,11 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
     painter->drawText(labelTextRect, flags, thumbnail->label());
 }
 
-void ThumbnailWidget::drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
+void ThumbnailWidget::drawThumbnail(QPainter* painter, const QPixmap *pixmap) {
     painter->drawPixmap(drawRectCentered, *pixmap);
 }
 
-void ThumbnailWidget::drawIcon(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
+void ThumbnailWidget::drawIcon(QPainter* painter, const QPixmap *pixmap) {
     QPointF pos = QPointF(width()  / 2 - pixmap->width()  / (2 * pixmap->devicePixelRatioF()),
                           height() / 2 - pixmap->height() / (2 * pixmap->devicePixelRatioF()));
     painter->drawPixmap(pos, *pixmap);

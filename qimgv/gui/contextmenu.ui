@@ -88,7 +88,7 @@
         </size>
        </property>
        <property name="accessibleName">
-        <string notr="true">PanelButtonSmall</string>
+        <string notr="true">ContextMenuButton</string>
        </property>
       </widget>
      </item>
@@ -107,7 +107,7 @@
         </size>
        </property>
        <property name="accessibleName">
-        <string notr="true">PanelButtonSmall</string>
+        <string notr="true">ContextMenuButton</string>
        </property>
       </widget>
      </item>
@@ -126,7 +126,7 @@
         </size>
        </property>
        <property name="accessibleName">
-        <string notr="true">PanelButtonSmall</string>
+        <string notr="true">ContextMenuButton</string>
        </property>
       </widget>
      </item>
@@ -145,7 +145,7 @@
         </size>
        </property>
        <property name="accessibleName">
-        <string notr="true">PanelButtonSmall</string>
+        <string notr="true">ContextMenuButton</string>
        </property>
       </widget>
      </item>
@@ -164,7 +164,7 @@
         </size>
        </property>
        <property name="accessibleName">
-        <string notr="true">PanelButtonSmall</string>
+        <string notr="true">ContextMenuButton</string>
        </property>
       </widget>
      </item>
@@ -299,15 +299,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ContextMenuItem</class>
-   <extends>QWidget</extends>
-   <header>gui/customwidgets/contextmenuitem.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>ActionButton</class>
    <extends>QWidget</extends>
    <header>gui/customwidgets/actionbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ContextMenuItem</class>
+   <extends>QWidget</extends>
+   <header>gui/customwidgets/contextmenuitem.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

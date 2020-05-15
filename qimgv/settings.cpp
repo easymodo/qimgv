@@ -14,6 +14,7 @@ Settings::Settings(QObject *parent) : QObject(parent) {
     QSettings::setDefaultFormat(QSettings::NativeFormat);
     s = new QSettings();
     state = new QSettings(QCoreApplication::organizationName(), "savedState");
+    theme = new QSettings(QCoreApplication::organizationName(), "theme");
 #else
     mTmpDir = new QDir(QApplication::applicationDirPath() + "/cache");
     mTmpDir->mkpath(mTmpDir->absolutePath());
@@ -23,37 +24,24 @@ Settings::Settings(QObject *parent) : QObject(parent) {
     mConfDir->mkpath(QApplication::applicationDirPath() + "/conf");
     s = new QSettings(mConfDir->absolutePath() + "/" + qApp->applicationName() + ".ini", QSettings::IniFormat);
     state = new QSettings(mConfDir->absolutePath() + "/savedState.ini", QSettings::IniFormat);
+    theme = new QSettings(mConfDir->absolutePath() + "/theme.ini", QSettings::IniFormat);
 #endif
+    loadColorScheme();
 }
-
+//------------------------------------------------------------------------------
 Settings::~Settings() {
+    saveColorScheme();
     delete mThumbCacheDir;
     delete mTmpDir;
     delete s;
     delete state;
+    delete theme;
 }
-
+//------------------------------------------------------------------------------
 Settings *Settings::getInstance() {
-    if(!settings) {
+    if(!settings)
         settings = new Settings();
-        validate();
-    }
     return settings;
-}
-
-void Settings::validate() {
-    if(settings) {
-        bool ok = true;
-        if(settings->state->value("lastDir") == "") {
-            settings->state->setValue("lastDir", QDir::homePath());
-        }
-        if(!ok) {
-            qDebug() << "Settings: error reading thumbnail size (int conversion failed).";
-            qDebug() << "Settings: setting default size.";
-            ok = true;
-            settings->s->setValue("mainPanelSize", 230);
-        }
-    }
 }
 //------------------------------------------------------------------------------
 void Settings::sync() {
@@ -67,6 +55,58 @@ QString Settings::thumbnailCacheDir() {
 //------------------------------------------------------------------------------
 QString Settings::tmpDir() {
     return mTmpDir->path() + "/";
+}
+//------------------------------------------------------------------------------
+void Settings::loadColorScheme() {
+    mColorScheme.background            = QColor(theme->value("background",            "#1b1b1c").toString());
+    mColorScheme.background_fullscreen = QColor(theme->value("background_fullscreen", "#1b1b1c").toString());
+    mColorScheme.text                  = QColor(theme->value("text",                  "#9c9ea0").toString());
+    mColorScheme.widget                = QColor(theme->value("widget",                "#232324").toString());
+    mColorScheme.widget_border         = QColor(theme->value("widget_border",         "#232324").toString());
+    mColorScheme.button                = QColor(theme->value("button",                "#2f2f30").toString());
+    mColorScheme.accent                = QColor(theme->value("accent",                "#375e87").toString());
+    mColorScheme.folderview            = QColor(theme->value("folderview",            "#2f2f30").toString());
+    mColorScheme.folderview_topbar     = QColor(theme->value("folderview_topbar",     "#1a1a1b").toString());
+    mColorScheme.folderview_panel      = QColor(theme->value("folderview_panel",      "#373738").toString());
+    mColorScheme.slider_groove         = QColor(theme->value("slider_groove",         "#2f2f30").toString());
+    mColorScheme.slider_handle         = QColor(theme->value("slider_handle",         "#5c5e60").toString());
+    mColorScheme.overlay_text          = QColor(theme->value("overlay_text",          "#d2d2d2").toString());
+    mColorScheme.overlay               = QColor(theme->value("overlay",               "#1a1a1b").toString());
+    createColorVariants();
+}
+void Settings::saveColorScheme() {
+    theme->beginGroup("Colors");
+    theme->setValue("background",            mColorScheme.background.name());
+    theme->setValue("background_fullscreen", mColorScheme.background_fullscreen.name());
+    theme->setValue("text",                  mColorScheme.text.name());
+    theme->setValue("widget",                mColorScheme.widget.name());
+    theme->setValue("widget_border",         mColorScheme.widget_border.name());
+    theme->setValue("button",                mColorScheme.button.name());
+    theme->setValue("accent",                mColorScheme.accent.name());
+    theme->setValue("folderview",            mColorScheme.folderview.name());
+    theme->setValue("folderview_topbar",     mColorScheme.folderview_topbar.name());
+    theme->setValue("folderview_panel",      mColorScheme.folderview_panel.name());
+    theme->setValue("slider_groove",         mColorScheme.slider_groove.name());
+    theme->setValue("slider_handle",         mColorScheme.slider_handle.name());
+    theme->setValue("overlay_text",          mColorScheme.overlay_text.name());
+    theme->setValue("overlay",               mColorScheme.overlay.name());
+    theme->endGroup();
+}
+//------------------------------------------------------------------------------
+void Settings::createColorVariants() {
+    // darker & desaturated
+    mColorScheme.accent_darker.setHsv(mColorScheme.accent.hue(),
+                                      mColorScheme.accent.saturation() * 0.8f,
+                                      mColorScheme.accent.value() * 0.7f);
+    mColorScheme.button_hover      = QColor(mColorScheme.button.lighter(115));
+    mColorScheme.button_pressed    = QColor(mColorScheme.button.darker(120));
+    mColorScheme.button_border     = QColor(mColorScheme.button.darker(145));
+    mColorScheme.input_field_focus = QColor(mColorScheme.accent_darker);
+    mColorScheme.slider_hover      = QColor(mColorScheme.slider_handle.lighter(120));
+    mColorScheme.text_lighter      = QColor(mColorScheme.text.lighter(120));
+    mColorScheme.text_light        = QColor(mColorScheme.text.lighter(110));
+    mColorScheme.text_dark         = QColor(mColorScheme.text.darker(104));
+    mColorScheme.text_darker       = QColor(mColorScheme.text.darker(112));
 }
 //------------------------------------------------------------------------------
 QString Settings::mpvBinary() {
@@ -300,46 +340,6 @@ bool Settings::usePreloader() {
 
 void Settings::setUsePreloader(bool mode) {
     settings->s->setValue("usePreloader", mode);
-}
-//------------------------------------------------------------------------------
-QColor Settings::backgroundColor() {
-    return settings->s->value("bgColor", QColor(27, 27, 28)).value<QColor>();
-}
-
-void Settings::setBackgroundColor(QColor color) {
-    settings->s->setValue("bgColor", color);
-}
-//------------------------------------------------------------------------------
-QColor Settings::backgroundColorFullscreen() {
-    return settings->s->value("bgColorFullscreen", QColor(27, 27, 28)).value<QColor>();
-}
-
-void Settings::setBackgroundColorFullscreen(QColor color) {
-    settings->s->setValue("bgColorFullscreen", color);
-}
-//------------------------------------------------------------------------------
-QColor Settings::accentColor() {
-    return settings->s->value("accentColor", QColor(55, 94, 135)).value<QColor>();
-}
-
-void Settings::setAccentColor(QColor color) {
-    settings->s->setValue("accentColor", color);
-}
-//------------------------------------------------------------------------------
-QColor Settings::highlightColor() {
-    return settings->s->value("highlightColor", QColor(55, 94, 135)).value<QColor>();
-}
-
-void Settings::setHighlightColor(QColor color) {
-    settings->s->setValue("highlightColor", color);
-}
-//------------------------------------------------------------------------------
-QColor Settings::fullscreenInfoTextColor() {
-    return settings->s->value("fullscreenInfoTextColor", QColor(210, 210, 210)).value<QColor>();
-}
-
-void Settings::setFullscreenInfoTextColor(QColor color) {
-    settings->s->setValue("fullscreenInfoTextColor", color);
 }
 //------------------------------------------------------------------------------
 bool Settings::keepFitMode() {
@@ -827,4 +827,14 @@ ViewMode Settings::defaultViewMode() {
 
 void Settings::setDefaultViewMode(ViewMode mode) {
     settings->s->setValue("defaultViewMode", mode);
+}
+
+const ColorScheme& Settings::colorScheme() {
+    return mColorScheme;
+}
+
+void Settings::setColorScheme(ColorScheme &scheme) {
+    mColorScheme = scheme;
+    createColorVariants();
+    saveColorScheme();
 }

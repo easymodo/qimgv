@@ -134,7 +134,7 @@ void SettingsDialog::readSettings() {
     ui->fullscreenCheckBox->setChecked(settings->fullscreenMode());
     ui->panelPositionComboBox->setCurrentIndex(settings->panelPosition());
 
-    //bg colors
+    /*//bg colors
     QColor windowColor = settings->backgroundColor();
     windowColorPalette.setColor(QPalette::Window, windowColor);
     ui->windowColorLabel->setPalette(windowColorPalette);
@@ -156,6 +156,7 @@ void SettingsDialog::readSettings() {
     QColor higlightColor = settings->highlightColor();
     highlightLabelPalette.setColor(QPalette::Window, higlightColor);
     ui->highlightColorLabel->setPalette(highlightLabelPalette);
+    */
 
     // thumbnail size
     // maybe use slider instead of combobox?
@@ -232,11 +233,12 @@ void SettingsDialog::applySettings() {
 
     settings->setPanelPosition(static_cast<PanelHPosition>(ui->panelPositionComboBox->currentIndex()));
 
-    settings->setBackgroundColor(windowColorPalette.color(QPalette::Window));
+    /*settings->setBackgroundColor(windowColorPalette.color(QPalette::Window));
     settings->setBackgroundColorFullscreen(fullscreenColorPalette.color(QPalette::Window));
     settings->setFullscreenInfoTextColor(fullscreenTextColorPalette.color(QPalette::Window));
     settings->setAccentColor(accentLabelPalette.color(QPalette::Window));
     settings->setHighlightColor(highlightLabelPalette.color(QPalette::Window));
+    */
 
     int index = ui->thumbSizeComboBox->currentIndex();
     if(index == 0) {

@@ -368,8 +368,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>467</width>
-                <height>1070</height>
+                <width>466</width>
+                <height>1092</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1390,8 +1390,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>276</width>
-                <height>358</height>
+                <width>480</width>
+                <height>571</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -1440,6 +1440,9 @@
                  </property>
                  <item row="0" column="0">
                   <widget class="QLabel" name="accentColorTextLabel">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -1597,6 +1600,9 @@
                  </item>
                  <item row="0" column="0">
                   <widget class="QLabel" name="bgColorTextLabel">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -1703,6 +1709,9 @@
                  </item>
                  <item row="4" column="0">
                   <widget class="QLabel" name="label_16">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="text">
                     <string>Background color:</string>
                    </property>
@@ -1723,6 +1732,9 @@
                  </property>
                  <item>
                   <widget class="QLabel" name="label_22">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="text">
                     <string>Info bar text color:</string>
                    </property>
@@ -1801,6 +1813,9 @@
                  </property>
                  <item row="0" column="0">
                   <widget class="QCheckBox" name="transparencyGridCheckBox">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                      <horstretch>0</horstretch>
@@ -1886,6 +1901,9 @@
              </property>
              <item>
               <widget class="QLabel" name="label_19">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="text">
                 <string>Highlight color</string>
                </property>
@@ -1957,8 +1975,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>357</width>
-                <height>164</height>
+                <width>480</width>
+                <height>571</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2580,8 +2598,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>349</width>
-                <height>239</height>
+                <width>352</width>
+                <height>249</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2960,7 +2978,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>256</width>
-                <height>221</height>
+                <height>223</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">

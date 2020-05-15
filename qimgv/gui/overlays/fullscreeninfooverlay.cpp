@@ -17,8 +17,8 @@ FullscreenInfoOverlay::FullscreenInfoOverlay(FloatingWidgetContainer *parent) :
 }
 
 void FullscreenInfoOverlay::readSettings() {
-    QColor color = settings->fullscreenInfoTextColor();
-    ui->posLabel->setStyleSheet("color: " + color.name() + ";");
+    QColor color = settings->colorScheme().overlay_text;
+    ui->posLabel->setStyleSheet("color: "  + color.name() + ";");
     ui->nameLabel->setStyleSheet("color: " + color.name() + ";");
     ui->infoLabel->setStyleSheet("color: " + color.name() + ";");
 }
