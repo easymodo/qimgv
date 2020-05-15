@@ -50,8 +50,8 @@ enum ScalingFilter {
 
 enum ZoomIndicatorMode {
     INDICATOR_DISABLED,
-    INDICATOR_AUTOHIDE,
-    INDICATOR_ENABLED
+    INDICATOR_ENABLED,
+    INDICATOR_AUTO
 };
 
 enum DefaultCropAction {
@@ -113,12 +113,8 @@ public:
     QList<QByteArray> supportedFormats();
     QString supportedFormatsString();
     QString supportedFormatsRegex();
-    bool useFastScale();
-    void setUseFastScale(bool mode);
-    unsigned int lastFilePosition();
-    void setLastFilePosition(unsigned int pos);
-    unsigned int mainPanelSize();
-    void setMainPanelSize(unsigned int size);
+    int mainPanelSize();
+    void setMainPanelSize(int size);
     bool usePreloader();
     void setUsePreloader(bool mode);
     bool fullscreenMode();
@@ -127,10 +123,6 @@ public:
     void setImageFitMode(ImageFitMode mode);
     QRect windowGeometry();
     void setWindowGeometry(QRect geometry);
-    bool reduceRamUsage();
-    void setReduceRamUsage(bool mode);
-    bool playWebm();
-    void setPlayWebm(bool mode);
     bool playVideoSounds();
     void setPlayVideoSounds(bool mode);
     void setVolume(int vol);
@@ -145,20 +137,14 @@ public:
 
     bool infiniteScrolling();
     void setInfiniteScrolling(bool mode);
-    bool fullscreenTaskbarShown();
-    void setFullscreenTaskbarShown(bool mode);
     void readShortcuts(QMap<QString, QString> &shortcuts);
     void saveShortcuts(const QMap<QString, QString> &shortcuts);
     bool panelEnabled();
     void setPanelEnabled(bool mode);
     int lastDisplay();
     void setLastDisplay(int display);
-    bool mouseWrapping();
-    void setMouseWrapping(bool mode);
     bool squareThumbnails();
     void setSquareThumbnails(bool mode);
-    bool drawThumbnailSelectionBorder();
-    void setDrawThumbnailSelectionBorder(bool mode);
     bool transparencyGrid();
     void setTransparencyGrid(bool mode);
     bool enableSmoothScroll();
@@ -172,10 +158,6 @@ public:
     void setThumbnailerThreadCount(int count);
     bool smoothUpscaling();
     void setSmoothUpscaling(bool mode);
-    int maxZoomedResolution();
-    void setMaxZoomedResolution(int value);
-    int maximumZoom();
-    void setMaximumZoom(int value);
     void setExpandImage(bool mode);
     bool expandImage();
     ScalingFilter scalingFilter();
@@ -184,8 +166,6 @@ public:
     void setSmoothAnimatedImages(bool mode);
     bool panelFullscreenOnly();
     void setPanelFullscreenOnly(bool mode);
-    bool playMp4();
-    void setPlayMp4(bool mode);
     QVersionNumber lastVersion();
     void setLastVersion(QVersionNumber &ver);
     void setShowChangelogs(bool mode);
@@ -265,6 +245,8 @@ public:
     const ColorScheme& colorScheme();
     void setColorScheme(ColorScheme &scheme);
 
+    bool videoPlayback();
+    void setVideoPlayback(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

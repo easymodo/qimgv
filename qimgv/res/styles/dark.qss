@@ -696,3 +696,9 @@ SettingsDialog QPushButton,
 SettingsDialog QComboBox {
     min-height: 20px;
 }
+
+[accessibleName="StyledOptionsGroup"] {
+    background-color: rgba(0, 0, 0, 13);
+    border: 1px solid rgba(0, 0, 0, 13);
+    border-radius: 3px;
+}

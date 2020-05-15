@@ -134,12 +134,8 @@ void Settings::setMpvBinary(QString path) {
 QList<QByteArray> Settings::supportedFormats() {
     auto formats = QImageReader::supportedImageFormats();
     formats << "jfif";
-    if(playWebm()) {
-        formats << "webm";
-    }
-    if(playMp4()) {
-        formats << "mp4";
-    }
+    if(videoPlayback())
+        formats << "webm" << "mp4";
     return formats;
 }
 //------------------------------------------------------------------------------
@@ -148,11 +144,7 @@ QList<QByteArray> Settings::supportedFormats() {
 QString Settings::supportedFormatsString() {
     QString filters;
     auto formats = supportedFormats();
-    if(playWebm())
-        formats << "webm";
-    if(playMp4())
-        formats << "mp4";
-    filters.append("Images (");
+    filters.append("Supported files (");
     for(int i = 0; i < formats.count(); i++) {
         filters.append("*." + QString(formats.at(i)) + " ");
     }
@@ -176,38 +168,24 @@ QString Settings::supportedFormatsRegex() {
 QStringList Settings::supportedMimeTypes() {
     QStringList filters;
     QList<QByteArray> mimeTypes = QImageReader::supportedMimeTypes();
-    if(playWebm())
-        mimeTypes << "video/webm";
-    if(playMp4())
-        mimeTypes << "video/mp4";
+    if(videoPlayback())
+        mimeTypes << "video/webm" << "video/mp4";
     for(int i = 0; i < mimeTypes.count(); i++) {
         filters << QString(mimeTypes.at(i));
     }
     return filters;
 }
 //------------------------------------------------------------------------------
-bool Settings::playWebm() {
+bool Settings::videoPlayback() {
 #ifdef USE_MPV
-    return settings->s->value("playWebm", true).toBool();
+    return settings->s->value("videoPlayback", true).toBool();
 #else
     return false;
 #endif
 }
 
-void Settings::setPlayWebm(bool mode) {
-    settings->s->setValue("playWebm", mode);
-}
-//------------------------------------------------------------------------------
-bool Settings::playMp4() {
-#ifdef USE_MPV
-    return settings->s->value("playMp4", true).toBool();
-#else
-    return false;
-#endif
-}
-
-void Settings::setPlayMp4(bool mode) {
-    settings->s->setValue("playMp4", mode);
+void Settings::setVideoPlayback(bool mode) {
+    settings->s->setValue("videoPlayback", mode);
 }
 //------------------------------------------------------------------------------
 QVersionNumber Settings::lastVersion() {
@@ -291,28 +269,6 @@ int Settings::volume() {
     return settings->state->value("volume", 100).toInt();
 }
 //------------------------------------------------------------------------------
-bool Settings::useFastScale() {
-    return settings->s->value("useFastScale", "true").toBool();
-}
-
-void Settings::setUseFastScale(bool mode) {
-    settings->s->setValue("useFastScale", mode);
-}
-//------------------------------------------------------------------------------
-unsigned int Settings::lastFilePosition() {
-    bool ok = true;
-    unsigned int pos = settings->state->value("lastFilePosition", "0").toUInt(&ok);
-    if(!ok) {
-        qDebug() << "Settings: Invalid lastFilePosition. Resetting to 0.";
-        pos = 0;
-    }
-    return pos;
-}
-
-void Settings::setLastFilePosition(unsigned int pos) {
-    settings->state->setValue("lastFilePosition", pos);
-}
-//------------------------------------------------------------------------------
 bool Settings::showThumbnailLabels() {
     return settings->s->value("showThumbnailLabels", false).toBool();
 }
@@ -321,16 +277,16 @@ void Settings::setShowThumbnailLabels(bool mode) {
     settings->s->setValue("showThumbnailLabels", mode);
 }
 //------------------------------------------------------------------------------
-unsigned int Settings::mainPanelSize() {
+int Settings::mainPanelSize() {
     bool ok = true;
-    unsigned int size = settings->s->value("mainPanelSize", mainPanelSizeDefault).toUInt(&ok);
-    if(!ok) {
+    int size = settings->s->value("mainPanelSize", mainPanelSizeDefault).toInt(&ok);
+    if(!ok)
         size = mainPanelSizeDefault;
-    }
+    size = qBound(160, size, 350);
     return size;
 }
 
-void Settings::setMainPanelSize(unsigned int size) {
+void Settings::setMainPanelSize(int size) {
     settings->s->setValue("mainPanelSize", size);
 }
 //------------------------------------------------------------------------------
@@ -517,14 +473,6 @@ void Settings::saveScripts(const QMap<QString, Script> &scripts) {
     }
     settings->s->endArray();
     settings->s->endGroup();
-}
-//------------------------------------------------------------------------------
-bool Settings::mouseWrapping() {
-    return settings->s->value("mouseWrapping", false).toBool();
-}
-
-void Settings::setMouseWrapping(bool mode) {
-    settings->s->setValue("mouseWrapping", mode);
 }
 //------------------------------------------------------------------------------
 bool Settings::squareThumbnails() {

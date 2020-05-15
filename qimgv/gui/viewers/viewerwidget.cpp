@@ -148,7 +148,7 @@ void ViewerWidget::onScaleChanged(qreal scale) {
         zoomIndicator->setScale(scale);
         if(settings->zoomIndicatorMode() == ZoomIndicatorMode::INDICATOR_ENABLED)
             zoomIndicator->show();
-        else if((settings->zoomIndicatorMode() == ZoomIndicatorMode::INDICATOR_AUTOHIDE))
+        else if((settings->zoomIndicatorMode() == ZoomIndicatorMode::INDICATOR_AUTO))
             zoomIndicator->show(1500);
     } else {
         zoomIndicator->hide();

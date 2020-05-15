@@ -74,12 +74,12 @@ void SettingsDialog::setupSidebar() {
 
 void SettingsDialog::readSettings() {
     ui->infiniteScrollingCheckBox->setChecked(settings->infiniteScrolling());
-    ui->playWebmCheckBox->setChecked(settings->playWebm());
-    ui->playMp4CheckBox->setChecked(settings->playMp4());
+    ui->videoPlaybackCheckBox->setChecked(settings->videoPlayback());
+    ui->videoPlaybackGroupContents->setEnabled(settings->videoPlayback());
     ui->playSoundsCheckBox->setChecked(settings->playVideoSounds());
     ui->enablePanelCheckBox->setChecked(settings->panelEnabled());
+    ui->thumbnailPanelGroupContents->setEnabled(settings->panelEnabled());
     ui->panelFullscreenOnlyCheckBox->setChecked(settings->panelFullscreenOnly());
-    ui->mouseWrappingCheckBox->setChecked(settings->mouseWrapping());
     ui->squareThumbnailsCheckBox->setChecked(settings->squareThumbnails());
     ui->transparencyGridCheckBox->setChecked(settings->transparencyGrid());
     ui->enableSmoothScrollCheckBox->setChecked(settings->enableSmoothScroll());
@@ -87,11 +87,17 @@ void SettingsDialog::readSettings() {
     ui->useThumbnailCacheCheckBox->setChecked(settings->useThumbnailCache());
     ui->smoothUpscalingCheckBox->setChecked(settings->smoothUpscaling());
     ui->expandImageCheckBox->setChecked(settings->expandImage());
+    ui->expandImagesGroupContents->setEnabled(settings->expandImage());
     ui->smoothAnimatedImagesCheckBox->setChecked(settings->smoothAnimatedImages());
     ui->bgOpacitySlider->setValue(static_cast<int>(settings->backgroundOpacity() * 100));
     ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
-    ui->zoomIndicatorComboBox->setCurrentIndex(settings->zoomIndicatorMode());
+    if(settings->zoomIndicatorMode() == INDICATOR_ENABLED)
+        ui->zoomIndicatorOn->setChecked(true);
+    else if(settings->zoomIndicatorMode() == INDICATOR_AUTO)
+        ui->zoomIndicatorAuto->setChecked(true);
+    else
+        ui->zoomIndicatorOff->setChecked(true);
     ui->showInfoBarFullscreen->setChecked(settings->infoBarFullscreen());
     ui->showInfoBarWindowed->setChecked(settings->infoBarWindowed());
     ui->showExtendedInfoTitle->setChecked(settings->windowTitleExtendedInfo());
@@ -109,9 +115,6 @@ void SettingsDialog::readSettings() {
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
-    // ##### scaling #####
-    ui->scalingQualityComboBox->setCurrentIndex(settings->useFastScale() ? 1 : 0);
-
     ui->zoomStepSlider->setValue(static_cast<int>(settings->zoomStep() * 10));
     onZoomStepSliderChanged(ui->zoomStepSlider->value());
 
@@ -126,15 +129,25 @@ void SettingsDialog::readSettings() {
     onThumbnailerThreadsSliderChanged(ui->thumbnailerThreadsSlider->value());
 
     // ##### fit mode #####
-    int fitMode = settings->imageFitMode();
-    ui->fitModeComboBox->setCurrentIndex(fitMode);
+    if(settings->imageFitMode() == FIT_WINDOW)
+        ui->fitModeWindow->setChecked(true);
+    else if(settings->imageFitMode() == FIT_WIDTH)
+        ui->fitModeWidth->setChecked(true);
+    else
+        ui->fitMode1to1->setChecked(true);
 
     // ##### UI #####
     ui->scalingQualityComboBox->setCurrentIndex(settings->scalingFilter());
     ui->fullscreenCheckBox->setChecked(settings->fullscreenMode());
-    ui->panelPositionComboBox->setCurrentIndex(settings->panelPosition());
+    if(settings->panelPosition() == PANEL_TOP)
+        ui->panelTop->setChecked(true);
+    else
+        ui->panelBottom->setChecked(true);
+    // reduce by 10x to have nice granular control in qslider
+    ui->panelSizeSlider->setValue(settings->mainPanelSize() / 10);
 
-    /*//bg colors
+    // theme settings - later
+    /*
     QColor windowColor = settings->backgroundColor();
     windowColorPalette.setColor(QPalette::Window, windowColor);
     ui->windowColorLabel->setPalette(windowColorPalette);
@@ -158,28 +171,6 @@ void SettingsDialog::readSettings() {
     ui->highlightColorLabel->setPalette(highlightLabelPalette);
     */
 
-    // thumbnail size
-    // maybe use slider instead of combobox?
-    unsigned int size = settings->mainPanelSize();
-    switch(size) {
-        case SettingsDialog::thumbSizeSmall:
-            ui->thumbSizeComboBox->setCurrentIndex(0);
-            break;
-        case SettingsDialog::thumbSizeMedium:
-            ui->thumbSizeComboBox->setCurrentIndex(1);
-            break;
-        case SettingsDialog::thumbSizeLarge:
-            ui->thumbSizeComboBox->setCurrentIndex(2);
-            break;
-        case SettingsDialog::thumbSizeVeryLarge:
-            ui->thumbSizeComboBox->setCurrentIndex(3);
-            break;
-        default:
-            ui->thumbSizeComboBox->addItem("Custom: " + QString::number(size) + "px");
-            ui->thumbSizeComboBox->setCurrentIndex(4);
-            thumbSizeCustom = size;
-            break;
-    }
     populateShortcuts();
     populateScripts();
 }
@@ -192,13 +183,16 @@ void SettingsDialog::applySettings() {
 
     settings->setInfiniteScrolling(ui->infiniteScrollingCheckBox->isChecked());
     settings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
-    settings->setImageFitMode(static_cast<ImageFitMode>(ui->fitModeComboBox->currentIndex()));
-    settings->setPlayWebm(ui->playWebmCheckBox->isChecked());
-    settings->setPlayMp4(ui->playMp4CheckBox->isChecked());
+    if(ui->fitModeWindow->isChecked())
+        settings->setImageFitMode(FIT_WINDOW);
+    else if(ui->fitModeWidth->isChecked())
+        settings->setImageFitMode(FIT_WIDTH);
+    else
+        settings->setImageFitMode(FIT_ORIGINAL);
+    settings->setVideoPlayback(ui->videoPlaybackCheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
     settings->setPanelEnabled(ui->enablePanelCheckBox->isChecked());
     settings->setPanelFullscreenOnly(ui->panelFullscreenOnlyCheckBox->isChecked());
-    settings->setMouseWrapping(ui->mouseWrappingCheckBox->isChecked());
     settings->setSquareThumbnails(ui->squareThumbnailsCheckBox->isChecked());
     settings->setTransparencyGrid(ui->transparencyGridCheckBox->isChecked());
     settings->setEnableSmoothScroll(ui->enableSmoothScrollCheckBox->isChecked());
@@ -210,7 +204,12 @@ void SettingsDialog::applySettings() {
     settings->setBackgroundOpacity(static_cast<qreal>(ui->bgOpacitySlider->value()) / 100);
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
-    settings->setZoomIndicatorMode(static_cast<ZoomIndicatorMode>(ui->zoomIndicatorComboBox->currentIndex()));
+    if(ui->zoomIndicatorOn->isChecked())
+        settings->setZoomIndicatorMode(INDICATOR_ENABLED);
+    else if(ui->zoomIndicatorAuto->isChecked())
+        settings->setZoomIndicatorMode(INDICATOR_AUTO);
+    else
+        settings->setZoomIndicatorMode(INDICATOR_DISABLED);
     settings->setInfoBarFullscreen(ui->showInfoBarFullscreen->isChecked());
     settings->setInfoBarWindowed(ui->showInfoBarWindowed->isChecked());
     settings->setWindowTitleExtendedInfo(ui->showExtendedInfoTitle->isChecked());
@@ -231,7 +230,10 @@ void SettingsDialog::applySettings() {
 
     settings->setImageScrolling(static_cast<ImageScrolling>(ui->imageScrollingComboBox->currentIndex()));
 
-    settings->setPanelPosition(static_cast<PanelHPosition>(ui->panelPositionComboBox->currentIndex()));
+    if(ui->panelTop->isChecked())
+        settings->setPanelPosition(PANEL_TOP);
+    else
+        settings->setPanelPosition(PANEL_BOTTOM);
 
     /*settings->setBackgroundColor(windowColorPalette.color(QPalette::Window));
     settings->setBackgroundColorFullscreen(fullscreenColorPalette.color(QPalette::Window));
@@ -240,18 +242,7 @@ void SettingsDialog::applySettings() {
     settings->setHighlightColor(highlightLabelPalette.color(QPalette::Window));
     */
 
-    int index = ui->thumbSizeComboBox->currentIndex();
-    if(index == 0) {
-        settings->setMainPanelSize(thumbSizeSmall);
-    } else if(index == 1) {
-        settings->setMainPanelSize(thumbSizeMedium);
-    } else if(index == 2) {
-        settings->setMainPanelSize(thumbSizeLarge);
-    } else if(index == 3) {
-        settings->setMainPanelSize(thumbSizeVeryLarge);
-    } else if(index == 4) {
-        settings->setMainPanelSize(thumbSizeCustom);
-    }
+    settings->setMainPanelSize(ui->panelSizeSlider->value() * 10);
 
     settings->setJPEGSaveQuality(ui->JPEGQualitySlider->value());
     settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value()) / 10);
@@ -477,7 +468,7 @@ void SettingsDialog::highlightColorDialog() {
 
 void SettingsDialog::onExpandLimitSliderChanged(int value) {
     if(value == 0)
-        ui->expandLimitLabel->setText("none");
+        ui->expandLimitLabel->setText("-");
     else
         ui->expandLimitLabel->setText(QString::number(value) + "x");
 }

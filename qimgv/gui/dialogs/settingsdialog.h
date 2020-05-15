@@ -36,14 +36,7 @@ private:
     void populateShortcuts();
     void populateScripts();
     Ui::SettingsDialog *ui;
-    enum Constants {
-        thumbSizeSmall = 170,
-        thumbSizeMedium = 210,
-        thumbSizeLarge = 230,
-        thumbSizeVeryLarge = 250
-    };
 
-    unsigned int thumbSizeCustom;
     void applyShortcuts();
     void addShortcutToTable(const QString &action, const QString &shortcut);
     void addScriptToList(const QString &name);
