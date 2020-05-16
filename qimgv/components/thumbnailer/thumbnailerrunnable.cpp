@@ -81,26 +81,40 @@ ThumbnailerRunnable::~ThumbnailerRunnable() {
 }
 
 std::pair<QImage*, QSize> ThumbnailerRunnable::createThumbnail(QUrl path, const char *format, int size, bool squared) {
-    QImageReader reader;
-    reader.setFileName(path.toString());
-    reader.setFormat(format);
+    QImageReader *reader = new QImageReader(path.toString(), format);
     Qt::AspectRatioMode ARMode = squared?
                 (Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
     QImage *result = nullptr;
     QSize originalSize;
-    if(reader.supportsOption(QImageIOHandler::Size)) { // resize during via QImageReader
-        QSize scaledSize = reader.size().scaled(size, size, ARMode);
-        reader.setScaledSize(scaledSize);
+    bool manualResize = !reader->supportsOption(QImageIOHandler::Size);
+    if(!manualResize) { // resize during read via QImageReader (faster)
+        QSize scaledSize = reader->size().scaled(size, size, ARMode);
+        reader->setScaledSize(scaledSize);
         if(squared) {
             QRect clip(0, 0, size, size);
             QRect scaledRect(QPoint(0,0), scaledSize);
             clip.moveCenter(scaledRect.center());
-            reader.setScaledClipRect(clip);
+            reader->setScaledClipRect(clip);
         }
-        originalSize = reader.size();
-        result = new QImage(reader.read());
-    } else { // scale & crop manually
-        QImage *fullSize = new QImage(reader.read());
+        originalSize = reader->size();
+        result = new QImage();
+        if(!reader->read(result)) {
+            // If read() returns false there's no guarantee that size conversion worked properly.
+            // So we fallback to manual.
+            // Se far I've seen this happen only on some weird (corrupted?) jpeg saved from camera
+            manualResize = true;
+            delete result;
+            result = nullptr;
+            // Force reset reader because it is really finicky
+            // and can fail on the second read attempt (yeah wtf)
+            reader->setFileName("");
+            delete reader;
+            reader = new QImageReader(path.toString(), format);
+        }
+    }
+    if(manualResize) { // manual resize & crop. slower but should just work
+        QImage *fullSize = new QImage();
+        reader->read(fullSize);
         originalSize = fullSize->size();
         QSize scaledSize = fullSize->size().scaled(size, size, ARMode);
         if(squared) {
@@ -115,8 +129,8 @@ std::pair<QImage*, QSize> ThumbnailerRunnable::createThumbnail(QUrl path, const 
         delete fullSize;
     }
     // force reader to close file so it can be deleted later
-    reader.setFileName("");
-
+    reader->setFileName("");
+    delete reader;
     return std::make_pair(result, originalSize);
 }
 
