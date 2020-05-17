@@ -24,7 +24,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 #endif
 
 #ifndef USE_MPV
-    ui->videoSettingsWidget->setEnabled(false);
+    ui->videoPlaybackGroup->setEnabled(false);
     ui->novideoInfoLabel->setHidden(false);
 #else
     ui->novideoInfoLabel->setHidden(true);
