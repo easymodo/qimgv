@@ -58,6 +58,7 @@ QString Settings::tmpDir() {
 }
 //------------------------------------------------------------------------------
 void Settings::loadColorScheme() {
+    theme->beginGroup("Colors");
     mColorScheme.background            = QColor(theme->value("background",            "#1b1b1c").toString());
     mColorScheme.background_fullscreen = QColor(theme->value("background_fullscreen", "#1b1b1c").toString());
     mColorScheme.text                  = QColor(theme->value("text",                  "#9c9ea0").toString());
@@ -72,6 +73,7 @@ void Settings::loadColorScheme() {
     mColorScheme.slider_handle         = QColor(theme->value("slider_handle",         "#5c5e60").toString());
     mColorScheme.overlay_text          = QColor(theme->value("overlay_text",          "#d2d2d2").toString());
     mColorScheme.overlay               = QColor(theme->value("overlay",               "#1a1a1b").toString());
+    theme->endGroup();
     createColorVariants();
 }
 void Settings::saveColorScheme() {

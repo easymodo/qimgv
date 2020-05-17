@@ -69,7 +69,7 @@ void ThumbnailGridWidget::drawLabel(QPainter *painter) {
     //if(isHovered())
     //    painter->setPen(QColor(240, 240, 240, 255));
     //else
-        painter->setPen(QColor(220, 220, 220, 255));
+        painter->setPen(settings->colorScheme().text);
     painter->drawText(nameTextRect, flags, thumbnail->name());
     // additional info
     //painter->setFont(fontSmall);

@@ -247,7 +247,7 @@ SidePanel QDoubleSpinBox
 {
     color: %text_dark%;
     background-color: %widget%;
-    border: 2px solid %button_border%;
+    border: 1px solid %button_border%;
     border-radius: 2px;
     padding: 2 0 2 0;
     min-height: 20px;
@@ -256,7 +256,7 @@ SidePanel QDoubleSpinBox
 SidePanel QSpinBox:focus,
 SidePanel QDoubleSpinBox:focus
 {
-    border-color: %input_field_focus%;
+    border: 2px solid %input_field_focus%;
 }
 
 SidePanel QSpinBox::up-button, QDoubleSpinBox::up-button  {

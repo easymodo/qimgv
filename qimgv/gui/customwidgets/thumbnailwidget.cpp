@@ -14,7 +14,6 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
 {
     setAttribute(Qt::WA_OpaquePaintEvent, true);
     setAcceptHoverEvents(true);
-    nameColor.setRgb(20, 20, 20, 255);
     qreal fntSz = font.pointSizeF();
     if(fntSz > 0) {
         fontSmall.setPointSizeF(fontSmall.pointSizeF() * 0.85);
@@ -31,6 +30,7 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
 }
 
 void ThumbnailWidget::readSettings() {
+    nameColor = settings->colorScheme().text;
     highlightColor = settings->colorScheme().accent;
 }
 
@@ -192,16 +192,16 @@ void ThumbnailWidget::drawHover(QPainter *painter) {
 void ThumbnailWidget::drawLabel(QPainter *painter) {
     // text background
     painter->setOpacity(0.95);
-    painter->fillRect(nameRect, nameColor);
+    painter->fillRect(nameRect, QColor(15,15,15));
     painter->setOpacity(1.0);
     // filename
     int flags = Qt::TextSingleLine | Qt::AlignVCenter;
     painter->setFont(font);
-    painter->setPen(QColor(210, 210, 210, 255));
+    painter->setPen(settings->colorScheme().text_lighter);
     painter->drawText(nameTextRect, flags, thumbnail->name());
     // additional info
     painter->setFont(fontSmall);
-    painter->setPen(QColor(160, 160, 160, 255));
+    painter->setPen(settings->colorScheme().text_dark);
     painter->drawText(labelTextRect, flags, thumbnail->label());
 }
 

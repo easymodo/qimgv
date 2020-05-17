@@ -115,8 +115,8 @@ void ThumbnailStrip::setThumbnailSize(int newSize) {
 // resizes thumbnailSize to fit new widget size
 // TODO: find some way to make this trigger while hidden
 void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
-    Q_UNUSED(event)
     ThumbnailView::resizeEvent(event);
+    fitSceneToContents();
     if(event->oldSize().height() != height())
         updateThumbnailSize();
     if(event->oldSize().width() < width())
