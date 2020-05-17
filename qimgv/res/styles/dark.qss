@@ -698,7 +698,7 @@ SettingsDialog QComboBox {
 }
 
 [accessibleName="StyledOptionsGroup"] {
-    background-color: rgba(0, 0, 0, 13);
-    border: 1px solid rgba(0, 0, 0, 13);
-    border-radius: 3px;
+    /* This needs to look "ok" with both light and dark themes. May need further tweaking */
+    background-color: rgba(130, 130, 130, 40);
+    border-top: 4px solid rgba(130, 130, 130, 40);
 }
