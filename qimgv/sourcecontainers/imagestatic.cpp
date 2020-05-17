@@ -29,7 +29,18 @@ void ImageStatic::load() {
 
 
 void ImageStatic::loadGeneric() {
-    std::unique_ptr<const QImage> img(new QImage(mPath, mDocInfo->format().toStdString().c_str()));
+    /* QImageReader::read() seems more reliable than just reading via QImage.
+     * For example: "Invalid JPEG file structure: two SOF markers"
+     * QImageReader::read() returns false, but still reads an image. Meanwhile QImage just fails.
+     * I havent checked qimage's code, but it seems like it sees an exception
+     * from libjpeg or whatever and just gives up on reading the file.
+     *
+     * tldr: qimage bad
+     */
+    QImageReader r(mPath, mDocInfo->format().toStdString().c_str());
+    QImage *tmp = new QImage();
+    r.read(tmp);
+    std::unique_ptr<const QImage> img(tmp);
     img = ImageLib::exifRotated(std::move(img), mDocInfo.get()->exifOrientation());
     // scaling this format via qt results in transparent background
     // it rare enough so lets just convert it to the closest working thing
