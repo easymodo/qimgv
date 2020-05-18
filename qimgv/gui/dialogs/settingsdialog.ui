@@ -2933,8 +2933,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>352</width>
-                <height>249</height>
+                <width>553</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2986,6 +2986,9 @@
                  </property>
                  <item row="4" column="0">
                   <widget class="QCheckBox" name="useOpenGLCheckBox">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="text">
                     <string>Use OpenGL (restart required)</string>
                    </property>
@@ -3312,8 +3315,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>256</width>
-                <height>223</height>
+                <width>553</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
