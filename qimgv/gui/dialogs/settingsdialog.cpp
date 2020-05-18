@@ -37,6 +37,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 #endif
 
     setupSidebar();
+    ui->sideBar->setCurrentRow(0);
 
     connect(this, &SettingsDialog::settingsChanged, settings, &Settings::sendChangeNotification);
     readSettings();

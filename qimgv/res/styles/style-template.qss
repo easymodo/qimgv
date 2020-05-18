@@ -155,7 +155,6 @@ QComboBox QAbstractItemView {
 FloatingWidget {
     background-color: %widget%;
     border: 1px solid %widget_border%;
-    /* border-radius: 2px; */
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="OverlayHeaderWidget"] {
@@ -172,8 +171,8 @@ FloatingWidget {
 }
 
 [accessibleName="OverlayCloseButton"]:hover {
-    background-color: %accent_darker%;
-    border-color: %accent_darker%;
+    background-color: %accent_dark%;
+    border-color: %accent_dark%;
 }
 
 [accessibleName="OverlayHeaderLabel"] {
@@ -363,7 +362,7 @@ PathSelectorMenuItem [accessibleName="MenuItemIcon"] {
 }
 
 PathSelectorMenuItem [accessibleName="MenuItemIcon"]:hover {
-    background-color: %accent_darker%;
+    background-color: %accent_dark%;
 }
 
 
@@ -484,7 +483,7 @@ ContextMenu {
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="MenuItem"]:hover {
-    background-color: %accent%;   /* %bg5% */
+    background-color: %accent%;
 }
 
 [accessibleName="MenuItem"] QLabel {
@@ -592,8 +591,8 @@ FolderView QTreeView::item {
 }
 
 FolderView QTreeView::item:hover {
-    background-color: %accent_darker%;
-    border-color: %accent_darker%;
+    background-color: %accent_dark%;
+    border-color: %accent_dark%;
 }
 
 FolderView QTreeView::item:selected:!active,
@@ -620,8 +619,8 @@ BookmarksItem {
 }
 
 BookmarksItem:hover {
-    background-color: %accent_darker%;
-    border-color: %accent_darker%;
+    background-color: %accent_dark%;
+    border-color: %accent_dark%;
 }
 
 BookmarksItem QLabel {
@@ -665,8 +664,8 @@ BookmarksItem[highlighted="true"] {
 
 [accessibleName="PlacesPanelButton"]:pressed,
 [accessibleName="PlacesPanelButton"][pressed="true"] {
-    background-color: %accent_darker%;
-    border: 1px solid %accent_darker%;
+    background-color: %accent_dark%;
+    border: 1px solid %accent_dark%;
 }
 /*----------------------------------------------------------------------------*/
 
@@ -701,4 +700,9 @@ SettingsDialog QComboBox {
     /* This needs to look "ok" with both light and dark themes. May need further tweaking */
     background-color: rgba(130, 130, 130, 40);
     border-top: 4px solid rgba(130, 130, 130, 40);
+}
+
+[accessibleName="SettingsBottomWidget"] {
+    /* This needs to look "ok" with both light and dark themes. May need further tweaking */
+    background-color: rgba(130, 130, 130, 70);
 }

@@ -27,7 +27,7 @@ QDataStream& operator>>(QDataStream& in, Script& v) {
 
 void loadStylesheet() {
     // stylesheet template file
-    QFile file(":/res/styles/dark.qss");
+    QFile file(":/res/styles/style-template.qss");
     if(file.open(QFile::ReadOnly)) {
         auto colors = settings->colorScheme();
         QString styleSheet = QLatin1String(file.readAll());
@@ -42,7 +42,7 @@ void loadStylesheet() {
         styleSheet.replace("%folderview_topbar%", colors.folderview_topbar.name());
         styleSheet.replace("%folderview_panel%",  colors.folderview_panel.name());
         styleSheet.replace("%accent%",            colors.accent.name());
-        styleSheet.replace("%accent_darker%",     colors.accent_darker.name());
+        styleSheet.replace("%accent_dark%",     colors.accent_dark.name());
         styleSheet.replace("%input_field_focus%", colors.input_field_focus.name());
         styleSheet.replace("%slider_groove%",     colors.slider_groove.name());
         styleSheet.replace("%slider_handle%",     colors.slider_handle.name());

@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>res/styles/dark.qss</file>
+        <file>res/styles/style-template.qss</file>
         <file>res/icons/app/48.png</file>
         <file>res/images/cropheader.png</file>
         <file>res/images/changelogheader.png</file>

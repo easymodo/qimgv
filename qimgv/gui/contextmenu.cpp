@@ -112,6 +112,16 @@ void ContextMenu::showAt(QPoint pos) {
     show();
 }
 
+void ContextMenu::setGeometry(QRect geom) {
+    auto screen = QGuiApplication::primaryScreen();
+    // fit inside the current screen
+    if(geom.bottom() > screen->geometry().bottom())
+        geom.moveBottom(screen->geometry().bottom());
+    if(geom.right() > screen->geometry().right())
+        geom.moveRight(screen->geometry().right());
+    QWidget::setGeometry(geom);
+}
+
 void ContextMenu::mousePressEvent(QMouseEvent *event) {
     QWidget::mousePressEvent(event);
     hide();

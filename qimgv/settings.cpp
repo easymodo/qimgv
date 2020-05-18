@@ -65,7 +65,7 @@ void Settings::loadColorScheme() {
     mColorScheme.widget                = QColor(theme->value("widget",                "#232324").toString());
     mColorScheme.widget_border         = QColor(theme->value("widget_border",         "#232324").toString());
     mColorScheme.button                = QColor(theme->value("button",                "#2f2f30").toString());
-    mColorScheme.accent                = QColor(theme->value("accent",                "#375e87").toString());
+    mColorScheme.accent                = QColor(theme->value("accent",                "#32587d").toString());
     mColorScheme.folderview            = QColor(theme->value("folderview",            "#2f2f30").toString());
     mColorScheme.folderview_topbar     = QColor(theme->value("folderview_topbar",     "#1a1a1b").toString());
     mColorScheme.folderview_panel      = QColor(theme->value("folderview_panel",      "#373738").toString());
@@ -96,14 +96,16 @@ void Settings::saveColorScheme() {
 }
 //------------------------------------------------------------------------------
 void Settings::createColorVariants() {
-    // darker & desaturated
-    mColorScheme.accent_darker.setHsv(mColorScheme.accent.hue(),
-                                      mColorScheme.accent.saturation() * 0.8f,
-                                      mColorScheme.accent.value() * 0.7f);
+    mColorScheme.accent_dark.setHsv(mColorScheme.accent.hue(),
+                                    mColorScheme.accent.saturation() * 0.9,
+                                    mColorScheme.accent.value() * 0.8f);
+    mColorScheme.accent_light.setHsv(mColorScheme.accent.hue(),
+                                     qMin(static_cast<int>(mColorScheme.accent.saturation() * 1.1), 255),
+                                     qMin(static_cast<int>(mColorScheme.accent.value() * 1.2), 255));
     mColorScheme.button_hover      = QColor(mColorScheme.button.lighter(115));
     mColorScheme.button_pressed    = QColor(mColorScheme.button.darker(120));
     mColorScheme.button_border     = QColor(mColorScheme.button.darker(145));
-    mColorScheme.input_field_focus = QColor(mColorScheme.accent_darker);
+    mColorScheme.input_field_focus = QColor(mColorScheme.accent);
     mColorScheme.slider_hover      = QColor(mColorScheme.slider_handle.lighter(120));
     mColorScheme.text_lighter      = QColor(mColorScheme.text.lighter(120));
     mColorScheme.text_light        = QColor(mColorScheme.text.lighter(110));

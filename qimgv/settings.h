@@ -91,7 +91,8 @@ struct ColorScheme {
     QColor button_pressed;
     QColor button_border;
     QColor accent;
-    QColor accent_darker;
+    QColor accent_dark;
+    QColor accent_light;
     QColor folderview;
     QColor folderview_topbar;
     QColor folderview_panel;
