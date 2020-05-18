@@ -747,7 +747,9 @@ void Settings::setFirstRun(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::useOpenGL() {
-    return settings->s->value("useOpenGL", false).toBool();
+    // this causes several issues, ignore for now
+    //return settings->s->value("useOpenGL", false).toBool();
+    return false;
 }
 
 void Settings::setUseOpenGL(bool mode) {

@@ -2633,6 +2633,9 @@
                  </property>
                  <item row="4" column="0">
                   <widget class="QCheckBox" name="useOpenGLCheckBox">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="text">
                     <string>Use OpenGL (restart required)</string>
                    </property>
