@@ -31,7 +31,7 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
 
 void ThumbnailWidget::readSettings() {
     nameColor = settings->colorScheme().text;
-    highlightColor = settings->colorScheme().accent_light;
+    highlightColor = settings->colorScheme().accent_hc;
 }
 
 void ThumbnailWidget::setThumbnailSize(int size) {
@@ -197,11 +197,11 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
     // filename
     int flags = Qt::TextSingleLine | Qt::AlignVCenter;
     painter->setFont(font);
-    painter->setPen(settings->colorScheme().text_lighter);
+    painter->setPen(settings->colorScheme().text_hc2);
     painter->drawText(nameTextRect, flags, thumbnail->name());
     // additional info
     painter->setFont(fontSmall);
-    painter->setPen(settings->colorScheme().text_dark);
+    painter->setPen(settings->colorScheme().text_lc1);
     painter->drawText(labelTextRect, flags, thumbnail->label());
 }
 

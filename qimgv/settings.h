@@ -79,11 +79,11 @@ enum ViewMode {
 struct ColorScheme {
     QColor background;
     QColor background_fullscreen;
-    QColor text_lighter;
-    QColor text_light;
+    QColor text_hc2;
+    QColor text_hc1;
     QColor text;
-    QColor text_dark;
-    QColor text_darker;
+    QColor text_lc1;
+    QColor text_lc2;
     QColor widget;
     QColor widget_border;
     QColor button;
@@ -91,8 +91,8 @@ struct ColorScheme {
     QColor button_pressed;
     QColor button_border;
     QColor accent;
-    QColor accent_dark;
-    QColor accent_light;
+    QColor accent_lc;
+    QColor accent_hc;
     QColor folderview;
     QColor folderview_topbar;
     QColor folderview_panel;
@@ -102,6 +102,12 @@ struct ColorScheme {
     QColor overlay_text;
     QColor overlay;
     QColor input_field_focus;
+};
+
+struct Theme {
+    ColorScheme colors;
+    bool dark = true;
+    QString iconTheme = "light";
 };
 
 class Settings : public QObject
@@ -243,6 +249,7 @@ public:
     ViewMode defaultViewMode();
     void setDefaultViewMode(ViewMode mode);
 
+    const Theme &theme();
     const ColorScheme& colorScheme();
     void setColorScheme(ColorScheme &scheme);
 
@@ -251,11 +258,11 @@ public:
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;
-    QSettings *s, *state, *theme;
+    QSettings *settingsConf, *stateConf, *themeConf;
     QDir *mTmpDir, *mThumbCacheDir, *mConfDir;
-    ColorScheme mColorScheme;
-    void loadColorScheme();
-    void saveColorScheme();
+    Theme mTheme;
+    void loadTheme();
+    void saveTheme();
     void createColorVariants();
 
 signals:

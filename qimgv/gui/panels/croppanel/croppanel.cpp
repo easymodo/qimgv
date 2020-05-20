@@ -12,6 +12,8 @@ CropPanel::CropPanel(CropOverlay *_overlay, QWidget *parent) :
     ui->ARcomboBox->setItemDelegate(new QStyledItemDelegate(ui->ARcomboBox));
     ui->ARcomboBox->view()->setTextElideMode(Qt::ElideNone);
 
+    ui->headerLabel->setPixmap(QPixmap(":res/icons/" + settings->theme().iconTheme + "/other/image-crop48.png"));
+
     hide();
 
     if(settings->defaultCropAction() == ACTION_CROP)

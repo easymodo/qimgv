@@ -7,6 +7,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowTitle("Preferences — " + qApp->applicationName());
+
     ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->windowColorLabel->setAutoFillBackground(true);
     ui->fullscreenColorLabel->setAutoFillBackground(true);
@@ -16,8 +17,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->aboutAppTextBrowser->viewport()->setAutoFillBackground(false);
     ui->versionLabel->setText("" + QApplication::applicationVersion());
     ui->qtVersionLabel->setText(qVersion());
-    ui->appIconLabel->setPixmap(QIcon(":/res/icons/app/22.png").pixmap(22,22));
-    ui->qtIconLabel->setPixmap(QIcon(":/res/icons/other/qt22.png").pixmap(22,16));
+    ui->appIconLabel->setPixmap(QIcon(":/res/icons/common/logo/app/22.png").pixmap(22,22));
+    ui->qtIconLabel->setPixmap(QIcon(":/res/icons/common/logo/3rdparty/qt22.png").pixmap(22,16));
 
 #ifndef USE_KDE_BLUR
     ui->blurBackgroundCheckBox->setEnabled(false);
@@ -48,24 +49,25 @@ SettingsDialog::~SettingsDialog() {
 }
 
 void SettingsDialog::setupSidebar() {
+    auto icontheme = settings->theme().iconTheme;
     QListWidget *sideBar = ui->sideBar;
     sideBar->viewport()->setAutoFillBackground(false);
     // General
-    sideBar->item(0)->setIcon(QIcon(":/res/icons/settings/32/general32.png"));
+    sideBar->item(0)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/general32.png"));
     // Appearance
-    sideBar->item(1)->setIcon(QIcon(":/res/icons/settings/32/appearance32.png"));
+    sideBar->item(1)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/appearance32.png"));
     // FolderView
-    sideBar->item(2)->setIcon(QIcon(":/res/icons/settings/32/folderview32.png"));
+    sideBar->item(2)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/folderview32.png"));
     // Scaling
-    sideBar->item(3)->setIcon(QIcon(":/res/icons/settings/32/scale32.png"));
+    sideBar->item(3)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/scale32.png"));
     // Controls
-    sideBar->item(4)->setIcon(QIcon(":/res/icons/settings/32/shortcuts32.png"));
+    sideBar->item(4)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/shortcuts32.png"));
     // Scripts
-    sideBar->item(5)->setIcon(QIcon(":/res/icons/settings/32/terminal32.png"));
+    sideBar->item(5)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/terminal32.png"));
     // Advanced
-    sideBar->item(6)->setIcon(QIcon(":/res/icons/settings/32/advanced32.png"));
+    sideBar->item(6)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/advanced32.png"));
     // About
-    sideBar->item(7)->setIcon(QIcon(":/res/icons/settings/32/about32.png"));
+    sideBar->item(7)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/about32.png"));
 
 #ifdef _WIN32
     // Not implemented on windows. Not sure if will ever be. I don't really care.

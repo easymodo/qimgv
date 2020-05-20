@@ -31,6 +31,19 @@ void loadStylesheet() {
     if(file.open(QFile::ReadOnly)) {
         auto colors = settings->colorScheme();
         QString styleSheet = QLatin1String(file.readAll());
+
+        QPalette p;
+        auto system_window = p.window().color();
+        // values might need tweaking
+        bool system_dark_theme = (system_window.valueF() < 0.32f);
+        QColor system_window_tinted;
+        if(system_dark_theme)
+            system_window_tinted = system_window.lighter(123);
+        else
+            system_window_tinted = system_window.darker(108);
+
+        styleSheet.replace("%icontheme%",         settings->theme().iconTheme);
+
         // -------------- write colors into stylesheet ---------------
         styleSheet.replace("%button%",            colors.button.name());
         styleSheet.replace("%button_hover%",      colors.button_hover.name());
@@ -42,18 +55,20 @@ void loadStylesheet() {
         styleSheet.replace("%folderview_topbar%", colors.folderview_topbar.name());
         styleSheet.replace("%folderview_panel%",  colors.folderview_panel.name());
         styleSheet.replace("%accent%",            colors.accent.name());
-        styleSheet.replace("%accent_dark%",     colors.accent_dark.name());
+        styleSheet.replace("%accent_lc%",         colors.accent_lc.name());
         styleSheet.replace("%input_field_focus%", colors.input_field_focus.name());
         styleSheet.replace("%slider_groove%",     colors.slider_groove.name());
         styleSheet.replace("%slider_handle%",     colors.slider_handle.name());
         styleSheet.replace("%slider_hover%",      colors.slider_hover.name());
         styleSheet.replace("%overlay%",           colors.overlay.name());
-        styleSheet.replace("%text_lighter%",      colors.text_lighter.name());
-        styleSheet.replace("%text_light%",        colors.text_light.name());
+        styleSheet.replace("%text_hc2%",          colors.text_hc2.name());
+        styleSheet.replace("%text_hc1%",          colors.text_hc1.name());
         styleSheet.replace("%text%",              colors.text.name());
         styleSheet.replace("%overlay_text%",      colors.overlay_text.name());
-        styleSheet.replace("%text_dark%",         colors.text_dark.name());
-        styleSheet.replace("%text_darker%",       colors.text_darker.name());
+        styleSheet.replace("%text_lc1%",          colors.text_lc1.name());
+        styleSheet.replace("%text_lc2%",          colors.text_lc2.name());
+
+        styleSheet.replace("%system_window_tinted%", system_window_tinted.name());
         // ------------------------ apply ----------------------------
         qApp->setStyleSheet(styleSheet);
     }

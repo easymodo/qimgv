@@ -3,7 +3,7 @@
 
 [accessibleName="Button"], [accessibleName="ButtonSetLeft"], [accessibleName="ButtonSetRight"]
 {
-    color: %text_dark%;
+    color: %text_lc1%;
     background-color: %button%;
     border: 1px solid %button_border%;
     border-radius: 2px;
@@ -23,7 +23,7 @@
 [accessibleName="ButtonSetRight"]:pressed, [accessibleName="ButtonSetRight"][pressed="true"]
 {
     background-color: %button_pressed%;
-    color: %text_darker%;
+    color: %text_lc2%;
 }
 
 [accessibleName="ButtonSetLeft"] {
@@ -96,7 +96,7 @@ QComboBox QAbstractItemView {
 
 [accessibleName="PanelComboBox"] {
     background-color: %button%;
-    color: %text_light%;
+    color: %text_hc1%;
     border: 2px solid %button%;
     border-radius: 2px;
     padding: 2px 8px 2px 5px;
@@ -115,7 +115,7 @@ QComboBox QAbstractItemView {
 [accessibleName="PanelComboBox"]::down-arrow {
     border: 0px;
     margin-right: 8px;
-    image: url(:/res/icons/other/sorting-mode16.png);
+    image: url(:/res/icons/%icontheme%/other/sorting-mode16.png);
 }
 
 [accessibleName="PanelComboBox"]::drop-down {
@@ -132,7 +132,7 @@ QComboBox QAbstractItemView {
     border: 1px solid %widget%;
     border-radius: 1px;
     padding: 1px 4px;
-    color: %text_light%;
+    color: %text_hc1%;
     min-height: 22px;
 }
 
@@ -171,22 +171,22 @@ FloatingWidget {
 }
 
 [accessibleName="OverlayCloseButton"]:hover {
-    background-color: %accent_dark%;
-    border-color: %accent_dark%;
+    background-color: %accent_lc%;
+    border-color: %accent_lc%;
 }
 
 [accessibleName="OverlayHeaderLabel"] {
-    color: %text_light%;
+    color: %text_hc1%;
 }
 
 FloatingWidget QTableWidget {
     background-color: %widget%;
-    color: %text_lighter%;
+    color: %text_hc2%;
 }
 
 FloatingWidget QLineEdit {
     background-color: %button%;
-    color: %text_light%;
+    color: %text_hc1%;
     border: 2px solid %button%;
     border-radius: 2px;
     padding: 4px 8px 4px 8px;
@@ -212,7 +212,7 @@ FullscreenInfoOverlay {
 }
 
 FullscreenInfoOverlay QLabel {
-/*    color: %text_lighter%;  managed from settings  */
+/*    color: %text_hc2%;  managed from settings  */
 /*    font: bold;*/
 }
 
@@ -221,7 +221,7 @@ FullscreenInfoOverlay QLabel {
 /*----------------------------------------------------------------------------*/
 
 FloatingMessage QLabel {
-    color: %text_light%;
+    color: %text_hc1%;
     font: bold;
 }
 
@@ -234,7 +234,7 @@ SidePanel {
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QGroupBox {
-    color: %text_dark%;
+    color: %text_lc1%;
     background-color: %button%;
     border: 1px solid %button_border%;
     border-radius: 2px;
@@ -244,7 +244,7 @@ SidePanel QGroupBox {
 SidePanel QSpinBox,
 SidePanel QDoubleSpinBox
 {
-    color: %text_dark%;
+    color: %text_lc1%;
     background-color: %widget%;
     border: 1px solid %button_border%;
     border-radius: 2px;
@@ -271,11 +271,11 @@ SidePanel QSpinBox::down-button, QDoubleSpinBox::down-button {
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QLabel {
-    color: %text_dark%;
+    color: %text_lc1%;
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QComboBox {
-    color: %text_dark%;
+    color: %text_lc1%;
     background-color: %widget%;
     border: 1px solid %button_border%;
     border-radius: 2px;
@@ -285,7 +285,7 @@ SidePanel QComboBox {
 SidePanel QComboBox::down-arrow {
     border: 0px;
     margin-right: 8px;
-    image: url(:/res/icons/other/dropDownArrow.png);
+    image: url(:/res/icons/%icontheme%/other/dropDownArrow.png);
 }
 
 SidePanel QComboBox::drop-down {
@@ -303,7 +303,7 @@ SidePanel QComboBox QAbstractItemView::item {
     border: 1px solid %widget%;
     border-radius: 1px;
     padding: 1px 4px;
-    color: %text_light%;
+    color: %text_hc1%;
     min-height: 22px;
 }
 
@@ -326,7 +326,7 @@ ChangelogWindow QTextBrowser {
 /*----------------------------------------------------------------------------*/
 
 VideoControls QLabel {
-    color: %text_lighter%;
+    color: %text_hc2%;
     font: bold;
 }
 /*----------------------------------------------------------------------------*/
@@ -342,7 +342,7 @@ VideoControls QSlider::groove:horizontal {
 VideoControls QSlider::handle:horizontal {
     height: 0px;
     width:  1px;
-    background: %text_light%;
+    background: %text_hc1%;
 }
 
 VideoControls QSlider::add-page:horizontal {
@@ -350,7 +350,7 @@ VideoControls QSlider::add-page:horizontal {
 }
 
 VideoControls QSlider::sub-page:horizontal {
-    background: %text_light%;
+    background: %text_hc1%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -362,7 +362,7 @@ PathSelectorMenuItem [accessibleName="MenuItemIcon"] {
 }
 
 PathSelectorMenuItem [accessibleName="MenuItemIcon"]:hover {
-    background-color: %accent_dark%;
+    background-color: %accent_lc%;
 }
 
 
@@ -487,11 +487,11 @@ ContextMenu {
 }
 
 [accessibleName="MenuItem"] QLabel {
-    color: %text_light%;
+    color: %text_hc1%;
 }
 
 [accessibleName="MenuItem"] QLabel:disabled {
-    color: %text_darker%;
+    color: %text_lc2%;
 }
 
 ContextMenu [accessibleName="MenuItemIcon"] {
@@ -519,7 +519,7 @@ InfoBar {
 }
 
 InfoBar QLabel {
-    color: %text_light%;
+    color: %text_hc1%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -532,7 +532,7 @@ ZoomIndicatorOverlay {
 }
 
 ZoomIndicatorOverlay QLabel {
-    color: %text_light%;
+    color: %text_hc1%;
     /*font: bold;*/
 }
 
@@ -587,12 +587,12 @@ FolderView QTreeView::item {
     border: 1px solid transparent;
     border-radius: 2px;
     min-height: 24px;
-    color: %text_lighter%;
+    color: %text_hc2%;
 }
 
 FolderView QTreeView::item:hover {
-    background-color: %accent_dark%;
-    border-color: %accent_dark%;
+    background-color: %accent_lc%;
+    border-color: %accent_lc%;
 }
 
 FolderView QTreeView::item:selected:!active,
@@ -619,12 +619,12 @@ BookmarksItem {
 }
 
 BookmarksItem:hover {
-    background-color: %accent_dark%;
-    border-color: %accent_dark%;
+    background-color: %accent_lc%;
+    border-color: %accent_lc%;
 }
 
 BookmarksItem QLabel {
-    color: %text_lighter%;
+    color: %text_hc2%;
 }
 
 BookmarksItem[highlighted="true"] {
@@ -641,12 +641,12 @@ BookmarksItem[highlighted="true"] {
 }
 
 [accessibleName="PanelSectionHeader"] {
-    color: %text_light%;
+    color: %text_hc1%;
     font: bold;
 }
 
 [accessibleName="PanelSectionHeader"]:hover {
-    color: %text_lighter%;
+    color: %text_hc2%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -664,8 +664,8 @@ BookmarksItem[highlighted="true"] {
 
 [accessibleName="PlacesPanelButton"]:pressed,
 [accessibleName="PlacesPanelButton"][pressed="true"] {
-    background-color: %accent_dark%;
-    border: 1px solid %accent_dark%;
+    background-color: %accent_lc%;
+    border: 1px solid %accent_lc%;
 }
 /*----------------------------------------------------------------------------*/
 
@@ -676,13 +676,13 @@ QTreeView::branch:has-siblings:!adjoins-item {
 QTreeView::branch:has-children:!has-siblings:closed,
 QTreeView::branch:closed:has-children:has-siblings {
         border-image: none;
-        image: url(:/res/icons/other/collapsed.png)
+        image: url(:/res/icons/%icontheme%/other/collapsed.png)
 }
 
 QTreeView::branch:open:has-children:!has-siblings,
 QTreeView::branch:open:has-children:has-siblings {
         border-image: none;
-        image: url(:/res/icons/other/expanded.png)
+        image: url(:/res/icons/%icontheme%/other/expanded.png)
 }
 
 /*----------------------------------------------------------------------------*/
@@ -698,11 +698,13 @@ SettingsDialog QComboBox {
 
 [accessibleName="StyledOptionsGroup"] {
     /* This needs to look "ok" with both light and dark themes. May need further tweaking */
-    background-color: rgba(130, 130, 130, 40);
-    border-top: 4px solid rgba(130, 130, 130, 40);
+    background-color: %system_window_tinted%;
+    border: 1px solid %system_window_tinted%;
+    border-radius: 3px;
+    /* border-top: 4px solid rgba(130, 130, 130, 30); */
 }
 
 [accessibleName="SettingsBottomWidget"] {
     /* This needs to look "ok" with both light and dark themes. May need further tweaking */
-    background-color: rgba(130, 130, 130, 70);
+    background-color: %system_window_tinted%;
 }

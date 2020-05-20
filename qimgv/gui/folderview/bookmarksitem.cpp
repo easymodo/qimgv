@@ -10,11 +10,12 @@ BookmarksItem::BookmarksItem(QString _dirName, QString _dirPath, QWidget *parent
 
     spacer = new QSpacerItem(16, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
+    auto icontheme = settings->theme().iconTheme;
     folderIconLabel.setAttribute(Qt::WA_TransparentForMouseEvents, true);
-    folderIconLabel.setPixmap(QIcon(":/res/icons/menuitem/folder16.png").pixmap(16, 16));
+    folderIconLabel.setPixmap(QIcon(":/res/icons/" + icontheme + "/menuitem/folder16.png").pixmap(16, 16));
     folderIconLabel.installEventFilter(this);
 
-    removeIconLabel.setIconPath(":/res/icons/buttons/remove12.png");
+    removeIconLabel.setIconPath(":/res/icons/" + icontheme + "/buttons/panel-small/remove12.png");
     removeIconLabel.setMinimumSize(16, 16);
     removeIconLabel.installEventFilter(this);
 

@@ -2,6 +2,7 @@
 
 #include <QFileDialog>
 #include "gui/customwidgets/menuitem.h"
+#include "settings.h"
 
 class PathSelectorMenuItem : public MenuItem {
     Q_OBJECT

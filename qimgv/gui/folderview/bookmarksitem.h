@@ -10,6 +10,7 @@
 #include <QLabel>
 #include "gui/customwidgets/iconbutton.h"
 #include "gui/customwidgets/clickablelabel.h"
+#include "settings.h"
 #include <QMouseEvent>
 
 class BookmarksItem : public QWidget {

@@ -3,6 +3,7 @@
 
 #include <QFileSystemModel>
 #include <QApplication>
+#include "settings.h"
 
 class FileSystemModelCustom : public QFileSystemModel
 {

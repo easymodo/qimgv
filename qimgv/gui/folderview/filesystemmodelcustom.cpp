@@ -2,7 +2,7 @@
 
 FileSystemModelCustom::FileSystemModelCustom(QObject *parent) : QFileSystemModel(parent) {
     qreal dpr = qApp->devicePixelRatio();
-    QString iconPath = ":/res/icons/menuitem/folder16.png";
+    QString iconPath = ":/res/icons/" + settings->theme().iconTheme + "/menuitem/folder16.png";
     if(dpr >= (1.0 + 0.001))
         iconPath.replace(".", "@2x.");
     folderIcon.load(iconPath);

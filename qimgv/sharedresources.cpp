@@ -16,10 +16,10 @@ QPixmap *SharedResources::getPixmap(ShrIcon icon, qreal dpr) {
     QPixmap *pixmap;
     QString path;
     if(icon == ShrIcon::SHR_ICON_ERROR) {
-        path = ":/res/icons/other/loading-error72.png";
+        path = ":/res/icons/light/other/loading-error72.png";
         pixmap = mLoadingErrorIcon72;
     } else {
-        path = ":/res/icons/other/loading72.png";
+        path = ":/res/icons/light/other/loading72.png";
         pixmap = mLoadingIcon72;
     }
     if(pixmap)
