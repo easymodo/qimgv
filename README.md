@@ -223,7 +223,7 @@ Enable RPMFusion [https://rpmfusion.org/Configuration](https://rpmfusion.org/Con
 It is needed for video playback (mpv), but you also can build without it. See __CMake build options__ at the end.
 
 ```
-sudo dnf install git cmake make qt5 qt5-devel gcc-c++ mpv mpv-libs-devel exiv2-devel
+sudo dnf install git cmake make qt5 qt5-devel gcc-c++ mpv mpv-libs-devel exiv2-devel opencv opencv-devel
 ```
 Optional: `kf5-kwindowsystem`
 		
