@@ -248,7 +248,7 @@ SidePanel QDoubleSpinBox
     background-color: %widget%;
     border: 2px solid %widget%;
     border-radius: 2px;
-    padding: 3 0 3 0;
+    padding: 2 0 2 0;
     min-height: 20px;
 }
 
@@ -277,7 +277,7 @@ SidePanel QLabel {
 SidePanel QComboBox {
     color: %text_lc1%;
     background-color: %widget%;
-    border: 1px solid %button_border%;
+    border: 1px solid %widget%;
     border-radius: 2px;
     padding: 4px 8px 4px 8px;
 }
@@ -496,6 +496,11 @@ ContextMenu {
 
 ContextMenu [accessibleName="MenuItemIcon"] {
     /* margin: 5px; */
+}
+
+[accessibleName="MenuItemText"],
+[accessibleName="MenuItemShortcutLabel"] {
+    padding: 5 0 6 0;
 }
 
 [accessibleName="ContextMenuButton"] {
