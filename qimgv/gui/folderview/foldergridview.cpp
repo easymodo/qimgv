@@ -9,10 +9,9 @@ FolderGridView::FolderGridView(QWidget *parent)
 {
     offscreenPreloadArea = 2300;
 
-    // TMP - !!!SET THIS BACK TO TRUE & USE COLOR FROM SETTINGS!!!
-    // EXPENSIVE PAINT
-    this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, false);
-    this->scene.setBackgroundBrush(QColor(47,47,48, 0));
+    this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
+    this->scene.setBackgroundBrush(settings->theme().colors.folderview);
+    this->setCacheMode(QGraphicsView::CacheBackground);
 
     // turn this off until [multi]selection is implemented
     setDrawScrollbarIndicator(false);
