@@ -29,6 +29,8 @@ signals:
 
 protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+
     bool eventFilter(QObject *o, QEvent *ev) Q_DECL_OVERRIDE;
 
     void paintEvent(QPaintEvent *event) override;

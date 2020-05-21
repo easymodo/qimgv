@@ -47,9 +47,13 @@ void BookmarksItem::setHighlighted(bool mode) {
 }
 
 void BookmarksItem::mouseReleaseEvent(QMouseEvent *event) {
-    Q_UNUSED(event)
+    event->accept();
     if(event->button() == Qt::LeftButton)
         emit clicked(dirPath);
+}
+
+void BookmarksItem::mousePressEvent(QMouseEvent *event) {
+    event->accept();
 }
 
 void BookmarksItem::onRemoveClicked() {

@@ -12,6 +12,8 @@
 #include <QPainter>
 #include <QDebug>
 
+#include <QWheelEvent>
+
 class FloatingWidget : public QWidget
 {
     Q_OBJECT
@@ -28,6 +30,9 @@ protected:
     void paintEvent(QPaintEvent *event);
     void setContainerSize(QSize container);
 
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event);
 private:
     // size of whatever widget we are overlayed on
     QSize container;

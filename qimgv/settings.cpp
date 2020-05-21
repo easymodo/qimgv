@@ -22,9 +22,9 @@ Settings::Settings(QObject *parent) : QObject(parent) {
     mThumbCacheDir->mkpath(mThumbCacheDir->absolutePath());
     mConfDir = new QDir(QApplication::applicationDirPath() + "/conf");
     mConfDir->mkpath(QApplication::applicationDirPath() + "/conf");
-    s = new QSettings(mConfDir->absolutePath() + "/" + qApp->applicationName() + ".ini", QSettings::IniFormat);
-    state = new QSettings(mConfDir->absolutePath() + "/savedState.ini", QSettings::IniFormat);
-    theme = new QSettings(mConfDir->absolutePath() + "/theme.ini", QSettings::IniFormat);
+    settingsConf = new QSettings(mConfDir->absolutePath() + "/" + qApp->applicationName() + ".ini", QSettings::IniFormat);
+    stateConf = new QSettings(mConfDir->absolutePath() + "/savedState.ini", QSettings::IniFormat);
+    themeConf = new QSettings(mConfDir->absolutePath() + "/theme.ini", QSettings::IniFormat);
 #endif
     loadTheme();
 }

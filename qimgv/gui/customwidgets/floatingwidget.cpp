@@ -37,3 +37,15 @@ void FloatingWidget::setAcceptKeyboardFocus(bool mode) {
 
 void FloatingWidget::recalculateGeometry() {
 }
+
+void FloatingWidget::mousePressEvent(QMouseEvent *event) {
+    event->accept();
+}
+
+void FloatingWidget::mouseReleaseEvent(QMouseEvent *event) {
+    event->accept();
+}
+
+void FloatingWidget::wheelEvent(QWheelEvent *event) {
+    event->accept();
+}
