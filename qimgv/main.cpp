@@ -45,28 +45,30 @@ void loadStylesheet() {
         styleSheet.replace("%icontheme%",         settings->theme().iconTheme);
 
         // -------------- write colors into stylesheet ---------------
-        styleSheet.replace("%button%",            colors.button.name());
-        styleSheet.replace("%button_hover%",      colors.button_hover.name());
-        styleSheet.replace("%button_pressed%",    colors.button_pressed.name());
-        styleSheet.replace("%button_border%",     colors.button_border.name());
-        styleSheet.replace("%widget%",            colors.widget.name());
-        styleSheet.replace("%widget_border%",     colors.widget_border.name());
-        styleSheet.replace("%folderview%",        colors.folderview.name());
-        styleSheet.replace("%folderview_topbar%", colors.folderview_topbar.name());
-        styleSheet.replace("%folderview_panel%",  colors.folderview_panel.name());
-        styleSheet.replace("%accent%",            colors.accent.name());
-        styleSheet.replace("%accent_lc%",         colors.accent_lc.name());
-        styleSheet.replace("%input_field_focus%", colors.input_field_focus.name());
-        styleSheet.replace("%slider_groove%",     colors.slider_groove.name());
-        styleSheet.replace("%slider_handle%",     colors.slider_handle.name());
-        styleSheet.replace("%slider_hover%",      colors.slider_hover.name());
-        styleSheet.replace("%overlay%",           colors.overlay.name());
-        styleSheet.replace("%text_hc2%",          colors.text_hc2.name());
-        styleSheet.replace("%text_hc1%",          colors.text_hc1.name());
-        styleSheet.replace("%text%",              colors.text.name());
-        styleSheet.replace("%overlay_text%",      colors.overlay_text.name());
-        styleSheet.replace("%text_lc1%",          colors.text_lc1.name());
-        styleSheet.replace("%text_lc2%",          colors.text_lc2.name());
+        styleSheet.replace("%button%",               colors.button.name());
+        styleSheet.replace("%button_hover%",         colors.button_hover.name());
+        styleSheet.replace("%button_pressed%",       colors.button_pressed.name());
+        styleSheet.replace("%panel_button_hover%",   colors.panel_button_hover.name());
+        styleSheet.replace("%panel_button_pressed%", colors.panel_button_pressed.name());
+        styleSheet.replace("%button_border%",        colors.button_border.name());
+        styleSheet.replace("%widget%",               colors.widget.name());
+        styleSheet.replace("%widget_border%",        colors.widget_border.name());
+        styleSheet.replace("%folderview%",           colors.folderview.name());
+        styleSheet.replace("%folderview_topbar%",    colors.folderview_topbar.name());
+        styleSheet.replace("%folderview_panel%",     colors.folderview_panel.name());
+        styleSheet.replace("%accent%",               colors.accent.name());
+        styleSheet.replace("%accent_lc%",            colors.accent_lc.name());
+        styleSheet.replace("%input_field_focus%",    colors.input_field_focus.name());
+        styleSheet.replace("%slider_groove%",        colors.slider_groove.name());
+        styleSheet.replace("%slider_handle%",        colors.slider_handle.name());
+        styleSheet.replace("%slider_hover%",         colors.slider_hover.name());
+        styleSheet.replace("%overlay%",              colors.overlay.name());
+        styleSheet.replace("%text_hc2%",             colors.text_hc2.name());
+        styleSheet.replace("%text_hc1%",             colors.text_hc1.name());
+        styleSheet.replace("%text%",                 colors.text.name());
+        styleSheet.replace("%overlay_text%",         colors.overlay_text.name());
+        styleSheet.replace("%text_lc1%",             colors.text_lc1.name());
+        styleSheet.replace("%text_lc2%",             colors.text_lc2.name());
 
         styleSheet.replace("%system_window_tinted%", system_window_tinted.name());
         // ------------------------ apply ----------------------------

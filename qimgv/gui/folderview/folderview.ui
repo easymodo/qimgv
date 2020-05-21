@@ -424,7 +424,7 @@
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="handleWidth">
-           <number>12</number>
+           <number>10</number>
           </property>
           <property name="childrenCollapsible">
            <bool>false</bool>
@@ -453,16 +453,16 @@
              <enum>QLayout::SetDefaultConstraint</enum>
             </property>
             <property name="leftMargin">
-             <number>8</number>
+             <number>7</number>
             </property>
             <property name="topMargin">
-             <number>12</number>
+             <number>7</number>
             </property>
             <property name="rightMargin">
              <number>8</number>
             </property>
             <property name="bottomMargin">
-             <number>8</number>
+             <number>0</number>
             </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -702,7 +702,7 @@
              <number>0</number>
             </property>
             <property name="topMargin">
-             <number>9</number>
+             <number>7</number>
             </property>
             <property name="rightMargin">
              <number>0</number>
@@ -736,15 +736,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FolderGridView</class>
-   <extends>QGraphicsView</extends>
-   <header>gui/folderview/foldergridview.h</header>
-  </customwidget>
-  <customwidget>
    <class>ActionButton</class>
    <extends>QWidget</extends>
    <header>gui/customwidgets/actionbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>FolderGridView</class>
+   <extends>QGraphicsView</extends>
+   <header>gui/folderview/foldergridview.h</header>
   </customwidget>
   <customwidget>
    <class>TreeViewCustom</class>

@@ -90,6 +90,8 @@ struct ColorScheme {
     QColor button_hover;
     QColor button_pressed;
     QColor button_border;
+    QColor panel_button_hover;
+    QColor panel_button_pressed;
     QColor accent;
     QColor accent_lc;
     QColor accent_hc;

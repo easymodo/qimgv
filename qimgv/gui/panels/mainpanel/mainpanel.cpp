@@ -5,16 +5,16 @@ MainPanel::MainPanel(FloatingWidgetContainer *parent) : SlideHPanel(parent) {
     buttonsWidget.setAccessibleName("panelButtonsWidget");
     auto icontheme = settings->theme().iconTheme;
     openButton       = new ActionButton("open", ":res/icons/" + icontheme + "/buttons/panel/open20.png", 30, this);
-    openButton->setAccessibleName("PanelButtonSmall");
+    openButton->setAccessibleName("ButtonSmall");
     openButton->setTriggerMode(TriggerMode::PressTrigger);
     settingsButton   = new ActionButton("openSettings", ":res/icons/" + icontheme + "/buttons/panel/settings20.png", 30, this);
-    settingsButton->setAccessibleName("PanelButtonSmall");
+    settingsButton->setAccessibleName("ButtonSmall");
     settingsButton->setTriggerMode(TriggerMode::PressTrigger);
     exitButton       = new ActionButton("exit", ":res/icons/" + icontheme + "/buttons/panel/close16.png", 30, this);
-    exitButton->setAccessibleName("PanelButtonSmall");
+    exitButton->setAccessibleName("ButtonSmall");
     exitButton->setTriggerMode(TriggerMode::PressTrigger);
     folderViewButton = new ActionButton("folderView", ":res/icons/" + icontheme + "/buttons/panel/folderview20.png", 30, this);
-    folderViewButton->setAccessibleName("PanelButtonSmall");
+    folderViewButton->setAccessibleName("ButtonSmall");
     folderViewButton->setTriggerMode(TriggerMode::PressTrigger);
 
     buttonsLayout.setDirection(QBoxLayout::BottomToTop);
