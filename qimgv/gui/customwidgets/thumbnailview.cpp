@@ -54,7 +54,7 @@ void ThumbnailView::createScrollTimeLine() {
         scrollTimeLine->deleteLater();
     }
     /* scrolling-related things */
-    scrollTimeLine = new QTimeLine(SCROLL_ANIMATION_SPEED, this);
+    scrollTimeLine = new QTimeLine(SCROLL_SPEED, this);
     scrollTimeLine->setEasingCurve(QEasingCurve::OutSine);
     scrollTimeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
     if(orientation == THUMBNAILVIEW_HORIZONTAL) {
@@ -336,7 +336,7 @@ void ThumbnailView::wheelEvent(QWheelEvent *event) {
         else if(abs(angleDelta) < SMOOTH_SCROLL_THRESHOLD)
             scrollPrecise(angleDelta);
         else if(angleDelta)
-            scrollSmooth(angleDelta, SCROLL_SPEED_MULTIPLIER, SCROLL_SPEED_ACCELERATION, true);
+            scrollSmooth(angleDelta, SCROLL_MULTIPLIER, SCROLL_ACCELERATION, true);
     }
 }
 
@@ -368,7 +368,7 @@ void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration
         center = static_cast<int>(viewportCenter.x());
     else
         center = static_cast<int>(viewportCenter.y());
-    bool redirect = false;
+    bool redirect = false, accelerate = false;
     int newEndFrame = center - static_cast<int>(delta * multiplier);
     if( (newEndFrame < center && center < scrollTimeLine->endFrame()) ||
         (newEndFrame > center && center > scrollTimeLine->endFrame()) )
@@ -377,6 +377,7 @@ void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration
     }
     if(scrollTimeLine->state() == QTimeLine::Running) {
         int oldEndFrame = scrollTimeLine->endFrame();
+        accelerate = true;
         // QTimeLine has this weird issue when it is already finished (at the last frame)
         // but is stuck in the running state. So we just create a new one.
         if(oldEndFrame == center)
@@ -385,6 +386,10 @@ void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration
             newEndFrame = oldEndFrame - static_cast<int>(delta * multiplier * acceleration);
     }
     scrollTimeLine->stop();
+    if(accelerate)
+        scrollTimeLine->setDuration(SCROLL_SPEED / SCROLL_SPEED_ACCELERATION);
+    else
+        scrollTimeLine->setDuration(SCROLL_SPEED);
     //blockThumbnailLoading = true;
     scrollTimeLine->setFrameRange(center, newEndFrame);
     scrollTimeLine->start();
