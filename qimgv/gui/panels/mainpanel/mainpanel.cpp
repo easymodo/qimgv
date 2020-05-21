@@ -3,17 +3,17 @@
 MainPanel::MainPanel(FloatingWidgetContainer *parent) : SlideHPanel(parent) {
     // buttons stuff
     buttonsWidget.setAccessibleName("panelButtonsWidget");
-
-    openButton       = new ActionButton("open", ":/icons/panel/open20.png", 30, this);
+    auto icontheme = settings->theme().iconTheme;
+    openButton       = new ActionButton("open", ":res/icons/" + icontheme + "/buttons/panel/open20.png", 30, this);
     openButton->setAccessibleName("PanelButtonSmall");
     openButton->setTriggerMode(TriggerMode::PressTrigger);
-    settingsButton   = new ActionButton("openSettings", ":/icons/panel/settings20.png", 30, this);
+    settingsButton   = new ActionButton("openSettings", ":res/icons/" + icontheme + "/buttons/panel/settings20.png", 30, this);
     settingsButton->setAccessibleName("PanelButtonSmall");
     settingsButton->setTriggerMode(TriggerMode::PressTrigger);
-    exitButton       = new ActionButton("exit", ":/icons/panel/close16.png", 30, this);
+    exitButton       = new ActionButton("exit", ":res/icons/" + icontheme + "/buttons/panel/close16.png", 30, this);
     exitButton->setAccessibleName("PanelButtonSmall");
     exitButton->setTriggerMode(TriggerMode::PressTrigger);
-    folderViewButton = new ActionButton("folderView", ":/icons/panel/folderview20.png", 30, this);
+    folderViewButton = new ActionButton("folderView", ":res/icons/" + icontheme + "/buttons/panel/folderview20.png", 30, this);
     folderViewButton->setAccessibleName("PanelButtonSmall");
     folderViewButton->setTriggerMode(TriggerMode::PressTrigger);
 
