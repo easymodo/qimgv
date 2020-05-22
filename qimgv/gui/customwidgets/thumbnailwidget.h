@@ -7,7 +7,6 @@
 #include <QPainter>
 #include <QGraphicsSceneHoverEvent>
 #include <QPaintEngine>
-#include <QTimeLine>
 #include <cmath>
 #include "sourcecontainers/thumbnail.h"
 #include "settings.h"

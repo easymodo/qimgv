@@ -29,7 +29,7 @@ MainPanel::MainPanel(FloatingWidgetContainer *parent) : SlideHPanel(parent) {
     buttonsWidget.setLayout(&buttonsLayout);
     mLayout.addWidget(&buttonsWidget, 0, 1);
 
-    thumbnailStrip.reset(new ThumbnailStrip());
+    thumbnailStrip.reset(new ThumbnailStripProxy(this));
     setWidget(thumbnailStrip);
 
     readSettings();
@@ -64,8 +64,12 @@ void MainPanel::setExitButtonEnabled(bool mode) {
     exitButton->setHidden(!mode);
 }
 
-std::shared_ptr<ThumbnailStrip> MainPanel::getThumbnailStrip() {
+std::shared_ptr<ThumbnailStripProxy> MainPanel::getThumbnailStrip() {
     return thumbnailStrip;
+}
+
+void MainPanel::setupThumbnailStrip() {
+    thumbnailStrip->init();
 }
 
 void MainPanel::readSettings() {

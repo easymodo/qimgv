@@ -27,15 +27,15 @@ void DirectoryPresenter::setFolderView(std::shared_ptr<FolderViewProxy> view) {
             this, &DirectoryPresenter::generateThumbnails);
 }
 
-void DirectoryPresenter::setThumbPanel(std::shared_ptr<ThumbnailStrip> view) {
+void DirectoryPresenter::setThumbPanel(std::shared_ptr<ThumbnailStripProxy> view) {
     if(thumbPanel)
         return;
     thumbPanel = view;
     if(model)
         view->populate(model->itemCount());
-    connect(thumbPanel.get(), &ThumbnailStrip::itemSelected,
+    connect(thumbPanel.get(), &ThumbnailStripProxy::itemSelected,
             this, &DirectoryPresenter::itemSelected);
-    connect(thumbPanel.get(), &ThumbnailStrip::thumbnailsRequested,
+    connect(thumbPanel.get(), &ThumbnailStripProxy::thumbnailsRequested,
             this, &DirectoryPresenter::generateThumbnails);
 }
 

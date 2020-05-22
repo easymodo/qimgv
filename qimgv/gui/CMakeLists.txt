@@ -54,6 +54,7 @@ target_sources(qimgv PRIVATE
     panels/croppanel/croppanel.cpp
     panels/mainpanel/mainpanel.cpp
     panels/mainpanel/thumbnailstrip.cpp
+    panels/mainpanel/thumbnailstripproxy.cpp
     panels/sidepanel/sidepanel.cpp
 
     panels/infobar/infobar.cpp

@@ -208,7 +208,7 @@ bool ViewerWidget::interactionEnabled() {
     return mInteractionEnabled;
 }
 
-std::shared_ptr<ThumbnailStrip> ViewerWidget::getThumbPanel() {
+std::shared_ptr<ThumbnailStripProxy> ViewerWidget::getThumbPanel() {
     return mainPanel->getThumbnailStrip();
 }
 
@@ -381,6 +381,11 @@ PanelHPosition ViewerWidget::panelPosition() {
 
 bool ViewerWidget::panelEnabled() {
     return mPanelEnabled;
+}
+
+void ViewerWidget::setupMainPanel() {
+    if(mPanelEnabled)
+        mainPanel->setupThumbnailStrip();
 }
 
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {

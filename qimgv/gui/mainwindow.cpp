@@ -104,6 +104,7 @@ void MW::setupUi() {
 
 void MW::setupFullUi() {
     setupCropPanel();
+    viewerWidget->setupMainPanel();
     infoBarWindowed->init();
     infoBarFullscreen->init();
 }
@@ -664,7 +665,7 @@ std::shared_ptr<FolderViewProxy> MW::getFolderView() {
     return folderView;
 }
 
-std::shared_ptr<ThumbnailStrip> MW::getThumbnailPanel() {
+std::shared_ptr<ThumbnailStripProxy> MW::getThumbnailPanel() {
     return viewerWidget->getThumbPanel();
 }
 

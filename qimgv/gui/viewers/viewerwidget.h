@@ -28,7 +28,7 @@ public:
     void disableInteraction();
     bool interactionEnabled();
 
-    std::shared_ptr<ThumbnailStrip> getThumbPanel();
+    std::shared_ptr<ThumbnailStripProxy> getThumbPanel();
 
     bool showImage(std::unique_ptr<QPixmap> pixmap);
     bool showAnimation(std::unique_ptr<QMovie> movie);
@@ -40,6 +40,8 @@ public:
     PanelHPosition panelPosition();
 
     bool panelEnabled();
+    void setupMainPanel();
+
 private:
     QHBoxLayout layout;
     std::unique_ptr<ImageViewerV2> imageViewer;

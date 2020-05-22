@@ -62,7 +62,7 @@ public:
     void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, qint64 fileSize, bool slideshow);
     void setExifInfo(QMap<QString, QString>);
     std::shared_ptr<FolderViewProxy> getFolderView();
-    std::shared_ptr<ThumbnailStrip> getThumbnailPanel();
+    std::shared_ptr<ThumbnailStripProxy> getThumbnailPanel();
 
     ViewMode currentViewMode();
     int folderViewSelection();
