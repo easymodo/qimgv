@@ -73,10 +73,5 @@ protected:
     QColor highlightColor, nameColor;
     QFont font, fontSmall;
     QFontMetrics *fm, *fmSmall;
-    qreal highlightEffectOpacity;
-    QTimeLine *highlightTimeLine;
     QRect drawRectCentered;
-
-private slots:
-    void onAnimationFrameChanged(int frame);
 };

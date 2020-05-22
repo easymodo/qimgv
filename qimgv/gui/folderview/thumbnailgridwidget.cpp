@@ -30,12 +30,9 @@ void ThumbnailGridWidget::setupLayout() {
 
 void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
     if(isHighlighted()) {
-        auto op = painter->opacity();
-        painter->setOpacity(highlightEffectOpacity);
         QPainterPath path;
         path.addRoundedRect(highlightRect, 3, 3);
         painter->fillPath(path, highlightColor);
-        painter->setOpacity(op);
     }
 }
 
