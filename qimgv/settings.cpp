@@ -120,10 +120,10 @@ void Settings::createColorVariants() {
         // top bar buttons
         mTheme.colors.panel_button_hover.setHsv(mTheme.colors.folderview_topbar.hue(),
                                                 mTheme.colors.folderview_topbar.saturation(),
-                                                qMin(mTheme.colors.folderview_topbar.value() + 32, 255));
+                                                qMin(mTheme.colors.folderview_topbar.value() + 33, 255));
         mTheme.colors.panel_button_pressed.setHsv(mTheme.colors.folderview_topbar.hue(),
                                                   mTheme.colors.folderview_topbar.saturation(),
-                                                  qMin(mTheme.colors.folderview_topbar.value() + 19, 255));
+                                                  qMin(mTheme.colors.folderview_topbar.value() + 22, 255));
         // regular buttons - from widget bg
         mTheme.colors.button.setHsv(mTheme.colors.widget.hue(),
                                     mTheme.colors.widget.saturation(),
@@ -136,6 +136,9 @@ void Settings::createColorVariants() {
         mTheme.colors.accent_lc.setHsv(mTheme.colors.accent.hue(),
                                        mTheme.colors.accent.saturation() * 0.9,
                                        mTheme.colors.accent.value() * 0.8f);
+        mTheme.colors.accent_lc2.setHsv(mTheme.colors.accent.hue(),
+                                        mTheme.colors.accent.saturation() * 0.5,
+                                        mTheme.colors.accent.value() * 0.62f);
         mTheme.colors.accent_hc.setHsv(mTheme.colors.accent.hue(),
                                        qMin(static_cast<int>(mTheme.colors.accent.saturation() * 1.1), 255),
                                        qMin(static_cast<int>(mTheme.colors.accent.value() * 1.2), 255));

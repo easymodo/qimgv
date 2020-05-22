@@ -94,6 +94,7 @@ struct ColorScheme {
     QColor panel_button_pressed;
     QColor accent;
     QColor accent_lc;
+    QColor accent_lc2;
     QColor accent_hc;
     QColor folderview;
     QColor folderview_topbar;

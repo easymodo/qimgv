@@ -7,6 +7,7 @@
 #include <QPainter>
 #include <QGraphicsSceneHoverEvent>
 #include <QPaintEngine>
+#include <QTimeLine>
 #include <cmath>
 #include "sourcecontainers/thumbnail.h"
 #include "settings.h"
@@ -66,11 +67,16 @@ protected:
     virtual void updateThumbnailDrawPosition();
 
     std::shared_ptr<Thumbnail> thumbnail;
-    bool highlighted, hovered, mDrawLabel;
+    bool highlighted, hovered, mDrawLabel, animateHover;
     int mThumbnailSize, paddingX, paddingY, textHeight;
     QRectF highlightRect, nameRect, nameTextRect, labelTextRect;
     QColor highlightColor, nameColor;
     QFont font, fontSmall;
     QFontMetrics *fm, *fmSmall;
+    qreal highlightEffectOpacity;
+    QTimeLine *highlightTimeLine;
     QRect drawRectCentered;
+
+private slots:
+    void onAnimationFrameChanged(int frame);
 };

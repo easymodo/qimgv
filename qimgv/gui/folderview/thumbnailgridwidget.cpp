@@ -30,9 +30,12 @@ void ThumbnailGridWidget::setupLayout() {
 
 void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
     if(isHighlighted()) {
+        auto op = painter->opacity();
+        painter->setOpacity(highlightEffectOpacity);
         QPainterPath path;
         path.addRoundedRect(highlightRect, 3, 3);
         painter->fillPath(path, highlightColor);
+        painter->setOpacity(op);
     }
 }
 
@@ -41,9 +44,6 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap
     if(!thumbnail->hasAlphaChannel())
         painter->fillRect(drawRectCentered.adjusted(3,3,3,3), shadowColor);
     painter->drawPixmap(drawRectCentered, *pixmap);
-    if(isHovered()) {
-        painter->fillRect(drawRectCentered, QColor(255,255,255, 18));
-    }
 }
 
 void ThumbnailGridWidget::readSettings() {
@@ -51,7 +51,13 @@ void ThumbnailGridWidget::readSettings() {
 }
 
 void ThumbnailGridWidget::drawHover(QPainter *painter) {
-    Q_UNUSED(painter)
+    //Q_UNUSED(painter)
+    QPainterPath path;
+    path.addRoundedRect(highlightRect, 3, 3);
+    auto op = painter->opacity();
+    painter->setOpacity(0.55f);
+    painter->fillPath(path, settings->theme().colors.accent_lc2);
+    painter->setOpacity(op);
 }
 
 void ThumbnailGridWidget::drawLabel(QPainter *painter) {

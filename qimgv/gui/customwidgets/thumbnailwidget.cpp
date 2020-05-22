@@ -7,7 +7,9 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     highlighted(false),
     hovered(false),
     mDrawLabel(true),
+    animateHover(false),
     mThumbnailSize(100),
+    highlightTimeLine(nullptr),
     paddingX(1),
     paddingY(3),
     textHeight(5)
@@ -23,6 +25,12 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     fm = new QFontMetrics(font);
     fmSmall = new QFontMetrics(fontSmall);
     textHeight = fm->height();
+
+    highlightTimeLine = new QTimeLine(100, this);
+    highlightTimeLine->setEasingCurve(QEasingCurve::Linear);
+    highlightTimeLine->setUpdateInterval(16);
+    highlightTimeLine->setFrameRange(45, 100);
+    connect(highlightTimeLine, &QTimeLine::frameChanged, this, &ThumbnailWidget::onAnimationFrameChanged);
 
     setThumbnailSize(100);
     readSettings();
@@ -135,7 +143,12 @@ void ThumbnailWidget::updateHighlightRect() {
 void ThumbnailWidget::setHighlighted(bool mode) {
     if(highlighted != mode) {
         highlighted = mode;
-        update();
+        if(!highlighted) {
+            highlightTimeLine->stop();
+            update();
+        } else {
+            highlightTimeLine->start();
+        }
     }
 }
 
@@ -159,6 +172,8 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     Q_UNUSED(widget)
     Q_UNUSED(option)
     qreal dpr = painter->paintEngine()->paintDevice()->devicePixelRatioF();
+    if(isHovered())
+        drawHover(painter);
     if(isHighlighted())
         drawHighlight(painter);
     if(!thumbnail) {
@@ -174,16 +189,17 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
         if(mDrawLabel)
             drawLabel(painter);
     }
-    if(isHovered())
-        drawHover(painter);
 }
 
 void ThumbnailWidget::drawHighlight(QPainter *painter) {
+    auto op = painter->opacity();
+    painter->setOpacity(highlightEffectOpacity);
     painter->fillRect(highlightRect, highlightColor);
+    painter->setOpacity(op);
 }
 
 void ThumbnailWidget::drawHover(QPainter *painter) {
-    painter->setOpacity(0.6);
+    painter->setOpacity(0.6f);
     painter->fillRect(highlightRect, highlightColor);
     painter->setOpacity(1.0);
     painter->fillRect(boundingRect(), QColor(255,255,255, 10));
@@ -233,10 +249,26 @@ void ThumbnailWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
 }
 
 void ThumbnailWidget::setHovered(bool mode) {
-    if(hovered != mode) {
+    if(!animateHover) {
+        if(hovered != mode) {
+            hovered = mode;
+            update();
+        }
+    } else {
+        if(hovered != mode) {
+            highlightTimeLine->stop();
+            highlightTimeLine->start();
+        }
         hovered = mode;
-        update();
     }
+}
+
+void ThumbnailWidget::onAnimationFrameChanged(int frame) {
+    if(frame)
+        highlightEffectOpacity = frame / (static_cast<qreal>(100.));
+    else
+        highlightEffectOpacity = 0.;
+    this->update();
 }
 
 bool ThumbnailWidget::isHovered() {
