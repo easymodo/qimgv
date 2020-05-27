@@ -482,7 +482,7 @@ void CropOverlay::mousePressEvent(QMouseEvent *event) {
 //------------------------------------------------------------------------------
 // TODO: uneven movement with fractional scaling
 void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
-    if(event->buttons() & Qt::LeftButton/* && hasSelection()*/) {
+    if(event->buttons() & Qt::LeftButton /*&& hasSelection()*/) {
         if(cursorAction == SELECTION_START) {
             // skip if cursor hasn't been moved in some direction
             if(event->pos().x() == moveStartPos.x() || event->pos().y() == moveStartPos.y())
@@ -547,6 +547,9 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
 
 //------------------------------------------------------------------------------
 void CropOverlay::mouseReleaseEvent(QMouseEvent *event) {
+    // user just clicked without moving the mouse, clear
+    if(cursorAction == SELECTION_START)
+        clearSelection();
     cursorAction = NO_DRAG;
     setCursorAction(hoverTarget(event->pos() * dpr));
     update();
