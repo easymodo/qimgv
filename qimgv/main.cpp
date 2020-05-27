@@ -55,7 +55,7 @@ void loadStylesheet() {
         styleSheet.replace("%widget_border%",        colors.widget_border.name());
         styleSheet.replace("%folderview%",           colors.folderview.name());
         styleSheet.replace("%folderview_topbar%",    colors.folderview_topbar.name());
-        styleSheet.replace("%folderview_panel%",     colors.folderview_panel.name());
+        styleSheet.replace("%folderview_separator%",    colors.folderview_separator.name());
         styleSheet.replace("%accent%",               colors.accent.name());
         styleSheet.replace("%accent_lc%",            colors.accent_lc.name());
         styleSheet.replace("%input_field_focus%",    colors.input_field_focus.name());

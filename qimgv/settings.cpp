@@ -69,7 +69,6 @@ void Settings::loadTheme() {
     colors.accent                = QColor(themeConf->value("accent",                "#32587d").toString());
     colors.folderview            = QColor(themeConf->value("folderview",            "#2f2f30").toString());
     colors.folderview_topbar     = QColor(themeConf->value("folderview_topbar",     "#1a1a1b").toString());
-    colors.folderview_panel      = QColor(themeConf->value("folderview_panel",      "#373738").toString());
     //colors.slider_groove         = QColor(themeConf->value("slider_groove",         "#2f2f30").toString());
     colors.slider_handle         = QColor(themeConf->value("slider_handle",         "#5c5e60").toString());
     colors.overlay_text          = QColor(themeConf->value("overlay_text",          "#d2d2d2").toString());
@@ -88,7 +87,6 @@ void Settings::saveTheme() {
     themeConf->setValue("accent",                mTheme.colors.accent.name());
     themeConf->setValue("folderview",            mTheme.colors.folderview.name());
     themeConf->setValue("folderview_topbar",     mTheme.colors.folderview_topbar.name());
-    themeConf->setValue("folderview_panel",      mTheme.colors.folderview_panel.name());
     //themeConf->setValue("slider_groove",         mTheme.colors.slider_groove.name());
     themeConf->setValue("slider_handle",         mTheme.colors.slider_handle.name());
     themeConf->setValue("overlay_text",          mTheme.colors.overlay_text.name());
@@ -124,6 +122,12 @@ void Settings::createColorVariants() {
         mTheme.colors.panel_button_pressed.setHsv(mTheme.colors.folderview_topbar.hue(),
                                                   mTheme.colors.folderview_topbar.saturation(),
                                                   qMin(mTheme.colors.folderview_topbar.value() + 22, 255));
+
+
+        mTheme.colors.folderview_separator.setHsv(mTheme.colors.folderview.hue(),
+                                                  mTheme.colors.folderview.saturation(),
+                                                  qMin(mTheme.colors.folderview.value() + 22, 255));
+
         // regular buttons - from widget bg
         mTheme.colors.button.setHsv(mTheme.colors.widget.hue(),
                                     mTheme.colors.widget.saturation(),

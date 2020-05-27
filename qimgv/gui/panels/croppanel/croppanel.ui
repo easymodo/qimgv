@@ -78,7 +78,7 @@
       <item>
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Size</string>
+         <string>Selection</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -97,6 +97,9 @@
          <widget class="QLabel" name="label">
           <property name="text">
            <string>Width</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -131,6 +134,9 @@
           <property name="text">
            <string>Height</string>
           </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
          </widget>
         </item>
         <item>
@@ -151,43 +157,31 @@
         </item>
        </layout>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="accessibleName">
-      <string/>
-     </property>
-     <property name="title">
-      <string/>
-     </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <property name="spacing">
-       <number>8</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
       <item>
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Position</string>
+       <widget class="QWidget" name="line" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>1</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>1</height>
+         </size>
+        </property>
+        <property name="accessibleName">
+         <string notr="true">CropPanelSeparator</string>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
         </property>
        </widget>
       </item>
@@ -205,7 +199,10 @@
            <string notr="true"/>
           </property>
           <property name="text">
-           <string notr="true">X</string>
+           <string notr="true">Pos_X</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -241,7 +238,10 @@
            <string notr="true"/>
           </property>
           <property name="text">
-           <string notr="true">Y</string>
+           <string notr="true">Pos_Y</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>

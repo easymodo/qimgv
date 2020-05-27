@@ -53,7 +53,7 @@ void ThumbnailGridWidget::drawHover(QPainter *painter) {
     path.addRoundedRect(highlightRect, 3, 3);
     auto op = painter->opacity();
     painter->setOpacity(0.55f);
-    painter->fillPath(path, settings->theme().colors.accent_lc2);
+    painter->fillPath(path, settings->theme().colors.accent);
     painter->setOpacity(op);
 }
 

@@ -185,20 +185,19 @@ FloatingWidget QTableWidget {
 }
 
 FloatingWidget QLineEdit {
-    background-color: %button%;
+    background-color: %button_pressed%;
     color: %text_hc1%;
-    border: 2px solid %button%;
+    border: 2px solid %button_pressed%;
     border-radius: 2px;
     padding: 4px 8px 4px 8px;
     margin-top: 5px;
     margin-bottom: 5px;
-    margin-left: 2px;
-    margin-right:2px;
 }
 
 FloatingWidget QLineEdit::hover,
 FloatingWidget QLineEdit::focus {
-    border-color: %input_field_focus%;
+    background-color: %button%;
+    border-color: %button%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -235,8 +234,8 @@ SidePanel {
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QGroupBox {
-    background-color: %button%;
-    /*border: 1px solid %button_border%;*/
+    background-color: %widget%;
+    border: 1px solid %button%;
     border-radius: 2px;
     padding: 6px 10px 8px 10px;
 }
@@ -245,17 +244,25 @@ SidePanel QSpinBox,
 SidePanel QDoubleSpinBox
 {
     color: %text%;
-    background-color: %widget%;
-    border: 2px solid %widget%;
+    background-color: %button_pressed%;
+    border: 2px solid %button_pressed%;
     border-radius: 2px;
     padding: 2 0 2 0;
     min-height: 20px;
 }
 
+SidePanel QSpinBox:hover,
+SidePanel QDoubleSpinBox:hover
+{
+    background-color: %button%;
+    border-color: %button%;
+}
+
 SidePanel QSpinBox:focus,
 SidePanel QDoubleSpinBox:focus
 {
-    border: 2px solid %input_field_focus%;
+    background-color: %button%;
+    border-color: %button%;
 }
 
 SidePanel QSpinBox::up-button, QDoubleSpinBox::up-button  {
@@ -276,10 +283,15 @@ SidePanel QLabel {
 /*----------------------------------------------------------------------------*/
 SidePanel QComboBox {
     color: %text_lc1%;
-    background-color: %widget%;
-    border: 1px solid %widget%;
+    background-color: %button_pressed%;
+    border: 1px solid %button_pressed%;
     border-radius: 2px;
     padding: 4px 8px 4px 8px;
+}
+
+SidePanel QComboBox:hover {
+    background-color: %button%;
+    border-color: %button%;
 }
 
 SidePanel QComboBox::down-arrow {
@@ -310,6 +322,10 @@ SidePanel QComboBox QAbstractItemView::item {
 SidePanel QComboBox QAbstractItemView::item:selected {
     background-color: %accent%;
     border-color: %accent%;
+}
+
+[accessibleName="CropPanelSeparator"] {
+    background-color: %button%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -584,7 +600,7 @@ FolderView QScrollBar::sub-line {
 /*----------------------------------------------------------------------------*/
 
 FolderView QTreeView {
-    background-color: %folderview_panel%;
+    background-color: %folderview%;
 }
 
 FolderView QTreeView::item {
@@ -611,7 +627,7 @@ FolderView QTreeView::branch:has-siblings:!adjoins-item,
 FolderView QTreeView::branch:closed:has-children,
 FolderView QTreeView::branch:open:has-children
 {
-    background: %folderview_panel%;
+    background: %folderview%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -642,8 +658,8 @@ BookmarksItem[highlighted="true"] {
 /*----------------------------------------------------------------------------*/
 
 [accessibleName="PlacesPanel"] {
-    background-color: %folderview_panel%;
-    border-right: 1px solid %widget_border%;
+    background-color: %folderview%;
+    border-right: 1px solid %folderview_separator%;
 }
 
 [accessibleName="PanelSectionHeader"] {

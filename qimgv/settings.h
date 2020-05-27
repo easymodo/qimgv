@@ -98,7 +98,7 @@ struct ColorScheme {
     QColor accent_hc;
     QColor folderview;
     QColor folderview_topbar;
-    QColor folderview_panel;
+    QColor folderview_separator;
     QColor slider_groove;
     QColor slider_handle;
     QColor slider_hover;
