@@ -27,9 +27,6 @@ set_target_properties(qimgv PROPERTIES CXX_EXTENSIONS OFF)
 
 # LINK STUFF
 target_link_libraries(qimgv PRIVATE Qt5::Core Qt5::Widgets Qt5::Concurrent)
-if(USING_LIBSTDCXX)
-    target_link_libraries(qimgv PRIVATE stdc++fs)
-endif()
 
 # OPTION DEFINITIONS, LINKING
 if(EXIV2)

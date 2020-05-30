@@ -14,7 +14,6 @@
 #include <iostream>
 #include <filesystem>
 #include <algorithm>
-//#include <experimental/filesystem>
 
 #include "settings.h"
 #include "watchers/directorywatcher.h"

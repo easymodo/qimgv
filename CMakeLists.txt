@@ -1,7 +1,7 @@
 # qimgv root
 cmake_minimum_required(VERSION 3.13)
 project(qimgv
-    VERSION 0.8.9
+    VERSION 0.9.2
     HOMEPAGE_URL "https://github.com/easymodo/qimgv"
     LANGUAGES CXX)
 
@@ -12,24 +12,10 @@ project(qimgv
 #endif()
 message(STATUS "Build configuration: " ${CMAKE_BUILD_TYPE})
 
-# detect if libstdc++ is in use to know if libstdc++fs should be linked
-include(CheckCXXSourceCompiles)
-check_cxx_source_compiles("#include <iostream>
-    #ifndef __GLIBCXX__
-    #error not using libstdc+++
-    #endif
-    int main() { return 0; }"
-    USING_LIBSTDCXX)
-
-# check requirements for std::filesystem
+# check for gcc
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
-        CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.0)
-    message(FATAL_ERROR "\n!!! THIS PROJECT REQUIRES GCC 8 OR LATER !!!\n"
-        "If you already have gcc 8+ you can force it like this:\n"
-        "CC=gcc-8 CXX=g++-8 cmake [...etc]")
-    # force gcc 8
-    #set(CMAKE_C_COMPILER "gcc-8")
-    #set(CMAKE_CXX_COMPILER "g++-8")
+        CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
+    message(FATAL_ERROR "\n!!! THIS PROJECT REQUIRES GCC 9.0 OR LATER !!!\n")
 endif()
 
 # AUTOMOC
