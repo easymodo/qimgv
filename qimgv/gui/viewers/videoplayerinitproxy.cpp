@@ -1,5 +1,17 @@
 #include "videoplayerinitproxy.h"
 
+#ifdef _QIMGV_PLUGIN_PATH
+    #define QIMGV_PLUGIN_PATH _QIMGV_PLUGIN_PATH
+#else
+    #define QIMGV_PLUGIN_PATH ""
+#endif
+
+#ifdef _QIMGV_PLAYER_PLUGIN
+    #define QIMGV_PLAYER_PLUGIN _QIMGV_PLAYER_PLUGIN
+#else
+    #define QIMGV_PLAYER_PLUGIN ""
+#endif
+
 VideoPlayerInitProxy::VideoPlayerInitProxy(QWidget *parent)
     : VideoPlayer(parent),
       player(nullptr)
@@ -26,13 +38,19 @@ std::shared_ptr<VideoPlayer> VideoPlayerInitProxy::getPlayer() {
 }
 
 inline bool VideoPlayerInitProxy::initPlayer() {
+    QString path = QString(QIMGV_PLUGIN_PATH) + QIMGV_PLAYER_PLUGIN;
 #ifndef USE_MPV
     return false;
 #endif
     if(player)
         return true;
 #ifdef __linux
-    playerLib.setFileName("qimgv_player_mpv");
+    if(QFile::exists(path)) {
+        playerLib.setFileName(path);
+    } else {
+        qDebug() << "Plugin at:" << path << "does not exist.";
+        playerLib.setFileName("qimgv_player_mpv"); // let QLibrary try to find it
+    }
 #else
     playerLib.setFileName("libqimgv_player_mpv.dll");
 #endif
@@ -43,11 +61,9 @@ inline bool VideoPlayerInitProxy::initPlayer() {
         player.reset(pl);
     }
     if(!player) {
-        qDebug() << "[VideoPlayerInitProxy] Error - could not load player library";
-        qDebug() << playerLib.fileName();
+        qDebug() << "Could not load plugin:" << playerLib.fileName();
         return false;
     }
-    //qDebug() << "[VideoPlayerInitProxy] Library load success!";
 
     player->setMuted(!settings->playVideoSounds());
     player->setVideoUnscaled(!settings->expandImage());

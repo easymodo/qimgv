@@ -12,6 +12,11 @@ project(qimgv
 #endif()
 message(STATUS "Build configuration: " ${CMAKE_BUILD_TYPE})
 
+set(QIMGV_PLUGIN_PATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/qimgv")
+ADD_DEFINITIONS(-D_QIMGV_PLUGIN_PATH="${QIMGV_PLUGIN_PATH}/")
+
+message(STATUS "Plugin path: " ${QIMGV_PLUGIN_PATH})
+
 # detect if libstdc++ is in use to know if libstdc++fs should be linked
 include(CheckCXXSourceCompiles)
 check_cxx_source_compiles("#include <iostream>
@@ -67,5 +72,5 @@ endif()
 add_subdirectory(qimgv)
 
 if(VIDEO_SUPPORT)
-    add_subdirectory(qimgv_libs/qimgv_player_mpv)
+    add_subdirectory(plugins/player_mpv)
 endif()
