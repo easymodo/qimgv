@@ -7,6 +7,7 @@
 #include "videoplayer.h"
 #include "settings.h"
 #include <QLibrary>
+#include <QFileInfo>
 #include <QDebug>
 
 class VideoPlayerInitProxy : public VideoPlayer {

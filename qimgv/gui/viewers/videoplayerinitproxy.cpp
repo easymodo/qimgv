@@ -1,11 +1,5 @@
 #include "videoplayerinitproxy.h"
 
-#ifdef _QIMGV_PLUGIN_PATH
-    #define QIMGV_PLUGIN_PATH _QIMGV_PLUGIN_PATH
-#else
-    #define QIMGV_PLUGIN_PATH ""
-#endif
-
 #ifdef _QIMGV_PLAYER_PLUGIN
     #define QIMGV_PLAYER_PLUGIN _QIMGV_PLAYER_PLUGIN
 #else
@@ -38,21 +32,22 @@ std::shared_ptr<VideoPlayer> VideoPlayerInitProxy::getPlayer() {
 }
 
 inline bool VideoPlayerInitProxy::initPlayer() {
-    QString path = QString(QIMGV_PLUGIN_PATH) + QIMGV_PLAYER_PLUGIN;
+    QString path = QIMGV_PLAYER_PLUGIN;
 #ifndef USE_MPV
     return false;
 #endif
     if(player)
         return true;
-#ifdef __linux
-    if(QFile::exists(path)) {
+#ifdef _WIN32
+    playerLib.setFileName("plugins/player_mpv.dll");
+#else
+    QFileInfo pluginFile(path);
+    if(pluginFile.isFile() && pluginFile.isReadable()) {
         playerLib.setFileName(path);
     } else {
         qDebug() << "Plugin at:" << path << "does not exist.";
-        playerLib.setFileName("qimgv_player_mpv"); // let QLibrary try to find it
+        return false;
     }
-#else
-    playerLib.setFileName("libqimgv_player_mpv.dll");
 #endif
     typedef VideoPlayer* (*createPlayerWidgetFn)();
     createPlayerWidgetFn fn = (createPlayerWidgetFn) playerLib.resolve("CreatePlayerWidget");
@@ -61,7 +56,7 @@ inline bool VideoPlayerInitProxy::initPlayer() {
         player.reset(pl);
     }
     if(!player) {
-        qDebug() << "Could not load plugin:" << playerLib.fileName();
+        qDebug() << "Could not load plugin:" << playerLib.fileName() << ". Last error: " << playerLib.errorString();
         return false;
     }
 
@@ -75,8 +70,8 @@ inline bool VideoPlayerInitProxy::initPlayer() {
     setFocusProxy(player.get());
     connect(player.get(), SIGNAL(durationChanged(int)), this, SIGNAL(durationChanged(int)));
     connect(player.get(), SIGNAL(positionChanged(int)), this, SIGNAL(positionChanged(int)));
-    connect(player.get(), SIGNAL(videoPaused(bool)), this, SIGNAL(videoPaused(bool)));
-    connect(player.get(), SIGNAL(playbackFinished()), this, SIGNAL(playbackFinished()));
+    connect(player.get(), SIGNAL(videoPaused(bool)),    this, SIGNAL(videoPaused(bool)));
+    connect(player.get(), SIGNAL(playbackFinished()),   this, SIGNAL(playbackFinished()));
     return true;
 }
 
