@@ -5,11 +5,6 @@ project(qimgv
     HOMEPAGE_URL "https://github.com/easymodo/qimgv"
     LANGUAGES CXX)
 
-#if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-#    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
-#    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
-#        Debug Release MinSizeRel RelWithDebInfo)
-#endif()
 message(STATUS "Build configuration: " ${CMAKE_BUILD_TYPE})
 
 set(QIMGV_PLUGIN_PATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/qimgv")
