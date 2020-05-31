@@ -1,0 +1,5 @@
+/* Plugin path */
+#define QIMGV_PLUGIN_DIR "${QIMGV_PLUGIN_DIR}"
+
+/* Shared library suffix */
+# define SHARED_LIBRARY_SUFFIX "${CMAKE_SHARED_LIBRARY_SUFFIX}"
