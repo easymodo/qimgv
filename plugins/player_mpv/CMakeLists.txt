@@ -38,6 +38,4 @@ if(WIN32)
         ${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/$<IF$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x86_64,i686>)
 endif()
 
-target_compile_definitions(player_mpv PRIVATE player_mpv_LIBRARY)
-
 install(TARGETS player_mpv LIBRARY DESTINATION ${QIMGV_LIBDIR})
