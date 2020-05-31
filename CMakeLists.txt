@@ -12,8 +12,13 @@ project(qimgv
 #endif()
 message(STATUS "Build configuration: " ${CMAKE_BUILD_TYPE})
 
+set(QIMGV_PLUGIN_PATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/qimgv")
+ADD_DEFINITIONS(-D_QIMGV_PLUGIN_PATH="${QIMGV_PLUGIN_PATH}/")
+
+message(STATUS "Plugin path: " ${QIMGV_PLUGIN_PATH})
+
 # check for gcc
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
         CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
     message(FATAL_ERROR "\n!!! THIS PROJECT REQUIRES GCC 9.0 OR LATER !!!\n")
 endif()
@@ -53,5 +58,5 @@ endif()
 add_subdirectory(qimgv)
 
 if(VIDEO_SUPPORT)
-    add_subdirectory(qimgv_libs/qimgv_player_mpv)
+    add_subdirectory(plugins/player_mpv)
 endif()

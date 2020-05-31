@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.11)
-project(qimgv_player_mpv VERSION 1.0
+project(player_mpv
     DESCRIPTION "video player widget for qimgv (using mpv)"
     LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
+
+set(QIMGV_LIBDIR "${CMAKE_INSTALL_LIBDIR}/qimgv")
 
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
@@ -12,31 +14,30 @@ pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
 
 include(GNUInstallDirs)
 
-add_library(qimgv_player_mpv SHARED
+add_library(player_mpv SHARED
     src/videoplayer.cpp
     src/mpvwidget.cpp
     src/videoplayermpv.cpp
     src/qthelper.hpp)
 
-target_compile_features(qimgv_player_mpv PRIVATE cxx_std_11)
+target_compile_features(player_mpv PRIVATE cxx_std_11)
 
-target_link_libraries(qimgv_player_mpv PRIVATE
+target_link_libraries(player_mpv PRIVATE
     Qt5::Core Qt5::Widgets PkgConfig::Mpv)
 
-set_target_properties(qimgv_player_mpv PROPERTIES
+set_target_properties(player_mpv PROPERTIES
     CXX_EXTENSIONS OFF
-    VERSION ${PROJECT_VERSION}
-    SOVERSION 1)
+    PREFIX "")
 
-target_include_directories(qimgv_player_mpv PRIVATE src)
+target_include_directories(player_mpv PRIVATE src)
 
 if(WIN32)
-    target_include_directories(qimgv_player_mpv PRIVATE
+    target_include_directories(player_mpv PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/include)
-    target_link_directories(qimgv_player_mpv PRIVATE
+    target_link_directories(player_mpv PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/$<IF$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x86_64,i686>)
 endif()
 
-target_compile_definitions(qimgv_player_mpv PRIVATE QIMGV_PLAYER_MPV_LIBRARY)
+target_compile_definitions(player_mpv PRIVATE player_mpv_LIBRARY)
 
-install(TARGETS qimgv_player_mpv LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS player_mpv LIBRARY DESTINATION ${QIMGV_LIBDIR})
