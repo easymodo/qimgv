@@ -14,7 +14,7 @@ pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
 
 include(GNUInstallDirs)
 
-add_library(player_mpv SHARED
+add_library(player_mpv MODULE
     src/videoplayer.cpp
     src/mpvwidget.cpp
     src/videoplayermpv.cpp
