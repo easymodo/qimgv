@@ -37,11 +37,22 @@ void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> 
                 qWarning() << "[ScriptManager] Unable not start:" << exec.program() << " Make sure it is an executable.";
             }
         }
-
-        emit scriptFinished();
     } else {
         qDebug() << "[ScriptManager] Script " << scriptName << " does not exist.";
     }
+}
+
+QString ScriptManager::runCommand(QString cmd) {
+    QProcess exec;
+    QStringList cmdSplit = ScriptManager::splitCommandLine(cmd);
+    exec.start(cmdSplit.takeAt(0), cmdSplit);
+    exec.waitForFinished(2000);
+    return exec.readAllStandardOutput();
+}
+
+void ScriptManager::runCommandDetached(QString cmd) {
+    QStringList cmdSplit = ScriptManager::splitCommandLine(cmd);
+    QProcess::startDetached(cmdSplit.takeAt(0), cmdSplit);
 }
 
 #else

@@ -523,22 +523,21 @@ void Core::showOpenDialog() {
 void Core::showInDirectory() {
     if(!model)
         return;
-#ifdef __linux__
-    QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
-#endif
-
-#ifdef __WIN32
-    QString fileName = this->selectedFileName();
-    if(fileName.isEmpty()) {
+    if(selectedFileName().isEmpty()) {
         QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
-    } else {
-        QStringList args;
-        args << "/select," << QDir::toNativeSeparators(model->fullPath(fileName));
-        QProcess::startDetached("explorer", args);
+        return;
     }
-#endif
-/*
-#ifdef Q_WS_MAC
+#ifdef __linux__
+    QString fm = ScriptManager::runCommand("xdg-mime query default inode/directory");
+    if(fm.contains("dolphin"))
+        ScriptManager::runCommandDetached("dolphin --select " + model->fullPath(selectedFileName()));
+    else if(fm.contains("nautilus"))
+        ScriptManager::runCommandDetached("nautilus --select " + model->fullPath(selectedFileName()));
+    else
+        QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
+#elif __WIN32
+    ScriptManager::runCommandDetached("explorer /select " + QDir::toNativeSeparators(model->fullPath(selectedFileName())) );
+#elif Q_WS_MAC
     QStringList args;
     args << "-e";
     args << "tell application \"Finder\"";
@@ -549,8 +548,9 @@ void Core::showInDirectory() {
     args << "-e";
     args << "end tell";
     QProcess::startDetached("osascript", args);
+#else
+    QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
 #endif
-*/
 }
 
 void Core::moveCurrentFile(QString destDirectory) {

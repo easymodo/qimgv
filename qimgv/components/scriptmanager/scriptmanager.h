@@ -18,6 +18,8 @@ public:
     static ScriptManager* getInstance();
     ~ScriptManager();
     void runScript(const QString &scriptName, std::shared_ptr<Image> img);
+    static QString runCommand(QString cmd);
+    static void runCommandDetached(QString cmd);
     bool scriptExists(QString scriptName);
     void readScripts();
     void saveScripts();
@@ -25,17 +27,14 @@ public:
     const QMap<QString, Script> &allScripts();
     QList<QString> scriptNames();
     Script getScript(QString scriptName);
-
     void addScript(QString scriptName, Script script);
+    static QStringList splitCommandLine(const QString &cmdLine);
+
 private:
     explicit ScriptManager(QObject *parent = nullptr);
     QMap<QString, Script> scripts; // <name, script>
     void processArguments(QStringList &cmd, std::shared_ptr<Image> img);
 
-    QStringList splitCommandLine(const QString &cmdLine);
-signals:
-    void scriptFinished();
-private slots:
 };
 
 extern ScriptManager *scriptManager;
