@@ -6,7 +6,7 @@
     color: %text_hc1%;
     background-color: %button%;
     /*border: 1px solid %button_border%;*/
-    border-radius: 2px;
+    border-radius: 3px;
     padding: 7px 12px 7px 12px;
 }
 
@@ -39,7 +39,7 @@
 
 /*----------------------------------------------------------------------------*/
 [accessibleName="CheckableButton"] {
-    border-radius: 2px;
+    border-radius: 3px;
     padding:       7px;
     margin-top:    4px;
     margin-bottom: 4px;
@@ -62,7 +62,7 @@
 /*----------------------------------------------------------------------------*/
 [accessibleName="PanelButton"] {
     margin: 3px;
-    border-radius: 2px;
+    border-radius: 3px;
 }
 
 [accessibleName="PanelButton"]:hover {
@@ -98,7 +98,7 @@ QComboBox QAbstractItemView {
     background-color: %panel_button_pressed%;
     color: %text_hc1%;
     border: 2px solid %panel_button_pressed%;
-    border-radius: 2px;
+    border-radius: 3px;
     padding: 2px 8px 2px 5px;
     margin-top: 4px;
     margin-bottom: 4px;
@@ -154,7 +154,8 @@ QComboBox QAbstractItemView {
 
 FloatingWidget {
     background-color: %widget%;
-    border: 1px solid %widget_border%;
+    border: 2px solid %widget_border%;
+    border-radius: 3px;
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="OverlayHeaderWidget"] {
@@ -188,8 +189,8 @@ FloatingWidget QLineEdit {
     background-color: %button_pressed%;
     color: %text_hc1%;
     border: 2px solid %button_pressed%;
-    border-radius: 2px;
-    padding: 4px 8px 4px 8px;
+    border-radius: 3px;
+    padding: 4px 6px 4px 6px;
     margin-top: 5px;
     margin-bottom: 5px;
 }
@@ -236,7 +237,7 @@ SidePanel {
 SidePanel QGroupBox {
     background-color: %widget%;
     border: 1px solid %button%;
-    border-radius: 2px;
+    border-radius: 3px;
     padding: 6px 10px 8px 10px;
 }
 /*----------------------------------------------------------------------------*/
@@ -246,7 +247,7 @@ SidePanel QDoubleSpinBox
     color: %text%;
     background-color: %button_pressed%;
     border: 2px solid %button_pressed%;
-    border-radius: 2px;
+    border-radius: 3px;
     padding: 2 0 2 0;
     min-height: 20px;
 }
@@ -285,7 +286,7 @@ SidePanel QComboBox {
     color: %text_lc1%;
     background-color: %button_pressed%;
     border: 1px solid %button_pressed%;
-    border-radius: 2px;
+    border-radius: 3px;
     padding: 4px 8px 4px 8px;
 }
 
@@ -347,26 +348,26 @@ VideoControls QLabel {
 }
 /*----------------------------------------------------------------------------*/
 VideoControls QSlider {
-    border: 4px solid %slider_groove%;
+    border: 2px solid %widget%;
     margin: 1px;
 }
 
-VideoControls QSlider::groove:horizontal {
-    background: %slider_groove%;
+VideoControls QSlider::groove:horizontal,
+VideoControls QSlider::add-page:horizontal {
+    background: %button_pressed%;
+    border-radius: 3px;
 }
 
 VideoControls QSlider::handle:horizontal {
     height: 0px;
-    width:  1px;
+    width:  0px;
     background: %text_hc1%;
-}
-
-VideoControls QSlider::add-page:horizontal {
-    background: %slider_groove%;
 }
 
 VideoControls QSlider::sub-page:horizontal {
     background: %text_hc1%;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -494,8 +495,8 @@ ThumbnailStrip QScrollBar::sub-line {
 
 ContextMenu {
     background-color: %widget%;
-    border: 1px solid %widget_border%;
-    /* border-radius: 2px; */
+    border: 2px solid %widget_border%;
+    border-radius: 3px;
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="MenuItem"]:hover {
@@ -521,13 +522,13 @@ ContextMenu [accessibleName="MenuItemIcon"] {
 
 [accessibleName="ContextMenuButton"] {
     padding: 4px;
-    border-radius: 1px;
-    border: 1px solid transparent;
+    border-radius: 2px;
+    border: 2px solid transparent;
 }
 
 [accessibleName="ContextMenuButton"]:hover {
     background-color: %accent%;
-    border: 1px solid %accent%;
+    border: 2px solid %accent%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -606,7 +607,7 @@ FolderView QTreeView {
 FolderView QTreeView::item {
     margin-right: 8px;
     border: 1px solid transparent;
-    border-radius: 2px;
+    border-radius: 3px;
     min-height: 24px;
     color: %text_hc2%;
 }
@@ -628,6 +629,22 @@ FolderView QTreeView::branch:closed:has-children,
 FolderView QTreeView::branch:open:has-children
 {
     background: %folderview%;
+}
+
+QTreeView::branch:has-siblings:!adjoins-item {
+        background: transparent;
+}
+
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings {
+        border-image: none;
+        image: url(:/res/icons/%icontheme%/other/collapsed.png)
+}
+
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings {
+        border-image: none;
+        image: url(:/res/icons/%icontheme%/other/expanded.png)
 }
 
 /*----------------------------------------------------------------------------*/
@@ -676,7 +693,7 @@ BookmarksItem[highlighted="true"] {
 /*----------------------------------------------------------------------------*/
 
 [accessibleName="PlacesPanelButton"] {
-    border-radius: 2px;
+    border-radius: 3px;
 }
 
 [accessibleName="PlacesPanelButton"]:hover {
@@ -688,23 +705,6 @@ BookmarksItem[highlighted="true"] {
 [accessibleName="PlacesPanelButton"][pressed="true"] {
     background-color: %accent_lc%;
     border: 1px solid %accent_lc%;
-}
-/*----------------------------------------------------------------------------*/
-
-QTreeView::branch:has-siblings:!adjoins-item {
-        background: transparent;
-}
-
-QTreeView::branch:has-children:!has-siblings:closed,
-QTreeView::branch:closed:has-children:has-siblings {
-        border-image: none;
-        image: url(:/res/icons/%icontheme%/other/collapsed.png)
-}
-
-QTreeView::branch:open:has-children:!has-siblings,
-QTreeView::branch:open:has-children:has-siblings {
-        border-image: none;
-        image: url(:/res/icons/%icontheme%/other/expanded.png)
 }
 
 /*----------------------------------------------------------------------------*/

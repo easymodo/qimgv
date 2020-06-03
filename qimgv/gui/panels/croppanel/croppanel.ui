@@ -449,9 +449,6 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="spacing">
-      <number>0</number>
-     </property>
      <property name="topMargin">
       <number>0</number>
      </property>
@@ -461,7 +458,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="accessibleName">
-        <string notr="true">ButtonSetLeft</string>
+        <string notr="true">Button</string>
        </property>
        <property name="text">
         <string>Crop</string>
@@ -474,7 +471,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="accessibleName">
-        <string notr="true">ButtonSetRight</string>
+        <string notr="true">Button</string>
        </property>
        <property name="text">
         <string>Crop &amp;&amp; Save</string>

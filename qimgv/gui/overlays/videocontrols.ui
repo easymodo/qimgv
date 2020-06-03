@@ -96,7 +96,7 @@
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>4</width>
+         <width>6</width>
          <height>5</height>
         </size>
        </property>
@@ -276,6 +276,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>IconButton</class>
+   <extends>QWidget</extends>
+   <header>gui/customwidgets/iconbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>ActionButton</class>
    <extends>QWidget</extends>
    <header>gui/customwidgets/actionbutton.h</header>
@@ -285,12 +291,6 @@
    <class>VideoSlider</class>
    <extends>QSlider</extends>
    <header>gui/customwidgets/videoslider.h</header>
-  </customwidget>
-  <customwidget>
-   <class>IconButton</class>
-   <extends>QWidget</extends>
-   <header>gui/customwidgets/iconbutton.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

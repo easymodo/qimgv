@@ -60,19 +60,17 @@ QString Settings::tmpDir() {
 void Settings::loadTheme() {
     ColorScheme colors;
     themeConf->beginGroup("Colors");
-    colors.background            = QColor(themeConf->value("background",            "#1b1b1c").toString());
-    colors.background_fullscreen = QColor(themeConf->value("background_fullscreen", "#1b1b1c").toString());
-    colors.text                  = QColor(themeConf->value("text",                  "#9c9ea0").toString());
-    colors.widget                = QColor(themeConf->value("widget",                "#232324").toString());
-    colors.widget_border         = QColor(themeConf->value("widget_border",         "#232324").toString());
-    //colors.button                = QColor(themeConf->value("button",                "#2f2f30").toString());
-    colors.accent                = QColor(themeConf->value("accent",                "#32587d").toString());
-    colors.folderview            = QColor(themeConf->value("folderview",            "#2f2f30").toString());
-    colors.folderview_topbar     = QColor(themeConf->value("folderview_topbar",     "#1a1a1b").toString());
-    //colors.slider_groove         = QColor(themeConf->value("slider_groove",         "#2f2f30").toString());
-    colors.slider_handle         = QColor(themeConf->value("slider_handle",         "#5c5e60").toString());
+    colors.background            = QColor(themeConf->value("background",            "#1a1a1a").toString());
+    colors.background_fullscreen = QColor(themeConf->value("background_fullscreen", "#1a1a1a").toString());
+    colors.text                  = QColor(themeConf->value("text",                  "#a4a4a4").toString());
+    colors.widget                = QColor(themeConf->value("widget",                "#252525").toString());
+    colors.widget_border         = QColor(themeConf->value("widget_border",         "#272727").toString());
+    colors.accent                = QColor(themeConf->value("accent",                "#4f4f4f").toString());
+    colors.folderview            = QColor(themeConf->value("folderview",            "#282828").toString());
+    colors.folderview_topbar     = QColor(themeConf->value("folderview_topbar",     "#373737").toString());
+    colors.slider_handle         = QColor(themeConf->value("slider_handle",         "#5e5e5e").toString());
     colors.overlay_text          = QColor(themeConf->value("overlay_text",          "#d2d2d2").toString());
-    colors.overlay               = QColor(themeConf->value("overlay",               "#1a1a1b").toString());
+    colors.overlay               = QColor(themeConf->value("overlay",               "#1a1a1a").toString());
     themeConf->endGroup();
     setColorScheme(colors);
 }
@@ -83,11 +81,9 @@ void Settings::saveTheme() {
     themeConf->setValue("text",                  mTheme.colors.text.name());
     themeConf->setValue("widget",                mTheme.colors.widget.name());
     themeConf->setValue("widget_border",         mTheme.colors.widget_border.name());
-    //themeConf->setValue("button",                mTheme.colors.button.name());
     themeConf->setValue("accent",                mTheme.colors.accent.name());
     themeConf->setValue("folderview",            mTheme.colors.folderview.name());
     themeConf->setValue("folderview_topbar",     mTheme.colors.folderview_topbar.name());
-    //themeConf->setValue("slider_groove",         mTheme.colors.slider_groove.name());
     themeConf->setValue("slider_handle",         mTheme.colors.slider_handle.name());
     themeConf->setValue("overlay_text",          mTheme.colors.overlay_text.name());
     themeConf->setValue("overlay",               mTheme.colors.overlay.name());
@@ -131,9 +127,9 @@ void Settings::createColorVariants() {
         // regular buttons - from widget bg
         mTheme.colors.button.setHsv(mTheme.colors.widget.hue(),
                                     mTheme.colors.widget.saturation(),
-                                    qMin(mTheme.colors.widget.value() + 23, 255));
-        mTheme.colors.button_hover   = QColor(mTheme.colors.button.lighter(115));
-        mTheme.colors.button_pressed = QColor(mTheme.colors.button.darker(120));
+                                    qMin(mTheme.colors.widget.value() + 20, 255));
+        mTheme.colors.button_hover   = QColor(mTheme.colors.button.lighter(112));
+        mTheme.colors.button_pressed = QColor(mTheme.colors.button.darker(112));
         mTheme.colors.button_border  = QColor(mTheme.colors.button.darker(145));
 
         // accents (saturation tweak)
@@ -148,7 +144,7 @@ void Settings::createColorVariants() {
                                        qMin(static_cast<int>(mTheme.colors.accent.value() * 1.2), 255));
 
         // text
-        mTheme.colors.text_hc2 = QColor(mTheme.colors.text.lighter(120));
+        mTheme.colors.text_hc2 = QColor(mTheme.colors.text.lighter(118));
         mTheme.colors.text_hc1 = QColor(mTheme.colors.text.lighter(110));
         mTheme.colors.text_lc1 = QColor(mTheme.colors.text.darker(104));
         mTheme.colors.text_lc2 = QColor(mTheme.colors.text.darker(112));
