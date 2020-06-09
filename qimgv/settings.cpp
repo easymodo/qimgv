@@ -4,22 +4,12 @@ Settings *settings = nullptr;
 
 Settings::Settings(QObject *parent) : QObject(parent) {
 #ifdef __linux__
-    QString genericCacheLocation = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation);
-    if(genericCacheLocation.isEmpty())
-        genericCacheLocation = QDir::homePath() + "/.cache";
-    mTmpDir = new QDir(genericCacheLocation + "/" + QApplication::applicationName());
-    mTmpDir->mkpath(mTmpDir->absolutePath());
-    mThumbCacheDir = new QDir(mTmpDir->absolutePath() + "/thumbnails");
-    mThumbCacheDir->mkpath(mThumbCacheDir->absolutePath());
+    // config files
     QSettings::setDefaultFormat(QSettings::NativeFormat);
     settingsConf = new QSettings();
     stateConf = new QSettings(QCoreApplication::organizationName(), "savedState");
     themeConf = new QSettings(QCoreApplication::organizationName(), "theme");
 #else
-    mTmpDir = new QDir(QApplication::applicationDirPath() + "/cache");
-    mTmpDir->mkpath(mTmpDir->absolutePath());
-    mThumbCacheDir = new QDir(QApplication::applicationDirPath() + "/thumbnails");
-    mThumbCacheDir->mkpath(mThumbCacheDir->absolutePath());
     mConfDir = new QDir(QApplication::applicationDirPath() + "/conf");
     mConfDir->mkpath(QApplication::applicationDirPath() + "/conf");
     settingsConf = new QSettings(mConfDir->absolutePath() + "/" + qApp->applicationName() + ".ini", QSettings::IniFormat);
@@ -39,9 +29,38 @@ Settings::~Settings() {
 }
 //------------------------------------------------------------------------------
 Settings *Settings::getInstance() {
-    if(!settings)
+    if(!settings) {
         settings = new Settings();
+        settings->setupCache();
+    }
     return settings;
+}
+//------------------------------------------------------------------------------
+void Settings::setupCache() {
+#ifdef __linux__
+    QString genericCacheLocation = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation);
+    if(genericCacheLocation.isEmpty())
+        genericCacheLocation = QDir::homePath() + "/.cache";
+    genericCacheLocation.append("/" + QApplication::applicationName());
+    QString cacheLocation = settings->settingsConf->value("cacheDir", genericCacheLocation).toString();
+    mTmpDir = new QDir(cacheLocation);
+    mTmpDir->mkpath(mTmpDir->absolutePath());
+    QFileInfo dirTest(mTmpDir->absolutePath());
+    if(!dirTest.isDir() || !dirTest.isWritable() || !dirTest.exists()) {
+        // fallback
+        qDebug() << "Error: cache dir is not writable" << mTmpDir->absolutePath();
+        qDebug() << "Trying to use" << genericCacheLocation << "instead";
+        mTmpDir->setPath(genericCacheLocation);
+        mTmpDir->mkpath(mTmpDir->absolutePath());
+    }
+    mThumbCacheDir = new QDir(mTmpDir->absolutePath() + "/thumbnails");
+    mThumbCacheDir->mkpath(mThumbCacheDir->absolutePath());
+#else
+    mTmpDir = new QDir(QApplication::applicationDirPath() + "/cache");
+    mTmpDir->mkpath(mTmpDir->absolutePath());
+    mThumbCacheDir = new QDir(QApplication::applicationDirPath() + "/thumbnails");
+    mThumbCacheDir->mkpath(mThumbCacheDir->absolutePath());
+#endif
 }
 //------------------------------------------------------------------------------
 void Settings::sync() {

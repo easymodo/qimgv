@@ -268,6 +268,7 @@ private:
     void saveTheme();
     void createColorVariants();
 
+    void setupCache();
 signals:
     void settingsChanged();
 
