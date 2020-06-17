@@ -84,9 +84,9 @@ void Settings::loadTheme() {
     colors.text                  = QColor(themeConf->value("text",                  "#a4a4a4").toString());
     colors.widget                = QColor(themeConf->value("widget",                "#252525").toString());
     colors.widget_border         = QColor(themeConf->value("widget_border",         "#272727").toString());
-    colors.accent                = QColor(themeConf->value("accent",                "#4f4f4f").toString());
-    colors.folderview            = QColor(themeConf->value("folderview",            "#282828").toString());
-    colors.folderview_topbar     = QColor(themeConf->value("folderview_topbar",     "#373737").toString());
+    colors.accent                = QColor(themeConf->value("accent",                "#4f6a91").toString());
+    colors.folderview            = QColor(themeConf->value("folderview",            "#242424").toString());
+    colors.folderview_topbar     = QColor(themeConf->value("folderview_topbar",     "#343434").toString());
     colors.slider_handle         = QColor(themeConf->value("slider_handle",         "#5e5e5e").toString());
     colors.overlay_text          = QColor(themeConf->value("overlay_text",          "#d2d2d2").toString());
     colors.overlay               = QColor(themeConf->value("overlay",               "#1a1a1a").toString());
@@ -133,10 +133,10 @@ void Settings::createColorVariants() {
         // top bar buttons
         mTheme.colors.panel_button_hover.setHsv(mTheme.colors.folderview_topbar.hue(),
                                                 mTheme.colors.folderview_topbar.saturation(),
-                                                qMin(mTheme.colors.folderview_topbar.value() + 33, 255));
+                                                qMin(mTheme.colors.folderview_topbar.value() + 30, 255));
         mTheme.colors.panel_button_pressed.setHsv(mTheme.colors.folderview_topbar.hue(),
                                                   mTheme.colors.folderview_topbar.saturation(),
-                                                  qMin(mTheme.colors.folderview_topbar.value() + 22, 255));
+                                                  qMin(mTheme.colors.folderview_topbar.value() + 20, 255));
 
 
         mTheme.colors.folderview_separator.setHsv(mTheme.colors.folderview.hue(),
