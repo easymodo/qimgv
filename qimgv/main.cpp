@@ -32,19 +32,8 @@ void loadStylesheet() {
         auto colors = settings->colorScheme();
         QString styleSheet = QLatin1String(file.readAll());
 
-        QPalette p;
-        auto system_window = p.window().color();
-        // values might need tweaking
-        bool system_dark_theme = (system_window.valueF() < 0.32f);
-        QColor system_window_tinted;
-        if(system_dark_theme)
-            system_window_tinted = system_window.lighter(123);
-        else
-            system_window_tinted = system_window.darker(108);
-
-        styleSheet.replace("%icontheme%",         settings->theme().iconTheme);
-
-        // -------------- write colors into stylesheet ---------------
+        // -------------- write variables into stylesheet ---------------
+        styleSheet.replace("%icontheme%",            settings->theme().iconTheme);
         styleSheet.replace("%button%",               colors.button.name());
         styleSheet.replace("%button_hover%",         colors.button_hover.name());
         styleSheet.replace("%button_pressed%",       colors.button_pressed.name());
@@ -55,7 +44,7 @@ void loadStylesheet() {
         styleSheet.replace("%widget_border%",        colors.widget_border.name());
         styleSheet.replace("%folderview%",           colors.folderview.name());
         styleSheet.replace("%folderview_topbar%",    colors.folderview_topbar.name());
-        styleSheet.replace("%folderview_separator%",    colors.folderview_separator.name());
+        styleSheet.replace("%folderview_separator%", colors.folderview_separator.name());
         styleSheet.replace("%accent%",               colors.accent.name());
         styleSheet.replace("%accent_lc%",            colors.accent_lc.name());
         styleSheet.replace("%input_field_focus%",    colors.input_field_focus.name());
@@ -69,8 +58,8 @@ void loadStylesheet() {
         styleSheet.replace("%overlay_text%",         colors.overlay_text.name());
         styleSheet.replace("%text_lc1%",             colors.text_lc1.name());
         styleSheet.replace("%text_lc2%",             colors.text_lc2.name());
+        styleSheet.replace("%system_window_tinted%", colors.system_window_tinted.name());
 
-        styleSheet.replace("%system_window_tinted%", system_window_tinted.name());
         // ------------------------ apply ----------------------------
         qApp->setStyleSheet(styleSheet);
     }

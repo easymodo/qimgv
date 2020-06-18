@@ -8,6 +8,7 @@
 #include <QImageReader>
 #include <QStringList>
 #include <QColor>
+#include <QPalette>
 #include <QDir>
 #include <QKeySequence>
 #include <QMap>
@@ -105,12 +106,16 @@ struct ColorScheme {
     QColor overlay_text;
     QColor overlay;
     QColor input_field_focus;
+    QColor system_window;
+    QColor system_window_tinted;
 };
 
 struct Theme {
     ColorScheme colors;
-    bool dark = true;
+    bool darkTheme = true;
+    bool systemDarkTheme = false;
     QString iconTheme = "light";
+    QString systemIconTheme = "dark";
 };
 
 class Settings : public QObject

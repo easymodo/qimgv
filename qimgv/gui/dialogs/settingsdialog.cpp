@@ -49,7 +49,7 @@ SettingsDialog::~SettingsDialog() {
 }
 
 void SettingsDialog::setupSidebar() {
-    auto icontheme = settings->theme().iconTheme;
+    auto icontheme = settings->theme().systemIconTheme;
     QListWidget *sideBar = ui->sideBar;
     sideBar->viewport()->setAutoFillBackground(false);
     // General

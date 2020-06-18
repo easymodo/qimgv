@@ -30,9 +30,10 @@ void ThumbnailStrip::setupLayout() {
 }
 
 ThumbnailWidget* ThumbnailStrip::createThumbnailWidget() {
-    ThumbnailWidget *widget = new ThumbnailWidget();
+    ThumbnailWidget *widget = new ThumbnailGridWidget();
+    widget->setDrawLabel(false);
+    widget->setPadding(6,6);
     widget->setThumbnailSize(this->mThumbnailSize);
-    widget->setDrawLabel(true);
     return widget;
 }
 
@@ -126,7 +127,7 @@ void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
 // update size based on widget's size
 // reposition thumbnails within scene if needed
 void ThumbnailStrip::updateThumbnailSize() {
-    int newSize = height() - 25;
+    int newSize = height() - 30;
     if( newSize % 2 )
         --newSize;
     if(newSize != mThumbnailSize) {

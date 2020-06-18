@@ -119,17 +119,34 @@ const ColorScheme& Settings::colorScheme() {
 //------------------------------------------------------------------------------
 void Settings::setColorScheme(ColorScheme &scheme) {
     mTheme.colors = scheme;
-    mTheme.dark = (mTheme.colors.widget.valueF() <= 0.32f);
-    if(mTheme.dark)
+    mTheme.darkTheme = (mTheme.colors.widget.valueF() <= 0.32f);
+    if(mTheme.darkTheme)
         mTheme.iconTheme = "light";
     else
         mTheme.iconTheme = "dark";
+
+    QPalette p;
+    mTheme.colors.system_window = p.window().color();
+    mTheme.systemDarkTheme = (mTheme.colors.system_window.valueF() <= 0.32f);
+    if(mTheme.systemDarkTheme)
+        mTheme.systemIconTheme = "light";
+    else
+        mTheme.systemIconTheme = "dark";
     createColorVariants();
 }
 //------------------------------------------------------------------------------
 void Settings::createColorVariants() {
+    if(mTheme.systemDarkTheme) {
+        mTheme.colors.system_window_tinted.setHsv(mTheme.colors.system_window.hue(),
+                                    mTheme.colors.system_window.saturation(),
+                                    mTheme.colors.system_window.value() + 16);
+    } else {
+        mTheme.colors.system_window_tinted.setHsv(mTheme.colors.system_window.hue(),
+                                    mTheme.colors.system_window.saturation(),
+                                    mTheme.colors.system_window.value() - 16);
+    }
     // light variant needs tweaking
-    //if(mTheme.dark) {
+    //if(mTheme.darkTheme) {
         // top bar buttons
         mTheme.colors.panel_button_hover.setHsv(mTheme.colors.folderview_topbar.hue(),
                                                 mTheme.colors.folderview_topbar.saturation(),

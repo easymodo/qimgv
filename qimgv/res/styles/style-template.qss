@@ -145,7 +145,7 @@ QComboBox QAbstractItemView {
 /* panel buttons holder widget */
 
 [accessibleName="panelButtonsWidget"] {
-    background-color: %widget%;
+    background-color: %folderview%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -400,7 +400,7 @@ ThumbnailView {
 }
 /*----------------------------------------------------------------------------*/
 ThumbnailStrip {
-    background-color: %widget%;
+    background-color: %folderview%;
 }
 /*----------------------------------------------------------------------------*/
 FolderGridView {

@@ -12,6 +12,7 @@
 #include <cmath>
 
 #include "gui/customwidgets/thumbnailview.h"
+#include "gui/folderview/thumbnailgridwidget.h"
 #include "sourcecontainers/thumbnail.h"
 
 class ThumbnailStrip : public ThumbnailView
