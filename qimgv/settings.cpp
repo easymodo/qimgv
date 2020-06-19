@@ -92,6 +92,24 @@ void Settings::loadTheme() {
     colors.overlay               = QColor(themeConf->value("overlay",               "#1a1a1a").toString());
     themeConf->endGroup();
     setColorScheme(colors);
+
+    QPalette p;
+    // choose icons depending on text color
+    if(p.text().color().valueF() > 0.5f) {
+        mTheme.systemIconTheme = "light";
+    } else {
+        mTheme.systemIconTheme = "dark";
+    }
+    QColor system_window = p.window().color();
+    if(system_window.valueF() <= 0.45f) {
+        mTheme.system_window_tinted.setHsv(system_window.hue(),
+                                           system_window.saturation(),
+                                           system_window.value() + 16);
+    } else {
+        mTheme.system_window_tinted.setHsv(system_window.hue(),
+                                           system_window.saturation(),
+                                           system_window.value() - 16);
+    }
 }
 void Settings::saveTheme() {
     themeConf->beginGroup("Colors");
@@ -119,34 +137,18 @@ const ColorScheme& Settings::colorScheme() {
 //------------------------------------------------------------------------------
 void Settings::setColorScheme(ColorScheme &scheme) {
     mTheme.colors = scheme;
-    mTheme.darkTheme = (mTheme.colors.widget.valueF() <= 0.32f);
-    if(mTheme.darkTheme)
+    // choose icons depending on text color
+    if(mTheme.colors.text.valueF() > 0.5f)
         mTheme.iconTheme = "light";
     else
         mTheme.iconTheme = "dark";
-
-    QPalette p;
-    mTheme.colors.system_window = p.window().color();
-    mTheme.systemDarkTheme = (mTheme.colors.system_window.valueF() <= 0.32f);
-    if(mTheme.systemDarkTheme)
-        mTheme.systemIconTheme = "light";
-    else
-        mTheme.systemIconTheme = "dark";
+    qDebug() << mTheme.colors.text.valueF() << mTheme.iconTheme;
     createColorVariants();
 }
 //------------------------------------------------------------------------------
 void Settings::createColorVariants() {
-    if(mTheme.systemDarkTheme) {
-        mTheme.colors.system_window_tinted.setHsv(mTheme.colors.system_window.hue(),
-                                    mTheme.colors.system_window.saturation(),
-                                    mTheme.colors.system_window.value() + 16);
-    } else {
-        mTheme.colors.system_window_tinted.setHsv(mTheme.colors.system_window.hue(),
-                                    mTheme.colors.system_window.saturation(),
-                                    mTheme.colors.system_window.value() - 16);
-    }
     // light variant needs tweaking
-    //if(mTheme.darkTheme) {
+    //if(mTheme.colors.widget.valueF() <= 0.45f) {
         // top bar buttons
         mTheme.colors.panel_button_hover.setHsv(mTheme.colors.folderview_topbar.hue(),
                                                 mTheme.colors.folderview_topbar.saturation(),

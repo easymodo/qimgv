@@ -12,7 +12,7 @@ CropPanel::CropPanel(CropOverlay *_overlay, QWidget *parent) :
     ui->ARcomboBox->setItemDelegate(new QStyledItemDelegate(ui->ARcomboBox));
     ui->ARcomboBox->view()->setTextElideMode(Qt::ElideNone);
 
-    ui->headerLabel->setPixmap(QPixmap(":res/icons/" + settings->theme().iconTheme + "/other/image-crop48.png"));
+    ui->headerIcon->setIconPath(":/res/icons/" + settings->theme().iconTheme + "/other/image-crop48.png");
 
     hide();
 

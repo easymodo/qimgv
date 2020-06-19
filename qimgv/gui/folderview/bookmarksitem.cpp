@@ -11,22 +11,23 @@ BookmarksItem::BookmarksItem(QString _dirName, QString _dirPath, QWidget *parent
     spacer = new QSpacerItem(16, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
     auto icontheme = settings->theme().iconTheme;
-    folderIconLabel.setAttribute(Qt::WA_TransparentForMouseEvents, true);
-    folderIconLabel.setPixmap(QIcon(":/res/icons/" + icontheme + "/menuitem/folder16.png").pixmap(16, 16));
-    folderIconLabel.installEventFilter(this);
+    folderIconWidget.setAttribute(Qt::WA_TransparentForMouseEvents, true);
+    folderIconWidget.setIconPath(":/res/icons/" + icontheme + "/menuitem/folder16.png");
+    folderIconWidget.setMinimumSize(16, 16);
+    folderIconWidget.installEventFilter(this);
 
-    removeIconLabel.setIconPath(":/res/icons/" + icontheme + "/buttons/panel-small/remove12.png");
-    removeIconLabel.setMinimumSize(16, 16);
-    removeIconLabel.installEventFilter(this);
+    removeItemButton.setIconPath(":/res/icons/" + icontheme + "/buttons/panel-small/remove12.png");
+    removeItemButton.setMinimumSize(16, 16);
+    removeItemButton.installEventFilter(this);
 
-    removeIconLabel.setAccessibleName("BookmarksItemRemoveLabel");
+    removeItemButton.setAccessibleName("BookmarksItemRemoveLabel");
 
-    connect(&removeIconLabel, &IconButton::clicked, this, &BookmarksItem::onRemoveClicked);
+    connect(&removeItemButton, &IconButton::clicked, this, &BookmarksItem::onRemoveClicked);
 
-    layout.addWidget(&folderIconLabel);
+    layout.addWidget(&folderIconWidget);
     layout.addWidget(&dirNameLabel);
     layout.addSpacerItem(spacer);
-    layout.addWidget(&removeIconLabel);
+    layout.addWidget(&removeItemButton);
 
     setMouseTracking(true);
 
@@ -66,18 +67,6 @@ void BookmarksItem::paintEvent(QPaintEvent *event) {
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-}
-
-bool BookmarksItem::eventFilter(QObject *watched, QEvent *event) {
-    if(event->type() == QEvent::Paint) {
-        if(watched == &folderIconLabel) {
-            QLabel *label = dynamic_cast<QLabel*>(watched);
-            QPainter painter(label);
-            label->style()->drawItemPixmap(&painter, label->rect(), Qt::AlignHCenter | Qt::AlignVCenter, *label->pixmap());
-            return true;
-        }
-    }
-    return false;
 }
 
 void BookmarksItem::dropEvent(QDropEvent *event) {

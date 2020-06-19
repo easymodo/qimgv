@@ -635,7 +635,7 @@ void Core::resize(QSize size) {
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
             img->save();
     } else {
-        mw->showMessage("Editing gifs/video is unsupported.");
+        mw->showMessage("Editing gifs/video is not supported.");
     }
 }
 
@@ -651,7 +651,7 @@ void Core::flipH() {
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
             img->save();
     } else {
-        mw->showMessage("Editing gifs/video is unsupported.");
+        mw->showMessage("Editing gifs/video is not supported.");
     }
 }
 
@@ -667,7 +667,7 @@ void Core::flipV() {
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
             img->save();
     } else {
-        mw->showMessage("Editing gifs/video is unsupported.");
+        mw->showMessage("Editing gifs/video is not supported.");
     }
 }
 
@@ -682,7 +682,7 @@ bool Core::crop(QRect rect) {
         model->updateItem(state.currentFileName, img);
         return true;
     } else {
-        mw->showMessage("Editing gifs/video is unsupported.");
+        mw->showMessage("Editing gifs/video is not supported.");
         return false;
     }
 }
@@ -706,7 +706,7 @@ void Core::rotateByDegrees(int degrees) {
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
             img->save();
     } else {
-        mw->showMessage("Editing gifs/video is unsupported.");
+        mw->showMessage("Editing gifs/video is not supported.");
     }
 }
 

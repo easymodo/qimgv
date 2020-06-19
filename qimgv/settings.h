@@ -106,14 +106,11 @@ struct ColorScheme {
     QColor overlay_text;
     QColor overlay;
     QColor input_field_focus;
-    QColor system_window;
-    QColor system_window_tinted;
 };
 
 struct Theme {
     ColorScheme colors;
-    bool darkTheme = true;
-    bool systemDarkTheme = false;
+    QColor system_window_tinted; // move somewhere else?
     QString iconTheme = "light";
     QString systemIconTheme = "dark";
 };

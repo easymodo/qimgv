@@ -7,7 +7,7 @@
 #include <QStyleOption>
 #include <QHBoxLayout>
 #include <QSpacerItem>
-#include "gui/customwidgets/clickablelabel.h"
+#include "gui/customwidgets/iconbutton.h"
 #include "components/actionmanager/actionmanager.h"
 
 class MenuItem : public QWidget {
@@ -19,18 +19,16 @@ public:
     QString text();
     void setShortcutText(QString mTextLabel);
     QString shortcut();
-    void setPixmap(QPixmap pixmap);
-    void setIcon(QIcon mIconLabel);
+    void setIconPath(QString path);
 
 protected:
-    ClickableLabel mIconLabel;
+    IconButton mIconWidget;
     QLabel mTextLabel, mShortcutLabel;
     QSpacerItem *spacer;
     QHBoxLayout mLayout;
     void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-    bool eventFilter(QObject *o, QEvent *ev) Q_DECL_OVERRIDE;
 
     virtual void onClick();
     virtual void onPress();

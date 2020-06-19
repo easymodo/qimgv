@@ -6,6 +6,13 @@ FileSystemModelCustom::FileSystemModelCustom(QObject *parent) : QFileSystemModel
     if(dpr >= (1.0 + 0.001))
         iconPath.replace(".", "@2x.");
     folderIcon.load(iconPath);
+    // overlay icon with color
+    QPainter p(&folderIcon);
+    QColor color = settings->colorScheme().text;
+    p.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    p.setBrush(color);
+    p.setPen(color);
+    p.drawRect(folderIcon.rect());
 }
 
 QVariant FileSystemModelCustom::data( const QModelIndex& index, int role ) const {

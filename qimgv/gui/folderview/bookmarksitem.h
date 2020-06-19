@@ -31,8 +31,6 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
 
-    bool eventFilter(QObject *o, QEvent *ev) Q_DECL_OVERRIDE;
-
     void paintEvent(QPaintEvent *event) override;
     void dropEvent(QDropEvent *event) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
@@ -43,8 +41,8 @@ private slots:
 private:
     QString dirName, dirPath;
 
-    QLabel folderIconLabel;
-    IconButton removeIconLabel;
+    IconWidget folderIconWidget;
+    IconButton removeItemButton;
     QLabel dirNameLabel;
     QSpacerItem *spacer;
     QHBoxLayout layout;

@@ -36,7 +36,7 @@
     <number>18</number>
    </property>
    <property name="topMargin">
-    <number>18</number>
+    <number>12</number>
    </property>
    <property name="rightMargin">
     <number>18</number>
@@ -45,14 +45,34 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QLabel" name="headerLabel">
-     <property name="accessibleName">
-      <string notr="true"/>
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <property name="bottomMargin">
+      <number>4</number>
      </property>
-     <property name="text">
-      <string notr="true"/>
-     </property>
-    </widget>
+     <item>
+      <widget class="IconWidget" name="headerIcon" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>48</width>
+         <height>48</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox">
@@ -518,6 +538,12 @@
    <class>SpinBoxInputFix</class>
    <extends>QSpinBox</extends>
    <header>gui/customwidgets/spinboxinputfix.h</header>
+  </customwidget>
+  <customwidget>
+   <class>IconWidget</class>
+   <extends>QWidget</extends>
+   <header>gui/customwidgets/iconwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

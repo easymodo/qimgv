@@ -8,6 +8,7 @@
 #include <QPainter>
 #include <QtGlobal>
 #include "gui/customwidgets/sidepanelwidget.h"
+#include "gui/customwidgets/iconwidget.h"
 #include "gui/customwidgets/spinboxinputfix.h"
 #include "gui/overlays/cropoverlay.h"
 #include <QTimer>

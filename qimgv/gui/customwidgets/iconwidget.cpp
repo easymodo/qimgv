@@ -30,6 +30,13 @@ void IconWidget::setIconPath(QString path) {
         pixmap = new QPixmap(path);
         pixmapDrawScale = dpr;
     }
+    // overlay icon with color
+    QPainter p(pixmap);
+    QColor color = settings->colorScheme().text;
+    p.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    p.setBrush(color);
+    p.setPen(color);
+    p.drawRect(pixmap->rect());
     update();
 }
 
