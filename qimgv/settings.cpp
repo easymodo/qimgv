@@ -221,6 +221,7 @@ QList<QByteArray> Settings::supportedFormats() {
     formats << "jfif";
     if(videoPlayback())
         formats << "webm" << "mp4";
+    formats.removeAll("pdf");
     return formats;
 }
 //------------------------------------------------------------------------------
