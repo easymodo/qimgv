@@ -5,7 +5,7 @@ PathSelectorMenuItem::PathSelectorMenuItem(QWidget *parent)
       mDirectory("")
 {
     setFocusPolicy(Qt::NoFocus);
-    setIconPath(":/res/icons/" + settings->theme().iconTheme + "/menuitem/folder16.png");
+    setIconPath(":/res/icons/common/menuitem/folder16.png");
     mIconWidget.setAttribute(Qt::WA_TransparentForMouseEvents, false);
     connect(&mIconWidget, &IconButton::clicked, [this]() {
         QFileDialog dialog;

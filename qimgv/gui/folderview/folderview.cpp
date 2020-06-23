@@ -29,23 +29,24 @@ FolderView::FolderView(QWidget *parent) :
     ui->dirTreeView->setRootIndex(idx);
 #endif
     // -------------------------------
-    auto icontheme = settings->theme().iconTheme;
     ui->openButton->setAction("open");
-    ui->openButton->setIconPath(":res/icons/" + icontheme + "/buttons/panel/open16.png");
+    ui->openButton->setIconPath(":res/icons/common/buttons/panel/open16.png");
     ui->settingsButton->setAction("openSettings");
-    ui->settingsButton->setIconPath(":res/icons/" + icontheme + "/buttons/panel/settings16.png");
+    ui->settingsButton->setIconPath(":res/icons/common/buttons/panel/settings16.png");
     ui->exitButton->setAction("exit");
-    ui->exitButton->setIconPath(":res/icons/" + icontheme + "/buttons/panel/close16.png");
+    ui->exitButton->setIconPath(":res/icons/common/buttons/panel/close16.png");
     ui->docViewButton->setAction("documentView");
-    ui->docViewButton->setIconPath(":res/icons/" + icontheme + "/buttons/panel/document-view16.png");
+    ui->docViewButton->setIconPath(":res/icons/common/buttons/panel/document-view16.png");
     ui->showLabelsButton->setCheckable(true);
-    ui->showLabelsButton->setIconPath(":res/icons/" + icontheme + "/buttons/panel/labels.png");
+    ui->showLabelsButton->setIconPath(":res/icons/common/buttons/panel/labels.png");
     ui->togglePlacesPanelButton->setCheckable(true);
-    ui->togglePlacesPanelButton->setIconPath(":res/icons/" + icontheme + "/buttons/panel/toggle-panel20.png");
+    ui->togglePlacesPanelButton->setIconPath(":res/icons/common/buttons/panel/toggle-panel20.png");
 
-    ui->newBookmarkButton->setIconPath(":res/icons/" + icontheme + "/buttons/panel-small/add-new12.png");
-    ui->homeButton->setIconPath(":res/icons/" + icontheme + "/buttons/panel-small/home12.png");
-    ui->rootButton->setIconPath(":res/icons/" + icontheme + "/buttons/panel-small/root12.png");
+    ui->sortingComboBox->setIconPath(":res/icons/common/other/sorting-mode16.png");
+
+    ui->newBookmarkButton->setIconPath(":res/icons/common/buttons/panel-small/add-new12.png");
+    ui->homeButton->setIconPath(":res/icons/common/buttons/panel-small/home12.png");
+    ui->rootButton->setIconPath(":res/icons/common/buttons/panel-small/root12.png");
 
     int min = ui->thumbnailGrid->THUMBNAIL_SIZE_MIN;
     int max = ui->thumbnailGrid->THUMBNAIL_SIZE_MAX;

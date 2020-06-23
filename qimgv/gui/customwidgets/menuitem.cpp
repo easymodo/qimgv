@@ -31,18 +31,6 @@ MenuItem::~MenuItem() {
     delete spacer;
 }
 
-/*bool MenuItem::eventFilter(QObject *watched, QEvent *event) {
-    if(watched == &mIconWidget && event->type() == QEvent::Paint) {
-        QLabel * label = dynamic_cast<QLabel*>(watched);
-        QPainter painter(label);
-        label->style()->drawItemPixmap(&painter, label->rect(), Qt::AlignHCenter | Qt::AlignVCenter, *label->pixmap());
-        return true;
-    }
-    return false;
-}
-
-*/
-
 void MenuItem::setText(QString text) {
     this->mTextLabel.setText(text);
 }
@@ -62,7 +50,6 @@ QString MenuItem::shortcut() {
 
 void MenuItem::setIconPath(QString path) {
     mIconWidget.setIconPath(path);
-    //this->mIconWidget.setPixmap(icon.pixmap(16,16));
 }
 
 void MenuItem::paintEvent(QPaintEvent *event) {

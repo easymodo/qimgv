@@ -112,12 +112,6 @@ QComboBox QAbstractItemView {
     border-color: %panel_button_hover%;
 }
 
-[accessibleName="PanelComboBox"]::down-arrow {
-    border: 0px;
-    margin-right: 8px;
-    image: url(:/res/icons/%icontheme%/other/sorting-mode16.png);
-}
-
 [accessibleName="PanelComboBox"]::drop-down {
     border: 0px;
 }
@@ -293,12 +287,6 @@ SidePanel QComboBox {
 SidePanel QComboBox:hover {
     background-color: %button%;
     border-color: %button%;
-}
-
-SidePanel QComboBox::down-arrow {
-    border: 0px;
-    margin-right: 8px;
-    image: url(:/res/icons/%icontheme%/other/dropDownArrow.png);
 }
 
 SidePanel QComboBox::drop-down {

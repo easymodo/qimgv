@@ -8,11 +8,10 @@ VideoControls::VideoControls(FloatingWidgetContainer *parent) :
     ui->setupUi(this);
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     hide();
-    auto icontheme = settings->theme().iconTheme;
-    ui->pauseButton->setIconPath(":res/icons/" + icontheme + "/buttons/videocontrols/play24.png");
-    ui->prevFrameButton->setIconPath(":res/icons/" + icontheme + "/buttons/videocontrols/skip-backwards24.png");
-    ui->nextFrameButton->setIconPath(":res/icons/" + icontheme + "/buttons/videocontrols/skip-forward24.png");
-    ui->muteButton->setIconPath(":/res/icons/" + icontheme + "/buttons/videocontrols/mute-on24.png");
+    ui->pauseButton->setIconPath(":res/icons/common/buttons/videocontrols/play24.png");
+    ui->prevFrameButton->setIconPath(":res/icons/common/buttons/videocontrols/skip-backwards24.png");
+    ui->nextFrameButton->setIconPath(":res/icons/common/buttons/videocontrols/skip-forward24.png");
+    ui->muteButton->setIconPath(":/res/icons/common/buttons/videocontrols/mute-on24.png");
     ui->muteButton->setAction("toggleMute");
 
     lastPosition = -1;
@@ -92,17 +91,15 @@ void VideoControls::setPlaybackPosition(int position) {
 }
 
 void VideoControls::onPlaybackPaused(bool mode) {
-    auto icontheme = settings->theme().iconTheme;
     if(mode)
-        ui->pauseButton->setIconPath(":res/icons/" + icontheme + "/buttons/videocontrols/play24.png");
+        ui->pauseButton->setIconPath(":res/icons/common/buttons/videocontrols/play24.png");
     else
-        ui->pauseButton->setIconPath(":res/icons/" + icontheme + "/buttons/videocontrols/pause24.png");
+        ui->pauseButton->setIconPath(":res/icons/common/buttons/videocontrols/pause24.png");
 }
 
 void VideoControls::onVideoMuted(bool mode) {
-    auto icontheme = settings->theme().iconTheme;
     if(mode)
-        ui->muteButton->setIconPath(":res/icons/" + icontheme + "/buttons/videocontrols/mute-on24.png");
+        ui->muteButton->setIconPath(":res/icons/common/buttons/videocontrols/mute-on24.png");
     else
-        ui->muteButton->setIconPath(":res/icons/" + icontheme + "/buttons/videocontrols/mute-off24.png");
+        ui->muteButton->setIconPath(":res/icons/common/buttons/videocontrols/mute-off24.png");
 }

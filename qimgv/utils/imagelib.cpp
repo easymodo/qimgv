@@ -1,29 +1,12 @@
 #include "imagelib.h"
 
-
-/*QString type2str(int type) {
-  QString r;
-
-  uchar depth = type & CV_MAT_DEPTH_MASK;
-  uchar chans = 1 + (type >> CV_CN_SHIFT);
-
-  switch ( depth ) {
-    case CV_8U:  r = "8U"; break;
-    case CV_8S:  r = "8S"; break;
-    case CV_16U: r = "16U"; break;
-    case CV_16S: r = "16S"; break;
-    case CV_32S: r = "32S"; break;
-    case CV_32F: r = "32F"; break;
-    case CV_64F: r = "64F"; break;
-    default:     r = "User"; break;
-  }
-
-  r += "C";
-  r += (chans+'0');
-
-  return r;
+void ImageLib::overlayColor(QPixmap &pixmap, QColor color) {
+    QPainter p(&pixmap);
+    p.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    p.setBrush(color);
+    p.setPen(color);
+    p.drawRect(pixmap.rect());
 }
-*/
 
 QImage *ImageLib::rotated(const QImage *src, int grad) {
     QImage *img = new QImage();

@@ -68,25 +68,24 @@ void FloatingMessage::setText(QString text) {
 }
 
 void FloatingMessage::setIcon(FloatingMessageIcon icon) {
-    auto icontheme = settings->theme().iconTheme;
     switch (icon) {
         case FloatingMessageIcon::NO_ICON:
             ui->iconLabel->hide();
             break;
         case FloatingMessageIcon::ICON_LEFT_EDGE:
             ui->iconLabel->show();
-            ui->iconLabel->setIconPath(":/res/icons/" + icontheme + "/notifications/dir_start20.png");
+            ui->iconLabel->setIconPath(":/res/icons/common/notifications/dir_start20.png");
             break;
         case FloatingMessageIcon::ICON_RIGHT_EDGE:
             ui->iconLabel->show();
-            ui->iconLabel->setIconPath(":/res/icons/" + icontheme + "/notifications/dir_end20.png");
+            ui->iconLabel->setIconPath(":/res/icons/common/notifications/dir_end20.png");
             break;
         case FloatingMessageIcon::ICON_SUCCESS:
             ui->iconLabel->show();
-            ui->iconLabel->setIconPath(":/res/icons/" + icontheme + "/notifications/success16.png");
+            ui->iconLabel->setIconPath(":/res/icons/common/notifications/success16.png");
             break;
         case FloatingMessageIcon::ICON_ERROR:
-            //ui->iconLabel->setIconPath(":/res/icons/" + icontheme + "/notifications/error16.png");
+            //ui->iconLabel->setIconPath(":/res/icons/common/notifications/error16.png");
             ui->iconLabel->hide();
             break;
     }

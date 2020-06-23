@@ -10,6 +10,7 @@
 #include "gui/folderview/filesystemmodelcustom.h"
 #include "gui/folderview/bookmarkswidget.h"
 #include "gui/customwidgets/actionbutton.h"
+#include "gui/customwidgets/styledcombobox.h"
 
 namespace Ui {
     class FolderView;

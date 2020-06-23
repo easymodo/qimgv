@@ -27,6 +27,7 @@ target_sources(qimgv PRIVATE
     customwidgets/thumbnailwidget.cpp
     customwidgets/videoslider.cpp
     customwidgets/pushbuttonfocusind.cpp
+    customwidgets/styledcombobox.cpp
 
     dialogs/resizedialog.cpp
     dialogs/scripteditordialog.cpp

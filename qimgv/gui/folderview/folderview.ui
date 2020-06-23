@@ -229,7 +229,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QComboBox" name="sortingComboBox">
+       <widget class="StyledComboBox" name="sortingComboBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
           <horstretch>0</horstretch>
@@ -770,6 +770,11 @@
    <extends>QWidget</extends>
    <header>gui/customwidgets/iconbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StyledComboBox</class>
+   <extends>QComboBox</extends>
+   <header>gui/customwidgets/styledcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

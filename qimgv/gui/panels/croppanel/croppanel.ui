@@ -318,7 +318,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="ARcomboBox">
+       <widget class="StyledComboBox" name="ARcomboBox">
         <item>
          <property name="text">
           <string>Free</string>
@@ -529,6 +529,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>StyledComboBox</class>
+   <extends>QComboBox</extends>
+   <header>gui/customwidgets/styledcombobox.h</header>
+  </customwidget>
   <customwidget>
    <class>PushButtonFocusInd</class>
    <extends>QPushButton</extends>

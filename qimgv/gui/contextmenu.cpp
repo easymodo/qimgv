@@ -11,78 +11,77 @@ ContextMenu::ContextMenu(QWidget *parent) :
     setAttribute(Qt::WA_NoMousePropagation, true);
     this->hide();
 
-    auto icontheme = settings->theme().iconTheme;
     // -------------------------------------------------------------------------
     // setup actions
     // top zoom buttons
     ui->zoomIn->setAction("zoomIn");
-    ui->zoomIn->setIconPath(":/res/icons/" + icontheme + "/buttons/contextmenu/zoom-in18.png");
+    ui->zoomIn->setIconPath(":/res/icons/common/buttons/contextmenu/zoom-in18.png");
     ui->zoomIn->setTriggerMode(TriggerMode::PressTrigger);
     ui->zoomOut->setAction("zoomOut");
-    ui->zoomOut->setIconPath(":/res/icons/" + icontheme + "/buttons/contextmenu/zoom-out18.png");
+    ui->zoomOut->setIconPath(":/res/icons/common/buttons/contextmenu/zoom-out18.png");
     ui->zoomOut->setTriggerMode(TriggerMode::PressTrigger);
     ui->zoomOriginal->setAction("fitNormal");
-    ui->zoomOriginal->setIconPath(":/res/icons/" + icontheme + "/buttons/contextmenu/zoom-original18.png");
+    ui->zoomOriginal->setIconPath(":/res/icons/common/buttons/contextmenu/zoom-original18.png");
     ui->zoomOriginal->setTriggerMode(TriggerMode::PressTrigger);
     ui->fitWidth->setAction("fitWidth");
-    ui->fitWidth->setIconPath(":/res/icons/" + icontheme + "/buttons/contextmenu/fit-width18.png");
+    ui->fitWidth->setIconPath(":/res/icons/common/buttons/contextmenu/fit-width18.png");
     ui->fitWidth->setTriggerMode(TriggerMode::PressTrigger);
     ui->fitWindow->setAction("fitWindow");
-    ui->fitWindow->setIconPath(":/res/icons/" + icontheme + "/buttons/contextmenu/fit-window18.png");
+    ui->fitWindow->setIconPath(":/res/icons/common/buttons/contextmenu/fit-window18.png");
     ui->fitWindow->setTriggerMode(TriggerMode::PressTrigger);
     // -------------------------------------------------------------------------
     //  entries
     ui->rotateLeft->setAction("rotateLeft");
     ui->rotateLeft->setText(tr("Rotate left"));
-    ui->rotateLeft->setIconPath(":/res/icons/" + icontheme + "/menuitem/rotate-left16.png");
+    ui->rotateLeft->setIconPath(":/res/icons/common/menuitem/rotate-left16.png");
 
     ui->rotateRight->setAction("rotateRight");
     ui->rotateRight->setText(tr("Rotate right"));
-    ui->rotateRight->setIconPath(":/res/icons/" + icontheme + "/menuitem/rotate-right16.png");
+    ui->rotateRight->setIconPath(":/res/icons/common/menuitem/rotate-right16.png");
 
     ui->flipH->setAction("flipH");
     ui->flipH->setText(tr("Flip H"));
-    ui->flipH->setIconPath(":/res/icons/" + icontheme + "/menuitem/flip-h16.png");
+    ui->flipH->setIconPath(":/res/icons/common/menuitem/flip-h16.png");
 
     ui->flipV->setAction("flipV");
     ui->flipV->setText(tr("Flip V"));
-    ui->flipV->setIconPath(":/res/icons/" + icontheme + "/menuitem/flip-v16.png");
+    ui->flipV->setIconPath(":/res/icons/common/menuitem/flip-v16.png");
 
     ui->crop->setAction("crop");
     ui->crop->setText(tr("Crop"));
-    ui->crop->setIconPath(":/res/icons/" + icontheme + "/menuitem/image-crop16.png");
+    ui->crop->setIconPath(":/res/icons/common/menuitem/image-crop16.png");
 
     ui->resize->setAction("resize");
     ui->resize->setText(tr("Resize"));
-    ui->resize->setIconPath(":/res/icons/" + icontheme + "/menuitem/resize16.png");
+    ui->resize->setIconPath(":/res/icons/common/menuitem/resize16.png");
     // -------------------------------------------------------------------------
     ui->copy->setAction("copyFile");
     ui->copy->setText(tr("Quick copy"));
-    ui->copy->setIconPath(":/res/icons/" + icontheme + "/menuitem/copy16.png");
+    ui->copy->setIconPath(":/res/icons/common/menuitem/copy16.png");
 
     ui->move->setAction("moveFile");
     ui->move->setText(tr("Quick move"));
-    ui->move->setIconPath(":/res/icons/" + icontheme + "/menuitem/move16.png");
+    ui->move->setIconPath(":/res/icons/common/menuitem/move16.png");
 
     ui->trash->setAction("moveToTrash");
     ui->trash->setText(tr("Move to trash"));
-    ui->trash->setIconPath(":/res/icons/" + icontheme + "/menuitem/trash-red16.png");
+    ui->trash->setIconPath(":/res/icons/common/menuitem/trash-red16.png");
     // -------------------------------------------------------------------------
     ui->open->setAction("open");
     ui->open->setText(tr("Open"));
-    ui->open->setIconPath(":/res/icons/" + icontheme + "/menuitem/open16.png");
+    ui->open->setIconPath(":/res/icons/common/menuitem/open16.png");
 
     ui->folderView->setAction("folderView");
     ui->folderView->setText(tr("Folder View"));
-    ui->folderView->setIconPath(":/res/icons/" + icontheme + "/menuitem/folderview16.png");
+    ui->folderView->setIconPath(":/res/icons/common/menuitem/folderview16.png");
 
     ui->settings->setAction("openSettings");
     ui->settings->setText(tr("Settings"));
-    ui->settings->setIconPath(":/res/icons/" + icontheme + "/menuitem/settings16.png");
+    ui->settings->setIconPath(":/res/icons/common/menuitem/settings16.png");
     // -------------------------------------------------------------------------
     ui->showLocation->setAction("showInDirectory");
     ui->showLocation->setText(tr("Show in folder"));
-    ui->showLocation->setIconPath(":/res/icons/" + icontheme + "/menuitem/folder16.png");
+    ui->showLocation->setIconPath(":/res/icons/common/menuitem/folder16.png");
     // -------------------------------------------------------------------------
     // force resize to fit new menuitem width
     this->adjustSize();

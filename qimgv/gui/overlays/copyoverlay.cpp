@@ -9,9 +9,8 @@ CopyOverlay::CopyOverlay(FloatingWidgetContainer *parent) :
     hide();
     setFadeEnabled(true);
 
-    auto icontheme = settings->theme().iconTheme;
-    ui->closeButton->setIconPath(":/res/icons/" + icontheme + "/overlay/close-dim16.png");
-    ui->headerIcon->setIconPath(":/res/icons/" + icontheme + "/overlay/copy16.png");
+    ui->closeButton->setIconPath(":/res/icons/common/overlay/close-dim16.png");
+    ui->headerIcon->setIconPath(":/res/icons/common/overlay/copy16.png");
     ui->headerLabel->setText(tr("Copy to..."));
     mode = OVERLAY_COPY;
 
