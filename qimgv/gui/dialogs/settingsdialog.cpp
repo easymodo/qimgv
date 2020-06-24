@@ -15,13 +15,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->appIconLabel->setPixmap(QIcon(":/res/icons/common/logo/app/22.png").pixmap(22,22));
     ui->qtIconLabel->setPixmap(QIcon(":/res/icons/common/logo/3rdparty/qt22.png").pixmap(22,16));
 
-    connect(ui->useDesktopThemeButton, &QPushButton::pressed, this, &SettingsDialog::resetToDesktopTheme);
-    //connect(ui->useDesktopcolorsButton, &QPushButton::pressed, this, &SettingsDialog::resetToDesktopcolors);
-
     // fake combobox that acts as a menu button
     // less code than using pushbutton with menu
+    // will be replaced with something custom later
     ui->themeSelectorComboBox->setCurrentIndex(-1);
-    ui->themeSelectorComboBox->setPlaceholderText("Select colors..");
 
     connect(ui->themeSelectorComboBox, qOverload<int>(&QComboBox::currentIndexChanged), [this](int index) {
         ui->themeSelectorComboBox->blockSignals(true);
@@ -34,6 +31,13 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
             default: settings->setColorScheme(ThemeStore::colorScheme(COLORS_DARK)); break;
         }
         this->readColorScheme();
+    });
+
+    connect(ui->useSystemColorsCheckBox, &QCheckBox::toggled, [this](bool useSystemTheme) {
+        settings->setUseSystemColorScheme(useSystemTheme);
+        this->readColorScheme();
+        ui->themeSelectorComboBox->setEnabled(!useSystemTheme);
+        ui->colorConfigSubgroup->setEnabled(!useSystemTheme);
     });
 
     ui->colorSelectorAccent->setDescription("Accent color");
@@ -82,26 +86,26 @@ void SettingsDialog::resetToDesktopTheme() {
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::setupSidebar() {
-    //auto iconcolors = settings->colors().systemIconcolors;
-    QString iconcolors = "dark";
+    //auto theme = settings->colors().systemtheme;
+    QString theme = "dark";
     QListWidget *sideBar = ui->sideBar;
     sideBar->viewport()->setAutoFillBackground(false);
     // General
-    sideBar->item(0)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/general32.png"));
+    sideBar->item(0)->setIcon(QIcon(":res/icons/" + theme + "/settings/general32.png"));
     // Appearance
-    sideBar->item(1)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/appearance32.png"));
+    sideBar->item(1)->setIcon(QIcon(":res/icons/" + theme + "/settings/appearance32.png"));
     // FolderView
-    sideBar->item(2)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/folderview32.png"));
+    sideBar->item(2)->setIcon(QIcon(":res/icons/" + theme + "/settings/folderview32.png"));
     // Scaling
-    sideBar->item(3)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/scale32.png"));
+    sideBar->item(3)->setIcon(QIcon(":res/icons/" + theme + "/settings/scale32.png"));
     // Controls
-    sideBar->item(4)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/shortcuts32.png"));
+    sideBar->item(4)->setIcon(QIcon(":res/icons/" + theme + "/settings/shortcuts32.png"));
     // Scripts
-    sideBar->item(5)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/terminal32.png"));
+    sideBar->item(5)->setIcon(QIcon(":res/icons/" + theme + "/settings/terminal32.png"));
     // Advanced
-    sideBar->item(6)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/advanced32.png"));
+    sideBar->item(6)->setIcon(QIcon(":res/icons/" + theme + "/settings/advanced32.png"));
     // About
-    sideBar->item(7)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/about32.png"));
+    sideBar->item(7)->setIcon(QIcon(":res/icons/" + theme + "/settings/about32.png"));
 
 #ifdef _WIN32
     // Not implemented on windows. Not sure if will ever be. I don't really care.
@@ -182,6 +186,10 @@ void SettingsDialog::readSettings() {
         ui->panelBottom->setChecked(true);
     // reduce by 10x to have nice granular control in qslider
     ui->panelSizeSlider->setValue(settings->mainPanelSize() / 10);
+
+    ui->useSystemColorsCheckBox->setChecked(settings->useSystemColorScheme());
+    ui->themeSelectorComboBox->setEnabled(!settings->useSystemColorScheme());
+    ui->colorConfigSubgroup->setEnabled(!settings->useSystemColorScheme());
 
     readColorScheme();
     readShortcuts();

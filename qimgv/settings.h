@@ -222,8 +222,9 @@ public:
 
     bool videoPlayback();
     void setVideoPlayback(bool mode);
-    void loadSystemColorTheme();
-    void loadDefaultColorTheme();
+
+    bool useSystemColorScheme();
+    void setUseSystemColorScheme(bool mode);
 
 private:
     explicit Settings(QObject *parent = nullptr);

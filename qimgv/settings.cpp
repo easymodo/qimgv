@@ -16,7 +16,6 @@ Settings::Settings(QObject *parent) : QObject(parent) {
     stateConf = new QSettings(mConfDir->absolutePath() + "/savedState.ini", QSettings::IniFormat);
     themeConf = new QSettings(mConfDir->absolutePath() + "/theme.ini", QSettings::IniFormat);
 #endif
-    loadTheme();
 }
 //------------------------------------------------------------------------------
 Settings::~Settings() {
@@ -32,6 +31,7 @@ Settings *Settings::getInstance() {
     if(!settings) {
         settings = new Settings();
         settings->setupCache();
+        settings->loadTheme();
     }
     return settings;
 }
@@ -77,23 +77,29 @@ QString Settings::tmpDir() {
 }
 //------------------------------------------------------------------------------
 void Settings::loadTheme() {
-    BaseColorScheme base;
-    themeConf->beginGroup("Colors");
-    base.background            = QColor(themeConf->value("background",            "#1a1a1a").toString());
-    base.background_fullscreen = QColor(themeConf->value("background_fullscreen", "#1a1a1a").toString());
-    base.text                  = QColor(themeConf->value("text",                  "#a4a4a4").toString());
-    base.widget                = QColor(themeConf->value("widget",                "#252525").toString());
-    base.widget_border         = QColor(themeConf->value("widget_border",         "#272727").toString());
-    base.accent                = QColor(themeConf->value("accent",                "#4f6a91").toString());
-    base.folderview            = QColor(themeConf->value("folderview",            "#242424").toString());
-    base.folderview_topbar     = QColor(themeConf->value("folderview_topbar",     "#343434").toString());
-    base.slider_handle         = QColor(themeConf->value("slider_handle",         "#5e5e5e").toString());
-    base.overlay_text          = QColor(themeConf->value("overlay_text",          "#d2d2d2").toString());
-    base.overlay               = QColor(themeConf->value("overlay",               "#1a1a1a").toString());
-    themeConf->endGroup();
-    mColorScheme = ColorScheme(base);
+    if(settings->useSystemColorScheme()) {
+        mColorScheme = ThemeStore::colorScheme(ColorSchemes::COLORS_SYSTEM);
+    } else {
+        BaseColorScheme base;
+        themeConf->beginGroup("Colors");
+        base.background            = QColor(themeConf->value("background",            "#1a1a1a").toString());
+        base.background_fullscreen = QColor(themeConf->value("background_fullscreen", "#1a1a1a").toString());
+        base.text                  = QColor(themeConf->value("text",                  "#a4a4a4").toString());
+        base.widget                = QColor(themeConf->value("widget",                "#252525").toString());
+        base.widget_border         = QColor(themeConf->value("widget_border",         "#272727").toString());
+        base.accent                = QColor(themeConf->value("accent",                "#4f6a91").toString());
+        base.folderview            = QColor(themeConf->value("folderview",            "#242424").toString());
+        base.folderview_topbar     = QColor(themeConf->value("folderview_topbar",     "#343434").toString());
+        base.slider_handle         = QColor(themeConf->value("slider_handle",         "#5e5e5e").toString());
+        base.overlay_text          = QColor(themeConf->value("overlay_text",          "#d2d2d2").toString());
+        base.overlay               = QColor(themeConf->value("overlay",               "#1a1a1a").toString());
+        themeConf->endGroup();
+        mColorScheme = ColorScheme(base);
+    }
 }
 void Settings::saveTheme() {
+    if(settings->useSystemColorScheme())
+        return;
     themeConf->beginGroup("Colors");
     themeConf->setValue("background",            mColorScheme.background.name());
     themeConf->setValue("background_fullscreen", mColorScheme.background_fullscreen.name());
@@ -111,10 +117,6 @@ void Settings::saveTheme() {
 //------------------------------------------------------------------------------
 const ColorScheme& Settings::colorScheme() {
     return mColorScheme;
-}
-//------------------------------------------------------------------------------
-void Settings::loadSystemColorTheme() {
-    mColorScheme = ThemeStore::colorScheme(ColorSchemes::COLORS_SYSTEM);
 }
 //------------------------------------------------------------------------------
 void Settings::setColorScheme(ColorScheme scheme) {
@@ -199,6 +201,15 @@ bool Settings::videoPlayback() {
 
 void Settings::setVideoPlayback(bool mode) {
     settings->settingsConf->setValue("videoPlayback", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::useSystemColorScheme() {
+    return settings->settingsConf->value("useSystemColorScheme", false).toBool();
+}
+
+void Settings::setUseSystemColorScheme(bool mode) {
+    settings->settingsConf->setValue("useSystemColorScheme", mode);
+    loadTheme();
 }
 //------------------------------------------------------------------------------
 QVersionNumber Settings::lastVersion() {
