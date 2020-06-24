@@ -29,36 +29,53 @@ void loadStylesheet() {
     // stylesheet template file
     QFile file(":/res/styles/style-template.qss");
     if(file.open(QFile::ReadOnly)) {
-        auto theme = settings->theme();
         QString styleSheet = QLatin1String(file.readAll());
 
+        auto colors = settings->colorScheme();
+        // for settings window
+        QPalette p;
+        // choose icons depending on text color
+        /*if(p.text().color().valueF() > 0.5f) {
+            mTheme.systemIconTheme = "light";
+        } else {
+            mTheme.systemIconTheme = "dark";
+        } */
+        QColor sys_window = p.window().color();
+        QColor sys_window_tinted;
+        if(sys_window.valueF() <= 0.45f) {
+            sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 16);
+        } else {
+            sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 16);
+        }
+
         // -------------- write variables into stylesheet ---------------
-        styleSheet.replace("%icontheme%",            settings->theme().iconTheme);
-        styleSheet.replace("%button%",               theme.colors.button.name());
-        styleSheet.replace("%button_hover%",         theme.colors.button_hover.name());
-        styleSheet.replace("%button_pressed%",       theme.colors.button_pressed.name());
-        styleSheet.replace("%panel_button_hover%",   theme.colors.panel_button_hover.name());
-        styleSheet.replace("%panel_button_pressed%", theme.colors.panel_button_pressed.name());
-        styleSheet.replace("%button_border%",        theme.colors.button_border.name());
-        styleSheet.replace("%widget%",               theme.colors.widget.name());
-        styleSheet.replace("%widget_border%",        theme.colors.widget_border.name());
-        styleSheet.replace("%folderview%",           theme.colors.folderview.name());
-        styleSheet.replace("%folderview_topbar%",    theme.colors.folderview_topbar.name());
-        styleSheet.replace("%folderview_separator%", theme.colors.folderview_separator.name());
-        styleSheet.replace("%accent%",               theme.colors.accent.name());
-        styleSheet.replace("%accent_lc%",            theme.colors.accent_lc.name());
-        styleSheet.replace("%input_field_focus%",    theme.colors.input_field_focus.name());
-        styleSheet.replace("%slider_groove%",        theme.colors.slider_groove.name());
-        styleSheet.replace("%slider_handle%",        theme.colors.slider_handle.name());
-        styleSheet.replace("%slider_hover%",         theme.colors.slider_hover.name());
-        styleSheet.replace("%overlay%",              theme.colors.overlay.name());
-        styleSheet.replace("%text_hc2%",             theme.colors.text_hc2.name());
-        styleSheet.replace("%text_hc1%",             theme.colors.text_hc1.name());
-        styleSheet.replace("%text%",                 theme.colors.text.name());
-        styleSheet.replace("%overlay_text%",         theme.colors.overlay_text.name());
-        styleSheet.replace("%text_lc1%",             theme.colors.text_lc1.name());
-        styleSheet.replace("%text_lc2%",             theme.colors.text_lc2.name());
-        styleSheet.replace("%system_window_tinted%", theme.system_window_tinted.name());
+        //styleSheet.replace("%icontheme%",            settings->theme().iconTheme);
+        styleSheet.replace("%icontheme%",            "light");
+        styleSheet.replace("%button%",               colors.button.name());
+        styleSheet.replace("%button_hover%",         colors.button_hover.name());
+        styleSheet.replace("%button_pressed%",       colors.button_pressed.name());
+        styleSheet.replace("%panel_button_hover%",   colors.panel_button_hover.name());
+        styleSheet.replace("%panel_button_pressed%", colors.panel_button_pressed.name());
+        styleSheet.replace("%button_border%",        colors.button_border.name());
+        styleSheet.replace("%widget%",               colors.widget.name());
+        styleSheet.replace("%widget_border%",        colors.widget_border.name());
+        styleSheet.replace("%folderview%",           colors.folderview.name());
+        styleSheet.replace("%folderview_topbar%",    colors.folderview_topbar.name());
+        styleSheet.replace("%folderview_separator%", colors.folderview_separator.name());
+        styleSheet.replace("%accent%",               colors.accent.name());
+        styleSheet.replace("%accent_lc%",            colors.accent_lc.name());
+        styleSheet.replace("%input_field_focus%",    colors.input_field_focus.name());
+        styleSheet.replace("%slider_groove%",        colors.slider_groove.name());
+        styleSheet.replace("%slider_handle%",        colors.slider_handle.name());
+        styleSheet.replace("%slider_hover%",         colors.slider_hover.name());
+        styleSheet.replace("%overlay%",              colors.overlay.name());
+        styleSheet.replace("%text_hc2%",             colors.text_hc2.name());
+        styleSheet.replace("%text_hc1%",             colors.text_hc1.name());
+        styleSheet.replace("%text%",                 colors.text.name());
+        styleSheet.replace("%overlay_text%",         colors.overlay_text.name());
+        styleSheet.replace("%text_lc1%",             colors.text_lc1.name());
+        styleSheet.replace("%text_lc2%",             colors.text_lc2.name());
+        styleSheet.replace("%system_window_tinted%", sys_window_tinted.name());
 
         // ------------------------ apply ----------------------------
         qApp->setStyleSheet(styleSheet);
@@ -71,7 +88,7 @@ int main(int argc, char *argv[]) {
     qputenv("QT_AUTO_SCREEN_SCALE_FACTOR","0");
 
     // for testing purposes
-    //qputenv("QT_SCALE_FACTOR","2.0");
+    //qputenv("QT_SCALE_FACTOR","1.0");
     //qputenv("QT_SCREEN_SCALE_FACTORS", "1;1.7");
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

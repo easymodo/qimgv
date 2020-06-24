@@ -20,7 +20,7 @@ void StyledComboBox::setIconPath(QString path) {
         downArrow.load(path);
         pixmapDrawScale = dpr;
     }
-    ImageLib::overlayColor(downArrow, settings->colorScheme().text);
+    ImageLib::recolor(downArrow, settings->colorScheme().text);
     update();
 }
 

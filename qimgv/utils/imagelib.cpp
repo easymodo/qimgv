@@ -1,6 +1,6 @@
 #include "imagelib.h"
 
-void ImageLib::overlayColor(QPixmap &pixmap, QColor color) {
+void ImageLib::recolor(QPixmap &pixmap, QColor color) {
     QPainter p(&pixmap);
     p.setCompositionMode(QPainter::CompositionMode_SourceIn);
     p.setBrush(color);

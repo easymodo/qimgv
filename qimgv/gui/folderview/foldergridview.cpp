@@ -10,7 +10,7 @@ FolderGridView::FolderGridView(QWidget *parent)
     offscreenPreloadArea = 2300;
 
     this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
-    this->scene.setBackgroundBrush(settings->theme().colors.folderview);
+    this->scene.setBackgroundBrush(settings->colorScheme().folderview);
     this->setCacheMode(QGraphicsView::CacheBackground);
 
     // turn this off until [multi]selection is implemented

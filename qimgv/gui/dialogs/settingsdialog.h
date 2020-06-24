@@ -8,9 +8,10 @@
 #include <QTextBrowser>
 #include <QListWidget>
 #include <QStackedWidget>
-#include <QGridLayout>
+#include <QApplication>
 #include <QDebug>
-#include "gui/customwidgets/clickablelabel.h"
+#include <QMenu>
+#include "gui/customwidgets/colorselectorbutton.h"
 #include "gui/dialogs/shortcutcreatordialog.h"
 #include "gui/dialogs/scripteditordialog.h"
 #include "settings.h"
@@ -30,25 +31,25 @@ public:
 
 public slots:
     int exec();
+
 private:
-    QPalette windowColorPalette, fullscreenColorPalette, fullscreenTextColorPalette, accentLabelPalette, highlightLabelPalette;
+    void readColorScheme();
+    void saveColorScheme();
     void readSettings();
-    void populateShortcuts();
-    void populateScripts();
+    void readShortcuts();
+    void readScripts();
     Ui::SettingsDialog *ui;
 
-    void applyShortcuts();
+    void saveShortcuts();
     void addShortcutToTable(const QString &action, const QString &shortcut);
     void addScriptToList(const QString &name);
 
     void setupSidebar();
     void removeShortcutAt(int row);
+
 private slots:
-    void applySettings();
-    void applySettingsAndClose();
-    void windowColorDialog();
-    void accentColorDialog();
-    void highlightColorDialog();
+    void saveSettings();
+    void saveSettingsAndClose();
 
     void addScript();
     void editScript();
@@ -62,11 +63,11 @@ private slots:
     void selectMpvPath();
     void onBgOpacitySliderChanged(int value);
     void onThumbnailerThreadsSliderChanged(int value);
-    void fullscreenColorDialog();
-    void fullscreenTextColorDialog();
     void onExpandLimitSliderChanged(int value);
     void onZoomStepSliderChanged(int value);
     void onJPEGQualitySliderChanged(int value);
+    void resetToDesktopTheme();    
+
 signals:
     void settingsChanged();
 };

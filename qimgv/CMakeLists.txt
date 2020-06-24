@@ -6,6 +6,7 @@ add_executable(qimgv
     core.cpp
     main.cpp
     settings.cpp
+    themestore.cpp
     sharedresources.cpp
     shortcutbuilder.cpp
     proxystyle.cpp

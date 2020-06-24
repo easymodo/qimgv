@@ -39,5 +39,5 @@ class ImageLib {
 #endif
         static std::unique_ptr<const QImage> exifRotated(std::unique_ptr<const QImage> src, int orientation);
         static std::unique_ptr<QImage> exifRotated(std::unique_ptr<QImage> src, int orientation);
-        static void overlayColor(QPixmap &pixmap, QColor color);
+        static void recolor(QPixmap &pixmap, QColor color);
 };

@@ -8,17 +8,45 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle("Preferences — " + qApp->applicationName());
 
-    ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->windowColorLabel->setAutoFillBackground(true);
-    ui->fullscreenColorLabel->setAutoFillBackground(true);
-    ui->fullscreenTextColorLabel->setAutoFillBackground(true);
-    ui->accentColorLabel->setAutoFillBackground(true);
-    ui->highlightColorLabel->setAutoFillBackground(true);
+    ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);   
     ui->aboutAppTextBrowser->viewport()->setAutoFillBackground(false);
     ui->versionLabel->setText("" + QApplication::applicationVersion());
     ui->qtVersionLabel->setText(qVersion());
     ui->appIconLabel->setPixmap(QIcon(":/res/icons/common/logo/app/22.png").pixmap(22,22));
     ui->qtIconLabel->setPixmap(QIcon(":/res/icons/common/logo/3rdparty/qt22.png").pixmap(22,16));
+
+    connect(ui->useDesktopThemeButton, &QPushButton::pressed, this, &SettingsDialog::resetToDesktopTheme);
+    //connect(ui->useDesktopcolorsButton, &QPushButton::pressed, this, &SettingsDialog::resetToDesktopcolors);
+
+    // fake combobox that acts as a menu button
+    // less code than using pushbutton with menu
+    ui->themeSelectorComboBox->setCurrentIndex(-1);
+    ui->themeSelectorComboBox->setPlaceholderText("Select colors..");
+
+    connect(ui->themeSelectorComboBox, qOverload<int>(&QComboBox::currentIndexChanged), [this](int index) {
+        ui->themeSelectorComboBox->blockSignals(true);
+        ui->themeSelectorComboBox->setCurrentIndex(-1);
+        ui->themeSelectorComboBox->blockSignals(false);
+
+        switch(index) {
+            case 1:  settings->setColorScheme(ThemeStore::colorScheme(COLORS_LIGHT)); break;
+            case 0:
+            default: settings->setColorScheme(ThemeStore::colorScheme(COLORS_DARK)); break;
+        }
+        this->readColorScheme();
+    });
+
+    ui->colorSelectorAccent->setDescription("Accent color");
+    ui->colorSelectorAccent->setDescription("Windowed mode background");
+    ui->colorSelectorAccent->setDescription("Fullscreen mode background");
+    ui->colorSelectorAccent->setDescription("FolderView background");
+    ui->colorSelectorAccent->setDescription("FolderView top panel");
+    ui->colorSelectorAccent->setDescription("Text color");
+    ui->colorSelectorAccent->setDescription("Widget background");
+    ui->colorSelectorAccent->setDescription("Widget border");
+    ui->colorSelectorAccent->setDescription("Overlay background");
+    ui->colorSelectorAccent->setDescription("Overlay text");
+    ui->colorSelectorAccent->setDescription("Sliders");
 
 #ifndef USE_KDE_BLUR
     ui->blurBackgroundCheckBox->setEnabled(false);
@@ -43,38 +71,44 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     connect(this, &SettingsDialog::settingsChanged, settings, &Settings::sendChangeNotification);
     readSettings();
 }
-
+//------------------------------------------------------------------------------
 SettingsDialog::~SettingsDialog() {
     delete ui;
 }
-
+//------------------------------------------------------------------------------
+void SettingsDialog::resetToDesktopTheme() {
+    settings->setColorScheme(ThemeStore::colorScheme(ColorSchemes::COLORS_SYSTEM));
+    this->readColorScheme();
+}
+//------------------------------------------------------------------------------
 void SettingsDialog::setupSidebar() {
-    auto icontheme = settings->theme().systemIconTheme;
+    //auto iconcolors = settings->colors().systemIconcolors;
+    QString iconcolors = "dark";
     QListWidget *sideBar = ui->sideBar;
     sideBar->viewport()->setAutoFillBackground(false);
     // General
-    sideBar->item(0)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/general32.png"));
+    sideBar->item(0)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/general32.png"));
     // Appearance
-    sideBar->item(1)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/appearance32.png"));
+    sideBar->item(1)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/appearance32.png"));
     // FolderView
-    sideBar->item(2)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/folderview32.png"));
+    sideBar->item(2)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/folderview32.png"));
     // Scaling
-    sideBar->item(3)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/scale32.png"));
+    sideBar->item(3)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/scale32.png"));
     // Controls
-    sideBar->item(4)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/shortcuts32.png"));
+    sideBar->item(4)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/shortcuts32.png"));
     // Scripts
-    sideBar->item(5)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/terminal32.png"));
+    sideBar->item(5)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/terminal32.png"));
     // Advanced
-    sideBar->item(6)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/advanced32.png"));
+    sideBar->item(6)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/advanced32.png"));
     // About
-    sideBar->item(7)->setIcon(QIcon(":res/icons/" + icontheme + "/settings/about32.png"));
+    sideBar->item(7)->setIcon(QIcon(":res/icons/" + iconcolors + "/settings/about32.png"));
 
 #ifdef _WIN32
     // Not implemented on windows. Not sure if will ever be. I don't really care.
     sideBar->item(5)->setHidden(true);
 #endif
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::readSettings() {
     ui->infiniteScrollingCheckBox->setChecked(settings->infiniteScrolling());
     ui->videoPlaybackCheckBox->setChecked(settings->videoPlayback());
@@ -149,36 +183,12 @@ void SettingsDialog::readSettings() {
     // reduce by 10x to have nice granular control in qslider
     ui->panelSizeSlider->setValue(settings->mainPanelSize() / 10);
 
-    // theme settings - later
-    /*
-    QColor windowColor = settings->backgroundColor();
-    windowColorPalette.setColor(QPalette::Window, windowColor);
-    ui->windowColorLabel->setPalette(windowColorPalette);
-
-    QColor fullscreenColor = settings->backgroundColorFullscreen();
-    fullscreenColorPalette.setColor(QPalette::Window, fullscreenColor);
-    ui->fullscreenColorLabel->setPalette(fullscreenColorPalette);
-
-    QColor fullscreenTextColor = settings->fullscreenInfoTextColor();
-    fullscreenTextColorPalette.setColor(QPalette::Window, fullscreenTextColor);
-    ui->fullscreenTextColorLabel->setPalette(fullscreenTextColorPalette);
-
-    //accent color
-    QColor accentColor = settings->accentColor();
-    accentLabelPalette.setColor(QPalette::Window, accentColor);
-    ui->accentColorLabel->setPalette(accentLabelPalette);
-
-    // folder view highlight color
-    QColor higlightColor = settings->highlightColor();
-    highlightLabelPalette.setColor(QPalette::Window, higlightColor);
-    ui->highlightColorLabel->setPalette(highlightLabelPalette);
-    */
-
-    populateShortcuts();
-    populateScripts();
+    readColorScheme();
+    readShortcuts();
+    readScripts();
 }
-
-void SettingsDialog::applySettings() {
+//------------------------------------------------------------------------------
+void SettingsDialog::saveSettings() {
     // wait for all background stuff to finish
     if(QThreadPool::globalInstance()->activeThreadCount()) {
         QThreadPool::globalInstance()->waitForDone();
@@ -204,6 +214,7 @@ void SettingsDialog::applySettings() {
     settings->setSmoothUpscaling(ui->smoothUpscalingCheckBox->isChecked());
     settings->setExpandImage(ui->expandImageCheckBox->isChecked());
     settings->setSmoothAnimatedImages(ui->smoothAnimatedImagesCheckBox->isChecked());
+
     settings->setBackgroundOpacity(static_cast<qreal>(ui->bgOpacitySlider->value()) / 100);
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
@@ -238,13 +249,6 @@ void SettingsDialog::applySettings() {
     else
         settings->setPanelPosition(PANEL_BOTTOM);
 
-    /*settings->setBackgroundColor(windowColorPalette.color(QPalette::Window));
-    settings->setBackgroundColorFullscreen(fullscreenColorPalette.color(QPalette::Window));
-    settings->setFullscreenInfoTextColor(fullscreenTextColorPalette.color(QPalette::Window));
-    settings->setAccentColor(accentLabelPalette.color(QPalette::Window));
-    settings->setHighlightColor(highlightLabelPalette.color(QPalette::Window));
-    */
-
     settings->setMainPanelSize(ui->panelSizeSlider->value() * 10);
 
     settings->setJPEGSaveQuality(ui->JPEGQualitySlider->value());
@@ -252,19 +256,51 @@ void SettingsDialog::applySettings() {
     settings->setExpandLimit(ui->expandLimitSlider->value());
     settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
 
-    applyShortcuts();
+    saveColorScheme();
+    saveShortcuts();
 
     scriptManager->saveScripts();
     actionManager->saveShortcuts();
     emit settingsChanged();
 }
-
-void SettingsDialog::applySettingsAndClose() {
-    applySettings();
+//------------------------------------------------------------------------------
+void SettingsDialog::saveSettingsAndClose() {
+    saveSettings();
     this->close();
 }
-
-void SettingsDialog::populateShortcuts() {
+//------------------------------------------------------------------------------
+void SettingsDialog::readColorScheme() {
+    auto colors = settings->colorScheme();
+    ui->colorSelectorAccent->setColor(colors.accent);
+    ui->colorSelectorBackground->setColor(colors.background);
+    ui->colorSelectorFullscreen->setColor(colors.background_fullscreen);
+    ui->colorSelectorFolderview->setColor(colors.folderview);
+    ui->colorSelectorFolderviewPanel->setColor(colors.folderview_topbar);
+    ui->colorSelectorText->setColor(colors.text);
+    ui->colorSelectorWidget->setColor(colors.widget);
+    ui->colorSelectorWidgetBorder->setColor(colors.widget_border);
+    ui->colorSelectorOverlay->setColor(colors.overlay);
+    ui->colorSelectorOverlayText->setColor(colors.overlay_text);
+    ui->colorSelectorSlider->setColor(colors.slider_handle);
+}
+//------------------------------------------------------------------------------
+void SettingsDialog::saveColorScheme() {
+    BaseColorScheme base;
+    base.accent = ui->colorSelectorAccent->color();
+    base.background = ui->colorSelectorBackground->color();
+    base.background_fullscreen = ui->colorSelectorFullscreen->color();
+    base.folderview = ui->colorSelectorFolderview->color();
+    base.folderview_topbar = ui->colorSelectorFolderviewPanel->color();
+    base.text = ui->colorSelectorText->color();
+    base.widget = ui->colorSelectorWidget->color();
+    base.widget_border = ui->colorSelectorWidgetBorder->color();
+    base.overlay = ui->colorSelectorOverlay->color();
+    base.overlay_text = ui->colorSelectorOverlayText->color();
+    base.slider_handle = ui->colorSelectorSlider->color();
+    settings->setColorScheme(ColorScheme(base));
+}
+//------------------------------------------------------------------------------
+void SettingsDialog::readShortcuts() {
     ui->shortcutsTableWidget->clearContents();
     ui->shortcutsTableWidget->setRowCount(0);
     const QMap<QString, QString> shortcuts = actionManager->allShortcuts();
@@ -275,7 +311,7 @@ void SettingsDialog::populateShortcuts() {
     }
 }
 //------------------------------------------------------------------------------
-void SettingsDialog::populateScripts() {
+void SettingsDialog::readScripts() {
     ui->scriptsListWidget->clear();
     const QMap<QString, Script> scripts = scriptManager->allScripts();
     QMapIterator<QString, Script> i(scripts);
@@ -284,7 +320,7 @@ void SettingsDialog::populateScripts() {
         addScriptToList(i.key());
     }
 }
-
+//------------------------------------------------------------------------------
 // does not check if the shortcut already there
 void SettingsDialog::addScriptToList(const QString &name) {
     if(name.isEmpty())
@@ -296,17 +332,17 @@ void SettingsDialog::addScriptToList(const QString &name) {
     list->insertItem(ui->scriptsListWidget->count(), nameItem);
     list->sortItems(Qt::AscendingOrder);
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::addScript() {
     ScriptEditorDialog w;
     if(w.exec()) {
         if(w.scriptName().isEmpty())
             return;
         scriptManager->addScript(w.scriptName(), w.script());
-        populateScripts();
+        readScripts();
     }
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::editScript() {
     int row = ui->scriptsListWidget->currentRow();
     if(row >= 0) {
@@ -314,31 +350,31 @@ void SettingsDialog::editScript() {
         editScript(name);
     }
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::editScript(QListWidgetItem* item) {
     if(item) {
         editScript(item->text());
     }
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::editScript(QString name) {
     ScriptEditorDialog w(name, scriptManager->getScript(name));
     if(w.exec()) {
         if(w.scriptName().isEmpty())
             return;
         scriptManager->addScript(w.scriptName(), w.script());
-        populateScripts();
+        readScripts();
     }
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::removeScript() {
     int row = ui->scriptsListWidget->currentRow();
     if(row >= 0) {
         QString scriptName = ui->scriptsListWidget->currentItem()->text();
         delete ui->scriptsListWidget->takeItem(row);
-        applyShortcuts();
+        saveShortcuts();
         actionManager->removeAllShortcuts("s:"+scriptName);
-        populateShortcuts();
+        readShortcuts();
         scriptManager->removeScript(scriptName);
     }
 }
@@ -358,7 +394,7 @@ void SettingsDialog::addShortcutToTable(const QString &action, const QString &sh
     // EFFICIENCY
     ui->shortcutsTableWidget->sortByColumn(0, Qt::AscendingOrder);
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::addShortcut() {
     ShortcutCreatorDialog w;
     if(w.exec()) {
@@ -370,31 +406,31 @@ void SettingsDialog::addShortcut() {
         addShortcutToTable(w.selectedAction(), w.selectedShortcut());
     }
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::removeShortcutAt(int row) {
     if(row > 0 && row >= ui->shortcutsTableWidget->rowCount())
         return;
 
     ui->shortcutsTableWidget->removeRow(row);
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::removeShortcut() {
     removeShortcutAt(ui->shortcutsTableWidget->currentRow());
 }
-
-void SettingsDialog::applyShortcuts() {
+//------------------------------------------------------------------------------
+void SettingsDialog::saveShortcuts() {
     actionManager->removeAllShortcuts();
     for(int i = 0; i < ui->shortcutsTableWidget->rowCount(); i++) {
         actionManager->addShortcut(ui->shortcutsTableWidget->item(i, 1)->text(),
                                    ui->shortcutsTableWidget->item(i, 0)->text());
     }
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::resetShortcuts() {
     actionManager->resetDefaults();
-    populateShortcuts();
+    readShortcuts();
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::selectMpvPath() {
     QFileDialog dialog;
     QString file;
@@ -403,95 +439,30 @@ void SettingsDialog::selectMpvPath() {
         ui->mpvLineEdit->setText(file);
     }
 }
-
-void SettingsDialog::windowColorDialog() {
-    QColorDialog *colorDialog = new QColorDialog(this);
-    QColor newColor;
-    newColor = colorDialog->getColor(windowColorPalette.color(QPalette::Window),
-                                     this,
-                                     "Windowed mode background");
-    if(newColor.isValid()) {
-        windowColorPalette.setColor(QPalette::Window, newColor);
-        ui->windowColorLabel->setPalette(windowColorPalette);
-    }
-    delete colorDialog;
-}
-
-void SettingsDialog::fullscreenColorDialog() {
-    QColorDialog *colorDialog = new QColorDialog(this);
-    QColor newColor;
-    newColor = colorDialog->getColor(fullscreenColorPalette.color(QPalette::Window),
-                                     this,
-                                     "Fullscreen mode background");
-    if(newColor.isValid()) {
-        fullscreenColorPalette.setColor(QPalette::Window, newColor);
-        ui->fullscreenColorLabel->setPalette(fullscreenColorPalette);
-    }
-    delete colorDialog;
-}
-
-void SettingsDialog::fullscreenTextColorDialog() {
-    QColorDialog *colorDialog = new QColorDialog(this);
-    QColor newColor;
-    newColor = colorDialog->getColor(fullscreenTextColorPalette.color(QPalette::Window),
-                                     this,
-                                     "Fullscreen info text color");
-    if(newColor.isValid()) {
-        fullscreenTextColorPalette.setColor(QPalette::Window, newColor);
-        ui->fullscreenTextColorLabel->setPalette(fullscreenTextColorPalette);
-    }
-    delete colorDialog;
-}
-
-void SettingsDialog::accentColorDialog() {
-    QColorDialog *colorDialog = new QColorDialog(this);
-    QColor newColor;
-    newColor = colorDialog->getColor(accentLabelPalette.color(QPalette::Window),
-                                     this,
-                                     "Accent color");
-    if(newColor.isValid()) {
-        accentLabelPalette.setColor(QPalette::Window, newColor);
-        ui->accentColorLabel->setPalette(accentLabelPalette);
-    }
-    delete colorDialog;
-}
-
-void SettingsDialog::highlightColorDialog() {
-    QColorDialog *colorDialog = new QColorDialog(this);
-    QColor newColor;
-    newColor = colorDialog->getColor(highlightLabelPalette.color(QPalette::Window),
-                                     this,
-                                     "Highlight color");
-    if(newColor.isValid()) {
-        highlightLabelPalette.setColor(QPalette::Window, newColor);
-        ui->highlightColorLabel->setPalette(highlightLabelPalette);
-    }
-    delete colorDialog;
-}
-
+//------------------------------------------------------------------------------
 void SettingsDialog::onExpandLimitSliderChanged(int value) {
     if(value == 0)
         ui->expandLimitLabel->setText("-");
     else
         ui->expandLimitLabel->setText(QString::number(value) + "x");
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::onJPEGQualitySliderChanged(int value) {
     ui->JPEGQualityLabel->setText(QString::number(value) + "%");
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::onZoomStepSliderChanged(int value) {
     ui->zoomStepLabel->setText("0." + QString::number(value) + "x");
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::onThumbnailerThreadsSliderChanged(int value) {
     ui->thumbnailerThreadsLabel->setText(QString::number(value));
 }
-
+//------------------------------------------------------------------------------
 void SettingsDialog::onBgOpacitySliderChanged(int value) {
     ui->bgOpacityPercentLabel->setText(QString::number(value) + "%");
 }
-
+//------------------------------------------------------------------------------
 int SettingsDialog::exec() {
     return QDialog::exec();
 }

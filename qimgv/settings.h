@@ -14,6 +14,7 @@
 #include <QMap>
 #include <QVersionNumber>
 #include "utils/script.h"
+#include "themestore.h"
 
 enum SortingMode {
     SORT_NAME,
@@ -75,44 +76,6 @@ enum ImageScrolling {
 enum ViewMode {
     MODE_DOCUMENT,
     MODE_FOLDERVIEW
-};
-
-struct ColorScheme {
-    QColor background;
-    QColor background_fullscreen;
-    QColor text_hc2;
-    QColor text_hc1;
-    QColor text;
-    QColor text_lc1;
-    QColor text_lc2;
-    QColor widget;
-    QColor widget_border;
-    QColor button;
-    QColor button_hover;
-    QColor button_pressed;
-    QColor button_border;
-    QColor panel_button_hover;
-    QColor panel_button_pressed;
-    QColor accent;
-    QColor accent_lc;
-    QColor accent_lc2;
-    QColor accent_hc;
-    QColor folderview;
-    QColor folderview_topbar;
-    QColor folderview_separator;
-    QColor slider_groove;
-    QColor slider_handle;
-    QColor slider_hover;
-    QColor overlay_text;
-    QColor overlay;
-    QColor input_field_focus;
-};
-
-struct Theme {
-    ColorScheme colors;
-    QColor system_window_tinted; // move somewhere else?
-    QString iconTheme = "light";
-    QString systemIconTheme = "dark";
 };
 
 class Settings : public QObject
@@ -254,18 +217,20 @@ public:
     ViewMode defaultViewMode();
     void setDefaultViewMode(ViewMode mode);
 
-    const Theme &theme();
     const ColorScheme& colorScheme();
-    void setColorScheme(ColorScheme &scheme);
+    void setColorScheme(ColorScheme scheme);
 
     bool videoPlayback();
     void setVideoPlayback(bool mode);
+    void loadSystemColorTheme();
+    void loadDefaultColorTheme();
+
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;
     QSettings *settingsConf, *stateConf, *themeConf;
     QDir *mTmpDir, *mThumbCacheDir, *mConfDir;
-    Theme mTheme;
+    ColorScheme mColorScheme;
     void loadTheme();
     void saveTheme();
     void createColorVariants();

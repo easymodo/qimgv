@@ -77,123 +77,48 @@ QString Settings::tmpDir() {
 }
 //------------------------------------------------------------------------------
 void Settings::loadTheme() {
-    ColorScheme colors;
+    BaseColorScheme base;
     themeConf->beginGroup("Colors");
-    colors.background            = QColor(themeConf->value("background",            "#1a1a1a").toString());
-    colors.background_fullscreen = QColor(themeConf->value("background_fullscreen", "#1a1a1a").toString());
-    colors.text                  = QColor(themeConf->value("text",                  "#a4a4a4").toString());
-    colors.widget                = QColor(themeConf->value("widget",                "#252525").toString());
-    colors.widget_border         = QColor(themeConf->value("widget_border",         "#272727").toString());
-    colors.accent                = QColor(themeConf->value("accent",                "#4f6a91").toString());
-    colors.folderview            = QColor(themeConf->value("folderview",            "#242424").toString());
-    colors.folderview_topbar     = QColor(themeConf->value("folderview_topbar",     "#343434").toString());
-    colors.slider_handle         = QColor(themeConf->value("slider_handle",         "#5e5e5e").toString());
-    colors.overlay_text          = QColor(themeConf->value("overlay_text",          "#d2d2d2").toString());
-    colors.overlay               = QColor(themeConf->value("overlay",               "#1a1a1a").toString());
+    base.background            = QColor(themeConf->value("background",            "#1a1a1a").toString());
+    base.background_fullscreen = QColor(themeConf->value("background_fullscreen", "#1a1a1a").toString());
+    base.text                  = QColor(themeConf->value("text",                  "#a4a4a4").toString());
+    base.widget                = QColor(themeConf->value("widget",                "#252525").toString());
+    base.widget_border         = QColor(themeConf->value("widget_border",         "#272727").toString());
+    base.accent                = QColor(themeConf->value("accent",                "#4f6a91").toString());
+    base.folderview            = QColor(themeConf->value("folderview",            "#242424").toString());
+    base.folderview_topbar     = QColor(themeConf->value("folderview_topbar",     "#343434").toString());
+    base.slider_handle         = QColor(themeConf->value("slider_handle",         "#5e5e5e").toString());
+    base.overlay_text          = QColor(themeConf->value("overlay_text",          "#d2d2d2").toString());
+    base.overlay               = QColor(themeConf->value("overlay",               "#1a1a1a").toString());
     themeConf->endGroup();
-    setColorScheme(colors);
-
-    QPalette p;
-    // choose icons depending on text color
-    if(p.text().color().valueF() > 0.5f) {
-        mTheme.systemIconTheme = "light";
-    } else {
-        mTheme.systemIconTheme = "dark";
-    }
-    QColor system_window = p.window().color();
-    if(system_window.valueF() <= 0.45f) {
-        mTheme.system_window_tinted.setHsv(system_window.hue(),
-                                           system_window.saturation(),
-                                           system_window.value() + 16);
-    } else {
-        mTheme.system_window_tinted.setHsv(system_window.hue(),
-                                           system_window.saturation(),
-                                           system_window.value() - 16);
-    }
+    mColorScheme = ColorScheme(base);
 }
 void Settings::saveTheme() {
     themeConf->beginGroup("Colors");
-    themeConf->setValue("background",            mTheme.colors.background.name());
-    themeConf->setValue("background_fullscreen", mTheme.colors.background_fullscreen.name());
-    themeConf->setValue("text",                  mTheme.colors.text.name());
-    themeConf->setValue("widget",                mTheme.colors.widget.name());
-    themeConf->setValue("widget_border",         mTheme.colors.widget_border.name());
-    themeConf->setValue("accent",                mTheme.colors.accent.name());
-    themeConf->setValue("folderview",            mTheme.colors.folderview.name());
-    themeConf->setValue("folderview_topbar",     mTheme.colors.folderview_topbar.name());
-    themeConf->setValue("slider_handle",         mTheme.colors.slider_handle.name());
-    themeConf->setValue("overlay_text",          mTheme.colors.overlay_text.name());
-    themeConf->setValue("overlay",               mTheme.colors.overlay.name());
+    themeConf->setValue("background",            mColorScheme.background.name());
+    themeConf->setValue("background_fullscreen", mColorScheme.background_fullscreen.name());
+    themeConf->setValue("text",                  mColorScheme.text.name());
+    themeConf->setValue("widget",                mColorScheme.widget.name());
+    themeConf->setValue("widget_border",         mColorScheme.widget_border.name());
+    themeConf->setValue("accent",                mColorScheme.accent.name());
+    themeConf->setValue("folderview",            mColorScheme.folderview.name());
+    themeConf->setValue("folderview_topbar",     mColorScheme.folderview_topbar.name());
+    themeConf->setValue("slider_handle",         mColorScheme.slider_handle.name());
+    themeConf->setValue("overlay_text",          mColorScheme.overlay_text.name());
+    themeConf->setValue("overlay",               mColorScheme.overlay.name());
     themeConf->endGroup();
 }
 //------------------------------------------------------------------------------
-const Theme &Settings::theme() {
-    return mTheme;
-}
-//------------------------------------------------------------------------------
 const ColorScheme& Settings::colorScheme() {
-    return mTheme.colors;
+    return mColorScheme;
 }
 //------------------------------------------------------------------------------
-void Settings::setColorScheme(ColorScheme &scheme) {
-    mTheme.colors = scheme;
-    // choose icons depending on text color
-    if(mTheme.colors.text.valueF() > 0.5f)
-        mTheme.iconTheme = "light";
-    else
-        mTheme.iconTheme = "dark";
-    qDebug() << mTheme.colors.text.valueF() << mTheme.iconTheme;
-    createColorVariants();
+void Settings::loadSystemColorTheme() {
+    mColorScheme = ThemeStore::colorScheme(ColorSchemes::COLORS_SYSTEM);
 }
 //------------------------------------------------------------------------------
-void Settings::createColorVariants() {
-    // light variant needs tweaking
-    //if(mTheme.colors.widget.valueF() <= 0.45f) {
-        // top bar buttons
-        mTheme.colors.panel_button_hover.setHsv(mTheme.colors.folderview_topbar.hue(),
-                                                mTheme.colors.folderview_topbar.saturation(),
-                                                qMin(mTheme.colors.folderview_topbar.value() + 30, 255));
-        mTheme.colors.panel_button_pressed.setHsv(mTheme.colors.folderview_topbar.hue(),
-                                                  mTheme.colors.folderview_topbar.saturation(),
-                                                  qMin(mTheme.colors.folderview_topbar.value() + 20, 255));
-
-
-        mTheme.colors.folderview_separator.setHsv(mTheme.colors.folderview.hue(),
-                                                  mTheme.colors.folderview.saturation(),
-                                                  qMin(mTheme.colors.folderview.value() + 22, 255));
-
-        // regular buttons - from widget bg
-        mTheme.colors.button.setHsv(mTheme.colors.widget.hue(),
-                                    mTheme.colors.widget.saturation(),
-                                    qMin(mTheme.colors.widget.value() + 20, 255));
-        mTheme.colors.button_hover   = QColor(mTheme.colors.button.lighter(112));
-        mTheme.colors.button_pressed = QColor(mTheme.colors.button.darker(112));
-        mTheme.colors.button_border  = QColor(mTheme.colors.button.darker(145));
-
-        // accents (saturation tweak)
-        mTheme.colors.accent_lc.setHsv(mTheme.colors.accent.hue(),
-                                       mTheme.colors.accent.saturation() * 0.9,
-                                       mTheme.colors.accent.value() * 0.8f);
-        mTheme.colors.accent_lc2.setHsv(mTheme.colors.accent.hue(),
-                                        mTheme.colors.accent.saturation() * 0.5,
-                                        mTheme.colors.accent.value() * 0.62f);
-        mTheme.colors.accent_hc.setHsv(mTheme.colors.accent.hue(),
-                                       qMin(static_cast<int>(mTheme.colors.accent.saturation() * 1.1), 255),
-                                       qMin(static_cast<int>(mTheme.colors.accent.value() * 1.2), 255));
-
-        // text
-        mTheme.colors.text_hc2 = QColor(mTheme.colors.text.lighter(118));
-        mTheme.colors.text_hc1 = QColor(mTheme.colors.text.lighter(110));
-        mTheme.colors.text_lc1 = QColor(mTheme.colors.text.darker(104));
-        mTheme.colors.text_lc2 = QColor(mTheme.colors.text.darker(112));
-
-        // misc
-        mTheme.colors.input_field_focus = QColor(mTheme.colors.accent);
-        mTheme.colors.slider_hover      = QColor(mTheme.colors.slider_handle.lighter(120));
-        mTheme.colors.slider_groove     = mTheme.colors.folderview;
-    //} else { // light variant - todo!!
-
-    //}
+void Settings::setColorScheme(ColorScheme scheme) {
+    mColorScheme = scheme;
 }
 //------------------------------------------------------------------------------
 QString Settings::mpvBinary() {

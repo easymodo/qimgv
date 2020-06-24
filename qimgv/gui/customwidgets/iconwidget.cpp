@@ -30,7 +30,7 @@ void IconWidget::setIconPath(QString path) {
         pixmap = new QPixmap(path);
         pixmapDrawScale = dpr;
     }
-    ImageLib::overlayColor(*pixmap, settings->colorScheme().text);
+    ImageLib::recolor(*pixmap, settings->colorScheme().text);
     update();
 }
 
