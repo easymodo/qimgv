@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QDebug>
 #include <QColor>
 #include <QPalette>
 
@@ -53,9 +54,6 @@ public:
     QColor button_border;
     QColor panel_button_hover;
     QColor panel_button_pressed;
-    QColor accent_lc;
-    QColor accent_lc2;
-    QColor accent_hc;
     QColor folderview_separator;
     QColor slider_groove;
     QColor slider_hover;

@@ -31,7 +31,7 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
 
 void ThumbnailWidget::readSettings() {
     nameColor = settings->colorScheme().text;
-    highlightColor = settings->colorScheme().accent_hc;
+    highlightColor = settings->colorScheme().accent;
 }
 
 void ThumbnailWidget::setThumbnailSize(int size) {

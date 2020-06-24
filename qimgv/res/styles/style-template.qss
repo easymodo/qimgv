@@ -5,7 +5,7 @@
 {
     color: %text_hc1%;
     background-color: %button%;
-    /*border: 1px solid %button_border%;*/
+    border: 1px solid %button_border%;
     border-radius: 3px;
     padding: 7px 12px 7px 12px;
 }
@@ -13,6 +13,7 @@
 [accessibleName="Button"]:hover, [accessibleName="ButtonSetLeft"]:hover, [accessibleName="ButtonSetRight"]:hover
 {
     background-color: %button_hover%;
+    border-color: %button_hover%;
     color: %text_hc2%;
 }
 
@@ -23,18 +24,24 @@
 [accessibleName="ButtonSetRight"]:pressed, [accessibleName="ButtonSetRight"][pressed="true"]
 {
     background-color: %button_pressed%;
+    border-color: %button_pressed%;
     color: %text%;
 }
 
 [accessibleName="ButtonSetLeft"] {
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
+    border-right: 0px solid %button%;
 }
 
 [accessibleName="ButtonSetRight"] {
-    border-left: 1px solid %button_border%;
+    border-left: 1px solid %button_pressed%;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
+}
+
+[accessibleName="ButtonSetRight"]:hover {
+    border-left: 1px solid %button_pressed%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -157,17 +164,13 @@ FloatingWidget {
     border-top-right-radius: 1px;
 }
 /*----------------------------------------------------------------------------*/
-/* Close button */
 [accessibleName="OverlayCloseButton"] {
     background-color: transparent;
-    border: 2px solid transparent;
-    border-bottom-left-radius: 2px;
     padding: 4px;
 }
 
 [accessibleName="OverlayCloseButton"]:hover {
-    background-color: %accent_lc%;
-    border-color: %accent_lc%;
+    background-color: %accent_hover_rgba%;
 }
 
 [accessibleName="OverlayHeaderLabel"] {
@@ -367,7 +370,7 @@ PathSelectorMenuItem [accessibleName="MenuItemIcon"] {
 }
 
 PathSelectorMenuItem [accessibleName="MenuItemIcon"]:hover {
-    background-color: %accent_lc%;
+    background-color: %accent_hover_rgba%;
 }
 
 
@@ -488,7 +491,7 @@ ContextMenu {
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="MenuItem"]:hover {
-    background-color: %accent%;
+    background-color: %accent_hover_rgba%;
 }
 
 [accessibleName="MenuItem"] QLabel {
@@ -511,12 +514,10 @@ ContextMenu [accessibleName="MenuItemIcon"] {
 [accessibleName="ContextMenuButton"] {
     padding: 4px;
     border-radius: 2px;
-    border: 2px solid transparent;
 }
 
 [accessibleName="ContextMenuButton"]:hover {
-    background-color: %accent%;
-    border: 2px solid %accent%;
+    background-color: %accent_hover_rgba%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -594,15 +595,14 @@ FolderView QTreeView {
 
 FolderView QTreeView::item {
     margin-right: 8px;
-    border: 1px solid transparent;
     border-radius: 3px;
     min-height: 24px;
+    padding: 2px;
     color: %text_hc2%;
 }
 
 FolderView QTreeView::item:hover {
-    background-color: %accent_lc%;
-    border-color: %accent_lc%;
+    background-color: %accent_hover_rgba%;
 }
 
 FolderView QTreeView::item:selected:!active,
@@ -640,13 +640,11 @@ QTreeView::branch:open:has-children:has-siblings {
 /*----------------------------------------------------------------------------*/
 
 BookmarksItem {
-    border: 1px solid transparent;
-    border-radius: 2px;
+    border-radius: 3px;
 }
 
 BookmarksItem:hover {
-    background-color: %accent_lc%;
-    border-color: %accent_lc%;
+    background-color: %accent_hover_rgba%;
 }
 
 BookmarksItem QLabel {
@@ -686,13 +684,12 @@ BookmarksItem[highlighted="true"] {
 
 [accessibleName="PlacesPanelButton"]:hover {
     background-color: %accent%;
-    border: 1px solid %accent%;
+
 }
 
 [accessibleName="PlacesPanelButton"]:pressed,
 [accessibleName="PlacesPanelButton"][pressed="true"] {
-    background-color: %accent_lc%;
-    border: 1px solid %accent_lc%;
+    background-color: %accent_hover_rgba%;
 }
 
 /*----------------------------------------------------------------------------*/

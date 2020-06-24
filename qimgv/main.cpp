@@ -63,7 +63,9 @@ void loadStylesheet() {
         styleSheet.replace("%folderview_topbar%",    colors.folderview_topbar.name());
         styleSheet.replace("%folderview_separator%", colors.folderview_separator.name());
         styleSheet.replace("%accent%",               colors.accent.name());
-        styleSheet.replace("%accent_lc%",            colors.accent_lc.name());
+        styleSheet.replace("%accent_hover_rgba%",    "rgba(" + QString::number(colors.accent.red())   + ","
+                                                             + QString::number(colors.accent.green()) + ","
+                                                             + QString::number(colors.accent.blue())  + ",50%)");
         styleSheet.replace("%input_field_focus%",    colors.input_field_focus.name());
         styleSheet.replace("%slider_groove%",        colors.slider_groove.name());
         styleSheet.replace("%slider_handle%",        colors.slider_handle.name());
