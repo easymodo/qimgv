@@ -19,7 +19,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     // less code than using pushbutton with menu
     // will be replaced with something custom later
     ui->themeSelectorComboBox->setCurrentIndex(-1);
-
+    #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    ui->themeSelectorComboBox->setPlaceholderText("Select theme...");
+    #endif
     connect(ui->themeSelectorComboBox, qOverload<int>(&QComboBox::currentIndexChanged), [this](int index) {
         ui->themeSelectorComboBox->blockSignals(true);
         ui->themeSelectorComboBox->setCurrentIndex(-1);

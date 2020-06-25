@@ -56,9 +56,9 @@ void ScriptManager::runCommandDetached(QString cmd) {
 }
 
 #else
-void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> img) {
-    qDebug() << "Nope.";
-}
+void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> img) {}
+QString ScriptManager::runCommand(QString cmd) {}
+void ScriptManager::runCommandDetached(QString cmd) {}
 #endif
 
 // TODO: what if filename contains one of the tags?
