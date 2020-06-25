@@ -35,7 +35,7 @@ if(WIN32)
     target_include_directories(player_mpv PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/include)
     target_link_directories(player_mpv PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/$<IF$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x86_64,i686>)
+        ${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x86_64,i686>)
 endif()
 
 install(TARGETS player_mpv LIBRARY DESTINATION ${QIMGV_LIBDIR})
