@@ -130,16 +130,14 @@ QComboBox QAbstractItemView {
 }
 
 [accessibleName="PanelComboBox"] QAbstractItemView::item {
-    border: 1px solid %widget%;
     border-radius: 1px;
-    padding: 1px 4px;
+    padding: 2px 5px;
     color: %text_hc1%;
     min-height: 22px;
 }
 
 [accessibleName="PanelComboBox"] QAbstractItemView::item:selected {
-    background-color: %accent%;
-    border-color: %accent%;
+    background-color: %accent_hover_rgba%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -304,16 +302,14 @@ SidePanel QComboBox QAbstractItemView {
 }
 
 SidePanel QComboBox QAbstractItemView::item {
-    border: 1px solid %widget%;
     border-radius: 1px;
-    padding: 1px 4px;
+    padding: 2px 5px;
     color: %text_hc1%;
     min-height: 22px;
 }
 
 SidePanel QComboBox QAbstractItemView::item:selected {
-    background-color: %accent%;
-    border-color: %accent%;
+    background-color: %accent_hover_rgba%;
 }
 
 [accessibleName="CropPanelSeparator"] {

@@ -16,7 +16,17 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
                                       qBound(0, p.highlight().color().value() - 35, 240));
             break;
         case COLORS_LIGHT:
-            // --
+            base.background = "#1a1a1a";
+            base.background_fullscreen = "#1a1a1a";
+            base.text = "#282c2d";
+            base.widget = "#e1e1e1";
+            base.widget_border = "#e1e1e1";
+            base.accent = "#5fa2f8";
+            base.folderview = "#f5f5f5";
+            base.folderview_topbar = "#e1e1e1";
+            base.slider_handle = "#8b8b8b";
+            base.overlay_text = "#d2d2d2";
+            base.overlay = "#1a1a1a";
             break;
         case COLORS_DARK:
         case COLORS_DEFAULT:

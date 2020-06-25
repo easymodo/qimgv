@@ -24,8 +24,6 @@
         <file>res/icons/common/buttons/panel/open20@2x.png</file>
         <file>res/icons/common/buttons/panel/settings16.png</file>
         <file>res/icons/common/buttons/panel/settings16@2x.png</file>
-        <file>res/icons/common/buttons/panel/settings20.png</file>
-        <file>res/icons/common/buttons/panel/settings20@2x.png</file>
         <file>res/icons/common/buttons/panel/toggle-panel20.png</file>
         <file>res/icons/common/buttons/panel/toggle-panel20@2x.png</file>
         <file>res/icons/common/buttons/panel-small/add-new12.png</file>
@@ -48,7 +46,6 @@
         <file>res/icons/common/buttons/videocontrols/skip-backwards24@2x.png</file>
         <file>res/icons/common/buttons/videocontrols/skip-forward24.png</file>
         <file>res/icons/common/buttons/videocontrols/skip-forward24@2x.png</file>
-
         <file>res/icons/common/menuitem/copy16.png</file>
         <file>res/icons/common/menuitem/copy16@2x.png</file>
         <file>res/icons/common/menuitem/document-view16.png</file>
@@ -77,7 +74,6 @@
         <file>res/icons/common/menuitem/settings16@2x.png</file>
         <file>res/icons/common/menuitem/trash-red16.png</file>
         <file>res/icons/common/menuitem/trash-red16@2x.png</file>
-
         <file>res/icons/common/notifications/dir_end20.png</file>
         <file>res/icons/common/notifications/dir_end20@2x.png</file>
         <file>res/icons/common/notifications/dir_start20.png</file>
@@ -86,7 +82,6 @@
         <file>res/icons/common/notifications/success16@2x.png</file>
         <file>res/icons/common/notifications/trash-red16.png</file>
         <file>res/icons/common/notifications/trash-red16@2x.png</file>
-
         <file>res/icons/common/other/arrow_down.png</file>
         <file>res/icons/common/other/arrow_up.png</file>
         <file>res/icons/common/other/dropDownArrow.png</file>
@@ -100,7 +95,6 @@
         <file>res/icons/common/other/loading72@2x.png</file>
         <file>res/icons/common/other/sorting-mode16.png</file>
         <file>res/icons/common/other/sorting-mode16@2x.png</file>
-
         <file>res/icons/common/overlay/close-dim16.png</file>
         <file>res/icons/common/overlay/close-dim16@2x.png</file>
         <file>res/icons/common/overlay/close16.png</file>
@@ -111,12 +105,10 @@
         <file>res/icons/common/overlay/edit16@2x.png</file>
         <file>res/icons/common/overlay/move16.png</file>
         <file>res/icons/common/overlay/move16@2x.png</file>
-
         <file>res/icons/common/logo/3rdparty/qt22.png</file>
         <file>res/icons/common/logo/3rdparty/qt22@2x.png</file>
         <file>res/icons/common/logo/app/22.png</file>
         <file>res/icons/common/logo/app/22@2x.png</file>
-
         <file>res/icons/dark/other/collapsed.png</file>
         <file>res/icons/dark/other/expanded.png</file>
         <file>res/icons/dark/settings/about32.png</file>
@@ -135,7 +127,6 @@
         <file>res/icons/dark/settings/shortcuts32@2x.png</file>
         <file>res/icons/dark/settings/terminal32.png</file>
         <file>res/icons/dark/settings/terminal32@2x.png</file>
-
         <file>res/icons/light/other/collapsed.png</file>
         <file>res/icons/light/other/expanded.png</file>
         <file>res/icons/light/settings/about32.png</file>
@@ -154,9 +145,10 @@
         <file>res/icons/light/settings/shortcuts32@2x.png</file>
         <file>res/icons/light/settings/terminal32.png</file>
         <file>res/icons/light/settings/terminal32@2x.png</file>
-
         <file>res/images/cropheader.png</file>
         <file>res/styles/style-template.qss</file>
         <file>res/translations/ru_RU.qm</file>
+        <file>res/icons/common/buttons/panel/settings20.png</file>
+        <file>res/icons/common/buttons/panel/settings20@2x.png</file>
     </qresource>
 </RCC>
