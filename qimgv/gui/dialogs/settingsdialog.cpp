@@ -94,8 +94,12 @@ void SettingsDialog::resetToDesktopTheme() {
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::setupSidebar() {
-    //auto theme = settings->colors().systemtheme;
-    QString theme = "dark";
+    QString theme;
+    QPalette p;
+    if(p.base().color().valueF() <= 0.45f)
+        theme = "light";
+    else
+        theme = "dark";
     QListWidget *sideBar = ui->sideBar;
     sideBar->viewport()->setAutoFillBackground(false);
     // General
