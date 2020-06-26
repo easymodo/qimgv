@@ -256,7 +256,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1838,6 +1838,13 @@
                      </spacer>
                     </item>
                     <item>
+                     <widget class="QLabel" name="loadPresetLabel">
+                      <property name="text">
+                       <string>Load preset:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QComboBox" name="themeSelectorComboBox">
                       <property name="currentText">
                        <string>Dark (default)</string>
@@ -1845,6 +1852,11 @@
                       <item>
                        <property name="text">
                         <string>Dark (default)</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Dark blue</string>
                        </property>
                       </item>
                       <item>

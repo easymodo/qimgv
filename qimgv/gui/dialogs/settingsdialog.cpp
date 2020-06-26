@@ -20,6 +20,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     // will be replaced with something custom later
     ui->themeSelectorComboBox->setCurrentIndex(-1);
     #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    ui->loadPresetLabel->hide();
     ui->themeSelectorComboBox->setPlaceholderText("Load preset...");
     #endif
     connect(ui->themeSelectorComboBox, qOverload<int>(&QComboBox::currentIndexChanged), [this](int index) {
@@ -27,9 +28,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
         ui->themeSelectorComboBox->setCurrentIndex(-1);
         ui->themeSelectorComboBox->blockSignals(false);
         switch(index) {
-            case 1: setColorScheme(ThemeStore::colorScheme(COLORS_LIGHT)); break;
-            case 0:
-            default: setColorScheme(ThemeStore::colorScheme(COLORS_DARK)); break;
+            case 0: setColorScheme(ThemeStore::colorScheme(COLORS_DARK)); break;
+            case 1: setColorScheme(ThemeStore::colorScheme(COLORS_DARKBLUE)); break;
+            case 2: setColorScheme(ThemeStore::colorScheme(COLORS_LIGHT)); break;
         }
     });
 
@@ -113,6 +114,8 @@ void SettingsDialog::setupSidebar() {
     // About
     sideBar->item(7)->setIcon(QIcon(":res/icons/" + theme + "/settings/about32.png"));
 
+    // empty for now
+    sideBar->item(2)->setHidden(true);
 #ifdef _WIN32
     // Not implemented on windows. Not sure if will ever be. I don't really care.
     sideBar->item(5)->setHidden(true);
