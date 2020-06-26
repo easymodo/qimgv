@@ -291,7 +291,7 @@ void SettingsDialog::readColorScheme() {
     ui->colorSelectorWidgetBorder->setColor(colors.widget_border);
     ui->colorSelectorOverlay->setColor(colors.overlay);
     ui->colorSelectorOverlayText->setColor(colors.overlay_text);
-    ui->colorSelectorSlider->setColor(colors.slider_handle);
+    ui->colorSelectorScrollbar->setColor(colors.scrollbar);
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::saveColorScheme() {
@@ -306,7 +306,7 @@ void SettingsDialog::saveColorScheme() {
     base.widget_border = ui->colorSelectorWidgetBorder->color();
     base.overlay = ui->colorSelectorOverlay->color();
     base.overlay_text = ui->colorSelectorOverlayText->color();
-    base.slider_handle = ui->colorSelectorSlider->color();
+    base.scrollbar = ui->colorSelectorScrollbar->color();
     settings->setColorScheme(ColorScheme(base));
 }
 //------------------------------------------------------------------------------

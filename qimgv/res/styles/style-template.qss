@@ -400,26 +400,26 @@ FolderView {
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewSlider"]::groove:horizontal {
-    border: 1px solid %slider_groove%;
+    border: 1px solid %panel_button_pressed%;
     height: 6px;
     margin: 0 12px;
 }
 
 [accessibleName="FolderViewSlider"]::sub-page:horizontal { /* left */
-    background: %slider_groove%;
-    border: 1px solid %slider_groove%;
+    background: %panel_button_pressed%;
+    border: 1px solid %panel_button_pressed%;
     height: 6px;
 }
 
 [accessibleName="FolderViewSlider"]::add-page:horizontal {
-    background: %slider_groove%;
-    border: 1px solid %slider_groove%;
+    background: %panel_button_pressed%;
+    border: 1px solid %panel_button_pressed%;
     height: 6px;
 }
 
 [accessibleName="FolderViewSlider"]::handle:horizontal {
-    background: %slider_handle%;
-    border: 1px solid %slider_handle%;
+    background: %text_lc2%;
+    border: 1px solid %text_lc2%;
     width: 12px;
     height: 12px;
     border-radius: 1px;
@@ -427,8 +427,8 @@ FolderView {
 }
 
 [accessibleName="FolderViewSlider"]::handle:horizontal:hover {
-    background: %slider_hover%;
-    border-color: %slider_hover%;
+    background: %text_hc2%;
+    border-color: %text_hc2%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -439,14 +439,14 @@ ThumbnailStrip QScrollBar:horizontal {
 }
 
 ThumbnailStrip QScrollBar::handle:horizontal {
-    background-color: %slider_handle%;
-    border: 1px solid %slider_handle%;
+    background-color: %scrollbar%;
+    border: 1px solid %scrollbar%;
     min-width: 60px;
 }
 
 ThumbnailStrip QScrollBar::handle:horizontal:hover {
-    background-color: %slider_hover%;
-    border-color: %slider_hover%;
+    background-color: %scrollbar_hover%;
+    border-color: %scrollbar_hover%;
 }
 
 ThumbnailStrip QScrollBar:vertical {
@@ -553,14 +553,14 @@ FolderView QScrollBar:vertical {
 }
 
 FolderView QScrollBar::handle:vertical {
-    background-color: %slider_handle%;
-    border: 1px solid %slider_handle%;
+    background-color: %scrollbar%;
+    border: 1px solid %scrollbar%;
     min-height: 60px;
 }
 
 FolderView QScrollBar::handle:vertical:hover {
-    background-color: %slider_hover%;
-    border-color: %slider_hover%;
+    background-color: %scrollbar_hover%;
+    border-color: %scrollbar_hover%;
 }
 
 FolderView QScrollBar::sub-page {

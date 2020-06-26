@@ -11,20 +11,20 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.folderview = p.base().color();
             base.text = p.text().color();
             base.accent = p.highlight().color();
-            base.slider_handle.setHsv(p.highlight().color().hue(),
+            base.scrollbar.setHsv(p.highlight().color().hue(),
                                       qBound(0, p.highlight().color().saturation() - 20, 240),
                                       qBound(0, p.highlight().color().value() - 35, 240));
             break;
         case COLORS_LIGHT:
             base.background = "#1a1a1a";
             base.background_fullscreen = "#1a1a1a";
-            base.text = "#282c2d";
-            base.widget = "#e1e1e1";
-            base.widget_border = "#e1e1e1";
-            base.accent = "#5fa2f8";
-            base.folderview = "#f5f5f5";
-            base.folderview_topbar = "#e1e1e1";
-            base.slider_handle = "#8b8b8b";
+            base.text = "#373e3f";
+            base.widget = "#cdcdcd";
+            base.widget_border = "#cdcdcd";
+            base.accent = "#6aa6eb";
+            base.folderview = "#e1e1e1";
+            base.folderview_topbar = "#cdcdcd";
+            base.scrollbar = "#a5a5a5";
             base.overlay_text = "#d2d2d2";
             base.overlay = "#1a1a1a";
             break;
@@ -38,7 +38,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.accent = "#3367a5";
             base.folderview = "#242424";
             base.folderview_topbar = "#343434";
-            base.slider_handle = "#5e5e5e";
+            base.scrollbar = "#5e5e5e";
             base.overlay_text = "#d2d2d2";
             base.overlay = "#1a1a1a";
             break;
@@ -64,9 +64,9 @@ void ColorScheme::setBaseColors(BaseColorScheme base) {
     accent                = base.accent;
     folderview            = base.folderview;
     folderview_topbar     = base.folderview_topbar;
-    slider_handle         = base.slider_handle;
     overlay               = base.overlay;
     overlay_text          = base.overlay_text;
+    scrollbar             = base.scrollbar;
     createColorVariants();
 }
 
@@ -78,9 +78,9 @@ void ColorScheme::createColorVariants() {
         folderview_separator.setHsv(folderview.hue(), folderview.saturation(), qMin(folderview.value() + 22, 255));
         // regular buttons - from widget bg
         button.setHsv(widget.hue(), widget.saturation(), qMin(widget.value() + 20, 255));
-        button_hover   = QColor(button.lighter(112));
-        button_pressed = QColor(button.darker(112));
-        button_border  = button;
+        button_hover    = QColor(button.lighter(112));
+        button_pressed  = QColor(button.darker(112));
+        scrollbar_hover = scrollbar.lighter(120);
     } else { // light theme
         // top bar buttons
         panel_button_hover.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMax(folderview_topbar.value() - 40, 0));
@@ -88,9 +88,9 @@ void ColorScheme::createColorVariants() {
         folderview_separator.setHsv(folderview.hue(), folderview.saturation(), qMax(folderview.value() - 25, 0));
         // regular buttons - from widget bg
         button.setHsv(widget.hue(), widget.saturation(), qMax(widget.value() - 35, 0));
-        button_pressed   = QColor(button.darker(106));
-        button_hover = QColor(button.lighter(106));
-        button_border  = QColor(button.darker(106));
+        button_hover    = QColor(button.lighter(106));
+        button_pressed  = QColor(button.darker(106));
+        scrollbar_hover = scrollbar.darker(120);
     }
     // text
     text_hc2 = QColor(text.lighter(118));
@@ -99,7 +99,5 @@ void ColorScheme::createColorVariants() {
     text_lc2 = QColor(text.darker(112));
     // misc
     input_field_focus = QColor(accent);
-    slider_hover      = QColor(slider_handle.lighter(120));
-    slider_groove     = button_hover;
 }
 

@@ -90,7 +90,7 @@ void Settings::loadTheme() {
         base.accent                = QColor(themeConf->value("accent",                "#4f6a91").toString());
         base.folderview            = QColor(themeConf->value("folderview",            "#242424").toString());
         base.folderview_topbar     = QColor(themeConf->value("folderview_topbar",     "#343434").toString());
-        base.slider_handle         = QColor(themeConf->value("slider_handle",         "#5e5e5e").toString());
+        base.scrollbar             = QColor(themeConf->value("scrollbar",             "#5e5e5e").toString());
         base.overlay_text          = QColor(themeConf->value("overlay_text",          "#d2d2d2").toString());
         base.overlay               = QColor(themeConf->value("overlay",               "#1a1a1a").toString());
         themeConf->endGroup();
@@ -109,7 +109,7 @@ void Settings::saveTheme() {
     themeConf->setValue("accent",                mColorScheme.accent.name());
     themeConf->setValue("folderview",            mColorScheme.folderview.name());
     themeConf->setValue("folderview_topbar",     mColorScheme.folderview_topbar.name());
-    themeConf->setValue("slider_handle",         mColorScheme.slider_handle.name());
+    themeConf->setValue("scrollbar",             mColorScheme.scrollbar.name());
     themeConf->setValue("overlay_text",          mColorScheme.overlay_text.name());
     themeConf->setValue("overlay",               mColorScheme.overlay.name());
     themeConf->endGroup();
