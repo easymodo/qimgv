@@ -80,14 +80,13 @@ void MainPanel::readSettings() {
 void MainPanel::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
     QPainter p(this);
-    p.setPen(settings->colorScheme().widget_border);
+    p.setPen(settings->colorScheme().folderview_separator);
     if(mPosition == PanelHPosition::PANEL_TOP) {
         p.drawLine(rect().bottomLeft() - QPoint(0, bottomMargin - 1), rect().bottomRight() - QPoint(0, bottomMargin - 1));
-        p.drawLine(rect().bottomLeft() - QPoint(0, bottomMargin - 2), rect().bottomRight() - QPoint(0, bottomMargin - 2));
     } else {
         p.drawLine(rect().topLeft(), rect().topRight());
+        p.setPen(settings->colorScheme().folderview);
         p.drawLine(rect().topLeft() + QPoint(0,1), rect().topRight() + QPoint(0,1));
         p.drawLine(rect().topLeft() + QPoint(0,2), rect().topRight() + QPoint(0,2));
-        p.drawLine(rect().topLeft() + QPoint(0,3), rect().topRight() + QPoint(0,3));
     }
 }

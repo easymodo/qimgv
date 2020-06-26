@@ -47,10 +47,10 @@ void CopyOverlay::hide() {
 void CopyOverlay::setDialogMode(CopyOverlayMode _mode) {
     mode = _mode;
     if(mode == OVERLAY_COPY) {
-        ui->headerIcon->setIconPath(":/res/icons/light/overlay/copy16.png");
+        ui->headerIcon->setIconPath(":/res/icons/common/overlay/copy16.png");
         ui->headerLabel->setText(tr("Copy to..."));
     } else {
-        ui->headerIcon->setIconPath(":/res/icons/light/overlay/move16.png");
+        ui->headerIcon->setIconPath(":/res/icons/common/overlay/move16.png");
         ui->headerLabel->setText(tr("Move to..."));
     }
 }

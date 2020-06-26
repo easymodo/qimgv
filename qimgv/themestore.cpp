@@ -32,10 +32,10 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
         case COLORS_DEFAULT:
             base.background = "#1a1a1a";
             base.background_fullscreen = "#1a1a1a";
-            base.text = "#a4a4a4";
+            base.text = "#9a9a9a";
             base.widget = "#252525";
             base.widget_border = "#272727";
-            base.accent = "#3371c8";
+            base.accent = "#3367a5";
             base.folderview = "#242424";
             base.folderview_topbar = "#343434";
             base.slider_handle = "#5e5e5e";

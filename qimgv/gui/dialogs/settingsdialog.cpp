@@ -20,7 +20,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     // will be replaced with something custom later
     ui->themeSelectorComboBox->setCurrentIndex(-1);
     #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-    ui->themeSelectorComboBox->setPlaceholderText("Select theme...");
+    ui->themeSelectorComboBox->setPlaceholderText("Load preset...");
     #endif
     connect(ui->themeSelectorComboBox, qOverload<int>(&QComboBox::currentIndexChanged), [this](int index) {
         ui->themeSelectorComboBox->blockSignals(true);

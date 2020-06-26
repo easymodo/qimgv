@@ -5,7 +5,6 @@
 {
     color: %text_hc1%;
     background-color: %button%;
-    border: 1px solid %button_border%;
     border-radius: 3px;
     padding: 7px 12px 7px 12px;
 }
@@ -13,7 +12,6 @@
 [accessibleName="Button"]:hover, [accessibleName="ButtonSetLeft"]:hover, [accessibleName="ButtonSetRight"]:hover
 {
     background-color: %button_hover%;
-    border-color: %button_hover%;
     color: %text_hc2%;
 }
 
@@ -24,14 +22,12 @@
 [accessibleName="ButtonSetRight"]:pressed, [accessibleName="ButtonSetRight"][pressed="true"]
 {
     background-color: %button_pressed%;
-    border-color: %button_pressed%;
     color: %text%;
 }
 
 [accessibleName="ButtonSetLeft"] {
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
-    border-right: 0px solid %button%;
 }
 
 [accessibleName="ButtonSetRight"] {
@@ -519,6 +515,10 @@ ContextMenu [accessibleName="MenuItemIcon"] {
 /*----------------------------------------------------------------------------*/
 ControlsOverlay {
     background-color: %overlay%;
+    border-color: %overlay%;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
 }
 /*----------------------------------------------------------------------------*/
 InfoBar {

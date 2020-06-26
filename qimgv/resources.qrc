@@ -82,8 +82,6 @@
         <file>res/icons/common/notifications/success16@2x.png</file>
         <file>res/icons/common/notifications/trash-red16.png</file>
         <file>res/icons/common/notifications/trash-red16@2x.png</file>
-        <file>res/icons/common/other/arrow_down.png</file>
-        <file>res/icons/common/other/arrow_up.png</file>
         <file>res/icons/common/other/dropDownArrow.png</file>
         <file>res/icons/common/other/dropDownArrow@2x.png</file>
         <file>res/icons/common/other/empty.png</file>
@@ -145,7 +143,6 @@
         <file>res/icons/light/settings/shortcuts32@2x.png</file>
         <file>res/icons/light/settings/terminal32.png</file>
         <file>res/icons/light/settings/terminal32@2x.png</file>
-        <file>res/images/cropheader.png</file>
         <file>res/styles/style-template.qss</file>
         <file>res/translations/ru_RU.qm</file>
         <file>res/icons/common/buttons/panel/settings20.png</file>
