@@ -1856,7 +1856,12 @@
                       </item>
                       <item>
                        <property name="text">
-                        <string>Dark blue</string>
+                        <string>Dark Blue</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Drak Gray</string>
                        </property>
                       </item>
                       <item>

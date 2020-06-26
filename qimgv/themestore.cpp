@@ -41,17 +41,30 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.overlay_text = "#d2d2d2";
             base.overlay = "#1a1a1a";
             break;
+        case COLORS_DARKGRAY:
+            base.background = "#1a1a1a";
+            base.background_fullscreen = "#1a1a1a";
+            base.text = "#a6a6a6";
+            base.widget = "#252525";
+            base.widget_border = "#272727";
+            base.accent = "#4a658c";
+            base.folderview = "#242424";
+            base.folderview_topbar = "#343434";
+            base.scrollbar = "#5e5e5e";
+            base.overlay_text = "#d2d2d2";
+            base.overlay = "#1a1a1a";
+            break;
         case COLORS_DARK:
         case COLORS_DEFAULT:
             base.background = "#1a1a1a";
             base.background_fullscreen = "#1a1a1a";
-            base.text = "#9a9a9a";
-            base.widget = "#252525";
-            base.widget_border = "#272727";
-            base.accent = "#336ca5";
-            base.folderview = "#242424";
-            base.folderview_topbar = "#343434";
-            base.scrollbar = "#5e5e5e";
+            base.text = "#a6a6a7";
+            base.widget = "#28292a";
+            base.widget_border = "#28292a";
+            base.accent = "#4a658c";
+            base.folderview = "#28292a";
+            base.folderview_topbar = "#3c3d3e";
+            base.scrollbar = "#5d5e5f";
             base.overlay_text = "#d2d2d2";
             base.overlay = "#1a1a1a";
             break;
@@ -90,7 +103,7 @@ void ColorScheme::createColorVariants() {
         panel_button_pressed.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMin(folderview_topbar.value() + 20, 255));
         folderview_separator.setHsv(folderview.hue(), folderview.saturation(), qMin(folderview.value() + 22, 255));
         // regular buttons - from widget bg
-        button.setHsv(widget.hue(), widget.saturation(), qMin(widget.value() + 20, 255));
+        button.setHsv(widget.hue(), widget.saturation(), qMin(widget.value() + 21, 255));
         button_hover    = QColor(button.lighter(112));
         button_pressed  = QColor(button.darker(112));
         scrollbar_hover = scrollbar.lighter(120);
@@ -105,7 +118,7 @@ void ColorScheme::createColorVariants() {
         panel_button_pressed.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMax(folderview_topbar.value() - 28, 0));
         folderview_separator.setHsv(folderview.hue(), folderview.saturation(), qMax(folderview.value() - 25, 0));
         // regular buttons - from widget bg
-        button.setHsv(widget.hue(), widget.saturation(), qMax(widget.value() - 35, 0));
+        button.setHsv(widget.hue(), widget.saturation(), qMax(widget.value() - 36, 0));
         button_hover    = QColor(button.lighter(106));
         button_pressed  = QColor(button.darker(106));
         scrollbar_hover = scrollbar.darker(120);
