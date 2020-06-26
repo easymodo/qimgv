@@ -256,7 +256,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1808,6 +1808,19 @@
                      <widget class="QCheckBox" name="useSystemColorsCheckBox">
                       <property name="text">
                        <string>Use system colors</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="ClickableLabel" name="modifySystemSchemeLabel">
+                      <property name="cursor">
+                       <cursorShape>PointingHandCursor</cursorShape>
+                      </property>
+                      <property name="text">
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;modify&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      </property>
+                      <property name="textFormat">
+                       <enum>Qt::RichText</enum>
                       </property>
                      </widget>
                     </item>
@@ -3858,6 +3871,11 @@ p, li { white-space: pre-wrap; }
    <class>ColorSelectorButton</class>
    <extends>QLabel</extends>
    <header>gui/customwidgets/colorselectorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>gui/customwidgets/clickablelabel.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

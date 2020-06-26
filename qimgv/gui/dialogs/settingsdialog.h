@@ -34,6 +34,7 @@ public slots:
 
 private:
     void readColorScheme();
+    void setColorScheme(ColorScheme colors);
     void saveColorScheme();
     void readSettings();
     void readShortcuts();

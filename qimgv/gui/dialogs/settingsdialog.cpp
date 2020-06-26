@@ -26,13 +26,11 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
         ui->themeSelectorComboBox->blockSignals(true);
         ui->themeSelectorComboBox->setCurrentIndex(-1);
         ui->themeSelectorComboBox->blockSignals(false);
-
         switch(index) {
-            case 1:  settings->setColorScheme(ThemeStore::colorScheme(COLORS_LIGHT)); break;
+            case 1: setColorScheme(ThemeStore::colorScheme(COLORS_LIGHT)); break;
             case 0:
-            default: settings->setColorScheme(ThemeStore::colorScheme(COLORS_DARK)); break;
+            default: setColorScheme(ThemeStore::colorScheme(COLORS_DARK)); break;
         }
-        this->readColorScheme();
     });
 
     connect(ui->useSystemColorsCheckBox, &QCheckBox::toggled, [this](bool useSystemTheme) {
@@ -40,6 +38,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
         this->readColorScheme();
         ui->themeSelectorComboBox->setEnabled(!useSystemTheme);
         ui->colorConfigSubgroup->setEnabled(!useSystemTheme);
+        ui->modifySystemSchemeLabel->setVisible(useSystemTheme);
+    });
+
+    connect(ui->modifySystemSchemeLabel, &ClickableLabel::clicked, [this]() {
+        ui->useSystemColorsCheckBox->setChecked(false);
+        setColorScheme(ThemeStore::colorScheme(ColorSchemes::COLORS_SYSTEM));
     });
 
     ui->colorSelectorAccent->setDescription("Accent color");
@@ -190,6 +194,7 @@ void SettingsDialog::readSettings() {
     ui->panelSizeSlider->setValue(settings->mainPanelSize() / 10);
 
     ui->useSystemColorsCheckBox->setChecked(settings->useSystemColorScheme());
+    ui->modifySystemSchemeLabel->setVisible(settings->useSystemColorScheme());
     ui->themeSelectorComboBox->setEnabled(!settings->useSystemColorScheme());
     ui->colorConfigSubgroup->setEnabled(!settings->useSystemColorScheme());
 
@@ -281,6 +286,10 @@ void SettingsDialog::saveSettingsAndClose() {
 //------------------------------------------------------------------------------
 void SettingsDialog::readColorScheme() {
     auto colors = settings->colorScheme();
+    setColorScheme(colors);
+}
+
+void SettingsDialog::setColorScheme(ColorScheme colors) {
     ui->colorSelectorAccent->setColor(colors.accent);
     ui->colorSelectorBackground->setColor(colors.background);
     ui->colorSelectorFullscreen->setColor(colors.background_fullscreen);
@@ -293,6 +302,7 @@ void SettingsDialog::readColorScheme() {
     ui->colorSelectorOverlayText->setColor(colors.overlay_text);
     ui->colorSelectorScrollbar->setColor(colors.scrollbar);
 }
+
 //------------------------------------------------------------------------------
 void SettingsDialog::saveColorScheme() {
     BaseColorScheme base;
