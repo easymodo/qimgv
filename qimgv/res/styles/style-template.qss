@@ -195,16 +195,16 @@ FloatingWidget QLineEdit::focus {
 /*----------------------------------------------------------------------------*/
 
 FullscreenInfoOverlay {
-    background-color: rgba(15, 15, 15, 170);
-    border-color: rgba(15, 15, 15, 120);
-    border-top:  0px;
-    border-left: 0px;
-    border-bottom-right-radius: 2px;
+    border: 0px solid transparent;
+    background-color: %overlay_rgba%;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 3px;
 }
 
 FullscreenInfoOverlay QLabel {
-/*    color: %text_hc2%;  managed from settings  */
-/*    font: bold;*/
+    color: %overlay_text%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -514,8 +514,8 @@ ContextMenu [accessibleName="MenuItemIcon"] {
 
 /*----------------------------------------------------------------------------*/
 ControlsOverlay {
-    background-color: %overlay%;
-    border-color: %overlay%;
+    border: 0px solid transparent;
+    background-color: %overlay_rgba%;
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;

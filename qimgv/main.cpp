@@ -67,6 +67,9 @@ void loadStylesheet() {
                                                              + QString::number(colors.accent.blue())  + ",60%)");
         styleSheet.replace("%input_field_focus%",    colors.input_field_focus.name());
         styleSheet.replace("%overlay%",              colors.overlay.name());
+        styleSheet.replace("%overlay_rgba%",         "rgba(" + QString::number(colors.overlay.red())   + ","
+                                                             + QString::number(colors.overlay.green()) + ","
+                                                             + QString::number(colors.overlay.blue())  + ",90%)");
         styleSheet.replace("%text_hc2%",             colors.text_hc2.name());
         styleSheet.replace("%text_hc1%",             colors.text_hc1.name());
         styleSheet.replace("%text%",                 colors.text.name());
