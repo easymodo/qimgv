@@ -50,12 +50,9 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
     connect(videoPlayer.get(), &VideoPlayer::playbackFinished, this, &ViewerWidget::onVideoPlaybackFinished);
 
-    connect(videoControls, &VideoControlsProxyWrapper::pause,     this, &ViewerWidget::pauseResumePlayback);
     connect(videoControls, &VideoControlsProxyWrapper::seekLeft,  this, &ViewerWidget::seekLeft);
     connect(videoControls, &VideoControlsProxyWrapper::seekRight, this, &ViewerWidget::seekRight);
     connect(videoControls, &VideoControlsProxyWrapper::seek,      this, &ViewerWidget::seek);
-    connect(videoControls, &VideoControlsProxyWrapper::nextFrame, this, &ViewerWidget::frameStep);
-    connect(videoControls, &VideoControlsProxyWrapper::prevFrame, this, &ViewerWidget::frameStepBack);
 
     enableImageViewer();
     enableInteraction();

@@ -29,12 +29,9 @@ public slots:
     void setMode(PlaybackMode _mode);
 
 signals:
-    void pause();
     void seek(int pos);
     void seekRight();
     void seekLeft();
-    void nextFrame();
-    void prevFrame();
 
 private slots:
     void readSettings();

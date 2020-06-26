@@ -23,12 +23,9 @@ public:
     bool isVisible();
 
 signals:
-    void pause();
     void seek(int pos);
     void seekRight();
     void seekLeft();
-    void nextFrame();
-    void prevFrame();
 
 public slots:
     void setPlaybackDuration(int);
