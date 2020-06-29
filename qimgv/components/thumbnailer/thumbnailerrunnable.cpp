@@ -80,8 +80,8 @@ std::shared_ptr<Thumbnail> ThumbnailerRunnable::generate(ThumbnailCache* cache, 
 ThumbnailerRunnable::~ThumbnailerRunnable() {
 }
 
-std::pair<QImage*, QSize> ThumbnailerRunnable::createThumbnail(QUrl path, const char *format, int size, bool squared) {
-    QImageReader *reader = new QImageReader(path.toString(), format);
+std::pair<QImage*, QSize> ThumbnailerRunnable::createThumbnail(QString path, const char *format, int size, bool squared) {
+    QImageReader *reader = new QImageReader(path, format);
     Qt::AspectRatioMode ARMode = squared?
                 (Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
     QImage *result = nullptr;
@@ -109,7 +109,7 @@ std::pair<QImage*, QSize> ThumbnailerRunnable::createThumbnail(QUrl path, const 
             // and can fail on the second read attempt (yeah wtf)
             reader->setFileName("");
             delete reader;
-            reader = new QImageReader(path.toString(), format);
+            reader = new QImageReader(path, format);
         }
     }
     if(manualResize) { // manual resize & crop. slower but should just work
@@ -134,12 +134,13 @@ std::pair<QImage*, QSize> ThumbnailerRunnable::createThumbnail(QUrl path, const 
     return std::make_pair(result, originalSize);
 }
 
-std::pair<QImage*, QSize> ThumbnailerRunnable::createVideoThumbnail(QUrl path, int size, bool squared) {
+std::pair<QImage*, QSize> ThumbnailerRunnable::createVideoThumbnail(QString path, int size, bool squared) {
+    QFileInfo fi(path);
     QImageReader reader;
-    QString tmpFilePath = settings->tmpDir() + path.fileName() + ".png";
+    QString tmpFilePath = settings->tmpDir() + fi.fileName() + ".png";
     QString tmpFilePathEsc = tmpFilePath;
     tmpFilePathEsc.replace("%", "%%");
-    QString command = "\"" + settings->mpvBinary() + "\" --start=30% --frames=1 --aid=no --sid=no --no-config --load-scripts=no --no-terminal --o=\"" + tmpFilePathEsc + "\" \"" + path.toString() + "\"";
+    QString command = "\"" + settings->mpvBinary() + "\" --start=30% --frames=1 --aid=no --sid=no --no-config --load-scripts=no --no-terminal --o=\"" + tmpFilePathEsc + "\" \"" + path + "\"";
     QProcess process;
     process.start(command);
     process.waitForFinished(8000);
