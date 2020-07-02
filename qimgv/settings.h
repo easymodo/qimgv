@@ -226,6 +226,8 @@ public:
     bool useSystemColorScheme();
     void setUseSystemColorScheme(bool mode);
 
+    void loadStylesheet();
+
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

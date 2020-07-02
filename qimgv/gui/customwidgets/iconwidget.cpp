@@ -6,6 +6,9 @@ IconWidget::IconWidget(QWidget *parent)
       pixmap(nullptr)
 {
     dpr = this->devicePixelRatioF();
+    connect(settings, &Settings::settingsChanged, [this]() {
+        ImageLib::recolor(*(this->pixmap), settings->colorScheme().text);
+    });
 }
 
 IconWidget::~IconWidget() {

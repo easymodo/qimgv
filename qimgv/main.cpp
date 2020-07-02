@@ -25,66 +25,6 @@ QDataStream& operator>>(QDataStream& in, Script& v) {
     return in;
 }
 
-void loadStylesheet() {
-    // stylesheet template file
-    QFile file(":/res/styles/style-template.qss");
-    if(file.open(QFile::ReadOnly)) {
-        QString styleSheet = QLatin1String(file.readAll());
-
-        auto colors = settings->colorScheme();
-        // for settings window
-        QPalette p;
-        // choose icons depending on text color
-        /*if(p.text().color().valueF() > 0.5f) {
-            mTheme.systemIconTheme = "light";
-        } else {
-            mTheme.systemIconTheme = "dark";
-        } */
-        QColor sys_window = p.window().color();
-        QColor sys_window_tinted;
-        if(sys_window.valueF() <= 0.45f) {
-            sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 16);
-        } else {
-            sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 16);
-        }
-
-        // -------------- write variables into stylesheet ---------------
-        //styleSheet.replace("%icontheme%",            settings->theme().iconTheme);
-        styleSheet.replace("%icontheme%",            "light");
-        styleSheet.replace("%button%",               colors.button.name());
-        styleSheet.replace("%button_hover%",         colors.button_hover.name());
-        styleSheet.replace("%button_pressed%",       colors.button_pressed.name());
-        styleSheet.replace("%panel_button_hover%",   colors.panel_button_hover.name());
-        styleSheet.replace("%panel_button_pressed%", colors.panel_button_pressed.name());
-        styleSheet.replace("%widget%",               colors.widget.name());
-        styleSheet.replace("%widget_border%",        colors.widget_border.name());
-        styleSheet.replace("%folderview%",           colors.folderview.name());
-        styleSheet.replace("%folderview_topbar%",    colors.folderview_topbar.name());
-        styleSheet.replace("%folderview_separator%", colors.folderview_separator.name());
-        styleSheet.replace("%accent%",               colors.accent.name());
-        styleSheet.replace("%accent_hover_rgba%",    "rgba(" + QString::number(colors.accent.red())   + ","
-                                                             + QString::number(colors.accent.green()) + ","
-                                                             + QString::number(colors.accent.blue())  + ",60%)");
-        styleSheet.replace("%input_field_focus%",    colors.input_field_focus.name());
-        styleSheet.replace("%overlay%",              colors.overlay.name());
-        styleSheet.replace("%overlay_rgba%",         "rgba(" + QString::number(colors.overlay.red())   + ","
-                                                             + QString::number(colors.overlay.green()) + ","
-                                                             + QString::number(colors.overlay.blue())  + ",90%)");
-        styleSheet.replace("%text_hc2%",             colors.text_hc2.name());
-        styleSheet.replace("%text_hc1%",             colors.text_hc1.name());
-        styleSheet.replace("%text%",                 colors.text.name());
-        styleSheet.replace("%overlay_text%",         colors.overlay_text.name());
-        styleSheet.replace("%text_lc1%",             colors.text_lc1.name());
-        styleSheet.replace("%text_lc2%",             colors.text_lc2.name());
-        styleSheet.replace("%scrollbar%",            colors.scrollbar.name());
-        styleSheet.replace("%scrollbar_hover%",      colors.scrollbar_hover.name());
-        styleSheet.replace("%system_window_tinted%", sys_window_tinted.name());
-
-        // ------------------------ apply ----------------------------
-        qApp->setStyleSheet(styleSheet);
-    }
-}
-
 int main(int argc, char *argv[]) {
     // I'm not sure what this does but "1" breaks the UI
     // Huge widgets but tiny fonts
@@ -145,11 +85,6 @@ int main(int argc, char *argv[]) {
 
     QElapsedTimer t;
     t.start();
-
-    loadStylesheet();
-
-    //qApp->processEvents();
-    //qDebug() << "stylesheet: " << t.elapsed() << "ms";
 
     Core core;
 

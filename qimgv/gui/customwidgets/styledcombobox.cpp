@@ -3,6 +3,9 @@
 StyledComboBox::StyledComboBox(QWidget *parent) : QComboBox(parent), hiResPixmap(false)
 {
     dpr = this->devicePixelRatioF();
+    connect(settings, &Settings::settingsChanged, [this]() {
+        ImageLib::recolor(this->downArrow, settings->colorScheme().text);
+    });
 }
 
 void StyledComboBox::setIconPath(QString path) {
