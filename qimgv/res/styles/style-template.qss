@@ -149,7 +149,7 @@ QComboBox QAbstractItemView {
 
 FloatingWidget {
     background-color: %widget%;
-    border: 2px solid %widget_border%;
+    border: 1px solid %widget_border%;
     border-radius: 3px;
 }
 /*----------------------------------------------------------------------------*/
@@ -161,10 +161,11 @@ FloatingWidget {
 [accessibleName="OverlayCloseButton"] {
     background-color: transparent;
     padding: 4px;
+    border-radius: 2px;
 }
 
 [accessibleName="OverlayCloseButton"]:hover {
-    background-color: %accent_hover_rgba%;
+    background-color: %button_pressed%;
 }
 
 [accessibleName="OverlayHeaderLabel"] {
@@ -274,7 +275,7 @@ SidePanel QLabel {
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QComboBox {
-    color: %text_lc1%;
+    color: %text%;
     background-color: %button_pressed%;
     border: 1px solid %button_pressed%;
     border-radius: 3px;
@@ -478,7 +479,7 @@ ThumbnailStrip QScrollBar::sub-line {
 
 ContextMenu {
     background-color: %widget%;
-    border: 2px solid %widget_border%;
+    border: 1px solid %widget_border%;
     border-radius: 3px;
 }
 /*----------------------------------------------------------------------------*/
@@ -500,7 +501,7 @@ ContextMenu [accessibleName="MenuItemIcon"] {
 
 [accessibleName="MenuItemText"],
 [accessibleName="MenuItemShortcutLabel"] {
-    padding: 5 0 6 0;
+    padding: 6 0 7 0;
 }
 
 [accessibleName="ContextMenuButton"] {

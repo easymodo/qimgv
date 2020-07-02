@@ -256,7 +256,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1857,11 +1857,6 @@
                       <item>
                        <property name="text">
                         <string>Dark Blue</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Drak Gray</string>
                        </property>
                       </item>
                       <item>

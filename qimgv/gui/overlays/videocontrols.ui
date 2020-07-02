@@ -39,16 +39,16 @@
     <number>7</number>
    </property>
    <property name="leftMargin">
-    <number>14</number>
+    <number>13</number>
    </property>
    <property name="topMargin">
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="rightMargin">
-    <number>14</number>
+    <number>13</number>
    </property>
    <property name="bottomMargin">
-    <number>10</number>
+    <number>9</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0">

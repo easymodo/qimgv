@@ -9,7 +9,6 @@ enum ColorSchemes {
     COLORS_LIGHT,
     COLORS_DARK,
     COLORS_DARKBLUE,
-    COLORS_DARKGRAY,
     COLORS_DEFAULT
 };
 

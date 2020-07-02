@@ -17,6 +17,10 @@ FolderGridView::FolderGridView(QWidget *parent)
     setDrawScrollbarIndicator(false);
     setSelectMode(SELECT_BY_DOUBLECLICK);
 
+    connect(settings, &Settings::settingsChanged, [this]() {
+        this->scene.setBackgroundBrush(settings->colorScheme().folderview);
+    });
+
     setupLayout();
     connect(this, &ThumbnailView::itemSelected,
             this, &FolderGridView::onitemSelected);

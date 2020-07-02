@@ -30,8 +30,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
         switch(index) {
             case 0: setColorScheme(ThemeStore::colorScheme(COLORS_DARK));     break;
             case 1: setColorScheme(ThemeStore::colorScheme(COLORS_DARKBLUE)); break;
-            case 2: setColorScheme(ThemeStore::colorScheme(COLORS_DARKGRAY)); break;
-            case 3: setColorScheme(ThemeStore::colorScheme(COLORS_LIGHT));    break;
+            case 2: setColorScheme(ThemeStore::colorScheme(COLORS_LIGHT));    break;
         }
     });
 

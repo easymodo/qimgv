@@ -30,16 +30,16 @@
     <enum>QLayout::SetMinAndMaxSize</enum>
    </property>
    <property name="leftMargin">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>2</number>
+    <number>0</number>
    </property>
    <item>
     <widget class="QWidget" name="widget" native="true">
@@ -140,16 +140,16 @@
       <number>6</number>
      </property>
      <property name="leftMargin">
-      <number>7</number>
+      <number>9</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
      <property name="rightMargin">
-      <number>7</number>
+      <number>9</number>
      </property>
      <property name="bottomMargin">
-      <number>7</number>
+      <number>9</number>
      </property>
      <item>
       <widget class="QLineEdit" name="fileName">
