@@ -41,3 +41,7 @@ void StyledComboBox::paintEvent(QPaintEvent *e) {
     }
     p.drawPixmap(pos, downArrow);
 }
+
+void StyledComboBox::keyPressEvent(QKeyEvent *event) {
+    event->ignore();
+}

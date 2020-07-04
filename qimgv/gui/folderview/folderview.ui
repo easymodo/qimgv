@@ -236,9 +236,6 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
         <property name="contextMenuPolicy">
          <enum>Qt::NoContextMenu</enum>
         </property>
@@ -736,6 +733,14 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>gui/customwidgets/clickablelabel.h</header>
+   <slots>
+    <signal>clicked()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
    <class>ActionButton</class>
    <extends>QWidget</extends>
    <header>gui/customwidgets/actionbutton.h</header>
@@ -750,14 +755,6 @@
    <class>TreeViewCustom</class>
    <extends>QTreeView</extends>
    <header>gui/folderview/treeviewcustom.h</header>
-  </customwidget>
-  <customwidget>
-   <class>ClickableLabel</class>
-   <extends>QLabel</extends>
-   <header>gui/customwidgets/clickablelabel.h</header>
-   <slots>
-    <signal>clicked()</signal>
-   </slots>
   </customwidget>
   <customwidget>
    <class>BookmarksWidget</class>

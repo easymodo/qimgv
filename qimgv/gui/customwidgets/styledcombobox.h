@@ -3,6 +3,7 @@
 
 #include <QComboBox>
 #include <QPainter>
+#include <QKeyEvent>
 #include "settings.h"
 #include "utils/imagelib.h"
 
@@ -14,6 +15,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *e) override;
+    void keyPressEvent(QKeyEvent *event);
 
 private:
     bool hiResPixmap;

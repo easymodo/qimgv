@@ -319,6 +319,9 @@
       </item>
       <item>
        <widget class="StyledComboBox" name="ARcomboBox">
+        <property name="contextMenuPolicy">
+         <enum>Qt::NoContextMenu</enum>
+        </property>
         <item>
          <property name="text">
           <string>Free</string>
