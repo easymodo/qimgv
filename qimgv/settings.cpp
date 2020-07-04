@@ -271,7 +271,6 @@ bool Settings::useSystemColorScheme() {
 
 void Settings::setUseSystemColorScheme(bool mode) {
     settings->settingsConf->setValue("useSystemColorScheme", mode);
-    loadTheme();
 }
 //------------------------------------------------------------------------------
 QVersionNumber Settings::lastVersion() {

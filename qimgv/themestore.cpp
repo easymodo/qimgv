@@ -29,11 +29,11 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.overlay = "#1a1a1a";
             break;
         case COLORS_DARKBLUE:
-            base.background = "#19191a";
-            base.background_fullscreen = "#19191a";
-            base.text = "#e5e5e6";
-            base.widget = "#31363b";
-            base.widget_border = "#31363b";
+            base.background = "#18191a";
+            base.background_fullscreen = "#18191a";
+            base.text = "#cdd2d7";
+            base.widget = "#232629";
+            base.widget_border = "#26292d";
             base.accent = "#336ca5";
             base.folderview = "#232629";
             base.folderview_topbar = "#31363b";

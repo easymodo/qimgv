@@ -487,20 +487,19 @@ ContextMenu {
 }
 
 [accessibleName="MenuItem"] QLabel {
-    color: %text_hc1%;
+    padding: 6 0 7 0;
 }
 
 [accessibleName="MenuItem"] QLabel:disabled {
     color: %text_lc2%;
 }
 
-ContextMenu [accessibleName="MenuItemIcon"] {
-    /* margin: 5px; */
+[accessibleName="MenuItemText"] {
+    color: %text_hc1%;
 }
 
-[accessibleName="MenuItemText"],
 [accessibleName="MenuItemShortcutLabel"] {
-    padding: 6 0 7 0;
+    color: %text_lc1%;
 }
 
 [accessibleName="ContextMenuButton"] {

@@ -3,7 +3,7 @@
 MenuItem::MenuItem(QWidget *parent)
     : QWidget(parent)
 {
-    mLayout.setContentsMargins(6,0,11,0);
+    mLayout.setContentsMargins(6,0,9,0);
     mLayout.setSpacing(3);
 
     setAccessibleName("MenuItem");

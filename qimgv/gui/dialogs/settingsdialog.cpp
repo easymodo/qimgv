@@ -35,8 +35,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     });
 
     connect(ui->useSystemColorsCheckBox, &QCheckBox::toggled, [this](bool useSystemTheme) {
-        settings->setUseSystemColorScheme(useSystemTheme);
-        this->readColorScheme();
+        setColorScheme(ThemeStore::colorScheme(ColorSchemes::COLORS_SYSTEM));
         ui->themeSelectorComboBox->setEnabled(!useSystemTheme);
         ui->colorConfigSubgroup->setEnabled(!useSystemTheme);
         ui->modifySystemSchemeLabel->setVisible(useSystemTheme);
@@ -277,6 +276,8 @@ void SettingsDialog::saveSettings() {
     settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value()) / 10);
     settings->setExpandLimit(ui->expandLimitSlider->value());
     settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
+
+    settings->setUseSystemColorScheme(ui->useSystemColorsCheckBox->isChecked());
 
     saveColorScheme();
     saveShortcuts();
