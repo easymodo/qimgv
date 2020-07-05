@@ -399,8 +399,13 @@ FolderView {
     border-bottom: 1px solid %folderview_topbar%;
 }
 /*----------------------------------------------------------------------------*/
+[accessibleName="FolderViewSlider"] {
+    margin-top: 1px;
+}
+
 [accessibleName="FolderViewSlider"]::groove:horizontal {
-    border: 1px solid %panel_button_pressed%;
+    border-top: 1px solid %panel_button_pressed%;
+    border-bottom: 1px solid %panel_button_pressed%;
     height: 6px;
     margin: 0 12px;
 }
@@ -411,7 +416,7 @@ FolderView {
     height: 6px;
 }
 
-[accessibleName="FolderViewSlider"]::add-page:horizontal {
+[accessibleName="FolderViewSlider"]::add-page:horizontal { /* right */
     background: %panel_button_pressed%;
     border: 1px solid %panel_button_pressed%;
     height: 6px;
@@ -530,15 +535,15 @@ InfoBar QLabel {
 
 /*----------------------------------------------------------------------------*/
 ZoomIndicatorOverlay {
-    background-color: rgba(15, 15, 15, 190);
-    border-color: rgba(15, 15, 15, 120);
+    background-color: %overlay_rgba%;
+    border-color: %overlay_rgba%;
     border-left: 0px;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
 }
 
 ZoomIndicatorOverlay QLabel {
-    color: %text_hc1%;
+    color: %overlay_text%;
     /*font: bold;*/
 }
 

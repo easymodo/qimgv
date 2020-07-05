@@ -47,16 +47,16 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     });
 
     ui->colorSelectorAccent->setDescription("Accent color");
-    ui->colorSelectorAccent->setDescription("Windowed mode background");
-    ui->colorSelectorAccent->setDescription("Fullscreen mode background");
-    ui->colorSelectorAccent->setDescription("FolderView background");
-    ui->colorSelectorAccent->setDescription("FolderView top panel");
-    ui->colorSelectorAccent->setDescription("Text color");
-    ui->colorSelectorAccent->setDescription("Widget background");
-    ui->colorSelectorAccent->setDescription("Widget border");
-    ui->colorSelectorAccent->setDescription("Overlay background");
-    ui->colorSelectorAccent->setDescription("Overlay text");
-    ui->colorSelectorAccent->setDescription("Sliders");
+    ui->colorSelectorBackground->setDescription("Windowed mode background");
+    ui->colorSelectorFullscreen->setDescription("Fullscreen mode background");
+    ui->colorSelectorFolderview->setDescription("FolderView background");
+    ui->colorSelectorFolderviewPanel->setDescription("FolderView top panel");
+    ui->colorSelectorText->setDescription("Text color");
+    ui->colorSelectorWidget->setDescription("Widget background");
+    ui->colorSelectorWidgetBorder->setDescription("Widget border");
+    ui->colorSelectorOverlay->setDescription("Overlay background");
+    ui->colorSelectorOverlayText->setDescription("Overlay text");
+    ui->colorSelectorScrollbar->setDescription("Scrollbars");
 
 #ifndef USE_KDE_BLUR
     ui->blurBackgroundCheckBox->setEnabled(false);

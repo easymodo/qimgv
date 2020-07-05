@@ -138,60 +138,57 @@
        </spacer>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <property name="spacing">
-         <number>6</number>
+       <widget class="QSlider" name="zoomSlider">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <property name="leftMargin">
-         <number>6</number>
+        <property name="minimumSize">
+         <size>
+          <width>110</width>
+          <height>0</height>
+         </size>
         </property>
-        <property name="topMargin">
-         <number>0</number>
+        <property name="maximumSize">
+         <size>
+          <width>110</width>
+          <height>16777215</height>
+         </size>
         </property>
-        <property name="rightMargin">
-         <number>6</number>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
         </property>
-        <property name="bottomMargin">
-         <number>0</number>
+        <property name="contextMenuPolicy">
+         <enum>Qt::NoContextMenu</enum>
         </property>
-        <item>
-         <widget class="QSlider" name="zoomSlider">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>110</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>110</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
-          </property>
-          <property name="contextMenuPolicy">
-           <enum>Qt::NoContextMenu</enum>
-          </property>
-          <property name="accessibleName">
-           <string>FolderViewSlider</string>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::NoTicks</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
+        <property name="accessibleName">
+         <string>FolderViewSlider</string>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::NoTicks</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>10</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item>
        <widget class="ActionButton" name="showLabelsButton" native="true">
@@ -222,7 +219,7 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>12</width>
+          <width>10</width>
           <height>20</height>
          </size>
         </property>
@@ -287,7 +284,7 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>12</width>
+          <width>10</width>
           <height>20</height>
          </size>
         </property>
