@@ -158,6 +158,7 @@ qreal ThumbnailWidget::height() {
 void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(widget)
     Q_UNUSED(option)
+    painter->setRenderHints(QPainter::Antialiasing);
     qreal dpr = painter->paintEngine()->paintDevice()->devicePixelRatioF();
     if(isHovered())
         drawHover(painter);

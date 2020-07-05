@@ -37,10 +37,21 @@ void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
 }
 
 void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap) {
-    // draw a shadow rectangle
-    if(!thumbnail->hasAlphaChannel())
+    if(!thumbnail->hasAlphaChannel()) {
+        // paint shadow
         painter->fillRect(drawRectCentered.adjusted(3,3,3,3), shadowColor);
-    painter->drawPixmap(drawRectCentered, *pixmap);
+        // paint image
+        painter->drawPixmap(drawRectCentered, *pixmap);
+        // paint outline
+        auto op = painter->opacity();
+        painter->setOpacity(0.05f);
+        painter->setPen(Qt::white);
+        QRectF adj = static_cast<QRectF>(drawRectCentered).adjusted(0.5f, 0.5f, -0.5f, -0.5f);
+        painter->drawRect(adj);
+        painter->setOpacity(op);
+    } else {
+        painter->drawPixmap(drawRectCentered, *pixmap);
+    }
 }
 
 void ThumbnailGridWidget::readSettings() {
