@@ -43,11 +43,11 @@
 /*----------------------------------------------------------------------------*/
 [accessibleName="CheckableButton"] {
     border-radius: 3px;
-    padding:       7px;
+    padding: 7px;
     margin-top:    4px;
     margin-bottom: 4px;
-    margin-left:   2px;
-    margin-right:  2px;
+    margin-left:   3px;
+    margin-right:  3px;
 }
 
 [accessibleName="CheckableButton"]:hover {
@@ -160,7 +160,7 @@ FloatingWidget {
 [accessibleName="OverlayCloseButton"] {
     background-color: transparent;
     padding: 4px;
-    border-radius: 2px;
+    border-radius: 3px;
 }
 
 [accessibleName="OverlayCloseButton"]:hover {

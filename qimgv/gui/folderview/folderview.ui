@@ -74,20 +74,20 @@
       <item>
        <widget class="ActionButton" name="togglePlacesPanelButton" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="minimumSize">
          <size>
-          <width>38</width>
+          <width>40</width>
           <height>38</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>38</width>
+          <width>40</width>
           <height>38</height>
          </size>
         </property>
