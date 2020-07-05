@@ -6,7 +6,7 @@ ThumbnailGridWidget::ThumbnailGridWidget(QGraphicsItem* parent)
       labelSpacing(7)
 {
     font.setBold(false);
-    shadowColor.setRgb(10,10,10,90);
+    shadowColor.setRgb(0,0,0,65);
     readSettings();
 }
 
@@ -38,6 +38,8 @@ void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
 
 void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap) {
     if(!thumbnail->hasAlphaChannel()) {
+        // square variant - fast
+        /*
         // paint shadow
         painter->fillRect(drawRectCentered.adjusted(3,3,3,3), shadowColor);
         // paint image
@@ -49,6 +51,36 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap
         QRectF adj = static_cast<QRectF>(drawRectCentered).adjusted(0.5f, 0.5f, -0.5f, -0.5f);
         painter->drawRect(adj);
         painter->setOpacity(op);
+        */
+
+        // rounded corners variant - via tmp pixmap
+        QPixmap surface(width(), height());
+        surface.fill(Qt::transparent);
+        QPainter spainter(&surface);
+        QPainterPath path;
+        path.addRoundedRect(drawRectCentered, 3, 3);
+        spainter.fillPath(path, Qt::red);
+
+        spainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+        spainter.drawPixmap(drawRectCentered, *pixmap);
+        spainter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+        // outline
+        path.clear();
+        QRectF adj = static_cast<QRectF>(drawRectCentered).adjusted(0.5f, 0.5f, -0.5f, -0.5f);
+        path.addRoundedRect(adj, 3, 3);
+        spainter.setOpacity(0.05f);
+        spainter.setPen(Qt::white);
+        spainter.drawPath(path);
+
+        // drop shadow (todo - maybe soft shadows?)
+        path.clear();
+        path.addRoundedRect(drawRectCentered.adjusted(2,2,2,2),3,3);
+        painter->fillPath(path, shadowColor);
+
+        // write pixmap layer
+        painter->setCompositionMode(QPainter::CompositionMode_SourceAtop);
+        painter->drawPixmap(0, 0, surface);
+        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     } else {
         painter->drawPixmap(drawRectCentered, *pixmap);
     }
