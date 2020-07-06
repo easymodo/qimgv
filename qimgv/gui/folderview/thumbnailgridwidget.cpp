@@ -37,6 +37,7 @@ void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
 }
 
 void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap) {
+    qreal dpr = qApp->devicePixelRatio();
     if(!thumbnail->hasAlphaChannel()) {
         // square - old variant - fast but looks meh
         /*
@@ -55,9 +56,9 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap
 
         // rounded corners variant - via tmp pixmap layer
         // slower but FANCY
-        QPixmap surface(width()*qApp->devicePixelRatio(), height()*qApp->devicePixelRatio());
+        QPixmap surface(width() * dpr, height() * dpr);
         surface.fill(Qt::transparent);
-        surface.setDevicePixelRatio(qApp->devicePixelRatio());
+        surface.setDevicePixelRatio(dpr);
         QPainter spainter(&surface);
         // rounded mask
         QPainterPath path;
@@ -76,7 +77,7 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap
         spainter.drawPath(path);
         // drop shadow (todo - maybe soft shadows?)
         path.clear();
-        path.addRoundedRect(drawRectCentered.adjusted(2,2,2,2),3,3); // offset=3 may look better.. maybe make this configurable?
+        path.addRoundedRect(drawRectCentered.adjusted(2,2,2,2),3,3); // offset=3 may look better.. make this configurable?
         painter->fillPath(path, shadowColor);
         // write thumbnail layer into graphicsitem
         painter->setCompositionMode(QPainter::CompositionMode_SourceAtop);
@@ -102,26 +103,39 @@ void ThumbnailGridWidget::drawHover(QPainter *painter) {
 }
 
 void ThumbnailGridWidget::drawLabel(QPainter *painter) {
+    // TODO: OPTIMIZE THIS
+    // share secondary layer with drawThumbnail() ?
+    // pre-calculate more rects?
+    qreal dpr = qApp->devicePixelRatio();
     // filename
     int flags;
-    if(nameFits)
-        flags = Qt::TextSingleLine | Qt::AlignVCenter | Qt::AlignHCenter;
-    else
-        flags = Qt::TextSingleLine | Qt::AlignVCenter;
     painter->setFont(font);
-    //shadow
-    //painter->setPen(shadowColor);
-    //painter->drawText(nameTextRect.adjusted(2,2,2,2), flags, thumbnail->name());
-    //text
-    //if(isHovered())
-    //    painter->setPen(QColor(240, 240, 240, 255));
-    //else
+    if(nameFits) {
+        flags = Qt::TextSingleLine | Qt::AlignVCenter | Qt::AlignHCenter;
         painter->setPen(settings->colorScheme().text_hc2);
-    painter->drawText(nameTextRect, flags, thumbnail->name());
-    // additional info
-    //painter->setFont(fontSmall);
-    //painter->setPen(QColor(160, 160, 160, 255));
-    //painter->drawText(labelTextRect, Qt::TextSingleLine, thumbnail->label());
+        painter->drawText(nameTextRect, flags, thumbnail->name());
+    } else {
+        QPixmap textLayer(nameTextRect.width() * dpr, nameTextRect.height() * dpr);
+        textLayer.fill(Qt::transparent);
+        textLayer.setDevicePixelRatio(dpr);
+        QPainter textPainter(&textLayer);
+        // paint text onto tmp layer
+        flags = Qt::TextSingleLine | Qt::AlignVCenter;
+        textPainter.setPen(settings->colorScheme().text_hc2);
+        QRect textRect = QRect(0, 0, nameTextRect.width(), nameTextRect.height());
+        textPainter.drawText(textRect, flags, thumbnail->name());
+        QRectF fadeRect = textRect.adjusted(textRect.width() - 6,0,0,0);
+        // fade effect
+        QLinearGradient gradient(fadeRect.topLeft(), fadeRect.topRight());
+        gradient.setColorAt(0, Qt::transparent);
+        gradient.setColorAt(1, settings->colorScheme().folderview);
+        textPainter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
+        textPainter.fillRect(fadeRect, gradient);
+        // write text layer into graphicsitem
+        painter->setCompositionMode(QPainter::CompositionMode_SourceAtop);
+        painter->drawPixmap(nameTextRect.topLeft(), textLayer);
+        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+    }
 }
 
 void ThumbnailGridWidget::updateHighlightRect() {
@@ -152,8 +166,7 @@ void ThumbnailGridWidget::updateThumbnailDrawPosition() {
                 topLeft.setX(width() / 2.0 - thumbnail->pixmap()->width() / (2.0 * dpr));
                 topLeft.setY(height() / 2.0 - thumbnail->pixmap()->height() / (2.0 * dpr));
             }
-            // shift by 1px to offset the drop shadow
-            drawRectCentered = QRect(topLeft - QPoint(1,1), thumbnail->pixmap()->size() / dpr);
+            drawRectCentered = QRect(topLeft, thumbnail->pixmap()->size() / dpr);
         } else {
             // old size pixmap, scaling
             QSize scaled = thumbnail->pixmap()->size().scaled(mThumbnailSize, mThumbnailSize, Qt::KeepAspectRatio);
@@ -167,7 +180,7 @@ void ThumbnailGridWidget::updateThumbnailDrawPosition() {
                 topLeft.setX((width() - scaled.width()) / 2.0);
                 topLeft.setY((height() - scaled.height()) / 2.0);
             }
-            drawRectCentered = QRect(topLeft - QPoint(1,1), scaled);
+            drawRectCentered = QRect(topLeft, scaled);
         }
     }
 }
