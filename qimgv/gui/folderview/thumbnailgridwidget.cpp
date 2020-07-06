@@ -6,7 +6,7 @@ ThumbnailGridWidget::ThumbnailGridWidget(QGraphicsItem* parent)
       labelSpacing(7)
 {
     font.setBold(false);
-    shadowColor.setRgb(0,0,0,65);
+    shadowColor.setRgb(0,0,0,60);
     readSettings();
 }
 
@@ -38,7 +38,7 @@ void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
 
 void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap) {
     if(!thumbnail->hasAlphaChannel()) {
-        // square variant - fast
+        // square - old variant - fast but looks meh
         /*
         // paint shadow
         painter->fillRect(drawRectCentered.adjusted(3,3,3,3), shadowColor);
@@ -53,14 +53,17 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap
         painter->setOpacity(op);
         */
 
-        // rounded corners variant - via tmp pixmap
-        QPixmap surface(width(), height());
+        // rounded corners variant - via tmp pixmap layer
+        // slower but FANCY
+        QPixmap surface(width()*qApp->devicePixelRatio(), height()*qApp->devicePixelRatio());
         surface.fill(Qt::transparent);
+        surface.setDevicePixelRatio(qApp->devicePixelRatio());
         QPainter spainter(&surface);
+        // rounded mask
         QPainterPath path;
         path.addRoundedRect(drawRectCentered, 3, 3);
         spainter.fillPath(path, Qt::red);
-
+        // rounded thumbnail
         spainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
         spainter.drawPixmap(drawRectCentered, *pixmap);
         spainter.setCompositionMode(QPainter::CompositionMode_SourceOver);
@@ -71,15 +74,13 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap
         spainter.setOpacity(0.05f);
         spainter.setPen(Qt::white);
         spainter.drawPath(path);
-
         // drop shadow (todo - maybe soft shadows?)
         path.clear();
-        path.addRoundedRect(drawRectCentered.adjusted(2,2,2,2),3,3);
+        path.addRoundedRect(drawRectCentered.adjusted(2,2,2,2),3,3); // offset=3 may look better.. maybe make this configurable?
         painter->fillPath(path, shadowColor);
-
-        // write pixmap layer
+        // write thumbnail layer into graphicsitem
         painter->setCompositionMode(QPainter::CompositionMode_SourceAtop);
-        painter->drawPixmap(0, 0, surface);
+        painter->drawPixmap(QPointF(0,0), surface);
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     } else {
         painter->drawPixmap(drawRectCentered, *pixmap);
