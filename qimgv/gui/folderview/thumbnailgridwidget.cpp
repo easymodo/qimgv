@@ -37,7 +37,7 @@ void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
         QRectF adj = static_cast<QRectF>(highlightRect).adjusted(0.5f, 0.5f, -0.5f, -0.5f);
         path.addRoundedRect(adj, 3, 3);
         auto op = painter->opacity();
-        painter->setOpacity(0.05f);
+        painter->setOpacity(0.03f);
         painter->setPen(Qt::white);
         painter->drawPath(path);
         painter->setOpacity(op);
@@ -65,7 +65,7 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap
         path.clear();
         QRectF adj = static_cast<QRectF>(drawRectCentered).adjusted(0.5f, 0.5f, -0.5f, -0.5f);
         path.addRoundedRect(adj, 3, 3);
-        spainter.setOpacity(0.05f);
+        spainter.setOpacity(0.03f);
         spainter.setPen(Qt::white);
         spainter.drawPath(path);
         // drop shadow (todo - maybe soft shadows?)
