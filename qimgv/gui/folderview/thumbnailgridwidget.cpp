@@ -128,7 +128,7 @@ void ThumbnailGridWidget::drawLabel(QPainter *painter) {
         // fade effect
         QLinearGradient gradient(fadeRect.topLeft(), fadeRect.topRight());
         gradient.setColorAt(0, Qt::transparent);
-        gradient.setColorAt(1, settings->colorScheme().folderview);
+        gradient.setColorAt(1, Qt::red); // any color, this is just a transparency mask
         textPainter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
         textPainter.fillRect(fadeRect, gradient);
         // write text layer into graphicsitem
