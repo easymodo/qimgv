@@ -119,12 +119,11 @@ void ThumbnailWidget::setupLayout() {
                       highlightRect.width(), textHeight * 1.7);
 
     if(thumbnail && !thumbnail->label().isEmpty()) {
-        nameTextRect = nameRect.adjusted(4, 0, -4, 0);
         labelTextRect.setWidth(fmSmall->width(thumbnail->label()));
         labelTextRect.setHeight(nameRect.height());
-        labelTextRect.moveTop(nameTextRect.top());
-        labelTextRect.moveRight(nameTextRect.right());
-        nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
+        labelTextRect.moveTop(nameRect.top());
+        labelTextRect.moveRight(nameRect.right());
+        nameRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
     }
 }
 
@@ -199,7 +198,7 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
     int flags = Qt::TextSingleLine | Qt::AlignVCenter;
     painter->setFont(font);
     painter->setPen(settings->colorScheme().text_hc2);
-    painter->drawText(nameTextRect, flags, thumbnail->name());
+    painter->drawText(nameRect, flags, thumbnail->name());
     // additional info
     painter->setFont(fontSmall);
     painter->setPen(settings->colorScheme().text_lc1);

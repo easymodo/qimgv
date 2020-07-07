@@ -68,7 +68,7 @@ protected:
     std::shared_ptr<Thumbnail> thumbnail;
     bool highlighted, hovered, mDrawLabel, animateHover;
     int mThumbnailSize, paddingX, paddingY, textHeight;
-    QRectF highlightRect, nameRect, nameTextRect, labelTextRect;
+    QRectF highlightRect, nameRect, labelTextRect;
     QColor highlightColor, nameColor;
     QFont font, fontSmall;
     QFontMetrics *fm, *fmSmall;

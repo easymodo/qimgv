@@ -2,7 +2,6 @@
 
 ThumbnailGridWidget::ThumbnailGridWidget(QGraphicsItem* parent)
     : ThumbnailWidget(parent),
-      nameFits(true),
       labelSpacing(7)
 {
     font.setBold(false);
@@ -13,7 +12,7 @@ ThumbnailGridWidget::ThumbnailGridWidget(QGraphicsItem* parent)
 QRectF ThumbnailGridWidget::boundingRect() const {
     if(mDrawLabel)
         return QRectF(0, 0, mThumbnailSize + paddingX * 2,
-                            mThumbnailSize + paddingY * 2 + labelSpacing + textHeight);
+                            mThumbnailSize + paddingY * 2 + labelSpacing + textHeight * 2);
     else
         return QRectF(0, 0, mThumbnailSize + paddingX * 2,
                             mThumbnailSize + paddingY * 2);
@@ -23,37 +22,31 @@ void ThumbnailGridWidget::setupLayout() {
     if(mDrawLabel) {
         nameRect = QRectF(paddingX, paddingY + mThumbnailSize + labelSpacing,
                           mThumbnailSize, fm->height());
-        nameTextRect = nameRect.adjusted(4, 0, -4, 0);
-        nameFits = !(thumbnail && fm->horizontalAdvance(thumbnail->name()) >= nameTextRect.width());
+        infoRect = nameRect.adjusted(0,fm->height() + 2,0,fm->height() + 2);
     }
 }
 
 void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
     if(isHighlighted()) {
         QPainterPath path;
+        // fill
         path.addRoundedRect(highlightRect, 3, 3);
         painter->fillPath(path, highlightColor);
+        // outline
+        path.clear();
+        QRectF adj = static_cast<QRectF>(highlightRect).adjusted(0.5f, 0.5f, -0.5f, -0.5f);
+        path.addRoundedRect(adj, 3, 3);
+        auto op = painter->opacity();
+        painter->setOpacity(0.05f);
+        painter->setPen(Qt::white);
+        painter->drawPath(path);
+        painter->setOpacity(op);
     }
 }
 
 void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap) {
     qreal dpr = qApp->devicePixelRatio();
     if(!thumbnail->hasAlphaChannel()) {
-        // square - old variant - fast but looks meh
-        /*
-        // paint shadow
-        painter->fillRect(drawRectCentered.adjusted(3,3,3,3), shadowColor);
-        // paint image
-        painter->drawPixmap(drawRectCentered, *pixmap);
-        // paint outline
-        auto op = painter->opacity();
-        painter->setOpacity(0.05f);
-        painter->setPen(Qt::white);
-        QRectF adj = static_cast<QRectF>(drawRectCentered).adjusted(0.5f, 0.5f, -0.5f, -0.5f);
-        painter->drawRect(adj);
-        painter->setOpacity(op);
-        */
-
         // rounded corners variant - via tmp pixmap layer
         // slower but FANCY
         QPixmap surface(width() * dpr, height() * dpr);
@@ -103,27 +96,34 @@ void ThumbnailGridWidget::drawHover(QPainter *painter) {
 }
 
 void ThumbnailGridWidget::drawLabel(QPainter *painter) {
-    // TODO: OPTIMIZE THIS
-    // share secondary layer with drawThumbnail() ?
-    // pre-calculate more rects?
+    if(thumbnail) {
+        drawSingleLineText(painter, nameRect, thumbnail->name(), settings->colorScheme().text_hc2);
+        drawSingleLineText(painter, infoRect, thumbnail->label(), settings->colorScheme().text_lc1);
+    }
+}
+
+// todo use shared layer, then merge it down at the end
+void ThumbnailGridWidget::drawSingleLineText(QPainter *painter, QRectF rect, QString text, const QColor &color) {
     qreal dpr = qApp->devicePixelRatio();
+    bool fits = !(fm->horizontalAdvance(text) >= rect.width());
+
     // filename
     int flags;
     painter->setFont(font);
-    if(nameFits) {
+    if(fits) {
         flags = Qt::TextSingleLine | Qt::AlignVCenter | Qt::AlignHCenter;
-        painter->setPen(settings->colorScheme().text_hc2);
-        painter->drawText(nameTextRect, flags, thumbnail->name());
+        painter->setPen(color);
+        painter->drawText(rect, flags, text);
     } else {
-        QPixmap textLayer(nameTextRect.width() * dpr, nameTextRect.height() * dpr);
+        QPixmap textLayer(rect.width() * dpr, rect.height() * dpr);
         textLayer.fill(Qt::transparent);
         textLayer.setDevicePixelRatio(dpr);
         QPainter textPainter(&textLayer);
         // paint text onto tmp layer
         flags = Qt::TextSingleLine | Qt::AlignVCenter;
-        textPainter.setPen(settings->colorScheme().text_hc2);
-        QRect textRect = QRect(0, 0, nameTextRect.width(), nameTextRect.height());
-        textPainter.drawText(textRect, flags, thumbnail->name());
+        textPainter.setPen(color);
+        QRect textRect = QRect(0, 0, rect.width(), rect.height());
+        textPainter.drawText(textRect, flags, text);
         QRectF fadeRect = textRect.adjusted(textRect.width() - 6,0,0,0);
         // fade effect
         QLinearGradient gradient(fadeRect.topLeft(), fadeRect.topRight());
@@ -133,7 +133,7 @@ void ThumbnailGridWidget::drawLabel(QPainter *painter) {
         textPainter.fillRect(fadeRect, gradient);
         // write text layer into graphicsitem
         painter->setCompositionMode(QPainter::CompositionMode_SourceAtop);
-        painter->drawPixmap(nameTextRect.topLeft(), textLayer);
+        painter->drawPixmap(rect.topLeft(), textLayer);
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     }
 }
@@ -142,11 +142,8 @@ void ThumbnailGridWidget::updateHighlightRect() {
     if(!mDrawLabel || drawRectCentered.height() >= drawRectCentered.width()) {
         highlightRect = boundingRect();
     } else {
-        highlightRect = drawRectCentered.adjusted(-paddingX,
-                                                  -paddingY,
-                                                  paddingX,
-                                                  paddingY);
-        highlightRect.setBottom(nameTextRect.bottom() + paddingY);
+        highlightRect = drawRectCentered.adjusted(-paddingX, -paddingY, paddingX, paddingY);
+        highlightRect.setBottom(height());
     }
 }
 

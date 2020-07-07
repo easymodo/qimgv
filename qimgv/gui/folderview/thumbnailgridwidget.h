@@ -19,8 +19,9 @@ protected:
     void drawThumbnail(QPainter *painter, const QPixmap *pixmap) Q_DECL_OVERRIDE;
     virtual void readSettings() Q_DECL_OVERRIDE;
     virtual void updateHighlightRect() Q_DECL_OVERRIDE;
+    void drawSingleLineText(QPainter *painter, QRectF rect, QString text, const QColor &color);
 
 private:
-    bool nameFits;
     int labelSpacing;
+    QRectF infoRect;
 };
