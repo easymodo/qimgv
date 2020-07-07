@@ -631,7 +631,9 @@ void MW::onInfoUpdated() {
 
     QString windowTitle;
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW) {
-        windowTitle = info.directory + " — " + qApp->applicationName();
+        windowTitle = qApp->applicationName();
+        if(!info.directory.isEmpty())
+        windowTitle.prepend(info.directory + " — ");
         infoBarFullscreen->setInfo("", "No file opened.", "");
         infoBarWindowed->setInfo("", "No file opened.", "");
     } else if(info.fileName.isEmpty()) {
