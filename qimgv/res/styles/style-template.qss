@@ -592,12 +592,12 @@ FolderView QScrollBar::sub-line {
 /*----------------------------------------------------------------------------*/
 
 FolderView QTreeView {
-    background-color: %folderview%;
+    background-color: transparent;
+    show-decoration-selected: 1;
 }
 
 FolderView QTreeView::item {
-    margin-right: 8px;
-    border-radius: 3px;
+    border-radius: 0px; /* left padding on hover is wrong unless we add this.. wtf */
     min-height: 24px;
     padding: 2px;
     color: %text_hc2%;
@@ -613,16 +613,20 @@ FolderView QTreeView::item:selected:active {
     border-color: %accent%;
 }
 
-QTreeView::branch,
-FolderView QTreeView::branch:has-siblings:!adjoins-item,
-FolderView QTreeView::branch:closed:has-children,
-FolderView QTreeView::branch:open:has-children
-{
-    background: %folderview%;
+QTreeView::branch:selected {
+    background-color: %accent%;
 }
 
-QTreeView::branch:has-siblings:!adjoins-item {
-        background: transparent;
+QTreeView::branch:hover:!selected {
+    background-color: %accent_hover_rgba%;
+}
+
+QTreeView::branch:has-siblings:!adjoins-item:!selected {
+    background: transparent;
+}
+
+QTreeView::branch:has-siblings:hover:!adjoins-item:!selected {
+    background-color: %accent_hover_rgba%;
 }
 
 QTreeView::branch:has-children:!has-siblings:closed,
@@ -642,7 +646,7 @@ QTreeView::branch:open:has-children:has-siblings {
 /*----------------------------------------------------------------------------*/
 
 BookmarksItem {
-    border-radius: 3px;
+    /*border-radius: 3px;*/
 }
 
 BookmarksItem:hover {

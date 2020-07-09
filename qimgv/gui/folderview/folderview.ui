@@ -453,13 +453,13 @@
              <enum>QLayout::SetDefaultConstraint</enum>
             </property>
             <property name="leftMargin">
-             <number>7</number>
+             <number>0</number>
             </property>
             <property name="topMargin">
              <number>7</number>
             </property>
             <property name="rightMargin">
-             <number>8</number>
+             <number>0</number>
             </property>
             <property name="bottomMargin">
              <number>0</number>
@@ -470,13 +470,13 @@
                <number>16</number>
               </property>
               <property name="leftMargin">
-               <number>0</number>
+               <number>8</number>
               </property>
               <property name="topMargin">
                <number>0</number>
               </property>
               <property name="rightMargin">
-               <number>0</number>
+               <number>6</number>
               </property>
               <property name="bottomMargin">
                <number>0</number>
@@ -549,13 +549,13 @@
                <number>16</number>
               </property>
               <property name="leftMargin">
-               <number>0</number>
+               <number>8</number>
               </property>
               <property name="topMargin">
                <number>0</number>
               </property>
               <property name="rightMargin">
-               <number>0</number>
+               <number>6</number>
               </property>
               <property name="bottomMargin">
                <number>0</number>
