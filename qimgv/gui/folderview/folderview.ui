@@ -424,7 +424,7 @@
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="handleWidth">
-           <number>10</number>
+           <number>6</number>
           </property>
           <property name="childrenCollapsible">
            <bool>false</bool>
@@ -637,7 +637,7 @@
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                 <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
+                <verstretch>2</verstretch>
                </sizepolicy>
               </property>
               <property name="minimumSize">

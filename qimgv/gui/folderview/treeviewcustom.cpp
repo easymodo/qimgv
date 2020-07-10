@@ -53,17 +53,12 @@ void TreeViewCustom::resizeEvent(QResizeEvent *event) {
 
 void TreeViewCustom::updateScrollbarStyle() {
     QString handle, hover = settings->colorScheme().scrollbar_hover.name();
-    if(rect().contains(mapFromGlobal(cursor().pos()))) {
+    if(rect().contains(mapFromGlobal(cursor().pos())))
         handle = settings->colorScheme().scrollbar.name();
-    } else {
-        handle = "rgba(" + QString::number(settings->colorScheme().scrollbar.red())   + ","
-                         + QString::number(settings->colorScheme().scrollbar.green()) + ","
-                         + QString::number(settings->colorScheme().scrollbar.blue())  + ","
-                         + "40%)";
+    else
         handle = settings->colorScheme().folderview_separator.name();
-    }
     overlayScrollbar.setGeometry(width() - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, height());
     overlayScrollbar.setStyleSheet( "QScrollBar { background-color: transparent; } QScrollBar::handle:vertical { background-color: "+ handle +" } QScrollBar::handle:vertical:hover { background-color: " + hover + " }" );
 
-    overlayScrollbar.setVisible( (this->verticalScrollBar()->maximum()!=0) );
+    overlayScrollbar.setVisible( (this->verticalScrollBar()->maximum()) );
 }

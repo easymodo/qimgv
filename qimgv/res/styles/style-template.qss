@@ -553,7 +553,7 @@ ZoomIndicatorOverlay QLabel {
 /*----------------------------------------------------------------------------*/
 
 FolderView QScrollBar:vertical {
-    width: 10px;
+    width: 12px;
     background-color: transparent;
 }
 
@@ -608,6 +608,10 @@ FolderView QTreeView::item:selected:!active,
 FolderView QTreeView::item:selected:active {
     background-color: %accent%;
     border-color: %accent%;
+}
+
+QTreeView::branch {
+    padding-left: 6px;
 }
 
 QTreeView::branch:selected {

@@ -31,7 +31,7 @@ private slots:
 private:
     QScrollBar overlayScrollbar;
 
-    const int SCROLLBAR_WIDTH = 10;
+    const int SCROLLBAR_WIDTH = 12;
 };
 
 #endif // TREEVIEWCUSTOM_H
