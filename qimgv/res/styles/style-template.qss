@@ -670,6 +670,7 @@ BookmarksItem[highlighted="true"] {
 [accessibleName="PlacesPanel"] {
     background-color: %folderview%;
     border-right: 1px solid %folderview_separator%;
+    margin-right: 6px;
 }
 
 [accessibleName="PanelSectionHeader"] {
