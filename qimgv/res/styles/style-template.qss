@@ -447,7 +447,6 @@ ThumbnailStrip QScrollBar:horizontal {
 
 ThumbnailStrip QScrollBar::handle:horizontal {
     background-color: %scrollbar%;
-    border: 1px solid %scrollbar%;
     min-width: 60px;
 }
 
@@ -554,19 +553,17 @@ ZoomIndicatorOverlay QLabel {
 /*----------------------------------------------------------------------------*/
 
 FolderView QScrollBar:vertical {
-    width: 12px;
+    width: 10px;
     background-color: transparent;
 }
 
 FolderView QScrollBar::handle:vertical {
     background-color: %scrollbar%;
-    border: 1px solid %scrollbar%;
     min-height: 60px;
 }
 
 FolderView QScrollBar::handle:vertical:hover {
     background-color: %scrollbar_hover%;
-    border-color: %scrollbar_hover%;
 }
 
 FolderView QScrollBar::sub-page {
