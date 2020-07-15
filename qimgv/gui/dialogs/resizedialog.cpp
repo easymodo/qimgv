@@ -8,7 +8,7 @@ ResizeDialog::ResizeDialog(QSize originalSize,  QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowModality(Qt::ApplicationModal);
-    ui->width->setFocus();
+    ui->percent->setFocus();
 
     this->originalSize = originalSize;
     targetSize = originalSize;
@@ -23,6 +23,9 @@ ResizeDialog::ResizeDialog(QSize originalSize,  QWidget *parent) :
 
     QDesktopWidget desktopWidget;
     desktopSize = desktopWidget.screenGeometry(desktopWidget.primaryScreen()).size();
+    connect(ui->byPercentage,   &QRadioButton::toggled, this, &ResizeDialog::onPercentageRadioButton);
+    connect(ui->byAbsoluteSize, &QRadioButton::toggled, this, &ResizeDialog::onAbsoluteSizeRadioButton);
+    connect(ui->percent, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ResizeDialog::percentChanged);
     connect(ui->width,  qOverload<int>(&QSpinBox::valueChanged), this, &ResizeDialog::widthChanged);
     connect(ui->height, qOverload<int>(&QSpinBox::valueChanged), this, &ResizeDialog::heightChanged);
     connect(ui->keepAspectRatio, &QCheckBox::toggled, this, &ResizeDialog::onAspectRatioCheckbox);
@@ -115,10 +118,64 @@ void ResizeDialog::onAspectRatioCheckbox() {
     (lastEdited)?heightChanged(ui->height->value()):widthChanged(ui->width->value());
 }
 
+void ResizeDialog::onAbsoluteSizeRadioButton() {
+    ui->width->blockSignals(true);
+    ui->height->blockSignals(true);
+    ui->percent->blockSignals(true);
+    ui->keepAspectRatio->blockSignals(true);
+
+    ui->width->setEnabled(true);
+    ui->height->setEnabled(true);
+    ui->percent->setEnabled(false);
+    ui->keepAspectRatio->setEnabled(true);
+
+    ui->width->blockSignals(false);
+    ui->height->blockSignals(false);
+    ui->percent->blockSignals(false);
+    ui->keepAspectRatio->blockSignals(false);
+}
+
+void ResizeDialog::onPercentageRadioButton() {
+    ui->width->blockSignals(true);
+    ui->height->blockSignals(true);
+    ui->percent->blockSignals(true);
+    ui->keepAspectRatio->blockSignals(true);
+
+    ui->width->setEnabled(false);
+    ui->height->setEnabled(false);
+    ui->percent->setEnabled(true);
+    ui->keepAspectRatio->setChecked(true);
+    ui->keepAspectRatio->setEnabled(false);
+    percentChanged(ui->percent->value());
+
+    ui->width->blockSignals(false);
+    ui->height->blockSignals(false);
+    ui->percent->blockSignals(false);
+    ui->keepAspectRatio->blockSignals(false);
+}
+
 void ResizeDialog::resetResCheckBox() {
     ui->resComboBox->blockSignals(true);
     ui->resComboBox->setCurrentIndex(0);
     ui->resComboBox->blockSignals(false);
+}
+
+void ResizeDialog::percentChanged(double newPercent) {
+    double scale = newPercent / 100.d;
+    targetSize.setWidth(originalSize.width()*scale);
+    targetSize.setHeight(originalSize.height()*scale);
+
+    updateToTargetValues();
+}
+
+void ResizeDialog::keyPressEvent(QKeyEvent *event) {
+    if((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)) {
+        sizeSelect();
+    } else if(event->key() == Qt::Key_Escape) {
+        reject();
+    } else {
+        event->ignore();
+    }
 }
 
 void ResizeDialog::reset() {

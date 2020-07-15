@@ -257,13 +257,17 @@ SidePanel QDoubleSpinBox:focus
     border-color: %button%;
 }
 
-SidePanel QSpinBox::up-button, QDoubleSpinBox::up-button  {
+SidePanel QSpinBox::up-button,
+SidePanel QDoubleSpinBox::up-button
+{
     max-width: 0px;
     max-height: 0px;
     width:0px;
 }
 
-SidePanel QSpinBox::down-button, QDoubleSpinBox::down-button {
+SidePanel QSpinBox::down-button,
+SidePanel QDoubleSpinBox::down-button
+{
     max-width: 0px;
     max-height: 0px;
     width:0px;
