@@ -536,7 +536,9 @@ void Core::showInDirectory() {
     else
         QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
 #elif __WIN32
-    ScriptManager::runCommandDetached("explorer /select " + QDir::toNativeSeparators(model->fullPath(selectedFileName())) );
+    QStringList args;
+    args << "/select," << QDir::toNativeSeparators(model->fullPath(selectedFileName()));
+    QProcess::startDetached("explorer", args);
 #elif Q_WS_MAC
     QStringList args;
     args << "-e";
