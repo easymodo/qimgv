@@ -113,7 +113,7 @@ void ContextMenu::showAt(QPoint pos) {
 }
 
 void ContextMenu::setGeometry(QRect geom) {
-    auto screen = QGuiApplication::primaryScreen();
+    auto screen = QGuiApplication::screenAt(cursor().pos());
     // fit inside the current screen
     if(geom.bottom() > screen->geometry().bottom())
         geom.moveBottom(cursor().pos().y());
