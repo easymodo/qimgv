@@ -5,7 +5,6 @@
 #include <QMutex>
 #include <QClipboard>
 #include <QDrag>
-#include <malloc.h>
 #include <QFileSystemModel>
 #include <QDesktopServices>
 #include "appversion.h"

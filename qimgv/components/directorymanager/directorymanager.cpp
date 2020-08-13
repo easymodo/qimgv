@@ -297,6 +297,12 @@ bool DirectoryManager::moveToTrash(QString file) {
 }
 #endif
 
+#ifdef Q_OS_MAC
+bool DirectoryManager::moveToTrash(QString file) { // todo
+    return false;
+}
+#endif
+
 bool DirectoryManager::checkRange(int index) const {
     return index >= 0 && index < (int)entryVec.size();
 }

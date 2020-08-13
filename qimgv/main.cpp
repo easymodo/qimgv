@@ -9,6 +9,13 @@
 #include "proxystyle.h"
 #include "core.h"
 
+#include <QEvent>
+#include <QApplication>
+
+#ifdef __APPLE__
+#include "macosapplication.h"
+#endif
+
 void saveSettings() {
     delete settings;
 }
@@ -36,8 +43,11 @@ int main(int argc, char *argv[]) {
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-
+#ifdef __APPLE__
+    MacOSApplication a(argc, argv);
+#else
     QApplication a(argc, argv);
+#endif
     QCoreApplication::setOrganizationName("qimgv");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
@@ -90,6 +100,10 @@ int main(int argc, char *argv[]) {
 
     //qApp->processEvents();
     //qDebug() << "Core + MW init: " << t.elapsed() << "ms";
+
+#ifdef __APPLE__
+    QObject::connect(&a, &MacOSApplication::fileOpened, &core, &Core::loadPath);
+#endif
 
     if(!arg1.isEmpty()) {
         // assume 1st arg is the filename

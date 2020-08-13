@@ -10,6 +10,7 @@ add_executable(qimgv
     sharedresources.cpp
     shortcutbuilder.cpp
     proxystyle.cpp
+    macosapplication.cpp
     resources.qrc
     qimgv.rc)
 
@@ -25,6 +26,10 @@ endif()
 # C++ STANDARD
 target_compile_features(qimgv PRIVATE cxx_std_17)
 set_target_properties(qimgv PROPERTIES CXX_EXTENSIONS OFF)
+
+if(APPLE)
+    set_target_properties(qimgv PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/distrib/MyBundleInfo.plist.in)
+endif()
 
 # LINK STUFF
 target_link_libraries(qimgv PRIVATE Qt5::Core Qt5::Widgets Qt5::Concurrent)

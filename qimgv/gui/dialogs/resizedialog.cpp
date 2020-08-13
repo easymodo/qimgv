@@ -161,7 +161,7 @@ void ResizeDialog::resetResCheckBox() {
 }
 
 void ResizeDialog::percentChanged(double newPercent) {
-    double scale = newPercent / 100.d;
+    double scale = newPercent / 100.;
     targetSize.setWidth(originalSize.width()*scale);
     targetSize.setHeight(originalSize.height()*scale);
 

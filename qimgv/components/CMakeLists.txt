@@ -29,7 +29,12 @@ target_sources(qimgv PRIVATE
 
 )
 
-if(UNIX)
+if(APPLE)
+    #target_sources(qimgv PRIVATE
+    #    directorymanager/watchers/linux/linuxfsevent.cpp
+    #    directorymanager/watchers/linux/linuxwatcher.cpp
+    #    directorymanager/watchers/linux/linuxworker.cpp)
+elseif(UNIX)
     target_sources(qimgv PRIVATE
         directorymanager/watchers/linux/linuxfsevent.cpp
         directorymanager/watchers/linux/linuxwatcher.cpp
