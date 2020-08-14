@@ -736,6 +736,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>StyledComboBox</class>
+   <extends>QComboBox</extends>
+   <header>gui/customwidgets/styledcombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header>gui/customwidgets/clickablelabel.h</header>
@@ -770,11 +775,6 @@
    <extends>QWidget</extends>
    <header>gui/customwidgets/iconbutton.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>StyledComboBox</class>
-   <extends>QComboBox</extends>
-   <header>gui/customwidgets/styledcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

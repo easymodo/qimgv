@@ -559,8 +559,10 @@ void ImageViewerV2::mouseReleaseEvent(QMouseEvent *event) {
 // for some reason in qgraphicsview wheelEvent is followed by moveEvent (wtf?)
 void ImageViewerV2::wheelEvent(QWheelEvent *event) {
     // we don't need these
-    if(event->phase() == Qt::ScrollBegin || event->phase() == Qt::ScrollEnd)
+    if(event->phase() == Qt::ScrollBegin || event->phase() == Qt::ScrollEnd) {
+        event->accept();
         return;
+    }
 
     if(event->buttons() & Qt::RightButton) {
         event->accept();
