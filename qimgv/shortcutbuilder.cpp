@@ -126,6 +126,12 @@ QString ShortcutBuilder::fromEventText(QKeyEvent *event) {
     if(!sequence.isEmpty()) {
         // remove "Key_" at the beginning
         sequence.remove(0,4);
+        // rename some keys to match the ones from inputmap
+        // just a bandaid
+        if(sequence == "Return")
+            sequence = "Enter";
+        else if(sequence == "Escape")
+            sequence = "Esc";
     } else {
         // got an unknown key (usually something from non-eng layout)
         // use it's text value instead
