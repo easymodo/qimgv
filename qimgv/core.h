@@ -7,6 +7,7 @@
 #include <QDrag>
 #include <QFileSystemModel>
 #include <QDesktopServices>
+#include <malloc.h>
 #include "appversion.h"
 #include "settings.h"
 #include "components/directorymodel.h"
