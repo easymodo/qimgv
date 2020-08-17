@@ -7,7 +7,6 @@
 #include <QDrag>
 #include <QFileSystemModel>
 #include <QDesktopServices>
-#include <malloc.h>
 #include "appversion.h"
 #include "settings.h"
 #include "components/directorymodel.h"
@@ -15,6 +14,10 @@
 #include "components/scriptmanager/scriptmanager.h"
 #include "gui/mainwindow.h"
 #include "utils/randomizer.h"
+
+#ifdef __GLIBC__
+#include <malloc.h>
+#endif
 
 struct State {
     bool hasActiveImage = false;
