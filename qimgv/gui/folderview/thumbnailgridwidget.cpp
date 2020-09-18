@@ -46,7 +46,7 @@ void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
 
 void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap) {
     qreal dpr = qApp->devicePixelRatio();
-    if(!thumbnail->hasAlphaChannel()) {
+    /*if(!thumbnail->hasAlphaChannel()) {
         // rounded corners variant - via tmp pixmap layer
         // slower but FANCY
         QPixmap surface(width() * dpr, height() * dpr);
@@ -78,6 +78,14 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     } else {
         painter->drawPixmap(drawRectCentered, *pixmap);
+    }
+    */
+    // draw a shadow rectangle
+    if(!thumbnail->hasAlphaChannel())
+        painter->fillRect(drawRectCentered.adjusted(3,3,3,3), shadowColor);
+    painter->drawPixmap(drawRectCentered, *pixmap);
+    if(isHovered()) {
+    //    painter->fillRect(drawRectCentered, QColor(255,255,255, 18));
     }
 }
 
@@ -115,6 +123,7 @@ void ThumbnailGridWidget::drawSingleLineText(QPainter *painter, QRectF rect, QSt
         painter->setPen(color);
         painter->drawText(rect, flags, text);
     } else {
+        // fancy variant with text fade effect - uses temporary surface to paint; slow
         QPixmap textLayer(rect.width() * dpr, rect.height() * dpr);
         textLayer.fill(Qt::transparent);
         textLayer.setDevicePixelRatio(dpr);

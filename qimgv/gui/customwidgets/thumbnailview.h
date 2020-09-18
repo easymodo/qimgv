@@ -70,7 +70,7 @@ private:
     // TODO: tune this value
     const int SMOOTH_SCROLL_THRESHOLD = 120;
 
-    int mSelectedIndex, mDrawScrollbarIndicator, mDragTarget;
+    int mSelectedIndex, mDrawScrollbarIndicator, mDragTarget, lastScrollFrameTime;
 
     bool mCropThumbnails;
     ThumbnailSelectMode selectMode;
@@ -78,6 +78,9 @@ private:
     ThumbnailWidget* dragTarget;
 
     void createScrollTimeLine();
+    QElapsedTimer scrollFrameTimer;
+    std::function<void(int)> centerOn;
+
 protected:
     QGraphicsScene scene;
     QList<ThumbnailWidget*> thumbnails;
@@ -129,7 +132,4 @@ protected:
 
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-private slots:
-    void centerOnX(int);
-    void centerOnY(int);
 };

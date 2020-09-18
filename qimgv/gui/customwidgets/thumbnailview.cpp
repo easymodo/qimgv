@@ -9,6 +9,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       mThumbnailSize(120),
       selectMode(SELECT_BY_PRESS),
       mDragTarget(-1),
+      lastScrollFrameTime(0),
       mSelectedIndex(-1),
       scrollTimeLine(nullptr)
 {
@@ -22,7 +23,6 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     setRenderHint(QPainter::Antialiasing, false);
     setRenderHint(QPainter::SmoothPixmapTransform, false);
 
-    createScrollTimeLine();
 
     connect(&loadTimer, &QTimer::timeout, this, &ThumbnailView::loadVisibleThumbnails);
     loadTimer.setInterval(static_cast<const int>(LOAD_DELAY));
@@ -32,13 +32,22 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
         this->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scrollBar = this->horizontalScrollBar();
-        connect(scrollTimeLine, &QTimeLine::frameChanged, this, &ThumbnailView::centerOnX);
+        centerOn = [this](int value) {
+            QGraphicsView::centerOn(value + 1, viewportCenter.y());
+            // trigger repaint immediately
+            qApp->processEvents();
+        };
     } else {
         this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         scrollBar = this->verticalScrollBar();
-        connect(scrollTimeLine, &QTimeLine::frameChanged, this, &ThumbnailView::centerOnY);
+        centerOn = [this](int value) {
+            QGraphicsView::centerOn(viewportCenter.x(), value + 1);
+            // trigger repaint immediately
+            qApp->processEvents();
+        };
     }
+    createScrollTimeLine();
 
     scrollBar->setContextMenuPolicy(Qt::NoContextMenu);
     scrollBar->installEventFilter(this);
@@ -56,12 +65,21 @@ void ThumbnailView::createScrollTimeLine() {
     /* scrolling-related things */
     scrollTimeLine = new QTimeLine(SCROLL_SPEED, this);
     scrollTimeLine->setEasingCurve(QEasingCurve::OutSine);
+    //scrollTimeLine->setEasingCurve(QEasingCurve::Linear);
     scrollTimeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
-    if(orientation == THUMBNAILVIEW_HORIZONTAL) {
-        connect(scrollTimeLine, &QTimeLine::frameChanged, this, &ThumbnailView::centerOnX);
-    } else {
-        connect(scrollTimeLine, &QTimeLine::frameChanged, this, &ThumbnailView::centerOnY);
-    }
+
+    connect(scrollTimeLine, &QTimeLine::frameChanged, [this](int value) {
+        scrollFrameTimer.start();
+        this->centerOn(value);
+        lastScrollFrameTime = scrollFrameTimer.elapsed();
+        if(scrollTimeLine->state() == QTimeLine::Running && lastScrollFrameTime > SCROLL_UPDATE_RATE) {
+            scrollTimeLine->setPaused(true);
+            int newTime = qMin(scrollTimeLine->duration(), scrollTimeLine->currentTime() + lastScrollFrameTime);
+            scrollTimeLine->setCurrentTime(newTime);
+            scrollTimeLine->setPaused(false);
+        }
+    });
+
     connect(scrollTimeLine, &QTimeLine::finished, [this]() {
         blockThumbnailLoading = false;
         loadVisibleThumbnails();
@@ -250,18 +268,6 @@ void ThumbnailView::loadVisibleThumbnailsDelayed() {
     loadTimer.start();
 }
 
-void ThumbnailView::centerOnX(int dx) {
-    centerOn(dx + 1, viewportCenter.y());
-    // trigger repaint immediately
-    qApp->processEvents();
-}
-
-void ThumbnailView::centerOnY(int dy) {
-    centerOn(viewportCenter.x(), dy + 1);
-    // trigger repaint immediately
-    qApp->processEvents();
-}
-
 void ThumbnailView::resetViewport() {
     if(scrollTimeLine->state() == QTimeLine::Running)
         scrollTimeLine->stop();
@@ -309,12 +315,12 @@ void ThumbnailView::fitSceneToContents() {
         int height = qMax((int)scene.itemsBoundingRect().height(), this->height());
         scene.setSceneRect(QRectF(0,0, this->width(), height));
         center = mapToScene(viewport()->rect().center());
-        centerOn(0, center.y() + 1);
+        QGraphicsView::centerOn(0, center.y() + 1);
     } else {
         int width = qMax((int)scene.itemsBoundingRect().width(), this->width());
         scene.setSceneRect(QRectF(0,0, width, this->height()));
         center = mapToScene(viewport()->rect().center());
-        centerOn(center.x(), 0);
+        QGraphicsView::centerOn(center.x(), 0);
     }
 }
 
@@ -350,11 +356,10 @@ void ThumbnailView::scrollPrecise(int delta) {
     if( (delta > 0 && atSceneStart()) || (delta < 0 && atSceneEnd()) )
         return;
     // pixel scrolling (precise)
-    if(orientation == THUMBNAILVIEW_HORIZONTAL) {
-        centerOnX(static_cast<int>(viewportCenter.x() - delta));
-    } else {
-        centerOnY(static_cast<int>(viewportCenter.y() - delta));
-    }
+    if(orientation == THUMBNAILVIEW_HORIZONTAL)
+        centerOn(static_cast<int>(viewportCenter.x() - delta));
+    else
+        centerOn(static_cast<int>(viewportCenter.y() - delta));
 }
 
 void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration, bool additive) {
@@ -375,7 +380,7 @@ void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration
     {
         redirect = true;
     }
-    if(scrollTimeLine->state() == QTimeLine::Running) {
+    if(scrollTimeLine->state() == QTimeLine::Running || scrollTimeLine->state() == QTimeLine::Paused) {
         int oldEndFrame = scrollTimeLine->endFrame();
         accelerate = true;
         // QTimeLine has this weird issue when it is already finished (at the last frame)
