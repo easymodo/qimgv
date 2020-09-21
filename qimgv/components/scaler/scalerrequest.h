@@ -8,10 +8,10 @@
 class ScalerRequest {
 public:
     ScalerRequest() : image(nullptr), size(QSize(0,0)), filter(QI_FILTER_BILINEAR) { }
-    ScalerRequest(std::shared_ptr<Image> _image, QSize _size, QString _string, ScalingFilter _filter) : image(_image), size(_size), string(_string), filter(_filter) {}
+    ScalerRequest(std::shared_ptr<Image> _image, QSize _size, QString _path, ScalingFilter _filter) : image(_image), size(_size), path(_path), filter(_filter) {}
     std::shared_ptr<Image> image;
     QSize size;
-    QString string;
+    QString path;
     ScalingFilter filter;
 
     bool operator==(const ScalerRequest &another) const {

@@ -39,11 +39,11 @@ void Thumbnailer::startThumbnailerThread(QString filePath, int size, bool crop, 
     pool->start(runnable);
 }
 
-void Thumbnailer::onTaskStart(QString path, int size) {
-    runningTasks.insert(path, size);
+void Thumbnailer::onTaskStart(QString filePath, int size) {
+    runningTasks.insert(filePath, size);
 }
 
-void Thumbnailer::onTaskEnd(std::shared_ptr<Thumbnail> thumbnail, QString path) {
-    runningTasks.remove(path, thumbnail->size());
-    emit thumbnailReady(thumbnail);
+void Thumbnailer::onTaskEnd(std::shared_ptr<Thumbnail> thumbnail, QString filePath) {
+    runningTasks.remove(filePath, thumbnail->size());
+    emit thumbnailReady(thumbnail, filePath);
 }

@@ -76,17 +76,17 @@ void DirectoryPresenter::disconnectAllViews() {
 
 //------------------------------------------------------------------------------
 
-void DirectoryPresenter::onFileRemoved(QString fileName, int index) {
-    Q_UNUSED(fileName)
+void DirectoryPresenter::onFileRemoved(QString filePath, int index) {
+    Q_UNUSED(filePath)
     if(folderView)
         folderView->removeItem(index);
     if(thumbPanel)
         thumbPanel->removeItem(index);
 }
 
-void DirectoryPresenter::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
-    Q_UNUSED(from)
-    Q_UNUSED(to)
+void DirectoryPresenter::onFileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo) {
+    Q_UNUSED(fromPath)
+    Q_UNUSED(toPath)
 
     if(folderView) {
         int selectedIndex = folderView->selectedIndex();
@@ -112,24 +112,24 @@ void DirectoryPresenter::onFileRenamed(QString from, int indexFrom, QString to, 
     }
 }
 
-void DirectoryPresenter::onFileAdded(QString fileName) {
-    int index = model->indexOf(fileName);
+void DirectoryPresenter::onFileAdded(QString filePath) {
+    int index = model->indexOf(filePath);
     if(folderView)
         folderView->insertItem(index);
     if(thumbPanel)
         thumbPanel->insertItem(index);
 }
 
-void DirectoryPresenter::onFileModified(QString fileName) {
-    int index = model->indexOf(fileName);
+void DirectoryPresenter::onFileModified(QString filePath) {
+    int index = model->indexOf(filePath);
     if(folderView)
         folderView->reloadItem(index);
     if(thumbPanel)
         thumbPanel->reloadItem(index);
 }
 
-void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb) {
-    int index = model->indexOf(thumb->name());
+void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb, QString filePath) {
+    int index = model->indexOf(filePath);
     if(folderView)
         folderView->setThumbnail(index, thumb);
     if(thumbPanel)

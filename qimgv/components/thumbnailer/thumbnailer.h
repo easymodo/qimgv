@@ -27,9 +27,9 @@ private:
     QMultiMap<QString, int> runningTasks;
 
 private slots:
-    void onTaskStart(QString path, int size);
-    void onTaskEnd(std::shared_ptr<Thumbnail> thumbnail, QString path);
+    void onTaskStart(QString filePath, int size);
+    void onTaskEnd(std::shared_ptr<Thumbnail> thumbnail, QString filePath);
 
 signals:
-    void thumbnailReady(std::shared_ptr<Thumbnail>);
+    void thumbnailReady(std::shared_ptr<Thumbnail> thumbnail, QString filePath);
 };

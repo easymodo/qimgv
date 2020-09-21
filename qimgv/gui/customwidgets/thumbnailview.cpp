@@ -65,13 +65,13 @@ void ThumbnailView::createScrollTimeLine() {
     /* scrolling-related things */
     scrollTimeLine = new QTimeLine(SCROLL_SPEED, this);
     scrollTimeLine->setEasingCurve(QEasingCurve::OutSine);
-    //scrollTimeLine->setEasingCurve(QEasingCurve::Linear);
     scrollTimeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
 
     connect(scrollTimeLine, &QTimeLine::frameChanged, [this](int value) {
         scrollFrameTimer.start();
         this->centerOn(value);
         lastScrollFrameTime = scrollFrameTimer.elapsed();
+        qDebug() << lastScrollFrameTime << "ms";
         if(scrollTimeLine->state() == QTimeLine::Running && lastScrollFrameTime > SCROLL_UPDATE_RATE) {
             scrollTimeLine->setPaused(true);
             int newTime = qMin(scrollTimeLine->duration(), scrollTimeLine->currentTime() + lastScrollFrameTime);

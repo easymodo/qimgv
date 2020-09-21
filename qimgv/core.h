@@ -21,7 +21,7 @@
 
 struct State {
     bool hasActiveImage = false;
-    QString currentFileName = "";
+    QString currentFilePath = "";
 };
 
 enum MimeDataTarget {
@@ -69,7 +69,7 @@ private:
     void syncRandomizer();
 
     void attachModel(DirectoryModel *_model);
-    QString selectedFileName();
+    QString selectedFilePath();
     void guiSetImage(std::shared_ptr<Image> img);
     QTimer slideshowTimer;
 
@@ -96,10 +96,10 @@ private slots:
     void copyUrls(QList<QUrl> urls, QString destDirectory);
     void moveUrls(QList<QUrl> urls, QString destDirectory);
     void removeFile(QString fileName, bool trash);
-    void onFileRemoved(QString fileName, int index);
-    void onFileRenamed(QString from, int indexFrom, QString to, int indexTo);
-    void onFileAdded(QString fileName);
-    void onFileModified(QString fileName);
+    void onFileRemoved(QString filePath, int index);
+    void onFileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);
+    void onFileAdded(QString filePath);
+    void onFileModified(QString filePath);
     void showResizeDialog();
     void resize(QSize size);
     void flipH();

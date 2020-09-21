@@ -19,12 +19,20 @@ insert_sorted(std::vector<T> & vec, T const& item, Pred pred) {
     return vec.insert(std::upper_bound(vec.begin(), vec.end(), item, pred), item);
 }
 
-bool DirectoryManager::name_entry_compare(const Entry &e1, const Entry &e2) const {
+bool DirectoryManager::path_entry_compare(const Entry &e1, const Entry &e2) const {
     return collator.compare(e1.path, e2.path) < 0;
 };
 
-bool DirectoryManager::name_entry_compare_reverse(const Entry &e1, const Entry &e2) const {
+bool DirectoryManager::path_entry_compare_reverse(const Entry &e1, const Entry &e2) const {
     return collator.compare(e1.path, e2.path) > 0;
+};
+
+bool DirectoryManager::name_entry_compare(const Entry &e1, const Entry &e2) const {
+    return collator.compare(e1.name, e2.name) < 0;
+};
+
+bool DirectoryManager::name_entry_compare_reverse(const Entry &e1, const Entry &e2) const {
+    return collator.compare(e1.name, e2.name) > 0;
 };
 
 bool DirectoryManager::date_entry_compare(const Entry& e1, const Entry& e2) const {
@@ -43,14 +51,10 @@ bool DirectoryManager::size_entry_compare_reverse(const Entry& e1, const Entry& 
     return e1.size > e2.size;
 }
 
-bool DirectoryManager::entryCompareString(Entry &e, QString path) {
-    return (e.path == path);
-}
-
 CompareFunction DirectoryManager::compareFunction() {
-    CompareFunction cmpFn = &DirectoryManager::name_entry_compare;
+    CompareFunction cmpFn = &DirectoryManager::path_entry_compare;
     if(mSortingMode == SortingMode::SORT_NAME_DESC)
-        cmpFn = &DirectoryManager::name_entry_compare_reverse;
+        cmpFn = &DirectoryManager::path_entry_compare_reverse;
     if(mSortingMode == SortingMode::SORT_TIME)
         cmpFn = &DirectoryManager::date_entry_compare;
     if(mSortingMode == SortingMode::SORT_TIME_DESC)
@@ -99,22 +103,22 @@ void DirectoryManager::readSettings() {
     setSortingMode(settings->sortingMode());
 }
 
-bool DirectoryManager::setDirectory(QString path) {
-    if(path.isEmpty()) {
+bool DirectoryManager::setDirectory(QString dirPath) {
+    if(dirPath.isEmpty()) {
         return false;
     }
-    if(!std::filesystem::exists(toStdString(path))) {
+    if(!std::filesystem::exists(toStdString(dirPath))) {
         qDebug() << "[DirectoryManager] Error - path does not exist.";
         return false;
     }
-    if(!std::filesystem::is_directory(toStdString(path))) {
+    if(!std::filesystem::is_directory(toStdString(dirPath))) {
         qDebug() << "[DirectoryManager] Error - path is not a directory.";
         return false;
     }
-    currentPath = path;
+    currentPath = dirPath;
     generateFileList();
     sortFileList();
-    emit loaded(path);
+    emit loaded(dirPath);
     startFileWatcher();
     return true;
 }
@@ -123,9 +127,9 @@ QString DirectoryManager::directoryPath() const {
     return currentPath;
 }
 
-int DirectoryManager::indexOf(QString fileName) const {
-    auto item = find_if(entryVec.begin(), entryVec.end(), [fileName](const Entry& e) {
-        return e.path == fileName;
+int DirectoryManager::indexOf(QString filePath) const {
+    auto item = find_if(entryVec.begin(), entryVec.end(), [filePath](const Entry& e) {
+        return e.path == filePath;
     });
 
     if(item != entryVec.end()) {
@@ -134,64 +138,64 @@ int DirectoryManager::indexOf(QString fileName) const {
     return -1;
 }
 
-QString DirectoryManager::filePathAt(int index) const {
-    return checkRange(index) ? currentPath + "/" + entryVec.at(index).path : "";
-}
-
 // dumb. maybe better to store full paths in Entry right away
+// !wont work with multiple directories. remove?
 QString DirectoryManager::fullFilePath(QString fileName) const {
     return fileName.isEmpty() ? "" : currentPath + "/" + fileName;
 }
 
-QString DirectoryManager::fileNameAt(int index) const {
+QString DirectoryManager::filePathAt(int index) const {
     return checkRange(index) ? entryVec.at(index).path : "";
 }
 
+QString DirectoryManager::fileNameAt(int index) const {
+    return checkRange(index) ? entryVec.at(index).name : "";
+}
+
 QString DirectoryManager::first() const {
-    QString fileName = "";
+    QString filePath = "";
     if(entryVec.size())
-        fileName = entryVec.front().path;
-    return fileName;
+        filePath = entryVec.front().path;
+    return filePath;
 }
 
 QString DirectoryManager::last() const {
-    QString fileName = "";
+    QString filePath = "";
     if(entryVec.size())
-        fileName = entryVec.back().path;
-    return fileName;
+        filePath = entryVec.back().path;
+    return filePath;
 }
 
-QString DirectoryManager::prevOf(QString fileName) const {
-    QString prevFileName = "";
-    int currentIndex = indexOf(fileName);
+QString DirectoryManager::prevOf(QString filePath) const {
+    QString prevFilePath = "";
+    int currentIndex = indexOf(filePath);
     if(currentIndex > 0)
-        prevFileName = entryVec.at(currentIndex - 1).path;
-    return prevFileName;
+        prevFilePath = entryVec.at(currentIndex - 1).path;
+    return prevFilePath;
 }
 
-QString DirectoryManager::nextOf(QString fileName) const {
-    QString nextFileName = "";
-    int currentIndex = indexOf(fileName);
+QString DirectoryManager::nextOf(QString filePath) const {
+    QString nextFilePath = "";
+    int currentIndex = indexOf(filePath);
     if(currentIndex >= 0 && currentIndex < entryVec.size() - 1)
-        nextFileName = entryVec.at(currentIndex + 1).path;
-    return nextFileName;
+        nextFilePath = entryVec.at(currentIndex + 1).path;
+    return nextFilePath;
 }
 
-bool DirectoryManager::removeFile(QString fileName, bool trash) {
-    if(!contains(fileName))
+bool DirectoryManager::removeFile(QString filePath, bool trash) {
+    if(!contains(filePath))
         return false;
-    QString path = fullFilePath(fileName);
-    QFile file(path);
-    int index = indexOf(fileName);
+    QFile file(filePath);
+    int index = indexOf(filePath);
     if(trash) {
-        if(moveToTrash(path)) {
+        if(moveToTrash(filePath)) {
             entryVec.erase(entryVec.begin() + index);
-            emit fileRemoved(fileName, index);
+            emit fileRemoved(filePath, index);
             return true;
         }
     } else if(file.remove()) {
         entryVec.erase(entryVec.begin() + index);
-        emit fileRemoved(fileName, index);
+        emit fileRemoved(filePath, index);
         return true;
     }
     return false;
@@ -223,7 +227,7 @@ bool DirectoryManager::moveToTrash(QString file) {
 #endif
 
 #ifdef Q_OS_LINUX
-bool DirectoryManager::moveToTrash(QString file) {
+bool DirectoryManager::moveToTrash(QString filePath) {
     #ifdef QT_GUI_LIB
     bool TrashInitialized = false;
     QString TrashPath;
@@ -256,7 +260,7 @@ bool DirectoryManager::moveToTrash(QString file) {
             qDebug() << "Trash doesn`t look like FreeDesktop.org Trash specification";
         TrashInitialized = true;
     }
-    QFileInfo original( file );
+    QFileInfo original( filePath );
     if( !original.exists() )
         qDebug() << "File doesn`t exist, cant move to trash";
     QString info;
@@ -316,10 +320,10 @@ bool DirectoryManager::isDirectory(QString path) const {
     return (fileInfo.isDir() && fileInfo.isReadable());
 }
 
-QDateTime DirectoryManager::lastModified(QString fileName) const {
+QDateTime DirectoryManager::lastModified(QString filePath) const {
     QFileInfo info;
-    if(contains(fileName))
-        info.setFile(fullFilePath(fileName));
+    if(contains(filePath))
+        info.setFile(filePath);
     return info.lastModified();
 }
 
@@ -342,8 +346,8 @@ bool DirectoryManager::isEmpty() const {
     return entryVec.empty();
 }
 
-bool DirectoryManager::contains(QString fileName) const {
-    return (std::find(entryVec.begin(), entryVec.end(), fileName) != entryVec.end());
+bool DirectoryManager::contains(QString filePath) const {
+    return (std::find(entryVec.begin(), entryVec.end(), filePath) != entryVec.end());
 }
 
 // ##############################################################
@@ -354,11 +358,13 @@ void DirectoryManager::generateFileList() {
     QRegularExpressionMatch match;
     for(const auto & entry : fs::directory_iterator(toStdString(currentPath))) {
         QString name = QString::fromStdString(entry.path().filename().string());
+        QString path = QString::fromStdString(entry.path().string());
         match = regex.match(name);
         if(match.hasMatch()) {
             Entry newEntry;
             try {
-                newEntry.path = name;
+                newEntry.name = name;
+                newEntry.path = path;
                 newEntry.size = entry.file_size();
                 newEntry.modifyTime = entry.last_write_time();
                 newEntry.isDirectory = entry.is_directory();
@@ -394,81 +400,82 @@ SortingMode DirectoryManager::sortingMode() const {
     return mSortingMode;
 }
 
-// fs watcher events
+// ? fixme
+bool DirectoryManager::forceInsert(QString filePath) {
+    if(!this->isFile(filePath) || contains(filePath))
+        return false;
+    std::filesystem::directory_entry stdEntry(toStdString(filePath));
+    QString fileName = QString::fromStdString(stdEntry.path().filename().string()); // isn't it beautiful
+    Entry entry(filePath, fileName, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
+    insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
+    emit fileAdded(filePath);
+    return true;
+}
 
+//----------------------------------------------------------------------------
+// fs watcher events  ( onFile___External() )
+// these take file NAMES, not paths
 void DirectoryManager::onFileRemovedExternal(QString fileName) {
-    if(!contains(fileName))
+    QString filePath = watcher->watchPath() + "/" + fileName;
+    if(!contains(filePath))
         return;
-
-    QFile file(fullFilePath(fileName));
+    QFile file(filePath);
     if(file.exists())
         return;
-
-    int index = indexOf(fileName);
+    int index = indexOf(filePath);
     entryVec.erase(entryVec.begin() + index);
-    emit fileRemoved(fileName, index);
+    emit fileRemoved(filePath, index);
 }
 
 void DirectoryManager::onFileAddedExternal(QString fileName) {
-    QString fullPath = fullFilePath(fileName);
-    if(!this->isSupportedFile(fullPath))
+    QString filePath = watcher->watchPath() + "/" + fileName;
+    if(!isSupportedFile(filePath))
         return;
-    if(this->contains(fileName))
+    if(contains(filePath))
         onFileModifiedExternal(fileName);
-    std::filesystem::directory_entry stdEntry(toStdString(fullPath));
-    Entry entry(fileName, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
+    std::filesystem::directory_entry stdEntry(toStdString(filePath));
+    Entry entry(filePath, fileName, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
     insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
-    emit fileAdded(fileName);
+    emit fileAdded(filePath);
     return;
 }
 
-void DirectoryManager::onFileRenamedExternal(QString oldFile, QString newFile) {
-    if(!contains(oldFile)) {
-        if(contains(newFile))
-            onFileModifiedExternal(newFile);
+void DirectoryManager::onFileRenamedExternal(QString oldFileName, QString newFileName) {
+    QString oldFilePath = watcher->watchPath() + "/" + oldFileName;
+    QString newFilePath = watcher->watchPath() + "/" + newFileName;
+    if(!contains(oldFilePath)) {
+        if(contains(newFilePath))
+            onFileModifiedExternal(newFileName);
         else
-            onFileAddedExternal(newFile);
+            onFileAddedExternal(newFileName);
         return;
     }
-
-    QString fullPath = fullFilePath(newFile);
-    if(!this->isSupportedFile(fullPath)) {
-        onFileRemovedExternal(oldFile);
+    if(!this->isSupportedFile(newFilePath)) {
+        onFileRemovedExternal(oldFileName);
         return;
     }
-    if(contains(newFile)) {
-        int replaceIndex = indexOf(newFile);
+    if(contains(newFilePath)) {
+        int replaceIndex = indexOf(newFilePath);
         entryVec.erase(entryVec.begin() + replaceIndex);
-        emit fileRemoved(newFile, replaceIndex);
+        emit fileRemoved(newFilePath, replaceIndex);
     }
     // remove the old one
-    int oldIndex = indexOf(oldFile);
+    int oldIndex = indexOf(oldFilePath);
     entryVec.erase(entryVec.begin() + oldIndex);
     // insert
-    std::filesystem::directory_entry stdEntry(toStdString(fullPath));
-    Entry entry(newFile, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
+    std::filesystem::directory_entry stdEntry(toStdString(newFilePath));
+    Entry entry(newFilePath, newFileName, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
     insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
-    emit fileRenamed(oldFile, oldIndex, newFile, indexOf(newFile));
+    emit fileRenamed(oldFilePath, oldIndex, newFilePath, indexOf(newFilePath));
 }
 
 void DirectoryManager::onFileModifiedExternal(QString fileName) {
-    if(!contains(fileName))
+    QString filePath = watcher->watchPath() + "/" + fileName;
+    if(!contains(filePath))
         return;
-    QString fullPath = fullFilePath(fileName);
-    std::filesystem::directory_entry stdEntry(toStdString(fullPath));
-    int index = indexOf(fileName);
+    std::filesystem::directory_entry stdEntry(toStdString(filePath));
+    int index = indexOf(filePath);
     if(entryVec.at(index).modifyTime != stdEntry.last_write_time())
         entryVec.at(index).modifyTime = stdEntry.last_write_time();
-    emit fileModified(fileName);
-}
-
-bool DirectoryManager::forceInsert(QString fileName) {
-    QString fullPath = fullFilePath(fileName);
-    if(!this->isFile(fullPath) || contains(fileName))
-        return false;
-    std::filesystem::directory_entry stdEntry(toStdString(fullPath));
-    Entry entry(fileName, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
-    insert_sorted(entryVec, entry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
-    emit fileAdded(fileName);
-    return true;
+    emit fileModified(filePath);
 }

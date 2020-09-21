@@ -21,10 +21,10 @@ public:
     void selectAndFocus(int index);
 
     // not used
-    void onFileRemoved(QString fileName, int index);
-    void onFileRenamed(QString from, int indexFrom, QString to, int indexTo);
-    void onFileAdded(QString fileName);
-    void onFileModified(QString fileName);
+    void onFileRemoved(QString filePath, int index);
+    void onFileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);
+    void onFileAdded(QString filePath);
+    void onFileModified(QString filePath);
 
 signals:
     void generateThumbnails(QList<int>, int, bool, bool);
@@ -36,7 +36,7 @@ public slots:
 
 private slots:
 
-    void onThumbnailReady(std::shared_ptr<Thumbnail>);
+    void onThumbnailReady(std::shared_ptr<Thumbnail> thumb, QString filePath);
     void setCurrentIndex(int index);
     void focusOn(int index);
     void populateViews();
