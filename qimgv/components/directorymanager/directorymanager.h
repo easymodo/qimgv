@@ -35,40 +35,43 @@ public:
     // ignored if the same dir is already opened
     bool setDirectory(QString);
     QString directoryPath() const;
-    // returns index in file list
-    // -1 if not found
-    int indexOf(QString filePath) const;
+    int indexOfFile(QString filePath) const;
+    int indexOfDir(QString dirPath) const;
     QString filePathAt(int index) const;
-    QString fullFilePath(QString fileName) const; // todo: is this needed anymore?
     bool removeFile(QString filePath, bool trash);
     unsigned long fileCount() const;
+    unsigned long dirCount() const;
     bool isSupportedFile(QString filePath) const;
     bool isEmpty() const;
-    bool contains(QString filePath) const;
-    bool checkRange(int index) const;
+    bool containsFile(QString filePath) const;
     QString fileNameAt(int index) const;
-    QString prevOf(QString filePath) const;
-    QString nextOf(QString filePath) const;
-    void sortFileList();
+    QString prevOfFile(QString filePath) const;
+    QString nextOfFile(QString filePath) const;
+    void sortEntryLists();
     QDateTime lastModified(QString filePath) const;
 
-    QString first() const;
-    QString last() const;
+    QString firstFile() const;
+    QString lastFile() const;
     void setSortingMode(SortingMode mode);
     SortingMode sortingMode() const;
-    bool forceInsert(QString filePath);
+    bool forceInsertFile(QString filePath);
     bool isFile(QString path) const;
 
-    const FSEntry &entryAt(int index) const;
+    unsigned long totalCount() const;
+    bool containsDir(QString dirPath) const;
+    const FSEntry &fileEntryAt(int index) const;
+    QString dirPathAt(int index) const;
+    QString dirNameAt(int index) const;
 private:
     QRegularExpression regex;
     QCollator collator;
-    std::vector<FSEntry> entryVec;
+    std::vector<FSEntry> fileEntryVec, dirEntryVec;
+    const FSEntry defaultEntry;
 
     DirectoryWatcher* watcher;
     void readSettings();
     SortingMode mSortingMode;
-    void loadFileList(QString directoryPath, bool recursive);
+    void loadEntryList(QString directoryPath, bool recursive);
 
     bool moveToTrash(QString file);
     bool path_entry_compare(const FSEntry &e1, const FSEntry &e2) const;
@@ -83,8 +86,11 @@ private:
     void startFileWatcher(QString directoryPath);
     void stopFileWatcher();
 
-    void addFromDirectory(std::vector<FSEntry> &entryVec, QString directoryPath);
-    void addFromDirectoryRecursive(std::vector<FSEntry> &entryVec, QString directoryPath);
+    void addEntriesFromDirectory(std::vector<FSEntry> &entryVec, QString directoryPath);
+    void addEntriesFromDirectoryRecursive(std::vector<FSEntry> &entryVec, QString directoryPath);
+    bool checkFileRange(int index) const;
+    bool checkDirRange(int index) const;
+
 private slots:
     void onFileAddedExternal(QString fileName);
     void onFileRemovedExternal(QString fileName);

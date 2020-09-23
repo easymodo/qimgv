@@ -68,8 +68,11 @@ void Core::connectComponents() {
     presenter.setFolderView(mw->getFolderView());
     presenter.setThumbPanel(mw->getThumbnailPanel());
 
-    connect(&presenter, &DirectoryPresenter::itemActivated,
+    connect(&presenter, &DirectoryPresenter::fileActivated,
             this, &Core::onDirectoryViewItemActivated);
+
+    connect(&presenter, &DirectoryPresenter::dirActivated,
+            this, &Core::loadPath);
 
     connect(mw, &MW::opened,                this, &Core::loadPath);
     connect(mw, &MW::droppedIn,             this, &Core::onDropIn);
@@ -99,8 +102,8 @@ void Core::connectComponents() {
     connect(model.get(), &DirectoryModel::fileRenamed,    this, &Core::onFileRenamed);
     connect(model.get(), &DirectoryModel::fileModified,   this, &Core::onFileModified);
     connect(model.get(), &DirectoryModel::loaded,         this, &Core::onModelLoaded);
-    connect(model.get(), &DirectoryModel::itemReady,      this, &Core::onModelItemReady);
-    connect(model.get(), &DirectoryModel::itemUpdated,    this, &Core::onModelItemUpdated);
+    connect(model.get(), &DirectoryModel::imageReady,      this, &Core::onModelItemReady);
+    connect(model.get(), &DirectoryModel::imageUpdated,    this, &Core::onModelItemUpdated);
     connect(model.get(), &DirectoryModel::sortingChanged, this, &Core::onModelSortingChanged);
 
     connect(&slideshowTimer, &QTimer::timeout, this, &Core::nextImageSlideshow);
@@ -241,9 +244,9 @@ void Core::onPlaybackFinished() {
 
 void Core::syncRandomizer() {
     if(model) {
-        randomizer.setCount(model->itemCount());
+        randomizer.setCount(model->fileCount());
         randomizer.shuffle();
-        randomizer.setCurrent(model->indexOf(state.currentFilePath));
+        randomizer.setCurrent(model->indexOfFile(state.currentFilePath));
     }
 }
 
@@ -308,7 +311,7 @@ void Core::enableDocumentView() {
     if(mw->currentViewMode() == MODE_DOCUMENT)
         return;
     mw->enableDocumentView();
-    if(model && model->itemCount() && state.currentFilePath == "")
+    if(model && model->fileCount() && state.currentFilePath == "")
         loadIndex(0, false, settings->usePreloader());
 }
 
@@ -324,7 +327,7 @@ void Core::copyFileClipboard() {
     if(model->isEmpty())
         return;
 
-    QMimeData* mimeData = getMimeDataFor(model->getItem(this->selectedFilePath()), TARGET_CLIPBOARD);
+    QMimeData* mimeData = getMimeDataFor(model->getImage(this->selectedFilePath()), TARGET_CLIPBOARD);
 
     // mimeData->text() should already contain an url
     QByteArray gnomeFormat = QByteArray("copy\n").append(QUrl(mimeData->text()).toEncoded());
@@ -362,14 +365,14 @@ void Core::onDropIn(const QMimeData *mimeData, QObject* source) {
 // drag'n'drop
 // drag image out of the program
 void Core::onDragOut() {
-    onDragOut(model->indexOf(state.currentFilePath));
+    onDragOut(model->indexOfFile(state.currentFilePath));
 }
 
 void Core::onDragOut(int index) {
     if(model->isEmpty())
         return;
 
-    QMimeData *mimeData = getMimeDataFor(model->getItemAt(index), TARGET_DROP);
+    QMimeData *mimeData = getMimeDataFor(model->getImageAt(index), TARGET_DROP);
     auto thumb = Thumbnailer::getThumbnail(model->filePathAt(index), 100);
     mDrag = new QDrag(this);
     mDrag->setMimeData(mimeData);
@@ -409,7 +412,7 @@ void Core::sortBy(SortingMode mode) {
 
 // !! fixme
 void Core::renameCurrentFile(QString newName) {
-    if(!model->itemCount() || newName == state.currentFilePath) // ??
+    /*if(!model->fileCount() || newName == state.currentFilePath) // ??
         return;
     QString newPath = model->fullPath(newName);
     QString oldName = state.currentFilePath;
@@ -437,6 +440,7 @@ void Core::renameCurrentFile(QString newName) {
         if(exists)
             replaceMe.rename(newPath);
     }
+    */
 }
 
 // removes file at specified index within current directory
@@ -447,7 +451,7 @@ void Core::removeFile(QString filePath, bool trash) {
     bool reopen = false;
     std::shared_ptr<Image> img;
     if(state.currentFilePath == filePath) {
-        img = model->getItem(filePath);
+        img = model->getImage(filePath);
         if(img->type() == ANIMATED || img->type() == VIDEO) {
             mw->closeImage();
             reopen = true;
@@ -487,7 +491,7 @@ void Core::onFileAdded(QString filePath) {
     Q_UNUSED(filePath)
     // update file count
     updateInfoString();
-    if(model->itemCount() == 1 && state.currentFilePath == "")
+    if(model->fileCount() == 1 && state.currentFilePath == "")
         loadIndex(0, false, settings->usePreloader());
 }
 
@@ -565,7 +569,7 @@ void Core::moveCurrentFile(QString destDirectory) {
     if(result == FileOpResult::SUCCESS) {
         mw->showMessageSuccess("File moved.");
     } else {
-        guiSetImage(model->getItem(selectedFilePath()));
+        guiSetImage(model->getImage(selectedFilePath()));
         outputError(result);
     }
 }
@@ -620,7 +624,7 @@ void Core::requestSavePath() {
 void Core::showResizeDialog() {
     if(model->isEmpty())
         return;
-    auto img = model->getItem(this->selectedFilePath());
+    auto img = model->getImage(this->selectedFilePath());
     mw->showResizeDialog(img->size());
 }
 
@@ -629,12 +633,12 @@ void Core::showResizeDialog() {
 void Core::resize(QSize size) {
     if(model->isEmpty())
         return;
-    std::shared_ptr<Image> img = model->getItem(this->selectedFilePath());
+    std::shared_ptr<Image> img = model->getImage(this->selectedFilePath());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::scaled(imgStatic->getImage(), size, QI_FILTER_BILINEAR)));
-        model->updateItem(this->selectedFilePath(), img);
+        model->updateImage(this->selectedFilePath(), img);
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
             img->save();
     } else {
@@ -645,12 +649,12 @@ void Core::resize(QSize size) {
 void Core::flipH() {
     if(model->isEmpty())
         return;
-    std::shared_ptr<Image> img = model->getItem(this->selectedFilePath());
+    std::shared_ptr<Image> img = model->getImage(this->selectedFilePath());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::flippedH(imgStatic->getImage())));
-        model->updateItem(this->selectedFilePath(), img);
+        model->updateImage(this->selectedFilePath(), img);
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
             img->save();
     } else {
@@ -661,12 +665,12 @@ void Core::flipH() {
 void Core::flipV() {
     if(model->isEmpty())
         return;
-    std::shared_ptr<Image> img = model->getItem(this->selectedFilePath());
+    std::shared_ptr<Image> img = model->getImage(this->selectedFilePath());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::flippedV(imgStatic->getImage())));
-        model->updateItem(this->selectedFilePath(), img);
+        model->updateImage(this->selectedFilePath(), img);
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
             img->save();
     } else {
@@ -677,12 +681,12 @@ void Core::flipV() {
 bool Core::crop(QRect rect) {
     if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
         return false;
-    std::shared_ptr<Image> img = model->getItem(state.currentFilePath);
+    std::shared_ptr<Image> img = model->getImage(state.currentFilePath);
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::cropped(imgStatic->getImage(), rect)));
-        model->updateItem(state.currentFilePath, img);
+        model->updateImage(state.currentFilePath, img);
         return true;
     } else {
         mw->showMessage("Editing gifs/video is not supported.");
@@ -700,12 +704,12 @@ void Core::rotateByDegrees(int degrees) {
         return;
 
     QString filePath = this->selectedFilePath();
-    std::shared_ptr<Image> img = model->getItem(filePath);
+    std::shared_ptr<Image> img = model->getImage(filePath);
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::rotated(imgStatic->getImage(), degrees)));
-        model->updateItem(filePath, img);
+        model->updateImage(filePath, img);
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
             img->save();
     } else {
@@ -717,11 +721,11 @@ void Core::discardEdits() {
     if(model->isEmpty())
         return;
 
-    std::shared_ptr<Image> img = model->getItem(this->selectedFilePath());
+    std::shared_ptr<Image> img = model->getImage(this->selectedFilePath());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->discardEditedImage();
-        model->updateItem(this->selectedFilePath(), img);
+        model->updateImage(this->selectedFilePath(), img);
     }
     mw->hideSaveOverlay();
 }
@@ -745,7 +749,7 @@ void Core::saveImageToDisk() {
 void Core::saveImageToDisk(QString filePath) {
     if(model->isEmpty())
         return;
-    std::shared_ptr<Image> img = model->getItem(selectedFilePath());
+    std::shared_ptr<Image> img = model->getImage(selectedFilePath());
     if(img->save(filePath))
         mw->showMessageSuccess("File saved.");
     else
@@ -783,16 +787,15 @@ void Core::showRenameDialog() {
 void Core::runScript(const QString &scriptName) {
     if(model->isEmpty())
         return;
-    scriptManager->runScript(scriptName, model->getItem(selectedFilePath()));
+    scriptManager->runScript(scriptName, model->getImage(selectedFilePath()));
 }
 
 void Core::scalingRequest(QSize size, ScalingFilter filter) {
     // filter out an unnecessary scale request at statup
     if(mw->isVisible() && state.hasActiveImage) {
-        std::shared_ptr<Image> forScale = model->getItem(state.currentFilePath);
+        std::shared_ptr<Image> forScale = model->getImage(state.currentFilePath);
         if(forScale) {
-            QString path = model->directoryPath() + "/" + state.currentFilePath;
-            model->scaler->requestScaled(ScalerRequest(forScale, size, path, filter));
+            model->scaler->requestScaled(ScalerRequest(forScale, size, state.currentFilePath, filter));
         }
     }
 }
@@ -837,7 +840,7 @@ void Core::loadPath(QString path) {
     }
     // load file / folderview
     if(fileInfo.isFile()) {
-        int index = model->indexOf(fileInfo.absoluteFilePath());
+        int index = model->indexOfFile(fileInfo.absoluteFilePath());
         // DirectoryManager only checks file extensions via regex (performance reasons)
         // But in this case we force check mimetype
         if(index == -1) {
@@ -846,7 +849,7 @@ void Core::loadPath(QString path) {
             QMimeType type = db.mimeTypeForFile(fileInfo.absoluteFilePath());
             if(types.contains(type.name())) {
                 if(model->forceInsert(fileInfo.absoluteFilePath())) {
-                    index = model->indexOf(fileInfo.absoluteFilePath());
+                    index = model->indexOfFile(fileInfo.absoluteFilePath());
                 }
             }
         }
@@ -888,8 +891,8 @@ void Core::nextImage() {
         loadIndex(randomizer.next(), true, false);
         return;
     }
-    int newIndex = model->indexOf(state.currentFilePath) + 1;
-    if(newIndex >= model->itemCount()) {
+    int newIndex = model->indexOfFile(state.currentFilePath) + 1;
+    if(newIndex >= model->fileCount()) {
         if(infiniteScrolling) {
             newIndex = 0;
         } else {
@@ -910,10 +913,10 @@ void Core::prevImage() {
         return;
     }
 
-    int newIndex = model->indexOf(state.currentFilePath) - 1;
+    int newIndex = model->indexOfFile(state.currentFilePath) - 1;
     if(newIndex < 0) {
         if(infiniteScrolling) {
-            newIndex = model->itemCount() - 1;
+            newIndex = model->fileCount() - 1;
         } else {
             if(!model->loaderBusy())
                 mw->showMessageDirectoryStart();
@@ -929,8 +932,8 @@ void Core::nextImageSlideshow() {
     if(settings->shuffleEnabled()) {
         loadIndex(randomizer.next(), false, false);
     } else {
-        int newIndex = model->indexOf(state.currentFilePath) + 1;
-        if(newIndex >= model->itemCount()) {
+        int newIndex = model->indexOfFile(state.currentFilePath) + 1;
+        if(newIndex >= model->fileCount()) {
             if(infiniteScrolling) {
                 newIndex = 0;
             } else {
@@ -947,7 +950,7 @@ void Core::nextImageSlideshow() {
 void Core::startSlideshowTimer() {
     // start timer only for static images or single frame gifs
     // for proper gifs and video we get a playbackFinished() signal
-    auto img = model->getItem(state.currentFilePath);
+    auto img = model->getImage(state.currentFilePath);
     if(img->type() == STATIC) {
         slideshowTimer.start();
     } else if(img->type() == ANIMATED) {
@@ -969,7 +972,7 @@ void Core::jumpToLast() {
     if(model->isEmpty())
         return;
     stopSlideshow();
-    loadIndex(model->itemCount() - 1, true, settings->usePreloader());
+    loadIndex(model->fileCount() - 1, true, settings->usePreloader());
     mw->showMessageDirectoryEnd();
 }
 
@@ -992,7 +995,7 @@ void Core::onModelItemReady(std::shared_ptr<Image> img) {
 
 void Core::onModelItemUpdated(QString filePath) {
     if(filePath == state.currentFilePath) {
-        guiSetImage(model->getItem(filePath));
+        guiSetImage(model->getImage(filePath));
         updateInfoString();
     }
 }
@@ -1031,12 +1034,12 @@ void Core::updateInfoString() {
     qint64 fileSize = 0;
 
     if(model->isLoaded(state.currentFilePath)) {
-        auto img = model->getItem(state.currentFilePath);
+        auto img = model->getImage(state.currentFilePath);
         imageSize = img->size();
         fileSize  = img->fileSize();
     }
-    mw->setCurrentInfo(model->indexOf(state.currentFilePath),
-                       model->itemCount(),
+    mw->setCurrentInfo(model->indexOfFile(state.currentFilePath),
+                       model->fileCount(),
                        state.currentFilePath,
                        imageSize,
                        fileSize,

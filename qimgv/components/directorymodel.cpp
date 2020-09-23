@@ -12,7 +12,7 @@ DirectoryModel::DirectoryModel(QObject *parent) :
     connect(&dirManager, &DirectoryManager::fileRenamed, this, &DirectoryModel::onFileRenamed);
     connect(&dirManager, &DirectoryManager::loaded, this, &DirectoryModel::loaded);
     connect(&dirManager, &DirectoryManager::sortingChanged, this, &DirectoryModel::onSortingChanged);
-    connect(&loader, &Loader::loadFinished, this, &DirectoryModel::onItemReady);
+    connect(&loader, &Loader::loadFinished, this, &DirectoryModel::onImageReady);
 }
 
 DirectoryModel::~DirectoryModel() {
@@ -20,12 +20,24 @@ DirectoryModel::~DirectoryModel() {
     delete scaler;
 }
 
-int DirectoryModel::itemCount() const {
+int DirectoryModel::totalCount() const {
+    return dirManager.totalCount();
+}
+
+int DirectoryModel::fileCount() const {
     return dirManager.fileCount();
 }
 
-int DirectoryModel::indexOf(QString filePath) const {
-    return dirManager.indexOf(filePath);
+int DirectoryModel::dirCount() const {
+    return dirManager.dirCount();
+}
+
+int DirectoryModel::indexOfFile(QString filePath) const {
+    return dirManager.indexOfFile(filePath);
+}
+
+int DirectoryModel::indexOfDir(QString filePath) const {
+    return dirManager.indexOfDir(filePath);
 }
 
 SortingMode DirectoryModel::sortingMode() const {
@@ -33,7 +45,7 @@ SortingMode DirectoryModel::sortingMode() const {
 }
 
 const FSEntry &DirectoryModel::entryAt(int index) const {
-    return dirManager.entryAt(index);
+    return dirManager.fileEntryAt(index);
 }
 
 QString DirectoryModel::fileNameAt(int index) const {
@@ -44,8 +56,12 @@ QString DirectoryModel::filePathAt(int index) const {
     return dirManager.filePathAt(index);
 }
 
-QString DirectoryModel::fullPath(QString fileName) const {
-    return dirManager.fullFilePath(fileName);
+QString DirectoryModel::dirNameAt(int index) const {
+    return dirManager.dirNameAt(index);
+}
+
+QString DirectoryModel::dirPathAt(int index) const {
+    return dirManager.dirPathAt(index);
 }
 
 QString DirectoryModel::directoryPath() const {
@@ -53,7 +69,7 @@ QString DirectoryModel::directoryPath() const {
 }
 
 bool DirectoryModel::contains(QString filePath) const {
-    return dirManager.contains(filePath);
+    return dirManager.containsFile(filePath);
 }
 
 bool DirectoryModel::isEmpty() const {
@@ -61,19 +77,19 @@ bool DirectoryModel::isEmpty() const {
 }
 
 QString DirectoryModel::first() const {
-    return dirManager.first();
+    return dirManager.firstFile();
 }
 
 QString DirectoryModel::last() const {
-    return dirManager.last();
+    return dirManager.lastFile();
 }
 
 QString DirectoryModel::nextOf(QString filePath) const {
-    return dirManager.nextOf(filePath);
+    return dirManager.nextOfFile(filePath);
 }
 
 QString DirectoryModel::prevOf(QString filePath) const {
-    return dirManager.prevOf(filePath);
+    return dirManager.prevOfFile(filePath);
 }
 
 QDateTime DirectoryModel::lastModified(QString filePath) const {
@@ -83,7 +99,7 @@ QDateTime DirectoryModel::lastModified(QString filePath) const {
 // -----------------------------------------------------------------------------
 
 bool DirectoryModel::forceInsert(QString filePath) {
-    return dirManager.forceInsert(filePath);
+    return dirManager.forceInsertFile(filePath);
 }
 
 void DirectoryModel::setSortingMode(SortingMode mode) {
@@ -218,16 +234,12 @@ bool DirectoryModel::loaderBusy() const {
     return loader.isBusy();
 }
 
-std::shared_ptr<Image> DirectoryModel::itemAt(int index) {
-    return cache.get(filePathAt(index));
-}
-
-void DirectoryModel::onItemReady(std::shared_ptr<Image> img) {
+void DirectoryModel::onImageReady(std::shared_ptr<Image> img) {
     if(!img)
         return;
     cache.remove(img->path());
     cache.insert(img);
-    emit itemReady(img);
+    emit imageReady(img);
 }
 
 void DirectoryModel::onSortingChanged() {
@@ -272,24 +284,24 @@ bool DirectoryModel::isLoaded(QString filePath) const {
     return cache.contains(filePath);
 }
 
-std::shared_ptr<Image> DirectoryModel::getItemAt(int index) {
-    return getItem(filePathAt(index));
+std::shared_ptr<Image> DirectoryModel::getImageAt(int index) {
+    return getImage(filePathAt(index));
 }
 
 // returns cached image
 // if image is not cached, loads it in the main thread
 // for async access use setIndexAsync(int)
-std::shared_ptr<Image> DirectoryModel::getItem(QString filePath) {
+std::shared_ptr<Image> DirectoryModel::getImage(QString filePath) {
     std::shared_ptr<Image> img = cache.get(filePath);
     if(!img)
         img = loader.load(filePath);
     return img;
 }
 
-void DirectoryModel::updateItem(QString filePath, std::shared_ptr<Image> img) {
+void DirectoryModel::updateImage(QString filePath, std::shared_ptr<Image> img) {
     if(contains(filePath)) {
         cache.insert(img);
-        emit itemUpdated(filePath);
+        emit imageUpdated(filePath);
     }
 }
 
@@ -302,10 +314,10 @@ void DirectoryModel::load(QString filePath, bool asyncHint) {
         } else {
             auto img = loader.load(filePath);
             cache.insert(img);
-            emit itemReady(img);
+            emit imageReady(img);
         }
     } else {
-        emit itemReady(cache.get(filePath));
+        emit imageReady(cache.get(filePath));
     }
 }
 

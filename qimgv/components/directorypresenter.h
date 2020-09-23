@@ -29,7 +29,8 @@ public:
     void onFileModified(QString filePath);
 
 signals:
-    void itemActivated(int);
+    void dirActivated(QString dirPath);
+    void fileActivated(int);
 
 public slots:
     void disconnectAllViews();
@@ -38,10 +39,10 @@ public slots:
 private slots:
     void generateThumbnails(QList<int>, int, bool, bool);
     void onThumbnailReady(std::shared_ptr<Thumbnail> thumb, QString filePath);
-    void setCurrentIndex(int index);
-    void focusOn(int index);
     void populateViews();
 
+    void generateThumbnailsFolderView(QList<int> indexes, int size, bool crop, bool force);
+    void onItemActivatedFolderView(int index);
 private:
     std::shared_ptr<FolderViewProxy> folderView = nullptr;
     std::shared_ptr<ThumbnailStripProxy> thumbPanel = nullptr;

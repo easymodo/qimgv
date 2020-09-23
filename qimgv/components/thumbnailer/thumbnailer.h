@@ -4,7 +4,6 @@
 #include <QtConcurrent>
 #include "components/thumbnailer/thumbnailerrunnable.h"
 #include "components/cache/thumbnailcache.h"
-#include "components/cache/cache.h"
 #include "settings.h"
 
 class Thumbnailer : public QObject

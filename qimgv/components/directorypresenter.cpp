@@ -1,5 +1,7 @@
 #include "directorypresenter.h"
 
+// todo: im just temporarily piling everything here.  use MVVM instead of MVP
+
 DirectoryPresenter::DirectoryPresenter(QObject *parent) : QObject(parent) {
     connect(&thumbnailer, &Thumbnailer::thumbnailReady, this, &DirectoryPresenter::onThumbnailReady);
 }
@@ -19,11 +21,11 @@ void DirectoryPresenter::setFolderView(std::shared_ptr<FolderViewProxy> view) {
         return;
     folderView = view;
     if(model)
-        folderView->populate(model->itemCount());
+        folderView->populate(settings->directoriesInFolderView() ? model->totalCount() : model->fileCount());
     connect(folderView.get(), &FolderViewProxy::itemActivated,
-            this, &DirectoryPresenter::itemActivated);
+            this, &DirectoryPresenter::onItemActivatedFolderView);
     connect(folderView.get(), &FolderViewProxy::thumbnailsRequested,
-            this, &DirectoryPresenter::generateThumbnails);
+            this, &DirectoryPresenter::generateThumbnailsFolderView);
 }
 
 void DirectoryPresenter::setThumbPanel(std::shared_ptr<ThumbnailStripProxy> view) {
@@ -31,9 +33,9 @@ void DirectoryPresenter::setThumbPanel(std::shared_ptr<ThumbnailStripProxy> view
         return;
     thumbPanel = view;
     if(model)
-        view->populate(model->itemCount());
+        view->populate(model->fileCount());
     connect(thumbPanel.get(), &ThumbnailStripProxy::itemActivated,
-            this, &DirectoryPresenter::itemActivated);
+            this, &DirectoryPresenter::fileActivated);
     connect(thumbPanel.get(), &ThumbnailStripProxy::thumbnailsRequested,
             this, &DirectoryPresenter::generateThumbnails);
 }
@@ -62,9 +64,9 @@ void DirectoryPresenter::populateViews() {
     if(!model)
         return;
     if(folderView)
-        folderView->populate(model->itemCount());
+        folderView->populate(settings->directoriesInFolderView() ? model->totalCount() : model->fileCount());
     if(thumbPanel)
-        thumbPanel->populate(model->itemCount());
+        thumbPanel->populate(model->fileCount());
 }
 
 void DirectoryPresenter::disconnectAllViews() {
@@ -76,11 +78,12 @@ void DirectoryPresenter::disconnectAllViews() {
 void DirectoryPresenter::onFileRemoved(QString filePath, int index) {
     Q_UNUSED(filePath)
     if(folderView)
-        folderView->removeItem(index);
+        folderView->removeItem(settings->directoriesInFolderView() ? index + model->dirCount() : index);
     if(thumbPanel)
         thumbPanel->removeItem(index);
 }
 
+// todo fix dir offset
 void DirectoryPresenter::onFileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo) {
     Q_UNUSED(fromPath)
     Q_UNUSED(toPath)
@@ -110,70 +113,83 @@ void DirectoryPresenter::onFileRenamed(QString fromPath, int indexFrom, QString 
 }
 
 void DirectoryPresenter::onFileAdded(QString filePath) {
-    int index = model->indexOf(filePath);
+    int index = model->indexOfFile(filePath);
     if(folderView)
-        folderView->insertItem(index);
+        folderView->insertItem(settings->directoriesInFolderView() ? model->dirCount() + index : index);
     if(thumbPanel)
         thumbPanel->insertItem(index);
 }
 
 void DirectoryPresenter::onFileModified(QString filePath) {
-    int index = model->indexOf(filePath);
+    int index = model->indexOfFile(filePath);
     if(folderView)
-        folderView->reloadItem(index);
+        folderView->reloadItem(settings->directoriesInFolderView() ? model->dirCount() + index : index);
     if(thumbPanel)
         thumbPanel->reloadItem(index);
 }
 
-void DirectoryPresenter::generateThumbnails(QList<int> indexes, int size, bool crop, bool force) {
-    thumbnailer.clearTasks();
+// [dirs] + files
+void DirectoryPresenter::generateThumbnailsFolderView(QList<int> indexes, int size, bool crop, bool force) {
+    if(!settings->directoriesInFolderView()) {
+        generateThumbnails(indexes, size, crop, force);
+        return;
+    }
     for(int i : indexes) {
-        auto entry = model->entryAt(i);
-        if(!entry.isDirectory) {
-            thumbnailer.getThumbnailAsync(model->filePathAt(i), size, crop, force);
-        } else {
-            // gen thumb for a directory (shared res)
+        if(i < model->dirCount()) {
+            // gen thumb for a directory (!todo: shared res)
+            // tmp ------------------------------------------------------------
             QPixmap *pixmap = new QPixmap(":/res/icons/common/other/folder96.png");
             ImageLib::recolor(*pixmap, settings->colorScheme().text);
-            std::shared_ptr<Thumbnail> thumb(new Thumbnail(entry.name,
+            std::shared_ptr<Thumbnail> thumb(new Thumbnail(model->dirNameAt(i),
                                                            "Folder",
                                                            size,
                                                            std::shared_ptr<QPixmap>(pixmap)));
-            onThumbnailReady(thumb, entry.path);
+            // ^----------------------------------------------------------------
+            folderView->setThumbnail(i, thumb);
+        } else {
+            QString path = model->filePathAt(i - model->dirCount());
+            thumbnailer.getThumbnailAsync(path, size, crop, force);
         }
     }
 }
 
+// assumes files only
+void DirectoryPresenter::generateThumbnails(QList<int> indexes, int size, bool crop, bool force) {
+    thumbnailer.clearTasks();
+    for(int i : indexes) {
+        thumbnailer.getThumbnailAsync(model->filePathAt(i), size, crop, force);
+    }
+}
+
 void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb, QString filePath) {
-    int index = model->indexOf(filePath);
+    int index = model->indexOfFile(filePath);
     if(index == -1)
         return;
 
-    if(folderView)
-        folderView->setThumbnail(index, thumb);
-    if(thumbPanel)
+    if(folderView) {
+        folderView->setThumbnail(settings->directoriesInFolderView() ? model->dirCount() + index : index, thumb);
+    }
+    if(thumbPanel) {
         thumbPanel->setThumbnail(index, thumb);
+    }
 }
 
-// tmp -- ?
-void DirectoryPresenter::setCurrentIndex(int index) {
-    if(folderView)
-        folderView->selectIndex(index);
-    if(thumbPanel)
-        thumbPanel->selectIndex(index);
-}
-
-void DirectoryPresenter::focusOn(int index) {
-    if(folderView)
-        folderView->focusOn(index);
-    if(thumbPanel)
-        thumbPanel->focusOn(index);
+void DirectoryPresenter::onItemActivatedFolderView(int index) {
+    if(!settings->directoriesInFolderView()) {
+        emit fileActivated(index);
+        return;
+    }
+    if(index < model->dirCount())
+        emit dirActivated(model->dirPathAt(index));
+    else
+        emit fileActivated(index - model->dirCount());
 }
 
 void DirectoryPresenter::selectAndFocus(int index) {
     if(folderView)  {
-        folderView->selectIndex(index);
-        folderView->focusOn(index);
+        int indexDirOffset = settings->directoriesInFolderView() ? model->dirCount() + index : index;
+        folderView->selectIndex(indexDirOffset);
+        folderView->focusOn(indexDirOffset);
     }
     if(thumbPanel) {
         thumbPanel->selectIndex(index);
