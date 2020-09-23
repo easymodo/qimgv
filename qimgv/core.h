@@ -60,8 +60,7 @@ private:
 
     void rotateByDegrees(int degrees);
     void reset();
-    void loadDirectoryPath(QString);
-    void loadImagePath(QString path, bool blocking);
+
     QDrag *mDrag;
     QMimeData *getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget target);
 
@@ -134,7 +133,7 @@ private slots:
     void outputError(const FileOpResult &error) const;
     void showOpenDialog();
     void showInDirectory();
-    void onDirectoryViewItemSelected(int index);
+    void onDirectoryViewItemActivated(int index);
     bool loadIndex(int index, bool async, bool preload);
     void enableDocumentView();
     void enableFolderView();

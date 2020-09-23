@@ -56,7 +56,7 @@ public slots:
     virtual void reloadItem(int index) Q_DECL_OVERRIDE;
 
 signals:
-    void itemSelected(int) Q_DECL_OVERRIDE;
+    void itemActivated(int) Q_DECL_OVERRIDE;
     void thumbnailsRequested(QList<int>, int, bool, bool) Q_DECL_OVERRIDE;
     void draggedOut(int index);
 

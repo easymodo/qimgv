@@ -4,7 +4,6 @@
 #include "cache/cache.h"
 #include "directorymanager/directorymanager.h"
 #include "scaler/scaler.h"
-#include "thumbnailer/thumbnailer.h"
 #include "loader/loader.h"
 
 enum FileOpResult {
@@ -72,6 +71,7 @@ public:
     void reload(QString filePath);
     QString filePathAt(int index) const;
     void unloadExcept(QString filePath, bool keepNearby);
+    const FSEntry &entryAt(int index) const;
 
 signals:
     void fileRemoved(QString filePath, int index);
@@ -86,15 +86,11 @@ signals:
     void itemReady(std::shared_ptr<Image> img);
     void itemUpdated(QString filePath);
 
-    void generateThumbnails(QList<int> indexes, int size, bool, bool);
-    void thumbnailReady(std::shared_ptr<Thumbnail> thumbnail, QString filePath);
-
 private:
     DirectoryManager dirManager;
     Loader loader;
     Cache cache;
     FileListSource fileListSource;
-    Thumbnailer *thumbnailer;
 
 private slots:
     void onItemReady(std::shared_ptr<Image> img);

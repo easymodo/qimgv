@@ -147,5 +147,6 @@
         <file>res/translations/ru_RU.qm</file>
         <file>res/icons/common/buttons/panel/settings20.png</file>
         <file>res/icons/common/buttons/panel/settings20@2x.png</file>
+        <file>res/icons/common/other/folder96.png</file>
     </qresource>
 </RCC>

@@ -18,46 +18,15 @@
 #include "settings.h"
 #include "watchers/directorywatcher.h"
 #include "utils/stuff.h"
+#include "sourcecontainers/fsentry.h"
 
 #ifdef Q_OS_WIN32
 #include "windows.h"
 #endif
 
 class DirectoryManager;
-class Entry {
-public:
-    Entry() { }
-    Entry( QString _path, QString _name, std::uintmax_t _size, std::filesystem::file_time_type _modifyTime, bool _isDirectory)
-        : path(_path),
-          name(_name),
-          size(_size),
-          modifyTime(_modifyTime),
-          isDirectory(_isDirectory)
-    {
-    }
-    Entry( QString _path, QString _name, std::uintmax_t _size, bool _isDirectory)
-        : path(_path),
-          name(_name),
-          size(_size),
-          isDirectory(_isDirectory)
-    {
-    }
-    Entry( QString _path, QString _name, bool _isDirectory)
-        : path(_path),
-          name(_name),
-          isDirectory(_isDirectory)
-    {
-    }
-    bool operator==(const QString &anotherPath) const {
-        return this->path == anotherPath;
-    }
-    QString path, name;
-    std::uintmax_t size;
-    std::filesystem::file_time_type modifyTime;
-    bool isDirectory;
-};
 
-typedef bool (DirectoryManager::*CompareFunction)(const Entry &e1, const Entry &e2) const;
+typedef bool (DirectoryManager::*CompareFunction)(const FSEntry &e1, const FSEntry &e2) const;
 
 class DirectoryManager : public QObject {
     Q_OBJECT
@@ -80,7 +49,6 @@ public:
     QString fileNameAt(int index) const;
     QString prevOf(QString filePath) const;
     QString nextOf(QString filePath) const;
-    bool isDirectory(QString path) const;
     void sortFileList();
     QDateTime lastModified(QString filePath) const;
 
@@ -91,31 +59,32 @@ public:
     bool forceInsert(QString filePath);
     bool isFile(QString path) const;
 
+    const FSEntry &entryAt(int index) const;
 private:
-    QString currentPath;
-    QString filterRegex;
     QRegularExpression regex;
     QCollator collator;
-    std::vector<Entry> entryVec;
+    std::vector<FSEntry> entryVec;
 
     DirectoryWatcher* watcher;
     void readSettings();
     SortingMode mSortingMode;
-    void generateFileList();
+    void loadFileList(QString directoryPath, bool recursive);
 
     bool moveToTrash(QString file);
-    bool path_entry_compare(const Entry &e1, const Entry &e2) const;
-    bool path_entry_compare_reverse(const Entry &e1, const Entry &e2) const;
-    bool name_entry_compare(const Entry &e1, const Entry &e2) const;
-    bool name_entry_compare_reverse(const Entry &e1, const Entry &e2) const;
-    bool date_entry_compare(const Entry &e1, const Entry &e2) const;
-    bool date_entry_compare_reverse(const Entry &e1, const Entry &e2) const;
+    bool path_entry_compare(const FSEntry &e1, const FSEntry &e2) const;
+    bool path_entry_compare_reverse(const FSEntry &e1, const FSEntry &e2) const;
+    bool name_entry_compare(const FSEntry &e1, const FSEntry &e2) const;
+    bool name_entry_compare_reverse(const FSEntry &e1, const FSEntry &e2) const;
+    bool date_entry_compare(const FSEntry &e1, const FSEntry &e2) const;
+    bool date_entry_compare_reverse(const FSEntry &e1, const FSEntry &e2) const;
     CompareFunction compareFunction();
-    bool size_entry_compare(const Entry &e1, const Entry &e2) const;
-    bool size_entry_compare_reverse(const Entry &e1, const Entry &e2) const;
-    void startFileWatcher();
+    bool size_entry_compare(const FSEntry &e1, const FSEntry &e2) const;
+    bool size_entry_compare_reverse(const FSEntry &e1, const FSEntry &e2) const;
+    void startFileWatcher(QString directoryPath);
     void stopFileWatcher();
 
+    void addFromDirectory(std::vector<FSEntry> &entryVec, QString directoryPath);
+    void addFromDirectoryRecursive(std::vector<FSEntry> &entryVec, QString directoryPath);
 private slots:
     void onFileAddedExternal(QString fileName);
     void onFileRemovedExternal(QString fileName);

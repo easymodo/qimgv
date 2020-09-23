@@ -68,8 +68,8 @@ void Core::connectComponents() {
     presenter.setFolderView(mw->getFolderView());
     presenter.setThumbPanel(mw->getThumbnailPanel());
 
-    connect(&presenter, &DirectoryPresenter::itemSelected,
-            this, &Core::onDirectoryViewItemSelected);
+    connect(&presenter, &DirectoryPresenter::itemActivated,
+            this, &Core::onDirectoryViewItemActivated);
 
     connect(mw, &MW::opened,                this, &Core::loadPath);
     connect(mw, &MW::droppedIn,             this, &Core::onDropIn);
@@ -253,7 +253,7 @@ void Core::onModelLoaded() {
         syncRandomizer();
 }
 
-void Core::onDirectoryViewItemSelected(int index) {
+void Core::onDirectoryViewItemActivated(int index) {
     // we aren`t using async load so it won't flicker with empty view
     mw->enableDocumentView();
     loadIndex(index, false, settings->usePreloader());
@@ -861,22 +861,22 @@ void Core::loadPath(QString path) {
 bool Core::loadIndex(int index, bool async, bool preload) {
     if(!model)
         return false;
-    QString path = model->filePathAt(index);
-    if(path.isEmpty())
+    auto entry = model->entryAt(index);
+    if(entry.path.isEmpty())
         return false;
-
-    state.currentFilePath = path;
-
-    model->unloadExcept(path, preload);
-    model->load(path, async);
-
-    if(preload) {
-        model->preload(model->nextOf(path));
-        model->preload(model->prevOf(path));
+    if(entry.isDirectory) { // load directory
+        loadPath(entry.path);
+    } else {
+        state.currentFilePath = entry.path;
+        model->unloadExcept(entry.path, preload);
+        model->load(entry.path, async);
+        if(preload) {
+            model->preload(model->nextOf(entry.path));
+            model->preload(model->prevOf(entry.path));
+        }
+        presenter.onIndexChanged(index);
+        updateInfoString();
     }
-
-    presenter.onIndexChanged(index);
-    updateInfoString();
     return true;
 }
 

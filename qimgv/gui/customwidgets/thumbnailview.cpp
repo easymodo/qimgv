@@ -71,7 +71,6 @@ void ThumbnailView::createScrollTimeLine() {
         scrollFrameTimer.start();
         this->centerOn(value);
         lastScrollFrameTime = scrollFrameTimer.elapsed();
-        qDebug() << lastScrollFrameTime << "ms";
         if(scrollTimeLine->state() == QTimeLine::Running && lastScrollFrameTime > SCROLL_UPDATE_RATE) {
             scrollTimeLine->setPaused(true);
             int newTime = qMin(scrollTimeLine->duration(), scrollTimeLine->currentTime() + lastScrollFrameTime);
@@ -416,7 +415,7 @@ void ThumbnailView::mousePressEvent(QMouseEvent *event) {
         int index = thumbnails.indexOf(item);
         if(event->button() == Qt::LeftButton) {
             if(selectMode == SELECT_BY_PRESS) {
-                emit itemSelected(index);
+                emit itemActivated(index);
                 return;
             } else {
                 selectIndex(index);
@@ -451,7 +450,7 @@ void ThumbnailView::mouseDoubleClickEvent(QMouseEvent *event) {
         if(event->button() == Qt::LeftButton) {
             ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
             if(item) {
-                emit itemSelected(thumbnails.indexOf(item));
+                emit itemActivated(thumbnails.indexOf(item));
                 return;
             }
         }

@@ -17,7 +17,7 @@ void FolderViewProxy::init() {
     this->setFocusProxy(folderView.get());
     this->setLayout(&layout);
 
-    connect(folderView.get(), &FolderView::itemSelected, this, &FolderViewProxy::itemSelected);
+    connect(folderView.get(), &FolderView::itemActivated, this, &FolderViewProxy::itemActivated);
     connect(folderView.get(), &FolderView::thumbnailsRequested, this, &FolderViewProxy::thumbnailsRequested);
     connect(folderView.get(), &FolderView::sortingSelected, this, &FolderViewProxy::sortingSelected);
     connect(folderView.get(), &FolderView::directorySelected, this, &FolderViewProxy::directorySelected);

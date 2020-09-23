@@ -22,7 +22,7 @@ FolderGridView::FolderGridView(QWidget *parent)
     });
 
     setupLayout();
-    connect(this, &ThumbnailView::itemSelected,
+    connect(this, &ThumbnailView::itemActivated,
             this, &FolderGridView::onitemSelected);
 }
 
@@ -259,7 +259,7 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
     else if(shortcut == "Down")
         selectBelow();
     else if(shortcut == "Enter")
-        emit itemSelected(selectedIndex());
+        emit itemActivated(selectedIndex());
     else if(shortcut == "Home")
         selectFirst();
     else if(shortcut == "End")

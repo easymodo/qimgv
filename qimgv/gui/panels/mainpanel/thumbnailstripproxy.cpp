@@ -15,7 +15,7 @@ void ThumbnailStripProxy::init() {
     this->setFocusProxy(thumbnailStrip.get());
     this->setLayout(&layout);
 
-    connect(thumbnailStrip.get(), &ThumbnailStrip::itemSelected, this, &ThumbnailStripProxy::itemSelected);
+    connect(thumbnailStrip.get(), &ThumbnailStrip::itemActivated, this, &ThumbnailStripProxy::itemActivated);
     connect(thumbnailStrip.get(), &ThumbnailStrip::thumbnailsRequested, this, &ThumbnailStripProxy::thumbnailsRequested);
 
     thumbnailStrip->show();

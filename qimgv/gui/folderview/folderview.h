@@ -52,7 +52,7 @@ protected slots:
     void onZoomSliderValueChanged(int value);
 
 signals:
-    void itemSelected(int) Q_DECL_OVERRIDE;
+    void itemActivated(int) Q_DECL_OVERRIDE;
     void thumbnailsRequested(QList<int>, int, bool, bool) Q_DECL_OVERRIDE;
     void sortingSelected(SortingMode);
     void directorySelected(QString path);

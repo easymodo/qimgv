@@ -2,7 +2,6 @@
 
 #include <QThreadPool>
 #include <QtConcurrent>
-#include "components/directorymanager/directorymanager.h"
 #include "components/thumbnailer/thumbnailerrunnable.h"
 #include "components/cache/thumbnailcache.h"
 #include "components/cache/cache.h"
@@ -12,18 +11,18 @@ class Thumbnailer : public QObject
 {
     Q_OBJECT
 public:
-    explicit Thumbnailer(DirectoryManager *_dm);
+    explicit Thumbnailer();
+    ~Thumbnailer();
     static std::shared_ptr<Thumbnail> getThumbnail(QString filePath, int size);
     void clearTasks();
 
 public slots:
-    void generateThumbnails(QList<int> indexes, int size, bool crop, bool force);
+    void getThumbnailAsync(QString path, int size, bool crop, bool force);
 
 private:
     ThumbnailCache *cache;
     QThreadPool *pool;
     void startThumbnailerThread(QString filePath, int size, bool crop, bool force);
-    DirectoryManager *dm;
     QMultiMap<QString, int> runningTasks;
 
 private slots:

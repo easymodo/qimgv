@@ -1,6 +1,7 @@
 #include "directorypresenter.h"
 
 DirectoryPresenter::DirectoryPresenter(QObject *parent) : QObject(parent) {
+    connect(&thumbnailer, &Thumbnailer::thumbnailReady, this, &DirectoryPresenter::onThumbnailReady);
 }
 
 void DirectoryPresenter::unsetModel() {
@@ -9,8 +10,6 @@ void DirectoryPresenter::unsetModel() {
     disconnect(model.get(), &DirectoryModel::fileModified,   this, &DirectoryPresenter::onFileModified);
     disconnect(model.get(), &DirectoryModel::fileModifiedInternal,   this, &DirectoryPresenter::onFileModified);
     disconnect(model.get(), &DirectoryModel::fileRenamed,    this, &DirectoryPresenter::onFileRenamed);
-    disconnect(model.get(), &DirectoryModel::thumbnailReady, this, &DirectoryPresenter::onThumbnailReady);
-    disconnect(this, &DirectoryPresenter::generateThumbnails, model.get(), &DirectoryModel::generateThumbnails);
     model = nullptr;
     // also empty views?
 }
@@ -21,8 +20,8 @@ void DirectoryPresenter::setFolderView(std::shared_ptr<FolderViewProxy> view) {
     folderView = view;
     if(model)
         folderView->populate(model->itemCount());
-    connect(folderView.get(), &FolderViewProxy::itemSelected,
-            this, &DirectoryPresenter::itemSelected);
+    connect(folderView.get(), &FolderViewProxy::itemActivated,
+            this, &DirectoryPresenter::itemActivated);
     connect(folderView.get(), &FolderViewProxy::thumbnailsRequested,
             this, &DirectoryPresenter::generateThumbnails);
 }
@@ -33,8 +32,8 @@ void DirectoryPresenter::setThumbPanel(std::shared_ptr<ThumbnailStripProxy> view
     thumbPanel = view;
     if(model)
         view->populate(model->itemCount());
-    connect(thumbPanel.get(), &ThumbnailStripProxy::itemSelected,
-            this, &DirectoryPresenter::itemSelected);
+    connect(thumbPanel.get(), &ThumbnailStripProxy::itemActivated,
+            this, &DirectoryPresenter::itemActivated);
     connect(thumbPanel.get(), &ThumbnailStripProxy::thumbnailsRequested,
             this, &DirectoryPresenter::generateThumbnails);
 }
@@ -53,8 +52,6 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
     connect(model.get(), &DirectoryModel::fileModified,   this, &DirectoryPresenter::onFileModified);
     connect(model.get(), &DirectoryModel::fileModifiedInternal,   this, &DirectoryPresenter::onFileModified);
     connect(model.get(), &DirectoryModel::fileRenamed,    this, &DirectoryPresenter::onFileRenamed);
-    connect(model.get(), &DirectoryModel::thumbnailReady, this, &DirectoryPresenter::onThumbnailReady);
-    connect(this, &DirectoryPresenter::generateThumbnails, model.get(), &DirectoryModel::generateThumbnails);
 }
 
 void DirectoryPresenter::reloadModel() {
@@ -128,8 +125,30 @@ void DirectoryPresenter::onFileModified(QString filePath) {
         thumbPanel->reloadItem(index);
 }
 
+void DirectoryPresenter::generateThumbnails(QList<int> indexes, int size, bool crop, bool force) {
+    thumbnailer.clearTasks();
+    for(int i : indexes) {
+        auto entry = model->entryAt(i);
+        if(!entry.isDirectory) {
+            thumbnailer.getThumbnailAsync(model->filePathAt(i), size, crop, force);
+        } else {
+            // gen thumb for a directory (shared res)
+            QPixmap *pixmap = new QPixmap(":/res/icons/common/other/folder96.png");
+            ImageLib::recolor(*pixmap, settings->colorScheme().text);
+            std::shared_ptr<Thumbnail> thumb(new Thumbnail(entry.name,
+                                                           "Folder",
+                                                           size,
+                                                           std::shared_ptr<QPixmap>(pixmap)));
+            onThumbnailReady(thumb, entry.path);
+        }
+    }
+}
+
 void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb, QString filePath) {
     int index = model->indexOf(filePath);
+    if(index == -1)
+        return;
+
     if(folderView)
         folderView->setThumbnail(index, thumb);
     if(thumbPanel)

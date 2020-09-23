@@ -1,6 +1,6 @@
 #include "thumbnailer.h"
 
-Thumbnailer::Thumbnailer(DirectoryManager *_dm) : dm(_dm) {
+Thumbnailer::Thumbnailer() {
     cache = new ThumbnailCache();
     pool = new QThreadPool(this);
     int threads = settings->thumbnailerThreadCount();
@@ -10,25 +10,22 @@ Thumbnailer::Thumbnailer(DirectoryManager *_dm) : dm(_dm) {
     pool->setMaxThreadCount(threads);
 }
 
-void Thumbnailer::clearTasks() {
+Thumbnailer::~Thumbnailer() {
     pool->clear();
     pool->waitForDone();
+}
+
+void Thumbnailer::clearTasks() {
+    pool->clear();
 }
 
 std::shared_ptr<Thumbnail> Thumbnailer::getThumbnail(QString filePath, int size) {
     return ThumbnailerRunnable::generate(nullptr, filePath, size, false, false);
 }
 
-void Thumbnailer::generateThumbnails(QList<int> indexes, int size, bool crop, bool force) {
-    pool->clear();
-    for(int i = 0; i < indexes.count(); i++) {
-        if(!dm->checkRange(indexes[i]))
-            continue;
-        QString filePath = dm->filePathAt(indexes[i]);
-        if(!runningTasks.contains(filePath, size)) {
-            startThumbnailerThread(filePath, size, crop, force);
-        }
-    }
+void Thumbnailer::getThumbnailAsync(QString path, int size, bool crop, bool force) {
+    if(!runningTasks.contains(path, size))
+        startThumbnailerThread(path, size, crop, force);
 }
 
 void Thumbnailer::startThumbnailerThread(QString filePath, int size, bool crop, bool force) {

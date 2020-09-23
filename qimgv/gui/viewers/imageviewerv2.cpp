@@ -579,8 +579,8 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
         // high-precision touchpad
         if(pixelDelta != QPoint(0,0) && settings->imageScrolling() != ImageScrolling::SCROLL_NONE) {
             stopPosAnimation();
-            horizontalScrollBar()->setValue(horizontalScrollBar()->value() - pixelDelta.x());
-            verticalScrollBar()->setValue(verticalScrollBar()->value() - pixelDelta.y());
+            horizontalScrollBar()->setValue(horizontalScrollBar()->value() - pixelDelta.x() * TRACKPAD_SCROLL_MULTIPLIER);
+            verticalScrollBar()->setValue(verticalScrollBar()->value() - pixelDelta.y() * TRACKPAD_SCROLL_MULTIPLIER);
             centerIfNecessary();
             snapToEdges();
         } else if(angleDelta != QPoint(0,0)) { // mouse wheel & (windows) touchpad
@@ -597,8 +597,8 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                 return; // return immediately so we wont restart the scroll timer
             } else if(settings->imageScrolling() != ImageScrolling::SCROLL_NONE) {
                 stopPosAnimation();
-                horizontalScrollBar()->setValue(horizontalScrollBar()->value() - angleDelta.x());
-                verticalScrollBar()->setValue(verticalScrollBar()->value() - angleDelta.y());
+                horizontalScrollBar()->setValue(horizontalScrollBar()->value() - angleDelta.x() * TRACKPAD_SCROLL_MULTIPLIER);
+                verticalScrollBar()->setValue(verticalScrollBar()->value() - angleDelta.y() * TRACKPAD_SCROLL_MULTIPLIER);
                 centerIfNecessary();
                 snapToEdges();
             }

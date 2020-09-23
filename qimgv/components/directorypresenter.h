@@ -4,7 +4,9 @@
 #include <memory>
 #include "gui/folderview/folderviewproxy.h"
 #include "gui/panels/mainpanel/thumbnailstripproxy.h"
+#include "components/thumbnailer/thumbnailer.h"
 #include "directorymodel.h"
+#include "sharedresources.h"
 
 class DirectoryPresenter : public QObject {
     Q_OBJECT
@@ -27,15 +29,14 @@ public:
     void onFileModified(QString filePath);
 
 signals:
-    void generateThumbnails(QList<int>, int, bool, bool);
-    void itemSelected(int);
+    void itemActivated(int);
 
 public slots:
     void disconnectAllViews();
     void reloadModel();
 
 private slots:
-
+    void generateThumbnails(QList<int>, int, bool, bool);
     void onThumbnailReady(std::shared_ptr<Thumbnail> thumb, QString filePath);
     void setCurrentIndex(int index);
     void focusOn(int index);
@@ -45,4 +46,5 @@ private:
     std::shared_ptr<FolderViewProxy> folderView = nullptr;
     std::shared_ptr<ThumbnailStripProxy> thumbPanel = nullptr;
     std::shared_ptr<DirectoryModel> model = nullptr;
+    Thumbnailer thumbnailer;
 };

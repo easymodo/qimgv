@@ -34,7 +34,7 @@ protected:
     void showEvent(QShowEvent *event) override;
 
 signals:
-    void itemSelected(int) override;
+    void itemActivated(int) override;
     void thumbnailsRequested(QList<int>, int, bool, bool);
     void sortingSelected(SortingMode);
     void directorySelected(QString);

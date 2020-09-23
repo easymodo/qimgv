@@ -4,7 +4,6 @@ DirectoryModel::DirectoryModel(QObject *parent) :
     QObject(parent),
     fileListSource(SOURCE_DIRECTORY)
 {
-    thumbnailer = new Thumbnailer(&dirManager);
     scaler = new Scaler(&cache);
 
     connect(&dirManager, &DirectoryManager::fileRemoved, this, &DirectoryModel::onFileRemoved);
@@ -14,15 +13,11 @@ DirectoryModel::DirectoryModel(QObject *parent) :
     connect(&dirManager, &DirectoryManager::loaded, this, &DirectoryModel::loaded);
     connect(&dirManager, &DirectoryManager::sortingChanged, this, &DirectoryModel::onSortingChanged);
     connect(&loader, &Loader::loadFinished, this, &DirectoryModel::onItemReady);
-    connect(thumbnailer, &Thumbnailer::thumbnailReady, this, &DirectoryModel::thumbnailReady);
-    connect(this, &DirectoryModel::generateThumbnails, thumbnailer, &Thumbnailer::generateThumbnails);
 }
 
 DirectoryModel::~DirectoryModel() {
-    thumbnailer->clearTasks();
     loader.clearTasks();
     delete scaler;
-    delete thumbnailer;
 }
 
 int DirectoryModel::itemCount() const {
@@ -35,6 +30,10 @@ int DirectoryModel::indexOf(QString filePath) const {
 
 SortingMode DirectoryModel::sortingMode() const {
     return dirManager.sortingMode();
+}
+
+const FSEntry &DirectoryModel::entryAt(int index) const {
+    return dirManager.entryAt(index);
 }
 
 QString DirectoryModel::fileNameAt(int index) const {
