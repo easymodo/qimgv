@@ -10,7 +10,6 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       selectMode(SELECT_BY_PRESS),
       mDragTarget(-1),
       lastScrollFrameTime(0),
-      //mSelection({-1}),
       scrollTimeLine(nullptr)
 {
     setAccessibleName("thumbnailView");
@@ -107,15 +106,17 @@ void ThumbnailView::setDirectoryPath(QString path) {
 }
 
 void ThumbnailView::select(QList<int> indices) {
-    for(auto i : mSelection) {
+    for(auto i : mSelection)
         thumbnails.at(i)->setHighlighted(false);
-    }
-    for(auto i : indices) {
+    QList<int>::iterator it = indices.begin();
+    while (it != indices.end()) {
         // sanity check
-        if(i < 0 || i >= this->itemCount())
-            indices.removeAll(i);
-        else
-            thumbnails.at(i)->setHighlighted(true);
+        if(*it < 0 || *it >= itemCount()) {
+            it = indices.erase(it);
+        } else {
+            thumbnails.at(*it)->setHighlighted(true);
+            ++it;
+        }
     }
     mSelection = indices;
     updateScrollbarIndicator();
@@ -127,6 +128,12 @@ void ThumbnailView::select(int index) {
 
 QList<int> ThumbnailView::selection() {
     return mSelection;
+}
+
+void ThumbnailView::clearSelection() {
+    for(auto i : mSelection)
+        thumbnails.at(i)->setHighlighted(false);
+    mSelection.clear();
 }
 
 int ThumbnailView::lastSelected() {
@@ -150,6 +157,7 @@ void ThumbnailView::showEvent(QShowEvent *event) {
 }
 
 void ThumbnailView::populate(int count) {
+    clearSelection();
     if(count >= 0) {
         // reuse existing items
         if(count == thumbnails.count()) {
@@ -167,7 +175,6 @@ void ThumbnailView::populate(int count) {
             }
         }
     }
-    mSelection = { 0 };
     mDragTarget = -1;
     updateLayout();
     fitSceneToContents();

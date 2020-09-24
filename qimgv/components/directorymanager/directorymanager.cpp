@@ -113,13 +113,8 @@ bool DirectoryManager::setDirectory(QString dirPath) {
         qDebug() << "[DirectoryManager] Error - path is not a directory.";
         return false;
     }
-    QElapsedTimer t;
-    t.start();
     loadEntryList(dirPath, false);
-    qDebug() << "loadList: " << t.elapsed();
-    t.start();
     sortEntryLists();
-    qDebug() << "sortList: " << t.elapsed();
     emit loaded(dirPath);
     startFileWatcher(dirPath);
     return true;

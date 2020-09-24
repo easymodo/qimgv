@@ -36,7 +36,8 @@ void FolderViewProxy::init() {
     // wait till layout stuff happens
     // before calling focusOn()
     qApp->processEvents();
-    folderView->focusOn(stateBuf.selection.first());
+    if(stateBuf.selection.count())
+        folderView->focusOn(stateBuf.selection.last());
     folderView->onSortingChanged(stateBuf.sortingMode);
 }
 

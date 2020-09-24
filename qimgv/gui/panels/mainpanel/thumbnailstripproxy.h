@@ -3,7 +3,7 @@
 #include "gui/panels/mainpanel/thumbnailstrip.h"
 
 struct ThumbnailStripStateBuffer {
-    QList<int> selection = {-1};
+    QList<int> selection;
     int itemCount;
 };
 

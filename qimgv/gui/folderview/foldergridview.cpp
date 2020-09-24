@@ -33,7 +33,7 @@ void FolderGridView::onitemSelected() {
 void FolderGridView::updateScrollbarIndicator() {
     if(!thumbnails.count() || !selection().count())
         return;
-    ThumbnailWidget *thumb = thumbnails.at(selection().first());
+    ThumbnailWidget *thumb = thumbnails.at(lastSelected());
     qreal itemCenter = (thumb->pos().y() + (thumb->height() / 2)) / scene.height();
     indicator = QRect(2, scrollBar->height() * itemCenter - indicatorSize, scrollBar->width() - 4, indicatorSize);
 }

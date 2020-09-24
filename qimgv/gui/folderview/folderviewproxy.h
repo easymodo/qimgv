@@ -4,7 +4,7 @@
 
 struct FolderViewStateBuffer {
     QString directory;
-    QList<int> selection = {-1};
+    QList<int> selection;
     int itemCount;
     SortingMode sortingMode;
     bool fullscreenMode;
