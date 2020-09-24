@@ -55,7 +55,8 @@ void Core::initGui() {
 
 void Core::attachModel(DirectoryModel *_model) {
     model.reset(_model);
-    presenter.setModel(model);
+    thumbPanelPresenter.setModel(model);
+    folderViewPresenter.setModel(model);
     if(settings->shuffleEnabled())
         syncRandomizer();
 }
@@ -65,13 +66,16 @@ void Core::initComponents() {
 }
 
 void Core::connectComponents() {
-    presenter.setFolderView(mw->getFolderView());
-    presenter.setThumbPanel(mw->getThumbnailPanel());
-
-    connect(&presenter, &DirectoryPresenter::fileActivated,
+    thumbPanelPresenter.setView(mw->getThumbnailPanel());
+    connect(&thumbPanelPresenter, &DirectoryPresenter::fileActivated,
             this, &Core::onDirectoryViewItemActivated);
+    connect(&thumbPanelPresenter, &DirectoryPresenter::dirActivated,
+            this, &Core::loadPath);
 
-    connect(&presenter, &DirectoryPresenter::dirActivated,
+    folderViewPresenter.setView(mw->getFolderView());
+    connect(&folderViewPresenter, &DirectoryPresenter::fileActivated,
+            this, &Core::onDirectoryViewItemActivated);
+    connect(&folderViewPresenter, &DirectoryPresenter::dirActivated,
             this, &Core::loadPath);
 
     connect(mw, &MW::opened,                this, &Core::loadPath);
@@ -90,7 +94,6 @@ void Core::connectComponents() {
     connect(mw, &MW::sortingSelected,       this, &Core::sortBy);
     connect(mw, &MW::discardEditsRequested, this, &Core::discardEdits);
     connect(mw, qOverload<>(&MW::draggedOut),    this, qOverload<>(&Core::onDragOut));
-    connect(mw, qOverload<int>(&MW::draggedOut), this, qOverload<int>(&Core::onDragOut));
 
     connect(mw, &MW::playbackFinished, this, &Core::onPlaybackFinished);
 
@@ -251,7 +254,8 @@ void Core::syncRandomizer() {
 }
 
 void Core::onModelLoaded() {
-    presenter.reloadModel();
+    thumbPanelPresenter.reloadModel();
+    folderViewPresenter.reloadModel();
     if(settings->shuffleEnabled())
         syncRandomizer();
 }
@@ -730,11 +734,12 @@ void Core::discardEdits() {
     mw->hideSaveOverlay();
 }
 
+// todo: multi
 QString Core::selectedFilePath() {
     if(!model)
         return "";
     else if(mw->currentViewMode() == MODE_FOLDERVIEW)
-        return model->filePathAt(mw->folderViewSelection());
+        return model->filePathAt(folderViewPresenter.selection().first());
     else
         return state.currentFilePath;
 }
@@ -857,7 +862,7 @@ void Core::loadPath(QString path) {
         loadIndex(index, false, settings->usePreloader());
     } else {
         mw->enableFolderView();
-        presenter.selectAndFocus(0);
+        thumbPanelPresenter.selectAndFocus(0);
     }
 }
 
@@ -877,7 +882,8 @@ bool Core::loadIndex(int index, bool async, bool preload) {
             model->preload(model->nextOf(entry.path));
             model->preload(model->prevOf(entry.path));
         }
-        presenter.onIndexChanged(index);
+        thumbPanelPresenter.onIndexChanged(index);
+        folderViewPresenter.onIndexChanged(index);
         updateInfoString();
     }
     return true;
@@ -1002,8 +1008,10 @@ void Core::onModelItemUpdated(QString filePath) {
 
 void Core::onModelSortingChanged(SortingMode mode) {
     mw->onSortingChanged(mode);
-    presenter.reloadModel();
-    presenter.onIndexChanged(0);
+    thumbPanelPresenter.reloadModel();
+    thumbPanelPresenter.onIndexChanged(0);
+    folderViewPresenter.reloadModel();
+    folderViewPresenter.onIndexChanged(0);
 }
 
 void Core::guiSetImage(std::shared_ptr<Image> img) {

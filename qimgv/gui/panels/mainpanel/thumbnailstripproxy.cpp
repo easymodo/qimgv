@@ -22,11 +22,11 @@ void ThumbnailStripProxy::init() {
 
     // apply buffer
     thumbnailStrip->populate(stateBuf.itemCount);
-    thumbnailStrip->selectIndex(stateBuf.selectedIndex);
+    thumbnailStrip->select(stateBuf.selection);
     // wait till layout stuff happens
     // before calling focusOn()
     qApp->processEvents();
-    thumbnailStrip->focusOn(stateBuf.selectedIndex);
+    thumbnailStrip->focusOn(stateBuf.selection.first());
 }
 
 void ThumbnailStripProxy::populate(int count) {
@@ -43,19 +43,28 @@ void ThumbnailStripProxy::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb
     }
 }
 
-void ThumbnailStripProxy::selectIndex(int index) {
+void ThumbnailStripProxy::select(QList<int> indices) {
     if(thumbnailStrip) {
-        thumbnailStrip->selectIndex(index);
+        thumbnailStrip->select(indices);
     } else {
-        stateBuf.selectedIndex = index;
+        stateBuf.selection = indices;
     }
 }
 
-int ThumbnailStripProxy::selectedIndex() {
+void ThumbnailStripProxy::select(int index) {
     if(thumbnailStrip) {
-        return thumbnailStrip->selectedIndex();
+        thumbnailStrip->select(index);
     } else {
-        return stateBuf.selectedIndex;
+        stateBuf.selection.clear();
+        stateBuf.selection << index;
+    }
+}
+
+QList<int> ThumbnailStripProxy::selection() {
+    if(thumbnailStrip) {
+        return thumbnailStrip->selection();
+    } else {
+        return stateBuf.selection;
     }
 }
 
@@ -78,14 +87,13 @@ void ThumbnailStripProxy::removeItem(int index) {
         thumbnailStrip->removeItem(index);
     } else {
         stateBuf.itemCount--;
-        if(index < stateBuf.selectedIndex) {
-            stateBuf.selectedIndex--;
-        } else if(index == stateBuf.selectedIndex) {
-            if(stateBuf.selectedIndex >= stateBuf.itemCount)
-                stateBuf.selectedIndex = stateBuf.itemCount - 1;
-            else
-                stateBuf.selectedIndex = index;
+        stateBuf.selection.removeAll(index);
+        for(int i=0; i < stateBuf.selection.count(); i++) {
+            if(stateBuf.selection[i] > index)
+                stateBuf.selection[i]--;
         }
+        if(!stateBuf.selection.count())
+            stateBuf.selection << ((index >= stateBuf.itemCount) ? stateBuf.itemCount - 1 : index);
     }
 }
 

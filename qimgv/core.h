@@ -56,7 +56,7 @@ private:
     // components
     std::shared_ptr<DirectoryModel> model;
 
-    DirectoryPresenter presenter;
+    DirectoryPresenter thumbPanelPresenter, folderViewPresenter;
 
     void rotateByDegrees(int degrees);
     void reset();

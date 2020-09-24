@@ -65,7 +65,6 @@ void MW::setupUi() {
     folderView.reset(new FolderViewProxy(this));
     connect(folderView.get(), &FolderViewProxy::sortingSelected, this, &MW::sortingSelected);
     connect(folderView.get(), &FolderViewProxy::directorySelected, this, &MW::opened);
-    connect(folderView.get(), &FolderViewProxy::draggedOut, this, qOverload<int>(&MW::draggedOut));
     connect(folderView.get(), &FolderViewProxy::copyUrlsRequested, this, &MW::copyUrlsRequested);
     connect(folderView.get(), &FolderViewProxy::moveUrlsRequested, this, &MW::moveUrlsRequested);
 
@@ -165,10 +164,6 @@ void MW::enableFolderView() {
 
 ViewMode MW::currentViewMode() {
     return centralWidget->currentViewMode();
-}
-
-int MW::folderViewSelection() {
-    return folderView->selectedIndex();
 }
 
 void MW::fitWindow() {

@@ -210,12 +210,16 @@ void FolderView::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
     ui->thumbnailGrid->setThumbnail(pos, thumb);
 }
 
-void FolderView::selectIndex(int index) {
-    ui->thumbnailGrid->selectIndex(index);
+void FolderView::select(QList<int> indices) {
+    ui->thumbnailGrid->select(indices);
 }
 
-int FolderView::selectedIndex() {
-    return ui->thumbnailGrid->selectedIndex();
+void FolderView::select(int index) {
+    ui->thumbnailGrid->select(index);
+}
+
+QList<int> FolderView::selection() {
+    return ui->thumbnailGrid->selection();
 }
 
 void FolderView::focusOn(int index) {

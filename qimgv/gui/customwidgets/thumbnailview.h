@@ -35,11 +35,13 @@ class ThumbnailView : public QGraphicsView, public IDirectoryView {
 public:
     ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent = nullptr);
     virtual void setDirectoryPath(QString path) Q_DECL_OVERRIDE;
-    void selectIndex(int);
-    int selectedIndex();
+    void select(QList<int>) override;
+    void select(int) override;
+    QList<int> selection() override;
     int itemCount();
 
     void setSelectMode(ThumbnailSelectMode mode);
+    int lastSelected();
 public slots:
     void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
     void resetViewport();
@@ -58,7 +60,8 @@ public slots:
 signals:
     void itemActivated(int) Q_DECL_OVERRIDE;
     void thumbnailsRequested(QList<int>, int, bool, bool) Q_DECL_OVERRIDE;
-    void draggedOut(int index);
+    void draggedOut(QList<int>) Q_DECL_OVERRIDE;
+    void draggedToBookmarks(QList<int>) Q_DECL_OVERRIDE;
 
 private:
     ThumbnailViewOrientation orientation;
@@ -70,7 +73,8 @@ private:
     // TODO: tune this value
     const int SMOOTH_SCROLL_THRESHOLD = 120;
 
-    int mSelectedIndex, mDrawScrollbarIndicator, mDragTarget, lastScrollFrameTime;
+    int mDrawScrollbarIndicator, mDragTarget, lastScrollFrameTime;
+    QList<int> mSelection;
 
     bool mCropThumbnails;
     ThumbnailSelectMode selectMode;

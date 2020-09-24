@@ -65,7 +65,6 @@ public:
     std::shared_ptr<ThumbnailStripProxy> getThumbnailPanel();
 
     ViewMode currentViewMode();
-    int folderViewSelection();
 
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;
@@ -176,7 +175,6 @@ signals:
     void toggleTransparencyGrid();
     void droppedIn(const QMimeData*, QObject*);
     void draggedOut();
-    void draggedOut(int);
     void setLoopPlayback(bool);
     void playbackFinished();
 

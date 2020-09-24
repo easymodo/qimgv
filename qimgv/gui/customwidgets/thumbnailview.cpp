@@ -10,7 +10,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       selectMode(SELECT_BY_PRESS),
       mDragTarget(-1),
       lastScrollFrameTime(0),
-      mSelectedIndex(-1),
+      //mSelection({-1}),
       scrollTimeLine(nullptr)
 {
     setAccessibleName("thumbnailView");
@@ -106,22 +106,34 @@ void ThumbnailView::setDirectoryPath(QString path) {
     Q_UNUSED(path)
 }
 
-void ThumbnailView::selectIndex(int index) {
-    if(!checkRange(index))
-        return;
-
-    if(checkRange(mSelectedIndex))
-        thumbnails.at(mSelectedIndex)->setHighlighted(false);
-
-    mSelectedIndex = index;
-
-    ThumbnailWidget *thumb = thumbnails.at(mSelectedIndex);
-    thumb->setHighlighted(true);
+void ThumbnailView::select(QList<int> indices) {
+    for(auto i : mSelection) {
+        thumbnails.at(i)->setHighlighted(false);
+    }
+    for(auto i : indices) {
+        // sanity check
+        if(i < 0 || i >= this->itemCount())
+            indices.removeAll(i);
+        else
+            thumbnails.at(i)->setHighlighted(true);
+    }
+    mSelection = indices;
     updateScrollbarIndicator();
 }
 
-int ThumbnailView::selectedIndex() {
-    return mSelectedIndex;
+void ThumbnailView::select(int index) {
+    this->select(QList<int>() << index);
+}
+
+QList<int> ThumbnailView::selection() {
+    return mSelection;
+}
+
+int ThumbnailView::lastSelected() {
+    if(!selection().count())
+        return -1;
+    else
+        return selection().last();
 }
 
 int ThumbnailView::itemCount() {
@@ -155,7 +167,7 @@ void ThumbnailView::populate(int count) {
             }
         }
     }
-    mSelectedIndex = -1;
+    mSelection = { 0 };
     mDragTarget = -1;
     updateLayout();
     fitSceneToContents();
@@ -169,14 +181,19 @@ void ThumbnailView::addItem() {
 
 // insert at index
 void ThumbnailView::insertItem(int index) {
-    if(index <= mSelectedIndex) {
-        mSelectedIndex++;
-    }
     ThumbnailWidget *widget = createThumbnailWidget();
     thumbnails.insert(index, widget);
     addItemToLayout(widget, index);
     updateLayout();
     fitSceneToContents();
+
+    auto newSelection = mSelection;
+    for(int i=0; i < newSelection.count(); i++) {
+        if(index <= newSelection[i])
+            newSelection[i]++;
+    }
+    select(newSelection);
+
     updateScrollbarIndicator();
     loadVisibleThumbnails();
 }
@@ -186,14 +203,15 @@ void ThumbnailView::removeItem(int index) {
         removeItemFromLayout(index);
         delete thumbnails.takeAt(index);
         fitSceneToContents();
-        if(index < mSelectedIndex) {
-            selectIndex(mSelectedIndex - 1);
-        } else if(index == mSelectedIndex) {
-            if(mSelectedIndex >= thumbnails.count())
-                selectIndex(thumbnails.count() - 1);
-            else
-                selectIndex(mSelectedIndex);
+        auto newSelection = mSelection;
+        newSelection.removeAll(index);
+        for(int i=0; i < newSelection.count(); i++) {
+            if(newSelection[i] > index)
+                newSelection[i]--;
         }
+        if(!newSelection.count())
+            newSelection << ((index >= itemCount()) ? itemCount() - 1 : index);
+        select(newSelection);
         updateScrollbarIndicator();
         loadVisibleThumbnails();
     }
@@ -418,12 +436,18 @@ void ThumbnailView::mousePressEvent(QMouseEvent *event) {
                 emit itemActivated(index);
                 return;
             } else {
-                selectIndex(index);
+                if(event->modifiers() & Qt::ControlModifier) {
+                    if(!selection().contains(index)) {
+                        select(selection() << index);
+                    }
+                } else {
+                    select(index);
+                }
                 dragStartPos = event->pos();
                 mDragTarget = index;
             }
-        } else if(event->button() == Qt::RightButton) {
-            selectIndex(index);
+        } else if(event->button() == Qt::RightButton) { // todo: context menu maybe?
+            select(QList<int>() << index);
             return;
         }
     }
@@ -435,7 +459,7 @@ void ThumbnailView::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() != Qt::LeftButton || mDragTarget == -1)
         return;
     if(QLineF(dragStartPos, event->pos()).length() >= 40) {
-        emit draggedOut(mDragTarget);
+        emit draggedOut(QList<int>() << mDragTarget);
         mDragTarget = -1;
     }
 }

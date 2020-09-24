@@ -2,8 +2,7 @@
 
 #include <QObject>
 #include <memory>
-#include "gui/folderview/folderviewproxy.h"
-#include "gui/panels/mainpanel/thumbnailstripproxy.h"
+#include "gui/idirectoryview.h"
 #include "components/thumbnailer/thumbnailer.h"
 #include "directorymodel.h"
 #include "sharedresources.h"
@@ -13,39 +12,38 @@ class DirectoryPresenter : public QObject {
 public:
     explicit DirectoryPresenter(QObject *parent = nullptr);
 
-    void setFolderView(std::shared_ptr<FolderViewProxy>);
-    void setThumbPanel(std::shared_ptr<ThumbnailStripProxy>);
-
+    void setView(std::shared_ptr<IDirectoryView>);
     void setModel(std::shared_ptr<DirectoryModel> newModel);
     void unsetModel();
 
     void onIndexChanged(int index);
     void selectAndFocus(int index);
 
-    // not used
     void onFileRemoved(QString filePath, int index);
     void onFileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);
     void onFileAdded(QString filePath);
     void onFileModified(QString filePath);
+
+    void setShowDirs(bool mode);
+    QList<int> selection() const;
 
 signals:
     void dirActivated(QString dirPath);
     void fileActivated(int);
 
 public slots:
-    void disconnectAllViews();
+    void disconnectView();
     void reloadModel();
 
 private slots:
     void generateThumbnails(QList<int>, int, bool, bool);
     void onThumbnailReady(std::shared_ptr<Thumbnail> thumb, QString filePath);
-    void populateViews();
+    void populateView();
+    void onItemActivated(int index);
 
-    void generateThumbnailsFolderView(QList<int> indexes, int size, bool crop, bool force);
-    void onItemActivatedFolderView(int index);
 private:
-    std::shared_ptr<FolderViewProxy> folderView = nullptr;
-    std::shared_ptr<ThumbnailStripProxy> thumbPanel = nullptr;
+    std::shared_ptr<IDirectoryView> view = nullptr;
     std::shared_ptr<DirectoryModel> model = nullptr;
     Thumbnailer thumbnailer;
+    bool showDirs;
 };

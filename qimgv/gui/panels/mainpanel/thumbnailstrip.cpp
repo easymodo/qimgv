@@ -16,7 +16,9 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
 }
 
 void ThumbnailStrip::updateScrollbarIndicator() {
-    qreal itemCenter = (qreal)(selectedIndex() + 0.5) / itemCount();
+    if(!thumbnails.count() || lastSelected() == -1)
+        return;
+    qreal itemCenter = (qreal)(lastSelected() + 0.5) / itemCount();
     if(scrollBar->orientation() == Qt::Horizontal)
         indicator = QRect(scrollBar->width() * itemCenter - indicatorSize, 2, indicatorSize, scrollBar->height() - 4);
     else
@@ -109,7 +111,7 @@ void ThumbnailStrip::setThumbnailSize(int newSize) {
         //scene.invalidate(scene.sceneRect());
         updateThumbnailPositions(0, thumbnails.count() - 1);
         fitSceneToContents();
-        ensureThumbnailVisible(selectedIndex());
+        ensureThumbnailVisible(lastSelected());
     }
 }
 
