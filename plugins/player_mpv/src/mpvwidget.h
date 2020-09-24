@@ -13,7 +13,7 @@ class MpvWidget Q_DECL_FINAL: public QOpenGLWidget {
     Q_OBJECT
 public:
     MpvWidget(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::Widget);
-    ~MpvWidget() Q_DECL_OVERRIDE;
+    ~MpvWidget() override;
     void command(const QVariant& params);
     void setOption(const QString &name, const QVariant &value);
     void setProperty(const QString& name, const QVariant& value);
@@ -39,8 +39,8 @@ signals:
     void playbackFinished();
 
 protected:
-    void initializeGL() Q_DECL_OVERRIDE;
-    void paintGL() Q_DECL_OVERRIDE;
+    void initializeGL() override;
+    void paintGL() override;
 
 private slots:
     void swapped();

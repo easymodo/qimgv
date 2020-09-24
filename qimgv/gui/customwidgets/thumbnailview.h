@@ -34,7 +34,7 @@ class ThumbnailView : public QGraphicsView, public IDirectoryView {
     Q_OBJECT
 public:
     ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent = nullptr);
-    virtual void setDirectoryPath(QString path) Q_DECL_OVERRIDE;
+    virtual void setDirectoryPath(QString path) override;
     void select(QList<int>) override;
     void select(int) override;
     QList<int> selection() override;
@@ -43,7 +43,7 @@ public:
     void setSelectMode(ThumbnailSelectMode mode);
     int lastSelected();
 public slots:
-    void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
+    void showEvent(QShowEvent *event) override;
     void resetViewport();
     int thumbnailSize();
     void loadVisibleThumbnails();
@@ -51,17 +51,17 @@ public slots:
 
     void addItem();
 
-    virtual void populate(int count) Q_DECL_OVERRIDE;
-    virtual void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) Q_DECL_OVERRIDE;
-    virtual void insertItem(int index) Q_DECL_OVERRIDE;
-    virtual void removeItem(int index) Q_DECL_OVERRIDE;
-    virtual void reloadItem(int index) Q_DECL_OVERRIDE;
+    virtual void populate(int count) override;
+    virtual void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) override;
+    virtual void insertItem(int index) override;
+    virtual void removeItem(int index) override;
+    virtual void reloadItem(int index) override;
 
 signals:
-    void itemActivated(int) Q_DECL_OVERRIDE;
-    void thumbnailsRequested(QList<int>, int, bool, bool) Q_DECL_OVERRIDE;
-    void draggedOut(QList<int>) Q_DECL_OVERRIDE;
-    void draggedToBookmarks(QList<int>) Q_DECL_OVERRIDE;
+    void itemActivated(int) override;
+    void thumbnailsRequested(QList<int>, int, bool, bool) override;
+    void draggedOut(QList<int>) override;
+    void draggedToBookmarks(QList<int>) override;
 
 private:
     ThumbnailViewOrientation orientation;
@@ -122,10 +122,10 @@ protected:
     void setCropThumbnails(bool);
     void setDrawScrollbarIndicator(bool mode);
 
-    void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;
-    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void wheelEvent(QWheelEvent *) override;
+    void mousePressEvent(QMouseEvent *event) override;
 
-    bool eventFilter(QObject *o, QEvent *ev) Q_DECL_OVERRIDE;
+    bool eventFilter(QObject *o, QEvent *ev) override;
     void resizeEvent(QResizeEvent *event);
     void scrollPrecise(int delta);
     void scrollSmooth(int delta);

@@ -13,7 +13,7 @@ public:
     void setAction(QString mAction);
 
 protected:
-    virtual void onPress() Q_DECL_OVERRIDE;
+    virtual void onPress() override;
 
 private:
     QString mAction;

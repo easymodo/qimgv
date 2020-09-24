@@ -17,7 +17,7 @@ class ThumbnailWidget : public QGraphicsWidget {
 
 public:
     ThumbnailWidget(QGraphicsItem *parent = nullptr);
-    ~ThumbnailWidget() Q_DECL_OVERRIDE;
+    ~ThumbnailWidget() override;
 
     enum { Type = UserType + 1 };
     int type() const { return Type; }
@@ -28,13 +28,13 @@ public:
     void setHighlighted(bool x);
     bool isHighlighted();
 
-    virtual QRectF boundingRect() const Q_DECL_OVERRIDE;
+    virtual QRectF boundingRect() const override;
 
     qreal width();
     qreal height();
     void setThumbnailSize(int size);
 
-    void setGeometry(const QRectF &rect) Q_DECL_OVERRIDE;
+    void setGeometry(const QRectF &rect) override;
 
     virtual QRectF geometry() const;
     QSizeF effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
@@ -54,11 +54,11 @@ protected:
     virtual void drawHighlight(QPainter *painter);
     virtual void drawHover(QPainter *painter);
     virtual void drawLabel(QPainter *painter);
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) Q_DECL_OVERRIDE;
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const Q_DECL_OVERRIDE;
-    void updateGeometry() Q_DECL_OVERRIDE;
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
+    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
+    void updateGeometry() override;
     void setHovered(bool);
     bool isHovered();
     virtual void updateHighlightRect();

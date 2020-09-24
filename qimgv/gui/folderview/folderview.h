@@ -26,26 +26,26 @@ public:
 public slots:
     void show();
     void hide();
-    virtual void populate(int) Q_DECL_OVERRIDE;
-    virtual void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) Q_DECL_OVERRIDE;
-    virtual void select(QList<int>) Q_DECL_OVERRIDE;
+    virtual void populate(int) override;
+    virtual void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) override;
+    virtual void select(QList<int>) override;
     virtual void select(int) override;
     virtual QList<int> selection() override;
-    virtual void focusOn(int) Q_DECL_OVERRIDE;
-    virtual void setDirectoryPath(QString path) Q_DECL_OVERRIDE;
-    virtual void insertItem(int index) Q_DECL_OVERRIDE;
-    virtual void removeItem(int index) Q_DECL_OVERRIDE;
-    virtual void reloadItem(int index) Q_DECL_OVERRIDE;
+    virtual void focusOn(int) override;
+    virtual void setDirectoryPath(QString path) override;
+    virtual void insertItem(int index) override;
+    virtual void removeItem(int index) override;
+    virtual void reloadItem(int index) override;
     void addItem();
     void onFullscreenModeChanged(bool mode);
     void onSortingChanged(SortingMode mode);
 
 
 protected:
-    void wheelEvent(QWheelEvent *event) Q_DECL_OVERRIDE;
-    void focusInEvent(QFocusEvent *event) Q_DECL_OVERRIDE;
-    void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
-    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+    void wheelEvent(QWheelEvent *event) override;
+    void focusInEvent(QFocusEvent *event) override;
+    void paintEvent(QPaintEvent *) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 protected slots:
     void onShowLabelsChanged(bool mode);
@@ -54,10 +54,10 @@ protected slots:
     void onZoomSliderValueChanged(int value);
 
 signals:
-    void itemActivated(int) Q_DECL_OVERRIDE;
-    void thumbnailsRequested(QList<int>, int, bool, bool) Q_DECL_OVERRIDE;
-    void draggedOut(QList<int>) Q_DECL_OVERRIDE;
-    void draggedToBookmarks(QList<int>) Q_DECL_OVERRIDE;
+    void itemActivated(int) override;
+    void thumbnailsRequested(QList<int>, int, bool, bool) override;
+    void draggedOut(QList<int>) override;
+    void draggedToBookmarks(QList<int>) override;
     void sortingSelected(SortingMode);
     void directorySelected(QString path);
     void copyUrlsRequested(QList<QUrl>, QString path);

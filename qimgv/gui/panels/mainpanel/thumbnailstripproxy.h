@@ -15,16 +15,16 @@ public:
     void init();
 
 public slots:
-    virtual void populate(int) Q_DECL_OVERRIDE;
-    virtual void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) Q_DECL_OVERRIDE;
-    virtual void select(QList<int>) Q_DECL_OVERRIDE;
+    virtual void populate(int) override;
+    virtual void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) override;
+    virtual void select(QList<int>) override;
     virtual void select(int) override;
-    virtual QList<int> selection() Q_DECL_OVERRIDE;
-    virtual void focusOn(int) Q_DECL_OVERRIDE;
-    virtual void insertItem(int index) Q_DECL_OVERRIDE;
-    virtual void removeItem(int index) Q_DECL_OVERRIDE;
-    virtual void reloadItem(int index) Q_DECL_OVERRIDE;
-    virtual void setDirectoryPath(QString path) Q_DECL_OVERRIDE;
+    virtual QList<int> selection() override;
+    virtual void focusOn(int) override;
+    virtual void insertItem(int index) override;
+    virtual void removeItem(int index) override;
+    virtual void reloadItem(int index) override;
+    virtual void setDirectoryPath(QString path) override;
     void addItem();
 
 protected:
