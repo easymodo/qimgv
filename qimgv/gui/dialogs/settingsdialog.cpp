@@ -304,6 +304,7 @@ void SettingsDialog::setColorScheme(ColorScheme colors) {
     ui->colorSelectorFolderview->setColor(colors.folderview);
     ui->colorSelectorFolderviewPanel->setColor(colors.folderview_topbar);
     ui->colorSelectorText->setColor(colors.text);
+    ui->colorSelectorIcons->setColor(colors.icons);
     ui->colorSelectorWidget->setColor(colors.widget);
     ui->colorSelectorWidgetBorder->setColor(colors.widget_border);
     ui->colorSelectorOverlay->setColor(colors.overlay);
@@ -320,6 +321,7 @@ void SettingsDialog::saveColorScheme() {
     base.folderview = ui->colorSelectorFolderview->color();
     base.folderview_topbar = ui->colorSelectorFolderviewPanel->color();
     base.text = ui->colorSelectorText->color();
+    base.icons = ui->colorSelectorIcons->color();
     base.widget = ui->colorSelectorWidget->color();
     base.widget_border = ui->colorSelectorWidgetBorder->color();
     base.overlay = ui->colorSelectorOverlay->color();

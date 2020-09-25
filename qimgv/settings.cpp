@@ -122,6 +122,7 @@ void Settings::loadStylesheet() {
         styleSheet.replace("%overlay_rgba%",         "rgba(" + QString::number(colors.overlay.red())   + ","
                                                              + QString::number(colors.overlay.green()) + ","
                                                              + QString::number(colors.overlay.blue())  + ",90%)");
+        styleSheet.replace("%icons%",                colors.icons.name());
         styleSheet.replace("%text_hc2%",             colors.text_hc2.name());
         styleSheet.replace("%text_hc1%",             colors.text_hc1.name());
         styleSheet.replace("%text%",                 colors.text.name());
@@ -146,6 +147,7 @@ void Settings::loadTheme() {
         base.background            = QColor(themeConf->value("background",            "#1a1a1a").toString());
         base.background_fullscreen = QColor(themeConf->value("background_fullscreen", "#1a1a1a").toString());
         base.text                  = QColor(themeConf->value("text",                  "#a4a4a4").toString());
+        base.icons                 = QColor(themeConf->value("icons",                 "#a4a4a4").toString());
         base.widget                = QColor(themeConf->value("widget",                "#252525").toString());
         base.widget_border         = QColor(themeConf->value("widget_border",         "#272727").toString());
         base.accent                = QColor(themeConf->value("accent",                "#4f6a91").toString());
@@ -165,6 +167,7 @@ void Settings::saveTheme() {
     themeConf->setValue("background",            mColorScheme.background.name());
     themeConf->setValue("background_fullscreen", mColorScheme.background_fullscreen.name());
     themeConf->setValue("text",                  mColorScheme.text.name());
+    themeConf->setValue("icons",                 mColorScheme.icons.name());
     themeConf->setValue("widget",                mColorScheme.widget.name());
     themeConf->setValue("widget_border",         mColorScheme.widget_border.name());
     themeConf->setValue("accent",                mColorScheme.accent.name());

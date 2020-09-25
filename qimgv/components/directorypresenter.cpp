@@ -142,7 +142,7 @@ void DirectoryPresenter::generateThumbnails(QList<int> indexes, int size, bool c
             // gen thumb for a directory (!todo: shared res)
             // tmp ------------------------------------------------------------
             QPixmap *pixmap = new QPixmap(":/res/icons/common/other/folder96.png");
-            ImageLib::recolor(*pixmap, settings->colorScheme().text);
+            ImageLib::recolor(*pixmap, settings->colorScheme().icons);
             std::shared_ptr<Thumbnail> thumb(new Thumbnail(model->dirNameAt(i),
                                                            "Folder",
                                                            size,

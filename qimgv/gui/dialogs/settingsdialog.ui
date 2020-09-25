@@ -1881,102 +1881,19 @@
                       <number>1</number>
                      </property>
                      <property name="bottomMargin">
-                      <number>1</number>
+                      <number>20</number>
                      </property>
                      <property name="horizontalSpacing">
                       <number>8</number>
                      </property>
-                     <item row="1" column="1">
-                      <widget class="QLabel" name="label_34">
+                     <item row="4" column="3">
+                      <widget class="QLabel" name="label_22">
                        <property name="text">
-                        <string>Background</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="ColorSelectorButton" name="colorSelectorBackground">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>40</width>
-                         <height>22</height>
-                        </size>
-                       </property>
-                       <property name="cursor">
-                        <cursorShape>PointingHandCursor</cursorShape>
-                       </property>
-                       <property name="accessibleName">
-                        <string notr="true"/>
-                       </property>
-                       <property name="autoFillBackground">
-                        <bool>true</bool>
-                       </property>
-                       <property name="frameShape">
-                        <enum>QFrame::Box</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QLabel" name="label_33">
-                       <property name="text">
-                        <string>Accent</string>
+                        <string>Widget border</string>
                        </property>
                       </widget>
                      </item>
                      <item row="5" column="0">
-                      <widget class="ColorSelectorButton" name="colorSelectorText">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>40</width>
-                         <height>22</height>
-                        </size>
-                       </property>
-                       <property name="cursor">
-                        <cursorShape>PointingHandCursor</cursorShape>
-                       </property>
-                       <property name="accessibleName">
-                        <string notr="true"/>
-                       </property>
-                       <property name="autoFillBackground">
-                        <bool>true</bool>
-                       </property>
-                       <property name="frameShape">
-                        <enum>QFrame::Box</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="3">
-                      <widget class="QLabel" name="label_37">
-                       <property name="text">
-                        <string>Overlay text</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="1">
-                      <widget class="QLabel" name="label_23">
-                       <property name="text">
-                        <string>Folder view background</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="2">
                       <widget class="ColorSelectorButton" name="colorSelectorOverlay">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2004,6 +1921,13 @@
                        </property>
                        <property name="text">
                         <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="3">
+                      <widget class="QLabel" name="label_31">
+                       <property name="text">
+                        <string>Folder view top panel</string>
                        </property>
                       </widget>
                      </item>
@@ -2038,6 +1962,44 @@
                        </property>
                       </widget>
                      </item>
+                     <item row="3" column="2">
+                      <widget class="ColorSelectorButton" name="colorSelectorFolderviewPanel">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>40</width>
+                         <height>22</height>
+                        </size>
+                       </property>
+                       <property name="cursor">
+                        <cursorShape>PointingHandCursor</cursorShape>
+                       </property>
+                       <property name="accessibleName">
+                        <string notr="true"/>
+                       </property>
+                       <property name="autoFillBackground">
+                        <bool>true</bool>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::Box</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="label_34">
+                       <property name="text">
+                        <string>Background</string>
+                       </property>
+                      </widget>
+                     </item>
                      <item row="0" column="0">
                       <widget class="ColorSelectorButton" name="colorSelectorAccent">
                        <property name="sizePolicy">
@@ -2066,6 +2028,210 @@
                        </property>
                        <property name="text">
                         <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="ColorSelectorButton" name="colorSelectorBackground">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>40</width>
+                         <height>22</height>
+                        </size>
+                       </property>
+                       <property name="cursor">
+                        <cursorShape>PointingHandCursor</cursorShape>
+                       </property>
+                       <property name="accessibleName">
+                        <string notr="true"/>
+                       </property>
+                       <property name="autoFillBackground">
+                        <bool>true</bool>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::Box</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QLabel" name="label_36">
+                       <property name="text">
+                        <string>Overlay background</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="3">
+                      <widget class="QLabel" name="label_35">
+                       <property name="text">
+                        <string>Background (fullscreen)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="3">
+                      <widget class="QLabel" name="label_37">
+                       <property name="text">
+                        <string>Overlay text</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="label_33">
+                       <property name="text">
+                        <string>Accent</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="ColorSelectorButton" name="colorSelectorWidget">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>40</width>
+                         <height>22</height>
+                        </size>
+                       </property>
+                       <property name="cursor">
+                        <cursorShape>PointingHandCursor</cursorShape>
+                       </property>
+                       <property name="accessibleName">
+                        <string notr="true"/>
+                       </property>
+                       <property name="autoFillBackground">
+                        <bool>true</bool>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::Box</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLabel" name="label_11">
+                       <property name="text">
+                        <string>Text</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="2">
+                      <widget class="ColorSelectorButton" name="colorSelectorWidgetBorder">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>40</width>
+                         <height>22</height>
+                        </size>
+                       </property>
+                       <property name="cursor">
+                        <cursorShape>PointingHandCursor</cursorShape>
+                       </property>
+                       <property name="accessibleName">
+                        <string notr="true"/>
+                       </property>
+                       <property name="autoFillBackground">
+                        <bool>true</bool>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::Box</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2">
+                      <widget class="ColorSelectorButton" name="colorSelectorFullscreen">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>40</width>
+                         <height>22</height>
+                        </size>
+                       </property>
+                       <property name="cursor">
+                        <cursorShape>PointingHandCursor</cursorShape>
+                       </property>
+                       <property name="accessibleName">
+                        <string notr="true"/>
+                       </property>
+                       <property name="autoFillBackground">
+                        <bool>true</bool>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::Box</enum>
+                       </property>
+                       <property name="text">
+                        <string notr="true"/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QLabel" name="label_21">
+                       <property name="text">
+                        <string>Widget background</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="ColorSelectorButton" name="colorSelectorText">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>40</width>
+                         <height>22</height>
+                        </size>
+                       </property>
+                       <property name="cursor">
+                        <cursorShape>PointingHandCursor</cursorShape>
+                       </property>
+                       <property name="accessibleName">
+                        <string notr="true"/>
+                       </property>
+                       <property name="autoFillBackground">
+                        <bool>true</bool>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::Box</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLabel" name="label_23">
+                       <property name="text">
+                        <string>Folder view background</string>
                        </property>
                       </widget>
                      </item>
@@ -2100,22 +2266,8 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="1">
-                      <widget class="QLabel" name="label_31">
-                       <property name="text">
-                        <string>Folder view top panel</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="1">
-                      <widget class="QLabel" name="label_11">
-                       <property name="text">
-                        <string>Text &amp; Icons</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="ColorSelectorButton" name="colorSelectorFullscreen">
+                     <item row="1" column="2">
+                      <widget class="ColorSelectorButton" name="colorSelectorIcons">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                          <horstretch>0</horstretch>
@@ -2127,9 +2279,6 @@
                          <width>40</width>
                          <height>22</height>
                         </size>
-                       </property>
-                       <property name="cursor">
-                        <cursorShape>PointingHandCursor</cursorShape>
                        </property>
                        <property name="accessibleName">
                         <string notr="true"/>
@@ -2145,52 +2294,14 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="2" column="1">
-                      <widget class="QLabel" name="label_35">
+                     <item row="1" column="3">
+                      <widget class="QLabel" name="label_14">
                        <property name="text">
-                        <string>Background (fullscreen)</string>
+                        <string>Icons</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="0">
-                      <widget class="ColorSelectorButton" name="colorSelectorFolderviewPanel">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>40</width>
-                         <height>22</height>
-                        </size>
-                       </property>
-                       <property name="cursor">
-                        <cursorShape>PointingHandCursor</cursorShape>
-                       </property>
-                       <property name="accessibleName">
-                        <string notr="true"/>
-                       </property>
-                       <property name="autoFillBackground">
-                        <bool>true</bool>
-                       </property>
-                       <property name="frameShape">
-                        <enum>QFrame::Box</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="3">
-                      <widget class="QLabel" name="label_36">
-                       <property name="text">
-                        <string>Overlay background</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="2">
+                     <item row="6" column="0">
                       <widget class="ColorSelectorButton" name="colorSelectorScrollbar">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2221,86 +2332,10 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="3">
+                     <item row="6" column="1">
                       <widget class="QLabel" name="label_32">
                        <property name="text">
                         <string>Scrollbars</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="2">
-                      <widget class="ColorSelectorButton" name="colorSelectorWidgetBorder">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>40</width>
-                         <height>22</height>
-                        </size>
-                       </property>
-                       <property name="cursor">
-                        <cursorShape>PointingHandCursor</cursorShape>
-                       </property>
-                       <property name="accessibleName">
-                        <string notr="true"/>
-                       </property>
-                       <property name="autoFillBackground">
-                        <bool>true</bool>
-                       </property>
-                       <property name="frameShape">
-                        <enum>QFrame::Box</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="3">
-                      <widget class="QLabel" name="label_22">
-                       <property name="text">
-                        <string>Widget border</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="2">
-                      <widget class="ColorSelectorButton" name="colorSelectorWidget">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>40</width>
-                         <height>22</height>
-                        </size>
-                       </property>
-                       <property name="cursor">
-                        <cursorShape>PointingHandCursor</cursorShape>
-                       </property>
-                       <property name="accessibleName">
-                        <string notr="true"/>
-                       </property>
-                       <property name="autoFillBackground">
-                        <bool>true</bool>
-                       </property>
-                       <property name="frameShape">
-                        <enum>QFrame::Box</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="3">
-                      <widget class="QLabel" name="label_21">
-                       <property name="text">
-                        <string>Widget background</string>
                        </property>
                       </widget>
                      </item>
@@ -2573,8 +2608,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>624</height>
+                <width>380</width>
+                <height>172</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3196,8 +3231,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>624</height>
+                <width>370</width>
+                <height>249</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3578,8 +3613,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>624</height>
+                <width>274</width>
+                <height>223</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -3639,14 +3674,14 @@
                   <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu, '; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;This is a fast and easy to use image viewer&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;Features video support via libmpv&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; font-style:italic;&quot;&gt;Github page:&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic;&quot;&gt; &lt;/span&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;https://github.com/easymodo/qimgv&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; font-style:italic;&quot;&gt;Main developer:&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic;&quot;&gt; easymodo (easymodofrf@gmail.com)&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv/graphs/contributors&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;Contributors&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-weight:600; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;OpenCV enabled builds use &lt;/span&gt;&lt;a href=&quot;https://github.com/dbzhang800/QtOpenCV&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; text-decoration: underline; color:#007af4;&quot;&gt;QtOpenCV&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; by dbzhang800&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;OpenCV enabled builds use &lt;/span&gt;&lt;a href=&quot;https://github.com/dbzhang800/QtOpenCV&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;QtOpenCV&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; by dbzhang800&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-weight:600; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;qimgv is licensed under &lt;/span&gt;&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.en.html&quot;&gt;&lt;span style=&quot; font-family:'Droid Sans'; text-decoration: underline; color:#007af4;&quot;&gt;GNU GPL Version 3&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;

@@ -6,10 +6,10 @@ FileSystemModelCustom::FileSystemModelCustom(QObject *parent) : QFileSystemModel
     if(dpr >= (1.0 + 0.001))
         iconPath.replace(".", "@2x.");
     folderIcon.load(iconPath);
-    ImageLib::recolor(this->folderIcon, settings->colorScheme().text);
+    ImageLib::recolor(this->folderIcon, settings->colorScheme().icons);
 
     connect(settings, &Settings::settingsChanged, [this]() {
-        ImageLib::recolor(this->folderIcon, settings->colorScheme().text);
+        ImageLib::recolor(this->folderIcon, settings->colorScheme().icons);
     });
 }
 

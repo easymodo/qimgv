@@ -10,6 +10,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.widget_border = p.window().color();
             base.folderview = p.base().color();
             base.text = p.text().color();
+            base.icons = p.text().color();
             base.accent = p.highlight().color();
             base.scrollbar.setHsv(p.highlight().color().hue(),
                                   qBound(0, p.highlight().color().saturation() - 20, 240),
@@ -19,6 +20,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.background = "#1a1a1a";
             base.background_fullscreen = "#1a1a1a";
             base.text = "#454647";
+            base.icons = "#454647";
             base.widget = "#cdcdcd";
             base.widget_border = "#c3c3c3";
             base.accent = "#adadad";
@@ -32,6 +34,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.background = "#18191a";
             base.background_fullscreen = "#18191a";
             base.text = "#cdd2d7";
+            base.icons = "#cdd2d7";
             base.widget = "#232629";
             base.widget_border = "#26292d";
             base.accent = "#336ca5";
@@ -46,6 +49,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.background = "#1a1a1a";
             base.background_fullscreen = "#1a1a1a";
             base.text = "#a8a8a8";
+            base.icons = "#a8a8a8";
             base.widget = "#252525";
             base.widget_border = "#272727";
             base.accent = "#436082";
@@ -72,6 +76,7 @@ void ColorScheme::setBaseColors(BaseColorScheme base) {
     background            = base.background;
     background_fullscreen = base.background_fullscreen;
     text                  = base.text;
+    icons                 = base.icons;
     widget                = base.widget;
     widget_border         = base.widget_border;
     accent                = base.accent;
