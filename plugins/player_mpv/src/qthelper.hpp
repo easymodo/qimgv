@@ -1,34 +1,7 @@
-/* Copyright (C) 2017 the mpv developers
- *
- * Permission to use, copy, modify, and/or distribute this software for any
- * purpose with or without fee is hereby granted, provided that the above
- * copyright notice and this permission notice appear in all copies.
- *
- * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
-
-#ifndef MPV_CLIENT_API_QTHELPER_H_
-#define MPV_CLIENT_API_QTHELPER_H_
+#ifndef LIBMPV_QTHELPER_H_
+#define LIBMPV_QTHELPER_H_
 
 #include <mpv/client.h>
-
-#if !MPV_ENABLE_DEPRECATED
-#error "This helper is deprecated. Copy it into your project instead."
-#else
-
-/**
- * Note: these helpers are provided for convenience for C++/Qt applications.
- * This is based on the public API in client.h, and it does not encode any
- * knowledge that is not known or guaranteed outside of the C client API. You
- * can even copy and modify this code as you like, or implement similar things
- * for other languages.
- */
 
 #include <cstring>
 
@@ -230,8 +203,6 @@ struct node_autofree {
     ~node_autofree() { mpv_free_node_contents(ptr); }
 };
 
-#if MPV_ENABLE_DEPRECATED
-
 /**
  * Return the given property as mpv_node converted to QVariant, or QVariant()
  * on error.
@@ -288,8 +259,6 @@ static inline QVariant command_variant(mpv_handle *ctx, const QVariant &args)
     node_autofree f(&res);
     return node_to_variant(&res);
 }
-
-#endif
 
 /**
  * This is used to return error codes wrapped in QVariant for functions which
@@ -380,7 +349,5 @@ static inline QVariant command(mpv_handle *ctx, const QVariant &args)
 }
 
 Q_DECLARE_METATYPE(mpv::qt::ErrorReturn)
-
-#endif /* else #if MPV_ENABLE_DEPRECATED */
 
 #endif

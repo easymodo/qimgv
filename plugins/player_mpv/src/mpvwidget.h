@@ -1,9 +1,14 @@
 #pragma once
 
+#include <QtCore/QMetaObject>
 #include <QtWidgets/QOpenGLWidget>
+#include <QtGui/QOpenGLContext>
+#include <QtGui/QOpenGLFramebufferObject>
+
 #include <mpv/client.h>
-#include <mpv/opengl_cb.h>
+#include <mpv/render_gl.h>
 #include "qthelper.hpp"
+
 #include <QDebug>
 #include <ctime>
 #include <QSurfaceFormat>
@@ -14,6 +19,7 @@ class MpvWidget Q_DECL_FINAL: public QOpenGLWidget {
 public:
     MpvWidget(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::Widget);
     ~MpvWidget() override;
+
     void command(const QVariant& params);
     void setOption(const QString &name, const QVariant &value);
     void setProperty(const QString& name, const QVariant& value);
@@ -32,6 +38,7 @@ public:
     bool muted();
     int volume();
     void setVolume(int vol);
+
 signals:
     void durationChanged(int value);
     void positionChanged(int value);
@@ -43,7 +50,6 @@ protected:
     void paintGL() override;
 
 private slots:
-    void swapped();
     void on_mpv_events();
     void maybeUpdate();
 
@@ -51,6 +57,6 @@ private:
     void handle_mpv_event(mpv_event *event);
     static void on_update(void *ctx);
 
-    mpv::qt::Handle mpv;
-    mpv_opengl_cb_context *mpv_gl;
+    mpv_handle *mpv;
+    mpv_render_context *mpv_gl;
 };
