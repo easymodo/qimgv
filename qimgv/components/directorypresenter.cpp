@@ -74,14 +74,18 @@ void DirectoryPresenter::onFileRenamed(QString fromPath, int indexFrom, QString 
         indexFrom += model->dirCount();
         indexTo += model->dirCount();
     }
-    // todo: deal with multi-selection
-    //int selectedIndex = view->selectedIndex();
+    auto oldSelection = view->selection();
     view->removeItem(indexFrom);
     view->insertItem(indexTo);
-    //if(selectedIndex == indexFrom || selectedIndex == -1) {
-    //    view->select(indexTo);
-    //    view->focusOn(indexTo);
-    //}
+    // re-select if needed
+    if(oldSelection.contains(indexFrom)) {
+        if(oldSelection.count() == 1) {
+            view->select(indexTo);
+            view->focusOn(indexTo);
+        } else if(oldSelection.count() > 1) {
+            view->select(view->selection() << indexTo);
+        }
+    }
 }
 
 void DirectoryPresenter::onFileAdded(QString filePath) {
@@ -105,13 +109,28 @@ void DirectoryPresenter::setShowDirs(bool mode) {
     populateView();
 }
 
-QList<int> DirectoryPresenter::selection() const {
+QList<QString> DirectoryPresenter::selectedPaths() const {
+    QList<QString> paths;
     if(!view)
-        return QList<int>();
-    return view->selection();
+        return paths;
+    if(showDirs) {
+        for(auto i : view->selection()) {
+            if(i < model->dirCount())
+                paths << model->dirPathAt(i);
+            else
+                paths << model->filePathAt(i - model->dirCount());
+        }
+    } else {
+        for(auto i : view->selection()) {
+            paths << model->filePathAt(i);
+        }
+    }
+    return paths;
 }
 
 void DirectoryPresenter::generateThumbnails(QList<int> indexes, int size, bool crop, bool force) {
+    if(!view || !model)
+        return;
     thumbnailer.clearTasks();
     if(!showDirs) {
         for(int i : indexes)
@@ -138,7 +157,7 @@ void DirectoryPresenter::generateThumbnails(QList<int> indexes, int size, bool c
 }
 
 void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb, QString filePath) {
-    if(!view)
+    if(!view || !model)
         return;
     int index = model->indexOfFile(filePath);
     if(index == -1)
@@ -147,6 +166,8 @@ void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb, QStr
 }
 
 void DirectoryPresenter::onItemActivated(int index) {
+    if(!model)
+        return;
     if(!showDirs) {
         emit fileActivated(index);
         return;
@@ -158,10 +179,10 @@ void DirectoryPresenter::onItemActivated(int index) {
 }
 
 void DirectoryPresenter::selectAndFocus(int index) {
-    if(!view)
+    if(!model || !view)
         return;
     int indexDirOffset = showDirs ? model->dirCount() + index : index;
-    view->select(QList<int>() << indexDirOffset);
+    view->select(indexDirOffset);
     view->focusOn(indexDirOffset);
 }
 

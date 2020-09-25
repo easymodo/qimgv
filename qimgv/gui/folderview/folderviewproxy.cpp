@@ -46,6 +46,7 @@ void FolderViewProxy::populate(int count) {
         folderView->populate(count);
     } else {
         stateBuf.itemCount = count;
+        stateBuf.selection.clear();
     }
 }
 

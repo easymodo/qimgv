@@ -37,7 +37,8 @@ struct CurrentInfo {
     int index;
     int fileCount;
     QString fileName;
-    QString directory;
+    QString filePath;
+    QString directoryName;
     QSize imageSize;
     qint64 fileSize;
     bool slideshow;
@@ -59,7 +60,7 @@ public:
     void setAnimation(std::unique_ptr<QMovie> movie);
     void setVideo(QString file);
 
-    void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, qint64 fileSize, bool slideshow);
+    void setCurrentInfo(int fileIndex, int fileCount, QString filePath, QString fileName, QSize imageSize, qint64 fileSize, bool slideshow);
     void setExifInfo(QMap<QString, QString>);
     std::shared_ptr<FolderViewProxy> getFolderView();
     std::shared_ptr<ThumbnailStripProxy> getThumbnailPanel();

@@ -109,7 +109,7 @@ void ThumbnailView::select(QList<int> indices) {
     for(auto i : mSelection)
         thumbnails.at(i)->setHighlighted(false);
     QList<int>::iterator it = indices.begin();
-    while (it != indices.end()) {
+    while(it != indices.end()) {
         // sanity check
         if(*it < 0 || *it >= itemCount()) {
             it = indices.erase(it);
@@ -210,13 +210,14 @@ void ThumbnailView::removeItem(int index) {
         removeItemFromLayout(index);
         delete thumbnails.takeAt(index);
         fitSceneToContents();
+        mSelection.removeAll(index);
         auto newSelection = mSelection;
         newSelection.removeAll(index);
         for(int i=0; i < newSelection.count(); i++) {
-            if(newSelection[i] > index)
+            if(newSelection[i] >= index)
                 newSelection[i]--;
         }
-        if(!newSelection.count())
+        if(!newSelection.count() && itemCount())
             newSelection << ((index >= itemCount()) ? itemCount() - 1 : index);
         select(newSelection);
         updateScrollbarIndicator();

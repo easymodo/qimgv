@@ -201,6 +201,7 @@ void MW::switchFitMode() {
 
 void MW::closeImage() {
     info.fileName = "";
+    info.filePath = "";
     viewerWidget->closeImage();
 }
 
@@ -238,7 +239,7 @@ void MW::onSortingChanged(SortingMode mode) {
 
 void MW::setDirectoryPath(QString path) {
     closeImage();
-    info.directory = path;
+    info.directoryName = path;
     folderView->setDirectoryPath(path);
     onInfoUpdated();
 }
@@ -594,10 +595,11 @@ void MW::closeFullScreenOrExit() {
     }
 }
 
-void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _imageSize, qint64 _fileSize, bool slideshow) {
+void MW::setCurrentInfo(int _index, int _fileCount, QString _filePath, QString _fileName, QSize _imageSize, qint64 _fileSize, bool slideshow) {
     info.index = _index;
     info.fileCount = _fileCount;
     info.fileName = _fileName;
+    info.filePath = _filePath;
     info.imageSize = _imageSize;
     info.fileSize = _fileSize;
     info.slideshow = slideshow;
@@ -627,8 +629,8 @@ void MW::onInfoUpdated() {
     QString windowTitle;
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW) {
         windowTitle = qApp->applicationName();
-        if(!info.directory.isEmpty())
-        windowTitle.prepend(info.directory + " — ");
+        if(!info.directoryName.isEmpty())
+        windowTitle.prepend(info.directoryName + " — ");
         infoBarFullscreen->setInfo("", "No file opened.", "");
         infoBarWindowed->setInfo("", "No file opened.", "");
     } else if(info.fileName.isEmpty()) {

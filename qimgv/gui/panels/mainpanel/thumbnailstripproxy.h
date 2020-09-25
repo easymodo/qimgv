@@ -4,7 +4,7 @@
 
 struct ThumbnailStripStateBuffer {
     QList<int> selection;
-    int itemCount;
+    int itemCount = 0;
 };
 
 class ThumbnailStripProxy : public QWidget, public IDirectoryView {

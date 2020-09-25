@@ -26,7 +26,7 @@ void ThumbnailStripProxy::init() {
     // wait till layout stuff happens
     // before calling focusOn()
     qApp->processEvents();
-    if(stateBuf.selection.count())
+    if(thumbnailStrip->selection().count())
         thumbnailStrip->focusOn(stateBuf.selection.last());
 }
 
@@ -35,6 +35,7 @@ void ThumbnailStripProxy::populate(int count) {
         thumbnailStrip->populate(count);
     } else {
         stateBuf.itemCount = count;
+        stateBuf.selection.clear();
     }
 }
 

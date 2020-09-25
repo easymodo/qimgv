@@ -25,7 +25,7 @@ public:
     void onFileModified(QString filePath);
 
     void setShowDirs(bool mode);
-    QList<int> selection() const;
+    QList<QString> selectedPaths() const;
 
 signals:
     void dirActivated(QString dirPath);

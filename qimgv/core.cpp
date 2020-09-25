@@ -414,16 +414,16 @@ void Core::sortBy(SortingMode mode) {
     model->setSortingMode(mode);
 }
 
-// !! fixme
+// todo: move this crap to some fileoperations class? or model
 void Core::renameCurrentFile(QString newName) {
-    /*if(!model->fileCount() || newName == state.currentFilePath) // ??
+    QFileInfo oldFile(selectedFilePath());
+    if(!model->fileCount() || newName.isEmpty() || selectedFilePath().isEmpty() || oldFile.fileName() == newName)
         return;
-    QString newPath = model->fullPath(newName);
-    QString oldName = state.currentFilePath;
-    QString currentPath = model->fullPath(state.currentFilePath);
-    bool exists = model->contains(newName);
+    QString oldPath = selectedFilePath();
+    QString newPath = oldFile.absolutePath() + "/" + newName;
     QFile replaceMe(newPath);
-    // move existing file so we can revert if something fails
+    bool destinationExists = QFile::exists(newPath);
+    // move the existing file so we can revert if something fails
     if(replaceMe.exists()) {
         if(!replaceMe.rename(newPath + "__tmp")) {
             mw->showError("Could not replace file");
@@ -431,20 +431,19 @@ void Core::renameCurrentFile(QString newName) {
         }
     }
     // do the renaming
-    QFile file(currentPath);
-    if(file.exists() && file.rename(newPath)) {
+    QFile currentFile(selectedFilePath());
+    if(currentFile.exists() && currentFile.rename(newPath)) {
         // remove tmp file on success
-        if(exists)
+        if(destinationExists)
             replaceMe.remove();
         // at this point we will get a dirwatcher rename event
         // and the new file will be opened
     } else {
         mw->showError("Could not rename file");
         // revert tmp file on fail
-        if(exists)
+        if(destinationExists)
             replaceMe.rename(newPath);
     }
-    */
 }
 
 // removes file at specified index within current directory
@@ -739,7 +738,7 @@ QString Core::selectedFilePath() {
     if(!model)
         return "";
     else if(mw->currentViewMode() == MODE_FOLDERVIEW)
-        return model->filePathAt(folderViewPresenter.selection().first());
+        return folderViewPresenter.selectedPaths().last();
     else
         return state.currentFilePath;
 }
@@ -862,6 +861,7 @@ void Core::loadPath(QString path) {
         loadIndex(index, false, settings->usePreloader());
     } else {
         mw->enableFolderView();
+        folderViewPresenter.selectAndFocus(0);
         thumbPanelPresenter.selectAndFocus(0);
     }
 }
@@ -1046,9 +1046,11 @@ void Core::updateInfoString() {
         imageSize = img->size();
         fileSize  = img->fileSize();
     }
-    mw->setCurrentInfo(model->indexOfFile(state.currentFilePath),
+    int index = model->indexOfFile(state.currentFilePath);
+    mw->setCurrentInfo(index,
                        model->fileCount(),
-                       state.currentFilePath,
+                       model->filePathAt(index),
+                       model->fileNameAt(index),
                        imageSize,
                        fileSize,
                        slideshow);

@@ -84,9 +84,6 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap
     if(!thumbnail->hasAlphaChannel())
         painter->fillRect(drawRectCentered.adjusted(3,3,3,3), shadowColor);
     painter->drawPixmap(drawRectCentered, *pixmap);
-    if(isHovered()) {
-    //    painter->fillRect(drawRectCentered, QColor(255,255,255, 18));
-    }
 }
 
 void ThumbnailGridWidget::readSettings() {
