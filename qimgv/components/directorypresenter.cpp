@@ -1,6 +1,6 @@
 #include "directorypresenter.h"
 
-DirectoryPresenter::DirectoryPresenter(QObject *parent) : QObject(parent), showDirs(true) {
+DirectoryPresenter::DirectoryPresenter(QObject *parent) : QObject(parent), mShowDirs(false) {
     connect(&thumbnailer, &Thumbnailer::thumbnailReady, this, &DirectoryPresenter::onThumbnailReady);
 }
 
@@ -19,7 +19,7 @@ void DirectoryPresenter::setView(std::shared_ptr<IDirectoryView> _view) {
         return;
     view = _view;
     if(model)
-        view->populate(showDirs ? model->totalCount() : model->fileCount());
+        view->populate(mShowDirs ? model->totalCount() : model->fileCount());
     connect(dynamic_cast<QObject *>(view.get()), SIGNAL(itemActivated(int)),
             this, SLOT(onItemActivated(int)));
     connect(dynamic_cast<QObject *>(view.get()), SIGNAL(thumbnailsRequested(QList<int>, int, bool, bool)),
@@ -49,7 +49,7 @@ void DirectoryPresenter::reloadModel() {
 void DirectoryPresenter::populateView() {
     if(!model || !view)
         return;
-    view->populate(showDirs ? model->totalCount() : model->fileCount());
+    view->populate(mShowDirs ? model->totalCount() : model->fileCount());
 }
 
 void DirectoryPresenter::disconnectView() {
@@ -62,7 +62,7 @@ void DirectoryPresenter::onFileRemoved(QString filePath, int index) {
     Q_UNUSED(filePath)
     if(!view)
         return;
-    view->removeItem(showDirs ? index + model->dirCount() : index);
+    view->removeItem(mShowDirs ? index + model->dirCount() : index);
 }
 
 void DirectoryPresenter::onFileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo) {
@@ -70,7 +70,7 @@ void DirectoryPresenter::onFileRenamed(QString fromPath, int indexFrom, QString 
     Q_UNUSED(toPath)
     if(!view)
         return;
-    if(showDirs) {
+    if(mShowDirs) {
         indexFrom += model->dirCount();
         indexTo += model->dirCount();
     }
@@ -92,20 +92,24 @@ void DirectoryPresenter::onFileAdded(QString filePath) {
     if(!view)
         return;
     int index = model->indexOfFile(filePath);
-    view->insertItem(showDirs ? model->dirCount() + index : index);
+    view->insertItem(mShowDirs ? model->dirCount() + index : index);
 }
 
 void DirectoryPresenter::onFileModified(QString filePath) {
     if(!view)
         return;
     int index = model->indexOfFile(filePath);
-    view->reloadItem(showDirs ? model->dirCount() + index : index);
+    view->reloadItem(mShowDirs ? model->dirCount() + index : index);
+}
+
+bool DirectoryPresenter::showDirs() {
+    return mShowDirs;
 }
 
 void DirectoryPresenter::setShowDirs(bool mode) {
-    if(mode == showDirs)
+    if(mode == mShowDirs)
         return;
-    showDirs = mode;
+    mShowDirs = mode;
     populateView();
 }
 
@@ -113,7 +117,7 @@ QList<QString> DirectoryPresenter::selectedPaths() const {
     QList<QString> paths;
     if(!view)
         return paths;
-    if(showDirs) {
+    if(mShowDirs) {
         for(auto i : view->selection()) {
             if(i < model->dirCount())
                 paths << model->dirPathAt(i);
@@ -132,7 +136,7 @@ void DirectoryPresenter::generateThumbnails(QList<int> indexes, int size, bool c
     if(!view || !model)
         return;
     thumbnailer.clearTasks();
-    if(!showDirs) {
+    if(!mShowDirs) {
         for(int i : indexes)
             thumbnailer.getThumbnailAsync(model->filePathAt(i), size, crop, force);
         return;
@@ -162,13 +166,13 @@ void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb, QStr
     int index = model->indexOfFile(filePath);
     if(index == -1)
         return;
-    view->setThumbnail(showDirs ? model->dirCount() + index : index, thumb);
+    view->setThumbnail(mShowDirs ? model->dirCount() + index : index, thumb);
 }
 
 void DirectoryPresenter::onItemActivated(int index) {
     if(!model)
         return;
-    if(!showDirs) {
+    if(!mShowDirs) {
         emit fileActivated(index);
         return;
     }
@@ -181,7 +185,7 @@ void DirectoryPresenter::onItemActivated(int index) {
 void DirectoryPresenter::selectAndFocus(int index) {
     if(!model || !view)
         return;
-    int indexDirOffset = showDirs ? model->dirCount() + index : index;
+    int indexDirOffset = mShowDirs ? model->dirCount() + index : index;
     view->select(indexDirOffset);
     view->focusOn(indexDirOffset);
 }

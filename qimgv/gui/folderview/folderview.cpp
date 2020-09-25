@@ -39,6 +39,8 @@ FolderView::FolderView(QWidget *parent) :
     ui->docViewButton->setIconPath(":res/icons/common/buttons/panel/document-view16.png");
     ui->showLabelsButton->setCheckable(true);
     ui->showLabelsButton->setIconPath(":res/icons/common/buttons/panel/labels.png");
+    ui->showFoldersButton->setCheckable(true);
+    ui->showFoldersButton->setIconPath(":res/icons/common/buttons/panel/folder16.png");
     ui->togglePlacesPanelButton->setCheckable(true);
     ui->togglePlacesPanelButton->setIconPath(":res/icons/common/buttons/panel/toggle-panel20.png");
 
@@ -74,6 +76,7 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->zoomSlider, &QSlider::valueChanged, this, &FolderView::onZoomSliderValueChanged);
     connect(ui->sortingComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &FolderView::onSortingSelected);
     connect(ui->showLabelsButton, &ActionButton::toggled, this, &FolderView::onShowLabelsButtonToggled);
+    connect(ui->showFoldersButton, &ActionButton::toggled, this, &FolderView::onShowFoldersButtonToggled);
     connect(ui->togglePlacesPanelButton, &ActionButton::toggled, this, &FolderView::onPlacesPanelButtonChecked);
 
     connect(ui->dirTreeView, &TreeViewCustom::droppedIn, this, &FolderView::onDroppedInByIndex);
@@ -108,6 +111,7 @@ void FolderView::readSettings() {
     ui->splitter->setSizes(sizes);
 
     onSortingChanged(settings->sortingMode());
+    ui->showFoldersButton->setChecked(settings->showFolders());
 }
 
 void FolderView::onSplitterMoved() {
@@ -155,6 +159,15 @@ void FolderView::onShowLabelsChanged(bool mode) {
 
 void FolderView::onShowLabelsButtonToggled(bool mode) {
     ui->thumbnailGrid->setShowLabels(mode);
+}
+
+void FolderView::onShowFoldersChanged(bool mode) {
+    ui->showFoldersButton->setChecked(mode);
+    settings->setShowFolders(mode);
+}
+
+void FolderView::onShowFoldersButtonToggled(bool mode) {
+    emit showFoldersChanged(mode);
 }
 
 void FolderView::onThumbnailSizeChanged(int newSize) {

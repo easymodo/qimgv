@@ -256,7 +256,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1881,7 +1881,7 @@
                       <number>1</number>
                      </property>
                      <property name="bottomMargin">
-                      <number>20</number>
+                      <number>1</number>
                      </property>
                      <property name="horizontalSpacing">
                       <number>8</number>
@@ -2608,8 +2608,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>380</width>
-                <height>172</height>
+                <width>553</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3231,8 +3231,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>370</width>
-                <height>249</height>
+                <width>553</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3613,8 +3613,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>274</width>
-                <height>223</height>
+                <width>553</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">

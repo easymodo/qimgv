@@ -24,8 +24,11 @@ public:
     void onFileAdded(QString filePath);
     void onFileModified(QString filePath);
 
+    bool showDirs();
     void setShowDirs(bool mode);
+
     QList<QString> selectedPaths() const;
+
 
 signals:
     void dirActivated(QString dirPath);
@@ -45,5 +48,5 @@ private:
     std::shared_ptr<IDirectoryView> view = nullptr;
     std::shared_ptr<DirectoryModel> model = nullptr;
     Thumbnailer thumbnailer;
-    bool showDirs;
+    bool mShowDirs;
 };

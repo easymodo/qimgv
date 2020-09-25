@@ -191,6 +191,31 @@
        </spacer>
       </item>
       <item>
+       <widget class="ActionButton" name="showFoldersButton" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>38</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>40</width>
+          <height>38</height>
+         </size>
+        </property>
+        <property name="accessibleName">
+         <string>CheckableButton</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="ActionButton" name="showLabelsButton" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -736,17 +761,17 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>StyledComboBox</class>
-   <extends>QComboBox</extends>
-   <header>gui/customwidgets/styledcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header>gui/customwidgets/clickablelabel.h</header>
    <slots>
     <signal>clicked()</signal>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>StyledComboBox</class>
+   <extends>QComboBox</extends>
+   <header>gui/customwidgets/styledcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>ActionButton</class>

@@ -228,8 +228,8 @@ public:
 
     void loadStylesheet();
 
-    bool directoriesInFolderView();
-    void setDirectoriesInFolderView(bool mode);
+    bool showFolders();
+    void setShowFolders(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

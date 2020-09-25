@@ -643,12 +643,12 @@ void Settings::setPlacesPanelWidth(int width) {
     settings->stateConf->setValue("placesPanelWidth", width);
 }
 //------------------------------------------------------------------------------
-bool Settings::directoriesInFolderView() {
-    return settings->stateConf->value("directoriesInFolderView", true).toBool();
+bool Settings::showFolders() {
+    return settings->stateConf->value("showFolders", true).toBool();
 }
 
-void Settings::setDirectoriesInFolderView(bool mode) {
-    settings->stateConf->setValue("directoriesInFolderView", mode);
+void Settings::setShowFolders(bool mode) {
+    settings->stateConf->setValue("showFolders", mode);
 }
 //------------------------------------------------------------------------------
 void Settings::setSlideshowInterval(int ms) {

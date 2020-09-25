@@ -34,6 +34,8 @@ Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr), slideshow(fa
 void Core::readSettings() {
     infiniteScrolling = settings->infiniteScrolling();
     slideshowTimer.setInterval(settings->slideshowInterval());
+    if(folderViewPresenter.showDirs() != settings->showFolders())
+        folderViewPresenter.setShowDirs(settings->showFolders());
     if(settings->shuffleEnabled())
         syncRandomizer();
 }
@@ -57,6 +59,7 @@ void Core::attachModel(DirectoryModel *_model) {
     model.reset(_model);
     thumbPanelPresenter.setModel(model);
     folderViewPresenter.setModel(model);
+    folderViewPresenter.setShowDirs(settings->showFolders());
     if(settings->shuffleEnabled())
         syncRandomizer();
 }
@@ -92,6 +95,7 @@ void Core::connectComponents() {
     connect(mw, &MW::resizeRequested,       this, &Core::resize);
     connect(mw, &MW::renameRequested,       this, &Core::renameCurrentFile);
     connect(mw, &MW::sortingSelected,       this, &Core::sortBy);
+    connect(mw, &MW::showFoldersChanged,    this, &Core::setFoldersDisplay);
     connect(mw, &MW::discardEditsRequested, this, &Core::discardEdits);
     connect(mw, qOverload<>(&MW::draggedOut),    this, qOverload<>(&Core::onDragOut));
 
@@ -412,6 +416,12 @@ QMimeData *Core::getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget targe
 
 void Core::sortBy(SortingMode mode) {
     model->setSortingMode(mode);
+}
+
+void Core::setFoldersDisplay(bool mode) {
+    settings->setShowFolders(mode);
+    if(folderViewPresenter.showDirs() != settings->showFolders())
+        folderViewPresenter.setShowDirs(settings->showFolders());
 }
 
 // todo: move this crap to some fileoperations class? or model

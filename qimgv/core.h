@@ -140,4 +140,5 @@ private slots:
     void toggleFolderView();
     void toggleSlideshow();
     void onPlaybackFinished();
+    void setFoldersDisplay(bool mode);
 };

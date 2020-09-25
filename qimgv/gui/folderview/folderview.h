@@ -50,6 +50,8 @@ protected:
 protected slots:
     void onShowLabelsChanged(bool mode);
     void onShowLabelsButtonToggled(bool mode);
+    void onShowFoldersChanged(bool mode);
+    void onShowFoldersButtonToggled(bool mode);
     void onThumbnailSizeChanged(int newSize);
     void onZoomSliderValueChanged(int value);
 
@@ -60,6 +62,7 @@ signals:
     void draggedToBookmarks(QList<int>) override;
     void sortingSelected(SortingMode);
     void directorySelected(QString path);
+    void showFoldersChanged(bool mode);
     void copyUrlsRequested(QList<QUrl>, QString path);
     void moveUrlsRequested(QList<QUrl>, QString path);
 

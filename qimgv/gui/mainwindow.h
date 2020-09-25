@@ -143,6 +143,7 @@ signals:
     void moveRequested(QString);
     void copyUrlsRequested(QList<QUrl>, QString);
     void moveUrlsRequested(QList<QUrl>, QString);
+    void showFoldersChanged(bool);
     void resizeRequested(QSize);
     void renameRequested(QString);
     void cropRequested(QRect);

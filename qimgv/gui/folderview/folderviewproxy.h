@@ -41,6 +41,7 @@ signals:
     void draggedOut(QList<int>);
     void draggedToBookmarks(QList<int>);
     void sortingSelected(SortingMode);
+    void showFoldersChanged(bool mode);
     void directorySelected(QString);
     void copyUrlsRequested(QList<QUrl>, QString path);
     void moveUrlsRequested(QList<QUrl>, QString path);
