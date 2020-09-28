@@ -831,6 +831,8 @@ void Core::reset() {
 }
 
 void Core::loadPath(QString path) {
+    if(path.isEmpty())
+        return;
     if(path.startsWith("file://", Qt::CaseInsensitive))
         path.remove(0, 7);
 
@@ -871,8 +873,6 @@ void Core::loadPath(QString path) {
         loadIndex(index, false, settings->usePreloader());
     } else {
         mw->enableFolderView();
-        folderViewPresenter.selectAndFocus(0);
-        thumbPanelPresenter.selectAndFocus(0);
     }
 }
 

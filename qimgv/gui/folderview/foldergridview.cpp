@@ -5,8 +5,7 @@
 FolderGridView::FolderGridView(QWidget *parent)
     : ThumbnailView(THUMBNAILVIEW_VERTICAL, parent),
       shiftedCol(-1),
-      mShowLabels(false),
-      rangeSelection(false)
+      mShowLabels(false)
 {
     offscreenPreloadArea = 2300;
 
@@ -67,26 +66,6 @@ void FolderGridView::ensureSelectedItemVisible() {
         return;
     ThumbnailWidget *thumb = thumbnails.at(lastSelected());
     ensureVisible(thumb, 0, 0);
-}
-
-void FolderGridView::addSelectionRange(int indexTo) {
-    if(!rangeSelectionSnapshot.count() || !selection().count())
-        return;
-    auto list = rangeSelectionSnapshot;
-    if(indexTo > rangeSelectionSnapshot.last()) {
-        for(int i = rangeSelectionSnapshot.last() + 1; i <= indexTo; i++) {
-            if(list.contains(i))
-                list.removeAll(i);
-            list << i;
-        }
-    } else {
-        for(int i = rangeSelectionSnapshot.last() - 1; i >= indexTo; i--) {
-            if(list.contains(i))
-                list.removeAll(i);
-            list << i;
-        }
-    }
-    select(list);
 }
 
 void FolderGridView::selectAll() {
@@ -306,6 +285,8 @@ void FolderGridView::updateLayout() {
 }
 
 void FolderGridView::keyPressEvent(QKeyEvent *event) {
+    ThumbnailView::keyPressEvent(event);
+
     if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
         emit itemActivated(lastSelected());
         return;
@@ -318,12 +299,6 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
             event->ignore();
         return;
     }
-
-    if(event->key() == Qt::Key_Shift)
-        rangeSelectionSnapshot = selection();
-
-    if(event->modifiers() & Qt::ShiftModifier)
-        rangeSelection = true;
 
     // handle selection
     switch (event->key()) {
@@ -354,11 +329,6 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
     default:
         event->ignore();
     }
-}
-
-void FolderGridView::keyReleaseEvent(QKeyEvent *event) {
-    if(event->key() == Qt::Key_Shift)
-        rangeSelection = false;
 }
 
 void FolderGridView::wheelEvent(QWheelEvent *event) {

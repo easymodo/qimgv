@@ -19,6 +19,7 @@
 #include <QElapsedTimer>
 #include "gui/customwidgets/thumbnailwidget.h"
 #include "gui/idirectoryview.h"
+#include "shortcutbuilder.h"
 
 enum ThumbnailViewOrientation {
     THUMBNAILVIEW_HORIZONTAL,
@@ -96,6 +97,9 @@ protected:
     int mThumbnailSize;
     int offscreenPreloadArea = 3000;
 
+    QList<int> rangeSelectionSnapshot;
+    bool rangeSelection; // true if shift is pressed
+
     QRect indicator;
     const int indicatorSize = 2;
 
@@ -124,6 +128,8 @@ protected:
     void setCropThumbnails(bool);
     void setDrawScrollbarIndicator(bool mode);
 
+    void addSelectionRange(int indexTo);
+
     void wheelEvent(QWheelEvent *) override;
     void mousePressEvent(QMouseEvent *event) override;
 
@@ -138,4 +144,6 @@ protected:
 
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
 };

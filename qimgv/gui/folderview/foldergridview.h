@@ -5,7 +5,6 @@
 #include "gui/customwidgets/thumbnailview.h"
 #include "gui/folderview/thumbnailgridwidget.h"
 #include "gui/flowlayout.h"
-#include "components/actionmanager/actionmanager.h"
 #include "utils/stuff.h"
 
 class FolderGridView : public ThumbnailView {
@@ -16,8 +15,8 @@ public:
     const int THUMBNAIL_SIZE_MIN = 100;  // px
     const int THUMBNAIL_SIZE_MAX = 400;  // these should be divisible by ZOOM_STEP
     const int ZOOM_STEP = 25;
-
     void selectAll();
+
 public slots:
     void show();
     void hide();
@@ -41,11 +40,9 @@ private:
     FlowLayout *flowLayout;
     QGraphicsWidget holderWidget;
     int shiftedCol;
-    QList<int> rangeSelectionSnapshot;
-    bool mShowLabels, rangeSelection;
+    bool mShowLabels;
     void scrollToCurrent();
     void scrollToItem(int index);
-    void addSelectionRange(int indexTo);
 
 private slots:
     void onitemSelected();
@@ -65,7 +62,6 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     void wheelEvent(QWheelEvent *event);
 
-    void keyReleaseEvent(QKeyEvent *event);
 signals:
     void thumbnailSizeChanged(int);
     void showLabelsChanged(bool);

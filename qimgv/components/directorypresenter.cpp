@@ -50,6 +50,7 @@ void DirectoryPresenter::populateView() {
     if(!model || !view)
         return;
     view->populate(mShowDirs ? model->totalCount() : model->fileCount());
+    selectAndFocus(0);
 }
 
 void DirectoryPresenter::disconnectView() {
@@ -185,7 +186,7 @@ void DirectoryPresenter::onItemActivated(int index) {
 void DirectoryPresenter::selectAndFocus(int index) {
     if(!model || !view)
         return;
-    int indexDirOffset = mShowDirs ? model->dirCount() + index : index;
+    int indexDirOffset = mShowDirs ? (model->fileCount()) ? model->dirCount() + index : 0 : index;
     view->select(indexDirOffset);
     view->focusOn(indexDirOffset);
 }

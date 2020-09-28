@@ -7,6 +7,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       mCropThumbnails(false),
       mDrawScrollbarIndicator(true),
       mThumbnailSize(120),
+      rangeSelection(false),
       selectMode(SELECT_BY_PRESS),
       mDragTarget(-1),
       lastScrollFrameTime(0),
@@ -133,6 +134,26 @@ void ThumbnailView::deselect(int index) {
         mSelection.removeAll(index);
         thumbnails.at(index)->setHighlighted(false);
     }
+}
+
+void ThumbnailView::addSelectionRange(int indexTo) {
+    if(!rangeSelectionSnapshot.count() || !selection().count())
+        return;
+    auto list = rangeSelectionSnapshot;
+    if(indexTo > rangeSelectionSnapshot.last()) {
+        for(int i = rangeSelectionSnapshot.last() + 1; i <= indexTo; i++) {
+            if(list.contains(i))
+                list.removeAll(i);
+            list << i;
+        }
+    } else {
+        for(int i = rangeSelectionSnapshot.last() - 1; i >= indexTo; i--) {
+            if(list.contains(i))
+                list.removeAll(i);
+            list << i;
+        }
+    }
+    select(list);
 }
 
 QList<int> ThumbnailView::selection() {
@@ -458,6 +479,8 @@ void ThumbnailView::mousePressEvent(QMouseEvent *event) {
                         select(selection() << index);
                     else
                         deselect(index);
+                } else if(event->modifiers() & Qt::ShiftModifier) {
+                    addSelectionRange(index);
                 } else {
                     select(index);
                 }
@@ -465,7 +488,7 @@ void ThumbnailView::mousePressEvent(QMouseEvent *event) {
                 mDragTarget = index;
             }
         } else if(event->button() == Qt::RightButton) { // todo: context menu maybe?
-            select(QList<int>() << index);
+            select(index);
             return;
         }
     }
@@ -498,6 +521,18 @@ void ThumbnailView::mouseDoubleClickEvent(QMouseEvent *event) {
         }
     }
     event->ignore();
+}
+
+void ThumbnailView::keyPressEvent(QKeyEvent *event) {
+    if(event->key() == Qt::Key_Shift)
+        rangeSelectionSnapshot = selection();
+    if(event->modifiers() & Qt::ShiftModifier)
+        rangeSelection = true;
+}
+
+void ThumbnailView::keyReleaseEvent(QKeyEvent *event) {
+    if(event->key() == Qt::Key_Shift)
+        rangeSelection = false;
 }
 
 void ThumbnailView::resizeEvent(QResizeEvent *event) {
