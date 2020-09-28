@@ -126,6 +126,15 @@ void ThumbnailView::select(int index) {
     this->select(QList<int>() << index);
 }
 
+void ThumbnailView::deselect(int index) {
+    if(!checkRange(index))
+            return;
+    if(mSelection.count() > 1) {
+        mSelection.removeAll(index);
+        thumbnails.at(index)->setHighlighted(false);
+    }
+}
+
 QList<int> ThumbnailView::selection() {
     return mSelection;
 }
@@ -445,9 +454,10 @@ void ThumbnailView::mousePressEvent(QMouseEvent *event) {
                 return;
             } else {
                 if(event->modifiers() & Qt::ControlModifier) {
-                    if(!selection().contains(index)) {
+                    if(!selection().contains(index))
                         select(selection() << index);
-                    }
+                    else
+                        deselect(index);
                 } else {
                     select(index);
                 }

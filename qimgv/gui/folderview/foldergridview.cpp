@@ -5,7 +5,8 @@
 FolderGridView::FolderGridView(QWidget *parent)
     : ThumbnailView(THUMBNAILVIEW_VERTICAL, parent),
       shiftedCol(-1),
-      mShowLabels(false)
+      mShowLabels(false),
+      rangeSelection(false)
 {
     offscreenPreloadArea = 2300;
 
@@ -68,6 +69,34 @@ void FolderGridView::ensureSelectedItemVisible() {
     ensureVisible(thumb, 0, 0);
 }
 
+void FolderGridView::addSelectionRange(int indexTo) {
+    if(!rangeSelectionSnapshot.count() || !selection().count())
+        return;
+    auto list = rangeSelectionSnapshot;
+    if(indexTo > rangeSelectionSnapshot.last()) {
+        for(int i = rangeSelectionSnapshot.last() + 1; i <= indexTo; i++) {
+            if(list.contains(i))
+                list.removeAll(i);
+            list << i;
+        }
+    } else {
+        for(int i = rangeSelectionSnapshot.last() - 1; i >= indexTo; i--) {
+            if(list.contains(i))
+                list.removeAll(i);
+            list << i;
+        }
+    }
+    select(list);
+}
+
+void FolderGridView::selectAll() {
+    QList<int> list;
+    for(int i = 0; i < thumbnails.count(); i++) {
+        list << i;
+    }
+    select(list);
+}
+
 void FolderGridView::selectAbove() {
     if(!thumbnails.count() || lastSelected() == -1 || flowLayout->sameRow(0, lastSelected()))
         return;
@@ -80,7 +109,10 @@ void FolderGridView::selectAbove() {
     }
     if(!checkRange(newIndex))
         newIndex = 0;
-    select(newIndex);
+    if(rangeSelection)
+        addSelectionRange(newIndex);
+    else
+        select(newIndex);
     scrollToCurrent();
 }
 
@@ -93,18 +125,28 @@ void FolderGridView::selectBelow() {
         newIndex = thumbnails.count() - 1;
     if(flowLayout->columnOf(newIndex) != flowLayout->columnOf(lastSelected()))
         shiftedCol = flowLayout->columnOf(lastSelected());
-    select(newIndex);
+    if(rangeSelection)
+        addSelectionRange(newIndex);
+    else
+        select(newIndex);
     scrollToCurrent();
 }
 
 void FolderGridView::selectNext() {
-    if(!thumbnails.count() || lastSelected() == -1 || lastSelected() == thumbnails.count() - 1)
+    if(!thumbnails.count() || lastSelected() == -1)
         return;
+    if(!rangeSelection && lastSelected() == thumbnails.count() - 1) {
+        select(lastSelected());
+        return;
+    }
     shiftedCol = -1;
     int newIndex = lastSelected() + 1;
     if(!checkRange(newIndex))
         newIndex = thumbnails.count() - 1;
-    select(newIndex);
+    if(rangeSelection)
+        addSelectionRange(newIndex);
+    else
+        select(newIndex);
     scrollToCurrent();
 }
 
@@ -115,7 +157,10 @@ void FolderGridView::selectPrev() {
     int newIndex = lastSelected() - 1;
     if(!checkRange(newIndex))
         newIndex = 0;
-    select(newIndex);
+    if(rangeSelection)
+        addSelectionRange(newIndex);
+    else
+        select(newIndex);
     scrollToCurrent();
 }
 
@@ -135,7 +180,10 @@ void FolderGridView::pageUp() {
         newIndex += diff;
         shiftedCol = -1;
     }
-    select(newIndex);
+    if(rangeSelection)
+        addSelectionRange(newIndex);
+    else
+        select(newIndex);
     scrollToCurrent();
 }
 
@@ -153,7 +201,10 @@ void FolderGridView::pageDown() {
     }
     if(flowLayout->columnOf(newIndex) != flowLayout->columnOf(lastSelected()))
         shiftedCol = flowLayout->columnOf(lastSelected());
-    select(newIndex);
+    if(rangeSelection)
+        addSelectionRange(newIndex);
+    else
+        select(newIndex);
     scrollToCurrent();
 }
 
@@ -161,7 +212,10 @@ void FolderGridView::selectFirst() {
     if(!thumbnails.count())
         return;
     shiftedCol = -1;
-    select(0);
+    if(rangeSelection)
+        addSelectionRange(0);
+    else
+        select(0);
     scrollToCurrent();
 }
 
@@ -169,7 +223,10 @@ void FolderGridView::selectLast() {
     if(!thumbnails.count())
         return;
     shiftedCol = -1;
-    select(thumbnails.count() - 1);
+    if(rangeSelection)
+        addSelectionRange(thumbnails.count() - 1);
+    else
+        select(thumbnails.count() - 1);
     scrollToCurrent();
 }
 
@@ -249,27 +306,59 @@ void FolderGridView::updateLayout() {
 }
 
 void FolderGridView::keyPressEvent(QKeyEvent *event) {
-    QString shortcut = ShortcutBuilder::fromEvent(event);
-    if(shortcut == "Right")
-        selectNext();
-    else if(shortcut == "Left")
-        selectPrev();
-    else if(shortcut == "Up")
-        selectAbove();
-    else if(shortcut == "Down")
-        selectBelow();
-    else if(shortcut == "Enter")
+    if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
         emit itemActivated(lastSelected());
-    else if(shortcut == "Home")
-        selectFirst();
-    else if(shortcut == "End")
-        selectLast();
-    else if(shortcut == "PgUp")
+        return;
+    }
+
+    if(event->modifiers() & Qt::ControlModifier) {
+        if(ShortcutBuilder::fromEvent(event) == "Ctrl+A")
+            selectAll();
+        else
+            event->ignore();
+        return;
+    }
+
+    if(event->key() == Qt::Key_Shift)
+        rangeSelectionSnapshot = selection();
+
+    if(event->modifiers() & Qt::ShiftModifier)
+        rangeSelection = true;
+
+    // handle selection
+    switch (event->key()) {
+    case Qt::Key_Left:
+        selectPrev();
+        break;
+    case Qt::Key_Right:
+        selectNext();
+        break;
+    case Qt::Key_Up:
+        selectAbove();
+        break;
+    case Qt::Key_Down:
+        selectBelow();
+        break;
+    case Qt::Key_PageUp:
         pageUp();
-    else if(shortcut == "PgDown")
+        break;
+    case Qt::Key_PageDown:
         pageDown();
-    else
+        break;
+    case Qt::Key_Home:
+        selectFirst();
+        break;
+    case Qt::Key_End:
+        selectLast();
+        break;
+    default:
         event->ignore();
+    }
+}
+
+void FolderGridView::keyReleaseEvent(QKeyEvent *event) {
+    if(event->key() == Qt::Key_Shift)
+        rangeSelection = false;
 }
 
 void FolderGridView::wheelEvent(QWheelEvent *event) {

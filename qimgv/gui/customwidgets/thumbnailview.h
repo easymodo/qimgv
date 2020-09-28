@@ -43,6 +43,7 @@ public:
     void setSelectMode(ThumbnailSelectMode mode);
     int lastSelected();
     void clearSelection();
+    void deselect(int index);
 public slots:
     void showEvent(QShowEvent *event) override;
     void resetViewport();
