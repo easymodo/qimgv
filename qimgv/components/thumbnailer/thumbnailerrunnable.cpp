@@ -10,7 +10,6 @@ ThumbnailerRunnable::ThumbnailerRunnable(ThumbnailCache* _cache, QString _path, 
 }
 
 void ThumbnailerRunnable::run() {
-    emit taskStart(path, size);
     std::shared_ptr<Thumbnail> thumbnail = generate(cache, path, size, crop, force);
     emit taskEnd(thumbnail, path);
 }
