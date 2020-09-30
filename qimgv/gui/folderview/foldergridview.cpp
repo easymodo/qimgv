@@ -73,11 +73,17 @@ void FolderGridView::selectAll() {
     for(int i = 0; i < thumbnails.count(); i++) {
         list << i;
     }
+    // preserve last selected index by putting it at the end of a new selection
+    // this is simpler but it changes selection order a bit
+    if(lastSelected() != -1) {
+        // in this case list is sorted so no need to indexOf()
+        list.move(lastSelected(), list.count() - 1);
+    }
     select(list);
 }
 
 void FolderGridView::selectAbove() {
-    if(!thumbnails.count() || lastSelected() == -1 || flowLayout->sameRow(0, lastSelected()))
+    if(!thumbnails.count() || lastSelected() == -1)
         return;
     int newIndex;
     newIndex = flowLayout->itemAbove(lastSelected());
@@ -96,7 +102,7 @@ void FolderGridView::selectAbove() {
 }
 
 void FolderGridView::selectBelow() {
-    if(!thumbnails.count() || lastSelected() == -1 || flowLayout->sameRow(lastSelected(), thumbnails.count() - 1))
+    if(!thumbnails.count() || lastSelected() == -1)
         return;
     shiftedCol = -1;
     int newIndex = flowLayout->itemBelow(lastSelected());
@@ -112,7 +118,7 @@ void FolderGridView::selectBelow() {
 }
 
 void FolderGridView::selectNext() {
-    if(!thumbnails.count() || lastSelected() == -1)
+    if(!thumbnails.count())
         return;
     if(!rangeSelection && lastSelected() == thumbnails.count() - 1) {
         select(lastSelected());
@@ -130,7 +136,7 @@ void FolderGridView::selectNext() {
 }
 
 void FolderGridView::selectPrev() {
-    if(!thumbnails.count() || lastSelected() <= 0)
+    if(!thumbnails.count())
         return;
     shiftedCol = -1;
     int newIndex = lastSelected() - 1;

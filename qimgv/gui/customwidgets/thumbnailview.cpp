@@ -124,6 +124,9 @@ void ThumbnailView::select(QList<int> indices) {
 }
 
 void ThumbnailView::select(int index) {
+    // fallback
+    if(!checkRange(index))
+        index = 0;
     this->select(QList<int>() << index);
 }
 
