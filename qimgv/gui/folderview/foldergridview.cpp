@@ -264,7 +264,7 @@ void FolderGridView::setupLayout() {
 ThumbnailWidget* FolderGridView::createThumbnailWidget() {
     ThumbnailGridWidget *widget = new ThumbnailGridWidget();
     widget->setDrawLabel(mShowLabels);
-    widget->setPadding(8,8);
+    widget->setPadding(8);
     widget->setThumbnailSize(this->mThumbnailSize); // TODO: constructor
     return widget;
 }

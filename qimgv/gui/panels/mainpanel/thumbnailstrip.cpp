@@ -34,7 +34,7 @@ void ThumbnailStrip::setupLayout() {
 ThumbnailWidget* ThumbnailStrip::createThumbnailWidget() {
     ThumbnailWidget *widget = new ThumbnailGridWidget();
     widget->setDrawLabel(false);
-    widget->setPadding(6,6);
+    widget->setPadding(6);
     widget->setThumbnailSize(this->mThumbnailSize);
     return widget;
 }

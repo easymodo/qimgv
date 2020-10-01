@@ -39,7 +39,7 @@ public:
     virtual QRectF geometry() const;
     QSizeF effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
     void setDrawLabel(bool mode);
-    void setPadding(int x, int y);
+    void setPadding(int _padding);
     int thumbnailSize();
     void reset();
     void unsetThumbnail();
@@ -67,7 +67,7 @@ protected:
 
     std::shared_ptr<Thumbnail> thumbnail;
     bool highlighted, hovered, mDrawLabel, animateHover;
-    int mThumbnailSize, paddingX, paddingY, textHeight;
+    int mThumbnailSize, padding, textHeight;
     QRectF highlightRect, nameRect, labelTextRect;
     QColor highlightColor, nameColor;
     QFont font, fontSmall;

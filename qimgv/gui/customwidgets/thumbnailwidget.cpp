@@ -8,8 +8,7 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     hovered(false),
     mDrawLabel(true),
     mThumbnailSize(100),
-    paddingX(1),
-    paddingY(3),
+    padding(5),
     textHeight(5)
 {
     setAttribute(Qt::WA_OpaquePaintEvent, true);
@@ -46,9 +45,8 @@ void ThumbnailWidget::setThumbnailSize(int size) {
     }
 }
 
-void ThumbnailWidget::setPadding(int x, int y) {
-    paddingX = x;
-    paddingY = y;
+void ThumbnailWidget::setPadding(int _padding) {
+    padding = _padding;
 }
 
 int ThumbnailWidget::thumbnailSize() {
@@ -128,7 +126,7 @@ void ThumbnailWidget::setupLayout() {
 }
 
 void ThumbnailWidget::updateHighlightRect() {
-    highlightRect = QRectF(paddingX, 0, width() - paddingX * 2, paddingY);
+    highlightRect = QRectF(padding, 0, width() - padding * 2, padding);
 }
 
 void ThumbnailWidget::setHighlighted(bool mode) {
@@ -143,7 +141,7 @@ bool ThumbnailWidget::isHighlighted() {
 }
 
 QRectF ThumbnailWidget::boundingRect() const {
-    return QRectF(0, 0, mThumbnailSize + paddingX * 2, mThumbnailSize + paddingY * 2);
+    return QRectF(0, 0, mThumbnailSize + padding * 2, mThumbnailSize + padding * 2);
 }
 
 qreal ThumbnailWidget::width() {
@@ -159,8 +157,6 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     Q_UNUSED(option)
     painter->setRenderHints(QPainter::Antialiasing);
     qreal dpr = painter->paintEngine()->paintDevice()->devicePixelRatioF();
-    if(isHovered())
-        drawHover(painter);
     if(isHighlighted())
         drawHighlight(painter);
     if(!thumbnail) {
@@ -176,6 +172,8 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
         if(mDrawLabel)
             drawLabel(painter);
     }
+    if(isHovered())
+        drawHover(painter);
 }
 
 void ThumbnailWidget::drawHighlight(QPainter *painter) {

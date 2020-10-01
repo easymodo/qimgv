@@ -2,25 +2,27 @@
 
 ThumbnailGridWidget::ThumbnailGridWidget(QGraphicsItem* parent)
     : ThumbnailWidget(parent),
-      labelSpacing(7)
+      labelSpacing(7),
+      margin(2)
 {
     font.setBold(false);
     shadowColor.setRgb(0,0,0,60);
+    margin = 2;
     readSettings();
 }
 
 QRectF ThumbnailGridWidget::boundingRect() const {
     if(mDrawLabel)
-        return QRectF(0, 0, mThumbnailSize + paddingX * 2,
-                            mThumbnailSize + paddingY * 2 + labelSpacing + textHeight * 2);
+        return QRectF(0, 0, mThumbnailSize + (padding + margin) * 2,
+                            mThumbnailSize + (padding + margin) * 2 + labelSpacing + textHeight * 2);
     else
-        return QRectF(0, 0, mThumbnailSize + paddingX * 2,
-                            mThumbnailSize + paddingY * 2);
+        return QRectF(0, 0, mThumbnailSize + (padding + margin) * 2,
+                            mThumbnailSize + (padding + margin) * 2);
 }
 
 void ThumbnailGridWidget::setupLayout() {
     if(mDrawLabel) {
-        nameRect = QRectF(paddingX, paddingY + mThumbnailSize + labelSpacing,
+        nameRect = QRectF(padding + margin, padding + margin + mThumbnailSize + labelSpacing,
                           mThumbnailSize, fm->height());
         infoRect = nameRect.adjusted(0,fm->height() + 2,0,fm->height() + 2);
     }
@@ -28,6 +30,8 @@ void ThumbnailGridWidget::setupLayout() {
 
 void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
     if(isHighlighted()) {
+        painter->fillRect(highlightRect, highlightColor);
+        /*
         QPainterPath path;
         // fill
         path.addRoundedRect(highlightRect, 3, 3);
@@ -41,6 +45,7 @@ void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
         painter->setPen(Qt::white);
         painter->drawPath(path);
         painter->setOpacity(op);
+        */
     }
 }
 
@@ -91,13 +96,18 @@ void ThumbnailGridWidget::readSettings() {
 }
 
 void ThumbnailGridWidget::drawHover(QPainter *painter) {
-    //Q_UNUSED(painter)
-    QPainterPath path;
-    path.addRoundedRect(highlightRect, 3, 3);
+    if(!thumbnail || !thumbnail->pixmap())
+        return;
+    // save state
     auto op = painter->opacity();
-    painter->setOpacity(0.55f);
-    painter->fillPath(path, settings->colorScheme().accent);
+    auto mode = painter->compositionMode();
+    // paint
+    painter->setCompositionMode(QPainter::CompositionMode_Plus);
+    painter->setOpacity(0.3f);
+    painter->drawPixmap(drawRectCentered, *thumbnail->pixmap());
+    // restore
     painter->setOpacity(op);
+    painter->setCompositionMode(mode);
 }
 
 void ThumbnailGridWidget::drawLabel(QPainter *painter) {
@@ -146,10 +156,10 @@ void ThumbnailGridWidget::drawSingleLineText(QPainter *painter, QRectF rect, QSt
 
 void ThumbnailGridWidget::updateHighlightRect() {
     if(!mDrawLabel || drawRectCentered.height() >= drawRectCentered.width()) {
-        highlightRect = boundingRect();
+        highlightRect = boundingRect().adjusted(margin, margin, -margin, -margin);
     } else {
-        highlightRect = drawRectCentered.adjusted(-paddingX, -paddingY, paddingX, paddingY);
-        highlightRect.setBottom(height());
+        highlightRect = drawRectCentered.adjusted(-padding, -padding, padding, 0);
+        highlightRect.setBottom(height() - margin);
     }
 }
 
@@ -163,7 +173,7 @@ void ThumbnailGridWidget::updateThumbnailDrawPosition() {
             if(mDrawLabel) {
                 // snap thumbnail to bottom when drawing label
                 topLeft.setX(width() / 2.0 - thumbnail->pixmap()->width() / (2.0 * dpr));
-                topLeft.setY(paddingY + mThumbnailSize - thumbnail->pixmap()->height() / dpr);
+                topLeft.setY(padding + margin + mThumbnailSize - thumbnail->pixmap()->height() / dpr);
             } else {
                 // center otherwise
                 topLeft.setX(width() / 2.0 - thumbnail->pixmap()->width() / (2.0 * dpr));
@@ -177,7 +187,7 @@ void ThumbnailGridWidget::updateThumbnailDrawPosition() {
             if(mDrawLabel) {
                 // snap thumbnail to bottom when drawing label
                 topLeft.setX((width() - scaled.width()) / 2.0);
-                topLeft.setY(paddingY + mThumbnailSize - scaled.height());
+                topLeft.setY(padding + margin + mThumbnailSize - scaled.height());
             } else {
                 // center otherwise
                 topLeft.setX((width() - scaled.width()) / 2.0);

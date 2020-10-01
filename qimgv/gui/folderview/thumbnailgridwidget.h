@@ -22,6 +22,7 @@ protected:
     void drawSingleLineText(QPainter *painter, QRectF rect, QString text, const QColor &color);
 
 private:
-    int labelSpacing;
+    int labelSpacing, margin;
     QRectF infoRect;
+    QPixmap *hoverPixmap = nullptr;
 };
