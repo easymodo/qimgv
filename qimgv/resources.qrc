@@ -150,5 +150,6 @@
         <file>res/icons/common/other/folder96.png</file>
         <file>res/icons/common/buttons/panel/folder16.png</file>
         <file>res/icons/common/buttons/panel/folder16@2x.png</file>
+        <file>res/icons/common/other/folder32-scalable.svg</file>
     </qresource>
 </RCC>

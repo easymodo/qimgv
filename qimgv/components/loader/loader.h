@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QThreadPool>
-#include <QtConcurrent>
 #include "components/cache/thumbnailcache.h"
 #include "loaderrunnable.h"
 

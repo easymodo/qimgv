@@ -145,10 +145,21 @@ void DirectoryPresenter::generateThumbnails(QList<int> indexes, int size, bool c
     }
     for(int i : indexes) {
         if(i < model->dirCount()) {
-            // gen thumb for a directory (!todo: shared res)
             // tmp ------------------------------------------------------------
-            QPixmap *pixmap = new QPixmap(":/res/icons/common/other/folder96.png");
+            // gen thumb for a directory
+            // TODO: optimize & move dir icon loading to shared res; then overlay
+            // the mini-thumbs on top (similar to dolphin)
+            QSvgRenderer svgRenderer;
+            svgRenderer.load(QString(":/res/icons/common/other/folder32-scalable.svg"));
+            int factor = (size * 0.90f) / svgRenderer.defaultSize().width();
+            QPixmap *pixmap = new QPixmap(svgRenderer.defaultSize() * factor);
+            pixmap->fill(Qt::transparent);
+            QPainter pixPainter(pixmap);
+            svgRenderer.render(&pixPainter);
+            pixPainter.end();
+
             ImageLib::recolor(*pixmap, settings->colorScheme().icons);
+
             std::shared_ptr<Thumbnail> thumb(new Thumbnail(model->dirNameAt(i),
                                                            "Folder",
                                                            size,

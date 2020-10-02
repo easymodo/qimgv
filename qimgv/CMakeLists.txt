@@ -32,7 +32,7 @@ if(APPLE)
 endif()
 
 # LINK STUFF
-target_link_libraries(qimgv PRIVATE Qt5::Core Qt5::Widgets Qt5::Concurrent)
+target_link_libraries(qimgv PRIVATE Qt5::Core Qt5::Widgets Qt5::Svg)
 
 # OPTION DEFINITIONS, LINKING
 if(EXIV2)

@@ -2,7 +2,6 @@
 
 #include <QObject>
 #include <QThreadPool>
-#include <QtConcurrent>
 #include <QThread>
 #include <QMutex>
 #include "components/cache/cache.h"

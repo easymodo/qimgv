@@ -7,6 +7,9 @@
 #include "directorymodel.h"
 #include "sharedresources.h"
 
+//tmp
+#include <QtSvg/QSvgRenderer>
+
 class DirectoryPresenter : public QObject {
     Q_OBJECT
 public:

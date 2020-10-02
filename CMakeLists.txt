@@ -37,7 +37,7 @@ option(OPENCV_SUPPORT "Enable HQ scaling via OpenCV" ON)
 option(KDE_SUPPORT "Support blur when using KDE" OFF)
 
 # FIND PACKAGES
-find_package(Qt5 REQUIRED COMPONENTS Core Concurrent Widgets)
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets Svg)
 
 if(EXIV2)
     find_package(PkgConfig REQUIRED)

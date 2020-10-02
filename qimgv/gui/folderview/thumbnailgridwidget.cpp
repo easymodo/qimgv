@@ -69,8 +69,6 @@ void ThumbnailGridWidget::readSettings() {
 }
 
 void ThumbnailGridWidget::drawHoverHighlight(QPainter *painter) {
-    if(!thumbnail || !thumbnail->pixmap())
-        return;
     auto op = painter->opacity();
     painter->fillRect(highlightRect, settings->colorScheme().folderview_separator);
     painter->setOpacity(op);
@@ -124,8 +122,13 @@ void ThumbnailGridWidget::updateHighlightRect() {
     if(!mDrawLabel || drawRectCentered.height() >= drawRectCentered.width()) {
         highlightRect = boundingRect().adjusted(margin, margin, -margin, -margin);
     } else {
-        highlightRect = drawRectCentered.adjusted(-padding, -padding, padding, 0);
         highlightRect.setBottom(height() - margin);
+        highlightRect.setLeft(margin);
+        highlightRect.setRight(width() - margin);
+        if(!thumbnail || !thumbnail->pixmap())
+            highlightRect.setTop(drawRectCentered.top() - padding);
+        else // ensure we get equal padding on the top & sides
+            highlightRect.setTop(qMax(drawRectCentered.top() - drawRectCentered.left() + margin, margin));
     }
 }
 
