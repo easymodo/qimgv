@@ -52,7 +52,7 @@ protected:
     virtual void drawThumbnail(QPainter* painter, const QPixmap *pixmap);
     virtual void drawIcon(QPainter *painter, const QPixmap *pixmap);
     virtual void drawHighlight(QPainter *painter);
-    virtual void drawHover(QPainter *painter);
+    virtual void drawHoverHighlight(QPainter *painter);
     virtual void drawLabel(QPainter *painter);
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;

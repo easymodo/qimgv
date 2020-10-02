@@ -157,8 +157,11 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     Q_UNUSED(option)
     painter->setRenderHints(QPainter::Antialiasing);
     qreal dpr = painter->paintEngine()->paintDevice()->devicePixelRatioF();
+    if(isHovered())
+        drawHoverHighlight(painter);
     if(isHighlighted())
         drawHighlight(painter);
+
     if(!thumbnail) {
         QPixmap* loadingIcon = shrRes->getPixmap(ShrIcon::SHR_ICON_LOADING, dpr);
         drawIcon(painter, loadingIcon);
@@ -172,15 +175,13 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
         if(mDrawLabel)
             drawLabel(painter);
     }
-    if(isHovered())
-        drawHover(painter);
 }
 
 void ThumbnailWidget::drawHighlight(QPainter *painter) {
     painter->fillRect(highlightRect, highlightColor);
 }
 
-void ThumbnailWidget::drawHover(QPainter *painter) {
+void ThumbnailWidget::drawHoverHighlight(QPainter *painter) {
     painter->setOpacity(0.5f);
     painter->fillRect(highlightRect, highlightColor);
     painter->setOpacity(1.0);

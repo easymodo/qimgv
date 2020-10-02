@@ -50,64 +50,30 @@ void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
 }
 
 void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap) {
-    qreal dpr = qApp->devicePixelRatio();
-    /*if(!thumbnail->hasAlphaChannel()) {
-        // rounded corners variant - via tmp pixmap layer
-        // slower but FANCY
-        QPixmap surface(width() * dpr, height() * dpr);
-        surface.fill(Qt::transparent);
-        surface.setDevicePixelRatio(dpr);
-        QPainter spainter(&surface);
-        // rounded mask
-        QPainterPath path;
-        path.addRoundedRect(drawRectCentered, 3, 3);
-        spainter.fillPath(path, Qt::red);
-        // rounded thumbnail
-        spainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
-        spainter.drawPixmap(drawRectCentered, *pixmap);
-        spainter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-        // outline
-        path.clear();
-        QRectF adj = static_cast<QRectF>(drawRectCentered).adjusted(0.5f, 0.5f, -0.5f, -0.5f);
-        path.addRoundedRect(adj, 3, 3);
-        spainter.setOpacity(0.03f);
-        spainter.setPen(Qt::white);
-        spainter.drawPath(path);
-        // drop shadow (todo - maybe soft shadows?)
-        path.clear();
-        path.addRoundedRect(drawRectCentered.adjusted(2,2,2,2),3,3); // offset=3 may look better.. make this configurable?
-        painter->fillPath(path, shadowColor);
-        // write thumbnail layer into graphicsitem
-        painter->setCompositionMode(QPainter::CompositionMode_SourceAtop);
-        painter->drawPixmap(QPointF(0,0), surface);
-        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-    } else {
-        painter->drawPixmap(drawRectCentered, *pixmap);
-    }
-    */
-    // draw a shadow rectangle
     if(!thumbnail->hasAlphaChannel())
         painter->fillRect(drawRectCentered.adjusted(3,3,3,3), shadowColor);
     painter->drawPixmap(drawRectCentered, *pixmap);
+    if(isHovered()) {
+        auto op = painter->opacity();
+        auto mode = painter->compositionMode();
+        painter->setCompositionMode(QPainter::CompositionMode_Plus);
+        painter->setOpacity(0.2f);
+        painter->drawPixmap(drawRectCentered, *thumbnail->pixmap());
+        painter->setOpacity(op);
+        painter->setCompositionMode(mode);
+    }
 }
 
 void ThumbnailGridWidget::readSettings() {
     highlightColor = settings->colorScheme().accent;
 }
 
-void ThumbnailGridWidget::drawHover(QPainter *painter) {
+void ThumbnailGridWidget::drawHoverHighlight(QPainter *painter) {
     if(!thumbnail || !thumbnail->pixmap())
         return;
-    // save state
     auto op = painter->opacity();
-    auto mode = painter->compositionMode();
-    // paint
-    painter->setCompositionMode(QPainter::CompositionMode_Plus);
-    painter->setOpacity(0.3f);
-    painter->drawPixmap(drawRectCentered, *thumbnail->pixmap());
-    // restore
+    painter->fillRect(highlightRect, settings->colorScheme().folderview_separator);
     painter->setOpacity(op);
-    painter->setCompositionMode(mode);
 }
 
 void ThumbnailGridWidget::drawLabel(QPainter *painter) {
