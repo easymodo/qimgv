@@ -12,9 +12,9 @@ class FolderGridView : public ThumbnailView {
 public:
     explicit FolderGridView(QWidget *parent = nullptr);
 
-    const int THUMBNAIL_SIZE_MIN = 100;  // px
+    const int THUMBNAIL_SIZE_MIN = 80;  // px
     const int THUMBNAIL_SIZE_MAX = 400;  // these should be divisible by ZOOM_STEP
-    const int ZOOM_STEP = 25;
+    const int ZOOM_STEP = 20;
     void selectAll();
 
 public slots:
