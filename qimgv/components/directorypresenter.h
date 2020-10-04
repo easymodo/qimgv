@@ -36,6 +36,7 @@ public:
 signals:
     void dirActivated(QString dirPath);
     void fileActivated(int);
+    void draggedOut(QList<QString>);
 
 public slots:
     void disconnectView();
@@ -46,6 +47,7 @@ private slots:
     void onThumbnailReady(std::shared_ptr<Thumbnail> thumb, QString filePath);
     void populateView();
     void onItemActivated(int index);
+    void onDraggedOut();
 
 private:
     std::shared_ptr<IDirectoryView> view = nullptr;

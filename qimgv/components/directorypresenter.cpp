@@ -24,6 +24,8 @@ void DirectoryPresenter::setView(std::shared_ptr<IDirectoryView> _view) {
             this, SLOT(onItemActivated(int)));
     connect(dynamic_cast<QObject *>(view.get()), SIGNAL(thumbnailsRequested(QList<int>, int, bool, bool)),
             this, SLOT(generateThumbnails(QList<int>, int, bool, bool)));
+    connect(dynamic_cast<QObject *>(view.get()), SIGNAL(draggedOut()),
+            this, SLOT(onDraggedOut()));
 }
 
 void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
@@ -193,6 +195,10 @@ void DirectoryPresenter::onItemActivated(int index) {
         emit dirActivated(model->dirPathAt(index));
     else
         emit fileActivated(index - model->dirCount());
+}
+
+void DirectoryPresenter::onDraggedOut() {
+    emit draggedOut(selectedPaths());
 }
 
 void DirectoryPresenter::selectAndFocus(int index) {

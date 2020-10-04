@@ -63,7 +63,7 @@ public slots:
 signals:
     void itemActivated(int) override;
     void thumbnailsRequested(QList<int>, int, bool, bool) override;
-    void draggedOut(QList<int>) override;
+    void draggedOut() override;
     void draggedToBookmarks(QList<int>) override;
 
 private:
@@ -76,7 +76,7 @@ private:
     // TODO: tune this value
     const int SMOOTH_SCROLL_THRESHOLD = 120;
 
-    int mDrawScrollbarIndicator, mDragTarget, lastScrollFrameTime;
+    int mDrawScrollbarIndicator, lastScrollFrameTime;
     QList<int> mSelection;
 
     bool mCropThumbnails;

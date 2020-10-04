@@ -81,6 +81,9 @@ void Core::connectComponents() {
     connect(&folderViewPresenter, &DirectoryPresenter::dirActivated,
             this, &Core::loadPath);
 
+    connect(&folderViewPresenter, &DirectoryPresenter::draggedOut,
+            this, qOverload<QList<QString>>(&Core::onDraggedOut));
+
     connect(mw, &MW::opened,                this, &Core::loadPath);
     connect(mw, &MW::droppedIn,             this, &Core::onDropIn);
     connect(mw, &MW::copyRequested,         this, &Core::copyCurrentFile);
@@ -97,7 +100,7 @@ void Core::connectComponents() {
     connect(mw, &MW::sortingSelected,       this, &Core::sortBy);
     connect(mw, &MW::showFoldersChanged,    this, &Core::setFoldersDisplay);
     connect(mw, &MW::discardEditsRequested, this, &Core::discardEdits);
-    connect(mw, qOverload<>(&MW::draggedOut),    this, qOverload<>(&Core::onDragOut));
+    connect(mw, &MW::draggedOut,            this, qOverload<>(&Core::onDraggedOut));
 
     connect(mw, &MW::playbackFinished, this, &Core::onPlaybackFinished);
 
@@ -372,19 +375,20 @@ void Core::onDropIn(const QMimeData *mimeData, QObject* source) {
 
 // drag'n'drop
 // drag image out of the program
-void Core::onDragOut() {
-    onDragOut(model->indexOfFile(state.currentFilePath));
+void Core::onDraggedOut() {
+    onDraggedOut(QList<QString>() << state.currentFilePath);
 }
 
-void Core::onDragOut(int index) {
+void Core::onDraggedOut(QList<QString> paths) {
     if(model->isEmpty())
         return;
+    // this will break with multi-selection when there are 2+ edited files
+    QMimeData *mimeData = getMimeDataFor(model->getImage(paths.last()), TARGET_DROP);
 
-    QMimeData *mimeData = getMimeDataFor(model->getImageAt(index), TARGET_DROP);
-    auto thumb = Thumbnailer::getThumbnail(model->filePathAt(index), 100);
+    //auto thumb = Thumbnailer::getThumbnail(paths.last(), 100);
     mDrag = new QDrag(this);
     mDrag->setMimeData(mimeData);
-    mDrag->setPixmap(*thumb->pixmap().get());
+    //mDrag->setPixmap(*thumb->pixmap().get());
 
     mDrag->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction, Qt::CopyAction);
 

@@ -9,7 +9,6 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       mThumbnailSize(120),
       rangeSelection(false),
       selectMode(SELECT_BY_PRESS),
-      mDragTarget(-1),
       lastScrollFrameTime(0),
       scrollTimeLine(nullptr)
 {
@@ -208,7 +207,6 @@ void ThumbnailView::populate(int count) {
             }
         }
     }
-    mDragTarget = -1;
     updateLayout();
     fitSceneToContents();
     resetViewport();
@@ -468,7 +466,6 @@ void ThumbnailView::scrollSmooth(int angleDelta) {
 
 void ThumbnailView::mousePressEvent(QMouseEvent *event) {
     dragStartPos = QPointF(0,0);
-    mDragTarget = -1;
     ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
     if(item) {
         int index = thumbnails.indexOf(item);
@@ -488,7 +485,6 @@ void ThumbnailView::mousePressEvent(QMouseEvent *event) {
                     select(index);
                 }
                 dragStartPos = event->pos();
-                mDragTarget = index;
             }
         } else if(event->button() == Qt::RightButton) { // todo: context menu maybe?
             select(index);
@@ -500,17 +496,15 @@ void ThumbnailView::mousePressEvent(QMouseEvent *event) {
 
 void ThumbnailView::mouseMoveEvent(QMouseEvent *event) {
     QGraphicsView::mouseMoveEvent(event);
-    if(event->buttons() != Qt::LeftButton || mDragTarget == -1)
+    if(event->buttons() != Qt::LeftButton || !selection().count())
         return;
     if(QLineF(dragStartPos, event->pos()).length() >= 40) {
-        emit draggedOut(QList<int>() << mDragTarget);
-        mDragTarget = -1;
+        emit draggedOut();
     }
 }
 
 void ThumbnailView::mouseReleaseEvent(QMouseEvent *event) {
     QGraphicsView::mouseReleaseEvent(event);
-    mDragTarget = -1;
 }
 
 void ThumbnailView::mouseDoubleClickEvent(QMouseEvent *event) {

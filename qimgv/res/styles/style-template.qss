@@ -605,7 +605,7 @@ FolderView QTreeView::item {
 }
 
 FolderView QTreeView::item:hover {
-    background-color: %accent_hover_rgba%;
+    background-color: %folderview_separator%;
 }
 
 FolderView QTreeView::item:selected:!active,
@@ -623,7 +623,7 @@ QTreeView::branch:selected {
 }
 
 QTreeView::branch:hover:!selected {
-    background-color: %accent_hover_rgba%;
+    background-color: %folderview_separator%;
 }
 
 QTreeView::branch:has-siblings:!adjoins-item:!selected {
@@ -631,7 +631,7 @@ QTreeView::branch:has-siblings:!adjoins-item:!selected {
 }
 
 QTreeView::branch:has-siblings:hover:!adjoins-item:!selected {
-    background-color: %accent_hover_rgba%;
+    background-color: %folderview_separator%;
 }
 
 QTreeView::branch:has-children:!has-siblings:closed,
@@ -655,7 +655,7 @@ BookmarksItem {
 }
 
 BookmarksItem:hover {
-    background-color: %accent_hover_rgba%;
+    background-color: %folderview_separator%;
 }
 
 BookmarksItem QLabel {

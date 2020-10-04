@@ -58,7 +58,7 @@ protected slots:
 signals:
     void itemActivated(int) override;
     void thumbnailsRequested(QList<int>, int, bool, bool) override;
-    void draggedOut(QList<int>) override;
+    void draggedOut() override;
     void draggedToBookmarks(QList<int>) override;
     void sortingSelected(SortingMode);
     void directorySelected(QString path);

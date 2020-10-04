@@ -38,7 +38,7 @@ protected:
 signals:
     void itemActivated(int) override;
     void thumbnailsRequested(QList<int>, int, bool, bool);
-    void draggedOut(QList<int>);
+    void draggedOut();
     void draggedToBookmarks(QList<int>);
     void sortingSelected(SortingMode);
     void showFoldersChanged(bool mode);

@@ -125,8 +125,8 @@ private slots:
     void sortByTime();
     void sortBySize();
     void showRenameDialog();
-    void onDragOut();
-    void onDragOut(int index);
+    void onDraggedOut();
+    void onDraggedOut(QList<QString> paths);
     void onDropIn(const QMimeData *mimeData, QObject* source);
     void toggleShuffle();
     void onModelLoaded();

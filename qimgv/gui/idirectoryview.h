@@ -25,7 +25,7 @@ public:
 //signals
     virtual void itemActivated(int) = 0;
     virtual void thumbnailsRequested(QList<int>, int, bool, bool) = 0;
-    virtual void draggedOut(QList<int>) = 0;
+    virtual void draggedOut() = 0;
     virtual void draggedToBookmarks(QList<int>) = 0;
 };
 
