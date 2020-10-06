@@ -1,4 +1,4 @@
-#include "directorypresenter.h"
+﻿#include "directorypresenter.h"
 
 DirectoryPresenter::DirectoryPresenter(QObject *parent) : QObject(parent), mShowDirs(false) {
     connect(&thumbnailer, &Thumbnailer::thumbnailReady, this, &DirectoryPresenter::onThumbnailReady);
@@ -181,32 +181,40 @@ void DirectoryPresenter::onThumbnailReady(std::shared_ptr<Thumbnail> thumb, QStr
     view->setThumbnail(mShowDirs ? model->dirCount() + index : index, thumb);
 }
 
-void DirectoryPresenter::onItemActivated(int index) {
+void DirectoryPresenter::onItemActivated(int absoluteIndex) {
     if(!model)
         return;
     if(!mShowDirs) {
-        emit fileActivated(index);
+        emit fileActivated(model->filePathAt(absoluteIndex));
         return;
     }
-    if(index < model->dirCount())
-        emit dirActivated(model->dirPathAt(index));
+    if(absoluteIndex < model->dirCount())
+        emit dirActivated(model->dirPathAt(absoluteIndex));
     else
-        emit fileActivated(index - model->dirCount());
+        emit fileActivated(model->filePathAt(absoluteIndex - model->dirCount()));
 }
 
 void DirectoryPresenter::onDraggedOut() {
     emit draggedOut(selectedPaths());
 }
 
-void DirectoryPresenter::selectAndFocus(int index) {
+void DirectoryPresenter::selectAndFocus(QString path) {
     if(!model || !view)
         return;
-    int indexDirOffset = mShowDirs ? (model->fileCount()) ? model->dirCount() + index : 0 : index;
-    view->select(indexDirOffset);
-    view->focusOn(indexDirOffset);
+    if(model->containsDir(path) && showDirs()) {
+        int dirIndex = model->indexOfDir(path);
+        view->select(dirIndex);
+        view->focusOn(dirIndex);
+    } else if(model->containsFile(path)) {
+        int fileIndex = showDirs() ? model->indexOfFile(path) + model->dirCount() : model->indexOfFile(path);
+        view->select(fileIndex);
+        view->focusOn(fileIndex);
+    }
 }
 
-// TODO: in future this will behave differently when the view has multi-selection (not implemented yet)
-void DirectoryPresenter::onIndexChanged(int index) {
-    this->selectAndFocus(index);
+void DirectoryPresenter::selectAndFocus(int absoluteIndex) {
+    if(!model || !view)
+        return;
+    view->select(absoluteIndex);
+    view->focusOn(absoluteIndex);
 }

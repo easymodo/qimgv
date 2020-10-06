@@ -75,6 +75,7 @@ private:
     QCollator collator;
     std::vector<FSEntry> fileEntryVec, dirEntryVec;
     const FSEntry defaultEntry;
+    QString mDirectoryPath;
 
     DirectoryWatcher* watcher;
     void readSettings();

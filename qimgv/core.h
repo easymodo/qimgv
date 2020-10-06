@@ -137,7 +137,7 @@ private slots:
     void outputError(const FileOpResult &error) const;
     void showOpenDialog();
     void showInDirectory();
-    void onDirectoryViewItemActivated(int index);
+    void onDirectoryViewFileActivated(QString filePath);
     bool loadIndex(int index, bool async, bool preload);
     void enableDocumentView();
     void enableFolderView();
@@ -145,4 +145,5 @@ private slots:
     void toggleSlideshow();
     void onPlaybackFinished();
     void setFoldersDisplay(bool mode);
+    void loadParentDir();
 };

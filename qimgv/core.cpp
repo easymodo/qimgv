@@ -71,13 +71,13 @@ void Core::initComponents() {
 void Core::connectComponents() {
     thumbPanelPresenter.setView(mw->getThumbnailPanel());
     connect(&thumbPanelPresenter, &DirectoryPresenter::fileActivated,
-            this, &Core::onDirectoryViewItemActivated);
+            this, &Core::onDirectoryViewFileActivated);
     connect(&thumbPanelPresenter, &DirectoryPresenter::dirActivated,
             this, &Core::loadPath);
 
     folderViewPresenter.setView(mw->getFolderView());
     connect(&folderViewPresenter, &DirectoryPresenter::fileActivated,
-            this, &Core::onDirectoryViewItemActivated);
+            this, &Core::onDirectoryViewFileActivated);
     connect(&folderViewPresenter, &DirectoryPresenter::dirActivated,
             this, &Core::loadPath);
 
@@ -181,6 +181,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::volumeUp, mw, &MW::volumeUp);
     connect(actionManager, &ActionManager::volumeDown, mw, &MW::volumeDown);
     connect(actionManager, &ActionManager::toggleSlideshow, this, &Core::toggleSlideshow);
+    connect(actionManager, &ActionManager::goUp, this, &Core::loadParentDir);
 }
 
 void Core::onUpdate() {
@@ -268,10 +269,10 @@ void Core::onModelLoaded() {
         syncRandomizer();
 }
 
-void Core::onDirectoryViewItemActivated(int index) {
+void Core::onDirectoryViewFileActivated(QString filePath) {
     // we aren`t using async load so it won't flicker with empty view
     mw->enableDocumentView();
-    loadIndex(index, false, settings->usePreloader());
+    loadPath(filePath);
 }
 
 void Core::rotateLeft() {
@@ -876,11 +877,21 @@ bool Core::loadIndex(int index, bool async, bool preload) {
             model->preload(model->nextOf(entry.path));
             model->preload(model->prevOf(entry.path));
         }
-        thumbPanelPresenter.onIndexChanged(index);
-        folderViewPresenter.onIndexChanged(index);
+        thumbPanelPresenter.selectAndFocus(entry.path);
+        folderViewPresenter.selectAndFocus(entry.path);
         updateInfoString();
     }
     return true;
+}
+
+void Core::loadParentDir() {
+    if(model->directoryPath().isEmpty() || mw->currentViewMode() != MODE_FOLDERVIEW)
+        return;
+    QFileInfo currentDir(model->directoryPath());
+    QFileInfo parentDir(currentDir.absolutePath());
+    if(parentDir.exists() && parentDir.isReadable())
+        loadPath(parentDir.absoluteFilePath());
+    folderViewPresenter.selectAndFocus(currentDir.absoluteFilePath());
 }
 
 void Core::nextImage() {
@@ -997,13 +1008,12 @@ void Core::onModelItemUpdated(QString filePath) {
     }
 }
 
-// todo - fix selection being lost
 void Core::onModelSortingChanged(SortingMode mode) {
     mw->onSortingChanged(mode);
     thumbPanelPresenter.reloadModel();
-    thumbPanelPresenter.onIndexChanged(0);
+    thumbPanelPresenter.selectAndFocus(state.currentFilePath);
     folderViewPresenter.reloadModel();
-    folderViewPresenter.onIndexChanged(0);
+    folderViewPresenter.selectAndFocus(state.currentFilePath);
 }
 
 void Core::guiSetImage(std::shared_ptr<Image> img) {

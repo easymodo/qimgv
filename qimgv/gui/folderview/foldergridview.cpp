@@ -298,6 +298,13 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
         return;
     }
 
+    // temporary, will be configurable later
+    if(event->key() == Qt::Key_Backspace) {
+        actionManager->invokeAction("goUp");
+        event->accept();
+        return;
+    }
+
     if(event->modifiers() & Qt::ControlModifier) {
         if(ShortcutBuilder::fromEvent(event) == "Ctrl+A")
             selectAll();

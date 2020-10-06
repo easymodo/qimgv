@@ -77,6 +77,10 @@ bool DirectoryModel::containsFile(QString filePath) const {
     return dirManager.containsFile(filePath);
 }
 
+bool DirectoryModel::containsDir(QString dirPath) const {
+    return dirManager.containsDir(dirPath);
+}
+
 bool DirectoryModel::isEmpty() const {
     return dirManager.isEmpty();
 }

@@ -74,6 +74,7 @@ public:
     bool saveFile(const QString &filePath);
     bool saveFile(const QString &filePath, const QString &destPath);
 
+    bool containsDir(QString dirPath) const;
 signals:
     void fileRemoved(QString filePath, int index);
     void fileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);

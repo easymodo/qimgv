@@ -19,8 +19,8 @@ public:
     void setModel(std::shared_ptr<DirectoryModel> newModel);
     void unsetModel();
 
-    void onIndexChanged(int index);
     void selectAndFocus(int index);
+    void selectAndFocus(QString path);
 
     void onFileRemoved(QString filePath, int index);
     void onFileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);
@@ -35,7 +35,7 @@ public:
 
 signals:
     void dirActivated(QString dirPath);
-    void fileActivated(int);
+    void fileActivated(QString filePath);
     void draggedOut(QList<QString>);
 
 public slots:
@@ -46,7 +46,7 @@ private slots:
     void generateThumbnails(QList<int>, int, bool, bool);
     void onThumbnailReady(std::shared_ptr<Thumbnail> thumb, QString filePath);
     void populateView();
-    void onItemActivated(int index);
+    void onItemActivated(int absoluteIndex);
     void onDraggedOut();
 
 private:

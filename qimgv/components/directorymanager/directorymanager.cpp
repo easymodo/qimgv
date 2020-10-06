@@ -115,13 +115,14 @@ bool DirectoryManager::setDirectory(QString dirPath) {
     }
     loadEntryList(dirPath, false);
     sortEntryLists();
+    mDirectoryPath = dirPath;
     emit loaded(dirPath);
-    //startFileWatcher(dirPath);
+    startFileWatcher(dirPath);
     return true;
 }
 
 QString DirectoryManager::directoryPath() const {
-    return "";//currentPath;
+    return mDirectoryPath; // tmp
 }
 
 int DirectoryManager::indexOfFile(QString filePath) const {

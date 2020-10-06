@@ -115,6 +115,7 @@ signals:
     void volumeUp();
     void volumeDown();
     void toggleSlideshow();
+    void goUp();
 };
 
 extern ActionManager *actionManager;
