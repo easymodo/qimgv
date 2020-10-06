@@ -65,7 +65,7 @@ void ScriptManager::runCommandDetached(QString cmd) {}
 void ScriptManager::processArguments(QStringList &cmd, std::shared_ptr<Image> img) {
     for (auto& i : cmd) {
         if(i.contains("%file%"))
-            i.replace("%file%", img.get()->path());
+            i.replace("%file%", img.get()->filePath());
     }
 }
 

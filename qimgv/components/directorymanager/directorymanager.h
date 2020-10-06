@@ -28,6 +28,8 @@ class DirectoryManager;
 
 typedef bool (DirectoryManager::*CompareFunction)(const FSEntry &e1, const FSEntry &e2) const;
 
+//TODO: rename? EntrySomething?
+
 class DirectoryManager : public QObject {
     Q_OBJECT
 public:
@@ -38,7 +40,6 @@ public:
     int indexOfFile(QString filePath) const;
     int indexOfDir(QString dirPath) const;
     QString filePathAt(int index) const;
-    bool removeFile(QString filePath, bool trash);
     unsigned long fileCount() const;
     unsigned long dirCount() const;
     bool isSupportedFile(QString filePath) const;
@@ -54,7 +55,6 @@ public:
     QString lastFile() const;
     void setSortingMode(SortingMode mode);
     SortingMode sortingMode() const;
-    bool forceInsertFile(QString filePath);
     bool isFile(QString path) const;
 
     unsigned long totalCount() const;
@@ -62,6 +62,14 @@ public:
     const FSEntry &fileEntryAt(int index) const;
     QString dirPathAt(int index) const;
     QString dirNameAt(int index) const;
+    bool fileWatcherActive();
+
+    bool insertFileEntry(const QString &filePath);
+    bool forceInsertFileEntry(const QString &filePath);
+    void removeFileEntry(const QString &filePath);
+    void updateFileEntry(const QString &filePath);
+    void renameFileEntry(const QString &oldFilePath, const QString &newName);
+
 private:
     QRegularExpression regex;
     QCollator collator;
@@ -73,7 +81,6 @@ private:
     SortingMode mSortingMode;
     void loadEntryList(QString directoryPath, bool recursive);
 
-    bool moveToTrash(QString file);
     bool path_entry_compare(const FSEntry &e1, const FSEntry &e2) const;
     bool path_entry_compare_reverse(const FSEntry &e1, const FSEntry &e2) const;
     bool name_entry_compare(const FSEntry &e1, const FSEntry &e2) const;

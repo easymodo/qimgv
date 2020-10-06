@@ -80,7 +80,7 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->togglePlacesPanelButton, &ActionButton::toggled, this, &FolderView::onPlacesPanelButtonChecked);
 
     connect(ui->dirTreeView, &TreeViewCustom::droppedIn, this, &FolderView::onDroppedInByIndex);
-    connect(ui->bookmarksWidget, &BookmarksWidget::droppedIn, this, &FolderView::onDroppedIn);
+    connect(ui->bookmarksWidget, &BookmarksWidget::droppedIn, this, &FolderView::moveUrlsRequested);
 
     ui->sortingComboBox->setItemDelegate(new QStyledItemDelegate(ui->sortingComboBox));
     ui->sortingComboBox->view()->setTextElideMode(Qt::ElideNone);
@@ -144,12 +144,8 @@ void FolderView::toggleFilesystemView() {
     settings->setPlacesPanelTreeExpanded(ui->dirTreeView->isVisible());
 }
 
-void FolderView::onDroppedInByIndex(QList<QUrl> urls, QModelIndex index) {
-    emit moveUrlsRequested(urls, dirModel->filePath(index));
-}
-
-void FolderView::onDroppedIn(QList<QUrl> urls, QString dirPath) {
-    emit moveUrlsRequested(urls, dirPath);
+void FolderView::onDroppedInByIndex(QList<QString> paths, QModelIndex index) {
+    emit moveUrlsRequested(paths, dirModel->filePath(index));
 }
 
 void FolderView::onShowLabelsChanged(bool mode) {

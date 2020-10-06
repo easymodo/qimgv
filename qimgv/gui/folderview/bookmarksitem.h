@@ -25,7 +25,7 @@ public slots:
 signals:
     void clicked(QString dirPath);
     void removeClicked(QString dirPath);
-    void droppedIn(QList<QUrl> urls, QString dirPath);
+    void droppedIn(QList<QString> paths, QString dirPath);
 
 protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
@@ -38,6 +38,7 @@ protected:
 
 private slots:
     void onRemoveClicked();
+
 private:
     QString dirName, dirPath;
 

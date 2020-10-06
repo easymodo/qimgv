@@ -43,8 +43,8 @@ signals:
     void sortingSelected(SortingMode);
     void showFoldersChanged(bool mode);
     void directorySelected(QString);
-    void copyUrlsRequested(QList<QUrl>, QString path);
-    void moveUrlsRequested(QList<QUrl>, QString path);
+    void copyUrlsRequested(QList<QString>, QString path);
+    void moveUrlsRequested(QList<QString>, QString path);
 
 private:
     std::shared_ptr<FolderView> folderView;

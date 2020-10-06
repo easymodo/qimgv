@@ -141,8 +141,8 @@ signals:
     void fullscreenStateChanged(bool);
     void copyRequested(QString);
     void moveRequested(QString);
-    void copyUrlsRequested(QList<QUrl>, QString);
-    void moveUrlsRequested(QList<QUrl>, QString);
+    void copyUrlsRequested(QList<QString>, QString);
+    void moveUrlsRequested(QList<QString>, QString);
     void showFoldersChanged(bool);
     void resizeRequested(QSize);
     void renameRequested(QString);

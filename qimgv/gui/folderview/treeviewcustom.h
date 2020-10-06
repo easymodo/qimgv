@@ -16,7 +16,7 @@ public:
     virtual QSize minimumSizeHint() const override;
 
 signals:
-    void droppedIn(QList<QUrl>, QModelIndex);
+    void droppedIn(QList<QString>, QModelIndex);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;

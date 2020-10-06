@@ -88,13 +88,13 @@ void Core::connectComponents() {
     connect(mw, &MW::droppedIn,             this, &Core::onDropIn);
     connect(mw, &MW::copyRequested,         this, &Core::copyCurrentFile);
     connect(mw, &MW::moveRequested,         this, &Core::moveCurrentFile);
-    connect(mw, &MW::copyUrlsRequested,     this, &Core::copyUrls);
-    connect(mw, &MW::moveUrlsRequested,     this, &Core::moveUrls);
+    connect(mw, &MW::copyUrlsRequested,     this, &Core::copyPathsTo);
+    connect(mw, &MW::moveUrlsRequested,     this, &Core::movePathsTo);
     connect(mw, &MW::cropRequested,         this, &Core::crop);
     connect(mw, &MW::cropAndSaveRequested,  this, &Core::cropAndSave);
     connect(mw, &MW::saveAsClicked,         this, &Core::requestSavePath);
-    connect(mw, &MW::saveRequested,         this, qOverload<>(&Core::saveImageToDisk));
-    connect(mw, &MW::saveAsRequested,       this, qOverload<QString>(&Core::saveImageToDisk));
+    connect(mw, &MW::saveRequested,         this, &Core::saveCurrentFile);
+    connect(mw, &MW::saveAsRequested,       this, &Core::saveCurrentFileAs);
     connect(mw, &MW::resizeRequested,       this, &Core::resize);
     connect(mw, &MW::renameRequested,       this, &Core::renameCurrentFile);
     connect(mw, &MW::sortingSelected,       this, &Core::sortBy);
@@ -144,7 +144,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::crop, this, &Core::toggleCropPanel);
     //connect(actionManager, &ActionManager::setWallpaper, this, &Core::slotSelectWallpaper);
     connect(actionManager, &ActionManager::open, this, &Core::showOpenDialog);
-    connect(actionManager, &ActionManager::save, this, qOverload<>(&Core::saveImageToDisk));
+    connect(actionManager, &ActionManager::save, this, &Core::saveCurrentFile);
     connect(actionManager, &ActionManager::saveAs, this, &Core::requestSavePath);
     connect(actionManager, &ActionManager::exit, this, &Core::close);
     connect(actionManager, &ActionManager::closeFullScreenOrExit, mw, &MW::closeFullScreenOrExit);
@@ -286,7 +286,7 @@ void Core::close() {
 }
 
 void Core::removeFilePermanent() {
-    removeFilePermanent(this->selectedFilePath());
+    removeFilePermanent(selectedFilePath());
 }
 
 void Core::removeFilePermanent(QString filePath) {
@@ -294,7 +294,7 @@ void Core::removeFilePermanent(QString filePath) {
 }
 
 void Core::moveToTrash() {
-    moveToTrash(this->selectedFilePath());
+    moveToTrash(selectedFilePath());
 }
 
 void Core::moveToTrash(QString filePath) {
@@ -302,7 +302,7 @@ void Core::moveToTrash(QString filePath) {
 }
 
 void Core::reloadImage() {
-    reloadImage(this->selectedFilePath());
+    reloadImage(selectedFilePath());
 }
 
 void Core::reloadImage(QString filePath) {
@@ -338,7 +338,7 @@ void Core::copyFileClipboard() {
     if(model->isEmpty())
         return;
 
-    QMimeData* mimeData = getMimeDataFor(model->getImage(this->selectedFilePath()), TARGET_CLIPBOARD);
+    QMimeData* mimeData = getMimeDataFor(model->getImage(selectedFilePath()), TARGET_CLIPBOARD);
 
     // mimeData->text() should already contain an url
     QByteArray gnomeFormat = QByteArray("copy\n").append(QUrl(mimeData->text()).toEncoded());
@@ -398,7 +398,7 @@ QMimeData *Core::getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget targe
     QMimeData* mimeData = new QMimeData();
     if(!img)
         return mimeData;
-    QString path = img->path();
+    QString path = img->filePath();
     if(img->type() == STATIC) {
         if(img->isEdited()) {
             // TODO: cleanup temp files
@@ -428,36 +428,12 @@ void Core::setFoldersDisplay(bool mode) {
         folderViewPresenter.setShowDirs(settings->showFolders());
 }
 
-// todo: move this crap to some fileoperations class? or model
 void Core::renameCurrentFile(QString newName) {
-    QFileInfo oldFile(selectedFilePath());
-    if(!model->fileCount() || newName.isEmpty() || selectedFilePath().isEmpty() || oldFile.fileName() == newName)
+    if(!model->fileCount() || newName.isEmpty() || selectedFilePath().isEmpty())
         return;
-    QString oldPath = selectedFilePath();
-    QString newPath = oldFile.absolutePath() + "/" + newName;
-    QFile replaceMe(newPath);
-    bool destinationExists = QFile::exists(newPath);
-    // move the existing file so we can revert if something fails
-    if(replaceMe.exists()) {
-        if(!replaceMe.rename(newPath + "__tmp")) {
-            mw->showError("Could not replace file");
-            return;
-        }
-    }
-    // do the renaming
-    QFile currentFile(selectedFilePath());
-    if(currentFile.exists() && currentFile.rename(newPath)) {
-        // remove tmp file on success
-        if(destinationExists)
-            replaceMe.remove();
-        // at this point we will get a dirwatcher rename event
-        // and the new file will be opened
-    } else {
-        mw->showError("Could not rename file");
-        // revert tmp file on fail
-        if(destinationExists)
-            replaceMe.rename(newPath);
-    }
+    FileOpResult result;
+    model->renameFile(selectedFilePath(), newName, result);
+    outputError(result);
 }
 
 // removes file at specified index within current directory
@@ -518,24 +494,10 @@ void Core::onFileModified(QString filePath) {
 }
 
 void Core::outputError(const FileOpResult &error) const {
-    switch (error) {
-    case FileOpResult::DESTINATION_FILE_EXISTS:
-        mw->showError("File already exists."); break;
-    case FileOpResult::SOURCE_NOT_WRITABLE:
-        mw->showError("Source file is not writable."); break;
-    case FileOpResult::DESTINATION_NOT_WRITABLE:
-        mw->showError("Directory is not writable."); break;
-    case FileOpResult::SOURCE_DOES_NOT_EXIST:
-        mw->showError("Source file does not exist."); break;
-    case FileOpResult::DESTINATION_DOES_NOT_EXIST:
-        mw->showError("Directory does not exist."); break;
-    case FileOpResult::COPY_TO_SAME_DIR:
-        mw->showError("Already in this directory."); break;
-    case FileOpResult::OTHER_ERROR:
-        mw->showError("Unknown error."); break;
-    default:
-        break;
-    }
+    if(error == FileOpResult::SUCCESS || error == FileOpResult::NOTHING_TO_DO)
+        return;
+    mw->showError(FileOperations::decodeResult(error));
+    qDebug() << FileOperations::decodeResult(error);
 }
 
 void Core::showOpenDialog() {
@@ -591,23 +553,24 @@ void Core::moveCurrentFile(QString destDirectory) {
     }
 }
 
-void Core::copyUrls(QList<QUrl> urls, QString destDirectory) {
+void Core::copyPathsTo(QList<QString> paths, QString destDirectory) {
     if(model->isEmpty())
         return;
     FileOpResult result;
-    QList<QUrl>::iterator i;
-    for(i = urls.begin(); i != urls.end(); ++i) {
-        model->copyTo(destDirectory, (*i).path(), result); // didnt QUrl cause some issues? test
+    for(auto path : paths) {
+        model->copyTo(destDirectory ,path, result); // didnt QUrl cause some issues? test
     }
 }
 
-void Core::moveUrls(QList<QUrl> urls, QString destDirectory) {
+void Core::movePathsTo(QList<QString> paths, QString destDirectory) {
+    qDebug() << "move" << paths << destDirectory;
     if(model->isEmpty())
         return;
     FileOpResult result;
-    QList<QUrl>::iterator i;
-    for(i = urls.begin(); i != urls.end(); ++i) {
-        model->moveTo(destDirectory, (*i).path(), result);
+    for(auto path : paths) {
+        model->moveTo(destDirectory, path, result); // didnt QUrl cause some issues? test
+        if(result != FileOpResult::SUCCESS)
+            qDebug() << "error: " << result;
     }
 }
 
@@ -641,7 +604,7 @@ void Core::requestSavePath() {
 void Core::showResizeDialog() {
     if(model->isEmpty())
         return;
-    auto img = model->getImage(this->selectedFilePath());
+    auto img = model->getImage(selectedFilePath());
     mw->showResizeDialog(img->size());
 }
 
@@ -650,14 +613,14 @@ void Core::showResizeDialog() {
 void Core::resize(QSize size) {
     if(model->isEmpty())
         return;
-    std::shared_ptr<Image> img = model->getImage(this->selectedFilePath());
+    std::shared_ptr<Image> img = model->getImage(selectedFilePath());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::scaled(imgStatic->getImage(), size, QI_FILTER_BILINEAR)));
-        model->updateImage(this->selectedFilePath(), img);
+        model->updateImage(selectedFilePath(), img);
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
-            img->save();
+            saveFile(selectedFilePath());
     } else {
         mw->showMessage("Editing gifs/video is not supported.");
     }
@@ -666,14 +629,14 @@ void Core::resize(QSize size) {
 void Core::flipH() {
     if(model->isEmpty())
         return;
-    std::shared_ptr<Image> img = model->getImage(this->selectedFilePath());
+    std::shared_ptr<Image> img = model->getImage(selectedFilePath());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::flippedH(imgStatic->getImage())));
-        model->updateImage(this->selectedFilePath(), img);
+        model->updateImage(selectedFilePath(), img);
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
-            img->save();
+            saveFile(selectedFilePath());
     } else {
         mw->showMessage("Editing gifs/video is not supported.");
     }
@@ -682,14 +645,14 @@ void Core::flipH() {
 void Core::flipV() {
     if(model->isEmpty())
         return;
-    std::shared_ptr<Image> img = model->getImage(this->selectedFilePath());
+    std::shared_ptr<Image> img = model->getImage(selectedFilePath());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->setEditedImage(std::unique_ptr<const QImage>(
                     ImageLib::flippedV(imgStatic->getImage())));
-        model->updateImage(this->selectedFilePath(), img);
+        model->updateImage(selectedFilePath(), img);
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
-            img->save();
+            saveFile(selectedFilePath());
     } else {
         mw->showMessage("Editing gifs/video is not supported.");
     }
@@ -713,36 +676,68 @@ bool Core::crop(QRect rect) {
 
 void Core::cropAndSave(QRect rect) {
     if(crop(rect))
-        saveImageToDisk();
+        saveCurrentFile();
 }
 
 void Core::rotateByDegrees(int degrees) {
     if(model->isEmpty())
         return;
-
-    QString filePath = this->selectedFilePath();
-    std::shared_ptr<Image> img = model->getImage(filePath);
-    if(img && img->type() == STATIC) {
-        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                    ImageLib::rotated(imgStatic->getImage(), degrees)));
-        model->updateImage(filePath, img);
-        if(mw->currentViewMode() == MODE_FOLDERVIEW)
-            img->save();
-    } else {
+    QString filePath = selectedFilePath();
+    auto img = model->getImage(filePath);
+    if(!img || img->type() != STATIC) {
         mw->showMessage("Editing gifs/video is not supported.");
+        return;
     }
+    // -----------
+    auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
+    imgStatic->setEditedImage(std::unique_ptr<const QImage>(
+                ImageLib::rotated(imgStatic->getImage(), degrees)));
+    // -----------
+    model->updateImage(filePath, img);
+    if(mw->currentViewMode() == MODE_FOLDERVIEW)
+        saveFile(filePath);
+    // -----------
+}
+
+bool Core::saveFile(const QString &filePath) {
+    return saveFile(filePath, filePath);
+}
+
+bool Core::saveFile(const QString &filePath, const QString &newPath) {
+    if(!model->saveFile(filePath, newPath))
+        return false;
+    mw->hideSaveOverlay();
+    // switch to the new file
+    if(model->containsFile(newPath) && state.currentFilePath != newPath) {
+        discardEdits();
+        if(mw->currentViewMode() == MODE_DOCUMENT)
+            loadPath(newPath);
+    }
+    return true;
+}
+
+void Core::saveCurrentFile() {
+    saveCurrentFileAs(selectedFilePath());
+}
+
+void Core::saveCurrentFileAs(QString destPath) {
+    if(model->isEmpty())
+        return;
+    if(saveFile(selectedFilePath(), destPath))
+        mw->showMessageSuccess("File saved");
+    else
+        mw->showError("Could not save file");
 }
 
 void Core::discardEdits() {
     if(model->isEmpty())
         return;
 
-    std::shared_ptr<Image> img = model->getImage(this->selectedFilePath());
+    std::shared_ptr<Image> img = model->getImage(selectedFilePath());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->discardEditedImage();
-        model->updateImage(this->selectedFilePath(), img);
+        model->updateImage(selectedFilePath(), img);
     }
     mw->hideSaveOverlay();
 }
@@ -757,23 +752,7 @@ QString Core::selectedFilePath() {
         return state.currentFilePath;
 }
 
-// move saving logic away from Image container itself
-void Core::saveImageToDisk() {
-    if(model->isEmpty())
-        return;
-    saveImageToDisk(selectedFilePath());
-}
-
-void Core::saveImageToDisk(QString filePath) {
-    if(model->isEmpty())
-        return;
-    std::shared_ptr<Image> img = model->getImage(selectedFilePath());
-    if(img->save(filePath))
-        mw->showMessageSuccess("File saved.");
-    else
-        mw->showError("Could not save file.");
-    mw->hideSaveOverlay();
-}
+//------------------------
 
 void Core::sortByName() {
     auto mode = SortingMode::SORT_NAME;
@@ -1006,7 +985,7 @@ void Core::onLoadFailed(QString path) {
 }
 
 void Core::onModelItemReady(std::shared_ptr<Image> img) {
-    if(img->path() == state.currentFilePath) {
+    if(img->filePath() == state.currentFilePath) {
         guiSetImage(img);
         updateInfoString();
         model->unloadExcept(state.currentFilePath, settings->usePreloader());
@@ -1020,6 +999,7 @@ void Core::onModelItemUpdated(QString filePath) {
     }
 }
 
+// todo - fix selection being lost
 void Core::onModelSortingChanged(SortingMode mode) {
     mw->onSortingChanged(mode);
     thumbPanelPresenter.reloadModel();

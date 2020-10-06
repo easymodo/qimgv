@@ -74,6 +74,10 @@ private:
 
     void startSlideshowTimer();
     void stopSlideshow();
+
+    bool saveFile(const QString &filePath, const QString &newPath);
+    bool saveFile(const QString &filePath);
+
 private slots:
     void readSettings();
     void nextImage();
@@ -92,8 +96,8 @@ private slots:
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
     void copyCurrentFile(QString destDirectory);
     void moveCurrentFile(QString destDirectory);
-    void copyUrls(QList<QUrl> urls, QString destDirectory);
-    void moveUrls(QList<QUrl> urls, QString destDirectory);
+    void copyPathsTo(QList<QString> paths, QString destDirectory);
+    void movePathsTo(QList<QString> paths, QString destDirectory);
     void removeFile(QString fileName, bool trash);
     void onFileRemoved(QString filePath, int index);
     void onFileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);
@@ -108,8 +112,8 @@ private slots:
     void discardEdits();
     void toggleCropPanel();
     void requestSavePath();
-    void saveImageToDisk();
-    void saveImageToDisk(QString);
+    void saveCurrentFile();
+    void saveCurrentFileAs(QString);
     void runScript(const QString&);
     void removeFilePermanent();
     void removeFilePermanent(QString fileName);

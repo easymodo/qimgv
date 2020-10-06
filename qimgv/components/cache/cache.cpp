@@ -9,10 +9,10 @@ bool Cache::contains(QString path) const {
 
 bool Cache::insert(std::shared_ptr<Image> img) {
     if(img) {
-        if(items.contains(img->path())) {
+        if(items.contains(img->filePath())) {
             return false;
         } else {
-            items.insert(img->path(), new CacheItem(img));
+            items.insert(img->filePath(), new CacheItem(img));
             return true;
         }
     }

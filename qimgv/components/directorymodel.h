@@ -5,17 +5,7 @@
 #include "directorymanager/directorymanager.h"
 #include "scaler/scaler.h"
 #include "loader/loader.h"
-
-enum FileOpResult {
-    SUCCESS,
-    DESTINATION_FILE_EXISTS,
-    SOURCE_NOT_WRITABLE,
-    DESTINATION_NOT_WRITABLE,
-    SOURCE_DOES_NOT_EXIST,
-    DESTINATION_DOES_NOT_EXIST,
-    COPY_TO_SAME_DIR,
-    OTHER_ERROR
-};
+#include "utils/fileoperations.h"
 
 enum FileListSource { // rename? wip
     SOURCE_DIRECTORY,
@@ -38,16 +28,20 @@ public:
     int indexOfFile(QString filePath) const;
     int indexOfDir(QString filePath) const;
     QString fileNameAt(int index) const;
-    bool contains(QString filePath) const;
+    bool containsFile(QString filePath) const;
     bool isEmpty() const;
-    void removeFile(QString filePath, bool trash, FileOpResult &result);
     QString nextOf(QString filePath) const;
     QString prevOf(QString filePath) const;
     QString first() const;
     QString last() const;
     QDateTime lastModified(QString filePath) const;
+
+    bool forceInsert(QString filePath);
     void copyTo(const QString destDirPath, const QFileInfo srcFile, FileOpResult &result);
     void moveTo(const QString destDirPath, const QFileInfo srcFile, FileOpResult &result);
+    void renameFile(const QString &oldFilePath, const QString &newName, FileOpResult &result);
+    void removeFile(const QString &filePath, bool trash, FileOpResult &result);
+
     void setDirectory(QString);
 
     void unload(int index);
@@ -61,7 +55,6 @@ public:
 
     void setSortingMode(SortingMode mode);
     SortingMode sortingMode() const;
-    bool forceInsert(QString filePath);
 
     QString directoryPath() const;
     void unload(QString filePath);
@@ -75,16 +68,20 @@ public:
     int totalCount() const;
     QString dirNameAt(int index) const;
     QString dirPathAt(int index) const;
+
+    bool autoRefresh();
+
+    bool saveFile(const QString &filePath);
+    bool saveFile(const QString &filePath, const QString &destPath);
+
 signals:
     void fileRemoved(QString filePath, int index);
     void fileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);
     void fileAdded(QString filePath);
     void fileModified(QString filePath);
-    void fileModifiedInternal(QString filePath);
     void loaded(QString filePath);
     void sortingChanged(SortingMode);
     void indexChanged(int oldIndex, int index);
-    // returns current item
     void imageReady(std::shared_ptr<Image> img);
     void imageUpdated(QString filePath);
 

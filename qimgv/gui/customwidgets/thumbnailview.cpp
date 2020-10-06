@@ -260,10 +260,9 @@ void ThumbnailView::reloadItem(int index) {
     if(!checkRange(index))
         return;
     auto thumb = thumbnails.at(index);
-    if(thumb->isLoaded) {
+    if(thumb->isLoaded)
         thumb->unsetThumbnail();
-        emit thumbnailsRequested(QList<int>() << index, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize), mCropThumbnails, true);
-    }
+    emit thumbnailsRequested(QList<int>() << index, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize), mCropThumbnails, true);
 }
 
 void ThumbnailView::setCropThumbnails(bool mode) {

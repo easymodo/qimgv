@@ -19,7 +19,7 @@ Image::Image(std::unique_ptr<DocumentInfo> _info)
 Image::~Image() {
 }
 
-QString Image::path() const {
+QString Image::filePath() const {
     return mPath;
 }
 
@@ -31,7 +31,7 @@ DocumentType Image::type() const {
     return mDocInfo->type();
 }
 
-QString Image::name() const {
+QString Image::fileName() const {
     return mDocInfo->fileName();
 }
 

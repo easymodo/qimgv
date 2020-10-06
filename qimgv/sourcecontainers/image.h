@@ -16,14 +16,14 @@ public:
     virtual std::unique_ptr<QPixmap> getPixmap() = 0;
     virtual std::shared_ptr<const QImage> getImage() = 0;
     DocumentType type() const;
-    QString path() const;
+    QString filePath() const;
     virtual int height() = 0;
     virtual int width() = 0;
     virtual QSize size() = 0;
     bool isLoaded() const;
     virtual bool save() = 0;
     virtual bool save(QString destPath) = 0;
-    QString name() const;
+    QString fileName() const;
     QString baseName() const;
     bool isEdited() const;
     qint64 fileSize() const;
