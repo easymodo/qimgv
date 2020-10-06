@@ -85,10 +85,10 @@ private slots:
     void nextImageSlideshow();
     void jumpToFirst();
     void jumpToLast();
-    void onModelItemReady(std::shared_ptr<Image>);
+    void onModelItemReady(std::shared_ptr<Image>, const QString&);
     void onModelItemUpdated(QString fileName);
     void onModelSortingChanged(SortingMode mode);
-    void onLoadFailed(QString path);
+    void onLoadFailed(const QString &path);
     void rotateLeft();
     void rotateRight();
     void close();

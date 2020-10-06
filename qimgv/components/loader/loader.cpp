@@ -44,13 +44,13 @@ void Loader::doLoadAsync(QString path, int priority) {
     pool->start(runnable, priority);
 }
 
-void Loader::onLoadFinished(std::shared_ptr<Image> image, QString path) {
+void Loader::onLoadFinished(std::shared_ptr<Image> image, const QString &path) {
     auto task = tasks.take(path);
     delete task;
     if(!image)
-        emit loadFailed(path); // due incorrect image format etc
+        emit loadFailed(path);
     else
-        emit loadFinished(image);
+        emit loadFinished(image, path);
 }
 
 void Loader::clearPool() {

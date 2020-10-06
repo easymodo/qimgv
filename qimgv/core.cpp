@@ -112,9 +112,10 @@ void Core::connectComponents() {
     connect(model.get(), &DirectoryModel::fileRenamed,    this, &Core::onFileRenamed);
     connect(model.get(), &DirectoryModel::fileModified,   this, &Core::onFileModified);
     connect(model.get(), &DirectoryModel::loaded,         this, &Core::onModelLoaded);
-    connect(model.get(), &DirectoryModel::imageReady,      this, &Core::onModelItemReady);
-    connect(model.get(), &DirectoryModel::imageUpdated,    this, &Core::onModelItemUpdated);
+    connect(model.get(), &DirectoryModel::imageReady,     this, &Core::onModelItemReady);
+    connect(model.get(), &DirectoryModel::imageUpdated,   this, &Core::onModelItemUpdated);
     connect(model.get(), &DirectoryModel::sortingChanged, this, &Core::onModelSortingChanged);
+    connect(model.get(), &DirectoryModel::loadFailed,     this, &Core::onLoadFailed);
 
     connect(&slideshowTimer, &QTimer::timeout, this, &Core::nextImageSlideshow);
 }
@@ -975,17 +976,14 @@ void Core::jumpToLast() {
     mw->showMessageDirectoryEnd();
 }
 
-void Core::onLoadFailed(QString path) {
-    Q_UNUSED(path)
-    /*mw->showMessage("Load failed: " + path);
-    QString currentPath = model->fullFilePath(model->currentFileName);
-    if(path == currentPath)
+void Core::onLoadFailed(const QString &path) {
+    mw->showMessage("Load failed: " + path);
+    if(path == state.currentFilePath)
         mw->closeImage();
-        */
 }
 
-void Core::onModelItemReady(std::shared_ptr<Image> img) {
-    if(img->filePath() == state.currentFilePath) {
+void Core::onModelItemReady(std::shared_ptr<Image> img, const QString &path) {
+    if(path == state.currentFilePath) {
         guiSetImage(img);
         updateInfoString();
         model->unloadExcept(state.currentFilePath, settings->usePreloader());

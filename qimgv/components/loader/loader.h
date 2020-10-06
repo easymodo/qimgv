@@ -22,9 +22,9 @@ private:
     void doLoadAsync(QString path, int priority);
 
 signals:
-    void loadFinished(std::shared_ptr<Image>);
-    void loadFailed(QString path);
+    void loadFinished(std::shared_ptr<Image>, const QString &path);
+    void loadFailed(const QString &path);
 
 private slots:
-    void onLoadFinished(std::shared_ptr<Image>, QString);
+    void onLoadFinished(std::shared_ptr<Image>, const QString&);
 };

@@ -13,6 +13,7 @@ DirectoryModel::DirectoryModel(QObject *parent) :
     connect(&dirManager, &DirectoryManager::loaded, this, &DirectoryModel::loaded);
     connect(&dirManager, &DirectoryManager::sortingChanged, this, &DirectoryModel::onSortingChanged);
     connect(&loader, &Loader::loadFinished, this, &DirectoryModel::onImageReady);
+    connect(&loader, &Loader::loadFailed, this, &DirectoryModel::loadFailed);
 }
 
 DirectoryModel::~DirectoryModel() {
@@ -243,12 +244,14 @@ bool DirectoryModel::loaderBusy() const {
     return loader.isBusy();
 }
 
-void DirectoryModel::onImageReady(std::shared_ptr<Image> img) {
-    if(!img)
+void DirectoryModel::onImageReady(std::shared_ptr<Image> img, const QString &path) {
+    if(!img) {
+        emit loadFailed(path);
         return;
-    cache.remove(img->filePath());
+    }
+    cache.remove(path);
     cache.insert(img);
-    emit imageReady(img);
+    emit imageReady(img, path);
 }
 
 bool DirectoryModel::saveFile(const QString &filePath) {
@@ -348,11 +351,15 @@ void DirectoryModel::load(QString filePath, bool asyncHint) {
             loader.loadAsyncPriority(filePath);
         } else {
             auto img = loader.load(filePath);
-            cache.insert(img);
-            emit imageReady(img);
+            if(img) {
+                cache.insert(img);
+                emit imageReady(img, filePath);
+            } else {
+                emit loadFailed(filePath);
+            }
         }
     } else {
-        emit imageReady(cache.get(filePath));
+        emit imageReady(cache.get(filePath), filePath);
     }
 }
 

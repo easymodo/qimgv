@@ -80,9 +80,10 @@ signals:
     void fileAdded(QString filePath);
     void fileModified(QString filePath);
     void loaded(QString filePath);
+    void loadFailed(const QString &path);
     void sortingChanged(SortingMode);
     void indexChanged(int oldIndex, int index);
-    void imageReady(std::shared_ptr<Image> img);
+    void imageReady(std::shared_ptr<Image> img, const QString&);
     void imageUpdated(QString filePath);
 
 private:
@@ -92,7 +93,7 @@ private:
     FileListSource fileListSource;
 
 private slots:
-    void onImageReady(std::shared_ptr<Image> img);
+    void onImageReady(std::shared_ptr<Image> img, const QString &path);
     void onSortingChanged();
     void onFileAdded(QString filePath);
     void onFileRemoved(QString filePath, int index);
