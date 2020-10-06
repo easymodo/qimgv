@@ -195,6 +195,9 @@ void ThumbnailView::showEvent(QShowEvent *event) {
 
 void ThumbnailView::populate(int count) {
     clearSelection();
+    // pause updates until the layout is calculated
+    // without this you will see scene moving when scrollbar appears
+    this->setUpdatesEnabled(false);
     if(count >= 0) {
         // reuse existing items
         if(count == thumbnails.count()) {
@@ -215,6 +218,8 @@ void ThumbnailView::populate(int count) {
     updateLayout();
     fitSceneToContents();
     resetViewport();
+    qApp->processEvents();
+    this->setUpdatesEnabled(true);
     loadVisibleThumbnails();
 }
 
