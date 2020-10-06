@@ -56,6 +56,11 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     });
 }
 
+void ThumbnailView::hideEvent(QHideEvent *event) {
+    QGraphicsView::hideEvent(event);
+    rangeSelection = false;
+}
+
 void ThumbnailView::createScrollTimeLine() {
     if(scrollTimeLine) {
         scrollTimeLine->stop();
