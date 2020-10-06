@@ -12,26 +12,19 @@ public:
     explicit Thumbnailer();
     ~Thumbnailer();
     static std::shared_ptr<Thumbnail> getThumbnail(QString filePath, int size);
-    void clearQueuedTasks();
+    void clearTasks();
 
-    void clearAllTasks();
-    void setParameters(int _size, bool _crop);
 public slots:
-    void getThumbnailAsync(QString path, bool force);
+    void getThumbnailAsync(QString path, int size, bool crop, bool force);
 
 private:
     ThumbnailCache *cache;
     QThreadPool *pool;
     void startThumbnailerThread(QString filePath, int size, bool crop, bool force);
-    QList<QString> runningTasks;
-    QList<QString> bufferedTasks;
-
-    int size;
-    bool crop;
-
-    void tryToStartMoreThreads();
+    QMultiMap<QString, int> runningTasks;
 
 private slots:
+    void onTaskStart(QString filePath, int size);
     void onTaskEnd(std::shared_ptr<Thumbnail> thumbnail, QString filePath);
 
 signals:

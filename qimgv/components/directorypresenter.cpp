@@ -136,11 +136,10 @@ QList<QString> DirectoryPresenter::selectedPaths() const {
 void DirectoryPresenter::generateThumbnails(QList<int> indexes, int size, bool crop, bool force) {
     if(!view || !model)
         return;
-    thumbnailer.clearQueuedTasks();
-    thumbnailer.setParameters(size, crop);
+    thumbnailer.clearTasks();
     if(!mShowDirs) {
         for(int i : indexes)
-            thumbnailer.getThumbnailAsync(model->filePathAt(i), force);
+            thumbnailer.getThumbnailAsync(model->filePathAt(i), size, crop, force);
         return;
     }
     for(int i : indexes) {
@@ -168,7 +167,7 @@ void DirectoryPresenter::generateThumbnails(QList<int> indexes, int size, bool c
             view->setThumbnail(i, thumb);
         } else {
             QString path = model->filePathAt(i - model->dirCount());
-            thumbnailer.getThumbnailAsync(path, force);
+            thumbnailer.getThumbnailAsync(path, size, crop, force);
         }
     }
 }
