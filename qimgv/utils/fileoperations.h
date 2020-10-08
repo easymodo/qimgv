@@ -15,7 +15,7 @@ enum FileOpResult {
     DESTINATION_NOT_WRITABLE,
     SOURCE_DOES_NOT_EXIST,
     DESTINATION_DOES_NOT_EXIST,
-    NOTHING_TO_DO,
+    NOTHING_TO_DO, // todo: maybe just return SUCCESS?
     OTHER_ERROR
 };
 

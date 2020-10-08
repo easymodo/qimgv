@@ -72,6 +72,7 @@ void FileOperations::copyTo(const QFileInfo &srcFile, const QString &destDirPath
 
 void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath, FileOpResult &result) {
     // error checks
+    qDebug() << "destDir:" << destDirPath << "srcFile:" << srcFile.absolutePath();
     if(destDirPath == srcFile.absolutePath()) {
         result = FileOpResult::NOTHING_TO_DO;
         return;
@@ -115,6 +116,7 @@ void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath
         if(QFile::remove(destFile.absoluteFilePath()))
             result = FileOpResult::OTHER_ERROR;
     } else {
+        qDebug() << "wat";
         // could not COPY
         result = FileOpResult::OTHER_ERROR;
     }

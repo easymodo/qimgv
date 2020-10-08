@@ -6,6 +6,7 @@
 #include "components/thumbnailer/thumbnailer.h"
 #include "directorymodel.h"
 #include "sharedresources.h"
+#include <QMimeData>
 
 //tmp
 #include <QtSvg/QSvgRenderer>
@@ -49,6 +50,7 @@ private slots:
     void onItemActivated(int absoluteIndex);
     void onDraggedOut();
 
+    void onDroppedInto(const QMimeData *data, QObject *source, int targetIndex);
 private:
     std::shared_ptr<IDirectoryView> view = nullptr;
     std::shared_ptr<DirectoryModel> model = nullptr;

@@ -69,6 +69,10 @@ bool DirectoryModel::autoRefresh() {
     return dirManager.fileWatcherActive();
 }
 
+FileListSource DirectoryModel::source() {
+    return dirManager.source();
+}
+
 QString DirectoryModel::directoryPath() const {
     return dirManager.directoryPath();
 }
@@ -135,89 +139,13 @@ void DirectoryModel::renameFile(const QString &oldFilePath, const QString &newNa
         dirManager.renameFileEntry(oldFilePath, newName);
 }
 
-void DirectoryModel::copyTo(const QString destDirPath, const QFileInfo srcFile, FileOpResult &result) {
-    // error checks
-    if(destDirPath == directoryPath()) {
-        result = FileOpResult::NOTHING_TO_DO;
-        return;
-    }
-    if(!containsFile(srcFile.absoluteFilePath())) { // if this happens we have a bug
-        result = FileOpResult::SOURCE_DOES_NOT_EXIST;
-        return;
-    }
-    QFileInfo destDir(destDirPath);
-    if(!destDir.exists()) {
-        result = FileOpResult::DESTINATION_DOES_NOT_EXIST;
-        return;
-    }
-    if(!destDir.isWritable()) {
-        result = FileOpResult::DESTINATION_NOT_WRITABLE;
-        return;
-    }
-    QFileInfo destFile(destDirPath + "/" + srcFile.fileName());
-    if(destFile.exists()) {
-        if(!destFile.isWritable())
-            result = FileOpResult::DESTINATION_NOT_WRITABLE;
-        result = FileOpResult::DESTINATION_FILE_EXISTS;
-        return;
-    }
-    // copy
-    if(QFile::copy(srcFile.absoluteFilePath(), destFile.absoluteFilePath()))
-        result = FileOpResult::SUCCESS;
-    else
-        result = FileOpResult::OTHER_ERROR;
-    return;
+void DirectoryModel::copyTo(const QString &srcFile, const QString &destDirPath, FileOpResult &result) {
+    FileOperations::copyTo(srcFile, destDirPath, result);
 }
 
-void DirectoryModel::moveTo(const QString destDirPath, const QFileInfo srcFile, FileOpResult &result) {
-    // error checks
-    if(destDirPath == directoryPath()) {
-        result = FileOpResult::NOTHING_TO_DO;
-        return;
-    }
-    if(!containsFile(srcFile.absoluteFilePath())) { // if this happens we have a bug
-        result = FileOpResult::SOURCE_DOES_NOT_EXIST;
-        return;
-    }
-    QFileInfo destDir(destDirPath);
-    if(!destDir.exists()) {
-        result = FileOpResult::DESTINATION_DOES_NOT_EXIST;
-        return;
-    }
-    if(!destDir.isWritable()) {
-        result = FileOpResult::DESTINATION_NOT_WRITABLE;
-        return;
-    }
-    QFileInfo destFile(destDirPath + "/" + srcFile.fileName());
-    if(destFile.exists()) {
-        if(!destFile.isWritable())
-            result = FileOpResult::DESTINATION_NOT_WRITABLE;
-        result = FileOpResult::DESTINATION_FILE_EXISTS;
-        return;
-    }
-    if(!srcFile.isWritable()) {
-        result = FileOpResult::SOURCE_NOT_WRITABLE;
-        return;
-    }
-    // move
-    if(QFile::copy(srcFile.absoluteFilePath(), destFile.absoluteFilePath())) {
-        // remove original file
-        FileOpResult removeResult;
-        removeFile(srcFile.absoluteFilePath(), false, removeResult);
-        if(removeResult == FileOpResult::SUCCESS) {
-            // OK
-            result = FileOpResult::SUCCESS;
-            return;
-        }
-        // revert on failure
-        result = FileOpResult::SOURCE_NOT_WRITABLE;
-        if(QFile::remove(destFile.absoluteFilePath()))
-            result = FileOpResult::OTHER_ERROR;
-    } else {
-        // could not COPY
-        result = FileOpResult::OTHER_ERROR;
-    }
-    return;
+// todo: fix with autoRefresh()=false
+void DirectoryModel::moveTo(const QString &srcFile, const QString &destDirPath, FileOpResult &result) {
+    FileOperations::moveTo(srcFile, destDirPath, result);
 }
 // -----------------------------------------------------------------------------
 void DirectoryModel::setDirectory(QString path) {

@@ -5,10 +5,11 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
       orientation(orient),
       blockThumbnailLoading(false),
       mCropThumbnails(false),
+      mouseReleaseSelect(false),
       mDrawScrollbarIndicator(true),
       mThumbnailSize(120),
       rangeSelection(false),
-      selectMode(SELECT_BY_PRESS),
+      selectMode(ACTIVATE_BY_PRESS),
       lastScrollFrameTime(0),
       scrollTimeLine(nullptr)
 {
@@ -474,27 +475,30 @@ void ThumbnailView::scrollSmooth(int angleDelta) {
 }
 
 void ThumbnailView::mousePressEvent(QMouseEvent *event) {
+    mouseReleaseSelect = false;
     dragStartPos = QPointF(0,0);
     ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
     if(item) {
         int index = thumbnails.indexOf(item);
         if(event->button() == Qt::LeftButton) {
-            if(selectMode == SELECT_BY_PRESS) {
-                emit itemActivated(index);
-                return;
-            } else {
-                if(event->modifiers() & Qt::ControlModifier) {
-                    if(!selection().contains(index))
-                        select(selection() << index);
-                    else
-                        deselect(index);
-                } else if(event->modifiers() & Qt::ShiftModifier) {
-                    addSelectionRange(index);
+            if(event->modifiers() & Qt::ControlModifier) {
+                if(!selection().contains(index))
+                    select(selection() << index);
+                else
+                    deselect(index);
+            } else if(event->modifiers() & Qt::ShiftModifier) {
+                addSelectionRange(index);
+            } else if (selection().count() <= 1) {
+                if(selectMode == ACTIVATE_BY_PRESS) {
+                    emit itemActivated(index);
+                    return;
                 } else {
                     select(index);
                 }
-                dragStartPos = event->pos();
+            } else {
+                mouseReleaseSelect = true;
             }
+            dragStartPos = event->pos();
         } else if(event->button() == Qt::RightButton) { // todo: context menu maybe?
             select(index);
             return;
@@ -514,10 +518,17 @@ void ThumbnailView::mouseMoveEvent(QMouseEvent *event) {
 
 void ThumbnailView::mouseReleaseEvent(QMouseEvent *event) {
     QGraphicsView::mouseReleaseEvent(event);
+    if(mouseReleaseSelect && QLineF(dragStartPos, event->pos()).length() < 40) {
+        ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
+        if(item) {
+            int index = thumbnails.indexOf(item);
+            select(index);
+        }
+    }
 }
 
 void ThumbnailView::mouseDoubleClickEvent(QMouseEvent *event) {
-    if(selectMode == SELECT_BY_DOUBLECLICK) {
+    if(selectMode == ACTIVATE_BY_DOUBLECLICK) {
         if(event->button() == Qt::LeftButton) {
             ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
             if(item) {

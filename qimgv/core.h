@@ -62,7 +62,7 @@ private:
     void reset();
 
     QDrag *mDrag;
-    QMimeData *getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget target);
+    QMimeData *getMimeDataForImage(std::shared_ptr<Image> img, MimeDataTarget target);
 
     Randomizer randomizer;
     void syncRandomizer();
@@ -78,6 +78,8 @@ private:
     bool saveFile(const QString &filePath, const QString &newPath);
     bool saveFile(const QString &filePath);
 
+    ImageStatic* getEditableImage(const QString &filePath);
+    QList<QString> currentSelection();
 private slots:
     void readSettings();
     void nextImage();

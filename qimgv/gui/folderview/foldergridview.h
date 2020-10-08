@@ -61,8 +61,11 @@ protected:
     virtual void fitSceneToContents() override;
 
     void keyPressEvent(QKeyEvent *event);
-    void wheelEvent(QWheelEvent *event);
+    void wheelEvent(QWheelEvent *event);    
+    void dropEvent(QDropEvent *event);
 
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
 signals:
     void thumbnailSizeChanged(int);
     void showLabelsChanged(bool);

@@ -9,13 +9,15 @@ FolderGridView::FolderGridView(QWidget *parent)
 {
     offscreenPreloadArea = 2300;
 
+    this->setAcceptDrops(true);
+
     this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
     this->scene.setBackgroundBrush(settings->colorScheme().folderview);
     this->setCacheMode(QGraphicsView::CacheBackground);
 
     // turn this off until [multi]selection is implemented
     setDrawScrollbarIndicator(false);
-    setSelectMode(SELECT_BY_DOUBLECLICK);
+    setSelectMode(ACTIVATE_BY_DOUBLECLICK);
 
     connect(settings, &Settings::settingsChanged, [this]() {
         this->scene.setBackgroundBrush(settings->colorScheme().folderview);
@@ -24,6 +26,27 @@ FolderGridView::FolderGridView(QWidget *parent)
     setupLayout();
     connect(this, &ThumbnailView::itemActivated,
             this, &FolderGridView::onitemSelected);
+}
+
+void FolderGridView::dropEvent(QDropEvent *event) {
+    event->accept();
+    ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
+    int index = -1;
+    if(item) {
+        index = thumbnails.indexOf(item);
+    }
+    emit droppedInto(event->mimeData(), event->source(), index);
+}
+
+void FolderGridView::dragEnterEvent(QDragEnterEvent *event) {
+    event->accept();
+}
+
+void FolderGridView::dragMoveEvent(QDragMoveEvent *event) {
+    event->accept();
+    // do a highlight here later
+    // now there's a problem, we need to know what thumbnails are folders..
+    //qDebug() << "move" << event->pos() << event->source() << this;
 }
 
 void FolderGridView::onitemSelected() {

@@ -65,6 +65,7 @@ signals:
     void showFoldersChanged(bool mode);
     void copyUrlsRequested(QList<QString>, QString path);
     void moveUrlsRequested(QList<QString>, QString path);
+    void droppedInto(const QMimeData*, QObject*, int);
 
 private slots:
     void onSortingSelected(int);

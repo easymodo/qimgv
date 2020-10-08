@@ -27,8 +27,8 @@ enum ThumbnailViewOrientation {
 };
 
 enum ThumbnailSelectMode {
-    SELECT_BY_PRESS,
-    SELECT_BY_DOUBLECLICK
+    ACTIVATE_BY_PRESS,
+    ACTIVATE_BY_DOUBLECLICK
 };
 
 class ThumbnailView : public QGraphicsView, public IDirectoryView {
@@ -65,6 +65,7 @@ signals:
     void thumbnailsRequested(QList<int>, int, bool, bool) override;
     void draggedOut() override;
     void draggedToBookmarks(QList<int>) override;
+    void droppedInto(const QMimeData*, QObject*, int) override;
 
 private:
     ThumbnailViewOrientation orientation;
@@ -79,7 +80,7 @@ private:
     int mDrawScrollbarIndicator, lastScrollFrameTime;
     QList<int> mSelection;
 
-    bool mCropThumbnails;
+    bool mCropThumbnails, mouseReleaseSelect;
     ThumbnailSelectMode selectMode;
     QPointF dragStartPos;
     ThumbnailWidget* dragTarget;

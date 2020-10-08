@@ -24,6 +24,12 @@
 #include "windows.h"
 #endif
 
+enum FileListSource { // rename? wip
+    SOURCE_DIRECTORY,
+    SOURCE_DIRECTORY_RECURSIVE,
+    SOURCE_LIST
+};
+
 class DirectoryManager;
 
 typedef bool (DirectoryManager::*CompareFunction)(const FSEntry &e1, const FSEntry &e2) const;
@@ -36,6 +42,7 @@ public:
     DirectoryManager();
     // ignored if the same dir is already opened
     bool setDirectory(QString);
+    bool setDirectoryRecursive(QString);
     QString directoryPath() const;
     int indexOfFile(QString filePath) const;
     int indexOfDir(QString dirPath) const;
@@ -70,6 +77,8 @@ public:
     void updateFileEntry(const QString &filePath);
     void renameFileEntry(const QString &oldFilePath, const QString &newName);
 
+    FileListSource source() const;
+
 private:
     QRegularExpression regex;
     QCollator collator;
@@ -80,6 +89,7 @@ private:
     DirectoryWatcher* watcher;
     void readSettings();
     SortingMode mSortingMode;
+    FileListSource mListSource;
     void loadEntryList(QString directoryPath, bool recursive);
 
     bool path_entry_compare(const FSEntry &e1, const FSEntry &e2) const;

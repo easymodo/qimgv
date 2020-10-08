@@ -35,6 +35,7 @@ signals:
     void thumbnailsRequested(QList<int>, int, bool, bool) override;
     void draggedOut() override;
     void draggedToBookmarks(QList<int>) override;
+    void droppedInto(const QMimeData*, QObject*, int) override;
 
 private:
     std::shared_ptr<ThumbnailStrip> thumbnailStrip;

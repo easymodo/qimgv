@@ -25,6 +25,8 @@ void DirectoryPresenter::setView(std::shared_ptr<IDirectoryView> _view) {
             this, SLOT(generateThumbnails(QList<int>, int, bool, bool)));
     connect(dynamic_cast<QObject *>(view.get()), SIGNAL(draggedOut()),
             this, SLOT(onDraggedOut()));
+    connect(dynamic_cast<QObject *>(view.get()), SIGNAL(droppedInto(const QMimeData*,QObject*,int)),
+            this, SLOT(onDroppedInto(const QMimeData*,QObject*,int)));
 }
 
 void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
@@ -196,6 +198,31 @@ void DirectoryPresenter::onItemActivated(int absoluteIndex) {
 
 void DirectoryPresenter::onDraggedOut() {
     emit draggedOut(selectedPaths());
+}
+
+// todo: pass folder information into the view to simplify presenter?
+void DirectoryPresenter::onDroppedInto(const QMimeData *data, QObject *source, int targetIndex) {
+    if(!data->hasUrls() || model->source() != SOURCE_DIRECTORY)
+        return;
+    // convert urls to qstrings
+    QStringList pathList;
+    QList<QUrl> urlList = data->urls();
+    for(int i = 0; i < urlList.size() && i < 32; ++i)
+        pathList.append(urlList.at(i).toLocalFile());
+    // get target dir path
+    QString destDir;
+    if(showDirs() && targetIndex < model->dirCount())
+       destDir = model->dirPathAt(targetIndex);
+    if(destDir.isEmpty()) // fallback to the current dir
+        destDir = model->directoryPath();
+    pathList.removeAll(destDir); // remove target dir from source list
+    // do the needful
+    FileOpResult result;
+    for(auto path : pathList) {
+        model->moveTo(path, destDir, result);
+        if(result != FileOpResult::SUCCESS && result != FileOpResult::NOTHING_TO_DO)
+            qDebug() << FileOperations::decodeResult(result);
+    }
 }
 
 void DirectoryPresenter::selectAndFocus(QString path) {

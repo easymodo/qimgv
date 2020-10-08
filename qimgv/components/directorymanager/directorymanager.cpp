@@ -113,16 +113,41 @@ bool DirectoryManager::setDirectory(QString dirPath) {
         qDebug() << "[DirectoryManager] Error - path is not a directory.";
         return false;
     }
+    mListSource = SOURCE_DIRECTORY;
+    mDirectoryPath = dirPath;
     loadEntryList(dirPath, false);
     sortEntryLists();
-    mDirectoryPath = dirPath;
     emit loaded(dirPath);
     startFileWatcher(dirPath);
     return true;
 }
 
+bool DirectoryManager::setDirectoryRecursive(QString dirPath) {
+    if(dirPath.isEmpty()) {
+        return false;
+    }
+    if(!std::filesystem::exists(toStdString(dirPath))) {
+        qDebug() << "[DirectoryManager] Error - path does not exist.";
+        return false;
+    }
+    if(!std::filesystem::is_directory(toStdString(dirPath))) {
+        qDebug() << "[DirectoryManager] Error - path is not a directory.";
+        return false;
+    }
+    stopFileWatcher();
+    mListSource = SOURCE_DIRECTORY_RECURSIVE;
+    mDirectoryPath = dirPath;
+    loadEntryList(dirPath, true);
+    sortEntryLists();
+    emit loaded(dirPath);
+    return true;
+}
+
 QString DirectoryManager::directoryPath() const {
-    return mDirectoryPath; // tmp
+    if(mListSource == SOURCE_DIRECTORY || mListSource == SOURCE_DIRECTORY_RECURSIVE)
+        return mDirectoryPath;
+    else
+        return "";
 }
 
 int DirectoryManager::indexOfFile(QString filePath) const {
@@ -411,6 +436,10 @@ void DirectoryManager::renameFileEntry(const QString &oldFilePath, const QString
     insert_sorted(fileEntryVec, FSEntry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
     qDebug() << "fileRen" << oldFilePath << newFilePath;
     emit fileRenamed(oldFilePath, oldIndex, newFilePath, indexOfFile(newFilePath));
+}
+
+FileListSource DirectoryManager::source() const {
+    return mListSource;
 }
 
 bool DirectoryManager::fileWatcherActive() {

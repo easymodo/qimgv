@@ -340,7 +340,7 @@ void Core::copyFileClipboard() {
     if(model->isEmpty())
         return;
 
-    QMimeData* mimeData = getMimeDataFor(model->getImage(selectedFilePath()), TARGET_CLIPBOARD);
+    QMimeData* mimeData = getMimeDataForImage(model->getImage(selectedFilePath()), TARGET_CLIPBOARD);
 
     // mimeData->text() should already contain an url
     QByteArray gnomeFormat = QByteArray("copy\n").append(QUrl(mimeData->text()).toEncoded());
@@ -378,14 +378,23 @@ void Core::onDropIn(const QMimeData *mimeData, QObject* source) {
 // drag'n'drop
 // drag image out of the program
 void Core::onDraggedOut() {
-    onDraggedOut(QList<QString>() << state.currentFilePath);
+    onDraggedOut(currentSelection());
 }
 
 void Core::onDraggedOut(QList<QString> paths) {
-    if(model->isEmpty())
+    if(model->isEmpty() || paths.isEmpty())
         return;
-    // this will break with multi-selection when there are 2+ edited files
-    QMimeData *mimeData = getMimeDataFor(model->getImage(paths.last()), TARGET_DROP);
+    QMimeData *mimeData;
+    // single selection, image
+    if(paths.count() == 1 && model->containsFile(paths.first())) {
+        mimeData = getMimeDataForImage(model->getImage(paths.last()), TARGET_DROP);
+    } else { // multi-selection, or single directory. drag urls
+        mimeData = new QMimeData();
+        QList<QUrl> urlList;
+        for(auto path : paths)
+            urlList << QUrl::fromLocalFile(path);
+        mimeData->setUrls(urlList);
+    }
 
     //auto thumb = Thumbnailer::getThumbnail(paths.last(), 100);
     mDrag = new QDrag(this);
@@ -396,7 +405,7 @@ void Core::onDraggedOut(QList<QString> paths) {
 
 }
 
-QMimeData *Core::getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget target) {
+QMimeData *Core::getMimeDataForImage(std::shared_ptr<Image> img, MimeDataTarget target) {
     QMimeData* mimeData = new QMimeData();
     if(!img)
         return mimeData;
@@ -541,12 +550,40 @@ void Core::showInDirectory() {
 #endif
 }
 
+
+void Core::copyPathsTo(QList<QString> paths, QString destDirectory) {
+    if(model->isEmpty())
+        return;
+    FileOpResult result;
+    for(auto path : paths) {
+        model->copyTo(path, destDirectory, result);
+        if(result != FileOpResult::SUCCESS) { // todo: sane ui for replacing file (incl. multiple)
+            mw->showError(FileOperations::decodeResult(result));
+            qDebug() << FileOperations::decodeResult(result);
+        }
+    }
+}
+
+void Core::movePathsTo(QList<QString> paths, QString destDirectory) {
+    if(model->isEmpty())
+        return;
+    FileOpResult result;
+    for(auto path : paths) {
+        model->moveTo(path, destDirectory, result);
+        if(result != FileOpResult::SUCCESS) {
+            mw->showError(FileOperations::decodeResult(result));
+            qDebug() << FileOperations::decodeResult(result);
+        }
+    }
+}
+
+// remove this?
 void Core::moveCurrentFile(QString destDirectory) {
     if(model->isEmpty())
         return;
     mw->closeImage();
     FileOpResult result;
-    model->moveTo(destDirectory, selectedFilePath(), result);
+    model->moveTo(selectedFilePath(), destDirectory, result);
     if(result == FileOpResult::SUCCESS) {
         mw->showMessageSuccess("File moved.");
     } else {
@@ -555,32 +592,12 @@ void Core::moveCurrentFile(QString destDirectory) {
     }
 }
 
-void Core::copyPathsTo(QList<QString> paths, QString destDirectory) {
-    if(model->isEmpty())
-        return;
-    FileOpResult result;
-    for(auto path : paths) {
-        model->copyTo(destDirectory ,path, result); // didnt QUrl cause some issues? test
-    }
-}
-
-void Core::movePathsTo(QList<QString> paths, QString destDirectory) {
-    qDebug() << "move" << paths << destDirectory;
-    if(model->isEmpty())
-        return;
-    FileOpResult result;
-    for(auto path : paths) {
-        model->moveTo(destDirectory, path, result); // didnt QUrl cause some issues? test
-        if(result != FileOpResult::SUCCESS)
-            qDebug() << "error: " << result;
-    }
-}
-
+// remove this?
 void Core::copyCurrentFile(QString destDirectory) {
     if(model->isEmpty())
         return;
     FileOpResult result;
-    model->copyTo(destDirectory, selectedFilePath(), result);
+    model->copyTo(selectedFilePath(), destDirectory, result);
     if(result == FileOpResult::SUCCESS)
         mw->showMessageSuccess("File copied.");
     else
@@ -610,6 +627,7 @@ void Core::showResizeDialog() {
     mw->showResizeDialog(img->size());
 }
 
+// ---------------------------------------------------------------- image operations
 // all editing operations should be done in the main thread
 // do an access wrapper with edit function as argument?
 void Core::resize(QSize size) {
@@ -624,7 +642,7 @@ void Core::resize(QSize size) {
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
             saveFile(selectedFilePath());
     } else {
-        mw->showMessage("Editing gifs/video is not supported.");
+        mw->showMessage("Editing is not supported.");
     }
 }
 
@@ -640,7 +658,7 @@ void Core::flipH() {
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
             saveFile(selectedFilePath());
     } else {
-        mw->showMessage("Editing gifs/video is not supported.");
+        mw->showMessage("Editing is not supported.");
     }
 }
 
@@ -656,7 +674,7 @@ void Core::flipV() {
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
             saveFile(selectedFilePath());
     } else {
-        mw->showMessage("Editing gifs/video is not supported.");
+        mw->showMessage("Editing is not supported.");
     }
 }
 
@@ -671,7 +689,7 @@ bool Core::crop(QRect rect) {
         model->updateImage(state.currentFilePath, img);
         return true;
     } else {
-        mw->showMessage("Editing gifs/video is not supported.");
+        mw->showMessage("Editing is not supported.");
         return false;
     }
 }
@@ -687,7 +705,7 @@ void Core::rotateByDegrees(int degrees) {
     QString filePath = selectedFilePath();
     auto img = model->getImage(filePath);
     if(!img || img->type() != STATIC) {
-        mw->showMessage("Editing gifs/video is not supported.");
+        mw->showMessage("Editing is not supported.");
         return;
     }
     // -----------
@@ -700,6 +718,14 @@ void Core::rotateByDegrees(int degrees) {
         saveFile(filePath);
     // -----------
 }
+
+ImageStatic* Core::getEditableImage(const QString &filePath) {
+    auto img = model->getImage(filePath);
+    ImageStatic *imgStatic = nullptr;
+    imgStatic = dynamic_cast<ImageStatic *>(img.get());
+}
+
+// ---------------------------------------------------------------- image operations ^
 
 bool Core::saveFile(const QString &filePath) {
     return saveFile(filePath, filePath);
@@ -744,7 +770,7 @@ void Core::discardEdits() {
     mw->hideSaveOverlay();
 }
 
-// todo: multi
+// todo: remove?
 QString Core::selectedFilePath() {
     if(!model)
         return "";
@@ -752,6 +778,15 @@ QString Core::selectedFilePath() {
         return folderViewPresenter.selectedPaths().last();
     else
         return state.currentFilePath;
+}
+
+QList<QString> Core::currentSelection() {
+    if(!model)
+        return QList<QString>();
+    else if(mw->currentViewMode() == MODE_FOLDERVIEW)
+        return folderViewPresenter.selectedPaths();
+    else
+        return QList<QString>() << state.currentFilePath;
 }
 
 //------------------------

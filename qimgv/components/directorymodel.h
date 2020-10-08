@@ -7,11 +7,6 @@
 #include "loader/loader.h"
 #include "utils/fileoperations.h"
 
-enum FileListSource { // rename? wip
-    SOURCE_DIRECTORY,
-    SOURCE_LIST
-};
-
 class DirectoryModel : public QObject {
     Q_OBJECT
 public:
@@ -37,8 +32,8 @@ public:
     QDateTime lastModified(QString filePath) const;
 
     bool forceInsert(QString filePath);
-    void copyTo(const QString destDirPath, const QFileInfo srcFile, FileOpResult &result);
-    void moveTo(const QString destDirPath, const QFileInfo srcFile, FileOpResult &result);
+    void copyTo(const QString &srcFile, const QString &destDirPath, FileOpResult &result);
+    void moveTo(const QString &srcFile, const QString &destDirPath, FileOpResult &result);
     void renameFile(const QString &oldFilePath, const QString &newName, FileOpResult &result);
     void removeFile(const QString &filePath, bool trash, FileOpResult &result);
 
@@ -75,6 +70,7 @@ public:
     bool saveFile(const QString &filePath, const QString &destPath);
 
     bool containsDir(QString dirPath) const;
+    FileListSource source();
 signals:
     void fileRemoved(QString filePath, int index);
     void fileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);
