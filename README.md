@@ -97,12 +97,12 @@ Example of a command:
 
 `convert %file% %file%_.pdf`
 
-Example of a shell script file: 
+Example of a shell script file (`$1` will be image path): 
 ```
 #!/bin/bash
 gimp "$1"
 ```
-_Note: The $1 argument will be a full file path. Also, the script file must be an executable._
+_Note: The script file must be an executable. Also, "shebang" (`#!/bin/bash`) needs to be present._
 
 When you've created your script go to __Settings > Controls > Add__, then select it and assign a shortcut like for any regular action.
 
