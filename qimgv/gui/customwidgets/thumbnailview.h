@@ -110,6 +110,7 @@ protected:
     const int SCROLL_DURATION = 120;
     const float SCROLL_MULTIPLIER = 2.5f;
     const float SCROLL_ACCELERATION = 1.4f;
+    const int SCROLL_ACCELERATION_THRESHOLD = 50;
 
     const uint LOAD_DELAY = 150;
 

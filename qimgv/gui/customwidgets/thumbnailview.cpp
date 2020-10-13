@@ -455,7 +455,9 @@ void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration
     }
     if(scrollTimeLine->state() == QTimeLine::Running || scrollTimeLine->state() == QTimeLine::Paused) {
         int oldEndFrame = scrollTimeLine->endFrame();
-        accelerate = true;
+        qDebug() << scrollTimeLine->currentTime();
+        if(scrollTimeLine->currentTime() < SCROLL_ACCELERATION_THRESHOLD)
+            accelerate = true;
         // QTimeLine has this weird issue when it is already finished (at the last frame)
         // but is stuck in the running state. So we just create a new one.
         if(oldEndFrame == center)
