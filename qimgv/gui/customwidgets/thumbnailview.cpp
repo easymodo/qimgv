@@ -18,6 +18,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     this->setAcceptDrops(false);
     this->setScene(&scene);
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    setAttribute(Qt::WA_TranslucentBackground, false);
     this->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing, true);
     this->setOptimizationFlag(QGraphicsView::DontSavePainterState, true);
     setRenderHint(QPainter::Antialiasing, false);
@@ -68,8 +69,8 @@ void ThumbnailView::createScrollTimeLine() {
         scrollTimeLine->deleteLater();
     }
     /* scrolling-related things */
-    scrollTimeLine = new QTimeLine(SCROLL_SPEED, this);
-    scrollTimeLine->setEasingCurve(QEasingCurve::OutSine);
+    scrollTimeLine = new QTimeLine(SCROLL_DURATION, this);
+    scrollTimeLine->setEasingCurve(QEasingCurve::OutCubic);
     scrollTimeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
 
     connect(scrollTimeLine, &QTimeLine::frameChanged, [this](int value) {
@@ -458,9 +459,9 @@ void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration
     }
     scrollTimeLine->stop();
     if(accelerate)
-        scrollTimeLine->setDuration(SCROLL_SPEED / SCROLL_SPEED_ACCELERATION);
+        scrollTimeLine->setDuration(SCROLL_DURATION / SCROLL_SPEED_ACCELERATION);
     else
-        scrollTimeLine->setDuration(SCROLL_SPEED);
+        scrollTimeLine->setDuration(SCROLL_DURATION);
     //blockThumbnailLoading = true;
     scrollTimeLine->setFrameRange(center, newEndFrame);
     scrollTimeLine->start();

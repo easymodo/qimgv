@@ -104,11 +104,11 @@ protected:
     QRect indicator;
     const int indicatorSize = 2;
 
-    const int SCROLL_UPDATE_RATE = 7;
+    const int SCROLL_UPDATE_RATE = 16;
     const float SCROLL_MULTIPLIER = 2.5f;
     const float SCROLL_ACCELERATION = 1.5f;
     const float SCROLL_SPEED_ACCELERATION = 1.4f;
-    const int SCROLL_SPEED = 120;
+    const int SCROLL_DURATION = 270;
 
     const uint LOAD_DELAY = 150;
 
