@@ -48,6 +48,13 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
             qApp->processEvents();
         };
     }
+
+    qreal screenMaxRefreshRate = 60;
+    for(auto screen : qApp->screens())
+        if(screen->refreshRate() > screenMaxRefreshRate)
+            screenMaxRefreshRate = screen->refreshRate();
+    scrollRefreshRate = 1000 / screenMaxRefreshRate;
+
     createScrollTimeLine();
 
     scrollBar->setContextMenuPolicy(Qt::NoContextMenu);
@@ -68,16 +75,15 @@ void ThumbnailView::createScrollTimeLine() {
         scrollTimeLine->stop();
         scrollTimeLine->deleteLater();
     }
-    /* scrolling-related things */
     scrollTimeLine = new QTimeLine(SCROLL_DURATION, this);
-    scrollTimeLine->setEasingCurve(QEasingCurve::OutCubic);
-    scrollTimeLine->setUpdateInterval(SCROLL_UPDATE_RATE);
+    scrollTimeLine->setEasingCurve(QEasingCurve::OutSine);
+    scrollTimeLine->setUpdateInterval(scrollRefreshRate);
 
     connect(scrollTimeLine, &QTimeLine::frameChanged, [this](int value) {
         scrollFrameTimer.start();
         this->centerOn(value);
         lastScrollFrameTime = scrollFrameTimer.elapsed();
-        if(scrollTimeLine->state() == QTimeLine::Running && lastScrollFrameTime > SCROLL_UPDATE_RATE) {
+        if(scrollTimeLine->state() == QTimeLine::Running && lastScrollFrameTime > scrollRefreshRate) {
             scrollTimeLine->setPaused(true);
             int newTime = qMin(scrollTimeLine->duration(), scrollTimeLine->currentTime() + lastScrollFrameTime);
             scrollTimeLine->setCurrentTime(newTime);
@@ -459,7 +465,7 @@ void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration
     }
     scrollTimeLine->stop();
     if(accelerate)
-        scrollTimeLine->setDuration(SCROLL_DURATION / SCROLL_SPEED_ACCELERATION);
+        scrollTimeLine->setDuration(SCROLL_DURATION / SCROLL_ACCELERATION);
     else
         scrollTimeLine->setDuration(SCROLL_DURATION);
     //blockThumbnailLoading = true;
