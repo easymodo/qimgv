@@ -260,7 +260,10 @@ void FolderGridView::scrollToItem(int index) {
         // DOWN
         else
             delta = sceneRect.top() - itemRect.top();
-        scrollSmooth(delta);
+        if(settings->enableSmoothScroll())
+            scrollSmooth(delta);
+        else
+            scrollPrecise(delta);
     }
 }
 
