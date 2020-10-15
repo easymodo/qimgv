@@ -500,6 +500,8 @@ void MW::updateCropPanelData() {
 }
 
 void MW::showSaveOverlay() {
+    if(!settings->showSaveOverlay())
+        return;
     if(!saveOverlay)
         setupSaveOverlay();
     saveOverlay->show();
@@ -596,7 +598,8 @@ void MW::closeFullScreenOrExit() {
     }
 }
 
-void MW::setCurrentInfo(int _index, int _fileCount, QString _filePath, QString _fileName, QSize _imageSize, qint64 _fileSize, bool slideshow) {
+// todo: this is crap, use shared state object
+void MW::setCurrentInfo(int _index, int _fileCount, QString _filePath, QString _fileName, QSize _imageSize, qint64 _fileSize, bool slideshow, bool edited) {
     info.index = _index;
     info.fileCount = _fileCount;
     info.fileName = _fileName;
@@ -604,6 +607,7 @@ void MW::setCurrentInfo(int _index, int _fileCount, QString _filePath, QString _
     info.imageSize = _imageSize;
     info.fileSize = _fileSize;
     info.slideshow = slideshow;
+    info.edited = edited;
     onInfoUpdated();
 }
 
@@ -649,8 +653,10 @@ void MW::onInfoUpdated() {
         }
         if(info.slideshow)
             windowTitle.append(" — slideshow");
-        infoBarFullscreen->setInfo(posString, info.fileName, resString + "  " + sizeString);
-        infoBarWindowed->setInfo(posString, info.fileName, resString + "  " + sizeString);
+        if(info.edited)
+            windowTitle.prepend("* ");
+        infoBarFullscreen->setInfo(posString, info.fileName + (info.edited ? "  *" : ""), resString + "  " + sizeString);
+        infoBarWindowed->setInfo(posString, info.fileName + (info.edited ? "  *" : ""), resString + "  " + sizeString);
     }
     setWindowTitle(windowTitle);
 }

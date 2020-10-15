@@ -160,6 +160,7 @@ void SettingsDialog::readSettings() {
     ui->focusPointIn1to1ModeComboBox->setCurrentIndex(settings->focusPointIn1to1Mode());
     ui->slideshowIntervalSpinBox->setValue(settings->slideshowInterval());
     ui->imageScrollingComboBox->setCurrentIndex(settings->imageScrolling());
+    ui->saveOverlayCheckBox->setChecked(settings->showSaveOverlay());
 
     if(settings->defaultViewMode() == MODE_FOLDERVIEW)
         ui->startInFolderViewCheckBox->setChecked(true);
@@ -260,10 +261,9 @@ void SettingsDialog::saveSettings() {
         settings->setDefaultViewMode(MODE_DOCUMENT);
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
-
     settings->setScalingFilter(static_cast<ScalingFilter>(ui->scalingQualityComboBox->currentIndex()));
-
     settings->setImageScrolling(static_cast<ImageScrolling>(ui->imageScrollingComboBox->currentIndex()));
+    settings->setShowSaveOverlay(ui->saveOverlayCheckBox->isChecked());
 
     if(ui->panelTop->isChecked())
         settings->setPanelPosition(PANEL_TOP);

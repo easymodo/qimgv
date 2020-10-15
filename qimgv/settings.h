@@ -230,6 +230,8 @@ public:
 
     bool showFolders();
     void setShowFolders(bool mode);
+    bool showSaveOverlay();
+    void setShowSaveOverlay(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

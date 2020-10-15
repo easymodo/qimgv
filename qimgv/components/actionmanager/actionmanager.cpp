@@ -79,6 +79,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("S", "toggleShuffle");
     actionManager->defaults.insert("Ctrl+D", "showInDirectory");
     actionManager->defaults.insert("`", "toggleSlideshow");
+    actionManager->defaults.insert("Ctrl+Z", "discardEdits");
     //actionManager->defaults.insert("Backspace", "goUp"); // todo: shortcut scopes?
 }
 //------------------------------------------------------------------------------

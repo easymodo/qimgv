@@ -800,6 +800,14 @@ void Settings::setUseOpenGL(bool mode) {
     settings->settingsConf->setValue("useOpenGL", mode);
 }
 //------------------------------------------------------------------------------
+bool Settings::showSaveOverlay() {
+    return settings->settingsConf->value("showSaveOverlay", true).toBool();
+}
+
+void Settings::setShowSaveOverlay(bool mode) {
+    settings->settingsConf->setValue("showSaveOverlay", mode);
+}
+//------------------------------------------------------------------------------
 qreal Settings::zoomStep() {
     bool ok = false;
     qreal value = settings->settingsConf->value("zoomStep", 0.2).toReal(&ok);

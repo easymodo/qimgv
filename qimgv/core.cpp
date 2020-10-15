@@ -184,6 +184,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::volumeDown, mw, &MW::volumeDown);
     connect(actionManager, &ActionManager::toggleSlideshow, this, &Core::toggleSlideshow);
     connect(actionManager, &ActionManager::goUp, this, &Core::loadParentDir);
+    connect(actionManager, &ActionManager::discardEdits, this, &Core::discardEdits);
 }
 
 void Core::onUpdate() {
@@ -1079,11 +1080,13 @@ void Core::guiSetImage(std::shared_ptr<Image> img) {
 void Core::updateInfoString() {
     QSize imageSize(0,0);
     qint64 fileSize = 0;
+    bool edited = false;
 
     if(model->isLoaded(state.currentFilePath)) {
         auto img = model->getImage(state.currentFilePath);
         imageSize = img->size();
         fileSize  = img->fileSize();
+        edited = img->isEdited();
     }
     int index = model->indexOfFile(state.currentFilePath);
     mw->setCurrentInfo(index,
@@ -1092,5 +1095,6 @@ void Core::updateInfoString() {
                        model->fileNameAt(index),
                        imageSize,
                        fileSize,
-                       slideshow);
+                       slideshow,
+                       edited);
 }
