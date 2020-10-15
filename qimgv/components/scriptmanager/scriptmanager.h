@@ -30,6 +30,9 @@ public:
     void addScript(QString scriptName, Script script);
     static QStringList splitCommandLine(const QString &cmdLine);
 
+signals:
+    void error(QString);
+
 private:
     explicit ScriptManager(QObject *parent = nullptr);
     QMap<QString, Script> scripts; // <name, script>

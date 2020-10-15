@@ -25,16 +25,27 @@ void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> 
     if(scripts.contains(scriptName)) {
         Script script = scripts.value(scriptName);
         QProcess exec(this);
-        QStringList command = splitCommandLine(script.command);
-        processArguments(command, img);
+
+        auto arguments = splitCommandLine(script.command);
+        processArguments(arguments, img);
+        QString program = arguments.takeAt(0);
+
         if(script.blocking) {
-            exec.start(command.takeAt(0), command);
-            if(!exec.waitForStarted())
-                qDebug() << "[ScriptManager] Unable not start:" << exec.program() << " Make sure it is an executable.";
+            exec.start(program, arguments);
+            if(!exec.waitForStarted()) {
+                qDebug() << "Unable not start script." << program << " Make sure it is an executable.";
+            }
             exec.waitForFinished(10000);
         } else {
-            if(!exec.startDetached(command.takeAt(0), command)) {
-                qWarning() << "[ScriptManager] Unable not start:" << exec.program() << " Make sure it is an executable.";
+            if(!exec.startDetached(program, arguments)) {
+                QFileInfo fi(program);
+                QString errorString;
+                if(fi.isFile() && !fi.isExecutable())
+                     errorString = "Error:  " + program + "  is not an executable.";
+                else
+                    errorString = "Error: unable run script. See README for working examples.";
+                emit error(errorString);
+                qWarning() << errorString;
             }
         }
     } else {
@@ -70,7 +81,7 @@ void ScriptManager::processArguments(QStringList &cmd, std::shared_ptr<Image> im
 }
 
 // thanks stackoverflow
-QStringList ScriptManager::splitCommandLine(const QString & cmdLine) {
+QStringList ScriptManager::splitCommandLine(const QString &cmdLine) {
     QStringList list;
     QString arg;
     bool escape = false;

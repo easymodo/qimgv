@@ -706,7 +706,7 @@ void MW::showWarning(QString text) {
 }
 
 void MW::showError(QString text) {
-    floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_ERROR, 2500);
+    floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_ERROR, 3500);
 }
 
 void MW::readSettings() {

@@ -84,6 +84,8 @@ void Core::connectComponents() {
     connect(&folderViewPresenter, &DirectoryPresenter::draggedOut,
             this, qOverload<QList<QString>>(&Core::onDraggedOut));
 
+    connect(scriptManager, &ScriptManager::error, mw, &MW::showError);
+
     connect(mw, &MW::opened,                this, &Core::loadPath);
     connect(mw, &MW::droppedIn,             this, &Core::onDropIn);
     connect(mw, &MW::copyRequested,         this, &Core::copyCurrentFile);
