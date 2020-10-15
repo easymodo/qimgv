@@ -754,10 +754,12 @@ void Core::saveCurrentFile() {
 void Core::saveCurrentFileAs(QString destPath) {
     if(model->isEmpty())
         return;
-    if(saveFile(selectedFilePath(), destPath))
+    if(saveFile(selectedFilePath(), destPath)) {
         mw->showMessageSuccess("File saved");
-    else
+        updateInfoString();
+    } else {
         mw->showError("Could not save file");
+    }
 }
 
 void Core::discardEdits() {

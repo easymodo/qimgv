@@ -102,7 +102,7 @@ void ColorScheme::createColorVariants() {
         // text
         text_hc2 = QColor(text.lighter(118));
         text_hc1 = QColor(text.lighter(110));
-        text_lc1 = QColor(text.darker(130));
+        text_lc1 = QColor(text.darker(115));
         text_lc2 = QColor(text.darker(160));
     } else { // light theme; still not exactly happy with this (todo)
         // top bar buttons
