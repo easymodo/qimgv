@@ -19,8 +19,8 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
         case COLORS_LIGHT:
             base.background = "#1a1a1a";
             base.background_fullscreen = "#1a1a1a";
-            base.text = "#454647";
-            base.icons = "#454647";
+            base.text = "#323232";
+            base.icons = "#555555";
             base.widget = "#cdcdcd";
             base.widget_border = "#c3c3c3";
             base.accent = "#adadad";
@@ -34,7 +34,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.background = "#18191a";
             base.background_fullscreen = "#18191a";
             base.text = "#cdd2d7";
-            base.icons = "#cdd2d7";
+            base.icons = "#babec3";
             base.widget = "#232629";
             base.widget_border = "#26292d";
             base.accent = "#336ca5";
@@ -48,12 +48,12 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
         case COLORS_DEFAULT:
             base.background = "#1a1a1a";
             base.background_fullscreen = "#1a1a1a";
-            base.text = "#a8a8a8";
+            base.text = "#b0b0b0";
             base.icons = "#a8a8a8";
             base.widget = "#252525";
             base.widget_border = "#272727";
-            base.accent = "#436082";
-            base.folderview = "#242424";
+            base.accent = "#3f6691";
+            base.folderview = "#2a2a2a";
             base.folderview_topbar = "#343434";
             base.scrollbar = "#5e5e5e";
             base.overlay_text = "#d2d2d2";

@@ -132,7 +132,7 @@ QComboBox QAbstractItemView {
 }
 
 [accessibleName="PanelComboBox"] QAbstractItemView::item:selected {
-    background-color: %accent_hover_rgba%;
+    background-color: %accent%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -309,7 +309,7 @@ SidePanel QComboBox QAbstractItemView::item {
 }
 
 SidePanel QComboBox QAbstractItemView::item:selected {
-    background-color: %accent_hover_rgba%;
+    background-color: %accent%;
 }
 
 [accessibleName="CropPanelSeparator"] {
@@ -632,6 +632,10 @@ QTreeView::branch:has-siblings:!adjoins-item:!selected {
 
 QTreeView::branch:has-siblings:hover:!adjoins-item:!selected {
     background-color: %folderview_separator%;
+}
+
+QTreeView::branch:!has-children:!hover:adjoins-item:!selected {
+    background: transparent;
 }
 
 QTreeView::branch:has-children:!has-siblings:closed,

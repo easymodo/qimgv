@@ -256,7 +256,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>6</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -516,6 +516,23 @@
                         </property>
                        </widget>
                       </item>
+                      <item row="2" column="1">
+                       <widget class="QRadioButton" name="fitMode1to1">
+                        <property name="text">
+                         <string>1:1</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="1">
+                       <widget class="QRadioButton" name="fitModeWindow">
+                        <property name="text">
+                         <string>Fit in window</string>
+                        </property>
+                        <property name="checked">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
                       <item row="3" column="1">
                        <widget class="QComboBox" name="focusPointIn1to1ModeComboBox">
                         <property name="sizePolicy">
@@ -539,23 +556,6 @@
                           <string>At cursor</string>
                          </property>
                         </item>
-                       </widget>
-                      </item>
-                      <item row="2" column="1">
-                       <widget class="QRadioButton" name="fitMode1to1">
-                        <property name="text">
-                         <string>1:1</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="1">
-                       <widget class="QRadioButton" name="fitModeWindow">
-                        <property name="text">
-                         <string>Fit in window</string>
-                        </property>
-                        <property name="checked">
-                         <bool>true</bool>
-                        </property>
                        </widget>
                       </item>
                       <item row="3" column="0">
@@ -1149,7 +1149,7 @@
                             </size>
                            </property>
                            <property name="text">
-                            <string>Show only in fullscreen</string>
+                            <string>Hide in windowed mode</string>
                            </property>
                           </widget>
                          </item>
@@ -1197,7 +1197,7 @@
                             </size>
                            </property>
                            <property name="text">
-                            <string>Panel position:</string>
+                            <string>Position</string>
                            </property>
                            <property name="alignment">
                             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1255,7 +1255,7 @@
                        <item>
                         <widget class="QLabel" name="label_4">
                          <property name="text">
-                          <string>Panel size:</string>
+                          <string>Height:</string>
                          </property>
                         </widget>
                        </item>
