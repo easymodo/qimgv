@@ -5,6 +5,7 @@ ThumbnailGridWidget::ThumbnailGridWidget(QGraphicsItem* parent)
       labelSpacing(7),
       margin(2)
 {
+    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     font.setBold(false);
     shadowColor.setRgb(0,0,0,60);
     margin = 2;
@@ -96,9 +97,8 @@ void ThumbnailGridWidget::drawSingleLineText(QPainter *painter, QRectF rect, QSt
         textPainter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
         textPainter.fillRect(fadeRect, gradient);
         // write text layer into graphicsitem
-        painter->setCompositionMode(QPainter::CompositionMode_SourceAtop);
-        painter->drawPixmap(rect.topLeft(), textLayer);
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+        painter->drawPixmap(rect.topLeft(), textLayer);
     }
 }
 
