@@ -143,9 +143,12 @@ void DirectoryModel::copyTo(const QString &srcFile, const QString &destDirPath, 
     FileOperations::copyTo(srcFile, destDirPath, result);
 }
 
-// todo: fix with autoRefresh()=false
 void DirectoryModel::moveTo(const QString &srcFile, const QString &destDirPath, FileOpResult &result) {
     FileOperations::moveTo(srcFile, destDirPath, result);
+    if(result == FileOpResult::SUCCESS) {
+        if(destDirPath != this->directoryPath())
+            dirManager.removeFileEntry(srcFile);
+    }
 }
 // -----------------------------------------------------------------------------
 void DirectoryModel::setDirectory(QString path) {

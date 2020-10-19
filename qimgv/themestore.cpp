@@ -23,7 +23,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.icons = "#555555";
             base.widget = "#cdcdcd";
             base.widget_border = "#c3c3c3";
-            base.accent = "#adadad";
+            base.accent = "#729fcf";
             base.folderview = "#e1e1e1";
             base.folderview_topbar = "#cdcdcd";
             base.scrollbar = "#a5a5a5";
