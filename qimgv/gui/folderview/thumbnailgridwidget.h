@@ -5,7 +5,6 @@
 class ThumbnailGridWidget : public ThumbnailWidget {
 public:
     ThumbnailGridWidget(QGraphicsItem *parent = nullptr);
-    QRectF boundingRect() const override;
 
 protected:
     virtual void setupLayout() override;
@@ -21,6 +20,7 @@ protected:
     virtual void updateHighlightRect() override;
     void drawSingleLineText(QPainter *painter, QRectF rect, QString text, const QColor &color);
 
+    virtual void updateBoundingRect() override;
 private:
     int labelSpacing, margin;
     QRectF infoRect;

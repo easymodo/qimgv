@@ -37,6 +37,7 @@ void ThumbnailWidget::setThumbnailSize(int size) {
     if(mThumbnailSize != size && size > 0) {
         isLoaded = false;
         mThumbnailSize = size;
+        updateBoundingRect();
         updateGeometry();
         updateThumbnailDrawPosition();
         updateHighlightRect();
@@ -47,6 +48,7 @@ void ThumbnailWidget::setThumbnailSize(int size) {
 
 void ThumbnailWidget::setPadding(int _padding) {
     padding = _padding;
+    updateBoundingRect();
 }
 
 int ThumbnailWidget::thumbnailSize() {
@@ -65,6 +67,7 @@ void ThumbnailWidget::reset() {
 void ThumbnailWidget::setDrawLabel(bool mode) {
     if(mDrawLabel != mode) {
         mDrawLabel = mode;
+        updateBoundingRect();
         updateThumbnailDrawPosition();
         setupLayout();
         updateHighlightRect();
@@ -104,12 +107,6 @@ void ThumbnailWidget::unsetThumbnail() {
     if(thumbnail)
         thumbnail.reset();
     isLoaded = false;
-    /*
-    updateThumbnailDrawPosition();
-    setupLayout();
-    updateHighlightRect();
-    update();
-    */
 }
 
 void ThumbnailWidget::setupLayout() {
@@ -141,7 +138,11 @@ bool ThumbnailWidget::isHighlighted() {
 }
 
 QRectF ThumbnailWidget::boundingRect() const {
-    return QRectF(0, 0, mThumbnailSize + padding * 2, mThumbnailSize + padding * 2);
+    return mBoundingRect;
+}
+
+void ThumbnailWidget::updateBoundingRect() {
+    mBoundingRect = QRectF(0, 0, mThumbnailSize + padding * 2, mThumbnailSize + padding * 2);
 }
 
 qreal ThumbnailWidget::width() {

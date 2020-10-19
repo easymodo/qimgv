@@ -73,4 +73,6 @@ protected:
     QFont font, fontSmall;
     QFontMetrics *fm, *fmSmall;
     QRect drawRectCentered;
+    QRectF mBoundingRect;
+    virtual void updateBoundingRect();
 };

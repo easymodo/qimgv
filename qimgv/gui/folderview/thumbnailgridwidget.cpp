@@ -11,12 +11,12 @@ ThumbnailGridWidget::ThumbnailGridWidget(QGraphicsItem* parent)
     readSettings();
 }
 
-QRectF ThumbnailGridWidget::boundingRect() const {
+void ThumbnailGridWidget::updateBoundingRect() {
     if(mDrawLabel)
-        return QRectF(0, 0, mThumbnailSize + (padding + margin) * 2,
+        mBoundingRect = QRectF(0, 0, mThumbnailSize + (padding + margin) * 2,
                             mThumbnailSize + (padding + margin) * 2 + labelSpacing + textHeight * 2);
     else
-        return QRectF(0, 0, mThumbnailSize + (padding + margin) * 2,
+        mBoundingRect = QRectF(0, 0, mThumbnailSize + (padding + margin) * 2,
                             mThumbnailSize + (padding + margin) * 2);
 }
 
@@ -29,24 +29,8 @@ void ThumbnailGridWidget::setupLayout() {
 }
 
 void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
-    if(isHighlighted()) {
+    if(isHighlighted())
         painter->fillRect(highlightRect, highlightColor);
-        /*
-        QPainterPath path;
-        // fill
-        path.addRoundedRect(highlightRect, 3, 3);
-        painter->fillPath(path, highlightColor);
-        // outline
-        path.clear();
-        QRectF adj = static_cast<QRectF>(highlightRect).adjusted(0.5f, 0.5f, -0.5f, -0.5f);
-        path.addRoundedRect(adj, 3, 3);
-        auto op = painter->opacity();
-        painter->setOpacity(0.03f);
-        painter->setPen(Qt::white);
-        painter->drawPath(path);
-        painter->setOpacity(op);
-        */
-    }
 }
 
 void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap) {
