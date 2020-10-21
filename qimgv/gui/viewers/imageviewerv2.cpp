@@ -155,7 +155,11 @@ void ImageViewerV2::onAnimationTimer() {
             movie->jumpToFrame(0);
         }
     } else {
-        movie->jumpToNextFrame();
+        if(!movie->jumpToNextFrame()) {
+            qDebug() << "[Error] QMovie:" << movie->lastErrorString();
+            this->stopAnimation();
+            return;
+        }
     }
     emit frameChanged(movie->currentFrameNumber());
     std::unique_ptr<QPixmap> newFrame(new QPixmap());
@@ -188,7 +192,10 @@ bool ImageViewerV2::showAnimationFrame(int frame) {
     if(frame < movie->currentFrameNumber())
         movie->jumpToFrame(0);
     while(frame != movie->currentFrameNumber()) {
-        movie->jumpToNextFrame();
+        if(!movie->jumpToNextFrame()) {
+            qDebug() << "[Error] QMovie:" << movie->lastErrorString();
+            break;
+        }
     }
     emit frameChanged(movie->currentFrameNumber());
     std::unique_ptr<QPixmap> newFrame(new QPixmap());
