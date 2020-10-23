@@ -24,6 +24,7 @@ public slots:
     virtual void insertItem(int index) override;
     virtual void removeItem(int index) override;
     virtual void reloadItem(int index) override;
+    virtual void setDragHover(int index) override;
     virtual void setDirectoryPath(QString path) override;
     void addItem();
 
@@ -36,6 +37,7 @@ signals:
     void draggedOut() override;
     void draggedToBookmarks(QList<int>) override;
     void droppedInto(const QMimeData*, QObject*, int) override;
+    void draggedOver(int) override;
 
 private:
     std::shared_ptr<ThumbnailStrip> thumbnailStrip;

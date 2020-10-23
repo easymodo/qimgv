@@ -7,6 +7,7 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     highlighted(false),
     hovered(false),
     mDrawLabel(true),
+    dropHovered(false),
     mThumbnailSize(100),
     padding(5),
     textHeight(5)
@@ -137,6 +138,17 @@ bool ThumbnailWidget::isHighlighted() {
     return highlighted;
 }
 
+void ThumbnailWidget::setDropHovered(bool mode) {
+    if(dropHovered != mode) {
+        dropHovered = mode;
+        update();
+    }
+}
+
+bool ThumbnailWidget::isDropHovered() {
+    return dropHovered;
+}
+
 QRectF ThumbnailWidget::boundingRect() const {
     return mBoundingRect;
 }
@@ -176,6 +188,8 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
         if(mDrawLabel)
             drawLabel(painter);
     }
+    if(isDropHovered())
+        drawDropHover(painter);
 }
 
 void ThumbnailWidget::drawHighlight(QPainter *painter) {
@@ -203,6 +217,25 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
     painter->setFont(fontSmall);
     painter->setPen(settings->colorScheme().text_lc1);
     painter->drawText(labelTextRect, flags, thumbnail->label());
+}
+
+void ThumbnailWidget::drawDropHover(QPainter *painter) {
+    // save
+    auto hints = painter->renderHints();
+    auto op = painter->opacity();
+
+    painter->setRenderHint(QPainter::Antialiasing);
+    QColor clr(190,60,25);
+    QPen pen(clr);
+    pen.setWidth(2);
+    painter->setPen(pen);
+    painter->drawRect(highlightRect/*.adjusted(0.5f, 0.5f, -1.0f, -1.0f)*/);
+    painter->setOpacity(0.1f);
+    painter->fillRect(highlightRect, clr);
+
+    // restore
+    painter->setRenderHints(hints);
+    painter->setOpacity(op);
 }
 
 void ThumbnailWidget::drawThumbnail(QPainter* painter, const QPixmap *pixmap) {

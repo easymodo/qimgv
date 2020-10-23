@@ -25,8 +25,11 @@ public:
     bool isLoaded;
     void setThumbnail(std::shared_ptr<Thumbnail> _thumbnail);
 
-    void setHighlighted(bool x);
+    void setHighlighted(bool mode);
     bool isHighlighted();
+
+    void setDropHovered(bool mode);
+    bool isDropHovered();
 
     virtual QRectF boundingRect() const override;
 
@@ -54,6 +57,7 @@ protected:
     virtual void drawHighlight(QPainter *painter);
     virtual void drawHoverHighlight(QPainter *painter);
     virtual void drawLabel(QPainter *painter);
+    virtual void drawDropHover(QPainter *painter);
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
@@ -66,7 +70,7 @@ protected:
     virtual void updateThumbnailDrawPosition();
 
     std::shared_ptr<Thumbnail> thumbnail;
-    bool highlighted, hovered, mDrawLabel, animateHover;
+    bool highlighted, hovered, mDrawLabel, dropHovered, animateHover;
     int mThumbnailSize, padding, textHeight;
     QRectF highlightRect, nameRect, labelTextRect;
     QColor highlightColor, nameColor;

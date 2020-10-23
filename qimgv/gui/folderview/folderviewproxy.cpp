@@ -26,6 +26,7 @@ void FolderViewProxy::init() {
     connect(folderView.get(), &FolderView::copyUrlsRequested, this, &FolderViewProxy::copyUrlsRequested);
     connect(folderView.get(), &FolderView::moveUrlsRequested, this, &FolderViewProxy::moveUrlsRequested);
     connect(folderView.get(), &FolderView::droppedInto, this, &FolderViewProxy::droppedInto);
+    connect(folderView.get(), &FolderView::draggedOver, this, &FolderViewProxy::draggedOver);
 
     folderView->show();
 
@@ -123,6 +124,11 @@ void FolderViewProxy::removeItem(int index) {
 void FolderViewProxy::reloadItem(int index) {
     if(folderView)
         folderView->reloadItem(index);
+}
+
+void FolderViewProxy::setDragHover(int index) {
+    if(folderView)
+        folderView->setDragHover(index);
 }
 
 void FolderViewProxy::addItem() {

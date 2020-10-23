@@ -36,6 +36,7 @@ public slots:
     void setThumbnailSize(int newSize);
     void setShowLabels(bool mode);
     virtual void focusOn(int index);
+    virtual void setDragHover(int index);
 
 private:
     FlowLayout *flowLayout;
@@ -44,6 +45,7 @@ private:
     bool mShowLabels;
     void scrollToCurrent();
     void scrollToItem(int index);
+    int lastDragTarget = -1;
 
 private slots:
     void onitemSelected();

@@ -25,6 +25,8 @@ void DirectoryPresenter::setView(std::shared_ptr<IDirectoryView> _view) {
             this, SLOT(generateThumbnails(QList<int>, int, bool, bool)));
     connect(dynamic_cast<QObject *>(view.get()), SIGNAL(draggedOut()),
             this, SLOT(onDraggedOut()));
+    connect(dynamic_cast<QObject *>(view.get()), SIGNAL(draggedOver(int)),
+            this, SLOT(onDraggedOver(int)));
     connect(dynamic_cast<QObject *>(view.get()), SIGNAL(droppedInto(const QMimeData*,QObject*,int)),
             this, SLOT(onDroppedInto(const QMimeData*,QObject*,int)));
 }
@@ -200,10 +202,22 @@ void DirectoryPresenter::onDraggedOut() {
     emit draggedOut(selectedPaths());
 }
 
+void DirectoryPresenter::onDraggedOver(int index) {
+    if(!model || view->selection().contains(index))
+        return;
+    if(showDirs() && index < model->dirCount())
+        view->setDragHover(index);
+
+}
+
 // todo: pass folder information into the view to simplify presenter?
 void DirectoryPresenter::onDroppedInto(const QMimeData *data, QObject *source, int targetIndex) {
     if(!data->hasUrls() || model->source() != SOURCE_DIRECTORY)
         return;
+    // ignore drops into already selected folder
+    if(source && view->selection().contains(targetIndex))
+        return;
+
     // convert urls to qstrings
     QStringList pathList;
     QList<QUrl> urlList = data->urls();

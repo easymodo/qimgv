@@ -28,6 +28,7 @@ public slots:
     virtual void insertItem(int index) override;
     virtual void removeItem(int index) override;
     virtual void reloadItem(int index) override;
+    virtual void setDragHover(int) override;
     void addItem();
     void onFullscreenModeChanged(bool mode);
     void onSortingChanged(SortingMode mode);
@@ -46,6 +47,7 @@ signals:
     void copyUrlsRequested(QList<QString>, QString path);
     void moveUrlsRequested(QList<QString>, QString path);
     void droppedInto(const QMimeData*, QObject*, int);
+    void draggedOver(int);
 
 private:
     std::shared_ptr<FolderView> folderView;

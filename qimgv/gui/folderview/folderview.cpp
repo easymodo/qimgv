@@ -66,6 +66,7 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->thumbnailGrid, &FolderGridView::thumbnailSizeChanged, this, &FolderView::onThumbnailSizeChanged);
     connect(ui->thumbnailGrid, &FolderGridView::showLabelsChanged,    this, &FolderView::onShowLabelsChanged);
     connect(ui->thumbnailGrid, &FolderGridView::draggedOut,     this, &FolderView::draggedOut);
+    connect(ui->thumbnailGrid, &FolderGridView::draggedOver,     this, &FolderView::draggedOver);
     connect(ui->thumbnailGrid, &FolderGridView::droppedInto,     this, &FolderView::droppedInto);
 
     connect(ui->bookmarksWidget, &BookmarksWidget::bookmarkClicked, this, &FolderView::onBookmarkClicked);
@@ -321,6 +322,10 @@ void FolderView::removeItem(int index) {
 
 void FolderView::reloadItem(int index) {
     ui->thumbnailGrid->reloadItem(index);
+}
+
+void FolderView::setDragHover(int index) {
+    ui->thumbnailGrid->setDragHover(index);
 }
 
 // prevent passthrough to parent

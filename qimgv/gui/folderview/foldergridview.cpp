@@ -34,6 +34,7 @@ void FolderGridView::dropEvent(QDropEvent *event) {
     int index = -1;
     if(item) {
         index = thumbnails.indexOf(item);
+        item->setDropHovered(false);
     }
     emit droppedInto(event->mimeData(), event->source(), index);
 }
@@ -44,9 +45,22 @@ void FolderGridView::dragEnterEvent(QDragEnterEvent *event) {
 
 void FolderGridView::dragMoveEvent(QDragMoveEvent *event) {
     event->accept();
-    // do a highlight here later
-    // now there's a problem, we need to know what thumbnails are folders..
-    //qDebug() << "move" << event->pos() << event->source() << this;
+    ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
+    int index = -1;
+    if(item)
+        index = thumbnails.indexOf(item);
+    // unselect previous
+    if(index != lastDragTarget && checkRange(lastDragTarget))
+        thumbnails.at(lastDragTarget)->setDropHovered(false);
+    emit draggedOver(index);
+    lastDragTarget = index;
+}
+
+void FolderGridView::setDragHover(int index) {
+    if(!checkRange(index))
+        return;
+    auto item = thumbnails.at(index);
+    item->setDropHovered(true);
 }
 
 void FolderGridView::onitemSelected() {

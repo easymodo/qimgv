@@ -283,6 +283,10 @@ void ThumbnailView::reloadItem(int index) {
     emit thumbnailsRequested(QList<int>() << index, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize), mCropThumbnails, true);
 }
 
+void ThumbnailView::setDragHover(int index) {
+
+}
+
 void ThumbnailView::setCropThumbnails(bool mode) {
     if(mode != mCropThumbnails) {
         unloadAllThumbnails();

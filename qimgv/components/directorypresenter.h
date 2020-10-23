@@ -49,6 +49,7 @@ private slots:
     void populateView();
     void onItemActivated(int absoluteIndex);
     void onDraggedOut();
+    void onDraggedOver(int index);
 
     void onDroppedInto(const QMimeData *data, QObject *source, int targetIndex);
 private:

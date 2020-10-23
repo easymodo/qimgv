@@ -62,11 +62,14 @@ public slots:
     virtual void removeItem(int index) override;
     virtual void reloadItem(int index) override;
 
+    virtual void setDragHover(int index) override;
+
 signals:
     void itemActivated(int) override;
     void thumbnailsRequested(QList<int>, int, bool, bool) override;
     void draggedOut() override;
     void draggedToBookmarks(QList<int>) override;
+    void draggedOver(int) override;
     void droppedInto(const QMimeData*, QObject*, int) override;
 
 private:

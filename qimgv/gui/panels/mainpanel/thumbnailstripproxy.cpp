@@ -104,6 +104,11 @@ void ThumbnailStripProxy::reloadItem(int index) {
         thumbnailStrip->reloadItem(index);
 }
 
+void ThumbnailStripProxy::setDragHover(int index) {
+    if(thumbnailStrip)
+        thumbnailStrip->setDragHover(index);
+}
+
 void ThumbnailStripProxy::setDirectoryPath(QString path) {
     Q_UNUSED(path)
 }
