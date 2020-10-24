@@ -1847,11 +1847,16 @@
                     <item>
                      <widget class="QComboBox" name="themeSelectorComboBox">
                       <property name="currentText">
-                       <string>Dark (default)</string>
+                       <string>Dark</string>
                       </property>
                       <item>
                        <property name="text">
-                        <string>Dark (default)</string>
+                        <string>Dark</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Dark V2</string>
                        </property>
                       </item>
                       <item>
@@ -2608,8 +2613,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>624</height>
+                <width>380</width>
+                <height>172</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3231,8 +3236,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>624</height>
+                <width>367</width>
+                <height>277</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3620,8 +3625,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>624</height>
+                <width>274</width>
+                <height>223</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">

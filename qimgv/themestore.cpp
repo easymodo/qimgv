@@ -44,6 +44,20 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.overlay_text = "#d2d2d2";
             base.overlay = "#1a1a1a";
             break;
+        case COLORS_DARK_V2:
+            base.background = "#1a1a1b"; //
+            base.background_fullscreen = "#1a1a1b"; //
+            base.text = "#b9baba"; //
+            base.icons = "#adaeae"; //
+            base.widget = "#242526";
+            base.widget_border = "#262728";
+            base.accent = "#3f6691";
+            base.folderview = "#242526"; //
+            base.folderview_topbar = "#404142"; //
+            base.scrollbar = "#5c5d5e";
+            base.overlay_text = "#d2d2d2";
+            base.overlay = "#1a1a1a";
+            break;
         case COLORS_DARK:
         case COLORS_DEFAULT:
             base.background = "#1a1a1a";
