@@ -5,6 +5,11 @@
 #else
     #define QIMGV_PLAYER_PLUGIN ""
 #endif
+#ifdef _QIMGV_PLUGIN_DIR
+    #define QIMGV_PLUGIN_DIR _QIMGV_PLUGIN_DIR
+#else
+    #define QIMGV_PLUGIN_DIR ""
+#endif
 
 VideoPlayerInitProxy::VideoPlayerInitProxy(QWidget *parent)
     : VideoPlayer(parent),
@@ -32,23 +37,36 @@ std::shared_ptr<VideoPlayer> VideoPlayerInitProxy::getPlayer() {
 }
 
 inline bool VideoPlayerInitProxy::initPlayer() {
-    QString path = QIMGV_PLAYER_PLUGIN;
 #ifndef USE_MPV
     return false;
 #endif
     if(player)
         return true;
+
+    QString libDir  = QIMGV_PLUGIN_DIR;
+    QString libFile = QIMGV_PLAYER_PLUGIN;
+
+// search lib location
+    QStringList searchDirs;
 #ifdef _WIN32
-    playerLib.setFileName("plugins/player_mpv.dll");
+    searchDirs << libDir << "";
 #else
-    QFileInfo pluginFile(path);
-    if(pluginFile.isFile() && pluginFile.isReadable()) {
-        playerLib.setFileName(path);
-    } else {
-        qDebug() << "Plugin at:" << path << "does not exist.";
+    searchDirs << libDir << "/usr/lib/qimgv" << "/usr/lib64/qimgv";
+#endif
+    QFileInfo pluginFile;
+    for(auto dir : searchDirs) {
+        pluginFile.setFile(dir + "/" + libFile);
+        if(pluginFile.isFile() && pluginFile.isReadable()) {
+            playerLib.setFileName(pluginFile.absoluteFilePath());
+            break;
+        }
+    }
+    if(playerLib.fileName().isEmpty()) {
+        qDebug() << "Could not find" << libFile << "in the following directories:" << searchDirs;
         return false;
     }
-#endif
+
+// load lib
     typedef VideoPlayer* (*createPlayerWidgetFn)();
     createPlayerWidgetFn fn = (createPlayerWidgetFn) playerLib.resolve("CreatePlayerWidget");
     if(fn) {
@@ -56,7 +74,7 @@ inline bool VideoPlayerInitProxy::initPlayer() {
         player.reset(pl);
     }
     if(!player) {
-        qDebug() << "Could not load plugin:" << playerLib.fileName() << ". Last error: " << playerLib.errorString();
+        qDebug() << "Could not load:" << playerLib.fileName() << ". Wrong plugin version?";
         return false;
     }
 
