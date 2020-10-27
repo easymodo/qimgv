@@ -87,7 +87,7 @@ private:
 
     bool mCropThumbnails, mouseReleaseSelect;
     ThumbnailSelectMode selectMode;
-    QPointF dragStartPos;
+    QPoint dragStartPos;
     ThumbnailWidget* dragTarget;
 
     void createScrollTimeLine();

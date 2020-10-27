@@ -488,7 +488,7 @@ void ThumbnailView::scrollSmooth(int angleDelta) {
 
 void ThumbnailView::mousePressEvent(QMouseEvent *event) {
     mouseReleaseSelect = false;
-    dragStartPos = QPointF(0,0);
+    dragStartPos = QPoint(0,0);
     ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
     if(item) {
         int index = thumbnails.indexOf(item);
@@ -524,7 +524,9 @@ void ThumbnailView::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() != Qt::LeftButton || !selection().count())
         return;
     if(QLineF(dragStartPos, event->pos()).length() >= 40) {
-        emit draggedOut();
+        auto *item = dynamic_cast<ThumbnailWidget*>(itemAt(dragStartPos));
+        if(item && selection().contains(thumbnails.indexOf(item)))
+            emit draggedOut();
     }
 }
 
