@@ -82,7 +82,7 @@ private:
     QList<QString> currentSelection();
 
     template<typename... Args>
-    void run_callback(const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& func, Args&&... as);
+    void edit_template(bool save, const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& func, Args&&... as);
 
 private slots:
     void readSettings();
@@ -113,7 +113,7 @@ private slots:
     void resize(QSize size);
     void flipH();
     void flipV();
-    bool crop(QRect rect);
+    void crop(QRect rect);
     void cropAndSave(QRect rect);
     void discardEdits();
     void toggleCropPanel();

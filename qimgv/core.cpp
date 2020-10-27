@@ -631,54 +631,54 @@ void Core::showResizeDialog() {
 }
 
 // ---------------------------------------------------------------- image operations
+
+std::shared_ptr<ImageStatic> Core::getEditableImage(const QString &filePath) {
+    return std::dynamic_pointer_cast<ImageStatic>(model->getImage(filePath));
+}
+
 template<typename... Args>
-void Core::run_callback(const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& editFunc, Args&&... as) {
+void Core::edit_template(bool save, const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& editFunc, Args&&... as) {
     for(auto path : currentSelection()) {
         auto img = getEditableImage(path);
         if(!img)
             continue;
         img->setEditedImage(std::unique_ptr<const QImage>( editFunc(img->getImage(), std::forward<Args>(as)...) ));
         model->updateImage(path, std::static_pointer_cast<Image>(img));
-        if(mw->currentViewMode() == MODE_FOLDERVIEW)
+        if(save) {
             saveFile(path);
+            if(state.currentFilePath != path)
+                model->unload(path);
+        }
     }
+    updateInfoString();
 }
 
 void Core::flipH() {
-    run_callback({ ImageLib::flippedH });
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), { ImageLib::flippedH });
 }
 
 void Core::flipV() {
-    run_callback({ ImageLib::flippedV });
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), { ImageLib::flippedV });
 }
 
 void Core::rotateByDegrees(int degrees) {
-    run_callback({ ImageLib::rotated }, degrees);
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), { ImageLib::rotated }, degrees);
 }
 
 void Core::resize(QSize size) {
-    run_callback({ ImageLib::scaled }, size, QI_FILTER_BILINEAR);
+    edit_template(false, { ImageLib::scaled }, size, QI_FILTER_BILINEAR);
 }
 
-bool Core::crop(QRect rect) {
+void Core::crop(QRect rect) {
     if(mw->currentViewMode() == MODE_FOLDERVIEW)
-        return false;
-    auto img = getEditableImage(selectedFilePath());
-    if(!img)
-        return false;
-    img->setEditedImage(std::unique_ptr<const QImage>(
-                ImageLib::cropped(img->getImage(), rect)));
-    model->updateImage(selectedFilePath(), img);
-    return true;
+        return;
+    edit_template(false, { ImageLib::cropped }, rect);
 }
 
 void Core::cropAndSave(QRect rect) {
-    if(crop(rect))
-        saveCurrentFile();
-}
-
-std::shared_ptr<ImageStatic> Core::getEditableImage(const QString &filePath) {
-    return std::dynamic_pointer_cast<ImageStatic>(model->getImage(filePath));
+    if(mw->currentViewMode() == MODE_FOLDERVIEW)
+        return;
+    edit_template(true, { ImageLib::cropped }, rect);
 }
 
 // ---------------------------------------------------------------- image operations ^
