@@ -438,8 +438,8 @@ FolderView {
 }
 
 [accessibleName="FolderViewSlider"]::handle:horizontal:hover {
-    background: %text_hc2%;
-    border-color: %text_hc2%;
+    background: %text%;
+    border-color: %text%;
 }
 
 /*----------------------------------------------------------------------------*/

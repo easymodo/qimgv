@@ -293,6 +293,11 @@ void DirectoryManager::addEntriesFromDirectory(std::vector<FSEntry> &entryVec, Q
     QRegularExpressionMatch match;
     for(const auto & entry : fs::directory_iterator(toStdString(directoryPath))) {
         QString name = QString::fromStdString(entry.path().filename().string());
+#ifndef Q_OS_WIN32
+        // ignore hidden files
+        if(name.startsWith("."))
+            continue;
+#endif
         QString path = QString::fromStdString(entry.path().string());
         match = regex.match(name);
         if(entry.is_directory()) { // this can still throw std::bad_alloc ..
