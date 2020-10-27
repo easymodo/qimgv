@@ -272,7 +272,7 @@ std::shared_ptr<Image> DirectoryModel::getImage(QString filePath) {
 }
 
 void DirectoryModel::updateImage(QString filePath, std::shared_ptr<Image> img) {
-    if(containsFile(filePath)) {
+    if(containsFile(filePath) /*& cache.contains(filePath)*/) {
         cache.insert(img);
         emit imageUpdated(filePath);
     }

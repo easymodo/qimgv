@@ -8,7 +8,7 @@ void ImageLib::recolor(QPixmap &pixmap, QColor color) {
     p.drawRect(pixmap.rect());
 }
 
-QImage *ImageLib::rotated(const QImage *src, int grad) {
+QImage *ImageLib::rotatedRaw(const QImage *src, int grad) {
     QImage *img = new QImage();
     QTransform transform;
     transform.rotate(grad);
@@ -17,10 +17,10 @@ QImage *ImageLib::rotated(const QImage *src, int grad) {
 }
 //------------------------------------------------------------------------------
 QImage *ImageLib::rotated(std::shared_ptr<const QImage> src, int grad) {
-    return rotated(src.get(), grad);
+    return rotatedRaw(src.get(), grad);
 }
 //------------------------------------------------------------------------------
-QImage* ImageLib::cropped(const QImage *src, QRect newRect) {
+QImage* ImageLib::croppedRaw(const QImage *src, QRect newRect) {
     QImage *img = nullptr;
     if(src->rect().contains(newRect, false)) {
         img = new QImage(newRect.size(), src->format());
@@ -32,50 +32,50 @@ QImage* ImageLib::cropped(const QImage *src, QRect newRect) {
 }
 //------------------------------------------------------------------------------
 QImage* ImageLib::cropped(std::shared_ptr<const QImage> src, QRect newRect) {
-    return cropped(src.get(), newRect);
+    return croppedRaw(src.get(), newRect);
 }
 //------------------------------------------------------------------------------
-QImage* ImageLib::flippedH(const QImage *src) {
+QImage* ImageLib::flippedHRaw(const QImage *src) {
     return new QImage(src->mirrored(true, false));
 }
 //------------------------------------------------------------------------------
 QImage* ImageLib::flippedH(std::shared_ptr<const QImage> src) {
-    return flippedH(src.get());
+    return flippedHRaw(src.get());
 }
 //------------------------------------------------------------------------------
-QImage* ImageLib::flippedV(const QImage *src) {
+QImage* ImageLib::flippedVRaw(const QImage *src) {
     return new QImage(src->mirrored(false, true));
 }
 //------------------------------------------------------------------------------
 QImage* ImageLib::flippedV(std::shared_ptr<const QImage> src) {
-    return flippedV(src.get());
+    return flippedVRaw(src.get());
 }
 //------------------------------------------------------------------------------
 std::unique_ptr<const QImage> ImageLib::exifRotated(std::unique_ptr<const QImage> src, int orientation) {
     switch(orientation) {
     case 1: {
-        src.reset(ImageLib::flippedH(src.get()));
+        src.reset(ImageLib::flippedHRaw(src.get()));
     } break;
     case 2: {
-        src.reset(ImageLib::flippedV(src.get()));
+        src.reset(ImageLib::flippedVRaw(src.get()));
     } break;
     case 3: {
-        src.reset(ImageLib::flippedH(src.get()));
-        src.reset(ImageLib::flippedV(src.get()));
+        src.reset(ImageLib::flippedHRaw(src.get()));
+        src.reset(ImageLib::flippedVRaw(src.get()));
     } break;
     case 4: {
-        src.reset(ImageLib::rotated(src.get(), 90));
+        src.reset(ImageLib::rotatedRaw(src.get(), 90));
     } break;
     case 5: {
-        src.reset(ImageLib::flippedH(src.get()));
-        src.reset(ImageLib::rotated(src.get(), 90));
+        src.reset(ImageLib::flippedHRaw(src.get()));
+        src.reset(ImageLib::rotatedRaw(src.get(), 90));
     } break;
     case 6: {
-        src.reset(ImageLib::flippedV(src.get()));
-        src.reset(ImageLib::rotated(src.get(), 90));
+        src.reset(ImageLib::flippedVRaw(src.get()));
+        src.reset(ImageLib::rotatedRaw(src.get(), 90));
     } break;
     case 7: {
-        src.reset(ImageLib::rotated(src.get(), -90));
+        src.reset(ImageLib::rotatedRaw(src.get(), -90));
     } break;
     default: {
     } break;
@@ -86,28 +86,28 @@ std::unique_ptr<const QImage> ImageLib::exifRotated(std::unique_ptr<const QImage
 std::unique_ptr<QImage> ImageLib::exifRotated(std::unique_ptr<QImage> src, int orientation) {
     switch(orientation) {
     case 1: {
-        src.reset(ImageLib::flippedH(src.get()));
+        src.reset(ImageLib::flippedHRaw(src.get()));
     } break;
     case 2: {
-        src.reset(ImageLib::flippedV(src.get()));
+        src.reset(ImageLib::flippedVRaw(src.get()));
     } break;
     case 3: {
-        src.reset(ImageLib::flippedH(src.get()));
-        src.reset(ImageLib::flippedV(src.get()));
+        src.reset(ImageLib::flippedHRaw(src.get()));
+        src.reset(ImageLib::flippedVRaw(src.get()));
     } break;
     case 4: {
-        src.reset(ImageLib::rotated(src.get(), 90));
+        src.reset(ImageLib::rotatedRaw(src.get(), 90));
     } break;
     case 5: {
-        src.reset(ImageLib::flippedH(src.get()));
-        src.reset(ImageLib::rotated(src.get(), 90));
+        src.reset(ImageLib::flippedHRaw(src.get()));
+        src.reset(ImageLib::rotatedRaw(src.get(), 90));
     } break;
     case 6: {
-        src.reset(ImageLib::flippedV(src.get()));
-        src.reset(ImageLib::rotated(src.get(), 90));
+        src.reset(ImageLib::flippedVRaw(src.get()));
+        src.reset(ImageLib::rotatedRaw(src.get(), 90));
     } break;
     case 7: {
-        src.reset(ImageLib::rotated(src.get(), -90));
+        src.reset(ImageLib::rotatedRaw(src.get(), -90));
     } break;
     default: {
     } break;

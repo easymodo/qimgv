@@ -631,70 +631,45 @@ void Core::showResizeDialog() {
 }
 
 // ---------------------------------------------------------------- image operations
-// all editing operations should be done in the main thread
-// do an access wrapper with edit function as argument?
-void Core::resize(QSize size) {
-    if(model->isEmpty())
-        return;
-    std::shared_ptr<Image> img = model->getImage(selectedFilePath());
-    if(img && img->type() == STATIC) {
-        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                    ImageLib::scaled(imgStatic->getImage(), size, QI_FILTER_BILINEAR)));
-        model->updateImage(selectedFilePath(), img);
+template<typename... Args>
+void Core::run_callback(const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& editFunc, Args&&... as) {
+    for(auto path : currentSelection()) {
+        auto img = getEditableImage(path);
+        if(!img)
+            continue;
+        img->setEditedImage(std::unique_ptr<const QImage>( editFunc(img->getImage(), std::forward<Args>(as)...) ));
+        model->updateImage(path, std::static_pointer_cast<Image>(img));
         if(mw->currentViewMode() == MODE_FOLDERVIEW)
-            saveFile(selectedFilePath());
-    } else {
-        mw->showMessage("Editing is not supported.");
+            saveFile(path);
     }
 }
 
 void Core::flipH() {
-    if(model->isEmpty())
-        return;
-    std::shared_ptr<Image> img = model->getImage(selectedFilePath());
-    if(img && img->type() == STATIC) {
-        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                    ImageLib::flippedH(imgStatic->getImage())));
-        model->updateImage(selectedFilePath(), img);
-        if(mw->currentViewMode() == MODE_FOLDERVIEW)
-            saveFile(selectedFilePath());
-    } else {
-        mw->showMessage("Editing is not supported.");
-    }
+    run_callback({ ImageLib::flippedH });
 }
 
 void Core::flipV() {
-    if(model->isEmpty())
-        return;
-    std::shared_ptr<Image> img = model->getImage(selectedFilePath());
-    if(img && img->type() == STATIC) {
-        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                    ImageLib::flippedV(imgStatic->getImage())));
-        model->updateImage(selectedFilePath(), img);
-        if(mw->currentViewMode() == MODE_FOLDERVIEW)
-            saveFile(selectedFilePath());
-    } else {
-        mw->showMessage("Editing is not supported.");
-    }
+    run_callback({ ImageLib::flippedV });
+}
+
+void Core::rotateByDegrees(int degrees) {
+    run_callback({ ImageLib::rotated }, degrees);
+}
+
+void Core::resize(QSize size) {
+    run_callback({ ImageLib::scaled }, size, QI_FILTER_BILINEAR);
 }
 
 bool Core::crop(QRect rect) {
-    if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
+    if(mw->currentViewMode() == MODE_FOLDERVIEW)
         return false;
-    std::shared_ptr<Image> img = model->getImage(state.currentFilePath);
-    if(img && img->type() == STATIC) {
-        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                    ImageLib::cropped(imgStatic->getImage(), rect)));
-        model->updateImage(state.currentFilePath, img);
-        return true;
-    } else {
-        mw->showMessage("Editing is not supported.");
+    auto img = getEditableImage(selectedFilePath());
+    if(!img)
         return false;
-    }
+    img->setEditedImage(std::unique_ptr<const QImage>(
+                ImageLib::cropped(img->getImage(), rect)));
+    model->updateImage(selectedFilePath(), img);
+    return true;
 }
 
 void Core::cropAndSave(QRect rect) {
@@ -702,30 +677,8 @@ void Core::cropAndSave(QRect rect) {
         saveCurrentFile();
 }
 
-void Core::rotateByDegrees(int degrees) {
-    if(model->isEmpty())
-        return;
-    QString filePath = selectedFilePath();
-    auto img = model->getImage(filePath);
-    if(!img || img->type() != STATIC) {
-        mw->showMessage("Editing is not supported.");
-        return;
-    }
-    // -----------
-    auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-    imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                ImageLib::rotated(imgStatic->getImage(), degrees)));
-    // -----------
-    model->updateImage(filePath, img);
-    if(mw->currentViewMode() == MODE_FOLDERVIEW)
-        saveFile(filePath);
-    // -----------
-}
-
-ImageStatic* Core::getEditableImage(const QString &filePath) {
-    auto img = model->getImage(filePath);
-    ImageStatic *imgStatic = nullptr;
-    imgStatic = dynamic_cast<ImageStatic *>(img.get());
+std::shared_ptr<ImageStatic> Core::getEditableImage(const QString &filePath) {
+    return std::dynamic_pointer_cast<ImageStatic>(model->getImage(filePath));
 }
 
 // ---------------------------------------------------------------- image operations ^

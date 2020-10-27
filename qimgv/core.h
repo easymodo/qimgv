@@ -78,8 +78,12 @@ private:
     bool saveFile(const QString &filePath, const QString &newPath);
     bool saveFile(const QString &filePath);
 
-    ImageStatic* getEditableImage(const QString &filePath);
+    std::shared_ptr<ImageStatic> getEditableImage(const QString &filePath);
     QList<QString> currentSelection();
+
+    template<typename... Args>
+    void run_callback(const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& func, Args&&... as);
+
 private slots:
     void readSettings();
     void nextImage();
