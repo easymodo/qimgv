@@ -210,12 +210,16 @@ void DirectoryPresenter::onDraggedOver(int index) {
 
 }
 
-// todo: pass folder information into the view to simplify presenter?
 void DirectoryPresenter::onDroppedInto(const QMimeData *data, QObject *source, int targetIndex) {
     if(!data->hasUrls() || model->source() != SOURCE_DIRECTORY)
         return;
-    // ignore drops into already selected folder
-    if(source && view->selection().contains(targetIndex))
+
+    // ignore drops into selected / current folder when we are the source of dropEvent
+    if(source && (view->selection().contains(targetIndex) || targetIndex == -1) )
+        return;
+    // ignore drops into a file
+    // todo: drop into a current dir when target is a file
+    if(showDirs() && targetIndex >= model->dirCount())
         return;
 
     // convert urls to qstrings
@@ -223,6 +227,7 @@ void DirectoryPresenter::onDroppedInto(const QMimeData *data, QObject *source, i
     QList<QUrl> urlList = data->urls();
     for(int i = 0; i < urlList.size() && i < 32; ++i)
         pathList.append(urlList.at(i).toLocalFile());
+
     // get target dir path
     QString destDir;
     if(showDirs() && targetIndex < model->dirCount())
@@ -230,6 +235,7 @@ void DirectoryPresenter::onDroppedInto(const QMimeData *data, QObject *source, i
     if(destDir.isEmpty()) // fallback to the current dir
         destDir = model->directoryPath();
     pathList.removeAll(destDir); // remove target dir from source list
+
     // do the needful
     FileOpResult result;
     for(auto path : pathList) {
