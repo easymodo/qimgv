@@ -151,7 +151,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::saveAs, this, &Core::requestSavePath);
     connect(actionManager, &ActionManager::exit, this, &Core::close);
     connect(actionManager, &ActionManager::closeFullScreenOrExit, mw, &MW::closeFullScreenOrExit);
-    connect(actionManager, &ActionManager::removeFile, this, qOverload<>(&Core::removeFilePermanent));
+    connect(actionManager, &ActionManager::removeFile, this, qOverload<>(&Core::removePermanent));
     connect(actionManager, &ActionManager::moveToTrash, this, qOverload<>(&Core::moveToTrash));
     connect(actionManager, &ActionManager::copyFile, mw, &MW::triggerCopyOverlay);
     connect(actionManager, &ActionManager::moveFile, mw, &MW::triggerMoveOverlay);
@@ -290,20 +290,42 @@ void Core::close() {
     mw->close();
 }
 
-void Core::removeFilePermanent() {
-    removeFilePermanent(selectedFilePath());
-}
-
-void Core::removeFilePermanent(QString filePath) {
-    removeFile(filePath, false);
+void Core::removePermanent() {
+    FileOpResult result;
+    int successCount = 0;
+    auto paths = currentSelection();
+    for(auto path : paths) {
+        result = removeFile(path, false);
+        if(result == FileOpResult::SUCCESS)
+            successCount++;
+    }
+    if(paths.count() == 1) {
+        if(result == FileOpResult::SUCCESS)
+            mw->showMessageSuccess("File removed");
+        else
+            outputError(result);
+    } else if(paths.count() > 1) {
+        mw->showMessageSuccess("Removed: " + QString::number(successCount) + " files");
+    }
 }
 
 void Core::moveToTrash() {
-    moveToTrash(selectedFilePath());
-}
-
-void Core::moveToTrash(QString filePath) {
-    removeFile(filePath, true);
+    FileOpResult result;
+    int successCount = 0;
+    auto paths = currentSelection();
+    for(auto path : paths) {
+        result = removeFile(path, true);
+        if(result == FileOpResult::SUCCESS)
+            successCount++;
+    }
+    if(paths.count() == 1) {
+        if(result == FileOpResult::SUCCESS)
+            mw->showMessageSuccess("Moved to trash");
+        else
+            outputError(result);
+    } else if(paths.count() > 1) {
+        mw->showMessageSuccess("Moved to trash: " + QString::number(successCount) + " files");
+    }
 }
 
 void Core::reloadImage() {
@@ -328,7 +350,7 @@ void Core::enableDocumentView() {
         return;
     mw->enableDocumentView();
     if(model && model->fileCount() && state.currentFilePath == "")
-        loadIndex(0, false, settings->usePreloader());
+        loadPath(folderViewPresenter.selectedPaths().first());
 }
 
 void Core::toggleFolderView() {
@@ -450,10 +472,9 @@ void Core::renameCurrentFile(QString newName) {
     outputError(result);
 }
 
-// removes file at specified index within current directory
-void Core::removeFile(QString filePath, bool trash) {
+FileOpResult Core::removeFile(QString filePath, bool trash) {
     if(model->isEmpty())
-        return;
+        return FileOpResult::NOTHING_TO_DO;
 
     bool reopen = false;
     std::shared_ptr<Image> img;
@@ -466,24 +487,27 @@ void Core::removeFile(QString filePath, bool trash) {
     }
     FileOpResult result;
     model->removeFile(filePath, trash, result);
-    if(result == FileOpResult::SUCCESS) {
-        QString msg = trash ? "Moved to trash: " : "File removed: ";
-        mw->showMessage(msg + filePath);
-    } else {
-        if(reopen)
-            guiSetImage(img);
-        outputError(result);
-    }
+    if(result != FileOpResult::SUCCESS && reopen)
+        guiSetImage(img);
+    return result;
 }
 
 void Core::onFileRemoved(QString filePath, int index) {
+    // no files left
     if(model->isEmpty()) {
         mw->closeImage();
         state.hasActiveImage = false;
         state.currentFilePath = "";
-    } else if(state.currentFilePath == filePath) {
-        if(!loadIndex(index, true, settings->usePreloader()))
-            loadIndex(--index, true, settings->usePreloader());
+    }
+    // image mode && removed current file
+    if(state.currentFilePath == filePath) {
+        if(mw->currentViewMode() == MODE_DOCUMENT) {
+            if(!loadIndex(index, true, settings->usePreloader()))
+                loadIndex(--index, true, settings->usePreloader());
+        } else {
+            state.hasActiveImage = false;
+            state.currentFilePath = "";
+        }
     }
     updateInfoString();
 }
@@ -638,6 +662,8 @@ std::shared_ptr<ImageStatic> Core::getEditableImage(const QString &filePath) {
 
 template<typename... Args>
 void Core::edit_template(bool save, const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& editFunc, Args&&... as) {
+    if(model->isEmpty())
+        return;
     for(auto path : currentSelection()) {
         auto img = getEditableImage(path);
         if(!img)

@@ -119,6 +119,7 @@ void DirectoryModel::setSortingMode(SortingMode mode) {
     dirManager.setSortingMode(mode);
 }
 
+// todo: directories?
 void DirectoryModel::removeFile(const QString &filePath, bool trash, FileOpResult &result) {
     if(trash)
         FileOperations::moveToTrash(filePath, result);

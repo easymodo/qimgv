@@ -104,7 +104,7 @@ private slots:
     void moveCurrentFile(QString destDirectory);
     void copyPathsTo(QList<QString> paths, QString destDirectory);
     void movePathsTo(QList<QString> paths, QString destDirectory);
-    void removeFile(QString fileName, bool trash);
+    FileOpResult removeFile(QString fileName, bool trash);
     void onFileRemoved(QString filePath, int index);
     void onFileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);
     void onFileAdded(QString filePath);
@@ -121,10 +121,8 @@ private slots:
     void saveCurrentFile();
     void saveCurrentFileAs(QString);
     void runScript(const QString&);
-    void removeFilePermanent();
-    void removeFilePermanent(QString fileName);
+    void removePermanent();
     void moveToTrash();
-    void moveToTrash(QString fileName);
     void reloadImage();
     void reloadImage(QString fileName);
     void copyFileClipboard();
