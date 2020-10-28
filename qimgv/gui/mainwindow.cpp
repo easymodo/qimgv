@@ -765,6 +765,8 @@ void MW::adaptToWindowState() {
 }
 
 void MW::paintEvent(QPaintEvent *event) {
+    QPainter p(this);
+    p.fillRect(rect(), Qt::black);
     FloatingWidgetContainer::paintEvent(event);
 }
 

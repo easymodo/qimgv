@@ -134,7 +134,8 @@ void ViewerWidget::disableVideoPlayer() {
         // which paints over the imageviewer, causing corruption
         // so we do not HIDE it, but rather just cover it by imageviewer's widget
         // seems to work fine, might even feel a bit snappier
-        //videoPlayer->hide();
+        if(!videoPlayer->isInitialized())
+            videoPlayer->hide();
     }
 }
 

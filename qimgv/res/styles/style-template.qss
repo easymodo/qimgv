@@ -731,3 +731,9 @@ SettingsDialog QComboBox {
     /* This needs to look "ok" with both light and dark themes. May need further tweaking */
     background-color: %system_window_tinted%;
 }
+/*----------------------------------------------------------------------------*/
+[accessibleName="VideoPlayerInitProxy"] QLabel {
+
+    color: #BB0000;
+    font: bold;
+}
