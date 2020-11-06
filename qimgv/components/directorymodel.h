@@ -27,8 +27,8 @@ public:
     bool isEmpty() const;
     QString nextOf(QString filePath) const;
     QString prevOf(QString filePath) const;
-    QString first() const;
-    QString last() const;
+    QString firstFile() const;
+    QString lastFile() const;
     QDateTime lastModified(QString filePath) const;
 
     bool forceInsert(QString filePath);

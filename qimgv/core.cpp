@@ -349,8 +349,14 @@ void Core::enableDocumentView() {
     if(mw->currentViewMode() == MODE_DOCUMENT)
         return;
     mw->enableDocumentView();
-    if(model && model->fileCount() && state.currentFilePath == "")
-        loadPath(folderViewPresenter.selectedPaths().first());
+    if(model && model->fileCount() && state.currentFilePath == "") {
+        auto selected = folderViewPresenter.selectedPaths().first();
+        // if it is a directory - ignore and just open the first file
+        if(model->containsFile(selected))
+            loadPath(selected);
+        else
+            loadPath(model->firstFile());
+    }
 }
 
 void Core::toggleFolderView() {

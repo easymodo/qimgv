@@ -89,11 +89,11 @@ bool DirectoryModel::isEmpty() const {
     return dirManager.isEmpty();
 }
 
-QString DirectoryModel::first() const {
+QString DirectoryModel::firstFile() const {
     return dirManager.firstFile();
 }
 
-QString DirectoryModel::last() const {
+QString DirectoryModel::lastFile() const {
     return dirManager.lastFile();
 }
 
