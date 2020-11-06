@@ -61,7 +61,7 @@ void TreeViewCustom::updateScrollbarStyle() {
     if(rect().contains(mapFromGlobal(cursor().pos())))
         handle = settings->colorScheme().scrollbar.name();
     else
-        handle = settings->colorScheme().folderview_separator.name();
+        handle = settings->colorScheme().folderview_hc.name();
     overlayScrollbar.setGeometry(width() - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, height());
     overlayScrollbar.setStyleSheet( "QScrollBar { background-color: transparent; } QScrollBar::handle:vertical { background-color: "+ handle +" } QScrollBar::handle:vertical:hover { background-color: " + hover + " }" );
 

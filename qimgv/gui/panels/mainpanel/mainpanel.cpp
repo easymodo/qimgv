@@ -80,7 +80,7 @@ void MainPanel::readSettings() {
 void MainPanel::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
     QPainter p(this);
-    p.setPen(settings->colorScheme().folderview_separator);
+    p.setPen(settings->colorScheme().folderview_hc);
     if(mPosition == PanelHPosition::PANEL_TOP) {
         p.drawLine(rect().bottomLeft() - QPoint(0, bottomMargin - 1), rect().bottomRight() - QPoint(0, bottomMargin - 1));
     } else {

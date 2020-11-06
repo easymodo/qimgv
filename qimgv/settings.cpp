@@ -112,7 +112,8 @@ void Settings::loadStylesheet() {
         styleSheet.replace("%widget_border%",        colors.widget_border.name());
         styleSheet.replace("%folderview%",           colors.folderview.name());
         styleSheet.replace("%folderview_topbar%",    colors.folderview_topbar.name());
-        styleSheet.replace("%folderview_separator%", colors.folderview_separator.name());
+        styleSheet.replace("%folderview_hc%",        colors.folderview_hc.name());
+        styleSheet.replace("%folderview_hc2%",       colors.folderview_hc2.name());
         styleSheet.replace("%accent%",               colors.accent.name());
         styleSheet.replace("%accent_hover_rgba%",    "rgba(" + QString::number(colors.accent.red())   + ","
                                                              + QString::number(colors.accent.green()) + ","

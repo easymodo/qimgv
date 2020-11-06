@@ -87,8 +87,8 @@
 }
 
 [accessibleName="ButtonSmall"]:hover {
-    background-color: %button_hover%;
-    border: 1px solid %button_hover%;
+    background-color: %folderview_hc2%;
+    border: 1px solid %folderview_hc2%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -400,7 +400,7 @@ FolderView {
 /*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewPanel"] { /* top bar - rename */
     background-color: %folderview_topbar%;
-    border-bottom: 1px solid %folderview_separator%;
+    border-bottom: 1px solid %folderview_hc%;
     /*border-bottom: 8px solid %folderview_topbar%;*/
     /*border-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 rgba(0, 0, 0, 20), stop: 1 %folderview%);*/
 }
@@ -605,7 +605,7 @@ FolderView QTreeView::item {
 }
 
 FolderView QTreeView::item:hover {
-    background-color: %folderview_separator%;
+    background-color: %folderview_hc%;
 }
 
 FolderView QTreeView::item:selected:!active,
@@ -623,7 +623,7 @@ QTreeView::branch:selected {
 }
 
 QTreeView::branch:hover:!selected {
-    background-color: %folderview_separator%;
+    background-color: %folderview_hc%;
 }
 
 QTreeView::branch:has-siblings:!adjoins-item:!selected {
@@ -631,7 +631,7 @@ QTreeView::branch:has-siblings:!adjoins-item:!selected {
 }
 
 QTreeView::branch:has-siblings:hover:!adjoins-item:!selected {
-    background-color: %folderview_separator%;
+    background-color: %folderview_hc%;
 }
 
 QTreeView::branch:!has-children:!hover:adjoins-item:!selected {
@@ -659,7 +659,7 @@ BookmarksItem {
 }
 
 BookmarksItem:hover {
-    background-color: %folderview_separator%;
+    background-color: %folderview_hc%;
 }
 
 BookmarksItem QLabel {
@@ -677,7 +677,7 @@ BookmarksItem[highlighted="true"] {
 
 [accessibleName="PlacesPanel"] {
     background-color: %folderview%;
-    border-right: 1px solid %folderview_separator%;
+    border-right: 1px solid %folderview_hc%;
     margin-right: 6px;
 }
 
@@ -699,13 +699,13 @@ BookmarksItem[highlighted="true"] {
 }
 
 [accessibleName="PlacesPanelButton"]:hover {
-    background-color: %accent%;
+    background-color: %folderview_hc%;
 
 }
 
 [accessibleName="PlacesPanelButton"]:pressed,
 [accessibleName="PlacesPanelButton"][pressed="true"] {
-    background-color: %accent_hover_rgba%;
+    background-color: %folderview_hc2%;
 }
 
 /*----------------------------------------------------------------------------*/

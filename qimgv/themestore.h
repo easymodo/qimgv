@@ -58,7 +58,8 @@ public:
     QColor button_pressed;
     QColor panel_button_hover;
     QColor panel_button_pressed;
-    QColor folderview_separator;
+    QColor folderview_hc;
+    QColor folderview_hc2;
     QColor input_field_focus;
 
 

@@ -58,7 +58,7 @@ void ThumbnailGridWidget::readSettings() {
 
 void ThumbnailGridWidget::drawHoverHighlight(QPainter *painter) {
     auto op = painter->opacity();
-    painter->fillRect(highlightRect, settings->colorScheme().folderview_separator);
+    painter->fillRect(highlightRect, settings->colorScheme().folderview_hc);
     painter->setOpacity(op);
 }
 
