@@ -81,7 +81,6 @@
 /*----------------------------------------------------------------------------*/
 
 [accessibleName="ButtonSmall"] {
-    padding: 4px;
     border-radius: 1px;
     border: 1px solid transparent;
 }

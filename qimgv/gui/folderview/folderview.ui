@@ -43,13 +43,13 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>38</height>
+       <height>39</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>38</height>
+       <height>39</height>
       </size>
      </property>
      <property name="accessibleName">
@@ -69,7 +69,7 @@
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
+       <number>1</number>
       </property>
       <item>
        <widget class="ActionButton" name="togglePlacesPanelButton" native="true">
@@ -501,7 +501,7 @@
                <number>0</number>
               </property>
               <property name="rightMargin">
-               <number>6</number>
+               <number>5</number>
               </property>
               <property name="bottomMargin">
                <number>0</number>
@@ -532,14 +532,14 @@
                <widget class="IconButton" name="newBookmarkButton" native="true">
                 <property name="minimumSize">
                  <size>
-                  <width>24</width>
-                  <height>24</height>
+                  <width>26</width>
+                  <height>26</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>24</width>
-                  <height>24</height>
+                  <width>26</width>
+                  <height>26</height>
                  </size>
                 </property>
                 <property name="accessibleName">
@@ -580,7 +580,7 @@
                <number>0</number>
               </property>
               <property name="rightMargin">
-               <number>6</number>
+               <number>5</number>
               </property>
               <property name="bottomMargin">
                <number>0</number>
@@ -619,14 +619,14 @@
                  <widget class="IconButton" name="rootButton" native="true">
                   <property name="minimumSize">
                    <size>
-                    <width>24</width>
-                    <height>24</height>
+                    <width>26</width>
+                    <height>26</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>24</width>
-                    <height>24</height>
+                    <width>26</width>
+                    <height>26</height>
                    </size>
                   </property>
                   <property name="accessibleName">
@@ -638,14 +638,14 @@
                  <widget class="IconButton" name="homeButton" native="true">
                   <property name="minimumSize">
                    <size>
-                    <width>24</width>
-                    <height>24</height>
+                    <width>26</width>
+                    <height>26</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>24</width>
-                    <height>24</height>
+                    <width>26</width>
+                    <height>26</height>
                    </size>
                   </property>
                   <property name="accessibleName">
