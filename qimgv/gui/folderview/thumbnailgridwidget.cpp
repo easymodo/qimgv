@@ -2,7 +2,7 @@
 
 ThumbnailGridWidget::ThumbnailGridWidget(QGraphicsItem* parent)
     : ThumbnailWidget(parent),
-      labelSpacing(7),
+      labelSpacing(9),
       margin(2)
 {
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
@@ -14,18 +14,21 @@ ThumbnailGridWidget::ThumbnailGridWidget(QGraphicsItem* parent)
 
 void ThumbnailGridWidget::updateBoundingRect() {
     if(mDrawLabel)
-        mBoundingRect = QRectF(0, 0, mThumbnailSize + (padding + margin) * 2,
-                            mThumbnailSize + (padding + margin) * 2 + labelSpacing + textHeight * 2);
+        mBoundingRect = QRectF(0, 0,
+                               mThumbnailSize + (padding + margin) * 2,
+                               mThumbnailSize + (padding + margin) * 2 + labelSpacing + textHeight * 2);
     else
-        mBoundingRect = QRectF(0, 0, mThumbnailSize + (padding + margin) * 2,
-                            mThumbnailSize + (padding + margin) * 2);
+        mBoundingRect = QRectF(0, 0,
+                               mThumbnailSize + (padding + margin) * 2,
+                               mThumbnailSize + (padding + margin) * 2);
 }
 
 void ThumbnailGridWidget::setupLayout() {
     if(mDrawLabel) {
         nameRect = QRectF(padding + margin, padding + margin + mThumbnailSize + labelSpacing,
-                          mThumbnailSize, fm->height());
-        infoRect = nameRect.adjusted(0,fm->height() + 2,0,fm->height() + 2);
+                          mThumbnailSize,
+                          fm->height());
+        infoRect = nameRect.adjusted(0, fm->height() + 2, 0, fm->height() + 2);
     }
 }
 

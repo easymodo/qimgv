@@ -151,8 +151,8 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::saveAs, this, &Core::requestSavePath);
     connect(actionManager, &ActionManager::exit, this, &Core::close);
     connect(actionManager, &ActionManager::closeFullScreenOrExit, mw, &MW::closeFullScreenOrExit);
-    connect(actionManager, &ActionManager::removeFile, this, qOverload<>(&Core::removePermanent));
-    connect(actionManager, &ActionManager::moveToTrash, this, qOverload<>(&Core::moveToTrash));
+    connect(actionManager, &ActionManager::removeFile, this, &Core::removePermanent);
+    connect(actionManager, &ActionManager::moveToTrash, this, &Core::moveToTrash);
     connect(actionManager, &ActionManager::copyFile, mw, &MW::triggerCopyOverlay);
     connect(actionManager, &ActionManager::moveFile, mw, &MW::triggerMoveOverlay);
     connect(actionManager, &ActionManager::jumpToFirst, this, &Core::jumpToFirst);

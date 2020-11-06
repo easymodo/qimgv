@@ -127,8 +127,8 @@ void DirectoryModel::removeFile(const QString &filePath, bool trash, FileOpResul
         FileOperations::removeFile(filePath, result);
     if(result != FileOpResult::SUCCESS)
         return;
-    if(!dirManager.fileWatcherActive())
-        dirManager.removeFileEntry(filePath);
+    //if(!dirManager.fileWatcherActive())
+    dirManager.removeFileEntry(filePath);
     return;
 }
 
@@ -136,8 +136,8 @@ void DirectoryModel::renameFile(const QString &oldFilePath, const QString &newNa
     FileOperations::rename(oldFilePath, newName, result);
     if(result != FileOpResult::SUCCESS)
         return;
-    if(!dirManager.fileWatcherActive())
-        dirManager.renameFileEntry(oldFilePath, newName);
+    //if(!dirManager.fileWatcherActive())
+    dirManager.renameFileEntry(oldFilePath, newName);
 }
 
 void DirectoryModel::copyTo(const QString &srcFile, const QString &destDirPath, FileOpResult &result) {
