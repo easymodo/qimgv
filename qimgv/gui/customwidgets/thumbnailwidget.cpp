@@ -215,7 +215,7 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
     painter->drawText(nameRect, flags, thumbnail->name());
     // additional info
     painter->setFont(fontSmall);
-    painter->setPen(settings->colorScheme().text_lc1);
+    painter->setPen(settings->colorScheme().text_lc);
     painter->drawText(labelTextRect, flags, thumbnail->label());
 }
 

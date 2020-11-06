@@ -3,7 +3,7 @@
 
 [accessibleName="Button"], [accessibleName="ButtonSetLeft"], [accessibleName="ButtonSetRight"]
 {
-    color: %text_hc1%;
+    color: %text_hc%;
     background-color: %button%;
     border-radius: 3px;
     padding: 7px 12px 7px 12px;
@@ -58,8 +58,8 @@
 [accessibleName="CheckableButton"]:pressed,
 [accessibleName="CheckableButton"][pressed="true"],
 [accessibleName="CheckableButton"][checked="true"] {
-    background-color: %panel_button_pressed%;
-    border: 1px solid %panel_button_pressed%;
+    background-color: %panel_button%;
+    border: 1px solid %panel_button%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -97,9 +97,9 @@ QComboBox QAbstractItemView {
 }
 
 [accessibleName="PanelComboBox"] {
-    background-color: %panel_button_pressed%;
-    color: %text_hc1%;
-    border: 2px solid %panel_button_pressed%;
+    background-color: %panel_button%;
+    color: %text_hc%;
+    border: 2px solid %panel_button%;
     border-radius: 3px;
     padding: 2px 8px 2px 5px;
     margin-top: 4px;
@@ -126,7 +126,7 @@ QComboBox QAbstractItemView {
 [accessibleName="PanelComboBox"] QAbstractItemView::item {
     border-radius: 1px;
     padding: 2px 5px;
-    color: %text_hc1%;
+    color: %text_hc%;
     min-height: 22px;
 }
 
@@ -163,11 +163,11 @@ FloatingWidget {
 }
 
 [accessibleName="OverlayCloseButton"]:hover {
-    background-color: %button_pressed%;
+    background-color: %button_hover%;
 }
 
 [accessibleName="OverlayHeaderLabel"] {
-    color: %text_hc1%;
+    color: %text_hc%;
 }
 
 FloatingWidget QTableWidget {
@@ -176,9 +176,9 @@ FloatingWidget QTableWidget {
 }
 
 FloatingWidget QLineEdit {
-    background-color: %button_pressed%;
-    color: %text_hc1%;
-    border: 2px solid %button_pressed%;
+    background-color: %button%;
+    color: %text_hc%;
+    border: 2px solid %button%;
     border-radius: 3px;
     padding: 4px 6px 4px 6px;
     margin-top: 5px;
@@ -187,8 +187,8 @@ FloatingWidget QLineEdit {
 
 FloatingWidget QLineEdit::hover,
 FloatingWidget QLineEdit::focus {
-    background-color: %button%;
-    border-color: %button%;
+    background-color: %button_hover%;
+    border-color: %button_hover%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -211,7 +211,7 @@ FullscreenInfoOverlay QLabel {
 /*----------------------------------------------------------------------------*/
 
 FloatingMessage QLabel {
-    color: %text_hc1%;
+    color: %text_hc%;
     font: bold;
 }
 
@@ -235,8 +235,8 @@ SidePanel QSpinBox,
 SidePanel QDoubleSpinBox
 {
     color: %text%;
-    background-color: %button_pressed%;
-    border: 2px solid %button_pressed%;
+    background-color: %button%;
+    border: 2px solid %button%;
     border-radius: 3px;
     padding: 2 0 2 0;
     min-height: 20px;
@@ -245,15 +245,15 @@ SidePanel QDoubleSpinBox
 SidePanel QSpinBox:hover,
 SidePanel QDoubleSpinBox:hover
 {
-    background-color: %button%;
-    border-color: %button%;
+    background-color: %button_hover%;
+    border-color: %button_hover%;
 }
 
 SidePanel QSpinBox:focus,
 SidePanel QDoubleSpinBox:focus
 {
-    background-color: %button%;
-    border-color: %button%;
+    background-color: %button_hover%;
+    border-color: %button_hover%;
 }
 
 SidePanel QSpinBox::up-button,
@@ -273,20 +273,20 @@ SidePanel QDoubleSpinBox::down-button
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QLabel {
-    color: %text_hc1%;
+    color: %text_hc%;
 }
 /*----------------------------------------------------------------------------*/
 SidePanel QComboBox {
     color: %text%;
-    background-color: %button_pressed%;
-    border: 1px solid %button_pressed%;
+    background-color: %button%;
+    border: 1px solid %button%;
     border-radius: 3px;
     padding: 4px 8px 4px 8px;
 }
 
 SidePanel QComboBox:hover {
-    background-color: %button%;
-    border-color: %button%;
+    background-color: %button_hover%;
+    border-color: %button_hover%;
 }
 
 SidePanel QComboBox::drop-down {
@@ -303,7 +303,7 @@ SidePanel QComboBox QAbstractItemView {
 SidePanel QComboBox QAbstractItemView::item {
     border-radius: 1px;
     padding: 2px 5px;
-    color: %text_hc1%;
+    color: %text_hc%;
     min-height: 22px;
 }
 
@@ -347,11 +347,11 @@ VideoControls QSlider::add-page:horizontal {
 VideoControls QSlider::handle:horizontal {
     height: 0px;
     width:  0px;
-    background: %text_hc1%;
+    background: %text_hc%;
 }
 
 VideoControls QSlider::sub-page:horizontal {
-    background: %text_hc1%;
+    background: %text_hc%;
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
 }
@@ -504,11 +504,11 @@ ContextMenu {
 }
 
 [accessibleName="MenuItemText"] {
-    color: %text_hc1%;
+    color: %text_hc%;
 }
 
 [accessibleName="MenuItemShortcutLabel"] {
-    color: %text_lc1%;
+    color: %text_lc%;
 }
 
 [accessibleName="ContextMenuButton"] {
@@ -534,7 +534,7 @@ InfoBar {
 }
 
 InfoBar QLabel {
-    color: %text_hc1%;
+    color: %text_hc%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -681,7 +681,7 @@ BookmarksItem[highlighted="true"] {
 }
 
 [accessibleName="PanelSectionHeader"] {
-    color: %text_hc1%;
+    color: %text_hc%;
     font: bold;
 }
 
@@ -698,13 +698,12 @@ BookmarksItem[highlighted="true"] {
 }
 
 [accessibleName="PlacesPanelButton"]:hover {
-    background-color: %folderview_hc%;
-
+    background-color: %folderview_button_hover%;
 }
 
 [accessibleName="PlacesPanelButton"]:pressed,
 [accessibleName="PlacesPanelButton"][pressed="true"] {
-    background-color: %folderview_hc2%;
+    background-color: %folderview_button_pressed%;
 }
 
 /*----------------------------------------------------------------------------*/

@@ -65,7 +65,7 @@ void ThumbnailGridWidget::drawHoverHighlight(QPainter *painter) {
 void ThumbnailGridWidget::drawLabel(QPainter *painter) {
     if(thumbnail) {
         drawSingleLineText(painter, nameRect, thumbnail->name(), settings->colorScheme().text_hc2);
-        drawSingleLineText(painter, infoRect, thumbnail->label(), settings->colorScheme().text_lc1);
+        drawSingleLineText(painter, infoRect, thumbnail->label(), settings->colorScheme().text_lc);
     }
 }
 

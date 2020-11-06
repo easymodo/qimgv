@@ -26,7 +26,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.overlay = "#1a1a1a";
             base.overlay_text = "#d2d2d2";
             base.text = "#353535";
-            base.scrollbar = "#b9b9b9";
+            base.scrollbar = "#aaaaaa";
             base.widget = "#ffffff";
             base.widget_border = "#c3c3c3";
             break;
@@ -40,7 +40,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.accent = "#336ca5";
             base.folderview = "#232629";
             base.folderview_topbar = "#31363b";
-            base.scrollbar = "#62686e";
+            base.scrollbar = "#50555a";
             base.overlay_text = "#d2d2d2";
             base.overlay = "#1a1a1a";
             break;
@@ -105,35 +105,41 @@ void ColorScheme::setBaseColors(BaseColorScheme base) {
 void ColorScheme::createColorVariants() {
     if(widget.valueF() <= 0.45f) { // dark theme
         // top bar buttons
-        panel_button_hover.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMin(folderview_topbar.value() + 30, 255));
-        panel_button_pressed.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMin(folderview_topbar.value() + 20, 255));
-        folderview_hc.setHsv(folderview.hue(), folderview.saturation(), qMin(folderview.value() + 22, 255));
-        folderview_hc2.setHsv(folderview.hue(), folderview.saturation(), qMin(folderview.value() + 32, 255));
+        panel_button.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMin(folderview_topbar.value() + 20, 255));
+        panel_button_hover.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMin(folderview_topbar.value() + 26, 255));
+        panel_button_pressed.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMin(folderview_topbar.value() + 15, 255));
+        folderview_hc.setHsv(folderview.hue(), folderview.saturation(), qMin(folderview.value() + 12, 255));
+        folderview_hc2.setHsv(folderview.hue(), folderview.saturation(), qMin(folderview.value() + 22, 255));
+        folderview_button_pressed = folderview_hc;
+        folderview_button_hover = folderview_hc2;
         // regular buttons - from widget bg
         button.setHsv(widget.hue(), widget.saturation(), qMin(widget.value() + 21, 255));
         button_hover    = QColor(button.lighter(112));
         button_pressed  = QColor(button.darker(112));
         scrollbar_hover = scrollbar.lighter(120);
         // text
+        text_hc = QColor(text.lighter(110));
         text_hc2 = QColor(text.lighter(118));
-        text_hc1 = QColor(text.lighter(110));
-        text_lc1 = QColor(text.darker(115));
+        text_lc = QColor(text.darker(115));
         text_lc2 = QColor(text.darker(160));
-    } else { // light theme; still not exactly happy with this (todo)
+    } else { // light theme
         // top bar buttons
-        panel_button_hover.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMax(folderview_topbar.value() - 40, 0));
-        panel_button_pressed.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMax(folderview_topbar.value() - 28, 0));
+        panel_button.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMax(folderview_topbar.value() - 30, 0));
+        panel_button_hover.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMax(folderview_topbar.value() - 45, 0));
+        panel_button_pressed.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMax(folderview_topbar.value() - 55, 0));
         folderview_hc.setHsv(folderview.hue(), folderview.saturation(), qMax(folderview.value() - 25, 0));
-        folderview_hc2.setHsv(folderview.hue(), folderview.saturation(), qMax(folderview.value() - 35, 0));
+        folderview_hc2.setHsv(folderview.hue(), folderview.saturation(), qMax(folderview.value() - 40, 0));
+        folderview_button_pressed = folderview_hc2;
+        folderview_button_hover = folderview_hc;
         // regular buttons - from widget bg
-        button.setHsv(widget.hue(), widget.saturation(), qMax(widget.value() - 36, 0));
-        button_hover    = QColor(button.lighter(106));
-        button_pressed  = QColor(button.darker(106));
+        button.setHsv(widget.hue(), widget.saturation(), qMax(widget.value() - 42, 0));
+        button_hover    = QColor(button.darker(106));
+        button_pressed  = QColor(button.darker(118));
         scrollbar_hover = scrollbar.darker(120);
         // text
+        text_hc = QColor(text.darker(104));
         text_hc2 = QColor(text.darker(112));
-        text_hc1 = QColor(text.darker(104));
-        text_lc1 = QColor(text.lighter(130));
+        text_lc = QColor(text.lighter(130));
         text_lc2 = QColor(text.lighter(160));
     }
     // misc
