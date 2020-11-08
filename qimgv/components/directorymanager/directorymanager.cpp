@@ -8,7 +8,9 @@ DirectoryManager::DirectoryManager() :
     regex.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
     collator.setNumericMode(true);
 
+
     readSettings();
+    setSortingMode(settings->sortingMode());
     connect(settings, &Settings::settingsChanged, this, &DirectoryManager::readSettings);
 }
 
@@ -98,7 +100,6 @@ void DirectoryManager::stopFileWatcher() {
 
 void DirectoryManager::readSettings() {
     regex.setPattern(settings->supportedFormatsRegex());
-    setSortingMode(settings->sortingMode());
 }
 
 bool DirectoryManager::setDirectory(QString dirPath) {

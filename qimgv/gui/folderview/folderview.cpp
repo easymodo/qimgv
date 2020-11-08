@@ -111,8 +111,6 @@ void FolderView::readSettings() {
     QList<int> sizes;
     sizes << settings->placesPanelWidth() << 1;
     ui->splitter->setSizes(sizes);
-
-    onSortingChanged(settings->sortingMode());
     ui->showFoldersButton->setChecked(settings->showFolders());
 }
 
