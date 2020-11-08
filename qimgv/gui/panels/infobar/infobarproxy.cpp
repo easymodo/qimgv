@@ -33,3 +33,11 @@ void InfoBarProxy::init() {
     if(!stateBuf.fileName.isEmpty())
         infoBar->setInfo(stateBuf.position, stateBuf.fileName, stateBuf.info);
 }
+
+void InfoBarProxy::paintEvent(QPaintEvent *event) {
+    Q_UNUSED(event)
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}

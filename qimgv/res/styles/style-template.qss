@@ -529,7 +529,8 @@ ControlsOverlay {
     border-bottom-right-radius: 0px;
 }
 /*----------------------------------------------------------------------------*/
-InfoBar {
+
+InfoBar, InfoBarProxy {
     background-color: %widget%;
 }
 

@@ -4,6 +4,9 @@
 #include <QWheelEvent>
 #include <QDebug>
 
+#include <QPainter>
+#include <QStyleOption>
+
 namespace Ui {
 class InfoBar;
 }

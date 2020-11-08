@@ -1,9 +1,6 @@
 #include "infobar.h"
 #include "ui_infobar.h"
 
-#include <QPainter>
-#include <QStyleOption>
-
 InfoBar::InfoBar(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::InfoBar)
