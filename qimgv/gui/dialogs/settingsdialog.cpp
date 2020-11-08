@@ -36,7 +36,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     });
 
     connect(ui->useSystemColorsCheckBox, &QCheckBox::toggled, [this](bool useSystemTheme) {
-        setColorScheme(ThemeStore::colorScheme(ColorSchemes::COLORS_SYSTEM));
+        if(useSystemTheme)
+            setColorScheme(ThemeStore::colorScheme(ColorSchemes::COLORS_SYSTEM));
+        else
+            readColorScheme();
         ui->themeSelectorComboBox->setEnabled(!useSystemTheme);
         ui->colorConfigSubgroup->setEnabled(!useSystemTheme);
         ui->modifySystemSchemeLabel->setVisible(useSystemTheme);
