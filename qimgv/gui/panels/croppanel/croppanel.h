@@ -43,6 +43,7 @@ signals:
 protected:
     void paintEvent(QPaintEvent *);
     void keyPressEvent(QKeyEvent *event);
+    void wheelEvent(QWheelEvent *event);
 
 private slots:
     void doCrop();

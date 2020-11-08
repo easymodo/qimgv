@@ -236,3 +236,7 @@ void CropPanel::keyPressEvent(QKeyEvent *event) {
         event->ignore();
     }
 }
+
+void CropPanel::wheelEvent(QWheelEvent *event) {
+    event->accept();
+}

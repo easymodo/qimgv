@@ -22,6 +22,10 @@ void InfoBar::setInfo(QString position, QString fileName, QString info) {
     ui->info->setText(info);
 }
 
+void InfoBar::wheelEvent(QWheelEvent *event) {
+    event->accept();
+}
+
 void InfoBar::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QStyleOption opt;
