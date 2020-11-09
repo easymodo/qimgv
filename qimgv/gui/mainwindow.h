@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QHBoxLayout>
+#include <QMessageBox>
 #include <QFileDialog>
 #include <QMimeData>
 #include "gui/customwidgets/floatingwidgetcontainer.h"
@@ -68,6 +69,7 @@ public:
 
     ViewMode currentViewMode();
 
+    bool showConfirmation(QString title, QString msg);
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;
     QHBoxLayout layout;

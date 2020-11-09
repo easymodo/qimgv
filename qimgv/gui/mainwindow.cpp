@@ -715,6 +715,21 @@ void MW::showError(QString text) {
     floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_ERROR, 2800);
 }
 
+bool MW::showConfirmation(QString title, QString msg) {
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle(title);
+    msgBox.setText(msg);
+    msgBox.setIcon(QMessageBox::Warning);
+    msgBox.setStandardButtons(QMessageBox::Yes);
+    msgBox.addButton(QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    msgBox.setModal(true);
+    if(msgBox.exec() == QMessageBox::Yes)
+        return true;
+    else
+        return false;
+}
+
 void MW::readSettings() {
     showInfoBarFullscreen = settings->infoBarFullscreen();
     showInfoBarWindowed = settings->infoBarWindowed();

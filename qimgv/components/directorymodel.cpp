@@ -127,16 +127,16 @@ void DirectoryModel::removeFile(const QString &filePath, bool trash, FileOpResul
         FileOperations::removeFile(filePath, result);
     if(result != FileOpResult::SUCCESS)
         return;
-    //if(!dirManager.fileWatcherActive())
     dirManager.removeFileEntry(filePath);
     return;
 }
 
-void DirectoryModel::renameFile(const QString &oldFilePath, const QString &newName, FileOpResult &result) {
-    FileOperations::rename(oldFilePath, newName, result);
+void DirectoryModel::renameFile(const QString &oldFilePath, const QString &newName, bool force, FileOpResult &result) {
+    FileOperations::rename(oldFilePath, newName, force, result);
+    // chew through watcher events so they wont be processed out of order
+    qApp->processEvents();
     if(result != FileOpResult::SUCCESS)
         return;
-    //if(!dirManager.fileWatcherActive())
     dirManager.renameFileEntry(oldFilePath, newName);
 }
 

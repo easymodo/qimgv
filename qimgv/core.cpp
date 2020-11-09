@@ -474,7 +474,17 @@ void Core::renameCurrentFile(QString newName) {
     if(!model->fileCount() || newName.isEmpty() || selectedFilePath().isEmpty())
         return;
     FileOpResult result;
-    model->renameFile(selectedFilePath(), newName, result);
+    model->renameFile(selectedFilePath(), newName, false, result);
+    if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
+        if(mw->showConfirmation("File exists", "File already exists. Overwrite?")) {
+            model->renameFile(selectedFilePath(), newName, true, result);
+        } else {
+            // show rename dialog again
+            mw->toggleRenameOverlay();
+        }
+    }
+    //if(result == FileOpResult::SUCCESS)
+    //    loadPath()
     outputError(result);
 }
 

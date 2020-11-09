@@ -1,5 +1,9 @@
 #include "fileoperations.h"
 
+QString FileOperations::generateHash(const QString &str) {
+    return QString(QCryptographicHash::hash(str.toUtf8(), QCryptographicHash::Md5).toHex());
+}
+
 void FileOperations::removeFile(const QString &filePath, FileOpResult &result) {
     QFileInfo file(filePath);
     if(!file.exists()) {
@@ -57,8 +61,10 @@ void FileOperations::copyTo(const QFileInfo &srcFile, const QString &destDirPath
     }
     QFileInfo destFile(destDirPath + "/" + srcFile.fileName());
     if(destFile.exists()) {
-        if(!destFile.isWritable())
+        if(!destFile.isWritable()) {
             result = FileOpResult::DESTINATION_NOT_WRITABLE;
+            return;
+        }
         result = FileOpResult::DESTINATION_FILE_EXISTS;
         return;
     }
@@ -72,7 +78,6 @@ void FileOperations::copyTo(const QFileInfo &srcFile, const QString &destDirPath
 
 void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath, FileOpResult &result) {
     // error checks
-    qDebug() << "destDir:" << destDirPath << "srcFile:" << srcFile.absolutePath();
     if(destDirPath == srcFile.absolutePath()) {
         result = FileOpResult::NOTHING_TO_DO;
         return;
@@ -92,8 +97,10 @@ void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath
     }
     QFileInfo destFile(destDirPath + "/" + srcFile.fileName());
     if(destFile.exists()) {
-        if(!destFile.isWritable())
+        if(!destFile.isWritable()) {
             result = FileOpResult::DESTINATION_NOT_WRITABLE;
+            return;
+        }
         result = FileOpResult::DESTINATION_FILE_EXISTS;
         return;
     }
@@ -116,14 +123,15 @@ void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath
         if(QFile::remove(destFile.absoluteFilePath()))
             result = FileOpResult::OTHER_ERROR;
     } else {
-        qDebug() << "wat";
         // could not COPY
         result = FileOpResult::OTHER_ERROR;
     }
     return;
 }
 
-void FileOperations::rename(const QFileInfo &srcFile, const QString &newName, FileOpResult &result) {
+void FileOperations::rename(const QFileInfo &srcFile, const QString &newName, bool force, FileOpResult &result) {
+    bool exists = false;
+    QString tmpPath;
     // error checks
     if(!srcFile.exists()) {
         result = FileOpResult::SOURCE_DOES_NOT_EXIST;
@@ -142,13 +150,24 @@ void FileOperations::rename(const QFileInfo &srcFile, const QString &newName, Fi
     if(destFile.exists()) {
         if(!destFile.isWritable())
             result = FileOpResult::DESTINATION_NOT_WRITABLE;
-        result = FileOpResult::DESTINATION_FILE_EXISTS;
-        return;
+        if(!force) {
+            result = FileOpResult::DESTINATION_FILE_EXISTS;
+            return;
+        }
+        exists = true;
+        tmpPath = newFilePath + "_" + generateHash(newFilePath);
+        QFile::remove(tmpPath);
+        // move dest file
+        QFile::rename(newFilePath, tmpPath);
     }
-    if(QFile::rename(srcFile.filePath(), newFilePath))
+    if(QFile::rename(srcFile.filePath(), newFilePath)) {
         result = FileOpResult::SUCCESS;
-    else
+        QFile::remove(tmpPath);
+    } else {
         result = FileOpResult::OTHER_ERROR;
+        // restore dest file
+        QFile::rename(tmpPath, newFilePath);
+    }
 }
 
 void FileOperations::moveToTrash(const QString &filePath, FileOpResult &result) {
