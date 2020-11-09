@@ -295,7 +295,7 @@ void FolderView::onBookmarkClicked(QString dirPath) {
 void FolderView::newBookmark() {
     QString dirPath;
 
-    QFileDialog dialog(this);
+    QFileDialog dialog;
     dialog.setDirectory(QDir::homePath());
     dialog.setWindowTitle("Select directory");
     dialog.setWindowModality(Qt::ApplicationModal);
