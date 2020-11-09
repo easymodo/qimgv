@@ -476,15 +476,13 @@ void Core::renameCurrentFile(QString newName) {
     FileOpResult result;
     model->renameFile(selectedFilePath(), newName, false, result);
     if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
-        if(mw->showConfirmation("File exists", "File already exists. Overwrite?")) {
+        if(mw->showConfirmation("File exists", "Overwrite file?")) {
             model->renameFile(selectedFilePath(), newName, true, result);
         } else {
             // show rename dialog again
             mw->toggleRenameOverlay();
         }
     }
-    //if(result == FileOpResult::SUCCESS)
-    //    loadPath()
     outputError(result);
 }
 
@@ -599,7 +597,7 @@ void Core::copyPathsTo(QList<QString> paths, QString destDirectory) {
         return;
     FileOpResult result;
     for(auto path : paths) {
-        model->copyTo(path, destDirectory, result);
+        model->copyTo(path, destDirectory, false, result);
         if(result != FileOpResult::SUCCESS) { // todo: sane ui for replacing file (incl. multiple)
             mw->showError(FileOperations::decodeResult(result));
             qDebug() << FileOperations::decodeResult(result);
@@ -612,7 +610,7 @@ void Core::movePathsTo(QList<QString> paths, QString destDirectory) {
         return;
     FileOpResult result;
     for(auto path : paths) {
-        model->moveTo(path, destDirectory, result);
+        model->moveTo(path, destDirectory, false, result);
         if(result != FileOpResult::SUCCESS) {
             mw->showError(FileOperations::decodeResult(result));
             qDebug() << FileOperations::decodeResult(result);
@@ -620,30 +618,43 @@ void Core::movePathsTo(QList<QString> paths, QString destDirectory) {
     }
 }
 
-// remove this?
 void Core::moveCurrentFile(QString destDirectory) {
     if(model->isEmpty())
         return;
+    // pause updates to avoid flicker
+    mw->setUpdatesEnabled(false);
+    // move fails during file playback, so we close it temporarily
     mw->closeImage();
     FileOpResult result;
-    model->moveTo(selectedFilePath(), destDirectory, result);
+    model->moveTo(selectedFilePath(), destDirectory, false, result);
     if(result == FileOpResult::SUCCESS) {
         mw->showMessageSuccess("File moved.");
-    } else {
-        guiSetImage(model->getImage(selectedFilePath()));
-        outputError(result);
+    } else if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
+        if(mw->showConfirmation("File exists", "Destination file exists. Overwrite?"))
+            model->moveTo(selectedFilePath(), destDirectory, true, result);
     }
+    if(result != FileOpResult::SUCCESS) {
+        guiSetImage(model->getImage(selectedFilePath()));
+        updateInfoString();
+        if(result != FileOpResult::DESTINATION_FILE_EXISTS)
+            outputError(result);
+    }
+    mw->setUpdatesEnabled(true);
+    mw->repaint();
 }
 
-// remove this?
 void Core::copyCurrentFile(QString destDirectory) {
     if(model->isEmpty())
         return;
     FileOpResult result;
-    model->copyTo(selectedFilePath(), destDirectory, result);
-    if(result == FileOpResult::SUCCESS)
+    model->copyTo(selectedFilePath(), destDirectory, false, result);
+    if(result == FileOpResult::SUCCESS) {
         mw->showMessageSuccess("File copied.");
-    else
+    } else if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
+        if(mw->showConfirmation("File exists", "Destination file exists. Overwrite?"))
+            model->copyTo(selectedFilePath(), destDirectory, true, result);
+    }
+    if(result != FileOpResult::SUCCESS && result != FileOpResult::DESTINATION_FILE_EXISTS)
         outputError(result);
 }
 

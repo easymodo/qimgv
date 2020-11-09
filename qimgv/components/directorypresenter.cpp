@@ -239,7 +239,7 @@ void DirectoryPresenter::onDroppedInto(const QMimeData *data, QObject *source, i
     // do the needful
     FileOpResult result;
     for(auto path : pathList) {
-        model->moveTo(path, destDir, result);
+        model->moveTo(path, destDir, false, result);
         if(result != FileOpResult::SUCCESS && result != FileOpResult::NOTHING_TO_DO)
             qDebug() << FileOperations::decodeResult(result);
     }

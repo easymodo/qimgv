@@ -140,12 +140,14 @@ void DirectoryModel::renameFile(const QString &oldFilePath, const QString &newNa
     dirManager.renameFileEntry(oldFilePath, newName);
 }
 
-void DirectoryModel::copyTo(const QString &srcFile, const QString &destDirPath, FileOpResult &result) {
-    FileOperations::copyTo(srcFile, destDirPath, result);
+void DirectoryModel::copyTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
+    FileOperations::copyTo(srcFile, destDirPath, force, result);
 }
 
-void DirectoryModel::moveTo(const QString &srcFile, const QString &destDirPath, FileOpResult &result) {
-    FileOperations::moveTo(srcFile, destDirPath, result);
+void DirectoryModel::moveTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
+    FileOperations::moveTo(srcFile, destDirPath, force, result);
+    // chew through watcher events so they wont be processed out of order
+    qApp->processEvents();
     if(result == FileOpResult::SUCCESS) {
         if(destDirPath != this->directoryPath())
             dirManager.removeFileEntry(srcFile);

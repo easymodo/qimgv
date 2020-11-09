@@ -40,7 +40,9 @@ QString FileOperations::decodeResult(const FileOpResult &result) {
     }
 }
 
-void FileOperations::copyTo(const QFileInfo &srcFile, const QString &destDirPath, FileOpResult &result) {
+void FileOperations::copyTo(const QFileInfo &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
+    QString tmpPath;
+    bool exists = false;
     // error checks
     if(destDirPath == srcFile.absolutePath()) {
         result = FileOpResult::NOTHING_TO_DO;
@@ -65,18 +67,32 @@ void FileOperations::copyTo(const QFileInfo &srcFile, const QString &destDirPath
             result = FileOpResult::DESTINATION_NOT_WRITABLE;
             return;
         }
-        result = FileOpResult::DESTINATION_FILE_EXISTS;
-        return;
+        if(!force) {
+            result = FileOpResult::DESTINATION_FILE_EXISTS;
+            return;
+        }
+        tmpPath = destFile.absoluteFilePath() + "_" + generateHash(destFile.absoluteFilePath());
+        QFile::remove(tmpPath);
+        // move backup
+        QFile::rename(destFile.absoluteFilePath(), tmpPath);
+        exists = false;
     }
     // copy
-    if(QFile::copy(srcFile.absoluteFilePath(), destFile.absoluteFilePath()))
+    if(QFile::copy(srcFile.absoluteFilePath(), destFile.absoluteFilePath())) {
         result = FileOpResult::SUCCESS;
-    else
+        // ok; remove backup
+        QFile::remove(tmpPath);
+    } else {
         result = FileOpResult::OTHER_ERROR;
+        // fail; revert
+        QFile::rename(tmpPath, destFile.absoluteFilePath());
+    }
     return;
 }
 
-void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath, FileOpResult &result) {
+void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
+    QString tmpPath;
+    bool exists = false;
     // error checks
     if(destDirPath == srcFile.absolutePath()) {
         result = FileOpResult::NOTHING_TO_DO;
@@ -84,29 +100,36 @@ void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath
     }
     if(!srcFile.exists()) {
         result = FileOpResult::SOURCE_DOES_NOT_EXIST;
-        return;
-    }
-    QFileInfo destDir(destDirPath);
-    if(!destDir.exists()) {
-        result = FileOpResult::DESTINATION_DOES_NOT_EXIST;
-        return;
-    }
-    if(!destDir.isWritable()) {
-        result = FileOpResult::DESTINATION_NOT_WRITABLE;
-        return;
-    }
-    QFileInfo destFile(destDirPath + "/" + srcFile.fileName());
-    if(destFile.exists()) {
-        if(!destFile.isWritable()) {
-            result = FileOpResult::DESTINATION_NOT_WRITABLE;
-            return;
-        }
-        result = FileOpResult::DESTINATION_FILE_EXISTS;
         return;
     }
     if(!srcFile.isWritable()) {
         result = FileOpResult::SOURCE_NOT_WRITABLE;
         return;
+    }
+    QFileInfo destDir(destDirPath);
+    if(!destDir.exists()) {
+        result = FileOpResult::DESTINATION_DOES_NOT_EXIST;
+        return;
+    }
+    if(!destDir.isWritable()) {
+        result = FileOpResult::DESTINATION_NOT_WRITABLE;
+        return;
+    }
+    QFileInfo destFile(destDirPath + "/" + srcFile.fileName());
+    if(destFile.exists()) {
+        if(!destFile.isWritable()) {
+            result = FileOpResult::DESTINATION_NOT_WRITABLE;
+            return;
+        }
+        if(!force) {
+            result = FileOpResult::DESTINATION_FILE_EXISTS;
+            return;
+        }
+        tmpPath = destFile.absoluteFilePath() + "_" + generateHash(destFile.absoluteFilePath());
+        QFile::remove(tmpPath);
+        // move backup
+        QFile::rename(destFile.absoluteFilePath(), tmpPath);
+        exists = false;
     }
     // move
     if(QFile::copy(srcFile.absoluteFilePath(), destFile.absoluteFilePath())) {
@@ -116,6 +139,8 @@ void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath
         if(removeResult == FileOpResult::SUCCESS) {
             // OK
             result = FileOpResult::SUCCESS;
+            // remove backup
+            QFile::remove(tmpPath);
             return;
         }
         // revert on failure
@@ -126,11 +151,12 @@ void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath
         // could not COPY
         result = FileOpResult::OTHER_ERROR;
     }
+    if(exists) // failed; revert backup
+        QFile::rename(tmpPath, destFile.absoluteFilePath());
     return;
 }
 
 void FileOperations::rename(const QFileInfo &srcFile, const QString &newName, bool force, FileOpResult &result) {
-    bool exists = false;
     QString tmpPath;
     // error checks
     if(!srcFile.exists()) {
@@ -154,7 +180,6 @@ void FileOperations::rename(const QFileInfo &srcFile, const QString &newName, bo
             result = FileOpResult::DESTINATION_FILE_EXISTS;
             return;
         }
-        exists = true;
         tmpPath = newFilePath + "_" + generateHash(newFilePath);
         QFile::remove(tmpPath);
         // move dest file
