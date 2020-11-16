@@ -106,7 +106,7 @@ void Settings::loadStylesheet() {
         styleSheet.replace("%button%",               colors.button.name());
         styleSheet.replace("%button_hover%",         colors.button_hover.name());
         styleSheet.replace("%button_pressed%",       colors.button_pressed.name());
-        styleSheet.replace("%panel_button%",   colors.panel_button.name());
+        styleSheet.replace("%panel_button%",         colors.panel_button.name());
         styleSheet.replace("%panel_button_hover%",   colors.panel_button_hover.name());
         styleSheet.replace("%panel_button_pressed%", colors.panel_button_pressed.name());
         styleSheet.replace("%widget%",               colors.widget.name());
@@ -114,28 +114,29 @@ void Settings::loadStylesheet() {
         styleSheet.replace("%folderview%",           colors.folderview.name());
         styleSheet.replace("%folderview_topbar%",    colors.folderview_topbar.name());
         styleSheet.replace("%folderview_hc%",        colors.folderview_hc.name());
-        styleSheet.replace("%folderview_hc2%",        colors.folderview_hc2.name());
-        styleSheet.replace("%folderview_button_hover%",   colors.folderview_button_hover.name());
-        styleSheet.replace("%folderview_button_pressed%", colors.folderview_button_pressed.name());
+        styleSheet.replace("%folderview_hc2%",       colors.folderview_hc2.name());
         styleSheet.replace("%accent%",               colors.accent.name());
-        styleSheet.replace("%accent_hover_rgba%",    "rgba(" + QString::number(colors.accent.red())   + ","
-                                                             + QString::number(colors.accent.green()) + ","
-                                                             + QString::number(colors.accent.blue())  + ",65%)");
         styleSheet.replace("%input_field_focus%",    colors.input_field_focus.name());
         styleSheet.replace("%overlay%",              colors.overlay.name());
-        styleSheet.replace("%overlay_rgba%",         "rgba(" + QString::number(colors.overlay.red())   + ","
-                                                             + QString::number(colors.overlay.green()) + ","
-                                                             + QString::number(colors.overlay.blue())  + ",90%)");
         styleSheet.replace("%icons%",                colors.icons.name());
         styleSheet.replace("%text_hc2%",             colors.text_hc2.name());
-        styleSheet.replace("%text_hc%",             colors.text_hc.name());
+        styleSheet.replace("%text_hc%",              colors.text_hc.name());
         styleSheet.replace("%text%",                 colors.text.name());
         styleSheet.replace("%overlay_text%",         colors.overlay_text.name());
-        styleSheet.replace("%text_lc%",             colors.text_lc.name());
+        styleSheet.replace("%text_lc%",              colors.text_lc.name());
         styleSheet.replace("%text_lc2%",             colors.text_lc2.name());
         styleSheet.replace("%scrollbar%",            colors.scrollbar.name());
         styleSheet.replace("%scrollbar_hover%",      colors.scrollbar_hover.name());
         styleSheet.replace("%system_window_tinted%", sys_window_tinted.name());
+        styleSheet.replace("%folderview_button_hover%",   colors.folderview_button_hover.name());
+        styleSheet.replace("%folderview_button_pressed%", colors.folderview_button_pressed.name());
+        styleSheet.replace("%accent_hover_rgba%",    "rgba(" + QString::number(colors.accent.red())   + ","
+                                                             + QString::number(colors.accent.green()) + ","
+                                                             + QString::number(colors.accent.blue())  + ",65%)");
+        styleSheet.replace("%overlay_rgba%",         "rgba(" + QString::number(colors.overlay.red())   + ","
+                                                             + QString::number(colors.overlay.green()) + ","
+                                                             + QString::number(colors.overlay.blue())  + ",90%)");
+        styleSheet.replace("%topbar_border_rgba%",   "rgba(0,0,0,14%)");
 
         // ------------------------ apply ----------------------------
         qApp->setStyleSheet(styleSheet);

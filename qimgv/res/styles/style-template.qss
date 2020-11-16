@@ -396,12 +396,12 @@ FolderGridView {
 FolderView {
     background-color: %folderview%;
 }
+[accessibleName="FolderViewContents"] {
+    border-top: 1px solid %topbar_border_rgba%;
+}
 /*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewPanel"] { /* top bar - rename */
     background-color: %folderview_topbar%;
-    border-bottom: 1px solid %folderview_hc%;
-    /*border-bottom: 8px solid %folderview_topbar%;*/
-    /*border-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 rgba(0, 0, 0, 20), stop: 1 %folderview%);*/
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewSlider"] {
