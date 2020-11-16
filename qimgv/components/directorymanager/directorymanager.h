@@ -20,10 +20,6 @@
 #include "utils/stuff.h"
 #include "sourcecontainers/fsentry.h"
 
-#ifdef Q_OS_WIN32
-#include "windows.h"
-#endif
-
 enum FileListSource { // rename? wip
     SOURCE_DIRECTORY,
     SOURCE_DIRECTORY_RECURSIVE,

@@ -9,6 +9,10 @@
 #include <QStandardPaths>
 #include <QtGlobal>
 
+#ifdef Q_OS_WIN32
+#include "windows.h"
+#endif
+
 enum FileOpResult {
     SUCCESS,
     DESTINATION_FILE_EXISTS,
