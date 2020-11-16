@@ -300,9 +300,6 @@ void DirectoryManager::addEntriesFromDirectory(std::vector<FSEntry> &entryVec, Q
             continue;
 #endif
         QString path = QString::fromStdString(entry.path().generic_string());
-        qDebug() << fromStdString(entry.path().generic_wstring());
-        qDebug() << path;
-
         match = regex.match(name);
         if(entry.is_directory()) { // this can still throw std::bad_alloc ..
             FSEntry newEntry;

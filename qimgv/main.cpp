@@ -107,7 +107,6 @@ int main(int argc, char *argv[]) {
 
     if(!arg1.isEmpty()) {
         // assume 1st arg is the filename
-        qDebug() << "arg1" << arg1;
         core.loadPath(arg1);
     } else if(settings->defaultViewMode() == MODE_FOLDERVIEW) {
         core.loadPath(QDir::homePath());
