@@ -362,7 +362,7 @@ int Settings::volume() {
 }
 //------------------------------------------------------------------------------
 bool Settings::showThumbnailLabels() {
-    return settings->settingsConf->value("showThumbnailLabels", false).toBool();
+    return settings->settingsConf->value("showThumbnailLabels", true).toBool();
 }
 
 void Settings::setShowThumbnailLabels(bool mode) {
@@ -686,7 +686,7 @@ void Settings::setSmoothUpscaling(bool mode) {
 }
 //------------------------------------------------------------------------------
 int Settings::folderViewIconSize() {
-    return settings->settingsConf->value("folderViewIconSize", 150).toInt();
+    return settings->settingsConf->value("folderViewIconSize", 120).toInt();
 }
 
 void Settings::setFolderViewIconSize(int value) {
