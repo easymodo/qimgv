@@ -3,10 +3,9 @@
 FSEntry::FSEntry() {
 }
 
-FSEntry::FSEntry(const QString &filePath) {
-    std::filesystem::directory_entry stdEntry(toStdString(filePath));
-    QString name = QString::fromStdString(stdEntry.path().filename().string());
-    QString path = QString::fromStdString(stdEntry.path().string());
+FSEntry::FSEntry(const QString &path) {
+    std::filesystem::directory_entry stdEntry(toStdString(path));
+    QString name = QString::fromStdString(stdEntry.path().filename().generic_string());
     if(stdEntry.is_directory()) {
         try {
             this->name = name;

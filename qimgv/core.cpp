@@ -866,7 +866,6 @@ void Core::loadPath(QString path) {
         return;
     if(path.startsWith("file://", Qt::CaseInsensitive))
         path.remove(0, 7);
-
     stopSlideshow();
     QFileInfo fileInfo(path);
     QString directoryPath;
