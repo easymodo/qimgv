@@ -64,25 +64,22 @@ int main(int argc, char *argv[]) {
     //a.installTranslator(&translator);
     //qDebug() << "localeName: " << localeName;
 
-    // get arguments
-    QString arg1;
-    if(a.arguments().length() > 1) {
-        arg1 = a.arguments().at(1);
-    }
-
-    // output help text & shutdown
-    if(arg1 == "-h" || arg1 == "--help") {
-        HelpRunner r;
-        QTimer::singleShot(0, &r, SLOT(run()));
-        return a.exec();
-    }
-
     // init
     // needed for mpv
 #ifndef _MSC_VER
     setlocale(LC_NUMERIC, "C");
 #endif
+
+#ifdef __GLIBC__
+    // default value of 128k causes memory fragmentation issues
+    // finding this took 3 days of my life
+    mallopt(M_MMAP_THRESHOLD, 64000);
+#endif
+
     qRegisterMetaTypeStreamOperators<Script>("Script");
+    qRegisterMetaType<ScalerRequest>("ScalerRequest");
+    qRegisterMetaType<std::shared_ptr<Image>>("std::shared_ptr<Image>");
+    qRegisterMetaType<std::shared_ptr<Thumbnail>>("std::shared_ptr<Thumbnail>");
 
     inputMap = InputMap::getInstance();
     appActions = Actions::getInstance();
@@ -95,6 +92,34 @@ int main(int argc, char *argv[]) {
 
     QElapsedTimer t;
     t.start();
+
+    // get arguments
+    QString arg1;
+    if(a.arguments().length() > 1) {
+        arg1 = a.arguments().at(1);
+    }
+
+    // output help text & shutdown
+    if(arg1 == "-h" || arg1 == "--help") {
+        HelpRunner r;
+        QTimer::singleShot(0, &r, SLOT(run()));
+        return a.exec();
+    } else if(arg1.startsWith("--preload-thumbs")) {
+        // todo: properly catch preload parameters (dirPath, size etc)
+
+        Thumbnailer th;
+        DirectoryManager dm;
+        //dm.setDirectoryRecursive("/home/easymodo/coding/imgTest/drag-test/");
+        dm.setDirectoryRecursive("/home/easymodo/Pictures");
+
+        auto list = dm.fileList();
+        for(auto path : list) {
+            qDebug() << "generating for: " << path;
+            th.getThumbnailAsync(path, 100, false, false);
+        }
+
+        return a.exec();
+    }
 
     Core core;
 

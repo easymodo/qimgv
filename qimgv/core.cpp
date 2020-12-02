@@ -8,14 +8,6 @@
 #include "core.h"
 
 Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr), slideshow(false) {
-#ifdef __GLIBC__
-    // default value of 128k causes memory fragmentation issues
-    // finding this took 3 days of my life
-    mallopt(M_MMAP_THRESHOLD, 64000);
-#endif
-    qRegisterMetaType<ScalerRequest>("ScalerRequest");
-    qRegisterMetaType<std::shared_ptr<Image>>("std::shared_ptr<Image>");
-    qRegisterMetaType<std::shared_ptr<Thumbnail>>("std::shared_ptr<Thumbnail>");
     initGui();
     initComponents();
     connectComponents();

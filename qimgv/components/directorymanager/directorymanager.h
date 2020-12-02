@@ -75,6 +75,8 @@ public:
 
     FileListSource source() const;
 
+    QStringList fileList() const;
+
 private:
     QRegularExpression regex;
     QCollator collator;

@@ -448,6 +448,13 @@ FileListSource DirectoryManager::source() const {
     return mListSource;
 }
 
+QStringList DirectoryManager::fileList() const {
+    QStringList list;
+    for(auto const& value : fileEntryVec)
+        list << value.path;
+    return list;
+}
+
 bool DirectoryManager::fileWatcherActive() {
     if(!watcher)
         return false;
