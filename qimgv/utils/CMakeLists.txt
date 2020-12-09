@@ -2,7 +2,7 @@
 
 target_sources(qimgv PRIVATE
     actions.cpp
-    helprunner.cpp
+    cmdoptionsrunner.cpp
     imagefactory.cpp
     imagelib.cpp
     inputmap.cpp

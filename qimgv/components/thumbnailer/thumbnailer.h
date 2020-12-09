@@ -13,6 +13,7 @@ public:
     ~Thumbnailer();
     static std::shared_ptr<Thumbnail> getThumbnail(QString filePath, int size);
     void clearTasks();
+    void waitForDone();
 
 public slots:
     void getThumbnailAsync(QString path, int size, bool crop, bool force);

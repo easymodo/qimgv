@@ -15,6 +15,10 @@ Thumbnailer::~Thumbnailer() {
     pool->waitForDone();
 }
 
+void Thumbnailer::waitForDone() {
+    pool->waitForDone();
+}
+
 void Thumbnailer::clearTasks() {
     pool->clear();
 }
