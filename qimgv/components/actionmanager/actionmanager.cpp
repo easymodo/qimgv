@@ -150,7 +150,7 @@ void ActionManager::resetDefaultsFromVersion(QVersionNumber lastVer) {
             if(!shortcuts.contains(i.key())) {
                 shortcuts.insert(i.key(), i.value());
                 qDebug() << "[ActionManager] new action " << i.value() << " - assigning as [" << i.key() << "]";
-            } else {
+            } else if(i.value() != actionForShortcut(i.key())) {
                 qDebug() << "[ActionManager] new action " << i.value() << " - shortcut [" << i.key() << "] already assigned to another action " << actionForShortcut(i.key());
             }
         }
