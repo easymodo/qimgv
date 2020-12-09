@@ -28,8 +28,13 @@ std::shared_ptr<Thumbnail> ThumbnailerRunnable::generate(ThumbnailCache* cache, 
     QString thumbnailId = generateIdString(path, size, crop);
     std::unique_ptr<QImage> image;
 
-    if(!force && cache)
+    QString time = QString::number(imgInfo.lastModified().toMSecsSinceEpoch());
+
+    if(!force && cache) {
         image.reset(cache->readThumbnail(thumbnailId));
+        if(image->text("lastModified") != time)
+            image.reset(nullptr);
+    }
 
     if(!image) {
         std::pair<QImage*, QSize> pair;
@@ -43,13 +48,14 @@ std::shared_ptr<Thumbnail> ThumbnailerRunnable::generate(ThumbnailCache* cache, 
         image = ImageLib::exifRotated(std::move(image), imgInfo.exifOrientation());
 
         // put in image info
-        image.get()->setText("originalWidth", QString::number(originalSize.width()));
-        image.get()->setText("originalHeight", QString::number(originalSize.height()));
+        image->setText("originalWidth", QString::number(originalSize.width()));
+        image->setText("originalHeight", QString::number(originalSize.height()));
+        image->setText("lastModified", time);
 
         if(imgInfo.type() == ANIMATED)
-            image.get()->setText("label", " [a]");
+            image->setText("label", " [a]");
         else if(imgInfo.type() == VIDEO)
-            image.get()->setText("label", " [v]");
+            image->setText("label", " [v]");
 
         if(cache) {
             // save thumbnail if it makes sense
@@ -67,10 +73,10 @@ std::shared_ptr<Thumbnail> ThumbnailerRunnable::generate(ThumbnailCache* cache, 
         label = "error";
     } else  {
         // put info into Thumbnail object
-        label = image.get()->text("originalWidth") +
+        label = image->text("originalWidth") +
                 "x" +
-                image.get()->text("originalHeight") +
-                image.get()->text("label");
+                image->text("originalHeight") +
+                image->text("label");
     }
     std::shared_ptr<QPixmap> pixmapPtr(tmpPixmap);
     std::shared_ptr<Thumbnail> thumbnail(new Thumbnail(imgInfo.fileName(), label, size, pixmapPtr));
