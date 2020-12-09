@@ -431,21 +431,49 @@ void SettingsDialog::addShortcutToTable(const QString &action, const QString &sh
 //------------------------------------------------------------------------------
 void SettingsDialog::addShortcut() {
     ShortcutCreatorDialog w;
-    if(w.exec()) {
-        for(int i = 0; i < ui->shortcutsTableWidget->rowCount(); i++) {
-            if(ui->shortcutsTableWidget->item(i, 1)->text() == w.selectedShortcut()) {
-                removeShortcutAt(i);
-            }
-        }
-        addShortcutToTable(w.selectedAction(), w.selectedShortcut());
+    if(!w.exec())
+        return;
+    for(int i = 0; i < ui->shortcutsTableWidget->rowCount(); i++) {
+        if(ui->shortcutsTableWidget->item(i, 1)->text() == w.selectedShortcut())
+            removeShortcutAt(i);
     }
+    addShortcutToTable(w.selectedAction(), w.selectedShortcut());
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::removeShortcutAt(int row) {
     if(row > 0 && row >= ui->shortcutsTableWidget->rowCount())
         return;
-
     ui->shortcutsTableWidget->removeRow(row);
+}
+//------------------------------------------------------------------------------
+void SettingsDialog::editShortcut(int row) {
+    if(row >= 0) {
+        ShortcutCreatorDialog w;
+        w.setWindowTitle("Edit shortcut");
+        w.setAction(ui->shortcutsTableWidget->item(row, 0)->text());
+        w.setShortcut(ui->shortcutsTableWidget->item(row, 1)->text());
+        if(!w.exec())
+            return;
+        // remove itself
+        removeShortcutAt(row);
+        // remove anything we are replacing
+        for(int i = 0; i < ui->shortcutsTableWidget->rowCount(); i++) {
+            if(ui->shortcutsTableWidget->item(i, 1)->text() == w.selectedShortcut())
+                removeShortcutAt(i);
+        }
+        // re-add
+        addShortcutToTable(w.selectedAction(), w.selectedShortcut());
+        // re-select
+        auto items = ui->shortcutsTableWidget->findItems(w.selectedShortcut(), Qt::MatchExactly);
+        if(items.count()) {
+            int newRow = ui->shortcutsTableWidget->row(items.at(0));
+            ui->shortcutsTableWidget->selectRow(newRow);
+        }
+    }
+}
+//------------------------------------------------------------------------------
+void SettingsDialog::editShortcut() {
+    editShortcut(ui->shortcutsTableWidget->currentRow());
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::removeShortcut() {

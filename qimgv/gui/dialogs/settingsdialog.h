@@ -59,6 +59,8 @@ private slots:
     void removeScript();
 
     void addShortcut();
+    void editShortcut();
+    void editShortcut(int row);
     void removeShortcut();
     void resetShortcuts();
     void selectMpvPath();

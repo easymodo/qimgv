@@ -256,7 +256,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1739,8 +1739,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>414</width>
-                <height>406</height>
+                <width>553</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2613,8 +2613,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>380</width>
-                <height>172</height>
+                <width>553</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2961,18 +2961,6 @@
             </layout>
            </item>
            <item>
-            <widget class="QLabel" name="label_30">
-             <property name="font">
-              <font>
-               <italic>true</italic>
-              </font>
-             </property>
-             <property name="text">
-              <string>Setting this to &quot;Mouse Wheel&quot; will override any shortcut it's bound to</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <spacer name="verticalSpacer_18">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -3026,6 +3014,13 @@
                </property>
                <property name="text">
                 <string>Add</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_8">
+               <property name="text">
+                <string>Edit</string>
                </property>
               </widget>
              </item>
@@ -3236,8 +3231,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>624</height>
+                <width>401</width>
+                <height>277</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3625,8 +3620,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>624</height>
+                <width>274</width>
+                <height>223</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -3962,8 +3957,8 @@ p, li { white-space: pre-wrap; }
    <slot>resetShortcuts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>283</x>
-     <y>38</y>
+     <x>727</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
      <x>587</x>
@@ -3978,8 +3973,8 @@ p, li { white-space: pre-wrap; }
    <slot>removeShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>231</x>
-     <y>38</y>
+     <x>446</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
      <x>584</x>
@@ -3994,8 +3989,8 @@ p, li { white-space: pre-wrap; }
    <slot>addShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>205</x>
-     <y>38</y>
+     <x>274</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -4010,8 +4005,8 @@ p, li { white-space: pre-wrap; }
    <slot>selectMpvPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>526</x>
-     <y>242</y>
+     <x>566</x>
+     <y>270</y>
     </hint>
     <hint type="destinationlabel">
      <x>596</x>
@@ -4026,8 +4021,8 @@ p, li { white-space: pre-wrap; }
    <slot>addScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>212</x>
-     <y>27</y>
+     <x>274</x>
+     <y>63</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
@@ -4042,8 +4037,8 @@ p, li { white-space: pre-wrap; }
    <slot>removeScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>277</x>
-     <y>27</y>
+     <x>446</x>
+     <y>63</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -4058,8 +4053,8 @@ p, li { white-space: pre-wrap; }
    <slot>editScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>245</x>
-     <y>27</y>
+     <x>360</x>
+     <y>63</y>
     </hint>
     <hint type="destinationlabel">
      <x>2</x>
@@ -4074,8 +4069,8 @@ p, li { white-space: pre-wrap; }
    <slot>editScript(QListWidgetItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>284</x>
-     <y>37</y>
+     <x>478</x>
+     <y>108</y>
     </hint>
     <hint type="destinationlabel">
      <x>118</x>
@@ -4106,8 +4101,8 @@ p, li { white-space: pre-wrap; }
    <slot>onThumbnailerThreadsSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>526</x>
-     <y>210</y>
+     <x>566</x>
+     <y>238</y>
     </hint>
     <hint type="destinationlabel">
      <x>591</x>
@@ -4122,7 +4117,7 @@ p, li { white-space: pre-wrap; }
    <slot>onZoomStepSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>527</x>
+     <x>709</x>
      <y>162</y>
     </hint>
     <hint type="destinationlabel">
@@ -4138,8 +4133,8 @@ p, li { white-space: pre-wrap; }
    <slot>onJPEGQualitySliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>526</x>
-     <y>121</y>
+     <x>566</x>
+     <y>149</y>
     </hint>
     <hint type="destinationlabel">
      <x>642</x>
@@ -4154,8 +4149,8 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>460</x>
-     <y>517</y>
+     <x>511</x>
+     <y>515</y>
     </hint>
     <hint type="destinationlabel">
      <x>293</x>
@@ -4170,12 +4165,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>465</x>
-     <y>432</y>
+     <x>506</x>
+     <y>417</y>
     </hint>
     <hint type="destinationlabel">
-     <x>293</x>
-     <y>461</y>
+     <x>486</x>
+     <y>452</y>
     </hint>
    </hints>
   </connection>
@@ -4186,8 +4181,8 @@ p, li { white-space: pre-wrap; }
    <slot>onExpandLimitSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>641</x>
-     <y>338</y>
+     <x>705</x>
+     <y>332</y>
     </hint>
     <hint type="destinationlabel">
      <x>639</x>
@@ -4202,12 +4197,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>442</x>
-     <y>311</y>
+     <x>529</x>
+     <y>305</y>
     </hint>
     <hint type="destinationlabel">
-     <x>302</x>
-     <y>338</y>
+     <x>495</x>
+     <y>332</y>
     </hint>
    </hints>
   </connection>
@@ -4218,8 +4213,8 @@ p, li { white-space: pre-wrap; }
    <slot>onBgOpacitySliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>727</x>
-     <y>264</y>
+     <x>718</x>
+     <y>378</y>
     </hint>
     <hint type="destinationlabel">
      <x>621</x>
@@ -4259,6 +4254,38 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_8</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>editShortcut()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>337</x>
+     <y>130</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-34</x>
+     <y>151</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>shortcutsTableWidget</sender>
+   <signal>cellDoubleClicked(int,int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>editShortcut(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>529</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-87</x>
+     <y>548</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>bgColorDialog()</slot>
@@ -4284,5 +4311,7 @@ p, li { white-space: pre-wrap; }
   <slot>onJPEGQualitySliderChanged(int)</slot>
   <slot>saveSettingsAndClose()</slot>
   <slot>saveSettings()</slot>
+  <slot>editShortcut()</slot>
+  <slot>editShortcut(int)</slot>
  </slots>
 </ui>
