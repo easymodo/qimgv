@@ -1739,8 +1739,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>624</height>
+                <width>414</width>
+                <height>406</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3236,8 +3236,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>367</width>
-                <height>277</height>
+                <width>553</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3435,7 +3435,7 @@
                    <item>
                     <widget class="QLabel" name="label_17">
                      <property name="text">
-                      <string>Thumbnailer threads:</string>
+                      <string>Thumbnailer thread count:</string>
                      </property>
                     </widget>
                    </item>
@@ -3471,7 +3471,7 @@
                       <number>1</number>
                      </property>
                      <property name="maximum">
-                      <number>4</number>
+                      <number>8</number>
                      </property>
                      <property name="pageStep">
                       <number>1</number>
@@ -3625,8 +3625,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>274</width>
-                <height>223</height>
+                <width>553</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
