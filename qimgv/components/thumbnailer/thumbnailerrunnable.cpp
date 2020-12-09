@@ -32,7 +32,7 @@ std::shared_ptr<Thumbnail> ThumbnailerRunnable::generate(ThumbnailCache* cache, 
 
     if(!force && cache) {
         image.reset(cache->readThumbnail(thumbnailId));
-        if(image->text("lastModified") != time)
+        if(image && image->text("lastModified") != time)
             image.reset(nullptr);
     }
 
