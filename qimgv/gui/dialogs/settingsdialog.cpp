@@ -438,6 +438,12 @@ void SettingsDialog::addShortcut() {
             removeShortcutAt(i);
     }
     addShortcutToTable(w.selectedAction(), w.selectedShortcut());
+    // select
+    auto items = ui->shortcutsTableWidget->findItems(w.selectedShortcut(), Qt::MatchExactly);
+    if(items.count()) {
+        int newRow = ui->shortcutsTableWidget->row(items.at(0));
+        ui->shortcutsTableWidget->selectRow(newRow);
+    }
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::removeShortcutAt(int row) {
