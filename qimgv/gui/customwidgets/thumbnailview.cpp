@@ -554,6 +554,11 @@ void ThumbnailView::mouseDoubleClickEvent(QMouseEvent *event) {
     event->ignore();
 }
 
+void ThumbnailView::focusOutEvent(QFocusEvent *event) {
+    QGraphicsView::focusOutEvent(event);
+    rangeSelection = false;
+}
+
 void ThumbnailView::keyPressEvent(QKeyEvent *event) {
     if(event->key() == Qt::Key_Shift)
         rangeSelectionSnapshot = selection();

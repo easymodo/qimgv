@@ -147,6 +147,7 @@ protected:
     void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration, bool additive);
     void unloadAllThumbnails();
     void mouseDoubleClickEvent(QMouseEvent *event);
+    void focusOutEvent(QFocusEvent *event) override;
 
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);

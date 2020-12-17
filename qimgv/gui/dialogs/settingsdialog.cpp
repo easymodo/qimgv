@@ -149,6 +149,8 @@ void SettingsDialog::readSettings() {
     ui->bgOpacitySlider->setValue(static_cast<int>(settings->backgroundOpacity() * 100));
     ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
+    ui->confirmDeleteCheckBox->setChecked(settings->confirmDelete());
+    ui->confirmTrashCheckBox->setChecked(settings->confirmTrash());
     if(settings->zoomIndicatorMode() == INDICATOR_ENABLED)
         ui->zoomIndicatorOn->setChecked(true);
     else if(settings->zoomIndicatorMode() == INDICATOR_AUTO)
@@ -244,6 +246,8 @@ void SettingsDialog::saveSettings() {
     settings->setBackgroundOpacity(static_cast<qreal>(ui->bgOpacitySlider->value()) / 100);
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
+    settings->setConfirmDelete(ui->confirmDeleteCheckBox->isChecked());
+    settings->setConfirmTrash(ui->confirmTrashCheckBox->isChecked());
     if(ui->zoomIndicatorOn->isChecked())
         settings->setZoomIndicatorMode(INDICATOR_ENABLED);
     else if(ui->zoomIndicatorAuto->isChecked())

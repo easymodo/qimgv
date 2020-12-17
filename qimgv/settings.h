@@ -232,6 +232,10 @@ public:
     void setShowFolders(bool mode);
     bool showSaveOverlay();
     void setShowSaveOverlay(bool mode);
+    bool confirmDelete();
+    void setConfirmDelete(bool mode);
+    bool confirmTrash();
+    void setConfirmTrash(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

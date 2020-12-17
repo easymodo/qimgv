@@ -283,9 +283,20 @@ void Core::close() {
 }
 
 void Core::removePermanent() {
+    auto paths = currentSelection();
+    if(!paths.count())
+        return;
+    if(settings->confirmDelete()) {
+        QString msg;
+        if(paths.count() > 1)
+            msg = "Delete " + QString::number(paths.count()) +" items permanently?";
+        else
+            msg = "Delete item permanently?";
+        if(!mw->showConfirmation("Delete permanently", msg))
+            return;
+    }
     FileOpResult result;
     int successCount = 0;
-    auto paths = currentSelection();
     for(auto path : paths) {
         result = removeFile(path, false);
         if(result == FileOpResult::SUCCESS)
@@ -302,9 +313,20 @@ void Core::removePermanent() {
 }
 
 void Core::moveToTrash() {
+    auto paths = currentSelection();
+    if(!paths.count())
+        return;
+    if(settings->confirmTrash()) {
+        QString msg;
+        if(paths.count() > 1)
+            msg = "Move " + QString::number(paths.count()) +" items to trash?";
+        else
+            msg = "Move item to trash?";
+        if(!mw->showConfirmation("Move to trash", msg))
+            return;
+    }
     FileOpResult result;
     int successCount = 0;
-    auto paths = currentSelection();
     for(auto path : paths) {
         result = removeFile(path, true);
         if(result == FileOpResult::SUCCESS)

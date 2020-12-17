@@ -70,6 +70,7 @@ public:
     ViewMode currentViewMode();
 
     bool showConfirmation(QString title, QString msg);
+
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;
     QHBoxLayout layout;

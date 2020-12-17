@@ -813,6 +813,22 @@ void Settings::setShowSaveOverlay(bool mode) {
     settings->settingsConf->setValue("showSaveOverlay", mode);
 }
 //------------------------------------------------------------------------------
+bool Settings::confirmDelete() {
+    return settings->settingsConf->value("confirmDelete", true).toBool();
+}
+
+void Settings::setConfirmDelete(bool mode) {
+    settings->settingsConf->setValue("confirmDelete", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::confirmTrash() {
+    return settings->settingsConf->value("confirmTrash", true).toBool();
+}
+
+void Settings::setConfirmTrash(bool mode) {
+    settings->settingsConf->setValue("confirmTrash", mode);
+}
+//------------------------------------------------------------------------------
 qreal Settings::zoomStep() {
     bool ok = false;
     qreal value = settings->settingsConf->value("zoomStep", 0.2).toReal(&ok);

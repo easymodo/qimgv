@@ -256,7 +256,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>4</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -3231,8 +3231,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>401</width>
-                <height>277</height>
+                <width>553</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3282,6 +3282,107 @@
                  <property name="bottomMargin">
                   <number>0</number>
                  </property>
+                 <item row="7" column="0">
+                  <widget class="QCheckBox" name="useOpenGLCheckBox">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Use OpenGL (restart required)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QCheckBox" name="saveOverlayCheckBox">
+                   <property name="text">
+                    <string>Show save overlay when editing images</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_10">
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_3">
+                     <property name="text">
+                      <string>JPEG save quality:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_7">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="JPEGQualityLabel">
+                     <property name="text">
+                      <string>q</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSlider" name="JPEGQualitySlider">
+                     <property name="minimumSize">
+                      <size>
+                       <width>180</width>
+                       <height>25</height>
+                      </size>
+                     </property>
+                     <property name="minimum">
+                      <number>0</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100</number>
+                     </property>
+                     <property name="pageStep">
+                      <number>5</number>
+                     </property>
+                     <property name="value">
+                      <number>95</number>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="tickPosition">
+                      <enum>QSlider::TicksBelow</enum>
+                     </property>
+                     <property name="tickInterval">
+                      <number>10</number>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QCheckBox" name="usePreloaderCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Preload the next/previous image. Results in a much faster image switching (at the expense of wasting more RAM).</string>
+                   </property>
+                   <property name="text">
+                    <string>Use preloader (recommended)</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="0" column="0">
                   <widget class="QCheckBox" name="enableSmoothScrollCheckBox">
                    <property name="sizePolicy">
@@ -3298,7 +3399,98 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="0">
+                 <item row="8" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout">
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_17">
+                     <property name="text">
+                      <string>Thumbnailer thread count:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_9">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="thumbnailerThreadsLabel">
+                     <property name="text">
+                      <string>2</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSlider" name="thumbnailerThreadsSlider">
+                     <property name="minimumSize">
+                      <size>
+                       <width>180</width>
+                       <height>25</height>
+                      </size>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>8</number>
+                     </property>
+                     <property name="pageStep">
+                      <number>1</number>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="tickPosition">
+                      <enum>QSlider::TicksBelow</enum>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="6" column="0">
+                  <widget class="QCheckBox" name="useThumbnailCacheCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string/>
+                   </property>
+                   <property name="text">
+                    <string>Use thumbnail cache (recommended)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QCheckBox" name="confirmDeleteCheckBox">
+                   <property name="text">
+                    <string>Confirm file delete</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="0">
                   <layout class="QHBoxLayout" name="horizontalLayout_7">
                    <item>
                     <widget class="QLabel" name="mpvLabel">
@@ -3372,187 +3564,9 @@
                   </layout>
                  </item>
                  <item row="5" column="0">
-                  <widget class="QCheckBox" name="useOpenGLCheckBox">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
+                  <widget class="QCheckBox" name="confirmTrashCheckBox">
                    <property name="text">
-                    <string>Use OpenGL (restart required)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QCheckBox" name="usePreloaderCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="toolTip">
-                    <string>Preload the next/previous image. Results in a much faster image switching (at the expense of wasting more RAM).</string>
-                   </property>
-                   <property name="text">
-                    <string>Use preloader (recommended)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="0">
-                  <widget class="QCheckBox" name="useThumbnailCacheCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="toolTip">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string>Use thumbnail cache (recommended)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="6" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout">
-                   <property name="leftMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_17">
-                     <property name="text">
-                      <string>Thumbnailer thread count:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_9">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="thumbnailerThreadsLabel">
-                     <property name="text">
-                      <string>2</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QSlider" name="thumbnailerThreadsSlider">
-                     <property name="minimumSize">
-                      <size>
-                       <width>180</width>
-                       <height>25</height>
-                      </size>
-                     </property>
-                     <property name="minimum">
-                      <number>1</number>
-                     </property>
-                     <property name="maximum">
-                      <number>8</number>
-                     </property>
-                     <property name="pageStep">
-                      <number>1</number>
-                     </property>
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="tickPosition">
-                      <enum>QSlider::TicksBelow</enum>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="3" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_10">
-                   <property name="leftMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_3">
-                     <property name="text">
-                      <string>JPEG save quality:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_7">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="JPEGQualityLabel">
-                     <property name="text">
-                      <string>q</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QSlider" name="JPEGQualitySlider">
-                     <property name="minimumSize">
-                      <size>
-                       <width>180</width>
-                       <height>25</height>
-                      </size>
-                     </property>
-                     <property name="minimum">
-                      <number>0</number>
-                     </property>
-                     <property name="maximum">
-                      <number>100</number>
-                     </property>
-                     <property name="pageStep">
-                      <number>5</number>
-                     </property>
-                     <property name="value">
-                      <number>95</number>
-                     </property>
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="tickPosition">
-                      <enum>QSlider::TicksBelow</enum>
-                     </property>
-                     <property name="tickInterval">
-                      <number>10</number>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QCheckBox" name="saveOverlayCheckBox">
-                   <property name="text">
-                    <string>Show save overlay when editing images</string>
+                    <string>Confirm moving to trash</string>
                    </property>
                   </widget>
                  </item>
@@ -3620,8 +3634,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>274</width>
-                <height>223</height>
+                <width>553</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
