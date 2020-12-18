@@ -73,7 +73,7 @@ Note: you can configure every shortcut by going to __Settings > Controls__
 
 ## User interface
 
-The idea is to have a uncluttered, simple and easy to use UI. You can see ui elements only when you need them.
+The idea is to have a uncluttered, simple and easy to use UI. You can see UI elements only when you need them.
 
 There is a pull-down panel with thumbnails, as well as folder view (accessible by pressing Return).
 
@@ -114,7 +114,7 @@ QT_SCALE_FACTOR="1.5" qimgv /path/to/image.png
 ```
 You can put it in `qimgv.desktop` file to make it permanent. Using values less than `1.0` may break some things.
 
-qimgv should also obey the global scale factor set in kde's systemsettings.
+qimgv should also obey the global scale factor set in KDE's systemsettings.
 
 ### High quality scaling
 
@@ -162,7 +162,7 @@ sudo add-apt-repository ppa:easymodo/qimgv
 sudo apt-get update
 sudo apt install qimgv
 ```
-_Alternative package with kde support:_
+_Alternative package with KDE support:_
 ```
 sudo apt install qimgv-kde
 ```
@@ -280,7 +280,7 @@ If you have multiple version of gcc installed you _might_ need to specify a whic
 | VIDEO_SUPPORT | ON | Enables video playback via `mpv` |
 | EXIV2 | ON | Support reading exif tags via `exiv2` |
 | OPENCV_SUPPORT | ON | Enables high quality scaling options |
-| KDE_SUPPORT | OFF | Use some features from kde, like background blur |
+| KDE_SUPPORT | OFF | Use some features from KDE, like background blur |
 
 Usage example:
 ```
