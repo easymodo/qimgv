@@ -104,8 +104,8 @@ QComboBox QAbstractItemView {
     padding: 2px 8px 2px 5px;
     margin-top: 4px;
     margin-bottom: 4px;
-    margin-left: 2px;
-    margin-right:2px;
+    margin-left:  2px;
+    margin-right: 2px;
 }
 
 [accessibleName="PanelComboBox"]:hover {
