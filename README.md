@@ -159,6 +159,7 @@ __Ubuntu / Linux Mint / Pop!\_OS / etc.__
 
 ```
 sudo add-apt-repository ppa:easymodo/qimgv
+sudo apt-get update
 sudo apt install qimgv
 ```
 _Alternative package with kde support:_
