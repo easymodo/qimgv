@@ -692,7 +692,8 @@ void Core::showResizeDialog() {
     if(model->isEmpty())
         return;
     auto img = model->getImage(selectedFilePath());
-    mw->showResizeDialog(img->size());
+    if(img)
+        mw->showResizeDialog(img->size());
 }
 
 // ---------------------------------------------------------------- image operations
