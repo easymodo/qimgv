@@ -633,9 +633,6 @@ void Core::interactiveCopy(QList<QString> paths, QString destDirectory, bool &fo
 }
 
 void Core::interactiveCopy(QString path, QString destDirectory, bool &forceAll) {
-    //if(model->isEmpty())
-    //    return;
-
     // maybe use different flags for dir merge / file overwrite?
     bool force = forceAll;
 
@@ -647,8 +644,11 @@ void Core::interactiveCopy(QString path, QString destDirectory, bool &forceAll) 
             if(!dstFi.isDir()) { // overwriting file with a folder
                 if(force || (force = copyFileConfirmation(path, dstFi.absoluteFilePath())) ) {
                     // remove dst file; give up if not writable
-                    if(!QFile::remove(dstFi.absoluteFilePath()))
+                    if(!QFile::remove(dstFi.absoluteFilePath())) {
+                        mw->showError("Could not replace " + dstFi.absoluteFilePath());
+                        qDebug() << "Could not replace " + dstFi.absoluteFilePath();
                         return;
+                    }
                 }
             } else { // merge dirs
                 force = mergeDirConfirmation(path, dstFi.absoluteFilePath());
@@ -667,14 +667,13 @@ void Core::interactiveCopy(QString path, QString destDirectory, bool &forceAll) 
     } else { // SINGLE FILE
         FileOpResult result;
         FileOperations::copyTo(path, destDirectory, force, result);
-        return;
-        if(result == FileOpResult::DESTINATION_FILE_EXISTS && !force) {
+        if(!force && result == FileOpResult::DESTINATION_FILE_EXISTS) {
             // Ask & try again
             // Temporarily use shitty QMessageBox. Custom dialog (/w checkbox & cancel) later
             if(copyFileConfirmation(path, destDirectory + "/" + fi.fileName()))
                 FileOperations::copyTo(path, destDirectory, true, result);
         }
-        if(result != FileOpResult::SUCCESS) {
+        if(result != FileOpResult::SUCCESS && !(result == FileOpResult::DESTINATION_FILE_EXISTS && !force)) {
             mw->showError(FileOperations::decodeResult(result));
             qDebug() << FileOperations::decodeResult(result);
         }

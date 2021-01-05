@@ -71,11 +71,12 @@ void FileOperations::copyTo(const QFileInfo &srcFile, const QString &destDirPath
             result = FileOpResult::DESTINATION_FILE_EXISTS;
             return;
         }
+        // remove just in case it exists
         tmpPath = destFile.absoluteFilePath() + "_" + generateHash(destFile.absoluteFilePath());
         QFile::remove(tmpPath);
         // move backup
         QFile::rename(destFile.absoluteFilePath(), tmpPath);
-        exists = false;
+        exists = true;
     }
     // copy
     if(QFile::copy(srcFile.absoluteFilePath(), destFile.absoluteFilePath())) {
