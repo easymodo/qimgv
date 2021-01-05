@@ -80,8 +80,9 @@ void FileOperations::copyTo(const QFileInfo &srcFile, const QString &destDirPath
     // copy
     if(QFile::copy(srcFile.absoluteFilePath(), destFile.absoluteFilePath())) {
         result = FileOpResult::SUCCESS;
-        // ok; remove backup
-        QFile::remove(tmpPath);
+        // ok; remove the backup
+        if(exists)
+            QFile::remove(tmpPath);
     } else {
         result = FileOpResult::OTHER_ERROR;
         // fail; revert

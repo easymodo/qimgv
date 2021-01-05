@@ -236,13 +236,8 @@ void DirectoryPresenter::onDroppedInto(const QMimeData *data, QObject *source, i
         destDir = model->directoryPath();
     pathList.removeAll(destDir); // remove target dir from source list
 
-    // do the needful
-    FileOpResult result;
-    for(auto path : pathList) {
-        model->moveTo(path, destDir, false, result);
-        if(result != FileOpResult::SUCCESS && result != FileOpResult::NOTHING_TO_DO)
-            qDebug() << FileOperations::decodeResult(result);
-    }
+    // pass to core
+    emit droppedInto(pathList, destDir);
 }
 
 void DirectoryPresenter::selectAndFocus(QString path) {

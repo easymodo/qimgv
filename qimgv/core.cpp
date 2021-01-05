@@ -76,13 +76,16 @@ void Core::connectComponents() {
     connect(&folderViewPresenter, &DirectoryPresenter::draggedOut,
             this, qOverload<QList<QString>>(&Core::onDraggedOut));
 
+    connect(&folderViewPresenter, &DirectoryPresenter::droppedInto,
+            this, qOverload<QList<QString>,QString>(&Core::copyPathsTo));
+
     connect(scriptManager, &ScriptManager::error, mw, &MW::showError);
 
     connect(mw, &MW::opened,                this, &Core::loadPath);
     connect(mw, &MW::droppedIn,             this, &Core::onDropIn);
     connect(mw, &MW::copyRequested,         this, &Core::copyCurrentFile);
     connect(mw, &MW::moveRequested,         this, &Core::moveCurrentFile);
-    connect(mw, &MW::copyUrlsRequested,     this, &Core::copyPathsTo);
+    connect(mw, &MW::copyUrlsRequested,     this, qOverload<QList<QString>, QString>(&Core::copyPathsTo));
     connect(mw, &MW::moveUrlsRequested,     this, &Core::movePathsTo);
     connect(mw, &MW::cropRequested,         this, &Core::crop);
     connect(mw, &MW::cropAndSaveRequested,  this, &Core::cropAndSave);
@@ -605,18 +608,85 @@ void Core::showInDirectory() {
 #endif
 }
 
+// ------------------------ playground
+bool Core::copyFileConfirmation(QString src, QString dst) {
+    QString msg;
+    msg = "Overwrite target?";
+    msg.append("<br><br><b>Source:</b><br>" + src);
+    msg.append("<br><br> >>>>");
+    msg.append("<br><br><b>Destination folder:</b><br>" + dst);
+    return mw->showConfirmation("Confirm overwrite", msg);
+}
 
-void Core::copyPathsTo(QList<QString> paths, QString destDirectory) {
-    if(model->isEmpty())
+bool Core::mergeDirConfirmation(QString src, QString dst) {
+    QString msg;
+    msg = "Write into directory?";
+    msg.append("<br><br><b>Source:</b><br>" + src);
+    msg.append("<br><br> >>>>");
+    msg.append("<br><br><b>Destination:</b><br>" + dst);
+    return mw->showConfirmation("Confirm merge", msg);
+}
+
+void Core::interactiveCopy(QList<QString> paths, QString destDirectory, bool &forceAll) {
+    for(auto path : paths)
+        interactiveCopy(path, destDirectory, forceAll);
+}
+
+void Core::interactiveCopy(QString path, QString destDirectory, bool &forceAll) {
+    //if(model->isEmpty())
+    //    return;
+
+    // maybe use different flags for dir merge / file overwrite?
+    bool force = forceAll;
+
+    QFileInfo fi(path);
+    if(fi.isDir()) { // RECURSIVE DIR COPY
+        QFileInfo dstFi(destDirectory + "/" + fi.baseName());
+        // ask merge / overwrite
+        if(dstFi.exists()) {
+            if(!dstFi.isDir()) { // overwriting file with a folder
+                if(force || (force = copyFileConfirmation(path, dstFi.absoluteFilePath())) ) {
+                    // remove dst file; give up if not writable
+                    if(!QFile::remove(dstFi.absoluteFilePath()))
+                        return;
+                }
+            } else { // merge dirs
+                force = mergeDirConfirmation(path, dstFi.absoluteFilePath());
+            }
+        }
+        // create dst dir if needed
+        QDir dstDir(dstFi.absoluteFilePath());
+        if(!dstDir.exists())
+            dstDir.mkpath(".");
+        // recursive copy
+        QDir srcDir(fi.absoluteFilePath());
+        // TODO: skip symlinks? test
+        QStringList entryList = srcDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+        for(auto entry : entryList)
+            interactiveCopy(srcDir.absolutePath() + "/" + entry, dstDir.absolutePath(), forceAll);
+    } else { // SINGLE FILE
+        FileOpResult result;
+        FileOperations::copyTo(path, destDirectory, force, result);
         return;
-    FileOpResult result;
-    for(auto path : paths) {
-        model->copyTo(path, destDirectory, false, result);
-        if(result != FileOpResult::SUCCESS) { // todo: sane ui for replacing file (incl. multiple)
+        if(result == FileOpResult::DESTINATION_FILE_EXISTS && !force) {
+            // Ask & try again
+            // Temporarily use shitty QMessageBox. Custom dialog (/w checkbox & cancel) later
+            if(copyFileConfirmation(path, destDirectory + "/" + fi.fileName()))
+                FileOperations::copyTo(path, destDirectory, true, result);
+        }
+        if(result != FileOpResult::SUCCESS) {
             mw->showError(FileOperations::decodeResult(result));
             qDebug() << FileOperations::decodeResult(result);
         }
     }
+}
+
+void Core::copyPathsTo(QList<QString> paths, QString destDirectory, bool force) {
+    interactiveCopy(paths, destDirectory, force);
+}
+
+void Core::copyPathsTo(QList<QString> paths, QString destDirectory) {
+    copyPathsTo(paths, destDirectory, false);
 }
 
 void Core::movePathsTo(QList<QString> paths, QString destDirectory) {

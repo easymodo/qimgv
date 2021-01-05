@@ -38,6 +38,7 @@ signals:
     void dirActivated(QString dirPath);
     void fileActivated(QString filePath);
     void draggedOut(QList<QString>);
+    void droppedInto(QList<QString>, QString);
 
 public slots:
     void disconnectView();
