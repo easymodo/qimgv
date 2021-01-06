@@ -543,7 +543,7 @@ void Core::onFileRemoved(QString filePath, int index) {
     updateInfoString();
 }
 
-void Core::onFileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo) {
+void Core::onFileRenamed(QString fromPath, int /*indexFrom*/, QString /*toPath*/, int indexTo) {
     if(state.currentFilePath == fromPath) {
         loadIndex(indexTo, true, settings->usePreloader());
     }
@@ -636,9 +636,9 @@ void Core::interactiveCopy(QString path, QString destDirectory, bool &forceAll) 
     // maybe use different flags for dir merge / file overwrite?
     bool force = forceAll;
 
-    QFileInfo fi(path);
-    if(fi.isDir()) { // RECURSIVE DIR COPY
-        QFileInfo dstFi(destDirectory + "/" + fi.baseName());
+    QFileInfo srcFi(path);
+    if(srcFi.isDir()) { // RECURSIVE DIR COPY
+        QFileInfo dstFi(destDirectory + "/" + srcFi.baseName());
         // ask merge / overwrite
         if(dstFi.exists()) {
             if(!dstFi.isDir()) { // overwriting file with a folder
@@ -659,7 +659,7 @@ void Core::interactiveCopy(QString path, QString destDirectory, bool &forceAll) 
         if(!dstDir.exists())
             dstDir.mkpath(".");
         // recursive copy
-        QDir srcDir(fi.absoluteFilePath());
+        QDir srcDir(srcFi.absoluteFilePath());
         // TODO: skip symlinks? test
         QStringList entryList = srcDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
         for(auto entry : entryList)
@@ -670,7 +670,7 @@ void Core::interactiveCopy(QString path, QString destDirectory, bool &forceAll) 
         if(!force && result == FileOpResult::DESTINATION_FILE_EXISTS) {
             // Ask & try again
             // Temporarily use shitty QMessageBox. Custom dialog (/w checkbox & cancel) later
-            if(copyFileConfirmation(path, destDirectory + "/" + fi.fileName()))
+            if(copyFileConfirmation(path, destDirectory + "/" + srcFi.fileName()))
                 FileOperations::copyTo(path, destDirectory, true, result);
         }
         if(result != FileOpResult::SUCCESS && !(result == FileOpResult::DESTINATION_FILE_EXISTS && !force)) {

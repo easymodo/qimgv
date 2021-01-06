@@ -79,8 +79,16 @@ void FileOperations::copyTo(const QFileInfo &srcFile, const QString &destDirPath
         exists = true;
     }
     // copy
+    auto srcModTime = srcFile.lastModified();
+    auto srcReadTime = srcFile.lastRead();
     if(QFile::copy(srcFile.absoluteFilePath(), destFile.absoluteFilePath())) {
         result = FileOpResult::SUCCESS;
+        // restore timestamps
+        QFile dstF(destFile.absoluteFilePath());
+        dstF.open(QIODevice::ReadWrite);
+        dstF.setFileTime(srcModTime, QFileDevice::FileModificationTime);
+        dstF.setFileTime(srcReadTime, QFileDevice::FileAccessTime);
+        dstF.close();
         // ok; remove the backup
         if(exists)
             QFile::remove(tmpPath);
@@ -131,9 +139,11 @@ void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath
         QFile::remove(tmpPath);
         // move backup
         QFile::rename(destFile.absoluteFilePath(), tmpPath);
-        exists = false;
+        exists = true;
     }
     // move
+    auto srcModTime = srcFile.lastModified();
+    auto srcReadTime = srcFile.lastRead();
     if(QFile::copy(srcFile.absoluteFilePath(), destFile.absoluteFilePath())) {
         // remove original file
         FileOpResult removeResult;
@@ -141,8 +151,16 @@ void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath
         if(removeResult == FileOpResult::SUCCESS) {
             // OK
             result = FileOpResult::SUCCESS;
+            // restore timestamps
+            QFile dstF(destFile.absoluteFilePath());
+            dstF.open(QIODevice::ReadWrite);
+            // dstF.setFileTime(srcBirthTime, QFileDevice::FileBirthTime); // TODO: does not work (linux)
+            dstF.setFileTime(srcModTime, QFileDevice::FileModificationTime);
+            dstF.setFileTime(srcReadTime, QFileDevice::FileAccessTime);
+            dstF.close();
             // remove backup
-            QFile::remove(tmpPath);
+            if(exists)
+                QFile::remove(tmpPath);
             return;
         }
         // revert on failure
