@@ -226,16 +226,13 @@ void ThumbnailWidget::drawDropHover(QPainter *painter) {
 
     painter->setRenderHint(QPainter::Antialiasing);
     QColor clr(190,60,25);
-    QPen pen(clr);
-    pen.setWidth(2);
-    painter->setPen(pen);
-    painter->drawRect(highlightRect/*.adjusted(0.5f, 0.5f, -1.0f, -1.0f)*/);
-    painter->setOpacity(0.1f);
+    painter->setOpacity(0.1f * op);
     painter->fillRect(highlightRect, clr);
-
-    // restore
-    painter->setRenderHints(hints);
     painter->setOpacity(op);
+    QPen pen(clr, 2);
+    painter->setPen(pen);
+    painter->drawRect(highlightRect.adjusted(1,1,-1,-1));
+    painter->setRenderHints(hints);
 }
 
 void ThumbnailWidget::drawThumbnail(QPainter* painter, const QPixmap *pixmap) {

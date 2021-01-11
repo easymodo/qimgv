@@ -33,8 +33,19 @@ void ThumbnailGridWidget::setupLayout() {
 }
 
 void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
-    if(isHighlighted())
+    if(isHighlighted()) {
+        auto hints = painter->renderHints();
+        auto op = painter->opacity();
+        painter->setRenderHint(QPainter::Antialiasing);
+        painter->setOpacity(0.40f * op);
         painter->fillRect(highlightRect, highlightColor);
+        painter->setOpacity(op);
+        QPen pen(highlightColor, 2);
+        painter->setPen(pen);
+        painter->drawRect(highlightRect.adjusted(1,1,-1,-1)); // 2px pen
+        //painter->drawRect(highlightRect.adjusted(0.5,0.5,-0.5,-0.5)); // 1px pen
+        painter->setRenderHints(hints);
+    }
 }
 
 void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap) {

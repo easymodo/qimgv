@@ -56,6 +56,13 @@ void FolderGridView::dragMoveEvent(QDragMoveEvent *event) {
     lastDragTarget = index;
 }
 
+void FolderGridView::dragLeaveEvent(QDragLeaveEvent *event) {
+    event->accept();
+    if(lastDragTarget < 0 || lastDragTarget >= thumbnails.count())
+        return;
+    thumbnails.at(lastDragTarget)->setDropHovered(false);
+}
+
 void FolderGridView::setDragHover(int index) {
     if(!checkRange(index))
         return;
