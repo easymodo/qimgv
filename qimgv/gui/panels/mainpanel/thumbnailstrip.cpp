@@ -4,7 +4,6 @@
 
 ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     : ThumbnailView(THUMBNAILVIEW_HORIZONTAL, parent),
-      panelSize(100),
       thumbnailSpacing(0)
 {
     this->setAttribute(Qt::WA_NoMousePropagation, true);
@@ -34,7 +33,7 @@ void ThumbnailStrip::setupLayout() {
 ThumbnailWidget* ThumbnailStrip::createThumbnailWidget() {
     ThumbnailWidget *widget = new ThumbnailGridWidget();
     widget->setDrawLabel(false);
-    widget->setPadding(6);
+    widget->setPadding(9);
     widget->setThumbnailSize(this->mThumbnailSize);
     return widget;
 }
@@ -129,7 +128,7 @@ void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
 // update size based on widget's size
 // reposition thumbnails within scene if needed
 void ThumbnailStrip::updateThumbnailSize() {
-    int newSize = height() - 30;
+    int newSize = height() - 36;
     if( newSize % 2 )
         --newSize;
     if(newSize != mThumbnailSize) {

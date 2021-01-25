@@ -22,8 +22,6 @@ public:
     explicit ThumbnailStrip(QWidget *parent = nullptr);
 
 private:
-    int panelSize;
-
     int thumbnailSpacing;
 
     void updateThumbnailPositions(int start, int end);
