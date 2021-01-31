@@ -9,7 +9,7 @@ public:
 protected:
     virtual void setupLayout() override;
     virtual void drawHighlight(QPainter *painter) override;
-    virtual void drawHoverHighlight(QPainter *painter) override;
+    virtual void drawHoverBg(QPainter *painter) override;
     virtual void drawLabel(QPainter *painter) override;
     virtual void drawIcon(QPainter *painter, const QPixmap *pixmap) override;
 

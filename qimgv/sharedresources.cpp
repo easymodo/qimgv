@@ -25,11 +25,9 @@ QPixmap *SharedResources::getPixmap(ShrIcon icon, qreal dpr) {
     if(pixmap)
         return pixmap;
 
-    bool hiResPixmap = false;
     qreal pixmapDrawScale;
     if(dpr >= (1.0 + 0.001)) {
         path.replace(".", "@2x.");
-        hiResPixmap = true;
         pixmap = new QPixmap(path);
         if(dpr >= (2.0 - 0.001))
             pixmapDrawScale = dpr;
@@ -37,9 +35,7 @@ QPixmap *SharedResources::getPixmap(ShrIcon icon, qreal dpr) {
             pixmapDrawScale = 2.0;
         pixmap->setDevicePixelRatio(pixmapDrawScale);
     } else {
-        hiResPixmap = false;
         pixmap = new QPixmap(path);
-        pixmapDrawScale = dpr;
     }
     if(icon == ShrIcon::SHR_ICON_ERROR)
         mLoadingErrorIcon72 = pixmap;

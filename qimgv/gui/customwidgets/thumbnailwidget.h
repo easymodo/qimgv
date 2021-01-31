@@ -9,6 +9,7 @@
 #include <QPaintEngine>
 #include <cmath>
 #include "sourcecontainers/thumbnail.h"
+#include "utils/imagelib.h"
 #include "settings.h"
 #include "sharedresources.h"
 
@@ -55,6 +56,7 @@ protected:
     virtual void drawThumbnail(QPainter* painter, const QPixmap *pixmap);
     virtual void drawIcon(QPainter *painter, const QPixmap *pixmap);
     virtual void drawHighlight(QPainter *painter);
+    virtual void drawHoverBg(QPainter *painter);
     virtual void drawHoverHighlight(QPainter *painter);
     virtual void drawLabel(QPainter *painter);
     virtual void drawDropHover(QPainter *painter);

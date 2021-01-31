@@ -109,7 +109,7 @@ void ColorScheme::createColorVariants() {
         panel_button_hover.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMin(folderview_topbar.value() + 26, 255));
         panel_button_pressed.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMin(folderview_topbar.value() + 15, 255));
         folderview_hc.setHsv(folderview.hue(), folderview.saturation(), qMin(folderview.value() + 12, 255));
-        folderview_hc2.setHsv(folderview.hue(), folderview.saturation(), qMin(folderview.value() + 22, 255));
+        folderview_hc2.setHsv(folderview.hue(), folderview.saturation(), qMin(folderview.value() + 25, 255));
         folderview_button_pressed = folderview_hc;
         folderview_button_hover = folderview_hc2;
         // regular buttons - from widget bg
@@ -128,7 +128,7 @@ void ColorScheme::createColorVariants() {
         panel_button_hover.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMax(folderview_topbar.value() - 45, 0));
         panel_button_pressed.setHsv(folderview_topbar.hue(), folderview_topbar.saturation(), qMax(folderview_topbar.value() - 55, 0));
         folderview_hc.setHsv(folderview.hue(), folderview.saturation(), qMax(folderview.value() - 25, 0));
-        folderview_hc2.setHsv(folderview.hue(), folderview.saturation(), qMax(folderview.value() - 40, 0));
+        folderview_hc2.setHsv(folderview.hue(), folderview.saturation(), qMax(folderview.value() - 45, 0));
         folderview_button_pressed = folderview_hc2;
         folderview_button_hover = folderview_hc;
         // regular buttons - from widget bg

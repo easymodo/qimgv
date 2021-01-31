@@ -53,22 +53,13 @@ void ThumbnailGridWidget::drawThumbnail(QPainter *painter, const QPixmap *pixmap
     if(!thumbnail->hasAlphaChannel())
         painter->fillRect(drawRectCentered.adjusted(3,3,3,3), shadowColor);
     painter->drawPixmap(drawRectCentered, *pixmap);
-    if(isHovered()) {
-        auto op = painter->opacity();
-        auto mode = painter->compositionMode();
-        painter->setCompositionMode(QPainter::CompositionMode_Plus);
-        painter->setOpacity(0.2f);
-        painter->drawPixmap(drawRectCentered, *thumbnail->pixmap());
-        painter->setOpacity(op);
-        painter->setCompositionMode(mode);
-    }
 }
 
 void ThumbnailGridWidget::readSettings() {
     highlightColor = settings->colorScheme().accent;
 }
 
-void ThumbnailGridWidget::drawHoverHighlight(QPainter *painter) {
+void ThumbnailGridWidget::drawHoverBg(QPainter *painter) {
     auto op = painter->opacity();
     painter->fillRect(highlightRect, settings->colorScheme().folderview_hc);
     painter->setOpacity(op);
@@ -77,7 +68,7 @@ void ThumbnailGridWidget::drawHoverHighlight(QPainter *painter) {
 void ThumbnailGridWidget::drawLabel(QPainter *painter) {
     if(thumbnail) {
         drawSingleLineText(painter, nameRect, thumbnail->name(), settings->colorScheme().text_hc2);
-        drawSingleLineText(painter, infoRect, thumbnail->label(), settings->colorScheme().text_lc);
+        drawSingleLineText(painter, infoRect, thumbnail->label(), settings->colorScheme().text_lc2);
     }
 }
 

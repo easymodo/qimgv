@@ -170,20 +170,31 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     Q_UNUSED(option)
     painter->setRenderHints(QPainter::Antialiasing);
     qreal dpr = painter->paintEngine()->paintDevice()->devicePixelRatioF();
-    if(isHovered())
-        drawHoverHighlight(painter);
+    if(isHovered() && !isHighlighted())
+        drawHoverBg(painter);
     if(isHighlighted())
         drawHighlight(painter);
 
-    if(!thumbnail) {
-        QPixmap* loadingIcon = shrRes->getPixmap(ShrIcon::SHR_ICON_LOADING, dpr);
-        drawIcon(painter, loadingIcon);
+    if(!thumbnail) { // not loaded
+        // todo: recolor once in shrRes
+        QPixmap loadingIcon(*shrRes->getPixmap(ShrIcon::SHR_ICON_LOADING, dpr));
+        if(isHighlighted())
+            ImageLib::recolor(loadingIcon, settings->colorScheme().accent);
+        else
+            ImageLib::recolor(loadingIcon, settings->colorScheme().folderview_hc2);
+        drawIcon(painter, &loadingIcon);
     } else {
-        if(thumbnail->pixmap().get()->width() == 0) {
-            QPixmap* errorIcon = shrRes->getPixmap(ShrIcon::SHR_ICON_ERROR, dpr);
-            drawIcon(painter, errorIcon);
+        if(thumbnail->pixmap().get()->width() == 0) { // invalid thumb
+            QPixmap errorIcon(*shrRes->getPixmap(ShrIcon::SHR_ICON_ERROR, dpr));
+            if(isHighlighted())
+                ImageLib::recolor(errorIcon, settings->colorScheme().accent);
+            else
+                ImageLib::recolor(errorIcon, settings->colorScheme().folderview_hc2);
+            drawIcon(painter, &errorIcon);
         } else {
             drawThumbnail(painter, thumbnail->pixmap().get());
+            if(isHovered())
+                drawHoverHighlight(painter);
         }
         if(mDrawLabel)
             drawLabel(painter);
@@ -196,11 +207,21 @@ void ThumbnailWidget::drawHighlight(QPainter *painter) {
     painter->fillRect(highlightRect, highlightColor);
 }
 
-void ThumbnailWidget::drawHoverHighlight(QPainter *painter) {
+void ThumbnailWidget::drawHoverBg(QPainter *painter) {
     painter->setOpacity(0.5f);
     painter->fillRect(highlightRect, highlightColor);
     painter->setOpacity(1.0);
     painter->fillRect(boundingRect(), QColor(255,255,255, 10));
+}
+
+void ThumbnailWidget::drawHoverHighlight(QPainter *painter) {
+    auto op = painter->opacity();
+    auto mode = painter->compositionMode();
+    painter->setCompositionMode(QPainter::CompositionMode_Plus);
+    painter->setOpacity(0.2f);
+    painter->drawPixmap(drawRectCentered, *thumbnail->pixmap());
+    painter->setOpacity(op);
+    painter->setCompositionMode(mode);
 }
 
 void ThumbnailWidget::drawLabel(QPainter *painter) {
@@ -268,7 +289,6 @@ void ThumbnailWidget::setHovered(bool mode) {
         update();
     }
 }
-
 
 bool ThumbnailWidget::isHovered() {
     return hovered;
