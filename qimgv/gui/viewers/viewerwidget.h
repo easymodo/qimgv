@@ -55,7 +55,7 @@ private:
     void enableVideoPlayer();
 
     CurrentWidget currentWidget;
-    bool mInteractionEnabled;
+    bool mInteractionEnabled, mWaylandCursorWorkaround;
     QTimer cursorTimer;
     const int CURSOR_HIDE_TIMEOUT_MS = 1000;
     bool avoidPanelFlag, mPanelEnabled, mPanelFullscreenOnly, mIsFullscreen;

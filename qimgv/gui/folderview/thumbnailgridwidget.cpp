@@ -39,7 +39,7 @@ void ThumbnailGridWidget::drawHighlight(QPainter *painter) {
         painter->setRenderHint(QPainter::Antialiasing);
         painter->setOpacity(0.40f * op);
         painter->fillRect(highlightRect, highlightColor);
-        painter->setOpacity(0.80f * op);
+        painter->setOpacity(0.70f * op);
         QPen pen(highlightColor, 2);
         painter->setPen(pen);
         painter->drawRect(highlightRect.adjusted(1,1,-1,-1)); // 2px pen

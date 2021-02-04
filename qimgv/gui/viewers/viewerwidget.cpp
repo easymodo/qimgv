@@ -14,6 +14,7 @@ ViewerWidget::ViewerWidget(QWidget *parent)
       videoControls(nullptr),
       currentWidget(UNSET),
       mInteractionEnabled(false),
+      mWaylandCursorWorkaround(false),
       avoidPanelFlag(false),
       mPanelEnabled(false),
       mPanelFullscreenOnly(false),
@@ -21,7 +22,12 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 {
     setAttribute(Qt::WA_TranslucentBackground, true);
     setMouseTracking(true);
-
+#ifdef Q_OS_LINUX
+    // we cant check cursor position on wayland until the mouse is moved
+    // use this to skip cursor check once
+    if(qgetenv("XDG_SESSION_TYPE") == "wayland")
+        mWaylandCursorWorkaround = true;
+#endif
     layout.setContentsMargins(0, 0, 0, 0);
     layout.setSpacing(0);
     this->setLayout(&layout);
@@ -398,6 +404,7 @@ void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
+    mWaylandCursorWorkaround = false;
     if(!(event->buttons() & Qt::LeftButton) && !(event->buttons() & Qt::RightButton)) {
         showCursor();
         hideCursorTimed(true);
@@ -454,13 +461,19 @@ void ViewerWidget::hideCursor() {
     // ignore when menu is up
     if(contextMenu && contextMenu->isVisible())
         return;
-    // only hide when we are under viewer or player widget
     if(settings->cursorAutohide()) {
-        QWidget *w = qApp->widgetAt(QCursor::pos());
-        if(w && (w == imageViewer.get()->viewport() || w == videoPlayer->getPlayer().get())) {
-            if(!videoControls->isVisible() || !videoControlsArea().contains(mapFromGlobal(QCursor::pos()))) {
-                setCursor(QCursor(Qt::BlankCursor));
-                videoControls->hide();
+        // force hide on wayland until we can get the cursor pos
+        if(mWaylandCursorWorkaround) {
+            setCursor(QCursor(Qt::BlankCursor));
+            videoControls->hide();
+        } else {
+            // only hide when we are under viewer or player widget
+            QWidget *w = qApp->widgetAt(QCursor::pos());
+            if(w && (w == imageViewer.get()->viewport() || w == videoPlayer->getPlayer().get())) {
+                if(!videoControls->isVisible() || !videoControlsArea().contains(mapFromGlobal(QCursor::pos()))) {
+                    setCursor(QCursor(Qt::BlankCursor));
+                    videoControls->hide();
+                }
             }
         }
     }
