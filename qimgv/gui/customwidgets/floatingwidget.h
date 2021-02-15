@@ -10,6 +10,7 @@
 #include "gui/customwidgets/floatingwidgetcontainer.h"
 #include <QStyleOption>
 #include <QPainter>
+#include <QApplication>
 #include <QDebug>
 
 #include <QWheelEvent>

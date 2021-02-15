@@ -52,6 +52,6 @@ void FloatingWidget::wheelEvent(QWheelEvent *event) {
 
 void FloatingWidget::hide() {
     QWidget::hide();
-    if(this->hasFocus())
+    if(this->hasFocus() || isAncestorOf(qApp->focusWidget()))
         parentWidget()->setFocus();
 }
