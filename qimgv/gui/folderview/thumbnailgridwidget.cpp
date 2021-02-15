@@ -68,7 +68,10 @@ void ThumbnailGridWidget::drawHoverBg(QPainter *painter) {
 void ThumbnailGridWidget::drawLabel(QPainter *painter) {
     if(thumbnail) {
         drawSingleLineText(painter, nameRect, thumbnail->name(), settings->colorScheme().text_hc2);
-        drawSingleLineText(painter, infoRect, thumbnail->label(), settings->colorScheme().text_lc2);
+        auto op = painter->opacity();
+        painter->setOpacity(op * 0.57f);
+        drawSingleLineText(painter, infoRect, thumbnail->label(), settings->colorScheme().text_hc2);
+        painter->setOpacity(op);
     }
 }
 
