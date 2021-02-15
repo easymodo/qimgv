@@ -344,6 +344,7 @@ bool FolderGridView::focusNextPrevChild(bool) {
 
 void FolderGridView::keyPressEvent(QKeyEvent *event) {
     ThumbnailView::keyPressEvent(event);
+    event->accept();
 
     if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
         emit itemActivated(lastSelected());
@@ -353,7 +354,6 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
     // temporary, will be configurable later
     if(event->key() == Qt::Key_Backspace) {
         actionManager->invokeAction("goUp");
-        event->accept();
         return;
     }
 
@@ -361,7 +361,7 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
         if(ShortcutBuilder::fromEvent(event) == "Ctrl+A")
             selectAll();
         else
-            event->ignore();
+            actionManager->processEvent(event);
         return;
     }
 
@@ -392,7 +392,7 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
         selectLast();
         break;
     default:
-        event->ignore();
+        actionManager->processEvent(event);
     }
 }
 

@@ -37,11 +37,16 @@ CopyOverlay::~CopyOverlay() {
 void CopyOverlay::show() {
     OverlayWidget::show();
     setFocus();
+
 }
 
 void CopyOverlay::hide() {
     QWidget::hide();
-    clearFocus();
+    /* Reimplementation of CopyOverlay::focusNextPrevChild
+     * breaks clearFocus() - it does not get passed to the parent.
+     * We do it manually
+     */
+    parentWidget()->setFocus();
 }
 
 void CopyOverlay::setDialogMode(CopyOverlayMode _mode) {
@@ -117,12 +122,17 @@ void CopyOverlay::createDefaultPaths() {
     }
 }
 
+// block native tab-switching so we can use it in shortcuts
+bool CopyOverlay::focusNextPrevChild(bool mode) {
+    return false;
+}
+
 void CopyOverlay::keyPressEvent(QKeyEvent *event) {
     QString key = actionManager->keyForNativeScancode(event->nativeScanCode());
     if(shortcuts.contains(key)) {
         event->accept();
         requestFileOperation(pathWidgets.at(shortcuts[key])->directory());
     } else {
-        event->ignore();
+        actionManager->processEvent(event);
     }
 }

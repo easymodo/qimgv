@@ -68,11 +68,6 @@ void TreeViewCustom::updateScrollbarStyle() {
     overlayScrollbar.setVisible( (this->verticalScrollBar()->maximum()) );
 }
 
-// block native tab-switching so we can use it in shortcuts
-bool TreeViewCustom::focusNextPrevChild(bool) {
-    return false;
-}
-
 void TreeViewCustom::keyPressEvent(QKeyEvent* event) {
     QModelIndex currentIndex = this->currentIndex();
     if( (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return ) && currentIndex.isValid() ) {

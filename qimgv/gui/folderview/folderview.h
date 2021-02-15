@@ -86,6 +86,7 @@ private slots:
     void onSplitterMoved();
     void onHomeBtn();
     void onRootBtn();
+    void onTreeViewTabOut();
 private:
     Ui::FolderView *ui;
     FileSystemModelCustom *dirModel;

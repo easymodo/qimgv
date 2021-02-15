@@ -38,6 +38,7 @@ signals:
 protected:
     void keyPressEvent(QKeyEvent *event);
 
+    bool focusNextPrevChild(bool);
 private slots:
     void requestFileOperation(QString path);
     void readSettings();
@@ -53,4 +54,5 @@ private:
     QMap<QString, int> shortcuts;
     CopyOverlayMode mode;
     void removePathWidgets();
+
 };

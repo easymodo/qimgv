@@ -24,6 +24,11 @@ void KeySequenceEdit::wheelEvent(QWheelEvent *e) {
     processEvent(e);
 }
 
+// block native tab-switching so we can use it in shortcuts
+bool KeySequenceEdit::focusNextPrevChild(bool) {
+    return false;
+}
+
 void KeySequenceEdit::processEvent(QEvent *e) {
     QInputEvent *inputEvent = dynamic_cast<QInputEvent *>(e);
     if(!inputEvent)

@@ -82,6 +82,7 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->togglePlacesPanelButton, &ActionButton::toggled, this, &FolderView::onPlacesPanelButtonChecked);
 
     connect(ui->dirTreeView, &TreeViewCustom::droppedIn, this, &FolderView::onDroppedInByIndex);
+    connect(ui->dirTreeView, &TreeViewCustom::tabbedOut, this, &FolderView::onTreeViewTabOut);
     connect(ui->bookmarksWidget, &BookmarksWidget::droppedIn, this, &FolderView::copyUrlsRequested); // ask what to do via popup? copy or move
 
     ui->sortingComboBox->setItemDelegate(new QStyledItemDelegate(ui->sortingComboBox));
@@ -142,6 +143,11 @@ void FolderView::toggleFilesystemView() {
     else
         ui->dirTreeView->show();
     settings->setPlacesPanelTreeExpanded(ui->dirTreeView->isVisible());
+}
+
+void FolderView::onTreeViewTabOut() {
+    ui->thumbnailGrid->setFocus();
+    // TODO: maybe add a focus change indication? a border blink or something
 }
 
 // TODO: ask what to do

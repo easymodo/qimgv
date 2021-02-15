@@ -17,6 +17,7 @@ public:
 
 signals:
     void droppedIn(QList<QString>, QModelIndex);
+    void tabbedOut();
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
@@ -26,8 +27,8 @@ protected:
     void enterEvent(QEvent *event);
     void leaveEvent(QEvent *event);
     void showEvent(QShowEvent *event);
-    bool focusNextPrevChild(bool);
     void keyPressEvent(QKeyEvent *event);
+
 private slots:
     void updateScrollbarStyle();
 private:

@@ -791,6 +791,6 @@ void MW::leaveEvent(QEvent *event) {
 }
 
 // block native tab-switching so we can use it in shortcuts
-bool MW::focusNextPrevChild(bool) {
-    return false;
-}
+//bool MW::focusNextPrevChild(bool) {
+//    return false;
+//}
