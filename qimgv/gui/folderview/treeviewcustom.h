@@ -26,6 +26,8 @@ protected:
     void enterEvent(QEvent *event);
     void leaveEvent(QEvent *event);
     void showEvent(QShowEvent *event);
+    bool focusNextPrevChild(bool);
+    void keyPressEvent(QKeyEvent *event);
 private slots:
     void updateScrollbarStyle();
 private:
