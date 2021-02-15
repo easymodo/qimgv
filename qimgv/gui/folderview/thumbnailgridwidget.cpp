@@ -69,7 +69,7 @@ void ThumbnailGridWidget::drawLabel(QPainter *painter) {
     if(thumbnail) {
         drawSingleLineText(painter, nameRect, thumbnail->name(), settings->colorScheme().text_hc2);
         auto op = painter->opacity();
-        painter->setOpacity(op * 0.57f);
+        painter->setOpacity(op * 0.62f);
         drawSingleLineText(painter, infoRect, thumbnail->label(), settings->colorScheme().text_hc2);
         painter->setOpacity(op);
     }
