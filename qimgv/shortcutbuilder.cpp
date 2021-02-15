@@ -105,7 +105,7 @@ QString ShortcutBuilder::fromEventNativeScanCode(QKeyEvent *event) {
     if(sequence.isEmpty())
         return sequence;
 
-    QChar keyChr = event->text()[0];
+    QChar keyChr = event->text().at(0);
 
     bool useUppercaseChr = (event->modifiers() == Qt::ShiftModifier) && !(keyChr.isLetter() || !keyChr.isPrint() || keyChr.isSpace());
     if(useUppercaseChr) {
@@ -113,7 +113,7 @@ QString ShortcutBuilder::fromEventNativeScanCode(QKeyEvent *event) {
     } else if(!sequence.isEmpty()) {
         sequence.prepend(modifierKeys(event));
     }
-    //qDebug() << "RESULT:" << sequence;
+    qDebug() << "RESULT:" << sequence;
     return sequence;
 }
 //------------------------------------------------------------------------------

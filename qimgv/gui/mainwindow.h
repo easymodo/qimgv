@@ -140,6 +140,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void leaveEvent(QEvent *event);
 
+    bool focusNextPrevChild(bool);
 signals:
     void opened(QString);
     void fullscreenStateChanged(bool);

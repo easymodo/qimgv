@@ -789,3 +789,8 @@ void MW::leaveEvent(QEvent *event) {
     QWidget::leaveEvent(event);
     viewerWidget->hidePanelAnimated();
 }
+
+// block native tab-switching so we can use it in shortcuts
+bool MW::focusNextPrevChild(bool) {
+    return false;
+}

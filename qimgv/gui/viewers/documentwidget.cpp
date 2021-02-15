@@ -18,7 +18,6 @@ DocumentWidget::DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::sh
     setFocusProxy(mViewWidget.get());
 }
 
-
 std::shared_ptr<ViewerWidget> DocumentWidget::viewWidget() {
     return mViewWidget;
 }

@@ -337,6 +337,11 @@ void FolderGridView::updateLayout() {
     flowLayout->activate();
 }
 
+// block native tab-switching so we can use it in shortcuts
+bool FolderGridView::focusNextPrevChild(bool) {
+    return false;
+}
+
 void FolderGridView::keyPressEvent(QKeyEvent *event) {
     ThumbnailView::keyPressEvent(event);
 

@@ -69,6 +69,8 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
     void dragLeaveEvent(QDragLeaveEvent *event);
+    bool focusNextPrevChild(bool);
+
 signals:
     void thumbnailSizeChanged(int);
     void showLabelsChanged(bool);
