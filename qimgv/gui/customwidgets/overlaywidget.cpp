@@ -67,7 +67,7 @@ void OverlayWidget::setFadeEnabled(bool mode) {
 void OverlayWidget::show() {
     fadeAnimation->stop();
     opacityEffect->setOpacity(1.0);
-    QWidget::show();
+    FloatingWidget::show();
 }
 
 void OverlayWidget::hideAnimated() {
@@ -75,12 +75,13 @@ void OverlayWidget::hideAnimated() {
         fadeAnimation->stop();
         fadeAnimation->start(QPropertyAnimation::KeepWhenStopped);
     } else {
-        QWidget::hide();
+        FloatingWidget::hide();
     }
 }
+
 void OverlayWidget::hide() {
     fadeAnimation->stop();
-    QWidget::hide();
+    FloatingWidget::hide();
 }
 
 void OverlayWidget::recalculateGeometry() {

@@ -37,16 +37,10 @@ CopyOverlay::~CopyOverlay() {
 void CopyOverlay::show() {
     OverlayWidget::show();
     setFocus();
-
 }
 
 void CopyOverlay::hide() {
-    QWidget::hide();
-    /* Reimplementation of CopyOverlay::focusNextPrevChild
-     * breaks clearFocus() - it does not get passed to the parent.
-     * We do it manually
-     */
-    parentWidget()->setFocus();
+    OverlayWidget::hide();
 }
 
 void CopyOverlay::setDialogMode(CopyOverlayMode _mode) {
@@ -128,11 +122,10 @@ bool CopyOverlay::focusNextPrevChild(bool mode) {
 }
 
 void CopyOverlay::keyPressEvent(QKeyEvent *event) {
+    event->accept();
     QString key = actionManager->keyForNativeScancode(event->nativeScanCode());
-    if(shortcuts.contains(key)) {
-        event->accept();
+    if(shortcuts.contains(key))
         requestFileOperation(pathWidgets.at(shortcuts[key])->directory());
-    } else {
+    else
         actionManager->processEvent(event);
-    }
 }

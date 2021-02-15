@@ -542,13 +542,17 @@ void ViewerWidget::hideEvent(QHideEvent *event) {
     hideContextMenu();
 }
 
+// block native tab-switching so we can use it in shortcuts
+bool ViewerWidget::focusNextPrevChild(bool mode) {
+    return false;
+}
+
 void ViewerWidget::keyPressEvent(QKeyEvent *event) {
-    if(currentWidget == VIDEOPLAYER && event->key() == Qt::Key_Space) {
-        event->accept();
+    event->accept();
+    if(currentWidget == VIDEOPLAYER && event->key() == Qt::Key_Space)
         videoPlayer->pauseResume();
-    } else {
-        event->ignore();
-    }
+    else
+        actionManager->processEvent(event);
 }
 
 void ViewerWidget::enterEvent(QEvent *event) {

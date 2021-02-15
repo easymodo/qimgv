@@ -66,7 +66,7 @@ void InputMap::initKeyMap() {
     keyMap.insert( 329 , "PgUp" );
 
     // row 3
-    //keyMap.insert( ?? , "Tab" );
+    keyMap.insert( 15 , "Tab" );
     keyMap.insert( 16 , "Q" );
     keyMap.insert( 17 , "W" );
     keyMap.insert( 18 , "E" );

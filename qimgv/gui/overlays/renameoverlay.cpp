@@ -31,7 +31,6 @@ void RenameOverlay::show() {
 
 void RenameOverlay::hide() {
     OverlayWidget::hide();
-    ui->fileName->clearFocus();
 }
 
 void RenameOverlay::setName(QString name) {

@@ -124,8 +124,7 @@ void CropOverlay::hide() {
     endPos = QPoint(0, 0);
     imageDrawRect.setRect(0, 0, 0, 0);
     clearSelection();
-    QWidget::hide();
-    clearFocus();
+    FloatingWidget::hide();
     if(drawBuffer) {
         delete drawBuffer;
         drawBuffer = nullptr;

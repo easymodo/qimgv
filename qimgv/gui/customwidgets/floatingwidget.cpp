@@ -49,3 +49,9 @@ void FloatingWidget::mouseReleaseEvent(QMouseEvent *event) {
 void FloatingWidget::wheelEvent(QWheelEvent *event) {
     event->accept();
 }
+
+void FloatingWidget::hide() {
+    QWidget::hide();
+    if(this->hasFocus())
+        parentWidget()->setFocus();
+}

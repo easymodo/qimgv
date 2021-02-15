@@ -127,4 +127,5 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     void enterEvent(QEvent *event);
     void leaveEvent(QEvent *event);
+    bool focusNextPrevChild(bool mode);
 };

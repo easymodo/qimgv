@@ -113,6 +113,7 @@ QString ShortcutBuilder::fromEventNativeScanCode(QKeyEvent *event) {
     } else if(!sequence.isEmpty()) {
         sequence.prepend(modifierKeys(event));
     }
+
     //qDebug() << "RESULT:" << sequence;
     return sequence;
 }

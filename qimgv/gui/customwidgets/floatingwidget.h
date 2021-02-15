@@ -23,6 +23,9 @@ public:
     bool acceptKeyboardFocus() const;
     void setAcceptKeyboardFocus(bool mode);
 
+public slots:
+    void hide();
+
 protected:
     // called whenever container rectangle changes
     // this does nothing, reimplement to use
