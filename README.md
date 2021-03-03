@@ -132,6 +132,12 @@ Apple's `heif` format is supported via third-party qt plugin. Included in window
 
 See [github.com/jakar/qt-heif-image-plugin](https://github.com/jakar/qt-heif-image-plugin)
 
+### JPEG-XL (JXL) support:
+
+qimgv can open `jxl` files via third-party qt plugin.
+
+See [github.com/novomesk/qt-jpegxl-image-plugin](https://github.com/novomesk/qt-jpegxl-image-plugin)
+
 ### AVIF support
 
 qimgv can open `avif` files via third-party qt plugin.
