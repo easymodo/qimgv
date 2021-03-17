@@ -1,14 +1,17 @@
 #pragma once
 
-#include <QDialog>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QSpinBox>
 #include <QCheckBox>
-#include <QLabel>
-#include <QDesktopWidget>
 #include <QDebug>
+#include <QDesktopWidget>
+#include <QDialog>
+#include <QDoubleSpinBox>
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSpinBox>
+#include <QVBoxLayout>
 
 namespace Ui {
     class ResizeDialog;
@@ -24,6 +27,10 @@ public:
 
 public slots:
     int exec();
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
+
 private:
     Ui::ResizeDialog *ui;
     QSize originalSize, targetSize, desktopSize;
@@ -34,6 +41,7 @@ private:
 private slots:
     void widthChanged(int);
     void heightChanged(int);
+    void percentChanged(double);
     void sizeSelect();
 
     void setCommonResolution(int);
@@ -41,6 +49,8 @@ private slots:
     void fitDesktop();
     void fillDesktop();
     void onAspectRatioCheckbox();
+    void onPercentageRadioButton();
+    void onAbsoluteSizeRadioButton();
 signals:
     void sizeSelected(QSize);
 };

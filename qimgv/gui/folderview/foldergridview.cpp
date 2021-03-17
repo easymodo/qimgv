@@ -8,16 +8,66 @@ FolderGridView::FolderGridView(QWidget *parent)
       mShowLabels(false)
 {
     offscreenPreloadArea = 2300;
+
+    this->setAcceptDrops(true);
+
     this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
-    this->scene.setBackgroundBrush(QColor(47,47,48)); //#2f2f30 TODO: use qss??
+    this->scene.setBackgroundBrush(settings->colorScheme().folderview);
+    this->setCacheMode(QGraphicsView::CacheBackground);
 
     // turn this off until [multi]selection is implemented
     setDrawScrollbarIndicator(false);
-    setSelectMode(SELECT_BY_DOUBLECLICK);
+    setSelectMode(ACTIVATE_BY_DOUBLECLICK);
+
+    connect(settings, &Settings::settingsChanged, [this]() {
+        this->scene.setBackgroundBrush(settings->colorScheme().folderview);
+    });
 
     setupLayout();
-    connect(this, &ThumbnailView::itemSelected,
+    connect(this, &ThumbnailView::itemActivated,
             this, &FolderGridView::onitemSelected);
+}
+
+void FolderGridView::dropEvent(QDropEvent *event) {
+    event->accept();
+    ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
+    int index = -1;
+    if(item) {
+        index = thumbnails.indexOf(item);
+        item->setDropHovered(false);
+    }
+    emit droppedInto(event->mimeData(), event->source(), index);
+}
+
+void FolderGridView::dragEnterEvent(QDragEnterEvent *event) {
+    event->accept();
+}
+
+void FolderGridView::dragMoveEvent(QDragMoveEvent *event) {
+    event->accept();
+    ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
+    int index = -1;
+    if(item)
+        index = thumbnails.indexOf(item);
+    // unselect previous
+    if(index != lastDragTarget && checkRange(lastDragTarget))
+        thumbnails.at(lastDragTarget)->setDropHovered(false);
+    emit draggedOver(index);
+    lastDragTarget = index;
+}
+
+void FolderGridView::dragLeaveEvent(QDragLeaveEvent *event) {
+    event->accept();
+    if(lastDragTarget < 0 || lastDragTarget >= thumbnails.count())
+        return;
+    thumbnails.at(lastDragTarget)->setDropHovered(false);
+}
+
+void FolderGridView::setDragHover(int index) {
+    if(!checkRange(index))
+        return;
+    auto item = thumbnails.at(index);
+    item->setDropHovered(true);
 }
 
 void FolderGridView::onitemSelected() {
@@ -25,9 +75,9 @@ void FolderGridView::onitemSelected() {
 }
 
 void FolderGridView::updateScrollbarIndicator() {
-    if(!thumbnails.count() || selectedIndex() == -1)
+    if(!thumbnails.count() || !selection().count())
         return;
-    ThumbnailWidget *thumb = thumbnails.at(selectedIndex());
+    ThumbnailWidget *thumb = thumbnails.at(lastSelected());
     qreal itemCenter = (thumb->pos().y() + (thumb->height() / 2)) / scene.height();
     indicator = QRect(2, scrollBar->height() * itemCenter - indicatorSize, scrollBar->width() - 4, indicatorSize);
 }
@@ -56,67 +106,97 @@ void FolderGridView::setShowLabels(bool mode) {
 }
 
 void FolderGridView::ensureSelectedItemVisible() {
-    if(!checkRange(selectedIndex()))
+    if(!thumbnails.count() || lastSelected() == -1)
         return;
-    ThumbnailWidget *thumb = thumbnails.at(selectedIndex());
+    ThumbnailWidget *thumb = thumbnails.at(lastSelected());
     ensureVisible(thumb, 0, 0);
 }
 
+void FolderGridView::selectAll() {
+    QList<int> list;
+    for(int i = 0; i < thumbnails.count(); i++) {
+        list << i;
+    }
+    // preserve last selected index by putting it at the end of a new selection
+    // this is simpler but it changes selection order a bit
+    if(lastSelected() != -1) {
+        // in this case list is sorted so no need to indexOf()
+        list.move(lastSelected(), list.count() - 1);
+    }
+    select(list);
+}
+
 void FolderGridView::selectAbove() {
-    if(!thumbnails.count() || flowLayout->sameRow(0, selectedIndex()))
+    if(!thumbnails.count() || lastSelected() == -1 || flowLayout->sameRow(0, lastSelected()))
         return;
     int newIndex;
-    newIndex = flowLayout->itemAbove(selectedIndex());
+    newIndex = flowLayout->itemAbove(lastSelected());
     if(shiftedCol >= 0) {
-        int diff = shiftedCol - flowLayout->columnOf(selectedIndex());
+        int diff = shiftedCol - flowLayout->columnOf(lastSelected());
         newIndex += diff;
         shiftedCol = -1;
     }
     if(!checkRange(newIndex))
         newIndex = 0;
-    selectIndex(newIndex);
+    if(rangeSelection)
+        addSelectionRange(newIndex);
+    else
+        select(newIndex);
     scrollToCurrent();
 }
 
 void FolderGridView::selectBelow() {
-    if(!thumbnails.count() || flowLayout->sameRow(selectedIndex(), thumbnails.count() - 1))
+    if(!thumbnails.count() || lastSelected() == -1 || flowLayout->sameRow(lastSelected(), thumbnails.count() - 1))
         return;
     shiftedCol = -1;
-    int newIndex = flowLayout->itemBelow(selectedIndex());
+    int newIndex = flowLayout->itemBelow(lastSelected());
     if(!checkRange(newIndex))
         newIndex = thumbnails.count() - 1;
-    if(flowLayout->columnOf(newIndex) != flowLayout->columnOf(selectedIndex()))
-        shiftedCol = flowLayout->columnOf(selectedIndex());
-    selectIndex(newIndex);
+    if(flowLayout->columnOf(newIndex) != flowLayout->columnOf(lastSelected()))
+        shiftedCol = flowLayout->columnOf(lastSelected());
+    if(rangeSelection)
+        addSelectionRange(newIndex);
+    else
+        select(newIndex);
     scrollToCurrent();
 }
 
 void FolderGridView::selectNext() {
-    if(!thumbnails.count() || selectedIndex() == thumbnails.count() - 1)
+    if(!thumbnails.count() || lastSelected() == thumbnails.count() - 1)
         return;
+    if(!rangeSelection && lastSelected() == thumbnails.count() - 1) {
+        select(lastSelected());
+        return;
+    }
     shiftedCol = -1;
-    int newIndex = selectedIndex() + 1;
+    int newIndex = lastSelected() + 1;
     if(!checkRange(newIndex))
         newIndex = thumbnails.count() - 1;
-    selectIndex(newIndex);
+    if(rangeSelection)
+        addSelectionRange(newIndex);
+    else
+        select(newIndex);
     scrollToCurrent();
 }
 
 void FolderGridView::selectPrev() {
-    if(!thumbnails.count() || selectedIndex() == 0)
+    if(!thumbnails.count() || lastSelected() == 0)
         return;
     shiftedCol = -1;
-    int newIndex = selectedIndex() - 1;
+    int newIndex = lastSelected() - 1;
     if(!checkRange(newIndex))
         newIndex = 0;
-    selectIndex(newIndex);
+    if(rangeSelection)
+        addSelectionRange(newIndex);
+    else
+        select(newIndex);
     scrollToCurrent();
 }
 
 void FolderGridView::pageUp() {
-    if(!thumbnails.count() || flowLayout->sameRow(0, selectedIndex()))
+    if(!thumbnails.count() || lastSelected() == -1 || flowLayout->sameRow(0, lastSelected()))
         return;
-    int newIndex = selectedIndex();
+    int newIndex = lastSelected();
     int tmp;
     // 4 rows up
     for(int i = 0; i < 4; i++) {
@@ -129,15 +209,18 @@ void FolderGridView::pageUp() {
         newIndex += diff;
         shiftedCol = -1;
     }
-    selectIndex(newIndex);
+    if(rangeSelection)
+        addSelectionRange(newIndex);
+    else
+        select(newIndex);
     scrollToCurrent();
 }
 
 void FolderGridView::pageDown() {
-    if(!thumbnails.count() || flowLayout->sameRow(selectedIndex(), thumbnails.count() - 1))
+    if(!thumbnails.count() || lastSelected() == -1 || flowLayout->sameRow(lastSelected(), thumbnails.count() - 1))
         return;
     shiftedCol = -1;
-    int newIndex = selectedIndex();
+    int newIndex = lastSelected();
     int tmp;
     // 4 rows down
     for(int i = 0; i < 4; i++) {
@@ -145,9 +228,12 @@ void FolderGridView::pageDown() {
         if(checkRange(tmp))
             newIndex = tmp;
     }
-    if(flowLayout->columnOf(newIndex) != flowLayout->columnOf(selectedIndex()))
-        shiftedCol = flowLayout->columnOf(selectedIndex());
-    selectIndex(newIndex);
+    if(flowLayout->columnOf(newIndex) != flowLayout->columnOf(lastSelected()))
+        shiftedCol = flowLayout->columnOf(lastSelected());
+    if(rangeSelection)
+        addSelectionRange(newIndex);
+    else
+        select(newIndex);
     scrollToCurrent();
 }
 
@@ -155,7 +241,10 @@ void FolderGridView::selectFirst() {
     if(!thumbnails.count())
         return;
     shiftedCol = -1;
-    selectIndex(0);
+    if(rangeSelection)
+        addSelectionRange(0);
+    else
+        select(0);
     scrollToCurrent();
 }
 
@@ -163,12 +252,15 @@ void FolderGridView::selectLast() {
     if(!thumbnails.count())
         return;
     shiftedCol = -1;
-    selectIndex(thumbnails.count() - 1);
+    if(rangeSelection)
+        addSelectionRange(thumbnails.count() - 1);
+    else
+        select(thumbnails.count() - 1);
     scrollToCurrent();
 }
 
 void FolderGridView::scrollToCurrent() {
-    scrollToItem(selectedIndex());
+    scrollToItem(lastSelected());
 }
 
 void FolderGridView::scrollToItem(int index) {
@@ -189,7 +281,10 @@ void FolderGridView::scrollToItem(int index) {
         // DOWN
         else
             delta = sceneRect.top() - itemRect.top();
-        scrollSmooth(delta);
+        if(settings->enableSmoothScroll())
+            scrollSmooth(delta);
+        else
+            scrollPrecise(delta);
     }
 }
 
@@ -206,7 +301,7 @@ void FolderGridView::setupLayout() {
     this->setAlignment(Qt::AlignHCenter);
 
     flowLayout = new FlowLayout();
-    flowLayout->setContentsMargins(12,0,12,0);
+    flowLayout->setContentsMargins(9,0,9,0);
     setFrameShape(QFrame::NoFrame);
     scene.addItem(&holderWidget);
     holderWidget.setLayout(flowLayout);
@@ -216,7 +311,7 @@ void FolderGridView::setupLayout() {
 ThumbnailWidget* FolderGridView::createThumbnailWidget() {
     ThumbnailGridWidget *widget = new ThumbnailGridWidget();
     widget->setDrawLabel(mShowLabels);
-    widget->setPadding(8,8);
+    widget->setPadding(8);
     widget->setThumbnailSize(this->mThumbnailSize); // TODO: constructor
     return widget;
 }
@@ -242,28 +337,63 @@ void FolderGridView::updateLayout() {
     flowLayout->activate();
 }
 
+// block native tab-switching so we can use it in shortcuts
+bool FolderGridView::focusNextPrevChild(bool) {
+    return false;
+}
+
 void FolderGridView::keyPressEvent(QKeyEvent *event) {
-    QString shortcut = ShortcutBuilder::fromEvent(event);
-    if(shortcut == "Right")
-        selectNext();
-    else if(shortcut == "Left")
+    ThumbnailView::keyPressEvent(event);
+    event->accept();
+
+    if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
+        emit itemActivated(lastSelected());
+        return;
+    }
+
+    // temporary, will be configurable later
+    if(event->key() == Qt::Key_Backspace) {
+        actionManager->invokeAction("goUp");
+        return;
+    }
+
+    if(event->modifiers() & Qt::ControlModifier) {
+        if(ShortcutBuilder::fromEvent(event) == "Ctrl+A")
+            selectAll();
+        else
+            actionManager->processEvent(event);
+        return;
+    }
+
+    // handle selection
+    switch (event->key()) {
+    case Qt::Key_Left:
         selectPrev();
-    else if(shortcut == "Up")
+        break;
+    case Qt::Key_Right:
+        selectNext();
+        break;
+    case Qt::Key_Up:
         selectAbove();
-    else if(shortcut == "Down")
+        break;
+    case Qt::Key_Down:
         selectBelow();
-    else if(shortcut == "Enter")
-        emit itemSelected(selectedIndex());
-    else if(shortcut == "Home")
-        selectFirst();
-    else if(shortcut == "End")
-        selectLast();
-    else if(shortcut == "PgUp")
+        break;
+    case Qt::Key_PageUp:
         pageUp();
-    else if(shortcut == "PgDown")
+        break;
+    case Qt::Key_PageDown:
         pageDown();
-    else
-        event->ignore();
+        break;
+    case Qt::Key_Home:
+        selectFirst();
+        break;
+    case Qt::Key_End:
+        selectLast();
+        break;
+    default:
+        actionManager->processEvent(event);
+    }
 }
 
 void FolderGridView::wheelEvent(QWheelEvent *event) {
@@ -293,8 +423,8 @@ void FolderGridView::setThumbnailSize(int newSize) {
     }
     updateLayout();
     fitSceneToContents();
-    if(checkRange(selectedIndex()))
-        ensureVisible(thumbnails.at(selectedIndex()), 0, 40);
+    if(lastSelected() != -1)
+        ensureVisible(thumbnails.at(lastSelected()), 0, 40);
     emit thumbnailSizeChanged(mThumbnailSize);
     loadVisibleThumbnails();
 }

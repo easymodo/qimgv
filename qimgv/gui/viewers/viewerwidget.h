@@ -28,7 +28,7 @@ public:
     void disableInteraction();
     bool interactionEnabled();
 
-    std::shared_ptr<ThumbnailStrip> getThumbPanel();
+    std::shared_ptr<ThumbnailStripProxy> getThumbPanel();
 
     bool showImage(std::unique_ptr<QPixmap> pixmap);
     bool showAnimation(std::unique_ptr<QMovie> movie);
@@ -40,6 +40,8 @@ public:
     PanelHPosition panelPosition();
 
     bool panelEnabled();
+    void setupMainPanel();
+
 private:
     QHBoxLayout layout;
     std::unique_ptr<ImageViewerV2> imageViewer;
@@ -53,7 +55,7 @@ private:
     void enableVideoPlayer();
 
     CurrentWidget currentWidget;
-    bool mInteractionEnabled;
+    bool mInteractionEnabled, mWaylandCursorWorkaround;
     QTimer cursorTimer;
     const int CURSOR_HIDE_TIMEOUT_MS = 1000;
     bool avoidPanelFlag, mPanelEnabled, mPanelFullscreenOnly, mIsFullscreen;
@@ -125,4 +127,5 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     void enterEvent(QEvent *event);
     void leaveEvent(QEvent *event);
+    bool focusNextPrevChild(bool mode);
 };

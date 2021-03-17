@@ -28,6 +28,9 @@
     <height>16777215</height>
    </size>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
@@ -39,16 +42,16 @@
     <number>8</number>
    </property>
    <property name="leftMargin">
-    <number>1</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
-    <number>1</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>1</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>5</number>
+    <number>4</number>
    </property>
    <item>
     <widget class="QWidget" name="headerWidget" native="true">

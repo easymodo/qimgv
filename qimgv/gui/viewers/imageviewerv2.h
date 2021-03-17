@@ -14,6 +14,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <memory>
+#include <cmath>
 #include "settings.h"
 
 enum MouseInteractionState {
@@ -98,8 +99,8 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void resizeEvent(QResizeEvent* event);
     void wheelEvent(QWheelEvent *event);
-
     void showEvent(QShowEvent *event);
+
 protected slots:
     void onAnimationTimer();
 private slots:
@@ -121,6 +122,7 @@ private:
     const int SCROLL_UPDATE_RATE = 7;
     const int SCROLL_DISTANCE = 250;
     const qreal SCROLL_SPEED_MILTIPLIER = 1.3;
+    const qreal TRACKPAD_SCROLL_MULTIPLIER = 0.7;
     const int ANIMATION_SPEED = 120;
     const float FAST_SCALE_THRESHOLD = 1.0f;
     const int LARGE_VIEWPORT_SIZE = 2073600;

@@ -13,6 +13,7 @@ public:
 
     virtual void setWatchPath(const QString& watchPath);
     virtual QString watchPath() const;
+    bool isObserving();
 
 public Q_SLOTS:
     void observe();

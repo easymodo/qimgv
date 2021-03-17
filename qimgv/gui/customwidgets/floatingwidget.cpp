@@ -37,3 +37,21 @@ void FloatingWidget::setAcceptKeyboardFocus(bool mode) {
 
 void FloatingWidget::recalculateGeometry() {
 }
+
+void FloatingWidget::mousePressEvent(QMouseEvent *event) {
+    event->accept();
+}
+
+void FloatingWidget::mouseReleaseEvent(QMouseEvent *event) {
+    event->accept();
+}
+
+void FloatingWidget::wheelEvent(QWheelEvent *event) {
+    event->accept();
+}
+
+void FloatingWidget::hide() {
+    QWidget::hide();
+    if(this->hasFocus() || isAncestorOf(qApp->focusWidget()))
+        parentWidget()->setFocus();
+}

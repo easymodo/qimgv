@@ -5,6 +5,8 @@
 #include <QPainter>
 #include <QDebug>
 #include <QMouseEvent>
+#include "settings.h"
+#include "utils/imagelib.h"
 
 class IconWidget : public QWidget
 {

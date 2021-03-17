@@ -2,7 +2,7 @@
 
 target_sources(qimgv PRIVATE
     actions.cpp
-    helprunner.cpp
+    cmdoptionsrunner.cpp
     imagefactory.cpp
     imagelib.cpp
     inputmap.cpp
@@ -11,4 +11,5 @@ target_sources(qimgv PRIVATE
     sleep.cpp
     stuff.cpp
     wallpapersetter.cpp
+    fileoperations.cpp
 )

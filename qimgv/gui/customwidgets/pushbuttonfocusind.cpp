@@ -41,7 +41,7 @@ void PushButtonFocusInd::paintEvent(QPaintEvent *event) {
         QPainterPath path(p1);
         path.lineTo(p2);
         path.lineTo(p3);
-        painter.fillPath(path, QColor(112,112,112, 180));
+        painter.fillPath(path, settings->colorScheme().widget);
     }
 }
 

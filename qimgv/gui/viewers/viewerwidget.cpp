@@ -14,6 +14,7 @@ ViewerWidget::ViewerWidget(QWidget *parent)
       videoControls(nullptr),
       currentWidget(UNSET),
       mInteractionEnabled(false),
+      mWaylandCursorWorkaround(false),
       avoidPanelFlag(false),
       mPanelEnabled(false),
       mPanelFullscreenOnly(false),
@@ -21,7 +22,12 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 {
     setAttribute(Qt::WA_TranslucentBackground, true);
     setMouseTracking(true);
-
+#ifdef Q_OS_LINUX
+    // we cant check cursor position on wayland until the mouse is moved
+    // use this to skip cursor check once
+    if(qgetenv("XDG_SESSION_TYPE") == "wayland")
+        mWaylandCursorWorkaround = true;
+#endif
     layout.setContentsMargins(0, 0, 0, 0);
     layout.setSpacing(0);
     this->setLayout(&layout);
@@ -50,12 +56,9 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
     connect(videoPlayer.get(), &VideoPlayer::playbackFinished, this, &ViewerWidget::onVideoPlaybackFinished);
 
-    connect(videoControls, &VideoControlsProxyWrapper::pause,     this, &ViewerWidget::pauseResumePlayback);
     connect(videoControls, &VideoControlsProxyWrapper::seekLeft,  this, &ViewerWidget::seekLeft);
     connect(videoControls, &VideoControlsProxyWrapper::seekRight, this, &ViewerWidget::seekRight);
     connect(videoControls, &VideoControlsProxyWrapper::seek,      this, &ViewerWidget::seek);
-    connect(videoControls, &VideoControlsProxyWrapper::nextFrame, this, &ViewerWidget::frameStep);
-    connect(videoControls, &VideoControlsProxyWrapper::prevFrame, this, &ViewerWidget::frameStepBack);
 
     enableImageViewer();
     enableInteraction();
@@ -137,7 +140,8 @@ void ViewerWidget::disableVideoPlayer() {
         // which paints over the imageviewer, causing corruption
         // so we do not HIDE it, but rather just cover it by imageviewer's widget
         // seems to work fine, might even feel a bit snappier
-        //videoPlayer->hide();
+        if(!videoPlayer->isInitialized())
+            videoPlayer->hide();
     }
 }
 
@@ -148,7 +152,7 @@ void ViewerWidget::onScaleChanged(qreal scale) {
         zoomIndicator->setScale(scale);
         if(settings->zoomIndicatorMode() == ZoomIndicatorMode::INDICATOR_ENABLED)
             zoomIndicator->show();
-        else if((settings->zoomIndicatorMode() == ZoomIndicatorMode::INDICATOR_AUTOHIDE))
+        else if((settings->zoomIndicatorMode() == ZoomIndicatorMode::INDICATOR_AUTO))
             zoomIndicator->show(1500);
     } else {
         zoomIndicator->hide();
@@ -208,7 +212,7 @@ bool ViewerWidget::interactionEnabled() {
     return mInteractionEnabled;
 }
 
-std::shared_ptr<ThumbnailStrip> ViewerWidget::getThumbPanel() {
+std::shared_ptr<ThumbnailStripProxy> ViewerWidget::getThumbPanel() {
     return mainPanel->getThumbnailStrip();
 }
 
@@ -383,6 +387,11 @@ bool ViewerWidget::panelEnabled() {
     return mPanelEnabled;
 }
 
+void ViewerWidget::setupMainPanel() {
+    if(mPanelEnabled)
+        mainPanel->setupThumbnailStrip();
+}
+
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
     hideContextMenu();
     event->ignore();
@@ -395,6 +404,7 @@ void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
+    mWaylandCursorWorkaround = false;
     if(!(event->buttons() & Qt::LeftButton) && !(event->buttons() & Qt::RightButton)) {
         showCursor();
         hideCursorTimed(true);
@@ -451,13 +461,19 @@ void ViewerWidget::hideCursor() {
     // ignore when menu is up
     if(contextMenu && contextMenu->isVisible())
         return;
-    // only hide when we are under viewer or player widget
     if(settings->cursorAutohide()) {
-        QWidget *w = qApp->widgetAt(QCursor::pos());
-        if(w && (w == imageViewer.get()->viewport() || w == videoPlayer->getPlayer().get())) {
-            if(!videoControls->isVisible() || !videoControlsArea().contains(mapFromGlobal(QCursor::pos()))) {
-                setCursor(QCursor(Qt::BlankCursor));
-                videoControls->hide();
+        // force hide on wayland until we can get the cursor pos
+        if(mWaylandCursorWorkaround) {
+            setCursor(QCursor(Qt::BlankCursor));
+            videoControls->hide();
+        } else {
+            // only hide when we are under viewer or player widget
+            QWidget *w = qApp->widgetAt(QCursor::pos());
+            if(w && (w == imageViewer.get()->viewport() || w == videoPlayer->getPlayer().get())) {
+                if(!videoControls->isVisible() || !videoControlsArea().contains(mapFromGlobal(QCursor::pos()))) {
+                    setCursor(QCursor(Qt::BlankCursor));
+                    videoControls->hide();
+                }
             }
         }
     }
@@ -526,13 +542,17 @@ void ViewerWidget::hideEvent(QHideEvent *event) {
     hideContextMenu();
 }
 
+// block native tab-switching so we can use it in shortcuts
+bool ViewerWidget::focusNextPrevChild(bool mode) {
+    return false;
+}
+
 void ViewerWidget::keyPressEvent(QKeyEvent *event) {
-    if(currentWidget == VIDEOPLAYER && event->key() == Qt::Key_Space) {
-        event->accept();
+    event->accept();
+    if(currentWidget == VIDEOPLAYER && event->key() == Qt::Key_Space)
         videoPlayer->pauseResume();
-    } else {
-        event->ignore();
-    }
+    else
+        actionManager->processEvent(event);
 }
 
 void ViewerWidget::enterEvent(QEvent *event) {

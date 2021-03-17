@@ -15,11 +15,21 @@ VideoPlayerInitProxy::VideoPlayerInitProxy(QWidget *parent)
     : VideoPlayer(parent),
       player(nullptr)
 {
+    setAccessibleName("VideoPlayerInitProxy");
     setMouseTracking(true);
-    setAttribute(Qt::WA_TranslucentBackground, true);
     layout.setContentsMargins(0,0,0,0);
     setLayout(&layout);
     connect(settings, &Settings::settingsChanged, this, &VideoPlayerInitProxy::onSettingsChanged);
+
+    libDirDefault  = QIMGV_PLUGIN_DIR;
+    libFile = QIMGV_PLAYER_PLUGIN;
+
+
+    #ifdef _WIN32
+        libDirs << libDirDefault;
+    #else
+        libDirs << libDirDefault << "/usr/lib/qimgv" << "/usr/lib64/qimgv";
+    #endif
 }
 
 VideoPlayerInitProxy::~VideoPlayerInitProxy() {
@@ -36,6 +46,10 @@ std::shared_ptr<VideoPlayer> VideoPlayerInitProxy::getPlayer() {
     return player;
 }
 
+bool VideoPlayerInitProxy::isInitialized() {
+    return (player != nullptr);
+}
+
 inline bool VideoPlayerInitProxy::initPlayer() {
 #ifndef USE_MPV
     return false;
@@ -43,18 +57,8 @@ inline bool VideoPlayerInitProxy::initPlayer() {
     if(player)
         return true;
 
-    QString libDir  = QIMGV_PLUGIN_DIR;
-    QString libFile = QIMGV_PLAYER_PLUGIN;
-
-// search lib location
-    QStringList searchDirs;
-#ifdef _WIN32
-    searchDirs << libDir << "";
-#else
-    searchDirs << libDir << "/usr/lib/qimgv" << "/usr/lib64/qimgv";
-#endif
     QFileInfo pluginFile;
-    for(auto dir : searchDirs) {
+    for(auto dir : libDirs) {
         pluginFile.setFile(dir + "/" + libFile);
         if(pluginFile.isFile() && pluginFile.isReadable()) {
             playerLib.setFileName(pluginFile.absoluteFilePath());
@@ -62,7 +66,7 @@ inline bool VideoPlayerInitProxy::initPlayer() {
         }
     }
     if(playerLib.fileName().isEmpty()) {
-        qDebug() << "Could not find" << libFile << "in the following directories:" << searchDirs;
+        qDebug() << "Could not find" << libFile << "in the following directories:" << libDirs;
         return false;
     }
 
@@ -192,16 +196,25 @@ void VideoPlayerInitProxy::setLoopPlayback(bool mode) {
 }
 
 void VideoPlayerInitProxy::show() {
-    if(!initPlayer())
-        return;
-    player->show();
+    if(initPlayer()) {
+        layout.removeWidget(errorLabel);
+        player->show();
+    } else if(!errorLabel) {
+        errorLabel = new QLabel(this);
+        errorLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
+        errorLabel->setAlignment(Qt::AlignHCenter);
+        QString errString = "Could not load " + libFile + " from:";
+        for(auto path : libDirs)
+            errString.append("\n" + path + "/");
+        errorLabel->setText(errString);
+        layout.addWidget(errorLabel);
+    }
     VideoPlayer::show();
 }
 
 void VideoPlayerInitProxy::hide() {
-    if(!player)
-        return;
-    player->hide();
+    if(player)
+        player->hide();
     VideoPlayer::hide();
 }
 

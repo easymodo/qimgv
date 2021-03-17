@@ -50,8 +50,8 @@ bool ImageAnimated::save(QString destPath) {
             qDebug() << "Unable to save file.";
             return false;
         } else {
-            qDebug() << destPath << this->path();
-            if(destPath == this->path()) {
+            qDebug() << destPath << this->filePath();
+            if(destPath == this->filePath()) {
                 mDocInfo->refresh();
             }
             return true;

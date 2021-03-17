@@ -34,10 +34,23 @@
    <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>8</number>
+   </property>
+   <property name="topMargin">
+    <number>8</number>
+   </property>
+   <property name="rightMargin">
+    <number>8</number>
+   </property>
+   <property name="bottomMargin">
+    <number>8</number>
+   </property>
    <item>
     <widget class="QLabel" name="label">
      <property name="font">
       <font>
+       <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>

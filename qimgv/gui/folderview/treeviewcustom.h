@@ -4,7 +4,9 @@
 #include <QTreeView>
 #include <QDragEnterEvent>
 #include <QMimeData>
+#include <QScrollBar>
 #include <QDebug>
+#include "settings.h"
 
 class TreeViewCustom : public QTreeView
 {
@@ -14,11 +16,25 @@ public:
     virtual QSize minimumSizeHint() const override;
 
 signals:
-    void droppedIn(QList<QUrl>, QModelIndex);
+    void droppedIn(QList<QString>, QModelIndex);
+    void tabbedOut();
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+
+    void enterEvent(QEvent *event);
+    void leaveEvent(QEvent *event);
+    void showEvent(QShowEvent *event);
+    void keyPressEvent(QKeyEvent *event);
+
+private slots:
+    void updateScrollbarStyle();
+private:
+    QScrollBar overlayScrollbar;
+
+    const int SCROLLBAR_WIDTH = 12;
 };
 
 #endif // TREEVIEWCUSTOM_H

@@ -2,7 +2,8 @@
 
 InfoBarProxy::InfoBarProxy(QWidget *parent) : QWidget(parent), infoBar(nullptr) {
     setAccessibleName("InfoBarProxy");
-    this->setMaximumHeight(26);
+    this->setMinimumHeight(23);
+    this->setMaximumHeight(23);
     layout.setContentsMargins(0,0,0,0);
     setLayout(&layout);
 }
@@ -31,4 +32,12 @@ void InfoBarProxy::init() {
     setLayout(&layout);
     if(!stateBuf.fileName.isEmpty())
         infoBar->setInfo(stateBuf.position, stateBuf.fileName, stateBuf.info);
+}
+
+void InfoBarProxy::paintEvent(QPaintEvent *event) {
+    Q_UNUSED(event)
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }

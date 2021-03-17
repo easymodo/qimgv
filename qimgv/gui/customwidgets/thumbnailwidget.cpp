@@ -7,14 +7,13 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     highlighted(false),
     hovered(false),
     mDrawLabel(true),
+    dropHovered(false),
     mThumbnailSize(100),
-    paddingX(1),
-    paddingY(3),
+    padding(5),
     textHeight(5)
 {
     setAttribute(Qt::WA_OpaquePaintEvent, true);
     setAcceptHoverEvents(true);
-    nameColor.setRgb(20, 20, 20, 255);
     qreal fntSz = font.pointSizeF();
     if(fntSz > 0) {
         fontSmall.setPointSizeF(fontSmall.pointSizeF() * 0.85);
@@ -31,13 +30,15 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
 }
 
 void ThumbnailWidget::readSettings() {
-    highlightColor.setRgb(settings->accentColor().rgb());
+    nameColor = settings->colorScheme().text;
+    highlightColor = settings->colorScheme().accent;
 }
 
 void ThumbnailWidget::setThumbnailSize(int size) {
     if(mThumbnailSize != size && size > 0) {
         isLoaded = false;
         mThumbnailSize = size;
+        updateBoundingRect();
         updateGeometry();
         updateThumbnailDrawPosition();
         updateHighlightRect();
@@ -46,9 +47,9 @@ void ThumbnailWidget::setThumbnailSize(int size) {
     }
 }
 
-void ThumbnailWidget::setPadding(int x, int y) {
-    paddingX = x;
-    paddingY = y;
+void ThumbnailWidget::setPadding(int _padding) {
+    padding = _padding;
+    updateBoundingRect();
 }
 
 int ThumbnailWidget::thumbnailSize() {
@@ -67,6 +68,7 @@ void ThumbnailWidget::reset() {
 void ThumbnailWidget::setDrawLabel(bool mode) {
     if(mDrawLabel != mode) {
         mDrawLabel = mode;
+        updateBoundingRect();
         updateThumbnailDrawPosition();
         setupLayout();
         updateHighlightRect();
@@ -106,12 +108,6 @@ void ThumbnailWidget::unsetThumbnail() {
     if(thumbnail)
         thumbnail.reset();
     isLoaded = false;
-    /*
-    updateThumbnailDrawPosition();
-    setupLayout();
-    updateHighlightRect();
-    update();
-    */
 }
 
 void ThumbnailWidget::setupLayout() {
@@ -119,17 +115,16 @@ void ThumbnailWidget::setupLayout() {
                       highlightRect.width(), textHeight * 1.7);
 
     if(thumbnail && !thumbnail->label().isEmpty()) {
-        nameTextRect = nameRect.adjusted(4, 0, -4, 0);
         labelTextRect.setWidth(fmSmall->width(thumbnail->label()));
         labelTextRect.setHeight(nameRect.height());
-        labelTextRect.moveTop(nameTextRect.top());
-        labelTextRect.moveRight(nameTextRect.right());
-        nameTextRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
+        labelTextRect.moveTop(nameRect.top());
+        labelTextRect.moveRight(nameRect.right());
+        nameRect.adjust(0, 0, -labelTextRect.width() - 4, 0);
     }
 }
 
 void ThumbnailWidget::updateHighlightRect() {
-    highlightRect = QRectF(paddingX, 0, width() - paddingX * 2, paddingY);
+    highlightRect = QRectF(padding, 0, width() - padding * 2, padding);
 }
 
 void ThumbnailWidget::setHighlighted(bool mode) {
@@ -143,8 +138,23 @@ bool ThumbnailWidget::isHighlighted() {
     return highlighted;
 }
 
+void ThumbnailWidget::setDropHovered(bool mode) {
+    if(dropHovered != mode) {
+        dropHovered = mode;
+        update();
+    }
+}
+
+bool ThumbnailWidget::isDropHovered() {
+    return dropHovered;
+}
+
 QRectF ThumbnailWidget::boundingRect() const {
-    return QRectF(0, 0, mThumbnailSize + paddingX * 2, mThumbnailSize + paddingY * 2);
+    return mBoundingRect;
+}
+
+void ThumbnailWidget::updateBoundingRect() {
+    mBoundingRect = QRectF(0, 0, mThumbnailSize + padding * 2, mThumbnailSize + padding * 2);
 }
 
 qreal ThumbnailWidget::width() {
@@ -158,58 +168,99 @@ qreal ThumbnailWidget::height() {
 void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(widget)
     Q_UNUSED(option)
+    painter->setRenderHints(QPainter::Antialiasing);
     qreal dpr = painter->paintEngine()->paintDevice()->devicePixelRatioF();
+    if(isHovered() && !isHighlighted())
+        drawHoverBg(painter);
     if(isHighlighted())
         drawHighlight(painter);
-    if(!thumbnail) {
-        QPixmap* loadingIcon = shrRes->getPixmap(ShrIcon::SHR_ICON_LOADING, dpr);
-        drawIcon(painter, dpr, loadingIcon);
+
+    if(!thumbnail) { // not loaded
+        // todo: recolor once in shrRes
+        QPixmap loadingIcon(*shrRes->getPixmap(ShrIcon::SHR_ICON_LOADING, dpr));
+        if(isHighlighted())
+            ImageLib::recolor(loadingIcon, settings->colorScheme().accent);
+        else
+            ImageLib::recolor(loadingIcon, settings->colorScheme().folderview_hc2);
+        drawIcon(painter, &loadingIcon);
     } else {
-        if(thumbnail->pixmap().get()->width() == 0) {
-            QPixmap* errorIcon = shrRes->getPixmap(ShrIcon::SHR_ICON_ERROR, dpr);
-            drawIcon(painter, dpr, errorIcon);
+        if(thumbnail->pixmap().get()->width() == 0) { // invalid thumb
+            QPixmap errorIcon(*shrRes->getPixmap(ShrIcon::SHR_ICON_ERROR, dpr));
+            if(isHighlighted())
+                ImageLib::recolor(errorIcon, settings->colorScheme().accent);
+            else
+                ImageLib::recolor(errorIcon, settings->colorScheme().folderview_hc2);
+            drawIcon(painter, &errorIcon);
         } else {
-            drawThumbnail(painter, dpr, thumbnail->pixmap().get());
+            drawThumbnail(painter, thumbnail->pixmap().get());
+            if(isHovered())
+                drawHoverHighlight(painter);
         }
         if(mDrawLabel)
             drawLabel(painter);
     }
-    if(isHovered())
-        drawHover(painter);
+    if(isDropHovered())
+        drawDropHover(painter);
 }
 
 void ThumbnailWidget::drawHighlight(QPainter *painter) {
     painter->fillRect(highlightRect, highlightColor);
 }
 
-void ThumbnailWidget::drawHover(QPainter *painter) {
-    painter->setOpacity(0.6);
+void ThumbnailWidget::drawHoverBg(QPainter *painter) {
+    painter->setOpacity(0.5f);
     painter->fillRect(highlightRect, highlightColor);
     painter->setOpacity(1.0);
     painter->fillRect(boundingRect(), QColor(255,255,255, 10));
 }
 
+void ThumbnailWidget::drawHoverHighlight(QPainter *painter) {
+    auto op = painter->opacity();
+    auto mode = painter->compositionMode();
+    painter->setCompositionMode(QPainter::CompositionMode_Plus);
+    painter->setOpacity(0.2f);
+    painter->drawPixmap(drawRectCentered, *thumbnail->pixmap());
+    painter->setOpacity(op);
+    painter->setCompositionMode(mode);
+}
+
 void ThumbnailWidget::drawLabel(QPainter *painter) {
     // text background
     painter->setOpacity(0.95);
-    painter->fillRect(nameRect, nameColor);
+    painter->fillRect(nameRect, QColor(15,15,15));
     painter->setOpacity(1.0);
     // filename
     int flags = Qt::TextSingleLine | Qt::AlignVCenter;
     painter->setFont(font);
-    painter->setPen(QColor(210, 210, 210, 255));
-    painter->drawText(nameTextRect, flags, thumbnail->name());
+    painter->setPen(settings->colorScheme().text_hc2);
+    painter->drawText(nameRect, flags, thumbnail->name());
     // additional info
     painter->setFont(fontSmall);
-    painter->setPen(QColor(160, 160, 160, 255));
+    painter->setPen(settings->colorScheme().text_lc);
     painter->drawText(labelTextRect, flags, thumbnail->label());
 }
 
-void ThumbnailWidget::drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
+void ThumbnailWidget::drawDropHover(QPainter *painter) {
+    // save
+    auto hints = painter->renderHints();
+    auto op = painter->opacity();
+
+    painter->setRenderHint(QPainter::Antialiasing);
+    QColor clr(190,60,25);
+    painter->setOpacity(0.1f * op);
+    painter->fillRect(highlightRect, clr);
+    painter->setOpacity(op);
+    QPen pen(clr, 2);
+    painter->setPen(pen);
+    painter->drawRect(highlightRect.adjusted(1,1,-1,-1));
+    painter->setRenderHints(hints);
+}
+
+void ThumbnailWidget::drawThumbnail(QPainter* painter, const QPixmap *pixmap) {
     painter->drawPixmap(drawRectCentered, *pixmap);
 }
 
-void ThumbnailWidget::drawIcon(QPainter* painter, qreal dpr, const QPixmap *pixmap) {
+void ThumbnailWidget::drawIcon(QPainter* painter, const QPixmap *pixmap) {
     QPointF pos = QPointF(width()  / 2 - pixmap->width()  / (2 * pixmap->devicePixelRatioF()),
                           height() / 2 - pixmap->height() / (2 * pixmap->devicePixelRatioF()));
     painter->drawPixmap(pos, *pixmap);

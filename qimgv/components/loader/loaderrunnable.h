@@ -14,4 +14,5 @@ private:
     QString path;
 signals:
     void finished(std::shared_ptr<Image>, QString);
+    void failed(QString);
 };

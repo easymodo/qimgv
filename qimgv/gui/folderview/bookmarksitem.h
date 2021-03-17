@@ -10,6 +10,7 @@
 #include <QLabel>
 #include "gui/customwidgets/iconbutton.h"
 #include "gui/customwidgets/clickablelabel.h"
+#include "settings.h"
 #include <QMouseEvent>
 
 class BookmarksItem : public QWidget {
@@ -24,11 +25,11 @@ public slots:
 signals:
     void clicked(QString dirPath);
     void removeClicked(QString dirPath);
-    void droppedIn(QList<QUrl> urls, QString dirPath);
+    void droppedIn(QList<QString> paths, QString dirPath);
 
 protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
-    bool eventFilter(QObject *o, QEvent *ev) Q_DECL_OVERRIDE;
+    void mousePressEvent(QMouseEvent *event) override;
 
     void paintEvent(QPaintEvent *event) override;
     void dropEvent(QDropEvent *event) override;
@@ -37,11 +38,12 @@ protected:
 
 private slots:
     void onRemoveClicked();
+
 private:
     QString dirName, dirPath;
 
-    QLabel folderIconLabel;
-    IconButton removeIconLabel;
+    IconWidget folderIconWidget;
+    IconButton removeItemButton;
     QLabel dirNameLabel;
     QSpacerItem *spacer;
     QHBoxLayout layout;

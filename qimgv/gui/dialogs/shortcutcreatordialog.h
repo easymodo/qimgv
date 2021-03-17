@@ -23,13 +23,13 @@ public:
     ~ShortcutCreatorDialog();
     QString selectedAction();
     QString selectedShortcut();
+    void setAction(QString);
+    void setShortcut(QString);
 
 private slots:
     void onShortcutEdited();
 
 private:
     Ui::ShortcutCreatorDialog *ui;
-    int selectedActionIndex;
-    QString shortcut;
     QList<QString> actionList, scriptList;
 };

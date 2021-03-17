@@ -6,7 +6,9 @@
 #include <QVBoxLayout>
 #include "videoplayer.h"
 #include "settings.h"
+#include <QPainter>
 #include <QLibrary>
+#include <QLabel>
 #include <QFileInfo>
 #include <QDebug>
 
@@ -31,6 +33,7 @@ public:
     void setVideoUnscaled(bool mode);
     void setLoopPlayback(bool mode);
     std::shared_ptr<VideoPlayer> getPlayer();
+    bool isInitialized();
 
 public slots:
     void show();
@@ -44,6 +47,11 @@ private:
     std::shared_ptr<VideoPlayer> player;
     bool initPlayer();
     QVBoxLayout layout;
+    QLabel *errorLabel = nullptr;
+
+    QString libFile;
+    QString libDirDefault;
+    QStringList libDirs;
 
 private slots:
     void onSettingsChanged();

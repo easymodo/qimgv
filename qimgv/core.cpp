@@ -8,14 +8,6 @@
 #include "core.h"
 
 Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr), slideshow(false) {
-#ifdef __GLIBC__
-    // default value of 128k causes memory fragmentation issues
-    // finding this took 3 days of my life
-    mallopt(M_MMAP_THRESHOLD, 64000);
-#endif
-    qRegisterMetaType<ScalerRequest>("ScalerRequest");
-    qRegisterMetaType<std::shared_ptr<Image>>("std::shared_ptr<Image>");
-    qRegisterMetaType<std::shared_ptr<Thumbnail>>("std::shared_ptr<Thumbnail>");
     initGui();
     initComponents();
     connectComponents();
@@ -34,6 +26,8 @@ Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr), slideshow(fa
 void Core::readSettings() {
     infiniteScrolling = settings->infiniteScrolling();
     slideshowTimer.setInterval(settings->slideshowInterval());
+    if(folderViewPresenter.showDirs() != settings->showFolders())
+        folderViewPresenter.setShowDirs(settings->showFolders());
     if(settings->shuffleEnabled())
         syncRandomizer();
 }
@@ -55,7 +49,9 @@ void Core::initGui() {
 
 void Core::attachModel(DirectoryModel *_model) {
     model.reset(_model);
-    presenter.setModel(model);
+    thumbPanelPresenter.setModel(model);
+    folderViewPresenter.setModel(model);
+    folderViewPresenter.setShowDirs(settings->showFolders());
     if(settings->shuffleEnabled())
         syncRandomizer();
 }
@@ -65,29 +61,43 @@ void Core::initComponents() {
 }
 
 void Core::connectComponents() {
-    presenter.setFolderView(mw->getFolderView());
-    presenter.setThumbPanel(mw->getThumbnailPanel());
+    thumbPanelPresenter.setView(mw->getThumbnailPanel());
+    connect(&thumbPanelPresenter, &DirectoryPresenter::fileActivated,
+            this, &Core::onDirectoryViewFileActivated);
+    connect(&thumbPanelPresenter, &DirectoryPresenter::dirActivated,
+            this, &Core::loadPath);
 
-    connect(&presenter, &DirectoryPresenter::itemSelected,
-            this, &Core::onDirectoryViewItemSelected);
+    folderViewPresenter.setView(mw->getFolderView());
+    connect(&folderViewPresenter, &DirectoryPresenter::fileActivated,
+            this, &Core::onDirectoryViewFileActivated);
+    connect(&folderViewPresenter, &DirectoryPresenter::dirActivated,
+            this, &Core::loadPath);
+
+    connect(&folderViewPresenter, &DirectoryPresenter::draggedOut,
+            this, qOverload<QList<QString>>(&Core::onDraggedOut));
+
+    connect(&folderViewPresenter, &DirectoryPresenter::droppedInto,
+            this, qOverload<QList<QString>,QString>(&Core::copyPathsTo));
+
+    connect(scriptManager, &ScriptManager::error, mw, &MW::showError);
 
     connect(mw, &MW::opened,                this, &Core::loadPath);
     connect(mw, &MW::droppedIn,             this, &Core::onDropIn);
     connect(mw, &MW::copyRequested,         this, &Core::copyCurrentFile);
     connect(mw, &MW::moveRequested,         this, &Core::moveCurrentFile);
-    connect(mw, &MW::copyUrlsRequested,     this, &Core::copyUrls);
-    connect(mw, &MW::moveUrlsRequested,     this, &Core::moveUrls);
+    connect(mw, &MW::copyUrlsRequested,     this, qOverload<QList<QString>, QString>(&Core::copyPathsTo));
+    connect(mw, &MW::moveUrlsRequested,     this, &Core::movePathsTo);
     connect(mw, &MW::cropRequested,         this, &Core::crop);
     connect(mw, &MW::cropAndSaveRequested,  this, &Core::cropAndSave);
     connect(mw, &MW::saveAsClicked,         this, &Core::requestSavePath);
-    connect(mw, &MW::saveRequested,         this, qOverload<>(&Core::saveImageToDisk));
-    connect(mw, &MW::saveAsRequested,       this, qOverload<QString>(&Core::saveImageToDisk));
+    connect(mw, &MW::saveRequested,         this, &Core::saveCurrentFile);
+    connect(mw, &MW::saveAsRequested,       this, &Core::saveCurrentFileAs);
     connect(mw, &MW::resizeRequested,       this, &Core::resize);
     connect(mw, &MW::renameRequested,       this, &Core::renameCurrentFile);
     connect(mw, &MW::sortingSelected,       this, &Core::sortBy);
+    connect(mw, &MW::showFoldersChanged,    this, &Core::setFoldersDisplay);
     connect(mw, &MW::discardEditsRequested, this, &Core::discardEdits);
-    connect(mw, qOverload<>(&MW::draggedOut),    this, qOverload<>(&Core::onDragOut));
-    connect(mw, qOverload<int>(&MW::draggedOut), this, qOverload<int>(&Core::onDragOut));
+    connect(mw, &MW::draggedOut,            this, qOverload<>(&Core::onDraggedOut));
 
     connect(mw, &MW::playbackFinished, this, &Core::onPlaybackFinished);
 
@@ -99,9 +109,10 @@ void Core::connectComponents() {
     connect(model.get(), &DirectoryModel::fileRenamed,    this, &Core::onFileRenamed);
     connect(model.get(), &DirectoryModel::fileModified,   this, &Core::onFileModified);
     connect(model.get(), &DirectoryModel::loaded,         this, &Core::onModelLoaded);
-    connect(model.get(), &DirectoryModel::itemReady,      this, &Core::onModelItemReady);
-    connect(model.get(), &DirectoryModel::itemUpdated,    this, &Core::onModelItemUpdated);
+    connect(model.get(), &DirectoryModel::imageReady,     this, &Core::onModelItemReady);
+    connect(model.get(), &DirectoryModel::imageUpdated,   this, &Core::onModelItemUpdated);
     connect(model.get(), &DirectoryModel::sortingChanged, this, &Core::onModelSortingChanged);
+    connect(model.get(), &DirectoryModel::loadFailed,     this, &Core::onLoadFailed);
 
     connect(&slideshowTimer, &QTimer::timeout, this, &Core::nextImageSlideshow);
 }
@@ -131,12 +142,12 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::crop, this, &Core::toggleCropPanel);
     //connect(actionManager, &ActionManager::setWallpaper, this, &Core::slotSelectWallpaper);
     connect(actionManager, &ActionManager::open, this, &Core::showOpenDialog);
-    connect(actionManager, &ActionManager::save, this, qOverload<>(&Core::saveImageToDisk));
+    connect(actionManager, &ActionManager::save, this, &Core::saveCurrentFile);
     connect(actionManager, &ActionManager::saveAs, this, &Core::requestSavePath);
     connect(actionManager, &ActionManager::exit, this, &Core::close);
     connect(actionManager, &ActionManager::closeFullScreenOrExit, mw, &MW::closeFullScreenOrExit);
-    connect(actionManager, &ActionManager::removeFile, this, qOverload<>(&Core::removeFilePermanent));
-    connect(actionManager, &ActionManager::moveToTrash, this, qOverload<>(&Core::moveToTrash));
+    connect(actionManager, &ActionManager::removeFile, this, &Core::removePermanent);
+    connect(actionManager, &ActionManager::moveToTrash, this, &Core::moveToTrash);
     connect(actionManager, &ActionManager::copyFile, mw, &MW::triggerCopyOverlay);
     connect(actionManager, &ActionManager::moveFile, mw, &MW::triggerMoveOverlay);
     connect(actionManager, &ActionManager::jumpToFirst, this, &Core::jumpToFirst);
@@ -167,6 +178,8 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::volumeUp, mw, &MW::volumeUp);
     connect(actionManager, &ActionManager::volumeDown, mw, &MW::volumeDown);
     connect(actionManager, &ActionManager::toggleSlideshow, this, &Core::toggleSlideshow);
+    connect(actionManager, &ActionManager::goUp, this, &Core::loadParentDir);
+    connect(actionManager, &ActionManager::discardEdits, this, &Core::discardEdits);
 }
 
 void Core::onUpdate() {
@@ -241,23 +254,23 @@ void Core::onPlaybackFinished() {
 
 void Core::syncRandomizer() {
     if(model) {
-        randomizer.setCount(model->itemCount());
+        randomizer.setCount(model->fileCount());
         randomizer.shuffle();
-        randomizer.setCurrent(model->indexOf(state.currentFileName));
+        randomizer.setCurrent(model->indexOfFile(state.currentFilePath));
     }
 }
 
 void Core::onModelLoaded() {
-    presenter.reloadModel();
-    //state.currentFileName = model->fileNameAt(0);
+    thumbPanelPresenter.reloadModel();
+    folderViewPresenter.reloadModel();
     if(settings->shuffleEnabled())
         syncRandomizer();
 }
 
-void Core::onDirectoryViewItemSelected(int index) {
+void Core::onDirectoryViewFileActivated(QString filePath) {
     // we aren`t using async load so it won't flicker with empty view
     mw->enableDocumentView();
-    loadIndex(index, false, settings->usePreloader());
+    loadPath(filePath);
 }
 
 void Core::rotateLeft() {
@@ -272,30 +285,74 @@ void Core::close() {
     mw->close();
 }
 
-void Core::removeFilePermanent() {
-    removeFilePermanent(this->selectedFileName());
-}
-
-void Core::removeFilePermanent(QString fileName) {
-    removeFile(fileName, false);
+void Core::removePermanent() {
+    auto paths = currentSelection();
+    if(!paths.count())
+        return;
+    if(settings->confirmDelete()) {
+        QString msg;
+        if(paths.count() > 1)
+            msg = "Delete " + QString::number(paths.count()) +" items permanently?";
+        else
+            msg = "Delete item permanently?";
+        if(!mw->showConfirmation("Delete permanently", msg))
+            return;
+    }
+    FileOpResult result;
+    int successCount = 0;
+    for(auto path : paths) {
+        result = removeFile(path, false);
+        if(result == FileOpResult::SUCCESS)
+            successCount++;
+    }
+    if(paths.count() == 1) {
+        if(result == FileOpResult::SUCCESS)
+            mw->showMessageSuccess("File removed");
+        else
+            outputError(result);
+    } else if(paths.count() > 1) {
+        mw->showMessageSuccess("Removed: " + QString::number(successCount) + " files");
+    }
 }
 
 void Core::moveToTrash() {
-    moveToTrash(this->selectedFileName());
-}
-
-void Core::moveToTrash(QString fileName) {
-    removeFile(fileName, true);
+    auto paths = currentSelection();
+    if(!paths.count())
+        return;
+    if(settings->confirmTrash()) {
+        QString msg;
+        if(paths.count() > 1)
+            msg = "Move " + QString::number(paths.count()) +" items to trash?";
+        else
+            msg = "Move item to trash?";
+        if(!mw->showConfirmation("Move to trash", msg))
+            return;
+    }
+    FileOpResult result;
+    int successCount = 0;
+    for(auto path : paths) {
+        result = removeFile(path, true);
+        if(result == FileOpResult::SUCCESS)
+            successCount++;
+    }
+    if(paths.count() == 1) {
+        if(result == FileOpResult::SUCCESS)
+            mw->showMessageSuccess("Moved to trash");
+        else
+            outputError(result);
+    } else if(paths.count() > 1) {
+        mw->showMessageSuccess("Moved to trash: " + QString::number(successCount) + " files");
+    }
 }
 
 void Core::reloadImage() {
-    reloadImage(this->selectedFileName());
+    reloadImage(selectedFilePath());
 }
 
-void Core::reloadImage(QString fileName) {
+void Core::reloadImage(QString filePath) {
     if(model->isEmpty())
         return;
-    model->reload(fileName);
+    model->reload(filePath);
 }
 
 void Core::enableFolderView() {
@@ -309,8 +366,14 @@ void Core::enableDocumentView() {
     if(mw->currentViewMode() == MODE_DOCUMENT)
         return;
     mw->enableDocumentView();
-    if(model && model->itemCount() && state.currentFileName == "")
-        loadIndex(0, false, settings->usePreloader());
+    if(model && model->fileCount() && state.currentFilePath == "") {
+        auto selected = folderViewPresenter.selectedPaths().first();
+        // if it is a directory - ignore and just open the first file
+        if(model->containsFile(selected))
+            loadPath(selected);
+        else
+            loadPath(model->firstFile());
+    }
 }
 
 void Core::toggleFolderView() {
@@ -325,7 +388,7 @@ void Core::copyFileClipboard() {
     if(model->isEmpty())
         return;
 
-    QMimeData* mimeData = getMimeDataFor(model->getItem(this->selectedFileName()), TARGET_CLIPBOARD);
+    QMimeData* mimeData = getMimeDataForImage(model->getImage(selectedFilePath()), TARGET_CLIPBOARD);
 
     // mimeData->text() should already contain an url
     QByteArray gnomeFormat = QByteArray("copy\n").append(QUrl(mimeData->text()).toEncoded());
@@ -339,7 +402,7 @@ void Core::copyFileClipboard() {
 void Core::copyPathClipboard() {
     if(model->isEmpty())
         return;
-    QApplication::clipboard()->setText(model->fullPath(this->selectedFileName()));
+    QApplication::clipboard()->setText(selectedFilePath());
     mw->showMessage("Path copied");
 }
 
@@ -362,29 +425,39 @@ void Core::onDropIn(const QMimeData *mimeData, QObject* source) {
 
 // drag'n'drop
 // drag image out of the program
-void Core::onDragOut() {
-    onDragOut(model->indexOf(state.currentFileName));
+void Core::onDraggedOut() {
+    onDraggedOut(currentSelection());
 }
 
-void Core::onDragOut(int index) {
-    if(model->isEmpty())
+void Core::onDraggedOut(QList<QString> paths) {
+    if(model->isEmpty() || paths.isEmpty())
         return;
+    QMimeData *mimeData;
+    // single selection, image
+    if(paths.count() == 1 && model->containsFile(paths.first())) {
+        mimeData = getMimeDataForImage(model->getImage(paths.last()), TARGET_DROP);
+    } else { // multi-selection, or single directory. drag urls
+        mimeData = new QMimeData();
+        QList<QUrl> urlList;
+        for(auto path : paths)
+            urlList << QUrl::fromLocalFile(path);
+        mimeData->setUrls(urlList);
+    }
 
-    QMimeData *mimeData = getMimeDataFor(model->getItemAt(index), TARGET_DROP);
-    auto thumb = Thumbnailer::getThumbnail(model->filePathAt(index), 100);
+    //auto thumb = Thumbnailer::getThumbnail(paths.last(), 100);
     mDrag = new QDrag(this);
     mDrag->setMimeData(mimeData);
-    mDrag->setPixmap(*thumb->pixmap().get());
+    //mDrag->setPixmap(*thumb->pixmap().get());
 
     mDrag->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction, Qt::CopyAction);
 
 }
 
-QMimeData *Core::getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget target) {
+QMimeData *Core::getMimeDataForImage(std::shared_ptr<Image> img, MimeDataTarget target) {
     QMimeData* mimeData = new QMimeData();
     if(!img)
         return mimeData;
-    QString path = img->path();
+    QString path = img->filePath();
     if(img->type() == STATIC) {
         if(img->isEdited()) {
             // TODO: cleanup temp files
@@ -408,112 +481,92 @@ void Core::sortBy(SortingMode mode) {
     model->setSortingMode(mode);
 }
 
-void Core::renameCurrentFile(QString newName) {
-    if(!model->itemCount() || newName == state.currentFileName)
-        return;
-    QString newPath = model->fullPath(newName);
-    QString oldName = state.currentFileName;
-    QString currentPath = model->fullPath(state.currentFileName);
-    bool exists = model->contains(newName);
-    QFile replaceMe(newPath);
-    // move existing file so we can revert if something fails
-    if(replaceMe.exists()) {
-        if(!replaceMe.rename(newPath + "__tmp")) {
-            mw->showError("Could not replace file");
-            return;
-        }
-    }
-    // do the renaming
-    QFile file(currentPath);
-    if(file.exists() && file.rename(newPath)) {
-        // remove tmp file on success
-        if(exists)
-            replaceMe.remove();
-        // at this point we will get a dirwatcher rename event
-        // and the new file will be opened
-    } else {
-        mw->showError("Could not rename file");
-        // revert tmp file on fail
-        if(exists)
-            replaceMe.rename(newPath);
-    }
+void Core::setFoldersDisplay(bool mode) {
+    settings->setShowFolders(mode);
+    if(folderViewPresenter.showDirs() != settings->showFolders())
+        folderViewPresenter.setShowDirs(settings->showFolders());
 }
 
-// removes file at specified index within current directory
-void Core::removeFile(QString fileName, bool trash) {
-    if(model->isEmpty())
+void Core::renameCurrentFile(QString newName) {
+    if(!model->fileCount() || newName.isEmpty() || selectedFilePath().isEmpty())
         return;
+    FileOpResult result;
+    model->renameFile(selectedFilePath(), newName, false, result);
+    if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
+        if(mw->showConfirmation("File exists", "Overwrite file?")) {
+            model->renameFile(selectedFilePath(), newName, true, result);
+        } else {
+            // show rename dialog again
+            mw->toggleRenameOverlay();
+        }
+    }
+    outputError(result);
+}
+
+FileOpResult Core::removeFile(QString filePath, bool trash) {
+    if(model->isEmpty())
+        return FileOpResult::NOTHING_TO_DO;
 
     bool reopen = false;
     std::shared_ptr<Image> img;
-    if(state.currentFileName == fileName) {
-        img = model->getItem(fileName);
+    if(state.currentFilePath == filePath) {
+        img = model->getImage(filePath);
         if(img->type() == ANIMATED || img->type() == VIDEO) {
             mw->closeImage();
             reopen = true;
         }
     }
     FileOpResult result;
-    model->removeFile(fileName, trash, result);
-    if(result == FileOpResult::SUCCESS) {
-        QString msg = trash ? "Moved to trash: " : "File removed: ";
-        mw->showMessage(msg + fileName);
-    } else {
-        if(reopen)
-            guiSetImage(img);
-        outputError(result);
-    }
+    model->removeFile(filePath, trash, result);
+    if(result != FileOpResult::SUCCESS && reopen)
+        guiSetImage(img);
+    return result;
 }
 
-void Core::onFileRemoved(QString fileName, int index) {
+void Core::onFileRemoved(QString filePath, int index) {
+    // no files left
     if(model->isEmpty()) {
         mw->closeImage();
         state.hasActiveImage = false;
-        state.currentFileName = "";
-    } else if(state.currentFileName == fileName) {
-        if(!loadIndex(index, true, settings->usePreloader()))
-            loadIndex(--index, true, settings->usePreloader());
+        state.currentFilePath = "";
+    }
+    // image mode && removed current file
+    if(state.currentFilePath == filePath) {
+        if(mw->currentViewMode() == MODE_DOCUMENT) {
+            if(!loadIndex(index, true, settings->usePreloader()))
+                loadIndex(--index, true, settings->usePreloader());
+        } else {
+            state.hasActiveImage = false;
+            state.currentFilePath = "";
+        }
     }
     updateInfoString();
 }
 
-void Core::onFileRenamed(QString from, int indexFrom, QString to, int indexTo) {
-    if(state.currentFileName == from) {
+void Core::onFileRenamed(QString fromPath, int /*indexFrom*/, QString /*toPath*/, int indexTo) {
+    if(state.currentFilePath == fromPath) {
         loadIndex(indexTo, true, settings->usePreloader());
     }
 }
 
-void Core::onFileAdded(QString fileName) {
-    Q_UNUSED(fileName)
+void Core::onFileAdded(QString filePath) {
+    Q_UNUSED(filePath)
     // update file count
     updateInfoString();
-    if(model->itemCount() == 1 && state.currentFileName == "")
+    if(model->fileCount() == 1 && state.currentFilePath == "")
         loadIndex(0, false, settings->usePreloader());
 }
 
-void Core::onFileModified(QString fileName) {
-    Q_UNUSED(fileName)
+// !! fixme
+void Core::onFileModified(QString filePath) {
+    Q_UNUSED(filePath)
 }
 
 void Core::outputError(const FileOpResult &error) const {
-    switch (error) {
-    case FileOpResult::DESTINATION_FILE_EXISTS:
-        mw->showError("File already exists."); break;
-    case FileOpResult::SOURCE_NOT_WRITABLE:
-        mw->showError("Source file is not writable."); break;
-    case FileOpResult::DESTINATION_NOT_WRITABLE:
-        mw->showError("Directory is not writable."); break;
-    case FileOpResult::SOURCE_DOES_NOT_EXIST:
-        mw->showError("Source file does not exist."); break;
-    case FileOpResult::DESTINATION_DOES_NOT_EXIST:
-        mw->showError("Directory does not exist."); break;
-    case FileOpResult::COPY_TO_SAME_DIR:
-        mw->showError("Already in this directory."); break;
-    case FileOpResult::OTHER_ERROR:
-        mw->showError("Unknown error."); break;
-    default:
-        break;
-    }
+    if(error == FileOpResult::SUCCESS || error == FileOpResult::NOTHING_TO_DO)
+        return;
+    mw->showError(FileOperations::decodeResult(error));
+    qDebug() << FileOperations::decodeResult(error);
 }
 
 void Core::showOpenDialog() {
@@ -523,78 +576,168 @@ void Core::showOpenDialog() {
 void Core::showInDirectory() {
     if(!model)
         return;
-#ifdef __linux__
-    QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
-#endif
-
-#ifdef __WIN32
-    QString fileName = this->selectedFileName();
-    if(fileName.isEmpty()) {
+    if(selectedFilePath().isEmpty()) {
         QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
-    } else {
-        QStringList args;
-        args << "/select," << QDir::toNativeSeparators(model->fullPath(fileName));
-        QProcess::startDetached("explorer", args);
+        return;
     }
-#endif
-/*
-#ifdef Q_WS_MAC
+#ifdef __linux__
+    QString fm = ScriptManager::runCommand("xdg-mime query default inode/directory");
+    if(fm.contains("dolphin"))
+        ScriptManager::runCommandDetached("dolphin --select " + selectedFilePath());
+    else if(fm.contains("nautilus"))
+        ScriptManager::runCommandDetached("nautilus --select " + selectedFilePath());
+    else
+        QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
+#elif __WIN32
+    QStringList args;
+    args << "/select," << QDir::toNativeSeparators(selectedFilePath());
+    QProcess::startDetached("explorer", args);
+#elif Q_WS_MAC
     QStringList args;
     args << "-e";
     args << "tell application \"Finder\"";
     args << "-e";
     args << "activate";
     args << "-e";
-    args << "select POSIX file \""+filePath+"\"";
+    args << "select POSIX file \""+selectedFilePath()+"\"";
     args << "-e";
     args << "end tell";
     QProcess::startDetached("osascript", args);
+#else
+    QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
 #endif
-*/
+}
+
+// ------------------------ playground
+bool Core::copyFileConfirmation(QString src, QString dst) {
+    QString msg;
+    msg = "Overwrite target?";
+    msg.append("<br><br><b>Source:</b><br>" + src);
+    msg.append("<br><br> >>>>");
+    msg.append("<br><br><b>Destination folder:</b><br>" + dst);
+    return mw->showConfirmation("Confirm overwrite", msg);
+}
+
+bool Core::mergeDirConfirmation(QString src, QString dst) {
+    QString msg;
+    msg = "Write into directory?";
+    msg.append("<br><br><b>Source:</b><br>" + src);
+    msg.append("<br><br> >>>>");
+    msg.append("<br><br><b>Destination:</b><br>" + dst);
+    return mw->showConfirmation("Confirm merge", msg);
+}
+
+void Core::interactiveCopy(QList<QString> paths, QString destDirectory, bool &forceAll) {
+    for(auto path : paths)
+        interactiveCopy(path, destDirectory, forceAll);
+}
+
+void Core::interactiveCopy(QString path, QString destDirectory, bool &forceAll) {
+    // maybe use different flags for dir merge / file overwrite?
+    bool force = forceAll;
+
+    QFileInfo srcFi(path);
+    if(srcFi.isDir()) { // RECURSIVE DIR COPY
+        QFileInfo dstFi(destDirectory + "/" + srcFi.baseName());
+        // ask merge / overwrite
+        if(dstFi.exists()) {
+            if(!dstFi.isDir()) { // overwriting file with a folder
+                if(force || (force = copyFileConfirmation(path, dstFi.absoluteFilePath())) ) {
+                    // remove dst file; give up if not writable
+                    if(!QFile::remove(dstFi.absoluteFilePath())) {
+                        mw->showError("Could not replace " + dstFi.absoluteFilePath());
+                        qDebug() << "Could not replace " + dstFi.absoluteFilePath();
+                        return;
+                    }
+                }
+            } else { // merge dirs
+                force = mergeDirConfirmation(path, dstFi.absoluteFilePath());
+            }
+        }
+        // create dst dir if needed
+        QDir dstDir(dstFi.absoluteFilePath());
+        if(!dstDir.exists())
+            dstDir.mkpath(".");
+        // recursive copy
+        QDir srcDir(srcFi.absoluteFilePath());
+        // TODO: skip symlinks? test
+        QStringList entryList = srcDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+        for(auto entry : entryList)
+            interactiveCopy(srcDir.absolutePath() + "/" + entry, dstDir.absolutePath(), forceAll);
+    } else { // SINGLE FILE
+        FileOpResult result;
+        FileOperations::copyTo(path, destDirectory, force, result);
+        if(!force && result == FileOpResult::DESTINATION_FILE_EXISTS) {
+            // Ask & try again
+            // Temporarily use shitty QMessageBox. Custom dialog (/w checkbox & cancel) later
+            if(copyFileConfirmation(path, destDirectory + "/" + srcFi.fileName()))
+                FileOperations::copyTo(path, destDirectory, true, result);
+        }
+        if(result != FileOpResult::SUCCESS && !(result == FileOpResult::DESTINATION_FILE_EXISTS && !force)) {
+            mw->showError(FileOperations::decodeResult(result));
+            qDebug() << FileOperations::decodeResult(result);
+        }
+    }
+}
+
+void Core::copyPathsTo(QList<QString> paths, QString destDirectory, bool force) {
+    interactiveCopy(paths, destDirectory, force);
+}
+
+void Core::copyPathsTo(QList<QString> paths, QString destDirectory) {
+    copyPathsTo(paths, destDirectory, false);
+}
+
+void Core::movePathsTo(QList<QString> paths, QString destDirectory) {
+    if(model->isEmpty())
+        return;
+    FileOpResult result;
+    for(auto path : paths) {
+        model->moveTo(path, destDirectory, false, result);
+        if(result != FileOpResult::SUCCESS) {
+            mw->showError(FileOperations::decodeResult(result));
+            qDebug() << FileOperations::decodeResult(result);
+        }
+    }
 }
 
 void Core::moveCurrentFile(QString destDirectory) {
     if(model->isEmpty())
         return;
+    // pause updates to avoid flicker
+    mw->setUpdatesEnabled(false);
+    // move fails during file playback, so we close it temporarily
     mw->closeImage();
     FileOpResult result;
-    model->moveTo(destDirectory, model->fullPath(selectedFileName()), result);
+    model->moveTo(selectedFilePath(), destDirectory, false, result);
     if(result == FileOpResult::SUCCESS) {
         mw->showMessageSuccess("File moved.");
-    } else {
-        guiSetImage(model->getItem(selectedFileName()));
-        outputError(result);
+    } else if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
+        if(mw->showConfirmation("File exists", "Destination file exists. Overwrite?"))
+            model->moveTo(selectedFilePath(), destDirectory, true, result);
     }
-}
-
-void Core::copyUrls(QList<QUrl> urls, QString destDirectory) {
-    if(model->isEmpty())
-        return;
-    FileOpResult result;
-    QList<QUrl>::iterator i;
-    for(i = urls.begin(); i != urls.end(); ++i) {
-        model->copyTo(destDirectory, model->fullPath((*i).fileName()), result);
+    if(result != FileOpResult::SUCCESS) {
+        guiSetImage(model->getImage(selectedFilePath()));
+        updateInfoString();
+        if(result != FileOpResult::DESTINATION_FILE_EXISTS)
+            outputError(result);
     }
-}
-
-void Core::moveUrls(QList<QUrl> urls, QString destDirectory) {
-    if(model->isEmpty())
-        return;
-    FileOpResult result;
-    QList<QUrl>::iterator i;
-    for(i = urls.begin(); i != urls.end(); ++i) {
-        model->moveTo(destDirectory, model->fullPath((*i).fileName()), result);
-    }
+    mw->setUpdatesEnabled(true);
+    mw->repaint();
 }
 
 void Core::copyCurrentFile(QString destDirectory) {
     if(model->isEmpty())
         return;
     FileOpResult result;
-    model->copyTo(destDirectory, model->fullPath(selectedFileName()), result);
-    if(result == FileOpResult::SUCCESS)
+    model->copyTo(selectedFilePath(), destDirectory, false, result);
+    if(result == FileOpResult::SUCCESS) {
         mw->showMessageSuccess("File copied.");
-    else
+    } else if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
+        if(mw->showConfirmation("File exists", "Destination file exists. Overwrite?"))
+            model->copyTo(selectedFilePath(), destDirectory, true, result);
+    }
+    if(result != FileOpResult::SUCCESS && result != FileOpResult::DESTINATION_FILE_EXISTS)
         outputError(result);
 }
 
@@ -611,102 +754,101 @@ void Core::toggleCropPanel() {
 void Core::requestSavePath() {
     if(model->isEmpty())
         return;
-    mw->showSaveDialog(model->fullPath(selectedFileName()));
+    mw->showSaveDialog(selectedFilePath());
 }
 
 void Core::showResizeDialog() {
     if(model->isEmpty())
         return;
-    auto img = model->getItem(this->selectedFileName());
-    mw->showResizeDialog(img->size());
+    auto img = model->getImage(selectedFilePath());
+    if(img)
+        mw->showResizeDialog(img->size());
 }
 
-// all editing operations should be done in the main thread
-// do an access wrapper with edit function as argument?
-void Core::resize(QSize size) {
+// ---------------------------------------------------------------- image operations
+
+std::shared_ptr<ImageStatic> Core::getEditableImage(const QString &filePath) {
+    return std::dynamic_pointer_cast<ImageStatic>(model->getImage(filePath));
+}
+
+template<typename... Args>
+void Core::edit_template(bool save, const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& editFunc, Args&&... as) {
     if(model->isEmpty())
         return;
-    std::shared_ptr<Image> img = model->getItem(this->selectedFileName());
-    if(img && img->type() == STATIC) {
-        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                    ImageLib::scaled(imgStatic->getImage(), size, QI_FILTER_BILINEAR)));
-        model->updateItem(this->selectedFileName(), img);
-        if(mw->currentViewMode() == MODE_FOLDERVIEW)
-            img->save();
-    } else {
-        mw->showMessage("Editing gifs/video is unsupported.");
+    for(auto path : currentSelection()) {
+        auto img = getEditableImage(path);
+        if(!img)
+            continue;
+        img->setEditedImage(std::unique_ptr<const QImage>( editFunc(img->getImage(), std::forward<Args>(as)...) ));
+        model->updateImage(path, std::static_pointer_cast<Image>(img));
+        if(save) {
+            saveFile(path);
+            if(state.currentFilePath != path)
+                model->unload(path);
+        }
     }
+    updateInfoString();
 }
 
 void Core::flipH() {
-    if(model->isEmpty())
-        return;
-    std::shared_ptr<Image> img = model->getItem(this->selectedFileName());
-    if(img && img->type() == STATIC) {
-        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                    ImageLib::flippedH(imgStatic->getImage())));
-        model->updateItem(this->selectedFileName(), img);
-        if(mw->currentViewMode() == MODE_FOLDERVIEW)
-            img->save();
-    } else {
-        mw->showMessage("Editing gifs/video is unsupported.");
-    }
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), { ImageLib::flippedH });
 }
 
 void Core::flipV() {
-    if(model->isEmpty())
-        return;
-    std::shared_ptr<Image> img = model->getItem(this->selectedFileName());
-    if(img && img->type() == STATIC) {
-        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                    ImageLib::flippedV(imgStatic->getImage())));
-        model->updateItem(this->selectedFileName(), img);
-        if(mw->currentViewMode() == MODE_FOLDERVIEW)
-            img->save();
-    } else {
-        mw->showMessage("Editing gifs/video is unsupported.");
-    }
-}
-
-bool Core::crop(QRect rect) {
-    if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
-        return false;
-    std::shared_ptr<Image> img = model->getItem(state.currentFileName);
-    if(img && img->type() == STATIC) {
-        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                    ImageLib::cropped(imgStatic->getImage(), rect)));
-        model->updateItem(state.currentFileName, img);
-        return true;
-    } else {
-        mw->showMessage("Editing gifs/video is unsupported.");
-        return false;
-    }
-}
-
-void Core::cropAndSave(QRect rect) {
-    if(crop(rect))
-        saveImageToDisk();
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), { ImageLib::flippedV });
 }
 
 void Core::rotateByDegrees(int degrees) {
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), { ImageLib::rotated }, degrees);
+}
+
+void Core::resize(QSize size) {
+    edit_template(false, { ImageLib::scaled }, size, QI_FILTER_BILINEAR);
+}
+
+void Core::crop(QRect rect) {
+    if(mw->currentViewMode() == MODE_FOLDERVIEW)
+        return;
+    edit_template(false, { ImageLib::cropped }, rect);
+}
+
+void Core::cropAndSave(QRect rect) {
+    if(mw->currentViewMode() == MODE_FOLDERVIEW)
+        return;
+    edit_template(true, { ImageLib::cropped }, rect);
+}
+
+// ---------------------------------------------------------------- image operations ^
+
+bool Core::saveFile(const QString &filePath) {
+    return saveFile(filePath, filePath);
+}
+
+bool Core::saveFile(const QString &filePath, const QString &newPath) {
+    if(!model->saveFile(filePath, newPath))
+        return false;
+    mw->hideSaveOverlay();
+    // switch to the new file
+    if(model->containsFile(newPath) && state.currentFilePath != newPath) {
+        discardEdits();
+        if(mw->currentViewMode() == MODE_DOCUMENT)
+            loadPath(newPath);
+    }
+    return true;
+}
+
+void Core::saveCurrentFile() {
+    saveCurrentFileAs(selectedFilePath());
+}
+
+void Core::saveCurrentFileAs(QString destPath) {
     if(model->isEmpty())
         return;
-
-    QString fileName = this->selectedFileName();
-    std::shared_ptr<Image> img = model->getItem(fileName);
-    if(img && img->type() == STATIC) {
-        auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
-        imgStatic->setEditedImage(std::unique_ptr<const QImage>(
-                    ImageLib::rotated(imgStatic->getImage(), degrees)));
-        model->updateItem(fileName, img);
-        if(mw->currentViewMode() == MODE_FOLDERVIEW)
-            img->save();
+    if(saveFile(selectedFilePath(), destPath)) {
+        mw->showMessageSuccess("File saved");
+        updateInfoString();
     } else {
-        mw->showMessage("Editing gifs/video is unsupported.");
+        mw->showError("Could not save file");
     }
 }
 
@@ -714,41 +856,35 @@ void Core::discardEdits() {
     if(model->isEmpty())
         return;
 
-    std::shared_ptr<Image> img = model->getItem(this->selectedFileName());
+    std::shared_ptr<Image> img = model->getImage(selectedFilePath());
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->discardEditedImage();
-        model->updateItem(this->selectedFileName(), img);
+        model->updateImage(selectedFilePath(), img);
     }
     mw->hideSaveOverlay();
 }
 
-QString Core::selectedFileName() {
+// todo: remove?
+QString Core::selectedFilePath() {
     if(!model)
         return "";
     else if(mw->currentViewMode() == MODE_FOLDERVIEW)
-        return model->fileNameAt(mw->folderViewSelection());
+        return folderViewPresenter.selectedPaths().last();
     else
-        return state.currentFileName;
+        return state.currentFilePath;
 }
 
-// move saving logic away from Image container itself
-void Core::saveImageToDisk() {
-    if(model->isEmpty())
-        return;
-    saveImageToDisk(model->fullPath(this->selectedFileName()));
+QList<QString> Core::currentSelection() {
+    if(!model)
+        return QList<QString>();
+    else if(mw->currentViewMode() == MODE_FOLDERVIEW)
+        return folderViewPresenter.selectedPaths();
+    else
+        return QList<QString>() << state.currentFilePath;
 }
 
-void Core::saveImageToDisk(QString filePath) {
-    if(model->isEmpty())
-        return;
-    std::shared_ptr<Image> img = model->getItem(this->selectedFileName());
-    if(img->save(filePath))
-        mw->showMessageSuccess("File saved.");
-    else
-        mw->showError("Could not save file.");
-    mw->hideSaveOverlay();
-}
+//------------------------
 
 void Core::sortByName() {
     auto mode = SortingMode::SORT_NAME;
@@ -780,23 +916,22 @@ void Core::showRenameDialog() {
 void Core::runScript(const QString &scriptName) {
     if(model->isEmpty())
         return;
-    scriptManager->runScript(scriptName, model->getItem(selectedFileName()));
+    scriptManager->runScript(scriptName, model->getImage(selectedFilePath()));
 }
 
 void Core::scalingRequest(QSize size, ScalingFilter filter) {
     // filter out an unnecessary scale request at statup
     if(mw->isVisible() && state.hasActiveImage) {
-        std::shared_ptr<Image> forScale = model->getItem(state.currentFileName);
+        std::shared_ptr<Image> forScale = model->getImage(state.currentFilePath);
         if(forScale) {
-            QString path = model->absolutePath() + "/" + state.currentFileName;
-            model->scaler->requestScaled(ScalerRequest(forScale, size, path, filter));
+            model->scaler->requestScaled(ScalerRequest(forScale, size, state.currentFilePath, filter));
         }
     }
 }
 
 // TODO: don't use connect? otherwise there is no point using unique_ptr
 void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
-    if(state.hasActiveImage /* TODO: a better fix > */ && req.string == model->fullPath(state.currentFileName)) {
+    if(state.hasActiveImage /* TODO: a better fix > */ && req.path == state.currentFilePath) {
         mw->onScalingFinished(std::unique_ptr<QPixmap>(scaled));
     } else {
         delete scaled;
@@ -806,14 +941,15 @@ void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
 // reset state; clear cache; etc
 void Core::reset() {
     state.hasActiveImage = false;
-    state.currentFileName = "";
+    state.currentFilePath = "";
     model->setDirectory("");
 }
 
 void Core::loadPath(QString path) {
+    if(path.isEmpty())
+        return;
     if(path.startsWith("file://", Qt::CaseInsensitive))
         path.remove(0, 7);
-
     stopSlideshow();
     QFileInfo fileInfo(path);
     QString directoryPath;
@@ -827,23 +963,23 @@ void Core::loadPath(QString path) {
         return;
     }
     // set model dir if needed
-    if(model->absolutePath() != directoryPath) {
+    if(model->directoryPath() != directoryPath) {
         this->reset();
         model->setDirectory(directoryPath);
         mw->setDirectoryPath(directoryPath);
     }
     // load file / folderview
     if(fileInfo.isFile()) {
-        int index = model->indexOf(fileInfo.fileName());
+        int index = model->indexOfFile(fileInfo.absoluteFilePath());
         // DirectoryManager only checks file extensions via regex (performance reasons)
         // But in this case we force check mimetype
         if(index == -1) {
             QStringList types = settings->supportedMimeTypes();
             QMimeDatabase db;
-            QMimeType type = db.mimeTypeForFile(fileInfo.filePath());
+            QMimeType type = db.mimeTypeForFile(fileInfo.absoluteFilePath());
             if(types.contains(type.name())) {
-                if(model->forceInsert(fileInfo.fileName())) {
-                    index = model->indexOf(fileInfo.fileName());
+                if(model->forceInsert(fileInfo.absoluteFilePath())) {
+                    index = model->indexOfFile(fileInfo.absoluteFilePath());
                 }
             }
         }
@@ -851,30 +987,40 @@ void Core::loadPath(QString path) {
         loadIndex(index, false, settings->usePreloader());
     } else {
         mw->enableFolderView();
-        presenter.selectAndFocus(0);
     }
 }
 
 bool Core::loadIndex(int index, bool async, bool preload) {
     if(!model)
         return false;
-    QString newName = model->fileNameAt(index);
-    if(newName.isEmpty())
+    auto entry = model->entryAt(index);
+    if(entry.path.isEmpty())
         return false;
-
-    state.currentFileName = newName;
-
-    model->unloadExcept(newName, preload);
-    model->load(newName, async);
-
-    if(preload) {
-        model->preload(model->nextOf(newName));
-        model->preload(model->prevOf(newName));
+    if(entry.isDirectory) { // load directory
+        loadPath(entry.path);
+    } else {
+        state.currentFilePath = entry.path;
+        model->unloadExcept(entry.path, preload);
+        model->load(entry.path, async);
+        if(preload) {
+            model->preload(model->nextOf(entry.path));
+            model->preload(model->prevOf(entry.path));
+        }
+        thumbPanelPresenter.selectAndFocus(entry.path);
+        folderViewPresenter.selectAndFocus(entry.path);
+        updateInfoString();
     }
-
-    presenter.onIndexChanged(index);
-    updateInfoString();
     return true;
+}
+
+void Core::loadParentDir() {
+    if(model->directoryPath().isEmpty() || mw->currentViewMode() != MODE_FOLDERVIEW)
+        return;
+    QFileInfo currentDir(model->directoryPath());
+    QFileInfo parentDir(currentDir.absolutePath());
+    if(parentDir.exists() && parentDir.isReadable())
+        loadPath(parentDir.absoluteFilePath());
+    folderViewPresenter.selectAndFocus(currentDir.absoluteFilePath());
 }
 
 void Core::nextImage() {
@@ -885,8 +1031,8 @@ void Core::nextImage() {
         loadIndex(randomizer.next(), true, false);
         return;
     }
-    int newIndex = model->indexOf(state.currentFileName) + 1;
-    if(newIndex >= model->itemCount()) {
+    int newIndex = model->indexOfFile(state.currentFilePath) + 1;
+    if(newIndex >= model->fileCount()) {
         if(infiniteScrolling) {
             newIndex = 0;
         } else {
@@ -907,10 +1053,10 @@ void Core::prevImage() {
         return;
     }
 
-    int newIndex = model->indexOf(state.currentFileName) - 1;
+    int newIndex = model->indexOfFile(state.currentFilePath) - 1;
     if(newIndex < 0) {
         if(infiniteScrolling) {
-            newIndex = model->itemCount() - 1;
+            newIndex = model->fileCount() - 1;
         } else {
             if(!model->loaderBusy())
                 mw->showMessageDirectoryStart();
@@ -926,8 +1072,8 @@ void Core::nextImageSlideshow() {
     if(settings->shuffleEnabled()) {
         loadIndex(randomizer.next(), false, false);
     } else {
-        int newIndex = model->indexOf(state.currentFileName) + 1;
-        if(newIndex >= model->itemCount()) {
+        int newIndex = model->indexOfFile(state.currentFilePath) + 1;
+        if(newIndex >= model->fileCount()) {
             if(infiniteScrolling) {
                 newIndex = 0;
             } else {
@@ -944,7 +1090,7 @@ void Core::nextImageSlideshow() {
 void Core::startSlideshowTimer() {
     // start timer only for static images or single frame gifs
     // for proper gifs and video we get a playbackFinished() signal
-    auto img = model->getItem(state.currentFileName);
+    auto img = model->getImage(state.currentFilePath);
     if(img->type() == STATIC) {
         slideshowTimer.start();
     } else if(img->type() == ANIMATED) {
@@ -966,38 +1112,37 @@ void Core::jumpToLast() {
     if(model->isEmpty())
         return;
     stopSlideshow();
-    loadIndex(model->itemCount() - 1, true, settings->usePreloader());
+    loadIndex(model->fileCount() - 1, true, settings->usePreloader());
     mw->showMessageDirectoryEnd();
 }
 
-void Core::onLoadFailed(QString path) {
-    Q_UNUSED(path)
-    /*mw->showMessage("Load failed: " + path);
-    QString currentPath = model->fullFilePath(model->currentFileName);
-    if(path == currentPath)
+void Core::onLoadFailed(const QString &path) {
+    mw->showMessage("Load failed: " + path);
+    if(path == state.currentFilePath)
         mw->closeImage();
-        */
 }
 
-void Core::onModelItemReady(std::shared_ptr<Image> img) {
-    if(img->name() == state.currentFileName) {
+void Core::onModelItemReady(std::shared_ptr<Image> img, const QString &path) {
+    if(path == state.currentFilePath) {
         guiSetImage(img);
         updateInfoString();
-        model->unloadExcept(state.currentFileName, settings->usePreloader());
+        model->unloadExcept(state.currentFilePath, settings->usePreloader());
     }
 }
 
-void Core::onModelItemUpdated(QString fileName) {
-    if(fileName == state.currentFileName) {
-        guiSetImage(model->getItem(fileName));
+void Core::onModelItemUpdated(QString filePath) {
+    if(filePath == state.currentFilePath) {
+        guiSetImage(model->getImage(filePath));
         updateInfoString();
     }
 }
 
 void Core::onModelSortingChanged(SortingMode mode) {
     mw->onSortingChanged(mode);
-    presenter.reloadModel();
-    presenter.onIndexChanged(0);
+    thumbPanelPresenter.reloadModel();
+    thumbPanelPresenter.selectAndFocus(state.currentFilePath);
+    folderViewPresenter.reloadModel();
+    folderViewPresenter.selectAndFocus(state.currentFilePath);
 }
 
 void Core::guiSetImage(std::shared_ptr<Image> img) {
@@ -1026,16 +1171,21 @@ void Core::guiSetImage(std::shared_ptr<Image> img) {
 void Core::updateInfoString() {
     QSize imageSize(0,0);
     qint64 fileSize = 0;
+    bool edited = false;
 
-    if(model->isLoaded(state.currentFileName)) {
-        auto img = model->getItem(state.currentFileName);
+    if(model->isLoaded(state.currentFilePath)) {
+        auto img = model->getImage(state.currentFilePath);
         imageSize = img->size();
         fileSize  = img->fileSize();
+        edited = img->isEdited();
     }
-    mw->setCurrentInfo(model->indexOf(state.currentFileName),
-                       model->itemCount(),
-                       state.currentFileName,
+    int index = model->indexOfFile(state.currentFilePath);
+    mw->setCurrentInfo(index,
+                       model->fileCount(),
+                       model->filePathAt(index),
+                       model->fileNameAt(index),
                        imageSize,
                        fileSize,
-                       slideshow);
+                       slideshow,
+                       edited);
 }

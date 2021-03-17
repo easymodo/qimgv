@@ -17,13 +17,16 @@ void FolderViewProxy::init() {
     this->setFocusProxy(folderView.get());
     this->setLayout(&layout);
 
-    connect(folderView.get(), &FolderView::itemSelected, this, &FolderViewProxy::itemSelected);
+    connect(folderView.get(), &FolderView::itemActivated, this, &FolderViewProxy::itemActivated);
     connect(folderView.get(), &FolderView::thumbnailsRequested, this, &FolderViewProxy::thumbnailsRequested);
     connect(folderView.get(), &FolderView::sortingSelected, this, &FolderViewProxy::sortingSelected);
+    connect(folderView.get(), &FolderView::showFoldersChanged, this, &FolderViewProxy::showFoldersChanged);
     connect(folderView.get(), &FolderView::directorySelected, this, &FolderViewProxy::directorySelected);
     connect(folderView.get(), &FolderView::draggedOut, this, &FolderViewProxy::draggedOut);
     connect(folderView.get(), &FolderView::copyUrlsRequested, this, &FolderViewProxy::copyUrlsRequested);
     connect(folderView.get(), &FolderView::moveUrlsRequested, this, &FolderViewProxy::moveUrlsRequested);
+    connect(folderView.get(), &FolderView::droppedInto, this, &FolderViewProxy::droppedInto);
+    connect(folderView.get(), &FolderView::draggedOver, this, &FolderViewProxy::draggedOver);
 
     folderView->show();
 
@@ -32,11 +35,12 @@ void FolderViewProxy::init() {
         folderView->setDirectoryPath(stateBuf.directory);
     folderView->onFullscreenModeChanged(stateBuf.fullscreenMode);
     folderView->populate(stateBuf.itemCount);
-    folderView->selectIndex(stateBuf.selectedIndex);
+    folderView->select(stateBuf.selection);
     // wait till layout stuff happens
     // before calling focusOn()
     qApp->processEvents();
-    folderView->focusOn(stateBuf.selectedIndex);
+    if(stateBuf.selection.count())
+        folderView->focusOn(stateBuf.selection.last());
     folderView->onSortingChanged(stateBuf.sortingMode);
 }
 
@@ -45,6 +49,7 @@ void FolderViewProxy::populate(int count) {
         folderView->populate(count);
     } else {
         stateBuf.itemCount = count;
+        stateBuf.selection.clear();
     }
 }
 
@@ -54,19 +59,28 @@ void FolderViewProxy::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
     }
 }
 
-void FolderViewProxy::selectIndex(int index) {
+void FolderViewProxy::select(QList<int> indices) {
     if(folderView) {
-        folderView->selectIndex(index);
+        folderView->select(indices);
     } else {
-        stateBuf.selectedIndex = index;
+        stateBuf.selection = indices;
     }
 }
 
-int FolderViewProxy::selectedIndex() {
+void FolderViewProxy::select(int index) {
     if(folderView) {
-        return folderView->selectedIndex();
+        folderView->select(index);
     } else {
-        return stateBuf.selectedIndex;
+        stateBuf.selection.clear();
+        stateBuf.selection << index;
+    }
+}
+
+QList<int> FolderViewProxy::selection() {
+    if(folderView) {
+        return folderView->selection();
+    } else {
+        return stateBuf.selection;
     }
 }
 
@@ -97,20 +111,24 @@ void FolderViewProxy::removeItem(int index) {
         folderView->removeItem(index);
     } else {
         stateBuf.itemCount--;
-        if(index < stateBuf.selectedIndex) {
-            stateBuf.selectedIndex--;
-        } else if(index == stateBuf.selectedIndex) {
-            if(stateBuf.selectedIndex >= stateBuf.itemCount)
-                stateBuf.selectedIndex = stateBuf.itemCount - 1;
-            else
-                stateBuf.selectedIndex = index;
+        stateBuf.selection.removeAll(index);
+        for(int i=0; i < stateBuf.selection.count(); i++) {
+            if(stateBuf.selection[i] > index)
+                stateBuf.selection[i]--;
         }
+        if(!stateBuf.selection.count())
+            stateBuf.selection << ((index >= stateBuf.itemCount) ? stateBuf.itemCount - 1 : index);
     }
 }
 
 void FolderViewProxy::reloadItem(int index) {
     if(folderView)
         folderView->reloadItem(index);
+}
+
+void FolderViewProxy::setDragHover(int index) {
+    if(folderView)
+        folderView->setDragHover(index);
 }
 
 void FolderViewProxy::addItem() {

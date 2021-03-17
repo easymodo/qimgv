@@ -5,22 +5,24 @@
 class ThumbnailGridWidget : public ThumbnailWidget {
 public:
     ThumbnailGridWidget(QGraphicsItem *parent = nullptr);
-    QRectF boundingRect() const Q_DECL_OVERRIDE;
 
 protected:
-    virtual void setupLayout() Q_DECL_OVERRIDE;
-    virtual void drawHighlight(QPainter *painter) Q_DECL_OVERRIDE;
-    virtual void drawHover(QPainter *painter) Q_DECL_OVERRIDE;
-    virtual void drawLabel(QPainter *painter) Q_DECL_OVERRIDE;
-    virtual void drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap) Q_DECL_OVERRIDE;
+    virtual void setupLayout() override;
+    virtual void drawHighlight(QPainter *painter) override;
+    virtual void drawHoverBg(QPainter *painter) override;
+    virtual void drawLabel(QPainter *painter) override;
+    virtual void drawIcon(QPainter *painter, const QPixmap *pixmap) override;
 
     QColor shadowColor;
-    void updateThumbnailDrawPosition() Q_DECL_OVERRIDE;
-    void drawThumbnail(QPainter *painter, qreal dpr, const QPixmap *pixmap) Q_DECL_OVERRIDE;
-    virtual void readSettings() Q_DECL_OVERRIDE;
-    virtual void updateHighlightRect() Q_DECL_OVERRIDE;
+    void updateThumbnailDrawPosition() override;
+    void drawThumbnail(QPainter *painter, const QPixmap *pixmap) override;
+    virtual void readSettings() override;
+    virtual void updateHighlightRect() override;
+    void drawSingleLineText(QPainter *painter, QRectF rect, QString text, const QColor &color);
 
+    virtual void updateBoundingRect() override;
 private:
-    bool nameFits;
-    int labelSpacing;
+    int labelSpacing, margin;
+    QRectF infoRect;
+    QPixmap *hoverPixmap = nullptr;
 };

@@ -12,15 +12,6 @@ FullscreenInfoOverlay::FullscreenInfoOverlay(FloatingWidgetContainer *parent) :
     ui->nameLabel->setText("No file opened");
     if(parent)
         setContainerSize(parent->size());
-    readSettings();
-    connect(settings, &Settings::settingsChanged, this, &FullscreenInfoOverlay::readSettings);
-}
-
-void FullscreenInfoOverlay::readSettings() {
-    QColor color = settings->fullscreenInfoTextColor();
-    ui->posLabel->setStyleSheet("color: " + color.name() + ";");
-    ui->nameLabel->setStyleSheet("color: " + color.name() + ";");
-    ui->infoLabel->setStyleSheet("color: " + color.name() + ";");
 }
 
 FullscreenInfoOverlay::~FullscreenInfoOverlay() {

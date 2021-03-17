@@ -8,10 +8,13 @@ VideoControls::VideoControls(FloatingWidgetContainer *parent) :
     ui->setupUi(this);
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     hide();
-    ui->pauseButton->setIconPath(":res/icons/buttons/videocontrols/play24.png");
-    ui->prevFrameButton->setIconPath(":res/icons/buttons/videocontrols/skip-backwards24.png");
-    ui->nextFrameButton->setIconPath(":res/icons/buttons/videocontrols/skip-forward24.png");
-    ui->muteButton->setIconPath(":/res/icons/buttons/videocontrols/mute-on24.png");
+    ui->pauseButton->setIconPath(":res/icons/common/buttons/videocontrols/play24.png");
+    ui->pauseButton->setAction("pauseVideo");
+    ui->prevFrameButton->setIconPath(":res/icons/common/buttons/videocontrols/skip-backwards24.png");
+    ui->prevFrameButton->setAction("frameStepBack");
+    ui->nextFrameButton->setIconPath(":res/icons/common/buttons/videocontrols/skip-forward24.png");
+    ui->nextFrameButton->setAction("frameStep");
+    ui->muteButton->setIconPath(":/res/icons/common/buttons/videocontrols/mute-on24.png");
     ui->muteButton->setAction("toggleMute");
 
     lastPosition = -1;
@@ -19,10 +22,7 @@ VideoControls::VideoControls(FloatingWidgetContainer *parent) :
     readSettings();
     connect(settings, &Settings::settingsChanged, this, &VideoControls::readSettings);
 
-    connect(ui->pauseButton, &IconButton::clicked, this, &VideoControls::pause);
     connect(ui->seekBar, &VideoSlider::sliderMovedX, this, &VideoControls::seek);
-    connect(ui->prevFrameButton, &IconButton::clicked, this, &VideoControls::prevFrame);
-    connect(ui->nextFrameButton, &IconButton::clicked, this, &VideoControls::nextFrame);
 
     if(parent)
         setContainerSize(parent->size());
@@ -92,14 +92,14 @@ void VideoControls::setPlaybackPosition(int position) {
 
 void VideoControls::onPlaybackPaused(bool mode) {
     if(mode)
-        ui->pauseButton->setIconPath(":res/icons/buttons/videocontrols/play24.png");
+        ui->pauseButton->setIconPath(":res/icons/common/buttons/videocontrols/play24.png");
     else
-        ui->pauseButton->setIconPath(":res/icons/buttons/videocontrols/pause24.png");
+        ui->pauseButton->setIconPath(":res/icons/common/buttons/videocontrols/pause24.png");
 }
 
 void VideoControls::onVideoMuted(bool mode) {
     if(mode)
-        ui->muteButton->setIconPath(":res/icons/buttons/videocontrols/mute-on24.png");
+        ui->muteButton->setIconPath(":res/icons/common/buttons/videocontrols/mute-on24.png");
     else
-        ui->muteButton->setIconPath(":res/icons/buttons/videocontrols/mute-off24.png");
+        ui->muteButton->setIconPath(":res/icons/common/buttons/videocontrols/mute-off24.png");
 }

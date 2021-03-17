@@ -29,23 +29,26 @@ FolderView::FolderView(QWidget *parent) :
     ui->dirTreeView->setRootIndex(idx);
 #endif
     // -------------------------------
-
     ui->openButton->setAction("open");
-    ui->openButton->setIconPath(":res/icons/buttons/panel/open16.png");
+    ui->openButton->setIconPath(":res/icons/common/buttons/panel/open16.png");
     ui->settingsButton->setAction("openSettings");
-    ui->settingsButton->setIconPath(":res/icons/buttons/panel/settings16.png");
+    ui->settingsButton->setIconPath(":res/icons/common/buttons/panel/settings16.png");
     ui->exitButton->setAction("exit");
-    ui->exitButton->setIconPath(":res/icons/buttons/panel/close16.png");
+    ui->exitButton->setIconPath(":res/icons/common/buttons/panel/close16.png");
     ui->docViewButton->setAction("documentView");
-    ui->docViewButton->setIconPath(":res/icons/buttons/panel/document-view16.png");
+    ui->docViewButton->setIconPath(":res/icons/common/buttons/panel/document-view16.png");
     ui->showLabelsButton->setCheckable(true);
-    ui->showLabelsButton->setIconPath(":res/icons/buttons/panel/labels.png");
+    ui->showLabelsButton->setIconPath(":res/icons/common/buttons/panel/labels.png");
+    ui->showFoldersButton->setCheckable(true);
+    ui->showFoldersButton->setIconPath(":res/icons/common/buttons/panel/folder16.png");
     ui->togglePlacesPanelButton->setCheckable(true);
-    ui->togglePlacesPanelButton->setIconPath(":res/icons/buttons/panel/toggle-panel20.png");
+    ui->togglePlacesPanelButton->setIconPath(":res/icons/common/buttons/panel/toggle-panel20.png");
 
-    ui->newBookmarkButton->setIconPath(":res/icons/buttons/add-new12.png");
-    ui->homeButton->setIconPath(":res/icons/buttons/home12.png");
-    ui->rootButton->setIconPath(":res/icons/buttons/root12.png");
+    ui->sortingComboBox->setIconPath(":res/icons/common/other/sorting-mode16.png");
+
+    ui->newBookmarkButton->setIconPath(":res/icons/common/buttons/panel-small/add-new12.png");
+    ui->homeButton->setIconPath(":res/icons/common/buttons/panel-small/home12.png");
+    ui->rootButton->setIconPath(":res/icons/common/buttons/panel-small/root12.png");
 
     int min = ui->thumbnailGrid->THUMBNAIL_SIZE_MIN;
     int max = ui->thumbnailGrid->THUMBNAIL_SIZE_MAX;
@@ -58,11 +61,13 @@ FolderView::FolderView(QWidget *parent) :
 
     ui->splitter->setStretchFactor(1, 50);
 
-    connect(ui->thumbnailGrid, &FolderGridView::itemSelected,     this, &FolderView::itemSelected);
+    connect(ui->thumbnailGrid, &FolderGridView::itemActivated,     this, &FolderView::itemActivated);
     connect(ui->thumbnailGrid, &FolderGridView::thumbnailsRequested,  this, &FolderView::thumbnailsRequested);
     connect(ui->thumbnailGrid, &FolderGridView::thumbnailSizeChanged, this, &FolderView::onThumbnailSizeChanged);
     connect(ui->thumbnailGrid, &FolderGridView::showLabelsChanged,    this, &FolderView::onShowLabelsChanged);
     connect(ui->thumbnailGrid, &FolderGridView::draggedOut,     this, &FolderView::draggedOut);
+    connect(ui->thumbnailGrid, &FolderGridView::draggedOver,     this, &FolderView::draggedOver);
+    connect(ui->thumbnailGrid, &FolderGridView::droppedInto,     this, &FolderView::droppedInto);
 
     connect(ui->bookmarksWidget, &BookmarksWidget::bookmarkClicked, this, &FolderView::onBookmarkClicked);
 
@@ -73,10 +78,12 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->zoomSlider, &QSlider::valueChanged, this, &FolderView::onZoomSliderValueChanged);
     connect(ui->sortingComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &FolderView::onSortingSelected);
     connect(ui->showLabelsButton, &ActionButton::toggled, this, &FolderView::onShowLabelsButtonToggled);
+    connect(ui->showFoldersButton, &ActionButton::toggled, this, &FolderView::onShowFoldersButtonToggled);
     connect(ui->togglePlacesPanelButton, &ActionButton::toggled, this, &FolderView::onPlacesPanelButtonChecked);
 
     connect(ui->dirTreeView, &TreeViewCustom::droppedIn, this, &FolderView::onDroppedInByIndex);
-    connect(ui->bookmarksWidget, &BookmarksWidget::droppedIn, this, &FolderView::onDroppedIn);
+    connect(ui->dirTreeView, &TreeViewCustom::tabbedOut, this, &FolderView::onTreeViewTabOut);
+    connect(ui->bookmarksWidget, &BookmarksWidget::droppedIn, this, &FolderView::copyUrlsRequested); // ask what to do via popup? copy or move
 
     ui->sortingComboBox->setItemDelegate(new QStyledItemDelegate(ui->sortingComboBox));
     ui->sortingComboBox->view()->setTextElideMode(Qt::ElideNone);
@@ -105,8 +112,7 @@ void FolderView::readSettings() {
     QList<int> sizes;
     sizes << settings->placesPanelWidth() << 1;
     ui->splitter->setSizes(sizes);
-
-    onSortingChanged(settings->sortingMode());
+    ui->showFoldersButton->setChecked(settings->showFolders());
 }
 
 void FolderView::onSplitterMoved() {
@@ -139,12 +145,14 @@ void FolderView::toggleFilesystemView() {
     settings->setPlacesPanelTreeExpanded(ui->dirTreeView->isVisible());
 }
 
-void FolderView::onDroppedInByIndex(QList<QUrl> urls, QModelIndex index) {
-    emit moveUrlsRequested(urls, dirModel->filePath(index));
+void FolderView::onTreeViewTabOut() {
+    ui->thumbnailGrid->setFocus();
+    // TODO: maybe add a focus change indication? a border blink or something
 }
 
-void FolderView::onDroppedIn(QList<QUrl> urls, QString dirPath) {
-    emit moveUrlsRequested(urls, dirPath);
+// TODO: ask what to do
+void FolderView::onDroppedInByIndex(QList<QString> paths, QModelIndex index) {
+    emit copyUrlsRequested(paths, dirModel->filePath(index));
 }
 
 void FolderView::onShowLabelsChanged(bool mode) {
@@ -154,6 +162,15 @@ void FolderView::onShowLabelsChanged(bool mode) {
 
 void FolderView::onShowLabelsButtonToggled(bool mode) {
     ui->thumbnailGrid->setShowLabels(mode);
+}
+
+void FolderView::onShowFoldersChanged(bool mode) {
+    ui->showFoldersButton->setChecked(mode);
+    settings->setShowFolders(mode);
+}
+
+void FolderView::onShowFoldersButtonToggled(bool mode) {
+    emit showFoldersChanged(mode);
 }
 
 void FolderView::onThumbnailSizeChanged(int newSize) {
@@ -209,12 +226,16 @@ void FolderView::setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) {
     ui->thumbnailGrid->setThumbnail(pos, thumb);
 }
 
-void FolderView::selectIndex(int index) {
-    ui->thumbnailGrid->selectIndex(index);
+void FolderView::select(QList<int> indices) {
+    ui->thumbnailGrid->select(indices);
 }
 
-int FolderView::selectedIndex() {
-    return ui->thumbnailGrid->selectedIndex();
+void FolderView::select(int index) {
+    ui->thumbnailGrid->select(index);
+}
+
+QList<int> FolderView::selection() {
+    return ui->thumbnailGrid->selection();
 }
 
 void FolderView::focusOn(int index) {
@@ -281,7 +302,7 @@ void FolderView::onBookmarkClicked(QString dirPath) {
 void FolderView::newBookmark() {
     QString dirPath;
 
-    QFileDialog dialog(this);
+    QFileDialog dialog;
     dialog.setDirectory(QDir::homePath());
     dialog.setWindowTitle("Select directory");
     dialog.setWindowModality(Qt::ApplicationModal);
@@ -306,6 +327,10 @@ void FolderView::removeItem(int index) {
 
 void FolderView::reloadItem(int index) {
     ui->thumbnailGrid->reloadItem(index);
+}
+
+void FolderView::setDragHover(int index) {
+    ui->thumbnailGrid->setDragHover(index);
 }
 
 // prevent passthrough to parent

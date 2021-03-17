@@ -105,7 +105,7 @@ QString ShortcutBuilder::fromEventNativeScanCode(QKeyEvent *event) {
     if(sequence.isEmpty())
         return sequence;
 
-    QChar keyChr = event->text()[0];
+    QChar keyChr = event->text().at(0);
 
     bool useUppercaseChr = (event->modifiers() == Qt::ShiftModifier) && !(keyChr.isLetter() || !keyChr.isPrint() || keyChr.isSpace());
     if(useUppercaseChr) {
@@ -113,6 +113,7 @@ QString ShortcutBuilder::fromEventNativeScanCode(QKeyEvent *event) {
     } else if(!sequence.isEmpty()) {
         sequence.prepend(modifierKeys(event));
     }
+
     //qDebug() << "RESULT:" << sequence;
     return sequence;
 }
@@ -126,6 +127,12 @@ QString ShortcutBuilder::fromEventText(QKeyEvent *event) {
     if(!sequence.isEmpty()) {
         // remove "Key_" at the beginning
         sequence.remove(0,4);
+        // rename some keys to match the ones from inputmap
+        // just a bandaid
+        if(sequence == "Return")
+            sequence = "Enter";
+        else if(sequence == "Escape")
+            sequence = "Esc";
     } else {
         // got an unknown key (usually something from non-eng layout)
         // use it's text value instead

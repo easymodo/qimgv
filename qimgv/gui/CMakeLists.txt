@@ -27,6 +27,8 @@ target_sources(qimgv PRIVATE
     customwidgets/thumbnailwidget.cpp
     customwidgets/videoslider.cpp
     customwidgets/pushbuttonfocusind.cpp
+    customwidgets/styledcombobox.cpp
+    customwidgets/colorselectorbutton.cpp
 
     dialogs/resizedialog.cpp
     dialogs/scripteditordialog.cpp
@@ -54,6 +56,7 @@ target_sources(qimgv PRIVATE
     panels/croppanel/croppanel.cpp
     panels/mainpanel/mainpanel.cpp
     panels/mainpanel/thumbnailstrip.cpp
+    panels/mainpanel/thumbnailstripproxy.cpp
     panels/sidepanel/sidepanel.cpp
 
     panels/infobar/infobar.cpp

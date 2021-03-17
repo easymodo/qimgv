@@ -8,11 +8,13 @@
 #include <QImageReader>
 #include <QStringList>
 #include <QColor>
+#include <QPalette>
 #include <QDir>
 #include <QKeySequence>
 #include <QMap>
 #include <QVersionNumber>
 #include "utils/script.h"
+#include "themestore.h"
 
 enum SortingMode {
     SORT_NAME,
@@ -50,8 +52,8 @@ enum ScalingFilter {
 
 enum ZoomIndicatorMode {
     INDICATOR_DISABLED,
-    INDICATOR_AUTOHIDE,
-    INDICATOR_ENABLED
+    INDICATOR_ENABLED,
+    INDICATOR_AUTO
 };
 
 enum DefaultCropAction {
@@ -82,35 +84,20 @@ class Settings : public QObject
 public:
     static Settings* getInstance();
     ~Settings();
-    static void validate();
     QStringList supportedMimeTypes();
     QList<QByteArray> supportedFormats();
     QString supportedFormatsString();
     QString supportedFormatsRegex();
-    bool useFastScale();
-    void setUseFastScale(bool mode);
-    unsigned int lastFilePosition();
-    void setLastFilePosition(unsigned int pos);
-    unsigned int mainPanelSize();
-    void setMainPanelSize(unsigned int size);
+    int mainPanelSize();
+    void setMainPanelSize(int size);
     bool usePreloader();
     void setUsePreloader(bool mode);
-    QColor backgroundColor();
-    void setBackgroundColor(QColor color);
-    QColor accentColor();
-    void setAccentColor(QColor color);
-    QColor highlightColor();
-    void setHighlightColor(QColor color);
     bool fullscreenMode();
     void setFullscreenMode(bool mode);
     ImageFitMode imageFitMode();
     void setImageFitMode(ImageFitMode mode);
     QRect windowGeometry();
     void setWindowGeometry(QRect geometry);
-    bool reduceRamUsage();
-    void setReduceRamUsage(bool mode);
-    bool playWebm();
-    void setPlayWebm(bool mode);
     bool playVideoSounds();
     void setPlayVideoSounds(bool mode);
     void setVolume(int vol);
@@ -125,20 +112,14 @@ public:
 
     bool infiniteScrolling();
     void setInfiniteScrolling(bool mode);
-    bool fullscreenTaskbarShown();
-    void setFullscreenTaskbarShown(bool mode);
     void readShortcuts(QMap<QString, QString> &shortcuts);
     void saveShortcuts(const QMap<QString, QString> &shortcuts);
     bool panelEnabled();
     void setPanelEnabled(bool mode);
     int lastDisplay();
     void setLastDisplay(int display);
-    bool mouseWrapping();
-    void setMouseWrapping(bool mode);
     bool squareThumbnails();
     void setSquareThumbnails(bool mode);
-    bool drawThumbnailSelectionBorder();
-    void setDrawThumbnailSelectionBorder(bool mode);
     bool transparencyGrid();
     void setTransparencyGrid(bool mode);
     bool enableSmoothScroll();
@@ -152,10 +133,6 @@ public:
     void setThumbnailerThreadCount(int count);
     bool smoothUpscaling();
     void setSmoothUpscaling(bool mode);
-    int maxZoomedResolution();
-    void setMaxZoomedResolution(int value);
-    int maximumZoom();
-    void setMaximumZoom(int value);
     void setExpandImage(bool mode);
     bool expandImage();
     ScalingFilter scalingFilter();
@@ -164,8 +141,6 @@ public:
     void setSmoothAnimatedImages(bool mode);
     bool panelFullscreenOnly();
     void setPanelFullscreenOnly(bool mode);
-    bool playMp4();
-    void setPlayMp4(bool mode);
     QVersionNumber lastVersion();
     void setLastVersion(QVersionNumber &ver);
     void setShowChangelogs(bool mode);
@@ -184,9 +159,6 @@ public:
     bool firstRun();
     void setFirstRun(bool mode);
 
-    QColor backgroundColorFullscreen();
-    void setBackgroundColorFullscreen(QColor color);
-
     void sync();
     bool cursorAutohide();
     void setCursorAutohide(bool mode);
@@ -204,9 +176,6 @@ public:
 
     bool maximizedWindow();
     void setMaximizedWindow(bool mode);
-
-    QColor fullscreenInfoTextColor();
-    void setFullscreenInfoTextColor(QColor color);
 
     bool keepFitMode();
     void setKeepFitMode(bool mode);
@@ -247,12 +216,37 @@ public:
 
     ViewMode defaultViewMode();
     void setDefaultViewMode(ViewMode mode);
+
+    const ColorScheme& colorScheme();
+    void setColorScheme(ColorScheme scheme);
+
+    bool videoPlayback();
+    void setVideoPlayback(bool mode);
+
+    bool useSystemColorScheme();
+    void setUseSystemColorScheme(bool mode);
+
+    void loadStylesheet();
+
+    bool showFolders();
+    void setShowFolders(bool mode);
+    bool showSaveOverlay();
+    void setShowSaveOverlay(bool mode);
+    bool confirmDelete();
+    void setConfirmDelete(bool mode);
+    bool confirmTrash();
+    void setConfirmTrash(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;
-    QSettings *s, *state;
+    QSettings *settingsConf, *stateConf, *themeConf;
     QDir *mTmpDir, *mThumbCacheDir, *mConfDir;
+    ColorScheme mColorScheme;
+    void loadTheme();
+    void saveTheme();
+    void createColorVariants();
 
+    void setupCache();
 signals:
     void settingsChanged();
 

@@ -1,9 +1,6 @@
 #include "infobar.h"
 #include "ui_infobar.h"
 
-#include <QPainter>
-#include <QStyleOption>
-
 InfoBar::InfoBar(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::InfoBar)
@@ -20,6 +17,10 @@ void InfoBar::setInfo(QString position, QString fileName, QString info) {
     ui->index->setText(position);
     ui->path->setText(fileName);
     ui->info->setText(info);
+}
+
+void InfoBar::wheelEvent(QWheelEvent *event) {
+    event->accept();
 }
 
 void InfoBar::paintEvent(QPaintEvent *event) {

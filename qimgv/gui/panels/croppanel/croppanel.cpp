@@ -12,6 +12,10 @@ CropPanel::CropPanel(CropOverlay *_overlay, QWidget *parent) :
     ui->ARcomboBox->setItemDelegate(new QStyledItemDelegate(ui->ARcomboBox));
     ui->ARcomboBox->view()->setTextElideMode(Qt::ElideNone);
 
+    ui->headerIcon->setIconPath(":/res/icons/common/other/image-crop48.png");
+
+    ui->ARcomboBox->setIconPath(":res/icons/common/other/dropDownArrow.png");
+
     hide();
 
     if(settings->defaultCropAction() == ACTION_CROP)
@@ -231,4 +235,8 @@ void CropPanel::keyPressEvent(QKeyEvent *event) {
     } else {
         event->ignore();
     }
+}
+
+void CropPanel::wheelEvent(QWheelEvent *event) {
+    event->accept();
 }

@@ -9,6 +9,7 @@
 #include <QPaintEngine>
 #include <cmath>
 #include "sourcecontainers/thumbnail.h"
+#include "utils/imagelib.h"
 #include "settings.h"
 #include "sharedresources.h"
 
@@ -17,7 +18,7 @@ class ThumbnailWidget : public QGraphicsWidget {
 
 public:
     ThumbnailWidget(QGraphicsItem *parent = nullptr);
-    ~ThumbnailWidget() Q_DECL_OVERRIDE;
+    ~ThumbnailWidget() override;
 
     enum { Type = UserType + 1 };
     int type() const { return Type; }
@@ -25,21 +26,24 @@ public:
     bool isLoaded;
     void setThumbnail(std::shared_ptr<Thumbnail> _thumbnail);
 
-    void setHighlighted(bool x);
+    void setHighlighted(bool mode);
     bool isHighlighted();
 
-    virtual QRectF boundingRect() const Q_DECL_OVERRIDE;
+    void setDropHovered(bool mode);
+    bool isDropHovered();
+
+    virtual QRectF boundingRect() const override;
 
     qreal width();
     qreal height();
     void setThumbnailSize(int size);
 
-    void setGeometry(const QRectF &rect) Q_DECL_OVERRIDE;
+    void setGeometry(const QRectF &rect) override;
 
     virtual QRectF geometry() const;
     QSizeF effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
     void setDrawLabel(bool mode);
-    void setPadding(int x, int y);
+    void setPadding(int _padding);
     int thumbnailSize();
     void reset();
     void unsetThumbnail();
@@ -49,16 +53,18 @@ protected slots:
 
 protected:
     virtual void setupLayout();
-    virtual void drawThumbnail(QPainter* painter, qreal dpr, const QPixmap *pixmap);
-    virtual void drawIcon(QPainter *painter, qreal dpr, const QPixmap *pixmap);
+    virtual void drawThumbnail(QPainter* painter, const QPixmap *pixmap);
+    virtual void drawIcon(QPainter *painter, const QPixmap *pixmap);
     virtual void drawHighlight(QPainter *painter);
-    virtual void drawHover(QPainter *painter);
+    virtual void drawHoverBg(QPainter *painter);
+    virtual void drawHoverHighlight(QPainter *painter);
     virtual void drawLabel(QPainter *painter);
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) Q_DECL_OVERRIDE;
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const Q_DECL_OVERRIDE;
-    void updateGeometry() Q_DECL_OVERRIDE;
+    virtual void drawDropHover(QPainter *painter);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
+    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
+    void updateGeometry() override;
     void setHovered(bool);
     bool isHovered();
     virtual void updateHighlightRect();
@@ -66,11 +72,13 @@ protected:
     virtual void updateThumbnailDrawPosition();
 
     std::shared_ptr<Thumbnail> thumbnail;
-    bool highlighted, hovered, mDrawLabel;
-    int mThumbnailSize, paddingX, paddingY, textHeight;
-    QRectF highlightRect, nameRect, nameTextRect, labelTextRect;
+    bool highlighted, hovered, mDrawLabel, dropHovered, animateHover;
+    int mThumbnailSize, padding, textHeight;
+    QRectF highlightRect, nameRect, labelTextRect;
     QColor highlightColor, nameColor;
     QFont font, fontSmall;
     QFontMetrics *fm, *fmSmall;
     QRect drawRectCentered;
+    QRectF mBoundingRect;
+    virtual void updateBoundingRect();
 };

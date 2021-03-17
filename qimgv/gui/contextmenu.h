@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QScreen>
 #include <QStyleOption>
 #include <QTimer>
 #include <QPainter>
@@ -18,6 +19,8 @@ public:
 
 public slots:
     void showAt(QPoint pos);
+    void setGeometry(QRect geom);
+
 private:
     Ui::ContextMenu *ui;
     QTimer mTimer;

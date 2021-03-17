@@ -97,12 +97,12 @@ Example of a command:
 
 `convert %file% %file%_.pdf`
 
-Example of a shell script file: 
+Example of a shell script file (`$1` will be image path): 
 ```
 #!/bin/bash
 gimp "$1"
 ```
-_Note: The $1 argument will be a full file path. Also, the script file must be an executable._
+_Note: The script file must be an executable. Also, "shebang" (`#!/bin/bash`) needs to be present._
 
 When you've created your script go to __Settings > Controls > Add__, then select it and assign a shortcut like for any regular action.
 
@@ -168,7 +168,11 @@ sudo add-apt-repository ppa:easymodo/qimgv
 sudo apt-get update
 sudo apt install qimgv
 ```
+<<<<<<< HEAD
 _Alternative package with KDE support:_
+=======
+_Alternative package with kde support:_
+>>>>>>> dev
 ```
 sudo apt install qimgv-kde
 ```
@@ -218,7 +222,7 @@ If your favorite distro is not included refer to [Manual install] section at the
 
 Note: in order to compile you will need gcc 8 or later!
  
-__Install dependencies ( `gcc` >= 8, `git`, `cmake` >= 3.13, `qt` >= 5.9, `exiv2`, `mpv`, `opencv (core and imgproc` )__
+__Install dependencies ( `gcc` >= 9.0, `git`, `cmake` >= 3.13, `qt` >= 5.9, `exiv2`, `mpv`, `opencv (core and imgproc` )__
 
 _Ubuntu & derivatives:_
      

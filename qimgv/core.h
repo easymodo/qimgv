@@ -5,7 +5,6 @@
 #include <QMutex>
 #include <QClipboard>
 #include <QDrag>
-#include <malloc.h>
 #include <QFileSystemModel>
 #include <QDesktopServices>
 #include "appversion.h"
@@ -16,9 +15,13 @@
 #include "gui/mainwindow.h"
 #include "utils/randomizer.h"
 
+#ifdef __GLIBC__
+#include <malloc.h>
+#endif
+
 struct State {
     bool hasActiveImage = false;
-    QString currentFileName = "";
+    QString currentFilePath = "";
 };
 
 enum MimeDataTarget {
@@ -53,25 +56,37 @@ private:
     // components
     std::shared_ptr<DirectoryModel> model;
 
-    DirectoryPresenter presenter;
+    DirectoryPresenter thumbPanelPresenter, folderViewPresenter;
 
     void rotateByDegrees(int degrees);
     void reset();
-    void loadDirectoryPath(QString);
-    void loadImagePath(QString path, bool blocking);
+
     QDrag *mDrag;
-    QMimeData *getMimeDataFor(std::shared_ptr<Image> img, MimeDataTarget target);
+    QMimeData *getMimeDataForImage(std::shared_ptr<Image> img, MimeDataTarget target);
 
     Randomizer randomizer;
     void syncRandomizer();
 
     void attachModel(DirectoryModel *_model);
-    QString selectedFileName();
+    QString selectedFilePath();
     void guiSetImage(std::shared_ptr<Image> img);
     QTimer slideshowTimer;
 
     void startSlideshowTimer();
     void stopSlideshow();
+
+    bool saveFile(const QString &filePath, const QString &newPath);
+    bool saveFile(const QString &filePath);
+
+    std::shared_ptr<ImageStatic> getEditableImage(const QString &filePath);
+    QList<QString> currentSelection();
+
+    template<typename... Args>
+    void edit_template(bool save, const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& func, Args&&... as);
+
+    bool copyFileConfirmation(QString src, QString dst);
+    bool mergeDirConfirmation(QString src, QString dst);
+    void interactiveCopy(QString path, QString destDirectory, bool &forceAll);
 private slots:
     void readSettings();
     void nextImage();
@@ -79,10 +94,10 @@ private slots:
     void nextImageSlideshow();
     void jumpToFirst();
     void jumpToLast();
-    void onModelItemReady(std::shared_ptr<Image>);
+    void onModelItemReady(std::shared_ptr<Image>, const QString&);
     void onModelItemUpdated(QString fileName);
     void onModelSortingChanged(SortingMode mode);
-    void onLoadFailed(QString path);
+    void onLoadFailed(const QString &path);
     void rotateLeft();
     void rotateRight();
     void close();
@@ -90,29 +105,29 @@ private slots:
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
     void copyCurrentFile(QString destDirectory);
     void moveCurrentFile(QString destDirectory);
-    void copyUrls(QList<QUrl> urls, QString destDirectory);
-    void moveUrls(QList<QUrl> urls, QString destDirectory);
-    void removeFile(QString fileName, bool trash);
-    void onFileRemoved(QString fileName, int index);
-    void onFileRenamed(QString from, int indexFrom, QString to, int indexTo);
-    void onFileAdded(QString fileName);
-    void onFileModified(QString fileName);
+    void copyPathsTo(QList<QString> paths, QString destDirectory);
+    void copyPathsTo(QList<QString> paths, QString destDirectory, bool force);
+    void interactiveCopy(QList<QString> paths, QString destDirectory, bool &forceAll);
+    void movePathsTo(QList<QString> paths, QString destDirectory);
+    FileOpResult removeFile(QString fileName, bool trash);
+    void onFileRemoved(QString filePath, int index);
+    void onFileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);
+    void onFileAdded(QString filePath);
+    void onFileModified(QString filePath);
     void showResizeDialog();
     void resize(QSize size);
     void flipH();
     void flipV();
-    bool crop(QRect rect);
+    void crop(QRect rect);
     void cropAndSave(QRect rect);
     void discardEdits();
     void toggleCropPanel();
     void requestSavePath();
-    void saveImageToDisk();
-    void saveImageToDisk(QString);
+    void saveCurrentFile();
+    void saveCurrentFileAs(QString);
     void runScript(const QString&);
-    void removeFilePermanent();
-    void removeFilePermanent(QString fileName);
+    void removePermanent();
     void moveToTrash();
-    void moveToTrash(QString fileName);
     void reloadImage();
     void reloadImage(QString fileName);
     void copyFileClipboard();
@@ -123,19 +138,21 @@ private slots:
     void sortByTime();
     void sortBySize();
     void showRenameDialog();
-    void onDragOut();
-    void onDragOut(int index);
+    void onDraggedOut();
+    void onDraggedOut(QList<QString> paths);
     void onDropIn(const QMimeData *mimeData, QObject* source);
     void toggleShuffle();
     void onModelLoaded();
     void outputError(const FileOpResult &error) const;
     void showOpenDialog();
     void showInDirectory();
-    void onDirectoryViewItemSelected(int index);
+    void onDirectoryViewFileActivated(QString filePath);
     bool loadIndex(int index, bool async, bool preload);
     void enableDocumentView();
     void enableFolderView();
     void toggleFolderView();
     void toggleSlideshow();
     void onPlaybackFinished();
+    void setFoldersDisplay(bool mode);
+    void loadParentDir();
 };

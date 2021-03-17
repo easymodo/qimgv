@@ -19,6 +19,9 @@ public:
 public slots:
     void setInfo(QString position, QString fileName, QString info);
 
+protected:
+    void paintEvent(QPaintEvent *event);
+
 private:
     InfoBarStateBuffer stateBuf;
     InfoBar *infoBar;

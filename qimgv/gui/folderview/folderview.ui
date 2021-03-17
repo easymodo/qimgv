@@ -74,20 +74,20 @@
       <item>
        <widget class="ActionButton" name="togglePlacesPanelButton" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="minimumSize">
          <size>
-          <width>38</width>
+          <width>40</width>
           <height>38</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>38</width>
+          <width>40</width>
           <height>38</height>
          </size>
         </property>
@@ -138,72 +138,100 @@
        </spacer>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <property name="spacing">
-         <number>6</number>
+       <widget class="QSlider" name="zoomSlider">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <property name="leftMargin">
-         <number>2</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>2</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QSlider" name="zoomSlider">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>110</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>110</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
-          </property>
-          <property name="contextMenuPolicy">
-           <enum>Qt::NoContextMenu</enum>
-          </property>
-          <property name="accessibleName">
-           <string>FolderViewSlider</string>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::NoTicks</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="ActionButton" name="showLabelsButton" native="true">
         <property name="minimumSize">
          <size>
-          <width>38</width>
+          <width>110</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>110</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::NoContextMenu</enum>
+        </property>
+        <property name="accessibleName">
+         <string>FolderViewSlider</string>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::NoTicks</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>10</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="ActionButton" name="showFoldersButton" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
           <height>38</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>38</width>
+          <width>40</width>
+          <height>38</height>
+         </size>
+        </property>
+        <property name="accessibleName">
+         <string>CheckableButton</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="ActionButton" name="showLabelsButton" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>38</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>40</width>
           <height>38</height>
          </size>
         </property>
@@ -222,22 +250,31 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>12</width>
+          <width>10</width>
           <height>20</height>
          </size>
         </property>
        </spacer>
       </item>
       <item>
-       <widget class="QComboBox" name="sortingComboBox">
+       <widget class="StyledComboBox" name="sortingComboBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>38</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>38</height>
+         </size>
         </property>
         <property name="contextMenuPolicy">
          <enum>Qt::NoContextMenu</enum>
@@ -290,7 +327,7 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>12</width>
+          <width>10</width>
           <height>20</height>
          </size>
         </property>
@@ -375,146 +412,238 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="spacing">
-      <number>7</number>
+    <widget class="QWidget" name="contentsWidget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="leftMargin">
-      <number>0</number>
+     <property name="accessibleName">
+      <string notr="true">FolderViewContents</string>
      </property>
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QWidget" name="widget" native="true">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_7">
-        <property name="spacing">
-         <number>0</number>
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QSplitter" name="splitter">
+        <property name="accessibleName">
+         <string notr="true">FolderViewSplitter</string>
         </property>
-        <property name="leftMargin">
-         <number>0</number>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <property name="topMargin">
-         <number>0</number>
+        <property name="handleWidth">
+         <number>6</number>
         </property>
-        <property name="rightMargin">
-         <number>0</number>
+        <property name="childrenCollapsible">
+         <bool>false</bool>
         </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QSplitter" name="splitter">
-          <property name="accessibleName">
-           <string notr="true">FolderViewSplitter</string>
+        <widget class="QWidget" name="placesPanel" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>260</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="accessibleName">
+          <string>PlacesPanel</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="spacing">
+           <number>6</number>
           </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+          <property name="sizeConstraint">
+           <enum>QLayout::SetDefaultConstraint</enum>
           </property>
-          <property name="handleWidth">
-           <number>12</number>
+          <property name="leftMargin">
+           <number>0</number>
           </property>
-          <property name="childrenCollapsible">
-           <bool>false</bool>
+          <property name="topMargin">
+           <number>7</number>
           </property>
-          <widget class="QWidget" name="placesPanel" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>260</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="accessibleName">
-            <string>PlacesPanel</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="rightMargin">
+           <number>6</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
             <property name="spacing">
-             <number>6</number>
-            </property>
-            <property name="sizeConstraint">
-             <enum>QLayout::SetDefaultConstraint</enum>
+             <number>16</number>
             </property>
             <property name="leftMargin">
              <number>8</number>
             </property>
             <property name="topMargin">
-             <number>12</number>
+             <number>0</number>
             </property>
             <property name="rightMargin">
-             <number>8</number>
+             <number>5</number>
             </property>
             <property name="bottomMargin">
-             <number>8</number>
+             <number>0</number>
             </property>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <widget class="ClickableLabel" name="bookmarksLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="mouseTracking">
+               <bool>true</bool>
+              </property>
+              <property name="accessibleName">
+               <string notr="true">PanelSectionHeader</string>
+              </property>
+              <property name="text">
+               <string>BOOKMARKS</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="IconButton" name="newBookmarkButton" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>26</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>26</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="accessibleName">
+               <string>PlacesPanelButton</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="BookmarksWidget" name="bookmarksWidget" native="true"/>
+          </item>
+          <item>
+           <spacer name="placesPanelSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>10</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <property name="spacing">
+             <number>16</number>
+            </property>
+            <property name="leftMargin">
+             <number>8</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>5</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="ClickableLabel" name="directoriesLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="mouseTracking">
+               <bool>true</bool>
+              </property>
+              <property name="accessibleName">
+               <string notr="true">PanelSectionHeader</string>
+              </property>
+              <property name="text">
+               <string>FILESYSTEM</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
               <property name="spacing">
-               <number>16</number>
+               <number>0</number>
               </property>
               <property name="leftMargin">
                <number>0</number>
               </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
               <item>
-               <widget class="ClickableLabel" name="bookmarksLabel">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="cursor">
-                 <cursorShape>PointingHandCursor</cursorShape>
-                </property>
-                <property name="mouseTracking">
-                 <bool>true</bool>
-                </property>
-                <property name="accessibleName">
-                 <string notr="true">PanelSectionHeader</string>
-                </property>
-                <property name="text">
-                 <string>BOOKMARKS</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="IconButton" name="newBookmarkButton" native="true">
+               <widget class="IconButton" name="rootButton" native="true">
                 <property name="minimumSize">
                  <size>
-                  <width>24</width>
-                  <height>24</height>
+                  <width>26</width>
+                  <height>26</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>24</width>
-                  <height>24</height>
+                  <width>26</width>
+                  <height>26</height>
+                 </size>
+                </property>
+                <property name="accessibleName">
+                 <string>PlacesPanelButton</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="IconButton" name="homeButton" native="true">
+                <property name="minimumSize">
+                 <size>
+                  <width>26</width>
+                  <height>26</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>26</width>
+                  <height>26</height>
                  </size>
                 </property>
                 <property name="accessibleName">
@@ -524,218 +653,121 @@
               </item>
              </layout>
             </item>
-            <item>
-             <widget class="BookmarksWidget" name="bookmarksWidget" native="true"/>
-            </item>
-            <item>
-             <spacer name="placesPanelSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeType">
-               <enum>QSizePolicy::Fixed</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>10</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_6">
-              <property name="spacing">
-               <number>16</number>
-              </property>
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="ClickableLabel" name="directoriesLabel">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="cursor">
-                 <cursorShape>PointingHandCursor</cursorShape>
-                </property>
-                <property name="mouseTracking">
-                 <bool>true</bool>
-                </property>
-                <property name="accessibleName">
-                 <string notr="true">PanelSectionHeader</string>
-                </property>
-                <property name="text">
-                 <string>FILESYSTEM</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_8">
-                <property name="spacing">
-                 <number>0</number>
-                </property>
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="IconButton" name="rootButton" native="true">
-                  <property name="minimumSize">
-                   <size>
-                    <width>24</width>
-                    <height>24</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>24</width>
-                    <height>24</height>
-                   </size>
-                  </property>
-                  <property name="accessibleName">
-                   <string>PlacesPanelButton</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="IconButton" name="homeButton" native="true">
-                  <property name="minimumSize">
-                   <size>
-                    <width>24</width>
-                    <height>24</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>24</width>
-                    <height>24</height>
-                   </size>
-                  </property>
-                  <property name="accessibleName">
-                   <string>PlacesPanelButton</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="TreeViewCustom" name="dirTreeView">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>1</width>
-                <height>1</height>
-               </size>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::NoFrame</enum>
-              </property>
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAsNeeded</enum>
-              </property>
-              <property name="horizontalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="sizeAdjustPolicy">
-               <enum>QAbstractScrollArea::AdjustToContents</enum>
-              </property>
-              <property name="uniformRowHeights">
-               <bool>true</bool>
-              </property>
-              <property name="animated">
-               <bool>false</bool>
-              </property>
-              <property name="headerHidden">
-               <bool>true</bool>
-              </property>
-              <property name="expandsOnDoubleClick">
-               <bool>true</bool>
-              </property>
-              <attribute name="headerVisible">
-               <bool>false</bool>
-              </attribute>
-             </widget>
-            </item>
-            <item>
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
            </layout>
-          </widget>
-          <widget class="QWidget" name="thumbnailGridHolder" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <property name="spacing">
-             <number>0</number>
+          </item>
+          <item>
+           <widget class="TreeViewCustom" name="dirTreeView">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>2</verstretch>
+             </sizepolicy>
             </property>
-            <property name="leftMargin">
-             <number>0</number>
+            <property name="minimumSize">
+             <size>
+              <width>1</width>
+              <height>1</height>
+             </size>
             </property>
-            <property name="topMargin">
-             <number>9</number>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
             </property>
-            <property name="rightMargin">
-             <number>0</number>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAsNeeded</enum>
             </property>
-            <property name="bottomMargin">
-             <number>0</number>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
             </property>
-            <item>
-             <widget class="FolderGridView" name="thumbnailGrid">
-              <property name="minimumSize">
-               <size>
-                <width>200</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="optimizationFlags">
-               <set>QGraphicsView::DontClipPainter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
+            <property name="sizeAdjustPolicy">
+             <enum>QAbstractScrollArea::AdjustToContents</enum>
+            </property>
+            <property name="uniformRowHeights">
+             <bool>true</bool>
+            </property>
+            <property name="animated">
+             <bool>false</bool>
+            </property>
+            <property name="headerHidden">
+             <bool>true</bool>
+            </property>
+            <property name="expandsOnDoubleClick">
+             <bool>true</bool>
+            </property>
+            <attribute name="headerVisible">
+             <bool>false</bool>
+            </attribute>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="thumbnailGridHolder" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>7</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="FolderGridView" name="thumbnailGrid">
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="optimizationFlags">
+             <set>QGraphicsView::DontClipPainter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FolderGridView</class>
-   <extends>QGraphicsView</extends>
-   <header>gui/folderview/foldergridview.h</header>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>gui/customwidgets/clickablelabel.h</header>
+   <slots>
+    <signal>clicked()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>StyledComboBox</class>
+   <extends>QComboBox</extends>
+   <header>gui/customwidgets/styledcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>ActionButton</class>
@@ -744,17 +776,14 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>FolderGridView</class>
+   <extends>QGraphicsView</extends>
+   <header>gui/folderview/foldergridview.h</header>
+  </customwidget>
+  <customwidget>
    <class>TreeViewCustom</class>
    <extends>QTreeView</extends>
    <header>gui/folderview/treeviewcustom.h</header>
-  </customwidget>
-  <customwidget>
-   <class>ClickableLabel</class>
-   <extends>QLabel</extends>
-   <header>gui/customwidgets/clickablelabel.h</header>
-   <slots>
-    <signal>clicked()</signal>
-   </slots>
   </customwidget>
   <customwidget>
    <class>BookmarksWidget</class>

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QThreadPool>
-#include <QtConcurrent>
 #include "components/cache/thumbnailcache.h"
 #include "loaderrunnable.h"
 
@@ -14,7 +13,7 @@ public:
     void loadAsync(QString path);
 
     void clearTasks();
-    bool isBusy();
+    bool isBusy() const;
     bool isLoading(QString path);
 private:
     QHash<QString, LoaderRunnable*> tasks;
@@ -23,9 +22,9 @@ private:
     void doLoadAsync(QString path, int priority);
 
 signals:
-    void loadFinished(std::shared_ptr<Image>);
-    void loadFailed(QString path);
+    void loadFinished(std::shared_ptr<Image>, const QString &path);
+    void loadFailed(const QString &path);
 
 private slots:
-    void onLoadFinished(std::shared_ptr<Image>, QString);
+    void onLoadFinished(std::shared_ptr<Image>, const QString&);
 };

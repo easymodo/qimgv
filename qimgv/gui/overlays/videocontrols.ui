@@ -39,16 +39,16 @@
     <number>7</number>
    </property>
    <property name="leftMargin">
-    <number>14</number>
+    <number>13</number>
    </property>
    <property name="topMargin">
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="rightMargin">
-    <number>14</number>
+    <number>13</number>
    </property>
    <property name="bottomMargin">
-    <number>10</number>
+    <number>9</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0">
@@ -59,7 +59,7 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="IconButton" name="pauseButton" native="true">
+      <widget class="ActionButton" name="pauseButton" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -96,14 +96,14 @@
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>4</width>
+         <width>6</width>
          <height>5</height>
         </size>
        </property>
       </spacer>
      </item>
      <item>
-      <widget class="IconButton" name="prevFrameButton" native="true">
+      <widget class="ActionButton" name="prevFrameButton" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -131,7 +131,7 @@
       </widget>
      </item>
      <item>
-      <widget class="IconButton" name="nextFrameButton" native="true">
+      <widget class="ActionButton" name="nextFrameButton" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -285,12 +285,6 @@
    <class>VideoSlider</class>
    <extends>QSlider</extends>
    <header>gui/customwidgets/videoslider.h</header>
-  </customwidget>
-  <customwidget>
-   <class>IconButton</class>
-   <extends>QWidget</extends>
-   <header>gui/customwidgets/iconbutton.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

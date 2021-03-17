@@ -6,7 +6,6 @@ MW::MW(QWidget *parent)
     : FloatingWidgetContainer(parent),
       currentDisplay(0),
       desktopWidget(nullptr),
-      bgOpacity(1.0),
       maximized(false),
       activeSidePanel(SIDEPANEL_NONE),
       copyOverlay(nullptr),
@@ -66,9 +65,9 @@ void MW::setupUi() {
     folderView.reset(new FolderViewProxy(this));
     connect(folderView.get(), &FolderViewProxy::sortingSelected, this, &MW::sortingSelected);
     connect(folderView.get(), &FolderViewProxy::directorySelected, this, &MW::opened);
-    connect(folderView.get(), &FolderViewProxy::draggedOut, this, qOverload<int>(&MW::draggedOut));
     connect(folderView.get(), &FolderViewProxy::copyUrlsRequested, this, &MW::copyUrlsRequested);
     connect(folderView.get(), &FolderViewProxy::moveUrlsRequested, this, &MW::moveUrlsRequested);
+    connect(folderView.get(), &FolderViewProxy::showFoldersChanged, this, &MW::showFoldersChanged);
 
     centralWidget.reset(new CentralWidget(docWidget, folderView, this));
     layout.addWidget(centralWidget.get());
@@ -105,6 +104,7 @@ void MW::setupUi() {
 
 void MW::setupFullUi() {
     setupCropPanel();
+    viewerWidget->setupMainPanel();
     infoBarWindowed->init();
     infoBarFullscreen->init();
 }
@@ -167,10 +167,6 @@ ViewMode MW::currentViewMode() {
     return centralWidget->currentViewMode();
 }
 
-int MW::folderViewSelection() {
-    return folderView->selectedIndex();
-}
-
 void MW::fitWindow() {
     if(viewerWidget->interactionEnabled()) {
         viewerWidget->fitWindow();
@@ -206,6 +202,7 @@ void MW::switchFitMode() {
 
 void MW::closeImage() {
     info.fileName = "";
+    info.filePath = "";
     viewerWidget->closeImage();
 }
 
@@ -243,7 +240,7 @@ void MW::onSortingChanged(SortingMode mode) {
 
 void MW::setDirectoryPath(QString path) {
     closeImage();
-    info.directory = path;
+    info.directoryName = path;
     folderView->setDirectoryPath(path);
     onInfoUpdated();
 }
@@ -503,6 +500,8 @@ void MW::updateCropPanelData() {
 }
 
 void MW::showSaveOverlay() {
+    if(!settings->showSaveOverlay())
+        return;
     if(!saveOverlay)
         setupSaveOverlay();
     saveOverlay->show();
@@ -599,13 +598,16 @@ void MW::closeFullScreenOrExit() {
     }
 }
 
-void MW::setCurrentInfo(int _index, int _fileCount, QString _fileName, QSize _imageSize, qint64 _fileSize, bool slideshow) {
+// todo: this is crap, use shared state object
+void MW::setCurrentInfo(int _index, int _fileCount, QString _filePath, QString _fileName, QSize _imageSize, qint64 _fileSize, bool slideshow, bool edited) {
     info.index = _index;
     info.fileCount = _fileCount;
     info.fileName = _fileName;
+    info.filePath = _filePath;
     info.imageSize = _imageSize;
     info.fileSize = _fileSize;
     info.slideshow = slideshow;
+    info.edited = edited;
     onInfoUpdated();
 }
 
@@ -631,7 +633,9 @@ void MW::onInfoUpdated() {
 
     QString windowTitle;
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW) {
-        windowTitle = info.directory + " — " + qApp->applicationName();
+        windowTitle = qApp->applicationName();
+        if(!info.directoryName.isEmpty())
+        windowTitle.prepend(info.directoryName + " — ");
         infoBarFullscreen->setInfo("", "No file opened.", "");
         infoBarWindowed->setInfo("", "No file opened.", "");
     } else if(info.fileName.isEmpty()) {
@@ -649,8 +653,10 @@ void MW::onInfoUpdated() {
         }
         if(info.slideshow)
             windowTitle.append(" — slideshow");
-        infoBarFullscreen->setInfo(posString, info.fileName, resString + "  " + sizeString);
-        infoBarWindowed->setInfo(posString, info.fileName, resString + "  " + sizeString);
+        if(info.edited)
+            windowTitle.prepend("* ");
+        infoBarFullscreen->setInfo(posString, info.fileName + (info.edited ? "  *" : ""), resString + "  " + sizeString);
+        infoBarWindowed->setInfo(posString, info.fileName + (info.edited ? "  *" : ""), resString + "  " + sizeString);
     }
     setWindowTitle(windowTitle);
 }
@@ -665,7 +671,7 @@ std::shared_ptr<FolderViewProxy> MW::getFolderView() {
     return folderView;
 }
 
-std::shared_ptr<ThumbnailStrip> MW::getThumbnailPanel() {
+std::shared_ptr<ThumbnailStripProxy> MW::getThumbnailPanel() {
     return viewerWidget->getThumbPanel();
 }
 
@@ -706,7 +712,22 @@ void MW::showWarning(QString text) {
 }
 
 void MW::showError(QString text) {
-    floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_ERROR, 2500);
+    floatingMessage->showMessage(text,  FloatingMessageIcon::ICON_ERROR, 2800);
+}
+
+bool MW::showConfirmation(QString title, QString msg) {
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle(title);
+    msgBox.setText(msg);
+    msgBox.setIcon(QMessageBox::Warning);
+    msgBox.setStandardButtons(QMessageBox::Yes);
+    msgBox.addButton(QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    msgBox.setModal(true);
+    if(msgBox.exec() == QMessageBox::Yes)
+        return true;
+    else
+        return false;
 }
 
 void MW::readSettings() {
@@ -715,11 +736,10 @@ void MW::readSettings() {
     adaptToWindowState();
 }
 
+// todo: remove/rename?
 void MW::applyWindowedBackground() {
-    bgColor = settings->backgroundColor();
-    bgOpacity = settings->backgroundOpacity();
 #ifdef USE_KDE_BLUR
-    if(bgOpacity == 1.0)
+    if(settings->backgroundOpacity() == 1.0)
         KWindowEffects::enableBlurBehind(winId(), false);
     else
         KWindowEffects::enableBlurBehind(winId(), settings->blurBackground());
@@ -727,8 +747,6 @@ void MW::applyWindowedBackground() {
 }
 
 void MW::applyFullscreenBackground() {
-    bgColor = settings->backgroundColorFullscreen();
-    bgOpacity = 1.0;
 #ifdef USE_KDE_BLUR
     KWindowEffects::enableBlurBehind(winId(), false);
 #endif
@@ -762,12 +780,8 @@ void MW::adaptToWindowState() {
 }
 
 void MW::paintEvent(QPaintEvent *event) {
-    /*
     QPainter p(this);
-    p.setOpacity(bgOpacity);
-    p.setBrush(QBrush(bgColor));
-    p.fillRect(this->rect(), p.brush());
-    */
+    p.fillRect(rect(), Qt::black);
     FloatingWidgetContainer::paintEvent(event);
 }
 
@@ -775,3 +789,8 @@ void MW::leaveEvent(QEvent *event) {
     QWidget::leaveEvent(event);
     viewerWidget->hidePanelAnimated();
 }
+
+// block native tab-switching so we can use it in shortcuts
+//bool MW::focusNextPrevChild(bool) {
+//    return false;
+//}

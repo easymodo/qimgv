@@ -10,8 +10,8 @@ SaveConfirmOverlay::SaveConfirmOverlay(FloatingWidgetContainer *parent) :
     connect(ui->saveAsButton,  &QPushButton::clicked, this, &SaveConfirmOverlay::saveAsClicked);
     connect(ui->discardButton, &QPushButton::clicked, this, &SaveConfirmOverlay::discardClicked);
     this->setFocusPolicy(Qt::NoFocus);
-    ui->closeButton->setIconPath(":res/icons/overlay/close-dim16.png");
-    ui->headerIcon->setIconPath(":res/icons/overlay/edit16.png");
+    ui->closeButton->setIconPath(":res/icons/common/overlay/close-dim16.png");
+    ui->headerIcon->setIconPath(":res/icons/common/overlay/edit16.png");
     readSettings();
     connect(settings, &Settings::settingsChanged, this, &SaveConfirmOverlay::readSettings);
 

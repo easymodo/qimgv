@@ -107,10 +107,10 @@ void ImageViewerV2::onFullscreenModeChanged(bool mode) {
     QColor bgColor;
     mIsFullscreen = mode;
     if(mode) {
-        bgColor = settings->backgroundColorFullscreen();
+        bgColor = settings->colorScheme().background_fullscreen;
         bgColor.setAlphaF(1.0);
     } else {
-        bgColor = settings->backgroundColor();
+        bgColor = settings->colorScheme().background;
         bgColor.setAlphaF(settings->backgroundOpacity());
     }
     scene->setBackgroundBrush(bgColor);
@@ -169,15 +169,23 @@ void ImageViewerV2::onAnimationTimer() {
 }
 
 void ImageViewerV2::nextFrame() {
-    if(!movie || movie->currentFrameNumber() == movie->frameCount() - 1)
+    if(!movie) {
         return;
-    showAnimationFrame(movie->currentFrameNumber() + 1);
+    } else if(movie->currentFrameNumber() == movie->frameCount() - 1) {
+        showAnimationFrame(0);
+    } else {
+        showAnimationFrame(movie->currentFrameNumber() + 1);
+    }
 }
 
 void ImageViewerV2::prevFrame() {
-    if(!movie || movie->currentFrameNumber() == 0)
+    if(!movie) {
         return;
-    showAnimationFrame(movie->currentFrameNumber() - 1);
+    } else if(movie->currentFrameNumber() == 0) {
+        showAnimationFrame(movie->frameCount() - 1);
+    } else {
+        showAnimationFrame(movie->currentFrameNumber() - 1);
+    }
 }
 
 bool ImageViewerV2::showAnimationFrame(int frame) {
@@ -557,6 +565,12 @@ void ImageViewerV2::mouseReleaseEvent(QMouseEvent *event) {
 // warning for future me:
 // for some reason in qgraphicsview wheelEvent is followed by moveEvent (wtf?)
 void ImageViewerV2::wheelEvent(QWheelEvent *event) {
+    // we don't need these
+    if(event->phase() == Qt::ScrollBegin || event->phase() == Qt::ScrollEnd) {
+        event->accept();
+        return;
+    }
+
     if(event->buttons() & Qt::RightButton) {
         event->accept();
         mouseInteraction = MOUSE_WHEEL_ZOOM;
@@ -572,8 +586,8 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
         // high-precision touchpad
         if(pixelDelta != QPoint(0,0) && settings->imageScrolling() != ImageScrolling::SCROLL_NONE) {
             stopPosAnimation();
-            horizontalScrollBar()->setValue(horizontalScrollBar()->value() - pixelDelta.x());
-            verticalScrollBar()->setValue(verticalScrollBar()->value() - pixelDelta.y());
+            horizontalScrollBar()->setValue(horizontalScrollBar()->value() - pixelDelta.x() * TRACKPAD_SCROLL_MULTIPLIER);
+            verticalScrollBar()->setValue(verticalScrollBar()->value() - pixelDelta.y() * TRACKPAD_SCROLL_MULTIPLIER);
             centerIfNecessary();
             snapToEdges();
         } else if(angleDelta != QPoint(0,0)) { // mouse wheel & (windows) touchpad
@@ -590,8 +604,8 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                 return; // return immediately so we wont restart the scroll timer
             } else if(settings->imageScrolling() != ImageScrolling::SCROLL_NONE) {
                 stopPosAnimation();
-                horizontalScrollBar()->setValue(horizontalScrollBar()->value() - angleDelta.x());
-                verticalScrollBar()->setValue(verticalScrollBar()->value() - angleDelta.y());
+                horizontalScrollBar()->setValue(horizontalScrollBar()->value() - angleDelta.x() * TRACKPAD_SCROLL_MULTIPLIER);
+                verticalScrollBar()->setValue(verticalScrollBar()->value() - angleDelta.y() * TRACKPAD_SCROLL_MULTIPLIER);
                 centerIfNecessary();
                 snapToEdges();
             }

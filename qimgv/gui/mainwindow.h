@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QHBoxLayout>
+#include <QMessageBox>
 #include <QFileDialog>
 #include <QMimeData>
 #include "gui/customwidgets/floatingwidgetcontainer.h"
@@ -37,10 +38,12 @@ struct CurrentInfo {
     int index;
     int fileCount;
     QString fileName;
-    QString directory;
+    QString filePath;
+    QString directoryName;
     QSize imageSize;
     qint64 fileSize;
     bool slideshow;
+    bool edited;
 };
 
 enum ActiveSidePanel {
@@ -59,13 +62,14 @@ public:
     void setAnimation(std::unique_ptr<QMovie> movie);
     void setVideo(QString file);
 
-    void setCurrentInfo(int fileIndex, int fileCount, QString fileName, QSize imageSize, qint64 fileSize, bool slideshow);
+    void setCurrentInfo(int fileIndex, int fileCount, QString filePath, QString fileName, QSize imageSize, qint64 fileSize, bool slideshow, bool edited);
     void setExifInfo(QMap<QString, QString>);
     std::shared_ptr<FolderViewProxy> getFolderView();
-    std::shared_ptr<ThumbnailStrip> getThumbnailPanel();
+    std::shared_ptr<ThumbnailStripProxy> getThumbnailPanel();
 
     ViewMode currentViewMode();
-    int folderViewSelection();
+
+    bool showConfirmation(QString title, QString msg);
 
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;
@@ -74,8 +78,6 @@ private:
     int currentDisplay;
     QDesktopWidget *desktopWidget;
 
-    QColor bgColor;
-    qreal bgOpacity;
     bool cropPanelActive, showInfoBarFullscreen, showInfoBarWindowed, maximized;
     std::shared_ptr<DocumentWidget> docWidget;
     std::shared_ptr<FolderViewProxy> folderView;
@@ -138,13 +140,15 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void leaveEvent(QEvent *event);
 
+   // bool focusNextPrevChild(bool);
 signals:
     void opened(QString);
     void fullscreenStateChanged(bool);
     void copyRequested(QString);
     void moveRequested(QString);
-    void copyUrlsRequested(QList<QUrl>, QString);
-    void moveUrlsRequested(QList<QUrl>, QString);
+    void copyUrlsRequested(QList<QString>, QString);
+    void moveUrlsRequested(QList<QString>, QString);
+    void showFoldersChanged(bool);
     void resizeRequested(QSize);
     void renameRequested(QString);
     void cropRequested(QRect);
@@ -178,7 +182,6 @@ signals:
     void toggleTransparencyGrid();
     void droppedIn(const QMimeData*, QObject*);
     void draggedOut();
-    void draggedOut(int);
     void setLoopPlayback(bool);
     void playbackFinished();
 

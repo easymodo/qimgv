@@ -10,7 +10,10 @@
 #include "gui/customwidgets/floatingwidgetcontainer.h"
 #include <QStyleOption>
 #include <QPainter>
+#include <QApplication>
 #include <QDebug>
+
+#include <QWheelEvent>
 
 class FloatingWidget : public QWidget
 {
@@ -21,6 +24,9 @@ public:
     bool acceptKeyboardFocus() const;
     void setAcceptKeyboardFocus(bool mode);
 
+public slots:
+    void hide();
+
 protected:
     // called whenever container rectangle changes
     // this does nothing, reimplement to use
@@ -28,6 +34,9 @@ protected:
     void paintEvent(QPaintEvent *event);
     void setContainerSize(QSize container);
 
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event);
 private:
     // size of whatever widget we are overlayed on
     QSize container;

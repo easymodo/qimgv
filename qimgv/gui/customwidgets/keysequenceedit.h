@@ -16,6 +16,7 @@ protected:
     void wheelEvent(QWheelEvent *e);
 
     void mouseReleaseEvent(QMouseEvent *e);
+    bool focusNextPrevChild(bool);
 private:
     void processEvent(QEvent *e);
     QString mSequence;

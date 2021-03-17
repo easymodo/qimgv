@@ -5,14 +5,16 @@ PathSelectorMenuItem::PathSelectorMenuItem(QWidget *parent)
       mDirectory("")
 {
     setFocusPolicy(Qt::NoFocus);
-    setIcon(QIcon(":/res/icons/menuitem/folder16.png"));
-    mIconLabel.setAttribute(Qt::WA_TransparentForMouseEvents, false);
-    connect(&mIconLabel, &ClickableLabel::clicked, [this]() {
+    setIconPath(":/res/icons/common/menuitem/folder16.png");
+    mIconWidget.setAttribute(Qt::WA_TransparentForMouseEvents, false);
+    connect(&mIconWidget, &IconButton::clicked, [this]() {
         QFileDialog dialog;
         dialog.setDirectory(mDirectory);
-        dialog.setFileMode(QFileDialog::Directory);
         dialog.setWindowTitle("Select directory");
         dialog.setWindowModality(Qt::ApplicationModal);
+        dialog.setFileMode(QFileDialog::Directory);
+        dialog.setOption(QFileDialog::ShowDirsOnly);
+        dialog.setOption(QFileDialog::DontResolveSymlinks);
         connect(&dialog, &QFileDialog::fileSelected, this, &PathSelectorMenuItem::setDirectory);
         dialog.exec();
     });

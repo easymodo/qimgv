@@ -3,24 +3,23 @@
 MenuItem::MenuItem(QWidget *parent)
     : QWidget(parent)
 {
-    mLayout.setContentsMargins(6,0,11,0);
+    mLayout.setContentsMargins(6,0,9,0);
     mLayout.setSpacing(3);
 
     setAccessibleName("MenuItem");
     this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    mIconLabel.setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
     mTextLabel.setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     mShortcutLabel.setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    mIconLabel.setMinimumSize(26, 26); // 5px padding from stylesheet
+    mIconWidget.setMinimumSize(26, 26); // 5px padding from stylesheet
 
-    mIconLabel.installEventFilter(this);
+    mIconWidget.installEventFilter(this);
 
-    spacer = new QSpacerItem(16, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-    mIconLabel.setAttribute(Qt::WA_TransparentForMouseEvents, true);
-    mIconLabel.setAccessibleName("MenuItemIcon");
+    spacer = new QSpacerItem(8, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    mIconWidget.setAttribute(Qt::WA_TransparentForMouseEvents, true);
+    mIconWidget.setAccessibleName("MenuItemIcon");
     mTextLabel.setAccessibleName("MenuItemText");
     mShortcutLabel.setAccessibleName("MenuItemShortcutLabel");
-    mLayout.addWidget(&mIconLabel);
+    mLayout.addWidget(&mIconWidget);
     mLayout.addWidget(&mTextLabel);
     mLayout.addSpacerItem(spacer);
     mLayout.addWidget(&mShortcutLabel);
@@ -30,16 +29,6 @@ MenuItem::MenuItem(QWidget *parent)
 
 MenuItem::~MenuItem() {
     delete spacer;
-}
-
-bool MenuItem::eventFilter(QObject *watched, QEvent *event) {
-    if(watched == &mIconLabel && event->type() == QEvent::Paint) {
-        QLabel * label = dynamic_cast<QLabel*>(watched);
-        QPainter painter(label);
-        label->style()->drawItemPixmap(&painter, label->rect(), Qt::AlignHCenter | Qt::AlignVCenter, *label->pixmap());
-        return true;
-    }
-    return false;
 }
 
 void MenuItem::setText(QString text) {
@@ -59,12 +48,8 @@ QString MenuItem::shortcut() {
     return mShortcutLabel.text();
 }
 
-void MenuItem::setPixmap(QPixmap pixmap) {
-    this->mIconLabel.setPixmap(pixmap);
-}
-
-void MenuItem::setIcon(QIcon icon) {
-    this->mIconLabel.setPixmap(icon.pixmap(16,16));
+void MenuItem::setIconPath(QString path) {
+    mIconWidget.setIconPath(path);
 }
 
 void MenuItem::paintEvent(QPaintEvent *event) {

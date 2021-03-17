@@ -26,7 +26,7 @@ private slots:
     void saveBookmarks();
 signals:
     void bookmarkClicked(QString dirPath);
-    void droppedIn(QList<QUrl> urls, QString dirPath);
+    void droppedIn(QList<QString> paths, QString dirPath);
 
 protected:
     void dropEvent(QDropEvent *event);

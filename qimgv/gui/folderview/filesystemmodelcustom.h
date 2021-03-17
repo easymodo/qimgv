@@ -1,8 +1,11 @@
 #ifndef FILESYSTEMMODELCUSTOM_H
 #define FILESYSTEMMODELCUSTOM_H
 
-#include <QFileSystemModel>
 #include <QApplication>
+#include <QFileSystemModel>
+#include <QPainter>
+#include "settings.h"
+#include "utils/imagelib.h"
 
 class FileSystemModelCustom : public QFileSystemModel
 {

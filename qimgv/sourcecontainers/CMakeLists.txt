@@ -1,6 +1,7 @@
 ## SOURCES FOR QIMGV CONTAINER CLASSES
 
 target_sources(qimgv PRIVATE
+    fsentry.cpp
     clip.cpp
     documentinfo.cpp
     image.cpp

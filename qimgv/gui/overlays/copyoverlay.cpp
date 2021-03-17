@@ -9,8 +9,8 @@ CopyOverlay::CopyOverlay(FloatingWidgetContainer *parent) :
     hide();
     setFadeEnabled(true);
 
-    ui->closeButton->setIconPath(":/res/icons/overlay/close-dim16.png");
-    ui->headerIcon->setIconPath(":/res/icons/overlay/copy16.png");
+    ui->closeButton->setIconPath(":/res/icons/common/overlay/close-dim16.png");
+    ui->headerIcon->setIconPath(":/res/icons/common/overlay/copy16.png");
     ui->headerLabel->setText(tr("Copy to..."));
     mode = OVERLAY_COPY;
 
@@ -40,17 +40,16 @@ void CopyOverlay::show() {
 }
 
 void CopyOverlay::hide() {
-    QWidget::hide();
-    clearFocus();
+    OverlayWidget::hide();
 }
 
 void CopyOverlay::setDialogMode(CopyOverlayMode _mode) {
     mode = _mode;
     if(mode == OVERLAY_COPY) {
-        ui->headerIcon->setIconPath(":/res/icons/overlay/copy16.png");
+        ui->headerIcon->setIconPath(":/res/icons/common/overlay/copy16.png");
         ui->headerLabel->setText(tr("Copy to..."));
     } else {
-        ui->headerIcon->setIconPath(":/res/icons/overlay/move16.png");
+        ui->headerIcon->setIconPath(":/res/icons/common/overlay/move16.png");
         ui->headerLabel->setText(tr("Move to..."));
     }
 }
@@ -117,12 +116,16 @@ void CopyOverlay::createDefaultPaths() {
     }
 }
 
+// block native tab-switching so we can use it in shortcuts
+bool CopyOverlay::focusNextPrevChild(bool mode) {
+    return false;
+}
+
 void CopyOverlay::keyPressEvent(QKeyEvent *event) {
+    event->accept();
     QString key = actionManager->keyForNativeScancode(event->nativeScanCode());
-    if(shortcuts.contains(key)) {
-        event->accept();
+    if(shortcuts.contains(key))
         requestFileOperation(pathWidgets.at(shortcuts[key])->directory());
-    } else {
-        event->ignore();
-    }
+    else
+        actionManager->processEvent(event);
 }

@@ -16,12 +16,9 @@ void VideoControlsProxyWrapper::init() {
         return;
     videoControls = new VideoControls(container);
 
-    connect(videoControls, &VideoControls::pause,     this, &VideoControlsProxyWrapper::pause);
     connect(videoControls, &VideoControls::seekLeft,  this, &VideoControlsProxyWrapper::seekLeft);
     connect(videoControls, &VideoControls::seekRight, this, &VideoControlsProxyWrapper::seekRight);
     connect(videoControls, &VideoControls::seek,      this, &VideoControlsProxyWrapper::seek);
-    connect(videoControls, &VideoControls::nextFrame, this, &VideoControlsProxyWrapper::nextFrame);
-    connect(videoControls, &VideoControls::prevFrame, this, &VideoControlsProxyWrapper::prevFrame);
 
     videoControls->setMode(stateBuf.mode);
     videoControls->setPlaybackDuration(stateBuf.duration);

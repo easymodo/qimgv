@@ -3,12 +3,12 @@
 ControlsOverlay::ControlsOverlay(FloatingWidgetContainer *parent) :
     FloatingWidget(parent)
 {
-    folderViewButton = new ActionButton("folderView", ":/res/icons/buttons/panel/folderview20.png", 30);
-    folderViewButton->setAccessibleName("PanelButtonSmall");
-    settingsButton = new ActionButton("openSettings", ":/res/icons/buttons/panel/settings20.png", 30);
-    settingsButton->setAccessibleName("PanelButtonSmall");
-    closeButton = new ActionButton("exit", ":/res/icons/buttons/panel/close16.png", 30);
-    closeButton->setAccessibleName("PanelButtonSmall");
+    folderViewButton = new ActionButton("folderView", ":/res/icons/common/buttons/panel/folderview20.png", 30);
+    folderViewButton->setAccessibleName("ButtonSmall");
+    settingsButton = new ActionButton("openSettings", ":/res/icons/common/buttons/panel/settings20.png", 30);
+    settingsButton->setAccessibleName("ButtonSmall");
+    closeButton = new ActionButton("exit", ":/res/icons/common/buttons/panel/close16.png", 30);
+    closeButton->setAccessibleName("ButtonSmall");
 
     QWidget *horizontalLineWidget = new QWidget;
     horizontalLineWidget->setFixedSize(5, 22);

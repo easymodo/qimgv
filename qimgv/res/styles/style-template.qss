@@ -1,0 +1,738 @@
+/*----------------------------------------------------------------------------*/
+/* Buttons */
+
+[accessibleName="Button"], [accessibleName="ButtonSetLeft"], [accessibleName="ButtonSetRight"]
+{
+    color: %text_hc%;
+    background-color: %button%;
+    border-radius: 3px;
+    padding: 7px 12px 7px 12px;
+}
+
+[accessibleName="Button"]:hover, [accessibleName="ButtonSetLeft"]:hover, [accessibleName="ButtonSetRight"]:hover
+{
+    background-color: %button_hover%;
+    color: %text_hc2%;
+}
+
+/* TODO: fix me */
+[accessibleName="Button"]:pressed,
+[accessibleName="Button"][pressed="true"],
+[accessibleName="ButtonSetLeft"]:pressed,[accessibleName="ButtonSetLeft"][pressed="true"],
+[accessibleName="ButtonSetRight"]:pressed, [accessibleName="ButtonSetRight"][pressed="true"]
+{
+    background-color: %button_pressed%;
+    color: %text%;
+}
+
+[accessibleName="ButtonSetLeft"] {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+[accessibleName="ButtonSetRight"] {
+    border-left: 1px solid %button_pressed%;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+[accessibleName="ButtonSetRight"]:hover {
+    border-left: 1px solid %button_pressed%;
+}
+
+/*----------------------------------------------------------------------------*/
+[accessibleName="CheckableButton"] {
+    border-radius: 3px;
+    padding: 7px;
+    margin-top:    4px;
+    margin-bottom: 4px;
+    margin-left:   3px;
+    margin-right:  3px;
+}
+
+[accessibleName="CheckableButton"]:hover {
+    background-color: %panel_button_hover%;
+    border: 1px solid %panel_button_hover%;
+}
+
+[accessibleName="CheckableButton"]:pressed,
+[accessibleName="CheckableButton"][pressed="true"],
+[accessibleName="CheckableButton"][checked="true"] {
+    background-color: %panel_button%;
+    border: 1px solid %panel_button%;
+}
+
+/*----------------------------------------------------------------------------*/
+[accessibleName="PanelButton"] {
+    margin: 3px;
+    border-radius: 3px;
+}
+
+[accessibleName="PanelButton"]:hover {
+    background-color: %panel_button_hover%;
+    border: 1px solid %panel_button_hover%;
+}
+
+[accessibleName="PanelButton"]:pressed,
+[accessibleName="PanelButton"][pressed="true"] {
+    background-color: %panel_button_pressed%;
+    border: 1px solid %panel_button_pressed%;
+}
+/*----------------------------------------------------------------------------*/
+
+[accessibleName="ButtonSmall"] {
+    border-radius: 1px;
+    border: 1px solid transparent;
+}
+
+[accessibleName="ButtonSmall"]:hover {
+    background-color: %folderview_hc2%;
+    border: 1px solid %folderview_hc2%;
+}
+
+/*----------------------------------------------------------------------------*/
+/* remove ugly dotted border  */
+QComboBox QAbstractItemView {
+    outline: 0px;
+}
+
+[accessibleName="PanelComboBox"] {
+    background-color: %panel_button%;
+    color: %text_hc%;
+    border: 2px solid %panel_button%;
+    border-radius: 3px;
+    padding: 2px 8px 2px 5px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-left:  2px;
+    margin-right: 2px;
+}
+
+[accessibleName="PanelComboBox"]:hover {
+    background-color: %panel_button_hover%;
+    border-color: %panel_button_hover%;
+}
+
+[accessibleName="PanelComboBox"]::drop-down {
+    border: 0px;
+}
+
+[accessibleName="PanelComboBox"] QAbstractItemView {
+    padding: 5px 0px;
+    background-color: %widget%;
+    border: 1px solid %accent%;
+}
+
+[accessibleName="PanelComboBox"] QAbstractItemView::item {
+    border-radius: 1px;
+    padding: 2px 5px;
+    color: %text_hc%;
+    min-height: 22px;
+}
+
+[accessibleName="PanelComboBox"] QAbstractItemView::item:selected {
+    background-color: %accent%;
+}
+
+/*----------------------------------------------------------------------------*/
+/* panel buttons holder widget */
+
+[accessibleName="panelButtonsWidget"] {
+    background-color: %folderview%;
+}
+
+/*----------------------------------------------------------------------------*/
+/* Overlays */
+/*----------------------------------------------------------------------------*/
+
+FloatingWidget {
+    background-color: %widget%;
+    border: 1px solid %widget_border%;
+    border-radius: 3px;
+}
+/*----------------------------------------------------------------------------*/
+[accessibleName="OverlayHeaderWidget"] {
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
+}
+/*----------------------------------------------------------------------------*/
+[accessibleName="OverlayCloseButton"] {
+    background-color: transparent;
+    padding: 4px;
+    border-radius: 3px;
+}
+
+[accessibleName="OverlayCloseButton"]:hover {
+    background-color: %button_hover%;
+}
+
+[accessibleName="OverlayHeaderLabel"] {
+    color: %text_hc%;
+}
+
+FloatingWidget QTableWidget {
+    background-color: %widget%;
+    color: %text_hc2%;
+}
+
+FloatingWidget QLineEdit {
+    background-color: %button%;
+    color: %text_hc%;
+    border: 2px solid %button%;
+    border-radius: 3px;
+    padding: 4px 6px 4px 6px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+FloatingWidget QLineEdit::hover,
+FloatingWidget QLineEdit::focus {
+    background-color: %button_hover%;
+    border-color: %button_hover%;
+}
+
+/*----------------------------------------------------------------------------*/
+
+FullscreenInfoOverlay {
+    border: 0px solid transparent;
+    background-color: %overlay_rgba%;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 3px;
+}
+
+FullscreenInfoOverlay QLabel {
+    color: %overlay_text%;
+}
+
+/*----------------------------------------------------------------------------*/
+/* Notifications */
+/*----------------------------------------------------------------------------*/
+
+FloatingMessage QLabel {
+    color: %text_hc%;
+    font: bold;
+}
+
+/*----------------------------------------------------------------------------*/
+/* Crop panel */
+/*----------------------------------------------------------------------------*/
+
+SidePanel {
+    background-color: %widget%;
+    border-left: 1px solid %widget_border%;
+}
+/*----------------------------------------------------------------------------*/
+SidePanel QGroupBox {
+    background-color: %widget%;
+    border: 1px solid %button%;
+    border-radius: 3px;
+    padding: 6px 10px 8px 10px;
+}
+/*----------------------------------------------------------------------------*/
+SidePanel QSpinBox,
+SidePanel QDoubleSpinBox
+{
+    color: %text%;
+    background-color: %button%;
+    border: 2px solid %button%;
+    border-radius: 3px;
+    padding: 2 0 2 0;
+    min-height: 20px;
+}
+
+SidePanel QSpinBox:hover,
+SidePanel QDoubleSpinBox:hover
+{
+    background-color: %button_hover%;
+    border-color: %button_hover%;
+}
+
+SidePanel QSpinBox:focus,
+SidePanel QDoubleSpinBox:focus
+{
+    background-color: %button_hover%;
+    border-color: %button_hover%;
+}
+
+SidePanel QSpinBox::up-button,
+SidePanel QDoubleSpinBox::up-button
+{
+    max-width: 0px;
+    max-height: 0px;
+    width:0px;
+}
+
+SidePanel QSpinBox::down-button,
+SidePanel QDoubleSpinBox::down-button
+{
+    max-width: 0px;
+    max-height: 0px;
+    width:0px;
+}
+/*----------------------------------------------------------------------------*/
+SidePanel QLabel {
+    color: %text_hc%;
+}
+/*----------------------------------------------------------------------------*/
+SidePanel QComboBox {
+    color: %text%;
+    background-color: %button%;
+    border: 1px solid %button%;
+    border-radius: 3px;
+    padding: 4px 8px 4px 8px;
+}
+
+SidePanel QComboBox:hover {
+    background-color: %button_hover%;
+    border-color: %button_hover%;
+}
+
+SidePanel QComboBox::drop-down {
+    border: 0px;
+}
+
+/* dropdown menus */
+SidePanel QComboBox QAbstractItemView {
+    padding: 5px 0px;
+    background-color: %widget%;
+    border: 1px solid %accent%;
+}
+
+SidePanel QComboBox QAbstractItemView::item {
+    border-radius: 1px;
+    padding: 2px 5px;
+    color: %text_hc%;
+    min-height: 22px;
+}
+
+SidePanel QComboBox QAbstractItemView::item:selected {
+    background-color: %accent%;
+}
+
+[accessibleName="CropPanelSeparator"] {
+    background-color: %button%;
+}
+
+/*----------------------------------------------------------------------------*/
+/* changelog window */
+/*----------------------------------------------------------------------------*/
+
+ChangelogWindow QTextBrowser {
+    background-color: %widget%;
+    color: %text%;
+}
+
+/*----------------------------------------------------------------------------*/
+/* Video controls */
+/*----------------------------------------------------------------------------*/
+
+VideoControls QLabel {
+    color: %text_hc2%;
+    font: bold;
+}
+/*----------------------------------------------------------------------------*/
+VideoControls QSlider {
+    border: 2px solid %widget%;
+    margin: 1px;
+}
+
+VideoControls QSlider::groove:horizontal,
+VideoControls QSlider::add-page:horizontal {
+    background: %button_pressed%;
+    border-radius: 3px;
+}
+
+VideoControls QSlider::handle:horizontal {
+    height: 0px;
+    width:  0px;
+    background: %text_hc%;
+}
+
+VideoControls QSlider::sub-page:horizontal {
+    background: %text_hc%;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+/*----------------------------------------------------------------------------*/
+/* File copy - move window */
+/*----------------------------------------------------------------------------*/
+
+PathSelectorMenuItem [accessibleName="MenuItemIcon"] {
+    padding: 5px;
+}
+
+PathSelectorMenuItem [accessibleName="MenuItemIcon"]:hover {
+    background-color: %accent_hover_rgba%;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Video background. Pretty sure this doesn't work.. */
+/*----------------------------------------------------------------------------*/
+
+[accessibleName="mpvContainer"] {
+    background-color: black;
+}
+
+/*----------------------------------------------------------------------------*/
+/* Thumbnails views and scrollbars */
+/*----------------------------------------------------------------------------*/
+
+ThumbnailView {
+    border-style: none;
+}
+/*----------------------------------------------------------------------------*/
+ThumbnailStrip {
+    background-color: %folderview%;
+}
+/*----------------------------------------------------------------------------*/
+FolderGridView {
+    background-color: %folderview%;
+}
+/*----------------------------------------------------------------------------*/
+FolderView {
+    background-color: %folderview%;
+}
+[accessibleName="FolderViewContents"] {
+    border-top: 1px solid %topbar_border_rgba%;
+}
+/*----------------------------------------------------------------------------*/
+[accessibleName="FolderViewPanel"] { /* top bar - rename */
+    background-color: %folderview_topbar%;
+}
+/*----------------------------------------------------------------------------*/
+[accessibleName="FolderViewSlider"] {
+    margin-top: 1px;
+}
+
+[accessibleName="FolderViewSlider"]::groove:horizontal {
+    border-top: 1px solid %panel_button_pressed%;
+    border-bottom: 1px solid %panel_button_pressed%;
+    height: 6px;
+    margin: 0 12px;
+}
+
+[accessibleName="FolderViewSlider"]::sub-page:horizontal { /* left */
+    background: %panel_button_pressed%;
+    border: 1px solid %panel_button_pressed%;
+    height: 6px;
+}
+
+[accessibleName="FolderViewSlider"]::add-page:horizontal { /* right */
+    background: %panel_button_pressed%;
+    border: 1px solid %panel_button_pressed%;
+    height: 6px;
+}
+
+[accessibleName="FolderViewSlider"]::handle:horizontal {
+    background: %text_lc2%;
+    border: 1px solid %text_lc2%;
+    width: 12px;
+    height: 12px;
+    border-radius: 1px;
+    margin: -4px -12px;
+}
+
+[accessibleName="FolderViewSlider"]::handle:horizontal:hover {
+    background: %text%;
+    border-color: %text%;
+}
+
+/*----------------------------------------------------------------------------*/
+
+ThumbnailStrip QScrollBar:horizontal {
+    height: 12px;
+    background-color: transparent;
+}
+
+ThumbnailStrip QScrollBar::handle:horizontal {
+    background-color: %scrollbar%;
+    min-width: 60px;
+}
+
+ThumbnailStrip QScrollBar::handle:horizontal:hover {
+    background-color: %scrollbar_hover%;
+    border-color: %scrollbar_hover%;
+}
+
+ThumbnailStrip QScrollBar:vertical {
+    width: 12px;
+    background-color: transparent;
+}
+
+ThumbnailStrip QScrollBar::sub-page {
+    background: none;
+}
+
+ThumbnailStrip QScrollBar::add-page {
+    background: none;
+}
+
+ThumbnailStrip QScrollBar::add-line {
+    width: 0px;
+    height: 0px;
+}
+
+ThumbnailStrip QScrollBar::sub-line {
+    width: 0px;
+    height: 0px;
+}
+
+/*----------------------------------------------------------------------------*/
+/* Right click menu */
+/*----------------------------------------------------------------------------*/
+
+ContextMenu {
+    background-color: %widget%;
+    border: 1px solid %widget_border%;
+    border-radius: 3px;
+}
+/*----------------------------------------------------------------------------*/
+[accessibleName="MenuItem"]:hover {
+    background-color: %accent_hover_rgba%;
+}
+
+[accessibleName="MenuItem"] QLabel {
+    padding: 6 0 7 0;
+}
+
+[accessibleName="MenuItem"] QLabel:disabled {
+    color: %text_lc2%;
+}
+
+[accessibleName="MenuItemText"] {
+    color: %text_hc%;
+}
+
+[accessibleName="MenuItemShortcutLabel"] {
+    color: %text_lc%;
+}
+
+[accessibleName="ContextMenuButton"] {
+    padding: 4px;
+    border-radius: 2px;
+}
+
+[accessibleName="ContextMenuButton"]:hover {
+    background-color: %accent_hover_rgba%;
+}
+
+/*----------------------------------------------------------------------------*/
+ControlsOverlay {
+    border: 0px solid transparent;
+    background-color: %overlay_rgba%;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+/*----------------------------------------------------------------------------*/
+
+InfoBar, InfoBarProxy {
+    background-color: %widget%;
+}
+
+InfoBar QLabel {
+    color: %text_hc%;
+}
+
+/*----------------------------------------------------------------------------*/
+ZoomIndicatorOverlay {
+    background-color: %overlay_rgba%;
+    border-color: %overlay_rgba%;
+    border-left: 0px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+ZoomIndicatorOverlay QLabel {
+    color: %overlay_text%;
+    /*font: bold;*/
+}
+
+/*----------------------------------------------------------------------------*/
+/* FolderView scrollbars */
+/*----------------------------------------------------------------------------*/
+
+FolderView QScrollBar:vertical {
+    width: 12px;
+    background-color: transparent;
+}
+
+FolderView QScrollBar::handle:vertical {
+    background-color: %scrollbar%;
+    min-height: 60px;
+}
+
+FolderView QScrollBar::handle:vertical:hover {
+    background-color: %scrollbar_hover%;
+}
+
+FolderView QScrollBar::sub-page {
+    background: none;
+}
+
+FolderView QScrollBar::add-page {
+    background: none;
+}
+
+FolderView QScrollBar::add-line {
+    width: 0px;
+    height: 0px;
+}
+
+FolderView QScrollBar::sub-line {
+    width: 0px;
+    height: 0px;
+}
+
+/*----------------------------------------------------------------------------*/
+/* TreeView */
+/*----------------------------------------------------------------------------*/
+
+FolderView QTreeView {
+    background-color: transparent;
+    show-decoration-selected: 1;
+}
+
+FolderView QTreeView::item {
+    border-radius: 0px; /* left padding on hover is wrong unless we add this.. wtf */
+    min-height: 24px;
+    padding: 2px;
+    color: %text_hc2%;
+}
+
+FolderView QTreeView::item:hover {
+    background-color: %folderview_hc%;
+}
+
+FolderView QTreeView::item:selected:!active,
+FolderView QTreeView::item:selected:active {
+    background-color: %accent%;
+    border-color: %accent%;
+}
+
+QTreeView::branch {
+    padding-left: 6px;
+}
+
+QTreeView::branch:selected {
+    background-color: %accent%;
+}
+
+QTreeView::branch:hover:!selected {
+    background-color: %folderview_hc%;
+}
+
+QTreeView::branch:has-siblings:!adjoins-item:!selected {
+    background: transparent;
+}
+
+QTreeView::branch:has-siblings:hover:!adjoins-item:!selected {
+    background-color: %folderview_hc%;
+}
+
+QTreeView::branch:!has-children:!hover:adjoins-item:!selected {
+    background: transparent;
+}
+
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings {
+        border-image: none;
+        image: url(:/res/icons/%icontheme%/other/collapsed.png)
+}
+
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings {
+        border-image: none;
+        image: url(:/res/icons/%icontheme%/other/expanded.png)
+}
+
+/*----------------------------------------------------------------------------*/
+/* bookmarks widget */
+/*----------------------------------------------------------------------------*/
+
+BookmarksItem {
+    /*border-radius: 3px;*/
+}
+
+BookmarksItem:hover {
+    background-color: %folderview_hc%;
+}
+
+BookmarksItem QLabel {
+    color: %text_hc2%;
+}
+
+BookmarksItem[highlighted="true"] {
+    background-color: %accent%;
+    border-color: %accent%;
+}
+
+/*----------------------------------------------------------------------------*/
+/* places panel (bg) */
+/*----------------------------------------------------------------------------*/
+
+[accessibleName="PlacesPanel"] {
+    background-color: %folderview%;
+    border-right: 1px solid %folderview_hc%;
+    margin-right: 6px;
+}
+
+[accessibleName="PanelSectionHeader"] {
+    color: %text_hc%;
+    font: bold;
+}
+
+[accessibleName="PanelSectionHeader"]:hover {
+    color: %text_hc2%;
+}
+
+/*----------------------------------------------------------------------------*/
+/* places panel buttons */
+/*----------------------------------------------------------------------------*/
+
+[accessibleName="PlacesPanelButton"] {
+    border-radius: 3px;
+}
+
+[accessibleName="PlacesPanelButton"]:hover {
+    background-color: %folderview_button_hover%;
+}
+
+[accessibleName="PlacesPanelButton"]:pressed,
+[accessibleName="PlacesPanelButton"][pressed="true"] {
+    background-color: %folderview_button_pressed%;
+}
+
+/*----------------------------------------------------------------------------*/
+[accessibleName="FolderViewSplitter"]::handle {
+    background-color: %folderview%;
+}
+
+/*----------------------------------------------------------------------------*/
+SettingsDialog QPushButton,
+SettingsDialog QComboBox {
+    min-height: 20px;
+}
+
+[accessibleName="StyledOptionsGroup"] {
+    /* This needs to look "ok" with both light and dark themes. May need further tweaking */
+    background-color: %system_window_tinted%;
+    border: 1px solid %system_window_tinted%;
+    border-radius: 3px;
+    /* border-top: 4px solid rgba(130, 130, 130, 30); */
+}
+
+[accessibleName="SettingsBottomWidget"] {
+    /* This needs to look "ok" with both light and dark themes. May need further tweaking */
+    background-color: %system_window_tinted%;
+}
+/*----------------------------------------------------------------------------*/
+[accessibleName="VideoPlayerInitProxy"] QLabel {
+
+    color: #BB0000;
+    font: bold;
+}

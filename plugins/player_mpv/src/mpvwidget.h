@@ -46,8 +46,8 @@ signals:
     void playbackFinished();
 
 protected:
-    void initializeGL() Q_DECL_OVERRIDE;
-    void paintGL() Q_DECL_OVERRIDE;
+    void initializeGL() override;
+    void paintGL() override;
 
 private slots:
     void on_mpv_events();

@@ -4,7 +4,6 @@
 
 ThumbnailStrip::ThumbnailStrip(QWidget *parent)
     : ThumbnailView(THUMBNAILVIEW_HORIZONTAL, parent),
-      panelSize(100),
       thumbnailSpacing(0)
 {
     this->setAttribute(Qt::WA_NoMousePropagation, true);
@@ -16,7 +15,9 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent)
 }
 
 void ThumbnailStrip::updateScrollbarIndicator() {
-    qreal itemCenter = (qreal)(selectedIndex() + 0.5) / itemCount();
+    if(!thumbnails.count() || lastSelected() == -1)
+        return;
+    qreal itemCenter = (qreal)(lastSelected() + 0.5) / itemCount();
     if(scrollBar->orientation() == Qt::Horizontal)
         indicator = QRect(scrollBar->width() * itemCenter - indicatorSize, 2, indicatorSize, scrollBar->height() - 4);
     else
@@ -30,9 +31,10 @@ void ThumbnailStrip::setupLayout() {
 }
 
 ThumbnailWidget* ThumbnailStrip::createThumbnailWidget() {
-    ThumbnailWidget *widget = new ThumbnailWidget();
+    ThumbnailWidget *widget = new ThumbnailGridWidget();
+    widget->setDrawLabel(false);
+    widget->setPadding(9);
     widget->setThumbnailSize(this->mThumbnailSize);
-    widget->setDrawLabel(true);
     return widget;
 }
 
@@ -108,15 +110,15 @@ void ThumbnailStrip::setThumbnailSize(int newSize) {
         //scene.invalidate(scene.sceneRect());
         updateThumbnailPositions(0, thumbnails.count() - 1);
         fitSceneToContents();
-        ensureThumbnailVisible(selectedIndex());
+        ensureThumbnailVisible(lastSelected());
     }
 }
 
 // resizes thumbnailSize to fit new widget size
 // TODO: find some way to make this trigger while hidden
 void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
-    Q_UNUSED(event)
     ThumbnailView::resizeEvent(event);
+    fitSceneToContents();
     if(event->oldSize().height() != height())
         updateThumbnailSize();
     if(event->oldSize().width() < width())
@@ -126,7 +128,7 @@ void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
 // update size based on widget's size
 // reposition thumbnails within scene if needed
 void ThumbnailStrip::updateThumbnailSize() {
-    int newSize = height() - 25;
+    int newSize = height() - 36;
     if( newSize % 2 )
         --newSize;
     if(newSize != mThumbnailSize) {

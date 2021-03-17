@@ -16,16 +16,16 @@
 
 class ImageLib {
     public:
-        static QImage *rotated(const QImage *src, int grad);
+        static QImage *rotatedRaw(const QImage *src, int grad);
         static QImage *rotated(std::shared_ptr<const QImage> src, int grad);
 
-        static QImage *cropped(const QImage *src, QRect newRect);
+        static QImage *croppedRaw(const QImage *src, QRect newRect);
         static QImage *cropped(std::shared_ptr<const QImage> src, QRect newRect);
 
-        static QImage *flippedH(const QImage *src);
+        static QImage *flippedHRaw(const QImage *src);
         static QImage *flippedH(std::shared_ptr<const QImage> src);
 
-        static QImage *flippedV(const QImage *src);
+        static QImage *flippedVRaw(const QImage *src);
         static QImage *flippedV(std::shared_ptr<const QImage> src);
 
         //static QImage *scaled(const QImage *source, QSize destSize, ScalingFilter filter);
@@ -39,4 +39,5 @@ class ImageLib {
 #endif
         static std::unique_ptr<const QImage> exifRotated(std::unique_ptr<const QImage> src, int orientation);
         static std::unique_ptr<QImage> exifRotated(std::unique_ptr<QImage> src, int orientation);
+        static void recolor(QPixmap &pixmap, QColor color);
 };
