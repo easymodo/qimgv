@@ -168,11 +168,9 @@ sudo add-apt-repository ppa:easymodo/qimgv
 sudo apt-get update
 sudo apt install qimgv
 ```
-<<<<<<< HEAD
-_Alternative package with KDE support:_
-=======
+
 _Alternative package with kde support:_
->>>>>>> dev
+
 ```
 sudo apt install qimgv-kde
 ```
