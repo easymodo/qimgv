@@ -22,6 +22,7 @@
 #include "gui/overlays/renameoverlay.h"
 #include "gui/dialogs/resizedialog.h"
 #include "gui/centralwidget.h"
+#include "gui/dialogs/filereplacedialog.h"
 #include "components/actionmanager/actionmanager.h"
 #include "settings.h"
 #include "gui/dialogs/settingsdialog.h"
@@ -70,6 +71,7 @@ public:
     ViewMode currentViewMode();
 
     bool showConfirmation(QString title, QString msg);
+    DialogResult fileReplaceDialog(QString source, QString target, FileReplaceMode mode, bool multiple);
 
 private:
     std::shared_ptr<ViewerWidget> viewerWidget;

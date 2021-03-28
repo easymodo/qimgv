@@ -86,7 +86,7 @@ private:
 
     bool copyFileConfirmation(QString src, QString dst);
     bool mergeDirConfirmation(QString src, QString dst);
-    void interactiveCopy(QString path, QString destDirectory, bool &forceAll);
+    void interactiveCopy(QString path, QString destDirectory, bool &overwriteAllFiles, bool &mergeAllDirs, bool &cancelFlag);
 private slots:
     void readSettings();
     void nextImage();
@@ -106,8 +106,8 @@ private slots:
     void copyCurrentFile(QString destDirectory);
     void moveCurrentFile(QString destDirectory);
     void copyPathsTo(QList<QString> paths, QString destDirectory);
-    void copyPathsTo(QList<QString> paths, QString destDirectory, bool force);
-    void interactiveCopy(QList<QString> paths, QString destDirectory, bool &forceAll);
+    void copyPathsTo(QList<QString> paths, QString destDirectory, bool overwriteAllFiles, bool mergeAllDirs);
+    void interactiveCopy(QList<QString> paths, QString destDirectory, bool &overwriteAllFiles, bool &mergeAllDirs);
     void movePathsTo(QList<QString> paths, QString destDirectory);
     FileOpResult removeFile(QString fileName, bool trash);
     void onFileRemoved(QString filePath, int index);

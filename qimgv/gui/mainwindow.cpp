@@ -448,6 +448,19 @@ void MW::showResizeDialog(QSize initialSize) {
     dialog.exec();
 }
 
+DialogResult MW::fileReplaceDialog(QString src, QString dst, FileReplaceMode mode, bool multiple) {
+    FileReplaceDialog dialog(this);
+    dialog.setModal(true);
+    dialog.setSource(src);
+    dialog.setDestination(dst);
+    dialog.setMode(mode);
+    dialog.setMulti(multiple);
+
+    dialog.exec();
+
+    return dialog.getResult();
+}
+
 void MW::showSettings() {
     viewerWidget->hidePanel();
 

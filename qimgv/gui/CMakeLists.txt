@@ -30,6 +30,7 @@ target_sources(qimgv PRIVATE
     customwidgets/styledcombobox.cpp
     customwidgets/colorselectorbutton.cpp
 
+    dialogs/filereplacedialog.cpp
     dialogs/resizedialog.cpp
     dialogs/scripteditordialog.cpp
     dialogs/settingsdialog.cpp
@@ -83,6 +84,7 @@ target_sources(qimgv PRIVATE
 target_sources(qimgv PRIVATE
     contextmenu.ui
 
+    dialogs/filereplacedialog.ui
     dialogs/resizedialog.ui
     dialogs/scripteditordialog.ui
     dialogs/settingsdialog.ui
