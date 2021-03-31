@@ -1,5 +1,4 @@
-#ifndef FVOPTIONSPOPUP_H
-#define FVOPTIONSPOPUP_H
+#pragma once
 
 #include <QWidget>
 #include <QStyleOption>
@@ -21,6 +20,7 @@ public:
 
 public slots:
     void showAt(QPoint pos);
+
 protected:
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent *event);
@@ -28,11 +28,16 @@ protected:
 
 signals:
     void dismissed();
+    void viewModeSelected(FolderViewMode);
 
 private slots:
     void readSettings();
+
+    void selectSimpleView();
+    void selectExtendedView();
+    void selectFoldersView();
+
 private:
     Ui::FVOptionsPopup *ui;
+    void setViewMode(FolderViewMode mode);
 };
-
-#endif // FVOPTIONSPOPUP_H

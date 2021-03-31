@@ -26,8 +26,9 @@ Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr), slideshow(fa
 void Core::readSettings() {
     infiniteScrolling = settings->infiniteScrolling();
     slideshowTimer.setInterval(settings->slideshowInterval());
-    if(folderViewPresenter.showDirs() != settings->showFolders())
-        folderViewPresenter.setShowDirs(settings->showFolders());
+    bool showDirs = (settings->folderViewMode() == FV_EXT_FOLDERS);
+    if(folderViewPresenter.showDirs() != showDirs)
+        folderViewPresenter.setShowDirs(showDirs);
     if(settings->shuffleEnabled())
         syncRandomizer();
 }
@@ -51,7 +52,8 @@ void Core::attachModel(DirectoryModel *_model) {
     model.reset(_model);
     thumbPanelPresenter.setModel(model);
     folderViewPresenter.setModel(model);
-    folderViewPresenter.setShowDirs(settings->showFolders());
+    bool showDirs = (settings->folderViewMode() == FV_EXT_FOLDERS);
+    folderViewPresenter.setShowDirs(showDirs);
     if(settings->shuffleEnabled())
         syncRandomizer();
 }
@@ -482,9 +484,8 @@ void Core::sortBy(SortingMode mode) {
 }
 
 void Core::setFoldersDisplay(bool mode) {
-    settings->setShowFolders(mode);
-    if(folderViewPresenter.showDirs() != settings->showFolders())
-        folderViewPresenter.setShowDirs(settings->showFolders());
+    if(folderViewPresenter.showDirs() != mode)
+        folderViewPresenter.setShowDirs(mode);
 }
 
 void Core::renameCurrentFile(QString newName) {

@@ -24,7 +24,6 @@ void IconButton::setChecked(bool mode) {
         setProperty("checked", mChecked);
         style()->unpolish(this);
         style()->polish(this);
-        this->repaint();
     }
 }
 

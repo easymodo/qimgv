@@ -51,10 +51,6 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 protected slots:
-    void onShowLabelsChanged(bool mode);
-    void onShowLabelsButtonToggled(bool mode);
-    void onShowFoldersChanged(bool mode);
-    void onShowFoldersButtonToggled(bool mode);
     void onThumbnailSizeChanged(int newSize);
     void onZoomSliderValueChanged(int value);
 
@@ -84,8 +80,10 @@ private slots:
     void onBookmarkClicked(QString dirPath);
     void newBookmark();
     void fsTreeScrollToCurrent();
+
     void onOptionsPopupButtonToggled(bool mode);
     void onOptionsPopupDismissed();
+    void onViewModeSelected(FolderViewMode mode);
 
     void onSplitterMoved();
     void onHomeBtn();

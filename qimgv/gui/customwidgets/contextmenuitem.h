@@ -12,6 +12,9 @@ public:
     ~ContextMenuItem();
     void setAction(QString mAction);
 
+signals:
+    void pressed();
+
 protected:
     virtual void onPress() override;
 

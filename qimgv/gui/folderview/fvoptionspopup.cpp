@@ -12,19 +12,18 @@ FVOptionsPopup::FVOptionsPopup(QWidget *parent) :
 #else
     setWindowFlags(Qt::Popup);
 #endif
+
     setAttribute(Qt::WA_TranslucentBackground, true);
-    //setAttribute(Qt::WA_NoMousePropagation, true);
 
-    ui->viewSimpleButton->setText("Images only");
-    ui->viewSimpleButton->setIconPath(":/res/icons/common/menuitem/folder16.png");
+    ui->viewSimpleButton->setText("Simple");
+    ui->viewExtendedButton->setText("Extended");
+    ui->viewFoldersButton->setText("Extended + Folders");
 
-    ui->viewRegularButton->setText("Images & info");
-    ui->viewRegularButton->setIconPath(":/res/icons/common/menuitem/folder16.png");
+    connect(ui->viewSimpleButton,   &ContextMenuItem::pressed, this, &FVOptionsPopup::selectSimpleView);
+    connect(ui->viewExtendedButton,  &ContextMenuItem::pressed, this, &FVOptionsPopup::selectExtendedView);
+    connect(ui->viewFoldersButton,  &ContextMenuItem::pressed, this, &FVOptionsPopup::selectFoldersView);
 
-    ui->viewFoldersButton->setText("Images & Folders");
-    ui->viewFoldersButton->setIconPath(":/res/icons/common/menuitem/folder16.png");
-
-    // force resize
+    // force resize recalculation
     this->adjustSize();
 
     readSettings();
@@ -33,8 +32,30 @@ FVOptionsPopup::FVOptionsPopup(QWidget *parent) :
     hide();
 }
 
+
 FVOptionsPopup::~FVOptionsPopup() {
     delete ui;
+}
+
+void FVOptionsPopup::selectSimpleView() {
+    ui->viewSimpleButton->setIconPath(":res/icons/common/buttons/panel-small/add-new12.png");
+    ui->viewExtendedButton->setIconPath("");
+    ui->viewFoldersButton->setIconPath("");
+    emit viewModeSelected(FV_SIMPLE);
+}
+
+void FVOptionsPopup::selectExtendedView() {
+    ui->viewSimpleButton->setIconPath("");
+    ui->viewExtendedButton->setIconPath(":res/icons/common/buttons/panel-small/add-new12.png");
+    ui->viewFoldersButton->setIconPath("");
+    emit viewModeSelected(FV_EXTENDED);
+}
+
+void FVOptionsPopup::selectFoldersView() {
+    ui->viewSimpleButton->setIconPath("");
+    ui->viewExtendedButton->setIconPath("");
+    ui->viewFoldersButton->setIconPath(":res/icons/common/buttons/panel-small/add-new12.png");
+    emit viewModeSelected(FV_EXT_FOLDERS);
 }
 
 void FVOptionsPopup::paintEvent(QPaintEvent *event) {
@@ -46,16 +67,23 @@ void FVOptionsPopup::paintEvent(QPaintEvent *event) {
 }
 
 void FVOptionsPopup::keyPressEvent(QKeyEvent *event) {
-    quint32 nativeScanCode = event->nativeScanCode();
-    QString key = actionManager->keyForNativeScancode(nativeScanCode);
-    if(key == "Esc")
+    if(event->key() == Qt::Key_Escape)
         hide();
     else
         actionManager->processEvent(event);
 }
 
-void FVOptionsPopup::readSettings() {
+void FVOptionsPopup::setViewMode(FolderViewMode mode) {
+    if(mode == FV_SIMPLE)
+        selectSimpleView();
+    else if(mode == FV_EXTENDED)
+        selectExtendedView();
+    else
+        selectFoldersView();
+}
 
+void FVOptionsPopup::readSettings() {
+    setViewMode(settings->folderViewMode());
 }
 
 void FVOptionsPopup::showAt(QPoint pos) {
@@ -69,9 +97,3 @@ void FVOptionsPopup::hideEvent(QHideEvent* event) {
     event->accept();
     emit dismissed();
 }
-
-/*void FVOptionsPopup::recalculateGeometry() {
-    //setGeometry(0,0, containerSize().width(), containerSize().height());
-    setGeometry(350, 34, width(), height());
-}
-*/

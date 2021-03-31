@@ -78,6 +78,12 @@ enum ViewMode {
     MODE_FOLDERVIEW
 };
 
+enum FolderViewMode {
+    FV_SIMPLE,
+    FV_EXTENDED,
+    FV_EXT_FOLDERS
+};
+
 class Settings : public QObject
 {
     Q_OBJECT
@@ -105,8 +111,6 @@ public:
     QString thumbnailCacheDir();
     QString mpvBinary();
     void setMpvBinary(QString path);
-    bool showThumbnailLabels();
-    void setShowThumbnailLabels(bool mode);
     PanelHPosition panelPosition();
     void setPanelPosition(PanelHPosition);
 
@@ -228,14 +232,16 @@ public:
 
     void loadStylesheet();
 
-    bool showFolders();
-    void setShowFolders(bool mode);
     bool showSaveOverlay();
     void setShowSaveOverlay(bool mode);
     bool confirmDelete();
     void setConfirmDelete(bool mode);
     bool confirmTrash();
     void setConfirmTrash(bool mode);
+
+    FolderViewMode folderViewMode();
+    void setFolderViewMode(FolderViewMode mode);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

@@ -362,12 +362,15 @@ int Settings::volume() {
     return settings->stateConf->value("volume", 100).toInt();
 }
 //------------------------------------------------------------------------------
-bool Settings::showThumbnailLabels() {
-    return settings->settingsConf->value("showThumbnailLabels", true).toBool();
+FolderViewMode Settings::folderViewMode() {
+    int mode = settings->settingsConf->value("folderViewMode", 2).toInt();
+    if(mode < 0 || mode >= 3)
+        mode = 2;
+    return static_cast<FolderViewMode>(mode);
 }
 
-void Settings::setShowThumbnailLabels(bool mode) {
-    settings->settingsConf->setValue("showThumbnailLabels", mode);
+void Settings::setFolderViewMode(FolderViewMode mode) {
+    settings->settingsConf->setValue("folderViewMode", mode);
 }
 //------------------------------------------------------------------------------
 int Settings::mainPanelSize() {
@@ -646,14 +649,6 @@ int Settings::placesPanelWidth() {
 
 void Settings::setPlacesPanelWidth(int width) {
     settings->stateConf->setValue("placesPanelWidth", width);
-}
-//------------------------------------------------------------------------------
-bool Settings::showFolders() {
-    return settings->stateConf->value("showFolders", true).toBool();
-}
-
-void Settings::setShowFolders(bool mode) {
-    settings->stateConf->setValue("showFolders", mode);
 }
 //------------------------------------------------------------------------------
 void Settings::setSlideshowInterval(int ms) {

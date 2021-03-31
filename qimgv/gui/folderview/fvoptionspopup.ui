@@ -44,7 +44,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>View options</string>
+      <string>View mode</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -78,7 +78,7 @@
     </widget>
    </item>
    <item>
-    <widget class="ContextMenuItem" name="viewRegularButton" native="true"/>
+    <widget class="ContextMenuItem" name="viewExtendedButton" native="true"/>
    </item>
    <item>
     <widget class="ContextMenuItem" name="viewFoldersButton" native="true"/>
