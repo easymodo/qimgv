@@ -5,18 +5,20 @@
 #include <QAbstractItemView>
 #include <QFileSystemModel>
 #include <QFileDialog>
+#include "gui/customwidgets/floatingwidgetcontainer.h"
 #include "gui/idirectoryview.h"
 #include "gui/folderview/foldergridview.h"
 #include "gui/folderview/filesystemmodelcustom.h"
 #include "gui/folderview/bookmarkswidget.h"
 #include "gui/customwidgets/actionbutton.h"
 #include "gui/customwidgets/styledcombobox.h"
+#include "gui/folderview/fvoptionspopup.h"
 
 namespace Ui {
     class FolderView;
 }
 
-class FolderView : public QWidget, public IDirectoryView {
+class FolderView : public FloatingWidgetContainer, public IDirectoryView {
     Q_OBJECT
     Q_INTERFACES(IDirectoryView)
 public:
@@ -82,12 +84,16 @@ private slots:
     void onBookmarkClicked(QString dirPath);
     void newBookmark();
     void fsTreeScrollToCurrent();
+    void onOptionsPopupButtonToggled(bool mode);
+    void onOptionsPopupDismissed();
 
     void onSplitterMoved();
     void onHomeBtn();
     void onRootBtn();
     void onTreeViewTabOut();
+
 private:
     Ui::FolderView *ui;
     FileSystemModelCustom *dirModel;
+    FVOptionsPopup *optionsPopup;
 };

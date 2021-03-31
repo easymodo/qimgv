@@ -18,10 +18,13 @@ bool IconButton::isChecked() {
 
 void IconButton::setChecked(bool mode) {
     if(mCheckable && mode != mChecked) {
+        mPressed = false;
+        setProperty("pressed", false);
         mChecked = mode;
         setProperty("checked", mChecked);
         style()->unpolish(this);
         style()->polish(this);
+        this->repaint();
     }
 }
 

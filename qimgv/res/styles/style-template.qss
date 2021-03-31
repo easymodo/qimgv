@@ -441,6 +441,24 @@ FolderView {
     border-color: %text%;
 }
 
+/* dropdown menus */
+FVOptionsPopup {
+    padding: 5px 0px;
+    background-color: %widget%;
+    border: 1px solid %accent%;
+}
+
+FVOptionsPopup QRadioButton {
+    border-radius: 1px;
+    padding: 2px 5px;
+    color: %text_hc%;
+    min-height: 22px;
+}
+
+FVOptionsPopup QLabel {
+    color: %text_lc2%;
+}
+
 /*----------------------------------------------------------------------------*/
 
 ThumbnailStrip QScrollBar:horizontal {

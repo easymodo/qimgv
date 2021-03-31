@@ -2,7 +2,7 @@
 #include "ui_folderview.h"
 
 FolderView::FolderView(QWidget *parent) :
-    QWidget(parent),
+    FloatingWidgetContainer(parent),
     ui(new Ui::FolderView)
 {
     ui->setupUi(this);
@@ -11,6 +11,8 @@ FolderView::FolderView(QWidget *parent) :
     QString style = "font: %1pt;";
     style = style.arg(QApplication::font().pointSize());
     ui->dirTreeView->setStyleSheet(style);
+
+    optionsPopup = new FVOptionsPopup();
 
     dirModel = new FileSystemModelCustom(this);
     dirModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
@@ -44,6 +46,9 @@ FolderView::FolderView(QWidget *parent) :
     ui->togglePlacesPanelButton->setCheckable(true);
     ui->togglePlacesPanelButton->setIconPath(":res/icons/common/buttons/panel/toggle-panel20.png");
 
+    ui->optionsPopupButton->setCheckable(true);
+    ui->optionsPopupButton->setIconPath(":res/icons/common/buttons/panel/settings16.png");
+
     ui->sortingComboBox->setIconPath(":res/icons/common/other/sorting-mode16.png");
 
     ui->newBookmarkButton->setIconPath(":res/icons/common/buttons/panel-small/add-new12.png");
@@ -61,11 +66,11 @@ FolderView::FolderView(QWidget *parent) :
 
     ui->splitter->setStretchFactor(1, 50);
 
-    connect(ui->thumbnailGrid, &FolderGridView::itemActivated,     this, &FolderView::itemActivated);
     connect(ui->thumbnailGrid, &FolderGridView::thumbnailsRequested,  this, &FolderView::thumbnailsRequested);
     connect(ui->thumbnailGrid, &FolderGridView::thumbnailSizeChanged, this, &FolderView::onThumbnailSizeChanged);
     connect(ui->thumbnailGrid, &FolderGridView::showLabelsChanged,    this, &FolderView::onShowLabelsChanged);
-    connect(ui->thumbnailGrid, &FolderGridView::draggedOut,     this, &FolderView::draggedOut);
+    connect(ui->thumbnailGrid, &FolderGridView::itemActivated,   this, &FolderView::itemActivated);
+    connect(ui->thumbnailGrid, &FolderGridView::draggedOut,      this, &FolderView::draggedOut);
     connect(ui->thumbnailGrid, &FolderGridView::draggedOver,     this, &FolderView::draggedOver);
     connect(ui->thumbnailGrid, &FolderGridView::droppedInto,     this, &FolderView::droppedInto);
 
@@ -80,6 +85,9 @@ FolderView::FolderView(QWidget *parent) :
     connect(ui->showLabelsButton, &ActionButton::toggled, this, &FolderView::onShowLabelsButtonToggled);
     connect(ui->showFoldersButton, &ActionButton::toggled, this, &FolderView::onShowFoldersButtonToggled);
     connect(ui->togglePlacesPanelButton, &ActionButton::toggled, this, &FolderView::onPlacesPanelButtonChecked);
+
+    connect(ui->optionsPopupButton, &IconButton::toggled, this, &FolderView::onOptionsPopupButtonToggled);
+    connect(optionsPopup, &FVOptionsPopup::dismissed, this, &FolderView::onOptionsPopupDismissed);
 
     connect(ui->dirTreeView, &TreeViewCustom::droppedIn, this, &FolderView::onDroppedInByIndex);
     connect(ui->dirTreeView, &TreeViewCustom::tabbedOut, this, &FolderView::onTreeViewTabOut);
@@ -171,6 +179,18 @@ void FolderView::onShowFoldersChanged(bool mode) {
 
 void FolderView::onShowFoldersButtonToggled(bool mode) {
     emit showFoldersChanged(mode);
+}
+
+void FolderView::onOptionsPopupButtonToggled(bool mode) {
+    if(mode) {
+        QPoint pos = ui->optionsPopupButton->geometry().bottomRight() -
+                     QPoint(optionsPopup->width(), -10);
+        optionsPopup->showAt(mapToGlobal(pos));
+    }
+}
+
+void FolderView::onOptionsPopupDismissed() {
+    ui->optionsPopupButton->setChecked(false);
 }
 
 void FolderView::onThumbnailSizeChanged(int newSize) {
