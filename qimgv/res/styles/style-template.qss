@@ -118,20 +118,22 @@ QComboBox QAbstractItemView {
 }
 
 [accessibleName="PanelComboBox"] QAbstractItemView {
-    padding: 5px 0px;
+    /* bottom has uneven padding by default, so we use 1px */
+    /* todo: check on different plaforms */
+    padding: 5px 5px 1px 5px;
     background-color: %widget%;
     border: 1px solid %accent%;
 }
 
 [accessibleName="PanelComboBox"] QAbstractItemView::item {
     border-radius: 1px;
-    padding: 2px 5px;
+    padding: 4px 5px;
     color: %text_hc%;
     min-height: 22px;
 }
 
 [accessibleName="PanelComboBox"] QAbstractItemView::item:selected {
-    background-color: %accent%;
+    background-color: %accent_hover_rgba%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -308,7 +310,7 @@ SidePanel QComboBox QAbstractItemView::item {
 }
 
 SidePanel QComboBox QAbstractItemView::item:selected {
-    background-color: %accent%;
+    background-color: %accent_hover_rgba%;
 }
 
 [accessibleName="CropPanelSeparator"] {
@@ -448,15 +450,8 @@ FVOptionsPopup {
     border: 1px solid %accent%;
 }
 
-FVOptionsPopup QRadioButton {
-    border-radius: 1px;
-    padding: 2px 5px;
-    color: %text_hc%;
-    min-height: 22px;
-}
-
 FVOptionsPopup QLabel {
-    color: %text_lc2%;
+    color: %text%;
 }
 
 /*----------------------------------------------------------------------------*/

@@ -20,10 +20,10 @@ FVOptionsPopup::FVOptionsPopup(QWidget *parent) :
     ui->viewFoldersButton->setText("Extended + Folders");
 
     connect(ui->viewSimpleButton,   &ContextMenuItem::pressed, this, &FVOptionsPopup::selectSimpleView);
-    connect(ui->viewExtendedButton,  &ContextMenuItem::pressed, this, &FVOptionsPopup::selectExtendedView);
+    connect(ui->viewExtendedButton, &ContextMenuItem::pressed, this, &FVOptionsPopup::selectExtendedView);
     connect(ui->viewFoldersButton,  &ContextMenuItem::pressed, this, &FVOptionsPopup::selectFoldersView);
 
-    // force resize recalculation
+    // force size recalculation
     this->adjustSize();
 
     readSettings();
@@ -37,24 +37,36 @@ FVOptionsPopup::~FVOptionsPopup() {
     delete ui;
 }
 
-void FVOptionsPopup::selectSimpleView() {
+void FVOptionsPopup::setSimpleView() {
     ui->viewSimpleButton->setIconPath(":res/icons/common/buttons/panel-small/add-new12.png");
     ui->viewExtendedButton->setIconPath("");
     ui->viewFoldersButton->setIconPath("");
+}
+
+void FVOptionsPopup::setExtendedView() {
+    ui->viewSimpleButton->setIconPath("");
+    ui->viewExtendedButton->setIconPath(":res/icons/common/buttons/panel-small/add-new12.png");
+    ui->viewFoldersButton->setIconPath("");
+}
+
+void FVOptionsPopup::setFoldersView() {
+    ui->viewSimpleButton->setIconPath("");
+    ui->viewExtendedButton->setIconPath("");
+    ui->viewFoldersButton->setIconPath(":res/icons/common/buttons/panel-small/add-new12.png");
+}
+
+void FVOptionsPopup::selectSimpleView() {
+    setSimpleView();
     emit viewModeSelected(FV_SIMPLE);
 }
 
 void FVOptionsPopup::selectExtendedView() {
-    ui->viewSimpleButton->setIconPath("");
-    ui->viewExtendedButton->setIconPath(":res/icons/common/buttons/panel-small/add-new12.png");
-    ui->viewFoldersButton->setIconPath("");
+    setExtendedView();
     emit viewModeSelected(FV_EXTENDED);
 }
 
 void FVOptionsPopup::selectFoldersView() {
-    ui->viewSimpleButton->setIconPath("");
-    ui->viewExtendedButton->setIconPath("");
-    ui->viewFoldersButton->setIconPath(":res/icons/common/buttons/panel-small/add-new12.png");
+    setFoldersView();
     emit viewModeSelected(FV_EXT_FOLDERS);
 }
 

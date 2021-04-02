@@ -100,16 +100,17 @@ QString ShortcutBuilder::fromEventNativeScanCode(QKeyEvent *event) {
     // You can always just add the same keybind using your alt. layout if it doesnt work.
     QString sequence = inputMap->keys().value(event->nativeScanCode());
 
-    //qDebug() << "keyMap.insert(" << event->nativeScanCode() << ","<< QKeySequence(event->key()).toString() << ");";
-
     if(sequence.isEmpty())
         return sequence;
 
-    QChar keyChr = event->text().at(0);
+    QString eventText = event->text();
 
-    bool useUppercaseChr = (event->modifiers() == Qt::ShiftModifier) && !(keyChr.isLetter() || !keyChr.isPrint() || keyChr.isSpace());
-    if(useUppercaseChr) {
-        sequence = event->text();
+    QChar keyChr = eventText.isEmpty() ? QChar() : eventText.at(0);
+
+    // use alt characters accessed by shift (punctuation on the numbers row etc.)
+    bool useAltChr = (event->modifiers() == Qt::ShiftModifier) && !(keyChr.isLetter() || !keyChr.isPrint() || keyChr.isSpace());
+    if(useAltChr) {
+        sequence = eventText;
     } else if(!sequence.isEmpty()) {
         sequence.prepend(modifierKeys(event));
     }

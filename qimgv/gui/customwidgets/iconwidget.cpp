@@ -7,7 +7,8 @@ IconWidget::IconWidget(QWidget *parent)
 {
     dpr = this->devicePixelRatioF();
     connect(settings, &Settings::settingsChanged, [this]() {
-        ImageLib::recolor(*(this->pixmap), settings->colorScheme().icons);
+        if(pixmap)
+            ImageLib::recolor(*(this->pixmap), settings->colorScheme().icons);
     });
 }
 
@@ -33,7 +34,13 @@ void IconWidget::setIconPath(QString path) {
         pixmap = new QPixmap(path);
         pixmapDrawScale = dpr;
     }
-    ImageLib::recolor(*pixmap, settings->colorScheme().icons);
+    // check if the pixmap is valid
+    if(!pixmap->isNull()) {
+        ImageLib::recolor(*pixmap, settings->colorScheme().icons);
+    } else {
+        delete pixmap;
+        pixmap = nullptr;
+    }
     update();
 }
 

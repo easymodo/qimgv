@@ -159,7 +159,7 @@ void FolderView::onDroppedInByIndex(QList<QString> paths, QModelIndex index) {
 void FolderView::onOptionsPopupButtonToggled(bool mode) {
     if(mode) {
         QPoint pos = ui->optionsPopupButton->geometry().bottomRight() -
-                     QPoint(optionsPopup->width(), -10);
+                     QPoint(optionsPopup->width(), 0);
         optionsPopup->showAt(mapToGlobal(pos));
     }
 }
@@ -292,7 +292,6 @@ void FolderView::fsTreeScrollToCurrent() {
 }
 
 void FolderView::onTreeViewClicked(QModelIndex index) {
-    QString path = dirModel->fileInfo(index).absoluteFilePath();
     emit directorySelected(dirModel->fileInfo(index).absoluteFilePath());
 }
 
@@ -301,8 +300,6 @@ void FolderView::onBookmarkClicked(QString dirPath) {
 }
 
 void FolderView::newBookmark() {
-    QString dirPath;
-
     QFileDialog dialog;
     dialog.setDirectory(QDir::homePath());
     dialog.setWindowTitle("Select directory");

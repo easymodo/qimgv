@@ -224,24 +224,27 @@ void Core::toggleShuffle() {
 }
 
 void Core::toggleSlideshow() {
-    if(slideshow) {
-        slideshow = false;
-        mw->showMessage("Slideshow: OFF");
-        mw->setLoopPlayback(true);
-        slideshowTimer.stop();
-    } else {
+    if(slideshow)
+        stopSlideshow();
+    else
+        startSlideshow();
+}
+
+void Core::startSlideshow() {
+    if(!slideshow) {
         slideshow = true;
         mw->showMessage("Slideshow: ON");
         mw->setLoopPlayback(false);
         enableDocumentView();
         startSlideshowTimer();
+        updateInfoString();
     }
-    updateInfoString();
 }
 
 void Core::stopSlideshow() {
     if(slideshow) {
         slideshow = false;
+        //mw->showMessage("Slideshow: OFF");
         mw->setLoopPlayback(true);
         slideshowTimer.stop();
         updateInfoString();

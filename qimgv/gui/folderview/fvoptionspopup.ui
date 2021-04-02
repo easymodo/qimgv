@@ -36,15 +36,21 @@
     <number>0</number>
    </property>
    <property name="leftMargin">
-    <number>0</number>
+    <number>6</number>
+   </property>
+   <property name="topMargin">
+    <number>9</number>
    </property>
    <property name="rightMargin">
-    <number>0</number>
+    <number>6</number>
+   </property>
+   <property name="bottomMargin">
+    <number>6</number>
    </property>
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="headerLabel">
      <property name="text">
-      <string>View mode</string>
+      <string>View options</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

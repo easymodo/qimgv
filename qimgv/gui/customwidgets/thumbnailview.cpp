@@ -318,6 +318,9 @@ void ThumbnailView::loadVisibleThumbnails() {
         // grow rectangle to cover nearby offscreen items
         visibleRect.adjust(-offscreenPreloadArea, -offscreenPreloadArea,
                            offscreenPreloadArea, offscreenPreloadArea);
+
+        // TODO: occasionally crashes here, and debugging it hangs kde o_O
+        // some qt issue?
         QList<QGraphicsItem *>visibleItems = scene.items(visibleRect,
                                                          Qt::IntersectsItemShape,
                                                          Qt::AscendingOrder);

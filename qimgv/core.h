@@ -73,6 +73,7 @@ private:
     QTimer slideshowTimer;
 
     void startSlideshowTimer();
+    void startSlideshow();
     void stopSlideshow();
 
     bool saveFile(const QString &filePath, const QString &newPath);

@@ -40,4 +40,7 @@ private slots:
 private:
     Ui::FVOptionsPopup *ui;
     void setViewMode(FolderViewMode mode);
+    void setSimpleView();
+    void setExtendedView();
+    void setFoldersView();
 };
