@@ -73,5 +73,4 @@ protected:
 
 signals:
     void thumbnailSizeChanged(int);
-    void showLabelsChanged(bool);
 };

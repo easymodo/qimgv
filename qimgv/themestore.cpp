@@ -20,7 +20,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.accent = "#719ccd";
             base.background = "#1a1a1a";
             base.background_fullscreen = "#1a1a1a";
-            base.folderview = "#ebebeb";
+            base.folderview = "#f2f2f2";
             base.folderview_topbar = "#ffffff";
             base.icons = "#55585c";
             base.overlay = "#1a1a1a";

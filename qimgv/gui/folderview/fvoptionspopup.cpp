@@ -87,11 +87,11 @@ void FVOptionsPopup::keyPressEvent(QKeyEvent *event) {
 
 void FVOptionsPopup::setViewMode(FolderViewMode mode) {
     if(mode == FV_SIMPLE)
-        selectSimpleView();
+        setSimpleView();
     else if(mode == FV_EXTENDED)
-        selectExtendedView();
+        setExtendedView();
     else
-        selectFoldersView();
+        setFoldersView();
 }
 
 void FVOptionsPopup::readSettings() {

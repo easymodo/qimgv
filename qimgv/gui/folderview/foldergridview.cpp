@@ -96,13 +96,11 @@ void FolderGridView::hide() {
 
 void FolderGridView::setShowLabels(bool mode) {
     mShowLabels = mode;
-    for(int i = 0; i < thumbnails.count(); i++) {
+    for(int i = 0; i < thumbnails.count(); i++)
         thumbnails.at(i)->setDrawLabel(mShowLabels);
-    }
     updateLayout();
     fitSceneToContents();
     ensureSelectedItemVisible();
-    emit showLabelsChanged(mShowLabels);
 }
 
 void FolderGridView::ensureSelectedItemVisible() {
@@ -114,9 +112,8 @@ void FolderGridView::ensureSelectedItemVisible() {
 
 void FolderGridView::selectAll() {
     QList<int> list;
-    for(int i = 0; i < thumbnails.count(); i++) {
+    for(int i = 0; i < thumbnails.count(); i++)
         list << i;
-    }
     // preserve last selected index by putting it at the end of a new selection
     // this is simpler but it changes selection order a bit
     if(lastSelected() != -1) {
