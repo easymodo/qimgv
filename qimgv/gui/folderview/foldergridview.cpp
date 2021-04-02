@@ -332,6 +332,9 @@ void FolderGridView::updateLayout() {
     shiftedCol = -1;
     flowLayout->invalidate();
     flowLayout->activate();
+    // looks like some queueing happens during activate()
+    // so we wait for it to avoid crashes / unexpected bugs
+    qApp->processEvents();
 }
 
 // block native tab-switching so we can use it in shortcuts

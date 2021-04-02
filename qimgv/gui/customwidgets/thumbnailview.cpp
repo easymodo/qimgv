@@ -224,10 +224,10 @@ void ThumbnailView::populate(int count) {
         }
     }
     updateLayout();
-    // wait till layout happens before resizing the scene
-    qApp->processEvents();
     fitSceneToContents();
     resetViewport();
+    // wait for everything to resize before updating
+    qApp->processEvents();
     this->setUpdatesEnabled(true);
     loadVisibleThumbnails();
 }

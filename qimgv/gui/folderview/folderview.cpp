@@ -169,9 +169,18 @@ void FolderView::onOptionsPopupDismissed() {
 }
 
 void FolderView::onViewModeSelected(FolderViewMode mode) {
+    // this avoids flicker between transitions
+    // AND does not crash at the same time!
     settings->setFolderViewMode(mode);
-    ui->thumbnailGrid->setShowLabels((settings->folderViewMode() != FV_SIMPLE));
-    emit showFoldersChanged((mode == FV_EXT_FOLDERS));
+    ui->thumbnailGrid->setUpdatesEnabled(false);
+    if(mode == FV_EXT_FOLDERS) {
+        ui->thumbnailGrid->setShowLabels((settings->folderViewMode() != FV_SIMPLE));
+        emit showFoldersChanged((mode == FV_EXT_FOLDERS));
+    } else {
+        emit showFoldersChanged((mode == FV_EXT_FOLDERS));
+        ui->thumbnailGrid->setShowLabels((settings->folderViewMode() != FV_SIMPLE));
+    }
+    ui->thumbnailGrid->setUpdatesEnabled(true);
 }
 
 void FolderView::onThumbnailSizeChanged(int newSize) {
