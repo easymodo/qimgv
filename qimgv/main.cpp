@@ -55,6 +55,7 @@ int main(int argc, char *argv[]) {
 
     // use some style workarounds
     a.setStyle(new ProxyStyle);
+    QApplication::setEffectEnabled(Qt::UI_AnimateCombo, false);
 
     QGuiApplication::setDesktopFileName(QCoreApplication::applicationName() + ".desktop");
 
