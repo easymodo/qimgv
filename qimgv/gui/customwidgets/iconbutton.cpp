@@ -29,8 +29,13 @@ void IconButton::setChecked(bool mode) {
 
 void IconButton::mousePressEvent(QMouseEvent *event) {
     Q_UNUSED(event)
-    mPressed = true;
-    setProperty("pressed", true);
+    if(mCheckable) {
+        setChecked(!this->property("checked").toBool());
+        emit toggled(mChecked);
+    } else {
+        mPressed = true;
+        setProperty("pressed", true);
+    }
     style()->unpolish(this);
     style()->polish(this);
 }
@@ -38,13 +43,8 @@ void IconButton::mousePressEvent(QMouseEvent *event) {
 void IconButton::mouseReleaseEvent(QMouseEvent *event) {
     Q_UNUSED(event)
     mPressed = false;
-    if(rect().contains(event->pos())) {
-        if(mCheckable) {
-            setChecked(!this->property("checked").toBool());
-            emit toggled(mChecked);
-        } else {
-            emit clicked();
-        }
+    if(rect().contains(event->pos()) && !mCheckable) {
+        emit clicked();
     }
     if(!mChecked) {
         setProperty("pressed", false);
@@ -56,7 +56,7 @@ void IconButton::mouseReleaseEvent(QMouseEvent *event) {
 void IconButton::mouseMoveEvent(QMouseEvent *event) {
     if(mChecked || !mPressed)
         return;
-    if(QRect(0, 0, width(), height()).contains(event->pos())) {
+    if(rect().contains(event->pos())) {
         if(!property("pressed").toBool()) {
             setProperty("pressed", true);
             style()->unpolish(this);

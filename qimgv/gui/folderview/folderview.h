@@ -5,6 +5,7 @@
 #include <QAbstractItemView>
 #include <QFileSystemModel>
 #include <QFileDialog>
+#include <QElapsedTimer>
 #include "gui/customwidgets/floatingwidgetcontainer.h"
 #include "gui/idirectoryview.h"
 #include "gui/folderview/foldergridview.h"
@@ -94,4 +95,5 @@ private:
     Ui::FolderView *ui;
     FileSystemModelCustom *dirModel;
     FVOptionsPopup *optionsPopup;
+    QElapsedTimer popupTimerClutch;
 };

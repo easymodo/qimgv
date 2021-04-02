@@ -7,12 +7,7 @@ FVOptionsPopup::FVOptionsPopup(QWidget *parent) :
 {
     ui->setupUi(this);
 
-#ifdef _WIN32
-    setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-#else
     setWindowFlags(Qt::Popup);
-#endif
-
     setAttribute(Qt::WA_TranslucentBackground, true);
 
     ui->viewSimpleButton->setText("Simple");

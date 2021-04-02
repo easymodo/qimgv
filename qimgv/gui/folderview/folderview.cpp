@@ -158,6 +158,13 @@ void FolderView::onDroppedInByIndex(QList<QString> paths, QModelIndex index) {
 
 void FolderView::onOptionsPopupButtonToggled(bool mode) {
     if(mode) {
+        // Fixes popup being shown again right after dismissing it
+        // by clicking on this toggle button.
+        // This issue is only present on windows (different Qt::Popup behavior)
+        if(popupTimerClutch.elapsed() < 10) {
+            ui->optionsPopupButton->setChecked(false);
+            return;
+        }
         QPoint pos = ui->optionsPopupButton->geometry().bottomRight() -
                      QPoint(optionsPopup->width(), 0);
         optionsPopup->showAt(mapToGlobal(pos));
@@ -165,6 +172,7 @@ void FolderView::onOptionsPopupButtonToggled(bool mode) {
 }
 
 void FolderView::onOptionsPopupDismissed() {
+    popupTimerClutch.start();
     ui->optionsPopupButton->setChecked(false);
 }
 

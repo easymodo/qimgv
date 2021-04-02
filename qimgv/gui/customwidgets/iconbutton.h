@@ -3,8 +3,7 @@
 #include "gui/customwidgets/iconwidget.h"
 #include <QMouseEvent>
 
-class IconButton : public IconWidget
-{
+class IconButton : public IconWidget {
     Q_OBJECT
     bool isHovered();
 public:
