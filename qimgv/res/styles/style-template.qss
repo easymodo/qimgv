@@ -422,7 +422,7 @@ FolderView {
     border: 1px solid transparent;
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
-    margin: 0px 2px;
+    margin: 4px 2px;
 }
 
 [accessibleName="PathBarButton"]:hover {
