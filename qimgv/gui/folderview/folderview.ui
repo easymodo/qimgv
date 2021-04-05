@@ -97,7 +97,7 @@
        </widget>
       </item>
       <item>
-       <widget class="ActionButton" name="openButton" native="true">
+       <widget class="QWidget" name="pathBar" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -106,29 +106,71 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>40</width>
+          <width>0</width>
           <height>38</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>40</width>
+          <width>16777215</width>
           <height>38</height>
          </size>
         </property>
         <property name="accessibleName">
-         <string>PanelButton</string>
+         <string notr="true">PathBar</string>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="pathLabel">
-        <property name="cursor">
-         <cursorShape>IBeamCursor</cursorShape>
-        </property>
-        <property name="text">
-         <string>[path]</string>
-        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="ActionButton" name="upButton" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>34</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>34</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="accessibleName">
+            <string notr="true">PathBarButton</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="pathLabel">
+           <property name="cursor">
+            <cursorShape>IBeamCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>[path]</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>

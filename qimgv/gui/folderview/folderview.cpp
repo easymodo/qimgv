@@ -32,8 +32,9 @@ FolderView::FolderView(QWidget *parent) :
     ui->dirTreeView->setRootIndex(idx);
 #endif
     // -------------------------------
-    ui->openButton->setAction("open");
-    ui->openButton->setIconPath(":res/icons/common/buttons/panel/open16.png");
+    ui->upButton->setAction("goUp");
+    ui->upButton->setIconPath(":res/icons/common/buttons/panel/up16.png");
+    ui->upButton->setTriggerMode(TriggerMode::ClickTrigger);
     ui->settingsButton->setAction("openSettings");
     ui->settingsButton->setIconPath(":res/icons/common/buttons/panel/settings16.png");
     ui->exitButton->setAction("exit");

@@ -240,7 +240,8 @@ void MW::onSortingChanged(SortingMode mode) {
 
 void MW::setDirectoryPath(QString path) {
     closeImage();
-    info.directoryName = path;
+    info.directoryPath = path;
+    info.directoryName = path.split("/").last();
     folderView->setDirectoryPath(path);
     onInfoUpdated();
 }
@@ -646,9 +647,7 @@ void MW::onInfoUpdated() {
 
     QString windowTitle;
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW) {
-        windowTitle = qApp->applicationName();
-        if(!info.directoryName.isEmpty())
-        windowTitle.prepend(info.directoryName + " — ");
+        windowTitle = "Folder view";
         infoBarFullscreen->setInfo("", "No file opened.", "");
         infoBarWindowed->setInfo("", "No file opened.", "");
     } else if(info.fileName.isEmpty()) {

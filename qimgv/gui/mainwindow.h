@@ -41,6 +41,7 @@ struct CurrentInfo {
     QString fileName;
     QString filePath;
     QString directoryName;
+    QString directoryPath;
     QSize imageSize;
     qint64 fileSize;
     bool slideshow;

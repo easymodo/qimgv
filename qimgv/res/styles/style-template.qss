@@ -78,8 +78,8 @@
 
 [accessibleName="PanelButton"]:pressed,
 [accessibleName="PanelButton"][pressed="true"] {
-    background-color: %panel_button_pressed%;
-    border: 1px solid %panel_button_pressed%;
+    background-color: %panel_button%;
+    border: 1px solid %panel_button%;
 }
 /*----------------------------------------------------------------------------*/
 
@@ -121,9 +121,7 @@ QComboBox QAbstractItemView {
 }
 
 [accessibleName="PanelComboBox"] QAbstractItemView {
-    /* bottom has uneven padding by default, so we use 1px */
-    /* todo: check on different plaforms */
-    padding: 5px 5px 1px 5px;
+    padding: 5px 5px 5px 5px;
     background-color: %widget%;
     border: 1px solid %accent%;
 }
@@ -409,19 +407,35 @@ FolderView {
     background-color: %folderview_topbar%;
 }
 
-[accessibleName="FolderViewPanel"] QLabel {
-    color: %text%;
+[accessibleName="PathBar"] {
+    background-color: %panel_button%;
     border-radius: 3px;
-    padding: 2px 7px 2px 7px;
-    margin-top:    4px;
-    margin-bottom: 4px;
-    margin-left:   2px;
-    margin-right:  2px;
+    margin: 4px 2px;
 }
 
-[accessibleName="FolderViewPanel"] QLabel:hover {
-    background-color: %panel_button_pressed%;
+[accessibleName="PathBar"] QLabel {
+    color: %text%;
+    padding-right: 9px;
 }
+
+[accessibleName="PathBarButton"] {
+    border: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    margin: 0px 2px;
+}
+
+[accessibleName="PathBarButton"]:hover {
+    background-color: %panel_button_hover%;
+    border-color: %panel_button_hover%;
+}
+
+[accessibleName="PathBarButton"]:pressed,
+[accessibleName="PathBarButton"][pressed="true"] {
+    background-color: %panel_button_pressed%;
+    border-color: %panel_button_pressed%;
+}
+
 /*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewSlider"] {
     margin-top: 1px;
