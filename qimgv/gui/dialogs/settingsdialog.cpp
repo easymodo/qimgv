@@ -25,9 +25,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
         ui->themeSelectorComboBox->blockSignals(false);
         switch(index) {
             case 0: setColorScheme(ThemeStore::colorScheme(COLORS_DARK));     break;
-            case 1: setColorScheme(ThemeStore::colorScheme(COLORS_DARK_V2));  break;
-            case 2: setColorScheme(ThemeStore::colorScheme(COLORS_DARKBLUE)); break;
-            case 3: setColorScheme(ThemeStore::colorScheme(COLORS_LIGHT));    break;
+            case 1: setColorScheme(ThemeStore::colorScheme(COLORS_DARKBLUE)); break;
+            case 2: setColorScheme(ThemeStore::colorScheme(COLORS_LIGHT));    break;
         }
     });
 

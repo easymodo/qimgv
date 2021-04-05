@@ -8,7 +8,6 @@ enum ColorSchemes {
     COLORS_SYSTEM,
     COLORS_LIGHT,
     COLORS_DARK,
-    COLORS_DARK_V2,
     COLORS_DARKBLUE,
     COLORS_DEFAULT
 };
