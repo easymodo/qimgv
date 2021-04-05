@@ -13,6 +13,7 @@ FolderView::FolderView(QWidget *parent) :
     ui->dirTreeView->setStyleSheet(style);
 
     optionsPopup = new FVOptionsPopup();
+    popupTimerClutch.start();
 
     dirModel = new FileSystemModelCustom(this);
     dirModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
