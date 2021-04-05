@@ -202,6 +202,8 @@ void ThumbnailView::showEvent(QShowEvent *event) {
 }
 
 void ThumbnailView::populate(int count) {
+    // wait for possible queued layout events before removing items
+    qApp->processEvents();
     clearSelection();
     // pause updates until the layout is calculated
     // without this you will see scene moving when scrollbar appears
@@ -224,10 +226,10 @@ void ThumbnailView::populate(int count) {
         }
     }
     updateLayout();
-    // wait till layout happens before resizing the scene
-    qApp->processEvents();
     fitSceneToContents();
     resetViewport();
+    // wait for layout before updating
+    qApp->processEvents();
     this->setUpdatesEnabled(true);
     loadVisibleThumbnails();
 }
