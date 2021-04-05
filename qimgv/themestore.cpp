@@ -53,7 +53,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.widget = "#252525";
             base.widget_border = "#272727";
             base.accent = "#3f6491";
-            base.folderview = "#303030";
+            base.folderview = "#2f2f2f";
             base.folderview_topbar = "#373737";
             base.scrollbar = "#4b4b4b";
             base.overlay_text = "#d2d2d2";
