@@ -64,8 +64,11 @@
 
 /*----------------------------------------------------------------------------*/
 [accessibleName="PanelButton"] {
-    margin: 3px;
     border-radius: 3px;
+    margin-top:    4px;
+    margin-bottom: 4px;
+    margin-left:   3px;
+    margin-right:  3px;
 }
 
 [accessibleName="PanelButton"]:hover {
