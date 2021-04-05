@@ -18,7 +18,7 @@
 /* TODO: fix me */
 [accessibleName="Button"]:pressed,
 [accessibleName="Button"][pressed="true"],
-[accessibleName="ButtonSetLeft"]:pressed,[accessibleName="ButtonSetLeft"][pressed="true"],
+[accessibleName="ButtonSetLeft"]:pressed,  [accessibleName="ButtonSetLeft"][pressed="true"],
 [accessibleName="ButtonSetRight"]:pressed, [accessibleName="ButtonSetRight"][pressed="true"]
 {
     background-color: %button_pressed%;

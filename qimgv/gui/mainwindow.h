@@ -181,7 +181,6 @@ signals:
     void toggleMute();
     void volumeUp();
     void volumeDown();
-    void enableDocumentView();
     void toggleTransparencyGrid();
     void droppedIn(const QMimeData*, QObject*);
     void draggedOut();
@@ -196,6 +195,7 @@ public slots:
     void hideCropPanel();
     void toggleFolderView();
     void enableFolderView();
+    void enableDocumentView();
     void showOpenDialog(QString path);
     void showSaveDialog(QString filePath);
     void showResizeDialog(QSize initialSize);

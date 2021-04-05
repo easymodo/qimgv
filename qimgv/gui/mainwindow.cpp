@@ -98,7 +98,6 @@ void MW::setupUi() {
     connect(this, &MW::volumeUp,  viewerWidget.get(), &ViewerWidget::volumeUp);
     connect(this, &MW::volumeDown,  viewerWidget.get(), &ViewerWidget::volumeDown);
     connect(this, &MW::toggleTransparencyGrid, viewerWidget.get(), &ViewerWidget::toggleTransparencyGrid);
-    connect(this, &MW::enableDocumentView, centralWidget.get(), &CentralWidget::showDocumentView);
     connect(this, &MW::setLoopPlayback,  viewerWidget.get(), &ViewerWidget::setLoopPlayback);
 }
 
@@ -149,6 +148,7 @@ void MW::toggleFolderView() {
     viewerWidget->hidePanel();
     imageInfoOverlay->hide();
     centralWidget->toggleViewMode();
+    onInfoUpdated();
 }
 
 void MW::enableFolderView() {
@@ -160,6 +160,11 @@ void MW::enableFolderView() {
     viewerWidget->hidePanel();
     imageInfoOverlay->hide();
     centralWidget->showFolderView();
+    onInfoUpdated();
+}
+
+void MW::enableDocumentView() {
+    centralWidget->showDocumentView();
     onInfoUpdated();
 }
 
