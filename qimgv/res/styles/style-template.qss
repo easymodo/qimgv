@@ -408,6 +408,20 @@ FolderView {
 [accessibleName="FolderViewPanel"] { /* top bar - rename */
     background-color: %folderview_topbar%;
 }
+
+[accessibleName="FolderViewPanel"] QLabel {
+    color: %text%;
+    border-radius: 3px;
+    padding: 2px 7px 2px 7px;
+    margin-top:    4px;
+    margin-bottom: 4px;
+    margin-left:   2px;
+    margin-right:  2px;
+}
+
+[accessibleName="FolderViewPanel"] QLabel:hover {
+    background-color: %panel_button_pressed%;
+}
 /*----------------------------------------------------------------------------*/
 [accessibleName="FolderViewSlider"] {
     margin-top: 1px;

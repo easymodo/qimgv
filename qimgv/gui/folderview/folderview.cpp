@@ -274,6 +274,8 @@ void FolderView::setDirectoryPath(QString path) {
         ui->dirTreeView->setRootIndex(idx);
     }
 #endif
+    ui->pathLabel->setText(path);
+
     if(ui->dirTreeView->currentIndex().data() == path)
         return;
 
