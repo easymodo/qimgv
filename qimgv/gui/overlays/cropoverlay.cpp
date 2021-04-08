@@ -103,9 +103,10 @@ void CropOverlay::setAspectRatio(QPointF ratio) {
     ar = ratio;
     setLockAspectRatio(true);
     // force resize selection area
-    if(lockAspectRatio && hasSelection()) {
+    if(hasSelection()) {
         resizeSelection(QPoint(0,0));
         update();
+        emit selectionChanged(selectionRect);
     }
 }
 
