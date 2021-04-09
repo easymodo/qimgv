@@ -8,7 +8,8 @@ class KeySequenceEdit : public QPushButton {
     Q_OBJECT
 public:
     KeySequenceEdit(QWidget *parent);
-    QString sequence();
+    QString sequence();    
+    void setText(const QString &text);
 
 protected:
     void keyPressEvent(QKeyEvent *e);

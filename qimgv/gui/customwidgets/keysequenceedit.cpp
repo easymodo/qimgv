@@ -1,11 +1,16 @@
 #include "keysequenceedit.h"
 
 KeySequenceEdit::KeySequenceEdit(QWidget *parent) : QPushButton(parent), mSequence("") {
-    setText(tr("[Enter sequence]"));
+    QPushButton::setText(tr("[Enter sequence]"));
 }
 
 QString KeySequenceEdit::sequence() {
     return mSequence;
+}
+
+void KeySequenceEdit::setText(const QString &text) {
+    mSequence = text;
+    QPushButton::setText(mSequence);
 }
 
 void KeySequenceEdit::keyPressEvent(QKeyEvent *e) {
