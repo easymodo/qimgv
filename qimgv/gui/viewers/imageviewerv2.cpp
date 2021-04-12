@@ -454,8 +454,8 @@ void ImageViewerV2::drawTransparencyGrid() {
 bool ImageViewerV2::imageFits() const {
     if(!pixmap)
         return true;
-    return (pixmap->width()  <= viewport()->width() &&
-            pixmap->height() <= viewport()->height());
+    return (pixmap->width()  <= (viewport()->width()  * devicePixelRatioF()) &&
+            pixmap->height() <= (viewport()->height() * devicePixelRatioF()));
 }
 
 bool ImageViewerV2::scaledImageFits() const {
