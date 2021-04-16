@@ -330,8 +330,7 @@ void MW::onWindowGeometryChanged() {
 }
 
 void MW::saveCurrentDisplay() {
-    // TODO: QDesktopWidget
-    settings->setLastDisplay(0 /*desktopWidget->screenNumber(this)*/);
+    settings->setLastDisplay(qApp->screens().indexOf(this->window()->screen()));
 }
 
 //#############################################################
