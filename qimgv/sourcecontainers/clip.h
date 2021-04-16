@@ -2,6 +2,7 @@
 
 #include <QString>
 #include <QRect>
+#include <QRegExp>
 #include <QTransform>
 #include <QProcess>
 #include "settings.h"

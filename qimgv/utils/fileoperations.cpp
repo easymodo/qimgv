@@ -40,7 +40,8 @@ QString FileOperations::decodeResult(const FileOpResult &result) {
     }
 }
 
-void FileOperations::copyTo(const QFileInfo &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
+void FileOperations::copyTo(const QString &srcFilePath, const QString &destDirPath, bool force, FileOpResult &result) {
+    QFileInfo srcFile(srcFilePath);
     QString tmpPath;
     bool exists = false;
     // error checks
@@ -100,7 +101,8 @@ void FileOperations::copyTo(const QFileInfo &srcFile, const QString &destDirPath
     return;
 }
 
-void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
+void FileOperations::moveTo(const QString &srcFilePath, const QString &destDirPath, bool force, FileOpResult &result) {
+    QFileInfo srcFile(srcFilePath);
     QString tmpPath;
     bool exists = false;
     // error checks
@@ -176,7 +178,8 @@ void FileOperations::moveTo(const QFileInfo &srcFile, const QString &destDirPath
     return;
 }
 
-void FileOperations::rename(const QFileInfo &srcFile, const QString &newName, bool force, FileOpResult &result) {
+void FileOperations::rename(const QString &srcFilePath, const QString &newName, bool force, FileOpResult &result) {
+    QFileInfo srcFile(srcFilePath);
     QString tmpPath;
     // error checks
     if(!srcFile.exists()) {

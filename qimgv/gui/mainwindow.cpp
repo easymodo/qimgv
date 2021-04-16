@@ -5,7 +5,6 @@
 MW::MW(QWidget *parent)
     : FloatingWidgetContainer(parent),
       currentDisplay(0),
-      desktopWidget(nullptr),
       maximized(false),
       activeSidePanel(SIDEPANEL_NONE),
       copyOverlay(nullptr),
@@ -35,7 +34,6 @@ MW::MW(QWidget *parent)
     this->setMouseTracking(true);
     this->setAcceptDrops(true);
     this->setAccessibleName("mainwindow");
-    desktopWidget = QApplication::desktop();
     windowGeometryChangeTimer.setSingleShot(true);
     windowGeometryChangeTimer.setInterval(30);
     setupUi();
@@ -322,7 +320,8 @@ void MW::restoreWindowGeometry() {
 }
 
 void MW::updateCurrentDisplay() {
-    currentDisplay = desktopWidget->screenNumber(this);
+    auto screens = qApp->screens();
+    currentDisplay = screens.indexOf(this->window()->screen());
 }
 
 void MW::onWindowGeometryChanged() {
@@ -331,7 +330,8 @@ void MW::onWindowGeometryChanged() {
 }
 
 void MW::saveCurrentDisplay() {
-    settings->setLastDisplay(desktopWidget->screenNumber(this));
+    // TODO: QDesktopWidget
+    settings->setLastDisplay(0 /*desktopWidget->screenNumber(this)*/);
 }
 
 //#############################################################
@@ -486,12 +486,13 @@ void MW::showFullScreen() {
     //do not save immediately on application start
     if(!isHidden())
         saveWindowGeometry();
+    auto screens = qApp->screens();
+    // todo: why check the screen again?
+    auto _currentDisplay = screens.indexOf(this->window()->screen());
     //move to target screen
-    if(desktopWidget->screenCount() > currentDisplay &&
-       currentDisplay != desktopWidget->screenNumber(this))
-    {
-        this->move(desktopWidget->screenGeometry(currentDisplay).x(),
-                   desktopWidget->screenGeometry(currentDisplay).y());
+    if(screens.count() > currentDisplay && currentDisplay != _currentDisplay) {
+        this->move(screens.at(currentDisplay)->geometry().x(),
+                   screens.at(currentDisplay)->geometry().y());
     }
     QWidget::showFullScreen();
     // try to repaint sooner

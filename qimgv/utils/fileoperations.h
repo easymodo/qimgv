@@ -26,9 +26,9 @@ enum FileOpResult {
 
 class FileOperations {
 public:
-    static void copyTo(const QFileInfo &srcFile, const QString &destDirPath, bool force, FileOpResult &result);
-    static void moveTo(const QFileInfo &srcFile, const QString &destDirPath, bool force, FileOpResult &result);
-    static void rename(const QFileInfo &srcFile, const QString &newName, bool force, FileOpResult &result);
+    static void copyTo(const QString &srcFilePath, const QString &destDirPath, bool force, FileOpResult &result);
+    static void moveTo(const QString &srcFilePath, const QString &destDirPath, bool force, FileOpResult &result);
+    static void rename(const QString &srcFilePath, const QString &newName, bool force, FileOpResult &result);
     static void removeFile(const QString &filePath, FileOpResult &result);
     static void moveToTrash(const QString &filePath, FileOpResult &result);
 

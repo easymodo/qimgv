@@ -1,7 +1,5 @@
 #pragma once
 
-#include <QOpenGLWidget>
-
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>

@@ -19,7 +19,7 @@ SlidePanel::SlidePanel(FloatingWidgetContainer *parent)
     outCurve.setType(QEasingCurve::OutQuart);
 
     timeline.setDuration(ANIMATION_DURATION);
-    timeline.setCurveShape(QTimeLine::LinearCurve);
+    timeline.setEasingCurve(QEasingCurve::Linear);
     timeline.setStartFrame(0);
     timeline.setEndFrame(ANIMATION_DURATION);
     // For some reason 16 feels janky on windows. Linux is fine.

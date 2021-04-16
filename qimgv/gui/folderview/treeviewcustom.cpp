@@ -37,7 +37,7 @@ void TreeViewCustom::showEvent(QShowEvent *event) {
     QTreeView::showEvent(event);
 }
 
-void TreeViewCustom::enterEvent(QEvent *event) {
+void TreeViewCustom::enterEvent(QEnterEvent *event) {
     QTreeView::enterEvent(event);
     updateScrollbarStyle();
 }

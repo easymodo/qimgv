@@ -21,8 +21,7 @@ ResizeDialog::ResizeDialog(QSize originalSize,  QWidget *parent) :
                              " x " +
                              QString::number(originalSize.height()));
 
-    QDesktopWidget desktopWidget;
-    desktopSize = desktopWidget.screenGeometry(desktopWidget.primaryScreen()).size();
+    desktopSize = qApp->primaryScreen()->size();
     connect(ui->byPercentage,   &QRadioButton::toggled, this, &ResizeDialog::onPercentageRadioButton);
     connect(ui->byAbsoluteSize, &QRadioButton::toggled, this, &ResizeDialog::onAbsoluteSizeRadioButton);
     connect(ui->percent, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ResizeDialog::percentChanged);

@@ -79,7 +79,6 @@ private:
     QHBoxLayout layout;
     QTimer windowGeometryChangeTimer;
     int currentDisplay;
-    QDesktopWidget *desktopWidget;
 
     bool cropPanelActive, showInfoBarFullscreen, showInfoBarWindowed, maximized;
     std::shared_ptr<DocumentWidget> docWidget;

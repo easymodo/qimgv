@@ -395,9 +395,9 @@ void FolderGridView::keyPressEvent(QKeyEvent *event) {
 
 void FolderGridView::wheelEvent(QWheelEvent *event) {
     if(event->modifiers().testFlag(Qt::ControlModifier)) {
-        if(event->delta() > 0)
+        if(event->pixelDelta().y() > 0 || event->angleDelta().y() > 0)
             zoomIn();
-        else if(event->delta() < 0)
+        else if(event->pixelDelta().y() < 0 || event->angleDelta().y() < 0)
             zoomOut();
     } else {
         ThumbnailView::wheelEvent(event);

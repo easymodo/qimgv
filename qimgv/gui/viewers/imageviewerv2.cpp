@@ -21,9 +21,6 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     mScalingFilter(QI_FILTER_BILINEAR),
     scene(nullptr)
 {
-    if(settings->useOpenGL())
-        setViewport(new QOpenGLWidget);
-
     setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
     this->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, true);
     setFocusPolicy(Qt::NoFocus);
@@ -909,7 +906,7 @@ void ImageViewerV2::swapToOriginalPixmap() {
 }
 
 void ImageViewerV2::setZoomAnchor(QPoint viewportPos) {
-    zoomAnchor = QPair(pixmapItem.mapFromScene(mapToScene(viewportPos)),
+    zoomAnchor = QPair<QPointF, QPoint>(pixmapItem.mapFromScene(mapToScene(viewportPos)),
                        viewportPos);
 }
 

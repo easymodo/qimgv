@@ -80,7 +80,9 @@ int main(int argc, char *argv[]) {
     qRegisterMetaType<ScalerRequest>("ScalerRequest");
     qRegisterMetaType<std::shared_ptr<Image>>("std::shared_ptr<Image>");
     qRegisterMetaType<std::shared_ptr<Thumbnail>>("std::shared_ptr<Thumbnail>");
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     qRegisterMetaTypeStreamOperators<Script>("Script");
+#endif
 
     // globals
     inputMap = InputMap::getInstance();

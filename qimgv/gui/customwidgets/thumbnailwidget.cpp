@@ -115,7 +115,7 @@ void ThumbnailWidget::setupLayout() {
                       highlightRect.width(), textHeight * 1.7);
 
     if(thumbnail && !thumbnail->label().isEmpty()) {
-        labelTextRect.setWidth(fmSmall->width(thumbnail->label()));
+        labelTextRect.setWidth(fmSmall->horizontalAdvance(thumbnail->label()));
         labelTextRect.setHeight(nameRect.height());
         labelTextRect.moveTop(nameRect.top());
         labelTextRect.moveRight(nameRect.right());

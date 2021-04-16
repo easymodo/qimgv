@@ -1,7 +1,5 @@
 #include "directorywatcher_p.h"
 
-#include <QRegExp>
-
 #ifdef __linux__
 #include "linux/linuxwatcher.h"
 #elif _WIN32

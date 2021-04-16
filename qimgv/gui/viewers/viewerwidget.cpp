@@ -555,7 +555,7 @@ void ViewerWidget::keyPressEvent(QKeyEvent *event) {
         actionManager->processEvent(event);
 }
 
-void ViewerWidget::enterEvent(QEvent *event) {
+void ViewerWidget::enterEvent(QEnterEvent *event) {
     QWidget::enterEvent(event);
 
     if(!mInteractionEnabled)

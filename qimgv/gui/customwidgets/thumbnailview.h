@@ -9,7 +9,6 @@
  */
 
 #include <QGraphicsView>
-#include <QOpenGLWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QScrollBar>

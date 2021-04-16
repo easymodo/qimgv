@@ -7,7 +7,8 @@ set(CMAKE_AUTOMOC ON)
 
 set(QIMGV_LIBDIR "${CMAKE_INSTALL_LIBDIR}/qimgv")
 
-find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
@@ -23,7 +24,7 @@ add_library(player_mpv MODULE
 target_compile_features(player_mpv PRIVATE cxx_std_11)
 
 target_link_libraries(player_mpv PRIVATE
-    Qt5::Core Qt5::Widgets PkgConfig::Mpv)
+    Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets PkgConfig::Mpv)
 
 set_target_properties(player_mpv PROPERTIES
     CXX_EXTENSIONS OFF

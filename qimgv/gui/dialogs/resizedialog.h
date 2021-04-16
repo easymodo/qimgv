@@ -2,7 +2,7 @@
 
 #include <QCheckBox>
 #include <QDebug>
-#include <QDesktopWidget>
+#include <QScreen>
 #include <QDialog>
 #include <QDoubleSpinBox>
 #include <QHBoxLayout>

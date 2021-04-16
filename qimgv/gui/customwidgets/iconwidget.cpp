@@ -50,7 +50,7 @@ void IconWidget::paintEvent(QPaintEvent *event) {
     if(!this->isEnabled())
         p.setOpacity(0.5f);
     QStyleOption opt;
-    opt.init(this);
+    opt.initFrom(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
     if(pixmap) {
         p.setRenderHint(QPainter::SmoothPixmapTransform);

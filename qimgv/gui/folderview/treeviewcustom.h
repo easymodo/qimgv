@@ -24,7 +24,7 @@ protected:
     void dropEvent(QDropEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
 
-    void enterEvent(QEvent *event);
+    void enterEvent(QEnterEvent *event);
     void leaveEvent(QEvent *event);
     void showEvent(QShowEvent *event);
     void keyPressEvent(QKeyEvent *event);
