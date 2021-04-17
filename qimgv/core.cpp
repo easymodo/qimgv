@@ -985,6 +985,7 @@ void Core::loadPath(QString path) {
         return;
     if(path.startsWith("file://", Qt::CaseInsensitive))
         path.remove(0, 7);
+
     stopSlideshow();
     QFileInfo fileInfo(path);
     QString directoryPath;
@@ -997,12 +998,7 @@ void Core::loadPath(QString path) {
         qDebug() << "Could not open path: " << path;
         return;
     }
-    // set model dir if needed
-    if(model->directoryPath() != directoryPath) {
-        this->reset();
-        model->setDirectory(directoryPath);
-        mw->setDirectoryPath(directoryPath);
-    }
+    setDirectory(directoryPath);
     // load file / folderview
     if(fileInfo.isFile()) {
         int index = model->indexOfFile(fileInfo.absoluteFilePath());
@@ -1022,6 +1018,14 @@ void Core::loadPath(QString path) {
         loadIndex(index, false, settings->usePreloader());
     } else {
         mw->enableFolderView();
+    }
+}
+
+void Core::setDirectory(QString path) {
+    if(model->directoryPath() != path) {
+        this->reset();
+        model->setDirectory(path);
+        mw->setDirectoryPath(path);
     }
 }
 
@@ -1051,11 +1055,55 @@ bool Core::loadIndex(int index, bool async, bool preload) {
 void Core::loadParentDir() {
     if(model->directoryPath().isEmpty() || mw->currentViewMode() != MODE_FOLDERVIEW)
         return;
+    stopSlideshow();
     QFileInfo currentDir(model->directoryPath());
     QFileInfo parentDir(currentDir.absolutePath());
     if(parentDir.exists() && parentDir.isReadable())
         loadPath(parentDir.absoluteFilePath());
     folderViewPresenter.selectAndFocus(currentDir.absoluteFilePath());
+}
+
+void Core::nextDir() {
+    if(model->directoryPath().isEmpty() || mw->currentViewMode() != MODE_DOCUMENT)
+        return;
+    stopSlideshow();
+    QFileInfo currentDir(model->directoryPath());
+    QFileInfo parentDir(currentDir.absolutePath());
+    if(parentDir.exists() && parentDir.isReadable()) {
+        DirectoryManager dm;
+        dm.setDirectory(parentDir.absoluteFilePath());
+        QString next = dm.nextOfDir(model->directoryPath());
+        if(!next.isEmpty()) {
+            setDirectory(next);
+            QFileInfo fi(next);
+            mw->showMessage(fi.baseName(), 800);
+            if(model->fileCount())
+                loadIndex(0, false, true);
+        } else {
+            mw->showMessageDirectoryEnd();
+        }
+    }
+}
+
+void Core::prevDir() {
+    if(model->directoryPath().isEmpty() || mw->currentViewMode() != MODE_DOCUMENT)
+        return;
+    QFileInfo currentDir(model->directoryPath());
+    QFileInfo parentDir(currentDir.absolutePath());
+    if(parentDir.exists() && parentDir.isReadable()) {
+        DirectoryManager dm;
+        dm.setDirectory(parentDir.absoluteFilePath());
+        QString prev = dm.prevOfDir(model->directoryPath());
+        if(!prev.isEmpty()) {
+            setDirectory(prev);
+            QFileInfo fi(prev);
+            mw->showMessage(fi.baseName(), 800);
+            if(model->fileCount())
+                loadIndex(model->fileCount() - 1, false, true);
+        } else {
+            mw->showMessageDirectoryStart();
+        }
+    }
 }
 
 void Core::nextImage() {
@@ -1071,8 +1119,10 @@ void Core::nextImage() {
         if(infiniteScrolling) {
             newIndex = 0;
         } else {
-            if(!model->loaderBusy())
-                mw->showMessageDirectoryEnd();
+            if(!model->loaderBusy()) {
+                //mw->showMessageDirectoryEnd();
+                nextDir();
+            }
             return;
         }
     }
@@ -1093,8 +1143,10 @@ void Core::prevImage() {
         if(infiniteScrolling) {
             newIndex = model->fileCount() - 1;
         } else {
-            if(!model->loaderBusy())
-                mw->showMessageDirectoryStart();
+            if(!model->loaderBusy()) {
+                //mw->showMessageDirectoryStart();
+                prevDir();
+            }
             return;
         }
     }

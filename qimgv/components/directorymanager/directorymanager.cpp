@@ -3,11 +3,11 @@
 namespace fs = std::filesystem;
 
 DirectoryManager::DirectoryManager() :
-    watcher(nullptr)
+    watcher(nullptr),
+    mSortingMode(SORT_NAME)
 {
     regex.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
     collator.setNumericMode(true);
-
 
     readSettings();
     setSortingMode(settings->sortingMode());
@@ -213,6 +213,22 @@ QString DirectoryManager::nextOfFile(QString filePath) const {
     if(currentIndex >= 0 && currentIndex < fileEntryVec.size() - 1)
         nextFilePath = fileEntryVec.at(currentIndex + 1).path;
     return nextFilePath;
+}
+
+QString DirectoryManager::prevOfDir(QString dirPath) const {
+    QString prevDirPath = "";
+    int currentIndex = indexOfDir(dirPath);
+    if(currentIndex > 0)
+        prevDirPath = dirEntryVec.at(currentIndex - 1).path;
+    return prevDirPath;
+}
+
+QString DirectoryManager::nextOfDir(QString dirPath) const {
+    QString nextDirPath = "";
+    int currentIndex = indexOfDir(dirPath);
+    if(currentIndex >= 0 && currentIndex < dirEntryVec.size() - 1)
+        nextDirPath = dirEntryVec.at(currentIndex + 1).path;
+    return nextDirPath;
 }
 
 bool DirectoryManager::checkFileRange(int index) const {

@@ -51,6 +51,8 @@ public:
     QString fileNameAt(int index) const;
     QString prevOfFile(QString filePath) const;
     QString nextOfFile(QString filePath) const;
+    QString prevOfDir(QString filePath) const;
+    QString nextOfDir(QString filePath) const;
     void sortEntryLists();
     QDateTime lastModified(QString filePath) const;
 

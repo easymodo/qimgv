@@ -39,6 +39,8 @@ public slots:
     void updateInfoString();
     void loadPath(QString);
 
+    void nextDir();
+    void prevDir();
 private:
     void initGui();
     void initComponents();
@@ -60,6 +62,7 @@ private:
 
     void rotateByDegrees(int degrees);
     void reset();
+    void setDirectory(QString path);
 
     QDrag *mDrag;
     QMimeData *getMimeDataForImage(std::shared_ptr<Image> img, MimeDataTarget target);
