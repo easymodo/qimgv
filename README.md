@@ -56,7 +56,7 @@ Main window & panel        |  Folder view   |  Settings window
 | Rotate Right  | Ctrl+R |
 | Open containing directory | Ctrl+D |
 | Slideshow mode | ~ |
-| Shuffle mode | S |
+| Shuffle mode | Ctrl+~ |
 | Quick copy  | C |
 | Quick move  | M |
 | Move to trash | Delete |

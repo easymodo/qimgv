@@ -74,7 +74,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("RMB", "contextMenu");
     actionManager->defaults.insert("Menu", "contextMenu");
     actionManager->defaults.insert("I", "toggleImageInfo");
-    actionManager->defaults.insert("S", "toggleShuffle");
+    actionManager->defaults.insert("Ctrl+`", "toggleShuffle");
     actionManager->defaults.insert("Ctrl+D", "showInDirectory");
     actionManager->defaults.insert("`", "toggleSlideshow");
     actionManager->defaults.insert("Ctrl+Z", "discardEdits");
