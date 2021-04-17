@@ -216,19 +216,19 @@ QString DirectoryManager::nextOfFile(QString filePath) const {
 }
 
 QString DirectoryManager::prevOfDir(QString dirPath) const {
-    QString prevDirPath = "";
+    QString prevDirectoryPath = "";
     int currentIndex = indexOfDir(dirPath);
     if(currentIndex > 0)
-        prevDirPath = dirEntryVec.at(currentIndex - 1).path;
-    return prevDirPath;
+        prevDirectoryPath = dirEntryVec.at(currentIndex - 1).path;
+    return prevDirectoryPath;
 }
 
 QString DirectoryManager::nextOfDir(QString dirPath) const {
-    QString nextDirPath = "";
+    QString nextDirectoryPath = "";
     int currentIndex = indexOfDir(dirPath);
     if(currentIndex >= 0 && currentIndex < dirEntryVec.size() - 1)
-        nextDirPath = dirEntryVec.at(currentIndex + 1).path;
-    return nextDirPath;
+        nextDirectoryPath = dirEntryVec.at(currentIndex + 1).path;
+    return nextDirectoryPath;
 }
 
 bool DirectoryManager::checkFileRange(int index) const {

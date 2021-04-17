@@ -56,8 +56,8 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
     connect(videoPlayer.get(), &VideoPlayer::playbackFinished, this, &ViewerWidget::onVideoPlaybackFinished);
 
-    connect(videoControls, &VideoControlsProxyWrapper::seekLeft,  this, &ViewerWidget::seekLeft);
-    connect(videoControls, &VideoControlsProxyWrapper::seekRight, this, &ViewerWidget::seekRight);
+    connect(videoControls, &VideoControlsProxyWrapper::seekBackward,  this, &ViewerWidget::seekBackward);
+    connect(videoControls, &VideoControlsProxyWrapper::seekForward, this, &ViewerWidget::seekForward);
     connect(videoControls, &VideoControlsProxyWrapper::seek,      this, &ViewerWidget::seek);
 
     enableImageViewer();
@@ -311,12 +311,12 @@ void ViewerWidget::seekRelative(int pos) {
         videoPlayer.get()->seekRelative(pos);
 }
 
-void ViewerWidget::seekLeft() {
+void ViewerWidget::seekBackward() {
     if(currentWidget == VIDEOPLAYER)
         videoPlayer.get()->seekRelative(-10);
 }
 
-void ViewerWidget::seekRight() {
+void ViewerWidget::seekForward() {
     if(currentWidget == VIDEOPLAYER)
         videoPlayer.get()->seekRelative(10);
 }

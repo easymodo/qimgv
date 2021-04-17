@@ -61,10 +61,8 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("M", "moveFile");
     actionManager->defaults.insert("Home", "jumpToFirst");
     actionManager->defaults.insert("End", "jumpToLast");
-    actionManager->defaults.insert("S", "s:TestScript");
-    actionManager->defaults.insert("A", "s:TestScript2");
-    actionManager->defaults.insert("Shift+Right", "seekVideo");
-    actionManager->defaults.insert("Shift+Left", "seekBackVideo");
+    actionManager->defaults.insert("Ctrl+Right", "seekVideoForward");
+    actionManager->defaults.insert("Ctrl+Left", "seekVideoBackward");
     actionManager->defaults.insert(",", "frameStepBack");
     actionManager->defaults.insert(".", "frameStep");
     actionManager->defaults.insert("Enter", "folderView");
@@ -80,6 +78,8 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("Ctrl+D", "showInDirectory");
     actionManager->defaults.insert("`", "toggleSlideshow");
     actionManager->defaults.insert("Ctrl+Z", "discardEdits");
+    actionManager->defaults.insert("Shift+Right", "nextDirectory");
+    actionManager->defaults.insert("Shift+Left", "prevDirectory");
     //actionManager->defaults.insert("Backspace", "goUp"); // todo: shortcut scopes?
 }
 //------------------------------------------------------------------------------

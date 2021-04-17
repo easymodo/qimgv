@@ -173,8 +173,8 @@ signals:
     void scrollRight();
     void pauseVideo();
     void stopPlayback();
-    void seekVideoRight();
-    void seekVideoLeft();
+    void seekVideoForward();
+    void seekVideoBackward();
     void frameStep();
     void frameStepBack();
     void toggleMute();

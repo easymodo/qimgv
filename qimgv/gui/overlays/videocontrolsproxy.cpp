@@ -16,8 +16,8 @@ void VideoControlsProxyWrapper::init() {
         return;
     videoControls = new VideoControls(container);
 
-    connect(videoControls, &VideoControls::seekLeft,  this, &VideoControlsProxyWrapper::seekLeft);
-    connect(videoControls, &VideoControls::seekRight, this, &VideoControlsProxyWrapper::seekRight);
+    connect(videoControls, &VideoControls::seekBackward,  this, &VideoControlsProxyWrapper::seekBackward);
+    connect(videoControls, &VideoControls::seekForward, this, &VideoControlsProxyWrapper::seekForward);
     connect(videoControls, &VideoControls::seek,      this, &VideoControlsProxyWrapper::seek);
 
     videoControls->setMode(stateBuf.mode);

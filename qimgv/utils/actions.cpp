@@ -56,8 +56,6 @@ void Actions::init() {
     mActions.insert("flipV", QVersionNumber(0,6,3));
     mActions.insert("folderView", QVersionNumber(0,6,85));
     mActions.insert("pauseVideo", QVersionNumber(0,6,85));
-    mActions.insert("seekVideo", QVersionNumber(0,6,85));
-    mActions.insert("seekBackVideo", QVersionNumber(0,6,85));
     mActions.insert("frameStep", QVersionNumber(0,6,85));
     mActions.insert("frameStepBack", QVersionNumber(0,6,85));
     mActions.insert("folderView", QVersionNumber(0,6,85));
@@ -83,5 +81,9 @@ void Actions::init() {
     mActions.insert("showInDirectory", QVersionNumber(0,8,82));
     mActions.insert("goUp", QVersionNumber(0,9,2));
     mActions.insert("discardEdits", QVersionNumber(0,9,2));
+    mActions.insert("nextDirectory", QVersionNumber(0,9,2));
+    mActions.insert("prevDirectory", QVersionNumber(0,9,2));
+    mActions.insert("seekVideoForward", QVersionNumber(0,9,2));
+    mActions.insert("seekVideoBackward", QVersionNumber(0,9,2));
 }
 

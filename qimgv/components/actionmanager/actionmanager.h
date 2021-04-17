@@ -92,8 +92,8 @@ signals:
     void documentView();
     void runScript(const QString&);
     void pauseVideo();
-    void seekVideo();
-    void seekBackVideo();
+    void seekVideoForward();
+    void seekVideoBackward();
     void frameStep();
     void frameStepBack();
     void toggleFolderView();
@@ -117,6 +117,8 @@ signals:
     void toggleSlideshow();
     void discardEdits();
     void goUp();
+    void nextDir();
+    void prevDir();
 };
 
 extern ActionManager *actionManager;

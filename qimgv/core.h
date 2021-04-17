@@ -39,8 +39,6 @@ public slots:
     void updateInfoString();
     void loadPath(QString);
 
-    void nextDir();
-    void prevDir();
 private:
     void initGui();
     void initComponents();
@@ -159,4 +157,6 @@ private slots:
     void onPlaybackFinished();
     void setFoldersDisplay(bool mode);
     void loadParentDir();
+    void nextDir();
+    void prevDir();
 };

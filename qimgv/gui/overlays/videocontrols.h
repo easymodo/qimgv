@@ -30,8 +30,8 @@ public slots:
 
 signals:
     void seek(int pos);
-    void seekRight();
-    void seekLeft();
+    void seekForward();
+    void seekBackward();
 
 private slots:
     void readSettings();

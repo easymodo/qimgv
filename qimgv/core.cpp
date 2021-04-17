@@ -156,8 +156,8 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::jumpToLast, this, &Core::jumpToLast);
     connect(actionManager, &ActionManager::runScript, this, &Core::runScript);
     connect(actionManager, &ActionManager::pauseVideo, mw, &MW::pauseVideo);
-    connect(actionManager, &ActionManager::seekVideo, mw, &MW::seekVideoRight);
-    connect(actionManager, &ActionManager::seekBackVideo, mw, &MW::seekVideoLeft);
+    connect(actionManager, &ActionManager::seekVideoForward, mw, &MW::seekVideoForward);
+    connect(actionManager, &ActionManager::seekVideoBackward, mw, &MW::seekVideoBackward);
     connect(actionManager, &ActionManager::frameStep, mw, &MW::frameStep);
     connect(actionManager, &ActionManager::frameStepBack, mw, &MW::frameStepBack);
     connect(actionManager, &ActionManager::folderView, this, &Core::enableFolderView);
@@ -182,6 +182,8 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::toggleSlideshow, this, &Core::toggleSlideshow);
     connect(actionManager, &ActionManager::goUp, this, &Core::loadParentDir);
     connect(actionManager, &ActionManager::discardEdits, this, &Core::discardEdits);
+    connect(actionManager, &ActionManager::nextDir, this, &Core::nextDir);
+    connect(actionManager, &ActionManager::prevDir, this, &Core::prevDir);
 }
 
 void Core::onUpdate() {

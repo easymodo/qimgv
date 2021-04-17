@@ -102,8 +102,8 @@ public slots:
     void pauseResumePlayback();
     void seek(int pos);
     void seekRelative(int pos);
-    void seekLeft();
-    void seekRight();
+    void seekBackward();
+    void seekForward();
     void frameStep();
     void frameStepBack();
     void toggleMute();
