@@ -12,7 +12,8 @@ Core::Core()
       folderEndAction(FOLDER_END_NO_ACTION),
       loopSlideshow(false),
       mDrag(nullptr),
-      slideshow(false)
+      slideshow(false),
+      shuffle(false)
 {
     initGui();
     initComponents();
@@ -36,7 +37,7 @@ void Core::readSettings() {
     bool showDirs = (settings->folderViewMode() == FV_EXT_FOLDERS);
     if(folderViewPresenter.showDirs() != showDirs)
         folderViewPresenter.setShowDirs(showDirs);
-    if(settings->shuffleEnabled())
+    if(shuffle)
         syncRandomizer();
 }
 
@@ -61,7 +62,7 @@ void Core::attachModel(DirectoryModel *_model) {
     folderViewPresenter.setModel(model);
     bool showDirs = (settings->folderViewMode() == FV_EXT_FOLDERS);
     folderViewPresenter.setShowDirs(showDirs);
-    if(settings->shuffleEnabled())
+    if(shuffle)
         syncRandomizer();
 }
 
@@ -222,14 +223,14 @@ void Core::onFirstRun() {
 }
 
 void Core::toggleShuffle() {
-    if(settings->shuffleEnabled()) {
-        settings->setShuffleEnabled(false);
-        mw->showMessage("Shuffle Disabled");
+    if(shuffle) {
+        mw->showMessage("Shuffle mode: OFF");
     } else {
-        settings->setShuffleEnabled(true);
         syncRandomizer();
-        mw->showMessage("Shuffle Enabled");
+        mw->showMessage("Shuffle mode: ON");
     }
+    shuffle = !shuffle;
+    updateInfoString();
 }
 
 void Core::toggleSlideshow() {
@@ -279,7 +280,7 @@ void Core::syncRandomizer() {
 void Core::onModelLoaded() {
     thumbPanelPresenter.reloadModel();
     folderViewPresenter.reloadModel();
-    if(settings->shuffleEnabled())
+    if(shuffle)
         syncRandomizer();
 }
 
@@ -1129,7 +1130,7 @@ void Core::nextImage() {
     if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
     stopSlideshow();
-    if(settings->shuffleEnabled()) {
+    if(shuffle) {
         loadIndex(randomizer.next(), true, false);
         return;
     }
@@ -1153,7 +1154,7 @@ void Core::prevImage() {
     if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
     stopSlideshow();
-    if(settings->shuffleEnabled()) {
+    if(shuffle) {
         loadIndex(randomizer.prev(), true, false);
         return;
     }
@@ -1177,7 +1178,7 @@ void Core::prevImage() {
 void Core::nextImageSlideshow() {
     if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
-    if(settings->shuffleEnabled()) {
+    if(shuffle) {
         loadIndex(randomizer.next(), false, false);
     } else {
         int newIndex = model->indexOfFile(state.currentFilePath) + 1;
@@ -1295,5 +1296,6 @@ void Core::updateInfoString() {
                        imageSize,
                        fileSize,
                        slideshow,
+                       shuffle,
                        edited);
 }

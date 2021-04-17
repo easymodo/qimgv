@@ -766,13 +766,6 @@ void Settings::setWindowTitleExtendedInfo(bool mode) {
     settings->settingsConf->setValue("windowTitleExtendedInfo", mode);
 }
 
-bool Settings::shuffleEnabled() {
-    return settings->settingsConf->value("shuffleEnabled", false).toBool();
-}
-
-void Settings::setShuffleEnabled(bool mode) {
-    settings->settingsConf->setValue("shuffleEnabled", mode);
-}
 //------------------------------------------------------------------------------
 bool Settings::cursorAutohide() {
     return settings->settingsConf->value("cursorAutohiding", true).toBool();

@@ -180,9 +180,6 @@ public:
     bool windowTitleExtendedInfo();
     void setWindowTitleExtendedInfo(bool mode);
 
-    bool shuffleEnabled();
-    void setShuffleEnabled(bool mode);
-
     bool maximizedWindow();
     void setMaximizedWindow(bool mode);
 
