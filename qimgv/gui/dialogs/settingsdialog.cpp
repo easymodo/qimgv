@@ -125,7 +125,7 @@ void SettingsDialog::setupSidebar() {
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::readSettings() {
-    ui->infiniteScrollingCheckBox->setChecked(settings->infiniteScrolling());
+    ui->loopSlideshowCheckBox->setChecked(settings->loopSlideshow());
     ui->videoPlaybackCheckBox->setChecked(settings->videoPlayback());
     ui->videoPlaybackGroupContents->setEnabled(settings->videoPlayback());
     ui->playSoundsCheckBox->setChecked(settings->playVideoSounds());
@@ -167,6 +167,13 @@ void SettingsDialog::readSettings() {
         ui->startInFolderViewCheckBox->setChecked(true);
     else
         ui->startInFolderViewCheckBox->setChecked(false);
+
+    if(settings->folderEndAction() == FOLDER_END_NO_ACTION)
+        ui->folderEndNoAction->setChecked(true);
+    else if(settings->folderEndAction() == FOLDER_END_LOOP)
+        ui->folderEndLoop->setChecked(true);
+    else
+        ui->folderEndSwitchFolder->setChecked(true);
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
@@ -217,7 +224,7 @@ void SettingsDialog::saveSettings() {
         QThreadPool::globalInstance()->waitForDone();
     }
 
-    settings->setInfiniteScrolling(ui->infiniteScrollingCheckBox->isChecked());
+    settings->setLoopSlideshow(ui->loopSlideshowCheckBox->isChecked());
     settings->setFullscreenMode(ui->fullscreenCheckBox->isChecked());
     if(ui->fitModeWindow->isChecked())
         settings->setImageFitMode(FIT_WINDOW);
@@ -262,6 +269,13 @@ void SettingsDialog::saveSettings() {
         settings->setDefaultViewMode(MODE_FOLDERVIEW);
     else
         settings->setDefaultViewMode(MODE_DOCUMENT);
+
+    if(ui->folderEndNoAction->isChecked())
+        settings->setFolderEndAction(FOLDER_END_NO_ACTION);
+    else if(ui->folderEndLoop->isChecked())
+        settings->setFolderEndAction(FOLDER_END_LOOP);
+    else
+        settings->setFolderEndAction(FOLDER_END_GOTO_ADJACENT);
 
     settings->setMpvBinary(ui->mpvLineEdit->text());
     settings->setScalingFilter(static_cast<ScalingFilter>(ui->scalingQualityComboBox->currentIndex()));

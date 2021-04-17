@@ -84,6 +84,12 @@ enum FolderViewMode {
     FV_EXT_FOLDERS
 };
 
+enum FolderEndAction {
+    FOLDER_END_NO_ACTION,
+    FOLDER_END_LOOP,
+    FOLDER_END_GOTO_ADJACENT
+};
+
 class Settings : public QObject
 {
     Q_OBJECT
@@ -113,9 +119,8 @@ public:
     void setMpvBinary(QString path);
     PanelHPosition panelPosition();
     void setPanelPosition(PanelHPosition);
-
-    bool infiniteScrolling();
-    void setInfiniteScrolling(bool mode);
+    bool loopSlideshow();
+    void setLoopSlideshow(bool mode);
     void readShortcuts(QMap<QString, QString> &shortcuts);
     void saveShortcuts(const QMap<QString, QString> &shortcuts);
     bool panelEnabled();
@@ -220,6 +225,9 @@ public:
 
     ViewMode defaultViewMode();
     void setDefaultViewMode(ViewMode mode);
+
+    FolderEndAction folderEndAction();
+    void setFolderEndAction(FolderEndAction mode);
 
     const ColorScheme& colorScheme();
     void setColorScheme(ColorScheme scheme);

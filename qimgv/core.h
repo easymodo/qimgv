@@ -51,7 +51,8 @@ private:
     MW *mw;
 
     State state;
-    bool infiniteScrolling, slideshow;
+    bool loopSlideshow, slideshow;
+    FolderEndAction folderEndAction;
 
     // components
     std::shared_ptr<DirectoryModel> model;
@@ -157,6 +158,7 @@ private slots:
     void onPlaybackFinished();
     void setFoldersDisplay(bool mode);
     void loadParentDir();
-    void nextDir();
-    void prevDir();
+    void nextDirectory();
+    void prevDirectory(bool selectLast);
+    void prevDirectory();
 };

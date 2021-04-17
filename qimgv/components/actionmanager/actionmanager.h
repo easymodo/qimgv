@@ -117,8 +117,8 @@ signals:
     void toggleSlideshow();
     void discardEdits();
     void goUp();
-    void nextDir();
-    void prevDir();
+    void nextDirectory();
+    void prevDirectory();
 };
 
 extern ActionManager *actionManager;

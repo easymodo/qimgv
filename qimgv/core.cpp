@@ -7,7 +7,13 @@
 
 #include "core.h"
 
-Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr), slideshow(false) {
+Core::Core()
+    : QObject(),
+      folderEndAction(FOLDER_END_NO_ACTION),
+      loopSlideshow(false),
+      mDrag(nullptr),
+      slideshow(false)
+{
     initGui();
     initComponents();
     connectComponents();
@@ -24,7 +30,8 @@ Core::Core() : QObject(), infiniteScrolling(false), mDrag(nullptr), slideshow(fa
 }
 
 void Core::readSettings() {
-    infiniteScrolling = settings->infiniteScrolling();
+    loopSlideshow = settings->loopSlideshow();
+    folderEndAction = settings->folderEndAction();
     slideshowTimer.setInterval(settings->slideshowInterval());
     bool showDirs = (settings->folderViewMode() == FV_EXT_FOLDERS);
     if(folderViewPresenter.showDirs() != showDirs)
@@ -182,8 +189,8 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::toggleSlideshow, this, &Core::toggleSlideshow);
     connect(actionManager, &ActionManager::goUp, this, &Core::loadParentDir);
     connect(actionManager, &ActionManager::discardEdits, this, &Core::discardEdits);
-    connect(actionManager, &ActionManager::nextDir, this, &Core::nextDir);
-    connect(actionManager, &ActionManager::prevDir, this, &Core::prevDir);
+    connect(actionManager, &ActionManager::nextDirectory, this, &Core::nextDirectory);
+    connect(actionManager, &ActionManager::prevDirectory, this, qOverload<>(&Core::prevDirectory));
 }
 
 void Core::onUpdate() {
@@ -1065,7 +1072,7 @@ void Core::loadParentDir() {
     folderViewPresenter.selectAndFocus(currentDir.absoluteFilePath());
 }
 
-void Core::nextDir() {
+void Core::nextDirectory() {
     if(model->directoryPath().isEmpty() || mw->currentViewMode() != MODE_DOCUMENT)
         return;
     stopSlideshow();
@@ -1087,7 +1094,7 @@ void Core::nextDir() {
     }
 }
 
-void Core::prevDir() {
+void Core::prevDirectory(bool selectLast) {
     if(model->directoryPath().isEmpty() || mw->currentViewMode() != MODE_DOCUMENT)
         return;
     QFileInfo currentDir(model->directoryPath());
@@ -1100,12 +1107,20 @@ void Core::prevDir() {
             setDirectory(prev);
             QFileInfo fi(prev);
             mw->showMessageDirectory(fi.baseName());
-            if(model->fileCount())
-                loadIndex(model->fileCount() - 1, false, true);
+            if(model->fileCount()) {
+                if(selectLast)
+                    loadIndex(model->fileCount() - 1, false, true);
+                else
+                    loadIndex(0, false, true);
+            }
         } else {
             mw->showMessageDirectoryStart();
         }
     }
+}
+
+void Core::prevDirectory() {
+    prevDirectory(false);
 }
 
 void Core::nextImage() {
@@ -1118,13 +1133,14 @@ void Core::nextImage() {
     }
     int newIndex = model->indexOfFile(state.currentFilePath) + 1;
     if(newIndex >= model->fileCount()) {
-        if(infiniteScrolling) {
+        if(folderEndAction == FOLDER_END_LOOP) {
             newIndex = 0;
+        } else if (folderEndAction == FOLDER_END_GOTO_ADJACENT) {
+            nextDirectory();
+            return;
         } else {
-            if(!model->loaderBusy()) {
-                //mw->showMessageDirectoryEnd();
-                nextDir();
-            }
+            if(!model->loaderBusy())
+                mw->showMessageDirectoryEnd();
             return;
         }
     }
@@ -1142,13 +1158,14 @@ void Core::prevImage() {
 
     int newIndex = model->indexOfFile(state.currentFilePath) - 1;
     if(newIndex < 0) {
-        if(infiniteScrolling) {
+        if(folderEndAction == FOLDER_END_LOOP) {
             newIndex = model->fileCount() - 1;
+        } else if (folderEndAction == FOLDER_END_GOTO_ADJACENT) {
+            prevDirectory(true);
+            return;
         } else {
-            if(!model->loaderBusy()) {
-                //mw->showMessageDirectoryStart();
-                prevDir();
-            }
+            if(!model->loaderBusy())
+                mw->showMessageDirectoryStart();
             return;
         }
     }
@@ -1163,7 +1180,7 @@ void Core::nextImageSlideshow() {
     } else {
         int newIndex = model->indexOfFile(state.currentFilePath) + 1;
         if(newIndex >= model->fileCount()) {
-            if(infiniteScrolling) {
+            if(loopSlideshow) {
                 newIndex = 0;
             } else {
                 stopSlideshow();

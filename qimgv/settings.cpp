@@ -498,12 +498,12 @@ void Settings::setWindowGeometry(QRect geometry) {
     settings->stateConf->setValue("windowGeometry", geometry);
 }
 //------------------------------------------------------------------------------
-bool Settings::infiniteScrolling() {
-    return settings->settingsConf->value("infiniteScrolling", false).toBool();
+bool Settings::loopSlideshow() {
+    return settings->settingsConf->value("loopSlideshow", false).toBool();
 }
 
-void Settings::setInfiniteScrolling(bool mode) {
-    settings->settingsConf->setValue("infiniteScrolling", mode);
+void Settings::setLoopSlideshow(bool mode) {
+    settings->settingsConf->setValue("loopSlideshow", mode);
 }
 //------------------------------------------------------------------------------
 void Settings::sendChangeNotification() {
@@ -897,4 +897,15 @@ ViewMode Settings::defaultViewMode() {
 
 void Settings::setDefaultViewMode(ViewMode mode) {
     settings->settingsConf->setValue("defaultViewMode", mode);
+}
+
+FolderEndAction Settings::folderEndAction() {
+    int mode = settings->settingsConf->value("folderEndAction", 0).toInt();
+    if(mode < 0 || mode > 2)
+        mode = 0;
+    return static_cast<FolderEndAction>(mode);
+}
+
+void Settings::setFolderEndAction(FolderEndAction mode) {
+    settings->settingsConf->setValue("folderEndAction", mode);
 }
