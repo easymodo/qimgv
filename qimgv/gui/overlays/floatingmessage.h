@@ -11,13 +11,13 @@ class FloatingMessage;
 
 enum FloatingMessageIcon {
     NO_ICON,
+    ICON_DIRECTORY,
     ICON_LEFT_EDGE,
     ICON_RIGHT_EDGE,
     ICON_SUCCESS,
     ICON_WARNING,
     ICON_ERROR
 };
-
 
 class FloatingMessage : public OverlayWidget {
     Q_OBJECT 

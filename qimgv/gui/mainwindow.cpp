@@ -692,6 +692,11 @@ std::shared_ptr<ThumbnailStripProxy> MW::getThumbnailPanel() {
     return viewerWidget->getThumbPanel();
 }
 
+// todo: this is crap
+void MW::showMessageDirectory(QString dirName) {
+    floatingMessage->showMessage(dirName, FloatingMessageIcon::ICON_DIRECTORY, 900);
+}
+
 void MW::showMessageDirectoryEnd() {
     floatingMessage->showMessage("", FloatingWidgetPosition::RIGHT, FloatingMessageIcon::ICON_RIGHT_EDGE, 400);
 }

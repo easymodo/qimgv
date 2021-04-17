@@ -1076,7 +1076,7 @@ void Core::nextDir() {
         if(!next.isEmpty()) {
             setDirectory(next);
             QFileInfo fi(next);
-            mw->showMessage(fi.baseName(), 800);
+            mw->showMessageDirectory(fi.baseName());
             if(model->fileCount())
                 loadIndex(0, false, true);
         } else {
@@ -1097,7 +1097,7 @@ void Core::prevDir() {
         if(!prev.isEmpty()) {
             setDirectory(prev);
             QFileInfo fi(prev);
-            mw->showMessage(fi.baseName(), 800);
+            mw->showMessageDirectory(fi.baseName());
             if(model->fileCount())
                 loadIndex(model->fileCount() - 1, false, true);
         } else {

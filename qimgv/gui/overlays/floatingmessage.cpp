@@ -70,7 +70,14 @@ void FloatingMessage::setText(QString text) {
 void FloatingMessage::setIcon(FloatingMessageIcon icon) {
     switch (icon) {
         case FloatingMessageIcon::NO_ICON:
+        case FloatingMessageIcon::ICON_WARNING:
+        case FloatingMessageIcon::ICON_ERROR:
+            //ui->iconLabel->setIconPath(":/res/icons/common/notifications/error16.png");
             ui->iconLabel->hide();
+            break;
+        case FloatingMessageIcon::ICON_DIRECTORY:
+            ui->iconLabel->show();
+            ui->iconLabel->setIconPath(":/res/icons/common/buttons/panel/folder16.png");
             break;
         case FloatingMessageIcon::ICON_LEFT_EDGE:
             ui->iconLabel->show();
@@ -83,10 +90,6 @@ void FloatingMessage::setIcon(FloatingMessageIcon icon) {
         case FloatingMessageIcon::ICON_SUCCESS:
             ui->iconLabel->show();
             ui->iconLabel->setIconPath(":/res/icons/common/notifications/success16.png");
-            break;
-        case FloatingMessageIcon::ICON_ERROR:
-            //ui->iconLabel->setIconPath(":/res/icons/common/notifications/error16.png");
-            ui->iconLabel->hide();
             break;
     }
 }
