@@ -776,7 +776,10 @@ SettingsDialog QComboBox {
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="VideoPlayerInitProxy"] QLabel {
-
     color: #BB0000;
     font: bold;
+}
+/*----------------------------------------------------------------------------*/
+ImageInfoOverlay QLabel {
+    color: %text_hc%;
 }

@@ -56,26 +56,7 @@
       </font>
      </property>
      <property name="text">
-      <string>EXIF TAGS</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line">
-     <property name="minimumSize">
-      <size>
-       <width>100</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>100</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <string>EXIF Tags</string>
      </property>
     </widget>
    </item>
