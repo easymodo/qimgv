@@ -624,115 +624,75 @@ void Core::showInDirectory() {
 #endif
 }
 
-// ------------------------ playground
-bool Core::copyFileConfirmation(QString src, QString dst) {
-    QString msg;
-    msg = "Overwrite target?";
-    msg.append("<br><br><b>Source:</b><br>" + src);
-    msg.append("<br><br> >>>>");
-    msg.append("<br><br><b>Destination folder:</b><br>" + dst);
-    return mw->showConfirmation("Confirm overwrite", msg);
-}
-
-bool Core::mergeDirConfirmation(QString src, QString dst) {
-    QString msg;
-    msg = "Write into directory?";
-    msg.append("<br><br><b>Source:</b><br>" + src);
-    msg.append("<br><br> >>>>");
-    msg.append("<br><br><b>Destination:</b><br>" + dst);
-    return mw->showConfirmation("Confirm merge", msg);
-}
-
-void Core::interactiveCopy(QList<QString> paths, QString destDirectory, bool &overwriteAllFiles, bool &mergeAllDirs) {
-    bool cancelFlag = false;
+void Core::interactiveCopy(QList<QString> paths, QString destDirectory) {
+    DialogResult overwriteFiles;
     for(auto path : paths) {
-        interactiveCopy(path, destDirectory, overwriteAllFiles, mergeAllDirs, cancelFlag);
-        if(cancelFlag)
+        doInteractiveCopy(path, destDirectory, overwriteFiles);
+        if(overwriteFiles.cancel)
             return;
     }
 }
 
-// todo: simplify
-void Core::interactiveCopy(QString path, QString destDirectory, bool &overwriteAllFiles, bool &mergeAllDirs, bool &cancelFlag) {
-    bool overwriteCurrentFile = overwriteAllFiles;
-
+// todo: replacing DIR with a FILE?
+void Core::doInteractiveCopy(QString path, QString destDirectory, DialogResult &overwriteFiles) {
     QFileInfo srcFi(path);
-
-    if(srcFi.isDir()) { // RECURSIVE DIR COPY ==============================================================
-        QFileInfo dstFi(destDirectory + "/" + srcFi.baseName());
-        if(dstFi.exists()) {
-            if(!dstFi.isDir()) { // we are overwriting file with a folder
-                if(!overwriteAllFiles) {
-                    auto dialogRes = mw->fileReplaceDialog(srcFi.absoluteFilePath(), dstFi.absoluteFilePath(), DIR_TO_FILE, true);
-                    switch(dialogRes) {
-                        case DIALOG_YESTOALL: overwriteAllFiles = true;
-                        case DIALOG_YES:      break;
-                        case DIALOG_CANCEL:   cancelFlag        = true;
-                        case DIALOG_NO:       return;
-                    }
-                }
-                // remove dst file; give up if not writable
-                if(!QFile::remove(dstFi.absoluteFilePath())) {
-                    mw->showError("Could not replace " + dstFi.absoluteFilePath());
-                    qDebug() << "Could not replace " + dstFi.absoluteFilePath();
-                    return;
-                }
-            } else { // we are merging dirs
-                if(!mergeAllDirs) {
-                    auto dialogRes = mw->fileReplaceDialog(srcFi.absoluteFilePath(), dstFi.absoluteFilePath(), DIR_TO_DIR, true);
-                    switch(dialogRes) {
-                        case DIALOG_YESTOALL: mergeAllDirs = true;
-                        case DIALOG_YES:      break;
-                        case DIALOG_CANCEL:   cancelFlag   = true;
-                        case DIALOG_NO:       return;
-                    }
-                }
-            }
-        }
-        // create dst dir if needed
-        QDir dstDir(dstFi.absoluteFilePath());
-        if(!dstDir.exists())
-            dstDir.mkpath(".");
-        // recursive copy
-        QDir srcDir(srcFi.absoluteFilePath());
-        // TODO: skip symlinks? test
-        bool cancelFlag = false;
-        QStringList entryList = srcDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
-        for(auto entry : entryList) {
-            interactiveCopy(srcDir.absolutePath() + "/" + entry, dstDir.absolutePath(), overwriteAllFiles, mergeAllDirs, cancelFlag);
-            if(cancelFlag)
-                return;
-        }
-
-    } else { // SINGLE FILE COPY ===========================================================================
+// SINGLE FILE COPY ===========================================================================
+    if(!srcFi.isDir()) {
         FileOpResult result;
-        FileOperations::copyTo(path, destDirectory, overwriteCurrentFile, result);
-        if(result == FileOpResult::DESTINATION_FILE_EXISTS && !overwriteCurrentFile) {
-            // Ask & try again
-            if(!overwriteAllFiles) {
-                auto dialogRes = mw->fileReplaceDialog(srcFi.absoluteFilePath(), destDirectory + "/" + srcFi.fileName(), FILE_TO_FILE, true);
-                switch(dialogRes) {
-                    case DIALOG_YESTOALL: overwriteAllFiles    = true;
-                    case DIALOG_YES:      overwriteCurrentFile = true; break;
-                    case DIALOG_CANCEL:   cancelFlag = true;
-                    case DIALOG_NO:       return;
-                }
-            }
+        FileOperations::copyTo(path, destDirectory, overwriteFiles, result);
+        if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
+            if(overwriteFiles.all) // skipping all
+                return;
+            overwriteFiles = mw->fileReplaceDialog(srcFi.absoluteFilePath(), destDirectory + "/" + srcFi.fileName(), FILE_TO_FILE, true);
+            if(!overwriteFiles || overwriteFiles.cancel)
+                return;
             FileOperations::copyTo(path, destDirectory, true, result);
         }
-        if(result != FileOpResult::SUCCESS && !(result == FileOpResult::DESTINATION_FILE_EXISTS && !overwriteCurrentFile)) {
+        if(result != FileOpResult::SUCCESS && !(result == FileOpResult::DESTINATION_FILE_EXISTS && !overwriteFiles)) {
             mw->showError(FileOperations::decodeResult(result));
             qDebug() << FileOperations::decodeResult(result);
         }
+        if(!overwriteFiles.all) // copy attempt done; reset temporary flag
+            overwriteFiles.yes = false;
+        return;
+    }
+// DIR COPY (RECURSIVE) =======================================================================
+    QDir srcDir(srcFi.absoluteFilePath());
+    QFileInfo dstFi(destDirectory + "/" + srcFi.baseName());
+    QDir dstDir(dstFi.absoluteFilePath());
+    if(dstFi.exists() && !dstFi.isDir()) { // overwriting file with a folder
+        if(!overwriteFiles && !overwriteFiles.all) {
+            overwriteFiles = mw->fileReplaceDialog(srcFi.absoluteFilePath(), dstFi.absoluteFilePath(), DIR_TO_FILE, true);
+            if(!overwriteFiles || overwriteFiles.cancel)
+                return;
+            if(!overwriteFiles.all) // reset temp flag right away
+                overwriteFiles.yes = false;
+        }
+        // remove dst file; give up if not writable
+        FileOpResult result;
+        FileOperations::removeFile(dstFi.absoluteFilePath(), result);
+        if(result != FileOpResult::SUCCESS) {
+            mw->showError(FileOperations::decodeResult(result));
+            qDebug() << FileOperations::decodeResult(result);
+            return;
+        }
+    } else if(!dstDir.mkpath(".")) {
+        mw->showError("Could not create directory " + dstDir.absolutePath());
+        qDebug() << "Could not create directory " << dstDir.absolutePath();
+        return;
+    }
+    // copy all contents
+    // TODO: skip symlinks? test
+    QStringList entryList = srcDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+    for(auto entry : entryList) {
+        doInteractiveCopy(srcDir.absolutePath() + "/" + entry, dstDir.absolutePath(), overwriteFiles);
+        if(overwriteFiles.cancel)
+            return;
     }
 }
 
-void Core::copyPathsTo(QList<QString> paths, QString destDirectory, bool overwriteAllFiles, bool mergeAllDirs) {
-    interactiveCopy(paths, destDirectory, overwriteAllFiles, mergeAllDirs);
-}
-
 void Core::copyPathsTo(QList<QString> paths, QString destDirectory) {
-    copyPathsTo(paths, destDirectory, false, false);
+    interactiveCopy(paths, destDirectory);
 }
 
 void Core::movePathsTo(QList<QString> paths, QString destDirectory) {

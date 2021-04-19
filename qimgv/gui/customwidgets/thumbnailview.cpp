@@ -259,11 +259,11 @@ void ThumbnailView::insertItem(int index) {
 
 void ThumbnailView::removeItem(int index) {
     if(checkRange(index)) {
+        auto newSelection = mSelection;
+        clearSelection();
         removeItemFromLayout(index);
         delete thumbnails.takeAt(index);
         fitSceneToContents();
-        mSelection.removeAll(index);
-        auto newSelection = mSelection;
         newSelection.removeAll(index);
         for(int i=0; i < newSelection.count(); i++) {
             if(newSelection[i] >= index)

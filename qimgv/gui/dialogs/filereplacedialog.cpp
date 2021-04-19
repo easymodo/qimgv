@@ -4,7 +4,6 @@
 FileReplaceDialog::FileReplaceDialog(QWidget *parent) : QDialog(parent), ui(new Ui::FileReplaceDialog) {
     ui->setupUi(this);
     multi = false;
-    result = DIALOG_CANCEL;
     connect(ui->yesButton, &QPushButton::clicked, this, &FileReplaceDialog::onYesClicked);
     connect(ui->noButton, &QPushButton::clicked, this, &FileReplaceDialog::onNoClicked);
     connect(ui->cancelButton, &QPushButton::clicked, this, &FileReplaceDialog::onCancelClicked);
@@ -48,21 +47,20 @@ DialogResult FileReplaceDialog::getResult() {
 }
 
 void FileReplaceDialog::onYesClicked() {
-    if(multi && ui->applyAllCheckBox->isChecked())
-        result = DIALOG_YESTOALL;
-    else
-        result = DIALOG_YES;
+    result.yes = true;
+    result.all = ui->applyAllCheckBox->isChecked();
+    result.cancel = false;
     this->close();
 }
 
 void FileReplaceDialog::onNoClicked() {
-    //if(multi && ui->applyAllCheckBox->isChecked())
-    //    result = DIALOG_NOTOALL;
-    //else
-        result = DIALOG_NO;
+    result.yes = false;
+    result.all = ui->applyAllCheckBox->isChecked();
+    result.cancel = false;
     this->close();
 }
 
 void FileReplaceDialog::onCancelClicked() {
+    result.cancel = true;
     this->close();
 }

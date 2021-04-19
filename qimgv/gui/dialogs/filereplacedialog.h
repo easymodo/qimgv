@@ -1,12 +1,21 @@
 #pragma once
 #include <QDialog>
 
-enum DialogResult {
-    DIALOG_YES,
+struct DialogResult {
+    bool yes = false;
+    bool all = false;
+    bool cancel = false;
+    /*DIALOG_YES,
     DIALOG_YESTOALL,
     DIALOG_NO,
-    /*DIALOG_NOTOALL,*/
-    DIALOG_CANCEL
+    DIALOG_NOTOALL,
+    DIALOG_CANCEL*/
+    bool operator==(bool const &cmp) const {
+        return yes == cmp;
+    }
+    operator bool() {
+        return yes;
+    }
 };
 
 enum FileReplaceMode {
