@@ -32,8 +32,6 @@
 	<true/>
 	<key>NSHumanReadableCopyright</key>
         <string>${MACOSX_BUNDLE_COPYRIGHT}</string>
-        <key>LSUIPresentationMode</key>
-        <integer>3</integer>
   <key>CFBundleDocumentTypes</key>
   <array>
     <dict>
