@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QCommandLineParser>
+#include <QStyleFactory>
 #include <QEvent>
 
 #include "appversion.h"
@@ -45,16 +46,21 @@ int main(int argc, char *argv[]) {
 
 #ifdef __APPLE__
     MacOSApplication a(argc, argv);
+    // default to "fusion" if available ("macos" has layout bugs, weird comboboxes etc)
+    if(QStyleFactory::keys().contains("Fusion"))
+        a.setStyle(QStyleFactory::create("Fusion"));
 #else
     QApplication a(argc, argv);
+    // use some style workarounds
+    a.setStyle(new ProxyStyle);
 #endif
+
     QCoreApplication::setOrganizationName("qimgv");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
     QCoreApplication::setApplicationVersion(appVersion.normalized().toString());
 
-    // use some style workarounds
-    a.setStyle(new ProxyStyle);
+
     QApplication::setEffectEnabled(Qt::UI_AnimateCombo, false);
 
     QGuiApplication::setDesktopFileName(QCoreApplication::applicationName() + ".desktop");
