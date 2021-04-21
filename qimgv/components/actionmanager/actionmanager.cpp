@@ -36,24 +36,24 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("R", "resize");
     actionManager->defaults.insert("H", "flipH");
     actionManager->defaults.insert("V", "flipV");
-    actionManager->defaults.insert("Ctrl+R", "rotateRight");
-    actionManager->defaults.insert("Ctrl+L", "rotateLeft");
-    actionManager->defaults.insert("Ctrl+WheelDown", "zoomInCursor");
-    actionManager->defaults.insert("Ctrl+WheelUp", "zoomOutCursor");
-    actionManager->defaults.insert("Ctrl+Up", "zoomIn");
-    actionManager->defaults.insert("Ctrl+Down", "zoomOut");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+R", "rotateRight");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+L", "rotateLeft");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+WheelDown", "zoomInCursor");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+WheelUp", "zoomOutCursor");
     actionManager->defaults.insert("+", "zoomIn");
     actionManager->defaults.insert("-", "zoomOut");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Down", "zoomOut");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Up", "zoomIn");
     actionManager->defaults.insert("Up", "scrollUp");
     actionManager->defaults.insert("Down", "scrollDown");
-    actionManager->defaults.insert("Ctrl+O", "open");
-    actionManager->defaults.insert("Ctrl+S", "save");
-    actionManager->defaults.insert("Ctrl+Shift+S", "saveAs");
-    //actionManager->defaults.insert("Ctrl+W", "setWallpaper");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+O", "open");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+S", "save");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Shift+S", "saveAs");
+    //actionManager->defaults.insert(InputMap::keyNameCtrl() + "+W", "setWallpaper");
     actionManager->defaults.insert("X", "crop");
-    actionManager->defaults.insert("Ctrl+P", "openSettings");
-    actionManager->defaults.insert("Alt+X", "exit");
-    actionManager->defaults.insert("Ctrl+Q", "exit");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+P", "openSettings");
+    actionManager->defaults.insert(InputMap::keyNameAlt() + "+X", "exit");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Q", "exit");
     actionManager->defaults.insert("Esc", "closeFullScreenOrExit");
     actionManager->defaults.insert("Del", "moveToTrash");
     actionManager->defaults.insert("Shift+Del", "removeFile");
@@ -61,27 +61,34 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("M", "moveFile");
     actionManager->defaults.insert("Home", "jumpToFirst");
     actionManager->defaults.insert("End", "jumpToLast");
-    actionManager->defaults.insert("Ctrl+Right", "seekVideoForward");
-    actionManager->defaults.insert("Ctrl+Left", "seekVideoBackward");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Right", "seekVideoForward");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Left", "seekVideoBackward");
     actionManager->defaults.insert(",", "frameStepBack");
     actionManager->defaults.insert(".", "frameStep");
     actionManager->defaults.insert("Enter", "folderView");
     actionManager->defaults.insert("Backspace", "folderView");
     actionManager->defaults.insert("F5", "reloadImage");
-    actionManager->defaults.insert("Ctrl+C", "copyFileClipboard");
-    actionManager->defaults.insert("Ctrl+Shift+C", "copyPathClipboard");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+C", "copyFileClipboard");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Shift+C", "copyPathClipboard");
     actionManager->defaults.insert("F2", "renameFile");
     actionManager->defaults.insert("RMB", "contextMenu");
     actionManager->defaults.insert("Menu", "contextMenu");
     actionManager->defaults.insert("I", "toggleImageInfo");
-    actionManager->defaults.insert("Ctrl+`", "toggleShuffle");
-    actionManager->defaults.insert("Ctrl+D", "showInDirectory");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+`", "toggleShuffle");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+D", "showInDirectory");
     actionManager->defaults.insert("`", "toggleSlideshow");
-    actionManager->defaults.insert("Ctrl+Z", "discardEdits");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Z", "discardEdits");
     actionManager->defaults.insert("Shift+Right", "nextDirectory");
     actionManager->defaults.insert("Shift+Left", "prevDirectory");
+
+#ifdef __APPLE__
+    actionManager->defaults.insert(InputMap::keyNameAlt() + "+Up", "zoomIn");
+    actionManager->defaults.insert(InputMap::keyNameAlt() + "+Down", "zoomOut");
+#endif
+
     //actionManager->defaults.insert("Backspace", "goUp"); // todo: shortcut scopes?
 }
+
 //------------------------------------------------------------------------------
 void ActionManager::initShortcuts() {
     actionManager->readShortcuts();
@@ -182,6 +189,7 @@ void ActionManager::fixLegacyShortcutsV089() {
     }
     shortcuts = shortcutsNew;
 }
+
 //------------------------------------------------------------------------------
 void ActionManager::saveShortcuts() {
     settings->saveShortcuts(actionManager->shortcuts);

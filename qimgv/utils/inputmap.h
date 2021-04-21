@@ -9,6 +9,8 @@ public:
     static InputMap *getInstance();
     const QMap<quint32, QString> &keys();
     const QMap<QString, Qt::KeyboardModifier> &modifiers();
+    static QString keyNameCtrl();
+    static QString keyNameAlt();
 
 private:
     void initKeyMap();

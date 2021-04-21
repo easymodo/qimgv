@@ -72,7 +72,7 @@ QString ShortcutBuilder::modifierKeys(QInputEvent *event){
     while(i.hasNext()) {
         i.next();
         if(event->modifiers().testFlag(i.value()))
-            mods.append(i.key());
+            mods.append(i.key() + "+");
     }
     return mods;
 }

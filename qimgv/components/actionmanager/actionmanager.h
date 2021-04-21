@@ -38,7 +38,8 @@ public:
     void resetDefaultsFromVersion(QVersionNumber lastVer);
     void saveShortcuts();
 
-    void fixLegacyShortcutsV089();
+    void fixLegacyShortcutsV089(); // todo: remove this eventually
+
 public slots:
     bool invokeAction(const QString &actionName);
 private:

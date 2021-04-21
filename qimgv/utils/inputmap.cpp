@@ -266,7 +266,23 @@ void InputMap::initKeyMap() {
 
 void InputMap::initModMap() {
     modMap.clear();
-    modMap.insert("Shift+", Qt::ShiftModifier);
-    modMap.insert("Ctrl+", Qt::ControlModifier);
-    modMap.insert("Alt+", Qt::AltModifier);
+    modMap.insert(keyNameCtrl(), Qt::ControlModifier);
+    modMap.insert(keyNameAlt(),  Qt::AltModifier);
+    modMap.insert("Shift",       Qt::ShiftModifier);
+}
+
+QString InputMap::keyNameCtrl() {
+#ifdef __APPLE__
+    return "⌘";
+#else
+    return "Ctrl";
+#endif
+}
+
+QString InputMap::keyNameAlt() {
+#ifdef __APPLE__
+    return "⌥";
+#else
+    return "Alt";
+#endif
 }
