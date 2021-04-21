@@ -35,8 +35,6 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
         scrollBar = this->horizontalScrollBar();
         centerOn = [this](int value) {
             QGraphicsView::centerOn(value + 1, viewportCenter.y());
-            // trigger repaint immediately
-            qApp->processEvents();
         };
     } else {
         this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -44,8 +42,6 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
         scrollBar = this->verticalScrollBar();
         centerOn = [this](int value) {
             QGraphicsView::centerOn(viewportCenter.x(), value + 1);
-            // trigger repaint immediately
-            qApp->processEvents();
         };
     }
 
@@ -82,6 +78,8 @@ void ThumbnailView::createScrollTimeLine() {
     connect(scrollTimeLine, &QTimeLine::frameChanged, [this](int value) {
         scrollFrameTimer.start();
         this->centerOn(value);
+        // trigger repaint immediately
+        qApp->processEvents();
         lastScrollFrameTime = scrollFrameTimer.elapsed();
         if(scrollTimeLine->state() == QTimeLine::Running && lastScrollFrameTime > scrollRefreshRate) {
             scrollTimeLine->setPaused(true);

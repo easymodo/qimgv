@@ -36,17 +36,6 @@ endif()
 target_compile_features(qimgv PRIVATE cxx_std_17)
 set_target_properties(qimgv PROPERTIES CXX_EXTENSIONS OFF)
 
-if(APPLE)
-    set_target_properties(qimgv PROPERTIES
-        MACOSX_BUNDLE_BUNDLE_NAME "qimgv"
-        MACOSX_BUNDLE_BUNDLE_VERSION "0.9.2"
-        MACOSX_BUNDLE_SHORT_VERSION_STRING "0.9.2"
-        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/distrib/MyBundleInfo.plist.in
-        MACOSX_BUNDLE_ICON_FILE ${APPLE_ICON_NAME}
-    )
-    set_source_files_properties(${APPLE_ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-endif()
-
 # LINK STUFF
 target_link_libraries(qimgv PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Svg)
 if(QT_VERSION_MAJOR GREATER_EQUAL 6)
@@ -88,7 +77,15 @@ if(WIN32) # Check if we are on Windows
         message(SEND_ERROR "You are using an unsupported Windows compiler! (Not MSVC or GCC)")
     endif(MSVC)
 elseif(APPLE)
-    set_target_properties(qimgv PROPERTIES MACOSX_BUNDLE YES)
+    set_target_properties(qimgv PROPERTIES
+        MACOSX_BUNDLE YES
+        MACOSX_BUNDLE_BUNDLE_NAME "qimgv"
+        MACOSX_BUNDLE_BUNDLE_VERSION "0.9.2"
+        MACOSX_BUNDLE_SHORT_VERSION_STRING "0.9.2"
+        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/distrib/MyBundleInfo.plist.in
+        MACOSX_BUNDLE_ICON_FILE ${APPLE_ICON_NAME}
+    )
+    set_source_files_properties(${APPLE_ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 elseif(NOT UNIX)
     message(SEND_ERROR "You are on an unsupported platform! (Not Win32, Mac OS X or Unix)")
 endif()
