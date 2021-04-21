@@ -970,7 +970,8 @@ void Core::loadPath(QString path) {
         qDebug() << "Could not open path: " << path;
         return;
     }
-    setDirectory(directoryPath);
+    if(!setDirectory(directoryPath))
+        return;
     // load file / folderview
     if(fileInfo.isFile()) {
         int index = model->indexOfFile(fileInfo.absoluteFilePath());
@@ -993,12 +994,16 @@ void Core::loadPath(QString path) {
     }
 }
 
-void Core::setDirectory(QString path) {
+bool Core::setDirectory(QString path) {
     if(model->directoryPath() != path) {
         this->reset();
-        model->setDirectory(path);
+        if(!model->setDirectory(path)) {
+            mw->showError("Could not load folder: " + path);
+            return false;
+        }
         mw->setDirectoryPath(path);
     }
+    return true;
 }
 
 bool Core::loadIndex(int index, bool async, bool preload) {
@@ -1043,10 +1048,12 @@ void Core::nextDirectory() {
     QFileInfo parentDir(currentDir.absolutePath());
     if(parentDir.exists() && parentDir.isReadable()) {
         DirectoryManager dm;
-        dm.setDirectory(parentDir.absoluteFilePath());
+        if(!dm.setDirectory(parentDir.absoluteFilePath()))
+            return;
         QString next = dm.nextOfDir(model->directoryPath());
         if(!next.isEmpty()) {
-            setDirectory(next);
+            if(!setDirectory(next))
+                return;
             QFileInfo fi(next);
             mw->showMessageDirectory(fi.baseName());
             if(model->fileCount())
@@ -1067,7 +1074,8 @@ void Core::prevDirectory(bool selectLast) {
         dm.setDirectory(parentDir.absoluteFilePath());
         QString prev = dm.prevOfDir(model->directoryPath());
         if(!prev.isEmpty()) {
-            setDirectory(prev);
+            if(!setDirectory(prev))
+                return;
             QFileInfo fi(prev);
             mw->showMessageDirectory(fi.baseName());
             if(model->fileCount()) {

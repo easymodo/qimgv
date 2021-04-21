@@ -114,6 +114,11 @@ bool DirectoryManager::setDirectory(QString dirPath) {
         qDebug() << "[DirectoryManager] Error - path is not a directory.";
         return false;
     }
+    QDir dir(dirPath);
+    if(!dir.isReadable()) {
+        qDebug() << "[DirectoryManager] Error - cannot read directory.";
+        return false;
+    }
     mListSource = SOURCE_DIRECTORY;
     mDirectoryPath = dirPath;
     loadEntryList(dirPath, false);

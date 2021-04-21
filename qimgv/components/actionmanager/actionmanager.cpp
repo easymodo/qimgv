@@ -48,7 +48,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("Down", "scrollDown");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+O", "open");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+S", "save");
-    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Shift+S", "saveAs");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+" + InputMap::keyNameShift() + "+S", "saveAs");
     //actionManager->defaults.insert(InputMap::keyNameCtrl() + "+W", "setWallpaper");
     actionManager->defaults.insert("X", "crop");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+P", "openSettings");
@@ -56,7 +56,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Q", "exit");
     actionManager->defaults.insert("Esc", "closeFullScreenOrExit");
     actionManager->defaults.insert("Del", "moveToTrash");
-    actionManager->defaults.insert("Shift+Del", "removeFile");
+    actionManager->defaults.insert(InputMap::keyNameShift() + "+Del", "removeFile");
     actionManager->defaults.insert("C", "copyFile");
     actionManager->defaults.insert("M", "moveFile");
     actionManager->defaults.insert("Home", "jumpToFirst");
@@ -69,7 +69,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("Backspace", "folderView");
     actionManager->defaults.insert("F5", "reloadImage");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+C", "copyFileClipboard");
-    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Shift+C", "copyPathClipboard");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+" + InputMap::keyNameShift() + "+C", "copyPathClipboard");
     actionManager->defaults.insert("F2", "renameFile");
     actionManager->defaults.insert("RMB", "contextMenu");
     actionManager->defaults.insert("Menu", "contextMenu");
@@ -78,8 +78,8 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+D", "showInDirectory");
     actionManager->defaults.insert("`", "toggleSlideshow");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Z", "discardEdits");
-    actionManager->defaults.insert("Shift+Right", "nextDirectory");
-    actionManager->defaults.insert("Shift+Left", "prevDirectory");
+    actionManager->defaults.insert(InputMap::keyNameShift() + "+Right", "nextDirectory");
+    actionManager->defaults.insert(InputMap::keyNameShift() + "+Left", "prevDirectory");
 
 #ifdef __APPLE__
     actionManager->defaults.insert(InputMap::keyNameAlt() + "+Up", "zoomIn");

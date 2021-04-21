@@ -37,7 +37,7 @@ public:
     void renameFile(const QString &oldFilePath, const QString &newName, bool force, FileOpResult &result);
     void removeFile(const QString &filePath, bool trash, FileOpResult &result);
 
-    void setDirectory(QString);
+    bool setDirectory(QString);
 
     void unload(int index);
 

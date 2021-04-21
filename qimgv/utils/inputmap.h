@@ -11,6 +11,7 @@ public:
     const QMap<QString, Qt::KeyboardModifier> &modifiers();
     static QString keyNameCtrl();
     static QString keyNameAlt();
+    static QString keyNameShift();
 
 private:
     void initKeyMap();

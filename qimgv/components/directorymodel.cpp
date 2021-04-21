@@ -154,9 +154,9 @@ void DirectoryModel::moveTo(const QString &srcFile, const QString &destDirPath, 
     }
 }
 // -----------------------------------------------------------------------------
-void DirectoryModel::setDirectory(QString path) {
+bool DirectoryModel::setDirectory(QString path) {
     cache.clear();
-    dirManager.setDirectory(path);
+    return dirManager.setDirectory(path);
 }
 
 void DirectoryModel::unload(int index) {
