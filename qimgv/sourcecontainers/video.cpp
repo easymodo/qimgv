@@ -1,39 +1,52 @@
 #include "video.h"
 #include <time.h>
 
-Video::Video(QString _path)
-    : Image(_path)
-{
+Video::Video(QString _path) : Image(_path) {
     load();
 }
 
-Video::Video(std::unique_ptr<DocumentInfo> _info)
-    : Image(std::move(_info))
-{
+Video::Video(std::unique_ptr<DocumentInfo> _info) : Image(std::move(_info)) {
     load();
-}
-
-Video::~Video() {
-    delete clip;
 }
 
 void Video::load() {
-    if(isLoaded()) {
+    if(isLoaded())
         return;
-    }
-    clip = new Clip(mPath, mDocInfo->format().toStdString().c_str());
+
+    auto mpvBinary = settings->mpvBinary();
+    if(mpvBinary.isEmpty())
+        return;
+    // Get resolution from ffmpeg (so we don't have to ask videoplayer)
+    QString command = "\"" + mpvBinary + "\"" + " -i " + "\"" + mDocInfo->filePath() + "\"";
+    QProcess process;
+    process.start(command);
+    process.waitForFinished(100);
+    QByteArray out = process.readAllStandardError();
+    process.close();
+
+    QRegExp expResolution("[0-9]+x[0-9]+");
+    QRegExp expWidth("[0-9]+\\B");
+    QRegExp expHeight("\\B+[0-9]+$");
+    expResolution.indexIn(out);
+    QString res = expResolution.cap();
+    expWidth.indexIn(res);
+    expHeight.indexIn(res);
+    QString wt = expWidth.cap();
+    QString ht = expHeight.cap();
+
+    srcWidth = wt.toUInt();
+    srcHeight = ht.toUInt();
+
     mLoaded = true;
 }
 
 bool Video::save(QString destPath) {
     Q_UNUSED(destPath)
-    //clip->save(destPath);
     qDebug() << "Saving video is unsupported.";
     return false;
 }
 
 bool Video::save() {
-    //clip->save(path);
     qDebug() << "Saving video is unsupported.";
     return false;
 }
@@ -50,18 +63,14 @@ std::shared_ptr<const QImage> Video::getImage() {
     return nullptr;
 }
 
-Clip *Video::getClip() {
-    return clip;
-}
-
 int Video::height() {
-    return clip->height();
+    return srcHeight;
 }
 
 int Video::width() {
-    return clip->width();
+    return srcWidth;
 }
 
 QSize Video::size() {
-    return clip->size();
+    return QSize(srcWidth, srcHeight);
 }

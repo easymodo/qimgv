@@ -16,6 +16,7 @@ Settings::Settings(QObject *parent) : QObject(parent) {
     stateConf = new QSettings(mConfDir->absolutePath() + "/savedState.ini", QSettings::IniFormat);
     themeConf = new QSettings(mConfDir->absolutePath() + "/theme.ini", QSettings::IniFormat);
 #endif
+    fillVideoFormats();
 }
 //------------------------------------------------------------------------------
 Settings::~Settings() {
@@ -193,18 +194,29 @@ void Settings::setColorScheme(ColorScheme scheme) {
     loadStylesheet();
 }
 //------------------------------------------------------------------------------
+void Settings::fillVideoFormats() {
+    mVideoFormatsMap.insert("video/webm",       "webm");
+    mVideoFormatsMap.insert("video/mp4",        "mp4");
+    mVideoFormatsMap.insert("video/mpeg",       "mpg");
+    mVideoFormatsMap.insert("video/mpeg",       "mpeg");
+    mVideoFormatsMap.insert("video/x-matroska", "mkv");
+    mVideoFormatsMap.insert("video/x-ms-wmv",   "wmv");
+    mVideoFormatsMap.insert("video/x-msvideo",  "avi");
+    mVideoFormatsMap.insert("video/quicktime",  "mov");
+    mVideoFormatsMap.insert("video/x-flv",      "flv");
+}
+
+//------------------------------------------------------------------------------
 QString Settings::mpvBinary() {
     QString mpvPath = settings->settingsConf->value("mpvBinary", "").toString();
     if(!QFile::exists(mpvPath)) {
-        #ifdef _WIN32
+    #ifdef _WIN32
         mpvPath = QCoreApplication::applicationDirPath() + "/mpv.exe";
-        #elif defined __linux__
+    #elif defined __linux__
         mpvPath = "/usr/bin/mpv";
-        #endif
-        if(!QFile::exists(mpvPath)) {
+    #endif
+        if(!QFile::exists(mpvPath))
             mpvPath = "";
-        }
-
     }
     return mpvPath;
 }
@@ -219,7 +231,7 @@ QList<QByteArray> Settings::supportedFormats() {
     auto formats = QImageReader::supportedImageFormats();
     formats << "jfif";
     if(videoPlayback())
-        formats << "webm" << "mp4";
+        formats << mVideoFormatsMap.values();
     formats.removeAll("pdf");
     return formats;
 }
@@ -230,9 +242,8 @@ QString Settings::supportedFormatsString() {
     QString filters;
     auto formats = supportedFormats();
     filters.append("Supported files (");
-    for(int i = 0; i < formats.count(); i++) {
+    for(int i = 0; i < formats.count(); i++)
         filters.append("*." + QString(formats.at(i)) + " ");
-    }
     filters.append(")");
     return filters;
 }
@@ -241,9 +252,8 @@ QString Settings::supportedFormatsRegex() {
     QString filter;
     QList<QByteArray> formats = supportedFormats();
     filter.append(".*\\.(");
-    for(int i = 0; i < formats.count(); i++) {
+    for(int i = 0; i < formats.count(); i++)
         filter.append(QString(formats.at(i)) + "|");
-    }
     filter.chop(1);
     filter.append(")$");
     return filter;
@@ -254,7 +264,7 @@ QStringList Settings::supportedMimeTypes() {
     QStringList filters;
     QList<QByteArray> mimeTypes = QImageReader::supportedMimeTypes();
     if(videoPlayback())
-        mimeTypes << "video/webm" << "video/mp4";
+        mimeTypes << mVideoFormatsMap.keys();
     for(int i = 0; i < mimeTypes.count(); i++) {
         filters << QString(mimeTypes.at(i));
     }
@@ -371,6 +381,10 @@ FolderViewMode Settings::folderViewMode() {
 
 void Settings::setFolderViewMode(FolderViewMode mode) {
     settings->settingsConf->setValue("folderViewMode", mode);
+}
+//------------------------------------------------------------------------------
+const QMap<QByteArray, QByteArray> Settings::videoFormats() const {
+    return mVideoFormatsMap;
 }
 //------------------------------------------------------------------------------
 int Settings::mainPanelSize() {

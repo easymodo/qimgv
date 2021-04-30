@@ -2,7 +2,6 @@
 
 target_sources(qimgv PRIVATE
     fsentry.cpp
-    clip.cpp
     documentinfo.cpp
     image.cpp
     imageanimated.cpp
