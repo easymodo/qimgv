@@ -247,7 +247,7 @@ public:
     FolderViewMode folderViewMode();
     void setFolderViewMode(FolderViewMode mode);
 
-    const QMap<QByteArray, QByteArray> videoFormats() const;
+    const QMultiMap<QByteArray, QByteArray> videoFormats() const;
 
 private:
     explicit Settings(QObject *parent = nullptr);

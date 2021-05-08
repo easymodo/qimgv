@@ -383,7 +383,7 @@ void Settings::setFolderViewMode(FolderViewMode mode) {
     settings->settingsConf->setValue("folderViewMode", mode);
 }
 //------------------------------------------------------------------------------
-const QMap<QByteArray, QByteArray> Settings::videoFormats() const {
+const QMultiMap<QByteArray, QByteArray> Settings::videoFormats() const {
     return mVideoFormatsMap;
 }
 //------------------------------------------------------------------------------

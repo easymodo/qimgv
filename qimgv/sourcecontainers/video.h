@@ -3,6 +3,7 @@
 #include <QImage>
 #include <QPixmap>
 #include <QProcess>
+#include <QRegExp>
 #include <QFile>
 #include "image.h"
 
