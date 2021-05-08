@@ -608,7 +608,7 @@ void Core::showInDirectory() {
     QStringList args;
     args << "/select," << QDir::toNativeSeparators(selectedFilePath());
     QProcess::startDetached("explorer", args);
-#elif Q_WS_MAC
+#elif __APPLE__
     QStringList args;
     args << "-e";
     args << "tell application \"Finder\"";
