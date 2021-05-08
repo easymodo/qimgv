@@ -1239,7 +1239,7 @@ void Core::guiSetImage(std::shared_ptr<Image> img) {
         // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
         // affects only initial startup (e.g. we open webm from file manager)
         showGui();
-        mw->setVideo(video->getClip()->getPath());
+        mw->setVideo(video->filePath());
     }
     img->isEdited() ? mw->showSaveOverlay() : mw->hideSaveOverlay();
     mw->setExifInfo(img->getExifTags());

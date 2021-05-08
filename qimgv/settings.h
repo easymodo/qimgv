@@ -247,17 +247,21 @@ public:
     FolderViewMode folderViewMode();
     void setFolderViewMode(FolderViewMode mode);
 
+    const QMap<QByteArray, QByteArray> videoFormats() const;
+
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;
     QSettings *settingsConf, *stateConf, *themeConf;
     QDir *mTmpDir, *mThumbCacheDir, *mConfDir;
     ColorScheme mColorScheme;
+    QMultiMap<QByteArray, QByteArray> mVideoFormatsMap; // [mimetype, format]
     void loadTheme();
     void saveTheme();
     void createColorVariants();
 
     void setupCache();
+    void fillVideoFormats();
 signals:
     void settingsChanged();
 

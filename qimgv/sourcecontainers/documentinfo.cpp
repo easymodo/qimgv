@@ -1,7 +1,7 @@
 #include "documentinfo.h"
 
 DocumentInfo::DocumentInfo(QString path)
-    : mDocumentType(NONE),
+    : mDocumentType(DocumentType::NONE),
       mOrientation(0),
       mFormat(""),
       exifLoaded(false)
@@ -72,50 +72,45 @@ int DocumentInfo::exifOrientation() const {
 // ####################### PRIVATE METHODS ######################
 // ##############################################################
 void DocumentInfo::detectFormat() {
-    if(mDocumentType != NONE)
+    if(mDocumentType != DocumentType::NONE)
         return;
     QMimeDatabase mimeDb;
     mMimeType = mimeDb.mimeTypeForFile(fileInfo.filePath(), QMimeDatabase::MatchContent);
-    QString mimeName = mMimeType.name();
-    QString suffix = fileInfo.completeSuffix().toLower();
+    auto mimeName = mMimeType.name().toUtf8();
+    auto suffix = fileInfo.suffix().toLower().toUtf8();
     if(mimeName == "image/jpeg") {
         mFormat = "jpg";
-        mDocumentType = STATIC;
+        mDocumentType = DocumentType::STATIC;
     } else if(mimeName == "image/png") {
         if(QImageReader::supportedImageFormats().contains("apng") && detectAPNG()) {
             mFormat = "apng";
-            mDocumentType = ANIMATED;
+            mDocumentType = DocumentType::ANIMATED;
         } else {
             mFormat = "png";
-            mDocumentType = STATIC;
+            mDocumentType = DocumentType::STATIC;
         }
     } else if(mimeName == "image/gif") {
         mFormat = "gif";
-        mDocumentType = ANIMATED;
+        mDocumentType = DocumentType::ANIMATED;
     } else if(mimeName == "image/webp" || (mimeName == "audio/x-riff" && suffix == "webp")) {
         mFormat = "webp";
-        mDocumentType = detectAnimatedWebP() ? ANIMATED : STATIC;
+        mDocumentType = detectAnimatedWebP() ? DocumentType::ANIMATED : DocumentType::STATIC;
     } else if(mimeName == "image/bmp") {
         mFormat = "bmp";
-        mDocumentType = STATIC;
-    } else if(mimeName == "video/webm") {
-        mFormat = "webm";
+        mDocumentType = DocumentType::STATIC;
+    } else if(settings->videoPlayback() && settings->videoFormats().contains(mimeName)) {
         mDocumentType = DocumentType::VIDEO;
-    } else if(mimeName == "video/mp4") {
-        mFormat = "mp4";
-        mDocumentType = DocumentType::VIDEO;
-    } else if(suffix == "webm" || suffix == "mp4") {
-        // it's possible for some downloaded videos to not have a correct mimetype
-        mFormat = suffix;
-        mDocumentType = DocumentType::VIDEO;
+        mFormat = settings->videoFormats().value(mimeName);
     } else {
         // just try to open via suffix if all of the above fails
-        mFormat = fileInfo.completeSuffix();
+        mFormat = suffix;
         if(mFormat.compare("jfif", Qt::CaseInsensitive) == 0)
             mFormat = "jpg";
-        mDocumentType = STATIC;
+        if(settings->videoPlayback() && settings->videoFormats().values().contains(suffix))
+            mDocumentType = DocumentType::VIDEO;
+        else
+            mDocumentType = DocumentType::STATIC;
     }
-    //qDebug() << mFormat << mDocumentType << mimeName;
     loadExifOrientation();
 }
 
@@ -247,7 +242,7 @@ QMap<QString, QString> DocumentInfo::getExifTags() {
 }
 
 void DocumentInfo::loadExifOrientation() {
-    if(mDocumentType == VIDEO || mDocumentType == NONE)
+    if(mDocumentType == DocumentType::VIDEO || mDocumentType == DocumentType::NONE)
         return;
 
     QString path = filePath();
