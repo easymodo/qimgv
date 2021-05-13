@@ -204,7 +204,6 @@ void VideoPlayerInitProxy::show() {
         errorLabel = new QLabel(this);
         errorLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
         errorLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        //errorLabel->setAlignment(Qt::AlignVCenter);
         QString errString = "Could not load " + libFile + " from:";
         for(auto path : libDirs)
             errString.append("\n" + path + "/");

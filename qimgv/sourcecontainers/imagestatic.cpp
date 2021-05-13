@@ -82,6 +82,9 @@ bool ImageStatic::save(QString destPath) {
     QString tmpPath = destPath + "_" + generateHash(destPath);
     QFileInfo fi(destPath);
     QString ext = fi.suffix();
+    // qt plugin is still a bit unstable
+    if(ext == "jxl")
+        return false;
     // png compression note from libpng
     // Note that tests have shown that zlib compression levels 3-6 usually perform as well
     // as level 9 for PNG images, and do considerably fewer caclulations
