@@ -63,8 +63,6 @@ void WindowsWatcherPrivate::dispatchNotify(PFILE_NOTIFY_INFORMATION notify) {
     int len = notify->FileNameLength / sizeof(WCHAR);
     QString name = QString::fromWCharArray(static_cast<wchar_t*>(notify->FileName), len);
 
-    int pos;
-
     switch (notify->Action)
     {
         case FILE_ACTION_ADDED:
@@ -72,6 +70,8 @@ void WindowsWatcherPrivate::dispatchNotify(PFILE_NOTIFY_INFORMATION notify) {
             break;
 
         case FILE_ACTION_MODIFIED:
+            emit q->fileModified(name);
+            // ??
             /*WatcherEvent* event;
             if (findEventIndexByName(name) != -1)
                 return;

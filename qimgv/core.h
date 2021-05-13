@@ -88,6 +88,7 @@ private:
     void edit_template(bool save, const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& func, Args&&... as);
 
     void doInteractiveCopy(QString path, QString destDirectory, DialogResult &overwriteAllFiles);
+
 private slots:
     void readSettings();
     void nextImage();

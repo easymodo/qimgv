@@ -94,18 +94,19 @@ bool ImageStatic::save(QString destPath) {
     else if(ext.compare("jpg", Qt::CaseInsensitive) == 0 || ext.compare("jpeg", Qt::CaseInsensitive) == 0)
         quality = settings->JPEGSaveQuality();
 
-    bool doBackup = false, success = false, originalExists = false;
+    bool backupExists = false, success = false, originalExists = false;
 
     if(QFile::exists(destPath))
         originalExists = true;
 
     // backup the original file if possible
     if(originalExists) {
+        QFile::remove(tmpPath);
         if(!QFile::copy(destPath, tmpPath)) {
             qDebug() << "ImageStatic::save() - Could not create file backup.";
             return false;
         }
-        doBackup = true;
+        backupExists = true;
     }
     // save file
     if(isEdited()) {
@@ -115,7 +116,7 @@ bool ImageStatic::save(QString destPath) {
     } else {
         success = image->save(destPath, ext.toStdString().c_str(), quality);
     }
-    if(doBackup) {
+    if(backupExists) {
         if(success) {
             // everything ok - remove the backup
             QFile file(tmpPath);

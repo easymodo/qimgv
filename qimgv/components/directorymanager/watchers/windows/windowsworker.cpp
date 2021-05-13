@@ -31,7 +31,7 @@ void WindowsWorker::run() {
                                          &buffer[0],
                                          buffer.size(),
                                          FALSE,
-                                         FILE_ACTION_ADDED | FILE_ACTION_REMOVED | FILE_NOTIFY_CHANGE_FILE_NAME | FILE_ACTION_MODIFIED,
+                                         FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE,
                                          &dwBytes,
                                          &ovl,
                                          nullptr);
