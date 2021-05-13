@@ -532,7 +532,6 @@ ThumbnailStrip QScrollBar::sub-line {
 ContextMenu {
     background-color: %widget%;
     border: 1px solid %widget_border%;
-    border-radius: 3px;
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="MenuItem"]:hover {
@@ -557,7 +556,6 @@ ContextMenu {
 
 [accessibleName="ContextMenuButton"] {
     padding: 4px;
-    border-radius: 2px;
 }
 
 [accessibleName="ContextMenuButton"]:hover {
