@@ -96,12 +96,12 @@ bool ImageStatic::save(QString destPath) {
 
     bool doBackup = false, success = false, originalExists = false;
 
-    if(QFile::exists(mDocInfo->filePath()))
+    if(QFile::exists(destPath))
         originalExists = true;
 
     // backup the original file if possible
     if(originalExists) {
-        if(!QFile::copy(mDocInfo->filePath(), tmpPath)) {
+        if(!QFile::copy(destPath, tmpPath)) {
             qDebug() << "ImageStatic::save() - Could not create file backup.";
             return false;
         }
@@ -127,9 +127,8 @@ bool ImageStatic::save(QString destPath) {
             QFile::remove(tmpPath);
         }
     }
-    if(destPath == mPath && success) {
+    if(destPath == mPath && success)
         mDocInfo->refresh();
-    }
     return success;
 }
 
