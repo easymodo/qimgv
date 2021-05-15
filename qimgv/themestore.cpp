@@ -48,12 +48,12 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
         case COLORS_DEFAULT:
             base.background = "#1a1a1a";
             base.background_fullscreen = "#1a1a1a";
-            base.text = "#b0b0b0";
+            base.text = "#b4b4b4";
             base.icons = "#a8a8a8";
             base.widget = "#252525";
             base.widget_border = "#272727";
             base.accent = "#3f6491";
-            base.folderview = "#2f2f2f";
+            base.folderview = "#262626";
             base.folderview_topbar = "#373737";
             base.scrollbar = "#4b4b4b";
             base.overlay_text = "#d2d2d2";
