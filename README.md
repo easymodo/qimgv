@@ -294,3 +294,11 @@ Usage example:
 ```
 cmake ../ -DKDE_SUPPORT=ON  -DCMAKE_INSTALL_PREFIX=/usr/
 ```
+
+### Donate
+
+If you wish to throw me a few bucks, you can do it here:
+
+<a href="https://www.buymeacoffee.com/easymodo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Donate" height="41" width="174"></a>
+
+Any support is appreciated!
