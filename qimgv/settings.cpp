@@ -123,6 +123,9 @@ void Settings::loadStylesheet() {
         styleSheet.replace("%text_hc2%",             colors.text_hc2.name());
         styleSheet.replace("%text_hc%",              colors.text_hc.name());
         styleSheet.replace("%text%",                 colors.text.name());
+        styleSheet.replace("%text_secondary_rgba%",  "rgba(" + QString::number(colors.text.red())   + ","
+                                                             + QString::number(colors.text.green()) + ","
+                                                             + QString::number(colors.text.blue())  + ",62%)");
         styleSheet.replace("%overlay_text%",         colors.overlay_text.name());
         styleSheet.replace("%text_lc%",              colors.text_lc.name());
         styleSheet.replace("%text_lc2%",             colors.text_lc2.name());
@@ -138,7 +141,12 @@ void Settings::loadStylesheet() {
                                                              + QString::number(colors.overlay.green()) + ","
                                                              + QString::number(colors.overlay.blue())  + ",90%)");
         styleSheet.replace("%topbar_border_rgba%",   "rgba(0,0,0,14%)");
-
+        // Qt::Popup can't do transparency under windows, use square window
+#ifdef _WIN32
+        styleSheet.replace("%contextmenu_border_radius%",  "0px");
+#else
+        styleSheet.replace("%contextmenu_border_radius%",  "3px");
+#endif
         // ------------------------ apply ----------------------------
         qApp->setStyleSheet(styleSheet);
     }

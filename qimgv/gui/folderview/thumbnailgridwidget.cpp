@@ -75,7 +75,6 @@ void ThumbnailGridWidget::drawLabel(QPainter *painter) {
     }
 }
 
-// todo use shared layer, then merge it down at the end
 void ThumbnailGridWidget::drawSingleLineText(QPainter *painter, QRectF rect, QString text, const QColor &color) {
     qreal dpr = qApp->devicePixelRatio();
     bool fits = !(fm->horizontalAdvance(text) >= rect.width());

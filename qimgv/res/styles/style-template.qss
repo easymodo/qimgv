@@ -532,6 +532,7 @@ ThumbnailStrip QScrollBar::sub-line {
 ContextMenu {
     background-color: %widget%;
     border: 1px solid %widget_border%;
+    border-radius: %contextmenu_border_radius%;
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="MenuItem"]:hover {
@@ -543,7 +544,7 @@ ContextMenu {
 }
 
 [accessibleName="MenuItem"] QLabel:disabled {
-    color: %text_lc2%;
+    color: %text_secondary_rgba%;
 }
 
 [accessibleName="MenuItemText"] {
@@ -551,11 +552,12 @@ ContextMenu {
 }
 
 [accessibleName="MenuItemShortcutLabel"] {
-    color: %text_lc%;
+    color: %text_secondary_rgba%;
 }
 
 [accessibleName="ContextMenuButton"] {
     padding: 4px;
+    border-radius: 2px;
 }
 
 [accessibleName="ContextMenuButton"]:hover {
