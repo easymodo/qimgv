@@ -171,6 +171,7 @@ void ViewerWidget::onAnimationPlaybackFinished() {
 
 void ViewerWidget::enableInteraction() {
     if(!mInteractionEnabled) {
+        connect(this, &ViewerWidget::toggleZoomLock, imageViewer.get(), &ImageViewerV2::toggleZoomLock);
         connect(this, &ViewerWidget::zoomIn,        imageViewer.get(), &ImageViewerV2::zoomIn);
         connect(this, &ViewerWidget::zoomOut,       imageViewer.get(), &ImageViewerV2::zoomOut);
         connect(this, &ViewerWidget::zoomInCursor,  imageViewer.get(), &ImageViewerV2::zoomInCursor);
@@ -365,6 +366,10 @@ bool ViewerWidget::isDisplaying() {
         return true;
     else
         return false;
+}
+
+bool ViewerWidget::zoomLock() {
+    return imageViewer->zoomLock();
 }
 
 ScalingFilter ViewerWidget::scalingFilter() {

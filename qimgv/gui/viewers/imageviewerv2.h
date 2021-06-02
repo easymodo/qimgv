@@ -91,6 +91,9 @@ public slots:
 
     bool showAnimationFrame(int frame);
     void onFullscreenModeChanged(bool mode);
+    void toggleZoomLock();
+    bool zoomLock();
+
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent* event);
@@ -114,7 +117,7 @@ private:
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
     QTimer *animationTimer, *scaleTimer;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
-    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, loopPlayback, mIsFullscreen;
+    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, loopPlayback, mIsFullscreen, mZoomLock;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_UPDATE_RATE = 7;
@@ -128,7 +131,7 @@ private:
     int zoomThreshold = 4;
     int dragThreshold = 10;
     qreal zoomStep = 0.1, dpr;
-    float minScale, maxScale, fitWindowScale, expandLimit;
+    float minScale, maxScale, fitWindowScale, expandLimit, lockedScale;
     QPair<QPointF, QPoint> zoomAnchor; // [pixmap coords, viewport coords]
 
     QElapsedTimer lastTouchpadScroll;
@@ -167,4 +170,5 @@ private:
     void scrollPrecise(int dx, int dy);
     void updateFitWindowScale();
     void updateMinScale();
+    void fitFree(float scale);
 };

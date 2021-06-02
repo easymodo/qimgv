@@ -249,6 +249,15 @@ void MW::setDirectoryPath(QString path) {
     onInfoUpdated();
 }
 
+void MW::toggleZoomLock() {
+    viewerWidget->toggleZoomLock();
+    if(viewerWidget->zoomLock())
+        showMessage("Zoom lock: ON");
+    else
+        showMessage("Zoom lock: OFF");
+    onInfoUpdated();
+}
+
 void MW::toggleImageInfoOverlay() {
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
         return;
@@ -669,16 +678,23 @@ void MW::onInfoUpdated() {
             if(!sizeString.isEmpty())
                 windowTitle.append("  -  " + sizeString);
         }
-        if(info.slideshow || info.shuffle)
-            windowTitle.append(" - ");
+
+        // toggleable states
+        QString states;
         if(info.slideshow)
-            windowTitle.append("[slideshow]");
+            states.append(" [slideshow]");
         if(info.shuffle)
-            windowTitle.append("[shuffle]");
+            states.append(" [shuffle]");
+        if(viewerWidget->zoomLock())
+            states.append(" [zoom lock]");
+
+        if(!settings->infoBarWindowed() && !states.isEmpty())
+            windowTitle.append(" -" + states);
         if(info.edited)
             windowTitle.prepend("* ");
+
         infoBarFullscreen->setInfo(posString, info.fileName + (info.edited ? "  *" : ""), resString + "  " + sizeString);
-        infoBarWindowed->setInfo(posString, info.fileName + (info.edited ? "  *" : ""), resString + "  " + sizeString);
+        infoBarWindowed->setInfo(posString, info.fileName + (info.edited ? "  *" : ""), resString + "  " + sizeString + " " + states);
     }
     setWindowTitle(windowTitle);
 }

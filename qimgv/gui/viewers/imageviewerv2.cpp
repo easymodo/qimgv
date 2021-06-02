@@ -12,6 +12,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     keepFitMode(false),
     loopPlayback(true),
     mIsFullscreen(false),
+    mZoomLock(false),
     mouseInteraction(MouseInteractionState::MOUSE_NONE),
     minScale(0.01f),
     maxScale(500.0f),
@@ -236,11 +237,15 @@ void ImageViewerV2::displayAnimation(std::unique_ptr<QMovie> _movie) {
         emit frameChanged(0);
 
         updateMinScale();
-        if(!keepFitMode)
-                imageFitMode = imageFitModeDefault;
-        if(imageFitMode == FIT_FREE)
-            imageFitMode = FIT_WINDOW;
-        applyFitMode();
+        if(!keepFitMode || imageFitMode == FIT_FREE)
+            imageFitMode = imageFitModeDefault;
+
+        if(mZoomLock) {
+            imageFitMode = FIT_FREE;
+            fitFree(lockedScale);
+        } else {
+            applyFitMode();
+        }
 
         if(transparencyGridEnabled)
             drawTransparencyGrid();
@@ -254,29 +259,29 @@ void ImageViewerV2::displayImage(std::unique_ptr<QPixmap> _pixmap) {
     reset();
     if(_pixmap) {
         pixmapItemScaled.hide();
-
         pixmap = std::move(_pixmap);
         pixmap->setDevicePixelRatio(dpr);
         pixmapItem.setPixmap(*pixmap);
-
         Qt::TransformationMode mode = Qt::SmoothTransformation;
         if(mScalingFilter == QI_FILTER_NEAREST)
             mode = Qt::FastTransformation;
         pixmapItem.setTransformationMode(mode);
-
         pixmapItem.show();
-
         pixmapItem.setOffset((scene->width()  / 2.0) - (pixmap->width()  / (dpr * 2.0)),
                              (scene->height() / 2.0) - (pixmap->height() / (dpr * 2.0)));
         // always scale from center
         pixmapItem.setTransformOriginPoint(pixmapItem.boundingRect().center());
-
         updateMinScale();
-        if(!keepFitMode)
-                imageFitMode = imageFitModeDefault;
-        if(imageFitMode == FIT_FREE)
-            imageFitMode = FIT_WINDOW;
-        applyFitMode();
+
+        if(!keepFitMode || imageFitMode == FIT_FREE)
+            imageFitMode = imageFitModeDefault;
+
+        if(mZoomLock) {
+            imageFitMode = FIT_FREE;
+            fitFree(lockedScale);
+        } else {
+            applyFitMode();
+        }
         requestScaling();
 
         if(transparencyGridEnabled)
@@ -675,6 +680,8 @@ void ImageViewerV2::updateMinScale() {
         minScale = 1.0f;
     else
         minScale = fitWindowScale;
+    if(mZoomLock && lockedScale < minScale)
+        minScale = lockedScale;
 }
 
 void ImageViewerV2::fitWidth() {
@@ -714,10 +721,14 @@ void ImageViewerV2::fitWindow() {
 }
 
 void ImageViewerV2::fitNormal() {
+    fitFree(1.0f);
+}
+
+void ImageViewerV2::fitFree(float scale) {
     if(!pixmap)
         return;
     if(focusIn1to1 == FOCUS_TOP) {
-        doZoom(1.0f);
+        doZoom(scale);
         centerIfNecessary();
         if(scaledSize().height() > viewport()->height()) {
             QPointF centerTarget = sceneRect().center();
@@ -730,7 +741,7 @@ void ImageViewerV2::fitNormal() {
             setZoomAnchor(viewport()->rect().center());
         else
             setZoomAnchor(mapFromGlobal(cursor().pos()));
-        zoomAnchored(1.0f);
+        zoomAnchored(scale);
         centerIfNecessary();
         snapToEdges();
     }
@@ -911,7 +922,6 @@ void ImageViewerV2::setZoomAnchor(QPoint viewportPos) {
 }
 
 void ImageViewerV2::zoomAnchored(float newScale) {
-    newScale = qBound(minScale, newScale, 500.0f);
     if(currentScale() != newScale) {
         QPointF vportCenter = mapToScene(viewport()->geometry()).boundingRect().center();
         doZoom(newScale);
@@ -921,7 +931,7 @@ void ImageViewerV2::zoomAnchored(float newScale) {
         centerOn(vportCenter - diff);
         requestScaling();
     }
- }
+}
 
 // zoom in around viewport center
 void ImageViewerV2::zoomIn() {
@@ -943,6 +953,20 @@ void ImageViewerV2::zoomOut() {
     imageFitMode = FIT_FREE;
     if(pixmapItem.scale() == fitWindowScale)
         imageFitMode = FIT_WINDOW;
+}
+
+void ImageViewerV2::toggleZoomLock() {
+    if(!isDisplaying())
+        return;
+    mZoomLock = !mZoomLock;
+    if(mZoomLock) {
+        lockedScale = pixmapItem.scale();
+        imageFitMode = FIT_FREE;
+    }
+}
+
+bool ImageViewerV2::zoomLock() {
+    return mZoomLock;
 }
 
 void ImageViewerV2::centerIfNecessary() {
@@ -1009,6 +1033,7 @@ void ImageViewerV2::zoomOutCursor() {
 void ImageViewerV2::doZoom(float newScale) {
     if(!pixmap)
         return;
+    newScale = qBound(minScale, newScale, 500.0f);
     pixmapItem.setScale(newScale);
     pixmapItem.setTransformationMode(selectTransformationMode());
     swapToOriginalPixmap();

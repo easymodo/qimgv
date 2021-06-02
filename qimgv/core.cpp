@@ -135,6 +135,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::fitNormal, mw, &MW::fitOriginal);
     connect(actionManager, &ActionManager::toggleFitMode, mw, &MW::switchFitMode);
     connect(actionManager, &ActionManager::toggleFullscreen, mw, &MW::triggerFullScreen);
+    connect(actionManager, &ActionManager::zoomLock, mw, &MW::toggleZoomLock);
     connect(actionManager, &ActionManager::zoomIn, mw, &MW::zoomIn);
     connect(actionManager, &ActionManager::zoomOut, mw, &MW::zoomOut);
     connect(actionManager, &ActionManager::zoomInCursor, mw, &MW::zoomInCursor);
