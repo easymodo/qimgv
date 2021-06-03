@@ -1019,8 +1019,8 @@ void ImageViewerV2::saveViewportPos() {
     QGraphicsPixmapItem *item = &pixmapItem;
     QPointF sceneCenter = mapToScene( viewport()->rect().center() ) + QPointF(1,1);
     auto itemRect = item->sceneBoundingRect();
-    savedViewportPos.setX(qBound(0.f, (sceneCenter.x() - itemRect.left()) / itemRect.width(),  1.f));
-    savedViewportPos.setY(qBound(0.f, (sceneCenter.y() - itemRect.top())  / itemRect.height(), 1.f));
+    savedViewportPos.setX(qBound(qreal(0), (sceneCenter.x() - itemRect.left()) / itemRect.width(),  qreal(1)));
+    savedViewportPos.setY(qBound(qreal(0), (sceneCenter.y() - itemRect.top())  / itemRect.height(), qreal(1)));
 }
 
 void ImageViewerV2::applySavedViewportPos() {
