@@ -85,7 +85,8 @@ void Actions::init() {
     mActions.insert("prevDirectory", QVersionNumber(0,9,2));
     mActions.insert("seekVideoForward", QVersionNumber(0,9,2));
     mActions.insert("seekVideoBackward", QVersionNumber(0,9,2));
-    mActions.insert("zoomLock", QVersionNumber(0,9,2));
+    mActions.insert("lockZoom", QVersionNumber(0,9,2));
+    mActions.insert("lockView", QVersionNumber(0,9,2));
     //mActions.insert("positionLock", QVersionNumber(0,9,2));
 }
 

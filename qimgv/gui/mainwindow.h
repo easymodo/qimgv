@@ -237,5 +237,6 @@ public slots:
     void setFilterBilinear();
     void toggleScalingFilter();
     void setDirectoryPath(QString path);
-    void toggleZoomLock();
+    void toggleLockZoom();
+    void toggleLockView();
 };

@@ -24,6 +24,12 @@ enum MouseInteractionState {
     MOUSE_WHEEL_ZOOM
 };
 
+enum ViewLockMode {
+    LOCK_NONE,
+    LOCK_ZOOM,
+    LOCK_ALL
+};
+
 class ImageViewerV2 : public QGraphicsView
 {
     Q_OBJECT
@@ -91,8 +97,10 @@ public slots:
 
     bool showAnimationFrame(int frame);
     void onFullscreenModeChanged(bool mode);
-    void toggleZoomLock();
-    bool zoomLock();
+    void toggleLockZoom();
+    bool lockZoomEnabled();
+    void toggleLockView();
+    bool lockViewEnabled();
 
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
@@ -109,6 +117,7 @@ private slots:
     void scrollToX(int x);
     void scrollToY(int y);
 
+    void onScrollTimelineFinished();
 private:
     QGraphicsScene *scene;
     std::shared_ptr<QPixmap> pixmap;
@@ -117,14 +126,14 @@ private:
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
     QTimer *animationTimer, *scaleTimer;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
-    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, loopPlayback, mIsFullscreen, mZoomLock;
+    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, loopPlayback, mIsFullscreen;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_UPDATE_RATE = 7;
-    const int SCROLL_DISTANCE = 250;
+    const int SCROLL_DISTANCE = 220;
     const qreal SCROLL_SPEED_MILTIPLIER = 1.3;
     const qreal TRACKPAD_SCROLL_MULTIPLIER = 0.7;
-    const int ANIMATION_SPEED = 120;
+    const int ANIMATION_SPEED = 150;
     const float FAST_SCALE_THRESHOLD = 1.0f;
     const int LARGE_VIEWPORT_SIZE = 2073600;
     // how many px you can move while holding RMB until it counts as a zoom attempt
@@ -132,6 +141,9 @@ private:
     int dragThreshold = 10;
     qreal zoomStep = 0.1, dpr;
     float minScale, maxScale, fitWindowScale, expandLimit, lockedScale;
+    QPointF savedViewportPos;
+    ViewLockMode mViewLock;
+
     QPair<QPointF, QPoint> zoomAnchor; // [pixmap coords, viewport coords]
 
     QElapsedTimer lastTouchpadScroll;
@@ -171,4 +183,7 @@ private:
     void updateFitWindowScale();
     void updateMinScale();
     void fitFree(float scale);
+    void applySavedViewportPos();
+    void saveViewportPos();
+    void lockZoom();
 };

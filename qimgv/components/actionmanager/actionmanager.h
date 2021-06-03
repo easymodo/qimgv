@@ -120,8 +120,8 @@ signals:
     void goUp();
     void nextDirectory();
     void prevDirectory();
-    void zoomLock();
-    void positionLock();
+    void lockZoom();
+    void lockView();
 };
 
 extern ActionManager *actionManager;

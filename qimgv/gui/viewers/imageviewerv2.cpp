@@ -12,14 +12,14 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     keepFitMode(false),
     loopPlayback(true),
     mIsFullscreen(false),
-    mZoomLock(false),
     mouseInteraction(MouseInteractionState::MOUSE_NONE),
     minScale(0.01f),
     maxScale(500.0f),
     fitWindowScale(0.125f),
+    mViewLock(LOCK_NONE),
     imageFitMode(FIT_WINDOW),
-    imageFitModeDefault(FIT_WINDOW),
     mScalingFilter(QI_FILTER_BILINEAR),
+    imageFitModeDefault(FIT_WINDOW),
     scene(nullptr)
 {
     setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
@@ -37,6 +37,8 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     scrollTimeLineX->setEasingCurve(QEasingCurve::OutSine);
     scrollTimeLineX->setDuration(ANIMATION_SPEED);
     scrollTimeLineX->setUpdateInterval(SCROLL_UPDATE_RATE);
+    connect(scrollTimeLineX, &QTimeLine::finished, this, &ImageViewerV2::onScrollTimelineFinished);
+    connect(scrollTimeLineY, &QTimeLine::finished, this, &ImageViewerV2::onScrollTimelineFinished);
 
     animationTimer = new QTimer(this);
     animationTimer->setSingleShot(true);
@@ -240,11 +242,13 @@ void ImageViewerV2::displayAnimation(std::unique_ptr<QMovie> _movie) {
         if(!keepFitMode || imageFitMode == FIT_FREE)
             imageFitMode = imageFitModeDefault;
 
-        if(mZoomLock) {
+        if(mViewLock == LOCK_NONE) {
+            applyFitMode();
+        } else {
             imageFitMode = FIT_FREE;
             fitFree(lockedScale);
-        } else {
-            applyFitMode();
+            if(mViewLock == LOCK_ALL)
+                applySavedViewportPos();
         }
 
         if(transparencyGridEnabled)
@@ -276,11 +280,13 @@ void ImageViewerV2::displayImage(std::unique_ptr<QPixmap> _pixmap) {
         if(!keepFitMode || imageFitMode == FIT_FREE)
             imageFitMode = imageFitModeDefault;
 
-        if(mZoomLock) {
+        if(mViewLock == LOCK_NONE) {
+            applyFitMode();
+        } else {
             imageFitMode = FIT_FREE;
             fitFree(lockedScale);
-        } else {
-            applyFitMode();
+            if(mViewLock == LOCK_ALL)
+                applySavedViewportPos();
         }
         requestScaling();
 
@@ -613,6 +619,7 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
             }
             lastTouchpadScroll.restart();
         }
+        saveViewportPos();
     } else {
         event->ignore();
         QWidget::wheelEvent(event);
@@ -636,6 +643,7 @@ void ImageViewerV2::mousePan(QMouseEvent *event) {
     mouseMoveStartPos -= event->pos();
     scroll(mouseMoveStartPos.x(), mouseMoveStartPos.y(), false);
     mouseMoveStartPos = event->pos();
+    saveViewportPos();
 }
 
 //  zooming while the right button is pressed
@@ -680,7 +688,7 @@ void ImageViewerV2::updateMinScale() {
         minScale = 1.0f;
     else
         minScale = fitWindowScale;
-    if(mZoomLock && lockedScale < minScale)
+    if(mViewLock != LOCK_NONE && lockedScale < minScale)
         minScale = lockedScale;
 }
 
@@ -809,6 +817,7 @@ void ImageViewerV2::resizeEvent(QResizeEvent *event) {
         if(scaleTimer->isActive())
             scaleTimer->stop();
         scaleTimer->start();
+        saveViewportPos();
     }
 }
 
@@ -883,6 +892,7 @@ void ImageViewerV2::scrollSmooth(int dx, int dy) {
         scrollTimeLineY->setFrameRange(currentYPos, newEndFrame);
         scrollTimeLineY->start();
     }
+    saveViewportPos();
 }
 
 void ImageViewerV2::scrollPrecise(int dx, int dy) {
@@ -891,6 +901,7 @@ void ImageViewerV2::scrollPrecise(int dx, int dy) {
     verticalScrollBar()->setValue(verticalScrollBar()->value() + dy);
     centerIfNecessary();
     snapToEdges();
+    saveViewportPos();
 }
 
 // used by scrollTimeLine
@@ -898,6 +909,8 @@ void ImageViewerV2::scrollToX(int x) {
     horizontalScrollBar()->setValue(x);
     centerIfNecessary();
     snapToEdges();
+    update();
+    qApp->processEvents();
 }
 
 // used by scrollTimeLine
@@ -905,6 +918,12 @@ void ImageViewerV2::scrollToY(int y) {
     verticalScrollBar()->setValue(y);
     centerIfNecessary();
     snapToEdges();
+    update();
+    qApp->processEvents();
+}
+
+void ImageViewerV2::onScrollTimelineFinished() {
+    saveViewportPos();
 }
 
 void ImageViewerV2::swapToOriginalPixmap() {
@@ -955,18 +974,64 @@ void ImageViewerV2::zoomOut() {
         imageFitMode = FIT_WINDOW;
 }
 
-void ImageViewerV2::toggleZoomLock() {
+void ImageViewerV2::toggleLockZoom() {
     if(!isDisplaying())
         return;
-    mZoomLock = !mZoomLock;
-    if(mZoomLock) {
-        lockedScale = pixmapItem.scale();
-        imageFitMode = FIT_FREE;
+    if(mViewLock != LOCK_ZOOM) {
+        mViewLock = LOCK_ZOOM;
+        lockZoom();
+    } else {
+        mViewLock = LOCK_NONE;
     }
 }
 
-bool ImageViewerV2::zoomLock() {
-    return mZoomLock;
+bool ImageViewerV2::lockZoomEnabled() {
+    return (mViewLock == LOCK_ZOOM);
+}
+
+void ImageViewerV2::lockZoom() {
+    lockedScale = pixmapItem.scale();
+    imageFitMode = FIT_FREE;
+    saveViewportPos();
+}
+
+void ImageViewerV2::toggleLockView() {
+    if(!isDisplaying())
+        return;
+    if(mViewLock != LOCK_ALL) {
+        mViewLock = LOCK_ALL;
+        lockZoom();
+        saveViewportPos();
+    } else {
+        mViewLock = LOCK_NONE;
+    }
+}
+
+bool ImageViewerV2::lockViewEnabled() {
+    return (mViewLock == LOCK_ALL);
+}
+
+// savedViewportPos is [0...1][0...1]
+// values are where viewport center is on the image
+void ImageViewerV2::saveViewportPos() {
+    if(mViewLock != LOCK_ALL)
+        return;
+    QGraphicsPixmapItem *item = &pixmapItem;
+    QPointF sceneCenter = mapToScene( viewport()->rect().center() ) + QPointF(1,1);
+    auto itemRect = item->sceneBoundingRect();
+    savedViewportPos.setX(qBound(0.f, (sceneCenter.x() - itemRect.left()) / itemRect.width(),  1.f));
+    savedViewportPos.setY(qBound(0.f, (sceneCenter.y() - itemRect.top())  / itemRect.height(), 1.f));
+}
+
+void ImageViewerV2::applySavedViewportPos() {
+    QGraphicsPixmapItem *item = &pixmapItem;
+    auto itemRect = item->sceneBoundingRect();
+    QPointF newScenePos;
+    newScenePos.setX(itemRect.left() + itemRect.width()  * savedViewportPos.x());
+    newScenePos.setY(itemRect.top()  + itemRect.height() * savedViewportPos.y());
+    centerOn(newScenePos);
+    centerIfNecessary();
+    snapToEdges();
 }
 
 void ImageViewerV2::centerIfNecessary() {

@@ -249,12 +249,21 @@ void MW::setDirectoryPath(QString path) {
     onInfoUpdated();
 }
 
-void MW::toggleZoomLock() {
-    viewerWidget->toggleZoomLock();
-    if(viewerWidget->zoomLock())
+void MW::toggleLockZoom() {
+    viewerWidget->toggleLockZoom();
+    if(viewerWidget->lockZoomEnabled())
         showMessage("Zoom lock: ON");
     else
         showMessage("Zoom lock: OFF");
+    onInfoUpdated();
+}
+
+void MW::toggleLockView() {
+    viewerWidget->toggleLockView();
+    if(viewerWidget->lockViewEnabled())
+        showMessage("View lock: ON");
+    else
+        showMessage("View lock: OFF");
     onInfoUpdated();
 }
 
@@ -685,8 +694,10 @@ void MW::onInfoUpdated() {
             states.append(" [slideshow]");
         if(info.shuffle)
             states.append(" [shuffle]");
-        if(viewerWidget->zoomLock())
+        if(viewerWidget->lockZoomEnabled())
             states.append(" [zoom lock]");
+        if(viewerWidget->lockViewEnabled())
+            states.append(" [view lock]");
 
         if(!settings->infoBarWindowed() && !states.isEmpty())
             windowTitle.append(" -" + states);

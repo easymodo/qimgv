@@ -34,7 +34,8 @@ public:
     bool showAnimation(std::unique_ptr<QMovie> movie);
     void onScalingFinished(std::unique_ptr<QPixmap> scaled);
     bool isDisplaying();
-    bool zoomLock();
+    bool lockZoomEnabled();
+    bool lockViewEnabled();
     ScalingFilter scalingFilter();
     void hidePanel();
     void hidePanelAnimated();
@@ -88,7 +89,8 @@ signals:
     void setFilterNearest();
     void setFilterBilinear();
     void playbackFinished();
-    void toggleZoomLock();
+    void toggleLockZoom();
+    void toggleLockView();
 
 public slots:
     bool showVideo(QString file);
