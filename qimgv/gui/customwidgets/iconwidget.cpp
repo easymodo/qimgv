@@ -44,6 +44,12 @@ void IconWidget::setIconPath(QString path) {
     update();
 }
 
+void IconWidget::setIconOffset(int x, int y) {
+    iconOffset.setX(x);
+    iconOffset.setY(y);
+    update();
+}
+
 void IconWidget::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QPainter p(this);
@@ -62,6 +68,6 @@ void IconWidget::paintEvent(QPaintEvent *event) {
             pos = QPointF(width()  / 2 - pixmap->width()  / 2,
                           height() / 2 - pixmap->height() / 2);
         }
-        p.drawPixmap(pos, *pixmap);
+        p.drawPixmap(pos + iconOffset, *pixmap);
     }
 }

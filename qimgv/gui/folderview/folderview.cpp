@@ -39,10 +39,12 @@ FolderView::FolderView(QWidget *parent) :
     ui->settingsButton->setIconPath(":res/icons/common/buttons/panel/settings16.png");
     ui->exitButton->setAction("exit");
     ui->exitButton->setIconPath(":res/icons/common/buttons/panel/close16.png");
+    ui->exitButton->setIconOffset(-1, 0);
     ui->docViewButton->setAction("documentView");
     ui->docViewButton->setIconPath(":res/icons/common/buttons/panel/document-view16.png");
     ui->togglePlacesPanelButton->setCheckable(true);
     ui->togglePlacesPanelButton->setIconPath(":res/icons/common/buttons/panel/toggle-panel20.png");
+    ui->togglePlacesPanelButton->setIconOffset(1, 0);
 
     ui->optionsPopupButton->setCheckable(true);
     ui->optionsPopupButton->setIconPath(":res/icons/common/buttons/panel/folderview20.png");
@@ -222,6 +224,11 @@ void FolderView::hide() {
 
 void FolderView::onFullscreenModeChanged(bool mode) {
     ui->exitButton->setHidden(!mode);
+    if(mode) // hide 2px spacer
+        ui->panelRightEdgeSpacer->changeSize(0, 20, QSizePolicy::Fixed, QSizePolicy::Fixed);
+    else // show spacer
+        ui->panelRightEdgeSpacer->changeSize(2, 20, QSizePolicy::Fixed, QSizePolicy::Fixed);
+
 }
 
 void FolderView::focusInEvent(QFocusEvent *event) {
@@ -357,13 +364,12 @@ void FolderView::paintEvent(QPaintEvent *) {
 
 void FolderView::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
-    if(!ui->togglePlacesPanelButton->isChecked())
-        return;
-    if(width() < 600) {
-        if(ui->placesPanel->isVisible())
-            ui->placesPanel->setVisible(false);
-    } else {
-        if(!ui->placesPanel->isVisible())
-            ui->placesPanel->setVisible(true);
-    }
+    if(width() < 600)
+        ui->placesPanel->setVisible(false);
+    else if (ui->togglePlacesPanelButton->isChecked())
+        ui->placesPanel->setVisible(true);
+    if(width() < 510)
+        ui->zoomSlider->setVisible(false);
+    else
+        ui->zoomSlider->setVisible(true);
 }

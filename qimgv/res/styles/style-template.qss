@@ -43,21 +43,33 @@
 /*----------------------------------------------------------------------------*/
 [accessibleName="CheckableButton"] {
     border-radius: 3px;
-    padding:       7px;
     margin-top:    4px;
     margin-bottom: 4px;
-    margin-left:   3px;
-    margin-right:  3px;
+    margin-left:   2px;
+    margin-right:  2px;
 }
 
-[accessibleName="CheckableButton"]:hover {
+/* extra 2px left margin for fitt's law */
+[accessibleName="CheckableButtonLE"] {
+    border-radius: 3px;
+    margin-top:    4px;
+    margin-bottom: 4px;
+    margin-left:   4px;
+    margin-right:  2px;
+}
+
+[accessibleName="CheckableButton"]:hover,
+[accessibleName="CheckableButtonLE"]:hover {
     background-color: %panel_button_hover%;
     border: 1px solid %panel_button_hover%;
 }
 
 [accessibleName="CheckableButton"]:pressed,
+[accessibleName="CheckableButtonLE"]:pressed,
 [accessibleName="CheckableButton"][pressed="true"],
-[accessibleName="CheckableButton"][checked="true"] {
+[accessibleName="CheckableButtonLE"][pressed="true"],
+[accessibleName="CheckableButton"][checked="true"],
+[accessibleName="CheckableButtonLE"][checked="true"] {
     background-color: %panel_button%;
     border: 1px solid %panel_button%;
 }
@@ -67,17 +79,28 @@
     border-radius: 3px;
     margin-top:    4px;
     margin-bottom: 4px;
-    margin-left:   3px;
-    margin-right:  3px;
+    margin-left:   2px;
+    margin-right:  2px;
 }
 
-[accessibleName="PanelButton"]:hover {
+[accessibleName="PanelButtonRE"] {
+    border-radius: 3px;
+    margin-top:    4px;
+    margin-bottom: 4px;
+    margin-left:   2px;
+    margin-right:  4px;
+}
+
+[accessibleName="PanelButton"]:hover,
+[accessibleName="PanelButtonRE"]:hover {
     background-color: %panel_button_hover%;
     border: 1px solid %panel_button_hover%;
 }
 
 [accessibleName="PanelButton"]:pressed,
-[accessibleName="PanelButton"][pressed="true"] {
+[accessibleName="PanelButtonRE"]:pressed,
+[accessibleName="PanelButton"][pressed="true"],
+[accessibleName="PanelButtonRE"][pressed="true"] {
     background-color: %panel_button%;
     border: 1px solid %panel_button%;
 }

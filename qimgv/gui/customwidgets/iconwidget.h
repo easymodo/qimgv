@@ -14,12 +14,14 @@ public:
     explicit IconWidget(QWidget *parent = nullptr);
     ~IconWidget();
     void setIconPath(QString path);
+    void setIconOffset(int x, int y);
 
 protected:
     void paintEvent(QPaintEvent *event);
 
 private:
     bool hiResPixmap;
+    QPoint iconOffset;
     QPixmap *pixmap;
     qreal dpr, pixmapDrawScale;
 };

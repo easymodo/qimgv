@@ -92,7 +92,7 @@
          </size>
         </property>
         <property name="accessibleName">
-         <string notr="true">CheckableButton</string>
+         <string notr="true">CheckableButtonLE</string>
         </property>
        </widget>
       </item>
@@ -183,7 +183,7 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>12</width>
+          <width>0</width>
           <height>20</height>
          </size>
         </property>
@@ -252,13 +252,13 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>40</width>
+          <width>38</width>
           <height>38</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>40</width>
+          <width>38</width>
           <height>38</height>
          </size>
         </property>
@@ -350,11 +350,11 @@
          <enum>Qt::Horizontal</enum>
         </property>
         <property name="sizeType">
-         <enum>QSizePolicy::Maximum</enum>
+         <enum>QSizePolicy::Fixed</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>10</width>
+          <width>8</width>
           <height>20</height>
          </size>
         </property>
@@ -363,20 +363,20 @@
       <item>
        <widget class="ActionButton" name="docViewButton" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="minimumSize">
          <size>
-          <width>40</width>
+          <width>38</width>
           <height>38</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>40</width>
+          <width>38</width>
           <height>38</height>
          </size>
         </property>
@@ -388,20 +388,20 @@
       <item>
        <widget class="ActionButton" name="settingsButton" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="minimumSize">
          <size>
-          <width>40</width>
+          <width>38</width>
           <height>38</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>40</width>
+          <width>38</width>
           <height>38</height>
          </size>
         </property>
@@ -411,9 +411,25 @@
        </widget>
       </item>
       <item>
+       <spacer name="panelRightEdgeSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>2</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <widget class="ActionButton" name="exitButton" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -431,7 +447,7 @@
          </size>
         </property>
         <property name="accessibleName">
-         <string>PanelButton</string>
+         <string>PanelButtonRE</string>
         </property>
        </widget>
       </item>
