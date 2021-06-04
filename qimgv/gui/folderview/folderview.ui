@@ -174,7 +174,7 @@
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer">
+       <spacer name="pathbarSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -227,7 +227,7 @@
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer_4">
+       <spacer name="zoomSliderSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>

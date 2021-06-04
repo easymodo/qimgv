@@ -368,8 +368,16 @@ void FolderView::resizeEvent(QResizeEvent *event) {
         ui->placesPanel->setVisible(false);
     else if (ui->togglePlacesPanelButton->isChecked())
         ui->placesPanel->setVisible(true);
-    if(width() < 510)
+
+    if(width() < 510) {
         ui->zoomSlider->setVisible(false);
-    else
+        ui->zoomSliderSpacer->changeSize(0, 20, QSizePolicy::Fixed, QSizePolicy::Fixed);
+        ui->pathbarSpacer->changeSize(0, 20, QSizePolicy::Fixed, QSizePolicy::Fixed);
+        ui->panel->layout()->invalidate();
+    } else {
         ui->zoomSlider->setVisible(true);
+        ui->zoomSliderSpacer->changeSize(3, 20, QSizePolicy::Fixed, QSizePolicy::Fixed);
+        ui->pathbarSpacer->changeSize(12, 20, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+        ui->panel->layout()->invalidate();
+    }
 }
