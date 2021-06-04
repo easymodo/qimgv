@@ -43,7 +43,7 @@
 /*----------------------------------------------------------------------------*/
 [accessibleName="CheckableButton"] {
     border-radius: 3px;
-    padding: 7px;
+    padding:       7px;
     margin-top:    4px;
     margin-bottom: 4px;
     margin-left:   3px;
@@ -482,7 +482,7 @@ FVOptionsPopup {
 }
 
 FVOptionsPopup QLabel {
-    color: %text%;
+    color: %text_secondary_rgba%;
 }
 
 /*----------------------------------------------------------------------------*/
