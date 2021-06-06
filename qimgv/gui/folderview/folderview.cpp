@@ -228,7 +228,7 @@ void FolderView::onFullscreenModeChanged(bool mode) {
         ui->panelRightEdgeSpacer->changeSize(0, 20, QSizePolicy::Fixed, QSizePolicy::Fixed);
     else // show spacer
         ui->panelRightEdgeSpacer->changeSize(2, 20, QSizePolicy::Fixed, QSizePolicy::Fixed);
-
+    ui->panel->layout()->invalidate();
 }
 
 void FolderView::focusInEvent(QFocusEvent *event) {
