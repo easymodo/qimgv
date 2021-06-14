@@ -118,6 +118,15 @@ void PrintDialog::updatePrintLayout() {
     QPainter p(&pagePixmap);
     p.fillRect(pagePixmap.rect(), QColor(255,255,255));
     p.drawPixmap(imgRectScaled.left(), imgRectScaled.top(), imgPixmap);
+    // page border
+    p.setOpacity(0.25f);
+    QPalette palette;
+    QColor sys_window = palette.window().color();
+    if(sys_window.valueF() <= 0.45f)
+        p.setPen(Qt::white);
+    else
+        p.setPen(Qt::black);
+    p.drawRect(QRectF(0.5f, 0.5f, pagePixmap.width()-1.0f, pagePixmap.height()-1.0f));
     ui->previewLabel->setPixmap(pagePixmap);
 }
 

@@ -8,6 +8,7 @@
 #include <QPainter>
 #include <QDebug>
 #include "components/thumbnailer/thumbnailer.h"
+#include "settings.h"
 
 namespace Ui {
 class PrintDialog;
