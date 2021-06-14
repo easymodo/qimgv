@@ -35,6 +35,7 @@ target_sources(qimgv PRIVATE
     dialogs/scripteditordialog.cpp
     dialogs/settingsdialog.cpp
     dialogs/shortcutcreatordialog.cpp
+    dialogs/printdialog.cpp
 
     overlays/changelogwindow.cpp
     overlays/controlsoverlay.cpp
@@ -90,6 +91,7 @@ target_sources(qimgv PRIVATE
     dialogs/scripteditordialog.ui
     dialogs/settingsdialog.ui
     dialogs/shortcutcreatordialog.ui
+    dialogs/printdialog.ui
 
     overlays/changelogwindow.ui
     overlays/copyoverlay.ui

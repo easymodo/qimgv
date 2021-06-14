@@ -194,6 +194,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::discardEdits, this, &Core::discardEdits);
     connect(actionManager, &ActionManager::nextDirectory, this, &Core::nextDirectory);
     connect(actionManager, &ActionManager::prevDirectory, this, qOverload<>(&Core::prevDirectory));
+    connect(actionManager, &ActionManager::print, this, &Core::print);
 }
 
 void Core::onUpdate() {
@@ -926,6 +927,25 @@ void Core::runScript(const QString &scriptName) {
     if(model->isEmpty())
         return;
     scriptManager->runScript(scriptName, model->getImage(selectedFilePath()));
+}
+
+void Core::print() {
+    if(model->isEmpty())
+        return;
+    PrintDialog p(mw);
+    auto img = model->getImage(selectedFilePath());
+    if(!img) {
+        mw->showError("Could not open image");
+        return;
+    }
+    if(img->type() != DocumentType::STATIC) {
+        mw->showError("Can only print static images");
+        return;
+    }
+    QString pdfPath = model->directoryPath() + "/" + img->baseName() + ".pdf";
+    p.setImage(img->getImage());
+    p.setOutputPath(pdfPath);
+    p.exec();
 }
 
 void Core::scalingRequest(QSize size, ScalingFilter filter) {

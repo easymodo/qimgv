@@ -122,6 +122,7 @@ signals:
     void prevDirectory();
     void lockZoom();
     void lockView();
+    void print();
 };
 
 extern ActionManager *actionManager;

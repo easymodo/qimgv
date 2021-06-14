@@ -14,6 +14,7 @@
 #include "components/scriptmanager/scriptmanager.h"
 #include "gui/mainwindow.h"
 #include "utils/randomizer.h"
+#include "gui/dialogs/printdialog.h"
 
 #ifdef __GLIBC__
 #include <malloc.h>
@@ -159,4 +160,5 @@ private slots:
     void nextDirectory();
     void prevDirectory(bool selectLast);
     void prevDirectory();
+    void print();
 };
