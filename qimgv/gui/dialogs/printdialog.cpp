@@ -87,7 +87,7 @@ void PrintDialog::updatePrintLayout() {
         targetPrinter->setPageOrientation(QPageLayout::Landscape);
     pageRect = QRectF(QPoint(0,0), targetPrinter->pageRect(QPrinter::DevicePixel).size());
     imgRect = img->rect();
-    QRectF fullRect = targetPrinter->pageLayout().fullRect();
+    QRectF fullRect = targetPrinter->pageLayout().fullRectPixels(printer->resolution());
 
     // todo: fit buttons
     bool scaleToFit = true;
@@ -116,7 +116,7 @@ void PrintDialog::updatePrintLayout() {
     QPixmap imgPixmap = QPixmap::fromImage(img->scaled(imgRectScaled.size() * qApp->devicePixelRatio(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     imgPixmap.setDevicePixelRatio(qApp->devicePixelRatio());
     QPainter p(&pagePixmap);
-    p.fillRect(pagePixmap.rect(), QColor(245,245,245));
+    p.fillRect(pagePixmap.rect(), QColor(255,255,255));
     p.drawPixmap(imgRectScaled.left(), imgRectScaled.top(), imgPixmap);
     ui->previewLabel->setPixmap(pagePixmap);
 }
