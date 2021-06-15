@@ -26,6 +26,7 @@ public:
     bool processEvent(QInputEvent*);
     void addShortcut(const QString &keys, const QString &action);
     void resetDefaults();
+    void resetDefaults(QString action);
     QString actionForShortcut(const QString &keys);
     const QString shortcutForAction(QString action);
     const QList<QString> shortcutsForAction(QString action);
@@ -37,9 +38,6 @@ public:
     QString keyForNativeScancode(quint32 scanCode);
     void resetDefaultsFromVersion(QVersionNumber lastVer);
     void saveShortcuts();
-
-    void fixLegacyShortcutsV089(); // todo: remove this eventually
-
 public slots:
     bool invokeAction(const QString &actionName);
 private:

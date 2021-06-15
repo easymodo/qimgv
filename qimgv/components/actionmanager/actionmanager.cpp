@@ -51,7 +51,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+" + InputMap::keyNameShift() + "+S", "saveAs");
     //actionManager->defaults.insert(InputMap::keyNameCtrl() + "+W", "setWallpaper");
     actionManager->defaults.insert("X", "crop");
-    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+P", "openSettings");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+P", "print");
     actionManager->defaults.insert(InputMap::keyNameAlt() + "+X", "exit");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Q", "exit");
     actionManager->defaults.insert("Esc", "closeFullScreenOrExit");
@@ -84,6 +84,9 @@ void ActionManager::initDefaults() {
 #ifdef __APPLE__
     actionManager->defaults.insert(InputMap::keyNameAlt() + "+Up", "zoomIn");
     actionManager->defaults.insert(InputMap::keyNameAlt() + "+Down", "zoomOut");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Comma", "openSettings");
+#else
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+,", "openSettings");
 #endif
 
     //actionManager->defaults.insert("Backspace", "goUp"); // todo: shortcut scopes?
@@ -144,6 +147,18 @@ void ActionManager::resetDefaults() {
     actionManager->shortcuts = actionManager->defaults;
 }
 //------------------------------------------------------------------------------
+void ActionManager::resetDefaults(QString action) {
+    actionManager->removeAllShortcuts(action);
+    QMapIterator<QString, QString> i(defaults);
+    while(i.hasNext()) {
+        i.next();
+        if(i.value() == action) {
+            shortcuts.insert(i.key(), i.value());
+            qDebug() << "[ActionManager] new action " << i.value() << " - assigning as [" << i.key() << "]";
+        }
+    }
+}
+//------------------------------------------------------------------------------
 // argument: target version
 // every action added from next version onwards will be reset
 // TODO: maybe move this to core or something?
@@ -163,33 +178,6 @@ void ActionManager::resetDefaultsFromVersion(QVersionNumber lastVer) {
         }
     }
 }
-//------------------------------------------------------------------------------
-void ActionManager::fixLegacyShortcutsV089() {
-    QMap<QString, QString> shortcutsNew;
-    QString keyBuf;
-    QMapIterator<QString, QString> i(shortcuts);
-    while(i.hasNext()) {
-        i.next();
-        keyBuf = i.key();
-        // replace with correct key names
-        keyBuf.replace("Return", "Enter");
-        keyBuf.replace("delete", "Del");
-        keyBuf.replace("escape", "Esc");
-        keyBuf.replace("pageUp", "PgUp");
-        keyBuf.replace("pageDown", "PgDown");
-        keyBuf.replace("pageBack", "PgBack");
-        keyBuf.replace("pageForward", "PgForward");
-        keyBuf.replace("~", "`");
-        keyBuf.replace("backspace", "Backspace");
-        keyBuf.replace("home", "Home");
-        keyBuf.replace("end", "End");
-        keyBuf.replace("menu", "Menu");
-        qDebug() << "[ActionManager] inserting:" << keyBuf << "=>" << i.value();
-        shortcutsNew.insert(keyBuf, i.value());
-    }
-    shortcuts = shortcutsNew;
-}
-
 //------------------------------------------------------------------------------
 void ActionManager::saveShortcuts() {
     settings->saveShortcuts(actionManager->shortcuts);

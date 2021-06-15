@@ -200,8 +200,10 @@ void Core::initActions() {
 void Core::onUpdate() {
     QVersionNumber lastVer = settings->lastVersion();
 
-    if(lastVer < QVersionNumber(0,8,9))
-        actionManager->fixLegacyShortcutsV089();
+    if(lastVer < QVersionNumber(0,9,2)) {
+        actionManager->resetDefaults("print");
+        actionManager->resetDefaults("openSettings");
+    }
 
 #ifdef USE_OPENCV
     if(lastVer < QVersionNumber(0,9,0))
