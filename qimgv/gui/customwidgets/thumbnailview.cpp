@@ -315,23 +315,40 @@ void ThumbnailView::unloadAllThumbnails() {
 void ThumbnailView::loadVisibleThumbnails() {
     loadTimer.stop();
     if(isVisible() && !blockThumbnailLoading) {
-        QRectF visibleRect = mapToScene(viewport()->geometry()).boundingRect();
-        // grow rectangle to cover nearby offscreen items
-        visibleRect.adjust(-offscreenPreloadArea, -offscreenPreloadArea,
-                           offscreenPreloadArea, offscreenPreloadArea);
-        QList<QGraphicsItem *>visibleItems = scene.items(visibleRect,
-                                                         Qt::IntersectsItemShape,
-                                                         Qt::AscendingOrder);
-        // load new previews
+        QRectF visRect = mapToScene(viewport()->geometry()).boundingRect();
+        QRectF offRectBack;
+        QRectF offRectFront;
+        if(orientation == THUMBNAILVIEW_HORIZONTAL) {
+            offRectBack = QRectF(visRect.left() - offscreenPreloadArea, visRect.top(),
+                                 offscreenPreloadArea, visRect.height());
+            offRectFront = QRectF(visRect.right(), visRect.top(),
+                                 offscreenPreloadArea, visRect.height());
+        } else {
+            offRectBack = QRectF(visRect.left(), visRect.top() - offscreenPreloadArea,
+                                 visRect.width(), offscreenPreloadArea);
+            offRectFront = QRectF(visRect.left(), visRect.bottom(),
+                                 visRect.width(), offscreenPreloadArea);
+        }
+        QList<QGraphicsItem *>visibleItems;
+        if(lastScrollDirection == SCROLL_FORWARDS)
+            visibleItems = scene.items(visRect, Qt::IntersectsItemShape, Qt::AscendingOrder);
+        else
+            visibleItems = scene.items(visRect, Qt::IntersectsItemShape, Qt::DescendingOrder);
+        visibleItems.append(scene.items(offRectBack,  Qt::IntersectsItemShape, Qt::DescendingOrder));
+        visibleItems.append(scene.items(offRectFront, Qt::IntersectsItemShape, Qt::AscendingOrder));
+        // select
         QList<int> loadList;
         for(int i = 0; i < visibleItems.count(); i++) {
             ThumbnailWidget* widget = qgraphicsitem_cast<ThumbnailWidget*>(visibleItems.at(i));
-            if(widget && !widget->isLoaded)
-                loadList.append(thumbnails.indexOf(widget));
+            if(widget && !widget->isLoaded) {
+                int idx = thumbnails.indexOf(widget);
+                if(!loadList.contains(idx))
+                    loadList.append(idx);
+            }
         }
-        if(loadList.count()) {
+        // load
+        if(loadList.count())
             emit thumbnailsRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize), mCropThumbnails, false);
-        }
         // unload offscreen
         for(int i = 0; i < thumbnails.count(); i++) {
             if(!visibleItems.contains(thumbnails.at(i))) {
@@ -425,6 +442,10 @@ void ThumbnailView::wheelEvent(QWheelEvent *event) {
 }
 
 void ThumbnailView::scrollPrecise(int delta) {
+    if(delta < 0)
+        lastScrollDirection = SCROLL_FORWARDS;
+    else
+        lastScrollDirection = SCROLL_BACKWARDS;
     viewportCenter = mapToScene(viewport()->rect().center());
     if(scrollTimeLine->state() == QTimeLine::Running) {
         scrollTimeLine->stop();
@@ -441,6 +462,10 @@ void ThumbnailView::scrollPrecise(int delta) {
 }
 
 void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration, bool additive) {
+    if(delta < 0)
+        lastScrollDirection = SCROLL_FORWARDS;
+    else
+        lastScrollDirection = SCROLL_BACKWARDS;
     viewportCenter = mapToScene(viewport()->rect().center());
     // ignore if we reached boundaries
     if( (delta > 0 && atSceneStart()) || (delta < 0 && atSceneEnd()) ) {

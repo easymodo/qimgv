@@ -32,6 +32,11 @@ enum ThumbnailSelectMode {
     ACTIVATE_BY_DOUBLECLICK
 };
 
+enum ScrollDirection {
+    SCROLL_FORWARDS,
+    SCROLL_BACKWARDS
+};
+
 class ThumbnailView : public QGraphicsView, public IDirectoryView {
     Q_OBJECT
 public:
@@ -115,6 +120,7 @@ protected:
     const int SCROLL_ACCELERATION_THRESHOLD = 50;
 
     const uint LOAD_DELAY = 150;
+    ScrollDirection lastScrollDirection = SCROLL_FORWARDS;
 
     bool atSceneStart();
     bool atSceneEnd();
