@@ -8,8 +8,10 @@ void FileOperations::removeFile(const QString &filePath, FileOpResult &result) {
     QFileInfo file(filePath);
     if(!file.exists()) {
         result = FileOpResult::SOURCE_DOES_NOT_EXIST;
+#ifdef Q_OS_WIN32
     } else if(!file.isWritable()) {
         result = FileOpResult::SOURCE_NOT_WRITABLE;
+#endif
     } else {
         if(QFile::remove(filePath))
             result = FileOpResult::SUCCESS;
@@ -64,10 +66,12 @@ void FileOperations::copyTo(const QString &srcFilePath, const QString &destDirPa
     }
     QFileInfo destFile(destDirPath + "/" + srcFile.fileName());
     if(destFile.exists()) {
+#ifdef Q_OS_WIN32
         if(!destFile.isWritable()) {
             result = FileOpResult::DESTINATION_NOT_WRITABLE;
             return;
         }
+#endif
         if(!force) {
             result = FileOpResult::DESTINATION_FILE_EXISTS;
             return;
@@ -114,10 +118,12 @@ void FileOperations::moveTo(const QString &srcFilePath, const QString &destDirPa
         result = FileOpResult::SOURCE_DOES_NOT_EXIST;
         return;
     }
+    #ifdef Q_OS_WIN32
     if(!srcFile.isWritable()) {
         result = FileOpResult::SOURCE_NOT_WRITABLE;
         return;
     }
+    #endif
     QFileInfo destDir(destDirPath);
     if(!destDir.exists()) {
         result = FileOpResult::DESTINATION_DOES_NOT_EXIST;
@@ -129,10 +135,12 @@ void FileOperations::moveTo(const QString &srcFilePath, const QString &destDirPa
     }
     QFileInfo destFile(destDirPath + "/" + srcFile.fileName());
     if(destFile.exists()) {
+#ifdef Q_OS_WIN32
         if(!destFile.isWritable()) {
             result = FileOpResult::DESTINATION_NOT_WRITABLE;
             return;
         }
+#endif
         if(!force) {
             result = FileOpResult::DESTINATION_FILE_EXISTS;
             return;
@@ -186,10 +194,12 @@ void FileOperations::rename(const QString &srcFilePath, const QString &newName, 
         result = FileOpResult::SOURCE_DOES_NOT_EXIST;
         return;
     }
+#ifdef Q_OS_WIN32
     if(!srcFile.isWritable()) {
         result = FileOpResult::SOURCE_NOT_WRITABLE;
         return;
     }
+#endif
     if(newName.isEmpty() || newName == srcFile.fileName()) {
         result = FileOpResult::NOTHING_TO_DO;
         return;
@@ -197,8 +207,10 @@ void FileOperations::rename(const QString &srcFilePath, const QString &newName, 
     QString newFilePath = srcFile.absolutePath() + "/" + newName;
     QFileInfo destFile(newFilePath);
     if(destFile.exists()) {
+#ifdef Q_OS_WIN32
         if(!destFile.isWritable())
             result = FileOpResult::DESTINATION_NOT_WRITABLE;
+#endif
         if(!force) {
             result = FileOpResult::DESTINATION_FILE_EXISTS;
             return;
@@ -210,7 +222,8 @@ void FileOperations::rename(const QString &srcFilePath, const QString &newName, 
     }
     if(QFile::rename(srcFile.filePath(), newFilePath)) {
         result = FileOpResult::SUCCESS;
-        QFile::remove(tmpPath);
+        if(QFile::exists(tmpPath))
+            QFile::remove(tmpPath);
     } else {
         result = FileOpResult::OTHER_ERROR;
         // restore dest file
@@ -222,8 +235,10 @@ void FileOperations::moveToTrash(const QString &filePath, FileOpResult &result) 
     QFileInfo file(filePath);
     if(!file.exists()) {
         result = FileOpResult::SOURCE_DOES_NOT_EXIST;
+#ifdef Q_OS_WIN32
     } else if(!file.isWritable()) {
         result = FileOpResult::SOURCE_NOT_WRITABLE;
+#endif
     } else {
         if(moveToTrashImpl(filePath))
             result = FileOpResult::SUCCESS;
