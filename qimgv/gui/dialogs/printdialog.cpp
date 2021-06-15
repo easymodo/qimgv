@@ -25,7 +25,7 @@ PrintDialog::PrintDialog(QWidget *parent)
         printPdfDefault = settings->printPdfDefault();
     }
     ui->color->setChecked(settings->printColor());
-    ui->landscape->setChecked(settings->printLandscape());
+    setLandscape(settings->printLandscape());
     ui->fitToPageCheckBox->setChecked(settings->printFitToPage());
     if(printPdfDefault)
         ui->exportPdfButton->setFocus();
@@ -34,7 +34,7 @@ PrintDialog::PrintDialog(QWidget *parent)
     connect(ui->printButton, &QPushButton::clicked, this, &PrintDialog::print);
     connect(ui->exportPdfButton, &QPushButton::clicked, this, &PrintDialog::exportPdf);
     connect(ui->printerListComboBox, &QComboBox::currentTextChanged, this, &PrintDialog::onPrinterSelected);
-    connect(ui->portrait, &QRadioButton::toggled, this, &PrintDialog::onOrientationChanged);
+    connect(ui->landscape, &QRadioButton::toggled, this, &PrintDialog::setLandscape);
     connect(ui->fitToPageCheckBox, &QCheckBox::toggled, this, &PrintDialog::updatePreview);
     connect(ui->color, &QRadioButton::toggled, this, &PrintDialog::updatePreview);
 }
@@ -121,13 +121,16 @@ QRectF PrintDialog::getImagePrintRect(QPrinter *pr) {
     return imgRect;
 }
 
-void PrintDialog::onOrientationChanged() {
-    QPageLayout::Orientation mode = QPageLayout::Portrait;
-    if(ui->landscape->isChecked())
-        mode = QPageLayout::Landscape;
+void PrintDialog::setLandscape(bool mode) {
+    ui->landscape->blockSignals(true);
+    ui->landscape->setChecked(mode);
+    ui->landscape->blockSignals(false);
+    QPageLayout::Orientation orientation = QPageLayout::Portrait;
+    if(mode)
+        orientation = QPageLayout::Landscape;
     if(printer)
-        printer->setPageOrientation(mode);
-    pdfPrinter.setPageOrientation(mode);
+        printer->setPageOrientation(orientation);
+    pdfPrinter.setPageOrientation(orientation);
     updatePreview();
 }
 

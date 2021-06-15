@@ -29,7 +29,7 @@ private slots:
     void exportPdf();
     QRectF getImagePrintRect(QPrinter *printer);
     void updatePreview();
-    void onOrientationChanged();
+    void setLandscape(bool mode);
     void onPrinterSelected(QString name);
     QString pdfPathDialog();
 
