@@ -806,3 +806,14 @@ SettingsDialog QComboBox {
 ImageInfoOverlay QLabel {
     color: %text_hc%;
 }
+/*----------------------------------------------------------------------------*/
+PrintDialog QRadioButton,
+PrintDialog QCheckBox {
+    padding: 4px;
+}
+
+PrintDialog QRadioButton:hover,
+PrintDialog QCheckBox:hover {
+    /*  background-color: %system_window_tinted%;  */
+}
+

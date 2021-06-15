@@ -249,6 +249,17 @@ public:
 
     const QMultiMap<QByteArray, QByteArray> videoFormats() const;
 
+    bool printLandscape();
+    void setPrintLandscape(bool mode);
+    bool printPdfDefault();
+    void setPrintPdfDefault(bool mode);
+    bool printColor();
+    void setPrintColor(bool mode);
+    bool printFitToPage();
+    void setPrintFitToPage(bool mode);
+    QString lastPrinter();
+    void setLastPrinter(QString name);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;

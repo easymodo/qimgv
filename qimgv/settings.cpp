@@ -913,7 +913,7 @@ ViewMode Settings::defaultViewMode() {
 void Settings::setDefaultViewMode(ViewMode mode) {
     settings->settingsConf->setValue("defaultViewMode", mode);
 }
-
+//------------------------------------------------------------------------------
 FolderEndAction Settings::folderEndAction() {
     int mode = settings->settingsConf->value("folderEndAction", 0).toInt();
     if(mode < 0 || mode > 2)
@@ -923,4 +923,44 @@ FolderEndAction Settings::folderEndAction() {
 
 void Settings::setFolderEndAction(FolderEndAction mode) {
     settings->settingsConf->setValue("folderEndAction", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::printLandscape() {
+    return stateConf->value("printLandscape", false).toBool();
+}
+
+void Settings::setPrintLandscape(bool mode) {
+    stateConf->setValue("printLandscape", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::printPdfDefault() {
+    return stateConf->value("printPdfDefault", false).toBool();
+}
+
+void Settings::setPrintPdfDefault(bool mode) {
+    stateConf->setValue("printPdfDefault", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::printColor() {
+    return stateConf->value("printColor", false).toBool();
+}
+
+void Settings::setPrintColor(bool mode) {
+    stateConf->setValue("printColor", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::printFitToPage() {
+    return stateConf->value("printFitToPage", true).toBool();
+}
+
+void Settings::setPrintFitToPage(bool mode) {
+    stateConf->setValue("printFitToPage", mode);
+}
+//------------------------------------------------------------------------------
+QString Settings::lastPrinter() {
+    return stateConf->value("lastPrinter", "").toString();
+}
+
+void Settings::setLastPrinter(QString name) {
+    stateConf->setValue("lastPrinter", name);
 }

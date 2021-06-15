@@ -6,6 +6,7 @@
 #include <QtPrintSupport/QPrinterInfo>
 #include <QFileDialog>
 #include <QPainter>
+#include <QGraphicsColorizeEffect>
 #include <QDebug>
 #include "components/thumbnailer/thumbnailer.h"
 #include "settings.h"
@@ -25,18 +26,19 @@ public:
 
 private slots:
     void print();
-    void onPdfChecked(bool mode);
-    void updatePrintLayout();
+    void exportPdf();
+    QRectF getImagePrintRect(QPrinter *printer);
+    void updatePreview();
+    void onOrientationChanged();
     void onPrinterSelected(QString name);
-    void onOutputPathEdited(QString path);
-    void pdfPathDialog();
+    QString pdfPathDialog();
 
 private:
+    void saveSettings();
     Ui::PrintDialog *ui;
     std::shared_ptr<const QImage> img = nullptr;
-    QPrinter pdfPrinter;
-    QPrinter *printer = nullptr, *targetPrinter = nullptr;
-    QRectF pageRect, imgRect;
+    QPrinter pdfPrinter, *printer = nullptr;
+    bool printPdfDefault = false;
 };
 
 #endif // PRINTDIALOG_H
