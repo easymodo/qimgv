@@ -49,13 +49,12 @@ protected:
     void resizeEvent(QResizeEvent *event);
 private:
     QPoint startPos, endPos, moveStartPos, resizeAnchor;
-    QRect imageRect, imageDrawRect, selectionRect, selectionDrawRect, handles[8];
+    QRect imageRect, imageDrawRect, imageDrawRectDpi, selectionRect, selectionDrawRect, selectionDrawRectDpi, handles[8];
     bool lockAspectRatio;
     float scale;
     QBrush brushInactiveTint, brushDarkGray, brushGray, brushLightGray;
-    QRectF selectionDrawRectDpi, handlesDpi[8];
+    QRectF handlesDpi[8];
     int handleSize;
-    QImage *drawBuffer;
     CursorAction cursorAction;
     QPen selectionOutlinePen;
     qreal dpr;
@@ -78,7 +77,6 @@ private:
     void setResizeAnchor(CursorAction action);
     bool hasSelection();
 public slots:
-    void show();
     void hide();
     void onSelectionOutsideChange(QRect selection);
     void selectAll();

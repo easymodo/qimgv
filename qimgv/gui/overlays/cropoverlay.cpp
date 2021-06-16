@@ -9,7 +9,6 @@ CropOverlay::CropOverlay(FloatingWidgetContainer *parent) : FloatingWidget(paren
     selectionRect(QRect(0, 0, 0, 0)),
     lockAspectRatio(false),
     scale(1.0f),
-    drawBuffer(nullptr),
     cursorAction(NO_DRAG)
 {
     setMouseTracking(true);
@@ -53,9 +52,10 @@ void CropOverlay::setImageRealSize(QSize sz) {
 }
 
 //------------------------------------------------------------------------------
-void CropOverlay::setImageDrawRect(QRect imageDrawRect) {
-    this->imageDrawRect.setTopLeft(imageDrawRect.topLeft() * dpr);
-    this->imageDrawRect.setBottomRight(imageDrawRect.bottomRight() * dpr);
+void CropOverlay::setImageDrawRect(QRect _imageDrawRect) {
+    imageDrawRect.setTopLeft(_imageDrawRect.topLeft() * dpr);
+    imageDrawRect.setBottomRight(_imageDrawRect.bottomRight() * dpr);
+    imageDrawRectDpi = _imageDrawRect;
 }
 
 //------------------------------------------------------------------------------
@@ -111,57 +111,35 @@ void CropOverlay::setAspectRatio(QPointF ratio) {
 }
 
 //------------------------------------------------------------------------------
-void CropOverlay::show() {
-    if(!drawBuffer) {
-        drawBuffer = new QImage(size() * dpr, QImage::Format_ARGB32_Premultiplied);
-        drawBuffer->setDevicePixelRatio(dpr);
-    }
-    QWidget::show();
-}
-
-//------------------------------------------------------------------------------
 void CropOverlay::hide() {
     startPos = QPoint(0, 0);
     endPos = QPoint(0, 0);
     imageDrawRect.setRect(0, 0, 0, 0);
     clearSelection();
     FloatingWidget::hide();
-    if(drawBuffer) {
-        delete drawBuffer;
-        drawBuffer = nullptr;
-    }
 }
 
 //------------------------------------------------------------------------------
 void CropOverlay::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
+    QPainter p(this);
     if(!hasSelection()) {
-        QPainter painter(this);
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(brushInactiveTint);
-        painter.drawRect(QRect(imageDrawRect.topLeft() / dpr, imageDrawRect.size() / dpr));
+        p.setPen(Qt::NoPen);
+        p.setBrush(brushInactiveTint);
+        p.drawRect(imageDrawRectDpi);
     } else {
-        if(drawBuffer) {
-            QPainter painter(drawBuffer);
-            // clear to avoid corrupted background
-            painter.setCompositionMode(QPainter::CompositionMode_Clear);
-            painter.setBrush(brushInactiveTint); // any brush is ok
-            painter.drawRect(rect());
-            // draw tint over the image
-            painter.setCompositionMode(QPainter::CompositionMode_Source);
-            painter.setPen(Qt::NoPen);
-            painter.setBrush(brushInactiveTint);
-            painter.drawRect(QRect(imageDrawRect.topLeft() / dpr, imageDrawRect.size() / dpr));
-            // selection outline & handles
-            if(selectionDrawRect.width() > 0 && selectionDrawRect.height() > 0) {
-                drawSelection(&painter);
-                // draw handles if there is no interaction going on
-                // and selection is large enough
-                if(cursorAction == NO_DRAG && selectionDrawRect.width() >= 90 && selectionDrawRect.height() >= 90)
-                    drawHandles(brushGray, &painter);
-            }
-            // draw result on screen
-            QPainter(this).drawImage(QPoint(0, 0), *drawBuffer);
+        // draw tint over non-selected area of the image
+        QRegion tintRegion(imageDrawRectDpi);
+        p.setClipRegion(tintRegion.subtracted(selectionDrawRectDpi));
+        p.fillRect(imageDrawRectDpi, brushInactiveTint);
+        p.setClipRegion(rect());
+        // selection outline & handles
+        if(selectionDrawRect.width() > 0 && selectionDrawRect.height() > 0) {
+            drawSelection(&p);
+            // draw handles if there is no interaction going on
+            // and selection is large enough
+            if(cursorAction == NO_DRAG && selectionDrawRect.width() >= 90 && selectionDrawRect.height() >= 90)
+                drawHandles(brushGray, &p);
         }
     }
 }
@@ -169,7 +147,6 @@ void CropOverlay::paintEvent(QPaintEvent *event) {
 //------------------------------------------------------------------------------
 void CropOverlay::drawSelection(QPainter *painter) {
     painter->save();
-    painter->setCompositionMode(QPainter::CompositionMode_Source);
     painter->setPen(selectionOutlinePen);
     painter->setBrush(QBrush(QColor(0, 0, 0, 0)));
     painter->drawRect(selectionDrawRectDpi);
@@ -179,12 +156,10 @@ void CropOverlay::drawSelection(QPainter *painter) {
 //------------------------------------------------------------------------------
 void CropOverlay::drawHandles(QBrush &brush, QPainter *painter) {
     painter->save();
-    painter->setCompositionMode(QPainter::CompositionMode_Source);
     painter->setBrush(brush);
     painter->setPen(selectionOutlinePen);
-    for(int i = 0; i < 8; i++) {
+    for(int i = 0; i < 8; i++)
         painter->drawRect(handlesDpi[i]);
-    }
     painter->restore();
 }
 
@@ -436,8 +411,8 @@ void CropOverlay::updateSelectionDrawRect() {
     selectionDrawRect = selectionRect;
     selectionDrawRect.moveTopLeft(selectionRect.topLeft() * scale + imageDrawRect.topLeft());
     selectionDrawRect.setSize((selectionRect.size() - QSize(1, 1)) * scale);
-    selectionDrawRectDpi = QRectF(QPointF(selectionDrawRect.topLeft() / dpr),
-                                  selectionDrawRect.size() / dpr);
+    selectionDrawRectDpi = QRect(QPoint(selectionDrawRect.topLeft() / dpr),
+                                 selectionDrawRect.size() / dpr);
 }
 
 //------------------------------------------------------------------------------
@@ -583,19 +558,19 @@ void CropOverlay::updateHandlePositions() {
     // top left
     handlesDpi[0].moveTopLeft(selectionDrawRectDpi.topLeft());
     // top right
-    handlesDpi[1].moveTopRight(selectionDrawRectDpi.topRight());
+    handlesDpi[1].moveTopRight(selectionDrawRectDpi.topRight() + QPoint(1, 0));
     // bottom left
-    handlesDpi[2].moveBottomLeft(selectionDrawRectDpi.bottomLeft());
+    handlesDpi[2].moveBottomLeft(selectionDrawRectDpi.bottomLeft() + QPoint(0, 1));
     // bottom right
-    handlesDpi[3].moveBottomRight(selectionDrawRectDpi.bottomRight());
+    handlesDpi[3].moveBottomRight(selectionDrawRectDpi.bottomRight() + QPoint(1, 1));
     // left
     handlesDpi[4].moveLeft(selectionDrawRectDpi.left());
     // right
-    handlesDpi[5].moveRight(selectionDrawRectDpi.right());
+    handlesDpi[5].moveRight(selectionDrawRectDpi.right() + 1);
     // top
     handlesDpi[6].moveTop(selectionDrawRectDpi.top());
     // bottom
-    handlesDpi[7].moveBottom(selectionDrawRectDpi.bottom());
+    handlesDpi[7].moveBottom(selectionDrawRectDpi.bottom() + 1);
 }
 
 //------------------------------------------------------------------------------
@@ -642,10 +617,4 @@ void CropOverlay::resizeEvent(QResizeEvent *event) {
 //------------------------------------------------------------------------------
 void CropOverlay::recalculateGeometry() {
     setGeometry(0,0, containerSize().width(), containerSize().height());
-    // recreate buffer with a new size
-    if(drawBuffer) {
-        delete drawBuffer;
-        drawBuffer = new QImage(size() * dpr, QImage::Format_ARGB32_Premultiplied);
-        drawBuffer->setDevicePixelRatio(dpr);
-    }
 }
