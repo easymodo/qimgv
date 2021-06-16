@@ -86,7 +86,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert(InputMap::keyNameAlt() + "+Down", "zoomOut");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Comma", "openSettings");
 #else
-    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+,", "openSettings");
+    actionManager->defaults.insert("P", "openSettings");
 #endif
 
     //actionManager->defaults.insert("Backspace", "goUp"); // todo: shortcut scopes?
