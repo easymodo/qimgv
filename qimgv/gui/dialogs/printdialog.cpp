@@ -77,7 +77,7 @@ void PrintDialog::updatePreview() {
     if(!targetPrinter)
         targetPrinter = &pdfPrinter;
     auto imgRect = getImagePrintRect(targetPrinter);
-    QRectF fullRect = targetPrinter->pageLayout().fullRectPixels(printer->resolution());
+    QRectF fullRect = targetPrinter->pageLayout().fullRectPixels(targetPrinter->resolution());
     // margins
     QMarginsF margins(targetPrinter->pageLayout().marginsPixels(targetPrinter->resolution()));
     // scaled page with margins
