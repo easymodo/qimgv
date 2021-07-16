@@ -482,19 +482,26 @@ QMimeData *Core::getMimeDataForImage(std::shared_ptr<Image> img, MimeDataTarget 
     QString path = img->filePath();
     if(img->type() == STATIC) {
         if(img->isEdited()) {
-            // TODO: cleanup temp files
-            // meanwhile use generic name
-            //path = settings->cacheDir() + img->baseName() + ".png";
+            // save edits to tmp file
             path = settings->tmpDir() + "image.png";
             // use faster compression for drag'n'drop
             int pngQuality = (target == TARGET_DROP) ? 80 : 30;
             img->getImage()->save(path, nullptr, pngQuality);
         }
     }
-    // !!! using setImageData() while doing drag'n'drop hangs Xorg !!!
-    // clipboard only!
-    if(img->type() != VIDEO && target == TARGET_CLIPBOARD)
-        mimeData->setImageData(*img->getImage().get());
+    QFile f(path);
+    if(target == TARGET_CLIPBOARD) {
+        if(f.open(QFile::ReadOnly)) {
+            QByteArray ba = f.readAll();
+            f.close();
+            mimeData->setData(img->mimeType().name(), ba);
+        } else if(img->type() != VIDEO) {
+            // copy decoded image from memory
+            // if we for some reason cannot read the file
+            // (in theory this shouldn't happen)
+            mimeData->setImageData(*img->getImage().get());
+        }
+    }
     mimeData->setUrls({QUrl::fromLocalFile(path)});
     return mimeData;
 }
