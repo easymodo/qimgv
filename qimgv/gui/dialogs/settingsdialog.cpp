@@ -162,6 +162,7 @@ void SettingsDialog::readSettings() {
     ui->slideshowIntervalSpinBox->setValue(settings->slideshowInterval());
     ui->imageScrollingComboBox->setCurrentIndex(settings->imageScrolling());
     ui->saveOverlayCheckBox->setChecked(settings->showSaveOverlay());
+    ui->clipboardForcePNGCheckBox->setChecked(settings->clipboardForcePNG());
 
     if(settings->defaultViewMode() == MODE_FOLDERVIEW)
         ui->startInFolderViewCheckBox->setChecked(true);
@@ -293,6 +294,7 @@ void SettingsDialog::saveSettings() {
     settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value()) / 10);
     settings->setExpandLimit(ui->expandLimitSlider->value());
     settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
+    settings->setClipboardForcePNG(ui->clipboardForcePNGCheckBox->isChecked());
 
     settings->setUseSystemColorScheme(ui->useSystemColorsCheckBox->isChecked());
 

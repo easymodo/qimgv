@@ -410,7 +410,7 @@ void Core::copyFileClipboard() {
     if(model->isEmpty())
         return;
 
-    QMimeData* mimeData = getMimeDataForImage(model->getImage(selectedFilePath()), TARGET_CLIPBOARD);
+    QMimeData* mimeData = getMimeDataForClipboard(model->getImage(selectedFilePath()), settings->clipboardForcePNG());
 
     // mimeData->text() should already contain an url
     QByteArray gnomeFormat = QByteArray("copy\n").append(QUrl(mimeData->text()).toEncoded());
@@ -457,7 +457,7 @@ void Core::onDraggedOut(QList<QString> paths) {
     QMimeData *mimeData;
     // single selection, image
     if(paths.count() == 1 && model->containsFile(paths.first())) {
-        mimeData = getMimeDataForImage(model->getImage(paths.last()), TARGET_DROP);
+        mimeData = getMimeDataForDND(model->getImage(paths.last()));
     } else { // multi-selection, or single directory. drag urls
         mimeData = new QMimeData();
         QList<QUrl> urlList;
@@ -475,32 +475,39 @@ void Core::onDraggedOut(QList<QString> paths) {
 
 }
 
-QMimeData *Core::getMimeDataForImage(std::shared_ptr<Image> img, MimeDataTarget target) {
+QMimeData *Core::getMimeDataForClipboard(std::shared_ptr<Image> img, bool forcePNG) {
     QMimeData* mimeData = new QMimeData();
     if(!img)
         return mimeData;
     QString path = img->filePath();
-    if(img->type() == STATIC) {
-        if(img->isEdited()) {
+    if(img->type() == DocumentType::STATIC) {
+        if(img->isEdited() || (forcePNG && img->mimeType().name() != "image/png")) {
             // save edits to tmp file
             path = settings->tmpDir() + "image.png";
-            // use faster compression for drag'n'drop
-            int pngQuality = (target == TARGET_DROP) ? 80 : 30;
-            img->getImage()->save(path, nullptr, pngQuality);
+            img->getImage()->save(path, nullptr, 80);
         }
     }
     QFile f(path);
-    if(target == TARGET_CLIPBOARD) {
-        if(f.open(QFile::ReadOnly)) {
-            QByteArray ba = f.readAll();
-            f.close();
-            mimeData->setData(img->mimeType().name(), ba);
-        } else if(img->type() != VIDEO) {
-            // copy decoded image from memory
-            // if we for some reason cannot read the file
-            // (in theory this shouldn't happen)
-            mimeData->setImageData(*img->getImage().get());
-        }
+    if(f.open(QFile::ReadOnly)) {
+        QByteArray ba = f.readAll();
+        f.close();
+        mimeData->setData(img->mimeType().name(), ba);
+    } else if(img->type() != DocumentType::VIDEO) {
+        // fallback to decoded
+        mimeData->setImageData(*img->getImage().get());
+    }
+    mimeData->setUrls({QUrl::fromLocalFile(path)});
+    return mimeData;
+}
+
+QMimeData *Core::getMimeDataForDND(std::shared_ptr<Image> img) {
+    QMimeData* mimeData = new QMimeData();
+    if(!img)
+        return mimeData;
+    QString path = img->filePath();
+    if(img->isEdited()) {
+        path = settings->tmpDir() + "image.png";
+        img->getImage()->save(path, nullptr, 80);
     }
     mimeData->setUrls({QUrl::fromLocalFile(path)});
     return mimeData;

@@ -65,7 +65,8 @@ private:
     bool setDirectory(QString path);
 
     QDrag *mDrag;
-    QMimeData *getMimeDataForImage(std::shared_ptr<Image> img, MimeDataTarget target);
+    QMimeData *getMimeDataForClipboard(std::shared_ptr<Image> img, bool forcePNG);
+    QMimeData *getMimeDataForDND(std::shared_ptr<Image> img);
 
     Randomizer randomizer;
     void syncRandomizer();
