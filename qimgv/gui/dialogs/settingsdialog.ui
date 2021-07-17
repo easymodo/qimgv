@@ -256,7 +256,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>6</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -287,7 +287,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-365</y>
                 <width>539</width>
                 <height>991</height>
                </rect>
@@ -1825,8 +1825,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>360</width>
-                <height>405</height>
+                <width>553</width>
+                <height>626</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3324,8 +3324,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>626</height>
+                <width>369</width>
+                <height>307</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3375,46 +3375,7 @@
                  <property name="bottomMargin">
                   <number>0</number>
                  </property>
-                 <item row="6" column="0">
-                  <widget class="QCheckBox" name="useThumbnailCacheCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="toolTip">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string>Use thumbnail cache (recommended)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="0">
-                  <widget class="QCheckBox" name="confirmTrashCheckBox">
-                   <property name="text">
-                    <string>Confirm moving to trash</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QCheckBox" name="usePreloaderCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="toolTip">
-                    <string>Preload the next/previous image. Results in a much faster image switching (at the expense of wasting more RAM).</string>
-                   </property>
-                   <property name="text">
-                    <string>Use preloader (recommended)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="8" column="0">
+                 <item row="7" column="0">
                   <widget class="QCheckBox" name="useOpenGLCheckBox">
                    <property name="enabled">
                     <bool>false</bool>
@@ -3424,26 +3385,10 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="0">
-                  <widget class="QCheckBox" name="confirmDeleteCheckBox">
+                 <item row="2" column="0">
+                  <widget class="QCheckBox" name="saveOverlayCheckBox">
                    <property name="text">
-                    <string>Confirm file delete</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QCheckBox" name="enableSmoothScrollCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="toolTip">
-                    <string>Turn this off if you are using a touchpad with libinput driver.</string>
-                   </property>
-                   <property name="text">
-                    <string>Enable smooth scrolling</string>
+                    <string>Show save overlay when editing images</string>
                    </property>
                   </widget>
                  </item>
@@ -3515,14 +3460,39 @@
                    </item>
                   </layout>
                  </item>
-                 <item row="2" column="0">
-                  <widget class="QCheckBox" name="saveOverlayCheckBox">
+                 <item row="1" column="0">
+                  <widget class="QCheckBox" name="usePreloaderCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Preload the next/previous image. Results in a much faster image switching (at the expense of wasting more RAM).</string>
+                   </property>
                    <property name="text">
-                    <string>Show save overlay when editing images</string>
+                    <string>Use preloader (recommended)</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="0">
+                 <item row="0" column="0">
+                  <widget class="QCheckBox" name="enableSmoothScrollCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Turn this off if you are using a touchpad with libinput driver.</string>
+                   </property>
+                   <property name="text">
+                    <string>Enable smooth scrolling</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="8" column="0">
                   <layout class="QHBoxLayout" name="horizontalLayout">
                    <property name="leftMargin">
                     <number>0</number>
@@ -3590,7 +3560,30 @@
                    </item>
                   </layout>
                  </item>
-                 <item row="10" column="0">
+                 <item row="6" column="0">
+                  <widget class="QCheckBox" name="useThumbnailCacheCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string/>
+                   </property>
+                   <property name="text">
+                    <string>Use thumbnail cache (recommended)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QCheckBox" name="confirmDeleteCheckBox">
+                   <property name="text">
+                    <string>Confirm file delete</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="0">
                   <layout class="QHBoxLayout" name="horizontalLayout_7">
                    <item>
                     <widget class="QLabel" name="mpvLabel">
@@ -3663,10 +3656,10 @@
                    </item>
                   </layout>
                  </item>
-                 <item row="7" column="0">
-                  <widget class="QCheckBox" name="clipboardForcePNGCheckBox">
+                 <item row="5" column="0">
+                  <widget class="QCheckBox" name="confirmTrashCheckBox">
                    <property name="text">
-                    <string>(Clipboard) Always convert to PNG</string>
+                    <string>Confirm moving to trash</string>
                    </property>
                   </widget>
                  </item>
@@ -3734,8 +3727,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>626</height>
+                <width>274</width>
+                <height>220</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">

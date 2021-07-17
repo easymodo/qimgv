@@ -259,8 +259,6 @@ public:
     void setPrintFitToPage(bool mode);
     QString lastPrinter();
     void setLastPrinter(QString name);
-    bool clipboardForcePNG();
-    void setClipboardForcePNG(bool mode);
 
 private:
     explicit Settings(QObject *parent = nullptr);
