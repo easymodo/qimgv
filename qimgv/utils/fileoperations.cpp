@@ -26,10 +26,6 @@ void FileOperations::removeDir(const QString &dirPath, bool recursive, FileOpRes
     QDir dir(dirPath);
     if(!dir.exists()) {
         result = FileOpResult::SOURCE_DOES_NOT_EXIST;
-#ifdef Q_OS_WIN32
-    } else if(!dir.isWritable()) {
-        result = FileOpResult::SOURCE_NOT_WRITABLE;
-#endif
     } else {
         if(recursive ? dir.removeRecursively() : dir.rmdir(dirPath))
             result = FileOpResult::SUCCESS;
