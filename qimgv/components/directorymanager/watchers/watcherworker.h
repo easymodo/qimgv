@@ -19,5 +19,4 @@ Q_SIGNALS:
 
 protected:
     QAtomicInt isRunning;
-
 };

@@ -6,11 +6,17 @@ WindowsWorker::WindowsWorker() : WatcherWorker() {
 
 void WindowsWorker::setDirectoryHandle(HANDLE hDir) {
     //qDebug() << "setHandle" << this->hDir << " -> " << hDir;
+    freeHandle();
     this->hDir = hDir;
 }
 
+void WindowsWorker::freeHandle() {
+    CancelIoEx(this->hDir, NULL);
+    CloseHandle(this->hDir);
+}
+
 void WindowsWorker::run() {
-    running = true;
+    isRunning = true;
     DWORD error = 0;
     bool bPending = false;
     DWORD dwBytes = 0;
@@ -25,7 +31,7 @@ void WindowsWorker::run() {
 
     ::ResetEvent(ovl.hEvent); // is this needed?
 
-    while(running) {
+    while(isRunning) {
         //qDebug() << "_1";
         bPending = ReadDirectoryChangesW(hDir,
                                          &buffer[0],

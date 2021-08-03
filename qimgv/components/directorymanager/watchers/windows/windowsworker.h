@@ -22,7 +22,7 @@ private:
     DWORD bytesReturned;
     uint POLL_RATE_MS = 1000;
     void processEvent(FILE_NOTIFY_INFORMATION *fni);
-    QAtomicInt running;
+    void freeHandle();
 };
 
 #endif // WINDOWSWATCHERWORKER_H
