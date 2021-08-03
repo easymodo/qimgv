@@ -285,6 +285,15 @@ bool DirectoryManager::isFile(QString path) const {
     return true;
 }
 
+inline
+bool DirectoryManager::isDir(QString path) const {
+    if(!std::filesystem::exists(toStdString(path)))
+        return false;
+    if(!std::filesystem::is_directory(toStdString(path)))
+        return false;
+    return true;
+}
+
 bool DirectoryManager::isEmpty() const {
     return fileEntryVec.empty();
 }
@@ -466,6 +475,22 @@ void DirectoryManager::renameFileEntry(const QString &oldFilePath, const QString
 }
 
 // ---- dir entries
+
+bool DirectoryManager::insertDirEntry(const QString &dirPath) {
+    if(containsDir(dirPath))
+        return false;
+    std::filesystem::directory_entry stdEntry(toStdString(dirPath));
+    QString dirName = QString::fromStdString(stdEntry.path().filename().generic_string()); // isn't it beautiful
+    FSEntry FSEntry;
+    FSEntry.name = dirName;
+    FSEntry.path = dirPath;
+    FSEntry.isDirectory = true;
+    insert_sorted(dirEntryVec, FSEntry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
+    qDebug() << "dirIns" << dirPath;
+    emit dirAdded(dirPath);
+    return true;
+}
+
 void DirectoryManager::removeDirEntry(const QString &dirPath) {
     if(!containsDir(dirPath))
         return;
@@ -474,6 +499,24 @@ void DirectoryManager::removeDirEntry(const QString &dirPath) {
     qDebug() << "dirRem" << dirPath;
     emit dirRemoved(dirPath, index);
 }
+
+void DirectoryManager::renameDirEntry(const QString &oldDirPath, const QString &newDirName) {
+    QFileInfo fi(oldDirPath);
+    QString newDirPath = fi.absolutePath() + "/" + newDirName;
+    // remove the old one
+    int oldIndex = indexOfDir(oldDirPath);
+    dirEntryVec.erase(dirEntryVec.begin() + oldIndex);
+    // insert
+    std::filesystem::directory_entry stdEntry(toStdString(newDirPath));
+    FSEntry FSEntry;
+    FSEntry.name = newDirName;
+    FSEntry.path = newDirPath;
+    FSEntry.isDirectory = true;
+    insert_sorted(dirEntryVec, FSEntry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
+    qDebug() << "dirRen" << oldDirPath << newDirPath;
+    emit dirRenamed(oldDirPath, oldIndex, newDirPath, indexOfDir(newDirPath));
+}
+
 
 FileListSource DirectoryManager::source() const {
     return mListSource;
@@ -495,18 +538,27 @@ bool DirectoryManager::fileWatcherActive() {
 //----------------------------------------------------------------------------
 // fs watcher events  ( onFile___External() )
 // these take file NAMES, not paths
-// todo: hook up directories
 void DirectoryManager::onFileRemovedExternal(QString fileName) {
-    removeFileEntry(watcher->watchPath() + "/" + fileName);
+    QString fullPath = watcher->watchPath() + "/" + fileName;
+    removeDirEntry(fullPath);
+    removeFileEntry(fullPath);
 }
 
 void DirectoryManager::onFileAddedExternal(QString fileName) {
-    insertFileEntry(watcher->watchPath() + "/" + fileName);
+    QString fullPath = watcher->watchPath() + "/" + fileName;
+    if(isDir(fullPath))
+        insertDirEntry(fullPath);
+    else
+        insertFileEntry(fullPath);
 }
 
-void DirectoryManager::onFileRenamedExternal(QString oldFileName, QString newFileName) {
-    QString oldFilePath = watcher->watchPath() + "/" + oldFileName;
-    renameFileEntry(oldFilePath, newFileName);
+void DirectoryManager::onFileRenamedExternal(QString oldName, QString newName) {
+    QString oldPath = watcher->watchPath() + "/" + oldName;
+    QString newPath = watcher->watchPath() + "/" + newName;
+    if(isDir(newPath))
+        renameDirEntry(oldPath, newName);
+    else
+        renameFileEntry(oldPath, newName);
 }
 
 void DirectoryManager::onFileModifiedExternal(QString fileName) {

@@ -61,6 +61,7 @@ public:
     void setSortingMode(SortingMode mode);
     SortingMode sortingMode() const;
     bool isFile(QString path) const;
+    bool isDir(QString path) const;
 
     unsigned long totalCount() const;
     bool containsDir(QString dirPath) const;
@@ -75,11 +76,11 @@ public:
     void updateFileEntry(const QString &filePath);
     void renameFileEntry(const QString &oldFilePath, const QString &newName);
 
-    //bool insertDirEntry(const QString &dirPath);
+    bool insertDirEntry(const QString &dirPath);
     //bool forceInsertDirEntry(const QString &dirPath);
     void removeDirEntry(const QString &dirPath);
     //void updateDirEntry(const QString &dirPath);
-    //void renameDirEntry(const QString &oldDirPath, const QString &newName);
+    void renameDirEntry(const QString &oldDirPath, const QString &newName);
 
     FileListSource source() const;
 
