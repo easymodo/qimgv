@@ -55,7 +55,3 @@ QMap<QString, QString> Image::getExifTags() {
     return mDocInfo->getExifTags();
 }
 
-QMimeType Image::mimeType() const {
-    return mDocInfo->mimeType();
-}
-

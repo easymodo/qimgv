@@ -964,11 +964,3 @@ QString Settings::lastPrinter() {
 void Settings::setLastPrinter(QString name) {
     stateConf->setValue("lastPrinter", name);
 }
-//------------------------------------------------------------------------------
-bool Settings::clipboardForcePNG() {
-    return settings->settingsConf->value("clipboardForcePNG", false).toBool();
-}
-
-void Settings::setClipboardForcePNG(bool mode) {
-    settings->settingsConf->setValue("clipboardForcePNG", mode);
-}

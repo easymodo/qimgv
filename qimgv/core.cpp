@@ -410,7 +410,7 @@ void Core::copyFileClipboard() {
     if(model->isEmpty())
         return;
 
-    QMimeData* mimeData = getMimeDataForClipboard(model->getImage(selectedFilePath()), false);
+    QMimeData* mimeData = getMimeDataForImage(model->getImage(selectedFilePath()), TARGET_CLIPBOARD);
 
     // mimeData->text() should already contain an url
     QByteArray gnomeFormat = QByteArray("copy\n").append(QUrl(mimeData->text()).toEncoded());
@@ -457,7 +457,7 @@ void Core::onDraggedOut(QList<QString> paths) {
     QMimeData *mimeData;
     // single selection, image
     if(paths.count() == 1 && model->containsFile(paths.first())) {
-        mimeData = getMimeDataForDND(model->getImage(paths.last()));
+        mimeData = getMimeDataForImage(model->getImage(paths.last()), TARGET_DROP);
     } else { // multi-selection, or single directory. drag urls
         mimeData = new QMimeData();
         QList<QUrl> urlList;
@@ -475,40 +475,26 @@ void Core::onDraggedOut(QList<QString> paths) {
 
 }
 
-QMimeData *Core::getMimeDataForClipboard(std::shared_ptr<Image> img, bool forcePNG) {
+QMimeData *Core::getMimeDataForImage(std::shared_ptr<Image> img, MimeDataTarget target) {
     QMimeData* mimeData = new QMimeData();
     if(!img)
         return mimeData;
     QString path = img->filePath();
-    if(img->type() == DocumentType::STATIC) {
-        if(img->isEdited() || (forcePNG && img->mimeType().name() != "image/png")) {
-            // save edits to tmp file
+    if(img->type() == STATIC) {
+        if(img->isEdited()) {
+            // TODO: cleanup temp files
+            // meanwhile use generic name
+            //path = settings->cacheDir() + img->baseName() + ".png";
             path = settings->tmpDir() + "image.png";
-            img->getImage()->save(path, nullptr, 80);
+            // use faster compression for drag'n'drop
+            int pngQuality = (target == TARGET_DROP) ? 80 : 30;
+            img->getImage()->save(path, nullptr, pngQuality);
         }
     }
-    //mimeData->setImageData(*img->getImage().get());
-    QFile f(path);
-    if(f.open(QFile::ReadOnly)) {
-        QByteArray ba = f.readAll();
-        f.close();
-        mimeData->setData(img->mimeType().name(), ba);
-    } else if(img->type() != DocumentType::VIDEO) {
-        // fallback to decoded
-    }
-    mimeData->setUrls({QUrl::fromLocalFile(path)});
-    return mimeData;
-}
-
-QMimeData *Core::getMimeDataForDND(std::shared_ptr<Image> img) {
-    QMimeData* mimeData = new QMimeData();
-    if(!img)
-        return mimeData;
-    QString path = img->filePath();
-    if(img->isEdited()) {
-        path = settings->tmpDir() + "image.png";
-        img->getImage()->save(path, nullptr, 80);
-    }
+    // !!! using setImageData() while doing drag'n'drop hangs Xorg !!!
+    // clipboard only!
+    if(img->type() != VIDEO && target == TARGET_CLIPBOARD)
+        mimeData->setImageData(*img->getImage().get());
     mimeData->setUrls({QUrl::fromLocalFile(path)});
     return mimeData;
 }
