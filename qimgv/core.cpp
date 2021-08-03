@@ -323,7 +323,11 @@ void Core::removePermanent() {
     FileOpResult result;
     int successCount = 0;
     for(auto path : paths) {
-        result = removeFile(path, false);
+        QFileInfo fi(path);
+        if(fi.isDir())
+            model->removeDir(path, false, true, result);
+        else
+            result = removeFile(path, false);
         if(result == FileOpResult::SUCCESS)
             successCount++;
     }
@@ -751,7 +755,7 @@ void Core::doInteractiveMove(QString path, QString destDirectory, DialogResult &
         qDebug() << "Could not create directory " << dstDir.absolutePath();
         return;
     }
-    // copy all contents
+    // move all contents
     // TODO: skip symlinks? test
     QStringList entryList = srcDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
     for(auto entry : entryList) {
@@ -760,7 +764,7 @@ void Core::doInteractiveMove(QString path, QString destDirectory, DialogResult &
             return;
     }
     FileOpResult dirRmRes;
-    model->removeDir(srcDir.absolutePath(), false, dirRmRes);
+    model->removeDir(srcDir.absolutePath(), false, false, dirRmRes);
 }
 
 // -----------------------------------------------------------------------------------

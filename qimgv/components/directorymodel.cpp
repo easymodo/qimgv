@@ -143,11 +143,12 @@ void DirectoryModel::renameFile(const QString &oldFilePath, const QString &newNa
     dirManager.renameFileEntry(oldFilePath, newName);
 }
 
-void DirectoryModel::removeDir(const QString &dirPath, bool trash, FileOpResult &result) {
-    if(trash)
+void DirectoryModel::removeDir(const QString &dirPath, bool trash, bool recursive, FileOpResult &result) {
+    if(trash) {
         FileOperations::moveToTrash(dirPath, result);
-    else
-        FileOperations::removeDir(dirPath, result);
+    } else {
+        FileOperations::removeDir(dirPath, recursive, result);
+    }
     if(result != FileOpResult::SUCCESS)
         return;
     dirManager.removeDirEntry(dirPath);

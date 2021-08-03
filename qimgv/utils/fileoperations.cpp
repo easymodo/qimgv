@@ -22,19 +22,19 @@ void FileOperations::removeFile(const QString &filePath, FileOpResult &result) {
 }
 
 // non-recursive
-void FileOperations::removeDir(const QString &dirPath, FileOpResult &result) {
+void FileOperations::removeDir(const QString &dirPath, bool recursive, FileOpResult &result) {
     QDir dir(dirPath);
     if(!dir.exists()) {
         result = FileOpResult::SOURCE_DOES_NOT_EXIST;
-    } else if(!dir.isEmpty()) {
-        result = FileOpResult::DIRECTORY_NOT_EMPTY;
 #ifdef Q_OS_WIN32
     } else if(!dir.isWritable()) {
         result = FileOpResult::SOURCE_NOT_WRITABLE;
 #endif
     } else {
-        if(dir.rmdir(dirPath))
+        if(recursive ? dir.removeRecursively() : dir.rmdir(dirPath))
             result = FileOpResult::SUCCESS;
+        else if(!recursive && !dir.isEmpty())
+            result = FileOpResult::DIRECTORY_NOT_EMPTY;
         else
             result = FileOpResult::OTHER_ERROR;
     }

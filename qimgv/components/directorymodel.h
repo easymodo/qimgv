@@ -36,7 +36,7 @@ public:
     void moveFileTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result);
     void renameFile(const QString &oldFilePath, const QString &newName, bool force, FileOpResult &result);
     void removeFile(const QString &filePath, bool trash, FileOpResult &result);
-    void removeDir(const QString &dirPath, bool trash, FileOpResult &result);
+    void removeDir(const QString &dirPath, bool trash, bool recursive, FileOpResult &result);
 
     bool setDirectory(QString);
 
