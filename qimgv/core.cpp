@@ -452,7 +452,7 @@ void Core::onDraggedOut() {
 }
 
 void Core::onDraggedOut(QList<QString> paths) {
-    if(model->isEmpty() || paths.isEmpty())
+    if(paths.isEmpty())
         return;
     QMimeData *mimeData;
     // single selection, image
@@ -465,14 +465,11 @@ void Core::onDraggedOut(QList<QString> paths) {
             urlList << QUrl::fromLocalFile(path);
         mimeData->setUrls(urlList);
     }
-
     //auto thumb = Thumbnailer::getThumbnail(paths.last(), 100);
     mDrag = new QDrag(this);
     mDrag->setMimeData(mimeData);
     //mDrag->setPixmap(*thumb->pixmap().get());
-
     mDrag->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction, Qt::CopyAction);
-
 }
 
 QMimeData *Core::getMimeDataForImage(std::shared_ptr<Image> img, MimeDataTarget target) {
