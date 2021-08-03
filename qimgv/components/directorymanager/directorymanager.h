@@ -75,6 +75,12 @@ public:
     void updateFileEntry(const QString &filePath);
     void renameFileEntry(const QString &oldFilePath, const QString &newName);
 
+    //bool insertDirEntry(const QString &dirPath);
+    //bool forceInsertDirEntry(const QString &dirPath);
+    void removeDirEntry(const QString &dirPath);
+    //void updateDirEntry(const QString &dirPath);
+    //void renameDirEntry(const QString &oldDirPath, const QString &newName);
+
     FileListSource source() const;
 
     QStringList fileList() const;
@@ -122,4 +128,8 @@ signals:
     void fileModified(QString filePath);
     void fileAdded(QString filePath);
     void fileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);
+
+    void dirRemoved(QString dirPath, int);
+    void dirAdded(QString dirPath);
+    void dirRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);
 };

@@ -28,6 +28,10 @@ public:
     void onFileAdded(QString filePath);
     void onFileModified(QString filePath);
 
+    void onDirRemoved(QString dirPath, int index);
+    void onDirRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);
+    void onDirAdded(QString dirPath);
+
     bool showDirs();
     void setShowDirs(bool mode);
 

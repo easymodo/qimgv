@@ -6,10 +6,14 @@ DirectoryModel::DirectoryModel(QObject *parent) :
 {
     scaler = new Scaler(&cache);
 
-    connect(&dirManager, &DirectoryManager::fileRemoved, this, &DirectoryModel::onFileRemoved);
-    connect(&dirManager, &DirectoryManager::fileAdded, this, &DirectoryModel::onFileAdded);
+    connect(&dirManager, &DirectoryManager::fileRemoved,  this, &DirectoryModel::onFileRemoved);
+    connect(&dirManager, &DirectoryManager::fileAdded,    this, &DirectoryModel::onFileAdded);
+    connect(&dirManager, &DirectoryManager::fileRenamed,  this, &DirectoryModel::onFileRenamed);
     connect(&dirManager, &DirectoryManager::fileModified, this, &DirectoryModel::onFileModified);
-    connect(&dirManager, &DirectoryManager::fileRenamed, this, &DirectoryModel::onFileRenamed);
+    connect(&dirManager, &DirectoryManager::dirRemoved,  this, &DirectoryModel::dirRemoved);
+    connect(&dirManager, &DirectoryManager::dirAdded,    this, &DirectoryModel::dirAdded);
+    connect(&dirManager, &DirectoryManager::dirRenamed,  this, &DirectoryModel::dirRenamed);
+
     connect(&dirManager, &DirectoryManager::loaded, this, &DirectoryModel::loaded);
     connect(&dirManager, &DirectoryManager::sortingChanged, this, &DirectoryModel::onSortingChanged);
     connect(&loader, &Loader::loadFinished, this, &DirectoryModel::onImageReady);
@@ -119,7 +123,6 @@ void DirectoryModel::setSortingMode(SortingMode mode) {
     dirManager.setSortingMode(mode);
 }
 
-// todo: directories?
 void DirectoryModel::removeFile(const QString &filePath, bool trash, FileOpResult &result) {
     if(trash)
         FileOperations::moveToTrash(filePath, result);
@@ -140,12 +143,23 @@ void DirectoryModel::renameFile(const QString &oldFilePath, const QString &newNa
     dirManager.renameFileEntry(oldFilePath, newName);
 }
 
-void DirectoryModel::copyTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
-    FileOperations::copyTo(srcFile, destDirPath, force, result);
+void DirectoryModel::removeDir(const QString &dirPath, bool trash, FileOpResult &result) {
+    if(trash)
+        FileOperations::moveToTrash(dirPath, result);
+    else
+        FileOperations::removeDir(dirPath, result);
+    if(result != FileOpResult::SUCCESS)
+        return;
+    dirManager.removeDirEntry(dirPath);
+    return;
 }
 
-void DirectoryModel::moveTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
-    FileOperations::moveTo(srcFile, destDirPath, force, result);
+void DirectoryModel::copyFileTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
+    FileOperations::copyFileTo(srcFile, destDirPath, force, result);
+}
+
+void DirectoryModel::moveFileTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
+    FileOperations::moveFileTo(srcFile, destDirPath, force, result);
     // chew through watcher events so they wont be processed out of order
     qApp->processEvents();
     if(result == FileOpResult::SUCCESS) {

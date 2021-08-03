@@ -465,6 +465,16 @@ void DirectoryManager::renameFileEntry(const QString &oldFilePath, const QString
     emit fileRenamed(oldFilePath, oldIndex, newFilePath, indexOfFile(newFilePath));
 }
 
+// ---- dir entries
+void DirectoryManager::removeDirEntry(const QString &dirPath) {
+    if(!containsDir(dirPath))
+        return;
+    int index = indexOfDir(dirPath);
+    dirEntryVec.erase(dirEntryVec.begin() + index);
+    qDebug() << "dirRem" << dirPath;
+    emit dirRemoved(dirPath, index);
+}
+
 FileListSource DirectoryManager::source() const {
     return mListSource;
 }

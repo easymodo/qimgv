@@ -21,6 +21,26 @@ void FileOperations::removeFile(const QString &filePath, FileOpResult &result) {
     return;
 }
 
+// non-recursive
+void FileOperations::removeDir(const QString &dirPath, FileOpResult &result) {
+    QDir dir(dirPath);
+    if(!dir.exists()) {
+        result = FileOpResult::SOURCE_DOES_NOT_EXIST;
+    } else if(!dir.isEmpty()) {
+        result = FileOpResult::DIRECTORY_NOT_EMPTY;
+#ifdef Q_OS_WIN32
+    } else if(!dir.isWritable()) {
+        result = FileOpResult::SOURCE_NOT_WRITABLE;
+#endif
+    } else {
+        if(dir.rmdir(dirPath))
+            result = FileOpResult::SUCCESS;
+        else
+            result = FileOpResult::OTHER_ERROR;
+    }
+    return;
+}
+
 QString FileOperations::decodeResult(const FileOpResult &result) {
     switch(result) {
     case FileOpResult::SUCCESS:
@@ -35,6 +55,8 @@ QString FileOperations::decodeResult(const FileOpResult &result) {
         return "Source file does not exist.";
     case FileOpResult::DESTINATION_DOES_NOT_EXIST:
         return "Destination does not exist.";
+    case FileOpResult::DIRECTORY_NOT_EMPTY:
+        return "Directory is not empty.";
     case FileOpResult::NOTHING_TO_DO:
         return "Nothing to do.";
     case FileOpResult::OTHER_ERROR:
@@ -42,7 +64,7 @@ QString FileOperations::decodeResult(const FileOpResult &result) {
     }
 }
 
-void FileOperations::copyTo(const QString &srcFilePath, const QString &destDirPath, bool force, FileOpResult &result) {
+void FileOperations::copyFileTo(const QString &srcFilePath, const QString &destDirPath, bool force, FileOpResult &result) {
     QFileInfo srcFile(srcFilePath);
     QString tmpPath;
     bool exists = false;
@@ -105,7 +127,7 @@ void FileOperations::copyTo(const QString &srcFilePath, const QString &destDirPa
     return;
 }
 
-void FileOperations::moveTo(const QString &srcFilePath, const QString &destDirPath, bool force, FileOpResult &result) {
+void FileOperations::moveFileTo(const QString &srcFilePath, const QString &destDirPath, bool force, FileOpResult &result) {
     QFileInfo srcFile(srcFilePath);
     QString tmpPath;
     bool exists = false;

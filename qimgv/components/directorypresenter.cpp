@@ -5,10 +5,13 @@ DirectoryPresenter::DirectoryPresenter(QObject *parent) : QObject(parent), mShow
 }
 
 void DirectoryPresenter::unsetModel() {
-    disconnect(model.get(), &DirectoryModel::fileRemoved,    this, &DirectoryPresenter::onFileRemoved);
-    disconnect(model.get(), &DirectoryModel::fileAdded,      this, &DirectoryPresenter::onFileAdded);
-    disconnect(model.get(), &DirectoryModel::fileRenamed,    this, &DirectoryPresenter::onFileRenamed);
-    disconnect(model.get(), &DirectoryModel::fileModified,   this, &DirectoryPresenter::onFileModified);
+    disconnect(model.get(), &DirectoryModel::fileRemoved,  this, &DirectoryPresenter::onFileRemoved);
+    disconnect(model.get(), &DirectoryModel::fileAdded,    this, &DirectoryPresenter::onFileAdded);
+    disconnect(model.get(), &DirectoryModel::fileRenamed,  this, &DirectoryPresenter::onFileRenamed);
+    disconnect(model.get(), &DirectoryModel::fileModified, this, &DirectoryPresenter::onFileModified);
+    disconnect(model.get(), &DirectoryModel::dirRemoved,   this, &DirectoryPresenter::onDirRemoved);
+    disconnect(model.get(), &DirectoryModel::dirAdded,     this, &DirectoryPresenter::onDirAdded);
+    disconnect(model.get(), &DirectoryModel::dirRenamed,   this, &DirectoryPresenter::onDirRenamed);
     model = nullptr;
     // also empty view?
 }
@@ -40,10 +43,13 @@ void DirectoryPresenter::setModel(std::shared_ptr<DirectoryModel> newModel) {
     populateView();
 
     // filesystem changes
-    connect(model.get(), &DirectoryModel::fileRemoved,    this, &DirectoryPresenter::onFileRemoved);
-    connect(model.get(), &DirectoryModel::fileAdded,      this, &DirectoryPresenter::onFileAdded);
-    connect(model.get(), &DirectoryModel::fileRenamed,    this, &DirectoryPresenter::onFileRenamed);
-    connect(model.get(), &DirectoryModel::fileModified,   this, &DirectoryPresenter::onFileModified);
+    connect(model.get(), &DirectoryModel::fileRemoved,  this, &DirectoryPresenter::onFileRemoved);
+    connect(model.get(), &DirectoryModel::fileAdded,    this, &DirectoryPresenter::onFileAdded);
+    connect(model.get(), &DirectoryModel::fileRenamed,  this, &DirectoryPresenter::onFileRenamed);
+    connect(model.get(), &DirectoryModel::fileModified, this, &DirectoryPresenter::onFileModified);
+    connect(model.get(), &DirectoryModel::dirRemoved,   this, &DirectoryPresenter::onDirRemoved);
+    connect(model.get(), &DirectoryModel::dirAdded,     this, &DirectoryPresenter::onDirAdded);
+    connect(model.get(), &DirectoryModel::dirRenamed,   this, &DirectoryPresenter::onDirRenamed);
 }
 
 void DirectoryPresenter::reloadModel() {
@@ -105,6 +111,39 @@ void DirectoryPresenter::onFileModified(QString filePath) {
         return;
     int index = model->indexOfFile(filePath);
     view->reloadItem(mShowDirs ? model->dirCount() + index : index);
+}
+
+void DirectoryPresenter::onDirRemoved(QString dirPath, int index) {
+    Q_UNUSED(dirPath)
+    if(!view || !mShowDirs)
+        return;
+    view->removeItem(index);
+}
+
+void DirectoryPresenter::onDirRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo) {
+    Q_UNUSED(fromPath)
+    Q_UNUSED(toPath)
+    if(!view || !mShowDirs)
+        return;
+    auto oldSelection = view->selection();
+    view->removeItem(indexFrom);
+    view->insertItem(indexTo);
+    // re-select if needed
+    if(oldSelection.contains(indexFrom)) {
+        if(oldSelection.count() == 1) {
+            view->select(indexTo);
+            view->focusOn(indexTo);
+        } else if(oldSelection.count() > 1) {
+            view->select(view->selection() << indexTo);
+        }
+    }
+}
+
+void DirectoryPresenter::onDirAdded(QString dirPath) {
+    if(!view || !mShowDirs)
+        return;
+    int index = model->indexOfDir(dirPath);
+    view->insertItem(index);
 }
 
 bool DirectoryPresenter::showDirs() {

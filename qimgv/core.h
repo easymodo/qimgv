@@ -90,6 +90,7 @@ private:
     void edit_template(bool save, const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& func, Args&&... as);
 
     void doInteractiveCopy(QString path, QString destDirectory, DialogResult &overwriteAllFiles);
+    void doInteractiveMove(QString path, QString destDirectory, DialogResult &overwriteAllFiles);
 
 private slots:
     void readSettings();
@@ -111,6 +112,7 @@ private slots:
     void moveCurrentFile(QString destDirectory);
     void copyPathsTo(QList<QString> paths, QString destDirectory);
     void interactiveCopy(QList<QString> paths, QString destDirectory);
+    void interactiveMove(QList<QString> paths, QString destDirectory);
     void movePathsTo(QList<QString> paths, QString destDirectory);
     FileOpResult removeFile(QString fileName, bool trash);
     void onFileRemoved(QString filePath, int index);

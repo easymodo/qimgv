@@ -87,7 +87,7 @@ void Core::connectComponents() {
             this, qOverload<QList<QString>>(&Core::onDraggedOut));
 
     connect(&folderViewPresenter, &DirectoryPresenter::droppedInto,
-            this, qOverload<QList<QString>,QString>(&Core::copyPathsTo));
+            this, qOverload<QList<QString>,QString>(&Core::movePathsTo));
 
     connect(scriptManager, &ScriptManager::error, mw, &MW::showError);
 
@@ -410,7 +410,7 @@ void Core::copyFileClipboard() {
     if(model->isEmpty())
         return;
 
-    QMimeData* mimeData = getMimeDataForClipboard(model->getImage(selectedFilePath()), settings->clipboardForcePNG());
+    QMimeData* mimeData = getMimeDataForClipboard(model->getImage(selectedFilePath()), false);
 
     // mimeData->text() should already contain an url
     QByteArray gnomeFormat = QByteArray("copy\n").append(QUrl(mimeData->text()).toEncoded());
@@ -487,6 +487,7 @@ QMimeData *Core::getMimeDataForClipboard(std::shared_ptr<Image> img, bool forceP
             img->getImage()->save(path, nullptr, 80);
         }
     }
+    //mimeData->setImageData(*img->getImage().get());
     QFile f(path);
     if(f.open(QFile::ReadOnly)) {
         QByteArray ba = f.readAll();
@@ -494,7 +495,6 @@ QMimeData *Core::getMimeDataForClipboard(std::shared_ptr<Image> img, bool forceP
         mimeData->setData(img->mimeType().name(), ba);
     } else if(img->type() != DocumentType::VIDEO) {
         // fallback to decoded
-        mimeData->setImageData(*img->getImage().get());
     }
     mimeData->setUrls({QUrl::fromLocalFile(path)});
     return mimeData;
@@ -658,14 +658,14 @@ void Core::doInteractiveCopy(QString path, QString destDirectory, DialogResult &
 // SINGLE FILE COPY ===========================================================================
     if(!srcFi.isDir()) {
         FileOpResult result;
-        FileOperations::copyTo(path, destDirectory, overwriteFiles, result);
+        FileOperations::copyFileTo(path, destDirectory, overwriteFiles, result);
         if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
             if(overwriteFiles.all) // skipping all
                 return;
             overwriteFiles = mw->fileReplaceDialog(srcFi.absoluteFilePath(), destDirectory + "/" + srcFi.fileName(), FILE_TO_FILE, true);
             if(!overwriteFiles || overwriteFiles.cancel)
                 return;
-            FileOperations::copyTo(path, destDirectory, true, result);
+            FileOperations::copyFileTo(path, destDirectory, true, result);
         }
         if(result != FileOpResult::SUCCESS && !(result == FileOpResult::DESTINATION_FILE_EXISTS && !overwriteFiles)) {
             mw->showError(FileOperations::decodeResult(result));
@@ -709,22 +709,85 @@ void Core::doInteractiveCopy(QString path, QString destDirectory, DialogResult &
             return;
     }
 }
+// -----------------------------------------------------------------------------------
+
+void Core::interactiveMove(QList<QString> paths, QString destDirectory) {
+    DialogResult overwriteFiles;
+    for(auto path : paths) {
+        doInteractiveMove(path, destDirectory, overwriteFiles);
+        if(overwriteFiles.cancel)
+            return;
+    }
+}
+
+// todo: replacing DIR with a FILE?
+void Core::doInteractiveMove(QString path, QString destDirectory, DialogResult &overwriteFiles) {
+    QFileInfo srcFi(path);
+// SINGLE FILE MOVE ===========================================================================
+    if(!srcFi.isDir()) {
+        FileOpResult result;
+        model->moveFileTo(path, destDirectory, overwriteFiles, result);
+        if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
+            if(overwriteFiles.all) // skipping all
+                return;
+            overwriteFiles = mw->fileReplaceDialog(srcFi.absoluteFilePath(), destDirectory + "/" + srcFi.fileName(), FILE_TO_FILE, true);
+            if(!overwriteFiles || overwriteFiles.cancel)
+                return;
+            model->moveFileTo(path, destDirectory, true, result);
+        }
+        if(result != FileOpResult::SUCCESS && !(result == FileOpResult::DESTINATION_FILE_EXISTS && !overwriteFiles)) {
+            mw->showError(FileOperations::decodeResult(result));
+            qDebug() << FileOperations::decodeResult(result);
+        }
+        if(!overwriteFiles.all) // move attempt done; reset temporary flag
+            overwriteFiles.yes = false;
+        return;
+    }
+// DIR MOVE (RECURSIVE) =======================================================================
+    QDir srcDir(srcFi.absoluteFilePath());
+    QFileInfo dstFi(destDirectory + "/" + srcFi.baseName());
+    QDir dstDir(dstFi.absoluteFilePath());
+    if(dstFi.exists() && !dstFi.isDir()) { // overwriting file with a folder
+        if(!overwriteFiles && !overwriteFiles.all) {
+            overwriteFiles = mw->fileReplaceDialog(srcFi.absoluteFilePath(), dstFi.absoluteFilePath(), DIR_TO_FILE, true);
+            if(!overwriteFiles || overwriteFiles.cancel)
+                return;
+            if(!overwriteFiles.all) // reset temp flag right away
+                overwriteFiles.yes = false;
+        }
+        // remove dst file; give up if not writable
+        FileOpResult result;
+        FileOperations::removeFile(dstFi.absoluteFilePath(), result);
+        if(result != FileOpResult::SUCCESS) {
+            mw->showError(FileOperations::decodeResult(result));
+            qDebug() << FileOperations::decodeResult(result);
+            return;
+        }
+    } else if(!dstDir.mkpath(".")) {
+        mw->showError("Could not create directory " + dstDir.absolutePath());
+        qDebug() << "Could not create directory " << dstDir.absolutePath();
+        return;
+    }
+    // copy all contents
+    // TODO: skip symlinks? test
+    QStringList entryList = srcDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+    for(auto entry : entryList) {
+        doInteractiveMove(srcDir.absolutePath() + "/" + entry, dstDir.absolutePath(), overwriteFiles);
+        if(overwriteFiles.cancel)
+            return;
+    }
+    FileOpResult dirRmRes;
+    model->removeDir(srcDir.absolutePath(), false, dirRmRes);
+}
+
+// -----------------------------------------------------------------------------------
 
 void Core::copyPathsTo(QList<QString> paths, QString destDirectory) {
     interactiveCopy(paths, destDirectory);
 }
 
 void Core::movePathsTo(QList<QString> paths, QString destDirectory) {
-    if(model->isEmpty())
-        return;
-    FileOpResult result;
-    for(auto path : paths) {
-        model->moveTo(path, destDirectory, false, result);
-        if(result != FileOpResult::SUCCESS) {
-            mw->showError(FileOperations::decodeResult(result));
-            qDebug() << FileOperations::decodeResult(result);
-        }
-    }
+    interactiveMove(paths, destDirectory);
 }
 
 void Core::moveCurrentFile(QString destDirectory) {
@@ -735,12 +798,12 @@ void Core::moveCurrentFile(QString destDirectory) {
     // move fails during file playback, so we close it temporarily
     mw->closeImage();
     FileOpResult result;
-    model->moveTo(selectedFilePath(), destDirectory, false, result);
+    model->moveFileTo(selectedFilePath(), destDirectory, false, result);
     if(result == FileOpResult::SUCCESS) {
         mw->showMessageSuccess("File moved.");
     } else if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
         if(mw->showConfirmation("File exists", "Destination file exists. Overwrite?"))
-            model->moveTo(selectedFilePath(), destDirectory, true, result);
+            model->moveFileTo(selectedFilePath(), destDirectory, true, result);
     }
     if(result != FileOpResult::SUCCESS) {
         guiSetImage(model->getImage(selectedFilePath()));
@@ -756,12 +819,12 @@ void Core::copyCurrentFile(QString destDirectory) {
     if(model->isEmpty())
         return;
     FileOpResult result;
-    model->copyTo(selectedFilePath(), destDirectory, false, result);
+    model->copyFileTo(selectedFilePath(), destDirectory, false, result);
     if(result == FileOpResult::SUCCESS) {
         mw->showMessageSuccess("File copied.");
     } else if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
         if(mw->showConfirmation("File exists", "Destination file exists. Overwrite?"))
-            model->copyTo(selectedFilePath(), destDirectory, true, result);
+            model->copyFileTo(selectedFilePath(), destDirectory, true, result);
     }
     if(result != FileOpResult::SUCCESS && result != FileOpResult::DESTINATION_FILE_EXISTS)
         outputError(result);

@@ -32,10 +32,11 @@ public:
     QDateTime lastModified(QString filePath) const;
 
     bool forceInsert(QString filePath);
-    void copyTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result);
-    void moveTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result);
+    void copyFileTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result);
+    void moveFileTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result);
     void renameFile(const QString &oldFilePath, const QString &newName, bool force, FileOpResult &result);
     void removeFile(const QString &filePath, bool trash, FileOpResult &result);
+    void removeDir(const QString &dirPath, bool trash, FileOpResult &result);
 
     bool setDirectory(QString);
 
@@ -76,6 +77,9 @@ signals:
     void fileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);
     void fileAdded(QString filePath);
     void fileModified(QString filePath);
+    void dirRemoved(QString dirPath, int index);
+    void dirRenamed(QString dirPath, int indexFrom, QString toPath, int indexTo);
+    void dirAdded(QString dirPath);
     void loaded(QString filePath);
     void loadFailed(const QString &path);
     void sortingChanged(SortingMode);
