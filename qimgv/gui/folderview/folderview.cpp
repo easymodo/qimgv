@@ -157,7 +157,7 @@ void FolderView::onTreeViewTabOut() {
 
 // TODO: ask what to do
 void FolderView::onDroppedInByIndex(QList<QString> paths, QModelIndex index) {
-    emit copyUrlsRequested(paths, dirModel->filePath(index));
+    emit moveUrlsRequested(paths, dirModel->filePath(index));
 }
 
 void FolderView::onOptionsPopupButtonToggled(bool mode) {
