@@ -45,7 +45,6 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.overlay = "#1a1a1a";
             break;
         case COLORS_DARK:
-        case COLORS_DEFAULT:
             base.background = "#1a1a1a";
             base.background_fullscreen = "#1a1a1a";
             base.text = "#b4b4b4";
@@ -58,6 +57,21 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.scrollbar = "#4b4b4b";
             base.overlay_text = "#d2d2d2";
             base.overlay = "#1a1a1a";
+            break;
+        case COLORS_BLACK:
+        case COLORS_DEFAULT:
+            base.background = "#000000";
+            base.background_fullscreen = "#000000";
+            base.text = "#b0b0b0";
+            base.icons = "#999999";
+            base.widget = "#080808";
+            base.widget_border = "#181818";
+            base.accent = "#3a3a3a";
+            base.folderview = "#111111";
+            base.folderview_topbar = "#111111";
+            base.scrollbar = "#222222";
+            base.overlay_text = "#666666";
+            base.overlay = "#000000";
             break;
     }
     return ColorScheme(base);
