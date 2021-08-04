@@ -298,7 +298,7 @@ void FolderGridView::setupLayout() {
     this->setAlignment(Qt::AlignHCenter);
 
     flowLayout = new FlowLayout();
-    flowLayout->setContentsMargins(9,0,9,0);
+    flowLayout->setContentsMargins(9,6,9,0);
     setFrameShape(QFrame::NoFrame);
     scene.addItem(&holderWidget);
     holderWidget.setLayout(flowLayout);
