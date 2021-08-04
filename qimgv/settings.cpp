@@ -140,7 +140,10 @@ void Settings::loadStylesheet() {
         styleSheet.replace("%overlay_rgba%",         "rgba(" + QString::number(colors.overlay.red())   + ","
                                                              + QString::number(colors.overlay.green()) + ","
                                                              + QString::number(colors.overlay.blue())  + ",90%)");
-        styleSheet.replace("%topbar_border_rgba%",   "rgba(0,0,0,14%)");
+        if(colors.folderview != colors.folderview_topbar)
+            styleSheet.replace("%topbar_border_rgba%", "rgba(0,0,0,14%)");
+        else
+            styleSheet.replace("%topbar_border_rgba%", colors.folderview.name());
         // Qt::Popup can't do transparency under windows, use square window
 #ifdef _WIN32
         styleSheet.replace("%contextmenu_border_radius%",  "0px");
