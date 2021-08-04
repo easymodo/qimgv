@@ -85,8 +85,6 @@ void MainPanel::paintEvent(QPaintEvent *event) {
         p.drawLine(rect().bottomLeft() - QPoint(0, bottomMargin - 1), rect().bottomRight() - QPoint(0, bottomMargin - 1));
     } else {
         p.drawLine(rect().topLeft(), rect().topRight());
-        p.setPen(settings->colorScheme().folderview);
-        p.drawLine(rect().topLeft() + QPoint(0,1), rect().topRight() + QPoint(0,1));
-        p.drawLine(rect().topLeft() + QPoint(0,2), rect().topRight() + QPoint(0,2));
+        p.fillRect(rect().left(), rect().top(), width(), 3, settings->colorScheme().folderview);
     }
 }
