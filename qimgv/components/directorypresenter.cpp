@@ -264,7 +264,7 @@ void DirectoryPresenter::onDroppedInto(const QMimeData *data, QObject *source, i
     // convert urls to qstrings
     QStringList pathList;
     QList<QUrl> urlList = data->urls();
-    for(int i = 0; i < urlList.size() && i < 32; ++i)
+    for(int i = 0; i < urlList.size(); ++i)
         pathList.append(urlList.at(i).toLocalFile());
 
     // get target dir path
