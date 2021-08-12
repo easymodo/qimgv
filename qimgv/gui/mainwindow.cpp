@@ -726,7 +726,7 @@ std::shared_ptr<ThumbnailStripProxy> MW::getThumbnailPanel() {
 
 // todo: this is crap
 void MW::showMessageDirectory(QString dirName) {
-    floatingMessage->showMessage(dirName, FloatingMessageIcon::ICON_DIRECTORY, 1300);
+    floatingMessage->showMessage(dirName, FloatingMessageIcon::ICON_DIRECTORY, 1700);
 }
 
 void MW::showMessageDirectoryEnd() {

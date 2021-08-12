@@ -1182,7 +1182,7 @@ void Core::prevDirectory() {
 }
 
 void Core::nextImage() {
-    if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
+    if(mw->currentViewMode() == MODE_FOLDERVIEW || (model->isEmpty() && folderEndAction != FOLDER_END_GOTO_ADJACENT))
         return;
     stopSlideshow();
     if(shuffle) {
@@ -1206,7 +1206,7 @@ void Core::nextImage() {
 }
 
 void Core::prevImage() {
-    if(model->isEmpty() || mw->currentViewMode() == MODE_FOLDERVIEW)
+    if(mw->currentViewMode() == MODE_FOLDERVIEW || (model->isEmpty() && folderEndAction != FOLDER_END_GOTO_ADJACENT))
         return;
     stopSlideshow();
     if(shuffle) {

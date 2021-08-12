@@ -61,13 +61,10 @@ void LinuxWatcherPrivate::dispatchFilesystemEvent(LinuxFsEvent* e) {
         uint cookie     = notify_event->cookie;
         bool isDirEvent = mask & IN_ISDIR;
         
-        qDebug() << name;
-
         // Skip events for directories and files that isn't in filter range
         /*if((isDirEvent) && !(mask & IN_MOVED_TO) ) {
             continue;
         }*/
-        qDebug() << "pass";
 
         if (mask & IN_MODIFY) {
             handleModifyEvent(name);
