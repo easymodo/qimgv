@@ -256,7 +256,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2711,8 +2711,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>385</width>
-                <height>172</height>
+                <width>553</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2942,19 +2942,22 @@
                        <number>1</number>
                       </property>
                       <property name="maximum">
-                       <number>5</number>
+                       <number>30</number>
                       </property>
                       <property name="pageStep">
-                       <number>1</number>
+                       <number>10</number>
+                      </property>
+                      <property name="value">
+                       <number>20</number>
                       </property>
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
                       <property name="tickPosition">
-                       <enum>QSlider::TicksBelow</enum>
+                       <enum>QSlider::NoTicks</enum>
                       </property>
                       <property name="tickInterval">
-                       <number>1</number>
+                       <number>5</number>
                       </property>
                      </widget>
                     </item>

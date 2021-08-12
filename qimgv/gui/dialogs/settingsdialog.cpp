@@ -178,7 +178,7 @@ void SettingsDialog::readSettings() {
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
-    ui->zoomStepSlider->setValue(static_cast<int>(settings->zoomStep() * 10));
+    ui->zoomStepSlider->setValue(static_cast<int>(settings->zoomStep()));
     onZoomStepSliderChanged(ui->zoomStepSlider->value());
 
     ui->JPEGQualitySlider->setValue(settings->JPEGSaveQuality());
@@ -291,7 +291,7 @@ void SettingsDialog::saveSettings() {
     settings->setMainPanelSize(ui->panelSizeSlider->value() * 10);
 
     settings->setJPEGSaveQuality(ui->JPEGQualitySlider->value());
-    settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value()) / 10);
+    settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value()));
     settings->setExpandLimit(ui->expandLimitSlider->value());
     settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
 
