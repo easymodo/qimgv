@@ -178,7 +178,7 @@ void SettingsDialog::readSettings() {
 
     ui->mpvLineEdit->setText(settings->mpvBinary());
 
-    ui->zoomStepSlider->setValue(static_cast<int>(settings->zoomStep()));
+    ui->zoomStepSlider->setValue(static_cast<int>(settings->zoomStep() * 100.f));
     onZoomStepSliderChanged(ui->zoomStepSlider->value());
 
     ui->JPEGQualitySlider->setValue(settings->JPEGSaveQuality());
@@ -246,7 +246,7 @@ void SettingsDialog::saveSettings() {
     settings->setExpandImage(ui->expandImageCheckBox->isChecked());
     settings->setSmoothAnimatedImages(ui->smoothAnimatedImagesCheckBox->isChecked());
 
-    settings->setBackgroundOpacity(static_cast<qreal>(ui->bgOpacitySlider->value()) / 100);
+    settings->setBackgroundOpacity(static_cast<qreal>(ui->bgOpacitySlider->value()) / 100.f);
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
     settings->setConfirmDelete(ui->confirmDeleteCheckBox->isChecked());
@@ -291,7 +291,7 @@ void SettingsDialog::saveSettings() {
     settings->setMainPanelSize(ui->panelSizeSlider->value() * 10);
 
     settings->setJPEGSaveQuality(ui->JPEGQualitySlider->value());
-    settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value()));
+    settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value() / 100.f));
     settings->setExpandLimit(ui->expandLimitSlider->value());
     settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
 
@@ -534,7 +534,7 @@ void SettingsDialog::onJPEGQualitySliderChanged(int value) {
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::onZoomStepSliderChanged(int value) {
-    ui->zoomStepLabel->setText("0." + QString::number(value) + "x");
+    ui->zoomStepLabel->setText(QString::number(value / 100.f, 'f', 2) + "x");
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::onThumbnailerThreadsSliderChanged(int value) {

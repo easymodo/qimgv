@@ -846,19 +846,13 @@ qreal Settings::zoomStep() {
     bool ok = false;
     qreal value = settings->settingsConf->value("zoomStep", 0.2).toReal(&ok);
     if(!ok)
-        return 0.3;
-    if(value > 0.3)
-        return 0.3;
-    if(value < 0.01)
-        return 0.01;
+        return 0.2;
+    value = qBound(0.01, value, 0.3);
     return value;
 }
 
 void Settings::setZoomStep(qreal value) {
-    if(value > 0.5)
-        value = 0.5;
-    else if(value < 0.1)
-        value = 0.1;
+    value = qBound(0.01, value, 0.3);
     settings->settingsConf->setValue("zoomStep", value);
 }
 //------------------------------------------------------------------------------
