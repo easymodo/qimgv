@@ -1,9 +1,9 @@
 #pragma once
 
 #include <QtCore/QMetaObject>
-#include <QtWidgets/QOpenGLWidget>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLFramebufferObject>
+#include <QOpenGLWidget>
+#include <QOpenGLContext>
+#include <QOpenGLFramebufferObject>
 
 #include <mpv/client.h>
 #include <mpv/render_gl.h>
