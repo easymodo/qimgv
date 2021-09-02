@@ -95,6 +95,9 @@ void DocumentInfo::detectFormat() {
     } else if(mimeName == "image/webp" || (mimeName == "audio/x-riff" && suffix == "webp")) {
         mFormat = "webp";
         mDocumentType = detectAnimatedWebP() ? DocumentType::ANIMATED : DocumentType::STATIC;
+    } else if(mimeName == "image/jxl") {
+        mFormat = "jxl";
+        mDocumentType = detectAnimatedJxl() ? DocumentType::ANIMATED : DocumentType::STATIC;
     } else if(mimeName == "image/bmp") {
         mFormat = "bmp";
         mDocumentType = DocumentType::STATIC;
@@ -146,6 +149,11 @@ bool DocumentInfo::detectAnimatedWebP() {
         free(buf);
     }
     return result;
+}
+
+bool DocumentInfo::detectAnimatedJxl() {
+    QImageReader r(fileInfo.filePath(), "jxl");
+    return r.imageCount() > 1;
 }
 
 void DocumentInfo::loadExifTags() {
