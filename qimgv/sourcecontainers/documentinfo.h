@@ -60,6 +60,7 @@ private:
     void loadExifOrientation();
     bool detectAPNG();
     bool detectAnimatedWebP();
+    bool detectAnimatedJxl();
     QMap<QString, QString> exifTags;
     QMimeType mMimeType;
 };
