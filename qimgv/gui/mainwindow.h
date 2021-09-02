@@ -91,7 +91,6 @@ private:
     CropOverlay *cropOverlay;
     SaveConfirmOverlay *saveOverlay;
     ChangelogWindow *changelogWindow;
-    QRect windowedGeometry;
 
     CopyOverlay *copyOverlay;
 
