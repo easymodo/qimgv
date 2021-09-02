@@ -315,10 +315,7 @@ void MW::onScalingFinished(std::unique_ptr<QPixmap> scaled) {
 void MW::saveWindowGeometry() {
     if(this->windowState() == Qt::WindowNoState) {
     #ifdef __linux__
-        if(this->isHidden())
-            windowedGeometry = QRect(pos(), size());
-        else
-            windowedGeometry = geometry();
+        windowedGeometry = geometry();
     #else
         windowedGeometry = QRect(pos(), size());
     #endif
@@ -330,8 +327,7 @@ void MW::saveWindowGeometry() {
 // does not apply fullscreen; window size / maximized state only
 void MW::restoreWindowGeometry() {
     windowedGeometry = settings->windowGeometry();
-    this->resize(windowedGeometry.size());
-    this->move(windowedGeometry.x(), windowedGeometry.y());
+    this->setGeometry(windowedGeometry);
     if(settings->maximizedWindow())
         this->setWindowState(Qt::WindowMaximized);
     updateCurrentDisplay();
