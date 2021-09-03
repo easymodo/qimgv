@@ -98,6 +98,9 @@ void DocumentInfo::detectFormat() {
     } else if(mimeName == "image/jxl") {
         mFormat = "jxl";
         mDocumentType = detectAnimatedJxl() ? DocumentType::ANIMATED : DocumentType::STATIC;
+    } else if(mimeName == "image/avif") {
+        mFormat = "avif";
+        mDocumentType = detectAnimatedAvif() ? DocumentType::ANIMATED : DocumentType::STATIC;
     } else if(mimeName == "image/bmp") {
         mFormat = "bmp";
         mDocumentType = DocumentType::STATIC;
@@ -151,9 +154,27 @@ bool DocumentInfo::detectAnimatedWebP() {
     return result;
 }
 
+// TODO avoid creating multiple QImageReader instances
 bool DocumentInfo::detectAnimatedJxl() {
     QImageReader r(fileInfo.filePath(), "jxl");
-    return r.imageCount() > 1;
+    return r.supportsAnimation();
+}
+
+bool DocumentInfo::detectAnimatedAvif() {
+    QFile f(fileInfo.filePath());
+    bool result = false;
+    if(f.open(QFile::ReadOnly)) {
+        QDataStream in(&f);
+        in.skipRawData(4); // skip box size
+        char *buf = static_cast<char*>(malloc(9));
+        buf[8] = '\0';
+        in.readRawData(buf, 8);
+        if(strcmp(buf, "ftypavis") == 0) {
+            result = true;
+        }
+        free(buf);
+    }
+    return result;
 }
 
 void DocumentInfo::loadExifTags() {
