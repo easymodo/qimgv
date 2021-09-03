@@ -61,6 +61,7 @@ private:
     bool detectAPNG();
     bool detectAnimatedWebP();
     bool detectAnimatedJxl();
+    bool detectAnimatedAvif();
     QMap<QString, QString> exifTags;
     QMimeType mMimeType;
 };
