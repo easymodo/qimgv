@@ -62,7 +62,7 @@ public:
     bool isCropPanelActive();
     void onScalingFinished(std::unique_ptr<QPixmap>scaled);
     void setImage(std::unique_ptr<QPixmap> pixmap);
-    void setAnimation(std::unique_ptr<QMovie> movie);
+    void setAnimation(std::shared_ptr<QMovie> movie);
     void setVideo(QString file);
 
     void setCurrentInfo(int fileIndex, int fileCount, QString filePath, QString fileName, QSize imageSize, qint64 fileSize, bool slideshow, bool shuffle, bool edited);

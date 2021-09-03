@@ -31,7 +31,7 @@ public:
     std::shared_ptr<ThumbnailStripProxy> getThumbPanel();
 
     bool showImage(std::unique_ptr<QPixmap> pixmap);
-    bool showAnimation(std::unique_ptr<QMovie> movie);
+    bool showAnimation(std::shared_ptr<QMovie> movie);
     void onScalingFinished(std::unique_ptr<QPixmap> scaled);
     bool isDisplaying();
     bool lockZoomEnabled();

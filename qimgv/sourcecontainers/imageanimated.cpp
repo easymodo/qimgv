@@ -77,10 +77,10 @@ std::shared_ptr<const QImage> ImageAnimated::getImage() {
     return img;
 }
 
-std::unique_ptr<QMovie> ImageAnimated::getMovie() {
+std::shared_ptr<QMovie> ImageAnimated::getMovie() {
     if(movie == nullptr)
         loadMovie();
-    return std::move(movie);
+    return movie;
 }
 
 int ImageAnimated::height() {

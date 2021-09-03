@@ -41,7 +41,7 @@ public:
     virtual float currentScale() const;
     virtual QSize sourceSize() const;
     virtual void displayImage(std::unique_ptr<QPixmap> _pixmap);
-    virtual void displayAnimation(std::unique_ptr<QMovie> _animation);
+    virtual void displayAnimation(std::shared_ptr<QMovie> _animation);
     virtual void setScaledPixmap(std::unique_ptr<QPixmap> newFrame);
     virtual bool isDisplaying() const;
 
@@ -122,7 +122,7 @@ private:
     QGraphicsScene *scene;
     std::shared_ptr<QPixmap> pixmap;
     std::unique_ptr<QPixmap> pixmapScaled;
-    std::unique_ptr<QMovie> movie;
+    std::shared_ptr<QMovie> movie;
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
     QTimer *animationTimer, *scaleTimer;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
