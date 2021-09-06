@@ -195,6 +195,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::nextDirectory, this, &Core::nextDirectory);
     connect(actionManager, &ActionManager::prevDirectory, this, qOverload<>(&Core::prevDirectory));
     connect(actionManager, &ActionManager::print, this, &Core::print);
+    connect(actionManager, &ActionManager::toggleFullscreenInfoBar, this, &Core::toggleFullscreenInfoBar);
 }
 
 void Core::onUpdate() {
@@ -824,6 +825,10 @@ void Core::toggleCropPanel() {
     } else if(state.hasActiveImage) {
         mw->triggerCropPanel();
     }
+}
+
+void Core::toggleFullscreenInfoBar() {
+    mw->toggleFullscreenInfoBar();
 }
 
 void Core::requestSavePath() {

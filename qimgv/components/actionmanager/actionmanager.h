@@ -121,6 +121,7 @@ signals:
     void lockZoom();
     void lockView();
     void print();
+    void toggleFullscreenInfoBar();
 };
 
 extern ActionManager *actionManager;

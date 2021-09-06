@@ -267,6 +267,16 @@ void MW::toggleLockView() {
     onInfoUpdated();
 }
 
+void MW::toggleFullscreenInfoBar() {
+    if(!this->isFullScreen())
+        return;
+    showInfoBarFullscreen = !showInfoBarFullscreen;
+    if(showInfoBarFullscreen)
+        infoBarFullscreen->showWhenReady();
+    else
+        infoBarFullscreen->hide();
+}
+
 void MW::toggleImageInfoOverlay() {
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
         return;

@@ -126,6 +126,7 @@ private slots:
     void cropAndSave(QRect rect);
     void discardEdits();
     void toggleCropPanel();
+    void toggleFullscreenInfoBar();
     void requestSavePath();
     void saveCurrentFile();
     void saveCurrentFileAs(QString);

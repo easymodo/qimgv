@@ -188,7 +188,6 @@ signals:
 
 public slots:
     void setupFullUi();
-
     void showDefault();
     void showCropPanel();
     void hideCropPanel();
@@ -238,4 +237,5 @@ public slots:
     void setDirectoryPath(QString path);
     void toggleLockZoom();
     void toggleLockView();
+    void toggleFullscreenInfoBar();
 };
