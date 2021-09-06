@@ -229,12 +229,12 @@ bool ViewerWidget::showImage(std::unique_ptr<QPixmap> pixmap) {
     return true;
 }
 
-bool ViewerWidget::showAnimation(std::unique_ptr<QMovie> movie) {
+bool ViewerWidget::showAnimation(std::shared_ptr<QMovie> movie) {
     if(!movie)
         return false;
     stopPlayback();
     enableImageViewer();
-    imageViewer->displayAnimation(std::move(movie));
+    imageViewer->displayAnimation(movie);
     hideCursorTimed(false);
     return true;
 }

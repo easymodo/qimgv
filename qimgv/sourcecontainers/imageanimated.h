@@ -12,7 +12,7 @@ public:
 
     std::unique_ptr<QPixmap> getPixmap();
     std::shared_ptr<const QImage> getImage();
-    std::unique_ptr<QMovie> getMovie();
+    std::shared_ptr<QMovie> getMovie();
     int height();
     int width();
     QSize size();
@@ -32,6 +32,6 @@ private:
     void load();
     QSize mSize;
     int mFrameCount;
-    std::unique_ptr<QMovie> movie;
+    std::shared_ptr<QMovie> movie;
     void loadMovie();
 };

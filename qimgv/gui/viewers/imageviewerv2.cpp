@@ -225,10 +225,10 @@ void ImageViewerV2::updatePixmap(std::unique_ptr<QPixmap> newPixmap) {
     pixmapItem.update();
 }
 
-void ImageViewerV2::displayAnimation(std::unique_ptr<QMovie> _movie) {
+void ImageViewerV2::displayAnimation(std::shared_ptr<QMovie> _movie) {
     if(_movie && _movie->isValid()) {
         reset();
-        movie = std::move(_movie);
+        movie = _movie;
         movie->jumpToFrame(0);
         Qt::TransformationMode mode = smoothAnimatedImages ? Qt::SmoothTransformation : Qt::FastTransformation;
         pixmapItem.setTransformationMode(mode);
@@ -305,7 +305,7 @@ void ImageViewerV2::reset() {
     pixmapItem.setScale(1.0f);
     pixmap.reset();
     stopAnimation();
-    movie.reset(nullptr);
+    movie = nullptr;
     centerOn(sceneRect().center());
     // when this view is not in focus this it won't update the background
     // so we force it here

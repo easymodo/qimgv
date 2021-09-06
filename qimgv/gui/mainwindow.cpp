@@ -214,8 +214,8 @@ void MW::setImage(std::unique_ptr<QPixmap> pixmap) {
     updateCropPanelData();
 }
 
-void MW::setAnimation(std::unique_ptr<QMovie> movie) {
-    viewerWidget->showAnimation(std::move(movie));
+void MW::setAnimation(std::shared_ptr<QMovie> movie) {
+    viewerWidget->showAnimation(movie);
     updateCropPanelData();
 }
 
