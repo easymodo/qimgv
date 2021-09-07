@@ -25,7 +25,8 @@ void ThumbnailGridWidget::updateBoundingRect() {
 
 void ThumbnailGridWidget::setupLayout() {
     if(mDrawLabel) {
-        nameRect = QRectF(padding + margin, padding + margin + mThumbnailSize + labelSpacing,
+        nameRect = QRectF(padding + margin,
+                          padding + margin + mThumbnailSize + labelSpacing,
                           mThumbnailSize,
                           fm->height());
         infoRect = nameRect.adjusted(0, fm->height() + 2, 0, fm->height() + 2);

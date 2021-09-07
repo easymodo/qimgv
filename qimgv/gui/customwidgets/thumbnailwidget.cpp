@@ -15,16 +15,14 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     setAttribute(Qt::WA_OpaquePaintEvent, true);
     setAcceptHoverEvents(true);
     qreal fntSz = font.pointSizeF();
-    if(fntSz > 0) {
+    if(fntSz > 0)
         fontSmall.setPointSizeF(fontSmall.pointSizeF() * 0.85);
-    }
     font.setBold(true);
     fontSmall.setBold(true);
     fm = new QFontMetrics(font);
     fmSmall = new QFontMetrics(fontSmall);
     textHeight = fm->height();
 
-    setThumbnailSize(100);
     readSettings();
     connect(settings, &Settings::settingsChanged, this, &ThumbnailWidget::readSettings);
 }
