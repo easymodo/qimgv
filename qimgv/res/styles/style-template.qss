@@ -677,8 +677,8 @@ FolderView QTreeView::item:hover {
 
 FolderView QTreeView::item:selected:!active,
 FolderView QTreeView::item:selected:active {
-    background-color: %accent%;
-    border-color: %accent%;
+    background-color: %folderview_hc2%;
+    border-color: %folderview_hc2%;
 }
 
 QTreeView::branch {
@@ -686,7 +686,7 @@ QTreeView::branch {
 }
 
 QTreeView::branch:selected {
-    background-color: %accent%;
+    background-color: %folderview_hc2%;
 }
 
 QTreeView::branch:hover:!selected {
@@ -734,8 +734,8 @@ BookmarksItem QLabel {
 }
 
 BookmarksItem[highlighted="true"] {
-    background-color: %accent%;
-    border-color: %accent%;
+    background-color: %folderview_hc2%;
+    border-color: %folderview_hc2%;
 }
 
 /*----------------------------------------------------------------------------*/
