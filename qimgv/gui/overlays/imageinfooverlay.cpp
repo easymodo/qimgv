@@ -6,8 +6,11 @@ ImageInfoOverlay::ImageInfoOverlay(FloatingWidgetContainer *parent) :
     ui(new Ui::ImageInfoOverlay)
 {
     ui->setupUi(this);
-    ui->tableWidget->setColumnWidth(0, 120);
-    ui->tableWidget->setColumnWidth(1, 142);
+    ui->closeButton->setIconPath(":res/icons/common/overlay/close-dim16.png");
+    ui->headerIcon->setIconPath(":res/icons/common/overlay/info16.png");
+    entryStub.setFixedSize(280, 48);
+    entryStub.setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    connect(ui->closeButton,  &IconButton::clicked, this, &ImageInfoOverlay::hide);
     this->setPosition(FloatingWidgetPosition::RIGHT);
 
     if(parent)
@@ -16,26 +19,55 @@ ImageInfoOverlay::ImageInfoOverlay(FloatingWidgetContainer *parent) :
 
 ImageInfoOverlay::~ImageInfoOverlay() {
     delete ui;
+    for(auto i = entries.count() - 1; i >= 0; i--)
+        delete entries.takeAt(i);
 }
 
 void ImageInfoOverlay::setExifInfo(QMap<QString, QString> info) {
-    while(ui->tableWidget->rowCount() > 0) {
-        ui->tableWidget->removeRow(ui->tableWidget->rowCount() - 1);
+    // remove/add entries
+    int entryCount = entries.count();
+    if(entryCount > info.count()) {
+        for(auto i = entryCount - 1; i >= info.count(); i--) {
+            ui->entryLayout->removeWidget(entries.last());
+            delete entries.takeLast();
+        }
+    } else if(entryCount < info.count()) {
+        for(auto i = entryCount; i < info.count(); i++) {
+            entries.append(new EntryInfoItem(this));
+            ui->entryLayout->addWidget(entries.last());
+        }
     }
     QMap<QString, QString>::const_iterator i = info.constBegin();
-    while (i != info.constEnd()) {
-        ui->tableWidget->insertRow(ui->tableWidget->rowCount());
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(i.key()));
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1, new QTableWidgetItem(i.value()));
+    int entryIdx = 0;
+    while(i != info.constEnd()) {
+        entries.at(entryIdx)->setInfo(i.key(), i.value());
         ++i;
+        ++entryIdx;
     }
-    if(!isHidden())
-        adjustSize();
+
+    // Hiding/showing entryStub causes flicker,
+    // so we just remove it from layout and clear the text.
+    // It's still there but basically not visible
+    if(entries.count()) {
+        ui->entryLayout->removeWidget(&entryStub);
+        entryStub.setText("");
+    } else {
+        ui->entryLayout->addWidget(&entryStub);
+        entryStub.setText("<no metadata found>");
+    }
+
+    if(!isHidden() && entryCount != info.count()) {
+        // wait for layout change
+        qApp->processEvents();
+        // reposition
+        recalculateGeometry();
+    }
 }
 
 void ImageInfoOverlay::show() {
     OverlayWidget::show();
     adjustSize();
+    recalculateGeometry();
 }
 
 void ImageInfoOverlay::wheelEvent(QWheelEvent *event) {

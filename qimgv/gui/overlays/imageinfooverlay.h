@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gui/customwidgets/overlaywidget.h"
+#include "gui/customwidgets/entryinfoitem.h"
 #include <QWheelEvent>
 
 namespace Ui {
@@ -23,4 +24,6 @@ protected:
     void wheelEvent(QWheelEvent *event);
 private:
     Ui::ImageInfoOverlay *ui;
+    QList<EntryInfoItem*> entries;
+    QLabel entryStub;
 };

@@ -196,11 +196,6 @@ FloatingWidget {
     color: %text_hc%;
 }
 
-FloatingWidget QTableWidget {
-    background-color: %widget%;
-    color: %text_hc2%;
-}
-
 FloatingWidget QLineEdit {
     background-color: %button%;
     color: %text_hc%;
@@ -804,7 +799,16 @@ SettingsDialog QComboBox {
 }
 /*----------------------------------------------------------------------------*/
 ImageInfoOverlay QLabel {
-    color: %text_hc%;
+    color: %text%;
+}
+
+EntryInfoItem {
+    background-color: %widget%;
+    color: %text_hc2%;
+}
+
+EntryInfoItem:hover {
+    background-color: %accent_hover_rgba%;
 }
 /*----------------------------------------------------------------------------*/
 PrintDialog QRadioButton,
