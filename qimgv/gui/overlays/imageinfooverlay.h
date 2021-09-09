@@ -16,6 +16,9 @@ public:
     ~ImageInfoOverlay();
     void setExifInfo(QMap<QString, QString>);
 
+public slots:
+    void show();
+
 protected:
     void wheelEvent(QWheelEvent *event);
 private:

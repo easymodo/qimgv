@@ -29,7 +29,13 @@ void ImageInfoOverlay::setExifInfo(QMap<QString, QString> info) {
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1, new QTableWidgetItem(i.value()));
         ++i;
     }
-    this->adjustSize();
+    if(!isHidden())
+        adjustSize();
+}
+
+void ImageInfoOverlay::show() {
+    OverlayWidget::show();
+    adjustSize();
 }
 
 void ImageInfoOverlay::wheelEvent(QWheelEvent *event) {
