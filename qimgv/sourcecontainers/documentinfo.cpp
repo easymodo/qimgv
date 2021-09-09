@@ -202,6 +202,7 @@ void DocumentInfo::loadExifTags() {
         Exiv2::ExifKey isoSpeedRatings("Exif.Photo.ISOSpeedRatings");
         Exiv2::ExifKey flash("Exif.Photo.Flash");
         Exiv2::ExifKey focalLength("Exif.Photo.FocalLength");
+        Exiv2::ExifKey userComment("Exif.Photo.UserComment");
 
         Exiv2::ExifData::const_iterator it;
 
@@ -249,6 +250,15 @@ void DocumentInfo::loadExifTags() {
             Exiv2::Rational r = it->toRational();
             qreal fn = static_cast<qreal>(r.first) / r.second;
             exifTags.insert("Focal Length", QString::number(fn, 'g', 3) + " mm");
+        }
+
+        it = exifData.findKey(userComment);
+        if(it != exifData.end()) {
+            // crop out 'charset=ascii' etc"
+            auto comment = QString::fromStdString(it->value().toString());
+            if(comment.startsWith("charset="))
+                comment=comment.split(" ").last();
+            exifTags.insert("UserComment", comment);
         }
 
         return;
