@@ -163,6 +163,7 @@ void SettingsDialog::readSettings() {
     ui->slideshowIntervalSpinBox->setValue(settings->slideshowInterval());
     ui->imageScrollingComboBox->setCurrentIndex(settings->imageScrolling());
     ui->saveOverlayCheckBox->setChecked(settings->showSaveOverlay());
+    ui->unloadThumbsCheckBox->setChecked(settings->unloadThumbs());
 
     if(settings->defaultViewMode() == MODE_FOLDERVIEW)
         ui->startInFolderViewCheckBox->setChecked(true);
@@ -282,6 +283,7 @@ void SettingsDialog::saveSettings() {
     settings->setScalingFilter(static_cast<ScalingFilter>(ui->scalingQualityComboBox->currentIndex()));
     settings->setImageScrolling(static_cast<ImageScrolling>(ui->imageScrollingComboBox->currentIndex()));
     settings->setShowSaveOverlay(ui->saveOverlayCheckBox->isChecked());
+    settings->setUnloadThumbs(ui->unloadThumbsCheckBox->isChecked());
 
     if(ui->panelTop->isChecked())
         settings->setPanelPosition(PANEL_TOP);

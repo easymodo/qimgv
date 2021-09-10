@@ -842,6 +842,14 @@ void Settings::setConfirmTrash(bool mode) {
     settings->settingsConf->setValue("confirmTrash", mode);
 }
 //------------------------------------------------------------------------------
+bool Settings::unloadThumbs() {
+    return settings->settingsConf->value("unloadThumbs", true).toBool();
+}
+
+void Settings::setUnloadThumbs(bool mode) {
+    settings->settingsConf->setValue("unloadThumbs", mode);
+}
+//------------------------------------------------------------------------------
 qreal Settings::zoomStep() {
     bool ok = false;
     qreal value = settings->settingsConf->value("zoomStep", 0.2).toReal(&ok);

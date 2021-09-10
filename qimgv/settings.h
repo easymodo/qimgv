@@ -260,6 +260,8 @@ public:
     QString lastPrinter();
     void setLastPrinter(QString name);
 
+    bool unloadThumbs();
+    void setUnloadThumbs(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     const unsigned int mainPanelSizeDefault = 230;
