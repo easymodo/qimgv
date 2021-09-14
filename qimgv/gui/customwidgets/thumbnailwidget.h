@@ -68,7 +68,7 @@ protected:
     void drawHoverHighlight(QPainter *painter);
     void drawLabel(QPainter *painter);
     void drawDropHover(QPainter *painter);
-    void drawSingleLineText(QPainter *painter, QFont &_fnt, QRectF rect, QString text, const QColor &color, bool center = true);
+    void drawSingleLineText(QPainter *painter, QFont &_fnt, QRect rect, QString text, const QColor &color, bool center = true);
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
@@ -82,10 +82,10 @@ protected:
     std::shared_ptr<Thumbnail> thumbnail;
     bool highlighted, hovered, dropHovered;
     int mThumbnailSize, padding, marginX, marginY, labelSpacing, textHeight;
-    QRectF bgRect, nameRect, infoRect, mBoundingRect;
+    QRectF bgRect, mBoundingRect;
     QColor highlightColor, nameColor, shadowColor;
     QFont fontName, fontInfo;
-    QRect drawRectCentered;
+    QRect drawRectCentered, nameRect, infoRect;
     void updateBoundingRect();
     ThumbnailStyle thumbStyle;
 };

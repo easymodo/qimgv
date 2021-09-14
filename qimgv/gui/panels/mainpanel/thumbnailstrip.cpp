@@ -93,9 +93,11 @@ void ThumbnailStrip::readSettings() {
         mCurrentStyle = THUMB_COMPACT;
         thumbMarginX = 1;
         thumbMarginY = 3;
+        thumbPadding = 0;
     } else {
         thumbMarginX = 2;
         thumbMarginY = 4;
+        thumbPadding = 9;
         if(settings->thumbPanelStyle() == TH_PANEL_SIMPLE)
             mCurrentStyle = THUMB_SIMPLE;
         else
@@ -106,6 +108,7 @@ void ThumbnailStrip::readSettings() {
     for(int i = 0; i < thumbnails.count(); i++) {
         thumbnails.at(i)->setThumbStyle(mCurrentStyle);
         for(int i = 0; i < thumbnails.count(); i++) {
+            thumbnails.at(i)->setPadding(thumbPadding);
             thumbnails.at(i)->setMargins(thumbMarginX, thumbMarginY);
             thumbnails.at(i)->setThumbnailSize(mThumbnailSize);
         }

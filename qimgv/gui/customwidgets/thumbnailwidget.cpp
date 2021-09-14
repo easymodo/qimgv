@@ -127,17 +127,17 @@ void ThumbnailWidget::unsetThumbnail() {
 
 void ThumbnailWidget::setupTextLayout() {
     if(thumbStyle == THUMB_NORMAL || thumbStyle == THUMB_NORMAL_CENTERED) {
-        nameRect = QRectF(padding + marginX,
+        nameRect = QRect(padding + marginX,
                           padding + marginY + mThumbnailSize + labelSpacing,
                           mThumbnailSize, textHeight);
         infoRect = nameRect.adjusted(0, textHeight + 2, 0, textHeight + 2);
     } else if(thumbStyle == THUMB_COMPACT) {
-        nameRect = QRectF(marginX, marginY, width() - marginX * 2, textHeight * 1.6).adjusted(4, 0, -4, 0); // 1.7? or just add min height?
+        nameRect = QRect(marginX, marginY, width() - marginX * 2, textHeight * 1.7).adjusted(4, 0, -4, 0);
         if(thumbnail) {
             QFontMetrics fm(fontInfo);
             infoRect.setWidth(fm.horizontalAdvance(thumbnail->info()));
             infoRect.setHeight(nameRect.height());
-            infoRect.moveTop(nameRect.top() + 1);
+            infoRect.moveTop(nameRect.top());
             infoRect.moveRight(nameRect.right());
             nameRect.adjust(0, 0, -infoRect.width() - 3, 0);
         }
@@ -280,8 +280,8 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
     if(thumbnail) {
         bool centerName = true;
         if(thumbStyle == THUMB_COMPACT) {
-            painter->setOpacity(0.88);
-            painter->fillRect(QRectF(marginX, nameRect.top(), width() - marginX * 2, nameRect.height()), Qt::black);
+            painter->setOpacity(0.94);
+            painter->fillRect(QRect(marginX, nameRect.top(), width() - marginX * 2, nameRect.height()), QColor(20,20,20,255));
             painter->setOpacity(1.0);
             centerName = false;
         }
@@ -293,7 +293,7 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
     }
 }
 
-void ThumbnailWidget::drawSingleLineText(QPainter *painter, QFont &_fnt, QRectF rect, QString text, const QColor &color, bool center) {
+void ThumbnailWidget::drawSingleLineText(QPainter *painter, QFont &_fnt, QRect rect, QString text, const QColor &color, bool center) {
     qreal dpr = qApp->devicePixelRatio();
     QFontMetrics fm(_fnt);
     bool fits = !(fm.horizontalAdvance(text) > rect.width());
