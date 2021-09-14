@@ -163,6 +163,8 @@ void SettingsDialog::readSettings() {
     ui->slideshowIntervalSpinBox->setValue(settings->slideshowInterval());
     ui->imageScrollingComboBox->setCurrentIndex(settings->imageScrolling());
     ui->saveOverlayCheckBox->setChecked(settings->showSaveOverlay());
+    ui->unloadThumbsCheckBox->setChecked(settings->unloadThumbs());
+    ui->thumbStyleComboBox->setCurrentIndex(settings->thumbPanelStyle());
 
     if(settings->defaultViewMode() == MODE_FOLDERVIEW)
         ui->startInFolderViewCheckBox->setChecked(true);
@@ -207,7 +209,7 @@ void SettingsDialog::readSettings() {
     else
         ui->panelBottom->setChecked(true);
     // reduce by 10x to have nice granular control in qslider
-    ui->panelSizeSlider->setValue(settings->mainPanelSize() / 10);
+    ui->panelSizeSlider->setValue(settings->panelPreviewsSize() / 10);
 
     ui->useSystemColorsCheckBox->setChecked(settings->useSystemColorScheme());
     ui->modifySystemSchemeLabel->setVisible(settings->useSystemColorScheme());
@@ -282,13 +284,15 @@ void SettingsDialog::saveSettings() {
     settings->setScalingFilter(static_cast<ScalingFilter>(ui->scalingQualityComboBox->currentIndex()));
     settings->setImageScrolling(static_cast<ImageScrolling>(ui->imageScrollingComboBox->currentIndex()));
     settings->setShowSaveOverlay(ui->saveOverlayCheckBox->isChecked());
+    settings->setUnloadThumbs(ui->unloadThumbsCheckBox->isChecked());
+    settings->setThumbPanelStyle(static_cast<ThumbPanelStyle>(ui->thumbStyleComboBox->currentIndex()));
 
     if(ui->panelTop->isChecked())
         settings->setPanelPosition(PANEL_TOP);
     else
         settings->setPanelPosition(PANEL_BOTTOM);
 
-    settings->setMainPanelSize(ui->panelSizeSlider->value() * 10);
+    settings->setPanelPreviewsSize(ui->panelSizeSlider->value() * 10);
 
     settings->setJPEGSaveQuality(ui->JPEGQualitySlider->value());
     settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value() / 100.f));

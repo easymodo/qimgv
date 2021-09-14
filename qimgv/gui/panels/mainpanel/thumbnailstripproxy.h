@@ -13,6 +13,7 @@ class ThumbnailStripProxy : public QWidget, public IDirectoryView {
 public:
     ThumbnailStripProxy(QWidget *parent = nullptr);
     void init();
+    QSize itemSize();
 
 public slots:
     virtual void populate(int) override;

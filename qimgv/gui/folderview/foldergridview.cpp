@@ -4,8 +4,7 @@
 
 FolderGridView::FolderGridView(QWidget *parent)
     : ThumbnailView(THUMBNAILVIEW_VERTICAL, parent),
-      shiftedCol(-1),
-      mShowLabels(false)
+      shiftedCol(-1)
 {
     offscreenPreloadArea = 2300;
 
@@ -95,9 +94,9 @@ void FolderGridView::hide() {
 }
 
 void FolderGridView::setShowLabels(bool mode) {
-    mShowLabels = mode;
+    ThumbnailStyle style = mode ? THUMB_NORMAL : THUMB_SIMPLE;
     for(int i = 0; i < thumbnails.count(); i++)
-        thumbnails.at(i)->setDrawLabel(mShowLabels);
+        thumbnails.at(i)->setThumbStyle(style);
     updateLayout();
     fitSceneToContents();
     ensureSelectedItemVisible();
@@ -306,9 +305,10 @@ void FolderGridView::setupLayout() {
 }
 
 ThumbnailWidget* FolderGridView::createThumbnailWidget() {
-    ThumbnailGridWidget *widget = new ThumbnailGridWidget();
-    widget->setDrawLabel(mShowLabels);
+    ThumbnailWidget *widget = new ThumbnailWidget();
     widget->setPadding(8);
+    ThumbnailStyle style = (settings->folderViewMode() == FV_SIMPLE) ? THUMB_SIMPLE : THUMB_NORMAL;
+    widget->setThumbStyle(style);
     widget->setThumbnailSize(this->mThumbnailSize); // TODO: constructor
     return widget;
 }

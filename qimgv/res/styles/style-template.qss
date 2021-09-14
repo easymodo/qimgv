@@ -506,23 +506,19 @@ FVOptionsPopup QLabel {
 /*----------------------------------------------------------------------------*/
 
 ThumbnailStrip QScrollBar:horizontal {
-    height: 12px;
+    height: 15px;
     background-color: transparent;
 }
 
 ThumbnailStrip QScrollBar::handle:horizontal {
     background-color: %scrollbar%;
     min-width: 60px;
+    margin: 2px;
 }
 
 ThumbnailStrip QScrollBar::handle:horizontal:hover {
     background-color: %scrollbar_hover%;
     border-color: %scrollbar_hover%;
-}
-
-ThumbnailStrip QScrollBar:vertical {
-    width: 12px;
-    background-color: transparent;
 }
 
 ThumbnailStrip QScrollBar::sub-page {
@@ -619,13 +615,17 @@ ZoomIndicatorOverlay QLabel {
 /*----------------------------------------------------------------------------*/
 
 FolderView QScrollBar:vertical {
-    width: 12px;
+    width: 16px;
     background-color: transparent;
 }
 
 FolderView QScrollBar::handle:vertical {
     background-color: %scrollbar%;
     min-height: 60px;
+}
+
+FolderGridView QScrollBar::handle:vertical {
+    border: 2px solid %folderview%;
 }
 
 FolderView QScrollBar::handle:vertical:hover {

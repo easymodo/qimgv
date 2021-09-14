@@ -3,7 +3,7 @@
 #include <QGraphicsWidget>
 
 #include "gui/customwidgets/thumbnailview.h"
-#include "gui/folderview/thumbnailgridwidget.h"
+#include "gui/customwidgets/thumbnailwidget.h"
 #include "gui/flowlayout.h"
 #include "utils/stuff.h"
 #include "components/actionmanager/actionmanager.h"
@@ -42,7 +42,6 @@ private:
     FlowLayout *flowLayout;
     QGraphicsWidget holderWidget;
     int shiftedCol;
-    bool mShowLabels;
     void scrollToCurrent();
     void scrollToItem(int index);
     int lastDragTarget = -1;

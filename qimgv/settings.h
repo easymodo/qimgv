@@ -78,16 +78,22 @@ enum ViewMode {
     MODE_FOLDERVIEW
 };
 
+enum FolderEndAction {
+    FOLDER_END_NO_ACTION,
+    FOLDER_END_LOOP,
+    FOLDER_END_GOTO_ADJACENT
+};
+
 enum FolderViewMode {
     FV_SIMPLE,
     FV_EXTENDED,
     FV_EXT_FOLDERS
 };
 
-enum FolderEndAction {
-    FOLDER_END_NO_ACTION,
-    FOLDER_END_LOOP,
-    FOLDER_END_GOTO_ADJACENT
+enum ThumbPanelStyle {
+    TH_PANEL_SIMPLE,
+    TH_PANEL_EXTENDED,
+    TH_PANEL_COMPACT
 };
 
 class Settings : public QObject
@@ -100,8 +106,8 @@ public:
     QList<QByteArray> supportedFormats();
     QString supportedFormatsString();
     QString supportedFormatsRegex();
-    int mainPanelSize();
-    void setMainPanelSize(int size);
+    int panelPreviewsSize();
+    void setPanelPreviewsSize(int size);
     bool usePreloader();
     void setUsePreloader(bool mode);
     bool fullscreenMode();
@@ -259,10 +265,13 @@ public:
     void setPrintFitToPage(bool mode);
     QString lastPrinter();
     void setLastPrinter(QString name);
+    bool unloadThumbs();
+    void setUnloadThumbs(bool mode);
+    ThumbPanelStyle thumbPanelStyle();
+    void setThumbPanelStyle(ThumbPanelStyle mode);
 
 private:
     explicit Settings(QObject *parent = nullptr);
-    const unsigned int mainPanelSizeDefault = 230;
     QSettings *settingsConf, *stateConf, *themeConf;
     QDir *mTmpDir, *mThumbCacheDir, *mConfDir;
     ColorScheme mColorScheme;

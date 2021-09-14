@@ -1,8 +1,8 @@
 #include "thumbnail.h"
 
-Thumbnail::Thumbnail(QString _name, QString _label, int _size, std::shared_ptr<QPixmap> _pixmap)
+Thumbnail::Thumbnail(QString _name, QString _info, int _size, std::shared_ptr<QPixmap> _pixmap)
     : mName(_name),
-      mLabel(_label),
+      mInfo(_info),
       mPixmap(_pixmap),
       mSize(_size)
 {
@@ -14,8 +14,8 @@ QString Thumbnail::name() {
     return mName;
 }
 
-QString Thumbnail::label() {
-    return mLabel;
+QString Thumbnail::info() {
+    return mInfo;
 }
 
 int Thumbnail::size() {

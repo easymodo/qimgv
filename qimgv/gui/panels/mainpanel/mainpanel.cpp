@@ -51,11 +51,10 @@ void MainPanel::setHeight(int newHeight) {
 
 void MainPanel::setPosition(PanelHPosition newPosition) {
     SlideHPanel::setPosition(newPosition);
-    if(newPosition == PANEL_TOP) {
+    if(newPosition == PANEL_TOP)
         mLayout.setContentsMargins(0,0,0,bottomMargin);
-    } else {
+    else
         mLayout.setContentsMargins(0,3,0,0);
-    }
     recalculateGeometry();
 }
 
@@ -72,8 +71,12 @@ void MainPanel::setupThumbnailStrip() {
 }
 
 void MainPanel::readSettings() {
-    setHeight(static_cast<int>(settings->mainPanelSize()));
-    setPosition(settings->panelPosition());
+    auto newPos = settings->panelPosition();
+    int addedHeight = 19; // scrollbar & spacing
+    if(newPos == PANEL_TOP)
+        addedHeight = 16;
+    setHeight(static_cast<int>(thumbnailStrip->itemSize().height() + addedHeight));
+    setPosition(newPos);
 }
 
 // draw separator line at bottom or top
@@ -84,7 +87,7 @@ void MainPanel::paintEvent(QPaintEvent *event) {
     if(mPosition == PanelHPosition::PANEL_TOP) {
         p.drawLine(rect().bottomLeft() - QPoint(0, bottomMargin - 1), rect().bottomRight() - QPoint(0, bottomMargin - 1));
     } else {
-        p.drawLine(rect().topLeft(), rect().topRight());
         p.fillRect(rect().left(), rect().top(), width(), 3, settings->colorScheme().folderview);
+        p.drawLine(rect().topLeft(), rect().topRight());
     }
 }

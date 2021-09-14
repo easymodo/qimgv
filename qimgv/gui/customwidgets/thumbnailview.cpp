@@ -199,23 +199,53 @@ void ThumbnailView::showEvent(QShowEvent *event) {
     loadVisibleThumbnails();
 }
 
-void ThumbnailView::populate(int count) {
+void ThumbnailView::populate(int newCount) {
     // wait for possible queued layout events before removing items
     qApp->processEvents();
+
     clearSelection();
     // pause updates until the layout is calculated
     // without this you will see scene moving when scrollbar appears
     this->setUpdatesEnabled(false);
-    if(count >= 0) {
+    QElapsedTimer t;
+    t.start();
+    if(newCount >= 0) {
+        /* test this later
         // reuse existing items
-        if(count == thumbnails.count()) {
+        auto currentCount = thumbnails.count();
+        if(currentCount > newCount) {
+            qDebug() << this << "removing";
+            for(auto i = currentCount - 1; i >= newCount; i--) {
+                //removeItemFromLayout(i); // slow. is this needed?
+                delete thumbnails.takeLast();
+            }
+            // reset existing
+            QList<ThumbnailWidget*>::iterator i;
+            for(i = thumbnails.begin(); i != thumbnails.end(); ++i)
+                (*i)->reset();
+        } else if(currentCount <= newCount) {
+            // reset existing
+            QList<ThumbnailWidget*>::iterator i;
+            for(i = thumbnails.begin(); i != thumbnails.end(); ++i)
+                (*i)->reset();
+            qDebug() << this << "adding";
+            for(auto i = currentCount; i < newCount; i++) {
+                ThumbnailWidget *widget = createThumbnailWidget();
+                widget->setThumbnailSize(mThumbnailSize);
+                thumbnails.append(widget);
+                addItemToLayout(widget, i);
+            }
+        }
+        */
+
+        if(newCount == thumbnails.count()) {
             QList<ThumbnailWidget*>::iterator i;
             for (i = thumbnails.begin(); i != thumbnails.end(); ++i) {
                 (*i)->reset();
             }
         } else {
             removeAll();
-            for(int i = 0; i < count; i++) {
+            for(int i = 0; i < newCount; i++) {
                 ThumbnailWidget *widget = createThumbnailWidget();
                 widget->setThumbnailSize(mThumbnailSize);
                 thumbnails.append(widget);
@@ -226,6 +256,7 @@ void ThumbnailView::populate(int count) {
     updateLayout();
     fitSceneToContents();
     resetViewport();
+    //qDebug() << "_______POPULATE" << this << t.elapsed();
     // wait for layout before updating
     qApp->processEvents();
     this->setUpdatesEnabled(true);
@@ -350,9 +381,11 @@ void ThumbnailView::loadVisibleThumbnails() {
         if(loadList.count())
             emit thumbnailsRequested(loadList, static_cast<int>(qApp->devicePixelRatio() * mThumbnailSize), mCropThumbnails, false);
         // unload offscreen
-        for(int i = 0; i < thumbnails.count(); i++) {
-            if(!visibleItems.contains(thumbnails.at(i))) {
-                thumbnails.at(i)->unsetThumbnail();
+        if(settings->unloadThumbs()) {
+            for(int i = 0; i < thumbnails.count(); i++) {
+                if(!visibleItems.contains(thumbnails.at(i))) {
+                    thumbnails.at(i)->unsetThumbnail();
+                }
             }
         }
     }

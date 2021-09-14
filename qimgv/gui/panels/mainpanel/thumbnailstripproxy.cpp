@@ -121,6 +121,11 @@ void ThumbnailStripProxy::addItem() {
     }
 }
 
+QSize ThumbnailStripProxy::itemSize() {
+    init();
+    return thumbnailStrip->itemSize();
+}
+
 void ThumbnailStripProxy::showEvent(QShowEvent *event) {
     init();
     QWidget::showEvent(event);

@@ -394,21 +394,32 @@ void Settings::setFolderViewMode(FolderViewMode mode) {
     settings->settingsConf->setValue("folderViewMode", mode);
 }
 //------------------------------------------------------------------------------
+ThumbPanelStyle Settings::thumbPanelStyle() {
+    int mode = settings->settingsConf->value("thumbPanelStyle", 1).toInt();
+    if(mode < 0 || mode > 2)
+        mode = 1;
+    return static_cast<ThumbPanelStyle>(mode);
+}
+
+void Settings::setThumbPanelStyle(ThumbPanelStyle mode) {
+    settings->settingsConf->setValue("thumbPanelStyle", mode);
+}
+//------------------------------------------------------------------------------
 const QMultiMap<QByteArray, QByteArray> Settings::videoFormats() const {
     return mVideoFormatsMap;
 }
 //------------------------------------------------------------------------------
-int Settings::mainPanelSize() {
+int Settings::panelPreviewsSize() {
     bool ok = true;
-    int size = settings->settingsConf->value("mainPanelSize", mainPanelSizeDefault).toInt(&ok);
+    int size = settings->settingsConf->value("panelPreviewsSize", 140).toInt(&ok);
     if(!ok)
-        size = mainPanelSizeDefault;
-    size = qBound(160, size, 350);
+        size = 140;
+    size = qBound(100, size, 250);
     return size;
 }
 
-void Settings::setMainPanelSize(int size) {
-    settings->settingsConf->setValue("mainPanelSize", size);
+void Settings::setPanelPreviewsSize(int size) {
+    settings->settingsConf->setValue("panelPreviewsSize", size);
 }
 //------------------------------------------------------------------------------
 bool Settings::usePreloader() {
@@ -840,6 +851,14 @@ bool Settings::confirmTrash() {
 
 void Settings::setConfirmTrash(bool mode) {
     settings->settingsConf->setValue("confirmTrash", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::unloadThumbs() {
+    return settings->settingsConf->value("unloadThumbs", true).toBool();
+}
+
+void Settings::setUnloadThumbs(bool mode) {
+    settings->settingsConf->setValue("unloadThumbs", mode);
 }
 //------------------------------------------------------------------------------
 qreal Settings::zoomStep() {

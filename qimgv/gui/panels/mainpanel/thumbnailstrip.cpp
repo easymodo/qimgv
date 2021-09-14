@@ -2,10 +2,7 @@
 
 // TODO: move item highlight logic to base class
 
-ThumbnailStrip::ThumbnailStrip(QWidget *parent)
-    : ThumbnailView(THUMBNAILVIEW_HORIZONTAL, parent),
-      thumbnailSpacing(0)
-{
+ThumbnailStrip::ThumbnailStrip(QWidget *parent) : ThumbnailView(THUMBNAILVIEW_HORIZONTAL, parent) {
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
     setupLayout();
@@ -31,10 +28,11 @@ void ThumbnailStrip::setupLayout() {
 }
 
 ThumbnailWidget* ThumbnailStrip::createThumbnailWidget() {
-    ThumbnailWidget *widget = new ThumbnailGridWidget();
-    widget->setDrawLabel(false);
-    widget->setPadding(9);
-    widget->setThumbnailSize(this->mThumbnailSize);
+    ThumbnailWidget *widget = new ThumbnailWidget();
+    widget->setPadding(thumbPadding);
+    widget->setMargins(thumbMarginX, thumbMarginY);
+    widget->setThumbStyle(mCurrentStyle);
+    widget->setThumbnailSize(mThumbnailSize);
     return widget;
 }
 
@@ -74,7 +72,7 @@ void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
         return;
     }
     // assume all thumbnails are the same size
-    int thumbWidth = static_cast<int>(thumbnails.at(start)->boundingRect().width()) + thumbnailSpacing;
+    int thumbWidth = static_cast<int>(thumbnails.at(start)->boundingRect().width());
     ThumbnailWidget *tmp;
     for(int i = start; i <= end; i++) {
         tmp = thumbnails.at(i);
@@ -91,6 +89,30 @@ void ThumbnailStrip::focusOn(int index) {
 }
 
 void ThumbnailStrip::readSettings() {
+    if(settings->thumbPanelStyle() == TH_PANEL_COMPACT) {
+        mCurrentStyle = THUMB_COMPACT;
+        thumbMarginX = 1;
+        thumbMarginY = 3;
+    } else {
+        thumbMarginX = 2;
+        thumbMarginY = 4;
+        if(settings->thumbPanelStyle() == TH_PANEL_SIMPLE)
+            mCurrentStyle = THUMB_SIMPLE;
+        else
+            mCurrentStyle = THUMB_NORMAL_CENTERED;
+    }
+    mThumbnailSize = qBound(20, settings->panelPreviewsSize(), 300);
+    // apply style, size & reposition
+    for(int i = 0; i < thumbnails.count(); i++) {
+        thumbnails.at(i)->setThumbStyle(mCurrentStyle);
+        for(int i = 0; i < thumbnails.count(); i++) {
+            thumbnails.at(i)->setMargins(thumbMarginX, thumbMarginY);
+            thumbnails.at(i)->setThumbnailSize(mThumbnailSize);
+        }
+        updateThumbnailPositions(0, thumbnails.count() - 1);
+        fitSceneToContents();
+        ensureThumbnailVisible(lastSelected());
+    }
     setCropThumbnails(settings->squareThumbnails());
 }
 
@@ -100,38 +122,22 @@ void ThumbnailStrip::ensureThumbnailVisible(int pos) {
                       mThumbnailSize / 2, 0);
 }
 
-// scene stuff??
-void ThumbnailStrip::setThumbnailSize(int newSize) {
-    if(newSize >= 20) {
-        mThumbnailSize = newSize;
-        for(int i=0; i<thumbnails.count(); i++) {
-            thumbnails.at(i)->setThumbnailSize(newSize);
-        }
-        //scene.invalidate(scene.sceneRect());
-        updateThumbnailPositions(0, thumbnails.count() - 1);
-        fitSceneToContents();
-        ensureThumbnailVisible(lastSelected());
+QSize ThumbnailStrip::itemSize() {
+    if(!thumbnails.count()) {
+        ThumbnailWidget w;
+        w.setPadding(thumbPadding);
+        w.setMargins(thumbMarginX, thumbMarginY);
+        w.setThumbStyle(mCurrentStyle);
+        w.setThumbnailSize(mThumbnailSize);
+        return w.boundingRect().size().toSize();
+    } else {
+        return thumbnails.at(0)->boundingRect().size().toSize();
     }
 }
 
-// resizes thumbnailSize to fit new widget size
-// TODO: find some way to make this trigger while hidden
 void ThumbnailStrip::resizeEvent(QResizeEvent *event) {
     ThumbnailView::resizeEvent(event);
     fitSceneToContents();
-    if(event->oldSize().height() != height())
-        updateThumbnailSize();
     if(event->oldSize().width() < width())
         loadVisibleThumbnailsDelayed();
-}
-
-// update size based on widget's size
-// reposition thumbnails within scene if needed
-void ThumbnailStrip::updateThumbnailSize() {
-    int newSize = height() - 36;
-    if( newSize % 2 )
-        --newSize;
-    if(newSize != mThumbnailSize) {
-        setThumbnailSize(newSize);
-    }
 }

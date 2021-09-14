@@ -13,6 +13,13 @@
 #include "settings.h"
 #include "sharedresources.h"
 
+enum ThumbnailStyle {
+    THUMB_SIMPLE,
+    THUMB_NORMAL,
+    THUMB_NORMAL_CENTERED,
+    THUMB_COMPACT
+};
+
 class ThumbnailWidget : public QGraphicsWidget {
     Q_OBJECT
 
@@ -42,24 +49,26 @@ public:
 
     virtual QRectF geometry() const;
     QSizeF effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
-    void setDrawLabel(bool mode);
+    void setThumbStyle(ThumbnailStyle _style);
     void setPadding(int _padding);
+    void setMargins(int _marginX, int _marginY);
     int thumbnailSize();
     void reset();
     void unsetThumbnail();
 
 protected slots:
-    virtual void readSettings();
+    void readSettings();
 
 protected:
-    virtual void setupLayout();
-    virtual void drawThumbnail(QPainter* painter, const QPixmap *pixmap);
-    virtual void drawIcon(QPainter *painter, const QPixmap *pixmap);
-    virtual void drawHighlight(QPainter *painter);
-    virtual void drawHoverBg(QPainter *painter);
-    virtual void drawHoverHighlight(QPainter *painter);
-    virtual void drawLabel(QPainter *painter);
-    virtual void drawDropHover(QPainter *painter);
+    void setupTextLayout();
+    void drawThumbnail(QPainter* painter, const QPixmap *pixmap);
+    void drawIcon(QPainter *painter, const QPixmap *pixmap);
+    void drawHighlight(QPainter *painter);
+    void drawHoverBg(QPainter *painter);
+    void drawHoverHighlight(QPainter *painter);
+    void drawLabel(QPainter *painter);
+    void drawDropHover(QPainter *painter);
+    void drawSingleLineText(QPainter *painter, QFont &_fnt, QRectF rect, QString text, const QColor &color, bool center = true);
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
@@ -67,18 +76,16 @@ protected:
     void updateGeometry() override;
     void setHovered(bool);
     bool isHovered();
-    virtual void updateHighlightRect();
-
-    virtual void updateThumbnailDrawPosition();
+    void updateBackgroundRect();
+    void updateThumbnailDrawPosition();
 
     std::shared_ptr<Thumbnail> thumbnail;
-    bool highlighted, hovered, mDrawLabel, dropHovered, animateHover;
-    int mThumbnailSize, padding, textHeight;
-    QRectF highlightRect, nameRect, labelTextRect;
-    QColor highlightColor, nameColor;
-    QFont font, fontSmall;
-    QFontMetrics *fm, *fmSmall;
+    bool highlighted, hovered, dropHovered;
+    int mThumbnailSize, padding, marginX, marginY, labelSpacing, textHeight;
+    QRectF bgRect, nameRect, infoRect, mBoundingRect;
+    QColor highlightColor, nameColor, shadowColor;
+    QFont fontName, fontInfo;
     QRect drawRectCentered;
-    QRectF mBoundingRect;
-    virtual void updateBoundingRect();
+    void updateBoundingRect();
+    ThumbnailStyle thumbStyle;
 };

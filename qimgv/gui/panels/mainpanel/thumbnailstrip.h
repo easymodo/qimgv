@@ -12,7 +12,7 @@
 #include <cmath>
 
 #include "gui/customwidgets/thumbnailview.h"
-#include "gui/folderview/thumbnailgridwidget.h"
+#include "gui/customwidgets/thumbnailwidget.h"
 #include "sourcecontainers/thumbnail.h"
 
 class ThumbnailStrip : public ThumbnailView
@@ -20,15 +20,14 @@ class ThumbnailStrip : public ThumbnailView
     Q_OBJECT
 public:
     explicit ThumbnailStrip(QWidget *parent = nullptr);
+    QSize itemSize();
 
 private:
-    int thumbnailSpacing;
-
+    int thumbPadding = 9, thumbMarginX = 2, thumbMarginY = 2;
     void updateThumbnailPositions(int start, int end);
     void updateThumbnailPositions();
-    void setThumbnailSize(int);
-    void updateThumbnailSize();
     void setupLayout();
+    ThumbnailStyle mCurrentStyle;
 
 public slots:
     virtual void focusOn(int index);

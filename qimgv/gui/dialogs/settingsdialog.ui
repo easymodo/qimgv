@@ -256,7 +256,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -289,7 +289,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>539</width>
-                <height>1046</height>
+                <height>1064</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0">
@@ -1207,6 +1207,35 @@
                            </property>
                           </widget>
                          </item>
+                         <item row="2" column="1">
+                          <widget class="QLabel" name="label_18">
+                           <property name="text">
+                            <string>Display style:</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="2">
+                          <widget class="QComboBox" name="thumbStyleComboBox">
+                           <item>
+                            <property name="text">
+                             <string>Simple</string>
+                            </property>
+                           </item>
+                           <item>
+                            <property name="text">
+                             <string>Extended</string>
+                            </property>
+                           </item>
+                           <item>
+                            <property name="text">
+                             <string>Compact</string>
+                            </property>
+                           </item>
+                          </widget>
+                         </item>
                         </layout>
                        </item>
                       </layout>
@@ -1241,7 +1270,7 @@
                        <item>
                         <widget class="QLabel" name="label_4">
                          <property name="text">
-                          <string>Height:</string>
+                          <string>Previews size</string>
                          </property>
                         </widget>
                        </item>
@@ -1260,10 +1289,10 @@
                           </size>
                          </property>
                          <property name="minimum">
-                          <number>15</number>
+                          <number>10</number>
                          </property>
                          <property name="maximum">
-                          <number>35</number>
+                          <number>25</number>
                          </property>
                          <property name="singleStep">
                           <number>1</number>
@@ -1272,7 +1301,7 @@
                           <number>5</number>
                          </property>
                          <property name="value">
-                          <number>23</number>
+                          <number>14</number>
                          </property>
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
@@ -1825,8 +1854,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>624</height>
+                <width>422</width>
+                <height>410</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2711,8 +2740,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>624</height>
+                <width>385</width>
+                <height>172</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3333,7 +3362,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>404</width>
-                <height>333</height>
+                <height>361</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3383,20 +3412,26 @@
                  <property name="bottomMargin">
                   <number>0</number>
                  </property>
-                 <item row="7" column="0">
-                  <widget class="QCheckBox" name="useOpenGLCheckBox">
-                   <property name="enabled">
-                    <bool>false</bool>
+                 <item row="1" column="0">
+                  <widget class="QCheckBox" name="usePreloaderCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Preload the next/previous image. Results in a much faster image switching (at the expense of wasting more RAM).</string>
                    </property>
                    <property name="text">
-                    <string>Use OpenGL (restart required)</string>
+                    <string>Use preloader (recommended)</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="0">
-                  <widget class="QCheckBox" name="saveOverlayCheckBox">
+                 <item row="4" column="0">
+                  <widget class="QCheckBox" name="confirmDeleteCheckBox">
                    <property name="text">
-                    <string>Show save overlay when editing images</string>
+                    <string>Confirm file delete</string>
                    </property>
                   </widget>
                  </item>
@@ -3468,22 +3503,6 @@
                    </item>
                   </layout>
                  </item>
-                 <item row="1" column="0">
-                  <widget class="QCheckBox" name="usePreloaderCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="toolTip">
-                    <string>Preload the next/previous image. Results in a much faster image switching (at the expense of wasting more RAM).</string>
-                   </property>
-                   <property name="text">
-                    <string>Use preloader (recommended)</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="0">
                   <widget class="QCheckBox" name="enableSmoothScrollCheckBox">
                    <property name="sizePolicy">
@@ -3500,7 +3519,37 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="0">
+                 <item row="5" column="0">
+                  <widget class="QCheckBox" name="confirmTrashCheckBox">
+                   <property name="text">
+                    <string>Confirm moving to trash</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QCheckBox" name="saveOverlayCheckBox">
+                   <property name="text">
+                    <string>Show save overlay when editing images</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="0">
+                  <widget class="QCheckBox" name="useThumbnailCacheCheckBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string/>
+                   </property>
+                   <property name="text">
+                    <string>Use thumbnail cache (recommended)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="0">
                   <layout class="QHBoxLayout" name="horizontalLayout">
                    <property name="leftMargin">
                     <number>0</number>
@@ -3568,30 +3617,7 @@
                    </item>
                   </layout>
                  </item>
-                 <item row="6" column="0">
-                  <widget class="QCheckBox" name="useThumbnailCacheCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="toolTip">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string>Use thumbnail cache (recommended)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="0">
-                  <widget class="QCheckBox" name="confirmDeleteCheckBox">
-                   <property name="text">
-                    <string>Confirm file delete</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="0">
+                 <item row="10" column="0">
                   <layout class="QHBoxLayout" name="horizontalLayout_7">
                    <item>
                     <widget class="QLabel" name="mpvLabel">
@@ -3664,10 +3690,20 @@
                    </item>
                   </layout>
                  </item>
-                 <item row="5" column="0">
-                  <widget class="QCheckBox" name="confirmTrashCheckBox">
+                 <item row="8" column="0">
+                  <widget class="QCheckBox" name="useOpenGLCheckBox">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="text">
-                    <string>Confirm moving to trash</string>
+                    <string>Use OpenGL (restart required)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="0">
+                  <widget class="QCheckBox" name="unloadThumbsCheckBox">
+                   <property name="text">
+                    <string>Unload off-screen thumbnails</string>
                    </property>
                   </widget>
                  </item>
