@@ -44,22 +44,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.overlay_text = "#d2d2d2";
             base.overlay = "#1a1a1a";
             break;
-        case COLORS_DARK:
-            base.background = "#1a1a1a";
-            base.background_fullscreen = "#1a1a1a";
-            base.text = "#b4b4b4";
-            base.icons = "#a8a8a8";
-            base.widget = "#252525";
-            base.widget_border = "#272727";
-            base.accent = "#3f6491";
-            base.folderview = "#262626";
-            base.folderview_topbar = "#373737";
-            base.scrollbar = "#4b4b4b";
-            base.overlay_text = "#d2d2d2";
-            base.overlay = "#1a1a1a";
-            break;
         case COLORS_BLACK:
-        case COLORS_DEFAULT:
             base.background = "#000000";
             base.background_fullscreen = "#000000";
             base.text = "#b0b0b0";
@@ -72,6 +57,21 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.scrollbar = "#222222";
             base.overlay_text = "#666666";
             base.overlay = "#000000";
+            break;
+        case COLORS_DARK:
+        case COLORS_DEFAULT:
+            base.background = "#1a1a1a";
+            base.background_fullscreen = "#1a1a1a";
+            base.text = "#b4b4b4";
+            base.icons = "#a4a4a4";
+            base.widget = "#252525";
+            base.widget_border = "#2c2c2c";
+            base.accent = "#5a9147";
+            base.folderview = "#242424";
+            base.folderview_topbar = "#383838";
+            base.scrollbar = "#5e5e5e";
+            base.overlay_text = "#d2d2d2";
+            base.overlay = "#1a1a1a";
             break;
     }
     return ColorScheme(base);
