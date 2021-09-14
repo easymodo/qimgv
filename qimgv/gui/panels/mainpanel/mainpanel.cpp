@@ -68,9 +68,14 @@ std::shared_ptr<ThumbnailStripProxy> MainPanel::getThumbnailStrip() {
 
 void MainPanel::setupThumbnailStrip() {
     thumbnailStrip->init();
+    // adjust size & position
+    readSettings();
 }
 
 void MainPanel::readSettings() {
+    // do not query thumbnailStrip for itemsize before it was set up
+    if(!thumbnailStrip->isInitialized())
+        return;
     auto newPos = settings->panelPosition();
     int addedHeight = 19; // scrollbar & spacing
     if(newPos == PANEL_TOP)

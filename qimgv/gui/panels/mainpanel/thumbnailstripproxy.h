@@ -13,6 +13,7 @@ class ThumbnailStripProxy : public QWidget, public IDirectoryView {
 public:
     ThumbnailStripProxy(QWidget *parent = nullptr);
     void init();
+    bool isInitialized();
     QSize itemSize();
 
 public slots:
@@ -41,7 +42,7 @@ signals:
     void draggedOver(int) override;
 
 private:
-    std::shared_ptr<ThumbnailStrip> thumbnailStrip;
+    std::shared_ptr<ThumbnailStrip> thumbnailStrip = nullptr;
     QVBoxLayout layout;
     ThumbnailStripStateBuffer stateBuf;
 };

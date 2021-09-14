@@ -30,6 +30,10 @@ void ThumbnailStripProxy::init() {
         thumbnailStrip->focusOn(stateBuf.selection.last());
 }
 
+bool ThumbnailStripProxy::isInitialized() {
+    return (thumbnailStrip != nullptr);
+}
+
 void ThumbnailStripProxy::populate(int count) {
     if(thumbnailStrip) {
         thumbnailStrip->populate(count);
