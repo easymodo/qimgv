@@ -1229,11 +1229,6 @@
                              <string>Extended</string>
                             </property>
                            </item>
-                           <item>
-                            <property name="text">
-                             <string>Compact</string>
-                            </property>
-                           </item>
                           </widget>
                          </item>
                         </layout>

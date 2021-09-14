@@ -93,8 +93,7 @@ enum FolderViewMode {
 
 enum ThumbPanelStyle {
     TH_PANEL_SIMPLE,
-    TH_PANEL_EXTENDED,
-    TH_PANEL_COMPACT
+    TH_PANEL_EXTENDED
 };
 
 class Settings : public QObject

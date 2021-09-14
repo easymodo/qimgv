@@ -396,7 +396,7 @@ void Settings::setFolderViewMode(FolderViewMode mode) {
 //------------------------------------------------------------------------------
 ThumbPanelStyle Settings::thumbPanelStyle() {
     int mode = settings->settingsConf->value("thumbPanelStyle", 1).toInt();
-    if(mode < 0 || mode > 2)
+    if(mode < 0 || mode > 1)
         mode = 1;
     return static_cast<ThumbPanelStyle>(mode);
 }

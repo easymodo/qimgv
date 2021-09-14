@@ -23,7 +23,7 @@ public:
     QSize itemSize();
 
 private:
-    int thumbPadding = 9, thumbMarginX = 2, thumbMarginY = 2;
+    int thumbPadding = 9, thumbMarginX = 2, thumbMarginY = 4;
     void updateThumbnailPositions(int start, int end);
     void updateThumbnailPositions();
     void setupLayout();

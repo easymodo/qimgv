@@ -89,20 +89,13 @@ void ThumbnailStrip::focusOn(int index) {
 }
 
 void ThumbnailStrip::readSettings() {
-    if(settings->thumbPanelStyle() == TH_PANEL_COMPACT) {
-        mCurrentStyle = THUMB_COMPACT;
-        thumbMarginX = 1;
-        thumbMarginY = 3;
-        thumbPadding = 0;
-    } else {
-        thumbMarginX = 2;
-        thumbMarginY = 4;
-        thumbPadding = 9;
-        if(settings->thumbPanelStyle() == TH_PANEL_SIMPLE)
-            mCurrentStyle = THUMB_SIMPLE;
-        else
-            mCurrentStyle = THUMB_NORMAL_CENTERED;
-    }
+    thumbMarginX = 2;
+    thumbMarginY = 4;
+    thumbPadding = 9;
+    if(settings->thumbPanelStyle() == TH_PANEL_SIMPLE)
+        mCurrentStyle = THUMB_SIMPLE;
+    else
+        mCurrentStyle = THUMB_NORMAL_CENTERED;
     mThumbnailSize = qBound(20, settings->panelPreviewsSize(), 300);
     // apply style, size & reposition
     for(int i = 0; i < thumbnails.count(); i++) {
