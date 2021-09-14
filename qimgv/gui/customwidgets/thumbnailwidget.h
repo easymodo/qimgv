@@ -56,9 +56,6 @@ public:
     void reset();
     void unsetThumbnail();
 
-protected slots:
-    void readSettings();
-
 protected:
     void setupTextLayout();
     void drawThumbnail(QPainter* painter, const QPixmap *pixmap);
@@ -83,7 +80,7 @@ protected:
     bool highlighted, hovered, dropHovered;
     int mThumbnailSize, padding, marginX, marginY, labelSpacing, textHeight;
     QRectF bgRect, mBoundingRect;
-    QColor highlightColor, nameColor, shadowColor;
+    QColor shadowColor;
     QFont fontName, fontInfo;
     QRect drawRectCentered, nameRect, infoRect;
     void updateBoundingRect();

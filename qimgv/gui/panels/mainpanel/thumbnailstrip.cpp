@@ -106,16 +106,14 @@ void ThumbnailStrip::readSettings() {
     mThumbnailSize = qBound(20, settings->panelPreviewsSize(), 300);
     // apply style, size & reposition
     for(int i = 0; i < thumbnails.count(); i++) {
+        thumbnails.at(i)->setPadding(thumbPadding);
+        thumbnails.at(i)->setMargins(thumbMarginX, thumbMarginY);
         thumbnails.at(i)->setThumbStyle(mCurrentStyle);
-        for(int i = 0; i < thumbnails.count(); i++) {
-            thumbnails.at(i)->setPadding(thumbPadding);
-            thumbnails.at(i)->setMargins(thumbMarginX, thumbMarginY);
-            thumbnails.at(i)->setThumbnailSize(mThumbnailSize);
-        }
-        updateThumbnailPositions(0, thumbnails.count() - 1);
-        fitSceneToContents();
-        ensureThumbnailVisible(lastSelected());
+        thumbnails.at(i)->setThumbnailSize(mThumbnailSize);
     }
+    updateThumbnailPositions(0, thumbnails.count() - 1);
+    fitSceneToContents();
+    ensureThumbnailVisible(lastSelected());
     setCropThumbnails(settings->squareThumbnails());
 }
 

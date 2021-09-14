@@ -23,13 +23,6 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     QFontMetrics fm(fontName);
     textHeight = fm.height();
     shadowColor.setRgb(0,0,0,60);
-    readSettings();
-    connect(settings, &Settings::settingsChanged, this, &ThumbnailWidget::readSettings);
-}
-
-void ThumbnailWidget::readSettings() {
-    nameColor = settings->colorScheme().text;
-    highlightColor = settings->colorScheme().accent;
 }
 
 void ThumbnailWidget::setThumbnailSize(int size) {
@@ -242,15 +235,15 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 void ThumbnailWidget::drawHighlight(QPainter *painter) {
     if(isHighlighted()) {
         if(thumbStyle == THUMB_COMPACT) {
-            painter->fillRect(QRect(marginX, 0, width() - marginX * 2, marginY), highlightColor);
+            painter->fillRect(QRect(marginX, 0, width() - marginX * 2, marginY), settings->colorScheme().accent);
         } else {
             auto hints = painter->renderHints();
             auto op = painter->opacity();
             painter->setRenderHint(QPainter::Antialiasing);
             painter->setOpacity(0.40f * op);
-            painter->fillRect(bgRect, highlightColor);
+            painter->fillRect(bgRect, settings->colorScheme().accent);
             painter->setOpacity(0.70f * op);
-            QPen pen(highlightColor, 2);
+            QPen pen(settings->colorScheme().accent, 2);
             painter->setPen(pen);
             painter->drawRect(bgRect.adjusted(1,1,-1,-1)); // 2px pen
             //painter->drawRect(highlightRect.adjusted(0.5,0.5,-0.5,-0.5)); // 1px pen
