@@ -130,14 +130,14 @@ void ThumbnailWidget::setupTextLayout() {
         nameRect = QRectF(padding + marginX,
                           padding + marginY + mThumbnailSize + labelSpacing,
                           mThumbnailSize, textHeight);
-        infoRect = nameRect.adjusted(0, textHeight + 2, 0, textHeight);
+        infoRect = nameRect.adjusted(0, textHeight + 2, 0, textHeight + 2);
     } else if(thumbStyle == THUMB_COMPACT) {
         nameRect = QRectF(marginX, marginY, width() - marginX * 2, textHeight * 1.6).adjusted(4, 0, -4, 0); // 1.7? or just add min height?
         if(thumbnail) {
             QFontMetrics fm(fontInfo);
             infoRect.setWidth(fm.horizontalAdvance(thumbnail->info()));
             infoRect.setHeight(nameRect.height());
-            infoRect.moveTop(nameRect.top());
+            infoRect.moveTop(nameRect.top() + 1);
             infoRect.moveRight(nameRect.right());
             nameRect.adjust(0, 0, -infoRect.width() - 3, 0);
         }

@@ -204,6 +204,8 @@ void ThumbnailView::populate(int newCount) {
     qApp->processEvents();
 
     clearSelection();
+    // reset
+    lastScrollDirection = SCROLL_FORWARDS;
     // pause updates until the layout is calculated
     // without this you will see scene moving when scrollbar appears
     this->setUpdatesEnabled(false);
