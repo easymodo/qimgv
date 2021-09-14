@@ -13,6 +13,7 @@
 #include <QKeySequence>
 #include <QMap>
 #include <QVersionNumber>
+#include <QThread>
 #include "utils/script.h"
 #include "themestore.h"
 

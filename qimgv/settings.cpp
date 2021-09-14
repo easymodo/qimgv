@@ -699,9 +699,9 @@ int Settings::slideshowInterval() {
 }
 //------------------------------------------------------------------------------
 int Settings::thumbnailerThreadCount() {
-    int count = settings->settingsConf->value("thumbnailerThreads", 2).toInt();
+    int count = settings->settingsConf->value("thumbnailerThreads", 4).toInt();
     if(count < 1)
-        count = 1;
+        count = 4;
     return count;
 }
 
