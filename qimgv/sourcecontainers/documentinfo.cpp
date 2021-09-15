@@ -257,7 +257,7 @@ void DocumentInfo::loadExifTags() {
             // crop out 'charset=ascii' etc"
             auto comment = QString::fromStdString(it->value().toString());
             if(comment.startsWith("charset="))
-                comment=comment.split(" ").last();
+                comment.remove(0, comment.indexOf(" ") + 1);
             exifTags.insert("UserComment", comment);
         }
 
