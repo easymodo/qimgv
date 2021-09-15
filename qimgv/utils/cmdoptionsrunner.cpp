@@ -40,9 +40,6 @@ void CmdOptionsRunner::showBuildOptions() {
 #ifdef USE_EXIV2
     features << "USE_EXIV2";
 #endif
-#ifdef EXIV2_ENABLE_BMFF
-    features << "EXIV2_ENABLE_BMFF";
-#endif
 #ifdef USE_KDE_BLUR
     features << "USE_KDE_BLUR";
 #endif

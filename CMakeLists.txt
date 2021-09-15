@@ -32,7 +32,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # USER OPTIONS
 # Usage: cmake -DVIDEO_SUPPORT=ON [...]
 option(EXIV2 "For reading/writing exif tags" ON)
-option(EXIV2_ENABLE_BMFF "Exif support for bmff files (CR3, HEIF, HEIC, AVIF and JXL)" OFF)
 option(VIDEO_SUPPORT "Enable video support" ON)
 option(OPENCV_SUPPORT "Enable HQ scaling via OpenCV" ON)
 option(KDE_SUPPORT "Support blur when using KDE" OFF)

@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
     mallopt(M_MMAP_THRESHOLD, 64000);
 #endif
 
-#ifdef EXIV2_ENABLE_BMFF
+#ifdef USE_EXIV2
 #if EXIV2_TEST_VERSION(0,27,4)
     Exiv2::enableBMFF(true);
 #endif
