@@ -6,9 +6,7 @@ ThumbnailStrip::ThumbnailStrip(QWidget *parent) : ThumbnailView(THUMBNAILVIEW_HO
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
     setupLayout();
-
     readSettings();
-    connect(settings, SIGNAL(settingsChanged()), this, SLOT(readSettings()));
 }
 
 void ThumbnailStrip::updateScrollbarIndicator() {

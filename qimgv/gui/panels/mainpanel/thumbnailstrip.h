@@ -21,6 +21,7 @@ class ThumbnailStrip : public ThumbnailView
 public:
     explicit ThumbnailStrip(QWidget *parent = nullptr);
     QSize itemSize();
+    void readSettings();
 
 private:
     int thumbPadding = 9, thumbMarginX = 2, thumbMarginY = 4;
@@ -31,7 +32,6 @@ private:
 
 public slots:
     virtual void focusOn(int index);
-    void readSettings();
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);

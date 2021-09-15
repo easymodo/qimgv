@@ -15,6 +15,7 @@ public:
     void init();
     bool isInitialized();
     QSize itemSize();
+    void readSettings();
 
 public slots:
     virtual void populate(int) override;

@@ -76,6 +76,7 @@ void MainPanel::readSettings() {
     // do not query thumbnailStrip for itemsize before it was set up
     if(!thumbnailStrip->isInitialized())
         return;
+    thumbnailStrip->readSettings();
     auto newPos = settings->panelPosition();
     int addedHeight = 19; // scrollbar & spacing
     if(newPos == PANEL_TOP)
