@@ -6,6 +6,7 @@
 #include <QTimer>
 
 #include "gui/customwidgets/overlaywidget.h"
+#include "components/actionmanager/actionmanager.h"
 #include "settings.h"
 
 namespace Ui {
@@ -22,6 +23,7 @@ public:
 
 public slots:
     void setName(QString name);
+    void setBackdropEnabled(bool mode);
     void show();
     void hide();
 signals:
@@ -29,12 +31,16 @@ signals:
 
 protected:
     void keyPressEvent(QKeyEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void recalculateGeometry();
+
 private slots:
     void rename();
     void onCancel();
 
 private:
     Ui::RenameOverlay *ui;
+    bool backdrop = false;
     QString origName;
     void selectName();
 };

@@ -230,7 +230,7 @@ public slots:
     void showContextMenu();
     void onSortingChanged(SortingMode);
     void toggleImageInfoOverlay();
-    void toggleRenameOverlay();
+    void toggleRenameOverlay(QString currentName);
     void setFilterNearest();
     void setFilterBilinear();
     void toggleScalingFilter();

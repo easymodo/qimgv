@@ -140,6 +140,9 @@ void Settings::loadStylesheet() {
         styleSheet.replace("%overlay_rgba%",         "rgba(" + QString::number(colors.overlay.red())   + ","
                                                              + QString::number(colors.overlay.green()) + ","
                                                              + QString::number(colors.overlay.blue())  + ",90%)");
+        styleSheet.replace("%fv_backdrop_rgba%",     "rgba(" + QString::number(colors.folderview_hc2.red())   + ","
+                                                             + QString::number(colors.folderview_hc2.green()) + ","
+                                                             + QString::number(colors.folderview_hc2.blue())  + ",80%)");
         if(colors.folderview != colors.folderview_topbar)
             styleSheet.replace("%topbar_border_rgba%", "rgba(0,0,0,14%)");
         else

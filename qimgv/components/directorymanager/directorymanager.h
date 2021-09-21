@@ -45,7 +45,7 @@ public:
     QString filePathAt(int index) const;
     unsigned long fileCount() const;
     unsigned long dirCount() const;
-    bool isSupportedFile(QString filePath) const;
+    inline bool isSupportedFile(QString filePath) const;
     bool isEmpty() const;
     bool containsFile(QString filePath) const;
     QString fileNameAt(int index) const;

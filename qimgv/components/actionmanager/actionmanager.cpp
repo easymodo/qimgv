@@ -192,6 +192,10 @@ const QString ActionManager::shortcutForAction(QString action) {
     return shortcuts.key(action, "");
 }
 
+const QList<QString> ActionManager::shortcutsForAction(QString action) {
+    return shortcuts.keys(action);
+}
+
 //------------------------------------------------------------------------------
 bool ActionManager::invokeAction(const QString &actionName) {
     ActionType type = validateAction(actionName);

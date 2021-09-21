@@ -7,7 +7,7 @@ RenameOverlay::RenameOverlay(FloatingWidgetContainer *parent) :
 {
     ui->setupUi(this);
     connect(ui->cancelButton, &QPushButton::clicked, this, &RenameOverlay::onCancel);
-    connect(ui->closeButton,  &IconButton::clicked, this, &RenameOverlay::hide);
+    connect(ui->closeButton,  &IconButton::clicked,  this, &RenameOverlay::hide);
     connect(ui->okButton,     &QPushButton::clicked, this, &RenameOverlay::rename);
     ui->okButton->setHighlighted(true);
     ui->closeButton->setIconPath(":res/icons/common/overlay/close-dim16.png");
@@ -39,8 +39,24 @@ void RenameOverlay::setName(QString name) {
     selectName();
 }
 
+void RenameOverlay::setBackdropEnabled(bool mode) {
+    if(backdrop == mode)
+        return;
+    backdrop = mode;
+    recalculateGeometry();
+}
+
+void RenameOverlay::recalculateGeometry() {
+    if(!backdrop)
+        OverlayWidget::recalculateGeometry();
+    else // expand
+        setGeometry(0, 0, containerSize().width(), containerSize().height());
+}
+
 void RenameOverlay::selectName() {
     int end = ui->fileName->text().lastIndexOf(".");
+    if(end < 0)
+        end = ui->fileName->text().count();
     ui->fileName->setSelection(0, end);
 }
 
@@ -64,8 +80,18 @@ void RenameOverlay::keyPressEvent(QKeyEvent *event) {
         event->accept();
         rename();
     } else {
-        event->ignore();
+        // catch everything except app exit
+        auto appExitShortcuts = actionManager->shortcutsForAction("exit");
+        QString shortcut = ShortcutBuilder::fromEvent(event);
+        if(!shortcut.isEmpty() && appExitShortcuts.contains(shortcut))
+            event->ignore();
+        else
+            event->accept();
     }
 }
 
-
+void RenameOverlay::mousePressEvent(QMouseEvent *event) {
+    event->accept();
+    if(qApp->widgetAt(mapToGlobal(event->pos())) == this)
+        this->onCancel();
+}

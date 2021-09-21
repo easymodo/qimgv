@@ -71,7 +71,7 @@ private:
     void syncRandomizer();
 
     void attachModel(DirectoryModel *_model);
-    QString selectedFilePath();
+    QString selectedPath();
     void guiSetImage(std::shared_ptr<Image> img);
     QTimer slideshowTimer;
 
@@ -137,7 +137,7 @@ private slots:
     void reloadImage(QString fileName);
     void copyFileClipboard();
     void copyPathClipboard();
-    void renameCurrentFile(QString newName);
+    void renameCurrentSelection(QString newName);
     void sortBy(SortingMode mode);
     void sortByName();
     void sortByTime();
@@ -152,7 +152,7 @@ private slots:
     void showOpenDialog();
     void showInDirectory();
     void onDirectoryViewFileActivated(QString filePath);
-    bool loadIndex(int index, bool async, bool preload);
+    bool loadFileIndex(int index, bool async, bool preload);
     void enableDocumentView();
     void enableFolderView();
     void toggleFolderView();

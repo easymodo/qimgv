@@ -43,6 +43,8 @@ QString FileOperations::decodeResult(const FileOpResult &result) {
         return "Operation completed succesfully.";
     case FileOpResult::DESTINATION_FILE_EXISTS:
         return "Destination file exists.";
+    case FileOpResult::DESTINATION_DIR_EXISTS:
+        return "Destination directory exists.";
     case FileOpResult::SOURCE_NOT_WRITABLE:
         return "Source file is not writable.";
     case FileOpResult::DESTINATION_NOT_WRITABLE:
@@ -90,6 +92,10 @@ void FileOperations::copyFileTo(const QString &srcFilePath, const QString &destD
             return;
         }
 #endif
+        if(destDir.isDir()) {
+            result = FileOpResult::DESTINATION_DIR_EXISTS;
+            return;
+        }
         if(!force) {
             result = FileOpResult::DESTINATION_FILE_EXISTS;
             return;
@@ -159,6 +165,10 @@ void FileOperations::moveFileTo(const QString &srcFilePath, const QString &destD
             return;
         }
 #endif
+        if(destDir.isDir()) {
+            result = FileOpResult::DESTINATION_DIR_EXISTS;
+            return;
+        }
         if(!force) {
             result = FileOpResult::DESTINATION_FILE_EXISTS;
             return;
@@ -229,6 +239,10 @@ void FileOperations::rename(const QString &srcFilePath, const QString &newName, 
         if(!destFile.isWritable())
             result = FileOpResult::DESTINATION_NOT_WRITABLE;
 #endif
+        if(destFile.isDir()) {
+            result = FileOpResult::DESTINATION_DIR_EXISTS;
+            return;
+        }
         if(!force) {
             result = FileOpResult::DESTINATION_FILE_EXISTS;
             return;

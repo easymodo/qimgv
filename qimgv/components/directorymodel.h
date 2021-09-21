@@ -34,7 +34,7 @@ public:
     bool forceInsert(QString filePath);
     void copyFileTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result);
     void moveFileTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result);
-    void renameFile(const QString &oldFilePath, const QString &newName, bool force, FileOpResult &result);
+    void renameEntry(const QString &oldFilePath, const QString &newName, bool force, FileOpResult &result);
     void removeFile(const QString &filePath, bool trash, FileOpResult &result);
     void removeDir(const QString &dirPath, bool trash, bool recursive, FileOpResult &result);
 
@@ -59,7 +59,7 @@ public:
     void reload(QString filePath);
     QString filePathAt(int index) const;
     void unloadExcept(QString filePath, bool keepNearby);
-    const FSEntry &entryAt(int index) const;
+    const FSEntry &fileEntryAt(int index) const;
 
     int totalCount() const;
     QString dirNameAt(int index) const;

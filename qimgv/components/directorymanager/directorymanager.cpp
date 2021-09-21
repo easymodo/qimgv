@@ -276,7 +276,6 @@ bool DirectoryManager::isSupportedFile(QString path) const {
     return ( isFile(path) && regex.match(path).hasMatch() );
 }
 
-inline
 bool DirectoryManager::isFile(QString path) const {
     if(!std::filesystem::exists(toStdString(path)))
         return false;
@@ -285,7 +284,6 @@ bool DirectoryManager::isFile(QString path) const {
     return true;
 }
 
-inline
 bool DirectoryManager::isDir(QString path) const {
     if(!std::filesystem::exists(toStdString(path)))
         return false;
@@ -501,6 +499,8 @@ void DirectoryManager::removeDirEntry(const QString &dirPath) {
 }
 
 void DirectoryManager::renameDirEntry(const QString &oldDirPath, const QString &newDirName) {
+    if(!containsDir(oldDirPath))
+        return;
     QFileInfo fi(oldDirPath);
     QString newDirPath = fi.absolutePath() + "/" + newDirName;
     // remove the old one

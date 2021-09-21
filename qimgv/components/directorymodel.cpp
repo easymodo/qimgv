@@ -49,7 +49,7 @@ SortingMode DirectoryModel::sortingMode() const {
     return dirManager.sortingMode();
 }
 
-const FSEntry &DirectoryModel::entryAt(int index) const {
+const FSEntry &DirectoryModel::fileEntryAt(int index) const {
     return dirManager.fileEntryAt(index);
 }
 
@@ -134,13 +134,17 @@ void DirectoryModel::removeFile(const QString &filePath, bool trash, FileOpResul
     return;
 }
 
-void DirectoryModel::renameFile(const QString &oldFilePath, const QString &newName, bool force, FileOpResult &result) {
-    FileOperations::rename(oldFilePath, newName, force, result);
+void DirectoryModel::renameEntry(const QString &oldPath, const QString &newName, bool force, FileOpResult &result) {
+    bool isDir = dirManager.isDir(oldPath);
+    FileOperations::rename(oldPath, newName, force, result);
     // chew through watcher events so they wont be processed out of order
     qApp->processEvents();
     if(result != FileOpResult::SUCCESS)
         return;
-    dirManager.renameFileEntry(oldFilePath, newName);
+    if(isDir)
+        dirManager.renameDirEntry(oldPath, newName);
+    else
+        dirManager.renameFileEntry(oldPath, newName);
 }
 
 void DirectoryModel::removeDir(const QString &dirPath, bool trash, bool recursive, FileOpResult &result) {

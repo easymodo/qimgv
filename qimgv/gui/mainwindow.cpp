@@ -132,7 +132,7 @@ void MW::setupSaveOverlay() {
 }
 
 void MW::setupRenameOverlay() {
-    renameOverlay = new RenameOverlay(viewerWidget.get());
+    renameOverlay = new RenameOverlay(this);
     renameOverlay->setName(info.fileName);
     connect(renameOverlay, &RenameOverlay::renameRequested, this, &MW::renameRequested);
 }
@@ -286,15 +286,16 @@ void MW::toggleImageInfoOverlay() {
         imageInfoOverlay->hide();
 }
 
-void MW::toggleRenameOverlay() {
+void MW::toggleRenameOverlay(QString currentName) {
     if(!renameOverlay)
         setupRenameOverlay();
-    if(centralWidget->currentViewMode() == MODE_FOLDERVIEW)
-        return;
-    if(renameOverlay->isHidden())
+    if(renameOverlay->isHidden()) {
+        renameOverlay->setBackdropEnabled((centralWidget->currentViewMode() == MODE_FOLDERVIEW));
+        renameOverlay->setName(currentName);
         renameOverlay->show();
-    else
+    } else {
         renameOverlay->hide();
+    }
 }
 
 void MW::toggleScalingFilter() {

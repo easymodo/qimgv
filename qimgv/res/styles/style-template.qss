@@ -212,6 +212,16 @@ FloatingWidget QLineEdit::focus {
     border-color: %button_hover%;
 }
 
+RenameOverlay {
+    background-color: %fv_backdrop_rgba%;
+}
+
+[accessibleName = "RenameOverlayWidget"] {
+    background-color: %widget%;
+    border: 1px solid %widget_border%;
+    border-radius: 3px;
+}
+
 /*----------------------------------------------------------------------------*/
 
 FullscreenInfoOverlay {
