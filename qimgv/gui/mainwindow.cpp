@@ -657,13 +657,8 @@ void MW::onInfoUpdated() {
     if(info.imageSize.width())
         resString = QString::number(info.imageSize.width()) + " x " + QString::number(info.imageSize.height());
     QString sizeString;
-    if(info.fileSize) {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-        sizeString = QString::number(info.fileSize / 1024) + " KiB";
-#else
+    if(info.fileSize)
         sizeString = this->locale().formattedDataSize(info.fileSize, 1);
-#endif
-    }
 
     if(renameOverlay)
         renameOverlay->setName(info.fileName);
