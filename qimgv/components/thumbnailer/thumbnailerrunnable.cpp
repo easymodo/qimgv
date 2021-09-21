@@ -37,6 +37,10 @@ std::shared_ptr<Thumbnail> ThumbnailerRunnable::generate(ThumbnailCache* cache, 
     }
 
     if(!image) {
+        if(imgInfo.type() == DocumentType::NONE) {
+            std::shared_ptr<Thumbnail> thumbnail(new Thumbnail(imgInfo.fileName(), "", size, nullptr));
+            return thumbnail;
+        }
         std::pair<QImage*, QSize> pair;
         if(imgInfo.type() == VIDEO)
             pair = createVideoThumbnail(path, size, crop);

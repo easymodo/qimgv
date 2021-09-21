@@ -190,7 +190,7 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
             ImageLib::recolor(loadingIcon, settings->colorScheme().folderview_hc2);
         drawIcon(painter, &loadingIcon);
     } else {
-        if(thumbnail->pixmap().get()->width() == 0) { // invalid thumb
+        if(!thumbnail->pixmap() || thumbnail->pixmap().get()->width() == 0) { // invalid thumb
             QPixmap errorIcon(*shrRes->getPixmap(ShrIcon::SHR_ICON_ERROR, dpr));
             if(isHighlighted())
                 ImageLib::recolor(errorIcon, settings->colorScheme().accent);
@@ -345,7 +345,7 @@ bool ThumbnailWidget::isHovered() {
 }
 
 void ThumbnailWidget::updateThumbnailDrawPosition() {
-    if(thumbnail) {
+    if(thumbnail && thumbnail->pixmap()) {
         QPoint topLeft;
         QSize pixmapSize; // dpr-adjusted size
         if(isLoaded)
