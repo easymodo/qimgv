@@ -614,7 +614,7 @@ void Core::showInDirectory() {
         QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
 #elif __WIN32
     QStringList args;
-    args << "/select," << QDir::toNativeSeparators(selectedFilePath());
+    args << "/select," << QDir::toNativeSeparators(selectedPath());
     QProcess::startDetached("explorer", args);
 #elif __APPLE__
     QStringList args;

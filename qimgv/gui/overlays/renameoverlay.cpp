@@ -14,6 +14,10 @@ RenameOverlay::RenameOverlay(FloatingWidgetContainer *parent) :
     ui->headerIcon->setIconPath(":res/icons/common/overlay/edit16.png");
     setPosition(FloatingWidgetPosition::CENTER);
     setAcceptKeyboardFocus(true);
+
+    keyFilter.append(actionManager->shortcutsForAction("exit"));
+    keyFilter.append(actionManager->shortcutsForAction("renameFile"));
+
     hide();
     if(parent)
         setContainerSize(parent->size());
@@ -80,10 +84,8 @@ void RenameOverlay::keyPressEvent(QKeyEvent *event) {
         event->accept();
         rename();
     } else {
-        // catch everything except app exit
-        auto appExitShortcuts = actionManager->shortcutsForAction("exit");
-        QString shortcut = ShortcutBuilder::fromEvent(event);
-        if(!shortcut.isEmpty() && appExitShortcuts.contains(shortcut))
+        auto shortcut = ShortcutBuilder::fromEvent(event);
+        if(!shortcut.isEmpty() && keyFilter.contains(shortcut))
             event->ignore();
         else
             event->accept();
