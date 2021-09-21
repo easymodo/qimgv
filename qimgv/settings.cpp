@@ -980,3 +980,11 @@ QString Settings::lastPrinter() {
 void Settings::setLastPrinter(QString name) {
     stateConf->setValue("lastPrinter", name);
 }
+//------------------------------------------------------------------------------
+bool Settings::jxlAnimation() {
+    return settings->settingsConf->value("jxlAnimation", false).toBool();
+}
+
+void Settings::setJxlAnimation(bool mode) {
+    settings->settingsConf->setValue("jxlAnimation", mode);
+}

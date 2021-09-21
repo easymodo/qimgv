@@ -75,6 +75,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->scalingQualityComboBox->addItem("Bicubic+sharpen (OpenCV)");
 #endif
 
+    if(!settings->supportedFormats().contains("jxl"))
+        ui->animatedJxlCheckBox->hide();
+
     setupSidebar();
     ui->sideBar->setCurrentRow(0);
 
@@ -165,6 +168,7 @@ void SettingsDialog::readSettings() {
     ui->saveOverlayCheckBox->setChecked(settings->showSaveOverlay());
     ui->unloadThumbsCheckBox->setChecked(settings->unloadThumbs());
     ui->thumbStyleComboBox->setCurrentIndex(settings->thumbPanelStyle());
+    ui->animatedJxlCheckBox->setChecked(settings->jxlAnimation());
 
     if(settings->defaultViewMode() == MODE_FOLDERVIEW)
         ui->startInFolderViewCheckBox->setChecked(true);
@@ -286,6 +290,7 @@ void SettingsDialog::saveSettings() {
     settings->setShowSaveOverlay(ui->saveOverlayCheckBox->isChecked());
     settings->setUnloadThumbs(ui->unloadThumbsCheckBox->isChecked());
     settings->setThumbPanelStyle(static_cast<ThumbPanelStyle>(ui->thumbStyleComboBox->currentIndex()));
+    settings->setJxlAnimation(ui->animatedJxlCheckBox->isChecked());
 
     if(ui->panelTop->isChecked())
         settings->setPanelPosition(PANEL_TOP);

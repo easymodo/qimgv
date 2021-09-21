@@ -270,6 +270,8 @@ public:
     ThumbPanelStyle thumbPanelStyle();
     void setThumbPanelStyle(ThumbPanelStyle mode);
 
+    bool jxlAnimation();
+    void setJxlAnimation(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     QSettings *settingsConf, *stateConf, *themeConf;
