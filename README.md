@@ -1,4 +1,4 @@
-qimgv | Current version: 0.9.1
+qimgv | Current version: 1.0.0
 =====
 Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
 
@@ -18,7 +18,7 @@ Main window & panel        |  Folder view   |  Settings window
 
 - Easy to use
 
-- Fully configurable, including shortcuts
+- Fully configurable, including themes, shortcuts
 
 - High quality scaling
 
@@ -28,9 +28,9 @@ Main window & panel        |  Folder view   |  Settings window
 
 - Experimental video playback via libmpv
 
-- Ability to run shell scripts
+- Folder view mode
 
-- A nice dark theme, should look identical on every OS / DE
+- Ability to run shell scripts
 
 ## Default control scheme:
 
@@ -42,14 +42,14 @@ Main window & panel        |  Folder view   |  Settings window
 | Goto last image  | End |
 | Zoom in  | Ctrl+MouseWheel / Crtl+Up |
 | Zoom out  | Ctrl+MouseWheel / Crtl+Down |
-| Zoom | Hold right mouse btn & move up / down |
+| Zoom (alt. method) | Hold right mouse button & move up / down |
 | Fit mode: window | 1 |
 | Fit mode: width | 2 |
 | Fit mode: 1:1 (no scaling) | 3 |
 | Switch fit modes  | Space |
 | Toggle fullscreen mode  | DoubleClick / F / F11 |
 | Exit fullscreen mode | Esc |
-| Show image info  | I |
+| Show EXIF panel  | I |
 | Crop image  | X |
 | Resize image  | R |
 | Rotate left  | Ctrl+L |
@@ -64,7 +64,8 @@ Main window & panel        |  Folder view   |  Settings window
 | Save  | Ctrl+S |
 | Save As  | Ctrl+Shift+S |
 | Open | Ctrl+O |
-| Settings  | Ctrl+P |
+| Print / Export PDF | Ctrl+P |
+| Settings  | P |
 | Exit application | Esc / Ctrl+Q / Alt+X / MiddleClick |
 
 ... and more.
@@ -220,7 +221,7 @@ If your favorite distro is not included refer to [Manual install] section at the
 
 Note: in order to compile you will need gcc 8 or later!
  
-__Install dependencies ( `gcc` >= 9.0, `git`, `cmake` >= 3.13, `qt` >= 5.9, `exiv2`, `mpv`, `opencv (core and imgproc` )__
+__Install dependencies ( `gcc` >= 9.0, `git`, `cmake` >= 3.13, `qt` >= 5.9, `exiv2`, `mpv`, `opencv (core and imgproc)`__
 
 _Ubuntu & derivatives:_
      
