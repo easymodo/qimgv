@@ -169,7 +169,8 @@ QImage* ImageLib::scaled_Qt(std::shared_ptr<const QImage> source, QSize destSize
 QImage* ImageLib::scaled_CV(std::shared_ptr<const QImage> source, QSize destSize, cv::InterpolationFlags filter, int sharpen) {
     QElapsedTimer t;
     t.start();
-    cv::Mat srcMat = QtOcv::image2Mat_shared(*source.get());
+    QtOcv::MatColorOrder order;
+    cv::Mat srcMat = QtOcv::image2Mat_shared(*source.get(), &order);
     cv::Size destSizeCv(destSize.width(), destSize.height());
     QImage *dest = new QImage();
     if(destSize == source->size()) {
@@ -178,7 +179,7 @@ QImage* ImageLib::scaled_CV(std::shared_ptr<const QImage> source, QSize destSize
     } else if(destSize.width() > source.get()->width()) { // upscale
         cv::Mat dstMat(destSizeCv, srcMat.type());
         cv::resize(srcMat, dstMat, destSizeCv, 0, 0, filter);
-        *dest = QtOcv::mat2Image(dstMat);
+        *dest = QtOcv::mat2Image(dstMat, order, source->format());
     } else { // downscale
         float scale = (float)destSize.width() / source->width();
         if(scale < 0.5f && filter != cv::INTER_NEAREST) {
@@ -189,7 +190,7 @@ QImage* ImageLib::scaled_CV(std::shared_ptr<const QImage> source, QSize destSize
         cv::Mat dstMat(destSizeCv, srcMat.type());
         cv::resize(srcMat, dstMat, destSizeCv, 0, 0, filter);
         if(!sharpen || filter == cv::INTER_NEAREST) {
-            *dest = QtOcv::mat2Image(dstMat);
+            *dest = QtOcv::mat2Image(dstMat, order, source->format());
         } else {
             // todo: tweak this
             double amount = 0.25 * sharpen;
@@ -197,7 +198,7 @@ QImage* ImageLib::scaled_CV(std::shared_ptr<const QImage> source, QSize destSize
             cv::Mat dstMat_sharpened;
             cv::GaussianBlur(dstMat, dstMat_sharpened, cv::Size(0, 0), 2);
             cv::addWeighted(dstMat, 1.0 + amount, dstMat_sharpened, -amount, 0, dstMat_sharpened);
-            *dest = QtOcv::mat2Image(dstMat_sharpened);
+            *dest = QtOcv::mat2Image(dstMat_sharpened, order, source->format());
         }
     }
     //qDebug() << "Filter:" << filter << " sharpen=" << sharpen << " source size:" << source->size() << "->" << (float)destSize.width() / source->width() << ": " << t.elapsed() << " ms.";
