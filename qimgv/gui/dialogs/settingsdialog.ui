@@ -256,7 +256,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -287,8 +287,8 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>484</width>
+                <y>-150</y>
+                <width>539</width>
                 <height>1064</height>
                </rect>
               </property>
@@ -1265,7 +1265,7 @@
                        <item>
                         <widget class="QLabel" name="label_4">
                          <property name="text">
-                          <string>Previews size</string>
+                          <string>Previews size:</string>
                          </property>
                         </widget>
                        </item>
@@ -1849,8 +1849,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>414</width>
-                <height>410</height>
+                <width>553</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
