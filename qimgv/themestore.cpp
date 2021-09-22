@@ -22,7 +22,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.background_fullscreen = "#1a1a1a";
             base.folderview = "#f2f2f2";
             base.folderview_topbar = "#ffffff";
-            base.icons = "#55585c";
+            base.icons = "#656768";
             base.overlay = "#1a1a1a";
             base.overlay_text = "#d2d2d2";
             base.text = "#353535";
@@ -40,7 +40,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.accent = "#336ca5";
             base.folderview = "#232629";
             base.folderview_topbar = "#31363b";
-            base.scrollbar = "#42484f";
+            base.scrollbar = "#4f565c";
             base.overlay_text = "#d2d2d2";
             base.overlay = "#1a1a1a";
             break;
@@ -51,25 +51,25 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.icons = "#999999";
             base.widget = "#080808";
             base.widget_border = "#181818";
-            base.accent = "#3a3a3a";
+            base.accent = "#5a5a5a";
             base.folderview = "#111111";
             base.folderview_topbar = "#111111";
             base.scrollbar = "#222222";
-            base.overlay_text = "#666666";
+            base.overlay_text = "#888888";
             base.overlay = "#000000";
             break;
         case COLORS_DARK:
         case COLORS_DEFAULT:
             base.background = "#1a1a1a";
             base.background_fullscreen = "#1a1a1a";
-            base.text = "#b4b4b4";
+            base.text = "#b6b6b6";
             base.icons = "#a4a4a4";
             base.widget = "#252525";
             base.widget_border = "#2c2c2c";
-            base.accent = "#5a9147";
+            base.accent = "#496891";
             base.folderview = "#242424";
             base.folderview_topbar = "#383838";
-            base.scrollbar = "#5e5e5e";
+            base.scrollbar = "#5a5a5a";
             base.overlay_text = "#d2d2d2";
             base.overlay = "#1a1a1a";
             break;

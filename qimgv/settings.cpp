@@ -166,14 +166,14 @@ void Settings::loadTheme() {
         themeConf->beginGroup("Colors");
         base.background            = QColor(themeConf->value("background",            "#1a1a1a").toString());
         base.background_fullscreen = QColor(themeConf->value("background_fullscreen", "#1a1a1a").toString());
-        base.text                  = QColor(themeConf->value("text",                  "#b4b4b4").toString());
+        base.text                  = QColor(themeConf->value("text",                  "#b6b6b6").toString());
         base.icons                 = QColor(themeConf->value("icons",                 "#a4a4a4").toString());
         base.widget                = QColor(themeConf->value("widget",                "#252525").toString());
         base.widget_border         = QColor(themeConf->value("widget_border",         "#2c2c2c").toString());
-        base.accent                = QColor(themeConf->value("accent",                "#5a9147").toString());
+        base.accent                = QColor(themeConf->value("accent",                "#496891").toString());
         base.folderview            = QColor(themeConf->value("folderview",            "#242424").toString());
         base.folderview_topbar     = QColor(themeConf->value("folderview_topbar",     "#383838").toString());
-        base.scrollbar             = QColor(themeConf->value("scrollbar",             "#5e5e5e").toString());
+        base.scrollbar             = QColor(themeConf->value("scrollbar",             "#5a5a5a").toString());
         base.overlay_text          = QColor(themeConf->value("overlay_text",          "#d2d2d2").toString());
         base.overlay               = QColor(themeConf->value("overlay",               "#1a1a1a").toString());
         themeConf->endGroup();
