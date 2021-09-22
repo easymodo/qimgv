@@ -54,8 +54,8 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.accent = "#5a5a5a";
             base.folderview = "#111111";
             base.folderview_topbar = "#111111";
-            base.scrollbar = "#222222";
-            base.overlay_text = "#888888";
+            base.scrollbar = "#343434";
+            base.overlay_text = "#999999";
             base.overlay = "#000000";
             break;
         case COLORS_DARK:
@@ -66,7 +66,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.icons = "#a4a4a4";
             base.widget = "#252525";
             base.widget_border = "#2c2c2c";
-            base.accent = "#496891";
+            base.accent = "#8c9b81";
             base.folderview = "#242424";
             base.folderview_topbar = "#383838";
             base.scrollbar = "#5a5a5a";
