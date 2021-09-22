@@ -287,7 +287,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-150</y>
+                <y>0</y>
                 <width>539</width>
                 <height>1064</height>
                </rect>
@@ -1089,19 +1089,6 @@
                           <number>0</number>
                          </property>
                          <item>
-                          <spacer name="verticalSpacer_19">
-                           <property name="orientation">
-                            <enum>Qt::Vertical</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>20</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
                           <widget class="QCheckBox" name="squareThumbnailsCheckBox">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1849,8 +1836,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>624</height>
+                <width>414</width>
+                <height>410</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2735,8 +2722,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>624</height>
+                <width>481</width>
+                <height>204</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
