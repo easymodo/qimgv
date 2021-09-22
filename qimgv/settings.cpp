@@ -869,13 +869,22 @@ qreal Settings::zoomStep() {
     qreal value = settings->settingsConf->value("zoomStep", 0.2).toReal(&ok);
     if(!ok)
         return 0.2;
-    value = qBound(0.01, value, 0.3);
+    value = qBound(0.01, value, 0.5);
     return value;
 }
 
 void Settings::setZoomStep(qreal value) {
-    value = qBound(0.01, value, 0.3);
+    value = qBound(0.01, value, 0.5);
     settings->settingsConf->setValue("zoomStep", value);
+}
+//------------------------------------------------------------------------------
+bool Settings::absoluteZoomStep() {
+    bool mode = settings->settingsConf->value("absoluteZoomStep", false).toBool();
+    return mode;
+}
+
+void Settings::setAbsoluteZoomStep(bool mode) {
+    settings->settingsConf->setValue("absoluteZoomStep", mode);
 }
 //------------------------------------------------------------------------------
 void Settings::setZoomIndicatorMode(ZoomIndicatorMode mode) {

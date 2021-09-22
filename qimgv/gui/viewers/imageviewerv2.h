@@ -126,7 +126,7 @@ private:
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
     QTimer *animationTimer, *scaleTimer;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
-    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, loopPlayback, mIsFullscreen;
+    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, loopPlayback, mIsFullscreen, absoluteStep;
     MouseInteractionState mouseInteraction;
     const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_UPDATE_RATE = 7;

@@ -272,6 +272,8 @@ public:
 
     bool jxlAnimation();
     void setJxlAnimation(bool mode);
+    bool absoluteZoomStep();
+    void setAbsoluteZoomStep(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     QSettings *settingsConf, *stateConf, *themeConf;

@@ -12,6 +12,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     keepFitMode(false),
     loopPlayback(true),
     mIsFullscreen(false),
+    absoluteStep(false),
     mouseInteraction(MouseInteractionState::MOUSE_NONE),
     minScale(0.01f),
     maxScale(500.0f),
@@ -96,6 +97,7 @@ void ImageViewerV2::readSettings() {
     zoomStep = settings->zoomStep();
     transparencyGridEnabled = settings->transparencyGrid();
     focusIn1to1 = settings->focusPointIn1to1Mode();
+    absoluteStep = settings->absoluteZoomStep();
     // set bg color
     onFullscreenModeChanged(mIsFullscreen);
     updateMinScale();
@@ -955,7 +957,10 @@ void ImageViewerV2::zoomAnchored(float newScale) {
 // zoom in around viewport center
 void ImageViewerV2::zoomIn() {
     setZoomAnchor(viewport()->rect().center());
-    zoomAnchored(currentScale() * (1.0f + zoomStep));
+    if(absoluteStep)
+        zoomAnchored(currentScale() + zoomStep);
+    else
+        zoomAnchored(currentScale() * (1.0f + zoomStep));
     centerIfNecessary();
     snapToEdges();
     imageFitMode = FIT_FREE;
@@ -966,7 +971,10 @@ void ImageViewerV2::zoomIn() {
 // zoom out around viewport center
 void ImageViewerV2::zoomOut() {
     setZoomAnchor(viewport()->rect().center());
-    zoomAnchored(currentScale() * (1.0f - zoomStep));
+    if(absoluteStep)
+        zoomAnchored(currentScale() - zoomStep);
+    else
+        zoomAnchored(currentScale() * (1.0f - zoomStep));
     centerIfNecessary();
     snapToEdges();
     imageFitMode = FIT_FREE;
@@ -1067,10 +1075,14 @@ void ImageViewerV2::snapToEdges() {
     centerOn(centerTarget + QPointF(xShift, yShift));
 }
 
+// todo: just merge with zoomIn
 void ImageViewerV2::zoomInCursor() {
     if(underMouse()) {
         setZoomAnchor(mapFromGlobal(cursor().pos()));
-        zoomAnchored(currentScale() * (1.0f + zoomStep));
+        if(absoluteStep)
+            zoomAnchored(currentScale() + zoomStep);
+        else
+            zoomAnchored(currentScale() * (1.0f + zoomStep));
     } else {
         zoomIn();
     }
@@ -1084,7 +1096,10 @@ void ImageViewerV2::zoomInCursor() {
 void ImageViewerV2::zoomOutCursor() {
     if(underMouse()) {
         setZoomAnchor(mapFromGlobal(cursor().pos()));
-        zoomAnchored(currentScale() * (1.0f - zoomStep));
+        if(absoluteStep)
+            zoomAnchored(currentScale() - zoomStep);
+        else
+            zoomAnchored(currentScale() * (1.0f - zoomStep));
     } else {
         zoomIn();
     }

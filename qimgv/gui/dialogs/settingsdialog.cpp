@@ -169,6 +169,7 @@ void SettingsDialog::readSettings() {
     ui->unloadThumbsCheckBox->setChecked(settings->unloadThumbs());
     ui->thumbStyleComboBox->setCurrentIndex(settings->thumbPanelStyle());
     ui->animatedJxlCheckBox->setChecked(settings->jxlAnimation());
+    ui->absoluteStepCheckBox->setChecked(settings->absoluteZoomStep());
 
     if(settings->defaultViewMode() == MODE_FOLDERVIEW)
         ui->startInFolderViewCheckBox->setChecked(true);
@@ -291,6 +292,7 @@ void SettingsDialog::saveSettings() {
     settings->setUnloadThumbs(ui->unloadThumbsCheckBox->isChecked());
     settings->setThumbPanelStyle(static_cast<ThumbPanelStyle>(ui->thumbStyleComboBox->currentIndex()));
     settings->setJxlAnimation(ui->animatedJxlCheckBox->isChecked());
+    settings->setAbsoluteZoomStep(ui->absoluteStepCheckBox->isChecked());
 
     if(ui->panelTop->isChecked())
         settings->setPanelPosition(PANEL_TOP);
