@@ -1,7 +1,7 @@
 # qimgv root
 cmake_minimum_required(VERSION 3.13)
 project(qimgv
-    VERSION 0.9.2
+    VERSION 1.0.0
     HOMEPAGE_URL "https://github.com/easymodo/qimgv"
     LANGUAGES CXX)
 

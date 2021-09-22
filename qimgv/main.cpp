@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationName("qimgv");
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
-    QCoreApplication::setApplicationVersion(appVersion.normalized().toString());
+    QCoreApplication::setApplicationVersion(appVersion.toString());
 
 
     QApplication::setEffectEnabled(Qt::UI_AnimateCombo, false);
