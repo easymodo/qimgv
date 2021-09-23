@@ -134,17 +134,15 @@ qimgv can open some extra formats via third-party image plugins. All of them are
 
 # Installation
 
-### Windows builds
+## Windows builds
 
   [Grab the latest release here](https://github.com/easymodo/qimgv/releases)
   
-  Windows builds are portable (everything is contained within install folder).
-  
-  Installer additionally sets up file associations.
+  Windows builds are portable (everything is contained within install folder). Installer additionally sets up file associations.
 
-### GNU+Linux
+## GNU+Linux
 
-__Arch Linux / Manjaro / etc.:__ 
+### Arch Linux / Manjaro / etc.
 
 AUR package: 
 
@@ -152,7 +150,7 @@ AUR package:
 qimgv-git
 ```
   
-__Ubuntu / Linux Mint / Pop!\_OS / etc.__
+### Ubuntu / Linux Mint / Pop!\_OS / etc.
 
 ```
 sudo add-apt-repository ppa:easymodo/qimgv
@@ -166,108 +164,43 @@ _Alternative package with kde support:_
 sudo apt install qimgv-kde
 ```
 
-__Gentoo:__
-
-```
-emerge qimgv
-```
-
-__OpenSUSE__: 
-
-```
-zypper install qimgv
-```
-
-__Void linux__: 
-
-```
-xbps-install -S qimgv
-```
-
-__Alpine Linux__:
-
-```
-apk add qimgv
-```
-
-__Fedora__: 
+### Fedora
 
 ```
 sudo dnf install qimgv
 ```
 
-This list may be incomplete. If your favorite distro is not included refer to [Manual install] section below.
-
-### Manual install
- 
-__Install dependencies ( `gcc` >= 9.0, `git`, `cmake` >= 3.13, `qt` >= 5.14, `exiv2`, `mpv`, `opencv (core and imgproc)`__
-
-_Ubuntu & derivatives (21.04 or later):_
-     
-```
-sudo apt install build-essential git cmake qtbase5-dev libqt5svg5-dev libexiv2-dev libmpv-dev libopencv-dev kimageformat-plugins gcc g++
-```
-Optional: `libkf5windowsystem-dev`
-     
-_Fedora:_
-
-Enable RPMFusion [https://rpmfusion.org/Configuration](https://rpmfusion.org/Configuration).
-
-It is needed for video playback (mpv), but you also can build without it. See __CMake build options__ at the end.
+### OpenSUSE
 
 ```
-sudo dnf install git cmake make qt5 qt5-devel gcc-c++ mpv mpv-libs-devel exiv2-devel opencv opencv-devel
-```
-Optional: `kf5-kwindowsystem`
-		
-__Configure & install__
-
-Get sources
-
-```
-git clone https://github.com/easymodo/qimgv.git
-cd qimgv && mkdir -p build && cd build
+zypper install qimgv
 ```
 
-Configure
+### Gentoo
 
 ```
-cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_INSTALL_LIBDIR=lib
+emerge qimgv
 ```
 
-Build
+### Void linux
 
 ```
-make -j`nproc --ignore=1`
+xbps-install -S qimgv
 ```
 
-Install
+### Alpine Linux
 
 ```
-sudo make install
+apk add qimgv
 ```
 
-### Possible build issues
+This list may be incomplete. 
 
-- If you get errors like "/usr/lib64 exists in filesystem" during install:
+## Compiling from source
 
-add `-DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib` to cmake command.
+See [Compiling qimgv from source](https://github.com/easymodo/qimgv/wiki/Compiling-qimgv-from-source) on the wiki
 
-### CMake build options
-
-| Option  | Default value | Description |
-| ------- | ------------- | ----------- |
-| VIDEO_SUPPORT | ON | Enables video playback via `mpv` |
-| EXIV2 | ON | Support reading exif tags via `exiv2` |
-| OPENCV_SUPPORT | ON | Enables high quality scaling options |
-| KDE_SUPPORT | OFF | Use some features from KDE, like background blur |
-
-Usage example:
-```
-cmake ../ -DKDE_SUPPORT=ON  -DCMAKE_INSTALL_PREFIX=/usr/
-```
-
-### Donate
+# Donate
 
 If you wish to throw me a few bucks, you can do it here:
 
