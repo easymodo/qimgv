@@ -218,15 +218,13 @@ If your favorite distro is not included refer to [Manual install] section at the
   
 
 ### Manual install
-
-Note: in order to compile you will need gcc 8 or later!
  
-__Install dependencies ( `gcc` >= 9.0, `git`, `cmake` >= 3.13, `qt` >= 5.9, `exiv2`, `mpv`, `opencv (core and imgproc)`__
+__Install dependencies ( `gcc` >= 9.0, `git`, `cmake` >= 3.13, `qt` >= 5.14, `exiv2`, `mpv`, `opencv (core and imgproc)`__
 
 _Ubuntu & derivatives:_
      
 ```
-sudo apt install build-essential git cmake qt5-default libmpv-dev gcc-8 g++-8
+sudo apt install build-essential git cmake qtbase5-dev libqt5svg5-dev libexiv2-dev libmpv-dev libopencv-dev gcc g++
 ```
 Optional: `libkf5windowsystem-dev`
      
@@ -273,14 +271,6 @@ sudo make install
 - If you get errors like "/usr/lib64 exists in filesystem" during install:
 
 add `-DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib` to cmake command.
-
-- If you get some errors like "std::filesystem not found":
-
-qimgv needs a compiler with c++17 support - for example gcc 8.0+ (every recent distro has it)
-
-If you have multiple version of gcc installed you _might_ need to specify a which version for `cmake` to use, for example 
-
-`CC=gcc-8 CXX=g++-8 cmake [........]`
 
 ### CMake build options
 
