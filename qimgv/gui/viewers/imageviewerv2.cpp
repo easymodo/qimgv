@@ -575,11 +575,13 @@ void ImageViewerV2::mouseReleaseEvent(QMouseEvent *event) {
 // warning for future me:
 // for some reason in qgraphicsview wheelEvent is followed by moveEvent (wtf?)
 void ImageViewerV2::wheelEvent(QWheelEvent *event) {
+    #ifdef __APPLE__
     // we don't need these
     if(event->phase() == Qt::ScrollBegin || event->phase() == Qt::ScrollEnd) {
         event->accept();
         return;
     }
+    #endif
 
     if(event->buttons() & Qt::RightButton) {
         event->accept();
@@ -593,6 +595,7 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
         event->accept();
         QPoint pixelDelta = event->pixelDelta();
         QPoint angleDelta = event->angleDelta();
+        qDebug() << "pixelDelta:" << pixelDelta << "angleDelta:" << angleDelta;
         // high-precision touchpad
         if(pixelDelta != QPoint(0,0) && settings->imageScrolling() != ImageScrolling::SCROLL_NONE) {
             stopPosAnimation();
