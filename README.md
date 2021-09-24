@@ -1,6 +1,6 @@
 qimgv | Current version: 1.0.0
 =====
-Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
+Image viewer. Fast, easy to use. Optional video support.
 
 ## Screenshots
 
@@ -63,6 +63,7 @@ Main window & panel        |  Folder view   |  Settings window
 | Delete file  | Shift+Delete |
 | Save  | Ctrl+S |
 | Save As  | Ctrl+Shift+S |
+| Folder view | Enter / Backspace |
 | Open | Ctrl+O |
 | Print / Export PDF | Ctrl+P |
 | Settings  | P |
@@ -72,15 +73,13 @@ Main window & panel        |  Folder view   |  Settings window
 
 Note: you can configure every shortcut by going to __Settings > Controls__
 
-## User interface
+# User interface
 
 The idea is to have a uncluttered, simple and easy to use UI. You can see UI elements only when you need them.
 
-There is a pull-down panel with thumbnails, as well as folder view (accessible by pressing Return).
+There is a pull-down panel with thumbnails, as well as folder view. You can also bring up a context menu via right click.
 
-You can also bring up a context menu by right-clicking an image.
-
-### Using quick copy / quick move panels
+## Using quick copy / quick move panels
 
 Bring up the panel with C or M shortcut. You will see 9 destination directories, click them to set them up.
 
@@ -88,7 +87,7 @@ With panel visible, use 1 - 9 keys to copy/move current image to corresponding d
 
 When you are done press C or M again to hide the panel.
 
-### Running scripts
+## Running scripts
 
 You can run custom scripts on a current image.
 
@@ -107,54 +106,43 @@ _Note: The script file must be an executable. Also, "shebang" (`#!/bin/bash`) ne
 
 When you've created your script go to __Settings > Controls > Add__, then select it and assign a shortcut like for any regular action.
 
-### HiDPI
+## HiDPI (Linux / MacOS only)
 
 If qimgv appears too small / too big on your display, you can override the scale factor. Example:
 ```
 QT_SCALE_FACTOR="1.5" qimgv /path/to/image.png
 ```
-You can put it in `qimgv.desktop` file to make it permanent. Using values less than `1.0` may break some things.
+You can put it in `qimgv.desktop` file to make it permanent. Using values less than `1.0` is not supported.
 
 qimgv should also obey the global scale factor set in KDE's systemsettings.
 
-### High quality scaling
+## High quality scaling
 
-qimgv supports nicer scaling filters when compiled with `opencv` support (ON by default, might vary depending on your distribution). Filter options are available in __Settings > Scaling__. `Bicubic` or `bilinear+sharpen` is recommended.
+qimgv supports nicer scaling filters when compiled with `opencv` support (ON by default, but might vary depending on your linux distribution). Filter options are available in __Settings > Scaling__. `Bicubic` or `bilinear+sharpen` is recommended.
 
-### APNG support
+# Additional image formats
 
-APNG is supported via third-party qt plugin. (Included in windows qimgv package)
- 
-If you are linux user, install the latest [QtApng by Skycoder42](https://github.com/Skycoder42/QtApng).
+qimgv can open some extra formats via third-party image plugins. All of them are included with windows package.
 
-### HEIF / HEIC support
+| Format  | Plugin |
+| ------- | ------------- |
+| JPEG-XL | [github.com/novomesk/qt-jpegxl-image-plugin](https://github.com/novomesk/qt-jpegxl-image-plugin) |
+| AVIF | [github.com/novomesk/qt-avif-image-plugin](https://github.com/novomesk/qt-avif-image-plugin) |
+| APNG | [github.com/Skycoder42/QtApng](https://github.com/Skycoder42/QtApng) |
+| HEIF / HEIC | [github.com/jakar/qt-heif-image-plugin](https://github.com/jakar/qt-heif-image-plugin) |
+| RAW | [https://gitlab.com/mardy/qtraw](https://gitlab.com/mardy/qtraw) |
 
-Apple's `heif` format is supported via third-party qt plugin. Included in windows qimgv package.
+# Installation
 
-See [github.com/jakar/qt-heif-image-plugin](https://github.com/jakar/qt-heif-image-plugin)
+## Windows builds
 
-### JPEG-XL (JXL) support:
+  [Grab the latest release here](https://github.com/easymodo/qimgv/releases)
+  
+  Windows builds are portable (everything is contained within install folder). Installer additionally sets up file associations.
 
-qimgv can open `jxl` files via third-party qt plugin.
+## GNU+Linux
 
-See [github.com/novomesk/qt-jpegxl-image-plugin](https://github.com/novomesk/qt-jpegxl-image-plugin)
-
-### AVIF support
-
-qimgv can open `avif` files via third-party qt plugin.
-
-See [github.com/novomesk/qt-avif-image-plugin](https://github.com/novomesk/qt-avif-image-plugin)
-
-### RAW support
-
-Viewing raw is supported via [qtraw plugin](https://gitlab.com/mardy/qtraw). (Included in windows qimgv package)
-
-
-## Installation instructions
-
-### GNU+Linux
-
-__Arch Linux / Manjaro / etc.:__ 
+### Arch Linux / Manjaro / etc.
 
 AUR package: 
 
@@ -162,7 +150,7 @@ AUR package:
 qimgv-git
 ```
   
-__Ubuntu / Linux Mint / Pop!\_OS / etc.__
+### Ubuntu / Linux Mint / Pop!\_OS / etc.
 
 ```
 sudo add-apt-repository ppa:easymodo/qimgv
@@ -176,127 +164,43 @@ _Alternative package with kde support:_
 sudo apt install qimgv-kde
 ```
 
-__Gentoo:__
-
-```
-emerge qimgv
-```
-
-__OpenSUSE__: 
-
-```
-zypper install qimgv
-```
-
-__Void linux__: 
-
-```
-xbps-install -S qimgv
-```
-
-__Alpine Linux__:
-
-```
-apk add qimgv
-```
-
-__Fedora__: 
+### Fedora
 
 ```
 sudo dnf install qimgv
 ```
 
-If your favorite distro is not included refer to [Manual install] section at the end of this document.
-  
-### Windows builds
-
-  [Grab the latest release here.](https://github.com/easymodo/qimgv/releases)
-  
-  Windows builds are portable (everything is contained within install folder).
-  
-  Installer additionally sets up file associations.
-  
-
-### Manual install
-
-Note: in order to compile you will need gcc 8 or later!
- 
-__Install dependencies ( `gcc` >= 9.0, `git`, `cmake` >= 3.13, `qt` >= 5.9, `exiv2`, `mpv`, `opencv (core and imgproc)`__
-
-_Ubuntu & derivatives:_
-     
-```
-sudo apt install build-essential git cmake qt5-default libmpv-dev gcc-8 g++-8
-```
-Optional: `libkf5windowsystem-dev`
-     
-_Fedora:_
-
-Enable RPMFusion [https://rpmfusion.org/Configuration](https://rpmfusion.org/Configuration).
-
-It is needed for video playback (mpv), but you also can build without it. See __CMake build options__ at the end.
+### OpenSUSE
 
 ```
-sudo dnf install git cmake make qt5 qt5-devel gcc-c++ mpv mpv-libs-devel exiv2-devel opencv opencv-devel
-```
-Optional: `kf5-kwindowsystem`
-		
-__Configure & install__
-
-Get sources
-
-```
-git clone https://github.com/easymodo/qimgv.git
-cd qimgv && mkdir -p build && cd build
+zypper install qimgv
 ```
 
-Configure
+### Gentoo
 
 ```
-cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_INSTALL_LIBDIR=lib
+emerge qimgv
 ```
 
-Build
+### Void linux
 
 ```
-make -j`nproc --ignore=1`
+xbps-install -S qimgv
 ```
 
-Install
+### Alpine Linux
 
 ```
-sudo make install
+apk add qimgv
 ```
 
-### Possible build issues
+This list may be incomplete. 
 
-- If you get errors like "/usr/lib64 exists in filesystem" during install:
+## Compiling from source
 
-add `-DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib` to cmake command.
+See [Compiling qimgv from source](https://github.com/easymodo/qimgv/wiki/Compiling-qimgv-from-source) on the wiki
 
-- If you get some errors like "std::filesystem not found":
-
-qimgv needs a compiler with c++17 support - for example gcc 8.0+ (every recent distro has it)
-
-If you have multiple version of gcc installed you _might_ need to specify a which version for `cmake` to use, for example 
-
-`CC=gcc-8 CXX=g++-8 cmake [........]`
-
-### CMake build options
-
-| Option  | Default value | Description |
-| ------- | ------------- | ----------- |
-| VIDEO_SUPPORT | ON | Enables video playback via `mpv` |
-| EXIV2 | ON | Support reading exif tags via `exiv2` |
-| OPENCV_SUPPORT | ON | Enables high quality scaling options |
-| KDE_SUPPORT | OFF | Use some features from KDE, like background blur |
-
-Usage example:
-```
-cmake ../ -DKDE_SUPPORT=ON  -DCMAKE_INSTALL_PREFIX=/usr/
-```
-
-### Donate
+# Donate
 
 If you wish to throw me a few bucks, you can do it here:
 
