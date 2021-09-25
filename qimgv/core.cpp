@@ -623,7 +623,7 @@ void Core::showInDirectory() {
     args << "-e";
     args << "activate";
     args << "-e";
-    args << "select POSIX file \""+selectedFilePath()+"\"";
+    args << "select POSIX file \""+selectedPath()+"\"";
     args << "-e";
     args << "end tell";
     QProcess::startDetached("osascript", args);

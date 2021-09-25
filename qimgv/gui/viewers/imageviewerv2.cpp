@@ -576,7 +576,8 @@ void ImageViewerV2::mouseReleaseEvent(QMouseEvent *event) {
 // for some reason in qgraphicsview wheelEvent is followed by moveEvent (wtf?)
 void ImageViewerV2::wheelEvent(QWheelEvent *event) {
     #ifdef __APPLE__
-    // we don't need these
+    // this event goes off during force touch with being Qt::ScrollPhase set to begin/end
+    // lets filter these
     if(event->phase() == Qt::ScrollBegin || event->phase() == Qt::ScrollEnd) {
         event->accept();
         return;
@@ -592,37 +593,51 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
         else if(angleDelta < 0)
             zoomOutCursor();
     } else if(event->modifiers() == Qt::NoModifier) {
-        event->accept();
         QPoint pixelDelta = event->pixelDelta();
         QPoint angleDelta = event->angleDelta();
-        qDebug() << "pixelDelta:" << pixelDelta << "angleDelta:" << angleDelta;
-        // high-precision touchpad
-        if(pixelDelta != QPoint(0,0) && settings->imageScrolling() != ImageScrolling::SCROLL_NONE) {
-            stopPosAnimation();
-            horizontalScrollBar()->setValue(horizontalScrollBar()->value() - pixelDelta.x() * TRACKPAD_SCROLL_MULTIPLIER);
-            verticalScrollBar()->setValue(verticalScrollBar()->value() - pixelDelta.y() * TRACKPAD_SCROLL_MULTIPLIER);
-            centerIfNecessary();
-            snapToEdges();
-        } else if(angleDelta != QPoint(0,0)) { // mouse wheel & (windows) touchpad
-            // wheel usually sends angleDelta = 120 / 240 / ...
-            // there doesnt seem to be a way to detect event source except this
-            // this issue is windows only as both linux touchpad drivers send pixelDelta instead
-            // as a workaround we use QElapsedTimer to guess where the event came from
-            bool isWheel = angleDelta.y() && !(angleDelta.y() % 120);
-            if(isWheel && lastTouchpadScroll.elapsed() > 100) {
-                if(settings->imageScrolling() == SCROLL_BY_TRACKPAD_AND_WHEEL)
-                    scroll(0, -angleDelta.y(), true);
-                else
-                    QWidget::wheelEvent(event);
-                return; // return immediately so we wont restart the scroll timer
-            } else if(settings->imageScrolling() != ImageScrolling::SCROLL_NONE) {
+        /* for reference
+         * linux
+         *   trackpad:
+         *     pixelDelta = (x,y)
+         *     angleDelta = (x*scale,y*scale)
+         *   wheel:
+         *     pixelDelta = (0,0)     - libinput <= 1.18
+         *     pixelDelta = (0,120*m) - libinput 1.19
+         *     angleDelta = (0,120*m)
+         * -----------------------------------------
+         * macOS
+         *   trackpad:
+         *     pixelDelta = (x,y)
+         *     angleDelta = (x*scale,y*scale)
+         *   wheel:
+         *     pixelDelta = (0,y*scrollAccel)
+         *     angleDelta = (0,120*m)
+         * -----------------------------------------
+         * windows
+         *   trackpad:
+         *     ?? (dont have the hardware with precision drivers)
+         *   wheel:
+         *     pixelDelta = (0,0)
+         *     AngleDelta = (0,120*m)
+         */
+        bool isWheel = angleDelta.y() && !(angleDelta.y() % 120) && lastTouchpadScroll.elapsed() > 100;
+        if(!isWheel) {
+            lastTouchpadScroll.restart();
+            event->accept();
+            if(settings->imageScrolling() != ImageScrolling::SCROLL_NONE) {
+                // scroll (high precision)
                 stopPosAnimation();
-                horizontalScrollBar()->setValue(horizontalScrollBar()->value() - angleDelta.x() * TRACKPAD_SCROLL_MULTIPLIER);
-                verticalScrollBar()->setValue(verticalScrollBar()->value() - angleDelta.y() * TRACKPAD_SCROLL_MULTIPLIER);
+                horizontalScrollBar()->setValue(horizontalScrollBar()->value() - pixelDelta.x() * TRACKPAD_SCROLL_MULTIPLIER);
+                verticalScrollBar()->setValue(verticalScrollBar()->value() - pixelDelta.y() * TRACKPAD_SCROLL_MULTIPLIER);
                 centerIfNecessary();
                 snapToEdges();
             }
-            lastTouchpadScroll.restart();
+        } else if(isWheel && settings->imageScrolling() == SCROLL_BY_TRACKPAD_AND_WHEEL) {
+            // scroll by interval
+            scroll(0, -angleDelta.y(), true);
+        } else {
+           event->ignore();
+           QWidget::wheelEvent(event);
         }
         saveViewportPos();
     } else {
