@@ -576,7 +576,7 @@ void ImageViewerV2::mouseReleaseEvent(QMouseEvent *event) {
 // for some reason in qgraphicsview wheelEvent is followed by moveEvent (wtf?)
 void ImageViewerV2::wheelEvent(QWheelEvent *event) {
     #ifdef __APPLE__
-    // this event goes off during force touch with being Qt::ScrollPhase set to begin/end
+    // this event goes off during force touch with Qt::ScrollPhase being set to begin/end
     // lets filter these
     if(event->phase() == Qt::ScrollBegin || event->phase() == Qt::ScrollEnd) {
         event->accept();
