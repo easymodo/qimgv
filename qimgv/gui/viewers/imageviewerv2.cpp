@@ -634,6 +634,7 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
             }
         } else if(isWheel && settings->imageScrolling() == SCROLL_BY_TRACKPAD_AND_WHEEL) {
             // scroll by interval
+            event->accept();
             scroll(0, -angleDelta.y(), true);
         } else {
            event->ignore();
