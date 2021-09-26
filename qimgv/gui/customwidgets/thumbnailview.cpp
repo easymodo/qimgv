@@ -24,6 +24,7 @@ ThumbnailView::ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent)
     setRenderHint(QPainter::Antialiasing, false);
     setRenderHint(QPainter::SmoothPixmapTransform, false);
 
+    lastTouchpadScroll.start();
 
     connect(&loadTimer, &QTimer::timeout, this, &ThumbnailView::loadVisibleThumbnails);
     loadTimer.setInterval(static_cast<const int>(LOAD_DELAY));
@@ -457,20 +458,20 @@ void ThumbnailView::fitSceneToContents() {
 //################### scrolling ######################
 void ThumbnailView::wheelEvent(QWheelEvent *event) {
     event->accept();
-    // alright, i officially gave up on fixing libinput scrolling
-    // let's just hope it gets done in Qt while I am still alive
     int pixelDelta = event->pixelDelta().y();
     int angleDelta = event->angleDelta().ry();
+    bool isWheel = angleDelta && !(angleDelta % 120) && lastTouchpadScroll.elapsed() > 100;
+    if(!isWheel)
+        lastTouchpadScroll.restart();
+
     if(!settings->enableSmoothScroll()) {
         if(pixelDelta)
             scrollPrecise(pixelDelta);
         else if(angleDelta)
             scrollPrecise(angleDelta);
     } else {
-        if(pixelDelta)
+        if(!isWheel && pixelDelta)
             scrollPrecise(pixelDelta);
-        else if(abs(angleDelta) < SMOOTH_SCROLL_THRESHOLD)
-            scrollPrecise(angleDelta);
         else if(angleDelta)
             scrollSmooth(angleDelta, SCROLL_MULTIPLIER, SCROLL_ACCELERATION, true);
     }

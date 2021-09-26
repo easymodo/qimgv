@@ -16,7 +16,9 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     thumbStyle(THUMB_SIMPLE)
 {
     setAttribute(Qt::WA_OpaquePaintEvent, true);
-    //setCacheMode(QGraphicsItem::DeviceCoordinateCache); breaks hidpi fractional scaling
+    float dpr = qApp->devicePixelRatio();
+    if(trunc(dpr) == dpr) // don't enable for fractional scaling
+        setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     setAcceptHoverEvents(true);
     font.setBold(false);
     QFontMetrics fm(font);
