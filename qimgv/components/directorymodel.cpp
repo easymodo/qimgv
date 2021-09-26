@@ -219,11 +219,7 @@ bool DirectoryModel::saveFile(const QString &filePath, const QString &destPath) 
     if(!containsFile(filePath) || !cache.contains(filePath))
         return false;
     auto img = cache.get(filePath);
-    dirManager.blockSignals(true);
-    bool success = img->save(destPath);
-    qApp->processEvents();
-    dirManager.blockSignals(true);
-    if(success) {
+    if(img->save(destPath)) {
         if(filePath == destPath) { // replace
             dirManager.updateFileEntry(destPath);
             emit fileModified(destPath);
