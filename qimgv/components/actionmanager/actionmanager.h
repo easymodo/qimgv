@@ -36,7 +36,7 @@ public:
     void removeAllShortcuts();
     void removeAllShortcuts(QString actionName);
     QString keyForNativeScancode(quint32 scanCode);
-    void resetDefaultsFromVersion(QVersionNumber lastVer);
+    void adjustFromVersion(QVersionNumber lastVer);
     void saveShortcuts();
 public slots:
     bool invokeAction(const QString &actionName);

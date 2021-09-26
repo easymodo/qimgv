@@ -23,8 +23,8 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("Left", "prevImage");
     actionManager->defaults.insert("XButton2", "nextImage");
     actionManager->defaults.insert("XButton1", "prevImage");
-    actionManager->defaults.insert("WheelUp", "nextImage");
-    actionManager->defaults.insert("WheelDown", "prevImage");
+    actionManager->defaults.insert("WheelDown", "nextImage");
+    actionManager->defaults.insert("WheelUp", "prevImage");
     actionManager->defaults.insert("F", "toggleFullscreen");
     actionManager->defaults.insert("F11", "toggleFullscreen");
     actionManager->defaults.insert("LMB_DoubleClick", "toggleFullscreen");
@@ -38,8 +38,8 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("V", "flipV");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+R", "rotateRight");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+L", "rotateLeft");
-    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+WheelDown", "zoomInCursor");
-    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+WheelUp", "zoomOutCursor");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+WheelUp", "zoomInCursor");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+WheelDown", "zoomOutCursor");
     actionManager->defaults.insert("+", "zoomIn");
     actionManager->defaults.insert("-", "zoomOut");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Down", "zoomOut");
@@ -160,12 +160,29 @@ void ActionManager::resetDefaults(QString action) {
     }
 }
 //------------------------------------------------------------------------------
-// argument: target version
-// every action added from next version onwards will be reset
-// TODO: maybe move this to core or something?
-// TODO: save this to settings immediately
-// settings <=> actionManager <=> settingsDialog
-void ActionManager::resetDefaultsFromVersion(QVersionNumber lastVer) {
+void ActionManager::adjustFromVersion(QVersionNumber lastVer) {
+    // swap Ctrl-P & P
+    if(lastVer < QVersionNumber(0,9,2)) {
+        actionManager->resetDefaults("print");
+        actionManager->resetDefaults("openSettings");
+    }
+    // swap WheelUp/WheelDown. derp
+    if(lastVer < QVersionNumber(1,0,1)) {
+        qDebug() << "[actionManager]: swapping WheelUp/WheelDown";
+        QMapIterator<QString, QString> i(shortcuts);
+        QMap<QString, QString> swapped;
+        while(i.hasNext()) {
+            i.next();
+            QString key = i.key();
+            if(key.contains("WheelUp"))
+                key.replace("WheelUp", "WheelDown");
+            else if(key.contains("WheelDown"))
+                key.replace("WheelDown", "WheelUp");
+            swapped.insert(key, i.value());
+        }
+        shortcuts = swapped;
+    }
+    // add new default actions
     QMapIterator<QString, QString> i(defaults);
     while(i.hasNext()) {
         i.next();
@@ -178,6 +195,8 @@ void ActionManager::resetDefaultsFromVersion(QVersionNumber lastVer) {
             }
         }
     }
+    // apply
+    saveShortcuts();
 }
 //------------------------------------------------------------------------------
 void ActionManager::saveShortcuts() {

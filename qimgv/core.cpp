@@ -201,6 +201,7 @@ void Core::initActions() {
 void Core::onUpdate() {
     QVersionNumber lastVer = settings->lastVersion();
 
+
     if(lastVer < QVersionNumber(0,9,2)) {
         actionManager->resetDefaults("print");
         actionManager->resetDefaults("openSettings");
@@ -211,8 +212,8 @@ void Core::onUpdate() {
         settings->setScalingFilter(QI_FILTER_CV_CUBIC);
 #endif
 
-    actionManager->resetDefaultsFromVersion(lastVer);
-    actionManager->saveShortcuts();
+    actionManager->adjustFromVersion(lastVer);
+
     qDebug() << "Updated: " << settings->lastVersion().toString() << ">" << appVersion.toString();
     // TODO: finish changelogs
     //if(settings->showChangelogs())
