@@ -441,13 +441,46 @@ void MW::showDefault() {
 
 void MW::showSaveDialog(QString filePath) {
     viewerWidget->hidePanel();
+    QStringList filters;
+    // generate filter for writable images
+    // todo: some may need to be blacklisted
+    auto writerFormats = QImageWriter::supportedImageFormats();
+    if(writerFormats.contains("jpg"))  filters.append("JPEG (*.jpg *.jpeg *jpe *jfif)");
+    if(writerFormats.contains("png"))  filters.append("PNG (*.png)");
+    if(writerFormats.contains("webp")) filters.append("WebP (*.webp)");
+    // may not work..
+    if(writerFormats.contains("jp2"))  filters.append("JPEG 2000 (*.jp2 *.j2k *.jpf *.jpx *.jpm *.jpgx)");
+    if(writerFormats.contains("jxl"))  filters.append("JPEG-XL (*.jxl)");
+    if(writerFormats.contains("avif")) filters.append("AVIF (*.avif *.avifs)");
+    if(writerFormats.contains("tif"))  filters.append("TIFF (*.tif *.tiff)");
+    if(writerFormats.contains("bmp"))  filters.append("BMP (*.bmp)");
+#ifdef _WIN32
+    if(writerFormats.contains("ico"))  filters.append("Icon Files (*.ico)");
+#endif
+    if(writerFormats.contains("ppm"))  filters.append("PPM (*.ppm)");
+    if(writerFormats.contains("xbm"))  filters.append("XBM (*.xbm)");
+    if(writerFormats.contains("xpm"))  filters.append("XPM (*.xpm)");
+    if(writerFormats.contains("dds"))  filters.append("DDS (*.dds)");
+    if(writerFormats.contains("wbmp")) filters.append("WBMP (*.wbmp)");
+    // add everything else from imagewriter
+    for(auto fmt : writerFormats) {
+        if(filters.filter(fmt).isEmpty())
+            filters.append(fmt.toUpper() + " (*." + fmt + ")");
+    }
+    QString filterString = filters.join(";; ");
 
-    const QString imagesFilter = settings->supportedFormatsString();
-    filePath = QFileDialog::getSaveFileName(this, tr("Save File"),
-                                            filePath,
-                                            imagesFilter);
-    if(!filePath.isEmpty())
-        emit saveAsRequested(filePath);
+    // find matching filter for the current image
+    QString selectedFilter = "JPEG (*.jpg *.jpeg *jpe *jfif)";
+    QFileInfo fi(filePath);
+    for(auto filter : filters) {
+        if(filter.contains(fi.suffix().toLower())) {
+            selectedFilter = filter;
+            break;
+        }
+    }
+    QString newFilePath = QFileDialog::getSaveFileName(this, tr("Save File as..."), filePath, filterString, &selectedFilter);
+    if(!newFilePath.isEmpty())
+        emit saveAsRequested(newFilePath);
 }
 
 void MW::showOpenDialog(QString path) {
@@ -455,7 +488,7 @@ void MW::showOpenDialog(QString path) {
 
     QFileDialog dialog(this);
     QStringList imageFilter;
-    imageFilter.append(settings->supportedFormatsString());
+    imageFilter.append(settings->supportedFormatsFilter());
     imageFilter.append("All Files (*)");
     dialog.setDirectory(path);
     dialog.setNameFilters(imageFilter);

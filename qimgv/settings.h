@@ -104,7 +104,7 @@ public:
     ~Settings();
     QStringList supportedMimeTypes();
     QList<QByteArray> supportedFormats();
-    QString supportedFormatsString();
+    QString supportedFormatsFilter();
     QString supportedFormatsRegex();
     int panelPreviewsSize();
     void setPanelPreviewsSize(int size);

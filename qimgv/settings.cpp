@@ -250,9 +250,9 @@ QList<QByteArray> Settings::supportedFormats() {
     return formats;
 }
 //------------------------------------------------------------------------------
-// (for open/save dialogs)
+// (for open/save dialogs, as a single string)
 // example:  "Images (*.jpg, *.png)"
-QString Settings::supportedFormatsString() {
+QString Settings::supportedFormatsFilter() {
     QString filters;
     auto formats = supportedFormats();
     filters.append("Supported files (");
