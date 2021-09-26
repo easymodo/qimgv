@@ -855,8 +855,10 @@ std::shared_ptr<ImageStatic> Core::getEditableImage(const QString &filePath) {
 }
 
 template<typename... Args>
-void Core::edit_template(bool save, const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& editFunc, Args&&... as) {
+void Core::edit_template(bool save, QString action, const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& editFunc, Args&&... as) {
     if(model->isEmpty())
+        return;
+    if(save && !mw->showConfirmation(action, "Perform action \""+ action +"\"? \n\nChanges will be saved immediately."))
         return;
     for(auto path : currentSelection()) {
         auto img = getEditableImage(path);
@@ -874,31 +876,33 @@ void Core::edit_template(bool save, const std::function<QImage*(std::shared_ptr<
 }
 
 void Core::flipH() {
-    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), { ImageLib::flippedH });
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), "Flip horizontal", { ImageLib::flippedH });
 }
 
 void Core::flipV() {
-    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), { ImageLib::flippedV });
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), "Flip vertical", { ImageLib::flippedV });
 }
 
 void Core::rotateByDegrees(int degrees) {
-    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), { ImageLib::rotated }, degrees);
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), "Rotate", { ImageLib::rotated }, degrees);
 }
 
 void Core::resize(QSize size) {
-    edit_template(false, { ImageLib::scaled }, size, QI_FILTER_BILINEAR);
+    edit_template(false, "Resize", { ImageLib::scaled }, size, QI_FILTER_BILINEAR);
 }
 
 void Core::crop(QRect rect) {
     if(mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
-    edit_template(false, { ImageLib::cropped }, rect);
+    edit_template(false, "Crop", { ImageLib::cropped }, rect);
 }
 
 void Core::cropAndSave(QRect rect) {
     if(mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
-    edit_template(true, { ImageLib::cropped }, rect);
+    edit_template(false, "Crop", { ImageLib::cropped }, rect);
+    saveFile(selectedPath());
+    updateInfoString();
 }
 
 // ---------------------------------------------------------------- image operations ^
