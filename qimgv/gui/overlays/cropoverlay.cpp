@@ -447,6 +447,7 @@ void CropOverlay::mousePressEvent(QMouseEvent *event) {
             QPoint point = mapPointToImage(event->pos() * dpr);
             selectionRect.setTopLeft(point);
             selectionRect.setBottomRight(point);
+            resizeAnchor = point;
         }
     } else if(event->buttons() & Qt::RightButton) {
         clearSelection();
