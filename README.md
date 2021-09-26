@@ -81,7 +81,7 @@ There is a pull-down panel with thumbnails, as well as folder view. You can also
 
 ## Using quick copy / quick move panels
 
-Bring up the panel with C or M shortcut. You will see 9 destination directories, click them to set them up.
+Bring up the panel with C or M shortcut. You will see 9 destination directories, click on the folder icon to change them.
 
 With panel visible, use 1 - 9 keys to copy/move current image to corresponding directory.
 
