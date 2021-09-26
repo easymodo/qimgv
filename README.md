@@ -154,7 +154,7 @@ qimgv-git
 
 ```
 sudo add-apt-repository ppa:easymodo/qimgv
-sudo apt-get update
+sudo apt update
 sudo apt install qimgv
 ```
 
