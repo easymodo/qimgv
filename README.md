@@ -1,4 +1,4 @@
-qimgv | Current version: 1.0.0
+qimgv | Current version: 1.0.1
 =====
 Image viewer. Fast, easy to use. Optional video support.
 
