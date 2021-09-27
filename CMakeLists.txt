@@ -49,7 +49,7 @@ message(STATUS "Qt Version: " ${QT_VERSION})
 if(QT_VERSION_MAJOR GREATER_EQUAL 6)
     find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Svg PrintSupport Core5Compat OpenGLWidgets)
 else()
-    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
+    find_package(Qt${QT_VERSION_MAJOR} 5.12 REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
 endif()
 
 if(EXIV2)

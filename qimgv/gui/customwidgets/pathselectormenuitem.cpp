@@ -26,7 +26,12 @@ QString PathSelectorMenuItem::directory() {
 
 void PathSelectorMenuItem::setDirectory(QString path) {
     mDirectory = path;
-    QString stripped = mDirectory.split("/", Qt::SkipEmptyParts).last();
+    QString stripped;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    stripped = mDirectory.split("/").last();
+#else
+    stripped = mDirectory.split("/", Qt::SkipEmptyParts).last();
+#endif
     this->mTextLabel.setText(stripped);
 }
 

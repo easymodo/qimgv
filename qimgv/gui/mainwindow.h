@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QApplication>
 #include <QObject>
 #include <QWidget>
 #include <QHBoxLayout>
@@ -7,6 +8,11 @@
 #include <QFileDialog>
 #include <QMimeData>
 #include <QImageWriter>
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+#include <QDesktopWidget>
+#endif
+
 #include "gui/customwidgets/floatingwidgetcontainer.h"
 #include "gui/viewers/viewerwidget.h"
 #include "gui/overlays/controlsoverlay.h"
@@ -30,7 +36,6 @@
 #include "gui/viewers/documentwidget.h"
 #include "gui/folderview/folderviewproxy.h"
 #include "gui/panels/infobar/infobarproxy.h"
-#include <QApplication>
 
 #ifdef USE_KDE_BLUR
 #include <KWindowEffects>
@@ -106,6 +111,9 @@ private:
 
     PanelHPosition panelPosition;
     CurrentInfo info;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    QDesktopWidget desktopWidget;
+#endif
 
     void saveWindowGeometry();
     void restoreWindowGeometry();
