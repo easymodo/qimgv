@@ -463,17 +463,20 @@ void ThumbnailView::wheelEvent(QWheelEvent *event) {
     bool isWheel = angleDelta && !(angleDelta % 120) && lastTouchpadScroll.elapsed() > 100;
     if(!isWheel)
         lastTouchpadScroll.restart();
-
     if(!settings->enableSmoothScroll()) {
         if(pixelDelta)
             scrollPrecise(pixelDelta);
         else if(angleDelta)
             scrollPrecise(angleDelta);
     } else {
-        if(!isWheel && pixelDelta)
-            scrollPrecise(pixelDelta);
-        else if(angleDelta)
+        if(!isWheel) {
+            if(pixelDelta)
+                scrollPrecise(pixelDelta);
+            else if(angleDelta) // try this too
+                scrollPrecise(angleDelta);
+        } else if(angleDelta) {
             scrollSmooth(angleDelta, SCROLL_MULTIPLIER, SCROLL_ACCELERATION, true);
+        }
     }
 }
 

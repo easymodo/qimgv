@@ -598,8 +598,8 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
         /* for reference
          * linux
          *   trackpad:
-         *     pixelDelta = (x,y)
-         *     angleDelta = (x*scale,y*scale)
+         *     pixelDelta = (x,y) OR (0,0)
+         *     angleDelta = (x*scale,y*scale) OR (x,y)
          *   wheel:
          *     pixelDelta = (0,0)     - libinput <= 1.18
          *     pixelDelta = (0,120*m) - libinput 1.19
@@ -627,8 +627,10 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
             if(settings->imageScrolling() != ImageScrolling::SCROLL_NONE) {
                 // scroll (high precision)
                 stopPosAnimation();
-                horizontalScrollBar()->setValue(horizontalScrollBar()->value() - pixelDelta.x() * TRACKPAD_SCROLL_MULTIPLIER);
-                verticalScrollBar()->setValue(verticalScrollBar()->value() - pixelDelta.y() * TRACKPAD_SCROLL_MULTIPLIER);
+                int dx = pixelDelta.x() ? pixelDelta.x() : angleDelta.x();
+                int dy = pixelDelta.y() ? pixelDelta.y() : angleDelta.y();
+                horizontalScrollBar()->setValue(horizontalScrollBar()->value() - dx * TRACKPAD_SCROLL_MULTIPLIER);
+                verticalScrollBar()->setValue(verticalScrollBar()->value()     - dy * TRACKPAD_SCROLL_MULTIPLIER);
                 centerIfNecessary();
                 snapToEdges();
             }
