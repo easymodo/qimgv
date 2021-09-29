@@ -92,7 +92,7 @@ void FileOperations::copyFileTo(const QString &srcFilePath, const QString &destD
             return;
         }
 #endif
-        if(destDir.isDir()) {
+        if(destFile.isDir()) {
             result = FileOpResult::DESTINATION_DIR_EXISTS;
             return;
         }
@@ -165,7 +165,7 @@ void FileOperations::moveFileTo(const QString &srcFilePath, const QString &destD
             return;
         }
 #endif
-        if(destDir.isDir()) {
+        if(destFile.isDir()) {
             result = FileOpResult::DESTINATION_DIR_EXISTS;
             return;
         }
