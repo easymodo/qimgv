@@ -8,8 +8,6 @@ Main window & panel        |  Folder view   |  Settings window
 :-------------------------:|:-------------------------:|:-------------------------:|
 [![img1](qimgv/distrib/screenshots/qimgv0.9_1_thumb.jpg)](qimgv/distrib/screenshots/qimgv0.9_1.jpg?raw=true)  |  [![img2](qimgv/distrib/screenshots/qimgv0.9_2_thumb.jpg)](qimgv/distrib/screenshots/qimgv0.9_2.jpg?raw=true) | [![img3](qimgv/distrib/screenshots/qimgv_3_thumb.jpg)](qimgv/distrib/screenshots/qimgv_3.jpg?raw=true)
 
-## [qimgv v0.6 video overview](https://www.youtube.com/watch?v=AODRGCRPCpw)
-
 ## Key features:
 
 - Simple UI
@@ -139,6 +137,8 @@ qimgv can open some extra formats via third-party image plugins. All of them are
   [Grab the latest release here](https://github.com/easymodo/qimgv/releases)
   
   Windows builds are portable (everything is contained within install folder). Installer additionally sets up file associations.
+  
+  _NOTE: `-video` variants include mpv for video support_
 
 ## GNU+Linux
 
