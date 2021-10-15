@@ -17,7 +17,7 @@ signals:
     void notifyEvent(PFILE_NOTIFY_INFORMATION);
 
 private:
-    HANDLE hDir;
+    HANDLE hDir = NULL;
     WCHAR buffer[1024];
     DWORD bytesReturned;
     uint POLL_RATE_MS = 1000;

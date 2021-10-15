@@ -321,13 +321,13 @@ void DirectoryManager::loadEntryList(QString directoryPath, bool recursive) {
 void DirectoryManager::addEntriesFromDirectory(std::vector<FSEntry> &entryVec, QString directoryPath) {
     QRegularExpressionMatch match;
     for(const auto & entry : fs::directory_iterator(toStdString(directoryPath))) {
-        QString name = QString::fromStdString(entry.path().filename().generic_string());
+        QString name = QString::fromStdWString(entry.path().filename().generic_wstring());
 #ifndef Q_OS_WIN32
         // ignore hidden files
         if(name.startsWith("."))
             continue;
 #endif
-        QString path = QString::fromStdString(entry.path().generic_string());
+        QString path = QString::fromStdWString(entry.path().generic_wstring());
         match = regex.match(name);
         if(entry.is_directory()) { // this can still throw std::bad_alloc ..
             FSEntry newEntry;
@@ -362,8 +362,8 @@ void DirectoryManager::addEntriesFromDirectory(std::vector<FSEntry> &entryVec, Q
 void DirectoryManager::addEntriesFromDirectoryRecursive(std::vector<FSEntry> &entryVec, QString directoryPath) {
     QRegularExpressionMatch match;
     for(const auto & entry : fs::recursive_directory_iterator(toStdString(directoryPath))) {
-        QString name = QString::fromStdString(entry.path().filename().generic_string());
-        QString path = QString::fromStdString(entry.path().generic_string());
+        QString name = QString::fromStdWString(entry.path().filename().generic_wstring());
+        QString path = QString::fromStdWString(entry.path().generic_wstring());
         match = regex.match(name);
         if(!entry.is_directory() && match.hasMatch()) {
             FSEntry newEntry;
@@ -414,7 +414,7 @@ bool DirectoryManager::forceInsertFileEntry(const QString &filePath) {
     if(!this->isFile(filePath) || containsFile(filePath))
         return false;
     std::filesystem::directory_entry stdEntry(toStdString(filePath));
-    QString fileName = QString::fromStdString(stdEntry.path().filename().generic_string()); // isn't it beautiful
+    QString fileName = QString::fromStdWString(stdEntry.path().filename().generic_wstring()); // isn't it beautiful
     FSEntry FSEntry(filePath, fileName, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
     insert_sorted(fileEntryVec, FSEntry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
     qDebug() << "fileIns" << filePath;
@@ -478,7 +478,7 @@ bool DirectoryManager::insertDirEntry(const QString &dirPath) {
     if(containsDir(dirPath))
         return false;
     std::filesystem::directory_entry stdEntry(toStdString(dirPath));
-    QString dirName = QString::fromStdString(stdEntry.path().filename().generic_string()); // isn't it beautiful
+    QString dirName = QString::fromStdWString(stdEntry.path().filename().generic_wstring()); // isn't it beautiful
     FSEntry FSEntry;
     FSEntry.name = dirName;
     FSEntry.path = dirPath;
