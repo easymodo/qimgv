@@ -68,7 +68,7 @@ void ScriptManager::runCommandDetached(QString cmd) {
 
 #else
 void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> img) {}
-QString ScriptManager::runCommand(QString cmd) {}
+QString ScriptManager::runCommand(QString cmd) { return QString(""); }
 void ScriptManager::runCommandDetached(QString cmd) {}
 #endif
 
