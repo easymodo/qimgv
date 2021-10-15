@@ -159,7 +159,9 @@ QImage* ImageLib::scaled(std::shared_ptr<const QImage> source, QSize destSize, S
 QImage* ImageLib::scaled_Qt(std::shared_ptr<const QImage> source, QSize destSize, bool smooth) {
     QImage *dest = new QImage();
     Qt::TransformationMode mode = smooth ? Qt::SmoothTransformation : Qt::FastTransformation;
-    *dest = source->scaled(destSize.width(), destSize.height(), Qt::IgnoreAspectRatio, mode);
+    if (source) {
+        *dest = source->scaled(destSize.width(), destSize.height(), Qt::IgnoreAspectRatio, mode);
+    }
 
 
     return dest;
