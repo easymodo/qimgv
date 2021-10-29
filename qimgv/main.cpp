@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QTranslator>
 #include <QCommandLineParser>
 #include <QStyleFactory>
 #include <QEvent>
@@ -66,12 +67,17 @@ int main(int argc, char *argv[]) {
     QGuiApplication::setDesktopFileName(QCoreApplication::applicationName() + ".desktop");
 
     // enable translations
-    //QString localeName = QLocale::system().name();
-    //QTranslator translator;
-    //translator.load(":/res/translations/" + localeName);
-    //a.installTranslator(&translator);
-    //qDebug() << "localeName: " << localeName;
-
+    QString localeName = QLocale::system().name();
+    // qDebug() << "localeName: " << localeName;
+    QTranslator translator;
+#ifdef _WIN32
+    if (translator.load(QDir::currentPath() + "/locales/" + localeName))
+#else
+    if (translator.load("/usr/share/qimgv/locales/" + localeName))
+#endif                
+    {
+        a.installTranslator(&translator);
+    }
     // needed for mpv
 #ifndef _MSC_VER
     setlocale(LC_NUMERIC, "C");

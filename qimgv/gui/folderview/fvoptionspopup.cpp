@@ -10,9 +10,9 @@ FVOptionsPopup::FVOptionsPopup(QWidget *parent) :
     setWindowFlags(Qt::Popup);
     setAttribute(Qt::WA_TranslucentBackground, true);
 
-    ui->viewSimpleButton->setText("Simple");
-    ui->viewExtendedButton->setText("Extended");
-    ui->viewFoldersButton->setText("Extended + Folders");
+    ui->viewSimpleButton->setText(QObject::tr("Simple"));
+    ui->viewExtendedButton->setText(QObject::tr("Extended"));
+    ui->viewFoldersButton->setText(QObject::tr("Extended + Folders"));
 
     connect(ui->viewSimpleButton,   &ContextMenuItem::pressed, this, &FVOptionsPopup::selectSimpleView);
     connect(ui->viewExtendedButton, &ContextMenuItem::pressed, this, &FVOptionsPopup::selectExtendedView);

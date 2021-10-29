@@ -7,6 +7,13 @@ if(APPLE)
     set(APPLE_ICON_PATH "distrib/${APPLE_ICON_NAME}")
 endif()
 
+# if there are other translation files, just modify TS_FILES and QM_FILES variables. example:
+# set(TS_FILES "res/translations/zh_CN.ts" "res/translations/ru_RU.ts")
+# set(QM_FILES "locales/zh_CN.qm" "locales/ru_RU.qm")
+set(TS_FILES "res/translations/zh_CN.ts")
+set(QM_FILES "locales/zh_CN.qm")
+set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION "locales")
+
 # ADD EXECUTABLE
 add_executable(qimgv
     appversion.cpp
@@ -21,7 +28,15 @@ add_executable(qimgv
     resources.qrc
     qimgv.rc
     ${APPLE_ICON_PATH}
+    ${QM_FILES}
 )
+
+find_package(Qt5 COMPONENTS LinguistTools)
+# create/update .ts file, but ninja clean delete .ts files, see QTBUG-76410
+# maybe you should write a script to update .ts files
+# qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+# compile as .qm file
+qt5_add_translation(QM_FILES ${TS_FILES})
 
 # ADD SOURCES
 add_subdirectory(components)
@@ -109,4 +124,11 @@ foreach(icon IN ITEMS 16x16 22x22 24x24 32x32 36x36 48x48 64x64 128x128 256x256)
 endforeach()
 install(FILES distrib/hicolor/scalable/apps/qimgv.svg
     DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/hicolor/scalable/apps)
-    
+
+# Install internationalization language files 
+if(WIN32)
+    install(DIRECTORY "${PROJECT_BINARY_DIR}/qimgv/locales" DESTINATION "${CMAKE_INSTALL_BINDIR}")
+else()
+    install(DIRECTORY "${PROJECT_BINARY_DIR}/qimgv/locales" DESTINATION "${CMAKE_INSTALL_FULL_DATAROOTDIR}/qimgv")
+endif()
+   

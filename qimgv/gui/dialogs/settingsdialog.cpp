@@ -6,7 +6,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
-    this->setWindowTitle("Preferences — " + qApp->applicationName());
+    this->setWindowTitle(tr("Preferences — ") + qApp->applicationName());
 
     ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);   
     ui->aboutAppTextBrowser->viewport()->setAutoFillBackground(false);
@@ -46,17 +46,17 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
         setColorScheme(ThemeStore::colorScheme(ColorSchemes::COLORS_SYSTEM));
     });
 
-    ui->colorSelectorAccent->setDescription("Accent color");
-    ui->colorSelectorBackground->setDescription("Windowed mode background");
-    ui->colorSelectorFullscreen->setDescription("Fullscreen mode background");
-    ui->colorSelectorFolderview->setDescription("FolderView background");
-    ui->colorSelectorFolderviewPanel->setDescription("FolderView top panel");
-    ui->colorSelectorText->setDescription("Text color");
-    ui->colorSelectorWidget->setDescription("Widget background");
-    ui->colorSelectorWidgetBorder->setDescription("Widget border");
-    ui->colorSelectorOverlay->setDescription("Overlay background");
-    ui->colorSelectorOverlayText->setDescription("Overlay text");
-    ui->colorSelectorScrollbar->setDescription("Scrollbars");
+    ui->colorSelectorAccent->setDescription(tr("Accent color"));
+    ui->colorSelectorBackground->setDescription(tr("Windowed mode background"));
+    ui->colorSelectorFullscreen->setDescription(tr("Fullscreen mode background"));
+    ui->colorSelectorFolderview->setDescription(tr("FolderView background"));
+    ui->colorSelectorFolderviewPanel->setDescription(tr("FolderView top panel"));
+    ui->colorSelectorText->setDescription(tr("Text color"));
+    ui->colorSelectorWidget->setDescription(tr("Widget background"));
+    ui->colorSelectorWidgetBorder->setDescription(tr("Widget border"));
+    ui->colorSelectorOverlay->setDescription(tr("Overlay background"));
+    ui->colorSelectorOverlayText->setDescription(tr("Overlay text"));
+    ui->colorSelectorScrollbar->setDescription(tr("Scrollbars"));
 
 #ifndef USE_KDE_BLUR
     ui->blurBackgroundCheckBox->setEnabled(false);
@@ -480,7 +480,7 @@ void SettingsDialog::removeShortcutAt(int row) {
 void SettingsDialog::editShortcut(int row) {
     if(row >= 0) {
         ShortcutCreatorDialog w;
-        w.setWindowTitle("Edit shortcut");
+        w.setWindowTitle(tr("Edit shortcut"));
         w.setAction(ui->shortcutsTableWidget->item(row, 0)->text());
         w.setShortcut(ui->shortcutsTableWidget->item(row, 1)->text());
         if(!w.exec())
@@ -527,7 +527,7 @@ void SettingsDialog::resetShortcuts() {
 void SettingsDialog::selectMpvPath() {
     QFileDialog dialog;
     QString file;
-    file = dialog.getOpenFileName(this, "Navigate to mpv binary", "", "mpv*");
+    file = dialog.getOpenFileName(this, tr("Navigate to mpv binary"), "", "mpv*");
     if(!file.isEmpty()) {
         ui->mpvLineEdit->setText(file);
     }

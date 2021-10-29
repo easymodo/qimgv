@@ -27,7 +27,9 @@
 #define CVMATANDQIMAGE_H
 
 #include <QtGui/qimage.h>
-#include <opencv4/opencv2/core.hpp>
+// cmake automatically search the include directory
+// some platforms, we maybe use opencv 3.x stable
+#include <opencv2/core.hpp>
 
 namespace QtOcv {
 

@@ -711,13 +711,13 @@ void MW::onInfoUpdated() {
 
     QString windowTitle;
     if(centralWidget->currentViewMode() == MODE_FOLDERVIEW) {
-        windowTitle = "Folder view";
-        infoBarFullscreen->setInfo("", "No file opened.", "");
-        infoBarWindowed->setInfo("", "No file opened.", "");
+        windowTitle = tr("Folder view");
+        infoBarFullscreen->setInfo("", tr("No file opened."), "");
+        infoBarWindowed->setInfo("", tr("No file opened."), "");
     } else if(info.fileName.isEmpty()) {
         windowTitle = qApp->applicationName();
-        infoBarFullscreen->setInfo("", "No file opened.", "");
-        infoBarWindowed->setInfo("", "No file opened.", "");
+        infoBarFullscreen->setInfo("", tr("No file opened."), "");
+        infoBarWindowed->setInfo("", tr("No file opened."), "");
     } else {
         windowTitle = info.fileName;
         if(settings->windowTitleExtendedInfo()) {
@@ -778,15 +778,15 @@ void MW::showMessageDirectoryStart() {
 }
 
 void MW::showMessageFitWindow() {
-    floatingMessage->showMessage("Fit Window", FloatingMessageIcon::NO_ICON, 350);
+    floatingMessage->showMessage(tr("Fit Window"), FloatingMessageIcon::NO_ICON, 350);
 }
 
 void MW::showMessageFitWidth() {
-    floatingMessage->showMessage("Fit Width", FloatingMessageIcon::NO_ICON, 350);
+    floatingMessage->showMessage(tr("Fit Width"), FloatingMessageIcon::NO_ICON, 350);
 }
 
 void MW::showMessageFitOriginal() {
-    floatingMessage->showMessage("Fit 1:1", FloatingMessageIcon::NO_ICON, 350);
+    floatingMessage->showMessage(tr("Fit 1:1"), FloatingMessageIcon::NO_ICON, 350);
 }
 
 void MW::showMessage(QString text) {

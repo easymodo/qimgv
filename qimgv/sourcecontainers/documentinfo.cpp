@@ -212,25 +212,25 @@ void DocumentInfo::loadExifTags() {
 
         it = exifData.findKey(make);
         if(it != exifData.end() /* && it->count() */)
-            exifTags.insert("Make", QString::fromStdString(it->value().toString()));
+            exifTags.insert(QObject::tr("Make"), QString::fromStdString(it->value().toString()));
 
         it = exifData.findKey(model);
         if(it != exifData.end())
-            exifTags.insert("Model", QString::fromStdString(it->value().toString()));
+            exifTags.insert(QObject::tr("Model"), QString::fromStdString(it->value().toString()));
 
         it = exifData.findKey(dateTime);
         if(it != exifData.end())
-            exifTags.insert("Date/Time", QString::fromStdString(it->value().toString()));
+            exifTags.insert(QObject::tr("Date/Time"), QString::fromStdString(it->value().toString()));
 
         it = exifData.findKey(exposureTime);
         if(it != exifData.end()) {
             Exiv2::Rational r = it->toRational();
             if(r.first < r.second) {
                 qreal exp = round(static_cast<qreal>(r.second) / r.first);
-                exifTags.insert("ExposureTime", "1/" + QString::number(exp) + " sec");
+                exifTags.insert(QObject::tr("ExposureTime"), "1/" + QString::number(exp) + QObject::tr(" sec"));
             } else {
                 qreal exp = round(static_cast<qreal>(r.first) / r.second);
-                exifTags.insert("ExposureTime", QString::number(exp) + " sec");
+                exifTags.insert(QObject::tr("ExposureTime"), QString::number(exp) + QObject::tr(" sec"));
             }
         }
 
@@ -238,22 +238,22 @@ void DocumentInfo::loadExifTags() {
         if(it != exifData.end()) {
             Exiv2::Rational r = it->toRational();
             qreal fn = static_cast<qreal>(r.first) / r.second;
-            exifTags.insert("F Number", "f/" + QString::number(fn, 'g', 3));
+            exifTags.insert(QObject::tr("F Number"), "f/" + QString::number(fn, 'g', 3));
         }
 
         it = exifData.findKey(isoSpeedRatings);
         if(it != exifData.end())
-            exifTags.insert("ISO Speed ratings", QString::fromStdString(it->value().toString()));
+            exifTags.insert(QObject::tr("ISO Speed ratings"), QString::fromStdString(it->value().toString()));
 
         it = exifData.findKey(flash);
         if(it != exifData.end())
-            exifTags.insert("Flash", QString::fromStdString(it->value().toString()));
+            exifTags.insert(QObject::tr("Flash"), QString::fromStdString(it->value().toString()));
 
         it = exifData.findKey(focalLength);
         if(it != exifData.end()) {
             Exiv2::Rational r = it->toRational();
             qreal fn = static_cast<qreal>(r.first) / r.second;
-            exifTags.insert("Focal Length", QString::number(fn, 'g', 3) + " mm");
+            exifTags.insert(QObject::tr("Focal Length"), QString::number(fn, 'g', 3) + QObject::tr(" mm"));
         }
 
         it = exifData.findKey(userComment);
@@ -262,7 +262,7 @@ void DocumentInfo::loadExifTags() {
             auto comment = QString::fromStdString(it->value().toString());
             if(comment.startsWith("charset="))
                 comment.remove(0, comment.indexOf(" ") + 1);
-            exifTags.insert("UserComment", comment);
+            exifTags.insert(QObject::tr("UserComment"), comment);
         }
 
         return;
