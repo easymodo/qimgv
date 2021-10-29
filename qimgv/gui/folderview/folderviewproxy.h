@@ -38,16 +38,16 @@ protected:
 
 signals:
     void itemActivated(int) override;
-    void thumbnailsRequested(QList<int>, int, bool, bool);
-    void draggedOut();
-    void draggedToBookmarks(QList<int>);
+    void thumbnailsRequested(QList<int>, int, bool, bool) override;
+    void draggedOut() override;
+    void draggedToBookmarks(QList<int>) override;
     void sortingSelected(SortingMode);
     void showFoldersChanged(bool mode);
     void directorySelected(QString);
     void copyUrlsRequested(QList<QString>, QString path);
     void moveUrlsRequested(QList<QString>, QString path);
-    void droppedInto(const QMimeData*, QObject*, int);
-    void draggedOver(int);
+    void droppedInto(const QMimeData*, QObject*, int) override;
+    void draggedOver(int) override;
 
 private:
     std::shared_ptr<FolderView> folderView;

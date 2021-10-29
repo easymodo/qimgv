@@ -60,6 +60,7 @@ QString FileOperations::decodeResult(const FileOpResult &result) {
     case FileOpResult::OTHER_ERROR:
         return "Other error.";
     }
+    return nullptr;
 }
 
 void FileOperations::copyFileTo(const QString &srcFilePath, const QString &destDirPath, bool force, FileOpResult &result) {

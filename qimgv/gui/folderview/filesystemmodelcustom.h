@@ -14,7 +14,7 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
 
 protected:
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 private:
     QPixmap folderIcon;
 };

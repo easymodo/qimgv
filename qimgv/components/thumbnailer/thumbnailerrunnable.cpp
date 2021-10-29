@@ -152,7 +152,7 @@ std::pair<QImage*, QSize> ThumbnailerRunnable::createVideoThumbnail(QString path
     tmpFilePathEsc.replace("%", "%%");
     QString command = "\"" + settings->mpvBinary() + "\" --start=30% --frames=1 --aid=no --sid=no --no-config --load-scripts=no --no-terminal --o=\"" + tmpFilePathEsc + "\" \"" + path + "\"";
     QProcess process;
-    process.start(command);
+    process.start(command, QStringList() << "");
     process.waitForFinished(8000);
     process.close();
 

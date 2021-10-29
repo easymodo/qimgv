@@ -25,9 +25,9 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
     void enterEvent(QEnterEvent *event);
-    void leaveEvent(QEvent *event);
-    void showEvent(QShowEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+    void leaveEvent(QEvent *event) override;
+    void showEvent(QShowEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
     void updateScrollbarStyle();

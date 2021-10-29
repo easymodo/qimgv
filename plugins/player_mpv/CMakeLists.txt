@@ -6,6 +6,8 @@ project(player_mpv
 set(CMAKE_AUTOMOC ON)
 
 set(QIMGV_LIBDIR "${CMAKE_INSTALL_LIBDIR}/qimgv")
+# only export CreatePlayerWidget function
+ADD_DEFINITIONS(-DQIMGV_PLAYER_MPV_LIBRARY)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)

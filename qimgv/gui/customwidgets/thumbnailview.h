@@ -39,6 +39,7 @@ enum ScrollDirection {
 
 class ThumbnailView : public QGraphicsView, public IDirectoryView {
     Q_OBJECT
+    Q_INTERFACES(IDirectoryView)
 public:
     ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent = nullptr);
     virtual void setDirectoryPath(QString path) override;
@@ -142,18 +143,18 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
 
     bool eventFilter(QObject *o, QEvent *ev) override;
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *event) override;
     void scrollPrecise(int delta);
     void scrollSmooth(int delta);
     void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration);
     void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration, bool additive);
     void unloadAllThumbnails();
-    void mouseDoubleClickEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
 
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void keyPressEvent(QKeyEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
     void hideEvent(QHideEvent *event) override;
 };

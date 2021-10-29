@@ -15,7 +15,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *e) override;
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
     bool hiResPixmap;

@@ -72,7 +72,11 @@ if(WIN32) # Check if we are on Windows
         set_target_properties(qimgv PROPERTIES WIN32_EXECUTABLE ON)
         target_link_options(qimgv PRIVATE "/ENTRY:mainCRTStartup")
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        target_link_options(qimgv PRIVATE "-mwindows") # Not tested
+        target_link_options(qimgv PRIVATE "-mwindows")
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+        set(CMAKE_CXX_FLAGS "$ENV{CMAKE_CXX_FLAGS} -Wno-shift-negative-value")
+        set(CMAKE_EXE_LINKER_FLAGS "$ENV{CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld")
+        target_link_options(qimgv PRIVATE "-mwindows")
     else()
         message(SEND_ERROR "You are using an unsupported Windows compiler! (Not MSVC or GCC)")
     endif(MSVC)
@@ -105,3 +109,4 @@ foreach(icon IN ITEMS 16x16 22x22 24x24 32x32 36x36 48x48 64x64 128x128 256x256)
 endforeach()
 install(FILES distrib/hicolor/scalable/apps/qimgv.svg
     DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/hicolor/scalable/apps)
+    

@@ -19,7 +19,7 @@ void Video::load() {
     // Get resolution from ffmpeg (so we don't have to ask videoplayer)
     QString command = "\"" + mpvBinary + "\"" + " -i " + "\"" + mDocInfo->filePath() + "\"";
     QProcess process;
-    process.start(command);
+    process.start(command, QStringList() << "");
     process.waitForFinished(100);
     QByteArray out = process.readAllStandardError();
     process.close();

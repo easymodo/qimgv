@@ -35,8 +35,8 @@ public slots:
     void zoomOut();
     void setThumbnailSize(int newSize);
     void setShowLabels(bool mode);
-    virtual void focusOn(int index);
-    virtual void setDragHover(int index);
+    virtual void focusOn(int index) override;
+    virtual void setDragHover(int index) override;
 
 private:
     FlowLayout *flowLayout;
@@ -50,25 +50,25 @@ private slots:
     void onitemSelected();
 
 protected:
-    void resizeEvent(QResizeEvent *event);
-    virtual void updateScrollbarIndicator();
-    void addItemToLayout(ThumbnailWidget *widget, int pos);
-    void removeItemFromLayout(int pos);
-    void removeAll();
+    void resizeEvent(QResizeEvent *event) override;
+    virtual void updateScrollbarIndicator() override;
+    void addItemToLayout(ThumbnailWidget *widget, int pos) override;
+    void removeItemFromLayout(int pos) override;
+    void removeAll() override;
     void setupLayout();
-    ThumbnailWidget *createThumbnailWidget();
-    void updateLayout();
-    void ensureSelectedItemVisible();
+    ThumbnailWidget *createThumbnailWidget() override;
+    void updateLayout() override;
+    void ensureSelectedItemVisible() override;
     virtual void fitSceneToContents() override;
 
-    void keyPressEvent(QKeyEvent *event);
-    void wheelEvent(QWheelEvent *event);    
-    void dropEvent(QDropEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;    
+    void dropEvent(QDropEvent *event) override;
 
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-    void dragLeaveEvent(QDragLeaveEvent *event);
-    bool focusNextPrevChild(bool);
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dragLeaveEvent(QDragLeaveEvent *event) override;
+    bool focusNextPrevChild(bool) override;
 
 signals:
     void thumbnailSizeChanged(int);
