@@ -366,17 +366,15 @@ bool FileOperations::moveToTrashImpl(const QString &file) {
     QFileInfo fileinfo( file );
     if( !fileinfo.exists() )
         return false;
-    WCHAR from[ MAX_PATH ];
-    memset( from, 0, sizeof( from ));
-    int l = fileinfo.absoluteFilePath().toWCharArray( from );
-    Q_ASSERT( 0 <= l && l < MAX_PATH );
-    from[ l ] = '\0';
+    WCHAR* from = (WCHAR*) calloc((size_t)fileinfo.absoluteFilePath().length() + 2, sizeof(WCHAR));
+    fileinfo.absoluteFilePath().toWCharArray(from);    
     SHFILEOPSTRUCTW fileop;
     memset( &fileop, 0, sizeof( fileop ) );
     fileop.wFunc = FO_DELETE;
     fileop.pFrom = from;
     fileop.fFlags = FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_SILENT;
     int rv = SHFileOperationW( &fileop );
+    free(from);
     if( 0 != rv ){
         qDebug() << rv << QString::number( rv ).toInt( nullptr, 8 );
         qDebug() << "move to trash failed";
