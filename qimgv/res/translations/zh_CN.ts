@@ -784,59 +784,59 @@ Press ESC to cancel</source>
         <translation>扩展 + 文件夹</translation>
     </message>
     <message>
-        <location filename="../../sourcecontainers/documentinfo.cpp" line="215"/>
+        <location filename="../../sourcecontainers/documentinfo.cpp" line="218"/>
         <source>Make</source>
         <translation>相机制造商</translation>
     </message>
     <message>
-        <location filename="../../sourcecontainers/documentinfo.cpp" line="219"/>
+        <location filename="../../sourcecontainers/documentinfo.cpp" line="222"/>
         <source>Model</source>
         <translation>相机型号</translation>
     </message>
     <message>
-        <location filename="../../sourcecontainers/documentinfo.cpp" line="223"/>
+        <location filename="../../sourcecontainers/documentinfo.cpp" line="226"/>
         <source>Date/Time</source>
         <translation>拍摄日期</translation>
     </message>
     <message>
-        <location filename="../../sourcecontainers/documentinfo.cpp" line="230"/>
         <location filename="../../sourcecontainers/documentinfo.cpp" line="233"/>
+        <location filename="../../sourcecontainers/documentinfo.cpp" line="236"/>
         <source>ExposureTime</source>
         <translation>曝光时间</translation>
     </message>
     <message>
-        <location filename="../../sourcecontainers/documentinfo.cpp" line="230"/>
         <location filename="../../sourcecontainers/documentinfo.cpp" line="233"/>
+        <location filename="../../sourcecontainers/documentinfo.cpp" line="236"/>
         <source> sec</source>
         <translation> 秒</translation>
     </message>
     <message>
-        <location filename="../../sourcecontainers/documentinfo.cpp" line="241"/>
+        <location filename="../../sourcecontainers/documentinfo.cpp" line="244"/>
         <source>F Number</source>
         <translation>光圈值</translation>
     </message>
     <message>
-        <location filename="../../sourcecontainers/documentinfo.cpp" line="246"/>
+        <location filename="../../sourcecontainers/documentinfo.cpp" line="249"/>
         <source>ISO Speed ratings</source>
         <translation>ISO速度</translation>
     </message>
     <message>
-        <location filename="../../sourcecontainers/documentinfo.cpp" line="250"/>
+        <location filename="../../sourcecontainers/documentinfo.cpp" line="253"/>
         <source>Flash</source>
         <translation>闪光灯</translation>
     </message>
     <message>
-        <location filename="../../sourcecontainers/documentinfo.cpp" line="256"/>
+        <location filename="../../sourcecontainers/documentinfo.cpp" line="259"/>
         <source>Focal Length</source>
         <translation>焦距</translation>
     </message>
     <message>
-        <location filename="../../sourcecontainers/documentinfo.cpp" line="256"/>
+        <location filename="../../sourcecontainers/documentinfo.cpp" line="259"/>
         <source> mm</source>
         <translation> 毫米</translation>
     </message>
     <message>
-        <location filename="../../sourcecontainers/documentinfo.cpp" line="265"/>
+        <location filename="../../sourcecontainers/documentinfo.cpp" line="268"/>
         <source>UserComment</source>
         <translation>注释</translation>
     </message>

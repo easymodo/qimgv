@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
 #ifdef _WIN32
     if (translator.load(QCoreApplication::applicationDirPath() + "/locales/" + localeName)) {
 #else
-    if (translator.load(QCoreApplication::applicationDirPath() + "/../share/qimgv/locales/" + localeName) {
+    if (translator.load(QCoreApplication::applicationDirPath() + "/../share/qimgv/locales/" + localeName)) {
 #endif
         a.installTranslator(&translator);
     }

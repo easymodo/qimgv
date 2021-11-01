@@ -128,10 +128,13 @@ inline
 // dumb apng detector
 bool DocumentInfo::detectAPNG() {
     QFile f(fileInfo.filePath());
-    if(f.open(QFile::ReadOnly | QFile::Text)) {
-        QTextStream in(&f);
-        QString header(in.read(120)); // 120 chars should be sufficient?
-        return header.contains("acTL");
+    if(f.open(QFile::ReadOnly)) {
+        QDataStream in(&f);
+        const int len = 120;
+        QByteArray qbuf("\0", len);
+        if (in.readRawData(qbuf.data(), len) > 0) {
+            return qbuf.contains("acTL");
+        }
     }
     return false;
 }
@@ -264,15 +267,9 @@ void DocumentInfo::loadExifTags() {
                 comment.remove(0, comment.indexOf(" ") + 1);
             exifTags.insert(QObject::tr("UserComment"), comment);
         }
-
-        return;
     }
     catch (Exiv2::Error& e) {
         //std::cout << "Caught Exiv2 exception '" << e.what() << "'\n";
-        return;
-    }
-    catch (Exiv2::BasicError<CharType> e) {
-        //std::cout << "Caught BasicError Exiv2 exception '" << e.what() << "'\n";
         return;
     }
 #endif
