@@ -129,6 +129,18 @@ install(FILES distrib/hicolor/scalable/apps/qimgv.svg
 if(WIN32)
     install(DIRECTORY "${PROJECT_BINARY_DIR}/qimgv/locales" DESTINATION "${CMAKE_INSTALL_BINDIR}")
 else()
-    install(DIRECTORY "${PROJECT_BINARY_DIR}/qimgv/locales" DESTINATION "${CMAKE_INSTALL_FULL_DATAROOTDIR}/qimgv")
+    install(DIRECTORY "${PROJECT_BINARY_DIR}/qimgv/locales" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/qimgv")
 endif()
+
+# uninstall target
+if(NOT TARGET uninstall)
+  configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+
+  add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+endif()
+
    

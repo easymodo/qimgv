@@ -71,11 +71,10 @@ int main(int argc, char *argv[]) {
     // qDebug() << "localeName: " << localeName;
     QTranslator translator;
 #ifdef _WIN32
-    if (translator.load(QDir::currentPath() + "/locales/" + localeName))
+    if (translator.load(QCoreApplication::applicationDirPath() + "/locales/" + localeName)) {
 #else
-    if (translator.load("/usr/share/qimgv/locales/" + localeName))
-#endif                
-    {
+    if (translator.load(QCoreApplication::applicationDirPath() + "/../share/qimgv/locales/" + localeName) {
+#endif
         a.installTranslator(&translator);
     }
     // needed for mpv

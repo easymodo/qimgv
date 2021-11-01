@@ -652,7 +652,7 @@
     <message>
         <location filename="../../gui/dialogs/printdialog.ui" line="271"/>
         <source>Page orientation:</source>
-        <translation>页面定位:</translation>
+        <translation>页面风格:</translation>
     </message>
     <message>
         <location filename="../../gui/dialogs/printdialog.ui" line="297"/>
@@ -703,6 +703,67 @@
         <location filename="../../gui/dialogs/printdialog.cpp" line="70"/>
         <source>Choose pdf location</source>
         <translation>选择pdf文件所在位置</translation>
+    </message>
+</context>
+<context>
+    <name>QColorDialog</name>
+    <message>
+        <source>Hu&amp;e:</source>
+        <translation type="vanished">色调(&amp;E)：</translation>
+    </message>
+    <message>
+        <source>&amp;Sat:</source>
+        <translation type="vanished">饱和度(&amp;S)：</translation>
+    </message>
+    <message>
+        <source>&amp;Val:</source>
+        <translation type="vanished">亮度(&amp;V)：</translation>
+    </message>
+    <message>
+        <source>&amp;Red:</source>
+        <translation type="vanished">红色(&amp;R)：</translation>
+    </message>
+    <message>
+        <source>&amp;Green:</source>
+        <translation type="vanished">绿色(&amp;G)：</translation>
+    </message>
+    <message>
+        <source>Bl&amp;ue:</source>
+        <translation type="vanished">蓝色(&amp;U)：</translation>
+    </message>
+    <message>
+        <source>A&amp;lpha channel:</source>
+        <translation type="vanished">Alpha 通道(&amp;A)：</translation>
+    </message>
+    <message>
+        <source>&amp;HTML:</source>
+        <translation type="vanished">HTML(&amp;H)：</translation>
+    </message>
+    <message>
+        <source>Cursor at %1, %2
+Press ESC to cancel</source>
+        <translation type="vanished">光标在 %1，%2
+按 ESC 取消</translation>
+    </message>
+    <message>
+        <source>Select Color</source>
+        <translation type="vanished">选择颜色</translation>
+    </message>
+    <message>
+        <source>&amp;Basic colors</source>
+        <translation type="vanished">基本颜色(&amp;B)</translation>
+    </message>
+    <message>
+        <source>&amp;Custom colors</source>
+        <translation type="vanished">自定义颜色(&amp;C)</translation>
+    </message>
+    <message>
+        <source>&amp;Add to Custom Colors</source>
+        <translation type="vanished">添加到自定义颜色(&amp;A)</translation>
+    </message>
+    <message>
+        <source>&amp;Pick Screen Color</source>
+        <translation type="vanished">选取屏幕颜色(&amp;P)</translation>
     </message>
 </context>
 <context>
@@ -829,6 +890,81 @@
         <location filename="../../utils/fileoperations.cpp" line="61"/>
         <source>Other error.</source>
         <translation>其它错误.</translation>
+    </message>
+</context>
+<context>
+    <name>QPlatformTheme</name>
+    <message>
+        <source>OK</source>
+        <translation type="vanished">确定</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation type="vanished">保存</translation>
+    </message>
+    <message>
+        <source>Save All</source>
+        <translation type="vanished">全部保存</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation type="vanished">打开</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation type="vanished">是(&amp;Y)</translation>
+    </message>
+    <message>
+        <source>Yes to &amp;All</source>
+        <translation type="vanished">全是(&amp;A)</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation type="vanished">否(&amp;N)</translation>
+    </message>
+    <message>
+        <source>N&amp;o to All</source>
+        <translation type="vanished">全否(&amp;O)</translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation type="vanished">中止</translation>
+    </message>
+    <message>
+        <source>Retry</source>
+        <translation type="vanished">重试</translation>
+    </message>
+    <message>
+        <source>Ignore</source>
+        <translation type="vanished">忽略</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="vanished">关闭</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="vanished">取消</translation>
+    </message>
+    <message>
+        <source>Discard</source>
+        <translation type="vanished">放弃</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="vanished">帮助</translation>
+    </message>
+    <message>
+        <source>Apply</source>
+        <translation type="vanished">应用</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation type="vanished">重置</translation>
+    </message>
+    <message>
+        <source>Restore Defaults</source>
+        <translation type="vanished">恢复默认</translation>
     </message>
 </context>
 <context>
@@ -1028,7 +1164,7 @@
     <message>
         <location filename="../../gui/overlays/saveconfirmoverlay.ui" line="205"/>
         <source>Discard</source>
-        <translation>废弃</translation>
+        <translation>放弃</translation>
     </message>
 </context>
 <context>
@@ -1037,6 +1173,11 @@
         <location filename="../../gui/dialogs/scripteditordialog.ui" line="48"/>
         <source>Command:</source>
         <translation>命令:</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dialogs/scripteditordialog.ui" line="84"/>
+        <source>NOTE: make sure your .sh script has execute flag.</source>
+        <translation>注意: 确认你的 .sh 脚本具有可执行权限.</translation>
     </message>
     <message>
         <location filename="../../gui/dialogs/scripteditordialog.ui" line="91"/>
@@ -1844,12 +1985,12 @@ p, li { white-space: pre-wrap; }
         <translation>文本颜色</translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="488"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="483"/>
         <source>Edit shortcut</source>
         <translation>编辑快捷键</translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="535"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="530"/>
         <source>Navigate to mpv binary</source>
         <translation>定位mpv文件路径</translation>
     </message>
@@ -1885,32 +2026,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>main</name>
     <message>
-        <location filename="../../main.cpp" line="123"/>
+        <location filename="../../main.cpp" line="122"/>
         <source>File or directory path.</source>
         <translation>文件或目录所在路径.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="127"/>
+        <location filename="../../main.cpp" line="126"/>
         <source>Generate all thumbnails for directory.</source>
         <translation>为该目录下的所有文件生成略缩图.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="128"/>
+        <location filename="../../main.cpp" line="127"/>
         <source>directory-path</source>
         <translation>目录所在路径</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="131"/>
+        <location filename="../../main.cpp" line="130"/>
         <source>Thumbnail size. Current size is used if not specified.</source>
         <translation>缩略图大小. 如果未指定, 则使用当前大小.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="132"/>
+        <location filename="../../main.cpp" line="131"/>
         <source>thumbnail-size</source>
         <translation>略缩图大小</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="135"/>
+        <location filename="../../main.cpp" line="134"/>
         <source>Show build options.</source>
         <translation>显示编译选项.</translation>
     </message>
