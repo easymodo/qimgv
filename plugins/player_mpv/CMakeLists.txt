@@ -5,7 +5,6 @@ project(player_mpv
 
 set(CMAKE_AUTOMOC ON)
 
-set(QIMGV_LIBDIR "${CMAKE_INSTALL_LIBDIR}/qimgv")
 # only export CreatePlayerWidget function
 ADD_DEFINITIONS(-DQIMGV_PLAYER_MPV_LIBRARY)
 
@@ -47,5 +46,5 @@ endif()
 if(WIN32)
     install(TARGETS player_mpv LIBRARY DESTINATION "${CMAKE_INSTALL_BINDIR}/plugins")
 else()
-    install(TARGETS player_mpv LIBRARY DESTINATION ${QIMGV_LIBDIR})
+    install(TARGETS player_mpv LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/qimgv")
 endif()

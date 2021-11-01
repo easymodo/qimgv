@@ -31,12 +31,16 @@ add_executable(qimgv
     ${QM_FILES}
 )
 
-find_package(Qt5 COMPONENTS LinguistTools)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS LinguistTools)
 # create/update .ts file, but ninja clean delete .ts files, see QTBUG-76410
 # maybe you should write a script to update .ts files
 # qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 # compile as .qm file
-qt5_add_translation(QM_FILES ${TS_FILES})
+if (${QT_VERSION_MAJOR} EQUAL 6)
+    qt6_add_translation(QM_FILES ${TS_FILES})
+else()
+    qt5_add_translation(QM_FILES ${TS_FILES})
+endif()
 
 # ADD SOURCES
 add_subdirectory(components)

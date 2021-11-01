@@ -50,7 +50,6 @@ private:
     QLabel *errorLabel = nullptr;
 
     QString libFile;
-    QString libDirDefault;
     QStringList libDirs;
 
 private slots:
