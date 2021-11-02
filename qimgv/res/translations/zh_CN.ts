@@ -709,61 +709,61 @@
     <name>QColorDialog</name>
     <message>
         <source>Hu&amp;e:</source>
-        <translation type="vanished">色调(&amp;E)：</translation>
+        <translation>色调(&amp;E)：</translation>
     </message>
     <message>
         <source>&amp;Sat:</source>
-        <translation type="vanished">饱和度(&amp;S)：</translation>
+        <translation>饱和度(&amp;S)：</translation>
     </message>
     <message>
         <source>&amp;Val:</source>
-        <translation type="vanished">亮度(&amp;V)：</translation>
+        <translation>亮度(&amp;V)：</translation>
     </message>
     <message>
         <source>&amp;Red:</source>
-        <translation type="vanished">红色(&amp;R)：</translation>
+        <translation>红色(&amp;R)：</translation>
     </message>
     <message>
         <source>&amp;Green:</source>
-        <translation type="vanished">绿色(&amp;G)：</translation>
+        <translation>绿色(&amp;G)：</translation>
     </message>
     <message>
         <source>Bl&amp;ue:</source>
-        <translation type="vanished">蓝色(&amp;U)：</translation>
+        <translation>蓝色(&amp;U)：</translation>
     </message>
     <message>
         <source>A&amp;lpha channel:</source>
-        <translation type="vanished">Alpha 通道(&amp;A)：</translation>
+        <translation>Alpha 通道(&amp;A)：</translation>
     </message>
     <message>
         <source>&amp;HTML:</source>
-        <translation type="vanished">HTML(&amp;H)：</translation>
+        <translation>HTML(&amp;H)：</translation>
     </message>
     <message>
         <source>Cursor at %1, %2
 Press ESC to cancel</source>
-        <translation type="vanished">光标在 %1，%2
+        <translation>光标在 %1，%2
 按 ESC 取消</translation>
     </message>
     <message>
         <source>Select Color</source>
-        <translation type="vanished">选择颜色</translation>
+        <translation>选择颜色</translation>
     </message>
     <message>
         <source>&amp;Basic colors</source>
-        <translation type="vanished">基本颜色(&amp;B)</translation>
+        <translation>基本颜色(&amp;B)</translation>
     </message>
     <message>
         <source>&amp;Custom colors</source>
-        <translation type="vanished">自定义颜色(&amp;C)</translation>
+        <translation>自定义颜色(&amp;C)</translation>
     </message>
     <message>
         <source>&amp;Add to Custom Colors</source>
-        <translation type="vanished">添加到自定义颜色(&amp;A)</translation>
+        <translation>添加到自定义颜色(&amp;A)</translation>
     </message>
     <message>
         <source>&amp;Pick Screen Color</source>
-        <translation type="vanished">选取屏幕颜色(&amp;P)</translation>
+        <translation>选取屏幕颜色(&amp;P)</translation>
     </message>
 </context>
 <context>
@@ -896,75 +896,75 @@ Press ESC to cancel</source>
     <name>QPlatformTheme</name>
     <message>
         <source>OK</source>
-        <translation type="vanished">确定</translation>
+        <translation>确定</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="vanished">保存</translation>
+        <translation>保存</translation>
     </message>
     <message>
         <source>Save All</source>
-        <translation type="vanished">全部保存</translation>
+        <translation>全部保存</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation type="vanished">打开</translation>
+        <translation>打开</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
-        <translation type="vanished">是(&amp;Y)</translation>
+        <translation>是(&amp;Y)</translation>
     </message>
     <message>
         <source>Yes to &amp;All</source>
-        <translation type="vanished">全是(&amp;A)</translation>
+        <translation>全是(&amp;A)</translation>
     </message>
     <message>
         <source>&amp;No</source>
-        <translation type="vanished">否(&amp;N)</translation>
+        <translation>否(&amp;N)</translation>
     </message>
     <message>
         <source>N&amp;o to All</source>
-        <translation type="vanished">全否(&amp;O)</translation>
+        <translation>全否(&amp;O)</translation>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="vanished">中止</translation>
+        <translation>中止</translation>
     </message>
     <message>
         <source>Retry</source>
-        <translation type="vanished">重试</translation>
+        <translation>重试</translation>
     </message>
     <message>
         <source>Ignore</source>
-        <translation type="vanished">忽略</translation>
+        <translation>忽略</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="vanished">关闭</translation>
+        <translation>关闭</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="vanished">取消</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>Discard</source>
-        <translation type="vanished">放弃</translation>
+        <translation>放弃</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="vanished">帮助</translation>
+        <translation>帮助</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation type="vanished">应用</translation>
+        <translation>应用</translation>
     </message>
     <message>
         <source>Reset</source>
-        <translation type="vanished">重置</translation>
+        <translation>重置</translation>
     </message>
     <message>
         <source>Restore Defaults</source>
-        <translation type="vanished">恢复默认</translation>
+        <translation>恢复默认</translation>
     </message>
 </context>
 <context>
@@ -1601,7 +1601,7 @@ Press ESC to cancel</source>
     </message>
     <message>
         <location filename="../../gui/dialogs/settingsdialog.ui" line="2000"/>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="56"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="61"/>
         <source>Widget border</source>
         <translation>窗口部件边框</translation>
     </message>
@@ -1617,7 +1617,7 @@ Press ESC to cancel</source>
     </message>
     <message>
         <location filename="../../gui/dialogs/settingsdialog.ui" line="2176"/>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="57"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="62"/>
         <source>Overlay background</source>
         <translation>叠加背景色</translation>
     </message>
@@ -1628,7 +1628,7 @@ Press ESC to cancel</source>
     </message>
     <message>
         <location filename="../../gui/dialogs/settingsdialog.ui" line="2190"/>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="58"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="63"/>
         <source>Overlay text</source>
         <translation>覆盖文本</translation>
     </message>
@@ -1644,7 +1644,7 @@ Press ESC to cancel</source>
     </message>
     <message>
         <location filename="../../gui/dialogs/settingsdialog.ui" line="2304"/>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="55"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="60"/>
         <source>Widget background</source>
         <translation>部件背景色</translation>
     </message>
@@ -1660,7 +1660,7 @@ Press ESC to cancel</source>
     </message>
     <message>
         <location filename="../../gui/dialogs/settingsdialog.ui" line="2446"/>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="59"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="64"/>
         <source>Scrollbars</source>
         <translation>滚动条</translation>
     </message>
@@ -1955,42 +1955,42 @@ p, li { white-space: pre-wrap; }
         <translation>首选项 — </translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="49"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="54"/>
         <source>Accent color</source>
         <translation>重点色</translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="50"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="55"/>
         <source>Windowed mode background</source>
         <translation>窗口模式背景</translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="51"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="56"/>
         <source>Fullscreen mode background</source>
         <translation>全屏模式背景</translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="52"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="57"/>
         <source>FolderView background</source>
         <translation>文件夹视图背景</translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="53"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="58"/>
         <source>FolderView top panel</source>
         <translation>文件夹视图顶部面板</translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="54"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="59"/>
         <source>Text color</source>
         <translation>文本颜色</translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="483"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="496"/>
         <source>Edit shortcut</source>
         <translation>编辑快捷键</translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.cpp" line="530"/>
+        <location filename="../../gui/dialogs/settingsdialog.cpp" line="543"/>
         <source>Navigate to mpv binary</source>
         <translation>定位mpv文件路径</translation>
     </message>

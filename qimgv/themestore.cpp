@@ -1,10 +1,11 @@
 #include "themestore.h"
 
 ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
-    BaseColorScheme base;
+    BaseColorScheme base = {-1};
     QPalette p;
     switch(name) {
         case COLORS_SYSTEM:
+        case COLORS_CUSTOMIZED:    
             base.folderview_topbar = p.window().color();
             base.widget = p.window().color();
             base.widget_border = p.window().color();
@@ -15,6 +16,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.scrollbar.setHsv(p.highlight().color().hue(),
                                   qBound(0, p.highlight().color().saturation() - 20, 240),
                                   qBound(0, p.highlight().color().value() - 35, 240));
+            base.tid = static_cast<int>(name);
             break;
         case COLORS_LIGHT: // v2, works with w10 titlebars
             base.accent = "#719ccd";
@@ -29,6 +31,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.scrollbar = "#aaaaaa";
             base.widget = "#ffffff";
             base.widget_border = "#c3c3c3";
+            base.tid = static_cast<int>(name);
             break;
         case COLORS_DARKBLUE:
             base.background = "#18191a";
@@ -43,6 +46,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.scrollbar = "#4f565c";
             base.overlay_text = "#d2d2d2";
             base.overlay = "#1a1a1a";
+            base.tid = static_cast<int>(name);
             break;
         case COLORS_BLACK:
             base.background = "#000000";
@@ -57,9 +61,9 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.scrollbar = "#343434";
             base.overlay_text = "#999999";
             base.overlay = "#000000";
+            base.tid = static_cast<int>(name);
             break;
         case COLORS_DARK:
-        case COLORS_DEFAULT:
             base.background = "#1a1a1a";
             base.background_fullscreen = "#1a1a1a";
             base.text = "#b6b6b6";
@@ -72,6 +76,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
             base.scrollbar = "#5a5a5a";
             base.overlay_text = "#d2d2d2";
             base.overlay = "#1a1a1a";
+            base.tid = static_cast<int>(name);
             break;
     }
     return ColorScheme(base);
@@ -80,6 +85,7 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
 //---------------------------------------------------------------------
 
 ColorScheme::ColorScheme() {
+    tid = -1;
 }
 
 ColorScheme::ColorScheme(BaseColorScheme base) {
@@ -99,6 +105,7 @@ void ColorScheme::setBaseColors(BaseColorScheme base) {
     overlay               = base.overlay;
     overlay_text          = base.overlay_text;
     scrollbar             = base.scrollbar;
+    tid = base.tid;
     createColorVariants();
 }
 

@@ -234,6 +234,7 @@ public:
 
     const ColorScheme& colorScheme();
     void setColorScheme(ColorScheme scheme);
+    void setColorTid(int tid);
 
     bool videoPlayback();
     void setVideoPlayback(bool mode);

@@ -176,6 +176,7 @@ void Settings::loadTheme() {
         base.scrollbar             = QColor(themeConf->value("scrollbar",             "#5a5a5a").toString());
         base.overlay_text          = QColor(themeConf->value("overlay_text",          "#d2d2d2").toString());
         base.overlay               = QColor(themeConf->value("overlay",               "#1a1a1a").toString());
+        base.tid                   = themeConf->value("tid", "-1").toInt();
         themeConf->endGroup();
         setColorScheme(ColorScheme(base));
     }
@@ -196,6 +197,7 @@ void Settings::saveTheme() {
     themeConf->setValue("scrollbar",             mColorScheme.scrollbar.name());
     themeConf->setValue("overlay_text",          mColorScheme.overlay_text.name());
     themeConf->setValue("overlay",               mColorScheme.overlay.name());
+    themeConf->setValue("tid",                   mColorScheme.tid);
     themeConf->endGroup();
 }
 //------------------------------------------------------------------------------
@@ -206,6 +208,10 @@ const ColorScheme& Settings::colorScheme() {
 void Settings::setColorScheme(ColorScheme scheme) {
     mColorScheme = scheme;
     loadStylesheet();
+}
+//------------------------------------------------------------------------------
+void Settings::setColorTid(int tid) {
+    mColorScheme.tid = tid;
 }
 //------------------------------------------------------------------------------
 void Settings::fillVideoFormats() {
