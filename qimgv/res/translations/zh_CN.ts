@@ -230,7 +230,7 @@
     <message>
         <location filename="../../core.cpp" line="793"/>
         <source>File moved.</source>
-        <translation>文件已删除.</translation>
+        <translation>文件已移动.</translation>
     </message>
     <message>
         <location filename="../../core.cpp" line="795"/>
