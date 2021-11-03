@@ -268,8 +268,8 @@ void DocumentInfo::loadExifTags() {
             exifTags.insert(QObject::tr("UserComment"), comment);
         }
     }
-    // Exiv2::Error will be caught by base class
-    catch (Exiv2::BasicError<CharType> e) {
+    // No exception was caught, which may cause QT crash
+    catch (Exiv2::AnyError& e) {
         qDebug() << "Caught Exiv2 exception:\n" << e.what() << "\n";
         return;
     }
