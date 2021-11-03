@@ -649,7 +649,7 @@ void Settings::setUseThumbnailCache(bool mode) {
 }
 //------------------------------------------------------------------------------
 QStringList Settings::savedPaths() {
-    return settings->stateConf->value("savedPaths").toStringList();
+    return settings->stateConf->value("savedPaths", QDir::homePath()).toStringList();
 }
 
 void Settings::setSavedPaths(QStringList paths) {
