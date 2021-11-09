@@ -9,6 +9,8 @@ void ImageLib::recolor(QPixmap &pixmap, QColor color) {
 }
 
 QImage *ImageLib::rotatedRaw(const QImage *src, int grad) {
+    if(!src)
+        return new QImage();
     QImage *img = new QImage();
     QTransform transform;
     transform.rotate(grad);
@@ -21,14 +23,13 @@ QImage *ImageLib::rotated(std::shared_ptr<const QImage> src, int grad) {
 }
 //------------------------------------------------------------------------------
 QImage* ImageLib::croppedRaw(const QImage *src, QRect newRect) {
-    QImage *img = nullptr;
-    if(src->rect().contains(newRect, false)) {
-        img = new QImage(newRect.size(), src->format());
+    if(src && src->rect().contains(newRect, false)) {
+        QImage *img = new QImage(newRect.size(), src->format());
         *img = src->copy(newRect);
+        return img;
     } else {
-        img = new QImage();
+        return new QImage();
     }
-    return img;
 }
 //------------------------------------------------------------------------------
 QImage* ImageLib::cropped(std::shared_ptr<const QImage> src, QRect newRect) {
@@ -36,7 +37,10 @@ QImage* ImageLib::cropped(std::shared_ptr<const QImage> src, QRect newRect) {
 }
 //------------------------------------------------------------------------------
 QImage* ImageLib::flippedHRaw(const QImage *src) {
-    return new QImage(src->mirrored(true, false));
+    if(!src)
+        return new QImage();
+    else
+        return new QImage(src->mirrored(true, false));
 }
 //------------------------------------------------------------------------------
 QImage* ImageLib::flippedH(std::shared_ptr<const QImage> src) {
@@ -44,7 +48,10 @@ QImage* ImageLib::flippedH(std::shared_ptr<const QImage> src) {
 }
 //------------------------------------------------------------------------------
 QImage* ImageLib::flippedVRaw(const QImage *src) {
-    return new QImage(src->mirrored(false, true));
+    if(!src)
+        return new QImage();
+    else
+        return new QImage(src->mirrored(false, true));
 }
 //------------------------------------------------------------------------------
 QImage* ImageLib::flippedV(std::shared_ptr<const QImage> src) {
@@ -134,6 +141,8 @@ QImage *ImageLib::cropped(QRect newRect, QRect targetRes, bool upscaled) {
 */
 
 QImage* ImageLib::scaled(std::shared_ptr<const QImage> source, QSize destSize, ScalingFilter filter) {
+    if(!source)
+        return new QImage();
 #ifdef USE_OPENCV
     if(filter > 1 && !QtOcv::isSupported(source->format()))
         filter = QI_FILTER_BILINEAR;
@@ -157,20 +166,18 @@ QImage* ImageLib::scaled(std::shared_ptr<const QImage> source, QSize destSize, S
 }
 
 QImage* ImageLib::scaled_Qt(std::shared_ptr<const QImage> source, QSize destSize, bool smooth) {
+    if(!source)
+        return new QImage();
     QImage *dest = new QImage();
     Qt::TransformationMode mode = smooth ? Qt::SmoothTransformation : Qt::FastTransformation;
-    if (source) {
-        *dest = source->scaled(destSize.width(), destSize.height(), Qt::IgnoreAspectRatio, mode);
-    }
-
-
+    *dest = source->scaled(destSize.width(), destSize.height(), Qt::IgnoreAspectRatio, mode);
     return dest;
 }
 #ifdef USE_OPENCV
 // this probably leaks, needs checking
 QImage* ImageLib::scaled_CV(std::shared_ptr<const QImage> source, QSize destSize, cv::InterpolationFlags filter, int sharpen) {
-    QElapsedTimer t;
-    t.start();
+    if(!source)
+        return new QImage();
     QtOcv::MatColorOrder order;
     cv::Mat srcMat = QtOcv::image2Mat_shared(*source.get(), &order);
     cv::Size destSizeCv(destSize.width(), destSize.height());
