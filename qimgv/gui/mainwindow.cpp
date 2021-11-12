@@ -20,6 +20,8 @@ MW::MW(QWidget *parent)
     layout.setContentsMargins(0,0,0,0);
     layout.setSpacing(0);
 
+    setMinimumSize(10,10);
+
     // do not steal focus when clicked
     // this is just a container. accept key events only
     // via passthrough from child widgets
