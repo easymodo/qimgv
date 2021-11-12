@@ -40,8 +40,8 @@ public:
     virtual QRect scaledRect() const;
     virtual float currentScale() const;
     virtual QSize sourceSize() const;
-    virtual void displayImage(std::unique_ptr<QPixmap> _pixmap);
-    virtual void displayAnimation(std::shared_ptr<QMovie> _animation);
+    virtual void showImage(std::unique_ptr<QPixmap> _pixmap);
+    virtual void showAnimation(std::shared_ptr<QMovie> _animation);
     virtual void setScaledPixmap(std::unique_ptr<QPixmap> newFrame);
     virtual bool isDisplaying() const;
 

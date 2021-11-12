@@ -227,7 +227,7 @@ void ImageViewerV2::updatePixmap(std::unique_ptr<QPixmap> newPixmap) {
     pixmapItem.update();
 }
 
-void ImageViewerV2::displayAnimation(std::shared_ptr<QMovie> _movie) {
+void ImageViewerV2::showAnimation(std::shared_ptr<QMovie> _movie) {
     if(_movie && _movie->isValid()) {
         reset();
         movie = _movie;
@@ -261,7 +261,7 @@ void ImageViewerV2::displayAnimation(std::shared_ptr<QMovie> _movie) {
 }
 
 // display & initialize
-void ImageViewerV2::displayImage(std::unique_ptr<QPixmap> _pixmap) {
+void ImageViewerV2::showImage(std::unique_ptr<QPixmap> _pixmap) {
     reset();
     if(_pixmap) {
         pixmapItemScaled.hide();
@@ -428,6 +428,8 @@ void ImageViewerV2::hide() {
 void ImageViewerV2::requestScaling() {
     if(!pixmap || pixmapItem.scale() == 1.0f || (!smoothUpscaling && pixmapItem.scale() >= 1.0f) || movie)
         return;
+    if(scaleTimer->isActive())
+        scaleTimer->stop();
     // request "real" scaling when graphicsscene scaling is insufficient
     // (it uses a single pass bilinear which is sharp but produces artifacts on low zoom levels)
     if(currentScale() < FAST_SCALE_THRESHOLD)

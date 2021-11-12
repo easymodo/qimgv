@@ -16,7 +16,7 @@ class VideoPlayerInitProxy : public VideoPlayer {
 public:
     VideoPlayerInitProxy(QWidget *parent = nullptr);
     ~VideoPlayerInitProxy();
-    bool openMedia(QString file);
+    bool showVideo(QString file);
     void seek(int pos);
     void seekRelative(int pos);
     void pauseResume();

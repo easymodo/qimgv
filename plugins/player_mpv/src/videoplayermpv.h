@@ -15,7 +15,7 @@ class VideoPlayerMpv : public VideoPlayer {
     Q_OBJECT
 public:
     explicit VideoPlayerMpv(QWidget *parent = nullptr);
-    bool openMedia(QString file);
+    bool showVideo(QString file);
     void setVideoUnscaled(bool mode);
     int volume();
 

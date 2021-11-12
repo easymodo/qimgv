@@ -170,6 +170,7 @@ void SettingsDialog::readSettings() {
     ui->thumbStyleComboBox->setCurrentIndex(settings->thumbPanelStyle());
     ui->animatedJxlCheckBox->setChecked(settings->jxlAnimation());
     ui->absoluteStepCheckBox->setChecked(settings->absoluteZoomStep());
+    ui->autoResizeWindowCheckBox->setChecked(settings->autoResizeWindow());
 
     if(settings->defaultViewMode() == MODE_FOLDERVIEW)
         ui->startInFolderViewCheckBox->setChecked(true);
@@ -187,6 +188,9 @@ void SettingsDialog::readSettings() {
 
     ui->zoomStepSlider->setValue(static_cast<int>(settings->zoomStep() * 100.f));
     onZoomStepSliderChanged(ui->zoomStepSlider->value());
+
+    ui->autoResizeLimitSlider->setValue(static_cast<int>(settings->autoResizeLimit() / 5.f));
+    onAutoResizeLimitSliderChanged(ui->autoResizeLimitSlider->value());
 
     ui->JPEGQualitySlider->setValue(settings->JPEGSaveQuality());
     onJPEGQualitySliderChanged(ui->JPEGQualitySlider->value());
@@ -293,6 +297,7 @@ void SettingsDialog::saveSettings() {
     settings->setThumbPanelStyle(static_cast<ThumbPanelStyle>(ui->thumbStyleComboBox->currentIndex()));
     settings->setJxlAnimation(ui->animatedJxlCheckBox->isChecked());
     settings->setAbsoluteZoomStep(ui->absoluteStepCheckBox->isChecked());
+    settings->setAutoResizeWindow(ui->autoResizeWindowCheckBox->isChecked());
 
     if(ui->panelTop->isChecked())
         settings->setPanelPosition(PANEL_TOP);
@@ -303,6 +308,7 @@ void SettingsDialog::saveSettings() {
 
     settings->setJPEGSaveQuality(ui->JPEGQualitySlider->value());
     settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value() / 100.f));
+    settings->setAutoResizeLimit(ui->autoResizeLimitSlider->value() * 5);
     settings->setExpandLimit(ui->expandLimitSlider->value());
     settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
 
@@ -554,6 +560,10 @@ void SettingsDialog::onThumbnailerThreadsSliderChanged(int value) {
 //------------------------------------------------------------------------------
 void SettingsDialog::onBgOpacitySliderChanged(int value) {
     ui->bgOpacityPercentLabel->setText(QString::number(value) + "%");
+}
+//------------------------------------------------------------------------------
+void SettingsDialog::onAutoResizeLimitSliderChanged(int value) {
+    ui->autoResizeLimit->setText(QString::number(value * 5.f, 'f', 0) + "%");
 }
 //------------------------------------------------------------------------------
 int SettingsDialog::exec() {

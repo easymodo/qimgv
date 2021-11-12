@@ -70,6 +70,7 @@ private slots:
     void onZoomStepSliderChanged(int value);
     void onJPEGQualitySliderChanged(int value);
     void resetToDesktopTheme();    
+    void onAutoResizeLimitSliderChanged(int value);
 
 signals:
     void settingsChanged();

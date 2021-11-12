@@ -17,7 +17,6 @@ MW::MW(QWidget *parent)
       cropOverlay(nullptr)
 {
     setAttribute(Qt::WA_TranslucentBackground, true);
-    this->setMinimumSize(400, 300);
     layout.setContentsMargins(0,0,0,0);
     layout.setSpacing(0);
 
@@ -209,17 +208,50 @@ void MW::closeImage() {
     viewerWidget->closeImage();
 }
 
-void MW::setImage(std::unique_ptr<QPixmap> pixmap) {
+// todo: fix flicker somehow
+// ideally it should change img & resize in one go
+void MW::preShowResize(QSize sz) {
+    auto screens = qApp->screens();
+    if(this->windowState() != Qt::WindowNoState || !screens.count() || screens.count() <= currentDisplay)
+        return;
+    int decorationSize = frameGeometry().height() - height();
+    float maxSzMulti = settings->autoResizeLimit() / 100.f;
+    QRect availableGeom = screens.at(currentDisplay)->availableGeometry();
+    QSize maxSz = availableGeom.size() * maxSzMulti;
+    maxSz.setHeight(maxSz.height() - decorationSize);
+    if(!sz.isEmpty()) {
+        if(sz.width() > maxSz.width() || sz.height() > maxSz.height())
+            sz.scale(maxSz, Qt::KeepAspectRatio);
+    } else {
+        sz = maxSz;
+    }
+    QRect newGeom(0,0, sz.width(), sz.height());
+    newGeom.moveCenter(availableGeom.center());
+    newGeom.translate(0, decorationSize / 2);
+
+    if(this->isVisible())
+        setGeometry(newGeom);
+    else // setGeometry wont work on hidden windows, so we just save for it to be restored later
+        settings->setWindowGeometry(newGeom);
+}
+
+void MW::showImage(std::unique_ptr<QPixmap> pixmap) {
+    if(settings->autoResizeWindow())
+        preShowResize(pixmap->size());
     viewerWidget->showImage(std::move(pixmap));
     updateCropPanelData();
 }
 
-void MW::setAnimation(std::shared_ptr<QMovie> movie) {
+void MW::showAnimation(std::shared_ptr<QMovie> movie) {
+    if(settings->autoResizeWindow())
+        preShowResize(movie->frameRect().size());
     viewerWidget->showAnimation(movie);
     updateCropPanelData();
 }
 
-void MW::setVideo(QString file) {
+void MW::showVideo(QString file) {
+    if(settings->autoResizeWindow())
+        preShowResize(QSize()); // tmp. find a way to get this though mpv BEFORE playback
     viewerWidget->showVideo(file);
 }
 

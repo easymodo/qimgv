@@ -289,10 +289,10 @@
                 <x>0</x>
                 <y>0</y>
                 <width>539</width>
-                <height>1064</height>
+                <height>1156</height>
                </rect>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0">
+              <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
                <property name="spacing">
                 <number>8</number>
                </property>
@@ -370,6 +370,187 @@
                      <string>Start in folder view by default</string>
                     </property>
                    </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_19">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Fixed</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>9</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QFrame" name="frame_3">
+                 <property name="accessibleName">
+                  <string notr="true">StyledOptionsGroup</string>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_35">
+                  <property name="topMargin">
+                   <number>4</number>
+                  </property>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_8">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <spacer name="horizontalSpacer_19">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="autoResizeWindowCheckBox">
+                      <property name="text">
+                       <string>Resize window to match image size</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_20">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_24">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <spacer name="horizontalSpacer_21">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_39">
+                      <property name="text">
+                       <string>Screen area limit:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="autoResizeLimit">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>40</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>30</width>
+                        <height>16777215</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string>xx</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSlider" name="autoResizeLimitSlider">
+                      <property name="minimumSize">
+                       <size>
+                        <width>190</width>
+                        <height>10</height>
+                       </size>
+                      </property>
+                      <property name="minimum">
+                       <number>6</number>
+                      </property>
+                      <property name="maximum">
+                       <number>20</number>
+                      </property>
+                      <property name="singleStep">
+                       <number>1</number>
+                      </property>
+                      <property name="pageStep">
+                       <number>2</number>
+                      </property>
+                      <property name="value">
+                       <number>18</number>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="tickPosition">
+                       <enum>QSlider::NoTicks</enum>
+                      </property>
+                      <property name="tickInterval">
+                       <number>1</number>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -4157,8 +4338,8 @@ p, li { white-space: pre-wrap; }
    <slot>resetShortcuts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>727</x>
-     <y>141</y>
+     <x>284</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>587</x>
@@ -4173,8 +4354,8 @@ p, li { white-space: pre-wrap; }
    <slot>removeShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>446</x>
-     <y>141</y>
+     <x>284</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>584</x>
@@ -4189,8 +4370,8 @@ p, li { white-space: pre-wrap; }
    <slot>addShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>274</x>
-     <y>141</y>
+     <x>284</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -4205,8 +4386,8 @@ p, li { white-space: pre-wrap; }
    <slot>selectMpvPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>566</x>
-     <y>270</y>
+     <x>293</x>
+     <y>68</y>
     </hint>
     <hint type="destinationlabel">
      <x>596</x>
@@ -4221,8 +4402,8 @@ p, li { white-space: pre-wrap; }
    <slot>addScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>274</x>
-     <y>63</y>
+     <x>284</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
@@ -4237,8 +4418,8 @@ p, li { white-space: pre-wrap; }
    <slot>removeScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>446</x>
-     <y>63</y>
+     <x>284</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -4253,8 +4434,8 @@ p, li { white-space: pre-wrap; }
    <slot>editScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>360</x>
-     <y>63</y>
+     <x>284</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>2</x>
@@ -4269,8 +4450,8 @@ p, li { white-space: pre-wrap; }
    <slot>editScript(QListWidgetItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>478</x>
-     <y>108</y>
+     <x>284</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>118</x>
@@ -4301,8 +4482,8 @@ p, li { white-space: pre-wrap; }
    <slot>onThumbnailerThreadsSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>566</x>
-     <y>238</y>
+     <x>373</x>
+     <y>68</y>
     </hint>
     <hint type="destinationlabel">
      <x>591</x>
@@ -4317,8 +4498,8 @@ p, li { white-space: pre-wrap; }
    <slot>onZoomStepSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>709</x>
-     <y>162</y>
+     <x>433</x>
+     <y>175</y>
     </hint>
     <hint type="destinationlabel">
      <x>634</x>
@@ -4333,8 +4514,8 @@ p, li { white-space: pre-wrap; }
    <slot>onJPEGQualitySliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>566</x>
-     <y>149</y>
+     <x>373</x>
+     <y>68</y>
     </hint>
     <hint type="destinationlabel">
      <x>642</x>
@@ -4350,11 +4531,11 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>511</x>
-     <y>515</y>
+     <y>574</y>
     </hint>
     <hint type="destinationlabel">
-     <x>293</x>
-     <y>561</y>
+     <x>486</x>
+     <y>603</y>
     </hint>
    </hints>
   </connection>
@@ -4366,11 +4547,11 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>506</x>
-     <y>417</y>
+     <y>484</y>
     </hint>
     <hint type="destinationlabel">
-     <x>486</x>
-     <y>452</y>
+     <x>679</x>
+     <y>515</y>
     </hint>
    </hints>
   </connection>
@@ -4382,7 +4563,7 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>705</x>
-     <y>332</y>
+     <y>422</y>
     </hint>
     <hint type="destinationlabel">
      <x>639</x>
@@ -4398,11 +4579,11 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>529</x>
-     <y>305</y>
+     <y>395</y>
     </hint>
     <hint type="destinationlabel">
-     <x>495</x>
-     <y>332</y>
+     <x>688</x>
+     <y>422</y>
     </hint>
    </hints>
   </connection>
@@ -4413,8 +4594,8 @@ p, li { white-space: pre-wrap; }
    <slot>onBgOpacitySliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>718</x>
-     <y>378</y>
+     <x>374</x>
+     <y>321</y>
     </hint>
     <hint type="destinationlabel">
      <x>621</x>
@@ -4461,8 +4642,8 @@ p, li { white-space: pre-wrap; }
    <slot>editShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>337</x>
-     <y>130</y>
+     <x>284</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>-34</x>
@@ -4477,12 +4658,28 @@ p, li { white-space: pre-wrap; }
    <slot>editShortcut(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>285</x>
-     <y>529</y>
+     <x>284</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>-87</x>
      <y>548</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>autoResizeLimitSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>onAutoResizeLimitSliderChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>671</x>
+     <y>169</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>705</x>
+     <y>-8</y>
     </hint>
    </hints>
   </connection>
@@ -4513,5 +4710,6 @@ p, li { white-space: pre-wrap; }
   <slot>saveSettings()</slot>
   <slot>editShortcut()</slot>
   <slot>editShortcut(int)</slot>
+  <slot>onAutoResizeLimitSliderChanged(int)</slot>
  </slots>
 </ui>

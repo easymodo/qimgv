@@ -29,9 +29,9 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
         throw std::runtime_error("could not initialize mpv context");
 
     // Request hw decoding, just for testing.
-    mpv::qt::set_option_variant(mpv, "hwdec", "auto");
+    mpv::qt::set_property(mpv, "hwdec", "auto");
 
-    //mpv::qt::set_option_variant(mpv, "video-unscaled", "downscale-big");
+    //mpv::qt::set_property(mpv, "video-unscaled", "downscale-big");
 
     // Loop video
     setRepeat(true);
@@ -53,11 +53,11 @@ MpvWidget::~MpvWidget() {
 }
 
 void MpvWidget::command(const QVariant& params) {
-    mpv::qt::command_variant(mpv, params);
+    mpv::qt::command(mpv, params);
 }
 
 void MpvWidget::setProperty(const QString& name, const QVariant& value) {
-    mpv::qt::set_property_variant(mpv, name, value);
+    mpv::qt::set_property(mpv, name, value);
 }
 
 QVariant MpvWidget::getProperty(const QString &name) const {
@@ -65,7 +65,7 @@ QVariant MpvWidget::getProperty(const QString &name) const {
 }
 
 void MpvWidget::setOption(const QString& name, const QVariant& value) {
-    mpv::qt::set_option_variant(mpv, name, value);
+    mpv::qt::set_property(mpv, name, value);
 }
 
 void MpvWidget::initializeGL() {
@@ -158,9 +158,9 @@ void MpvWidget::on_update(void *ctx) {
 
 void MpvWidget::setMuted(bool mode) {
     if(mode)
-        mpv::qt::set_option_variant(mpv, "mute", "yes");
+        mpv::qt::set_property(mpv, "mute", "yes");
     else
-        mpv::qt::set_option_variant(mpv, "mute", "no");
+        mpv::qt::set_property(mpv, "mute", "no");
 }
 
 bool MpvWidget::muted() {
@@ -178,7 +178,7 @@ void MpvWidget::setVolume(int vol) {
 
 void MpvWidget::setRepeat(bool mode) {
     if(mode)
-        mpv::qt::set_option_variant(mpv, "loop-file", "inf");
+        mpv::qt::set_property(mpv, "loop-file", "inf");
     else
-        mpv::qt::set_option_variant(mpv, "loop-file", "no");
+        mpv::qt::set_property(mpv, "loop-file", "no");
 }

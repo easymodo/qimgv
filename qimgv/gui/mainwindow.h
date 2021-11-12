@@ -67,9 +67,9 @@ public:
     explicit MW(QWidget *parent = nullptr);
     bool isCropPanelActive();
     void onScalingFinished(std::unique_ptr<QPixmap>scaled);
-    void setImage(std::unique_ptr<QPixmap> pixmap);
-    void setAnimation(std::shared_ptr<QMovie> movie);
-    void setVideo(QString file);
+    void showImage(std::unique_ptr<QPixmap> pixmap);
+    void showAnimation(std::shared_ptr<QMovie> movie);
+    void showVideo(QString file);
 
     void setCurrentInfo(int fileIndex, int fileCount, QString filePath, QString fileName, QSize imageSize, qint64 fileSize, bool slideshow, bool shuffle, bool edited);
     void setExifInfo(QMap<QString, QString>);
@@ -129,6 +129,7 @@ private:
     void setupSaveOverlay();
     void setupRenameOverlay();
 
+    void preShowResize(QSize sz);
 private slots:
     void updateCurrentDisplay();
     void readSettings();

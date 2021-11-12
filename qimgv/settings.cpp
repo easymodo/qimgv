@@ -1000,3 +1000,22 @@ bool Settings::jxlAnimation() {
 void Settings::setJxlAnimation(bool mode) {
     settings->settingsConf->setValue("jxlAnimation", mode);
 }
+//------------------------------------------------------------------------------
+bool Settings::autoResizeWindow() {
+    return settings->settingsConf->value("autoResizeWindow", false).toBool();
+}
+
+void Settings::setAutoResizeWindow(bool mode) {
+    settings->settingsConf->setValue("autoResizeWindow", mode);
+}
+//------------------------------------------------------------------------------
+int Settings::autoResizeLimit() {
+    int limit = settings->settingsConf->value("autoResizeLimit", 90).toInt();
+    if(limit < 30 || limit > 100)
+        limit = 90;
+    return limit;
+}
+
+void Settings::setAutoResizeLimit(int percent) {
+    settings->settingsConf->setValue("autoResizeLimit", percent);
+}

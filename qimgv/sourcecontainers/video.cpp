@@ -2,27 +2,30 @@
 #include <time.h>
 
 Video::Video(QString _path) : Image(_path) {
-    load();
+    Video::load();
 }
 
 Video::Video(std::unique_ptr<DocumentInfo> _info) : Image(std::move(_info)) {
-    load();
+    Video::load();
 }
 
 void Video::load() {
     if(isLoaded())
         return;
 
+    /*
     auto mpvBinary = settings->mpvBinary();
     if(mpvBinary.isEmpty())
         return;
     // Get resolution from ffmpeg (so we don't have to ask videoplayer)
     QString command = "\"" + mpvBinary + "\"" + " -i " + "\"" + mDocInfo->filePath() + "\"";
+    QString filePathEsc = mDocInfo->filePath();
+    filePathEsc.replace("%", "%%");
     QProcess process;
-    process.start(command, QStringList() << "");
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    process.start(settings->mpvBinary(), QStringList() << "-i" << filePathEsc);
     process.waitForFinished(100);
-    QByteArray out = process.readAllStandardError();
-    process.close();
+    QByteArray out = process.readAllStandardOutput();
 
     QRegExp expResolution("[0-9]+x[0-9]+");
     QRegExp expWidth("[0-9]+\\B");
@@ -37,6 +40,8 @@ void Video::load() {
     srcWidth = wt.toUInt();
     srcHeight = ht.toUInt();
 
+    qDebug() << "zzzz" << wt << ht << filePathEsc << settings->mpvBinary();
+    */
     mLoaded = true;
 }
 

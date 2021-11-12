@@ -224,7 +224,7 @@ bool ViewerWidget::showImage(std::unique_ptr<QPixmap> pixmap) {
     stopPlayback();
     videoControls->hide();
     enableImageViewer();
-    imageViewer->displayImage(std::move(pixmap));
+    imageViewer->showImage(std::move(pixmap));
     hideCursorTimed(false);
     return true;
 }
@@ -234,7 +234,7 @@ bool ViewerWidget::showAnimation(std::shared_ptr<QMovie> movie) {
         return false;
     stopPlayback();
     enableImageViewer();
-    imageViewer->displayAnimation(movie);
+    imageViewer->showAnimation(movie);
     hideCursorTimed(false);
     return true;
 }
@@ -242,7 +242,7 @@ bool ViewerWidget::showAnimation(std::shared_ptr<QMovie> movie) {
 bool ViewerWidget::showVideo(QString file) {
     stopPlayback();
     enableVideoPlayer();
-    videoPlayer->openMedia(file);
+    videoPlayer->showVideo(file);
     hideCursorTimed(false);
     return true;
 }

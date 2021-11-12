@@ -6,7 +6,7 @@ class VideoPlayer : public QWidget {
     Q_OBJECT
 public:
     explicit VideoPlayer(QWidget *parent = nullptr);
-    virtual bool openMedia(QString file) = 0;
+    virtual bool showVideo(QString file) = 0;
     virtual void seek(int pos) = 0;
     virtual void seekRelative(int pos) = 0;
     virtual void pauseResume() = 0;

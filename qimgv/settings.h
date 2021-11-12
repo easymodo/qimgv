@@ -274,6 +274,11 @@ public:
     void setJxlAnimation(bool mode);
     bool absoluteZoomStep();
     void setAbsoluteZoomStep(bool mode);
+    bool autoResizeWindow();
+    void setAutoResizeWindow(bool mode);
+    int autoResizeLimit();
+    void setAutoResizeLimit(int percent);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     QSettings *settingsConf, *stateConf, *themeConf;

@@ -1326,16 +1326,16 @@ void Core::guiSetImage(std::shared_ptr<Image> img) {
     }
     DocumentType type = img->type();
     if(type == STATIC) {
-        mw->setImage(img->getPixmap());
+        mw->showImage(img->getPixmap());
     } else if(type == ANIMATED) {
         auto animated = dynamic_cast<ImageAnimated *>(img.get());
-        mw->setAnimation(animated->getMovie());
+        mw->showAnimation(animated->getMovie());
     } else if(type == VIDEO) {
         auto video = dynamic_cast<Video *>(img.get());
         // workaround for mpv. If we play video while mainwindow is hidden we get black screen.
         // affects only initial startup (e.g. we open webm from file manager)
         showGui();
-        mw->setVideo(video->filePath());
+        mw->showVideo(video->filePath());
     }
     img->isEdited() ? mw->showSaveOverlay() : mw->hideSaveOverlay();
     mw->setExifInfo(img->getExifTags());

@@ -27,12 +27,11 @@ VideoPlayerMpv::VideoPlayerMpv(QWidget *parent) : VideoPlayer(parent) {
     connect(m_mpv, SIGNAL(playbackFinished()), this, SIGNAL(playbackFinished()));
 }
 
-bool VideoPlayerMpv::openMedia(QString file) {
+bool VideoPlayerMpv::showVideo(QString file) {
     if(file.isEmpty())
         return false;
     m_mpv->command(QStringList() << "loadfile" << file);
     setPaused(false);
-    //qDebug() << m_mpv->size() << this->devicePixelRatioF();
     return true;
 }
 

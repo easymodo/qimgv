@@ -98,10 +98,10 @@ inline bool VideoPlayerInitProxy::initPlayer() {
     return true;
 }
 
-bool VideoPlayerInitProxy::openMedia(QString file) {
+bool VideoPlayerInitProxy::showVideo(QString file) {
     if(!initPlayer())
         return false;
-    return player->openMedia(file);
+    return player->showVideo(file);
 }
 
 void VideoPlayerInitProxy::seek(int pos) {
