@@ -38,7 +38,7 @@ public:
 
 public slots:
     void updateInfoString();
-    void loadPath(QString);
+    bool loadPath(QString);
 
 private:
     void initGui();
@@ -137,6 +137,7 @@ private slots:
     void reloadImage(QString fileName);
     void copyFileClipboard();
     void copyPathClipboard();
+    void openFromClipboard();
     void renameCurrentSelection(QString newName);
     void sortBy(SortingMode mode);
     void sortByName();

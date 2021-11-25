@@ -122,6 +122,7 @@ signals:
     void lockView();
     void print();
     void toggleFullscreenInfoBar();
+    void pasteFile();
 };
 
 extern ActionManager *actionManager;

@@ -482,6 +482,12 @@ void MW::showDefault() {
 }
 
 void MW::showSaveDialog(QString filePath) {
+    QString newFilePath = getSaveFileName(filePath);
+    if(!newFilePath.isEmpty())
+        emit saveAsRequested(newFilePath);
+}
+
+QString MW::getSaveFileName(QString filePath) {
     viewerWidget->hidePanel();
     QStringList filters;
     // generate filter for writable images
@@ -521,8 +527,7 @@ void MW::showSaveDialog(QString filePath) {
         }
     }
     QString newFilePath = QFileDialog::getSaveFileName(this, tr("Save File as..."), filePath, filterString, &selectedFilter);
-    if(!newFilePath.isEmpty())
-        emit saveAsRequested(newFilePath);
+    return newFilePath;
 }
 
 void MW::showOpenDialog(QString path) {

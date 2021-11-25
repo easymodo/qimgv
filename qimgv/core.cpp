@@ -196,6 +196,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::prevDirectory, this, qOverload<>(&Core::prevDirectory));
     connect(actionManager, &ActionManager::print, this, &Core::print);
     connect(actionManager, &ActionManager::toggleFullscreenInfoBar, this, &Core::toggleFullscreenInfoBar);
+    connect(actionManager, &ActionManager::pasteFile, this, &Core::openFromClipboard);
 }
 
 void Core::onUpdate() {
@@ -432,6 +433,93 @@ void Core::copyPathClipboard() {
         return;
     QApplication::clipboard()->setText(selectedPath());
     mw->showMessage("Path copied");
+}
+
+// open from clipboard
+// todo: actual file paste into folderview (like filemanager)
+void Core::openFromClipboard() {
+    auto cb = QApplication::clipboard();
+    auto mimeData = cb->mimeData();
+    if(!mimeData)
+        return;
+    qDebug() << "=====================================";
+    qDebug() << "hasUrls:" << mimeData->hasUrls();
+    qDebug() << "hasImage:" << mimeData->hasImage();
+    qDebug() << "hasText:" << mimeData->hasText();
+
+    qDebug() << "TEXT:" << cb->text();
+
+    // try opening url
+    if(mimeData->hasUrls()) {
+        auto url = mimeData->urls().first();
+        QString path = url.toLocalFile();
+        if(path.isEmpty()) {
+            qDebug() << "Could not load url:" << url;
+            qDebug() << "Currently only local files are supported.";
+        } else if(loadPath(path)) {
+            return;
+        }
+    }
+    // try to save buffer image then open
+    if(mimeData->hasImage()) {
+        auto image = cb->image();
+        if(image.isNull())
+            return;
+        QString destPath;
+        if(!model->isEmpty())
+            destPath = model->directoryPath() + "/";
+        else
+            destPath = QDir::homePath() + "/";
+        destPath.append("clipboard.png");
+        destPath = mw->getSaveFileName(destPath);
+        if(destPath.isEmpty())
+            return;
+
+
+        // ------- temporarily copypasted from ImageStatic (needs refactoring)
+
+        QString tmpPath = destPath + "_" + QString(QCryptographicHash::hash(destPath.toUtf8(), QCryptographicHash::Md5).toHex());
+        QFileInfo fi(destPath);
+        QString ext = fi.suffix();
+        int quality = 95;
+        if(ext.compare("png", Qt::CaseInsensitive) == 0)
+            quality = 30;
+        else if(ext.compare("jpg", Qt::CaseInsensitive) == 0 || ext.compare("jpeg", Qt::CaseInsensitive) == 0)
+            quality = settings->JPEGSaveQuality();
+
+        bool backupExists = false, success = false, originalExists = false;
+
+        if(QFile::exists(destPath))
+            originalExists = true;
+
+        // backup the original file if possible
+        if(originalExists) {
+            QFile::remove(tmpPath);
+            if(!QFile::copy(destPath, tmpPath)) {
+                qDebug() << "Could not create file backup.";
+                return;
+            }
+            backupExists = true;
+        }
+        // save file
+        success = image.save(destPath, ext.toStdString().c_str(), quality);
+
+        if(backupExists) {
+            if(success) {
+                // everything ok - remove the backup
+                QFile file(tmpPath);
+                file.remove();
+            } else if(originalExists) {
+                // revert on fail
+                QFile::remove(destPath);
+                QFile::copy(tmpPath, destPath);
+                QFile::remove(tmpPath);
+            }
+        }
+        // ------------------------------------------
+        if(success)
+            loadPath(destPath);
+    }
 }
 
 void Core::onDropIn(const QMimeData *mimeData, QObject* source) {
@@ -1052,9 +1140,9 @@ void Core::reset() {
     model->setDirectory("");
 }
 
-void Core::loadPath(QString path) {
+bool Core::loadPath(QString path) {
     if(path.isEmpty())
-        return;
+        return false;
     if(path.startsWith("file://", Qt::CaseInsensitive))
         path.remove(0, 7);
 
@@ -1068,10 +1156,10 @@ void Core::loadPath(QString path) {
     } else {
         mw->showError("Could not open path: " + path);
         qDebug() << "Could not open path: " << path;
-        return;
+        return false;
     }
     if(!setDirectory(directoryPath))
-        return;
+        return false;
     // load file / folderview
     if(fileInfo.isFile()) {
         int index = model->indexOfFile(fileInfo.absoluteFilePath());
@@ -1088,9 +1176,10 @@ void Core::loadPath(QString path) {
             }
         }
         mw->enableDocumentView();
-        loadFileIndex(index, false, settings->usePreloader());
+        return loadFileIndex(index, false, settings->usePreloader());
     } else {
         mw->enableFolderView();
+        return true;
     }
 }
 
