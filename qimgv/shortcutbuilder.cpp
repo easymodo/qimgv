@@ -16,9 +16,15 @@ QString ShortcutBuilder::fromEvent(QInputEvent *event) {
 //------------------------------------------------------------------------------
 QString ShortcutBuilder::processWheelEvent(QWheelEvent *event) {
     QString sequence;
+    if(event->angleDelta() == QPoint(0,0))
+        return "";
     if(event->angleDelta().ry() < 0)
         sequence = "WheelDown";
     else if(event->angleDelta().ry() > 0)
+        sequence = "WheelUp";
+    if(event->angleDelta().rx() < 0) // fallback to horizontal
+        sequence = "WheelDown";
+    else if(event->angleDelta().rx() > 0)
         sequence = "WheelUp";
     sequence.prepend(modifierKeys(event));
     return sequence;
