@@ -206,6 +206,7 @@ public slots:
     void enableDocumentView();
     void showOpenDialog(QString path);
     void showSaveDialog(QString filePath);
+    QString getSaveFileName(QString fileName);
     void showResizeDialog(QSize initialSize);
     void showSettings();
     void triggerFullScreen();

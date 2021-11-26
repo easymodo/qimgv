@@ -81,6 +81,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert(InputMap::keyNameShift() + "+Right", "nextDirectory");
     actionManager->defaults.insert(InputMap::keyNameShift() + "+Left", "prevDirectory");
     actionManager->defaults.insert(InputMap::keyNameShift() + "+F", "toggleFullscreenInfoBar");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+V", "pasteFile");
 
 #ifdef __APPLE__
     actionManager->defaults.insert(InputMap::keyNameAlt() + "+Up", "zoomIn");
