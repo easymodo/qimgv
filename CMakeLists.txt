@@ -31,23 +31,22 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # USER OPTIONS
 # Usage: cmake -DVIDEO_SUPPORT=ON [...]
-option(EXIV2 "For reading/writing exif tags" ON)
-option(VIDEO_SUPPORT "Enable video support" ON)
-option(OPENCV_SUPPORT "Enable HQ scaling via OpenCV" ON)
+option(EXIV2 "For reading/writing exif tags" OFF)
+option(VIDEO_SUPPORT "Enable video support" OFF)
+option(OPENCV_SUPPORT "Enable HQ scaling via OpenCV" OFF)
 option(KDE_SUPPORT "Support blur when using KDE" OFF)
 
 # FIND PACKAGES
-# test for qt5, use that if possible
-find_package(Qt5 COMPONENTS Widgets QUIET)
-if(Qt5_FOUND)
-    find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
+find_package(Qt6 COMPONENTS Widgets QUIET)
+if(Qt6_FOUND)
+    find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Widgets Svg PrintSupport OpenGLWidgets)
 else()
-    find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core Widgets Svg Core5Compat PrintSupport OpenGLWidgets)
+    find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
 endif()
 
 message(STATUS "Qt Version: " ${QT_VERSION})
 if(QT_VERSION_MAJOR GREATER_EQUAL 6)
-    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Svg PrintSupport Core5Compat OpenGLWidgets)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Svg PrintSupport OpenGLWidgets)
 else()
     find_package(Qt${QT_VERSION_MAJOR} 5.12 REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
 endif()

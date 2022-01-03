@@ -235,6 +235,7 @@ void MW::preShowResize(QSize sz) {
         setGeometry(newGeom);
     else // setGeometry wont work on hidden windows, so we just save for it to be restored later
         settings->setWindowGeometry(newGeom);
+    qApp->processEvents(); // not needed anymore with patched qt?
 }
 
 void MW::showImage(std::unique_ptr<QPixmap> pixmap) {
