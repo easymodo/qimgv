@@ -443,7 +443,11 @@ void MW::mouseDoubleClickEvent(QMouseEvent *event) {
 void MW::close() {
     saveWindowGeometry();
     saveCurrentDisplay();
+    // try to close window sooner
+    // since qt6.3 QWidget::close() no longer works on hidden windows (bug?)
+#if QT_VERSION < QT_VERSION_CHECK(6, 3, 0)
     this->hide();
+#endif
     if(copyOverlay)
         copyOverlay->saveSettings();
     QWidget::close();
