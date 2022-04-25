@@ -39,8 +39,7 @@ void FolderViewProxy::init() {
     // wait till layout stuff happens
     // before calling focusOn()
     qApp->processEvents();
-    if(stateBuf.selection.count())
-        folderView->focusOn(stateBuf.selection.last());
+    folderView->focusOnSelection();
     folderView->onSortingChanged(stateBuf.sortingMode);
 }
 
@@ -87,6 +86,12 @@ QList<int> FolderViewProxy::selection() {
 void FolderViewProxy::focusOn(int index) {
     if(folderView) {
         folderView->focusOn(index);
+    }
+}
+
+void FolderViewProxy::focusOnSelection() {
+    if(folderView) {
+        folderView->focusOnSelection();
     }
 }
 

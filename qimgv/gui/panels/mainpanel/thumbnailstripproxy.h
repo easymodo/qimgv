@@ -24,6 +24,7 @@ public slots:
     virtual void select(int) override;
     virtual QList<int> selection() override;
     virtual void focusOn(int) override;
+    virtual void focusOnSelection() override;
     virtual void insertItem(int index) override;
     virtual void removeItem(int index) override;
     virtual void reloadItem(int index) override;

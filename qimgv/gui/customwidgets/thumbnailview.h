@@ -53,6 +53,7 @@ public:
     void clearSelection();
     void deselect(int index);
 public slots:
+    void show();
     void showEvent(QShowEvent *event) override;
     void resetViewport();
     int thumbnailSize();
@@ -61,12 +62,12 @@ public slots:
 
     void addItem();
 
+    virtual void focusOnSelection() = 0;
     virtual void populate(int count) override;
     virtual void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) override;
     virtual void insertItem(int index) override;
     virtual void removeItem(int index) override;
     virtual void reloadItem(int index) override;
-
     virtual void setDragHover(int index) override;
 
 signals:
@@ -131,7 +132,6 @@ protected:
     virtual void removeAll() = 0;
     virtual void updateLayout();
     virtual void fitSceneToContents();
-    virtual void ensureSelectedItemVisible() = 0;
     virtual void updateScrollbarIndicator() = 0;
 
     void setCropThumbnails(bool);

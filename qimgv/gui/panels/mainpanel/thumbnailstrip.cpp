@@ -34,10 +34,6 @@ ThumbnailWidget* ThumbnailStrip::createThumbnailWidget() {
     return widget;
 }
 
-void ThumbnailStrip::ensureSelectedItemVisible() {
-
-}
-
 void ThumbnailStrip::addItemToLayout(ThumbnailWidget* widget, int pos) {
     scene.addItem(widget);
     updateThumbnailPositions(pos, thumbnails.count() - 1);
@@ -84,6 +80,12 @@ void ThumbnailStrip::focusOn(int index) {
     ThumbnailWidget *thumb = thumbnails.at(index);
     ensureVisible(thumb, 0, 0);
     loadVisibleThumbnails();
+}
+
+void ThumbnailStrip::focusOnSelection() {
+    if(selection().isEmpty())
+        return;
+    focusOn(selection().last());
 }
 
 void ThumbnailStrip::readSettings() {

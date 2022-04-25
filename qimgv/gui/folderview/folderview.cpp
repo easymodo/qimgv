@@ -260,6 +260,10 @@ void FolderView::focusOn(int index) {
     ui->thumbnailGrid->focusOn(index);
 }
 
+void FolderView::focusOnSelection() {
+    ui->thumbnailGrid->focusOnSelection();
+}
+
 void FolderView::onHomeBtn() {
     emit directorySelected(QDir::homePath());
 }

@@ -191,13 +191,17 @@ int ThumbnailView::itemCount() {
     return thumbnails.count();
 }
 
+void ThumbnailView::show() {
+    QGraphicsView::show();
+    focusOnSelection();
+    loadVisibleThumbnails();
+}
+
 void ThumbnailView::showEvent(QShowEvent *event) {
     QGraphicsView::showEvent(event);
     // ensure we are properly resized
     qApp->processEvents();
     updateScrollbarIndicator();
-    ensureSelectedItemVisible();
-    loadVisibleThumbnails();
 }
 
 void ThumbnailView::populate(int newCount) {

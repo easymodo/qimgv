@@ -26,8 +26,7 @@ void ThumbnailStripProxy::init() {
     // wait till layout stuff happens
     // before calling focusOn()
     qApp->processEvents();
-    if(thumbnailStrip->selection().count())
-        thumbnailStrip->focusOn(stateBuf.selection.last());
+    thumbnailStrip->focusOnSelection();
 }
 
 bool ThumbnailStripProxy::isInitialized() {
@@ -77,6 +76,12 @@ QList<int> ThumbnailStripProxy::selection() {
 void ThumbnailStripProxy::focusOn(int index) {
     if(thumbnailStrip) {
         thumbnailStrip->focusOn(index);
+    }
+}
+
+void ThumbnailStripProxy::focusOnSelection() {
+    if(thumbnailStrip) {
+        thumbnailStrip->focusOnSelection();
     }
 }
 

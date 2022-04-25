@@ -32,6 +32,7 @@ private:
 
 public slots:
     virtual void focusOn(int index);
+    virtual void focusOnSelection();
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);
@@ -41,5 +42,4 @@ protected:
     void removeItemFromLayout(int pos);
     void removeAll();
     ThumbnailWidget *createThumbnailWidget();
-    void ensureSelectedItemVisible();
 };

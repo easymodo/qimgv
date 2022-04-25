@@ -99,10 +99,10 @@ void FolderGridView::setShowLabels(bool mode) {
         thumbnails.at(i)->setThumbStyle(style);
     updateLayout();
     fitSceneToContents();
-    ensureSelectedItemVisible();
+    focusOnSelection();
 }
 
-void FolderGridView::ensureSelectedItemVisible() {
+void FolderGridView::focusOnSelection() {
     if(!thumbnails.count() || lastSelected() == -1)
         return;
     ThumbnailWidget *thumb = thumbnails.at(lastSelected());

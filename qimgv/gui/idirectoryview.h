@@ -17,6 +17,7 @@ public:
     virtual void select(QList<int>) = 0;
     virtual void select(int) = 0;
     virtual void focusOn(int) = 0;
+    virtual void focusOnSelection() = 0;
     virtual QList<int> selection() = 0;
     virtual void setDirectoryPath(QString path) = 0;
     virtual void insertItem(int index) = 0;
