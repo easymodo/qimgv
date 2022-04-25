@@ -638,8 +638,16 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
             }
         } else if(isWheel && settings->imageScrolling() == SCROLL_BY_TRACKPAD_AND_WHEEL) {
             // scroll by interval
-            event->accept();
-            scroll(0, -angleDelta.y(), true);
+            bool scrollable = false;
+            QRect imgRect = scaledRect();
+            if((event->angleDelta().y() < 0 && imgRect.bottom() > height()) ||
+               (event->angleDelta().y() > 0 && imgRect.top()    < 0))
+            {
+                event->accept();
+                scroll(0, -angleDelta.y(), true);
+            } else {
+                event->ignore(); // not scrollable; passthrough event
+            }
         } else {
            event->ignore();
            QWidget::wheelEvent(event);
