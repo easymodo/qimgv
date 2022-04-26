@@ -1149,24 +1149,21 @@ bool Core::loadPath(QString path) {
         path.remove(0, 7);
 
     stopSlideshow();
+    state.delayModel = false;
     QFileInfo fileInfo(path);
-    QString directoryPath;
     if(fileInfo.isDir()) {
-        directoryPath = QDir(path).absolutePath();
+        state.directoryPath = QDir(path).absolutePath();
     } else if(fileInfo.isFile()) {
-        directoryPath = fileInfo.absolutePath();
+        state.directoryPath = fileInfo.absolutePath();
+        if(model->directoryPath() != state.directoryPath)
+            state.delayModel = true;
     } else {
         mw->showError("Could not open path: " + path);
         qDebug() << "Could not open path: " << path;
         return false;
     }
-    state.directoryPath = directoryPath; // tmp, rewrite this
-    if(model->directoryPath() != directoryPath) {
-        state.delayModel = true;
-    } else {
-        if(!setDirectory(directoryPath))
-            return false;
-    }
+    if(!state.delayModel && !setDirectory(state.directoryPath))
+        return false;
 
     // load file / folderview
     if(fileInfo.isFile()) {
