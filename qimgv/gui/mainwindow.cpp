@@ -277,7 +277,7 @@ void MW::onSortingChanged(SortingMode mode) {
 }
 
 void MW::setDirectoryPath(QString path) {
-    closeImage();
+    //closeImage();
     info.directoryPath = path;
     info.directoryName = path.split("/").last();
     folderView->setDirectoryPath(path);

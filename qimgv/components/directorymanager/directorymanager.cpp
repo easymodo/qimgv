@@ -121,6 +121,7 @@ bool DirectoryManager::setDirectory(QString dirPath) {
     }
     mListSource = SOURCE_DIRECTORY;
     mDirectoryPath = dirPath;
+
     loadEntryList(dirPath, false);
     sortEntryLists();
     emit loaded(dirPath);
@@ -417,8 +418,10 @@ bool DirectoryManager::forceInsertFileEntry(const QString &filePath) {
     QString fileName = QString::fromStdString(stdEntry.path().filename().generic_string()); // isn't it beautiful
     FSEntry FSEntry(filePath, fileName, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
     insert_sorted(fileEntryVec, FSEntry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
-    qDebug() << "fileIns" << filePath;
-    emit fileAdded(filePath);
+    if(!directoryPath().isEmpty()) {
+        qDebug() << "fileIns" << filePath << directoryPath();
+        emit fileAdded(filePath);
+    }
     return true;
 }
 

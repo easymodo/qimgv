@@ -288,6 +288,8 @@ void Core::syncRandomizer() {
 void Core::onModelLoaded() {
     thumbPanelPresenter.reloadModel();
     folderViewPresenter.reloadModel();
+    thumbPanelPresenter.selectAndFocus(state.currentFilePath);
+    folderViewPresenter.selectAndFocus(state.currentFilePath);
     if(shuffle)
         syncRandomizer();
 }
@@ -1158,8 +1160,14 @@ bool Core::loadPath(QString path) {
         qDebug() << "Could not open path: " << path;
         return false;
     }
-    if(!setDirectory(directoryPath))
-        return false;
+    state.directoryPath = directoryPath; // tmp, rewrite this
+    if(model->directoryPath() != directoryPath) {
+        state.delayModel = true;
+    } else {
+        if(!setDirectory(directoryPath))
+            return false;
+    }
+
     // load file / folderview
     if(fileInfo.isFile()) {
         int index = model->indexOfFile(fileInfo.absoluteFilePath());
@@ -1386,10 +1394,23 @@ void Core::onLoadFailed(const QString &path) {
 
 void Core::onModelItemReady(std::shared_ptr<Image> img, const QString &path) {
     if(path == state.currentFilePath) {
+        state.currentImg = img;
         guiSetImage(img);
         updateInfoString();
+        if(state.delayModel) {
+            this->showGui();
+            state.delayModel = false;
+            QTimer::singleShot(40, this, SLOT(modelDelayLoad()));
+        }
         model->unloadExcept(state.currentFilePath, settings->usePreloader());
     }
+}
+
+void Core::modelDelayLoad() {
+    model->setDirectory(state.directoryPath);
+    mw->setDirectoryPath(state.directoryPath);
+    model->updateImage(state.currentFilePath, state.currentImg);
+    updateInfoString();
 }
 
 void Core::onModelItemUpdated(QString filePath) {

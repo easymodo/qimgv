@@ -22,7 +22,10 @@
 
 struct State {
     bool hasActiveImage = false;
+    bool delayModel = false;
     QString currentFilePath = "";
+    QString directoryPath = "";
+    std::shared_ptr<Image> currentImg;
 };
 
 enum MimeDataTarget {
@@ -41,6 +44,8 @@ public slots:
     bool loadPath(QString);
 
 private:
+    QElapsedTimer t;
+
     void initGui();
     void initComponents();
     void connectComponents();
@@ -165,4 +170,5 @@ private slots:
     void prevDirectory(bool selectLast);
     void prevDirectory();
     void print();
+    void modelDelayLoad();
 };

@@ -280,7 +280,7 @@ void DirectoryPresenter::onDroppedInto(const QMimeData *data, QObject *source, i
 }
 
 void DirectoryPresenter::selectAndFocus(QString path) {
-    if(!model || !view)
+    if(!model || !view || path.isEmpty())
         return;
     if(model->containsDir(path) && showDirs()) {
         int dirIndex = model->indexOfDir(path);
