@@ -640,7 +640,7 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
             // scroll by interval
             bool scrollable = false;
             QRect imgRect = scaledRect();
-            // shift by 2px in case of small edge misalignment
+            // shift by 2px in case of img edge misalignment
             // todo: maybe even increase it to skip small distance scrolls?
             if((event->angleDelta().y() < 0 && imgRect.bottom() > height() + 2) ||
                (event->angleDelta().y() > 0 && imgRect.top()    < -2))

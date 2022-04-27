@@ -24,6 +24,8 @@ ScriptManager *ScriptManager::getInstance() {
 void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> img) {
     if(scripts.contains(scriptName)) {
         Script script = scripts.value(scriptName);
+        if(script.command.isEmpty())
+            return;
         QProcess exec(this);
 
         auto arguments = splitCommandLine(script.command);

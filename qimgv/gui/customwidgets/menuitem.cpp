@@ -52,6 +52,10 @@ void MenuItem::setIconPath(QString path) {
     mIconWidget.setIconPath(path);
 }
 
+void MenuItem::setPassthroughClicks(bool mode) {
+    passthroughClicks = mode;
+}
+
 void MenuItem::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
     QStyleOption opt;
@@ -69,9 +73,13 @@ void MenuItem::onClick() {
 void MenuItem::mousePressEvent(QMouseEvent *event) {
     onPress();
     QWidget::mousePressEvent(event);
+    if(!passthroughClicks)
+        event->accept();
 }
 
 void MenuItem::mouseReleaseEvent(QMouseEvent *event) {
     onClick();
     QWidget::mouseReleaseEvent(event);
+    if(!passthroughClicks)
+        event->accept();
 }

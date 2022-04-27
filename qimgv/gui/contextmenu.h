@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QPainter>
 #include "components/actionmanager/actionmanager.h"
+#include "components/scriptmanager/scriptmanager.h"
 
 namespace Ui {
 class ContextMenu;
@@ -25,8 +26,12 @@ private:
     Ui::ContextMenu *ui;
     QTimer mTimer;
 
+    void fillOpenWithMenu();
 protected:
     void mousePressEvent(QMouseEvent*);
     void paintEvent(QPaintEvent *);
     void keyPressEvent(QKeyEvent *event);
+private slots:
+    void switchToMainPage();
+    void switchToScriptsPage();
 };

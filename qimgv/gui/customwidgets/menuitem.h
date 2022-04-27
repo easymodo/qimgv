@@ -20,12 +20,14 @@ public:
     void setShortcutText(QString mTextLabel);
     QString shortcut();
     void setIconPath(QString path);
+    void setPassthroughClicks(bool mode);
 
 protected:
     IconButton mIconWidget;
     QLabel mTextLabel, mShortcutLabel;
     QSpacerItem *spacer;
     QHBoxLayout mLayout;
+    bool passthroughClicks = true;
     void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);

@@ -79,17 +79,53 @@ ContextMenu::ContextMenu(QWidget *parent) :
     ui->settings->setText(tr("Settings"));
     ui->settings->setIconPath(":/res/icons/common/menuitem/settings16.png");
     // -------------------------------------------------------------------------
+    ui->openWith->setText(tr("Open with..."));
+    ui->openWith->setIconPath(":/res/icons/common/menuitem/open16.png");
+    ui->openWith->setPassthroughClicks(false);
+    connect(ui->openWith, &ContextMenuItem::pressed, this, &ContextMenu::switchToScriptsPage);
+    // -------------------------------------------------------------------------
     ui->showLocation->setAction("showInDirectory");
     ui->showLocation->setText(tr("Show in folder"));
     ui->showLocation->setIconPath(":/res/icons/common/menuitem/folder16.png");
     // -------------------------------------------------------------------------
     // force resize to fit new menuitem width
     this->adjustSize();
+
+    // Scripts page
     // -------------------------------------------------------------------------
+    ui->backButton->setText(tr("Back..."));
+    ui->backButton->setIconPath(":/res/icons/common/menuitem/rotate-left16.png");
+    ui->backButton->setPassthroughClicks(false);
+    ui->scriptSetupButton->setText(tr("Configure scripts"));
+    ui->scriptSetupButton->setIconPath(":/res/icons/common/menuitem/settings16.png");
+    connect(ui->backButton, &ContextMenuItem::pressed, this, &ContextMenu::switchToMainPage);
+    fillOpenWithMenu();
 }
 
 ContextMenu::~ContextMenu() {
     delete ui;
+}
+
+void ContextMenu::fillOpenWithMenu() {
+    auto scripts = scriptManager->allScripts();
+    QMap<QString, Script>::iterator i;
+    for (i = scripts.begin(); i != scripts.end(); ++i) {
+        if(!i.value().command.isEmpty()) {
+            auto btn = new ContextMenuItem();
+            btn->setAction("s:"+i.key());
+            btn->setIconPath(":/res/icons/common/menuitem/open16.png");
+            btn->setText(i.key());
+            ui->scriptsLayout->addWidget(btn);
+        }
+    }
+}
+
+void ContextMenu::switchToMainPage() {
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+void ContextMenu::switchToScriptsPage() {
+    ui->stackedWidget->setCurrentIndex(1);
 }
 
 void ContextMenu::setImageEntriesEnabled(bool mode) {
@@ -106,6 +142,7 @@ void ContextMenu::setImageEntriesEnabled(bool mode) {
 }
 
 void ContextMenu::showAt(QPoint pos) {
+    switchToMainPage();
     QRect geom = geometry();
     geom.moveTopLeft(pos);
     setGeometry(geom);
