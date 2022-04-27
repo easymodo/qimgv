@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gui/folderview/folderview.h"
+#include <QMutexLocker>
 
 struct FolderViewStateBuffer {
     QString directory;
@@ -54,4 +55,5 @@ private:
     std::shared_ptr<FolderView> folderView;
     QVBoxLayout layout;
     FolderViewStateBuffer stateBuf;
+    QMutex m;
 };

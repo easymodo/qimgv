@@ -7,10 +7,13 @@ ThumbnailStripProxy::ThumbnailStripProxy(QWidget *parent)
 }
 
 void ThumbnailStripProxy::init() {
+    qApp->processEvents(); // chew through events in case we have something that alters stateBuf in queue
+    QMutexLocker ml(&m);
     if(thumbnailStrip)
         return;
     thumbnailStrip.reset(new ThumbnailStrip());
     thumbnailStrip->setParent(this);
+    ml.unlock();
     layout.addWidget(thumbnailStrip.get());
     this->setFocusProxy(thumbnailStrip.get());
     this->setLayout(&layout);
@@ -34,10 +37,12 @@ bool ThumbnailStripProxy::isInitialized() {
 }
 
 void ThumbnailStripProxy::populate(int count) {
+    QMutexLocker ml(&m);
+    stateBuf.itemCount = count;
     if(thumbnailStrip) {
-        thumbnailStrip->populate(count);
+        ml.unlock();
+        thumbnailStrip->populate(stateBuf.itemCount);
     } else {
-        stateBuf.itemCount = count;
         stateBuf.selection.clear();
     }
 }
@@ -131,7 +136,6 @@ void ThumbnailStripProxy::addItem() {
 }
 
 QSize ThumbnailStripProxy::itemSize() {
-    init();
     return thumbnailStrip->itemSize();
 }
 

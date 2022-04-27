@@ -9,10 +9,13 @@ FolderViewProxy::FolderViewProxy(QWidget *parent)
 }
 
 void FolderViewProxy::init() {
+    qApp->processEvents(); // chew through events in case we have something that alters stateBuf in queue
+    QMutexLocker ml(&m);
     if(folderView)
         return;
     folderView.reset(new FolderView());
     folderView->setParent(this);
+    ml.unlock();
     layout.addWidget(folderView.get());
     this->setFocusProxy(folderView.get());
     this->setLayout(&layout);
@@ -44,10 +47,12 @@ void FolderViewProxy::init() {
 }
 
 void FolderViewProxy::populate(int count) {
+    QMutexLocker ml(&m);
+    stateBuf.itemCount = count;
     if(folderView) {
-        folderView->populate(count);
+        ml.unlock();
+        folderView->populate(stateBuf.itemCount);
     } else {
-        stateBuf.itemCount = count;
         stateBuf.selection.clear();
     }
 }
