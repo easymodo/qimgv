@@ -30,31 +30,31 @@ ContextMenu::ContextMenu(QWidget *parent) :
     ui->fitWindow->setIconPath(":/res/icons/common/buttons/contextmenu/fit-window18.png");
     ui->fitWindow->setTriggerMode(TriggerMode::PressTrigger);
     // -------------------------------------------------------------------------
-    //  entries
+    // transform buttons
     ui->rotateLeft->setAction("rotateLeft");
-    ui->rotateLeft->setText(tr("Rotate left"));
     ui->rotateLeft->setIconPath(":/res/icons/common/menuitem/rotate-left16.png");
-
+    ui->rotateLeft->setTriggerMode(TriggerMode::PressTrigger);
     ui->rotateRight->setAction("rotateRight");
-    ui->rotateRight->setText(tr("Rotate right"));
     ui->rotateRight->setIconPath(":/res/icons/common/menuitem/rotate-right16.png");
-
+    ui->rotateRight->setTriggerMode(TriggerMode::PressTrigger);
     ui->flipH->setAction("flipH");
-    ui->flipH->setText(tr("Flip H"));
     ui->flipH->setIconPath(":/res/icons/common/menuitem/flip-h16.png");
-
+    ui->flipH->setTriggerMode(TriggerMode::PressTrigger);
     ui->flipV->setAction("flipV");
-    ui->flipV->setText(tr("Flip V"));
     ui->flipV->setIconPath(":/res/icons/common/menuitem/flip-v16.png");
-
+    ui->flipV->setTriggerMode(TriggerMode::PressTrigger);
     ui->crop->setAction("crop");
-    ui->crop->setText(tr("Crop"));
     ui->crop->setIconPath(":/res/icons/common/menuitem/image-crop16.png");
-
+    ui->crop->setTriggerMode(TriggerMode::PressTrigger);
     ui->resize->setAction("resize");
-    ui->resize->setText(tr("Resize"));
     ui->resize->setIconPath(":/res/icons/common/menuitem/resize16.png");
+    ui->resize->setTriggerMode(TriggerMode::PressTrigger);
     // -------------------------------------------------------------------------
+    //  entries
+    ui->print->setAction("print");
+    ui->print->setText(tr("Print"));
+    ui->print->setIconPath(":/res/icons/common/menuitem/settings16.png");
+
     ui->copy->setAction("copyFile");
     ui->copy->setText(tr("Quick copy"));
     ui->copy->setIconPath(":/res/icons/common/menuitem/copy16.png");
@@ -135,9 +135,11 @@ void ContextMenu::setImageEntriesEnabled(bool mode) {
     ui->flipV->setEnabled(mode);
     ui->crop->setEnabled(mode);
     ui->resize->setEnabled(mode);
+
     ui->copy->setEnabled(mode);
     ui->move->setEnabled(mode);
     ui->trash->setEnabled(mode);
+    ui->openWith->setEnabled(mode);
     ui->showLocation->setEnabled(mode);
 }
 

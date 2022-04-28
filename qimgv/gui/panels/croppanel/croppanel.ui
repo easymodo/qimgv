@@ -198,7 +198,7 @@
          </size>
         </property>
         <property name="accessibleName">
-         <string notr="true">CropPanelSeparator</string>
+         <string notr="true">HLineSeparator</string>
         </property>
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>

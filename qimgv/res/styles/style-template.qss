@@ -342,7 +342,7 @@ SidePanel QComboBox QAbstractItemView::item:selected {
     background-color: %accent_hover_rgba%;
 }
 
-[accessibleName="CropPanelSeparator"] {
+[accessibleName="HLineSeparator"] {
     background-color: %button%;
 }
 
@@ -556,6 +556,9 @@ ContextMenu {
     background-color: %widget%;
     border: 1px solid %widget_border%;
     border-radius: %contextmenu_border_radius%;
+}
+ContextMenu QLabel {
+    color: %text_secondary_rgba%;
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="MenuItem"]:hover {
