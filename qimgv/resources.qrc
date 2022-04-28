@@ -152,5 +152,7 @@
         <file>res/icons/common/buttons/panel/up16@2x.png</file>
         <file>res/icons/common/overlay/info16.png</file>
         <file>res/icons/common/overlay/info16@2x.png</file>
+        <file>res/icons/common/menuitem/back16.png</file>
+        <file>res/icons/common/menuitem/forward16.png</file>
     </qresource>
 </RCC>

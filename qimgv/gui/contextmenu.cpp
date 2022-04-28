@@ -80,7 +80,7 @@ ContextMenu::ContextMenu(QWidget *parent) :
     ui->settings->setIconPath(":/res/icons/common/menuitem/settings16.png");
     // -------------------------------------------------------------------------
     ui->openWith->setText(tr("Open with..."));
-    ui->openWith->setIconPath(":/res/icons/common/menuitem/open16.png");
+    ui->openWith->setIconPath(":/res/icons/common/menuitem/forward16.png");
     ui->openWith->setPassthroughClicks(false);
     connect(ui->openWith, &ContextMenuItem::pressed, this, &ContextMenu::switchToScriptsPage);
     // -------------------------------------------------------------------------
@@ -93,10 +93,10 @@ ContextMenu::ContextMenu(QWidget *parent) :
 
     // Scripts page
     // -------------------------------------------------------------------------
-    ui->backButton->setText(tr("Back..."));
-    ui->backButton->setIconPath(":/res/icons/common/menuitem/rotate-left16.png");
+    ui->backButton->setText(tr("Back"));
+    ui->backButton->setIconPath(":/res/icons/common/menuitem/back16.png");
     ui->backButton->setPassthroughClicks(false);
-    ui->scriptSetupButton->setText(tr("Configure scripts"));
+    ui->scriptSetupButton->setText(tr("Configure menu"));
     ui->scriptSetupButton->setIconPath(":/res/icons/common/menuitem/settings16.png");
     connect(ui->backButton, &ContextMenuItem::pressed, this, &ContextMenu::switchToMainPage);
     fillOpenWithMenu();
