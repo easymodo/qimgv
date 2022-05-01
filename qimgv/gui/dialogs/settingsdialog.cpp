@@ -122,10 +122,6 @@ void SettingsDialog::setupSidebar() {
 
     // empty for now
     sideBar->item(2)->setHidden(true);
-#ifdef _WIN32
-    // Not implemented on windows. Not sure if will ever be. I don't really care.
-    sideBar->item(5)->setHidden(true);
-#endif
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::readSettings() {

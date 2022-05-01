@@ -7,7 +7,7 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) :
     editMode(false)
 {
     ui->setupUi(this);
-    this->setWindowTitle(tr("New script"));
+    this->setWindowTitle(tr("New application/script"));
     ui->keywordsLabel->setText(tr("Keywords:") + " %file%");
     connect(ui->nameLineEdit, &QLineEdit::textChanged, this, &ScriptEditorDialog::onNameChanged);
     this->onNameChanged(ui->nameLineEdit->text());
@@ -19,7 +19,7 @@ ScriptEditorDialog::ScriptEditorDialog(QString name, Script script, QWidget *par
       editMode(true)
 {
     ui->setupUi(this);
-    this->setWindowTitle(tr("Edit script"));
+    this->setWindowTitle(tr("Edit"));
     this->onNameChanged(ui->nameLineEdit->text());
     editTarget = name;
     connect(ui->nameLineEdit, &QLineEdit::textChanged, this, &ScriptEditorDialog::onNameChanged);
@@ -73,8 +73,13 @@ void ScriptEditorDialog::onNameChanged(QString name) {
 
 void ScriptEditorDialog::selectScriptPath() {
     QFileDialog dialog;
-    auto file = dialog.getOpenFileName(this, tr("Select a script file"), "", "Shell script (*.sh)");
+    QString file;
+#ifdef _WIN32
+    file = dialog.getOpenFileName(this, tr("Select an executable/script"), "", "Executable/script (*.exe *.bat)");
+#else
+    file = dialog.getOpenFileName(this, tr("Select a script file"), "", "Shell script (*.sh)");
+#endif
     if(!file.isEmpty()) {
-        ui->pathLineEdit->setText(file + " %file%");
+        ui->pathLineEdit->setText("\"" + file + "\"" + " %file%");
     }
 }

@@ -20,7 +20,6 @@ ScriptManager *ScriptManager::getInstance() {
     return scriptManager;
 }
 
-#ifdef __linux
 void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> img) {
     if(scripts.contains(scriptName)) {
         Script script = scripts.value(scriptName);
@@ -35,7 +34,7 @@ void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> 
         if(script.blocking) {
             exec.start(program, arguments);
             if(!exec.waitForStarted()) {
-                qDebug() << "Unable not start script." << program << " Make sure it is an executable.";
+                qDebug() << "Unable not run application/script." << program << " Make sure it is an executable.";
             }
             exec.waitForFinished(10000);
         } else {
@@ -45,13 +44,13 @@ void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> 
                 if(fi.isFile() && !fi.isExecutable())
                      errorString = "Error:  " + program + "  is not an executable.";
                 else
-                    errorString = "Error: unable run script. See README for working examples.";
+                    errorString = "Error: unable run application/script. See README for working examples.";
                 emit error(errorString);
                 qWarning() << errorString;
             }
         }
     } else {
-        qDebug() << "[ScriptManager] Script " << scriptName << " does not exist.";
+        qDebug() << "[ScriptManager] File " << scriptName << " does not exist.";
     }
 }
 
@@ -67,12 +66,6 @@ void ScriptManager::runCommandDetached(QString cmd) {
     QStringList cmdSplit = ScriptManager::splitCommandLine(cmd);
     QProcess::startDetached(cmdSplit.takeAt(0), cmdSplit);
 }
-
-#else
-void ScriptManager::runScript(const QString &scriptName, std::shared_ptr<Image> img) {}
-QString ScriptManager::runCommand(QString cmd) {return nullptr;}
-void ScriptManager::runCommandDetached(QString cmd) {}
-#endif
 
 // TODO: what if filename contains one of the tags?
 void ScriptManager::processArguments(QStringList &cmd, std::shared_ptr<Image> img) {
