@@ -109,4 +109,7 @@ foreach(icon IN ITEMS 16x16 22x22 24x24 32x32 36x36 48x48 64x64 128x128 256x256)
 endforeach()
 install(FILES distrib/hicolor/scalable/apps/qimgv.svg
     DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/hicolor/scalable/apps)
-    
+
+# AppData manifest
+install(FILES distrib/qimgv.appdata.xml
+    DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/metainfo)
