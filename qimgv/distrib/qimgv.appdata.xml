@@ -5,28 +5,35 @@
   <metadata_license>CC0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <name>qimgv</name>
-  <summary>Qt5 image viewer with optional video support</summary>
+  <summary>Image viewer. Fast, easy to use. Optional video support.</summary>
   <description>
-    <p>Qt5 image viewer. Fast, configurable, easy to use. Optional video support.
+    <p>Image viewer. Fast, easy to use. Optional video support.
 
-Key features:
+       Key features:
 
-- Simple UI
-- Fast
-- Easy to use
-- Fully configurable, including shortcuts
-- Basic image editing: Crop, Rotate and Resize
-- Ability to quickly copy / move images to different folders
-- Experimental video playback via libmpv
-- Ability to run shell scripts
-- A nice dark theme, should look identical on every OS / DE</p>
+        - Simple UI
+        - Fast
+        - Easy to use
+        - Fully configurable, including themes, shortcuts
+        - High quality scaling
+        - Basic image editing: Crop, Rotate and Resize
+        - Ability to quickly copy / move images to different folders
+        - Experimental video playback via libmpv
+        - Folder view mode
+        - Ability to run shell scripts</p>
   </description>
   <provides>
     <binary>qimgv</binary>
   </provides>
   <screenshots>
     <screenshot type="default">
-      <image>https://camo.githubusercontent.com/00793753c37237167fca0a36e46524f0db1ee612/68747470733a2f2f692e696d6775722e636f6d2f4b6545543149652e706e67</image>
+      <image>https://raw.githubusercontent.com/easymodo/qimgv/master/qimgv/distrib/screenshots/qimgv0.9_1.jpg</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/easymodo/qimgv/master/qimgv/distrib/screenshots/qimgv0.9_2.jpg</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/easymodo/qimgv/master/qimgv/distrib/screenshots/qimgv_3.jpg</image>
     </screenshot>
   </screenshots>
   <developer_name>easymodo</developer_name>
