@@ -36,6 +36,11 @@ QDataStream& operator>>(QDataStream& in, Script& v) {
 int main(int argc, char *argv[]) {
     // force some env variables
     qputenv("QT_AUTO_SCREEN_SCALE_FACTOR","0");
+#ifdef _WIN32
+    // if this is set by other app, platform plugin may fail to load
+    // https://github.com/easymodo/qimgv/issues/410
+    qputenv("QT_PLUGIN_PATH","");
+#endif
 
     // for hidpi testing
     //qputenv("QT_SCALE_FACTOR","1.0");
