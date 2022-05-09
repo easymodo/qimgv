@@ -14,7 +14,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)
 
 if(NOT WIN32)
     find_package(PkgConfig REQUIRED)
-    pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)\
+    pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
 endif()
 
 include(GNUInstallDirs)
@@ -47,9 +47,9 @@ target_include_directories(player_mpv PRIVATE src)
 
 if(WIN32)
     target_include_directories(player_mpv PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/include)
+        ${MPV_DIR}/include)
     target_link_directories(player_mpv PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/mpv-dev/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x86_64,i686>)
+        ${MPV_DIR}/lib/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x86_64,i686>)
 endif()
 
 install(TARGETS player_mpv LIBRARY DESTINATION ${QIMGV_LIBDIR})
