@@ -1,6 +1,8 @@
 .kdev4/
 *.txt
 !CMakeLists.txt
+!msys2-build-deps.txt
+!msys2-dll-deps.txt
 #build*
 .kdev_include_paths
 *.xmi
