@@ -1,0 +1,1198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mime-info [
+  <!ELEMENT mime-info (mime-type)+>
+  <!ATTLIST mime-info xmlns CDATA #FIXED "http://www.freedesktop.org/standards/shared-mime-info">
+
+  <!ELEMENT mime-type (comment+, (acronym,expanded-acronym)? , (icon? | generic-icon? | glob | magic | treemagic | root-XML | alias | sub-class-of)*)>
+  <!ATTLIST mime-type type CDATA #REQUIRED>
+
+  <!-- a comment describing a document with the respective MIME type. Example: "WMV video" -->
+  <!ELEMENT comment (#PCDATA)>
+  <!ATTLIST comment xml:lang CDATA #IMPLIED>
+
+  <!-- a comment describing the respective unexpanded MIME type acronym. Example: "WMV" -->
+  <!ELEMENT acronym (#PCDATA)>
+  <!ATTLIST acronym xml:lang CDATA #IMPLIED>
+
+  <!-- a comment describing the respective expanded MIME type acronym. Example: "Windows Media Video" -->
+  <!ELEMENT expanded-acronym (#PCDATA)>
+  <!ATTLIST expanded-acronym xml:lang CDATA #IMPLIED>
+
+  <!ELEMENT icon EMPTY>
+  <!ATTLIST icon name CDATA #REQUIRED>
+
+  <!-- a generic icon name as per the Icon Naming Specification, only required if computing
+  it from the mime-type would not work, See "generic-icon" in the Shared Mime Specification -->
+  <!ELEMENT generic-icon EMPTY>
+  <!ATTLIST generic-icon name (application-x-executable|audio-x-generic|folder|font-x-generic|image-x-generic|package-x-generic|text-html|text-x-generic|text-x-generic-template|text-x-script|video-x-generic|x-office-address-book|x-office-calendar|x-office-document|x-office-presentation|x-office-spreadsheet) #REQUIRED>
+
+  <!ELEMENT glob EMPTY>
+  <!ATTLIST glob pattern CDATA #REQUIRED>
+  <!ATTLIST glob weight CDATA "50">
+  <!ATTLIST glob case-sensitive CDATA #IMPLIED>
+
+  <!ELEMENT magic (match)+>
+  <!ATTLIST magic priority CDATA "50">
+
+  <!ELEMENT match (match)*>
+  <!ATTLIST match offset CDATA #REQUIRED>
+  <!ATTLIST match type (string|big16|big32|little16|little32|host16|host32|byte) #REQUIRED>
+  <!ATTLIST match value CDATA #REQUIRED>
+  <!ATTLIST match mask CDATA #IMPLIED>
+
+  <!ELEMENT treemagic (treematch)+>
+  <!ATTLIST treemagic priority CDATA "50">
+
+  <!ELEMENT treematch (treematch)*>
+  <!ATTLIST treematch path CDATA #REQUIRED>
+  <!ATTLIST treematch type (file|directory|link) #IMPLIED>
+  <!ATTLIST treematch match-case (true|false) #IMPLIED>
+  <!ATTLIST treematch executable (true|false) #IMPLIED>
+  <!ATTLIST treematch non-empty (true|false) #IMPLIED>
+  <!ATTLIST treematch mimetype CDATA #IMPLIED>
+
+  <!ELEMENT root-XML EMPTY>
+  <!ATTLIST root-XML namespaceURI CDATA #REQUIRED>
+  <!ATTLIST root-XML localName CDATA #REQUIRED>
+
+  <!ELEMENT alias EMPTY>
+  <!ATTLIST alias type CDATA #REQUIRED>
+
+  <!ELEMENT sub-class-of EMPTY>
+  <!ATTLIST sub-class-of type CDATA #REQUIRED>
+]>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+<mime-type type="image/bmp">
+  <comment>Windows BMP image</comment>
+  <magic priority="50">
+    <match value="BMxxxx\000\000" type="string" offset="0" mask="0xffff00000000ffff"/>
+    <match value="BM" type="string" offset="0">
+      <match value="12" type="byte" offset="14"/>
+      <match value="64" type="byte" offset="14"/>
+      <match value="40" type="byte" offset="14"/>
+    </match>
+  </magic>
+  <glob pattern="*.bmp"/>
+  <glob pattern="*.dib"/>
+  <alias type="image/x-bmp"/>
+  <alias type="image/x-MS-bmp"/>
+</mime-type>
+<mime-type type="image/vnd.wap.wbmp">
+  <comment>WBMP image</comment>
+  <acronym>WBMP</acronym>
+  <expanded-acronym>WAP bitmap</expanded-acronym>
+  <glob pattern="*.wbmp"/>
+</mime-type>
+<mime-type type="image/cgm">
+  <comment>Computer Graphics Metafile</comment>
+  <glob pattern="*.cgm"/>
+</mime-type>
+<mime-type type="image/fax-g3">
+  <comment>CCITT G3 fax</comment>
+  <glob pattern="*.g3"/>
+</mime-type>
+<mime-type type="image/g3fax">
+  <comment>G3 fax image</comment>
+</mime-type>
+<mime-type type="image/gif">
+  <comment>GIF image</comment>
+  <magic priority="50">
+    <match value="GIF8" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.gif"/>
+</mime-type>
+<mime-type type="image/ief">
+  <comment>IEF image</comment>
+  <glob pattern="*.ief"/>
+</mime-type>
+<mime-type type="image/jpeg">
+  <comment>JPEG image</comment>
+  <magic priority="50">
+    <match value="\377\330\377" type="string" offset="0"/>
+    <match value="0xffd8" type="big16" offset="0"/>
+  </magic>
+  <glob pattern="*.jpeg"/>
+  <glob pattern="*.jpg"/>
+  <glob pattern="*.jpe"/>
+  <alias type="image/pjpeg"/>
+</mime-type>
+<mime-type type="image/x-jp2-codestream">
+  <comment>JPEG-2000 codestream</comment>
+  <magic priority="50">
+    <match value="0xff4fff51" type="big32" offset="0"/>
+  </magic>
+  <glob pattern="*.j2c"/>
+  <glob pattern="*.j2k"/>
+  <glob pattern="*.jpc"/>
+</mime-type>
+<mime-type type="image/jp2">
+  <comment>JPEG-2000 JP2 image</comment>
+  <acronym>JP2</acronym>
+  <expanded-acronym>JPEG-2000</expanded-acronym>
+  <alias type="image/jpeg2000"/>
+  <alias type="image/jpeg2000-image"/>
+  <alias type="image/x-jpeg2000-image"/>
+  <magic priority="50">
+    <match value="\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a        jp2\x20" type="string" offset="0" mask="0xffffffffffffffffffffffff0000000000000000ffffffff"/>
+  </magic>
+  <glob pattern="*.jp2"/>
+  <glob pattern="*.jpg2"/>
+</mime-type>
+<mime-type type="image/jpx">
+  <comment>JPEG-2000 JPX image</comment>
+  <acronym>JPX</acronym>
+  <expanded-acronym>JPEG-2000 eXtended</expanded-acronym>
+  <magic priority="50">
+    <match value="\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a        jpx\x20" type="string" offset="0" mask="0xffffffffffffffffffffffff0000000000000000ffffffff"/>
+  </magic>
+  <glob pattern="*.jpf"/>
+  <glob pattern="*.jpx"/>
+</mime-type>
+<mime-type type="image/jpm">
+  <comment>JPEG-2000 JPM image</comment>
+  <acronym>JPM</acronym>
+  <expanded-acronym>JPEG-2000 Mixed</expanded-acronym>
+  <magic priority="50">
+    <match value="\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a        jpm\x20" type="string" offset="0" mask="0xffffffffffffffffffffffff0000000000000000ffffffff"/>
+  </magic>
+  <glob pattern="*.jpm"/>
+  <glob pattern="*.jpgm"/>
+</mime-type>
+<mime-type type="video/mj2">
+  <comment>JPEG-2000 MJ2 video</comment>
+  <acronym>MJ2</acronym>
+  <expanded-acronym>Motion JPEG-2000</expanded-acronym>
+  <magic priority="50">
+    <match value="\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a        mjp2" type="string" offset="0" mask="0xffffffffffffffffffffffff0000000000000000ffffffff"/>
+  </magic>
+  <glob pattern="*.mj2"/>
+  <glob pattern="*.mjp2"/>
+</mime-type>
+<mime-type type="image/openraster">
+  <comment>OpenRaster archiving image</comment>
+  <sub-class-of type="application/zip"/>
+  <magic priority="70">
+    <match value="PK\003\004" type="string" offset="0">
+      <match value="mimetype" type="string" offset="30">
+        <match value="image/openraster" type="string" offset="38"/>
+      </match>
+    </match>
+  </magic>
+  <glob pattern="*.ora"/>
+</mime-type>
+<mime-type type="image/x-dds">
+  <comment>DirectDraw surface</comment>
+  <magic priority="50">
+    <match value="DDS" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.dds"/>
+</mime-type>
+<mime-type type="image/x-xcursor">
+  <comment>X11 cursor</comment>
+  <magic priority="50">
+    <match value="Xcur" type="string" offset="0"/>
+  </magic>
+</mime-type>
+<mime-type type="image/x-exr">
+  <comment>EXR image</comment>
+  <magic priority="50">
+    <match value="20000630" type="little32" offset="0"/>
+  </magic>
+  <glob pattern="*.exr"/>
+</mime-type>
+<mime-type type="image/x-pict">
+  <comment>Macintosh Quickdraw/PICT drawing</comment>
+  <magic priority="50">
+    <match value="0x0011" type="big16" offset="10">
+      <match value="0x02FF" type="big16" offset="12">
+        <match value="0x0C00" type="big16" offset="14">
+          <match value="0xFFFE" type="big16" offset="16"/>
+        </match>
+      </match>
+    </match>
+  </magic>
+  <magic priority="50">
+    <match value="0x0011" type="big16" offset="522">
+      <match value="0x02FF" type="big16" offset="524">
+        <match value="0x0C00" type="big16" offset="526">
+          <match value="0xFFFE" type="big16" offset="528"/>
+        </match>
+      </match>
+    </match>
+  </magic>
+  <glob pattern="*.pct"/>
+  <glob pattern="*.pict"/>
+  <glob pattern="*.pict1"/>
+  <glob pattern="*.pict2"/>
+</mime-type>
+<mime-type type="application/x-ufraw">
+  <comment>UFRaw ID image</comment>
+  <acronym>UFRaw</acronym>
+  <expanded-acronym>Unidentified Flying Raw</expanded-acronym>
+  <sub-class-of type="application/xml"/>
+  <generic-icon name="image-x-generic"/>
+  <glob pattern="*.ufraw"/>
+</mime-type>
+<mime-type type="image/x-dcraw">
+  <comment>digital raw image</comment>
+</mime-type>
+<mime-type type="image/x-adobe-dng">
+  <comment>Adobe DNG negative</comment>
+  <acronym>DNG</acronym>
+  <expanded-acronym>Digital Negative</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <sub-class-of type="image/tiff"/>
+  <glob pattern="*.dng"/>
+</mime-type>
+
+
+<mime-type type="image/x-canon-crw">
+  <comment>Canon CRW raw image</comment>
+  <acronym>CRW</acronym>
+  <expanded-acronym>Canon RaW</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <magic priority="50">
+    <match value="II\x1a\x00\x00\x00HEAPCCDR" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.crw"/>
+</mime-type>
+
+<mime-type type="image/x-canon-cr2">
+  <comment>Canon CR2 raw image</comment>
+  <acronym>CR2</acronym>
+  <expanded-acronym>Canon Raw 2</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <sub-class-of type="image/tiff"/>
+  <glob pattern="*.cr2"/>
+</mime-type>
+<mime-type type="image/x-fuji-raf">
+  <comment>Fuji RAF raw image</comment>
+  <acronym>RAF</acronym>
+  <expanded-acronym>RAw Format</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <magic priority="50">
+    <match value="FUJIFILMCCD-RAW " type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.raf"/>
+</mime-type>
+<mime-type type="image/x-kodak-dcr">
+  <comment>Kodak DCR raw image</comment>
+  <acronym>DCR</acronym>
+  <expanded-acronym>Digital Camera Raw</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <sub-class-of type="image/tiff"/>
+  <glob pattern="*.dcr"/>
+</mime-type>
+<mime-type type="image/x-kodak-k25">
+  <comment>Kodak K25 raw image</comment>
+  <acronym>K25</acronym>
+  <expanded-acronym>Kodak DC25</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <sub-class-of type="image/tiff"/>
+  <glob pattern="*.k25"/>
+</mime-type>
+<mime-type type="image/x-kodak-kdc">
+  <comment>Kodak KDC raw image</comment>
+  <acronym>KDC</acronym>
+  <expanded-acronym>Kodak Digital Camera</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <sub-class-of type="image/tiff"/>
+  <magic priority="80">
+    <match value="EASTMAN KODAK COMPANY" type="string" offset="242"/>
+  </magic>
+  <glob pattern="*.kdc"/>
+</mime-type>
+<mime-type type="image/x-minolta-mrw">
+  <comment>Minolta MRW raw image</comment>
+  <acronym>MRW</acronym>
+  <expanded-acronym>Minolta RaW</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <magic priority="50">
+    <match value="\x00MRM" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.mrw"/>
+</mime-type>
+<mime-type type="image/x-nikon-nef">
+  <comment>Nikon NEF raw image</comment>
+  <acronym>NEF</acronym>
+  <expanded-acronym>Nikon Electronic Format</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <sub-class-of type="image/tiff"/>
+  <glob pattern="*.nef"/>
+</mime-type>
+<mime-type type="image/x-olympus-orf">
+  <comment>Olympus ORF raw image</comment>
+  <acronym>ORF</acronym>
+  <expanded-acronym>Olympus Raw Format</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <magic priority="50">
+
+
+
+
+
+    <match value="IIRO\x08\x00\x00\x00" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.orf"/>
+</mime-type>
+<mime-type type="image/x-panasonic-rw">
+  <comment>Panasonic raw image</comment>
+  <sub-class-of type="image/x-dcraw"/>
+  <magic priority="50">
+
+    <match value="IIU\x00\x08\x00\x00\x00" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.raw"/>
+  <alias type="image/x-panasonic-raw"/>
+</mime-type>
+<mime-type type="image/x-panasonic-rw2">
+  <comment>Panasonic raw2 image</comment>
+  <sub-class-of type="image/x-dcraw"/>
+  <magic priority="50">
+
+    <match value="IIU\x00\x18\x00\x00\x00" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.rw2"/>
+  <alias type="image/x-panasonic-raw2"/>
+</mime-type>
+<mime-type type="image/x-pentax-pef">
+  <comment>Pentax PEF raw image</comment>
+  <acronym>PEF</acronym>
+  <expanded-acronym>Pentax Electronic Format</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <sub-class-of type="image/tiff"/>
+  <glob pattern="*.pef"/>
+</mime-type>
+<mime-type type="image/x-sigma-x3f">
+  <comment>Sigma X3F raw image</comment>
+  <acronym>X3F</acronym>
+  <expanded-acronym>X3 Foveon</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <magic priority="50">
+
+    <match value="FOVb" type="string" offset="0">
+
+      <match value="0x00FF00FF" type="little32" offset="4" mask="0xFF00FF00"/>
+    </match>
+  </magic>
+  <glob pattern="*.x3f"/>
+</mime-type>
+<mime-type type="image/x-sony-srf">
+  <comment>Sony SRF raw image</comment>
+  <acronym>SRF</acronym>
+  <expanded-acronym>Sony Raw Format</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <sub-class-of type="image/tiff"/>
+  <glob pattern="*.srf"/>
+</mime-type>
+<mime-type type="image/x-sony-sr2">
+  <comment>Sony SR2 raw image</comment>
+  <acronym>SR2</acronym>
+  <expanded-acronym>Sony Raw format 2</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <sub-class-of type="image/tiff"/>
+  <glob pattern="*.sr2"/>
+</mime-type>
+<mime-type type="image/x-sony-arw">
+  <comment>Sony ARW raw image</comment>
+  <acronym>ARW</acronym>
+  <expanded-acronym>Alpha Raw format</expanded-acronym>
+  <sub-class-of type="image/x-dcraw"/>
+  <sub-class-of type="image/tiff"/>
+  <glob pattern="*.arw"/>
+</mime-type>
+<mime-type type="image/png">
+  <comment>PNG image</comment>
+  <magic priority="50">
+    <match value="\x89PNG" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.png"/>
+</mime-type>
+<mime-type type="image/rle">
+  <comment>Run Length Encoded bitmap image</comment>
+  <glob pattern="*.rle"/>
+</mime-type>
+<mime-type type="image/svg+xml">
+  <comment>SVG image</comment>
+  <acronym>SVG</acronym>
+  <expanded-acronym>Scalable Vector Graphics</expanded-acronym>
+  <sub-class-of type="application/xml"/>
+  <magic priority="80">
+    <match value="&lt;!DOCTYPE svg" type="string" offset="0:256"/>
+    <match value="&lt;svg" type="string" offset="0:256"/>
+  </magic>
+  <glob pattern="*.svg"/>
+  <root-XML namespaceURI="http://www.w3.org/2000/svg" localName="svg"/>
+</mime-type>
+<mime-type type="image/svg+xml-compressed">
+  <comment>compressed SVG image</comment>
+  <acronym>SVG</acronym>
+  <expanded-acronym>Scalable Vector Graphics</expanded-acronym>
+  <sub-class-of type="application/gzip"/>
+  <glob pattern="*.svgz"/>
+</mime-type>
+<mime-type type="image/tiff">
+  <comment>TIFF image</comment>
+  <acronym>TIFF</acronym>
+  <expanded-acronym>Tagged Image File Format</expanded-acronym>
+  <magic priority="50">
+    <match value="MM\x00\x2a" type="string" offset="0"/>
+    <match value="II\x2a\x00" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.tif"/>
+  <glob pattern="*.tiff"/>
+</mime-type>
+<mime-type type="image/x-tiff-multipage">
+  <comment>Multi-page TIFF image</comment>
+  <acronym>TIFF</acronym>
+  <expanded-acronym>Tagged Image File Format</expanded-acronym>
+  <sub-class-of type="image/tiff"/>
+</mime-type>
+<mime-type type="image/vnd.dwg">
+  <comment>AutoCAD image</comment>
+  <glob pattern="*.dwg"/>
+</mime-type>
+<mime-type type="image/vnd.dxf">
+  <comment>DXF vector image</comment>
+  <glob pattern="*.dxf"/>
+  <magic priority="50">
+    <match value="\nHEADER\n" type="string" offset="0:64"/>
+    <match value="\x0d\nHEADER\x0d\n" type="string" offset="0:64"/>
+  </magic>
+</mime-type>
+<mime-type type="image/vnd.ms-modi">
+  <comment>Microsoft Document Imaging format</comment>
+  <acronym>MDI</acronym>
+  <expanded-acronym>Microsoft Document Imaging</expanded-acronym>
+  <glob pattern="*.mdi"/>
+  <magic priority="50">
+    <match value="\x45\x50\x2A\x00" type="string" offset="0"/>
+  </magic>
+</mime-type>
+<mime-type type="image/webp">
+  <comment>WebP image</comment>
+  <magic priority="50">
+    <match value="RIFF" type="string" offset="0">
+      <match value="WEBP" type="string" offset="8"/>
+    </match>
+  </magic>
+  <glob pattern="*.webp"/>
+</mime-type>
+<mime-type type="image/x-3ds">
+  <comment>3D Studio image</comment>
+  <glob pattern="*.3ds"/>
+</mime-type>
+<mime-type type="image/x-applix-graphics">
+  <comment>Applix Graphics image</comment>
+  <magic priority="50">
+    <match value="*BEGIN" type="string" offset="0">
+      <match value="GRAPHICS" type="string" offset="7"/>
+    </match>
+  </magic>
+  <glob pattern="*.ag"/>
+</mime-type>
+<mime-type type="image/x-bzeps">
+  <comment>EPS image (bzip-compressed)</comment>
+  <sub-class-of type="application/x-bzip"/>
+  <glob pattern="*.eps.bz2"/>
+  <glob pattern="*.epsi.bz2"/>
+  <glob pattern="*.epsf.bz2"/>
+</mime-type>
+<mime-type type="image/x-cmu-raster">
+  <comment>CMU raster image</comment>
+  <glob pattern="*.ras"/>
+</mime-type>
+<mime-type type="image/x-compressed-xcf">
+  <comment>compressed GIMP image</comment>
+  <glob pattern="*.xcf.gz"/>
+  <glob pattern="*.xcf.bz2"/>
+</mime-type>
+<mime-type type="application/dicom">
+  <comment>DICOM image</comment>
+  <acronym>DICOM</acronym>
+  <expanded-acronym>Digital Imaging and Communications in Medicine</expanded-acronym>
+  <generic-icon name="image-x-generic"/>
+  <glob pattern="dicomdir"/>
+  <glob pattern="*.dcm"/>
+  <magic priority="50">
+    <match value="DICM" type="string" offset="128"/>
+  </magic>
+</mime-type>
+<mime-type type="application/x-docbook+xml">
+  <comment>DocBook document</comment>
+  <sub-class-of type="application/xml"/>
+  <generic-icon name="x-office-document"/>
+  <magic priority="90">
+    <match value="&lt;?xml" type="string" offset="0">
+      <match value="-//OASIS//DTD DocBook XML" type="string" offset="0:100"/>
+      <match value="-//KDE//DTD DocBook XML" type="string" offset="0:100"/>
+    </match>
+  </magic>
+  <glob pattern="*.dbk"/>
+  <glob pattern="*.docbook"/>
+  <alias type="application/docbook+xml"/>
+  <alias type="application/vnd.oasis.docbook+xml"/>
+</mime-type>
+<mime-type type="image/x-dib">
+  <comment>DIB image</comment>
+  <acronym>DIB</acronym>
+  <expanded-acronym>Device Independent Bitmap</expanded-acronym>
+  <magic priority="50">
+    <match value="\x28\00\00\00" type="string" offset="0"/>
+  </magic>
+</mime-type>
+<mime-type type="image/vnd.djvu">
+  <comment>DjVu image</comment>
+  <alias type="image/x-djvu"/>
+  <alias type="image/x.djvu"/>
+  <magic priority="50">
+    <match value="AT&amp;TFORM" type="string" offset="0">
+      <match value="DJVU" type="string" offset="12"/>
+    </match>
+    <match value="FORM" type="string" offset="0">
+      <match value="DJVU" type="string" offset="8"/>
+    </match>
+  </magic>
+  <glob pattern="*.djvu"/>
+  <glob pattern="*.djv"/>
+</mime-type>
+<mime-type type="image/vnd.djvu+multipage">
+  <comment>DjVu document</comment>
+  <generic-icon name="x-office-document"/>
+  <magic priority="50">
+    <match value="AT&amp;TFORM" type="string" offset="0">
+      <match value="DJVM" type="string" offset="12"/>
+    </match>
+    <match value="FORM" type="string" offset="0">
+      <match value="DJVM" type="string" offset="8"/>
+    </match>
+  </magic>
+  <sub-class-of type="image/vnd.djvu"/>
+  <glob pattern="*.djvu"/>
+  <glob pattern="*.djv"/>
+</mime-type>
+<mime-type type="image/dpx">
+  <comment>DPX image</comment>
+  <acronym>DPX</acronym>
+  <expanded-acronym>Digital Moving Picture Exchange</expanded-acronym>
+  <magic priority="50">
+    <match value="0x53445058" type="big32" offset="0"/>
+  </magic>
+</mime-type>
+<mime-type type="image/x-eps">
+  <comment>EPS image</comment>
+  <acronym>EPS</acronym>
+  <expanded-acronym>Encapsulated PostScript</expanded-acronym>
+  <sub-class-of type="application/postscript"/>
+  <magic priority="90">
+    <match value="%!" type="string" offset="0">
+      <match value="EPS" type="string" offset="15"/>
+    </match>
+    <match value="\004%!" type="string" offset="0">
+      <match value="EPS" type="string" offset="16"/>
+    </match>
+    <match value="0xC5D0D3C6" type="big32" offset="0"/>
+  </magic>
+  <glob pattern="*.eps"/>
+  <glob pattern="*.epsi"/>
+  <glob pattern="*.epsf"/>
+</mime-type>
+<mime-type type="image/fits">
+  <comment>FITS document</comment>
+  <acronym>FITS</acronym>
+  <expanded-acronym>Flexible Image Transport System</expanded-acronym>
+  <magic priority="50">
+    <match value="SIMPLE  =" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.fits"/>
+  <alias type="image/x-fits"/>
+</mime-type>
+<mime-type type="image/x-fpx">
+  <comment>FPX image</comment>
+  <acronym>FPX</acronym>
+  <expanded-acronym>FlashPiX</expanded-acronym>
+  <magic priority="50">
+    <match value="0x46506978" type="big32" offset="0"/>
+  </magic>
+</mime-type>
+<mime-type type="image/x-gzeps">
+  <comment>EPS image (gzip-compressed)</comment>
+  <sub-class-of type="application/gzip"/>
+  <glob pattern="*.eps.gz"/>
+  <glob pattern="*.epsi.gz"/>
+  <glob pattern="*.epsf.gz"/>
+</mime-type>
+<mime-type type="image/vnd.microsoft.icon">
+  <comment>Windows icon</comment>
+  <magic priority="50">
+    <match value="\0\0\1\0" type="string" offset="0">
+      <match value="\0" type="string" offset="5"/>
+    </match>
+  </magic>
+  <glob pattern="*.ico"/>
+  <alias type="application/ico"/>
+  <alias type="image/ico"/>
+  <alias type="image/icon"/>
+  <alias type="image/x-ico"/>
+  <alias type="image/x-icon"/>
+  <alias type="text/ico"/>
+</mime-type>
+<mime-type type="image/x-icns">
+  <comment>MacOS X icon</comment>
+  <glob pattern="*.icns"/>
+  <magic priority="50">
+    <match value="icns" type="string" offset="0"/>
+  </magic>
+</mime-type>
+<mime-type type="image/x-ilbm">
+  <comment>ILBM image</comment>
+  <acronym>ILBM</acronym>
+  <expanded-acronym>InterLeaved BitMap</expanded-acronym>
+  <sub-class-of type="application/x-iff"/>
+  <magic priority="50">
+    <match value="ILBM" type="string" offset="8"/>
+    <match value="PBM " type="string" offset="8"/>
+  </magic>
+  <glob pattern="*.iff"/>
+  <glob pattern="*.ilbm"/>
+  <glob pattern="*.lbm"/>
+  <alias type="image/x-iff"/>
+</mime-type>
+<mime-type type="image/x-jng">
+  <comment>JNG image</comment>
+  <acronym>JNG</acronym>
+  <expanded-acronym>JPEG Network Graphics</expanded-acronym>
+  <glob pattern="*.jng"/>
+</mime-type>
+<mime-type type="image/x-lwo">
+  <comment>LightWave object</comment>
+  <glob pattern="*.lwo"/>
+  <glob pattern="*.lwob"/>
+</mime-type>
+<mime-type type="image/x-lws">
+  <comment>LightWave scene</comment>
+  <glob pattern="*.lws"/>
+</mime-type>
+<mime-type type="image/x-macpaint">
+  <comment>MacPaint Bitmap image</comment>
+  <glob pattern="*.pntg"/>
+</mime-type>
+<mime-type type="image/x-msod">
+  <comment>Office drawing</comment>
+  <glob pattern="*.msod"/>
+</mime-type>
+<mime-type type="image/x-niff">
+  <comment>NIFF image</comment>
+  <magic priority="80">
+    <match value="IIN1" type="string" offset="0"/>
+  </magic>
+</mime-type>
+<mime-type type="image/vnd.zbrush.pcx">
+  <comment>PCX image</comment>
+  <acronym>PCX</acronym>
+  <expanded-acronym>PiCture eXchange</expanded-acronym>
+  <magic priority="50">
+    <match value="10" type="byte" offset="0">
+      <match value="0" type="byte" offset="1"/>
+      <match value="2" type="byte" offset="1"/>
+      <match value="3" type="byte" offset="1"/>
+      <match value="5" type="byte" offset="1"/>
+    </match>
+  </magic>
+  <glob pattern="*.pcx"/>
+  <alias type="image/x-pcx"/>
+</mime-type>
+<mime-type type="image/x-photo-cd">
+  <comment>PCD image</comment>
+  <acronym>PCD</acronym>
+  <expanded-acronym>PhotoCD</expanded-acronym>
+  <glob pattern="*.pcd"/>
+</mime-type>
+<mime-type type="image/x-portable-anymap">
+  <comment>PNM image</comment>
+  <glob pattern="*.pnm"/>
+</mime-type>
+<mime-type type="image/x-portable-bitmap">
+  <comment>PBM image</comment>
+  <acronym>PBM</acronym>
+  <expanded-acronym>Portable BitMap</expanded-acronym>
+  <sub-class-of type="image/x-portable-anymap"/>
+  <magic priority="50">
+    <match value="P1" type="string" offset="0">
+      <match value="0x0a" type="byte" offset="2"/>
+      <match value="0x20" type="byte" offset="2"/>
+      <match value="0x09" type="byte" offset="2"/>
+      <match value="0x0d" type="byte" offset="2"/>
+    </match>
+    <match value="P4" type="string" offset="0">
+      <match value="0x0a" type="byte" offset="2"/>
+      <match value="0x20" type="byte" offset="2"/>
+      <match value="0x09" type="byte" offset="2"/>
+      <match value="0x0d" type="byte" offset="2"/>
+    </match>
+  </magic>
+  <glob pattern="*.pbm"/>
+</mime-type>
+<mime-type type="image/x-portable-graymap">
+  <comment>PGM image</comment>
+  <acronym>PGM</acronym>
+  <expanded-acronym>Portable GrayMap</expanded-acronym>
+  <sub-class-of type="image/x-portable-anymap"/>
+  <magic priority="50">
+    <match value="P2" type="string" offset="0">
+      <match value="0x0a" type="byte" offset="2"/>
+      <match value="0x20" type="byte" offset="2"/>
+      <match value="0x09" type="byte" offset="2"/>
+      <match value="0x0d" type="byte" offset="2"/>
+    </match>
+    <match value="P5" type="string" offset="0">
+      <match value="0x0a" type="byte" offset="2"/>
+      <match value="0x20" type="byte" offset="2"/>
+      <match value="0x09" type="byte" offset="2"/>
+      <match value="0x0d" type="byte" offset="2"/>
+    </match>
+  </magic>
+  <glob pattern="*.pgm"/>
+</mime-type>
+<mime-type type="image/x-portable-pixmap">
+  <comment>PPM image</comment>
+  <acronym>PPM</acronym>
+  <expanded-acronym>Portable PixMap</expanded-acronym>
+  <sub-class-of type="image/x-portable-anymap"/>
+  <magic priority="50">
+    <match value="P3" type="string" offset="0">
+      <match value="0x0a" type="byte" offset="2"/>
+      <match value="0x20" type="byte" offset="2"/>
+      <match value="0x09" type="byte" offset="2"/>
+      <match value="0x0d" type="byte" offset="2"/>
+    </match>
+    <match value="P6" type="string" offset="0">
+      <match value="0x0a" type="byte" offset="2"/>
+      <match value="0x20" type="byte" offset="2"/>
+      <match value="0x09" type="byte" offset="2"/>
+      <match value="0x0d" type="byte" offset="2"/>
+    </match>
+  </magic>
+  <glob pattern="*.ppm"/>
+</mime-type>
+<mime-type type="image/vnd.adobe.photoshop">
+  <comment>Photoshop image</comment>
+  <magic priority="50">
+    <match value="8BPS  \000\000\000\000" type="string" offset="0" mask="0xffffffff0000ffffffff"/>
+  </magic>
+  <glob pattern="*.psd"/>
+  <alias type="image/psd"/>
+  <alias type="image/x-psd"/>
+  <alias type="image/photoshop"/>
+  <alias type="image/x-photoshop"/>
+  <alias type="application/photoshop"/>
+  <alias type="application/x-photoshop"/>
+</mime-type>
+<mime-type type="image/x-rgb">
+  <comment>RGB image</comment>
+  <glob pattern="*.rgb"/>
+</mime-type>
+<mime-type type="image/x-sgi">
+  <comment>SGI image</comment>
+  <glob pattern="*.sgi"/>
+</mime-type>
+<mime-type type="image/x-sun-raster">
+  <comment>Sun raster image</comment>
+  <magic priority="50">
+    <match value="0x59a66a95" type="big32" offset="0"/>
+  </magic>
+  <glob pattern="*.sun"/>
+</mime-type>
+<mime-type type="image/x-tga">
+  <comment>TGA image</comment>
+  <acronym>TGA</acronym>
+  <expanded-acronym>Truevision Graphics Adapter</expanded-acronym>
+  <magic priority="10">
+    <match value="\1\1" type="string" offset="1"/>
+    <match value="\1\11" type="string" offset="1"/>
+    <match value="\0\3" type="string" offset="1"/>
+    <match value="\0\xa" type="string" offset="1"/>
+    <match value="\0\xb" type="string" offset="1"/>
+  </magic>
+  <magic priority="50">
+    <match value="\0\2" type="string" offset="1">
+      <match value="0x08" type="byte" offset="16"/>
+      <match value="0x10" type="byte" offset="16"/>
+      <match value="0x18" type="byte" offset="16"/>
+      <match value="0x20" type="byte" offset="16"/>
+    </match>
+  </magic>
+  <glob pattern="*.tga"/>
+  <glob pattern="*.icb"/>
+  <glob pattern="*.tpic"/>
+  <glob pattern="*.vda"/>
+  <glob pattern="*.vst"/>
+  <alias type="image/x-icb"/>
+</mime-type>
+<mime-type type="image/x-win-bitmap">
+  <comment>Windows cursor</comment>
+  <magic priority="50">
+    <match value="\0\0\2\0" type="string" offset="0">
+      <match value="\0" type="string" offset="5"/>
+    </match>
+  </magic>
+  <glob pattern="*.cur"/>
+</mime-type>
+<mime-type type="application/x-navi-animation">
+  <comment>Windows animated cursor</comment>
+  <magic priority="50">
+    <match value="RIFF" type="string" offset="0">
+      <match value="ACON" type="string" offset="8"/>
+    </match>
+  </magic>
+  <glob pattern="*.ani"/>
+</mime-type>
+<mime-type type="image/emf">
+  <comment>EMF image</comment>
+  <acronym>EMF</acronym>
+  <expanded-acronym>Enhanced MetaFile</expanded-acronym>
+  <glob pattern="*.emf"/>
+  <alias type="image/x-emf"/>
+  <alias type="application/x-emf"/>
+  <alias type="application/emf"/>
+  <magic priority="50">
+    <match value="0x00000001" type="little32" offset="0">
+      <match value="0x464D4520" type="little32" offset="40">
+        <match value="0x00010000" type="little32" offset="44">
+          <match value="0x0000" type="little16" offset="58"/>
+        </match>
+      </match>
+    </match>
+  </magic>
+</mime-type>
+<mime-type type="image/wmf">
+  <comment>WMF image</comment>
+  <acronym>WMF</acronym>
+  <expanded-acronym>Windows Metafile</expanded-acronym>
+  <magic priority="50">
+
+    <match value="0x9AC6CDD7" type="little32" offset="0">
+
+      <match value="0x0001" type="little16" offset="22">
+        <match value="0x0009" type="little16" offset="24"/>
+      </match>
+    </match>
+
+    <match value="0x0001" type="little16" offset="0">
+      <match value="0x0009" type="little16" offset="2"/>
+    </match>
+  </magic>
+  <glob pattern="*.wmf"/>
+  <alias type="image/x-wmf"/>
+  <alias type="image/x-win-metafile"/>
+  <alias type="application/x-wmf"/>
+  <alias type="application/wmf"/>
+  <alias type="application/x-msmetafile"/>
+</mime-type>
+<mime-type type="image/x-xbitmap">
+  <comment>XBM image</comment>
+  <acronym>XBM</acronym>
+  <expanded-acronym>X BitMap</expanded-acronym>
+  <glob pattern="*.xbm"/>
+</mime-type>
+<mime-type type="image/x-xcf">
+  <comment>GIMP image</comment>
+  <glob pattern="*.xcf"/>
+  <magic priority="50">
+    <match value="gimp xcf file" type="string" offset="0"/>
+    <match value="gimp xcf v" type="string" offset="0"/>
+  </magic>
+</mime-type>
+<mime-type type="image/x-gimp-gbr">
+  <comment>GIMP brush</comment>
+  <glob pattern="*.gbr"/>
+  <magic priority="50">
+    <match value="GIMP" type="string" offset="20"/>
+  </magic>
+</mime-type>
+<mime-type type="image/x-gimp-gih">
+  <comment>GIMP brush pipe</comment>
+  <glob pattern="*.gih"/>
+</mime-type>
+<mime-type type="image/x-gimp-pat">
+  <comment>GIMP pattern</comment>
+  <glob pattern="*.pat"/>
+  <magic priority="50">
+    <match value="GPAT" type="string" offset="20"/>
+  </magic>
+</mime-type>
+<mime-type type="image/x-xfig">
+  <comment>XFig image</comment>
+  <glob pattern="*.fig"/>
+  <magic priority="50">
+    <match value="#FIG" type="string" offset="0"/>
+  </magic>
+</mime-type>
+<mime-type type="image/x-xpixmap">
+  <comment>XPM image</comment>
+  <acronym>XPM</acronym>
+  <expanded-acronym>X PixMap</expanded-acronym>
+  <magic priority="50">
+    <match value="/* XPM" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.xpm"/>
+  <alias type="image/x-xpm"/>
+</mime-type>
+<mime-type type="image/x-xwindowdump">
+  <comment>X window image</comment>
+  <glob pattern="*.xwd"/>
+</mime-type>
+<mime-type type="inode/directory">
+  <comment>folder</comment>
+  <generic-icon name="folder"/>
+  <alias type="x-directory/normal"/>
+</mime-type>
+<mime-type type="image/x-quicktime">
+  <comment>QuickTime image</comment>
+  <magic priority="50">
+    <match value="idat" type="string" offset="4"/>
+  </magic>
+  <glob pattern="*.qtif"/>
+  <glob pattern="*.qif"/>
+</mime-type>
+<mime-type type="image/ktx">
+  <comment>Khronos texture image</comment>
+  <magic priority="80">
+    <match value="0xAB4B5458" type="big32" offset="0">
+      <match value="0x203131BB" type="big32" offset="4">
+        <match value="0x0D0A1A0A" type="big32" offset="8"/>
+      </match>
+    </match>
+  </magic>
+  <glob pattern="*.ktx"/>
+</mime-type>
+<mime-type type="video/webm">
+  <comment>WebM video</comment>
+  <glob pattern="*.webm"/>
+  <magic priority="50">
+
+    <match value="0x1a45dfa3" type="big32" offset="0">
+
+      <match value="0x4282" type="big16" offset="5:65">
+
+        <match value="webm" type="string" offset="8:75"/>
+      </match>
+    </match>
+  </magic>
+</mime-type>
+<mime-type type="audio/webm">
+  <comment>WebM audio</comment>
+  <sub-class-of type="video/webm"/>
+</mime-type>
+<mime-type type="video/mp4">
+  <comment>MPEG-4 video</comment>
+  <alias type="video/mp4v-es"/>
+  <magic priority="50">
+    <match value="ftypisom" type="string" offset="4"/>
+    <match value="ftypmp42" type="string" offset="4"/>
+    <match value="ftypMSNV" type="string" offset="4"/>
+    <match value="ftypM4V " type="string" offset="4"/>
+    <match value="ftypf4v " type="string" offset="4"/>
+  </magic>
+  <glob pattern="*.mp4"/>
+  <glob pattern="*.m4v"/>
+  <glob pattern="*.f4v"/>
+  <glob pattern="*.lrv"/>
+  <alias type="video/x-m4v"/>
+</mime-type>
+<mime-type type="video/mpeg">
+  <comment>MPEG video</comment>
+  <acronym>MPEG</acronym>
+  <expanded-acronym>Moving Picture Experts Group</expanded-acronym>
+  <alias type="video/x-mpeg"/>
+  <alias type="video/mpeg-system"/>
+  <alias type="video/x-mpeg-system"/>
+  <alias type="video/x-mpeg2"/>
+  <magic priority="50">
+    <match value="\x47\x3f\xff\x10" type="string" offset="0"/>
+    <match value="0x000001b3" type="big32" offset="0"/>
+    <match value="0x000001ba" type="big32" offset="0"/>
+  </magic>
+  <glob pattern="*.mpeg"/>
+  <glob pattern="*.mpg"/>
+  <glob pattern="*.mp2"/>
+  <glob pattern="*.mpe"/>
+  <glob pattern="*.vob"/>
+  <glob pattern="[0-9][0-9][0-9].vdr"/>
+</mime-type>
+<mime-type type="application/x-matroska">
+  <comment>Matroska stream</comment>
+  <generic-icon name="video-x-generic"/>
+  <magic priority="50">
+
+    <match value="0x1a45dfa3" type="big32" offset="0">
+
+      <match value="0x4282" type="big16" offset="5:65">
+
+        <match value="matroska" type="string" offset="8:75"/>
+      </match>
+    </match>
+  </magic>
+</mime-type>
+<mime-type type="video/x-matroska">
+  <comment>Matroska video</comment>
+  <glob pattern="*.mkv"/>
+  <sub-class-of type="application/x-matroska"/>
+</mime-type>
+<mime-type type="video/x-ms-wmv">
+  <comment>Windows Media video</comment>
+  <sub-class-of type="application/vnd.ms-asf"/>
+  <glob pattern="*.wmv"/>
+</mime-type>
+<mime-type type="application/vnd.ms-asf">
+  <comment>ASF video</comment>
+  <acronym>ASF</acronym>
+  <expanded-acronym>Advanced Streaming Format</expanded-acronym>
+  <alias type="video/x-ms-wm"/>
+  <alias type="video/x-ms-asf"/>
+  <alias type="video/x-ms-asf-plugin"/>
+  <glob pattern="*.asf"/>
+  <magic priority="50">
+    <match value="0x3026b275" type="big32" offset="0"/>
+    <match value="[Reference]" type="string" offset="0"/>
+  </magic>
+</mime-type>
+<mime-type type="audio/x-riff">
+  <comment>RIFF audio</comment>
+</mime-type>
+<mime-type type="video/x-msvideo">
+  <comment>AVI video</comment>
+  <acronym>AVI</acronym>
+  <expanded-acronym>Audio Video Interleave</expanded-acronym>
+  <alias type="video/x-avi"/>
+  <alias type="video/avi"/>
+  <alias type="video/divx"/>
+  <alias type="video/msvideo"/>
+  <alias type="video/vnd.divx"/>
+  <magic priority="50">
+    <match value="RIFF" type="string" offset="0">
+      <match value="AVI " type="string" offset="8"/>
+    </match>
+    <match value="AVF0" type="string" offset="0">
+      <match value="AVI " type="string" offset="8"/>
+    </match>
+  </magic>
+  <glob pattern="*.avi"/>
+  <glob pattern="*.avf"/>
+  <glob pattern="*.divx"/>
+</mime-type>
+<mime-type type="video/quicktime">
+  <comment>QuickTime video</comment>
+  <magic priority="50">
+    <match value="mdat" type="string" offset="12"/>
+    <match value="mdat" type="string" offset="4"/>
+    <match value="moov" type="string" offset="4"/>
+    <match value="ftypqt" type="string" offset="4"/>
+  </magic>
+  <glob pattern="*.qt"/>
+  <glob pattern="*.mov"/>
+  <glob pattern="*.moov"/>
+  <glob pattern="*.qtvr"/>
+</mime-type>
+<mime-type type="video/x-flv">
+  <comment>Flash video</comment>
+  <generic-icon name="video-x-generic"/>
+  <magic priority="50">
+    <match value="FLV" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.flv"/>
+  <alias type="application/x-flash-video"/>
+  <alias type="flv-application/octet-stream"/>
+  <alias type="video/flv"/>
+</mime-type>
+<mime-type type="application/zip">
+  <comment>Zip archive</comment>
+  <alias type="application/x-zip-compressed"/>
+  <alias type="application/x-zip"/>
+  <generic-icon name="package-x-generic"/>
+  <magic priority="60">
+    <match value="PK\003\004" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.zip"/>
+</mime-type>
+<mime-type type="application/xml">
+  <comment>XML document</comment>
+  <acronym>XML</acronym>
+  <expanded-acronym>eXtensible Markup Language</expanded-acronym>
+  <sub-class-of type="text/plain"/>
+  <generic-icon name="text-html"/>
+  <magic priority="40">
+    <match value="&lt;?xml" type="string" offset="0"/>
+    <match value="&lt;!--" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.xml"/>
+  <glob pattern="*.xbl"/>
+  <glob pattern="*.xsd"/>
+  <glob pattern="*.rng"/>
+  <alias type="text/xml"/>
+</mime-type>
+<mime-type type="text/plain">
+  <comment>plain text document</comment>
+  <magic priority="50">
+    <match value="This is TeX," type="string" offset="0"/>
+    <match value="This is METAFONT," type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.txt"/>
+  <glob pattern="*.asc"/>
+  <glob pattern="*,v"/>
+</mime-type>
+<mime-type type="application/gzip">
+  <comment>Gzip archive</comment>
+  <generic-icon name="package-x-generic"/>
+  <magic priority="50">
+    <match value="\037\213" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.gz"/>
+  <alias type="application/x-gzip"/>
+</mime-type>
+<mime-type type="application/x-bzip">
+  <comment>Bzip archive</comment>
+  <generic-icon name="package-x-generic"/>
+  <magic priority="50">
+    <match value="BZh" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.bz2"/>
+  <glob pattern="*.bz"/>
+  <alias type="application/x-bzip2"/>
+</mime-type>
+<mime-type type="application/postscript">
+  <comment>PS document</comment>
+  <acronym>PS</acronym>
+  <expanded-acronym>PostScript</expanded-acronym>
+  <sub-class-of type="text/plain"/>
+  <generic-icon name="x-office-document"/>
+  <magic priority="50">
+    <match value="\004%!" type="string" offset="0"/>
+    <match value="%!" type="string" offset="0"/>
+  </magic>
+  <glob pattern="*.ps"/>
+</mime-type>
+<mime-type type="application/x-iff">
+  <comment>IFF file</comment>
+  <acronym>IFF</acronym>
+  <expanded-acronym>Interchange File Format</expanded-acronym>
+  <magic priority="40">
+    <match value="FORM" type="string" offset="0"/>
+  </magic>
+</mime-type>
+<mime-type type="image/avif">
+  <comment>AV1 Image File Format (AVIF)</comment>
+  <magic priority="50">
+    <match type="string" value="ftypavif" offset="4"/>
+    <match type="string" value="ftypavis" offset="4"/>
+    <match type="string" value="ftypmif1" offset="4">
+      <match type="string" value="avif" offset="16"/>
+      <match type="string" value="avif" offset="20"/>
+      <match type="string" value="avif" offset="24"/>
+    </match>
+  </magic>
+  <glob pattern="*.avif"/>
+  <glob pattern="*.avifs"/>
+  <alias type="image/avif-sequence"/>
+</mime-type>
+</mime-info>

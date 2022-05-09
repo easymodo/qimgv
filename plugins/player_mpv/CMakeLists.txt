@@ -12,8 +12,10 @@ ADD_DEFINITIONS(-DQIMGV_PLAYER_MPV_LIBRARY)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
+if(NOT WIN32)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)\
+endif()
 
 include(GNUInstallDirs)
 
@@ -25,8 +27,14 @@ add_library(player_mpv MODULE
 
 target_compile_features(player_mpv PRIVATE cxx_std_11)
 
-target_link_libraries(player_mpv PRIVATE
-    Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets PkgConfig::Mpv)
+if(WIN32)
+    target_link_libraries(player_mpv PRIVATE
+        Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Mpv)
+else()
+    target_link_libraries(player_mpv PRIVATE
+        Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets PkgConfig::Mpv)
+endif()
+
 if(QT_VERSION_MAJOR GREATER_EQUAL 6)
     target_link_libraries(player_mpv PRIVATE Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
 endif()
