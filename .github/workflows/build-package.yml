@@ -18,13 +18,11 @@ jobs:
           install: git p7zip
       - uses: actions/checkout@v3
         with: 
-          path: qimgv
 #          ref: dev
           fetch-depth: 0
       - id: build
         name: CI-Build
         run: |
-          cd qimgv
           export BUILD_NAME="qimgv-x64_$(git describe --tags)"
           echo "::set-output name=build_name::${BUILD_NAME}"
           echo "::set-output name=build_file_name::${BUILD_NAME}.7z"
@@ -36,7 +34,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: qimgv-build
-          path: qimgv/qimgv-x64.7z
+          path: qimgv-x64.7z
     outputs:
        build_name: ${{ steps.build.outputs.build_name }}
        build_file_name: ${{ steps.build.outputs.build_file_name }}
