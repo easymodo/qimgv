@@ -37,11 +37,11 @@ option(OPENCV_SUPPORT "Enable HQ scaling via OpenCV" OFF)
 option(KDE_SUPPORT "Support blur when using KDE" OFF)
 
 # FIND PACKAGES
-find_package(Qt6 COMPONENTS Widgets QUIET)
-if(Qt6_FOUND)
-    find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Widgets Svg PrintSupport OpenGLWidgets)
-else()
+find_package(Qt5 COMPONENTS Widgets QUIET)
+if(Qt5_FOUND)
     find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
+else()
+    find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Widgets Svg PrintSupport OpenGLWidgets)
 endif()
 
 message(STATUS "Qt Version: " ${QT_VERSION})
