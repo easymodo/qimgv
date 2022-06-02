@@ -26,6 +26,10 @@ private:
 
 protected:
     virtual void recalculateGeometry();
+#if QT_VERSION > QT_VERSION_CHECK(6,0,0)
+    void enterEvent(QEnterEvent *event);
+#else
     void enterEvent(QEvent *event);
+#endif
     void leaveEvent(QEvent *event);
 };
