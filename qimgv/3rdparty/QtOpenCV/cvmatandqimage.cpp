@@ -28,7 +28,7 @@
 #include <QSysInfo>
 #include <QDebug>
 #include <cstring>
-#include <opencv4/opencv2/imgproc.hpp>
+#include <opencv2/imgproc.hpp>
 
 namespace QtOcv {
 namespace {
