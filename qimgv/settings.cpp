@@ -627,7 +627,7 @@ void Settings::setTransparencyGrid(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::enableSmoothScroll() {
-    return settings->settingsConf->value("enableSmoothScroll", true).toBool();
+    return settings->settingsConf->value("enableSmoothScroll", false).toBool();
 }
 
 void Settings::setEnableSmoothScroll(bool mode) {

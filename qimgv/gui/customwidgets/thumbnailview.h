@@ -144,7 +144,9 @@ protected:
 
     bool eventFilter(QObject *o, QEvent *ev) override;
     void resizeEvent(QResizeEvent *event) override;
+    void scrollToItem(int index);
     void scrollPrecise(int delta);
+    void scrollByItem(int delta);
     void scrollSmooth(int delta);
     void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration);
     void scrollSmooth(int angleDelta, qreal multiplier, qreal acceleration, bool additive);

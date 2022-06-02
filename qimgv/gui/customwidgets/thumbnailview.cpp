@@ -469,9 +469,9 @@ void ThumbnailView::wheelEvent(QWheelEvent *event) {
         lastTouchpadScroll.restart();
     if(!settings->enableSmoothScroll()) {
         if(pixelDelta)
-            scrollPrecise(pixelDelta);
+            scrollByItem(pixelDelta);
         else if(angleDelta)
-            scrollPrecise(angleDelta);
+            scrollByItem(angleDelta);
     } else {
         if(!isWheel) {
             if(pixelDelta)
@@ -502,6 +502,58 @@ void ThumbnailView::scrollPrecise(int delta) {
         centerOn(static_cast<int>(viewportCenter.x() - delta));
     else
         centerOn(static_cast<int>(viewportCenter.y() - delta));
+}
+
+// windows explorer-like behavior
+// scrolls exactly by item width / height
+void ThumbnailView::scrollByItem(int delta) {
+    // grab fully visible thumbs
+    QRectF visRect = mapToScene(viewport()->geometry()).boundingRect();
+    QList<QGraphicsItem *>visibleItems;
+    visibleItems = scene.items(visRect, Qt::ContainsItemBoundingRect, Qt::AscendingOrder);
+    if(thumbnails.isEmpty() || visibleItems.isEmpty())
+        return;
+    int target = 0;
+    // select scroll target
+    if(delta > 0) { // up / left
+        ThumbnailWidget* widget = qgraphicsitem_cast<ThumbnailWidget*>(visibleItems.first());
+        if(!widget)
+            return;
+        target = thumbnails.indexOf(widget) - 1;
+    } else { // down / right
+        ThumbnailWidget* widget = qgraphicsitem_cast<ThumbnailWidget*>(visibleItems.last());
+        if(!widget)
+            return;
+        target = thumbnails.indexOf(widget) + 1;
+    }
+    scrollToItem(target);
+}
+
+void ThumbnailView::scrollToItem(int index) {
+    if(!checkRange(index))
+        return;
+    ThumbnailWidget *item = thumbnails.at(index);
+    QRectF sceneRect = mapToScene(viewport()->rect()).boundingRect();
+    QRectF itemRect = item->mapRectToScene(item->rect());
+    bool visible = sceneRect.contains(itemRect);
+    if(!visible) {
+        int delta = 0;
+        if(orientation == THUMBNAILVIEW_VERTICAL) {
+            if(itemRect.top() >= sceneRect.top()) // UP
+                delta = sceneRect.bottom() - itemRect.bottom();
+            else // DOWN
+                delta = sceneRect.top() - itemRect.top();
+        } else {
+            if(itemRect.left() >= sceneRect.left()) // LEFT
+                delta = sceneRect.right() - itemRect.right();
+            else // RIGHT
+                delta = sceneRect.left() - itemRect.left();
+        }
+        if(settings->enableSmoothScroll())
+            scrollSmooth(delta);
+        else
+            scrollPrecise(delta);
+    }
 }
 
 void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration, bool additive) {

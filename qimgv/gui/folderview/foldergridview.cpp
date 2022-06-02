@@ -259,31 +259,6 @@ void FolderGridView::scrollToCurrent() {
     scrollToItem(lastSelected());
 }
 
-void FolderGridView::scrollToItem(int index) {
-    if(!checkRange(index))
-        return;
-
-    ThumbnailWidget *item = thumbnails.at(index);
-
-    QRectF sceneRect = mapToScene(viewport()->rect()).boundingRect();
-    QRectF itemRect = item->mapRectToScene(item->rect());
-
-    bool visible = sceneRect.contains(itemRect);
-    if(!visible) {
-        int delta = 0;
-        // UP
-        if(itemRect.top() >= sceneRect.top())
-            delta = sceneRect.bottom() - itemRect.bottom();
-        // DOWN
-        else
-            delta = sceneRect.top() - itemRect.top();
-        if(settings->enableSmoothScroll())
-            scrollSmooth(delta);
-        else
-            scrollPrecise(delta);
-    }
-}
-
 // same as scrollToItem minus the animation
 void FolderGridView::focusOn(int index) {
     if(!checkRange(index))

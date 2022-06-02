@@ -44,7 +44,6 @@ private:
     QGraphicsWidget holderWidget;
     int shiftedCol;
     void scrollToCurrent();
-    void scrollToItem(int index);
     int lastDragTarget = -1;
 
 private slots:
