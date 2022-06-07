@@ -84,13 +84,11 @@ public slots:
     virtual void setExpandImage(bool mode);
     virtual void show();
     virtual void hide();
-
-    virtual void toggleTransparencyGrid();
-
     virtual void setFilterNearest();
     virtual void setFilterBilinear();
     virtual void setScalingFilter(ScalingFilter filter);
     void setLoopPlayback(bool mode);
+    void toggleTransparencyGrid();
 
     void nextFrame();
     void prevFrame();
@@ -109,6 +107,7 @@ protected:
     virtual void resizeEvent(QResizeEvent* event);
     void wheelEvent(QWheelEvent *event);
     void showEvent(QShowEvent *event);
+    void drawBackground(QPainter *painter, const QRectF &rect);
 
 protected slots:
     void onAnimationTimer();
@@ -126,9 +125,8 @@ private:
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
     QTimer *animationTimer, *scaleTimer;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
-    bool transparencyGridEnabled, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, loopPlayback, mIsFullscreen, absoluteStep;
+    bool transparencyGrid, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, loopPlayback, mIsFullscreen, absoluteStep;
     MouseInteractionState mouseInteraction;
-    const int CHECKBOARD_GRID_SIZE = 10;
     const int SCROLL_UPDATE_RATE = 7;
     const int SCROLL_DISTANCE = 220;
     const qreal SCROLL_SPEED_MILTIPLIER = 1.3;
@@ -152,6 +150,8 @@ private:
     ImageFocusPoint focusIn1to1;
     ScalingFilter mScalingFilter;
 
+    QPixmap *checkboard;
+
     void zoomAnchored(float newScale);
     void fitNormal();
     void fitWidth();
@@ -162,7 +162,6 @@ private:
     void mousePanWrapping(QMouseEvent *event);
     void mousePan(QMouseEvent *event);
     void mouseMoveZoom(QMouseEvent *event);
-    void drawTransparencyGrid();
     void reset();
     void applyFitMode();
 

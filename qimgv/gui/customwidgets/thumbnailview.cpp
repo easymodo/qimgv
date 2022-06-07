@@ -507,7 +507,7 @@ void ThumbnailView::scrollPrecise(int delta) {
 // scrolls exactly by item width / height
 void ThumbnailView::scrollByItem(int delta) {
     // grab fully visible thumbs
-    QRectF visRect = mapToScene(viewport()->geometry()).boundingRect();
+    QRectF visRect = mapToScene(viewport()->geometry()).boundingRect();//.adjusted(-20,-20,20,20);
     QList<QGraphicsItem *>visibleItems;
     visibleItems = scene.items(visRect, Qt::ContainsItemBoundingRect, Qt::AscendingOrder);
     if(thumbnails.isEmpty() || visibleItems.isEmpty())

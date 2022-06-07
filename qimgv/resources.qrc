@@ -154,5 +154,6 @@
         <file>res/icons/common/overlay/info16@2x.png</file>
         <file>res/icons/common/menuitem/back16.png</file>
         <file>res/icons/common/menuitem/forward16.png</file>
+        <file>res/icons/common/other/checkerboard.png</file>
     </qresource>
 </RCC>

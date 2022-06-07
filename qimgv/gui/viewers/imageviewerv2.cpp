@@ -4,7 +4,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     pixmap(nullptr),
     pixmapScaled(nullptr),
     movie(nullptr),
-    transparencyGridEnabled(false),
+    transparencyGrid(false),
     expandImage(false),
     smoothAnimatedImages(true),
     smoothUpscaling(true),
@@ -48,6 +48,8 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     scaleTimer->setSingleShot(true);
     scaleTimer->setInterval(80);
 
+    checkboard = new QPixmap(":res/icons/common/other/checkerboard.png");
+
     lastTouchpadScroll.start();
 
     zoomThreshold = static_cast<int>(devicePixelRatioF() * 4.);
@@ -86,6 +88,7 @@ ImageViewerV2::~ImageViewerV2() {
 }
 
 void ImageViewerV2::readSettings() {
+    transparencyGrid = settings->transparencyGrid();
     smoothAnimatedImages = settings->smoothAnimatedImages();
     smoothUpscaling = settings->smoothUpscaling();
     expandImage = settings->expandImage();
@@ -95,7 +98,6 @@ void ImageViewerV2::readSettings() {
     keepFitMode = settings->keepFitMode();
     imageFitModeDefault = settings->imageFitMode();
     zoomStep = settings->zoomStep();
-    transparencyGridEnabled = settings->transparencyGrid();
     focusIn1to1 = settings->focusPointIn1to1Mode();
     absoluteStep = settings->absoluteZoomStep();
     // set bg color
@@ -252,10 +254,6 @@ void ImageViewerV2::showAnimation(std::shared_ptr<QMovie> _movie) {
             if(mViewLock == LOCK_ALL)
                 applySavedViewportPos();
         }
-
-        if(transparencyGridEnabled)
-            drawTransparencyGrid();
-
         startAnimation();
     }
 }
@@ -291,9 +289,6 @@ void ImageViewerV2::showImage(std::unique_ptr<QPixmap> _pixmap) {
                 applySavedViewportPos();
         }
         requestScaling();
-
-        if(transparencyGridEnabled)
-            drawTransparencyGrid();
         update();
     }
 }
@@ -352,11 +347,9 @@ void ImageViewerV2::scrollRight() {
 }
 
 // temporary override till application restart
-// todo - use a separate pixmap item?
 void ImageViewerV2::toggleTransparencyGrid() {
-    transparencyGridEnabled = !transparencyGridEnabled;
-    // request a new one as the grid is baked into the current pixmap for performance reasons
-    requestScaling();
+    transparencyGrid = !transparencyGrid;
+    scene->update();
 }
 
 void ImageViewerV2::setScalingFilter(ScalingFilter filter) {
@@ -434,33 +427,6 @@ void ImageViewerV2::requestScaling() {
     // (it uses a single pass bilinear which is sharp but produces artifacts on low zoom levels)
     if(currentScale() < FAST_SCALE_THRESHOLD)
         emit scalingRequested(scaledSize() * dpr, mScalingFilter);
-}
-
-void ImageViewerV2::drawTransparencyGrid() {
-    // todo (via tiled pixmap? and just hide if disabled for zero overhead)
-    /*if(pixmapScaled && pixmapScaled->hasAlphaChannel() && pixmapScaled->depth() != 8) {
-        QPainter painter(pixmapScaled.get());
-        painter.setCompositionMode(QPainter::CompositionMode_DestinationOver);
-        QColor dark(90,90,90,255);
-        QColor light(140,140,140,255);
-        int xCount, yCount;
-        xCount = pixmapScaled->width() / CHECKBOARD_GRID_SIZE;
-        yCount = pixmapScaled->height() / CHECKBOARD_GRID_SIZE;
-        QRect square(0, 0, CHECKBOARD_GRID_SIZE, CHECKBOARD_GRID_SIZE);
-        bool evenOdd;
-        for(int i = 0; i <= yCount; i++) {
-            evenOdd = (i % 2);
-            for(int j = 0; j <= xCount; j++) {
-                if(j % 2 == evenOdd)
-                    painter.fillRect(square, light);
-                square.translate(CHECKBOARD_GRID_SIZE, 0);
-            }
-            square.translate(0, CHECKBOARD_GRID_SIZE);
-            square.moveLeft(0);
-        }
-        painter.fillRect(pixmapScaled->rect(), dark);
-    }
-    */
 }
 
 bool ImageViewerV2::imageFits() const {
@@ -668,6 +634,12 @@ void ImageViewerV2::showEvent(QShowEvent *event) {
     // reapply fitmode to fix viewport position
     if(imageFitMode == FIT_ORIGINAL)
         applyFitMode();
+}
+
+void ImageViewerV2::drawBackground(QPainter *painter, const QRectF &rect) {
+    if(!isDisplaying() || !transparencyGrid || !pixmap->hasAlphaChannel())
+        return;
+    painter->drawTiledPixmap(pixmapItem.sceneBoundingRect(), *checkboard);
 }
 
 // simple pan behavior (cursor stops at the screen edges)
