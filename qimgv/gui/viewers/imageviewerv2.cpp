@@ -637,6 +637,7 @@ void ImageViewerV2::showEvent(QShowEvent *event) {
 }
 
 void ImageViewerV2::drawBackground(QPainter *painter, const QRectF &rect) {
+    QGraphicsView::drawBackground(painter, rect);
     if(!isDisplaying() || !transparencyGrid || !pixmap->hasAlphaChannel())
         return;
     painter->drawTiledPixmap(pixmapItem.sceneBoundingRect(), *checkboard);
