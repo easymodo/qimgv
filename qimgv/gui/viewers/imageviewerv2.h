@@ -37,7 +37,7 @@ public:
     ImageViewerV2(QWidget* parent = nullptr);
     ~ImageViewerV2();
     virtual ImageFitMode fitMode() const;
-    virtual QRect scaledRect() const;
+    virtual QRect scaledRectR() const;
     virtual float currentScale() const;
     virtual QSize sourceSize() const;
     virtual void showImage(std::unique_ptr<QPixmap> _pixmap);
@@ -50,7 +50,7 @@ public:
     virtual QWidget *widget();
     bool hasAnimation() const;
 
-    QSize scaledSize() const;
+    QSize scaledSizeR() const;
 
     void pauseResume();
 signals:
@@ -115,6 +115,7 @@ private slots:
     void requestScaling();
     void scrollToX(int x);
     void scrollToY(int y);
+    void centerOnPixmap();
 
     void onScrollTimelineFinished();
 private:
@@ -124,8 +125,12 @@ private:
     std::shared_ptr<QMovie> movie;
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
     QTimer *animationTimer, *scaleTimer;
+    QScrollBar *hs, *vs;
     QPoint mouseMoveStartPos, mousePressPos, drawPos;
-    bool transparencyGrid, expandImage, smoothAnimatedImages, smoothUpscaling, forceFastScale, keepFitMode, loopPlayback, mIsFullscreen, absoluteStep;
+    bool transparencyGrid, expandImage,    smoothAnimatedImages,
+         smoothUpscaling,  forceFastScale, keepFitMode,
+         loopPlayback,     mIsFullscreen,  absoluteStep,
+         scrollBarWorkaround;
     MouseInteractionState mouseInteraction;
     const int SCROLL_UPDATE_RATE = 7;
     const int SCROLL_DISTANCE = 220;
@@ -156,7 +161,7 @@ private:
     void fitNormal();
     void fitWidth();
     void fitWindow();
-    void centerOnPixmap();
+
     void scroll(int dx, int dy, bool animated);
 
     void mousePanWrapping(QMouseEvent *event);
