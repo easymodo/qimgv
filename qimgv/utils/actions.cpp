@@ -42,7 +42,7 @@ void Actions::init() {
     mActions.insert("open", QVersionNumber(0,6,2));
     mActions.insert("save", QVersionNumber(0,6,2));
     mActions.insert("saveAs", QVersionNumber(0,6,2));
-    mActions.insert("setWallpaper", QVersionNumber(0,6,2));
+    mActions.insert("setWallpaper", QVersionNumber(0,9,3));
     mActions.insert("crop", QVersionNumber(0,6,2));
     mActions.insert("removeFile", QVersionNumber(0,6,2));
     mActions.insert("copyFile", QVersionNumber(0,6,2));

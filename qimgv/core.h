@@ -136,6 +136,7 @@ private slots:
     void saveCurrentFile();
     void saveCurrentFileAs(QString);
     void runScript(const QString&);
+    void setWallpaper();
     void removePermanent();
     void moveToTrash();
     void reloadImage();

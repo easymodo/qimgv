@@ -49,7 +49,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+O", "open");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+S", "save");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+" + InputMap::keyNameShift() + "+S", "saveAs");
-    //actionManager->defaults.insert(InputMap::keyNameCtrl() + "+W", "setWallpaper");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+W", "setWallpaper");
     actionManager->defaults.insert("X", "crop");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+P", "print");
     actionManager->defaults.insert(InputMap::keyNameAlt() + "+X", "exit");

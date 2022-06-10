@@ -152,7 +152,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::rotateRight, this, &Core::rotateRight);
     connect(actionManager, &ActionManager::openSettings, mw, &MW::showSettings);
     connect(actionManager, &ActionManager::crop, this, &Core::toggleCropPanel);
-    //connect(actionManager, &ActionManager::setWallpaper, this, &Core::slotSelectWallpaper);
+    connect(actionManager, &ActionManager::setWallpaper, this, &Core::setWallpaper);
     connect(actionManager, &ActionManager::open, this, &Core::showOpenDialog);
     connect(actionManager, &ActionManager::save, this, &Core::saveCurrentFile);
     connect(actionManager, &ActionManager::saveAs, this, &Core::requestSavePath);
@@ -1095,6 +1095,30 @@ void Core::runScript(const QString &scriptName) {
     if(model->isEmpty())
         return;
     scriptManager->runScript(scriptName, model->getImage(selectedPath()));
+}
+
+void Core::setWallpaper() {
+    if(model->isEmpty() || selectedPath().isEmpty())
+        return;
+    auto img = model->getImage(selectedPath());
+    if(img->type() != DocumentType::STATIC) {
+        mw->showMessage("Set wallpaper: file not supported");
+        return;
+    }
+#ifdef __WIN32
+    // set fit mode (registry)
+    LONG status;
+    HKEY hKey;
+    status = RegOpenKeyEx(HKEY_CURRENT_USER, TEXT("Control Panel\\Desktop"), 0, KEY_WRITE, &hKey);
+    if((status == ERROR_SUCCESS) && (hKey != NULL)) {
+        LPCTSTR value = TEXT("WallpaperStyle");
+        LPCTSTR data = "10";
+        status = RegSetValueEx(hKey, value, 0, REG_SZ, (LPBYTE)data, strlen(data)+1);
+        RegCloseKey(hKey);
+    }
+    // set wallpaper path
+    SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, (char*)(selectedPath().toStdWString().c_str()), SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
+#endif
 }
 
 void Core::print() {
