@@ -70,16 +70,12 @@
         <file>res/icons/common/menuitem/rotate-right16@2x.png</file>
         <file>res/icons/common/menuitem/settings16.png</file>
         <file>res/icons/common/menuitem/settings16@2x.png</file>
-        <file>res/icons/common/menuitem/trash-red16.png</file>
-        <file>res/icons/common/menuitem/trash-red16@2x.png</file>
         <file>res/icons/common/notifications/dir_end20.png</file>
         <file>res/icons/common/notifications/dir_end20@2x.png</file>
         <file>res/icons/common/notifications/dir_start20.png</file>
         <file>res/icons/common/notifications/dir_start20@2x.png</file>
         <file>res/icons/common/notifications/success16.png</file>
         <file>res/icons/common/notifications/success16@2x.png</file>
-        <file>res/icons/common/notifications/trash-red16.png</file>
-        <file>res/icons/common/notifications/trash-red16@2x.png</file>
         <file>res/icons/common/other/dropDownArrow.png</file>
         <file>res/icons/common/other/dropDownArrow@2x.png</file>
         <file>res/icons/common/other/empty.png</file>
@@ -155,5 +151,12 @@
         <file>res/icons/common/menuitem/back16.png</file>
         <file>res/icons/common/menuitem/forward16.png</file>
         <file>res/icons/common/other/checkerboard.png</file>
+        <file>res/icons/common/menuitem/print16.png</file>
+        <file>res/icons/common/menuitem/print16@2x.png</file>
+        <file>res/icons/common/menuitem/back16@2x.png</file>
+        <file>res/icons/common/menuitem/run16.png</file>
+        <file>res/icons/common/menuitem/run16@2x.png</file>
+        <file>res/icons/common/menuitem/trash16.png</file>
+        <file>res/icons/common/menuitem/trash16@2x.png</file>
     </qresource>
 </RCC>

@@ -343,7 +343,7 @@ SidePanel QComboBox QAbstractItemView::item:selected {
 }
 
 [accessibleName="HLineSeparator"] {
-    background-color: %button%;
+    border-bottom: 1px solid %button%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -583,7 +583,6 @@ ContextMenu QLabel {
 
 [accessibleName="ContextMenuButton"] {
     padding: 4px;
-    border-radius: 2px;
 }
 
 [accessibleName="ContextMenuButton"]:hover {

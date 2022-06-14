@@ -53,7 +53,7 @@ ContextMenu::ContextMenu(QWidget *parent) :
     //  entries
     ui->print->setAction("print");
     ui->print->setText(tr("Print"));
-    ui->print->setIconPath(":/res/icons/common/menuitem/settings16.png");
+    ui->print->setIconPath(":/res/icons/common/menuitem/print16.png");
 
     ui->copy->setAction("copyFile");
     ui->copy->setText(tr("Quick copy"));
@@ -65,7 +65,7 @@ ContextMenu::ContextMenu(QWidget *parent) :
 
     ui->trash->setAction("moveToTrash");
     ui->trash->setText(tr("Move to trash"));
-    ui->trash->setIconPath(":/res/icons/common/menuitem/trash-red16.png");
+    ui->trash->setIconPath(":/res/icons/common/menuitem/trash16.png");
     // -------------------------------------------------------------------------
     ui->open->setAction("open");
     ui->open->setText(tr("Open"));
@@ -80,7 +80,7 @@ ContextMenu::ContextMenu(QWidget *parent) :
     ui->settings->setIconPath(":/res/icons/common/menuitem/settings16.png");
     // -------------------------------------------------------------------------
     ui->openWith->setText(tr("Open with..."));
-    ui->openWith->setIconPath(":/res/icons/common/menuitem/forward16.png");
+    ui->openWith->setIconPath(":/res/icons/common/menuitem/run16.png");
     ui->openWith->setPassthroughClicks(false);
     connect(ui->openWith, &ContextMenuItem::pressed, this, &ContextMenu::switchToScriptsPage);
     // -------------------------------------------------------------------------
