@@ -12,8 +12,6 @@
         <file>res/icons/common/buttons/contextmenu/zoom-out18@2x.png</file>
         <file>res/icons/common/buttons/panel/close16.png</file>
         <file>res/icons/common/buttons/panel/close16@2x.png</file>
-        <file>res/icons/common/buttons/panel/document-view16.png</file>
-        <file>res/icons/common/buttons/panel/document-view16@2x.png</file>
         <file>res/icons/common/buttons/panel/folderview20.png</file>
         <file>res/icons/common/buttons/panel/folderview20@2x.png</file>
         <file>res/icons/common/buttons/panel/open16.png</file>
@@ -158,5 +156,7 @@
         <file>res/icons/common/menuitem/run16@2x.png</file>
         <file>res/icons/common/menuitem/trash16.png</file>
         <file>res/icons/common/menuitem/trash16@2x.png</file>
+        <file>res/icons/common/buttons/panel/document-view20.png</file>
+        <file>res/icons/common/buttons/panel/document-view20@2x.png</file>
     </qresource>
 </RCC>

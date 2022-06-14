@@ -41,7 +41,7 @@ FolderView::FolderView(QWidget *parent) :
     ui->exitButton->setIconPath(":res/icons/common/buttons/panel/close16.png");
     ui->exitButton->setIconOffset(-1, 0);
     ui->docViewButton->setAction("documentView");
-    ui->docViewButton->setIconPath(":res/icons/common/buttons/panel/document-view16.png");
+    ui->docViewButton->setIconPath(":res/icons/common/buttons/panel/document-view20.png");
     ui->togglePlacesPanelButton->setCheckable(true);
     ui->togglePlacesPanelButton->setIconPath(":res/icons/common/buttons/panel/toggle-panel20.png");
     ui->togglePlacesPanelButton->setIconOffset(1, 0);
