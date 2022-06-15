@@ -99,6 +99,7 @@ ContextMenu::ContextMenu(QWidget *parent) :
     ui->scriptSetupButton->setText(tr("Configure menu"));
     ui->scriptSetupButton->setIconPath(":/res/icons/common/menuitem/settings16.png");
     connect(ui->backButton, &ContextMenuItem::pressed, this, &ContextMenu::switchToMainPage);
+    connect(ui->scriptSetupButton, &ContextMenuItem::pressed, this, &ContextMenu::showScriptSettings);
     fillOpenWithMenu();
 }
 

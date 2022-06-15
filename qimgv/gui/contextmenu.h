@@ -27,6 +27,10 @@ private:
     QTimer mTimer;
 
     void fillOpenWithMenu();
+
+signals:
+    void showScriptSettings();
+
 protected:
     void mousePressEvent(QMouseEvent*);
     void paintEvent(QPaintEvent *);

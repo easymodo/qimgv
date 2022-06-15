@@ -79,6 +79,7 @@ void MW::setupUi() {
     connect(viewerWidget.get(), &ViewerWidget::scalingRequested, this, &MW::scalingRequested);
     connect(viewerWidget.get(), &ViewerWidget::draggedOut, this, qOverload<>(&MW::draggedOut));
     connect(viewerWidget.get(), &ViewerWidget::playbackFinished, this, &MW::playbackFinished);
+    connect(viewerWidget.get(), &ViewerWidget::showScriptSettings, this, &MW::showScriptSettings);
     connect(this, &MW::zoomIn,        viewerWidget.get(), &ViewerWidget::zoomIn);
     connect(this, &MW::zoomOut,       viewerWidget.get(), &ViewerWidget::zoomOut);
     connect(this, &MW::zoomInCursor,  viewerWidget.get(), &ViewerWidget::zoomInCursor);
@@ -571,8 +572,14 @@ DialogResult MW::fileReplaceDialog(QString src, QString dst, FileReplaceMode mod
 
 void MW::showSettings() {
     viewerWidget->hidePanel();
-
     SettingsDialog settingsDialog(this);
+    settingsDialog.exec();
+}
+
+void MW::showScriptSettings() {
+    viewerWidget->hidePanel();
+    SettingsDialog settingsDialog(this);
+    settingsDialog.switchToPage(5);
     settingsDialog.exec();
 }
 

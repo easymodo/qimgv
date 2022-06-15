@@ -128,15 +128,16 @@ private:
     void setupCopyOverlay();
     void setupSaveOverlay();
     void setupRenameOverlay();
-
     void preShowResize(QSize sz);
+
 private slots:
     void updateCurrentDisplay();
     void readSettings();
     void adaptToWindowState();
-
     void onWindowGeometryChanged();
     void onInfoUpdated();
+    void showScriptSettings();
+
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     bool event(QEvent *event);

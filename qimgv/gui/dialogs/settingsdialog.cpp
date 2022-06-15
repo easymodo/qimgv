@@ -565,3 +565,8 @@ void SettingsDialog::onAutoResizeLimitSliderChanged(int value) {
 int SettingsDialog::exec() {
     return QDialog::exec();
 }
+
+void SettingsDialog::switchToPage(int number) {
+    ui->stackedWidget->setCurrentIndex(number);
+    ui->sideBar->setCurrentRow(number);
+}

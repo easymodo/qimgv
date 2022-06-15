@@ -91,6 +91,7 @@ signals:
     void playbackFinished();
     void toggleLockZoom();
     void toggleLockView();
+    void showScriptSettings();
 
 public slots:
     bool showVideo(QString file);
