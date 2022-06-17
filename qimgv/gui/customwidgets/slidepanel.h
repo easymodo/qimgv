@@ -28,6 +28,10 @@ public:
     // If this is called mid-animation then geometry() will be all wrong.
     virtual QRect triggerRect() = 0;
     void hideAnimated();
+    // if this is set, the widget will not change geometry by itself
+    // no pos() animations & no recalculateGeometry()
+    bool layoutManaged();
+    void setLayoutManaged(bool mode);
 
 public slots:
     void show();
@@ -57,5 +61,6 @@ private:
     QRect mStaticGeometry;
     qreal panelVisibleOpacity = 1.0;
     QPoint startPosition, endPosition;
+    bool mLayoutManaged = false;
 
 };

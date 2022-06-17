@@ -10,20 +10,26 @@ class MainPanel : public SlideHPanel {
 public:
     MainPanel(FloatingWidgetContainer *parent);
     ~MainPanel();
-    void setHeight(int newHeight);
     void setPosition(PanelHPosition);
     void setExitButtonEnabled(bool mode);
     std::shared_ptr<ThumbnailStripProxy> getThumbnailStrip();
-
     void setupThumbnailStrip();
-private slots:
+    QSize sizeHint() const;
+
+public slots:
     void readSettings();
+
+signals:
+    void pinned(bool mode);
+
+private slots:
+    void onPinClicked();
 
 private:
     QVBoxLayout buttonsLayout;
     QWidget buttonsWidget;
     std::shared_ptr<ThumbnailStripProxy> thumbnailStrip;
-    ActionButton *openButton, *settingsButton, *exitButton, *folderViewButton;
+    ActionButton *openButton, *settingsButton, *exitButton, *folderViewButton, *pinButton;
 
 protected:
     virtual void paintEvent(QPaintEvent* event);

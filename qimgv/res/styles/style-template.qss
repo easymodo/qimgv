@@ -116,6 +116,11 @@
     border: 1px solid %folderview_hc2%;
 }
 
+[accessibleName="ButtonSmall"][checked="true"] {
+    background-color: %folderview_hc%;
+    border: 1px solid %folderview_hc%;
+}
+
 /*----------------------------------------------------------------------------*/
 /* remove ugly dotted border  */
 QComboBox QAbstractItemView {
@@ -784,7 +789,7 @@ BookmarksItem[highlighted="true"] {
 /*----------------------------------------------------------------------------*/
 SettingsDialog QPushButton,
 SettingsDialog QComboBox {
-    min-height: 20px;
+    min-height: 24px;
 }
 
 [accessibleName="StyledOptionsGroup"] {

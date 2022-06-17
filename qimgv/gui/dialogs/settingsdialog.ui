@@ -287,9 +287,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-317</y>
                 <width>540</width>
-                <height>1273</height>
+                <height>1271</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
@@ -1270,21 +1270,9 @@
                           <number>0</number>
                          </property>
                          <item>
-                          <widget class="QCheckBox" name="squareThumbnailsCheckBox">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>0</height>
-                            </size>
-                           </property>
+                          <widget class="QCheckBox" name="pinPanelCheckBox">
                            <property name="text">
-                            <string>Crop thumbnails</string>
+                            <string>Always visible</string>
                            </property>
                           </widget>
                          </item>
@@ -1303,22 +1291,28 @@
                             </size>
                            </property>
                            <property name="text">
-                            <string>Hide in windowed mode</string>
+                            <string>Disable in windowed mode</string>
                            </property>
                           </widget>
                          </item>
                          <item>
-                          <spacer name="verticalSpacer_15">
-                           <property name="orientation">
-                            <enum>Qt::Vertical</enum>
+                          <widget class="QCheckBox" name="squareThumbnailsCheckBox">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
                            </property>
-                           <property name="sizeHint" stdset="0">
+                           <property name="minimumSize">
                             <size>
-                             <width>20</width>
+                             <width>0</width>
                              <height>0</height>
                             </size>
                            </property>
-                          </spacer>
+                           <property name="text">
+                            <string>Crop previews</string>
+                           </property>
+                          </widget>
                          </item>
                         </layout>
                        </item>
@@ -1358,24 +1352,34 @@
                            </property>
                           </widget>
                          </item>
-                         <item row="0" column="2">
-                          <widget class="QRadioButton" name="panelTop">
-                           <property name="text">
-                            <string>Top</string>
-                           </property>
-                           <property name="checked">
-                            <bool>true</bool>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="2">
-                          <widget class="QRadioButton" name="panelBottom">
-                           <property name="text">
-                            <string>Bottom</string>
-                           </property>
-                          </widget>
-                         </item>
                          <item row="2" column="1">
+                          <spacer name="verticalSpacer_15">
+                           <property name="orientation">
+                            <enum>Qt::Vertical</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>20</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                         <item row="0" column="2">
+                          <widget class="QComboBox" name="panelPositionComboBox">
+                           <item>
+                            <property name="text">
+                             <string>Top</string>
+                            </property>
+                           </item>
+                           <item>
+                            <property name="text">
+                             <string>Bottom</string>
+                            </property>
+                           </item>
+                          </widget>
+                         </item>
+                         <item row="1" column="1">
                           <widget class="QLabel" name="label_18">
                            <property name="text">
                             <string>Display style:</string>
@@ -1385,7 +1389,7 @@
                            </property>
                           </widget>
                          </item>
-                         <item row="2" column="2">
+                         <item row="1" column="2">
                           <widget class="QComboBox" name="thumbStyleComboBox">
                            <item>
                             <property name="text">
@@ -1433,7 +1437,7 @@
                        <item>
                         <widget class="QLabel" name="label_4">
                          <property name="text">
-                          <string>Previews size:</string>
+                          <string>Preview size:</string>
                          </property>
                         </widget>
                        </item>
@@ -2017,8 +2021,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>552</width>
-                <height>618</height>
+                <width>448</width>
+                <height>432</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">

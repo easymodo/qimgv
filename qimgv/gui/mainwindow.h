@@ -129,6 +129,7 @@ private:
     void setupSaveOverlay();
     void setupRenameOverlay();
     void preShowResize(QSize sz);
+    void setInteractionEnabled(bool mode);
 
 private slots:
     void updateCurrentDisplay();

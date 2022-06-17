@@ -46,9 +46,20 @@ void SlidePanel::hide() {
 }
 
 void SlidePanel::hideAnimated() {
-    if(!this->isHidden() && timeline.state() != QTimeLine::Running) {
+    if(layoutManaged())
+        hide();
+    else if(!this->isHidden() && timeline.state() != QTimeLine::Running)
         timeline.start();
-    }
+}
+
+bool SlidePanel::layoutManaged() {
+    return mLayoutManaged;
+}
+
+void SlidePanel::setLayoutManaged(bool mode) {
+    mLayoutManaged = mode;
+    if(!mode)
+        recalculateGeometry();
 }
 
 void SlidePanel::setWidget(std::shared_ptr<QWidget> w) {

@@ -1,10 +1,6 @@
 #include "slidehpanel.h"
 
-SlideHPanel::SlideHPanel(FloatingWidgetContainer *parent)
-    : SlidePanel(parent)
-{
-    bottomMargin = 6;
-    panelHeight = 100;
+SlideHPanel::SlideHPanel(FloatingWidgetContainer *parent) : SlidePanel(parent) {
     mLayout.setContentsMargins(0,0,0,0);
     setPosition(PANEL_TOP);
 }
@@ -17,13 +13,6 @@ QRect SlideHPanel::triggerRect() {
     return mTriggerRect;
 }
 
-void SlideHPanel::setPanelHeight(int newHeight) {
-    if(newHeight != panelHeight) {
-        panelHeight = newHeight;
-        recalculateGeometry();
-    }
-}
-
 void SlideHPanel::setPosition(PanelHPosition p) {
     mPosition = p;
     recalculateGeometry();
@@ -34,16 +23,18 @@ PanelHPosition SlideHPanel::position() {
 }
 
 void SlideHPanel::recalculateGeometry() {
+    if(layoutManaged())
+        return;
     if(mPosition == PANEL_TOP) {
         setAnimationRange(QPoint(0,0),
                           QPoint(0,0) - QPoint(0, slideAmount));
         saveStaticGeometry(QRect(QPoint(0, 0),
-                                 QPoint(containerSize().width() - 1, panelHeight - 1 + bottomMargin)));
+                                 QPoint(containerSize().width() - 1, height() - 1)));
     } else {
         setAnimationRange(QPoint(0, containerSize().height() - height()),
                           QPoint(0, containerSize().height() - height() + slideAmount));
-        saveStaticGeometry(QRect(QPoint(0, containerSize().height() - panelHeight + 1),
-                                 QPoint(containerSize().width(), containerSize().height()) - QPoint(0,1) ));
+        saveStaticGeometry(QRect(QPoint(0, containerSize().height() - height()),
+                                 QPoint(containerSize().width() - 1, containerSize().height())));
     }
     this->setGeometry(staticGeometry());
     updateTriggerRect();

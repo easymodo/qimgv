@@ -1,12 +1,11 @@
 #pragma once
 
 #include "gui/customwidgets/floatingwidgetcontainer.h"
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include "gui/viewers/imageviewerv2.h"
 #include "gui/viewers/videoplayerinitproxy.h"
 #include "gui/overlays/videocontrolsproxy.h"
 #include "gui/overlays/zoomindicatoroverlayproxy.h"
-#include "gui/panels/mainpanel/mainpanel.h"
 #include "gui/contextmenu.h"
 
 enum CurrentWidget {
@@ -24,11 +23,8 @@ public:
     float currentScale();
     QSize sourceSize();
 
-    void enableInteraction();
-    void disableInteraction();
+    void setInteractionEnabled(bool mode);
     bool interactionEnabled();
-
-    std::shared_ptr<ThumbnailStripProxy> getThumbPanel();
 
     bool showImage(std::unique_ptr<QPixmap> pixmap);
     bool showAnimation(std::shared_ptr<QMovie> movie);
@@ -37,19 +33,12 @@ public:
     bool lockZoomEnabled();
     bool lockViewEnabled();
     ScalingFilter scalingFilter();
-    void hidePanel();
-    void hidePanelAnimated();
-    PanelHPosition panelPosition();
-
-    bool panelEnabled();
-    void setupMainPanel();
 
 private:
-    QHBoxLayout layout;
+    QVBoxLayout layout;
     std::unique_ptr<ImageViewerV2> imageViewer;
     std::unique_ptr<VideoPlayerInitProxy> videoPlayer;
     std::unique_ptr<ContextMenu> contextMenu;
-    std::shared_ptr<MainPanel> mainPanel;
     VideoControlsProxyWrapper *videoControls;
     ZoomIndicatorOverlayProxy *zoomIndicator;
 
@@ -60,12 +49,13 @@ private:
     bool mInteractionEnabled, mWaylandCursorWorkaround;
     QTimer cursorTimer;
     const int CURSOR_HIDE_TIMEOUT_MS = 1000;
-    bool avoidPanelFlag, mPanelEnabled, mPanelFullscreenOnly, mIsFullscreen;
+    bool mIsFullscreen;
 
     void disableImageViewer();
     void disableVideoPlayer();
 
     QRect videoControlsArea();
+
 private slots:
     void onScaleChanged(qreal);
     void onVideoPlaybackFinished();
@@ -130,7 +120,6 @@ protected:
     void hideEvent(QHideEvent *event);
 
     void keyPressEvent(QKeyEvent *event);
-    void enterEvent(QEnterEvent *event);
     void leaveEvent(QEvent *event);
     bool focusNextPrevChild(bool mode);
 };

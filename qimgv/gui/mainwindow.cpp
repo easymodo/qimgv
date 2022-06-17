@@ -74,8 +74,8 @@ void MW::setupUi() {
     infoBarFullscreen = new FullscreenInfoOverlayProxy(viewerWidget.get());
     sidePanel = new SidePanel(this);
     layout.addWidget(sidePanel);
-    imageInfoOverlay = new ImageInfoOverlayProxy(this);
-    floatingMessage = new FloatingMessageProxy(this);
+    imageInfoOverlay = new ImageInfoOverlayProxy(viewerWidget.get());
+    floatingMessage = new FloatingMessageProxy(viewerWidget.get()); // todo: use additional one for folderview?
     connect(viewerWidget.get(), &ViewerWidget::scalingRequested, this, &MW::scalingRequested);
     connect(viewerWidget.get(), &ViewerWidget::draggedOut, this, qOverload<>(&MW::draggedOut));
     connect(viewerWidget.get(), &ViewerWidget::playbackFinished, this, &MW::playbackFinished);
@@ -103,7 +103,8 @@ void MW::setupUi() {
 
 void MW::setupFullUi() {
     setupCropPanel();
-    viewerWidget->setupMainPanel();
+    docWidget->allowPanelInit();
+    docWidget->setupMainPanel();
     infoBarWindowed->init();
     infoBarFullscreen->init();
 }
@@ -145,7 +146,7 @@ void MW::toggleFolderView() {
         copyOverlay->hide();
     if(renameOverlay)
         renameOverlay->hide();
-    viewerWidget->hidePanel();
+    docWidget->hideFloatingPanel();
     imageInfoOverlay->hide();
     centralWidget->toggleViewMode();
     onInfoUpdated();
@@ -157,7 +158,7 @@ void MW::enableFolderView() {
         copyOverlay->hide();
     if(renameOverlay)
         renameOverlay->hide();
-    viewerWidget->hidePanel();
+    docWidget->hideFloatingPanel();
     imageInfoOverlay->hide();
     centralWidget->showFolderView();
     onInfoUpdated();
@@ -494,7 +495,7 @@ void MW::showSaveDialog(QString filePath) {
 }
 
 QString MW::getSaveFileName(QString filePath) {
-    viewerWidget->hidePanel();
+    docWidget->hideFloatingPanel();
     QStringList filters;
     // generate filter for writable images
     // todo: some may need to be blacklisted
@@ -537,7 +538,7 @@ QString MW::getSaveFileName(QString filePath) {
 }
 
 void MW::showOpenDialog(QString path) {
-    viewerWidget->hidePanel();
+    docWidget->hideFloatingPanel();
 
     QFileDialog dialog(this);
     QStringList imageFilter;
@@ -571,13 +572,13 @@ DialogResult MW::fileReplaceDialog(QString src, QString dst, FileReplaceMode mod
 }
 
 void MW::showSettings() {
-    viewerWidget->hidePanel();
+    docWidget->hideFloatingPanel();
     SettingsDialog settingsDialog(this);
     settingsDialog.exec();
 }
 
 void MW::showScriptSettings() {
-    viewerWidget->hidePanel();
+    docWidget->hideFloatingPanel();
     SettingsDialog settingsDialog(this);
     settingsDialog.switchToPage(5);
     settingsDialog.exec();
@@ -668,24 +669,29 @@ void MW::showCropPanel() {
         return;
 
     if(activeSidePanel != SIDEPANEL_CROP) {
-        viewerWidget->hidePanel();
+        docWidget->hideFloatingPanel();
         sidePanel->setWidget(cropPanel);
         sidePanel->show();
         cropOverlay->show();
         activeSidePanel = SIDEPANEL_CROP;
         // reset & lock zoom so CropOverlay won't go crazy
         viewerWidget->fitWindow();
-        viewerWidget->disableInteraction();
+        setInteractionEnabled(false);
         // feed the panel current image info
         updateCropPanelData();
     }
+}
+
+void MW::setInteractionEnabled(bool mode) {
+    docWidget->setInteractionEnabled(mode);
+    viewerWidget->setInteractionEnabled(mode);
 }
 
 void MW::hideCropPanel() {
     sidePanel->hide();
     if(activeSidePanel == SIDEPANEL_CROP) {
         cropOverlay->hide();
-        viewerWidget->enableInteraction();
+        setInteractionEnabled(true);
     }
     activeSidePanel = SIDEPANEL_NONE;
 }
@@ -812,7 +818,7 @@ std::shared_ptr<FolderViewProxy> MW::getFolderView() {
 }
 
 std::shared_ptr<ThumbnailStripProxy> MW::getThumbnailPanel() {
-    return viewerWidget->getThumbPanel();
+    return docWidget->thumbPanel();
 }
 
 // todo: this is crap
@@ -899,7 +905,7 @@ void MW::applyFullscreenBackground() {
 
 // changes ui elements according to fullscreen state
 void MW::adaptToWindowState() {
-    viewerWidget->hidePanel();
+    docWidget->hideFloatingPanel();
     if(isFullScreen()) { //-------------------------------------- fullscreen ---
         applyFullscreenBackground();
         infoBarWindowed->hide();
@@ -907,7 +913,7 @@ void MW::adaptToWindowState() {
             infoBarFullscreen->showWhenReady();
         else
             infoBarFullscreen->hide();    
-        if(viewerWidget->panelPosition() == PANEL_BOTTOM || !viewerWidget->panelEnabled())
+        if(settings->panelPosition() == PANEL_BOTTOM || !settings->panelEnabled())
             controlsOverlay->show();
         else
             controlsOverlay->hide();
@@ -921,6 +927,7 @@ void MW::adaptToWindowState() {
         controlsOverlay->hide();
     }
     folderView->onFullscreenModeChanged(isFullScreen());
+    docWidget->onFullscreenModeChanged(isFullScreen());
     viewerWidget->onFullscreenModeChanged(isFullScreen());
 }
 
@@ -932,7 +939,7 @@ void MW::paintEvent(QPaintEvent *event) {
 
 void MW::leaveEvent(QEvent *event) {
     QWidget::leaveEvent(event);
-    viewerWidget->hidePanelAnimated();
+    docWidget->hideFloatingPanel(true);
 }
 
 // block native tab-switching so we can use it in shortcuts

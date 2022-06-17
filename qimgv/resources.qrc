@@ -158,5 +158,7 @@
         <file>res/icons/common/menuitem/trash16@2x.png</file>
         <file>res/icons/common/buttons/panel/document-view20.png</file>
         <file>res/icons/common/buttons/panel/document-view20@2x.png</file>
+        <file>res/icons/common/buttons/panel/pin-panel20.png</file>
+        <file>res/icons/common/buttons/panel/pin-panel20@2x.png</file>
     </qresource>
 </RCC>

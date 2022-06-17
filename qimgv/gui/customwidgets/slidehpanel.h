@@ -19,8 +19,6 @@ public:
 
 protected:
     PanelHPosition mPosition;
-    int bottomMargin;
-    int panelHeight;
     void recalculateGeometry();
     virtual void updateTriggerRect();
 };

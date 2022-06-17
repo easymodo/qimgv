@@ -279,6 +279,8 @@ public:
     int autoResizeLimit();
     void setAutoResizeLimit(int percent);
 
+    bool panelPinned();
+    void setPanelPinned(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     QSettings *settingsConf, *stateConf, *themeConf;

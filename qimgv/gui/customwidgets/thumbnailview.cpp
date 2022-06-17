@@ -455,7 +455,7 @@ void ThumbnailView::fitSceneToContents() {
         int width = qMax((int)scene.itemsBoundingRect().width(), this->width());
         scene.setSceneRect(QRectF(0,0, width, this->height()));
         center = mapToScene(viewport()->rect().center());
-        QGraphicsView::centerOn(center.x(), 0);
+        QGraphicsView::centerOn(center.x() + 1, 0);
     }
 }
 

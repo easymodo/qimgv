@@ -209,10 +209,9 @@ void SettingsDialog::readSettings() {
     // ##### UI #####
     ui->scalingQualityComboBox->setCurrentIndex(settings->scalingFilter());
     ui->fullscreenCheckBox->setChecked(settings->fullscreenMode());
-    if(settings->panelPosition() == PANEL_TOP)
-        ui->panelTop->setChecked(true);
-    else
-        ui->panelBottom->setChecked(true);
+    ui->pinPanelCheckBox->setChecked(settings->panelPinned());
+    ui->panelPositionComboBox->setCurrentIndex(settings->panelPosition());
+
     // reduce by 10x to have nice granular control in qslider
     ui->panelSizeSlider->setValue(settings->panelPreviewsSize() / 10);
 
@@ -295,10 +294,9 @@ void SettingsDialog::saveSettings() {
     settings->setAbsoluteZoomStep(ui->absoluteStepCheckBox->isChecked());
     settings->setAutoResizeWindow(ui->autoResizeWindowCheckBox->isChecked());
 
-    if(ui->panelTop->isChecked())
-        settings->setPanelPosition(PANEL_TOP);
-    else
-        settings->setPanelPosition(PANEL_BOTTOM);
+    settings->setPanelPinned(ui->pinPanelCheckBox->isChecked());
+    int panelPos = ui->panelPositionComboBox->currentIndex();
+    settings->setPanelPosition(static_cast<PanelHPosition>(panelPos));
 
     settings->setPanelPreviewsSize(ui->panelSizeSlider->value() * 10);
 

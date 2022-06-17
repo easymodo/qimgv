@@ -503,6 +503,14 @@ void Settings::setPanelPosition(PanelHPosition pos) {
     settings->settingsConf->setValue("panelPosition", posString);
 }
 //------------------------------------------------------------------------------
+bool Settings::panelPinned() {
+    return settings->settingsConf->value("panelPinned", false).toBool();
+}
+
+void Settings::setPanelPinned(bool mode) {
+    settings->settingsConf->setValue("panelPinned", mode);
+}
+//------------------------------------------------------------------------------
 /*
  * 0: fit window
  * 1: fit width
