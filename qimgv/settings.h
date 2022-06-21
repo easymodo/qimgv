@@ -281,6 +281,9 @@ public:
 
     bool panelPinned();
     void setPanelPinned(bool mode);
+    int memoryAllocationLimit();
+    void setMemoryAllocationLimit(int limitMB);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     QSettings *settingsConf, *stateConf, *themeConf;

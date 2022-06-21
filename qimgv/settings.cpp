@@ -1027,3 +1027,16 @@ int Settings::autoResizeLimit() {
 void Settings::setAutoResizeLimit(int percent) {
     settings->settingsConf->setValue("autoResizeLimit", percent);
 }
+//------------------------------------------------------------------------------
+int Settings::memoryAllocationLimit() {
+    int limit = settings->settingsConf->value("memoryAllocationLimit", 1024).toInt();
+    if(limit < 512)
+        limit = 512;
+    else if(limit > 8192)
+        limit = 8192;
+    return limit;
+}
+
+void Settings::setMemoryAllocationLimit(int limitMB) {
+    settings->settingsConf->setValue("memoryAllocationLimit", limitMB);
+}

@@ -75,6 +75,11 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->scalingQualityComboBox->addItem("Bicubic+sharpen (OpenCV)");
 #endif
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    ui->memoryLimitSpinBox->setHidden(true);
+    ui->memoryLimitLabel->setHidden(true);
+#endif
+
     if(!settings->supportedFormats().contains("jxl"))
         ui->animatedJxlCheckBox->hide();
 
@@ -198,6 +203,8 @@ void SettingsDialog::readSettings() {
     ui->thumbnailerThreadsSlider->setValue(settings->thumbnailerThreadCount());
     onThumbnailerThreadsSliderChanged(ui->thumbnailerThreadsSlider->value());
 
+    ui->memoryLimitSpinBox->setValue(settings->memoryAllocationLimit());
+
     // ##### fit mode #####
     if(settings->imageFitMode() == FIT_WINDOW)
         ui->fitModeWindow->setChecked(true);
@@ -305,6 +312,7 @@ void SettingsDialog::saveSettings() {
     settings->setAutoResizeLimit(ui->autoResizeLimitSlider->value() * 5);
     settings->setExpandLimit(ui->expandLimitSlider->value());
     settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
+    settings->setMemoryAllocationLimit(ui->memoryLimitSpinBox->value());
 
     settings->setUseSystemColorScheme(ui->useSystemColorsCheckBox->isChecked());
 
