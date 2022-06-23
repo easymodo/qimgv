@@ -424,11 +424,10 @@ void ViewerWidget::hideCursor() {
 
 QRect ViewerWidget::videoControlsArea() {
     QRect vcontrolsRect;
-    // bottom
-    if(!settings->panelEnabled() || settings->panelPosition() == PANEL_TOP)
+    if(settings->panelEnabled() && settings->panelPosition() == PANEL_BOTTOM)
+        vcontrolsRect = QRect(0, 0, width(), 160); // inverted (top)
+    else
         vcontrolsRect = QRect(0, height() - 160, width(), height());
-    else // top
-        vcontrolsRect = QRect(0, 0, width(), 160);
     return vcontrolsRect;
 }
 

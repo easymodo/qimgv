@@ -172,6 +172,7 @@ void SettingsDialog::readSettings() {
     ui->animatedJxlCheckBox->setChecked(settings->jxlAnimation());
     ui->absoluteStepCheckBox->setChecked(settings->absoluteZoomStep());
     ui->autoResizeWindowCheckBox->setChecked(settings->autoResizeWindow());
+    ui->panelCenterSelectionCheckBox->setChecked(settings->panelCenterSelection());
 
     if(settings->defaultViewMode() == MODE_FOLDERVIEW)
         ui->startInFolderViewCheckBox->setChecked(true);
@@ -300,10 +301,11 @@ void SettingsDialog::saveSettings() {
     settings->setJxlAnimation(ui->animatedJxlCheckBox->isChecked());
     settings->setAbsoluteZoomStep(ui->absoluteStepCheckBox->isChecked());
     settings->setAutoResizeWindow(ui->autoResizeWindowCheckBox->isChecked());
+    settings->setPanelCenterSelection(ui->panelCenterSelectionCheckBox->isChecked());
 
     settings->setPanelPinned(ui->pinPanelCheckBox->isChecked());
     int panelPos = ui->panelPositionComboBox->currentIndex();
-    settings->setPanelPosition(static_cast<PanelHPosition>(panelPos));
+    settings->setPanelPosition(static_cast<PanelPosition>(panelPos));
 
     settings->setPanelPreviewsSize(ui->panelSizeSlider->value() * 10);
 

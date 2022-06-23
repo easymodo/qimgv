@@ -94,7 +94,7 @@ void CopyOverlay::requestFileOperation(QString path) {
 
 void CopyOverlay::readSettings() {
     // don't interfere with the main panel
-    if(settings->panelEnabled() && settings->panelPosition() == PanelHPosition::PANEL_BOTTOM) {
+    if(settings->panelEnabled() && settings->panelPosition() == PanelPosition::PANEL_BOTTOM) {
         setPosition(FloatingWidgetPosition::TOPLEFT);
     } else {
         setPosition(FloatingWidgetPosition::BOTTOMLEFT);

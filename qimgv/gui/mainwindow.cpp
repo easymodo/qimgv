@@ -909,21 +909,26 @@ void MW::adaptToWindowState() {
     if(isFullScreen()) { //-------------------------------------- fullscreen ---
         applyFullscreenBackground();
         infoBarWindowed->hide();
+
         if(showInfoBarFullscreen)
             infoBarFullscreen->showWhenReady();
         else
             infoBarFullscreen->hide();    
-        if(settings->panelPosition() == PANEL_BOTTOM || !settings->panelEnabled())
+
+        auto pos = settings->panelPosition();
+        if(!settings->panelEnabled() || pos == PANEL_BOTTOM || pos == PANEL_LEFT)
             controlsOverlay->show();
         else
             controlsOverlay->hide();
     } else { //------------------------------------------------------ window ---
         applyWindowedBackground();
         infoBarFullscreen->hide();
+
         if(showInfoBarWindowed)
             infoBarWindowed->show();
         else
             infoBarWindowed->hide();
+
         controlsOverlay->hide();
     }
     folderView->onFullscreenModeChanged(isFullScreen());

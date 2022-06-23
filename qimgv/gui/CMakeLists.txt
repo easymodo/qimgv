@@ -19,9 +19,7 @@ target_sources(qimgv PRIVATE
     customwidgets/overlaywidget.cpp
     customwidgets/pathselectormenuitem.cpp
     customwidgets/sidepanelwidget.cpp
-    customwidgets/slidehpanel.cpp
     customwidgets/slidepanel.cpp
-    customwidgets/slidevpanel.cpp
     customwidgets/spinboxinputfix.cpp
     customwidgets/thumbnailview.cpp
     customwidgets/thumbnailwidget.cpp

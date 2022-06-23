@@ -481,16 +481,20 @@ void Settings::setLastDisplay(int display) {
     settings->stateConf->setValue("lastDisplay", display);
 }
 //------------------------------------------------------------------------------
-PanelHPosition Settings::panelPosition() {
+PanelPosition Settings::panelPosition() {
     QString posString = settings->settingsConf->value("panelPosition", "top").toString();
     if(posString == "top") {
-        return PanelHPosition::PANEL_TOP;
+        return PanelPosition::PANEL_TOP;
+    } else if(posString == "bottom") {
+        return PanelPosition::PANEL_BOTTOM;
+    } else if(posString == "left") {
+        return PanelPosition::PANEL_LEFT;
     } else {
-        return PanelHPosition::PANEL_BOTTOM;
+        return PanelPosition::PANEL_RIGHT;
     }
 }
 
-void Settings::setPanelPosition(PanelHPosition pos) {
+void Settings::setPanelPosition(PanelPosition pos) {
     QString posString;
     switch(pos) {
         case PANEL_TOP:
@@ -498,6 +502,12 @@ void Settings::setPanelPosition(PanelHPosition pos) {
             break;
         case PANEL_BOTTOM:
             posString = "bottom";
+            break;
+        case PANEL_LEFT:
+            posString = "left";
+            break;
+        case PANEL_RIGHT:
+            posString = "right";
             break;
     }
     settings->settingsConf->setValue("panelPosition", posString);
@@ -1039,4 +1049,12 @@ int Settings::memoryAllocationLimit() {
 
 void Settings::setMemoryAllocationLimit(int limitMB) {
     settings->settingsConf->setValue("memoryAllocationLimit", limitMB);
+}
+//------------------------------------------------------------------------------
+bool Settings::panelCenterSelection() {
+    return settings->settingsConf->value("panelCenterSelection", false).toBool();
+}
+
+void Settings::setPanelCenterSelection(bool mode) {
+    settings->settingsConf->setValue("panelCenterSelection", mode);
 }

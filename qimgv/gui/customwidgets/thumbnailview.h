@@ -22,11 +22,6 @@
 #include "gui/idirectoryview.h"
 #include "shortcutbuilder.h"
 
-enum ThumbnailViewOrientation {
-    THUMBNAILVIEW_HORIZONTAL,
-    THUMBNAILVIEW_VERTICAL
-};
-
 enum ThumbnailSelectMode {
     ACTIVATE_BY_PRESS,
     ACTIVATE_BY_DOUBLECLICK
@@ -41,7 +36,7 @@ class ThumbnailView : public QGraphicsView, public IDirectoryView {
     Q_OBJECT
     Q_INTERFACES(IDirectoryView)
 public:
-    ThumbnailView(ThumbnailViewOrientation orient, QWidget *parent = nullptr);
+    ThumbnailView(Qt::Orientation orient, QWidget *parent = nullptr);
     virtual void setDirectoryPath(QString path) override;
     void select(QList<int>) override;
     void select(int) override;
@@ -52,6 +47,7 @@ public:
     int lastSelected();
     void clearSelection();
     void deselect(int index);
+
 public slots:
     void show();
     void showEvent(QShowEvent *event) override;
@@ -79,8 +75,6 @@ signals:
     void droppedInto(const QMimeData*, QObject*, int) override;
 
 private:
-    ThumbnailViewOrientation orientation;
-
     QTimer loadTimer;
     bool blockThumbnailLoading;
 
@@ -96,6 +90,7 @@ private:
     QElapsedTimer scrollFrameTimer;
     std::function<void(int)> centerOn;
     QElapsedTimer lastTouchpadScroll;
+    Qt::Orientation mOrientation = Qt::Horizontal;
 
 protected:
     QGraphicsScene scene;
@@ -133,6 +128,9 @@ protected:
     virtual void updateLayout();
     virtual void fitSceneToContents();
     virtual void updateScrollbarIndicator() = 0;
+
+    void setOrientation(Qt::Orientation _orientation);
+    Qt::Orientation orientation();
 
     void setCropThumbnails(bool);
     void setDrawScrollbarIndicator(bool mode);

@@ -2,7 +2,7 @@
 
 // TODO: move item highlight logic to base class
 
-ThumbnailStrip::ThumbnailStrip(QWidget *parent) : ThumbnailView(THUMBNAILVIEW_HORIZONTAL, parent) {
+ThumbnailStrip::ThumbnailStrip(QWidget *parent) : ThumbnailView(Qt::Horizontal, parent) {
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
     setupLayout();
@@ -43,11 +43,18 @@ void ThumbnailStrip::removeItemFromLayout(int pos) {
     if(checkRange(pos)) {
         ThumbnailWidget *thumb = thumbnails.at(pos);
         scene.removeItem(thumb);
-        // move items left
+        // move items
         ThumbnailWidget *tmp;
-        for(int i = pos; i < thumbnails.count(); i++) {
-            tmp = thumbnails.at(i);
-            tmp->moveBy(-tmp->boundingRect().width(), 0);
+        if(orientation() == Qt::Horizontal) {
+            for(int i = pos; i < thumbnails.count(); i++) {
+                tmp = thumbnails.at(i);
+                tmp->moveBy(-tmp->boundingRect().width(), 0);
+            }
+        } else {
+            for(int i = pos; i < thumbnails.count(); i++) {
+                tmp = thumbnails.at(i);
+                tmp->moveBy(0, -tmp->boundingRect().height());
+            }
         }
     }
 }
@@ -62,23 +69,45 @@ void ThumbnailStrip::updateThumbnailPositions() {
 }
 
 void ThumbnailStrip::updateThumbnailPositions(int start, int end) {
-    if(start > end || !checkRange(start) || !checkRange(end)) {
+    if(start > end || !checkRange(start) || !checkRange(end))
         return;
-    }
     // assume all thumbnails are the same size
-    int thumbWidth = static_cast<int>(thumbnails.at(start)->boundingRect().width());
     ThumbnailWidget *tmp;
-    for(int i = start; i <= end; i++) {
-        tmp = thumbnails.at(i);
-        tmp->setPos(i * thumbWidth, 0);
+    if(orientation() == Qt::Horizontal) {
+        int thumbWidth = static_cast<int>(thumbnails.at(start)->boundingRect().width());
+        for(int i = start; i <= end; i++) {
+            tmp = thumbnails.at(i);
+            tmp->setPos(i * thumbWidth, 0);
+        }
+    } else {
+        int thumbHeight = static_cast<int>(thumbnails.at(start)->boundingRect().height());
+        for(int i = start; i <= end; i++) {
+            tmp = thumbnails.at(i);
+            tmp->setPos(0, i * thumbHeight);
+        }
     }
 }
 
 void ThumbnailStrip::focusOn(int index) {
     if(!checkRange(index))
         return;
-    ThumbnailWidget *thumb = thumbnails.at(index);
-    ensureVisible(thumb, 0, 0);
+    auto th = thumbnails.at(index);
+    if(settings->panelCenterSelection()) {
+        QGraphicsView::centerOn(th->sceneBoundingRect().center());
+    } else {
+        // partially show the next thumb if possible
+        if(orientation() == Qt::Vertical) {
+            if(height() > th->height() * 2)
+                ensureVisible(th, 0, th->height()/2);
+            else
+                ensureVisible(th, 0, 0);
+        } else {
+            if(width() > th->width() * 2)
+                ensureVisible(th, th->width() / 2, 0);
+            else
+                ensureVisible(th, 0, 0);
+        }
+    }
     loadVisibleThumbnails();
 }
 
@@ -89,14 +118,23 @@ void ThumbnailStrip::focusOnSelection() {
 }
 
 void ThumbnailStrip::readSettings() {
-    thumbMarginX = 2;
-    thumbMarginY = 4;
-    thumbPadding = 9;
     if(settings->thumbPanelStyle() == TH_PANEL_SIMPLE)
         mCurrentStyle = THUMB_SIMPLE;
     else
         mCurrentStyle = THUMB_NORMAL_CENTERED;
+
     mThumbnailSize = qBound(20, settings->panelPreviewsSize(), 300);
+
+    if(settings->panelPosition() == PANEL_TOP || settings->panelPosition() == PANEL_BOTTOM) {
+        ThumbnailView::setOrientation(Qt::Horizontal);
+        thumbMarginX = 2;
+        thumbMarginY = 4;
+    } else {
+        ThumbnailView::setOrientation(Qt::Vertical);
+        thumbMarginX = 12;
+        thumbMarginY = 2;
+    }
+
     // apply style, size & reposition
     for(int i = 0; i < thumbnails.count(); i++) {
         thumbnails.at(i)->setPadding(thumbPadding);
@@ -106,14 +144,8 @@ void ThumbnailStrip::readSettings() {
     }
     updateThumbnailPositions(0, thumbnails.count() - 1);
     fitSceneToContents();
-    ensureThumbnailVisible(lastSelected());
     setCropThumbnails(settings->squareThumbnails());
-}
-
-void ThumbnailStrip::ensureThumbnailVisible(int pos) {
-    if(checkRange(pos))
-        ensureVisible(thumbnails.at(pos)->sceneBoundingRect(),
-                      mThumbnailSize / 2, 0);
+    focusOn(lastSelected());
 }
 
 QSize ThumbnailStrip::itemSize() {

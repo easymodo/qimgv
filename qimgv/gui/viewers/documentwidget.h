@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <QVBoxLayout>
+#include <QBoxLayout>
 #include "gui/customwidgets/floatingwidgetcontainer.h"
 #include "gui/viewers/viewerwidget.h"
 #include "gui/panels/mainpanel/mainpanel.h"
@@ -37,7 +37,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
 
 private:
-    QVBoxLayout layout;
+    QBoxLayout *layout;
     std::shared_ptr<ViewerWidget> mViewWidget;
     std::shared_ptr<InfoBarProxy> mInfoBar;
     std::shared_ptr<MainPanel> mainPanel;

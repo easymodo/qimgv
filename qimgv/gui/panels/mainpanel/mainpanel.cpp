@@ -1,7 +1,6 @@
 #include "mainpanel.h"
 
-MainPanel::MainPanel(FloatingWidgetContainer *parent) : SlideHPanel(parent) {
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+MainPanel::MainPanel(FloatingWidgetContainer *parent) : SlidePanel(parent) {
     // buttons stuff
     buttonsWidget.setAccessibleName("panelButtonsWidget");
     openButton       = new ActionButton("open", ":res/icons/common/buttons/panel/open20.png", 30, this);
@@ -24,7 +23,6 @@ MainPanel::MainPanel(FloatingWidgetContainer *parent) : SlideHPanel(parent) {
 
     buttonsLayout.setDirection(QBoxLayout::BottomToTop);
     buttonsLayout.setSpacing(0);
-    buttonsLayout.setContentsMargins(4,0,0,0);
     buttonsLayout.addWidget(settingsButton);
     buttonsLayout.addWidget(openButton);
     buttonsLayout.addStretch(0);
@@ -33,7 +31,8 @@ MainPanel::MainPanel(FloatingWidgetContainer *parent) : SlideHPanel(parent) {
     buttonsLayout.addWidget(exitButton);
 
     buttonsWidget.setLayout(&buttonsLayout);
-    mLayout.addWidget(&buttonsWidget, 0, 1);
+
+    layout()->addWidget(&buttonsWidget);
 
     thumbnailStrip.reset(new ThumbnailStripProxy(this));
     setWidget(thumbnailStrip);
@@ -56,13 +55,30 @@ void MainPanel::onPinClicked() {
     emit pinned(mode);
 }
 
-void MainPanel::setPosition(PanelHPosition newPosition) {
-    SlideHPanel::setPosition(newPosition);
-    // add a few px for drawing border
-    if(newPosition == PANEL_TOP)
-        mLayout.setContentsMargins(0,0,0,1);
-    else
-        mLayout.setContentsMargins(0,3,0,0);
+void MainPanel::setPosition(PanelPosition p) {
+    SlidePanel::setPosition(p);
+    switch(p) {
+        case PANEL_TOP:
+            buttonsLayout.setDirection(QBoxLayout::BottomToTop);
+            layout()->setContentsMargins(0,0,0,1);
+            buttonsLayout.setContentsMargins(4,0,0,0);
+        break;
+        case PANEL_BOTTOM:
+            buttonsLayout.setDirection(QBoxLayout::BottomToTop);
+            layout()->setContentsMargins(0,3,0,0);
+            buttonsLayout.setContentsMargins(4,0,0,0);
+        break;
+        case PANEL_LEFT:
+            buttonsLayout.setDirection(QBoxLayout::LeftToRight);
+            layout()->setContentsMargins(0,0,1,0);
+            buttonsLayout.setContentsMargins(0,0,0,4);
+        break;
+        case PANEL_RIGHT:
+            buttonsLayout.setDirection(QBoxLayout::LeftToRight);
+            layout()->setContentsMargins(1,0,0,0);
+            buttonsLayout.setContentsMargins(0,0,0,4);
+        break;
+    }
     recalculateGeometry();
 }
 
@@ -83,31 +99,57 @@ void MainPanel::setupThumbnailStrip() {
 QSize MainPanel::sizeHint() const {
     if(!thumbnailStrip->isInitialized())
         return QSize(0, 0);
-    auto newPos = settings->panelPosition();
-    int addedHeight = 19; // (thumb <> scrollbar) spacing + scrollbar + border
-    if(newPos == PANEL_TOP)
-        addedHeight = 16;
-    return QSize(width(), static_cast<int>(thumbnailStrip->itemSize().height() + addedHeight));
+    // item size + spacing + scrollbar + border
+    switch(settings->panelPosition()) {
+        case PANEL_TOP:
+            return QSize(width(), thumbnailStrip->itemSize().height() + 16);
+        case PANEL_BOTTOM:
+            return QSize(width(), thumbnailStrip->itemSize().height() + 16 + 3);
+        case PANEL_LEFT:
+        case PANEL_RIGHT:
+            return QSize(thumbnailStrip->itemSize().width() + 16, height());
+    }
 }
 
 void MainPanel::readSettings() {
-    pinButton->setChecked(settings->panelPinned());
+    auto newPos = settings->panelPosition();
+    if(newPos == PANEL_TOP || newPos == PANEL_BOTTOM) {
+        this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        int h = sizeHint().height();
+        if(h)
+            setFixedHeight(h);
+        setFixedWidth(QWIDGETSIZE_MAX);
+    } else {
+        this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+        int w = sizeHint().width();
+        if(w)
+            setFixedWidth(w);
+        setFixedHeight(QWIDGETSIZE_MAX);
+    }
     thumbnailStrip->readSettings();
-    int h = sizeHint().height();
-    if(h)
-        setFixedHeight(h);
-    setPosition(settings->panelPosition());
+    setPosition(newPos);
+    pinButton->setChecked(settings->panelPinned());
 }
 
 // draw separator line at bottom or top
 void MainPanel::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
+    // borders
     QPainter p(this);
     p.setPen(settings->colorScheme().folderview_hc);
-    if(mPosition == PanelHPosition::PANEL_TOP) {
-        p.drawLine(rect().bottomLeft(), rect().bottomRight());
-    } else {
-        p.fillRect(rect().left(), rect().top(), width(), 3, settings->colorScheme().folderview);
-        p.drawLine(rect().topLeft(), rect().topRight());
+    switch(mPosition) {
+        case PANEL_TOP:
+            p.drawLine(rect().bottomLeft(), rect().bottomRight());
+        break;
+        case PANEL_BOTTOM:
+            p.fillRect(rect().left(), rect().top(), width(), 3, settings->colorScheme().folderview);
+            p.drawLine(rect().topLeft(), rect().topRight());
+        break;
+        case PANEL_LEFT:
+            p.drawLine(rect().topRight(), rect().bottomRight());
+        break;
+        case PANEL_RIGHT:
+            p.drawLine(rect().topLeft(), rect().bottomLeft());
+        break;
     }
 }

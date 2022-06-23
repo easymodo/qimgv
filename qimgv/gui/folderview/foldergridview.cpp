@@ -3,7 +3,7 @@
 // TODO: create a base class for this and the one on panel
 
 FolderGridView::FolderGridView(QWidget *parent)
-    : ThumbnailView(THUMBNAILVIEW_VERTICAL, parent),
+    : ThumbnailView(Qt::Vertical, parent),
       shiftedCol(-1)
 {
     offscreenPreloadArea = 2300;

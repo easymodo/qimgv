@@ -33,12 +33,9 @@ enum ImageFitMode {
     FIT_FREE
 };
 
-enum PanelHPosition {
+enum PanelPosition {
     PANEL_TOP,
-    PANEL_BOTTOM
-};
-
-enum PanelVPosition {
+    PANEL_BOTTOM,
     PANEL_LEFT,
     PANEL_RIGHT
 };
@@ -123,8 +120,8 @@ public:
     QString thumbnailCacheDir();
     QString mpvBinary();
     void setMpvBinary(QString path);
-    PanelHPosition panelPosition();
-    void setPanelPosition(PanelHPosition);
+    PanelPosition panelPosition();
+    void setPanelPosition(PanelPosition);
     bool loopSlideshow();
     void setLoopSlideshow(bool mode);
     void readShortcuts(QMap<QString, QString> &shortcuts);
@@ -283,6 +280,8 @@ public:
     void setPanelPinned(bool mode);
     int memoryAllocationLimit();
     void setMemoryAllocationLimit(int limitMB);
+    bool panelCenterSelection();
+    void setPanelCenterSelection(bool mode);
 
 private:
     explicit Settings(QObject *parent = nullptr);

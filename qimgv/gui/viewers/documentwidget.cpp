@@ -11,18 +11,19 @@ DocumentWidget::DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::sh
       mInteractionEnabled(false),
       mAllowPanelInit(false)
 {
-    layout.setContentsMargins(0,0,0,0);
-    layout.setSpacing(0);
-    setLayout(&layout);
+    layout = new QBoxLayout(QBoxLayout::LeftToRight);
+    layout->setContentsMargins(0,0,0,0);
+    layout->setSpacing(0);
+    setLayout(layout);
     setAttribute(Qt::WA_TranslucentBackground, true);
     setMouseTracking(true);
     mViewWidget = viewWidget;
     mViewWidget->setParent(this);
-    layout.addWidget(mViewWidget.get());
+    layout->addWidget(mViewWidget.get());
     mViewWidget.get()->show();
     mInfoBar = infoBar;
     mInfoBar->setParent(this);
-    layout.addWidget(mInfoBar.get());
+    layout->addWidget(mInfoBar.get());
     setFocusProxy(mViewWidget.get());
 
     setInteractionEnabled(true);
@@ -46,7 +47,7 @@ void DocumentWidget::readSettings() {
 }
 
 void DocumentWidget::onFullscreenModeChanged(bool mode) {
-    if(mainPanel->position() == PANEL_TOP)
+    if(settings->panelPosition() == PANEL_TOP || settings->panelPosition() == PANEL_RIGHT)
         mainPanel->setExitButtonEnabled(mode);
     else
         mainPanel->setExitButtonEnabled(false);
@@ -58,13 +59,20 @@ void DocumentWidget::setPanelPinned(bool mode) {
         return;
     if(!mode) { // unpin
         if(mPanelPinned)
-            layout.removeWidget(mainPanel.get());
+            layout->removeWidget(mainPanel.get());
         mainPanel->setLayoutManaged(false);
     } else {    // pin
-        if(settings->panelPosition() == PanelHPosition::PANEL_TOP)
-            layout.insertWidget(0, mainPanel.get());
-        else
-            layout.insertWidget(1, mainPanel.get());
+        layout->insertWidget(1, mainPanel.get());
+        switch(settings->panelPosition()) {
+            case PANEL_TOP:
+                layout->setDirection(QBoxLayout::BottomToTop); break;
+            case PANEL_BOTTOM:
+                layout->setDirection(QBoxLayout::TopToBottom); break;
+            case PANEL_LEFT:
+                layout->setDirection(QBoxLayout::RightToLeft); break;
+            case PANEL_RIGHT:
+                layout->setDirection(QBoxLayout::LeftToRight); break;
+        }
         mainPanel->setLayoutManaged(true);
         mainPanel->show();
     }

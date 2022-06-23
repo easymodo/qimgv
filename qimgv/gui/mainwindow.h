@@ -109,7 +109,7 @@ private:
     std::shared_ptr<InfoBarProxy> infoBarWindowed;
     FloatingMessageProxy *floatingMessage;
 
-    PanelHPosition panelPosition;
+    PanelPosition panelPosition;
     CurrentInfo info;
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QDesktopWidget desktopWidget;

@@ -425,6 +425,11 @@ ThumbnailStrip {
     background-color: %folderview%;
 }
 /*----------------------------------------------------------------------------*/
+PanelButtonsHolder {
+    background-color: red;
+    border: 1px solid blue;
+}
+/*----------------------------------------------------------------------------*/
 FolderGridView {
     background-color: %folderview%;
 }
@@ -522,7 +527,7 @@ FVOptionsPopup QLabel {
 
 ThumbnailStrip QScrollBar:horizontal {
     height: 13px;
-    background-color: transparent;
+    background-color: %folderview%;
 }
 
 ThumbnailStrip QScrollBar::handle:horizontal {
@@ -531,6 +536,21 @@ ThumbnailStrip QScrollBar::handle:horizontal {
 }
 
 ThumbnailStrip QScrollBar::handle:horizontal:hover {
+    background-color: %scrollbar_hover%;
+    border-color: %scrollbar_hover%;
+}
+
+ThumbnailStrip QScrollBar:vertical {
+    width: 13px;
+    background-color: %folderview%;
+}
+
+ThumbnailStrip QScrollBar::handle:vertical {
+    background-color: %scrollbar%;
+    min-height: 60px;
+}
+
+ThumbnailStrip QScrollBar::handle:vertical:hover {
     background-color: %scrollbar_hover%;
     border-color: %scrollbar_hover%;
 }

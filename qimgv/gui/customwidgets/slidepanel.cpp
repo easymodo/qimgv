@@ -1,7 +1,7 @@
 #include "slidepanel.h"
 
 SlidePanel::SlidePanel(FloatingWidgetContainer *parent)
-    : FloatingWidget(parent),
+    : FloatingWidget(parent) ,
       panelSize(50),
       slideAmount(40),
       mWidget(nullptr)
@@ -34,10 +34,14 @@ SlidePanel::SlidePanel(FloatingWidgetContainer *parent)
 
     this->setAttribute(Qt::WA_NoMousePropagation, true);
     this->setFocusPolicy(Qt::NoFocus);
+
+    setPosition(PANEL_TOP);
+
     QWidget::hide();
 }
 
 SlidePanel::~SlidePanel() {
+
 }
 
 void SlidePanel::hide() {
@@ -66,10 +70,10 @@ void SlidePanel::setWidget(std::shared_ptr<QWidget> w) {
     if(!w)
         return;
     if(hasWidget())
-        mLayout.removeWidget(mWidget.get());
+        layout()->removeWidget(mWidget.get());
     mWidget = w;
     mWidget->setParent(this);
-    mLayout.addWidget(mWidget.get(), 0, 0);
+    mLayout.insertWidget(0, mWidget.get());
 }
 
 bool SlidePanel::hasWidget() {
@@ -125,4 +129,55 @@ void SlidePanel::onAnimationFinish() {
     QWidget::hide();
     fadeEffect->setOpacity(panelVisibleOpacity);
     setProperty("pos", startPosition);
+}
+
+QRect SlidePanel::triggerRect() {
+    return mTriggerRect;
+}
+
+void SlidePanel::setPosition(PanelPosition p) {
+    if(p == PANEL_TOP || p == PANEL_BOTTOM)
+        mLayout.setDirection(QBoxLayout::LeftToRight);
+    else
+        mLayout.setDirection(QBoxLayout::BottomToTop);
+    mPosition = p;
+    recalculateGeometry();
+}
+
+PanelPosition SlidePanel::position() {
+    return mPosition;
+}
+
+void SlidePanel::recalculateGeometry() {
+    if(layoutManaged())
+        return;
+    if(mPosition == PANEL_TOP) {
+        setAnimationRange(QPoint(0,0), QPoint(0,0) - QPoint(0, slideAmount));
+        saveStaticGeometry(QRect(QPoint(0, 0),
+                                 QPoint(containerSize().width() - 1, height() - 1)));
+    } else if(mPosition == PANEL_BOTTOM) {
+        setAnimationRange(QPoint(0, containerSize().height() - height()),
+                          QPoint(0, containerSize().height() - height() + slideAmount));
+        saveStaticGeometry(QRect(QPoint(0, containerSize().height() - height()),
+                                 QPoint(containerSize().width() - 1, containerSize().height())));
+    } else if(mPosition == PANEL_LEFT) {
+        setAnimationRange(QPoint(0,0), QPoint(0,0) - QPoint(slideAmount, 0));
+        saveStaticGeometry(QRect(0, 0, width(), containerSize().height()));
+
+    } else { // right
+        setAnimationRange(QPoint(containerSize().width() - width(), 0),
+                          QPoint(containerSize().width() - width(), 0) + QPoint(slideAmount, 0));
+        saveStaticGeometry(QRect(containerSize().width() - width(), 0,
+                                 containerSize().width(), containerSize().height()));
+    }
+    this->setGeometry(staticGeometry());
+    updateTriggerRect();
+}
+
+void SlidePanel::updateTriggerRect() {
+    mTriggerRect = staticGeometry();
+}
+
+void SlidePanel::setOrientation() {
+
 }
