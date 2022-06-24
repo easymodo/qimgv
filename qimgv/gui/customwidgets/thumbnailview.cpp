@@ -215,6 +215,7 @@ void ThumbnailView::showEvent(QShowEvent *event) {
     // ensure we are properly resized
     qApp->processEvents();
     updateScrollbarIndicator();
+    loadVisibleThumbnails();
 }
 
 void ThumbnailView::populate(int newCount) {
