@@ -460,7 +460,7 @@ void ThumbnailView::fitSceneToContents() {
     QPointF center;
     if(this->mOrientation == Qt::Vertical) {
         int height = qMax((int)scene.itemsBoundingRect().height(), this->height());
-        scene.setSceneRect(QRectF(0,0, scene.itemsBoundingRect().width(), height));
+        scene.setSceneRect(QRectF(0,0, this->width(), height));
         center = mapToScene(viewport()->rect().center());
         QGraphicsView::centerOn(0, center.y() + 1);
     } else {
