@@ -299,6 +299,7 @@ void ImageViewerV2::reset() {
     pixmapScaled.reset(nullptr);
     pixmapItem.setPixmap(QPixmap());
     pixmapItem.setScale(1.0f);
+    pixmapItem.setOffset(10000,10000);
     pixmap.reset();
     stopAnimation();
     movie = nullptr;
