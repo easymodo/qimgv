@@ -11,10 +11,14 @@ DocumentWidget::DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::sh
       mInteractionEnabled(false),
       mAllowPanelInit(false)
 {
+    layoutRoot = new QVBoxLayout();
+    layoutRoot->setContentsMargins(0,0,0,0);
+    layoutRoot->setSpacing(0);
     layout = new QBoxLayout(QBoxLayout::LeftToRight);
     layout->setContentsMargins(0,0,0,0);
     layout->setSpacing(0);
-    setLayout(layout);
+    layoutRoot->addLayout(layout);
+    setLayout(layoutRoot);
     setAttribute(Qt::WA_TranslucentBackground, true);
     setMouseTracking(true);
     mViewWidget = viewWidget;
@@ -23,7 +27,7 @@ DocumentWidget::DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::sh
     mViewWidget.get()->show();
     mInfoBar = infoBar;
     mInfoBar->setParent(this);
-    layout->addWidget(mInfoBar.get());
+    layoutRoot->addWidget(mInfoBar.get());
     setFocusProxy(mViewWidget.get());
 
     setInteractionEnabled(true);

@@ -37,7 +37,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
 
 private:
-    QBoxLayout *layout;
+    QBoxLayout *layout, *layoutRoot;
     std::shared_ptr<ViewerWidget> mViewWidget;
     std::shared_ptr<InfoBarProxy> mInfoBar;
     std::shared_ptr<MainPanel> mainPanel;
