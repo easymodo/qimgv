@@ -676,13 +676,11 @@ void ThumbnailView::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void ThumbnailView::mouseDoubleClickEvent(QMouseEvent *event) {
-    if(selectMode == ACTIVATE_BY_DOUBLECLICK) {
-        if(event->button() == Qt::LeftButton) {
-            ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
-            if(item) {
-                emit itemActivated(thumbnails.indexOf(item));
-                return;
-            }
+    if(event->button() == Qt::LeftButton) {
+        ThumbnailWidget *item = dynamic_cast<ThumbnailWidget*>(itemAt(event->pos()));
+        if(item) {
+            emit itemActivated(thumbnails.indexOf(item));
+            return;
         }
     }
     event->ignore();
