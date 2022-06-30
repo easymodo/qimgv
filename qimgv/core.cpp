@@ -7,6 +7,10 @@
 
 #include "core.h"
 
+#ifdef __WIN32
+#include <tchar.h>
+#endif
+
 Core::Core()
     : QObject(),
       folderEndAction(FOLDER_END_NO_ACTION),
@@ -1112,8 +1116,8 @@ void Core::setWallpaper() {
     status = RegOpenKeyEx(HKEY_CURRENT_USER, TEXT("Control Panel\\Desktop"), 0, KEY_WRITE, &hKey);
     if((status == ERROR_SUCCESS) && (hKey != NULL)) {
         LPCTSTR value = TEXT("WallpaperStyle");
-        LPCTSTR data = "10";
-        status = RegSetValueEx(hKey, value, 0, REG_SZ, (LPBYTE)data, strlen(data)+1);
+        LPCTSTR data  = TEXT("10");
+        status = RegSetValueEx(hKey, value, 0, REG_SZ, (LPBYTE)data, _tcslen(data) + 1);
         RegCloseKey(hKey);
     }
     // set wallpaper path
