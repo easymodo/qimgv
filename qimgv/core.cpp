@@ -1122,6 +1122,14 @@ void Core::setWallpaper() {
     }
     // set wallpaper path
     SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, (char*)(selectedPath().toStdWString().c_str()), SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
+#else
+    auto session = qgetenv("DESKTOP_SESSION").toLower();
+    if(session.contains("plasma"))
+        ScriptManager::runCommand("plasma-apply-wallpaperimage \"" + selectedPath() + "\"");
+    else if(session.contains("gnome"))
+        ScriptManager::runCommand("gsettings set org.gnome.desktop.background picture-uri \"" + selectedPath() + "\"");
+    else
+        mw->showMessage("Action is not supported in your desktop session (\"" + session + "\")", 3000);
 #endif
 }
 
