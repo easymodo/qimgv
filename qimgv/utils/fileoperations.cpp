@@ -40,25 +40,25 @@ void FileOperations::removeDir(const QString &dirPath, bool recursive, FileOpRes
 QString FileOperations::decodeResult(const FileOpResult &result) {
     switch(result) {
     case FileOpResult::SUCCESS:
-        return "Operation completed succesfully.";
+        return QObject::tr("Operation completed succesfully.");
     case FileOpResult::DESTINATION_FILE_EXISTS:
-        return "Destination file exists.";
+        return QObject::tr("Destination file exists.");
     case FileOpResult::DESTINATION_DIR_EXISTS:
-        return "Destination directory exists.";
+        return QObject::tr("Destination directory exists.");
     case FileOpResult::SOURCE_NOT_WRITABLE:
-        return "Source file is not writable.";
+        return QObject::tr("Source file is not writable.");
     case FileOpResult::DESTINATION_NOT_WRITABLE:
-        return "Destination is not writable.";
+        return QObject::tr("Destination is not writable.");
     case FileOpResult::SOURCE_DOES_NOT_EXIST:
-        return "Source file does not exist.";
+        return QObject::tr("Source file does not exist.");
     case FileOpResult::DESTINATION_DOES_NOT_EXIST:
-        return "Destination does not exist.";
+        return QObject::tr("Destination does not exist.");
     case FileOpResult::DIRECTORY_NOT_EMPTY:
-        return "Directory is not empty.";
+        return QObject::tr("Directory is not empty.");
     case FileOpResult::NOTHING_TO_DO:
-        return "Nothing to do.";
+        return QObject::tr("Nothing to do.");
     case FileOpResult::OTHER_ERROR:
-        return "Other error.";
+        return QObject::tr("Other error.");
     }
     return nullptr;
 }

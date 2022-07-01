@@ -10,10 +10,11 @@ enum ColorSchemes {
     COLORS_BLACK,
     COLORS_DARK,
     COLORS_DARKBLUE,
-    COLORS_DEFAULT
+    COLORS_CUSTOMIZED
 };
 
 struct BaseColorScheme {
+    int tid;
     QColor background;
     QColor background_fullscreen;
     QColor text;
@@ -33,7 +34,8 @@ public:
     ColorScheme();
     ColorScheme(BaseColorScheme base);
     void setBaseColors(BaseColorScheme base);
-
+    // index of theme name
+    int tid;
     // base
     QColor background;
     QColor background_fullscreen;

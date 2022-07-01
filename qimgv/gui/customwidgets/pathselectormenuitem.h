@@ -9,6 +9,7 @@ class PathSelectorMenuItem : public MenuItem {
 public:
     PathSelectorMenuItem(QWidget *parent);
     QString directory();
+    QString path();
 
 public slots:
     void setDirectory(QString path);
@@ -21,4 +22,5 @@ signals:
 
 private:
     QString mDirectory;
+    QString mPath;
 };

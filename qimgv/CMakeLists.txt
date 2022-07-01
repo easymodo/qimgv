@@ -7,6 +7,13 @@ if(APPLE)
     set(APPLE_ICON_PATH "distrib/${APPLE_ICON_NAME}")
 endif()
 
+# if there are other translation files, just modify TS_FILES and QM_FILES variables. example:
+# set(TS_FILES "res/translations/zh_CN.ts" "res/translations/ru_RU.ts")
+# set(QM_FILES "locales/zh_CN.qm" "locales/ru_RU.qm")
+set(TS_FILES "res/translations/zh_CN.ts")
+set(QM_FILES "locales/zh_CN.qm")
+set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION "locales")
+
 # ADD EXECUTABLE
 add_executable(qimgv
     appversion.cpp
@@ -21,7 +28,19 @@ add_executable(qimgv
     resources.qrc
     qimgv.rc
     ${APPLE_ICON_PATH}
+    ${QM_FILES}
 )
+
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS LinguistTools)
+# create/update .ts file, but ninja clean delete .ts files, see QTBUG-76410
+# maybe you should write a script to update .ts files
+# qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+# compile as .qm file
+if (${QT_VERSION_MAJOR} EQUAL 6)
+    qt6_add_translation(QM_FILES ${TS_FILES})
+else()
+    qt5_add_translation(QM_FILES ${TS_FILES})
+endif()
 
 # ADD SOURCES
 add_subdirectory(components)
@@ -38,9 +57,6 @@ set_target_properties(qimgv PROPERTIES CXX_EXTENSIONS OFF)
 
 # LINK STUFF
 target_link_libraries(qimgv PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::PrintSupport)
-if(QT_VERSION_MAJOR GREATER_EQUAL 6)
-    target_link_libraries(qimgv PRIVATE Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
-endif()
 
 # OPTION DEFINITIONS, LINKING
 if(EXIV2)
@@ -111,5 +127,22 @@ install(FILES distrib/hicolor/scalable/apps/qimgv.svg
     DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/hicolor/scalable/apps)
 
 # AppData manifest
-install(FILES distrib/qimgv.appdata.xml
-    DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/metainfo)
+install(FILES distrib/qimgv.appdata.xml DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/metainfo)
+
+# Install internationalization language files 
+if(WIN32)
+    install(DIRECTORY "${PROJECT_BINARY_DIR}/qimgv/locales" DESTINATION "${CMAKE_INSTALL_BINDIR}")
+else()
+    install(DIRECTORY "${PROJECT_BINARY_DIR}/qimgv/locales" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/qimgv")
+endif()
+
+# uninstall target
+if(NOT TARGET uninstall)
+  configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+
+  add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+endif()

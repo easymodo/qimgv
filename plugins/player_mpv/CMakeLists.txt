@@ -5,7 +5,6 @@ project(player_mpv
 
 set(CMAKE_AUTOMOC ON)
 
-set(QIMGV_LIBDIR "${CMAKE_INSTALL_LIBDIR}/qimgv")
 # only export CreatePlayerWidget function
 ADD_DEFINITIONS(-DQIMGV_PLAYER_MPV_LIBRARY)
 
@@ -35,10 +34,6 @@ else()
         Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets PkgConfig::Mpv)
 endif()
 
-if(QT_VERSION_MAJOR GREATER_EQUAL 6)
-    target_link_libraries(player_mpv PRIVATE Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
-endif()
-
 set_target_properties(player_mpv PROPERTIES
     CXX_EXTENSIONS OFF
     PREFIX "")
@@ -52,4 +47,8 @@ if(WIN32)
         ${MPV_DIR}/lib/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x86_64,i686>)
 endif()
 
-install(TARGETS player_mpv LIBRARY DESTINATION ${QIMGV_LIBDIR})
+if(WIN32)
+    install(TARGETS player_mpv LIBRARY DESTINATION "${CMAKE_INSTALL_BINDIR}/plugins")
+else()
+    install(TARGETS player_mpv LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/qimgv")
+endif()

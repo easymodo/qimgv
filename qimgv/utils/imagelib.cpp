@@ -173,6 +173,7 @@ QImage* ImageLib::scaled_Qt(std::shared_ptr<const QImage> source, QSize destSize
     *dest = source->scaled(destSize.width(), destSize.height(), Qt::IgnoreAspectRatio, mode);
     return dest;
 }
+
 #ifdef USE_OPENCV
 // this probably leaks, needs checking
 QImage* ImageLib::scaled_CV(std::shared_ptr<const QImage> source, QSize destSize, cv::InterpolationFlags filter, int sharpen) {

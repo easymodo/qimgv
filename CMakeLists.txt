@@ -7,16 +7,6 @@ project(qimgv
 
 message(STATUS "Build configuration: " ${CMAKE_BUILD_TYPE})
 
-if(IS_ABSOLUTE ${CMAKE_INSTALL_LIBDIR})
-    set(QIMGV_PLUGIN_DIR "${CMAKE_INSTALL_LIBDIR}/qimgv")
-else()
-    set(QIMGV_PLUGIN_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/qimgv")
-endif()
-
-# ADD_DEFINITIONS(-D_QIMGV_PLUGIN_DIR="${QIMGV_PLUGIN_DIR}")
-
-# message(STATUS "Plugin dir: " ${QIMGV_PLUGIN_DIR})
-
 # check for gcc
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
         CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
@@ -35,21 +25,24 @@ option(EXIV2 "For reading/writing exif tags" ON)
 option(VIDEO_SUPPORT "Enable video support" ON)
 option(OPENCV_SUPPORT "Enable HQ scaling via OpenCV" ON)
 option(KDE_SUPPORT "Support blur when using KDE" OFF)
+if(UNIX AND NOT APPLE)
+    set(QT_EXTERN_PATH "" CACHE STRING "Tell compile external QT path, example: (/opt/Qt/6.2.0/gcc_64)")
+    string(COMPARE EQUAL "${QT_EXTERN_PATH}" "" result)
+    if (NOT result)
+        set(CMAKE_INSTALL_RPATH "${QT_EXTERN_PATH}/lib")
+    endif()
+endif()
 
 # FIND PACKAGES
 find_package(Qt5 COMPONENTS Widgets QUIET)
 if(Qt5_FOUND)
     find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
 else()
-    find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Widgets Svg PrintSupport OpenGLWidgets)
+    find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
 endif()
 
 message(STATUS "Qt Version: " ${QT_VERSION})
-if(QT_VERSION_MAJOR GREATER_EQUAL 6)
-    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Svg PrintSupport OpenGLWidgets)
-else()
-    find_package(Qt${QT_VERSION_MAJOR} 5.12 REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
-endif()
+find_package(Qt${QT_VERSION_MAJOR} 5.12 REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
 
 if(EXIV2)
     find_package(PkgConfig REQUIRED)

@@ -5,11 +5,6 @@
 #else
     #define QIMGV_PLAYER_PLUGIN ""
 #endif
-#ifdef _QIMGV_PLUGIN_DIR
-    #define QIMGV_PLUGIN_DIR _QIMGV_PLUGIN_DIR
-#else
-    #define QIMGV_PLUGIN_DIR ""
-#endif
 
 VideoPlayerInitProxy::VideoPlayerInitProxy(QWidget *parent)
     : VideoPlayer(parent),
@@ -20,16 +15,12 @@ VideoPlayerInitProxy::VideoPlayerInitProxy(QWidget *parent)
     layout.setContentsMargins(0,0,0,0);
     setLayout(&layout);
     connect(settings, &Settings::settingsChanged, this, &VideoPlayerInitProxy::onSettingsChanged);
-
-    libDirDefault  = QIMGV_PLUGIN_DIR;
     libFile = QIMGV_PLAYER_PLUGIN;
-
 #ifdef _WIN32
-    // windows builds are portable, so libDirDefault is just a directory name
-    // (cmake does not know the full path)
-    libDirs << QApplication::applicationDirPath() + "/" + libDirDefault;
+    libDirs << QApplication::applicationDirPath() + "/plugins";
 #else
-    libDirs << libDirDefault << "/usr/lib/qimgv" << "/usr/lib64/qimgv";
+    QDir libPath(QApplication::applicationDirPath() + "/../lib/qimgv");
+    libDirs << (libPath.makeAbsolute() ? libPath.path() : ".") << "/usr/lib/qimgv" << "/usr/lib64/qimgv";
 #endif
 }
 

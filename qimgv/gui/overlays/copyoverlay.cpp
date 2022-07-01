@@ -102,17 +102,60 @@ void CopyOverlay::readSettings() {
     update();
 }
 
+// for some reason, duplicate folders may appear in the configuration
+// we remove duplicate directories
 void CopyOverlay::saveSettings() {
     paths.clear();
+    QStringList temp;
     for(int i = 0; i< pathWidgets.count(); i++) {
-        paths << pathWidgets.at(i)->directory();
+        QString path = pathWidgets.at(i)->path();
+        if (!path.isEmpty()) {
+            if (!temp.contains(path)) {
+                temp << path;
+                paths << pathWidgets.at(i)->directory();
+            }
+        }
     }
     settings->setSavedPaths(paths);
 }
 
 void CopyOverlay::createDefaultPaths() {
-    while(paths.count() < maxPathCount) {
-        paths << QDir::homePath();
+    QString home = QDir::homePath();
+    if (paths.count() < 1 || paths.at(0).isEmpty() || paths.at(0)[0] == '@') {
+        paths.clear();
+        paths << home;
+    }
+    if (paths.count() == 1 && paths.at(0) == home) {
+        QDir dir(home);
+        foreach(QFileInfo mfi, dir.entryInfoList()) {
+            if (paths.count() >= maxPathCount) {
+                break;
+            }
+            if(mfi.isFile()) {
+                continue;
+            } 
+            else {
+                if(mfi.fileName() == "."  
+                || mfi.fileName() ==  ".."
+                // hide directory
+                || mfi.fileName()[0] ==  '.' 
+                // windows system directory
+                || mfi.fileName() ==  "3D Objects"
+                || mfi.fileName() ==  "Contacts"
+                || mfi.fileName() ==  "Favorites"
+                || mfi.fileName() ==  "Links"
+                || mfi.fileName() ==  "Saved Games"
+                || mfi.fileName() ==  "Searches"
+                ) {
+                    continue;
+                }
+                QString qpath(home + "/" + mfi.fileName());
+                QFileInfo qinfo(qpath);
+                if (qinfo.permission(QFile::WriteUser | QFile::ReadGroup)) {
+                    paths << qpath;
+                }
+            }
+        }
     }
 }
 

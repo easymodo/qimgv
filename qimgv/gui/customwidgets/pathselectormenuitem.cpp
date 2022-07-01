@@ -2,7 +2,8 @@
 
 PathSelectorMenuItem::PathSelectorMenuItem(QWidget *parent)
     : MenuItem(parent),
-      mDirectory("")
+      mDirectory(""),
+      mPath("")
 {
     setFocusPolicy(Qt::NoFocus);
     setIconPath(":/res/icons/common/menuitem/folder16.png");
@@ -24,8 +25,13 @@ QString PathSelectorMenuItem::directory() {
     return mDirectory;
 }
 
+QString PathSelectorMenuItem::path() {
+    return mPath;
+}
+
 void PathSelectorMenuItem::setDirectory(QString path) {
     mDirectory = path;
+    mPath = path;
     QString stripped;
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     stripped = mDirectory.split("/").last();

@@ -223,23 +223,23 @@ void Core::onUpdate() {
     // TODO: finish changelogs
     //if(settings->showChangelogs())
     //    mw->showChangelogWindow();
-    mw->showMessage("Updated: " + settings->lastVersion().toString() + " > " + appVersion.toString(), 4000);
+    mw->showMessage(tr("Updated: ") + settings->lastVersion().toString() + " > " + appVersion.toString(), 4000);
     settings->setLastVersion(appVersion);
 }
 
 void Core::onFirstRun() {
     //mw->showSomeSortOfWelcomeScreen();
-    mw->showMessage("Welcome to " + qApp->applicationName() + " version " + appVersion.toString() + "!", 4000);
+    mw->showMessage(tr("Welcome to ") + qApp->applicationName() + tr(" version ") + appVersion.toString() + "!", 4000);
     settings->setFirstRun(false);
     settings->setLastVersion(appVersion);
 }
 
 void Core::toggleShuffle() {
     if(shuffle) {
-        mw->showMessage("Shuffle mode: OFF");
+        mw->showMessage(tr("Shuffle mode: OFF"));
     } else {
         syncRandomizer();
-        mw->showMessage("Shuffle mode: ON");
+        mw->showMessage(tr("Shuffle mode: ON"));
     }
     shuffle = !shuffle;
     updateInfoString();
@@ -248,11 +248,11 @@ void Core::toggleShuffle() {
 void Core::toggleSlideshow() {
     if(slideshow) {
         stopSlideshow();
-        mw->showMessage("Slideshow: OFF");
+        mw->showMessage(tr("Slideshow: OFF"));
 
     } else {
         startSlideshow();
-        mw->showMessage("Slideshow: ON");
+        mw->showMessage(tr("Slideshow: ON"));
     }
 }
 
@@ -323,10 +323,10 @@ void Core::removePermanent() {
     if(settings->confirmDelete()) {
         QString msg;
         if(paths.count() > 1)
-            msg = "Delete " + QString::number(paths.count()) +" items permanently?";
+            msg = tr("Delete ") + QString::number(paths.count()) + tr(" items permanently?");
         else
-            msg = "Delete item permanently?";
-        if(!mw->showConfirmation("Delete permanently", msg))
+            msg = tr("Delete item permanently?");
+        if(!mw->showConfirmation(tr("Delete permanently"), msg))
             return;
     }
     FileOpResult result;
@@ -342,11 +342,11 @@ void Core::removePermanent() {
     }
     if(paths.count() == 1) {
         if(result == FileOpResult::SUCCESS)
-            mw->showMessageSuccess("File removed");
+            mw->showMessageSuccess(tr("File removed"));
         else
             outputError(result);
     } else if(paths.count() > 1) {
-        mw->showMessageSuccess("Removed: " + QString::number(successCount) + " files");
+        mw->showMessageSuccess(tr("Removed: ") + QString::number(successCount) + tr(" files"));
     }
 }
 
@@ -357,10 +357,10 @@ void Core::moveToTrash() {
     if(settings->confirmTrash()) {
         QString msg;
         if(paths.count() > 1)
-            msg = "Move " + QString::number(paths.count()) +" items to trash?";
+            msg = tr("Move ") + QString::number(paths.count()) + tr(" items to trash?");
         else
-            msg = "Move item to trash?";
-        if(!mw->showConfirmation("Move to trash", msg))
+            msg = tr("Move item to trash?");
+        if(!mw->showConfirmation(tr("Move to trash"), msg))
             return;
     }
     FileOpResult result;
@@ -372,11 +372,11 @@ void Core::moveToTrash() {
     }
     if(paths.count() == 1) {
         if(result == FileOpResult::SUCCESS)
-            mw->showMessageSuccess("Moved to trash");
+            mw->showMessageSuccess(tr("Moved to trash"));
         else
             outputError(result);
     } else if(paths.count() > 1) {
-        mw->showMessageSuccess("Moved to trash: " + QString::number(successCount) + " files");
+        mw->showMessageSuccess(tr("Moved to trash: ") + QString::number(successCount) + tr(" files"));
     }
 }
 
@@ -431,14 +431,14 @@ void Core::copyFileClipboard() {
     mimeData->setData("application/x-kde-cutselection", "0");
 
     QApplication::clipboard()->setMimeData(mimeData);
-    mw->showMessage("File copied");
+    mw->showMessage(tr("File copied"));
 }
 
 void Core::copyPathClipboard() {
     if(model->isEmpty())
         return;
     QApplication::clipboard()->setText(selectedPath());
-    mw->showMessage("Path copied");
+    mw->showMessage(tr("Path copied"));
 }
 
 // open from clipboard
@@ -612,7 +612,7 @@ void Core::renameCurrentSelection(QString newName) {
     if(result == FileOpResult::DESTINATION_DIR_EXISTS) {
         mw->toggleRenameOverlay(newName);
     } else if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
-        if(mw->showConfirmation("File exists", "Overwrite file?")) {
+        if(mw->showConfirmation(tr("File exists"), tr("Overwrite file?"))) {
             model->renameEntry(selectedPath(), newName, true, result);
         } else {
             // show rename dialog again
@@ -780,7 +780,7 @@ void Core::doInteractiveCopy(QString path, QString destDirectory, DialogResult &
             return;
         }
     } else if(!dstDir.mkpath(".")) {
-        mw->showError("Could not create directory " + dstDir.absolutePath());
+        mw->showError(tr("Could not create directory ") + dstDir.absolutePath());
         qDebug() << "Could not create directory " << dstDir.absolutePath();
         return;
     }
@@ -848,7 +848,7 @@ void Core::doInteractiveMove(QString path, QString destDirectory, DialogResult &
             return;
         }
     } else if(!dstDir.mkpath(".")) {
-        mw->showError("Could not create directory " + dstDir.absolutePath());
+        mw->showError(tr("Could not create directory ") + dstDir.absolutePath());
         qDebug() << "Could not create directory " << dstDir.absolutePath();
         return;
     }
@@ -884,9 +884,9 @@ void Core::moveCurrentFile(QString destDirectory) {
     FileOpResult result;
     model->moveFileTo(selectedPath(), destDirectory, false, result);
     if(result == FileOpResult::SUCCESS) {
-        mw->showMessageSuccess("File moved.");
+        mw->showMessageSuccess(tr("File moved."));
     } else if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
-        if(mw->showConfirmation("File exists", "Destination file exists. Overwrite?"))
+        if(mw->showConfirmation(tr("File exists"), tr("Destination file exists. Overwrite?")))
             model->moveFileTo(selectedPath(), destDirectory, true, result);
     }
     if(result != FileOpResult::SUCCESS) {
@@ -905,9 +905,9 @@ void Core::copyCurrentFile(QString destDirectory) {
     FileOpResult result;
     model->copyFileTo(selectedPath(), destDirectory, false, result);
     if(result == FileOpResult::SUCCESS) {
-        mw->showMessageSuccess("File copied.");
+        mw->showMessageSuccess(tr("File copied."));
     } else if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
-        if(mw->showConfirmation("File exists", "Destination file exists. Overwrite?"))
+        if(mw->showConfirmation(tr("File exists"), tr("Destination file exists. Overwrite?")))
             model->copyFileTo(selectedPath(), destDirectory, true, result);
     }
     if(result != FileOpResult::SUCCESS && result != FileOpResult::DESTINATION_FILE_EXISTS)
@@ -952,7 +952,7 @@ template<typename... Args>
 void Core::edit_template(bool save, QString action, const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& editFunc, Args&&... as) {
     if(model->isEmpty())
         return;
-    if(save && !mw->showConfirmation(action, "Perform action \""+ action +"\"? \n\nChanges will be saved immediately."))
+    if(save && !mw->showConfirmation(action, tr("Perform action \"") + action + "\"? \n\n" + tr("Changes will be saved immediately.")))
         return;
     for(auto path : currentSelection()) {
         auto img = getEditableImage(path);
@@ -970,31 +970,31 @@ void Core::edit_template(bool save, QString action, const std::function<QImage*(
 }
 
 void Core::flipH() {
-    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), "Flip horizontal", { ImageLib::flippedH });
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), tr("Flip horizontal"), { ImageLib::flippedH });
 }
 
 void Core::flipV() {
-    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), "Flip vertical", { ImageLib::flippedV });
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), tr("Flip vertical"), { ImageLib::flippedV });
 }
 
 void Core::rotateByDegrees(int degrees) {
-    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), "Rotate", { ImageLib::rotated }, degrees);
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), tr("Rotate"), { ImageLib::rotated }, degrees);
 }
 
 void Core::resize(QSize size) {
-    edit_template(false, "Resize", { ImageLib::scaled }, size, QI_FILTER_BILINEAR);
+    edit_template(false, tr("Resize"), { ImageLib::scaled }, size, QI_FILTER_BILINEAR);
 }
 
 void Core::crop(QRect rect) {
     if(mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
-    edit_template(false, "Crop", { ImageLib::cropped }, rect);
+    edit_template(false, tr("Crop"), { ImageLib::cropped }, rect);
 }
 
 void Core::cropAndSave(QRect rect) {
     if(mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
-    edit_template(false, "Crop", { ImageLib::cropped }, rect);
+    edit_template(false, tr("Crop"), { ImageLib::cropped }, rect);
     saveFile(selectedPath());
     updateInfoString();
 }
@@ -1026,10 +1026,10 @@ void Core::saveCurrentFileAs(QString destPath) {
     if(model->isEmpty())
         return;
     if(saveFile(selectedPath(), destPath)) {
-        mw->showMessageSuccess("File saved");
+        mw->showMessageSuccess(tr("File saved"));
         updateInfoString();
     } else {
-        mw->showError("Could not save file");
+        mw->showError(tr("Could not save file"));
     }
 }
 
@@ -1139,11 +1139,11 @@ void Core::print() {
     PrintDialog p(mw);
     auto img = model->getImage(selectedPath());
     if(!img) {
-        mw->showError("Could not open image");
+        mw->showError(tr("Could not open image"));
         return;
     }
     if(img->type() != DocumentType::STATIC) {
-        mw->showError("Can only print static images");
+        mw->showError(tr("Can only print static images"));
         return;
     }
     QString pdfPath = model->directoryPath() + "/" + img->baseName() + ".pdf";
@@ -1194,7 +1194,7 @@ bool Core::loadPath(QString path) {
         if(model->directoryPath() != state.directoryPath)
             state.delayModel = true;
     } else {
-        mw->showError("Could not open path: " + path);
+        mw->showError(tr("Could not open path: ") + path);
         qDebug() << "Could not open path: " << path;
         return false;
     }
@@ -1228,7 +1228,7 @@ bool Core::setDirectory(QString path) {
     if(model->directoryPath() != path) {
         this->reset();
         if(!model->setDirectory(path)) {
-            mw->showError("Could not load folder: " + path);
+            mw->showError(tr("Could not load folder: ") + path);
             return false;
         }
         mw->setDirectoryPath(path);
@@ -1381,7 +1381,7 @@ void Core::nextImageSlideshow() {
                 newIndex = 0;
             } else {
                 stopSlideshow();
-                mw->showMessage("End of directory.");
+                mw->showMessage(tr("End of directory."));
                 return;
             }
         }
@@ -1420,7 +1420,7 @@ void Core::jumpToLast() {
 }
 
 void Core::onLoadFailed(const QString &path) {
-    mw->showMessage("Load failed: " + path);
+    mw->showMessage(tr("Load failed: ") + path);
     if(path == state.currentFilePath)
         mw->closeImage();
 }
@@ -1464,7 +1464,7 @@ void Core::onModelSortingChanged(SortingMode mode) {
 void Core::guiSetImage(std::shared_ptr<Image> img) {
     state.hasActiveImage = true;
     if(!img) {
-        mw->showMessage("Error: could not load image.");
+        mw->showMessage(tr("Error: could not load image."));
         return;
     }
     DocumentType type = img->type();

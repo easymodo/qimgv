@@ -81,7 +81,7 @@
         </font>
        </property>
        <property name="text">
-        <string notr="true">NOTE: make sure your .sh script has execute flag.</string>
+        <string>NOTE: make sure your .sh script has execute flag.</string>
        </property>
       </widget>
      </item>
