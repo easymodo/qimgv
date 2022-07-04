@@ -41,8 +41,8 @@ else()
     find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
 endif()
 
-message(STATUS "Qt Version: " ${QT_VERSION})
 find_package(Qt${QT_VERSION_MAJOR} 5.12 REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
+message(STATUS "Qt Version: " ${QT_VERSION})
 
 if(EXIV2)
     find_package(PkgConfig REQUIRED)
