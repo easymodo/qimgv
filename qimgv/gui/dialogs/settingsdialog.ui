@@ -13,7 +13,7 @@
     <x>0</x>
     <y>0</y>
     <width>740</width>
-    <height>680</height>
+    <height>696</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -289,7 +289,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>539</width>
-                <height>1301</height>
+                <height>1365</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
@@ -350,6 +350,63 @@
                      <set>Qt::AlignCenter</set>
                     </property>
                    </widget>
+                  </item>
+                  <item>
+                   <layout class="QGridLayout" name="gridLayout_3" columnstretch="3,2">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_30">
+                      <property name="text">
+                       <string>Application language:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QComboBox" name="langComboBox">
+                      <item>
+                       <property name="text">
+                        <string>en_US</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>zh_CN</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>system</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QLabel" name="label_40">
+                      <property name="font">
+                       <font>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>(restart required)</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                   <item>
                    <widget class="QCheckBox" name="fullscreenCheckBox">

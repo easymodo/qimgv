@@ -211,6 +211,12 @@ void SettingsDialog::readSettings() {
 
     ui->memoryLimitSpinBox->setValue(settings->memoryAllocationLimit());
 
+    // language
+    if(ui->langComboBox->findText(settings->language()) == -1)
+        ui->langComboBox->setCurrentText("en_US");
+    else
+        ui->langComboBox->setCurrentText(settings->language());
+
     // ##### fit mode #####
     if(settings->imageFitMode() == FIT_WINDOW)
         ui->fitModeWindow->setChecked(true);
@@ -252,6 +258,9 @@ void SettingsDialog::saveSettings() {
         settings->setImageFitMode(FIT_WIDTH);
     else
         settings->setImageFitMode(FIT_ORIGINAL);
+
+    settings->setLanguage(ui->langComboBox->currentText());
+
     settings->setVideoPlayback(ui->videoPlaybackCheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());
     settings->setPanelEnabled(ui->enablePanelCheckBox->isChecked());

@@ -19,6 +19,7 @@ Core::Core()
       slideshow(false),
       shuffle(false)
 {
+    loadTranslation();
     initGui();
     initComponents();
     connectComponents();
@@ -201,6 +202,28 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::print, this, &Core::print);
     connect(actionManager, &ActionManager::toggleFullscreenInfoBar, this, &Core::toggleFullscreenInfoBar);
     connect(actionManager, &ActionManager::pasteFile, this, &Core::openFromClipboard);
+}
+
+void Core::loadTranslation() {
+    if(!translator)
+        translator = new QTranslator;
+#ifdef TRANSLATIONS_PATH
+    QString translationPath = QString(TRANSLATIONS_PATH);
+#else
+    QString translationPath = QCoreApplication::applicationDirPath() + "/translations/";
+#endif
+    QString localeName = settings->language();
+    if(localeName == "system")
+        localeName = QLocale::system().name();
+    if(localeName.isEmpty() || localeName == "en_US") {
+        QApplication::removeTranslator(translator);
+        return;
+    }
+    QString tsFile = translationPath + "/" + localeName;
+    if(translator->load(tsFile))
+        QApplication::installTranslator(translator);
+    else
+        qDebug() << "Could not load translation file: " << tsFile;
 }
 
 void Core::onUpdate() {

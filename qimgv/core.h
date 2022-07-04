@@ -7,6 +7,7 @@
 #include <QDrag>
 #include <QFileSystemModel>
 #include <QDesktopServices>
+#include <QTranslator>
 #include "appversion.h"
 #include "settings.h"
 #include "components/directorymodel.h"
@@ -50,6 +51,7 @@ private:
     void initComponents();
     void connectComponents();
     void initActions();
+    void loadTranslation();
     void onUpdate();
     void onFirstRun();
 
@@ -71,6 +73,7 @@ private:
 
     QDrag *mDrag;
     QMimeData *getMimeDataForImage(std::shared_ptr<Image> img, MimeDataTarget target);
+    QTranslator *translator = nullptr;
 
     Randomizer randomizer;
     void syncRandomizer();

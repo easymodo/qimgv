@@ -283,6 +283,8 @@ public:
     void setMemoryAllocationLimit(int limitMB);
     bool panelCenterSelection();
     void setPanelCenterSelection(bool mode);
+    QString language();
+    void setLanguage(QString lang);
 
 private:
     explicit Settings(QObject *parent = nullptr);

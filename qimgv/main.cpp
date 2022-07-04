@@ -1,5 +1,4 @@
 #include <QApplication>
-#include <QTranslator>
 #include <QCommandLineParser>
 #include <QStyleFactory>
 #include <QEvent>
@@ -65,24 +64,9 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationDomain("github.com/easymodo/qimgv");
     QCoreApplication::setApplicationName("qimgv");
     QCoreApplication::setApplicationVersion(appVersion.toString());
-
-
     QApplication::setEffectEnabled(Qt::UI_AnimateCombo, false);
-
     QGuiApplication::setDesktopFileName(QCoreApplication::applicationName() + ".desktop");
 
-    // enable translations
-    QString localeName = QLocale::system().name();
-    //QString localeName = "zh_CN";
-    // qDebug() << "localeName: " << localeName;
-    QTranslator translator;
-//#ifdef _WIN32
-    if (translator.load(QCoreApplication::applicationDirPath() + "/locales/" + localeName)) {
-//#else
-//    if (translator.load(QCoreApplication::applicationDirPath() + "/../share/qimgv/locales/" + localeName)) {
-//#endif
-        a.installTranslator(&translator);
-    }
     // needed for mpv
 #ifndef _MSC_VER
     setlocale(LC_NUMERIC, "C");

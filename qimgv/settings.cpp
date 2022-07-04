@@ -1064,3 +1064,11 @@ bool Settings::panelCenterSelection() {
 void Settings::setPanelCenterSelection(bool mode) {
     settings->settingsConf->setValue("panelCenterSelection", mode);
 }
+//------------------------------------------------------------------------------
+QString Settings::language() {
+    return settingsConf->value("language", "").toString();
+}
+
+void Settings::setLanguage(QString lang) {
+    settingsConf->setValue("language", lang);
+}
