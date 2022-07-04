@@ -11,14 +11,14 @@ endif()
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS LinguistTools)
 # Example of creating a new translation file.
 # 1. cd into qimgv directory and run:
-#   lupdate -recursive . -ts res/translations/en_US.ts    [replace "en_US" with your locale]
+#   lupdate -recursive . -ts res/translations/qimgv_en_US.ts    [replace "en_US" with your locale]
 # 2. Add your .ts filename into TS_FILES list below
 # 3. Translate it with Qt Linguist
 set(TS_FILES
     "zh_CN.ts"
 )
 list(TRANSFORM TS_FILES PREPEND ${CMAKE_CURRENT_SOURCE_DIR}/res/translations/)
-set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION "locales")
+set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION ${PROJECT_BINARY_DIR}/qimgv/translations)
 
 # 1. Create 'qimgv_lupdate' target to update .ts files (needs to be called manually)
 # 2. Compile .ts > .qm
@@ -139,9 +139,9 @@ install(FILES distrib/qimgv.appdata.xml DESTINATION ${CMAKE_INSTALL_FULL_DATAROO
 
 # Install internationalization language files
 if(WIN32)
-    install(DIRECTORY "${PROJECT_BINARY_DIR}/qimgv/locales" DESTINATION "${CMAKE_INSTALL_BINDIR}")
+    install(DIRECTORY "${PROJECT_BINARY_DIR}/qimgv/translations" DESTINATION "${CMAKE_INSTALL_BINDIR}")
 else()
-    install(DIRECTORY "${PROJECT_BINARY_DIR}/qimgv/locales" DESTINATION "${CMAKE_INSTALL_FULL_DATAROOTDIR}/qimgv")
+    install(DIRECTORY "${PROJECT_BINARY_DIR}/qimgv/translations" DESTINATION "${CMAKE_INSTALL_FULL_DATAROOTDIR}/qimgv")
 endif()
 
 # uninstall target
