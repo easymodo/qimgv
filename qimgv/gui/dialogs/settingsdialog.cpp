@@ -91,6 +91,15 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     setupSidebar();
     ui->sideBar->setCurrentRow(0);
 
+    // readable language names
+    langs.insert("en_US", "English");
+    langs.insert("zh_CN", "简体中文");
+    // fill langs combobox, sorted by locale
+    ui->langComboBox->addItems(langs.values());
+    // insert system language entry manually at the beginning
+    langs.insert("system", "System language");
+    ui->langComboBox->insertItem(0, "System language");
+
     connect(this, &SettingsDialog::settingsChanged, settings, &Settings::sendChangeNotification);
     readSettings();
 }
@@ -212,10 +221,11 @@ void SettingsDialog::readSettings() {
     ui->memoryLimitSpinBox->setValue(settings->memoryAllocationLimit());
 
     // language
-    if(ui->langComboBox->findText(settings->language()) == -1)
+    QString langName = langs.value(settings->language());
+    if(langName.isEmpty() || ui->langComboBox->findText(langName) == -1)
         ui->langComboBox->setCurrentText("en_US");
     else
-        ui->langComboBox->setCurrentText(settings->language());
+        ui->langComboBox->setCurrentText(langName);
 
     // ##### fit mode #####
     if(settings->imageFitMode() == FIT_WINDOW)
@@ -259,7 +269,7 @@ void SettingsDialog::saveSettings() {
     else
         settings->setImageFitMode(FIT_ORIGINAL);
 
-    settings->setLanguage(ui->langComboBox->currentText());
+    settings->setLanguage(langs.key(ui->langComboBox->currentText()));
 
     settings->setVideoPlayback(ui->videoPlaybackCheckBox->isChecked());
     settings->setPlayVideoSounds(ui->playSoundsCheckBox->isChecked());

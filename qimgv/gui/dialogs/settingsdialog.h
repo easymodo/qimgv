@@ -48,6 +48,7 @@ private:
 
     void setupSidebar();
     void removeShortcutAt(int row);
+    QMap<QString, QString> langs; // <"en_US", "English">
 
 private slots:
     void saveSettings();

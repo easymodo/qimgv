@@ -289,7 +289,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>539</width>
-                <height>1365</height>
+                <height>1305</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
@@ -352,7 +352,7 @@
                    </widget>
                   </item>
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_3" columnstretch="3,2">
+                   <layout class="QGridLayout" name="gridLayout_3">
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
@@ -365,33 +365,40 @@
                     <property name="bottomMargin">
                      <number>0</number>
                     </property>
-                    <item row="0" column="0">
+                    <item row="0" column="1">
                      <widget class="QLabel" name="label_30">
                       <property name="text">
-                       <string>Application language:</string>
+                       <string>Language:</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="1">
-                     <widget class="QComboBox" name="langComboBox">
-                      <item>
-                       <property name="text">
-                        <string>en_US</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>zh_CN</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>system</string>
-                       </property>
-                      </item>
+                    <item row="0" column="2">
+                     <widget class="QComboBox" name="langComboBox"/>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QCheckBox" name="fullscreenCheckBox">
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string>Open in fullscreen</string>
+                      </property>
                      </widget>
                     </item>
-                    <item row="1" column="1">
+                    <item row="1" column="0">
+                     <widget class="QCheckBox" name="startInFolderViewCheckBox">
+                      <property name="text">
+                       <string>Start in folder view by default</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1" colspan="2">
                      <widget class="QLabel" name="label_40">
                       <property name="font">
                        <font>
@@ -399,34 +406,14 @@
                        </font>
                       </property>
                       <property name="text">
-                       <string>(restart required)</string>
+                       <string>(restart required) </string>
                       </property>
                       <property name="alignment">
-                       <set>Qt::AlignCenter</set>
+                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                       </property>
                      </widget>
                     </item>
                    </layout>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="fullscreenCheckBox">
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>Open in fullscreen</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="startInFolderViewCheckBox">
-                    <property name="text">
-                     <string>Start in folder view by default</string>
-                    </property>
-                   </widget>
                   </item>
                  </layout>
                 </widget>
