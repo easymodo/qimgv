@@ -207,10 +207,11 @@ void Core::initActions() {
 void Core::loadTranslation() {
     if(!translator)
         translator = new QTranslator;
+    QString trPathFallback = QCoreApplication::applicationDirPath() + "/translations";
 #ifdef TRANSLATIONS_PATH
-    QString translationPath = QString(TRANSLATIONS_PATH);
+    QString trPath = QString(TRANSLATIONS_PATH);
 #else
-    QString translationPath = QCoreApplication::applicationDirPath() + "/translations/";
+    QString trPath = trPathFallback;
 #endif
     QString localeName = settings->language();
     if(localeName == "system")
@@ -219,11 +220,16 @@ void Core::loadTranslation() {
         QApplication::removeTranslator(translator);
         return;
     }
-    QString tsFile = translationPath + "/" + localeName;
-    if(translator->load(tsFile))
-        QApplication::installTranslator(translator);
-    else
-        qDebug() << "Could not load translation file: " << tsFile;
+    QString trFile = trPath + "/" + localeName;
+    QString trFileFallback = trPathFallback + "/" + localeName;
+    if(!translator->load(trFile)) {
+        qDebug() << "Could not load translation file: " << trFile;
+        if(!translator->load(trFileFallback)) {
+            qDebug() << "Could not load translation file: " << trFileFallback;
+            return;
+        }
+    }
+    QApplication::installTranslator(translator);
 }
 
 void Core::onUpdate() {
