@@ -814,14 +814,18 @@ SettingsDialog QComboBox {
 
 [accessibleName="StyledOptionsGroup"] {
     /* This needs to look "ok" with both light and dark themes. May need further tweaking */
-    background-color: %system_window_tinted%;
-    border: 1px solid %system_window_tinted%;
-    border-radius: 3px;
+    /*background-color: %system_window_tinted%;*/
+    /*border: 1px solid %system_window_tinted%;*/
+    /*border-radius: 3px;*/
     /* border-top: 4px solid rgba(130, 130, 130, 30); */
 }
 
+[accessibleName="SmallText"] {
+    font-size: %font_small%;
+}
+
+/* This needs to look "ok" with both light and dark themes. May need further tweaking */
 [accessibleName="SettingsBottomWidget"] {
-    /* This needs to look "ok" with both light and dark themes. May need further tweaking */
     background-color: %system_window_tinted%;
 }
 /*----------------------------------------------------------------------------*/

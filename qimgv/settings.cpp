@@ -101,9 +101,13 @@ void Settings::loadStylesheet() {
             sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 16);
         }
 
+        // fonts
+        int smallFont = (int)(QApplication::font().pointSize() * 0.85f);
+
         // -------------- write variables into stylesheet ---------------
         //styleSheet.replace("%icontheme%",            settings->theme().iconTheme);
         styleSheet.replace("%icontheme%",            "light");
+        styleSheet.replace("%font_small%",           QString::number(smallFont)+"pt");
         styleSheet.replace("%button%",               colors.button.name());
         styleSheet.replace("%button_hover%",         colors.button_hover.name());
         styleSheet.replace("%button_pressed%",       colors.button_pressed.name());

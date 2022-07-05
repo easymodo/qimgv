@@ -12,6 +12,7 @@
 #include <QDir>
 #include <QKeySequence>
 #include <QMap>
+#include <QFont>
 #include <QVersionNumber>
 #include <QThread>
 #include "utils/script.h"

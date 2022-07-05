@@ -68,10 +68,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 #endif
 
 #ifndef USE_MPV
-    ui->videoPlaybackGroup->setEnabled(false);
-    ui->novideoInfoLabel->setHidden(false);
+    //ui->videoPlaybackGroup->setEnabled(false);
+    //ui->novideoInfoLabel->setHidden(false);
 #else
-    ui->novideoInfoLabel->setHidden(true);
+    //ui->novideoInfoLabel->setHidden(true);
 #endif
 
 #ifdef USE_OPENCV
@@ -91,6 +91,17 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     setupSidebar();
     ui->sideBar->setCurrentRow(0);
 
+    // setup radioBtn groups
+    fitModeGrp.addButton(ui->fitModeWindow);
+    fitModeGrp.addButton(ui->fitModeWidth);
+    fitModeGrp.addButton(ui->fitMode1to1);
+    folderEndGrp.addButton(ui->folderEndSwitchFolder);
+    folderEndGrp.addButton(ui->folderEndNoAction);
+    folderEndGrp.addButton(ui->folderEndLoop);
+    zoomIndGrp.addButton(ui->zoomIndicatorAuto);
+    zoomIndGrp.addButton(ui->zoomIndicatorOff);
+    zoomIndGrp.addButton(ui->zoomIndicatorOn);
+
     // readable language names
     langs.insert("en_US", "English");
     langs.insert("zh_CN", "简体中文");
@@ -102,10 +113,30 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
     connect(this, &SettingsDialog::settingsChanged, settings, &Settings::sendChangeNotification);
     readSettings();
+
+    adjustSizeToContents();
 }
 //------------------------------------------------------------------------------
 SettingsDialog::~SettingsDialog() {
     delete ui;
+}
+//------------------------------------------------------------------------------
+// an attempt to force minimum width to fit contents
+void SettingsDialog::adjustSizeToContents() {
+    // general tab
+    ui->gridLayout_15->activate();
+    ui->scrollAreaWidgetContents->layout()->activate();
+    ui->scrollArea->setMinimumWidth(ui->scrollAreaWidgetContents->minimumSizeHint().width());
+    // container
+    ui->stackedWidget->layout()->activate();
+    this->setMinimumWidth(sizeHint().width() + 22);
+
+    //qDebug() << "window:" << this->sizeHint() << this->minimumSizeHint() << this->size();
+    //qDebug() << "stackedwidget:" << ui->stackedWidget->sizeHint() << ui->stackedWidget->minimumSizeHint() << ui->stackedWidget->size();
+    //qDebug() << "scrollarea:" << ui->scrollArea->sizeHint() << ui->scrollArea->minimumSizeHint() << ui->scrollArea->size();
+    //qDebug() << "scrollareawidget:" << ui->scrollAreaWidgetContents->sizeHint() << ui->scrollAreaWidgetContents->minimumSizeHint() << ui->scrollAreaWidgetContents->size();
+    //qDebug() << "grid" << ui->gridLayout_15->sizeHint();
+    //qDebug() << "wtf" << ui->startInFolderViewCheckBox->sizeHint() << ui->startInFolderViewCheckBox->minimumSizeHint();
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::resetToDesktopTheme() {
@@ -146,10 +177,10 @@ void SettingsDialog::setupSidebar() {
 void SettingsDialog::readSettings() {
     ui->loopSlideshowCheckBox->setChecked(settings->loopSlideshow());
     ui->videoPlaybackCheckBox->setChecked(settings->videoPlayback());
-    ui->videoPlaybackGroupContents->setEnabled(settings->videoPlayback());
+    //ui->videoPlaybackGroupContents->setEnabled(settings->videoPlayback());
     ui->playSoundsCheckBox->setChecked(settings->playVideoSounds());
     ui->enablePanelCheckBox->setChecked(settings->panelEnabled());
-    ui->thumbnailPanelGroupContents->setEnabled(settings->panelEnabled());
+    //ui->thumbnailPanelGroupContents->setEnabled(settings->panelEnabled());
     ui->panelFullscreenOnlyCheckBox->setChecked(settings->panelFullscreenOnly());
     ui->squareThumbnailsCheckBox->setChecked(settings->squareThumbnails());
     ui->transparencyGridCheckBox->setChecked(settings->transparencyGrid());
