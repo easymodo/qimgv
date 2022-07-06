@@ -88,29 +88,51 @@ void Settings::loadStylesheet() {
         // for settings window
         QPalette p;
         // choose icons depending on text color
-        /*if(p.text().color().valueF() > 0.5f) {
+        /*if(p.text().color().valueF() > 0.5f)
             mTheme.systemIconTheme = "light";
-        } else {
+        else
             mTheme.systemIconTheme = "dark";
-        } */
+        */
         QColor sys_window = p.window().color();
         QColor sys_window_tinted;
-        if(sys_window.valueF() <= 0.45f) {
+        if(sys_window.valueF() <= 0.45f)
             sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 16);
-        } else {
+        else
             sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 16);
-        }
 
-        // fonts
-        int smallFont = (int)(QApplication::font().pointSize() * 0.9f);
+        // fonts and font-dependent widget sizes
+        // unfortunately this will add a few ms to launch time
+        // TODO: also try to scale icons / other stuff based on font size?
         auto fnt = QGuiApplication::font();
         QFontMetrics fm(fnt);
-        qDebug() << "fnt dpi=" << fm.fontDpi() << " point=" << fnt.pointSizeF() << " metricsH=" << fm.height();
+        int font_small = (int)(fnt.pointSize() * 0.9f); // todo: use precise values for ~9-11 point sizes
+        int font_height = fm.height();
+
+        // ~10% of font height, but at least 4px
+        int top_panel_text_padding = qMax((int)(font_height * 0.10f), 4);
+        // panel item sizes
+        int top_panel_v_margin = 4;
+        int top_panel_height = qMax((fm.height() + top_panel_text_padding * 2), 30) + top_panel_v_margin * 2;
+        int button_height = font_height;
 
         // -------------- write variables into stylesheet ---------------
-        //styleSheet.replace("%icontheme%",            settings->theme().iconTheme);
-        styleSheet.replace("%icontheme%",            "light");
-        styleSheet.replace("%font_small%",           QString::number(smallFont)+"pt");
+        // element / font sizes
+        styleSheet.replace("%font_small%", QString::number(font_small)+"pt");
+        styleSheet.replace("%button_height%", QString::number(button_height)+"px");
+        styleSheet.replace("%top_panel_height%", QString::number(top_panel_height)+"px");
+        //styleSheet.replace("%top_panel_v_margin%", QString::number(top_panel_v_margin)+"px");
+
+        // icons
+        //styleSheet.replace("%icontheme%", settings->theme().iconTheme);
+        styleSheet.replace("%icontheme%",  "light");
+
+        // Qt::Popup can't do transparency under windows, use square window
+#ifdef _WIN32
+        styleSheet.replace("%contextmenu_border_radius%",  "0px");
+#else
+        styleSheet.replace("%contextmenu_border_radius%",  "3px");
+#endif
+        // colorscheme
         styleSheet.replace("%button%",               colors.button.name());
         styleSheet.replace("%button_hover%",         colors.button_hover.name());
         styleSheet.replace("%button_pressed%",       colors.button_pressed.name());
@@ -150,16 +172,12 @@ void Settings::loadStylesheet() {
         styleSheet.replace("%fv_backdrop_rgba%",     "rgba(" + QString::number(colors.folderview_hc2.red())   + ","
                                                              + QString::number(colors.folderview_hc2.green()) + ","
                                                              + QString::number(colors.folderview_hc2.blue())  + ",80%)");
+        // do not show separator line if topbar color matches folderview
         if(colors.folderview != colors.folderview_topbar)
             styleSheet.replace("%topbar_border_rgba%", "rgba(0,0,0,14%)");
         else
             styleSheet.replace("%topbar_border_rgba%", colors.folderview.name());
-        // Qt::Popup can't do transparency under windows, use square window
-#ifdef _WIN32
-        styleSheet.replace("%contextmenu_border_radius%",  "0px");
-#else
-        styleSheet.replace("%contextmenu_border_radius%",  "3px");
-#endif
+
         // ------------------------ apply ----------------------------
         qApp->setStyleSheet(styleSheet);
     }

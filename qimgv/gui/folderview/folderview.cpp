@@ -228,7 +228,7 @@ void FolderView::onFullscreenModeChanged(bool mode) {
         ui->panelRightEdgeSpacer->changeSize(0, 20, QSizePolicy::Fixed, QSizePolicy::Fixed);
     else // show spacer
         ui->panelRightEdgeSpacer->changeSize(2, 20, QSizePolicy::Fixed, QSizePolicy::Fixed);
-    ui->panel->layout()->invalidate();
+    ui->topBar->layout()->invalidate();
 }
 
 void FolderView::focusInEvent(QFocusEvent *event) {
@@ -377,11 +377,11 @@ void FolderView::resizeEvent(QResizeEvent *event) {
         ui->zoomSlider->setVisible(false);
         ui->zoomSliderSpacer->changeSize(0, 20, QSizePolicy::Fixed, QSizePolicy::Fixed);
         ui->pathbarSpacer->changeSize(0, 20, QSizePolicy::Fixed, QSizePolicy::Fixed);
-        ui->panel->layout()->invalidate();
+        ui->topBar->layout()->invalidate();
     } else {
         ui->zoomSlider->setVisible(true);
         ui->zoomSliderSpacer->changeSize(3, 20, QSizePolicy::Fixed, QSizePolicy::Fixed);
         ui->pathbarSpacer->changeSize(12, 20, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-        ui->panel->layout()->invalidate();
+        ui->topBar->layout()->invalidate();
     }
 }

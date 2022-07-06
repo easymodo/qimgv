@@ -33,27 +33,15 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="panel" native="true">
+    <widget class="QWidget" name="topBar" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>38</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>38</height>
-      </size>
-     </property>
      <property name="accessibleName">
-      <string>FolderViewPanel</string>
+      <string notr="true">FolderViewTopBar</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <property name="spacing">
@@ -74,7 +62,7 @@
       <item>
        <widget class="ActionButton" name="togglePlacesPanelButton" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -82,13 +70,13 @@
         <property name="minimumSize">
          <size>
           <width>40</width>
-          <height>38</height>
+          <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>40</width>
-          <height>38</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="accessibleName">
@@ -99,22 +87,10 @@
       <item>
        <widget class="QWidget" name="pathBar" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>38</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>38</height>
-         </size>
         </property>
         <property name="accessibleName">
          <string notr="true">PathBar</string>
@@ -138,7 +114,7 @@
          <item>
           <widget class="ActionButton" name="upButton" native="true">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -146,13 +122,13 @@
            <property name="minimumSize">
             <size>
              <width>34</width>
-             <height>38</height>
+             <height>0</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>34</width>
-             <height>38</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="accessibleName">
@@ -245,7 +221,7 @@
       <item>
        <widget class="IconButton" name="optionsPopupButton" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -253,13 +229,13 @@
         <property name="minimumSize">
          <size>
           <width>38</width>
-          <height>38</height>
+          <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>38</width>
-          <height>38</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="accessibleName">
@@ -290,18 +266,6 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>38</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>38</height>
-         </size>
         </property>
         <property name="contextMenuPolicy">
          <enum>Qt::NoContextMenu</enum>
@@ -363,7 +327,7 @@
       <item>
        <widget class="ActionButton" name="docViewButton" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -371,13 +335,13 @@
         <property name="minimumSize">
          <size>
           <width>38</width>
-          <height>38</height>
+          <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>38</width>
-          <height>38</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="accessibleName">
@@ -388,7 +352,7 @@
       <item>
        <widget class="ActionButton" name="settingsButton" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -396,13 +360,13 @@
         <property name="minimumSize">
          <size>
           <width>38</width>
-          <height>38</height>
+          <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>38</width>
-          <height>38</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="accessibleName">
@@ -429,7 +393,7 @@
       <item>
        <widget class="ActionButton" name="exitButton" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -437,13 +401,13 @@
         <property name="minimumSize">
          <size>
           <width>40</width>
-          <height>38</height>
+          <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>40</width>
-          <height>38</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="accessibleName">

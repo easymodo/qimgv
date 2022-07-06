@@ -441,8 +441,10 @@ FolderView {
     border-top: 1px solid %topbar_border_rgba%;
 }
 /*----------------------------------------------------------------------------*/
-[accessibleName="FolderViewPanel"] { /* top bar - rename */
+[accessibleName="FolderViewTopBar"] {
     background-color: %folderview_topbar%;
+    min-height: %top_panel_height%;
+    max-height: %top_panel_height%;
 }
 
 [accessibleName="PathBar"] {
@@ -809,7 +811,7 @@ BookmarksItem[highlighted="true"] {
 /*----------------------------------------------------------------------------*/
 SettingsDialog QPushButton,
 SettingsDialog QComboBox {
-    min-height: 24px;
+    min-height: %button_height%;
 }
 
 [accessibleName="StyledOptionsGroup"] {

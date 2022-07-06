@@ -501,90 +501,89 @@
         <translation>来自</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="56"/>
         <source>FolderViewPanel</source>
-        <translation>FolderViewPanel</translation>
+        <translation type="vanished">FolderViewPanel</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="169"/>
+        <location filename="../../gui/folderview/folderview.ui" line="145"/>
         <source>[path]</source>
         <translation>[路径]</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="219"/>
+        <location filename="../../gui/folderview/folderview.ui" line="195"/>
         <source>FolderViewSlider</source>
         <translation>FolderViewSlider</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="266"/>
+        <location filename="../../gui/folderview/folderview.ui" line="242"/>
         <source>CheckableButton</source>
         <translation>CheckableButton</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="310"/>
+        <location filename="../../gui/folderview/folderview.ui" line="274"/>
         <source>PanelComboBox</source>
         <translation>PanelComboBox</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="317"/>
+        <location filename="../../gui/folderview/folderview.ui" line="281"/>
         <source>A - Z</source>
         <translation>A - Z</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="322"/>
+        <location filename="../../gui/folderview/folderview.ui" line="286"/>
         <source>Z - A</source>
         <translation>Z - A</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="327"/>
+        <location filename="../../gui/folderview/folderview.ui" line="291"/>
         <source>Size</source>
         <translation>大小</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="332"/>
+        <location filename="../../gui/folderview/folderview.ui" line="296"/>
         <source>Size (desc)</source>
         <translation>大小 (降序)</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="337"/>
+        <location filename="../../gui/folderview/folderview.ui" line="301"/>
         <source>Oldest</source>
         <translation>最旧</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="342"/>
+        <location filename="../../gui/folderview/folderview.ui" line="306"/>
         <source>Newest</source>
         <translation>最新</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="384"/>
-        <location filename="../../gui/folderview/folderview.ui" line="409"/>
+        <location filename="../../gui/folderview/folderview.ui" line="348"/>
+        <location filename="../../gui/folderview/folderview.ui" line="373"/>
         <source>PanelButton</source>
         <translation>PanelButton</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="450"/>
+        <location filename="../../gui/folderview/folderview.ui" line="414"/>
         <source>PanelButtonRE</source>
         <translation>PanelButtonRE</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="512"/>
+        <location filename="../../gui/folderview/folderview.ui" line="476"/>
         <source>PlacesPanel</source>
         <translation>PlacesPanel</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="568"/>
+        <location filename="../../gui/folderview/folderview.ui" line="532"/>
         <source>BOOKMARKS</source>
         <translation>书签</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="587"/>
-        <location filename="../../gui/folderview/folderview.ui" line="674"/>
-        <location filename="../../gui/folderview/folderview.ui" line="693"/>
+        <location filename="../../gui/folderview/folderview.ui" line="551"/>
+        <location filename="../../gui/folderview/folderview.ui" line="638"/>
+        <location filename="../../gui/folderview/folderview.ui" line="657"/>
         <source>PlacesPanelButton</source>
         <translation>PlacesPanelButton</translation>
     </message>
     <message>
-        <location filename="../../gui/folderview/folderview.ui" line="647"/>
+        <location filename="../../gui/folderview/folderview.ui" line="611"/>
         <source>FILESYSTEM</source>
         <translation>文件系统</translation>
     </message>
@@ -1912,6 +1911,7 @@ hr { height: 1px; border-width: 0; }
     </message>
     <message>
         <location filename="../../gui/dialogs/settingsdialog.ui" line="2809"/>
+        <location filename="../../gui/dialogs/settingsdialog.ui" line="3044"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
@@ -1942,9 +1942,8 @@ hr { height: 1px; border-width: 0; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.ui" line="3044"/>
         <source>Edit </source>
-        <translation>编辑 </translation>
+        <translation type="vanished">编辑 </translation>
     </message>
     <message>
         <location filename="../../gui/dialogs/settingsdialog.ui" line="3167"/>
@@ -2124,17 +2123,17 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;;&quot;&gt;汇报问题 / 请求新特性 &lt;/span&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv/issues&quot;&gt;&lt;span style=&quot; font-family:&apos;Droid Sans&apos;; text-decoration: underline; color:#007af4;&quot;&gt;点这里&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.ui" line="3835"/>
+        <location filename="../../gui/dialogs/settingsdialog.ui" line="3823"/>
         <source>OK</source>
         <translation>确认</translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.ui" line="3854"/>
+        <location filename="../../gui/dialogs/settingsdialog.ui" line="3830"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.ui" line="3873"/>
+        <location filename="../../gui/dialogs/settingsdialog.ui" line="3837"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -2215,32 +2214,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>main</name>
     <message>
-        <location filename="../../main.cpp" line="113"/>
+        <location filename="../../main.cpp" line="133"/>
         <source>File or directory path.</source>
         <translation>文件或目录所在路径.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="117"/>
+        <location filename="../../main.cpp" line="136"/>
         <source>Generate all thumbnails for directory.</source>
         <translation>为该目录下的所有文件生成略缩图.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="118"/>
+        <location filename="../../main.cpp" line="137"/>
         <source>directory-path</source>
         <translation>目录所在路径</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="121"/>
+        <location filename="../../main.cpp" line="139"/>
         <source>Thumbnail size. Current size is used if not specified.</source>
         <translation>缩略图大小. 如果未指定, 则使用当前大小.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="122"/>
+        <location filename="../../main.cpp" line="140"/>
         <source>thumbnail-size</source>
         <translation>略缩图大小</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="125"/>
+        <location filename="../../main.cpp" line="142"/>
         <source>Show build options.</source>
         <translation>显示编译选项.</translation>
     </message>
