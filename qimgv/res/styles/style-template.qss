@@ -825,7 +825,7 @@ SettingsDialog QComboBox {
 }
 
 /* This needs to look "ok" with both light and dark themes. May need further tweaking */
-[accessibleName="SettingsBottomWidget"] {
+[accessibleName="SettingsTintedWidget"] {
     background-color: %system_window_tinted%;
 }
 /*----------------------------------------------------------------------------*/

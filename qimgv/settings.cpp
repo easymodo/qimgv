@@ -102,7 +102,10 @@ void Settings::loadStylesheet() {
         }
 
         // fonts
-        int smallFont = (int)(QApplication::font().pointSize() * 0.85f);
+        int smallFont = (int)(QApplication::font().pointSize() * 0.9f);
+        auto fnt = QGuiApplication::font();
+        QFontMetrics fm(fnt);
+        qDebug() << "fnt dpi=" << fm.fontDpi() << " point=" << fnt.pointSizeF() << " metricsH=" << fm.height();
 
         // -------------- write variables into stylesheet ---------------
         //styleSheet.replace("%icontheme%",            settings->theme().iconTheme);
@@ -229,7 +232,6 @@ void Settings::fillVideoFormats() {
     mVideoFormatsMap.insert("video/quicktime",  "mov");
     mVideoFormatsMap.insert("video/x-flv",      "flv");
 }
-
 //------------------------------------------------------------------------------
 QString Settings::mpvBinary() {
     QString mpvPath = settings->settingsConf->value("mpvBinary", "").toString();

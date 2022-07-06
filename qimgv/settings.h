@@ -13,6 +13,7 @@
 #include <QKeySequence>
 #include <QMap>
 #include <QFont>
+#include <QFontMetrics>
 #include <QVersionNumber>
 #include <QThread>
 #include "utils/script.h"
@@ -299,6 +300,7 @@ private:
 
     void setupCache();
     void fillVideoFormats();
+
 signals:
     void settingsChanged();
 

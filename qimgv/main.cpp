@@ -34,8 +34,9 @@ QDataStream& operator>>(QDataStream& in, Script& v) {
 }
 //------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
+
     // force some env variables
-    qputenv("QT_AUTO_SCREEN_SCALE_FACTOR","0");
+
 #ifdef _WIN32
     // if this is set by other app, platform plugin may fail to load
     // https://github.com/easymodo/qimgv/issues/410
@@ -43,11 +44,30 @@ int main(int argc, char *argv[]) {
 #endif
 
     // for hidpi testing
-    //qputenv("QT_SCALE_FACTOR","1.0");
+    //qputenv("QT_SCALE_FACTOR","1.5");
     //qputenv("QT_SCREEN_SCALE_FACTORS", "1;1.7");
 
+    // do we still need this?
+    qputenv("QT_AUTO_SCREEN_SCALE_FACTOR","0");
+
+    // some qt5 hidpi vars
+#if (QT_VERSION_MAJOR == 5)
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+#endif
+
+    // Qt6 hidpi rendering on windows still has artifacts
+    // This disables it for scale factors < 1.75
+    // In this case only fonts are scaled
+#ifdef _WIN32
+#if (QT_VERSION_MAJOR == 6)
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor);
+#endif
+#endif
+
+    //qDebug() << qgetenv("QT_SCALE_FACTOR");
+    //qDebug() << qgetenv("QT_SCREEN_SCALE_FACTORS");
+    //qDebug() << qgetenv("QT_ENABLE_HIGHDPI_SCALING");
 
 #ifdef __APPLE__
     MacOSApplication a(argc, argv);
@@ -102,7 +122,7 @@ int main(int argc, char *argv[]) {
 
     atexit(saveSettings);
 
-// parse args test -------------------------------------------------------------
+// parse args ------------------------------------------------------------------
     QCommandLineParser parser;
     QString appDescription = qApp->applicationName() + " - Fast and configurable image viewer.";
     appDescription.append("\nVersion: " + qApp->applicationVersion());
@@ -111,20 +131,16 @@ int main(int argc, char *argv[]) {
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addPositionalArgument("path", QCoreApplication::translate("main", "File or directory path."));
-
     parser.addOptions({
         {"gen-thumbs",
             QCoreApplication::translate("main", "Generate all thumbnails for directory."),
             QCoreApplication::translate("main", "directory-path")},
-
         {"gen-thumbs-size",
             QCoreApplication::translate("main", "Thumbnail size. Current size is used if not specified."),
             QCoreApplication::translate("main", "thumbnail-size")},
-
         {"build-options",
             QCoreApplication::translate("main", "Show build options.")},
     });
-
     parser.process(a);
 
     if(parser.isSet("build-options")) {
