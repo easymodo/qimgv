@@ -119,7 +119,7 @@ void Settings::loadStylesheet() {
         int button_height = text_height;
 
         // pseudo-dpi to scale some widget widths
-        int text_height_base = 24;
+        int text_height_base = 22;
         qreal pDpi = qMax( ((qreal)(text_height) / text_height_base), 1.0);
         qDebug() << text_height << text_height_base << pDpi;
         int context_menu_width = 212 * pDpi;
