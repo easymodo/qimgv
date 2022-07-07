@@ -36,7 +36,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="widget" native="true">
+    <widget class="QWidget" name="header" native="true">
      <property name="accessibleName">
       <string notr="true">OverlayHeaderWidget</string>
      </property>
@@ -61,26 +61,8 @@
       </property>
       <item>
        <widget class="IconWidget" name="headerIcon" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
-        </property>
         <property name="accessibleName">
-         <string notr="true"/>
+         <string notr="true">OverlayHeaderIcon</string>
         </property>
        </widget>
       </item>
@@ -105,26 +87,8 @@
       </item>
       <item>
        <widget class="IconButton" name="closeButton" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
-        </property>
         <property name="accessibleName">
-         <string notr="true">OverlayCloseButton</string>
+         <string notr="true">OverlayHeaderButton</string>
         </property>
        </widget>
       </item>

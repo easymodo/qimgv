@@ -187,14 +187,25 @@ FloatingWidget {
     border-top-right-radius: 1px;
 }
 /*----------------------------------------------------------------------------*/
-[accessibleName="OverlayCloseButton"] {
+[accessibleName="OverlayHeaderButton"],
+[accessibleName="OverlayHeaderIcon"] {
+    min-height: %overlay_header_size%;
+    min-width: %overlay_header_size%;
+}
+
+[accessibleName="OverlayHeaderButton"] {
     background-color: transparent;
-    padding: 4px;
+    margin: 3px;
     border-radius: 3px;
 }
 
-[accessibleName="OverlayCloseButton"]:hover {
+[accessibleName="OverlayHeaderButton"]:hover {
     background-color: %button_hover%;
+}
+
+[accessibleName="OverlayHeaderButton"][pressed="true"] {
+    background-color: %button_pressed%;
+    color: %text%;
 }
 
 [accessibleName="OverlayHeaderLabel"] {
@@ -225,6 +236,7 @@ RenameOverlay {
     background-color: %widget%;
     border: 1px solid %widget_border%;
     border-radius: 3px;
+    min-width: %rename_overlay_width%;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -583,9 +595,12 @@ ContextMenu {
     background-color: %widget%;
     border: 1px solid %widget_border%;
     border-radius: %contextmenu_border_radius%;
+    min-width: %context_menu_width%;
 }
 ContextMenu QLabel {
     color: %text_secondary_rgba%;
+    margin: 0px 0px;
+    padding: 0px 0px;
 }
 /*----------------------------------------------------------------------------*/
 [accessibleName="MenuItem"]:hover {
@@ -609,7 +624,7 @@ ContextMenu QLabel {
 }
 
 [accessibleName="ContextMenuButton"] {
-    padding: 4px;
+    min-height: %context_menu_button_height%;
 }
 
 [accessibleName="ContextMenuButton"]:hover {
@@ -645,7 +660,6 @@ ZoomIndicatorOverlay {
 
 ZoomIndicatorOverlay QLabel {
     color: %overlay_text%;
-    /*font: bold;*/
 }
 
 /*----------------------------------------------------------------------------*/

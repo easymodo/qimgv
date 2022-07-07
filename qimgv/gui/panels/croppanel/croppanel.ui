@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>200</width>
+    <width>250</width>
     <height>300</height>
    </size>
   </property>
@@ -533,9 +533,10 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>StyledComboBox</class>
-   <extends>QComboBox</extends>
-   <header>gui/customwidgets/styledcombobox.h</header>
+   <class>IconWidget</class>
+   <extends>QWidget</extends>
+   <header>gui/customwidgets/iconwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>PushButtonFocusInd</class>
@@ -543,15 +544,14 @@
    <header>gui/customwidgets/pushbuttonfocusind.h</header>
   </customwidget>
   <customwidget>
+   <class>StyledComboBox</class>
+   <extends>QComboBox</extends>
+   <header>gui/customwidgets/styledcombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>SpinBoxInputFix</class>
    <extends>QSpinBox</extends>
    <header>gui/customwidgets/spinboxinputfix.h</header>
-  </customwidget>
-  <customwidget>
-   <class>IconWidget</class>
-   <extends>QWidget</extends>
-   <header>gui/customwidgets/iconwidget.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

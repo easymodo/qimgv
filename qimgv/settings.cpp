@@ -84,15 +84,10 @@ void Settings::loadStylesheet() {
     if(file.open(QFile::ReadOnly)) {
         QString styleSheet = QLatin1String(file.readAll());
 
+        // --- color scheme ---------------------------------------------
         auto colors = settings->colorScheme();
-        // for settings window
+        // tint color for system windows
         QPalette p;
-        // choose icons depending on text color
-        /*if(p.text().color().valueF() > 0.5f)
-            mTheme.systemIconTheme = "light";
-        else
-            mTheme.systemIconTheme = "dark";
-        */
         QColor sys_window = p.window().color();
         QColor sys_window_tinted;
         if(sys_window.valueF() <= 0.45f)
@@ -100,39 +95,53 @@ void Settings::loadStylesheet() {
         else
             sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 16);
 
-        // fonts and font-dependent widget sizes
-        // unfortunately this will add a few ms to launch time
-        // TODO: also try to scale icons / other stuff based on font size?
+        // --- widget sizes ---------------------------------------------
         auto fnt = QGuiApplication::font();
         QFontMetrics fm(fnt);
-        int font_small = (int)(fnt.pointSize() * 0.9f); // todo: use precise values for ~9-11 point sizes
-        int font_height = fm.height();
+        // todo: use precise values for ~9-11 point sizes
+        int font_small = (int)(fnt.pointSize() * 0.9f);
+        int text_height = fm.height();
+        int text_padding = (int)(text_height * 0.10f);
 
-        // ~10% of font height, but at least 4px
-        int top_panel_text_padding = qMax((int)(font_height * 0.10f), 4);
-        // panel item sizes
+        // folderview top panel item sizes
         int top_panel_v_margin = 4;
-        int top_panel_height = qMax((fm.height() + top_panel_text_padding * 2), 30) + top_panel_v_margin * 2;
-        int button_height = font_height;
+        // ensure at least 4px so its not too thin
+        int top_panel_text_padding = qMax(text_padding, 4);
+        // scale with font, 38px base size
+        int top_panel_height = qMax((text_height + top_panel_text_padding * 2 + top_panel_v_margin * 2), 38);
 
-        // -------------- write variables into stylesheet ---------------
-        // element / font sizes
+        // overlay headers
+        int overlay_header_margin = 2;
+        // 32px base size
+        int overlay_header_size = qMax(text_height + text_padding * 2, 32);
+
+        // todo
+        int button_height = text_height;
+
+        // pseudo-dpi to scale some widget widths
+        int text_height_base = 24;
+        qreal pDpi = qMax( ((qreal)(text_height) / text_height_base), 1.0);
+        qDebug() << text_height << text_height_base << pDpi;
+        int context_menu_width = 212 * pDpi;
+        int context_menu_button_height = 32 * pDpi;
+        int rename_overlay_width = 380 * pDpi;
+
+        // --- write variables into stylesheet --------------------------
         styleSheet.replace("%font_small%", QString::number(font_small)+"pt");
         styleSheet.replace("%button_height%", QString::number(button_height)+"px");
         styleSheet.replace("%top_panel_height%", QString::number(top_panel_height)+"px");
-        //styleSheet.replace("%top_panel_v_margin%", QString::number(top_panel_v_margin)+"px");
+        styleSheet.replace("%overlay_header_size%", QString::number(overlay_header_size)+"px");
+        styleSheet.replace("%context_menu_width%", QString::number(context_menu_width)+"px");
+        styleSheet.replace("%context_menu_button_height%", QString::number(context_menu_button_height)+"px");
+        styleSheet.replace("%rename_overlay_width%", QString::number(rename_overlay_width)+"px");
 
-        // icons
-        //styleSheet.replace("%icontheme%", settings->theme().iconTheme);
         styleSheet.replace("%icontheme%",  "light");
-
         // Qt::Popup can't do transparency under windows, use square window
 #ifdef _WIN32
         styleSheet.replace("%contextmenu_border_radius%",  "0px");
 #else
         styleSheet.replace("%contextmenu_border_radius%",  "3px");
 #endif
-        // colorscheme
         styleSheet.replace("%button%",               colors.button.name());
         styleSheet.replace("%button_hover%",         colors.button_hover.name());
         styleSheet.replace("%button_pressed%",       colors.button_pressed.name());
@@ -152,9 +161,6 @@ void Settings::loadStylesheet() {
         styleSheet.replace("%text_hc2%",             colors.text_hc2.name());
         styleSheet.replace("%text_hc%",              colors.text_hc.name());
         styleSheet.replace("%text%",                 colors.text.name());
-        styleSheet.replace("%text_secondary_rgba%",  "rgba(" + QString::number(colors.text.red())   + ","
-                                                             + QString::number(colors.text.green()) + ","
-                                                             + QString::number(colors.text.blue())  + ",62%)");
         styleSheet.replace("%overlay_text%",         colors.overlay_text.name());
         styleSheet.replace("%text_lc%",              colors.text_lc.name());
         styleSheet.replace("%text_lc2%",             colors.text_lc2.name());
@@ -163,6 +169,9 @@ void Settings::loadStylesheet() {
         styleSheet.replace("%system_window_tinted%", sys_window_tinted.name());
         styleSheet.replace("%folderview_button_hover%",   colors.folderview_button_hover.name());
         styleSheet.replace("%folderview_button_pressed%", colors.folderview_button_pressed.name());
+        styleSheet.replace("%text_secondary_rgba%",  "rgba(" + QString::number(colors.text.red())   + ","
+                                                             + QString::number(colors.text.green()) + ","
+                                                             + QString::number(colors.text.blue())  + ",62%)");
         styleSheet.replace("%accent_hover_rgba%",    "rgba(" + QString::number(colors.accent.red())   + ","
                                                              + QString::number(colors.accent.green()) + ","
                                                              + QString::number(colors.accent.blue())  + ",65%)");
@@ -178,7 +187,7 @@ void Settings::loadStylesheet() {
         else
             styleSheet.replace("%topbar_border_rgba%", colors.folderview.name());
 
-        // ------------------------ apply ----------------------------
+        // --- apply -------------------------------------------------
         qApp->setStyleSheet(styleSheet);
     }
 }

@@ -299,9 +299,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-1058</y>
                 <width>534</width>
-                <height>1710</height>
+                <height>1715</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0">
@@ -385,12 +385,6 @@
                  </item>
                  <item row="0" column="0" colspan="3">
                   <widget class="QLabel" name="label_15">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>20</height>
-                    </size>
-                   </property>
                    <property name="font">
                     <font>
                      <bold>true</bold>
@@ -875,12 +869,6 @@
                  </item>
                  <item row="53" column="0" colspan="3">
                   <widget class="QLabel" name="label_9">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>20</height>
-                    </size>
-                   </property>
                    <property name="font">
                     <font>
                      <bold>true</bold>
@@ -1197,12 +1185,6 @@
                    <property name="enabled">
                     <bool>true</bool>
                    </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>20</height>
-                    </size>
-                   </property>
                    <property name="font">
                     <font>
                      <bold>true</bold>
@@ -1242,12 +1224,6 @@
                  </item>
                  <item row="48" column="0" colspan="3">
                   <widget class="QLabel" name="label_13">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>20</height>
-                    </size>
-                   </property>
                    <property name="font">
                     <font>
                      <bold>true</bold>
@@ -1554,12 +1530,6 @@
                  </item>
                  <item row="41" column="0" colspan="3">
                   <widget class="QLabel" name="label_10">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>20</height>
-                    </size>
-                   </property>
                    <property name="font">
                     <font>
                      <bold>true</bold>
@@ -3686,13 +3656,13 @@ hr { height: 1px; border-width: 0; }
        <number>9</number>
       </property>
       <property name="topMargin">
-       <number>8</number>
+       <number>4</number>
       </property>
       <property name="rightMargin">
        <number>9</number>
       </property>
       <property name="bottomMargin">
-       <number>8</number>
+       <number>4</number>
       </property>
       <item>
        <widget class="QWidget" name="versionLabelWidget" native="true">

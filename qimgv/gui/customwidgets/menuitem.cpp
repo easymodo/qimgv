@@ -14,7 +14,7 @@ MenuItem::MenuItem(QWidget *parent)
 
     mIconWidget.installEventFilter(this);
 
-    spacer = new QSpacerItem(5, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    spacer = new QSpacerItem(3, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     mIconWidget.setAttribute(Qt::WA_TransparentForMouseEvents, true);
     mIconWidget.setAccessibleName("MenuItemIcon");
     mTextLabel.setAccessibleName("MenuItemText");
@@ -23,6 +23,7 @@ MenuItem::MenuItem(QWidget *parent)
     mLayout.addWidget(&mTextLabel);
     mLayout.addSpacerItem(spacer);
     mLayout.addWidget(&mShortcutLabel);
+    mLayout.setStretch(1,1);
 
     setLayout(&mLayout);
 }

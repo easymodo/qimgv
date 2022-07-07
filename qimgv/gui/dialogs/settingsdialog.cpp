@@ -145,30 +145,30 @@ void SettingsDialog::resetToDesktopTheme() {
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::setupSidebar() {
-    QString theme;
+    QString iconVariant;
     QPalette p;
     if(p.base().color().valueF() <= 0.45f)
-        theme = "light";
+        iconVariant = "light";
     else
-        theme = "dark";
+        iconVariant = "dark";
     QListWidget *sideBar = ui->sideBar;
     sideBar->viewport()->setAutoFillBackground(false);
     // General
-    sideBar->item(0)->setIcon(QIcon(":res/icons/" + theme + "/settings/general32.png"));
+    sideBar->item(0)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/general32.png"));
     // Appearance
-    sideBar->item(1)->setIcon(QIcon(":res/icons/" + theme + "/settings/appearance32.png"));
+    sideBar->item(1)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/appearance32.png"));
     // FolderView
-    sideBar->item(2)->setIcon(QIcon(":res/icons/" + theme + "/settings/folderview32.png"));
+    sideBar->item(2)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/folderview32.png"));
     // Scaling
-    sideBar->item(3)->setIcon(QIcon(":res/icons/" + theme + "/settings/scale32.png"));
+    sideBar->item(3)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/scale32.png"));
     // Controls
-    sideBar->item(4)->setIcon(QIcon(":res/icons/" + theme + "/settings/shortcuts32.png"));
+    sideBar->item(4)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/shortcuts32.png"));
     // Scripts
-    sideBar->item(5)->setIcon(QIcon(":res/icons/" + theme + "/settings/terminal32.png"));
+    sideBar->item(5)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/terminal32.png"));
     // Advanced
-    sideBar->item(6)->setIcon(QIcon(":res/icons/" + theme + "/settings/advanced32.png"));
+    sideBar->item(6)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/advanced32.png"));
     // About
-    sideBar->item(7)->setIcon(QIcon(":res/icons/" + theme + "/settings/about32.png"));
+    sideBar->item(7)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/about32.png"));
 
     // empty for now
     sideBar->item(2)->setHidden(true);
