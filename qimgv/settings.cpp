@@ -120,11 +120,12 @@ void Settings::loadStylesheet() {
 
         // pseudo-dpi to scale some widget widths
         int text_height_base = 22;
-        qreal pDpi = qMax( ((qreal)(text_height) / text_height_base), 1.0);
-        qDebug() << text_height << text_height_base << pDpi;
-        int context_menu_width = 212 * pDpi;
-        int context_menu_button_height = 32 * pDpi;
-        int rename_overlay_width = 380 * pDpi;
+        qreal pDpr = qMax( ((qreal)(text_height) / text_height_base), 1.0);
+        int context_menu_width = 212 * pDpr;
+        int context_menu_button_height = 32 * pDpr;
+        int rename_overlay_width = 380 * pDpr;
+
+        qDebug()<< "dpr=" << qApp->devicePixelRatio() << "dpDr=" << pDpr;
 
         // --- write variables into stylesheet --------------------------
         styleSheet.replace("%font_small%", QString::number(font_small)+"pt");
