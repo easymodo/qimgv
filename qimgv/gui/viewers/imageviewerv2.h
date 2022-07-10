@@ -46,6 +46,7 @@ public:
     virtual bool isDisplaying() const;
 
     virtual bool imageFits() const;
+    bool scaledImageFits() const;
     virtual ScalingFilter scalingFilter() const;
     virtual QWidget *widget();
     bool hasAnimation() const;
@@ -108,6 +109,7 @@ protected:
     void wheelEvent(QWheelEvent *event);
     void showEvent(QShowEvent *event);
     void drawBackground(QPainter *painter, const QRectF &rect);
+
 
 protected slots:
     void onAnimationTimer();
@@ -178,7 +180,6 @@ private:
     void swapToOriginalPixmap();
     void setZoomAnchor(QPoint viewportPos);
     void updatePixmap(std::unique_ptr<QPixmap> newPixmap);
-    bool scaledImageFits() const;
     Qt::TransformationMode selectTransformationMode();
     void centerIfNecessary();
     void snapToEdges();
