@@ -143,25 +143,32 @@ QImage *ImageLib::cropped(QRect newRect, QRect targetRes, bool upscaled) {
 QImage* ImageLib::scaled(std::shared_ptr<const QImage> source, QSize destSize, ScalingFilter filter) {
     if(!source)
         return new QImage();
+    auto scaleTarget = source;
+    if(source->format() == QImage::Format_Indexed8) {
+        auto newFmt = QImage::Format_RGB32;
+        if(source->hasAlphaChannel())
+            newFmt = QImage::Format_ARGB32;
+        scaleTarget.reset(new QImage(source->convertToFormat(newFmt)));
+    }
 #ifdef USE_OPENCV
-    if(filter > 1 && !QtOcv::isSupported(source->format()))
+    if(filter > 1 && !QtOcv::isSupported(scaleTarget->format()))
         filter = QI_FILTER_BILINEAR;
 #endif
     switch (filter) {
         case QI_FILTER_NEAREST:
-            return scaled_Qt(source, destSize, false);
+            return scaled_Qt(scaleTarget, destSize, false);
         case QI_FILTER_BILINEAR:
-            return scaled_Qt(source, destSize, true);
+            return scaled_Qt(scaleTarget, destSize, true);
 #ifdef USE_OPENCV
         case QI_FILTER_CV_BILINEAR_SHARPEN:
-            return scaled_CV(source, destSize, cv::INTER_LINEAR, 0);
+            return scaled_CV(scaleTarget, destSize, cv::INTER_LINEAR, 0);
         case QI_FILTER_CV_CUBIC:
-            return scaled_CV(source, destSize, cv::INTER_CUBIC, 0);
+            return scaled_CV(scaleTarget, destSize, cv::INTER_CUBIC, 0);
         case QI_FILTER_CV_CUBIC_SHARPEN:
-            return scaled_CV(source, destSize, cv::INTER_CUBIC, 1);
+            return scaled_CV(scaleTarget, destSize, cv::INTER_CUBIC, 1);
 #endif
         default:
-            return scaled_Qt(source, destSize, true);
+            return scaled_Qt(scaleTarget, destSize, true);
     }
 }
 

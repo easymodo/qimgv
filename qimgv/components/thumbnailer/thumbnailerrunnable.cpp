@@ -96,7 +96,8 @@ std::pair<QImage*, QSize> ThumbnailerRunnable::createThumbnail(QString path, con
                 (Qt::KeepAspectRatioByExpanding):(Qt::KeepAspectRatio);
     QImage *result = nullptr;
     QSize originalSize;
-    bool manualResize = !reader->supportsOption(QImageIOHandler::Size);
+    bool indexed = (reader->imageFormat() == QImage::Format_Indexed8);
+    bool manualResize = indexed || !reader->supportsOption(QImageIOHandler::Size);
     if(!manualResize) { // resize during read via QImageReader (faster)
         QSize scaledSize = reader->size().scaled(size, size, ARMode);
         reader->setScaledSize(scaledSize);
@@ -125,6 +126,14 @@ std::pair<QImage*, QSize> ThumbnailerRunnable::createThumbnail(QString path, con
     if(manualResize) { // manual resize & crop. slower but should just work
         QImage *fullSize = new QImage();
         reader->read(fullSize);
+        if(indexed) {
+            auto newFmt = QImage::Format_RGB32;
+            if(fullSize->hasAlphaChannel())
+                newFmt = QImage::Format_ARGB32;
+            auto tmp = new QImage(fullSize->convertToFormat(newFmt));
+            delete fullSize;
+            fullSize = tmp;
+        }
         originalSize = fullSize->size();
         QSize scaledSize = fullSize->size().scaled(size, size, ARMode);
         if(squared) {
