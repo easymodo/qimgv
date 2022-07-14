@@ -102,6 +102,7 @@ void Settings::loadStylesheet() {
         int font_small = (int)(fnt.pointSize() * 0.9f);
         int text_height = fm.height();
         int text_padding = (int)(text_height * 0.10f);
+        int text_padding_min = (int)(text_height * 0.05f);
 
         // folderview top panel item sizes
         int top_panel_v_margin = 4;
@@ -116,7 +117,7 @@ void Settings::loadStylesheet() {
         int overlay_header_size = qMax(text_height + text_padding * 2, 32);
 
         // todo
-        int button_height = text_height;
+        int button_height = text_height + text_padding_min * 2;
 
         // pseudo-dpi to scale some widget widths
         int text_height_base = 22;
@@ -125,7 +126,7 @@ void Settings::loadStylesheet() {
         int context_menu_button_height = 32 * pDpr;
         int rename_overlay_width = 380 * pDpr;
 
-        qDebug()<< "dpr=" << qApp->devicePixelRatio() << "dpDr=" << pDpr;
+        qDebug()<< "dpr=" << qApp->devicePixelRatio() << "pDpr=" << pDpr;
 
         // --- write variables into stylesheet --------------------------
         styleSheet.replace("%font_small%", QString::number(font_small)+"pt");

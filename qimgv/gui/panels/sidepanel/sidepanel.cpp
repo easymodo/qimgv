@@ -11,8 +11,7 @@ SidePanel::SidePanel(QWidget *parent) :
     this->hide();
 }
 
-SidePanel::~SidePanel()
-{
+SidePanel::~SidePanel() {
     delete ui;
 }
 
