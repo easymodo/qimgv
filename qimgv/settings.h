@@ -194,8 +194,8 @@ public:
     int expandLimit();
     void setExpandLimit(int value);
 
-    qreal zoomStep();
-    void setZoomStep(qreal value);
+    float zoomStep();
+    void setZoomStep(float value);
     int JPEGSaveQuality();
     void setJPEGSaveQuality(int value);
     bool useOpenGL();
@@ -288,6 +288,11 @@ public:
     QString language();
     void setLanguage(QString lang);
 
+    QString defaultZoomLevels();
+    QString zoomLevels();
+    void setZoomLevels(QString levels);
+    bool useFixedZoomLevels();
+    void setUseFixedZoomLevels(bool mode);
 private:
     explicit Settings(QObject *parent = nullptr);
     QSettings *settingsConf, *stateConf, *themeConf;

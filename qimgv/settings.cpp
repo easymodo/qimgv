@@ -923,27 +923,18 @@ void Settings::setUnloadThumbs(bool mode) {
     settings->settingsConf->setValue("unloadThumbs", mode);
 }
 //------------------------------------------------------------------------------
-qreal Settings::zoomStep() {
+float Settings::zoomStep() {
     bool ok = false;
-    qreal value = settings->settingsConf->value("zoomStep", 0.2).toReal(&ok);
+    float value = settings->settingsConf->value("zoomStep", 0.2f).toFloat(&ok);
     if(!ok)
-        return 0.2;
-    value = qBound(0.01, value, 0.5);
+        return 0.2f;
+    value = qBound(0.01f, value, 0.5f);
     return value;
 }
 
-void Settings::setZoomStep(qreal value) {
-    value = qBound(0.01, value, 0.5);
+void Settings::setZoomStep(float value) {
+    value = qBound(0.01f, value, 0.5f);
     settings->settingsConf->setValue("zoomStep", value);
-}
-//------------------------------------------------------------------------------
-bool Settings::absoluteZoomStep() {
-    bool mode = settings->settingsConf->value("absoluteZoomStep", false).toBool();
-    return mode;
-}
-
-void Settings::setAbsoluteZoomStep(bool mode) {
-    settings->settingsConf->setValue("absoluteZoomStep", mode);
 }
 //------------------------------------------------------------------------------
 void Settings::setZoomIndicatorMode(ZoomIndicatorMode mode) {
@@ -1106,4 +1097,23 @@ QString Settings::language() {
 
 void Settings::setLanguage(QString lang) {
     settingsConf->setValue("language", lang);
+}
+//------------------------------------------------------------------------------
+bool Settings::useFixedZoomLevels() {
+    return settings->settingsConf->value("useFixedZoomLevels", false).toBool();
+}
+
+void Settings::setUseFixedZoomLevels(bool mode) {
+    settings->settingsConf->setValue("useFixedZoomLevels", mode);
+}
+//------------------------------------------------------------------------------
+QString Settings::defaultZoomLevels() {
+    return QString("0.05,0.1,0.125,0.166,0.25,0.333,0.5,0.66,1,1.5,2,3,4,5,6,7,8");
+}
+QString Settings::zoomLevels() {
+    return settingsConf->value("fixedZoomLevels", defaultZoomLevels()).toString();
+}
+
+void Settings::setZoomLevels(QString levels) {
+    settingsConf->setValue("fixedZoomLevels", levels);
 }

@@ -12,8 +12,8 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     keepFitMode(false),
     loopPlayback(true),
     mIsFullscreen(false),
-    absoluteStep(false),
     scrollBarWorkaround(true),
+    useFixedZoomLevels(false),
     mouseInteraction(MouseInteractionState::MOUSE_NONE),
     minScale(0.01f),
     maxScale(500.0f),
@@ -107,7 +107,14 @@ void ImageViewerV2::readSettings() {
     imageFitModeDefault = settings->imageFitMode();
     zoomStep = settings->zoomStep();
     focusIn1to1 = settings->focusPointIn1to1Mode();
-    absoluteStep = settings->absoluteZoomStep();
+    if( (useFixedZoomLevels = settings->useFixedZoomLevels()) ) {
+        // zoomstep is stored as a string, parse into int list
+        zoomLevels.clear();
+        auto levelsStr = settings->zoomLevels().split(',');
+        for(const auto& i : levelsStr)
+            zoomLevels.append(i.toFloat());
+        std::sort(zoomLevels.begin(), zoomLevels.end());
+    }
     // set bg color
     onFullscreenModeChanged(mIsFullscreen);
     updateMinScale();
@@ -971,11 +978,36 @@ void ImageViewerV2::zoomAnchored(float newScale) {
 
 // zoom in around viewport center
 void ImageViewerV2::zoomIn() {
-    setZoomAnchor(viewport()->rect().center());
-    if(absoluteStep)
-        zoomAnchored(currentScale() + zoomStep);
+    doZoomIn(false);
+}
+
+// zoom in around cursor if its inside window
+void ImageViewerV2::zoomInCursor() {
+    doZoomIn(true);
+}
+
+void ImageViewerV2::doZoomIn(bool atCursor) {
+    if(atCursor && underMouse())
+        setZoomAnchor(mapFromGlobal(cursor().pos()));
     else
-        zoomAnchored(currentScale() * (1.0f + zoomStep));
+        setZoomAnchor(viewport()->rect().center());
+    float newScale = currentScale() * (1.0f + zoomStep);
+    if(useFixedZoomLevels && zoomLevels.count()) {
+        if(currentScale() < zoomLevels.first()) {
+            newScale = qMin(currentScale() * (1.0f + zoomStep), zoomLevels.first());
+        } else if(currentScale() >= zoomLevels.last()) {
+            newScale = currentScale() * (1.0f + zoomStep);
+        } else {
+            for(int i = 0; i < zoomLevels.count(); i++) {
+                float level = zoomLevels.at(i);
+                if(currentScale() < level) {
+                    newScale = level;
+                    break;
+                }
+            }
+        }
+    }
+    zoomAnchored(newScale);
     centerIfNecessary();
     snapToEdges();
     imageFitMode = FIT_FREE;
@@ -985,11 +1017,36 @@ void ImageViewerV2::zoomIn() {
 
 // zoom out around viewport center
 void ImageViewerV2::zoomOut() {
-    setZoomAnchor(viewport()->rect().center());
-    if(absoluteStep)
-        zoomAnchored(currentScale() - zoomStep);
+    doZoomOut(false);
+}
+
+// zoom out around cursor if its inside window
+void ImageViewerV2::zoomOutCursor() {
+    doZoomOut(true);
+}
+
+void ImageViewerV2::doZoomOut(bool atCursor) {
+    if(atCursor && underMouse())
+        setZoomAnchor(mapFromGlobal(cursor().pos()));
     else
-        zoomAnchored(currentScale() * (1.0f - zoomStep));
+        setZoomAnchor(viewport()->rect().center());
+    float newScale = currentScale() * (1.0f - zoomStep);
+    if(useFixedZoomLevels && zoomLevels.count()) {
+        if(currentScale() > zoomLevels.last()) {
+            newScale = qMax(zoomLevels.last(), currentScale() * (1.0f - zoomStep));
+        } else if(currentScale() <= zoomLevels.first()) {
+            newScale = currentScale() * (1.0f - zoomStep);
+        } else {
+            for(int i = zoomLevels.count() - 1; i >= 0; i--) {
+                float level = zoomLevels.at(i);
+                if(currentScale() > level) {
+                    newScale = level;
+                    break;
+                }
+            }
+        }
+    }
+    zoomAnchored(newScale);
     centerIfNecessary();
     snapToEdges();
     imageFitMode = FIT_FREE;
@@ -1088,41 +1145,6 @@ void ImageViewerV2::snapToEdges() {
             yShift = imgRect.bottom() - height();
     }
     centerOn(centerTarget + QPointF(xShift, yShift));
-}
-
-// todo: just merge with zoomIn
-void ImageViewerV2::zoomInCursor() {
-    if(underMouse()) {
-        setZoomAnchor(mapFromGlobal(cursor().pos()));
-        if(absoluteStep)
-            zoomAnchored(currentScale() + zoomStep);
-        else
-            zoomAnchored(currentScale() * (1.0f + zoomStep));
-    } else {
-        zoomIn();
-    }
-    imageFitMode = FIT_FREE;
-    if(pixmapItem.scale() == fitWindowScale)
-        imageFitMode = FIT_WINDOW;
-    centerIfNecessary();
-    snapToEdges();
-}
-
-void ImageViewerV2::zoomOutCursor() {
-    if(underMouse()) {
-        setZoomAnchor(mapFromGlobal(cursor().pos()));
-        if(absoluteStep)
-            zoomAnchored(currentScale() - zoomStep);
-        else
-            zoomAnchored(currentScale() * (1.0f - zoomStep));
-    } else {
-        zoomIn();
-    }
-    imageFitMode = FIT_FREE;
-    if(pixmapItem.scale() == fitWindowScale)
-        imageFitMode = FIT_WINDOW;
-    centerIfNecessary();
-    snapToEdges();
 }
 
 void ImageViewerV2::doZoom(float newScale) {

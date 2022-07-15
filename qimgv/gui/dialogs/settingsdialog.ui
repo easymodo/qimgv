@@ -259,7 +259,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -300,8 +300,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>534</width>
-                <height>1715</height>
+                <width>518</width>
+                <height>1759</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0">
@@ -324,7 +324,7 @@
                 <number>0</number>
                </property>
                <item>
-                <layout class="QGridLayout" name="gridLayout_15" columnstretch="0,0,0">
+                <layout class="QGridLayout" name="gridLayout_15" columnstretch="0,1,0">
                  <property name="leftMargin">
                   <number>0</number>
                  </property>
@@ -961,7 +961,7 @@
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>30</width>
+                        <width>35</width>
                         <height>16777215</height>
                        </size>
                       </property>
@@ -1364,7 +1364,7 @@
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>30</width>
+                       <width>60</width>
                        <height>16777215</height>
                       </size>
                      </property>
@@ -1633,8 +1633,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>442</width>
-                <height>347</height>
+                <width>462</width>
+                <height>350</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2276,7 +2276,7 @@
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>40</width>
+                     <width>60</width>
                      <height>16777215</height>
                     </size>
                    </property>
@@ -2422,8 +2422,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>481</width>
-                <height>234</height>
+                <width>548</width>
+                <height>653</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2602,9 +2602,9 @@
                 </widget>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_19">
-                 <property name="leftMargin">
-                  <number>0</number>
+                <layout class="QHBoxLayout" name="horizontalLayout_20" stretch="0,0,0,0">
+                 <property name="spacing">
+                  <number>8</number>
                  </property>
                  <property name="topMargin">
                   <number>0</number>
@@ -2612,31 +2612,33 @@
                  <property name="rightMargin">
                   <number>0</number>
                  </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
                  <item>
-                  <widget class="QLabel" name="label_25">
+                  <widget class="QLabel" name="label_12">
                    <property name="text">
                     <string>Zoom step:</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <spacer name="horizontalSpacer_12">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
+                  <widget class="QLabel" name="zoomStepLabel">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
                    </property>
-                   <property name="sizeHint" stdset="0">
+                   <property name="minimumSize">
                     <size>
-                     <width>47</width>
-                     <height>20</height>
+                     <width>60</width>
+                     <height>0</height>
                     </size>
                    </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="zoomStepLabel">
+                   <property name="maximumSize">
+                    <size>
+                     <width>60</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
                    <property name="text">
                     <string>[step]</string>
                    </property>
@@ -2652,13 +2654,13 @@
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>240</width>
+                     <width>300</width>
                      <height>25</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>240</width>
+                     <width>300</width>
                      <height>25</height>
                     </size>
                    </property>
@@ -2686,19 +2688,60 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QCheckBox" name="absoluteStepCheckBox">
-                   <property name="toolTip">
-                    <string>Always go by fixed increments - for example 100% &gt; 125% &gt; 150%</string>
+                  <spacer name="horizontalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
                    </property>
-                   <property name="toolTipDuration">
-                    <number>30</number>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
                    </property>
-                   <property name="text">
-                    <string>Absolute</string>
-                   </property>
-                  </widget>
+                  </spacer>
                  </item>
                 </layout>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="useFixedZoomLevelsCheckBox">
+                 <property name="text">
+                  <string>Use fixed zoom levels:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QWidget" name="widget" native="true">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_26">
+                  <property name="spacing">
+                   <number>8</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLineEdit" name="zoomLevels"/>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="resetZoomLevelsButton">
+                    <property name="text">
+                     <string>Load defaults</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
                </item>
                <item>
                 <spacer name="verticalSpacer_7">
@@ -3073,8 +3116,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>424</width>
-                <height>532</height>
+                <width>442</width>
+                <height>548</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3550,7 +3593,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>274</width>
-                <height>228</height>
+                <height>229</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -3610,7 +3653,7 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 hr { height: 1px; border-width: 0; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;This is a fast and easy to use image viewer&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;Features video support via libmpv&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600; font-style:italic;&quot;&gt;Github page:&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-style:italic;&quot;&gt; &lt;/span&gt;&lt;a href=&quot;https://github.com/easymodo/qimgv&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-style:italic; text-decoration: underline; color:#007af4;&quot;&gt;https://github.com/easymodo/qimgv&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
@@ -3837,8 +3880,8 @@ hr { height: 1px; border-width: 0; }
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>730</x>
-     <y>671</y>
+     <x>725</x>
+     <y>702</y>
     </hint>
     <hint type="destinationlabel">
      <x>383</x>
@@ -3902,7 +3945,7 @@ hr { height: 1px; border-width: 0; }
    <hints>
     <hint type="sourcelabel">
      <x>293</x>
-     <y>68</y>
+     <y>512</y>
     </hint>
     <hint type="destinationlabel">
      <x>596</x>
@@ -3998,27 +4041,11 @@ hr { height: 1px; border-width: 0; }
    <hints>
     <hint type="sourcelabel">
      <x>373</x>
-     <y>68</y>
+     <y>440</y>
     </hint>
     <hint type="destinationlabel">
      <x>591</x>
      <y>128</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>zoomStepSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>SettingsDialog</receiver>
-   <slot>onZoomStepSliderChanged(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>433</x>
-     <y>175</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>634</x>
-     <y>313</y>
     </hint>
    </hints>
   </connection>
@@ -4030,7 +4057,7 @@ hr { height: 1px; border-width: 0; }
    <hints>
     <hint type="sourcelabel">
      <x>373</x>
-     <y>68</y>
+     <y>175</y>
     </hint>
     <hint type="destinationlabel">
      <x>642</x>
@@ -4061,8 +4088,8 @@ hr { height: 1px; border-width: 0; }
    <slot>saveSettingsAndClose()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>490</x>
-     <y>663</y>
+     <x>553</x>
+     <y>702</y>
     </hint>
     <hint type="destinationlabel">
      <x>282</x>
@@ -4077,8 +4104,8 @@ hr { height: 1px; border-width: 0; }
    <slot>saveSettings()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>588</x>
-     <y>666</y>
+     <x>639</x>
+     <y>702</y>
     </hint>
     <hint type="destinationlabel">
      <x>513</x>
@@ -4125,12 +4152,12 @@ hr { height: 1px; border-width: 0; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>529</x>
-     <y>395</y>
+     <x>293</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
-     <x>688</x>
-     <y>422</y>
+     <x>293</x>
+     <y>37</y>
     </hint>
    </hints>
   </connection>
@@ -4141,8 +4168,8 @@ hr { height: 1px; border-width: 0; }
    <slot>onExpandLimitSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>705</x>
-     <y>422</y>
+     <x>353</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>639</x>
@@ -4157,12 +4184,60 @@ hr { height: 1px; border-width: 0; }
    <slot>onAutoResizeLimitSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>671</x>
-     <y>169</y>
+     <x>353</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>705</x>
      <y>-8</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>zoomStepSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>onZoomStepSliderChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>650</x>
+     <y>213</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>634</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useFixedZoomLevelsCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widget</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>284</x>
+     <y>265</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>618</x>
+     <y>302</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resetZoomLevelsButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>resetZoomLevels()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>688</x>
+     <y>289</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>844</x>
+     <y>441</y>
     </hint>
    </hints>
   </connection>
@@ -4194,5 +4269,6 @@ hr { height: 1px; border-width: 0; }
   <slot>editShortcut()</slot>
   <slot>editShortcut(int)</slot>
   <slot>onAutoResizeLimitSliderChanged(int)</slot>
+  <slot>resetZoomLevels()</slot>
  </slots>
 </ui>

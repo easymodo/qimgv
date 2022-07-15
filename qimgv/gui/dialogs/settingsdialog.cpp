@@ -215,9 +215,10 @@ void SettingsDialog::readSettings() {
     ui->unloadThumbsCheckBox->setChecked(settings->unloadThumbs());
     ui->thumbStyleComboBox->setCurrentIndex(settings->thumbPanelStyle());
     ui->animatedJxlCheckBox->setChecked(settings->jxlAnimation());
-    ui->absoluteStepCheckBox->setChecked(settings->absoluteZoomStep());
     ui->autoResizeWindowCheckBox->setChecked(settings->autoResizeWindow());
     ui->panelCenterSelectionCheckBox->setChecked(settings->panelCenterSelection());
+    ui->useFixedZoomLevelsCheckBox->setChecked(settings->useFixedZoomLevels());
+    ui->zoomLevels->setText(settings->zoomLevels());
 
     if(settings->defaultViewMode() == MODE_FOLDERVIEW)
         ui->startInFolderViewCheckBox->setChecked(true);
@@ -354,9 +355,10 @@ void SettingsDialog::saveSettings() {
     settings->setUnloadThumbs(ui->unloadThumbsCheckBox->isChecked());
     settings->setThumbPanelStyle(static_cast<ThumbPanelStyle>(ui->thumbStyleComboBox->currentIndex()));
     settings->setJxlAnimation(ui->animatedJxlCheckBox->isChecked());
-    settings->setAbsoluteZoomStep(ui->absoluteStepCheckBox->isChecked());
     settings->setAutoResizeWindow(ui->autoResizeWindowCheckBox->isChecked());
     settings->setPanelCenterSelection(ui->panelCenterSelectionCheckBox->isChecked());
+    settings->setUseFixedZoomLevels(ui->useFixedZoomLevelsCheckBox->isChecked());
+    settings->setZoomLevels(ui->zoomLevels->text());
 
     settings->setPanelPinned(ui->pinPanelCheckBox->isChecked());
     int panelPos = ui->panelPositionComboBox->currentIndex();
@@ -595,6 +597,10 @@ void SettingsDialog::saveShortcuts() {
 void SettingsDialog::resetShortcuts() {
     actionManager->resetDefaults();
     readShortcuts();
+}
+//------------------------------------------------------------------------------
+void SettingsDialog::resetZoomLevels() {
+    ui->zoomLevels->setText(settings->defaultZoomLevels());
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::selectMpvPath() {

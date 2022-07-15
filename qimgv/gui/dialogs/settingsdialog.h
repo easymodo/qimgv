@@ -77,6 +77,7 @@ private slots:
     void resetToDesktopTheme();    
     void onAutoResizeLimitSliderChanged(int value);
 
+    void resetZoomLevels();
 signals:
     void settingsChanged();
 };
