@@ -16,7 +16,7 @@ SettingsDialog QComboBox {
 }
 
 [accessibleName="SSideBar"] {
-    /*background-color: %sys_window_tinted%;*/
+    background-color: %sys_window_tinted%;
     padding-top: 10px;
 }
 
@@ -36,39 +36,6 @@ SettingsDialog QComboBox {
 
 [accessibleName="SettingsTintedWidget"] {
     background-color: %sys_window_tinted%;
-}
-
-SettingsDialog QScrollBar:vertical {
-    width: 15px;
-    background-color: %sys_window%;
-}
-
-SettingsDialog QScrollBar::handle:vertical {
-    background-color: %sys_window_tinted_hc%;
-    min-height: 60px;
-}
-
-SettingsDialog QScrollBar::handle:vertical:hover {
-    background-color: %sys_window_tinted_hc2%;
-    border-color: %sys_window_tinted_hc2%;
-}
-
-SettingsDialog QScrollBar::sub-page {
-    background: none;
-}
-
-SettingsDialog QScrollBar::add-page {
-    background: none;
-}
-
-SettingsDialog QScrollBar::add-line {
-    width: 0px;
-    height: 0px;
-}
-
-SettingsDialog QScrollBar::sub-line {
-    width: 0px;
-    height: 0px;
 }
 
 /*----------------------------------------------------------------------------*/

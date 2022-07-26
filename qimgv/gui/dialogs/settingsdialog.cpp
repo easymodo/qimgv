@@ -81,8 +81,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 #endif
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    ui->memoryLimitSpinBox->setHidden(true);
-    ui->memoryLimitLabel->setHidden(true);
+    ui->memoryLimitSpinBox->setEnabled(false);
+    ui->memoryLimitLabel->setEnabled(false);
 #endif
 
     if(!settings->supportedFormats().contains("jxl"))
@@ -207,7 +207,6 @@ void SettingsDialog::readSettings() {
     ui->showExtendedInfoTitle->setChecked(settings->windowTitleExtendedInfo());
     ui->cursorAutohideCheckBox->setChecked(settings->cursorAutohide());
     ui->keepFitModeCheckBox->setChecked(settings->keepFitMode());
-    ui->useOpenGLCheckBox->setChecked(settings->useOpenGL());
     if(settings->focusPointIn1to1Mode() == FOCUS_TOP)
         ui->focus1to1Top->setChecked(true);
     else if(settings->focusPointIn1to1Mode() == FOCUS_CENTER)
@@ -340,7 +339,6 @@ void SettingsDialog::saveSettings() {
     settings->setWindowTitleExtendedInfo(ui->showExtendedInfoTitle->isChecked());
     settings->setCursorAutohide(ui->cursorAutohideCheckBox->isChecked());
     settings->setKeepFitMode(ui->keepFitModeCheckBox->isChecked());
-    settings->setUseOpenGL(ui->useOpenGLCheckBox->isChecked());
     if(ui->focus1to1Top->isChecked())
         settings->setFocusPointIn1to1Mode(FOCUS_TOP);
     else if(ui->focus1to1Center->isChecked())

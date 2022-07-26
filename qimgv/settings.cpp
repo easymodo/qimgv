@@ -898,16 +898,6 @@ void Settings::setFirstRun(bool mode) {
     settings->settingsConf->setValue("firstRun", mode);
 }
 //------------------------------------------------------------------------------
-bool Settings::useOpenGL() {
-    // this causes several issues, ignore for now
-    //return settings->s->value("useOpenGL", false).toBool();
-    return false;
-}
-
-void Settings::setUseOpenGL(bool mode) {
-    settings->settingsConf->setValue("useOpenGL", mode);
-}
-//------------------------------------------------------------------------------
 bool Settings::showSaveOverlay() {
     return settings->settingsConf->value("showSaveOverlay", true).toBool();
 }

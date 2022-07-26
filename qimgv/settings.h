@@ -198,8 +198,6 @@ public:
     void setZoomStep(float value);
     int JPEGSaveQuality();
     void setJPEGSaveQuality(int value);
-    bool useOpenGL();
-    void setUseOpenGL(bool mode);
     void setZoomIndicatorMode(ZoomIndicatorMode mode);
     ZoomIndicatorMode zoomIndicatorMode();
     void setFocusPointIn1to1Mode(ImageFocusPoint mode);
