@@ -1,4 +1,77 @@
 /*----------------------------------------------------------------------------*/
+/* Settings window */
+
+SettingsDialog QPushButton {
+    min-height: %button_height%;
+}
+
+SettingsDialog QComboBox {
+    min-height: 20px;
+}
+
+[accessibleName="SLine"] {
+    background-color: %sys_window_tinted_hc%;
+    min-height: 1px;
+    max-height: 1px;
+}
+
+[accessibleName="SSideBar"] {
+    /*background-color: %sys_window_tinted%;*/
+    padding-top: 10px;
+}
+
+[accessibleName="SGroup"] {
+    /*border: 1px solid %sys_window_tinted_hc%;*/
+    /*background-color: %sys_window_tinted_lc%;*/
+}
+
+[accessibleName="SGroup"]:hover {
+    /*border-color: %sys_window_tinted_hc%;*/
+    /*background-color: %sys_window_tinted_lc%;*/
+}
+
+[accessibleName="SNoteText"] {
+    color: %sys_text_secondary_rgba%;
+}
+
+[accessibleName="SettingsTintedWidget"] {
+    background-color: %sys_window_tinted%;
+}
+
+SettingsDialog QScrollBar:vertical {
+    width: 15px;
+    background-color: %sys_window%;
+}
+
+SettingsDialog QScrollBar::handle:vertical {
+    background-color: %sys_window_tinted_hc%;
+    min-height: 60px;
+}
+
+SettingsDialog QScrollBar::handle:vertical:hover {
+    background-color: %sys_window_tinted_hc2%;
+    border-color: %sys_window_tinted_hc2%;
+}
+
+SettingsDialog QScrollBar::sub-page {
+    background: none;
+}
+
+SettingsDialog QScrollBar::add-page {
+    background: none;
+}
+
+SettingsDialog QScrollBar::add-line {
+    width: 0px;
+    height: 0px;
+}
+
+SettingsDialog QScrollBar::sub-line {
+    width: 0px;
+    height: 0px;
+}
+
+/*----------------------------------------------------------------------------*/
 /* Buttons */
 
 [accessibleName="Button"], [accessibleName="ButtonSetLeft"], [accessibleName="ButtonSetRight"]
@@ -821,29 +894,6 @@ BookmarksItem[highlighted="true"] {
 [accessibleName="FolderViewSplitter"]::handle {
     background-color: %folderview%;
 }
-
-/*----------------------------------------------------------------------------*/
-SettingsDialog QPushButton,
-SettingsDialog QComboBox {
-    min-height: %button_height%;
-}
-
-[accessibleName="StyledOptionsGroup"] {
-    /* This needs to look "ok" with both light and dark themes. May need further tweaking */
-    background-color: %system_window_tinted%;
-    border: 1px solid %system_window_tinted%;
-    border-radius: 3px;
-    /* border-top: 4px solid rgba(130, 130, 130, 30); */
-}
-
-[accessibleName="SmallText"] {
-    font-size: %font_small%;
-}
-
-/* This needs to look "ok" with both light and dark themes. May need further tweaking */
-[accessibleName="SettingsTintedWidget"] {
-    background-color: %system_window_tinted%;
-}
 /*----------------------------------------------------------------------------*/
 [accessibleName="VideoPlayerInitProxy"] QLabel {
     color: #BB0000;
@@ -870,6 +920,6 @@ PrintDialog QCheckBox {
 
 PrintDialog QRadioButton:hover,
 PrintDialog QCheckBox:hover {
-    /*  background-color: %system_window_tinted%;  */
+    /*  background-color: %sys_window_tinted%;  */
 }
 

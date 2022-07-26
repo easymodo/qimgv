@@ -88,21 +88,30 @@ void Settings::loadStylesheet() {
         auto colors = settings->colorScheme();
         // tint color for system windows
         QPalette p;
+        QColor sys_text = p.text().color();
         QColor sys_window = p.window().color();
-        QColor sys_window_tinted;
-        if(sys_window.valueF() <= 0.45f)
+        QColor sys_window_tinted, sys_window_tinted_lc, sys_window_tinted_hc, sys_window_tinted_hc2;
+        if(sys_window.valueF() <= 0.45f) {
             sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 16);
-        else
+            sys_window_tinted_lc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 11);
+            sys_window_tinted_hc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 50);
+            sys_window_tinted_hc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 70);
+        } else {
             sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 16);
+            sys_window_tinted_lc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 11);
+            sys_window_tinted_hc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 50);
+            sys_window_tinted_hc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 70);
+        }
 
         // --- widget sizes ---------------------------------------------
         auto fnt = QGuiApplication::font();
         QFontMetrics fm(fnt);
         // todo: use precise values for ~9-11 point sizes
-        int font_small = (int)(fnt.pointSize() * 0.9f);
+        int font_small = qMax((int)(fnt.pointSize() * 0.9f), 8);
         int text_height = fm.height();
         int text_padding = (int)(text_height * 0.10f);
-        int text_padding_min = (int)(text_height * 0.05f);
+        int text_padding_small = (int)(text_height * 0.05f);
+        int text_padding_large = (int)(text_height * 0.25f);
 
         // folderview top panel item sizes
         int top_panel_v_margin = 4;
@@ -114,10 +123,10 @@ void Settings::loadStylesheet() {
         // overlay headers
         int overlay_header_margin = 2;
         // 32px base size
-        int overlay_header_size = qMax(text_height + text_padding * 2, 32);
+        int overlay_header_size = qMax(text_height + text_padding * 2, 30);
 
         // todo
-        int button_height = text_height + text_padding_min * 2;
+        int button_height = text_height + text_padding_large * 2;
 
         // pseudo-dpi to scale some widget widths
         int text_height_base = 22;
@@ -144,6 +153,15 @@ void Settings::loadStylesheet() {
 #else
         styleSheet.replace("%contextmenu_border_radius%",  "3px");
 #endif
+        styleSheet.replace("%sys_window%",    sys_window.name());
+        styleSheet.replace("%sys_window_tinted%",    sys_window_tinted.name());
+        styleSheet.replace("%sys_window_tinted_lc%", sys_window_tinted_lc.name());
+        styleSheet.replace("%sys_window_tinted_hc%", sys_window_tinted_hc.name());
+        styleSheet.replace("%sys_window_tinted_hc2%", sys_window_tinted_hc2.name());
+        styleSheet.replace("%sys_text_secondary_rgba%", "rgba(" + QString::number(sys_text.red())   + ","
+                                                      + QString::number(sys_text.green()) + ","
+                                                      + QString::number(sys_text.blue())  + ",50%)");
+
         styleSheet.replace("%button%",               colors.button.name());
         styleSheet.replace("%button_hover%",         colors.button_hover.name());
         styleSheet.replace("%button_pressed%",       colors.button_pressed.name());
@@ -168,7 +186,6 @@ void Settings::loadStylesheet() {
         styleSheet.replace("%text_lc2%",             colors.text_lc2.name());
         styleSheet.replace("%scrollbar%",            colors.scrollbar.name());
         styleSheet.replace("%scrollbar_hover%",      colors.scrollbar_hover.name());
-        styleSheet.replace("%system_window_tinted%", sys_window_tinted.name());
         styleSheet.replace("%folderview_button_hover%",   colors.folderview_button_hover.name());
         styleSheet.replace("%folderview_button_pressed%", colors.folderview_button_pressed.name());
         styleSheet.replace("%text_secondary_rgba%",  "rgba(" + QString::number(colors.text.red())   + ","

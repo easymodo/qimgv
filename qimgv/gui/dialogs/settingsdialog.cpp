@@ -68,7 +68,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 #endif
 
 #ifndef USE_MPV
-    //ui->videoPlaybackGroup->setEnabled(false);
+    ui->videoPlaybackGroup->setEnabled(false);
     //ui->novideoInfoLabel->setHidden(false);
 #else
     //ui->novideoInfoLabel->setHidden(true);
@@ -124,7 +124,7 @@ SettingsDialog::~SettingsDialog() {
 // an attempt to force minimum width to fit contents
 void SettingsDialog::adjustSizeToContents() {
     // general tab
-    ui->gridLayout_15->activate();
+    //ui->gridLayout_15->activate();
     ui->scrollAreaWidgetContents->layout()->activate();
     ui->scrollArea->setMinimumWidth(ui->scrollAreaWidgetContents->minimumSizeHint().width());
     // container
@@ -177,10 +177,10 @@ void SettingsDialog::setupSidebar() {
 void SettingsDialog::readSettings() {
     ui->loopSlideshowCheckBox->setChecked(settings->loopSlideshow());
     ui->videoPlaybackCheckBox->setChecked(settings->videoPlayback());
-    //ui->videoPlaybackGroupContents->setEnabled(settings->videoPlayback());
+    ui->videoPlaybackGroupContents->setEnabled(settings->videoPlayback());
     ui->playSoundsCheckBox->setChecked(settings->playVideoSounds());
     ui->enablePanelCheckBox->setChecked(settings->panelEnabled());
-    //ui->thumbnailPanelGroupContents->setEnabled(settings->panelEnabled());
+    ui->thumbnailPanelGroupContents->setEnabled(settings->panelEnabled());
     ui->panelFullscreenOnlyCheckBox->setChecked(settings->panelFullscreenOnly());
     ui->squareThumbnailsCheckBox->setChecked(settings->squareThumbnails());
     ui->transparencyGridCheckBox->setChecked(settings->transparencyGrid());
@@ -208,12 +208,20 @@ void SettingsDialog::readSettings() {
     ui->cursorAutohideCheckBox->setChecked(settings->cursorAutohide());
     ui->keepFitModeCheckBox->setChecked(settings->keepFitMode());
     ui->useOpenGLCheckBox->setChecked(settings->useOpenGL());
-    ui->focusPointIn1to1ModeComboBox->setCurrentIndex(settings->focusPointIn1to1Mode());
+    if(settings->focusPointIn1to1Mode() == FOCUS_TOP)
+        ui->focus1to1Top->setChecked(true);
+    else if(settings->focusPointIn1to1Mode() == FOCUS_CENTER)
+        ui->focus1to1Center->setChecked(true);
+    else
+        ui->focus1to1Cursor->setChecked(true);
     ui->slideshowIntervalSpinBox->setValue(settings->slideshowInterval());
     ui->imageScrollingComboBox->setCurrentIndex(settings->imageScrolling());
     ui->saveOverlayCheckBox->setChecked(settings->showSaveOverlay());
     ui->unloadThumbsCheckBox->setChecked(settings->unloadThumbs());
-    ui->thumbStyleComboBox->setCurrentIndex(settings->thumbPanelStyle());
+    if(settings->thumbPanelStyle() == TH_PANEL_SIMPLE)
+        ui->thumbStyleSimple->setChecked(true);
+    else
+        ui->thumbStyleExtended->setChecked(true);
     ui->animatedJxlCheckBox->setChecked(settings->jxlAnimation());
     ui->autoResizeWindowCheckBox->setChecked(settings->autoResizeWindow());
     ui->panelCenterSelectionCheckBox->setChecked(settings->panelCenterSelection());
@@ -333,7 +341,13 @@ void SettingsDialog::saveSettings() {
     settings->setCursorAutohide(ui->cursorAutohideCheckBox->isChecked());
     settings->setKeepFitMode(ui->keepFitModeCheckBox->isChecked());
     settings->setUseOpenGL(ui->useOpenGLCheckBox->isChecked());
-    settings->setFocusPointIn1to1Mode(static_cast<ImageFocusPoint>(ui->focusPointIn1to1ModeComboBox->currentIndex()));
+    if(ui->focus1to1Top->isChecked())
+        settings->setFocusPointIn1to1Mode(FOCUS_TOP);
+    else if(ui->focus1to1Center->isChecked())
+        settings->setFocusPointIn1to1Mode(FOCUS_CENTER);
+    else
+        settings->setFocusPointIn1to1Mode(FOCUS_CURSOR);
+
     settings->setSlideshowInterval(ui->slideshowIntervalSpinBox->value());
 
     if(ui->startInFolderViewCheckBox->isChecked())
@@ -353,7 +367,10 @@ void SettingsDialog::saveSettings() {
     settings->setImageScrolling(static_cast<ImageScrolling>(ui->imageScrollingComboBox->currentIndex()));
     settings->setShowSaveOverlay(ui->saveOverlayCheckBox->isChecked());
     settings->setUnloadThumbs(ui->unloadThumbsCheckBox->isChecked());
-    settings->setThumbPanelStyle(static_cast<ThumbPanelStyle>(ui->thumbStyleComboBox->currentIndex()));
+    if(ui->thumbStyleSimple->isChecked())
+        settings->setThumbPanelStyle(TH_PANEL_SIMPLE);
+    else
+        settings->setThumbPanelStyle(TH_PANEL_EXTENDED);
     settings->setJxlAnimation(ui->animatedJxlCheckBox->isChecked());
     settings->setAutoResizeWindow(ui->autoResizeWindowCheckBox->isChecked());
     settings->setPanelCenterSelection(ui->panelCenterSelectionCheckBox->isChecked());
