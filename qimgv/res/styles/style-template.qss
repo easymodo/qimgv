@@ -6,7 +6,7 @@ SettingsDialog QPushButton {
 }
 
 SettingsDialog QComboBox {
-    min-height: 20px;
+    /*min-height: 20px;*/
 }
 
 [accessibleName="SLine"] {

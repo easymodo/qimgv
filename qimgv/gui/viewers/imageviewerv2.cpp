@@ -108,7 +108,7 @@ void ImageViewerV2::readSettings() {
     zoomStep = settings->zoomStep();
     focusIn1to1 = settings->focusPointIn1to1Mode();
     if( (useFixedZoomLevels = settings->useFixedZoomLevels()) ) {
-        // zoomstep is stored as a string, parse into int list
+        // zoomlevels are stored as a string, parse into list
         zoomLevels.clear();
         auto levelsStr = settings->zoomLevels().split(',');
         for(const auto& i : levelsStr)
@@ -681,26 +681,29 @@ void ImageViewerV2::mouseMoveZoom(QMouseEvent *event) {
 
 // scale at which current image fills the window
 void ImageViewerV2::updateFitWindowScale() {
-    float newMinScaleX = (float) viewport()->width()  * devicePixelRatioF() / pixmap->width();
-    float newMinScaleY = (float) viewport()->height() * devicePixelRatioF() / pixmap->height();
-    if(newMinScaleX < newMinScaleY) {
-        fitWindowScale = newMinScaleX;
+    float scaleFitX = (float) viewport()->width()  * devicePixelRatioF() / pixmap->width();
+    float scaleFitY = (float) viewport()->height() * devicePixelRatioF() / pixmap->height();
+    if(scaleFitX < scaleFitY) {
+        fitWindowScale = scaleFitX;
     } else {
-        fitWindowScale = newMinScaleY;
+        fitWindowScale = scaleFitY;
     }
     if(expandImage && fitWindowScale > expandLimit)
         fitWindowScale = expandLimit;
 }
 
-// limit min scale to window size
 void ImageViewerV2::updateMinScale() {
     if(!pixmap)
         return;
     updateFitWindowScale();
-    if(imageFits())
-        minScale = 1.0f;
-    else
-        minScale = fitWindowScale;
+    if(settings->unlockMinZoom()) {
+        minScale = 0.00001f;
+    } else {
+        if(imageFits())
+            minScale = 1.0f;
+        else
+            minScale = fitWindowScale;
+    }
     if(mViewLock != LOCK_NONE && lockedScale < minScale)
         minScale = lockedScale;
 }

@@ -155,12 +155,14 @@ void SettingsDialog::setupSidebar() {
     sideBar->viewport()->setAutoFillBackground(false);
     // General
     sideBar->item(0)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/general32.png"));
-    // Appearance
-    sideBar->item(1)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/appearance32.png"));
+    // Image view
+    //sideBar->item(1)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/folderview32.png"));
+    // Theme
+    sideBar->item(2)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/appearance32.png"));
     // FolderView
-    sideBar->item(2)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/folderview32.png"));
-    // Scaling
     sideBar->item(3)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/scale32.png"));
+    // empty for now
+    sideBar->item(3)->setHidden(true);
     // Controls
     sideBar->item(4)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/shortcuts32.png"));
     // Scripts
@@ -170,8 +172,6 @@ void SettingsDialog::setupSidebar() {
     // About
     sideBar->item(7)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/about32.png"));
 
-    // empty for now
-    sideBar->item(2)->setHidden(true);
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::readSettings() {
@@ -196,6 +196,7 @@ void SettingsDialog::readSettings() {
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
     ui->confirmDeleteCheckBox->setChecked(settings->confirmDelete());
     ui->confirmTrashCheckBox->setChecked(settings->confirmTrash());
+    ui->unlockMinZoomCheckBox->setChecked(settings->unlockMinZoom());
     if(settings->zoomIndicatorMode() == INDICATOR_ENABLED)
         ui->zoomIndicatorOn->setChecked(true);
     else if(settings->zoomIndicatorMode() == INDICATOR_AUTO)
@@ -328,6 +329,7 @@ void SettingsDialog::saveSettings() {
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
     settings->setConfirmDelete(ui->confirmDeleteCheckBox->isChecked());
     settings->setConfirmTrash(ui->confirmTrashCheckBox->isChecked());
+    settings->setUnlockMinZoom(ui->unlockMinZoomCheckBox->isChecked());
     if(ui->zoomIndicatorOn->isChecked())
         settings->setZoomIndicatorMode(INDICATOR_ENABLED);
     else if(ui->zoomIndicatorAuto->isChecked())

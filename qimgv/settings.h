@@ -291,6 +291,9 @@ public:
     void setZoomLevels(QString levels);
     bool useFixedZoomLevels();
     void setUseFixedZoomLevels(bool mode);
+    bool unlockMinZoom();
+    void setUnlockMinZoom(bool mode);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     QSettings *settingsConf, *stateConf, *themeConf;

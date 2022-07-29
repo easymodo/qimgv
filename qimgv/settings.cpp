@@ -1124,3 +1124,11 @@ QString Settings::zoomLevels() {
 void Settings::setZoomLevels(QString levels) {
     settingsConf->setValue("fixedZoomLevels", levels);
 }
+//------------------------------------------------------------------------------
+bool Settings::unlockMinZoom() {
+    return settings->settingsConf->value("unlockMinZoom", true).toBool();
+}
+
+void Settings::setUnlockMinZoom(bool mode) {
+    settings->settingsConf->setValue("unlockMinZoom", mode);
+}
