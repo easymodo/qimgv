@@ -90,17 +90,19 @@ void Settings::loadStylesheet() {
         QPalette p;
         QColor sys_text = p.text().color();
         QColor sys_window = p.window().color();
-        QColor sys_window_tinted, sys_window_tinted_lc, sys_window_tinted_hc, sys_window_tinted_hc2;
+        QColor sys_window_tinted, sys_window_tinted_lc, sys_window_tinted_lc2, sys_window_tinted_hc, sys_window_tinted_hc2;
         if(sys_window.valueF() <= 0.45f) {
             sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 16);
             sys_window_tinted_lc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 11);
-            sys_window_tinted_hc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 50);
-            sys_window_tinted_hc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 70);
+            sys_window_tinted_lc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 5);
+            sys_window_tinted_hc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 35);
+            sys_window_tinted_hc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 50);
         } else {
             sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 16);
             sys_window_tinted_lc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 11);
-            sys_window_tinted_hc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 50);
-            sys_window_tinted_hc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 70);
+            sys_window_tinted_lc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 5);
+            sys_window_tinted_hc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 35);
+            sys_window_tinted_hc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 50);
         }
 
         // --- widget sizes ---------------------------------------------
@@ -108,6 +110,7 @@ void Settings::loadStylesheet() {
         QFontMetrics fm(fnt);
         // todo: use precise values for ~9-11 point sizes
         int font_small = qMax((int)(fnt.pointSize() * 0.9f), 8);
+        int font_large = (int)(fnt.pointSize() * 1.8f);
         int text_height = fm.height();
         int text_padding = (int)(text_height * 0.10f);
         int text_padding_small = (int)(text_height * 0.05f);
@@ -139,6 +142,7 @@ void Settings::loadStylesheet() {
 
         // --- write variables into stylesheet --------------------------
         styleSheet.replace("%font_small%", QString::number(font_small)+"pt");
+        styleSheet.replace("%font_large%", QString::number(font_large)+"pt");
         styleSheet.replace("%button_height%", QString::number(button_height)+"px");
         styleSheet.replace("%top_panel_height%", QString::number(top_panel_height)+"px");
         styleSheet.replace("%overlay_header_size%", QString::number(overlay_header_size)+"px");
@@ -156,6 +160,7 @@ void Settings::loadStylesheet() {
         styleSheet.replace("%sys_window%",    sys_window.name());
         styleSheet.replace("%sys_window_tinted%",    sys_window_tinted.name());
         styleSheet.replace("%sys_window_tinted_lc%", sys_window_tinted_lc.name());
+        styleSheet.replace("%sys_window_tinted_lc2%", sys_window_tinted_lc2.name());
         styleSheet.replace("%sys_window_tinted_hc%", sys_window_tinted_hc.name());
         styleSheet.replace("%sys_window_tinted_hc2%", sys_window_tinted_hc2.name());
         styleSheet.replace("%sys_text_secondary_rgba%", "rgba(" + QString::number(sys_text.red())   + ","

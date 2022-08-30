@@ -89,7 +89,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
         ui->animatedJxlCheckBox->hide();
 
     setupSidebar();
-    ui->sideBar->setCurrentRow(0);
 
     // setup radioBtn groups
     fitModeGrp.addButton(ui->fitModeWindow);
@@ -145,7 +144,7 @@ void SettingsDialog::resetToDesktopTheme() {
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::setupSidebar() {
-    QString iconVariant;
+  /*  QString iconVariant;
     QPalette p;
     if(p.base().color().valueF() <= 0.45f)
         iconVariant = "light";
@@ -171,7 +170,7 @@ void SettingsDialog::setupSidebar() {
     sideBar->item(6)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/advanced32.png"));
     // About
     sideBar->item(7)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/about32.png"));
-
+    */
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::readSettings() {
@@ -661,6 +660,5 @@ int SettingsDialog::exec() {
 }
 
 void SettingsDialog::switchToPage(int number) {
-    ui->stackedWidget->setCurrentIndex(number);
-    ui->sideBar->setCurrentRow(number);
+    ui->sideBar2->selectEntry(number);
 }
