@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   inkscape:export-ydpi="96"
+   inkscape:export-xdpi="96"
+   inkscape:export-filename="../advanced32.png"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   sodipodi:docname="advanced.svg"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 32 32"
+   height="32"
+   width="32"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     inkscape:document-rotation="0"
+     inkscape:window-maximized="1"
+     inkscape:window-y="0"
+     inkscape:window-x="0"
+     inkscape:window-height="1119"
+     inkscape:window-width="1920"
+     inkscape:showpageshadow="false"
+     units="px"
+     showgrid="true"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="px"
+     inkscape:cy="18.46875"
+     inkscape:cx="20.15625"
+     inkscape:zoom="16"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       id="grid834"
+       type="xygrid"
+       originx="0"
+       originy="0" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(0,-288.53332)"
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/easymodo/coding/qimgv/qimgv/res/icons/light/settings/general32.png"
+       inkscape:connector-curvature="0"
+       id="rect97"
+       d="m 11.254263,291.55951 -0.602679,3.0134 h 5.0625 l -0.602679,-3.0134 h -1.928571 z m -0.619001,14.90625 0.619001,3.09375 h 1.928571 1.928571 l 0.619001,-3.09375 z"
+       style="display:inline;fill:#4d4d4d;fill-opacity:1;stroke-width:0.642857" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/easymodo/coding/qimgv/qimgv/res/icons/light/settings/general32.png"
+       style="display:inline;fill:#4d4d4d;fill-opacity:1;stroke-width:0.642857"
+       d="m 4.4243191,297.7297 2.3083359,2.02864 2.53125,-4.38426 -2.911014,-0.98476 -0.9642863,1.67019 z m 12.5996919,7.9892 2.988765,1.0108 0.964287,-1.67019 0.964286,-1.67019 -2.369766,-2.08295 z"
+       id="path152"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/easymodo/coding/qimgv/qimgv/res/icons/light/settings/general32.png"
+       inkscape:connector-curvature="0"
+       id="path154"
+       d="m 6.3528931,306.7297 2.9110149,-0.98476 -2.5312564,-4.38426 -2.3083346,2.02864 0.9642877,1.67019 z m 13.2186869,-6.91705 2.36977,-2.08295 -0.964287,-1.67019 -0.964287,-1.67019 -2.988764,1.0108 z"
+       style="display:inline;fill:#4d4d4d;fill-opacity:1;stroke-width:0.642857" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/easymodo/coding/qimgv/qimgv/res/icons/light/settings/general32.png"
+       inkscape:connector-curvature="0"
+       id="ellipse111"
+       d="m 84.503141,283.04395 a 11.000002,11 0 0 0 -11,11 11.000002,11 0 0 0 11,11 11.000002,11 0 0 0 11,-11 11.000002,11 0 0 0 -11,-11 z m 0,4.5 a 6.5000001,6.5000001 0 0 1 6.5,6.5 6.5000001,6.5000001 0 0 1 -6.5,6.5 6.5000001,6.5000001 0 0 1 -6.5,-6.5 6.5000001,6.5000001 0 0 1 6.5,-6.5 z"
+       style="display:inline;fill:#333333;fill-opacity:1;stroke-width:1.1" />
+    <path
+       id="path328"
+       style="fill:#333333;stroke-width:1.60552"
+       d="m 63.555925,265.44317 a 9.6304975,9.6304975 0 0 0 -9.630302,9.6303 9.6304975,9.6304975 0 0 0 9.630302,9.6303 9.6304975,9.6304975 0 0 0 9.630302,-9.6303 9.6304975,9.6304975 0 0 0 -9.630302,-9.6303 z m 0,4.52316 a 5.1078141,5.1078141 0 0 1 5.107143,5.10714 5.1078141,5.1078141 0 0 1 -5.107143,5.10714 5.1078141,5.1078141 0 0 1 -5.107143,-5.10714 5.1078141,5.1078141 0 0 1 5.107143,-5.10714 z" />
+    <path
+       id="path512"
+       style="fill:#4d4d4d;stroke-width:0.703142"
+       d="m 13.182834,293.48229 a 7.0773154,7.0773154 0 0 0 -7.0772235,7.07722 7.0773154,7.0773154 0 0 0 7.0772235,7.07722 7.0773154,7.0773154 0 0 0 7.077224,-7.07722 7.0773154,7.0773154 0 0 0 -7.077224,-7.07722 z m 0,3.90639 a 3.1711504,3.1711504 0 0 1 3.170823,3.17083 3.1711504,3.1711504 0 0 1 -3.170823,3.17083 3.1711504,3.1711504 0 0 1 -3.170823,-3.17083 3.1711504,3.1711504 0 0 1 3.170823,-3.17083 z" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/easymodo/coding/qimgv/qimgv/res/icons/light/settings/general32.png"
+       inkscape:connector-curvature="0"
+       id="rect97-3"
+       d="m 21.644025,305.48856 -0.401786,2.00893 h 3.375 l -0.401786,-2.00893 h -1.285714 z m -0.412668,9.9375 0.412668,2.0625 h 1.285714 1.285714 l 0.412667,-2.0625 z"
+       style="display:inline;fill:#4d4d4d;fill-opacity:1;stroke-width:0.428571" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/easymodo/coding/qimgv/qimgv/res/icons/light/settings/general32.png"
+       style="display:inline;fill:#4d4d4d;fill-opacity:1;stroke-width:0.428571"
+       d="m 17.090729,309.60202 1.53889,1.35243 1.6875,-2.92284 -1.940676,-0.65651 -0.642857,1.11346 z m 8.399794,5.32613 1.99251,0.67387 0.642858,-1.11346 0.642858,-1.11346 -1.579844,-1.38863 z"
+       id="path152-6"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/easymodo/coding/qimgv/qimgv/res/icons/light/settings/general32.png"
+       inkscape:connector-curvature="0"
+       id="path154-7"
+       d="m 18.376445,315.60202 1.940676,-0.65651 -1.687504,-2.92284 -1.53889,1.35243 0.642859,1.11346 z m 8.812458,-4.61137 1.579846,-1.38863 -0.642858,-1.11346 -0.642858,-1.11346 -1.992509,0.67387 z"
+       style="display:inline;fill:#4d4d4d;fill-opacity:1;stroke-width:0.428571" />
+    <path
+       id="path512-5"
+       style="fill:#4d4d4d;stroke-width:0.468761"
+       d="m 22.929739,306.77041 a 4.7182103,4.7182103 0 0 0 -4.718149,4.71815 4.7182103,4.7182103 0 0 0 4.718149,4.71815 4.7182103,4.7182103 0 0 0 4.718149,-4.71815 4.7182103,4.7182103 0 0 0 -4.718149,-4.71815 z m 0,2.60426 a 2.1141003,2.1141003 0 0 1 2.113882,2.11389 2.1141003,2.1141003 0 0 1 -2.113882,2.11389 2.1141003,2.1141003 0 0 1 -2.113882,-2.11389 2.1141003,2.1141003 0 0 1 2.113882,-2.11389 z" />
+    <rect
+       style="fill:#ff6600"
+       id="rect689"
+       width="48.046711"
+       height="47.912609"
+       x="-56.488014"
+       y="261.01611" />
+  </g>
+</svg>

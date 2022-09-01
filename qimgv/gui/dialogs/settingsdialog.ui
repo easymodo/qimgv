@@ -1862,7 +1862,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>557</width>
+                <width>593</width>
                 <height>876</height>
                </rect>
               </property>
@@ -1888,7 +1888,7 @@
                   <string notr="true">SHeaderText</string>
                  </property>
                  <property name="text">
-                  <string>Image view</string>
+                  <string>View</string>
                  </property>
                 </widget>
                </item>
@@ -2743,8 +2743,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>607</width>
-                <height>694</height>
+                <width>507</width>
+                <height>536</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -4108,8 +4108,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>607</width>
-                <height>694</height>
+                <width>481</width>
+                <height>622</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4644,8 +4644,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>607</width>
-                <height>694</height>
+                <width>292</width>
+                <height>274</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">

@@ -26,8 +26,8 @@ SettingsDialog QComboBox {
 }
 
 [accessibleName="SSideBarContainer"] {
-    background-color: %sys_window_tinted_lc%;
-    border-right: 1px solid %sys_window_tinted%;
+    background-color: %sys_window_tinted_lc2%;
+    border-right: 1px solid %sys_window_tinted_lc%;
 }
 
 SSideBarItem {
@@ -35,8 +35,8 @@ SSideBarItem {
 }
 
 SSideBarItem[checked="true"] {
-    /*background-color: %sys_window_tinted_hc%;*/
-    background-color: #abc1da;
+    background-color: %sys_highlight%;
+    /*background-color: #abc1da;*/
 }
 
 [accessibleName="SGroup"] {
@@ -53,10 +53,6 @@ SSideBarItem[checked="true"] {
 
 [accessibleName="SNoteText"] {
     color: %sys_text_secondary_rgba%;
-}
-
-[accessibleName="SettingsTintedWidget"] {
-    background-color: %sys_window_tinted%;
 }
 
 /*----------------------------------------------------------------------------*/

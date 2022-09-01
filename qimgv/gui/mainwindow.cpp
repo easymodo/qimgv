@@ -580,7 +580,7 @@ void MW::showSettings() {
 void MW::showScriptSettings() {
     docWidget->hideFloatingPanel();
     SettingsDialog settingsDialog(this);
-    settingsDialog.switchToPage(5);
+    settingsDialog.switchToPage(4);
     settingsDialog.exec();
 }
 

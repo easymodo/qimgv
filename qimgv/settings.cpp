@@ -89,20 +89,27 @@ void Settings::loadStylesheet() {
         // tint color for system windows
         QPalette p;
         QColor sys_text = p.text().color();
+        QColor sys_highlight = p.highlight().color();
         QColor sys_window = p.window().color();
         QColor sys_window_tinted, sys_window_tinted_lc, sys_window_tinted_lc2, sys_window_tinted_hc, sys_window_tinted_hc2;
+
+        qDebug() << "highlight.hsv: " << sys_highlight.hue() << sys_highlight.saturation() << sys_highlight.value() << sys_highlight.name();
         if(sys_window.valueF() <= 0.45f) {
-            sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 16);
-            sys_window_tinted_lc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 11);
-            sys_window_tinted_lc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 5);
-            sys_window_tinted_hc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 35);
+            // dark system theme
+            sys_window_tinted_lc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 6);
+            sys_window_tinted_lc.setHsv(sys_window.hue(),  sys_window.saturation(), sys_window.value() + 14);
+            sys_window_tinted.setHsv(sys_window.hue(),     sys_window.saturation(), sys_window.value() + 20);
+            sys_window_tinted_hc.setHsv(sys_window.hue(),  sys_window.saturation(), sys_window.value() + 35);
             sys_window_tinted_hc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() + 50);
+            sys_highlight.setHsv(sys_highlight.hue(), qMin(sys_highlight.saturation(), 170), sys_window_tinted_hc2.value());
         } else {
-            sys_window_tinted.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 16);
-            sys_window_tinted_lc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 11);
-            sys_window_tinted_lc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 5);
-            sys_window_tinted_hc.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 35);
+            // light system theme
+            sys_window_tinted_lc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 6);
+            sys_window_tinted_lc.setHsv(sys_window.hue(),  sys_window.saturation(), sys_window.value() - 14);
+            sys_window_tinted.setHsv(sys_window.hue(),     sys_window.saturation(), sys_window.value() - 20);
+            sys_window_tinted_hc.setHsv(sys_window.hue(),  sys_window.saturation(), sys_window.value() - 35);
             sys_window_tinted_hc2.setHsv(sys_window.hue(), sys_window.saturation(), sys_window.value() - 50);
+            sys_highlight.setHsv(sys_highlight.hue(), qMin(sys_highlight.saturation(), 75), sys_window.value() - 20);
         }
 
         // --- widget sizes ---------------------------------------------
@@ -157,6 +164,7 @@ void Settings::loadStylesheet() {
 #else
         styleSheet.replace("%contextmenu_border_radius%",  "3px");
 #endif
+        styleSheet.replace("%sys_highlight%", sys_highlight.name());
         styleSheet.replace("%sys_window%",    sys_window.name());
         styleSheet.replace("%sys_window_tinted%",    sys_window_tinted.name());
         styleSheet.replace("%sys_window_tinted_lc%", sys_window_tinted_lc.name());

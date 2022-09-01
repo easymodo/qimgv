@@ -3,16 +3,16 @@
 SSideBar::SSideBar(QWidget *parent) : QWidget{parent} {
     layout = new QBoxLayout(QBoxLayout::TopToBottom);
     layout->setSpacing(0);
-    layout->setContentsMargins(9,8,9,9);
+    layout->setContentsMargins(8,8,9,9);
     layout->addStretch();
     setLayout(layout);
-    addEntry(":res/icons/dark/settings/general32.png", "General");
-    addEntry(":res/icons/dark/settings/general32.png", "Image View");
-    addEntry(":res/icons/dark/settings/appearance32.png", "Theme");
-    addEntry(":res/icons/dark/settings/shortcuts32.png", "Controls");
-    addEntry(":res/icons/dark/settings/terminal32.png", "Scripts");
-    addEntry(":res/icons/dark/settings/advanced32.png", "Advanced");
-    addEntry(":res/icons/dark/settings/about32.png", "About");
+    addEntry(":res/icons/common/settings/general32.png",    "General");
+    addEntry(":res/icons/common/settings/view32.png",       "View");
+    addEntry(":res/icons/common/settings/appearance32.png", "Theme");
+    addEntry(":res/icons/common/settings/shortcuts32.png",  "Controls");
+    addEntry(":res/icons/common/settings/terminal32.png",   "Scripts");
+    addEntry(":res/icons/common/settings/advanced32.png",   "Advanced");
+    addEntry(":res/icons/common/settings/about32.png",      "About");
 }
 
 void SSideBar::addEntry(QString icon, QString name) {
@@ -70,11 +70,16 @@ void SSideBar::paintEvent(QPaintEvent *event) {
 // -------------------------------------------------------------------
 
 SSideBarItem::SSideBarItem(QString icon, QString name, QWidget *parent) : QWidget{parent} {
-    iconWidget.setColor(QColor(70,70,70));
+    QPalette p;
+    if(p.base().color().valueF() <= 0.45f)
+        iconWidget.setColor(QColor(184,184,185));
+    else
+        iconWidget.setColor(QColor(70,70,70));
     iconWidget.setIconPath(icon);
     textLabel.setText(name);
     layout = new QBoxLayout(QBoxLayout::LeftToRight);
-    layout->setContentsMargins(6,5,6,5);
+    layout->setContentsMargins(6,4,6,4);
+    layout->setSpacing(7);
     layout->addWidget(&iconWidget);
     layout->addWidget(&textLabel);
     layout->addStretch();

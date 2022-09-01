@@ -101,40 +101,8 @@
         <file>res/icons/common/logo/app/22@2x.png</file>
         <file>res/icons/dark/other/collapsed.png</file>
         <file>res/icons/dark/other/expanded.png</file>
-        <file>res/icons/dark/settings/about32.png</file>
-        <file>res/icons/dark/settings/about32@2x.png</file>
-        <file>res/icons/dark/settings/advanced32.png</file>
-        <file>res/icons/dark/settings/advanced32@2x.png</file>
-        <file>res/icons/dark/settings/appearance32.png</file>
-        <file>res/icons/dark/settings/appearance32@2x.png</file>
-        <file>res/icons/dark/settings/folderview32.png</file>
-        <file>res/icons/dark/settings/folderview32@2x.png</file>
-        <file>res/icons/dark/settings/general32.png</file>
-        <file>res/icons/dark/settings/general32@2x.png</file>
-        <file>res/icons/dark/settings/scale32.png</file>
-        <file>res/icons/dark/settings/scale32@2x.png</file>
-        <file>res/icons/dark/settings/shortcuts32.png</file>
-        <file>res/icons/dark/settings/shortcuts32@2x.png</file>
-        <file>res/icons/dark/settings/terminal32.png</file>
-        <file>res/icons/dark/settings/terminal32@2x.png</file>
         <file>res/icons/light/other/collapsed.png</file>
         <file>res/icons/light/other/expanded.png</file>
-        <file>res/icons/light/settings/about32.png</file>
-        <file>res/icons/light/settings/about32@2x.png</file>
-        <file>res/icons/light/settings/advanced32.png</file>
-        <file>res/icons/light/settings/advanced32@2x.png</file>
-        <file>res/icons/light/settings/appearance32.png</file>
-        <file>res/icons/light/settings/appearance32@2x.png</file>
-        <file>res/icons/light/settings/folderview32.png</file>
-        <file>res/icons/light/settings/folderview32@2x.png</file>
-        <file>res/icons/light/settings/general32.png</file>
-        <file>res/icons/light/settings/general32@2x.png</file>
-        <file>res/icons/light/settings/scale32.png</file>
-        <file>res/icons/light/settings/scale32@2x.png</file>
-        <file>res/icons/light/settings/shortcuts32.png</file>
-        <file>res/icons/light/settings/shortcuts32@2x.png</file>
-        <file>res/icons/light/settings/terminal32.png</file>
-        <file>res/icons/light/settings/terminal32@2x.png</file>
         <file>res/styles/style-template.qss</file>
         <file>res/icons/common/buttons/panel/settings20.png</file>
         <file>res/icons/common/buttons/panel/settings20@2x.png</file>
@@ -160,5 +128,22 @@
         <file>res/icons/common/buttons/panel/document-view20@2x.png</file>
         <file>res/icons/common/buttons/panel/pin-panel20.png</file>
         <file>res/icons/common/buttons/panel/pin-panel20@2x.png</file>
+        <file>res/icons/common/settings/about32.png</file>
+        <file>res/icons/common/settings/about32@2x.png</file>
+        <file>res/icons/common/settings/advanced32.png</file>
+        <file>res/icons/common/settings/advanced32@2x.png</file>
+        <file>res/icons/common/settings/appearance32.png</file>
+        <file>res/icons/common/settings/appearance32@2x.png</file>
+        <file>res/icons/common/settings/general32.png</file>
+        <file>res/icons/common/settings/general32@2x.png</file>
+        <file>res/icons/common/settings/scale32.png</file>
+        <file>res/icons/common/settings/scale32@2x.png</file>
+        <file>res/icons/common/settings/shortcuts32_i.png</file>
+        <file>res/icons/common/settings/shortcuts32.png</file>
+        <file>res/icons/common/settings/shortcuts32@2x.png</file>
+        <file>res/icons/common/settings/terminal32.png</file>
+        <file>res/icons/common/settings/terminal32@2x.png</file>
+        <file>res/icons/common/settings/view32.png</file>
+        <file>res/icons/common/settings/view32@2x.png</file>
     </qresource>
 </RCC>
