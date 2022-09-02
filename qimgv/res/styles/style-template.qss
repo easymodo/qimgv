@@ -35,8 +35,7 @@ SSideBarItem {
 }
 
 SSideBarItem[checked="true"] {
-    background-color: %sys_highlight%;
-    /*background-color: #abc1da;*/
+    background-color: %sys_window_tinted_hc%;
 }
 
 [accessibleName="SGroup"] {

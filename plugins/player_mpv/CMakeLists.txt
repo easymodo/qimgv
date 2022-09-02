@@ -34,6 +34,10 @@ else()
         Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets PkgConfig::Mpv)
 endif()
 
+if(QT_VERSION_MAJOR GREATER_EQUAL 6)
+    target_link_libraries(player_mpv PRIVATE Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
+endif()
+
 set_target_properties(player_mpv PROPERTIES
     CXX_EXTENSIONS OFF
     PREFIX "")
