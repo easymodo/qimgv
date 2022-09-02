@@ -103,6 +103,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
     // readable language names
     langs.insert("en_US", "English");
+    langs.insert("uk_UA", "Українська");
     langs.insert("zh_CN", "简体中文");
     // fill langs combobox, sorted by locale
     ui->langComboBox->addItems(langs.values());
@@ -123,11 +124,25 @@ SettingsDialog::~SettingsDialog() {
 // an attempt to force minimum width to fit contents
 void SettingsDialog::adjustSizeToContents() {
     // general tab
-    //ui->gridLayout_15->activate();
+    ui->gridLayout->activate();
+    ui->horizontalLayout_28->activate();
+    ui->horizontalLayout_19->activate();
+    ui->gridLayout_3->activate();
+    ui->horizontalLayout_18->activate();
+    ui->gridLayout_4->activate();
+    ui->horizontalLayout_24->activate();
+    ui->gridLayout_5->activate();
+    ui->slideshowGroupContents->activate();
     ui->scrollAreaWidgetContents->layout()->activate();
     ui->scrollArea->setMinimumWidth(ui->scrollAreaWidgetContents->minimumSizeHint().width());
+    // view tab
+    ui->horizontalLayout_29->activate();
+    ui->horizontalLayout_31->activate();
+    ui->widget->layout()->activate();
+    ui->scrollAreaWidgetContents_3->layout()->activate();
+    ui->scrollArea_3->setMinimumWidth(ui->scrollAreaWidgetContents_3->minimumSizeHint().width());
     // container
-    ui->stackedWidget->layout()->activate();
+    //ui->stackedWidget->layout()->activate();
     this->setMinimumWidth(sizeHint().width() + 22);
 
     //qDebug() << "window:" << this->sizeHint() << this->minimumSizeHint() << this->size();
@@ -144,33 +159,7 @@ void SettingsDialog::resetToDesktopTheme() {
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::setupSidebar() {
-  /*  QString iconVariant;
-    QPalette p;
-    if(p.base().color().valueF() <= 0.45f)
-        iconVariant = "light";
-    else
-        iconVariant = "dark";
-    QListWidget *sideBar = ui->sideBar;
-    sideBar->viewport()->setAutoFillBackground(false);
-    // General
-    sideBar->item(0)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/general32.png"));
-    // Image view
-    //sideBar->item(1)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/folderview32.png"));
-    // Theme
-    sideBar->item(2)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/appearance32.png"));
-    // FolderView
-    sideBar->item(3)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/scale32.png"));
-    // empty for now
-    sideBar->item(3)->setHidden(true);
-    // Controls
-    sideBar->item(4)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/shortcuts32.png"));
-    // Scripts
-    sideBar->item(5)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/terminal32.png"));
-    // Advanced
-    sideBar->item(6)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/advanced32.png"));
-    // About
-    sideBar->item(7)->setIcon(QIcon(":res/icons/" + iconVariant + "/settings/about32.png"));
-    */
+
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::readSettings() {

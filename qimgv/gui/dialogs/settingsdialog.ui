@@ -56,6 +56,9 @@
    <property name="spacing">
     <number>0</number>
    </property>
+   <property name="sizeConstraint">
+    <enum>QLayout::SetDefaultConstraint</enum>
+   </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -69,9 +72,12 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_22" stretch="0,0,99">
+    <layout class="QHBoxLayout" name="horizontalLayout_22" stretch="0,99">
      <property name="spacing">
       <number>0</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
      </property>
      <property name="topMargin">
       <number>0</number>
@@ -79,22 +85,6 @@
      <property name="rightMargin">
       <number>0</number>
      </property>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_26">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-      </layout>
-     </item>
      <item>
       <widget class="QWidget" name="widget_17" native="true">
        <property name="minimumSize">
@@ -241,7 +231,7 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,0">
        <property name="sizeConstraint">
-        <enum>QLayout::SetMinAndMaxSize</enum>
+        <enum>QLayout::SetDefaultConstraint</enum>
        </property>
        <property name="leftMargin">
         <number>0</number>
@@ -277,6 +267,9 @@
          </property>
          <widget class="QWidget" name="General">
           <layout class="QVBoxLayout" name="verticalLayout_4">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetDefaultConstraint</enum>
+           </property>
            <property name="leftMargin">
             <number>0</number>
            </property>
@@ -304,7 +297,7 @@
               <enum>Qt::ScrollBarAlwaysOff</enum>
              </property>
              <property name="sizeAdjustPolicy">
-              <enum>QAbstractScrollArea::AdjustIgnored</enum>
+              <enum>QAbstractScrollArea::AdjustToContents</enum>
              </property>
              <property name="widgetResizable">
               <bool>true</bool>
@@ -314,7 +307,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>593</width>
+                <width>595</width>
                 <height>1257</height>
                </rect>
               </property>
@@ -518,6 +511,9 @@
                   <property name="spacing">
                    <number>7</number>
                   </property>
+                  <property name="sizeConstraint">
+                   <enum>QLayout::SetDefaultConstraint</enum>
+                  </property>
                   <property name="leftMargin">
                    <number>13</number>
                   </property>
@@ -566,6 +562,9 @@
                     <property name="spacing">
                      <number>7</number>
                     </property>
+                    <property name="sizeConstraint">
+                     <enum>QLayout::SetDefaultConstraint</enum>
+                    </property>
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
@@ -580,6 +579,9 @@
                     </property>
                     <item>
                      <layout class="QGridLayout" name="gridLayout">
+                      <property name="sizeConstraint">
+                       <enum>QLayout::SetDefaultConstraint</enum>
+                      </property>
                       <property name="leftMargin">
                        <number>0</number>
                       </property>
@@ -1835,7 +1837,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="ImageVew">
+         <widget class="QWidget" name="View">
           <layout class="QVBoxLayout" name="verticalLayout_19">
            <property name="leftMargin">
             <number>0</number>
@@ -1862,7 +1864,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>593</width>
+                <width>595</width>
                 <height>876</height>
                </rect>
               </property>
@@ -2091,7 +2093,7 @@
                      <string notr="true">SNoteText</string>
                     </property>
                     <property name="text">
-                     <string>Viewport position after switching to 1:1</string>
+                     <string>Part of image that's focused after switching to 1:1</string>
                     </property>
                    </widget>
                   </item>
@@ -2114,7 +2116,7 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Grid background on transparent images</string>
+                     <string>Grid background on images with transparency</string>
                     </property>
                    </widget>
                   </item>
@@ -2743,8 +2745,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>507</width>
-                <height>536</height>
+                <width>609</width>
+                <height>694</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3134,7 +3136,7 @@
                      <item row="1" column="3">
                       <widget class="QLabel" name="label_35">
                        <property name="text">
-                        <string>Fullscreen background</string>
+                        <string>Background (fullscreen mode)</string>
                        </property>
                       </widget>
                      </item>
@@ -4108,8 +4110,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>481</width>
-                <height>622</height>
+                <width>609</width>
+                <height>694</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">

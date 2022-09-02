@@ -6,13 +6,13 @@ SSideBar::SSideBar(QWidget *parent) : QWidget{parent} {
     layout->setContentsMargins(8,8,9,9);
     layout->addStretch();
     setLayout(layout);
-    addEntry(":res/icons/common/settings/general32.png",    "General");
-    addEntry(":res/icons/common/settings/view32.png",       "View");
-    addEntry(":res/icons/common/settings/appearance32.png", "Theme");
-    addEntry(":res/icons/common/settings/shortcuts32.png",  "Controls");
-    addEntry(":res/icons/common/settings/terminal32.png",   "Scripts");
-    addEntry(":res/icons/common/settings/advanced32.png",   "Advanced");
-    addEntry(":res/icons/common/settings/about32.png",      "About");
+    addEntry(":res/icons/common/settings/general32.png",    tr("General"));
+    addEntry(":res/icons/common/settings/view32.png",       tr("View"));
+    addEntry(":res/icons/common/settings/appearance32.png", tr("Theme"));
+    addEntry(":res/icons/common/settings/shortcuts32.png",  tr("Controls"));
+    addEntry(":res/icons/common/settings/terminal32.png",   tr("Scripts"));
+    addEntry(":res/icons/common/settings/advanced32.png",   tr("Advanced"));
+    addEntry(":res/icons/common/settings/about32.png",      tr("About"));
 }
 
 void SSideBar::addEntry(QString icon, QString name) {
