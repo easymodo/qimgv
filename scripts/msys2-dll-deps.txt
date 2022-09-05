@@ -18,7 +18,7 @@ libheif.dll
 libiconv-2.dll
 libidn2-0.dll
 libintl-8.dll
-libjasper-4.dll
+libjasper.dll
 libjbig-0.dll
 libjpeg-8.dll
 libjxl.dll

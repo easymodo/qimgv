@@ -98,8 +98,7 @@ cmake -S . -B build -G "Ninja" \
     -DBUILD_TESTING=OFF -DJPEGXL_WARNINGS_AS_ERRORS=OFF \
     -DJPEGXL_ENABLE_SJPEG=OFF -DJPEGXL_ENABLE_BENCHMARK=OFF \
     -DJPEGXL_ENABLE_EXAMPLES=OFF -DJPEGXL_ENABLE_MANPAGES=OFF \
-    -DJPEGXL_FORCE_SYSTEM_BROTLI=ON \
-    -DCMAKE_CXX_FLAGS="-DHWY_COMPILE_ONLY_SCALAR"
+    -DJPEGXL_FORCE_SYSTEM_BROTLI=ON
 ninja install -C build
 
 # qt-jpegxl-image-plugin
@@ -163,10 +162,11 @@ PACKAGE_DIR=$SRC_DIR/$BUILD_NAME
 rm -rf $PACKAGE_DIR
 mkdir $PACKAGE_DIR
 
-# 1 - copy qimgv binaries
+# 1 - copy qimgv build
 cp $BUILD_DIR/qimgv/qimgv.exe $PACKAGE_DIR
 mkdir $PACKAGE_DIR/plugins
 cp $BUILD_DIR/plugins/player_mpv/player_mpv.dll $PACKAGE_DIR/plugins
+cp -r $BUILD_DIR/qimgv/translations/ $PACKAGE_DIR/
 
 # 2 - copy qt dlls
 cd $CUSTOM_QT_DIR/bin
