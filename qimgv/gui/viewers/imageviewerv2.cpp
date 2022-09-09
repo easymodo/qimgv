@@ -697,7 +697,10 @@ void ImageViewerV2::updateMinScale() {
         return;
     updateFitWindowScale();
     if(settings->unlockMinZoom()) {
-        minScale = 0.00001f;
+        if(!pixmap->isNull())
+            minScale = qMax(10./pixmap->width(), 10./pixmap->height());
+        else
+            minScale = 1.0f;
     } else {
         if(imageFits())
             minScale = 1.0f;
