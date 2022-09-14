@@ -45,3 +45,5 @@ libx265.dll
 libzstd.dll
 rav1e.dll
 zlib1.dll
+libSvtAv1Enc.dll
+libyuv.dll
