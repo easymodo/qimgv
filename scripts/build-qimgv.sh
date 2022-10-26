@@ -87,25 +87,24 @@ ninja -C $BUILD_DIR
 
 # ------------------------------------------------------------------------------
 echo "BUILDING IMAGEFORMATS"
-# libjxl
-cd $EXT_DIR
-git clone --depth 1 https://github.com/libjxl/libjxl.git --recursive
-cd libjxl
-rm -rf build
-cmake -S . -B build -G "Ninja" \
-    -DCMAKE_INSTALL_PREFIX=$MSYS_DIR \
-    -DCMAKE_BUILD_TYPE=Release -DJPEGXL_ENABLE_PLUGINS=OFF \
-    -DBUILD_TESTING=OFF -DJPEGXL_WARNINGS_AS_ERRORS=OFF \
-    -DJPEGXL_ENABLE_SJPEG=OFF -DJPEGXL_ENABLE_BENCHMARK=OFF \
-    -DJPEGXL_ENABLE_EXAMPLES=OFF -DJPEGXL_ENABLE_MANPAGES=OFF \
-    -DJPEGXL_FORCE_SYSTEM_BROTLI=ON
-ninja install -C build
+# We are using libjxl from MSYS2 but feel free to compile instead
+#cd $EXT_DIR
+#git clone --depth 1 https://github.com/libjxl/libjxl.git --recursive
+#cd libjxl
+#rm -rf build
+#cmake -S . -B build -G "Ninja" \
+#    -DCMAKE_INSTALL_PREFIX=$MSYS_DIR \
+#    -DCMAKE_BUILD_TYPE=Release -DJPEGXL_ENABLE_PLUGINS=OFF \
+#    -DBUILD_TESTING=OFF -DJPEGXL_WARNINGS_AS_ERRORS=OFF \
+#    -DJPEGXL_ENABLE_SJPEG=OFF -DJPEGXL_ENABLE_BENCHMARK=OFF \
+#    -DJPEGXL_ENABLE_EXAMPLES=OFF -DJPEGXL_ENABLE_MANPAGES=OFF \
+#    -DJPEGXL_FORCE_SYSTEM_BROTLI=ON
+#ninja install -C build
 
 # qt-jpegxl-image-plugin
 cd $EXT_DIR
 git clone --depth 1 https://github.com/novomesk/qt-jpegxl-image-plugin.git
 cd qt-jpegxl-image-plugin
-sed -i 's/ECM 5.89.0/ECM 5.85.0/g' ./CMakeLists.txt
 rm -rf build
 cmake -S . -B build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
@@ -117,7 +116,6 @@ ninja -C build
 cd $EXT_DIR
 git clone https://github.com/novomesk/qt-avif-image-plugin
 cd qt-avif-image-plugin
-sed -i 's/ECM 5.89.0/ECM 5.85.0/g' ./CMakeLists.txt
 rm -rf build
 cmake -S . -B build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
