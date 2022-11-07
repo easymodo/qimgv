@@ -15,6 +15,7 @@ libexpat-1.dll
 libgcc_s_seh-1.dll
 libgomp-1.dll
 libheif.dll
+libhwy.dll
 libiconv-2.dll
 libidn2-0.dll
 libintl-8.dll

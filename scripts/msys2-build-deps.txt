@@ -13,7 +13,7 @@ mingw-w64-x86_64-lerc
 mingw-w64-x86_64-aom
 mingw-w64-x86_64-libavif
 mingw-w64-x86_64-libheif
+mingw-w64-x86_64-libjxl
 mingw-w64-x86_64-libwebp
 mingw-w64-x86_64-libmng
 mingw-w64-x86_64-libraw
-mingw-w64-x86_64-gflags
