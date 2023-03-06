@@ -1,9 +1,10 @@
 name: msys2 dev-latest
-on: [push]
+on: [push] 
 #on:
 #  push:
 #    branches:
 #      - dev
+#
 jobs:
   build:
     runs-on: windows-latest
