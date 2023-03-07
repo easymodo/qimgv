@@ -78,6 +78,7 @@ signals:
     void draggedOut();
     void setFilterNearest();
     void setFilterBilinear();
+    void setScalingFilter(ScalingFilter filter);
     void playbackFinished();
     void toggleLockZoom();
     void toggleLockView();

@@ -246,6 +246,7 @@ public slots:
     void toggleRenameOverlay(QString currentName);
     void setFilterNearest();
     void setFilterBilinear();
+    void setFilter(ScalingFilter filter);
     void toggleScalingFilter();
     void setDirectoryPath(QString path);
     void toggleLockZoom();
