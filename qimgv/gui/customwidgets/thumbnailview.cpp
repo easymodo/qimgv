@@ -371,15 +371,15 @@ void ThumbnailView::loadVisibleThumbnails() {
         QRectF offRectBack;
         QRectF offRectFront;
         if(mOrientation == Qt::Horizontal) {
-            offRectBack = QRectF(visRect.left() - offscreenPreloadArea, visRect.top(),
-                                 visRect.left(), visRect.height());
+            offRectBack  = QRectF(visRect.left() - offscreenPreloadArea, visRect.top(),
+                                  offscreenPreloadArea, visRect.height());
             offRectFront = QRectF(visRect.right(), visRect.top(),
-                                  visRect.right() + offscreenPreloadArea, visRect.height());
+                                  offscreenPreloadArea, visRect.height());
         } else {
-            offRectBack = QRectF(visRect.left(), visRect.top() - offscreenPreloadArea,
-                                 visRect.width(), visRect.top());
+            offRectBack  = QRectF(visRect.left(), visRect.top() - offscreenPreloadArea,
+                                  visRect.width(), offscreenPreloadArea);
             offRectFront = QRectF(visRect.left(), visRect.bottom(),
-                                  visRect.width(), visRect.bottom() + offscreenPreloadArea);
+                                  visRect.width(), offscreenPreloadArea);
         }
         QList<QGraphicsItem *>visibleItems;
         if(lastScrollDirection == SCROLL_FORWARDS)
