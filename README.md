@@ -1,7 +1,4 @@
-## DEVELOPMENT IS ON HOLD INDEFINITELY (russian invasion of my country)
-------------------------------
-------------------------------
-------------------------------
+## :exclamation: Updates may be slow due to war in Ukraine :sunflower: :sunflower: :sunflower:
 
 qimgv | Current version: 1.0.2
 =====
@@ -207,8 +204,10 @@ See [Compiling qimgv from source](https://github.com/easymodo/qimgv/wiki/Compili
 
 # Donate
 
-If you wish to throw me a few bucks, you can do it here:
+If you wish to give me a few bucks, please consider donating to the Ukrainian Army instead:
 
-<a href="https://www.buymeacoffee.com/easymodo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Donate" height="41" width="174"></a>
+[https://savelife.in.ua/en/donate-en/#donate-army-card-once](https://savelife.in.ua/en/donate-en/#donate-army-card-once)
 
-Any support is appreciated!
+[https://u24.gov.ua/](https://u24.gov.ua/)
+
+This directly increases the chances of me being able to work on this in future
