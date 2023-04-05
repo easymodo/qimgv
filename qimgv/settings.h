@@ -293,6 +293,8 @@ public:
     void setUseFixedZoomLevels(bool mode);
     bool unlockMinZoom();
     void setUnlockMinZoom(bool mode);
+    bool sortFolders();
+    void setSortFolders(bool mode);
 
 private:
     explicit Settings(QObject *parent = nullptr);
