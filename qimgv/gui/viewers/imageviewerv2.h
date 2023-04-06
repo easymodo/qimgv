@@ -132,7 +132,7 @@ private:
     bool transparencyGrid, expandImage,    smoothAnimatedImages,
          smoothUpscaling,  forceFastScale, keepFitMode,
          loopPlayback,     mIsFullscreen,  scrollBarWorkaround,
-         useFixedZoomLevels;
+         useFixedZoomLevels, trackpadDetection;
     QList<float> zoomLevels;
     MouseInteractionState mouseInteraction;
     const int SCROLL_UPDATE_RATE = 7;

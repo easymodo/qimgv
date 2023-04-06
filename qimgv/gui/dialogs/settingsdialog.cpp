@@ -185,6 +185,9 @@ void SettingsDialog::readSettings() {
     ui->confirmDeleteCheckBox->setChecked(settings->confirmDelete());
     ui->confirmTrashCheckBox->setChecked(settings->confirmTrash());
     ui->unlockMinZoomCheckBox->setChecked(settings->unlockMinZoom());
+    ui->sortFoldersCheckBox->setChecked(settings->sortFolders());
+    ui->trackpadDetectionCheckBox->setChecked(settings->trackpadDetection());
+
     if(settings->zoomIndicatorMode() == INDICATOR_ENABLED)
         ui->zoomIndicatorOn->setChecked(true);
     else if(settings->zoomIndicatorMode() == INDICATOR_AUTO)
@@ -318,6 +321,9 @@ void SettingsDialog::saveSettings() {
     settings->setConfirmDelete(ui->confirmDeleteCheckBox->isChecked());
     settings->setConfirmTrash(ui->confirmTrashCheckBox->isChecked());
     settings->setUnlockMinZoom(ui->unlockMinZoomCheckBox->isChecked());
+    settings->setSortFolders(ui->sortFoldersCheckBox->isChecked());
+    settings->setTrackpadDetection(ui->trackpadDetectionCheckBox->isChecked());
+
     if(ui->zoomIndicatorOn->isChecked())
         settings->setZoomIndicatorMode(INDICATOR_ENABLED);
     else if(ui->zoomIndicatorAuto->isChecked())
