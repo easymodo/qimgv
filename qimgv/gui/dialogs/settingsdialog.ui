@@ -306,7 +306,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-563</y>
+                <y>0</y>
                 <width>595</width>
                 <height>1291</height>
                </rect>
@@ -1871,7 +1871,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>562</width>
+                <width>595</width>
                 <height>876</height>
                </rect>
               </property>
@@ -2752,8 +2752,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>568</width>
-                <height>536</height>
+                <width>609</width>
+                <height>694</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3937,6 +3937,30 @@
                 </property>
                 <property name="text">
                  <string>Note: you can also zoom by holding RMB and moving the mouse</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_29" native="true">
+                <property name="accessibleName">
+                 <string notr="true">SLine</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="trackpadDetectionCheckBox">
+                <property name="text">
+                 <string>Trackpad detection</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_7">
+                <property name="accessibleName">
+                 <string notr="true">SNoteText</string>
+                </property>
+                <property name="text">
+                 <string>Disable if you have issues with mouse scrolling</string>
                 </property>
                </widget>
               </item>

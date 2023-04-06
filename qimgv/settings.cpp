@@ -1147,3 +1147,11 @@ bool Settings::sortFolders() {
 void Settings::setSortFolders(bool mode) {
     settings->settingsConf->setValue("sortFolders", mode);
 }
+//------------------------------------------------------------------------------
+bool Settings::trackpadDetection() {
+    return settings->settingsConf->value("trackpadDetection", true).toBool();
+}
+
+void Settings::setTrackpadDetection(bool mode) {
+    settings->settingsConf->setValue("trackpadDetection", mode);
+}

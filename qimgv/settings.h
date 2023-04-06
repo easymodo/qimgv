@@ -295,6 +295,8 @@ public:
     void setUnlockMinZoom(bool mode);
     bool sortFolders();
     void setSortFolders(bool mode);
+    bool trackpadDetection();
+    void setTrackpadDetection(bool mode);
 
 private:
     explicit Settings(QObject *parent = nullptr);
