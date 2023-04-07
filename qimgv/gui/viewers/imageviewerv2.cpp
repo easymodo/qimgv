@@ -550,6 +550,7 @@ void ImageViewerV2::mouseReleaseEvent(QMouseEvent *event) {
 // warning for future me:
 // for some reason in qgraphicsview wheelEvent is followed by moveEvent (wtf?)
 void ImageViewerV2::wheelEvent(QWheelEvent *event) {
+    qDebug() << event->modifiers() << event->pixelDelta() << event->angleDelta() << lastTouchpadScroll.elapsed() << this->trackpadDetection;
     #ifdef __APPLE__
     // this event goes off during force touch with Qt::ScrollPhase being set to begin/end
     // lets filter these
@@ -611,6 +612,7 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                 centerIfNecessary();
                 snapToEdges();
             }
+            qDebug() << "trackpad";
         } else if(isWheel && settings->imageScrolling() == SCROLL_BY_TRACKPAD_AND_WHEEL) {
             // scroll by interval
             bool scrollable = false;
@@ -623,14 +625,17 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                 event->accept();
                 scroll(0, -angleDelta.y(), true);
             } else {
+                qDebug() << "pass1";
                 event->ignore(); // not scrollable; passthrough event
             }
         } else {
+            qDebug() << "pass2";
            event->ignore();
            QWidget::wheelEvent(event);
         }
         saveViewportPos();
     } else {
+        qDebug() << "pass3";
         event->ignore();
         QWidget::wheelEvent(event);
     }
