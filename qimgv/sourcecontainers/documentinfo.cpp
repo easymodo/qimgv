@@ -269,7 +269,7 @@ void DocumentInfo::loadExifTags() {
         }
     }
     // No exception was caught, which may cause QT crash
-    catch (Exiv2::AnyError& e) {
+    catch (Exiv2::Error& e) {
         qDebug() << "Caught Exiv2 exception:\n" << e.what() << "\n";
         return;
     }
