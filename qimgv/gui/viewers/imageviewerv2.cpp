@@ -14,6 +14,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     mIsFullscreen(false),
     scrollBarWorkaround(true),
     useFixedZoomLevels(false),
+    trackpadDetection(true),
     mouseInteraction(MouseInteractionState::MOUSE_NONE),
     minScale(0.01f),
     maxScale(500.0f),
@@ -107,6 +108,7 @@ void ImageViewerV2::readSettings() {
     imageFitModeDefault = settings->imageFitMode();
     zoomStep = settings->zoomStep();
     focusIn1to1 = settings->focusPointIn1to1Mode();
+    trackpadDetection = settings->trackpadDetection();
     if( (useFixedZoomLevels = settings->useFixedZoomLevels()) ) {
         // zoomlevels are stored as a string, parse into list
         zoomLevels.clear();
@@ -548,6 +550,7 @@ void ImageViewerV2::mouseReleaseEvent(QMouseEvent *event) {
 // warning for future me:
 // for some reason in qgraphicsview wheelEvent is followed by moveEvent (wtf?)
 void ImageViewerV2::wheelEvent(QWheelEvent *event) {
+    qDebug() << event->modifiers() << event->pixelDelta() << event->angleDelta() << lastTouchpadScroll.elapsed() << this->trackpadDetection;
     #ifdef __APPLE__
     // this event goes off during force touch with Qt::ScrollPhase being set to begin/end
     // lets filter these
@@ -593,7 +596,9 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
          *     pixelDelta = (0,0)
          *     AngleDelta = (0,120*m)
          */
-        bool isWheel = angleDelta.y() && !(angleDelta.y() % 120) && lastTouchpadScroll.elapsed() > 100;
+        bool isWheel = true;
+        if(trackpadDetection)
+            isWheel = angleDelta.y() && !(angleDelta.y() % 120) && lastTouchpadScroll.elapsed() > 250;
         if(!isWheel) {
             lastTouchpadScroll.restart();
             event->accept();
@@ -607,6 +612,7 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                 centerIfNecessary();
                 snapToEdges();
             }
+            qDebug() << "trackpad";
         } else if(isWheel && settings->imageScrolling() == SCROLL_BY_TRACKPAD_AND_WHEEL) {
             // scroll by interval
             bool scrollable = false;
@@ -619,14 +625,17 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                 event->accept();
                 scroll(0, -angleDelta.y(), true);
             } else {
+                qDebug() << "pass1";
                 event->ignore(); // not scrollable; passthrough event
             }
         } else {
+            qDebug() << "pass2";
            event->ignore();
            QWidget::wheelEvent(event);
         }
         saveViewportPos();
     } else {
+        qDebug() << "pass3";
         event->ignore();
         QWidget::wheelEvent(event);
     }

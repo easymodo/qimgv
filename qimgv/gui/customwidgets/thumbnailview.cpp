@@ -371,15 +371,15 @@ void ThumbnailView::loadVisibleThumbnails() {
         QRectF offRectBack;
         QRectF offRectFront;
         if(mOrientation == Qt::Horizontal) {
-            offRectBack = QRectF(visRect.left() - offscreenPreloadArea, visRect.top(),
-                                 visRect.left(), visRect.height());
+            offRectBack  = QRectF(visRect.left() - offscreenPreloadArea, visRect.top(),
+                                  offscreenPreloadArea, visRect.height());
             offRectFront = QRectF(visRect.right(), visRect.top(),
-                                  visRect.right() + offscreenPreloadArea, visRect.height());
+                                  offscreenPreloadArea, visRect.height());
         } else {
-            offRectBack = QRectF(visRect.left(), visRect.top() - offscreenPreloadArea,
-                                 visRect.width(), visRect.top());
+            offRectBack  = QRectF(visRect.left(), visRect.top() - offscreenPreloadArea,
+                                  visRect.width(), offscreenPreloadArea);
             offRectFront = QRectF(visRect.left(), visRect.bottom(),
-                                  visRect.width(), visRect.bottom() + offscreenPreloadArea);
+                                  visRect.width(), offscreenPreloadArea);
         }
         QList<QGraphicsItem *>visibleItems;
         if(lastScrollDirection == SCROLL_FORWARDS)
@@ -591,7 +591,7 @@ void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration
     {
         redirect = true;
     }
-    if(scrollTimeLine->state() == QTimeLine::Running || scrollTimeLine->state() == QTimeLine::Paused) {
+    if(scrollTimeLine->state() == QTimeLine::Running || scrollTimeLine->state() == QTimeLine::Paused) {      
         int oldEndFrame = scrollTimeLine->endFrame();
         if(scrollTimeLine->currentTime() < SCROLL_ACCELERATION_THRESHOLD)
             accelerate = true;
@@ -601,13 +601,16 @@ void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration
             createScrollTimeLine();
         if(!redirect && additive)
             newEndFrame = oldEndFrame - static_cast<int>(delta * multiplier * acceleration);
+        // force load thumbs inbetween scroll animations
+        blockThumbnailLoading = false;
+        loadVisibleThumbnails();
     }
     scrollTimeLine->stop();
     if(accelerate)
         scrollTimeLine->setDuration(SCROLL_DURATION / SCROLL_ACCELERATION);
     else
         scrollTimeLine->setDuration(SCROLL_DURATION);
-    //blockThumbnailLoading = true;
+    blockThumbnailLoading = true;
     scrollTimeLine->setFrameRange(center, newEndFrame);
     scrollTimeLine->start();
 }
