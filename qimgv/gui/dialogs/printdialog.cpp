@@ -113,7 +113,7 @@ QRectF PrintDialog::getImagePrintRect(QPrinter *pr) {
     QRectF pageRect = QRectF(QPoint(0,0), pr->pageRect(QPrinter::DevicePixel).size());
     imgRect = img->rect();
     // downscale / upscale
-    if(ui->fitToPageCheckBox->isChecked() || imgRect.width() > pageRect.width() || imgRect.height() > imgRect.height())
+    if(ui->fitToPageCheckBox->isChecked() || imgRect.width() > pageRect.width() || imgRect.height() > pageRect.height())
         imgRect.setSize(imgRect.size().scaled(pageRect.size(), Qt::KeepAspectRatio));
     // align top center
     imgRect.moveCenter(pageRect.center());
