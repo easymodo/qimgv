@@ -15,6 +15,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     scrollBarWorkaround(true),
     useFixedZoomLevels(false),
     trackpadDetection(true),
+    fitModeChanged(true),
     mouseInteraction(MouseInteractionState::MOUSE_NONE),
     minScale(0.01f),
     maxScale(500.0f),
@@ -721,9 +722,30 @@ void ImageViewerV2::updateMinScale() {
 }
 
 void ImageViewerV2::fitWidth() {
+    if (!pixmap || pixmap->width() == 0) { return; }
+    float scaleX = viewport()->width() * 1.0 * devicePixelRatioF() / pixmap->width();
+    bool scaled = false;
+    if (qFabs(currentScale() - scaleX) > 1e-6) {
+        swapToOriginalPixmap();
+        doZoom(scaleX);
+        scaled = true;
+    }
+    //! NOTE: update position only when scale is changed, otherwise the resize action
+    //! may lead to an unexpected image shift
+    if (fitModeChanged || scaled) {
+        // just center somewhere at the top then do snap
+        centerIfNecessary();
+        if(scaledSizeR().height() > viewport()->height()) {
+            QPointF centerTarget = mapToScene(viewport()->rect()).boundingRect().center();
+            centerTarget.setY(0);
+            centerOn(centerTarget);
+        }
+        snapToEdges();
+    }
+#if 0
     if(!pixmap)
         return;
-    float scaleX = (float)viewport()->width() * devicePixelRatioF() / pixmap->width();
+    float scaleX = (float);
     if(!expandImage && scaleX > 1.0f)
         scaleX = 1.0f;
     if(scaleX > expandLimit)
@@ -740,9 +762,31 @@ void ImageViewerV2::fitWidth() {
         centerOn(centerTarget);
     }
     snapToEdges();
+#endif
 }
 
 void ImageViewerV2::fitWindow() {
+    if (!pixmap || pixmap->width() == 0 || pixmap->height() == 0) { return; }
+    float scaleX = viewport()->width() * 1.0 * devicePixelRatioF() / pixmap->width();
+    float scaleY = viewport()->height() * 1.0 * devicePixelRatioF() / pixmap->height();
+    float scale = qMin(scaleX, scaleY);
+    bool scaled = false;
+    if (qFabs(currentScale() - scale) > 1e-6) {
+        swapToOriginalPixmap();
+        doZoom(scale);
+        scaled = true;
+    }
+    //! NOTE: update position only when scale is changed, otherwise the resize action
+    //! may lead to an unexpected image shift
+    if (fitModeChanged || scaled) {
+        if(scrollBarWorkaround) {
+            scrollBarWorkaround = false;
+            QTimer::singleShot(0, this, SLOT(centerOnPixmap()));
+        } else {
+            centerOnPixmap();
+        }
+    }
+#if 0
     if(!pixmap)
         return;
     if(imageFits() && !expandImage) {
@@ -762,6 +806,7 @@ void ImageViewerV2::fitWindow() {
             centerOnPixmap();
         }
     }
+#endif
 }
 
 void ImageViewerV2::fitNormal() {
@@ -812,9 +857,11 @@ void ImageViewerV2::setFitMode(ImageFitMode newMode) {
     if(scaleTimer->isActive())
         scaleTimer->stop();
     stopPosAnimation();
+    if (imageFitMode != newMode) { fitModeChanged = true; }
     imageFitMode = newMode;
     applyFitMode();
     requestScaling();
+    fitModeChanged = false;
 }
 
 // public, sends scale request
