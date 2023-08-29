@@ -942,7 +942,7 @@ void MW::adaptToWindowState() {
         if(showInfoBarFullscreen)
             infoBarFullscreen->showWhenReady();
         else
-            infoBarFullscreen->hide();    
+            infoBarFullscreen->hide();
 
         auto pos = settings->panelPosition();
         if(!settings->panelEnabled() || pos == PANEL_BOTTOM || pos == PANEL_LEFT)
