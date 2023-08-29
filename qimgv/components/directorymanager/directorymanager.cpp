@@ -324,15 +324,14 @@ void DirectoryManager::loadEntryList(QString directoryPath, bool recursive) {
 // both directories & files
 void DirectoryManager::addEntriesFromDirectory(std::vector<FSEntry> &entryVec, QString directoryPath) {
     QDir root(directoryPath);
-    root.setFilter(QDir::Dirs | QDir::Files
-#ifndef Q_OS_WIN32
-    | QDir::NoDot
-#endif
-    );
+    root.setFilter(QDir::Dirs | QDir::Files | QDir::NoDot);
 
     QRegularExpressionMatch match{};
     for (const auto &entry : root.entryInfoList()) {
         match = regex.match(entry.absoluteFilePath());
+#ifndef Q_OS_WIN32
+        if (entry.isHidden()) { continue; }
+#endif
         if (!entry.isDir() && !match.hasMatch()) { continue; }
         FSEntry newEntry{};
         newEntry.name = entry.fileName();
