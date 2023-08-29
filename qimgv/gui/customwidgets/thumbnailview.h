@@ -58,7 +58,7 @@ public slots:
 
     void addItem();
 
-    virtual void focusOnSelection() = 0;
+    //virtual void focusOnSelection() = 0;
     virtual void populate(int count) override;
     virtual void setThumbnail(int pos, std::shared_ptr<Thumbnail> thumb) override;
     virtual void insertItem(int index) override;
