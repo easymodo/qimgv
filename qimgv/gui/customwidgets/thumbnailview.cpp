@@ -601,7 +601,7 @@ void ThumbnailView::scrollSmooth(int delta, qreal multiplier, qreal acceleration
             createScrollTimeLine();
         if(!redirect && additive)
             newEndFrame = oldEndFrame - static_cast<int>(delta * multiplier * acceleration);
-        // force load thumbs inbetween scroll animations
+        // force load thumbs in between scroll animations
         blockThumbnailLoading = false;
         loadVisibleThumbnails();
     }

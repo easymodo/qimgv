@@ -102,7 +102,7 @@ QString ShortcutBuilder::fromEventNativeScanCode(QKeyEvent *event) {
     // Still has some issues like when you use two layouts
     // where on the same button you have a letter on one layout and some symbol on the other.
     // I'm leaving this as-is because trying to fix all layouts will turn into a mess real quick.
-    // You can always just add the same keybind using your alt. layout if it doesnt work.
+    // You can always just add the same keybind using your alt. layout if it doesn't work.
     QString sequence = inputMap->keys().value(event->nativeScanCode());
 
     if(sequence.isEmpty())

@@ -26,7 +26,7 @@ public:
     QVariant getProperty(const QString& name) const;
     // Related to this:
     // https://github.com/gnome-mpv/gnome-mpv/issues/245
-    // Let's hope this wont break more than it fixes
+    // Let's hope this won't break more than it fixes
     int width() const {
         return static_cast<int>(QOpenGLWidget::width() * this->devicePixelRatioF());
     }

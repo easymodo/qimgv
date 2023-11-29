@@ -1182,7 +1182,7 @@ void Core::print() {
 }
 
 void Core::scalingRequest(QSize size, ScalingFilter filter) {
-    // filter out an unnecessary scale request at statup
+    // filter out an unnecessary scale request at startup
     if(mw->isVisible() && state.hasActiveImage) {
         std::shared_ptr<Image> forScale = model->getImage(state.currentFilePath);
         if(forScale) {

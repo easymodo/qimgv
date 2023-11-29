@@ -19,7 +19,7 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     setAttribute(Qt::WA_TranslucentBackground, true);
     setMouseTracking(true);
 #ifdef Q_OS_LINUX
-    // we cant check cursor position on wayland until the mouse is moved
+    // we can't check cursor position on wayland until the mouse is moved
     // use this to skip cursor check once
     if(qgetenv("XDG_SESSION_TYPE") == "wayland")
         mWaylandCursorWorkaround = true;
