@@ -1,4 +1,7 @@
 #include "thumbnailerrunnable.h"
+#ifdef __linux__
+#include "libffmpegthumbnailer/videothumbnailer.h"
+#endif 
 
 ThumbnailerRunnable::ThumbnailerRunnable(ThumbnailCache* _cache, QString _path, int _size, bool _crop, bool _force) :
     path(_path),
@@ -157,6 +160,15 @@ std::pair<QImage*, QSize> ThumbnailerRunnable::createVideoThumbnail(QString path
     QFileInfo fi(path);
     QImageReader reader;
     QString tmpFilePath = settings->tmpDir() + fi.fileName() + ".png";
+
+#ifdef __linux__
+    ffmpegthumbnailer::VideoThumbnailer videoThumbnailer(0, false, true, 8, false);
+    videoThumbnailer.setThumbnailSize(0);
+    videoThumbnailer.setLogCallback([](ThumbnailerLogLevel lvl, const std::string& msg) { 
+        qDebug() << QString::fromStdString (msg);   
+     });
+    videoThumbnailer.generateThumbnail(path.toStdString(), Png, tmpFilePath.toStdString());
+#else
     QString tmpFilePathEsc = tmpFilePath;
     tmpFilePathEsc.replace("%", "%%");
     QProcess process;
@@ -174,6 +186,7 @@ std::pair<QImage*, QSize> ThumbnailerRunnable::createVideoThumbnail(QString path
                   );
     process.waitForFinished(8000);
     process.close();
+#endif
 
     reader.setFileName(tmpFilePath);
     reader.setFormat("png");
