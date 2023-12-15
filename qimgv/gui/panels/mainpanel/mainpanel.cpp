@@ -109,6 +109,7 @@ QSize MainPanel::sizeHint() const {
         case PANEL_RIGHT:
             return QSize(thumbnailStrip->itemSize().width() + 16, height());
     }
+    return QSize(0, 0);
 }
 
 void MainPanel::readSettings() {

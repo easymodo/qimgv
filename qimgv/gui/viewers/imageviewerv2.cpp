@@ -612,7 +612,7 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                 centerIfNecessary();
                 snapToEdges();
             }
-            qDebug() << "trackpad";
+            // qDebug() << "trackpad";
         } else if(isWheel && settings->imageScrolling() == SCROLL_BY_TRACKPAD_AND_WHEEL) {
             // scroll by interval
             bool scrollable = false;
@@ -625,17 +625,17 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                 event->accept();
                 scroll(0, -angleDelta.y(), true);
             } else {
-                qDebug() << "pass1";
+                // qDebug() << "pass1";
                 event->ignore(); // not scrollable; passthrough event
             }
         } else {
-            qDebug() << "pass2";
+           // qDebug() << "pass2";
            event->ignore();
            QWidget::wheelEvent(event);
         }
         saveViewportPos();
     } else {
-        qDebug() << "pass3";
+        // qDebug() << "pass3";
         event->ignore();
         QWidget::wheelEvent(event);
     }

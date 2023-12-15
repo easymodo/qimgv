@@ -22,7 +22,7 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
     //mpv_set_option_string(mpv, "msg-level", "all=v");
 
     // Request hw decoding, just for testing.
-    mpv::qt::set_property(mpv, "hwdec", "auto");
+    //mpv::qt::set_property(mpv, "hwdec", "auto");
 
     //mpv::qt::set_property(mpv, "video-unscaled", "downscale-big");
 
