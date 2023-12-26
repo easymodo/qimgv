@@ -268,7 +268,22 @@ void DocumentInfo::loadExifTags() {
             exifTags.insert(QObject::tr("UserComment"), comment);
         }
     }
-    // No exception was caught, which may cause QT crash
+
+// this should work with both 0.28 and <0.28
+#if not EXIV2_TEST_VERSION(0, 28, 0)
+#ifdef __WIN32
+    catch (Exiv2::BasicError<wchar_t>& e) {
+        qDebug() << "Caught Exiv2::BasicError exception:\n" << e.what() << "\n";
+        return;
+    }
+#else
+    catch (Exiv2::BasicError<char>& e) {
+        qDebug() << "Caught Exiv2::BasicError exception:\n" << e.what() << "\n";
+        return;
+    }
+#endif
+#endif
+
     catch (Exiv2::Error& e) {
         qDebug() << "Caught Exiv2 exception:\n" << e.what() << "\n";
         return;
