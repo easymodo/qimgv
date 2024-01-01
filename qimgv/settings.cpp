@@ -1106,7 +1106,7 @@ void Settings::setPanelCenterSelection(bool mode) {
 }
 //------------------------------------------------------------------------------
 QString Settings::language() {
-    return settingsConf->value("language", "").toString();
+    return settingsConf->value("language", "en_US").toString();
 }
 
 void Settings::setLanguage(QString lang) {
