@@ -1,29 +1,26 @@
 #include "fsentry.h"
 
+#include <QDir>
+
 FSEntry::FSEntry() {
 }
 
 FSEntry::FSEntry(const QString &path) {
-    std::filesystem::directory_entry stdEntry(toStdString(path));
-    QString name = QString::fromStdString(stdEntry.path().filename().generic_string());
-    if(stdEntry.is_directory()) {
-        try {
-            this->name = name;
-            this->path = path;
-            this->isDirectory = true;
-        } catch (const std::filesystem::filesystem_error &err) { }
+    QFileInfo file(path);
+    if(file.isDir()) {
+        this->name = file.fileName();
+        this->path = file.absoluteFilePath();
+        this->isDirectory = true;
     } else {
-        try {
-            this->name = name;
-            this->path = path;
-            this->isDirectory = false;
-            this->size = stdEntry.file_size();
-            this->modifyTime = stdEntry.last_write_time();
-        } catch (const std::filesystem::filesystem_error &err) { }
+        this->name = file.fileName();
+        this->path = file.absoluteFilePath();
+        this->isDirectory = false;
+        this->size = file.size();
+        this->modifyTime = file.lastModified();
     }
 }
 
-FSEntry::FSEntry( QString _path, QString _name, std::uintmax_t _size, std::filesystem::file_time_type _modifyTime, bool _isDirectory)
+FSEntry::FSEntry( QString _path, QString _name, std::uintmax_t _size, QDateTime _modifyTime, bool _isDirectory)
     : path(_path),
       name(_name),
       size(_size),
@@ -31,6 +28,7 @@ FSEntry::FSEntry( QString _path, QString _name, std::uintmax_t _size, std::files
       isDirectory(_isDirectory)
 {
 }
+
 FSEntry::FSEntry( QString _path, QString _name, std::uintmax_t _size, bool _isDirectory)
     : path(_path),
       name(_name),
@@ -38,12 +36,14 @@ FSEntry::FSEntry( QString _path, QString _name, std::uintmax_t _size, bool _isDi
       isDirectory(_isDirectory)
 {
 }
+
 FSEntry::FSEntry( QString _path, QString _name, bool _isDirectory)
     : path(_path),
       name(_name),
       isDirectory(_isDirectory)
 {
 }
+
 bool FSEntry::operator==(const QString &anotherPath) const {
     return this->path == anotherPath;
 }
