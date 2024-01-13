@@ -29,7 +29,7 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
         throw std::runtime_error("could not initialize mpv context");
 
     // Request hw decoding, just for testing.
-    mpv::qt::set_property(mpv, "hwdec", "auto");
+    //mpv::qt::set_property(mpv, "hwdec", "auto");
 
     //mpv::qt::set_property(mpv, "video-unscaled", "downscale-big");
 
