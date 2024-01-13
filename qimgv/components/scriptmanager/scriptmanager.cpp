@@ -72,6 +72,11 @@ void ScriptManager::processArguments(QStringList &cmd, std::shared_ptr<Image> im
     for (auto& i : cmd) {
         if(i.contains("%file%"))
             i.replace("%file%", img.get()->filePath());
+#ifdef __WIN32
+        // force "\" as a directory separator
+        i.replace("/", "\\");
+        i.replace("\\\\", "\\");
+#endif
     }
 }
 
@@ -82,25 +87,41 @@ QStringList ScriptManager::splitCommandLine(const QString &cmdLine) {
     bool escape = false;
     enum { Idle, Arg, QuotedArg } state = Idle;
     foreach (QChar const c, cmdLine) {
-        if (!escape && c == '\\') { escape = true; continue; }
+        //if(!escape && c == '\\') {
+        //    escape = true;
+        //    continue;
+        //}
         switch (state) {
         case Idle:
-            if (!escape && c == '"') state = QuotedArg;
-            else if (escape || !c.isSpace()) { arg += c; state = Arg; }
+            if(!escape && c == '"')
+                state = QuotedArg;
+            else if (escape || !c.isSpace()) {
+                arg += c;
+                state = Arg;
+            }
             break;
         case Arg:
-            if (!escape && c == '"') state = QuotedArg;
-            else if (escape || !c.isSpace()) arg += c;
-            else { list << arg; arg.clear(); state = Idle; }
+            if(!escape && c == '"')
+                state = QuotedArg;
+            else if(escape || !c.isSpace())
+                arg += c;
+            else {
+                list << arg;
+                arg.clear();
+                state = Idle;
+            }
             break;
         case QuotedArg:
-            if (!escape && c == '"') state = arg.isEmpty() ? Idle : Arg;
-            else arg += c;
+            if(!escape && c == '"')
+                state = arg.isEmpty() ? Idle : Arg;
+            else
+                arg += c;
             break;
         }
         escape = false;
     }
-    if (!arg.isEmpty()) list << arg;
+    if(!arg.isEmpty())
+        list << arg;
     return list;
 }
 
