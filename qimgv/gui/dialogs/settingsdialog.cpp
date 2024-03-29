@@ -105,6 +105,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     langs.insert("de_DE", "Deutsch");
     langs.insert("en_US", "English");
     langs.insert("es_ES", "Español");
+    langs.insert("fr_FR", "Français");
     langs.insert("uk_UA", "Українська");
     langs.insert("zh_CN", "简体中文");
     // fill langs combobox, sorted by locale
