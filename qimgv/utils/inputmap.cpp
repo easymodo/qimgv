@@ -143,6 +143,25 @@ void InputMap::initKeyMap() {
     keyMap.insert( 86 , "<" ); // near left shift (iso layout)
     //keyMap.insert(??, "PgBack");
     //keyMap.insert(??, "PgForward");
+
+    // looks like qt 6.7.0 changed nativeScanCode() values on windows
+    // see https://github.com/easymodo/qimgv/issues/539
+    keyMap.insert( 57426 , "Ins" );
+    keyMap.insert( 57415 , "Home" );
+    keyMap.insert( 57417 , "PgUp" );
+    keyMap.insert( 57427 , "Del" );
+    keyMap.insert( 57423 , "End" );
+    keyMap.insert( 57425 , "PgDown" );
+    keyMap.insert( 57416 , "Up" );
+    keyMap.insert( 57437 , "Menu" );
+    keyMap.insert( 57419 , "Left" );
+    keyMap.insert( 57424 , "Down" );
+    keyMap.insert( 57421 , "Right" );
+    // numpad
+    keyMap.insert( 57413 , "NumLock" );
+    keyMap.insert( 57397 , "/" );
+    keyMap.insert( 57372 , "Enter" );
+
 #elif defined __linux__
     // linux keymap for qimgv
 
