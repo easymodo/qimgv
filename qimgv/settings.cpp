@@ -277,6 +277,7 @@ void Settings::setColorTid(int tid) {
 void Settings::fillVideoFormats() {
     mVideoFormatsMap.insert("video/webm",       "webm");
     mVideoFormatsMap.insert("video/mp4",        "mp4");
+    mVideoFormatsMap.insert("video/mp4",        "m4v");
     mVideoFormatsMap.insert("video/mpeg",       "mpg");
     mVideoFormatsMap.insert("video/mpeg",       "mpeg");
     mVideoFormatsMap.insert("video/x-matroska", "mkv");
