@@ -40,8 +40,12 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+L", "rotateLeft");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+WheelUp", "zoomInCursor");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+WheelDown", "zoomOutCursor");
+    actionManager->defaults.insert("=", "zoomIn"); // [=+] key on the number row
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "=", "zoomIn");
     actionManager->defaults.insert("+", "zoomIn");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "+", "zoomIn");
     actionManager->defaults.insert("-", "zoomOut");
+    actionManager->defaults.insert(InputMap::keyNameCtrl() + "-", "zoomOut");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Down", "zoomOut");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Up", "zoomIn");
     actionManager->defaults.insert("Up", "scrollUp");
