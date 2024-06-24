@@ -80,7 +80,7 @@ QImage mat2Image(const cv::Mat &mat, MatColorOrder order=MCO_BGR, QImage::Format
  *   endian system or (A R G B) in big endian system.
  *
  * - User must make sure that the color channels order is the same as
- *   the color channels order requried by QImage.
+ *   the color channels order required by QImage.
  */
 cv::Mat image2Mat_shared(const QImage &img, MatColorOrder *order=0);
 QImage mat2Image_shared(const cv::Mat &mat, QImage::Format formatHint = QImage::Format_Invalid);
