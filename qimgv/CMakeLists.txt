@@ -24,14 +24,6 @@ set(TS_FILES
 list(TRANSFORM TS_FILES PREPEND ${CMAKE_CURRENT_SOURCE_DIR}/res/translations/)
 set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION ${PROJECT_BINARY_DIR}/qimgv/translations)
 
-# 1. Create 'qimgv_lupdate' target to update .ts files (needs to be called manually)
-# 2. Compile .ts > .qm
-if(${QT_VERSION_MAJOR} EQUAL 5)
-    add_custom_target(qimgv_lupdate COMMAND ${Qt5_LUPDATE_EXECUTABLE} -recursive
-        ${CMAKE_CURRENT_SOURCE_DIR} -ts ${TS_FILES})
-    qt5_add_translation(QM_FILES ${TS_FILES})
-endif()
-
 # ADD EXECUTABLE
 add_executable(qimgv
     appversion.cpp
@@ -80,7 +72,7 @@ if(EXIV2)
     target_compile_definitions(qimgv PRIVATE USE_EXIV2)
 endif()
 if(KDE_SUPPORT)
-    target_link_libraries(qimgv PRIVATE KF5::WindowSystem)
+    target_link_libraries(qimgv PRIVATE KF6::WindowSystem)
     target_compile_definitions(qimgv PRIVATE USE_KDE_BLUR)
 endif()
 if(VIDEO_SUPPORT)
