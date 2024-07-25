@@ -34,7 +34,7 @@ if(APPLE)
     #    directorymanager/watchers/linux/linuxfsevent.cpp
     #    directorymanager/watchers/linux/linuxwatcher.cpp
     #    directorymanager/watchers/linux/linuxworker.cpp)
-elseif(UNIX AND NOT (CMAKE_SYSTEM_NAME MATCHES ^FreeBSD$))
+elseif(UNIX)
     target_sources(qimgv PRIVATE
         directorymanager/watchers/linux/linuxfsevent.cpp
         directorymanager/watchers/linux/linuxwatcher.cpp
