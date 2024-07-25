@@ -188,6 +188,14 @@ xbps-install -S qimgv
 apk add qimgv
 ```
 
+## BSD
+
+### FreeBSD
+
+```
+pkg install qimgv
+```
+
 This list may be incomplete. 
 
 ## Compiling from source
