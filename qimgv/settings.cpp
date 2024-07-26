@@ -3,7 +3,7 @@
 Settings *settings = nullptr;
 
 Settings::Settings(QObject *parent) : QObject(parent) {
-#ifdef __linux__
+#if defined(__linux__) || defined(__FreeBSD__)
     // config files
     QSettings::setDefaultFormat(QSettings::NativeFormat);
     settingsConf = new QSettings();
@@ -38,7 +38,7 @@ Settings *Settings::getInstance() {
 }
 //------------------------------------------------------------------------------
 void Settings::setupCache() {
-#ifdef __linux__
+#if defined(__linux__) ||  defined(__FreeBSD__)
     QString genericCacheLocation = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation);
     if(genericCacheLocation.isEmpty())
         genericCacheLocation = QDir::homePath() + "/.cache";
@@ -294,6 +294,8 @@ QString Settings::mpvBinary() {
         mpvPath = QCoreApplication::applicationDirPath() + "/mpv.exe";
     #elif defined __linux__
         mpvPath = "/usr/bin/mpv";
+    #elif defined __FreeBSD__
+        mpvPath = "/usr/local/bin/mpv";
     #endif
         if(!QFile::exists(mpvPath))
             mpvPath = "";

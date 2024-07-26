@@ -8,7 +8,7 @@ int clamp(int x, int lower, int upper) {
 int probeOS() {
 #ifdef TARGET_OS_MAC
     return 0;
-#elif defined __linux__
+#elif defined(__linux__) || defined(__FreeBSD__)
     return 1;
 #elif defined _WIN32 || defined _WIN64
     return 2;
