@@ -64,7 +64,7 @@ QString ShortcutBuilder::processMouseEvent(QMouseEvent *event) {
 QString ShortcutBuilder::processKeyEvent(QKeyEvent *event) {
     if(event->type() != QEvent::KeyPress || isModifier(Qt::Key(event->key())))
         return "";
-#if defined(__linux__) || defined(_WIN32)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(_WIN32)
     return fromEventNativeScanCode(event);
 #else
     return fromEventText(event);

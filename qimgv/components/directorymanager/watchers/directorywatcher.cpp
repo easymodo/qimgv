@@ -1,6 +1,6 @@
 #include "directorywatcher_p.h"
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__FreeBSD__)
 #include "linux/linuxwatcher.h"
 #elif _WIN32
 #include "windows/windowswatcher.h"
@@ -34,7 +34,7 @@ DirectoryWatcher *DirectoryWatcher::newInstance()
 {
     DirectoryWatcher* watcher;
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__FreeBSD__)
         watcher = new LinuxWatcher();
 #elif _WIN32
         watcher = new WindowsWatcher();

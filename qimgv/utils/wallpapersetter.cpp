@@ -11,7 +11,7 @@ void WallpaperSetter::setWallpaper(QString path) {
                                    (PVOID) path.utf16(),
                                    SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
     qDebug() << "wallpaper changed:" << (ok ? "true" : "false");
-#elif defined __linux__
+#elif defined(__linux__) || defined(__FreeBSD__)
     QString command;
     command = "qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript \'var allDesktops = desktops(); print (allDesktops); for (i = 0; i < allDesktops.length; i++) { d = allDesktops[i]; d.wallpaperPlugin = \"org.kde.image\"; d.currentConfigGroup = Array(\"Wallpaper\", \"org.kde.image\", \"General\"); d.writeConfig(\"Image\", \"" + path + "\") } \'";
     QProcess process;

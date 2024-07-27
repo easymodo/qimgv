@@ -162,7 +162,7 @@ void InputMap::initKeyMap() {
     keyMap.insert( 57397 , "/" );
     keyMap.insert( 57372 , "Enter" );
 
-#elif defined __linux__
+#elif defined(__linux__) || defined(__FreeBSD__)
     // linux keymap for qimgv
 
     // row 1
