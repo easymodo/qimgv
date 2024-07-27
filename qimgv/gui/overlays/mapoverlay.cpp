@@ -257,7 +257,7 @@ void MapOverlay::updateMap(const QRectF &drawingRect) {
 void MapOverlay::mousePressEvent(QMouseEvent *event) {
     QWidget::mousePressEvent(event);
     setCursor(Qt::ClosedHandCursor);
-    d->moveMainImage(event->x(), event->y());
+    d->moveMainImage(event->position().x(), event->position().y());
     event->accept();
 }
 
@@ -265,7 +265,7 @@ void MapOverlay::mouseMoveEvent(QMouseEvent *event) {
     QWidget::mouseMoveEvent(event);
 
     if(event->buttons() & Qt::LeftButton) {
-        d->moveMainImage(event->x(), event->y());
+        d->moveMainImage(event->position().x(), event->position().y());
     }
     event->accept();
 }
