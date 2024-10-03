@@ -550,7 +550,7 @@ void ImageViewerV2::mouseReleaseEvent(QMouseEvent *event) {
 // warning for future me:
 // for some reason in qgraphicsview wheelEvent is followed by moveEvent (wtf?)
 void ImageViewerV2::wheelEvent(QWheelEvent *event) {
-    qDebug() << event->modifiers() << event->pixelDelta() << event->angleDelta() << lastTouchpadScroll.elapsed() << this->trackpadDetection;
+    //qDebug() << event->modifiers() << event->pixelDelta() << event->angleDelta() << lastTouchpadScroll.elapsed() << this->trackpadDetection;
     #ifdef __APPLE__
     // this event goes off during force touch with Qt::ScrollPhase being set to begin/end
     // lets filter these
@@ -573,9 +573,12 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
         QPoint angleDelta = event->angleDelta();
         /* for reference
          * linux
-         *   trackpad:
+         *   trackpad/xorg:
          *     pixelDelta = (x,y) OR (0,0)
          *     angleDelta = (x*scale,y*scale) OR (x,y)
+         *   trackpad/wayland:
+         *     pixelDelta = (x,y)
+         *     angleDelta = (x*scale,y*scale)
          *   wheel:
          *     pixelDelta = (0,0)     - libinput <= 1.18
          *     pixelDelta = (0,120*m) - libinput 1.19
@@ -591,11 +594,13 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
          * -----------------------------------------
          * windows
          *   trackpad:
-         *     ?? (dont have the hardware with precision drivers)
+         *     pixelDelta = (0,0)
+         *     angleDelta = (x,y)
          *   wheel:
          *     pixelDelta = (0,0)
          *     AngleDelta = (0,120*m)
          */
+
         bool isWheel = true;
         if(trackpadDetection)
             isWheel = angleDelta.y() && !(angleDelta.y() % 120) && lastTouchpadScroll.elapsed() > 250;
@@ -605,14 +610,15 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
             if(settings->imageScrolling() != ImageScrolling::SCROLL_NONE) {
                 // scroll (high precision)
                 stopPosAnimation();
-                int dx = pixelDelta.x() ? pixelDelta.x() : angleDelta.x();
-                int dy = pixelDelta.y() ? pixelDelta.y() : angleDelta.y();
+                // one of these (pixel/angleDelta) may be multiplied by some scale value
+                // we'll use whichever is larger
+                int dx = abs(angleDelta.x()) > abs(pixelDelta.x()) ? angleDelta.x() : pixelDelta.x();
+                int dy = abs(angleDelta.y()) > abs(pixelDelta.y()) ? angleDelta.y() : pixelDelta.y();
                 hs->setValue(hs->value() - dx * TRACKPAD_SCROLL_MULTIPLIER);
                 vs->setValue(vs->value() - dy * TRACKPAD_SCROLL_MULTIPLIER);
                 centerIfNecessary();
                 snapToEdges();
             }
-            qDebug() << "trackpad";
         } else if(isWheel && settings->imageScrolling() == SCROLL_BY_TRACKPAD_AND_WHEEL) {
             // scroll by interval
             bool scrollable = false;
@@ -625,17 +631,14 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                 event->accept();
                 scroll(0, -angleDelta.y(), true);
             } else {
-                qDebug() << "pass1";
                 event->ignore(); // not scrollable; passthrough event
             }
         } else {
-            qDebug() << "pass2";
            event->ignore();
            QWidget::wheelEvent(event);
         }
         saveViewportPos();
     } else {
-        qDebug() << "pass3";
         event->ignore();
         QWidget::wheelEvent(event);
     }
