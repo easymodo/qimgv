@@ -474,9 +474,11 @@ void ThumbnailView::fitSceneToContents() {
 //################### scrolling ######################
 void ThumbnailView::wheelEvent(QWheelEvent *event) {
     event->accept();
+
     int pixelDelta = event->pixelDelta().y();
     int angleDelta = event->angleDelta().ry();
     bool isWheel = angleDelta && !(angleDelta % 120) && lastTouchpadScroll.elapsed() > 100;
+    // qDebug() << pixelDelta << angleDelta << isWheel;
     if(isWheel) {
         if(!settings->enableSmoothScroll()) {
             if(pixelDelta)
@@ -488,10 +490,13 @@ void ThumbnailView::wheelEvent(QWheelEvent *event) {
         }
     } else {
         lastTouchpadScroll.restart();
-        if(pixelDelta)
-            scrollPrecise(pixelDelta);
-        else if(angleDelta)
+        // one of these (pixel/angleDelta) may be multiplied by some scale value
+        // we'll use whichever is larger
+        bool useAngleDelta = abs(angleDelta) > abs(pixelDelta);
+        if(useAngleDelta)
             scrollPrecise(angleDelta);
+        else
+            scrollPrecise(pixelDelta);
     }
 }
 
