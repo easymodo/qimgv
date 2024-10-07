@@ -48,6 +48,7 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
     // tmp no wrapper
     zoomIndicator = new ZoomIndicatorOverlayProxy(this);
+    clickZoneOverlay = new ClickZoneOverlay(this);
 
     connect(videoPlayer.get(), &VideoPlayer::playbackFinished, this, &ViewerWidget::onVideoPlaybackFinished);
 
@@ -411,10 +412,19 @@ void ViewerWidget::hideCursor() {
             setCursor(QCursor(Qt::BlankCursor));
             videoControls->hide();
         } else {
+            QPoint posMapped = mapFromGlobal(QCursor::pos());
+            //if(settings->enableClickZoneThing())
+            // ignore when we are hovering the click zone
+            if(clickZoneOverlay->leftZone().contains(posMapped) ||
+                clickZoneOverlay->leftZone().contains(posMapped))
+            {
+                return;
+            }
+
             // only hide when we are under viewer or player widget
             QWidget *w = qApp->widgetAt(QCursor::pos());
             if(w && (w == imageViewer.get()->viewport() || w == videoPlayer->getPlayer().get())) {
-                if(!videoControls->isVisible() || !videoControlsArea().contains(mapFromGlobal(QCursor::pos()))) {
+                if(!videoControls->isVisible() || !videoControlsArea().contains(posMapped)) {
                     setCursor(QCursor(Qt::BlankCursor));
                     videoControls->hide();
                 }
@@ -430,6 +440,82 @@ QRect ViewerWidget::videoControlsArea() {
     else
         vcontrolsRect = QRect(0, height() - 160, width(), height());
     return vcontrolsRect;
+}
+
+// click zone input crutch
+// --
+// we can't process mouse events in the overlay
+// cause they won't propagate to the ImageViewer, only to overlay's container (this widget)
+// so we just grab them before they reach ImageViewer and do the needful
+bool ViewerWidget::eventFilter(QObject *object, QEvent *event) {
+    if(object != imageViewer.get()->viewport() && object != videoPlayer.get())
+        return false;
+
+    // catch press and doubleclick
+    // force doubleclick to act as press event for click zones
+    if(event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonDblClick) {
+        // disable feature for very small windows
+        if(width() <= 250)
+            return false;
+
+        auto mouseEvent = dynamic_cast<QMouseEvent*>(event);
+        if(mouseEvent->button() != Qt::LeftButton || mouseEvent->modifiers()) {
+            clickZoneOverlay->disableHighlight();
+            return false;
+        }
+        if(clickZoneOverlay->leftZone().contains(mouseEvent->pos())) {
+            clickZoneOverlay->setPressed(true);
+            clickZoneOverlay->highlightLeft();
+            imageViewer.get()->disableDrags();
+            actionManager->invokeAction("prevImage");
+            return true; // do not pass the event to imageViewer
+        }
+        if(clickZoneOverlay->rightZone().contains(mouseEvent->pos())) {
+            clickZoneOverlay->setPressed(true);
+            clickZoneOverlay->highlightRight();
+            imageViewer.get()->disableDrags();
+            actionManager->invokeAction("nextImage");
+            return true;
+        }
+    }
+    // right click produces QEvent::ContextMenu instead of QEvent::MouseButtonPress
+    // this is NOT a QMouseEvent
+    if(event->type() == QEvent::ContextMenu) {
+        clickZoneOverlay->disableHighlight();
+        return false;
+    }
+
+    if(event->type() == QEvent::MouseButtonRelease) {
+        clickZoneOverlay->setPressed(false);
+        imageViewer.get()->enableDrags();
+    }
+
+    if(event->type() == QEvent::MouseMove) {
+        auto mouseEvent = dynamic_cast<QMouseEvent*>(event);
+        if(mouseEvent->buttons())
+            return false;
+        if(clickZoneOverlay->leftZone().contains(mouseEvent->pos())) {
+            clickZoneOverlay->setPressed(false);
+            clickZoneOverlay->highlightLeft();
+            setCursor(Qt::PointingHandCursor);
+            return true;
+        } else if(clickZoneOverlay->rightZone().contains(mouseEvent->pos())) {
+            clickZoneOverlay->setPressed(false);
+            clickZoneOverlay->highlightRight();
+            setCursor(Qt::PointingHandCursor);
+            return true;
+        } else {
+            clickZoneOverlay->disableHighlight();
+            setCursor(Qt::ArrowCursor);
+        }
+    }
+
+    if(event->type() == QEvent::Leave) {
+        clickZoneOverlay->disableHighlight();
+        setCursor(Qt::ArrowCursor);
+    }
+
+    return false; // send event to imageViewer / videoplayer
 }
 
 void ViewerWidget::showCursor() {
@@ -464,6 +550,16 @@ void ViewerWidget::onFullscreenModeChanged(bool mode) {
 
 void ViewerWidget::readSettings() {
     videoControls->onVideoMuted(!settings->playVideoSounds());
+    if(settings->clickableEdges()) {
+        imageViewer->viewport()->installEventFilter(this);
+        videoPlayer->installEventFilter(this);
+        clickZoneOverlay->show();
+    } else {
+        imageViewer->viewport()->removeEventFilter(this);
+        videoPlayer->removeEventFilter(this);
+        imageViewer.get()->enableDrags();
+        clickZoneOverlay->hide();
+    }
 }
 
 void ViewerWidget::setLoopPlayback(bool mode) {

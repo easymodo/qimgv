@@ -54,6 +54,9 @@ public:
     QSize scaledSizeR() const;
 
     void pauseResume();
+    void enableDrags();
+    void disableDrags();
+
 signals:
     void scalingRequested(QSize, ScalingFilter);
     void scaleChanged(qreal);
@@ -145,6 +148,7 @@ private:
     // how many px you can move while holding RMB until it counts as a zoom attempt
     int zoomThreshold = 4;
     int dragThreshold = 10;
+    bool dragsEnabled = true;
     float zoomStep = 0.1, dpr;
     float minScale, maxScale, fitWindowScale, expandLimit, lockedScale;
     QPointF savedViewportPos;

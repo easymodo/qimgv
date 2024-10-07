@@ -308,7 +308,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>595</width>
-                <height>1291</height>
+                <height>1264</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
@@ -1872,7 +1872,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>595</width>
-                <height>876</height>
+                <height>857</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2753,7 +2753,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>609</width>
-                <height>694</height>
+                <height>695</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3864,14 +3864,33 @@
                <number>10</number>
               </property>
               <item>
-               <widget class="QLabel" name="title4">
-                <property name="font">
-                 <font>
-                  <bold>true</bold>
-                 </font>
+               <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <property name="leftMargin">
+                 <number>0</number>
                 </property>
-                <property name="text">
-                 <string>Mouse &amp; touchpad</string>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QCheckBox" name="clickableEdgesCheckBox">
+                  <property name="text">
+                   <string>Switch image by clicking window edges</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="clickableEdgesVisibleCheckBox">
+                  <property name="text">
+                   <string>Visible edges</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_30" native="true">
+                <property name="accessibleName">
+                 <string notr="true">SLine</string>
                 </property>
                </widget>
               </item>
@@ -4142,7 +4161,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>485</width>
-                <height>622</height>
+                <height>611</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4678,7 +4697,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>292</width>
-                <height>274</height>
+                <height>273</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4907,8 +4926,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>940</x>
-     <y>736</y>
+     <x>776</x>
+     <y>734</y>
     </hint>
     <hint type="destinationlabel">
      <x>383</x>
@@ -4923,8 +4942,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>onBgOpacitySliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>518</x>
-     <y>81</y>
+     <x>514</x>
+     <y>451</y>
     </hint>
     <hint type="destinationlabel">
      <x>621</x>
@@ -4939,8 +4958,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>saveSettingsAndClose()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>768</x>
-     <y>736</y>
+     <x>604</x>
+     <y>734</y>
     </hint>
     <hint type="destinationlabel">
      <x>282</x>
@@ -4955,8 +4974,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>saveSettings()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>854</x>
-     <y>736</y>
+     <x>690</x>
+     <y>734</y>
     </hint>
     <hint type="destinationlabel">
      <x>513</x>
@@ -4971,8 +4990,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>onJPEGQualitySliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>508</x>
-     <y>81</y>
+     <x>511</x>
+     <y>347</y>
     </hint>
     <hint type="destinationlabel">
      <x>642</x>
@@ -4987,8 +5006,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>editShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>419</x>
-     <y>24</y>
+     <x>357</x>
+     <y>100</y>
     </hint>
     <hint type="destinationlabel">
      <x>0</x>
@@ -5003,8 +5022,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>onExpandLimitSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>684</x>
-     <y>251</y>
+     <x>547</x>
+     <y>351</y>
     </hint>
     <hint type="destinationlabel">
      <x>639</x>
@@ -5019,8 +5038,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>addScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>419</x>
-     <y>31</y>
+     <x>205</x>
+     <y>35</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
@@ -5035,8 +5054,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>resetZoomLevels()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>831</x>
-     <y>471</y>
+     <x>691</x>
+     <y>640</y>
     </hint>
     <hint type="destinationlabel">
      <x>719</x>
@@ -5051,8 +5070,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>onAutoResizeLimitSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>766</x>
-     <y>425</y>
+     <x>632</x>
+     <y>472</y>
     </hint>
     <hint type="destinationlabel">
      <x>705</x>
@@ -5067,12 +5086,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>429</x>
-     <y>934</y>
+     <x>614</x>
+     <y>1061</y>
     </hint>
     <hint type="destinationlabel">
-     <x>821</x>
-     <y>971</y>
+     <x>735</x>
+     <y>1095</y>
     </hint>
    </hints>
   </connection>
@@ -5083,8 +5102,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>resetShortcuts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>419</x>
-     <y>24</y>
+     <x>760</x>
+     <y>100</y>
     </hint>
     <hint type="destinationlabel">
      <x>587</x>
@@ -5099,8 +5118,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>onZoomStepSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>708</x>
-     <y>411</y>
+     <x>569</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
      <x>634</x>
@@ -5115,12 +5134,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>932</x>
-     <y>437</y>
+     <x>735</x>
+     <y>598</y>
     </hint>
     <hint type="destinationlabel">
-     <x>932</x>
-     <y>471</y>
+     <x>735</x>
+     <y>640</y>
     </hint>
    </hints>
   </connection>
@@ -5131,8 +5150,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>onThumbnailerThreadsSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>508</x>
-     <y>81</y>
+     <x>573</x>
+     <y>170</y>
     </hint>
     <hint type="destinationlabel">
      <x>591</x>
@@ -5147,8 +5166,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>addShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>419</x>
-     <y>24</y>
+     <x>271</x>
+     <y>100</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -5163,8 +5182,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>removeShortcut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>419</x>
-     <y>24</y>
+     <x>443</x>
+     <y>100</y>
     </hint>
     <hint type="destinationlabel">
      <x>584</x>
@@ -5179,8 +5198,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>editShortcut(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>419</x>
-     <y>26</y>
+     <x>610</x>
+     <y>138</y>
     </hint>
     <hint type="destinationlabel">
      <x>0</x>
@@ -5195,8 +5214,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>selectMpvPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>428</x>
-     <y>81</y>
+     <x>618</x>
+     <y>564</y>
     </hint>
     <hint type="destinationlabel">
      <x>596</x>
@@ -5211,12 +5230,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>429</x>
-     <y>509</y>
+     <x>614</x>
+     <y>526</y>
     </hint>
     <hint type="destinationlabel">
-     <x>428</x>
-     <y>546</y>
+     <x>612</x>
+     <y>592</y>
     </hint>
    </hints>
   </connection>
@@ -5227,8 +5246,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>editScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>419</x>
-     <y>31</y>
+     <x>225</x>
+     <y>35</y>
     </hint>
     <hint type="destinationlabel">
      <x>2</x>
@@ -5243,8 +5262,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>editScript(QListWidgetItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>419</x>
-     <y>31</y>
+     <x>252</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>118</x>
@@ -5259,8 +5278,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>removeScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>419</x>
-     <y>31</y>
+     <x>245</x>
+     <y>35</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -5275,12 +5294,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>518</x>
-     <y>251</y>
+     <x>381</x>
+     <y>351</y>
     </hint>
     <hint type="destinationlabel">
-     <x>725</x>
-     <y>251</y>
+     <x>588</x>
+     <y>351</y>
     </hint>
    </hints>
   </connection>
@@ -5291,12 +5310,28 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>223</x>
-     <y>35</y>
+     <x>170</x>
+     <y>36</y>
     </hint>
     <hint type="destinationlabel">
      <x>331</x>
      <y>34</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>clickableEdgesCheckBox</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>clickableEdgesVisibleCheckBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>454</x>
+     <y>501</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>544</x>
+     <y>509</y>
     </hint>
    </hints>
   </connection>

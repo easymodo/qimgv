@@ -140,7 +140,7 @@ void Settings::loadStylesheet() {
         int context_menu_button_height = 32 * pDpr;
         int rename_overlay_width = 380 * pDpr;
 
-        qDebug()<< "dpr=" << qApp->devicePixelRatio() << "pDpr=" << pDpr;
+        //qDebug()<< "dpr=" << qApp->devicePixelRatio() << "pDpr=" << pDpr;
 
         // --- write variables into stylesheet --------------------------
         styleSheet.replace("%font_small%", QString::number(font_small)+"pt");
@@ -1157,4 +1157,20 @@ bool Settings::trackpadDetection() {
 
 void Settings::setTrackpadDetection(bool mode) {
     settings->settingsConf->setValue("trackpadDetection", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::clickableEdges() {
+    return settings->settingsConf->value("clickableEdges", false).toBool();
+}
+
+void Settings::setClickableEdges(bool mode) {
+    settings->settingsConf->setValue("clickableEdges", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::clickableEdgesVisible() {
+    return settings->settingsConf->value("clickableEdgesVisible", true).toBool();
+}
+
+void Settings::setClickableEdgesVisible(bool mode) {
+    settings->settingsConf->setValue("clickableEdgesVisible", mode);
 }

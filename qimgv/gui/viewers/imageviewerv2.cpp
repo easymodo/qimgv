@@ -163,6 +163,14 @@ void ImageViewerV2::pauseResume() {
     }
 }
 
+void ImageViewerV2::enableDrags() {
+    dragsEnabled = true;
+}
+
+void ImageViewerV2::disableDrags() {
+    dragsEnabled = false;
+}
+
 void ImageViewerV2::onAnimationTimer() {
     if(!movie)
         return;
@@ -493,7 +501,8 @@ void ImageViewerV2::mouseMoveEvent(QMouseEvent *event) {
         // select which action to start
         if(mouseInteraction == MouseInteractionState::MOUSE_NONE) {
             if(scaledImageFits()) {
-                mouseInteraction = MouseInteractionState::MOUSE_DRAG_BEGIN;
+                if(dragsEnabled)
+                    mouseInteraction = MouseInteractionState::MOUSE_DRAG_BEGIN;
             } else {
                 mouseInteraction = MouseInteractionState::MOUSE_PAN;
                 if(cursor().shape() != Qt::ClosedHandCursor)

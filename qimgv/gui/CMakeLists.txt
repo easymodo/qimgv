@@ -38,6 +38,7 @@ target_sources(qimgv PRIVATE
     dialogs/printdialog.cpp
 
     overlays/changelogwindow.cpp
+    overlays/clickzoneoverlay.cpp
     overlays/controlsoverlay.cpp
     overlays/copyoverlay.cpp
     overlays/cropoverlay.cpp
