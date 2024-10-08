@@ -16,40 +16,46 @@ jobs:
           msystem: MINGW64
           update: true
           install: git p7zip
-      - uses: actions/checkout@v3
+
+      - uses: actions/checkout@v4
         with: 
-#          ref: dev
+          #ref: dev
           fetch-depth: 0
+
       - id: build
         name: CI-Build
         run: |
           export BUILD_NAME="qimgv-x64_$(git describe --tags)"
-          echo "::set-output name=build_name::${BUILD_NAME}"
-          echo "::set-output name=build_file_name::${BUILD_NAME}.7z"
+          echo "build_name=${BUILD_NAME}" >> $GITHUB_OUTPUT
+          echo "build_file_name=${BUILD_NAME}.7z" >> $GITHUB_OUTPUT
           ./scripts/build-qimgv.sh
           pwd
           ls -al
           echo "running: 7z a qimgv-x64.7z ./${BUILD_NAME}"
           7z a qimgv-x64.7z ./${BUILD_NAME}
-      - uses: actions/upload-artifact@v3
+
+      - uses: actions/upload-artifact@v4
         with:
           name: qimgv-build
           path: qimgv-x64.7z
+
     outputs:
        build_name: ${{ steps.build.outputs.build_name }}
        build_file_name: ${{ steps.build.outputs.build_file_name }}
-       
+
   upload-release:
     runs-on: ubuntu-latest
     needs: build
     steps:
        #- run: echo "${{ needs.build.outputs.build_name }}"
-       - uses: actions/download-artifact@v3
+       - uses: actions/download-artifact@v4
          with: 
            name: qimgv-build
+
        - name: Rename archive
          run: mv qimgv-x64.7z "${{ needs.build.outputs.build_file_name }}"
-       - uses: softprops/action-gh-release@v1
+
+       - uses: softprops/action-gh-release@v2
          #if: startsWith(github.ref, 'refs/tags/')
          with:
            files: ${{ needs.build.outputs.build_file_name }}
@@ -57,7 +63,3 @@ jobs:
            tag_name: latest-dev
            name: ${{ needs.build.outputs.build_name }}
            body: "Automated build"
-           
-           
-           
-           

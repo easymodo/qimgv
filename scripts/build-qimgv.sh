@@ -28,8 +28,8 @@ mkdir -p $BUILD_DIR
 
 # ------------------------------------------------------------------------------
 echo "UPDATING DEPENDENCY LIST"
-wget -O $BUILD_DIR/msys2-build-deps.txt https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-build-deps.txt
-wget -O $BUILD_DIR/msys2-dll-deps.txt https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-dll-deps.txt
+wget --progress=dot:mega -O $BUILD_DIR/msys2-build-deps.txt https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-build-deps.txt
+wget --progress=dot:mega -O $BUILD_DIR/msys2-dll-deps.txt https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-dll-deps.txt
 
 # ------------------------------------------------------------------------------
 echo "INSTALLING MSYS2 BUILD DEPS"
@@ -40,7 +40,7 @@ pacman -S $MSYS_DEPS --noconfirm --needed
 echo "GETTING Qt"
 mkdir C:/qt
 cd C:/qt
-wget -O 5.15.3-mingw64-slim.7z https://github.com/easymodo/qt-builds/releases/download/5.15.3-mingw64-slim/5.15.3-mingw64-slim.7z
+wget --progress=dot:mega -O 5.15.3-mingw64-slim.7z https://github.com/easymodo/qt-builds/releases/download/5.15.3-mingw64-slim/5.15.3-mingw64-slim.7z
 7z x 5.15.3-mingw64-slim.7z -y
 rm 5.15.3-mingw64-slim.7z
 
@@ -48,7 +48,7 @@ rm 5.15.3-mingw64-slim.7z
 echo "GETTING OpenCV"
 mkdir $OPENCV_DIR
 cd $OPENCV_DIR
-wget -O opencv-minimal-4.5.5-x64.7z https://github.com/easymodo/qimgv-deps-bin/releases/download/x64/opencv-minimal-4.5.5-x64.7z
+wget --progress=dot:mega -O opencv-minimal-4.5.5-x64.7z https://github.com/easymodo/qimgv-deps-bin/releases/download/x64/opencv-minimal-4.5.5-x64.7z
 7z x opencv-minimal-4.5.5-x64.7z -y
 rm opencv-minimal-4.5.5-x64.7z
 
@@ -56,7 +56,7 @@ rm opencv-minimal-4.5.5-x64.7z
 echo "GETTING MPV"
 mkdir $MPV_DIR
 cd $MPV_DIR
-wget -O mpv-x64.7z https://github.com/easymodo/qimgv-deps-bin/releases/download/x64/mpv-x86_64-20230402-git-0f13c38.7z
+wget --progress=dot:mega -O mpv-x64.7z https://github.com/easymodo/qimgv-deps-bin/releases/download/x64/mpv-x86_64-20230402-git-0f13c38.7z
 7z x mpv-x64.7z -y
 rm mpv-x64.7z
 
