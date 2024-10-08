@@ -50,12 +50,6 @@ int main(int argc, char *argv[]) {
     // do we still need this?
     qputenv("QT_AUTO_SCREEN_SCALE_FACTOR","0");
 
-    // some qt5 hidpi vars
-#if (QT_VERSION_MAJOR == 5)
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-#endif
-
     // Qt6 hidpi rendering on windows still has artifacts
     // This disables it for scale factors < 1.75
     // In this case only fonts are scaled
@@ -95,12 +89,6 @@ int main(int argc, char *argv[]) {
 #ifdef __GLIBC__
     // default value of 128k causes memory fragmentation issues
     mallopt(M_MMAP_THRESHOLD, 64000);
-#endif
-
-#ifdef USE_EXIV2
-#if EXIV2_TEST_VERSION(0,27,4)
-    Exiv2::enableBMFF(true);
-#endif
 #endif
 
     // use custom types in signals
