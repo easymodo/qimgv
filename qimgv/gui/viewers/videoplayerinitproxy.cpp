@@ -227,5 +227,5 @@ void VideoPlayerInitProxy::installEventFilter(QObject *filterObj) {
 
 void VideoPlayerInitProxy::removeEventFilter(QObject *filterObj) {
     if(player)
-        player->removeEventFilter(eventFilterObj);
+        player->removeEventFilter(filterObj);
 }
