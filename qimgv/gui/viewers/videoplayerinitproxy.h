@@ -36,6 +36,7 @@ public:
     bool isInitialized();
 
     void installEventFilter(QObject *filterObj);
+    void removeEventFilter(QObject *filterObj);
 
 public slots:
     void show();
