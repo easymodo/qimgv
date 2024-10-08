@@ -86,6 +86,10 @@ inline bool VideoPlayerInitProxy::initPlayer() {
     connect(player.get(), SIGNAL(positionChanged(int)), this, SIGNAL(positionChanged(int)));
     connect(player.get(), SIGNAL(videoPaused(bool)),    this, SIGNAL(videoPaused(bool)));
     connect(player.get(), SIGNAL(playbackFinished()),   this, SIGNAL(playbackFinished()));
+
+    if(eventFilterObj)
+        player.get()->installEventFilter(eventFilterObj);
+
     return true;
 }
 
@@ -213,4 +217,10 @@ void VideoPlayerInitProxy::hide() {
 
 void VideoPlayerInitProxy::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
+}
+
+void VideoPlayerInitProxy::installEventFilter(QObject *filterObj) {
+    eventFilterObj = filterObj;
+    if(player)
+        player->installEventFilter(eventFilterObj);
 }

@@ -35,6 +35,8 @@ public:
     std::shared_ptr<VideoPlayer> getPlayer();
     bool isInitialized();
 
+    void installEventFilter(QObject *filterObj);
+
 public slots:
     void show();
     void hide();
@@ -48,6 +50,7 @@ private:
     bool initPlayer();
     QVBoxLayout layout;
     QLabel *errorLabel = nullptr;
+    QObject *eventFilterObj = nullptr;
 
     QString libFile;
     QStringList libDirs;

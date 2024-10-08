@@ -448,9 +448,6 @@ QRect ViewerWidget::videoControlsArea() {
 // cause they won't propagate to the ImageViewer, only to overlay's container (this widget)
 // so we just grab them before they reach ImageViewer and do the needful
 bool ViewerWidget::eventFilter(QObject *object, QEvent *event) {
-    if(object != imageViewer.get()->viewport() && object != videoPlayer.get())
-        return false;
-
     // catch press and doubleclick
     // force doubleclick to act as press event for click zones
     if(event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonDblClick) {
@@ -490,16 +487,23 @@ bool ViewerWidget::eventFilter(QObject *object, QEvent *event) {
         imageViewer.get()->enableDrags();
     }
 
-    if(event->type() == QEvent::MouseMove) {
-        auto mouseEvent = dynamic_cast<QMouseEvent*>(event);
-        if(mouseEvent->buttons())
-            return false;
-        if(clickZoneOverlay->leftZone().contains(mouseEvent->pos())) {
+    if(event->type() == QEvent::MouseMove || event->type() == QEvent::Enter) {
+        QPoint mousePos;
+        if(event->type() == QEvent::MouseMove) {
+            auto mouseEvent = dynamic_cast<QMouseEvent*>(event);
+            mousePos = mouseEvent->pos();
+            if(mouseEvent->buttons())
+                return false;
+        } else {
+            auto enterEvent = dynamic_cast<QEnterEvent*>(event);
+            mousePos = enterEvent->pos();
+        }
+        if(clickZoneOverlay->leftZone().contains(mousePos)) {
             clickZoneOverlay->setPressed(false);
             clickZoneOverlay->highlightLeft();
             setCursor(Qt::PointingHandCursor);
             return true;
-        } else if(clickZoneOverlay->rightZone().contains(mouseEvent->pos())) {
+        } else if(clickZoneOverlay->rightZone().contains(mousePos)) {
             clickZoneOverlay->setPressed(false);
             clickZoneOverlay->highlightRight();
             setCursor(Qt::PointingHandCursor);
