@@ -320,7 +320,7 @@ void ImageViewerV2::reset() {
     pixmap.reset();
     stopAnimation();
     movie = nullptr;
-    centerOn(sceneRect().center());
+    centerOn(10000,10000);
     // when this view is not in focus this it won't update the background
     // so we force it here
     viewport()->update();
@@ -787,7 +787,7 @@ void ImageViewerV2::fitFree(float scale) {
         doZoom(scale);
         centerIfNecessary();
         if(scaledSizeR().height() > viewport()->height()) {
-            QPointF centerTarget = sceneRect().center();
+            QPointF centerTarget = pixmapItem.sceneBoundingRect().center();
             centerTarget.setY(0);
             centerOn(centerTarget);
         }
@@ -1200,10 +1200,8 @@ QPointF ImageViewerV2::sceneRoundPos(QPointF scenePoint) const {
 // rounds a rect in scene coordinates so it stays on the same spot on viewport
 // the result is what's actually drawn on screen (incl. size)
 QRectF ImageViewerV2::sceneRoundRect(QRectF sceneRect) const {
-    QRectF rounded = QRectF(sceneRoundPos(sceneRect.topLeft()),
-                            sceneRect.size());
-    return QRectF(sceneRoundPos(sceneRect.topLeft()),
-                  sceneRect.size());
+    QRectF rounded = QRectF(sceneRoundPos(sceneRect.topLeft()), sceneRect.size());
+    return QRectF(sceneRoundPos(sceneRect.topLeft()), sceneRect.size());
 }
 
 // size as it appears on screen (rounded)
