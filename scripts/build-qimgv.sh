@@ -28,8 +28,14 @@ mkdir -p $BUILD_DIR
 
 # ------------------------------------------------------------------------------
 echo "UPDATING DEPENDENCY LIST"
-wget --progress=dot:mega -O $BUILD_DIR/msys2-build-deps.txt https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-build-deps.txt
-wget --progress=dot:mega -O $BUILD_DIR/msys2-dll-deps.txt https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-dll-deps.txt
+if [[ -f "$PWD/msys2-build-deps.txt" ]]
+then cp "$PWD/msys2-build-deps.txt" "$BUILD_DIR/msys2-build-deps.txt"
+else wget --progress=dot:mega -O "$BUILD_DIR/msys2-build-deps.txt" https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-build-deps.txt
+fi
+if [[ -f "$PWD/msys2-dll-deps.txt" ]]
+then cp "$PWD/msys2-dll-deps.txt" "$BUILD_DIR/msys2-dll-deps.txt"
+else wget --progress=dot:mega -O "$BUILD_DIR/msys2-dll-deps.txt" https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-dll-deps.txt
+fi
 
 # ------------------------------------------------------------------------------
 echo "INSTALLING MSYS2 BUILD DEPS"
