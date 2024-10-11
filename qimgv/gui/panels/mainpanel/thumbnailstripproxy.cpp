@@ -7,10 +7,10 @@ ThumbnailStripProxy::ThumbnailStripProxy(QWidget *parent)
 }
 
 void ThumbnailStripProxy::init() {
-    qApp->processEvents(); // chew through events in case we have something that alters stateBuf in queue
-    QMutexLocker ml(&m);
     if(thumbnailStrip)
         return;
+    qApp->processEvents(); // chew through events in case we have something that alters stateBuf in queue
+    QMutexLocker ml(&m);
     thumbnailStrip.reset(new ThumbnailStrip());
     thumbnailStrip->setParent(this);
     ml.unlock();
