@@ -1,9 +1,15 @@
 name: msys2 dev-latest
-on: [workflow_dispatch]
-#on:
-#  push:
-#    branches:
-#      - dev
+on:
+  workflow_dispatch:
+    inputs:
+      use_ucrt:
+        description: "Use UCRT64 instead of MINGW64?"
+        type: choice
+        default: 'false'
+        options:
+          - 'true'
+          - 'false'
+
 jobs:
   build:
     runs-on: windows-latest
@@ -13,19 +19,21 @@ jobs:
     steps:
       - uses: msys2/setup-msys2@v2
         with:
-          msystem: MINGW64
+          msystem: ${{ inputs.use_ucrt == 'true' && 'UCRT64' || 'MINGW64' }}
           update: true
           install: git p7zip
 
       - uses: actions/checkout@v4
-        with: 
+        with:
           #ref: dev
           fetch-depth: 0
 
       - id: build
         name: CI-Build
+        env:
+          USE_UCRT: ${{ inputs.use_ucrt == 'true' && '1' || '0' }}
         run: |
-          export BUILD_NAME="qimgv-x64_$(git describe --tags)"
+          export BUILD_NAME="qimgv-$([[ "$USE_UCRT" == 1 ]] && echo ucrt-)x64_$(git describe --tags)"
           echo "build_name=${BUILD_NAME}" >> $GITHUB_OUTPUT
           echo "build_file_name=${BUILD_NAME}.7z" >> $GITHUB_OUTPUT
           ./scripts/build-qimgv.sh
@@ -33,7 +41,6 @@ jobs:
           ls -al
           echo "running: 7z a qimgv-x64.7z ./${BUILD_NAME}"
           7z a qimgv-x64.7z ./${BUILD_NAME}
-
       - uses: actions/upload-artifact@v4
         with:
           name: qimgv-build
@@ -49,7 +56,7 @@ jobs:
     steps:
        #- run: echo "${{ needs.build.outputs.build_name }}"
        - uses: actions/download-artifact@v4
-         with: 
+         with:
            name: qimgv-build
 
        - name: Rename archive

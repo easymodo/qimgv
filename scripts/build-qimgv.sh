@@ -33,7 +33,7 @@ wget --progress=dot:mega -O $BUILD_DIR/msys2-dll-deps.txt https://raw.githubuser
 
 # ------------------------------------------------------------------------------
 echo "INSTALLING MSYS2 BUILD DEPS"
-MSYS_DEPS=$(cat $BUILD_DIR/msys2-build-deps.txt | sed 's/\n/ /')
+MSYS_DEPS=$(cat $BUILD_DIR/msys2-build-deps.txt | sed "$(echo 's/\n/ /;' $([[ "$USE_UCRT" == 1 ]] && echo s/w64-x86_64/w64-ucrt-x86_64/))")
 pacman -S $MSYS_DEPS --noconfirm --needed
 
 # ------------------------------------------------------------------------------
@@ -165,7 +165,7 @@ mingw32-make -j4
 echo "PACKAGING"
 # 0 - prepare dir
 cd $SRC_DIR
-BUILD_NAME=qimgv-x64_$(git describe --tags)
+BUILD_NAME=qimgv-$([[ "$USE_UCRT" == 1 ]] && echo ucrt-)x64_$(git describe --tags)
 PACKAGE_DIR=$SRC_DIR/$BUILD_NAME
 rm -rf $PACKAGE_DIR
 mkdir $PACKAGE_DIR
