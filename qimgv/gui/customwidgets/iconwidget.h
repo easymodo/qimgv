@@ -27,6 +27,9 @@ public:
 protected:
     void paintEvent(QPaintEvent *event);
 
+private slots:
+    void onSettingsChanged();
+
 private:
     void loadIcon();
     void applyColor();

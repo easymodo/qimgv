@@ -7,17 +7,19 @@ IconWidget::IconWidget(QWidget *parent)
 {
     dpr = this->devicePixelRatioF();
     color = settings->colorScheme().icons;
-    connect(settings, &Settings::settingsChanged, [this]() {
-        if(colorMode == ICON_COLOR_THEME && color != settings->colorScheme().icons) {
-            color = settings->colorScheme().icons;
-            applyColor();
-        }
-    });
+    connect(settings, &Settings::settingsChanged, this, &IconWidget::onSettingsChanged);
 }
 
 IconWidget::~IconWidget() {
     if(pixmap)
         delete pixmap;
+}
+
+void IconWidget::onSettingsChanged() {
+    if(colorMode == ICON_COLOR_THEME && color != settings->colorScheme().icons) {
+        color = settings->colorScheme().icons;
+        applyColor();
+    }
 }
 
 void IconWidget::setIconPath(QString path) {
