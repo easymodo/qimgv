@@ -771,7 +771,7 @@
     </message>
     <message>
         <location filename="../../utils/fileoperations.cpp" line="43"/>
-        <source>Operation completed succesfully.</source>
+        <source>Operation completed successfully.</source>
         <translatorcomment>操作成功完成.</translatorcomment>
         <translation></translation>
     </message>

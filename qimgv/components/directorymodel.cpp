@@ -137,7 +137,7 @@ void DirectoryModel::removeFile(const QString &filePath, bool trash, FileOpResul
 void DirectoryModel::renameEntry(const QString &oldPath, const QString &newName, bool force, FileOpResult &result) {
     bool isDir = dirManager.isDir(oldPath);
     FileOperations::rename(oldPath, newName, force, result);
-    // chew through watcher events so they wont be processed out of order
+    // chew through watcher events so they won't be processed out of order
     qApp->processEvents();
     if(result != FileOpResult::SUCCESS)
         return;
@@ -165,7 +165,7 @@ void DirectoryModel::copyFileTo(const QString &srcFile, const QString &destDirPa
 
 void DirectoryModel::moveFileTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
     FileOperations::moveFileTo(srcFile, destDirPath, force, result);
-    // chew through watcher events so they wont be processed out of order
+    // chew through watcher events so they won't be processed out of order
     qApp->processEvents();
     if(result == FileOpResult::SUCCESS) {
         if(destDirPath != this->directoryPath())
