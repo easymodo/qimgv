@@ -327,6 +327,10 @@ void DirectoryManager::addEntriesFromDirectory(std::vector<FSEntry> &entryVec, Q
         // ignore hidden files
         if(name.startsWith("."))
             continue;
+#else
+        DWORD attributes = GetFileAttributes(entry.path().generic_string().c_str());
+        if(attributes & FILE_ATTRIBUTE_HIDDEN)
+            continue;
 #endif
         QString path = QString::fromStdString(entry.path().generic_string());
         match = regex.match(name);
