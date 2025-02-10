@@ -193,7 +193,7 @@ void SettingsDialog::readSettings() {
     ui->clickableEdgesCheckBox->setChecked(settings->clickableEdges());
     ui->clickableEdgesVisibleCheckBox->setChecked(settings->clickableEdgesVisible());
     ui->clickableEdgesVisibleCheckBox->setEnabled(settings->clickableEdges());
-    ui->skipHiddenFilesCheckBox->setChecked(settings->skipHiddenFiles());
+    ui->showHiddenFilesCheckBox->setChecked(settings->showHiddenFiles());
 
     if(settings->zoomIndicatorMode() == INDICATOR_ENABLED)
         ui->zoomIndicatorOn->setChecked(true);
@@ -315,7 +315,7 @@ void SettingsDialog::saveSettings() {
     settings->setPanelFullscreenOnly(ui->panelFullscreenOnlyCheckBox->isChecked());
     settings->setSquareThumbnails(ui->squareThumbnailsCheckBox->isChecked());
     settings->setTransparencyGrid(ui->transparencyGridCheckBox->isChecked());
-    settings->setSkipHiddenFiles(ui->skipHiddenFilesCheckBox->isChecked());
+    settings->setShowHiddenFiles(ui->showHiddenFilesCheckBox->isChecked());
     settings->setEnableSmoothScroll(ui->enableSmoothScrollCheckBox->isChecked());
     settings->setUsePreloader(ui->usePreloaderCheckBox->isChecked());
     settings->setUseThumbnailCache(ui->useThumbnailCacheCheckBox->isChecked());

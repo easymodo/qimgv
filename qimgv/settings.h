@@ -303,8 +303,8 @@ public:
     bool clickableEdgesVisible();
     void setClickableEdgesVisible(bool mode);
 
-    bool skipHiddenFiles();
-    void setSkipHiddenFiles(bool mode);
+    bool showHiddenFiles();
+    void setShowHiddenFiles(bool mode);
 
 private:
     explicit Settings(QObject *parent = nullptr);

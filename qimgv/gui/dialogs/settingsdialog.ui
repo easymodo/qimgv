@@ -1550,9 +1550,9 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QCheckBox" name="skipHiddenFilesCheckBox">
+                     <widget class="QCheckBox" name="showHiddenFilesCheckBox">
                       <property name="text">
-                       <string>Skip over dotfiles and windows hidden files</string>
+                       <string>Show hidden files</string>
                       </property>
                      </widget>
                     </item>
