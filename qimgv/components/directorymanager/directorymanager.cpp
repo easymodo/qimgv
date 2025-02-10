@@ -325,11 +325,11 @@ void DirectoryManager::addEntriesFromDirectory(std::vector<FSEntry> &entryVec, Q
         QString name = QString::fromStdString(entry.path().filename().generic_string());
 #ifndef Q_OS_WIN32
         // ignore hidden files
-        if(name.startsWith("."))
+        if(settings->skipHiddenFiles() && name.startsWith("."))
             continue;
 #else
         DWORD attributes = GetFileAttributes(entry.path().generic_string().c_str());
-        if(attributes & FILE_ATTRIBUTE_HIDDEN)
+        if(settings->skipHiddenFiles() && attributes & FILE_ATTRIBUTE_HIDDEN)
             continue;
 #endif
         QString path = QString::fromStdString(entry.path().generic_string());

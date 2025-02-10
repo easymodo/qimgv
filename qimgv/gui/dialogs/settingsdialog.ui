@@ -2272,6 +2272,23 @@
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <widget class="QWidget" name="widget_31" native="true">
+                    <property name="accessibleName">
+                     <string notr="true">SLine</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="skipHiddenFilesCheckBox">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="text">
+                     <string>Skip over dotfiles or windows hidden files</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
