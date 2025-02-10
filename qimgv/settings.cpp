@@ -1176,7 +1176,7 @@ void Settings::setClickableEdgesVisible(bool mode) {
 }
 //------------------------------------------------------------------------------
 bool Settings::skipHiddenFiles() {
-    return settings->settingsConf->value("skipHiddenFiles", false).toBool();
+    return settings->settingsConf->value("skipHiddenFiles", true).toBool();
 }
 
 void Settings::setSkipHiddenFiles(bool mode) {
