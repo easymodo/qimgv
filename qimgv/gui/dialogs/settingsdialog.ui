@@ -2285,7 +2285,7 @@
                      <bool>true</bool>
                     </property>
                     <property name="text">
-                     <string>Skip over dotfiles or windows hidden files</string>
+                     <string>Skip over dotfiles and windows hidden files</string>
                     </property>
                    </widget>
                   </item>
