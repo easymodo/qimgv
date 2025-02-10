@@ -1542,6 +1542,20 @@
                       </property>
                      </widget>
                     </item>
+                    <item>
+                     <widget class="QWidget" name="widget_31" native="true">
+                      <property name="accessibleName">
+                       <string notr="true">SLine</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="skipHiddenFilesCheckBox">
+                      <property name="text">
+                       <string>Skip over dotfiles and windows hidden files</string>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
                   </item>
                  </layout>
@@ -2269,23 +2283,6 @@
                     </property>
                     <property name="text">
                      <string>Images smaller than window will be zoomed in</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QWidget" name="widget_31" native="true">
-                    <property name="accessibleName">
-                     <string notr="true">SLine</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="skipHiddenFilesCheckBox">
-                    <property name="enabled">
-                     <bool>true</bool>
-                    </property>
-                    <property name="text">
-                     <string>Skip over dotfiles and windows hidden files</string>
                     </property>
                    </widget>
                   </item>
