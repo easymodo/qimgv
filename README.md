@@ -140,7 +140,7 @@ qimgv can open some extra formats via third-party image plugins. All of them are
   
   _NOTE: `-video` variants include mpv for video support_
   
-  Grab the latest release from the [releases page](https://github.com/easymodo/qimgv/releases)
+  Grab the latest version from the [releases page](https://github.com/easymodo/qimgv/releases)
 
   Alternatively you can install it with Chocolatey:
   
