@@ -151,7 +151,7 @@ qimgv can open some extra formats via third-party image plugins. All of them are
   Or WinGet:
   
   ```
-  winget install easymodo.qimgv
+  winget install --id easymodo.qimgv
   ```
 
 ## GNU+Linux
