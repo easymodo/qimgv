@@ -30,6 +30,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("LMB_DoubleClick", "toggleFullscreen");
     actionManager->defaults.insert("MiddleButton", "exit");
     actionManager->defaults.insert("Space", "toggleFitMode");
+    actionManager->defaults.insert(InputMap::keyNameShift() + "+Space", "nextFitMode");
     actionManager->defaults.insert("1", "fitWindow");
     actionManager->defaults.insert("2", "fitWidth");
     actionManager->defaults.insert("3", "fitNormal");
