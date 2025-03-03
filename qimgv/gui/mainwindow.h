@@ -8,10 +8,7 @@
 #include <QFileDialog>
 #include <QMimeData>
 #include <QImageWriter>
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#include <QDesktopWidget>
-#endif
+#include <QWindow>
 
 #include "gui/customwidgets/floatingwidgetcontainer.h"
 #include "gui/viewers/viewerwidget.h"
