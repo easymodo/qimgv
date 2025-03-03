@@ -1542,6 +1542,20 @@
                       </property>
                      </widget>
                     </item>
+                    <item>
+                     <widget class="QWidget" name="widget_31" native="true">
+                      <property name="accessibleName">
+                       <string notr="true">SLine</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="showHiddenFilesCheckBox">
+                      <property name="text">
+                       <string>Show hidden files</string>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
                   </item>
                  </layout>
