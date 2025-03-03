@@ -211,10 +211,8 @@ void MW::cycleFitMode() {
         viewerWidget->setFitMode(FIT_WIDTH);
     else if(viewerWidget->fitMode() == FIT_WIDTH)
         viewerWidget->setFitMode(FIT_ORIGINAL);
-    else if(viewerWidget->fitMode() == FIT_ORIGINAL)
-        viewerWidget->setFitMode(FIT_WINDOW);
     else
-        viewerWidget->setFitMode(FIT_FREE);
+        viewerWidget->setFitMode(FIT_WINDOW);
 }
 
 void MW::closeImage() {
