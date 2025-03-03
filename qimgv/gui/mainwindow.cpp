@@ -235,7 +235,7 @@ void MW::preShowResize(QSize sz) {
 
     if(this->isVisible())
         setGeometry(newGeom);
-    else // setGeometry wont work on hidden windows, so we just save for it to be restored later
+    else // setGeometry won't work on hidden windows, so we just save for it to be restored later
         settings->setWindowGeometry(newGeom);
     qApp->processEvents(); // not needed anymore with patched qt?
 }
