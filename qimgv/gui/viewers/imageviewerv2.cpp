@@ -349,19 +349,19 @@ bool ImageViewerV2::isDisplaying() const {
 }
 
 void ImageViewerV2::scrollUp() {
-    scroll(0, -WHEEL_SCROLL_DISTANCE, true);
+    scroll(0, -DEFAULT_SCROLL_DISTANCE, true);
 }
 
 void ImageViewerV2::scrollDown() {
-    scroll(0, WHEEL_SCROLL_DISTANCE, true);
+    scroll(0, DEFAULT_SCROLL_DISTANCE, true);
 }
 
 void ImageViewerV2::scrollLeft() {
-    scroll(-WHEEL_SCROLL_DISTANCE, 0, true);
+    scroll(-DEFAULT_SCROLL_DISTANCE, 0, true);
 }
 
 void ImageViewerV2::scrollRight() {
-    scroll(WHEEL_SCROLL_DISTANCE, 0, true);
+    scroll(DEFAULT_SCROLL_DISTANCE, 0, true);
 }
 
 // temporary override till application restart
@@ -646,7 +646,7 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                (event->angleDelta().y() > 0 && imgRect.top()    < -2))
             {
                 event->accept();
-                scroll(0, -angleDelta.y(), true);
+                scroll(0, -angleDelta.y() * WHEEL_SCROLL_MULTIPLIER, true);
             } else {
                 event->ignore(); // not scrollable; passthrough event
             }
@@ -902,14 +902,9 @@ void ImageViewerV2::scroll(int dx, int dy, bool smooth) {
 
 void ImageViewerV2::scrollSmooth(int dx, int dy) {
     if(dx) {
-        int delta;
-        if(dx < 0)
-            delta = WHEEL_SCROLL_DISTANCE;
-        else
-            delta = -WHEEL_SCROLL_DISTANCE;
         bool redirect = false;
         int currentXPos = hs->value();
-        int newEndFrame = currentXPos - static_cast<int>(delta);
+        int newEndFrame = currentXPos + static_cast<int>(dx);
         if( (newEndFrame < currentXPos && currentXPos < scrollTimeLineX->endFrame()) ||
             (newEndFrame > currentXPos && currentXPos > scrollTimeLineX->endFrame()) )
         {
@@ -920,21 +915,16 @@ void ImageViewerV2::scrollSmooth(int dx, int dy) {
             //if(oldEndFrame == currentYPos)
             //    createScrollTimeLine();
             if(!redirect)
-                newEndFrame = oldEndFrame - static_cast<int>(delta);
+                newEndFrame = oldEndFrame + static_cast<int>(dx);
         }
         scrollTimeLineX->stop();
         scrollTimeLineX->setFrameRange(currentXPos, newEndFrame);
         scrollTimeLineX->start();
     }
     if(dy) {
-        int delta;
-        if(dy < 0)
-            delta = WHEEL_SCROLL_DISTANCE;
-        else
-            delta = -WHEEL_SCROLL_DISTANCE;
         bool redirect = false;
         int currentYPos = vs->value();
-        int newEndFrame = currentYPos - static_cast<int>(delta);
+        int newEndFrame = currentYPos + static_cast<int>(dy);
         if( (newEndFrame < currentYPos && currentYPos < scrollTimeLineY->endFrame()) ||
             (newEndFrame > currentYPos && currentYPos > scrollTimeLineY->endFrame()) )
         {
@@ -945,7 +935,7 @@ void ImageViewerV2::scrollSmooth(int dx, int dy) {
             //if(oldEndFrame == currentYPos)
             //    createScrollTimeLine();
             if(!redirect)
-                newEndFrame = oldEndFrame - static_cast<int>(delta);
+                newEndFrame = oldEndFrame + static_cast<int>(dy);
         }
         scrollTimeLineY->stop();
         scrollTimeLineY->setFrameRange(currentYPos, newEndFrame);

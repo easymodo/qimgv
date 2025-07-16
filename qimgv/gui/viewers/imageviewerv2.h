@@ -139,8 +139,9 @@ private:
     QList<float> zoomLevels;
     MouseInteractionState mouseInteraction;
     const int SCROLL_UPDATE_RATE = 7;
-    const int WHEEL_SCROLL_DISTANCE = 220;
+    const int DEFAULT_SCROLL_DISTANCE = 240;
     const qreal TRACKPAD_SCROLL_MULTIPLIER = 0.7;
+    const qreal WHEEL_SCROLL_MULTIPLIER = 2.0f;
     const int ANIMATION_SPEED = 150;
     const float FAST_SCALE_THRESHOLD = 1.0f;
     const int LARGE_VIEWPORT_SIZE = 2073600;
