@@ -103,13 +103,14 @@ protected:
 
     QList<int> rangeSelectionSnapshot;
     bool rangeSelection; // true if shift is pressed
+    bool wayland = false;
 
     QRect indicator;
     const int indicatorSize = 2;
 
     int scrollRefreshRate = 16;
     const int SCROLL_DURATION = 120;
-    const float SCROLL_MULTIPLIER = 2.5f;
+    const float WHEEL_SCROLL_MULTIPLIER = 2.5f;
     const float SCROLL_ACCELERATION = 1.4f;
     const int SCROLL_ACCELERATION_THRESHOLD = 50;
 
