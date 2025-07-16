@@ -954,6 +954,20 @@ void Settings::setZoomStep(float value) {
     settings->settingsConf->setValue("zoomStep", value);
 }
 //------------------------------------------------------------------------------
+float Settings::mouseScrollingSpeed() {
+    bool ok = false;
+    float value = settings->settingsConf->value("mouseScrollingSpeed", 1.0f).toFloat(&ok);
+    if(!ok)
+        return 1.0f;
+    value = qBound(0.5f, value, 2.0f);
+    return value;
+}
+
+void Settings::setMouseScrollingSpeed(float value) {
+    value = qBound(0.5f, value, 2.0f);
+    settings->settingsConf->setValue("mouseScrollingSpeed", value);
+}
+//------------------------------------------------------------------------------
 void Settings::setZoomIndicatorMode(ZoomIndicatorMode mode) {
     settings->settingsConf->setValue("zoomIndicatorMode", mode);
 }

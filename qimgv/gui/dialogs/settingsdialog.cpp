@@ -242,6 +242,9 @@ void SettingsDialog::readSettings() {
     ui->zoomStepSlider->setValue(static_cast<int>(settings->zoomStep() * 100.f));
     onZoomStepSliderChanged(ui->zoomStepSlider->value());
 
+    ui->mouseScrollingSpeedSlider->setValue(static_cast<int>((settings->mouseScrollingSpeed() - 0.5f) / 0.25f));
+    onMouseScrollingSpeedSliderChanged(ui->mouseScrollingSpeedSlider->value());
+
     ui->autoResizeLimitSlider->setValue(static_cast<int>(settings->autoResizeLimit() / 5.f));
     onAutoResizeLimitSliderChanged(ui->autoResizeLimitSlider->value());
 
@@ -387,6 +390,7 @@ void SettingsDialog::saveSettings() {
 
     settings->setJPEGSaveQuality(ui->JPEGQualitySlider->value());
     settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value() / 100.f));
+    settings->setMouseScrollingSpeed(static_cast<qreal>(0.5f + (ui->mouseScrollingSpeedSlider->value() * 0.25f)));
     settings->setAutoResizeLimit(ui->autoResizeLimitSlider->value() * 5);
     settings->setExpandLimit(ui->expandLimitSlider->value());
     settings->setThumbnailerThreadCount(ui->thumbnailerThreadsSlider->value());
@@ -644,6 +648,10 @@ void SettingsDialog::onJPEGQualitySliderChanged(int value) {
 //------------------------------------------------------------------------------
 void SettingsDialog::onZoomStepSliderChanged(int value) {
     ui->zoomStepLabel->setText(QString::number(value / 100.f, 'f', 2) + "x");
+}
+//------------------------------------------------------------------------------
+void SettingsDialog::onMouseScrollingSpeedSliderChanged(int value) {
+    ui->mouseScrollingSpeedLabel->setText(QString::number(0.5f + (value*0.25f), 'f', 2) + "x");
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::onThumbnailerThreadsSliderChanged(int value) {

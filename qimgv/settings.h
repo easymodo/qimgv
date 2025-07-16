@@ -303,6 +303,8 @@ public:
     bool clickableEdgesVisible();
     void setClickableEdgesVisible(bool mode);
 
+    float mouseScrollingSpeed();
+    void setMouseScrollingSpeed(float value);
 private:
     explicit Settings(QObject *parent = nullptr);
     QSettings *settingsConf, *stateConf, *themeConf;

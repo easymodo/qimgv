@@ -562,7 +562,6 @@ void ImageViewerV2::mouseReleaseEvent(QMouseEvent *event) {
 // warning for future me:
 // for some reason in qgraphicsview wheelEvent is followed by moveEvent (wtf?)
 void ImageViewerV2::wheelEvent(QWheelEvent *event) {
-    //qDebug() << event->modifiers() << event->pixelDelta() << event->angleDelta() << lastTouchpadScroll.elapsed() << this->trackpadDetection;
     #ifdef __APPLE__
     // this event goes off during force touch with Qt::ScrollPhase being set to begin/end
     // lets filter these
@@ -614,11 +613,12 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
          */
 
         bool isWheel = true;
-        //if(trackpadDetection) // todo: do I need this?
-        if(wayland) // we should have scroll phase support
-            isWheel = (event->phase() == Qt::NoScrollPhase);
-        else // fallback to guesswork
-            isWheel = angleDelta.y() && (abs(angleDelta.y())>=120 && !(angleDelta.y() % 60)) && lastTouchpadScroll.elapsed() > 250;
+        if(trackpadDetection) {
+            if(wayland) // we should have scroll phase support
+                isWheel = (event->phase() == Qt::NoScrollPhase);
+            else // fallback to guesswork
+                isWheel = angleDelta.y() && (abs(angleDelta.y())>=120 && !(angleDelta.y() % 60)) && lastTouchpadScroll.elapsed() > 250;
+        }
         //qDebug() << "isWheel:" << isWheel << " angle / pixel delta:" << angleDelta << pixelDelta << lastTouchpadScroll.elapsed() << event->phase();
 
         if(!isWheel) {
@@ -646,7 +646,7 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                (event->angleDelta().y() > 0 && imgRect.top()    < -2))
             {
                 event->accept();
-                scroll(0, -angleDelta.y() * WHEEL_SCROLL_MULTIPLIER, true);
+                scroll(0, -angleDelta.y() * WHEEL_SCROLL_MULTIPLIER * settings->mouseScrollingSpeed(), true);
             } else {
                 event->ignore(); // not scrollable; passthrough event
             }
