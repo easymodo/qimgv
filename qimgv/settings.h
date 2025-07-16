@@ -305,6 +305,10 @@ public:
 
     float mouseScrollingSpeed();
     void setMouseScrollingSpeed(float value);
+
+    bool showHiddenFiles();
+    void setShowHiddenFiles(bool mode);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     QSettings *settingsConf, *stateConf, *themeConf;
