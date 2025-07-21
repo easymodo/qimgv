@@ -468,8 +468,7 @@ void MW::mouseDoubleClickEvent(QMouseEvent *event) {
     event->accept();
     QMouseEvent *fakePressEvent = new QMouseEvent(
         QEvent::MouseButtonPress,
-        event->position(),
-        event->globalPosition(),
+        event->pos(),
         event->button(),
         event->buttons(),
         event->modifiers()

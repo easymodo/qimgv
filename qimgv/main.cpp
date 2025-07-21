@@ -50,6 +50,11 @@ int main(int argc, char *argv[]) {
     // do we still need this?
     qputenv("QT_AUTO_SCREEN_SCALE_FACTOR","0");
 
+#if (QT_VERSION_MAJOR == 5)
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+#endif
+
     // Qt6 hidpi rendering on windows still has artifacts
     // This disables it for scale factors < 1.75
     // In this case only fonts are scaled

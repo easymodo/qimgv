@@ -8,7 +8,7 @@ set(CMAKE_AUTOMOC ON)
 # only export CreatePlayerWidget function
 ADD_DEFINITIONS(-DQIMGV_PLAYER_MPV_LIBRARY)
 
-find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)
 
 if(NOT WIN32)
