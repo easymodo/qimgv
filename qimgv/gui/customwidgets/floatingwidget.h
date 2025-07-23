@@ -38,7 +38,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
 private:
-    // size of whatever widget we are overlayed on
+    // size of whatever widget we are overlaid on
     QSize container;
     bool mAcceptKeyboardFocus;
 
