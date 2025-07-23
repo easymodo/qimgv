@@ -206,6 +206,15 @@ void MW::switchFitMode() {
         viewerWidget->setFitMode(FIT_WINDOW);
 }
 
+void MW::cycleFitMode() {
+    if(viewerWidget->fitMode() == FIT_WINDOW)
+        viewerWidget->setFitMode(FIT_WIDTH);
+    else if(viewerWidget->fitMode() == FIT_WIDTH)
+        viewerWidget->setFitMode(FIT_ORIGINAL);
+    else
+        viewerWidget->setFitMode(FIT_WINDOW);
+}
+
 void MW::closeImage() {
     info.fileName = "";
     info.filePath = "";
