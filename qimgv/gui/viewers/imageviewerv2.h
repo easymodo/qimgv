@@ -139,16 +139,19 @@ private:
     QList<float> zoomLevels;
     MouseInteractionState mouseInteraction;
     const int SCROLL_UPDATE_RATE = 7;
-    const int SCROLL_DISTANCE = 220;
-    const qreal SCROLL_SPEED_MILTIPLIER = 1.3;
+    const int DEFAULT_SCROLL_DISTANCE = 240;
     const qreal TRACKPAD_SCROLL_MULTIPLIER = 0.7;
+    const qreal WHEEL_SCROLL_MULTIPLIER = 2.0f;
     const int ANIMATION_SPEED = 150;
     const float FAST_SCALE_THRESHOLD = 1.0f;
     const int LARGE_VIEWPORT_SIZE = 2073600;
     // how many px you can move while holding RMB until it counts as a zoom attempt
     int zoomThreshold = 4;
     int dragThreshold = 10;
+
     bool dragsEnabled = true;
+    bool wayland = false;
+
     float zoomStep = 0.1, dpr;
     float minScale, maxScale, fitWindowScale, expandLimit, lockedScale;
     QPointF savedViewportPos;
