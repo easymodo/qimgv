@@ -142,16 +142,29 @@ qimgv can open some extra formats via third-party image plugins. All of them are
   
   Grab the latest version from the [releases page](https://github.com/easymodo/qimgv/releases)
 
-  Alternatively you can install it with Chocolatey:
+  Alternatively you can install it with [Chocolatey](https://github.com/chocolatey/choco):
   
   ```
   choco install qimgv
   ```
   
-  Or WinGet:
+  [WinGet](https://github.com/microsoft/winget-cli):
   
   ```
   winget install --id easymodo.qimgv
+  ```
+
+  Or [Scoop](https://github.com/ScoopInstaller/Scoop), by first installing the prerequisites:
+
+  ```
+  scoop bucket add extras
+  ```
+  and then choosing a version:
+  ```
+  scoop install extras/qimgv
+  ```
+  ```
+  scoop install extras/qimgv-video
   ```
 
 ## GNU+Linux
