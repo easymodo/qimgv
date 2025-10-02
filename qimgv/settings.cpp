@@ -592,7 +592,7 @@ void Settings::setPanelPinned(bool mode) {
 /*
  * 0: fit window
  * 1: fit width
- * 2: orginal size
+ * 2: original size
  */
 ImageFitMode Settings::imageFitMode() {
     int mode = settings->settingsConf->value("defaultFitMode", 0).toInt();

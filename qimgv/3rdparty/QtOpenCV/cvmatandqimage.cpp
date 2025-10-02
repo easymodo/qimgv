@@ -294,7 +294,7 @@ QImage mat2Image(const cv::Mat &mat, MatColorOrder order, QImage::Format formatH
 #endif
         }
 
-        //Channel order requried by the target QImage
+        //Channel order required by the target QImage
         MatColorOrder requiredOrder = getColorOrderOfRGB32Format();
 #if QT_VERSION >= 0x050200
         if (formatHint == QImage::Format_RGBX8888

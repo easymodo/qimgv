@@ -20,6 +20,6 @@ void WallpaperSetter::setWallpaper(QString path) {
     process.waitForFinished();
     process.close();
 
-    qDebug() << "In case that didnt work your cropped wallpaper is saved at:" << path;
+    qDebug() << "In case that didn't work your cropped wallpaper is saved at:" << path;
 #endif
 }
