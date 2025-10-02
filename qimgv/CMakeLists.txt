@@ -20,6 +20,7 @@ set(TS_FILES
     "es_ES.ts"
     "de_DE.ts"
     "fr_FR.ts"
+    "tr_TR.ts"
 )
 list(TRANSFORM TS_FILES PREPEND ${CMAKE_CURRENT_SOURCE_DIR}/res/translations/)
 set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION ${PROJECT_BINARY_DIR}/qimgv/translations)
@@ -80,7 +81,7 @@ if(EXIV2)
     target_compile_definitions(qimgv PRIVATE USE_EXIV2)
 endif()
 if(KDE_SUPPORT)
-    target_link_libraries(qimgv PRIVATE KF5::WindowSystem)
+    target_link_libraries(qimgv PRIVATE KF6::WindowSystem)
     target_compile_definitions(qimgv PRIVATE USE_KDE_BLUR)
 endif()
 if(VIDEO_SUPPORT)

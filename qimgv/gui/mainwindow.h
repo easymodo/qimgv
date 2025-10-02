@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QMimeData>
 #include <QImageWriter>
+#include <QWindow>
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>

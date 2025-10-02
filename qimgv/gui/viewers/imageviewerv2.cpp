@@ -31,6 +31,9 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     setAcceptDrops(false);
 
+    if(qApp->platformName() == "wayland")
+        wayland = true;
+
     dpr = this->devicePixelRatioF();
     hs = horizontalScrollBar();
     vs = verticalScrollBar();
@@ -346,19 +349,19 @@ bool ImageViewerV2::isDisplaying() const {
 }
 
 void ImageViewerV2::scrollUp() {
-    scroll(0, -SCROLL_DISTANCE, true);
+    scroll(0, -DEFAULT_SCROLL_DISTANCE, true);
 }
 
 void ImageViewerV2::scrollDown() {
-    scroll(0, SCROLL_DISTANCE, true);
+    scroll(0, DEFAULT_SCROLL_DISTANCE, true);
 }
 
 void ImageViewerV2::scrollLeft() {
-    scroll(-SCROLL_DISTANCE, 0, true);
+    scroll(-DEFAULT_SCROLL_DISTANCE, 0, true);
 }
 
 void ImageViewerV2::scrollRight() {
-    scroll(SCROLL_DISTANCE, 0, true);
+    scroll(DEFAULT_SCROLL_DISTANCE, 0, true);
 }
 
 // temporary override till application restart
@@ -559,7 +562,6 @@ void ImageViewerV2::mouseReleaseEvent(QMouseEvent *event) {
 // warning for future me:
 // for some reason in qgraphicsview wheelEvent is followed by moveEvent (wtf?)
 void ImageViewerV2::wheelEvent(QWheelEvent *event) {
-    //qDebug() << event->modifiers() << event->pixelDelta() << event->angleDelta() << lastTouchpadScroll.elapsed() << this->trackpadDetection;
     #ifdef __APPLE__
     // this event goes off during force touch with Qt::ScrollPhase being set to begin/end
     // lets filter these
@@ -611,8 +613,14 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
          */
 
         bool isWheel = true;
-        if(trackpadDetection)
-            isWheel = angleDelta.y() && !(angleDelta.y() % 120) && lastTouchpadScroll.elapsed() > 250;
+        if(trackpadDetection) {
+            if(wayland) // we should have scroll phase support
+                isWheel = (event->phase() == Qt::NoScrollPhase);
+            else // fallback to guesswork
+                isWheel = angleDelta.y() && (abs(angleDelta.y())>=120 && !(angleDelta.y() % 60)) && lastTouchpadScroll.elapsed() > 250;
+        }
+        //qDebug() << "isWheel:" << isWheel << " angle / pixel delta:" << angleDelta << pixelDelta << lastTouchpadScroll.elapsed() << event->phase();
+
         if(!isWheel) {
             lastTouchpadScroll.restart();
             event->accept();
@@ -638,7 +646,7 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                (event->angleDelta().y() > 0 && imgRect.top()    < -2))
             {
                 event->accept();
-                scroll(0, -angleDelta.y(), true);
+                scroll(0, -angleDelta.y() * WHEEL_SCROLL_MULTIPLIER * settings->mouseScrollingSpeed(), true);
             } else {
                 event->ignore(); // not scrollable; passthrough event
             }
@@ -894,14 +902,9 @@ void ImageViewerV2::scroll(int dx, int dy, bool smooth) {
 
 void ImageViewerV2::scrollSmooth(int dx, int dy) {
     if(dx) {
-        int delta;
-        if(dx < 0)
-            delta = SCROLL_DISTANCE;
-        else
-            delta = -SCROLL_DISTANCE;
         bool redirect = false;
         int currentXPos = hs->value();
-        int newEndFrame = currentXPos - static_cast<int>(delta);
+        int newEndFrame = currentXPos + static_cast<int>(dx);
         if( (newEndFrame < currentXPos && currentXPos < scrollTimeLineX->endFrame()) ||
             (newEndFrame > currentXPos && currentXPos > scrollTimeLineX->endFrame()) )
         {
@@ -912,21 +915,16 @@ void ImageViewerV2::scrollSmooth(int dx, int dy) {
             //if(oldEndFrame == currentYPos)
             //    createScrollTimeLine();
             if(!redirect)
-                newEndFrame = oldEndFrame - static_cast<int>(delta * SCROLL_SPEED_MILTIPLIER);
+                newEndFrame = oldEndFrame + static_cast<int>(dx);
         }
         scrollTimeLineX->stop();
         scrollTimeLineX->setFrameRange(currentXPos, newEndFrame);
         scrollTimeLineX->start();
     }
     if(dy) {
-        int delta;
-        if(dy < 0)
-            delta = SCROLL_DISTANCE;
-        else
-            delta = -SCROLL_DISTANCE;
         bool redirect = false;
         int currentYPos = vs->value();
-        int newEndFrame = currentYPos - static_cast<int>(delta);
+        int newEndFrame = currentYPos + static_cast<int>(dy);
         if( (newEndFrame < currentYPos && currentYPos < scrollTimeLineY->endFrame()) ||
             (newEndFrame > currentYPos && currentYPos > scrollTimeLineY->endFrame()) )
         {
@@ -937,7 +935,7 @@ void ImageViewerV2::scrollSmooth(int dx, int dy) {
             //if(oldEndFrame == currentYPos)
             //    createScrollTimeLine();
             if(!redirect)
-                newEndFrame = oldEndFrame - static_cast<int>(delta * SCROLL_SPEED_MILTIPLIER);
+                newEndFrame = oldEndFrame + static_cast<int>(dy);
         }
         scrollTimeLineY->stop();
         scrollTimeLineY->setFrameRange(currentYPos, newEndFrame);

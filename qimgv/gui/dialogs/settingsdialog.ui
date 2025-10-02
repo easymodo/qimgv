@@ -308,7 +308,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>595</width>
-                <height>1264</height>
+                <height>1272</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
@@ -1886,7 +1886,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>595</width>
-                <height>857</height>
+                <height>867</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2767,7 +2767,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>609</width>
-                <height>695</height>
+                <height>694</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3981,6 +3981,93 @@
                </widget>
               </item>
               <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_54">
+                  <property name="text">
+                   <string>Mouse scrolling speed:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSlider" name="mouseScrollingSpeedSlider">
+                  <property name="minimumSize">
+                   <size>
+                    <width>180</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="minimum">
+                   <number>0</number>
+                  </property>
+                  <property name="maximum">
+                   <number>6</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>1</number>
+                  </property>
+                  <property name="pageStep">
+                   <number>1</number>
+                  </property>
+                  <property name="value">
+                   <number>3</number>
+                  </property>
+                  <property name="sliderPosition">
+                   <number>3</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TicksBelow</enum>
+                  </property>
+                  <property name="tickInterval">
+                   <number>1</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="mouseScrollingSpeedLabel">
+                  <property name="text">
+                   <string>[x]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_34">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_31" native="true">
+                <property name="accessibleName">
+                 <string notr="true">SLine</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QCheckBox" name="trackpadDetectionCheckBox">
                 <property name="text">
                  <string>Trackpad detection</string>
@@ -4175,7 +4262,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>485</width>
-                <height>611</height>
+                <height>615</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4711,7 +4798,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>292</width>
-                <height>273</height>
+                <height>274</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4956,8 +5043,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>onBgOpacitySliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>514</x>
-     <y>451</y>
+     <x>379</x>
+     <y>444</y>
     </hint>
     <hint type="destinationlabel">
      <x>621</x>
@@ -5004,8 +5091,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>onJPEGQualitySliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>511</x>
-     <y>347</y>
+     <x>369</x>
+     <y>104</y>
     </hint>
     <hint type="destinationlabel">
      <x>642</x>
@@ -5036,8 +5123,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>onExpandLimitSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>547</x>
-     <y>351</y>
+     <x>349</x>
+     <y>104</y>
     </hint>
     <hint type="destinationlabel">
      <x>639</x>
@@ -5052,8 +5139,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>addScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>205</x>
-     <y>35</y>
+     <x>271</x>
+     <y>31</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
@@ -5068,8 +5155,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>resetZoomLevels()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>691</x>
-     <y>640</y>
+     <x>289</x>
+     <y>453</y>
     </hint>
     <hint type="destinationlabel">
      <x>719</x>
@@ -5084,8 +5171,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>onAutoResizeLimitSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>632</x>
-     <y>472</y>
+     <x>389</x>
+     <y>258</y>
     </hint>
     <hint type="destinationlabel">
      <x>705</x>
@@ -5100,12 +5187,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>614</x>
-     <y>1061</y>
+     <x>289</x>
+     <y>1062</y>
     </hint>
     <hint type="destinationlabel">
-     <x>735</x>
-     <y>1095</y>
+     <x>289</x>
+     <y>1086</y>
     </hint>
    </hints>
   </connection>
@@ -5132,8 +5219,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>onZoomStepSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>569</x>
-     <y>537</y>
+     <x>469</x>
+     <y>453</y>
     </hint>
     <hint type="destinationlabel">
      <x>634</x>
@@ -5148,12 +5235,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>735</x>
-     <y>598</y>
+     <x>289</x>
+     <y>453</y>
     </hint>
     <hint type="destinationlabel">
-     <x>735</x>
-     <y>640</y>
+     <x>289</x>
+     <y>453</y>
     </hint>
    </hints>
   </connection>
@@ -5164,8 +5251,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>onThumbnailerThreadsSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>573</x>
-     <y>170</y>
+     <x>369</x>
+     <y>104</y>
     </hint>
     <hint type="destinationlabel">
      <x>591</x>
@@ -5228,8 +5315,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>selectMpvPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>618</x>
-     <y>564</y>
+     <x>289</x>
+     <y>104</y>
     </hint>
     <hint type="destinationlabel">
      <x>596</x>
@@ -5244,12 +5331,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>614</x>
-     <y>526</y>
+     <x>289</x>
+     <y>527</y>
     </hint>
     <hint type="destinationlabel">
-     <x>612</x>
-     <y>592</y>
+     <x>289</x>
+     <y>548</y>
     </hint>
    </hints>
   </connection>
@@ -5260,8 +5347,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>editScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>225</x>
-     <y>35</y>
+     <x>271</x>
+     <y>31</y>
     </hint>
     <hint type="destinationlabel">
      <x>2</x>
@@ -5276,8 +5363,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>editScript(QListWidgetItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>252</x>
-     <y>37</y>
+     <x>271</x>
+     <y>31</y>
     </hint>
     <hint type="destinationlabel">
      <x>118</x>
@@ -5292,8 +5379,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>removeScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>245</x>
-     <y>35</y>
+     <x>271</x>
+     <y>31</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -5308,12 +5395,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>381</x>
-     <y>351</y>
+     <x>289</x>
+     <y>104</y>
     </hint>
     <hint type="destinationlabel">
-     <x>588</x>
-     <y>351</y>
+     <x>289</x>
+     <y>104</y>
     </hint>
    </hints>
   </connection>
@@ -5340,12 +5427,28 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>454</x>
-     <y>501</y>
+     <x>503</x>
+     <y>467</y>
     </hint>
     <hint type="destinationlabel">
-     <x>544</x>
-     <y>509</y>
+     <x>748</x>
+     <y>467</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mouseScrollingSpeedSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>onMouseScrollingSpeedSliderChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>496</x>
+     <y>587</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>790</x>
+     <y>560</y>
     </hint>
    </hints>
   </connection>
@@ -5378,5 +5481,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <slot>editShortcut(int)</slot>
   <slot>onAutoResizeLimitSliderChanged(int)</slot>
   <slot>resetZoomLevels()</slot>
+  <slot>onMouseScrollingSpeedSliderChanged(int)</slot>
  </slots>
 </ui>

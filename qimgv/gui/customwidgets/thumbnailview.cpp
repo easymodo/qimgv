@@ -49,6 +49,8 @@ ThumbnailView::ThumbnailView(Qt::Orientation _orientation, QWidget *parent)
     connect(verticalScrollBar(), &QScrollBar::valueChanged, [this]() {
         loadVisibleThumbnails();
     });
+    if(qApp->platformName() == "wayland")
+        wayland = true;
 }
 
 Qt::Orientation ThumbnailView::orientation() {
@@ -476,17 +478,25 @@ void ThumbnailView::wheelEvent(QWheelEvent *event) {
     event->accept();
 
     int pixelDelta = event->pixelDelta().y();
-    int angleDelta = event->angleDelta().ry();
-    bool isWheel = angleDelta && !(angleDelta % 120) && lastTouchpadScroll.elapsed() > 100;
-    // qDebug() << pixelDelta << angleDelta << isWheel;
+    int angleDelta = event->angleDelta().y();
+    bool isWheel = true;
+    if(settings->trackpadDetection()) {
+        if(wayland) // we should have scroll phase support
+            isWheel = (event->phase() == Qt::NoScrollPhase);
+        else // fallback to guesswork
+            isWheel = angleDelta && (abs(angleDelta)>=120 && !(angleDelta % 60)) && lastTouchpadScroll.elapsed() > 250;
+    }
+    //qDebug() << "isWheel:" << isWheel << " angle / pixel delta:" << angleDelta << pixelDelta << lastTouchpadScroll.elapsed() << event->phase() << " wayland:" << wayland;
+
     if(isWheel) {
+        angleDelta *= settings->mouseScrollingSpeed();
         if(!settings->enableSmoothScroll()) {
             if(pixelDelta)
                 scrollByItem(pixelDelta);
             else if(angleDelta)
                 scrollByItem(angleDelta);
         } else if(angleDelta) { // what about pixelDelta?
-            scrollSmooth(angleDelta, SCROLL_MULTIPLIER, SCROLL_ACCELERATION, true);
+            scrollSmooth(angleDelta, WHEEL_SCROLL_MULTIPLIER, SCROLL_ACCELERATION, true);
         }
     } else {
         lastTouchpadScroll.restart();

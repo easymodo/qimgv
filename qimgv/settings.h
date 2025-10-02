@@ -303,6 +303,9 @@ public:
     bool clickableEdgesVisible();
     void setClickableEdgesVisible(bool mode);
 
+    float mouseScrollingSpeed();
+    void setMouseScrollingSpeed(float value);
+
     bool showHiddenFiles();
     void setShowHiddenFiles(bool mode);
 
