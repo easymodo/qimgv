@@ -2,6 +2,8 @@
     <qresource prefix="/">
         <file>res/icons/common/buttons/contextmenu/fit-width18.png</file>
         <file>res/icons/common/buttons/contextmenu/fit-width18@2x.png</file>
+        <file>res/icons/common/buttons/contextmenu/fit-height-stretch18.png</file>
+        <file>res/icons/common/buttons/contextmenu/fit-height-stretch18@2x.png</file>
         <file>res/icons/common/buttons/contextmenu/fit-window18.png</file>
         <file>res/icons/common/buttons/contextmenu/fit-window18@2x.png</file>
         <file>res/icons/common/buttons/contextmenu/zoom-in18.png</file>

@@ -127,6 +127,13 @@
             </widget>
            </item>
            <item>
+            <widget class="ActionButton" name="fitWindowStretch" native="true">
+             <property name="accessibleName">
+              <string notr="true">ContextMenuButton</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="ActionButton" name="zoomOriginal" native="true">
              <property name="accessibleName">
               <string notr="true">ContextMenuButton</string>

@@ -33,6 +33,7 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert("1", "fitWindow");
     actionManager->defaults.insert("2", "fitWidth");
     actionManager->defaults.insert("3", "fitNormal");
+    actionManager->defaults.insert("4", "fitWindowStretch");
     actionManager->defaults.insert("R", "resize");
     actionManager->defaults.insert("H", "flipH");
     actionManager->defaults.insert("V", "flipV");
