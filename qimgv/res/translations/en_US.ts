@@ -1442,6 +1442,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../gui/dialogs/settingsdialog.ui" line="2025"/>
+        <source>Fit in window (stretch)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../gui/dialogs/settingsdialog.ui" line="2026"/>
         <source>Keep fit mode when switching images</source>
         <translation type="unfinished"></translation>

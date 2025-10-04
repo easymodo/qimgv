@@ -1442,6 +1442,11 @@
         <translation>1:1</translation>
     </message>
     <message>
+        <location filename="../../gui/dialogs/settingsdialog.ui" line="2025"/>
+        <source>Fit in window (stretch)</source>
+        <translation>Ajuster à la fenêtre (étirer)</translation>
+    </message>
+    <message>
         <location filename="../../gui/dialogs/settingsdialog.ui" line="2026"/>
         <source>Keep fit mode when switching images</source>
         <translation>Maintenir mode « ajustement » en passant d&apos;une image à l&apos;autre</translation>

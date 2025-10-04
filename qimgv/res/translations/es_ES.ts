@@ -1442,6 +1442,11 @@
         <translation></translation>
     </message>
     <message>
+        <location filename="../../gui/dialogs/settingsdialog.ui" line="2025"/>
+        <source>Fit in window (stretch)</source>
+        <translation>Ajustar a ventana (estirar)</translation>
+    </message>
+    <message>
         <location filename="../../gui/dialogs/settingsdialog.ui" line="2026"/>
         <source>Keep fit mode when switching images</source>
         <translation>Mantener modo de encaje al cambiar de imagen</translation>
