@@ -1472,7 +1472,12 @@
         <translation>Налаштування перегляду</translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.ui" line="2019"/>
+        <location filename="../../gui/dialogs/settingsdialog.ui" line="2025"/>
+        <source>Fit in window (stretch)</source>
+        <translation>Вписати у вікно (розтягнути)</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dialogs/settingsdialog.ui" line="2026"/>
         <source>Keep fit mode when switching images</source>
         <translation>Не змінювати при перемиканні зображення</translation>
     </message>

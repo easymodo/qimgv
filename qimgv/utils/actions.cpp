@@ -27,6 +27,7 @@ void Actions::init() {
     mActions.insert("fitWindow", QVersionNumber(0,6,2));
     mActions.insert("fitWidth", QVersionNumber(0,6,2));
     mActions.insert("fitNormal", QVersionNumber(0,6,2));
+    mActions.insert("fitWindowStretch", QVersionNumber(1,0,3));
     mActions.insert("toggleFitMode", QVersionNumber(0,6,2));
     mActions.insert("resize", QVersionNumber(0,6,2));
     mActions.insert("rotateRight", QVersionNumber(0,6,2));

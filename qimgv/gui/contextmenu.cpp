@@ -29,6 +29,9 @@ ContextMenu::ContextMenu(QWidget *parent) :
     ui->fitWindow->setAction("fitWindow");
     ui->fitWindow->setIconPath(":/res/icons/common/buttons/contextmenu/fit-window18.png");
     ui->fitWindow->setTriggerMode(TriggerMode::PressTrigger);
+    ui->fitWindowStretch->setAction("fitWindowStretch");
+    ui->fitWindowStretch->setIconPath(":/res/icons/common/buttons/contextmenu/fit-height-stretch18.png");
+    ui->fitWindowStretch->setTriggerMode(TriggerMode::PressTrigger);
     // -------------------------------------------------------------------------
     // transform buttons
     ui->rotateLeft->setAction("rotateLeft");

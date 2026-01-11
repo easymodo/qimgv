@@ -32,6 +32,7 @@ enum ImageFitMode {
     FIT_WINDOW,
     FIT_WIDTH,
     FIT_ORIGINAL,
+    FIT_WINDOW_STRETCH,
     FIT_FREE
 };
 

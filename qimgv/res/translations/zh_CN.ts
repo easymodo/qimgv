@@ -1443,7 +1443,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/dialogs/settingsdialog.ui" line="2019"/>
+        <location filename="../../gui/dialogs/settingsdialog.ui" line="2025"/>
+        <source>Fit in window (stretch)</source>
+        <translation>自适应窗口 (拉伸)</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dialogs/settingsdialog.ui" line="2026"/>
         <source>Keep fit mode when switching images</source>
         <translation type="unfinished"></translation>
     </message>

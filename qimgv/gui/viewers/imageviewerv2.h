@@ -73,6 +73,7 @@ public slots:
     virtual void setFitOriginal();
     virtual void setFitWidth();
     virtual void setFitWindow();
+    virtual void setFitWindowStretch();
     virtual void zoomIn();
     virtual void zoomOut();
     virtual void zoomInCursor();
@@ -153,7 +154,7 @@ private:
     bool wayland = false;
 
     float zoomStep = 0.1, dpr;
-    float minScale, maxScale, fitWindowScale, expandLimit, lockedScale;
+    float minScale, maxScale, fitWindowScale, fitWindowStretchScale, expandLimit, lockedScale;
     QPointF savedViewportPos;
     ViewLockMode mViewLock;
 
@@ -171,6 +172,7 @@ private:
     void fitNormal();
     void fitWidth();
     void fitWindow();
+    void fitWindowStretch();
 
     void scroll(int dx, int dy, bool animated);
 
@@ -194,6 +196,7 @@ private:
     void scrollSmooth(int dx, int dy);
     void scrollPrecise(int dx, int dy);
     void updateFitWindowScale();
+    void updateFitWindowStretchScale();
     void updateMinScale();
     void fitFree(float scale);
     void applySavedViewportPos();

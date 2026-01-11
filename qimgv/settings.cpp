@@ -593,10 +593,11 @@ void Settings::setPanelPinned(bool mode) {
  * 0: fit window
  * 1: fit width
  * 2: orginal size
+ * 3: fit window (stretch)
  */
 ImageFitMode Settings::imageFitMode() {
     int mode = settings->settingsConf->value("defaultFitMode", 0).toInt();
-    if(mode < 0 || mode > 2) {
+    if(mode < 0 || mode > 3) {
         qDebug() << "Settings: Invalid fit mode ( " + QString::number(mode) + " ). Resetting to default.";
         mode = 0;
     }
@@ -605,7 +606,7 @@ ImageFitMode Settings::imageFitMode() {
 
 void Settings::setImageFitMode(ImageFitMode mode) {
     int modeInt = static_cast<ImageFitMode>(mode);
-    if(modeInt < 0 || modeInt > 2) {
+    if(modeInt < 0 || modeInt > 3) {
         qDebug() << "Settings: Invalid fit mode ( " + QString::number(modeInt) + " ). Resetting to default.";
         modeInt = 0;
     }

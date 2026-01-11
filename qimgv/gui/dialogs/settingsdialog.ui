@@ -2020,6 +2020,13 @@
                      </widget>
                     </item>
                     <item>
+                     <widget class="QRadioButton" name="fitModeWindowStretch">
+                      <property name="text">
+                       <string>Fit in window (stretch)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <spacer name="horizontalSpacer_21">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
