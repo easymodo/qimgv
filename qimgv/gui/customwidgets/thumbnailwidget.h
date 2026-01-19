@@ -73,6 +73,7 @@ protected:
     bool isHovered();
     void updateBackgroundRect();
     void updateThumbnailDrawPosition();
+    void updateDpr(qreal newDpr);
 
     std::shared_ptr<Thumbnail> thumbnail;
     bool highlighted, hovered, dropHovered;
@@ -80,6 +81,7 @@ protected:
     QRectF bgRect, mBoundingRect;
     QFont font, fontInfo;
     QRect drawRectCentered, nameRect, infoRect;
+    qreal dpr = 1.0;
     void updateBoundingRect();
     ThumbnailStyle thumbStyle;
 };

@@ -16,13 +16,23 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
     thumbStyle(THUMB_SIMPLE)
 {
     setAttribute(Qt::WA_OpaquePaintEvent, true);
-    float dpr = qApp->devicePixelRatio();
+    dpr = qApp->devicePixelRatio();
     if(trunc(dpr) == dpr) // don't enable for fractional scaling
         setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     setAcceptHoverEvents(true);
     font.setBold(false);
     QFontMetrics fm(font);
     textHeight = fm.height();
+}
+
+void ThumbnailWidget::updateDpr(qreal newDpr) {
+    if(dpr != newDpr) {
+        dpr = newDpr;
+        if(trunc(dpr) == dpr) // don't enable for fractional scaling
+            setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+        updateThumbnailDrawPosition();
+        updateBackgroundRect();
+    }
 }
 
 void ThumbnailWidget::setThumbnailSize(int size) {
@@ -177,7 +187,11 @@ void ThumbnailWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     Q_UNUSED(widget)
     Q_UNUSED(option)
     painter->setRenderHints(QPainter::Antialiasing);
-    qreal dpr = painter->paintEngine()->paintDevice()->devicePixelRatioF();
+
+    // update dpr since on wayland we only get correct values on the first paint event
+    // actual thumbnail still has incorrect dpr but it is still drawn "correctly" so whatever
+    updateDpr(painter->paintEngine()->paintDevice()->devicePixelRatioF());
+
     if(isHovered() && !isHighlighted())
         drawHoverBg(painter);
     if(isHighlighted())
@@ -255,7 +269,6 @@ void ThumbnailWidget::drawLabel(QPainter *painter) {
 }
 
 void ThumbnailWidget::drawSingleLineText(QPainter *painter, QRect rect, QString text, const QColor &color) {
-    qreal dpr = qApp->devicePixelRatio();
     QFontMetrics fm(font);
     bool fits = !(fm.horizontalAdvance(text) > rect.width());
     // filename

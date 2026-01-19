@@ -114,6 +114,7 @@ protected:
     void showEvent(QShowEvent *event);
     void drawBackground(QPainter *painter, const QRectF &rect);
 
+    bool eventFilter(QObject *o, QEvent *ev);
 protected slots:
     void onAnimationTimer();
 
@@ -124,6 +125,7 @@ private slots:
     void centerOnPixmap();
     void onScrollTimelineFinished();
 
+    void onDPRChanged();
 private:
     QGraphicsScene *scene;
     std::shared_ptr<QPixmap> pixmap;
