@@ -103,7 +103,7 @@ ImageViewerV2::~ImageViewerV2() {
 // devicePixelRatioF() does not provide correct value on wayland until the first paint event occurs
 // catch change event & do the needful
 bool ImageViewerV2::eventFilter(QObject *o, QEvent *ev) {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
     if(ev->type() == QEvent::DevicePixelRatioChange) {
         onDPRChanged();
     }
