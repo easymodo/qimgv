@@ -16,7 +16,9 @@ FolderView::FolderView(QWidget *parent) :
     popupTimerClutch.start();
 
     dirModel = new FileSystemModelCustom(this);
-    dirModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
+    auto dirModelFilter = QDir::NoDotAndDotDot | QDir::AllDirs;
+    if(settings->showHiddenFiles()) dirModelFilter = dirModelFilter | QDir::Hidden;
+    dirModel->setFilter(dirModelFilter);
     ui->dirTreeView->setModel(dirModel);
 
     QHeaderView* header = ui->dirTreeView->header();
