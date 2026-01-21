@@ -28,12 +28,18 @@ mkdir -p $BUILD_DIR
 
 # ------------------------------------------------------------------------------
 echo "UPDATING DEPENDENCY LIST"
-wget --progress=dot:mega -O $BUILD_DIR/msys2-build-deps.txt https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-build-deps.txt
-wget --progress=dot:mega -O $BUILD_DIR/msys2-dll-deps.txt https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-dll-deps.txt
+if [[ -f "$PWD/msys2-build-deps.txt" ]]
+then cp "$PWD/msys2-build-deps.txt" "$BUILD_DIR/msys2-build-deps.txt"
+else wget --progress=dot:mega -O "$BUILD_DIR/msys2-build-deps.txt" https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-build-deps.txt
+fi
+if [[ -f "$PWD/msys2-dll-deps.txt" ]]
+then cp "$PWD/msys2-dll-deps.txt" "$BUILD_DIR/msys2-dll-deps.txt"
+else wget --progress=dot:mega -O "$BUILD_DIR/msys2-dll-deps.txt" https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-dll-deps.txt
+fi
 
 # ------------------------------------------------------------------------------
 echo "INSTALLING MSYS2 BUILD DEPS"
-MSYS_DEPS=$(cat $BUILD_DIR/msys2-build-deps.txt | sed 's/\n/ /')
+MSYS_DEPS=$(cat $BUILD_DIR/msys2-build-deps.txt | sed "$(echo 's/\n/ /;' $([[ "$USE_UCRT" == 1 ]] && echo s/w64-x86_64/w64-ucrt-x86_64/))")
 pacman -S $MSYS_DEPS --noconfirm --needed
 
 # ------------------------------------------------------------------------------
@@ -165,7 +171,7 @@ mingw32-make -j4
 echo "PACKAGING"
 # 0 - prepare dir
 cd $SRC_DIR
-BUILD_NAME=qimgv-x64_$(git describe --tags)
+BUILD_NAME=qimgv-$([[ "$USE_UCRT" == 1 ]] && echo ucrt-)x64_$(git describe --tags)
 PACKAGE_DIR=$SRC_DIR/$BUILD_NAME
 rm -rf $PACKAGE_DIR
 mkdir $PACKAGE_DIR
