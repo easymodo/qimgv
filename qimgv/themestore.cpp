@@ -3,19 +3,28 @@
 ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
     BaseColorScheme base = {-1};
     QPalette p;
+    const int darken_mult = (p.window().color().valueF() <= 0.45) * 2 - 1;
     switch(name) {
         case COLORS_SYSTEM:
-        case COLORS_CUSTOMIZED:    
-            base.folderview_topbar = p.window().color();
-            base.widget = p.window().color();
-            base.widget_border = p.window().color();
-            base.folderview = p.base().color();
-            base.text = p.text().color();
-            base.icons = p.text().color();
-            base.accent = p.highlight().color();
-            base.scrollbar.setHsv(p.highlight().color().hue(),
-                                  qBound(0, p.highlight().color().saturation() - 20, 240),
-                                  qBound(0, p.highlight().color().value() - 35, 240));
+        case COLORS_CUSTOMIZED:
+            base.accent.setHsv(p.highlight().color().hue(),
+                            qBound(0, p.highlight().color().saturation() - 50 * darken_mult, 240),
+                            qBound(0, p.highlight().color().value() - 35 * darken_mult, 240));
+            base.background = p.window().color();
+            base.background_fullscreen = p.window().color();
+            base.folderview = p.window().color();
+            base.folderview_topbar = p.alternateBase().color();
+            base.icons.setHsv(p.accent().color().hue(),
+                            qBound(0, p.accent().color().saturation() + 35 * darken_mult, 240),
+                            qBound(0, p.accent().color().value() - (p.accent().color().value() / 4) * darken_mult, 240));
+            base.overlay = p.alternateBase().color();
+            base.overlay_text = p.text().color();
+            base.scrollbar.setHsv(p.alternateBase().color().hue(),
+                            qBound(0, p.alternateBase().color().saturation() - 20 * darken_mult, 240),
+                            qBound(0, p.alternateBase().color().value() + 15 * darken_mult, 240));
+            base.text = p.windowText().color();
+            base.widget = p.alternateBase().color();
+            base.widget_border = p.accent().color();
             base.tid = static_cast<int>(name);
             break;
         case COLORS_LIGHT: // v2, works with w10 titlebars
