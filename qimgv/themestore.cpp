@@ -8,8 +8,8 @@ ColorScheme ThemeStore::colorScheme(ColorSchemes name) {
         case COLORS_SYSTEM:
         case COLORS_CUSTOMIZED:
             base.accent.setHsv(p.highlight().color().hue(),
-                            qBound(0, p.highlight().color().saturation() - 50 * darken_mult, 240),
-                            qBound(0, p.highlight().color().value() - 35 * darken_mult, 240));
+                            qBound(0, p.highlight().color().saturation() - 35 * darken_mult, 240),
+                            qBound(0, p.highlight().color().value() + 35 * darken_mult, 240));
             base.background = p.window().color();
             base.background_fullscreen = p.window().color();
             base.folderview = p.window().color();
