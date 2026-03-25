@@ -105,6 +105,12 @@ QString ShortcutBuilder::fromEventNativeScanCode(QKeyEvent *event) {
     // You can always just add the same keybind using your alt. layout if it doesnt work.
     QString sequence = inputMap->keys().value(event->nativeScanCode());
 
+    // layout-aware letters
+    int key = event->key();
+    if(key >= Qt::Key_A && key <= Qt::Key_Z) {
+        sequence = QChar(key);
+    }
+
     if(sequence.isEmpty())
         return sequence;
 
