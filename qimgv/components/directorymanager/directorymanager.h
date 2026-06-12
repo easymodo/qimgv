@@ -100,6 +100,7 @@ private:
     DirectoryWatcher* watcher;
     void readSettings();
     SortingMode mSortingMode;
+    ExifSortFallback mExifSortFallback;
     FileListSource mListSource;
     void loadEntryList(QString directoryPath, bool recursive);
 
@@ -109,6 +110,8 @@ private:
     bool name_entry_compare_reverse(const FSEntry &e1, const FSEntry &e2) const;
     bool date_entry_compare(const FSEntry &e1, const FSEntry &e2) const;
     bool date_entry_compare_reverse(const FSEntry &e1, const FSEntry &e2) const;
+    bool exif_date_entry_compare(const FSEntry &e1, const FSEntry &e2) const;
+    bool exif_date_entry_compare_reverse(const FSEntry &e1, const FSEntry &e2) const;
     CompareFunction compareFunction();
     bool size_entry_compare(const FSEntry &e1, const FSEntry &e2) const;
     bool size_entry_compare_reverse(const FSEntry &e1, const FSEntry &e2) const;

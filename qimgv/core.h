@@ -152,6 +152,7 @@ private slots:
     void sortByName();
     void sortByTime();
     void sortBySize();
+    void sortByExif();
     void showRenameDialog();
     void onDraggedOut();
     void onDraggedOut(QList<QString> paths);

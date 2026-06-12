@@ -1,7 +1,7 @@
 # qimgv root
 cmake_minimum_required(VERSION 3.13)
 project(qimgv
-    VERSION 1.0.2
+    VERSION 1.0.4
     HOMEPAGE_URL "https://github.com/easymodo/qimgv"
     LANGUAGES CXX)
 
@@ -65,7 +65,14 @@ if(EXIV2)
 endif()
 
 if(KDE_SUPPORT)
-    find_package(KF6WindowSystem REQUIRED)
+    # Try KF6 first, fallback to KF5
+    find_package(KF6WindowSystem QUIET)
+    if(KF6WindowSystem_FOUND)
+        message(STATUS "Using KF6WindowSystem")
+    else()
+        find_package(KF5WindowSystem REQUIRED)
+        message(STATUS "Using KF5WindowSystem")
+    endif()
 endif()
 
 if(OPENCV_SUPPORT)
@@ -80,3 +87,32 @@ add_subdirectory(qimgv)
 if(VIDEO_SUPPORT)
     add_subdirectory(plugins/player_mpv)
 endif()
+
+##############################################################
+# CPack configuration for Debian package generation
+##############################################################
+
+set(CPACK_PACKAGE_NAME "qimgv")
+set(CPACK_PACKAGE_VENDOR "easymodo")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Fast and configurable image viewer")
+set(CPACK_PACKAGE_DESCRIPTION "qimgv is a fast and easy to use image viewer with EXIF sorting support")
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(CPACK_PACKAGE_CONTACT "https://github.com/easymodo/qimgv")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+
+# Debian specific
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "qimgv developers")
+set(CPACK_DEBIAN_PACKAGE_SECTION "graphics")
+set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+
+# Auto-detect dependencies
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+
+# Generator
+set(CPACK_GENERATOR "DEB")
+
+include(CPack)

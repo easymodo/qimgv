@@ -188,6 +188,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::sortByName, this, &Core::sortByName);
     connect(actionManager, &ActionManager::sortByTime, this, &Core::sortByTime);
     connect(actionManager, &ActionManager::sortBySize, this, &Core::sortBySize);
+    connect(actionManager, &ActionManager::sortByExif, this, &Core::sortByExif);
     connect(actionManager, &ActionManager::toggleImageInfo, mw, &MW::toggleImageInfoOverlay);
     connect(actionManager, &ActionManager::toggleShuffle, this, &Core::toggleShuffle);
     connect(actionManager, &ActionManager::toggleScalingFilter, mw, &MW::toggleScalingFilter);
@@ -1115,6 +1116,13 @@ void Core::sortBySize() {
     auto mode = SortingMode::SORT_SIZE;
     if(model->sortingMode() == mode)
         mode = SortingMode::SORT_SIZE_DESC;
+    model->setSortingMode(mode);
+}
+
+void Core::sortByExif() {
+    auto mode = SortingMode::SORT_EXIF_TIME;
+    if(model->sortingMode() == mode)
+        mode = SortingMode::SORT_EXIF_TIME_DESC;
     model->setSortingMode(mode);
 }
 

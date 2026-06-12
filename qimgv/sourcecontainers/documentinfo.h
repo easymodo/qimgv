@@ -43,6 +43,7 @@ public:
     int exifOrientation() const;
 
     QDateTime lastModified() const;
+    QDateTime exifDateTime() const;
     void refresh();
     void loadExifTags();
     QMap<QString, QString> getExifTags();
@@ -53,11 +54,14 @@ private:
     int mOrientation;
     QString mFormat;
     bool exifLoaded;
+    QDateTime mExifDateTime;
+    QString mExifTimezone; // The actual timezone value (e.g., "+02:00"), empty if no timezone
 
     // guesses file type from its contents
     // and sets extension
     void detectFormat();
     void loadExifOrientation();
+    void loadExifDateTime();
     bool detectAPNG();
     bool detectAnimatedWebP();
     bool detectAnimatedJxl();

@@ -4,7 +4,8 @@ namespace fs = std::filesystem;
 
 DirectoryManager::DirectoryManager() :
     watcher(nullptr),
-    mSortingMode(SORT_NAME)
+    mSortingMode(SORT_NAME),
+    mExifSortFallback(EXIF_FALLBACK_TIME)
 {
     regex.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
     collator.setNumericMode(true);
@@ -44,6 +45,55 @@ bool DirectoryManager::date_entry_compare_reverse(const FSEntry& e1, const FSEnt
     return e1.modifyTime > e2.modifyTime;
 }
 
+bool DirectoryManager::exif_date_entry_compare(const FSEntry& e1, const FSEntry& e2) const {
+    // If both have EXIF dates, compare them
+    if(e1.exifDateTime.isValid() && e2.exifDateTime.isValid()) {
+        // Files with embedded timezone are already stored as local time
+        // Files without embedded timezone are stored as UTC - but we compare them directly
+        // This means old videos (UTC) will sort 2 hours earlier than photos at same local time
+        return e1.exifDateTime < e2.exifDateTime;
+    }
+    // If only e1 has EXIF date, it comes first
+    if(e1.exifDateTime.isValid()) {
+        return true;
+    }
+    // If only e2 has EXIF date, it comes first
+    if(e2.exifDateTime.isValid()) {
+        return false;
+    }
+    // If neither has EXIF date, use fallback sorting
+    ExifSortFallback fallback = settings->exifSortFallback();
+    if(fallback == EXIF_FALLBACK_NAME)
+        return collator.compare(e1.name, e2.name) < 0;
+    else if(fallback == EXIF_FALLBACK_SIZE)
+        return e1.size < e2.size;
+    else // EXIF_FALLBACK_TIME
+        return e1.modifyTime < e2.modifyTime;
+}
+
+bool DirectoryManager::exif_date_entry_compare_reverse(const FSEntry& e1, const FSEntry& e2) const {
+    // If both have EXIF dates, compare them
+    if(e1.exifDateTime.isValid() && e2.exifDateTime.isValid()) {
+        return e1.exifDateTime > e2.exifDateTime;
+    }
+    // If only e1 has EXIF date, it comes first
+    if(e1.exifDateTime.isValid()) {
+        return true;
+    }
+    // If only e2 has EXIF date, it comes first
+    if(e2.exifDateTime.isValid()) {
+        return false;
+    }
+    // If neither has EXIF date, use fallback sorting
+    ExifSortFallback fallback = settings->exifSortFallback();
+    if(fallback == EXIF_FALLBACK_NAME)
+        return collator.compare(e1.name, e2.name) > 0;
+    else if(fallback == EXIF_FALLBACK_SIZE)
+        return e1.size > e2.size;
+    else // EXIF_FALLBACK_TIME
+        return e1.modifyTime > e2.modifyTime;
+}
+
 bool DirectoryManager::size_entry_compare(const FSEntry& e1, const FSEntry& e2) const {
     return e1.size < e2.size;
 }
@@ -64,6 +114,10 @@ CompareFunction DirectoryManager::compareFunction() {
         cmpFn = &DirectoryManager::size_entry_compare;
     if(mSortingMode == SortingMode::SORT_SIZE_DESC)
         cmpFn = &DirectoryManager::size_entry_compare_reverse;
+    if(mSortingMode == SortingMode::SORT_EXIF_TIME)
+        cmpFn = &DirectoryManager::exif_date_entry_compare;
+    if(mSortingMode == SortingMode::SORT_EXIF_TIME_DESC)
+        cmpFn = &DirectoryManager::exif_date_entry_compare_reverse;
     return cmpFn;
 }
 
@@ -100,6 +154,18 @@ void DirectoryManager::stopFileWatcher() {
 
 void DirectoryManager::readSettings() {
     regex.setPattern(settings->supportedFormatsRegex());
+
+    // Check if EXIF sort fallback changed
+    ExifSortFallback newFallback = settings->exifSortFallback();
+    if(newFallback != mExifSortFallback) {
+        mExifSortFallback = newFallback;
+        // Re-sort if currently using EXIF sorting
+        if((mSortingMode == SORT_EXIF_TIME || mSortingMode == SORT_EXIF_TIME_DESC) &&
+           (fileEntryVec.size() > 1 || dirEntryVec.size() > 1)) {
+            sortEntryLists();
+            emit sortingChanged();
+        }
+    }
 }
 
 bool DirectoryManager::setDirectory(QString dirPath) {
@@ -355,6 +421,10 @@ void DirectoryManager::addEntriesFromDirectory(std::vector<FSEntry> &entryVec, Q
                 newEntry.isDirectory = false;
                 newEntry.size = entry.file_size();
                 newEntry.modifyTime = entry.last_write_time();
+
+                // Load EXIF creation date/time for sorting
+                DocumentInfo docInfo(path);
+                newEntry.exifDateTime = docInfo.exifDateTime();
             } catch (const std::filesystem::filesystem_error &err) {
                 qDebug() << "[DirectoryManager]" << err.what();
                 continue;
@@ -378,6 +448,10 @@ void DirectoryManager::addEntriesFromDirectoryRecursive(std::vector<FSEntry> &en
                 newEntry.isDirectory = false;
                 newEntry.size = entry.file_size();
                 newEntry.modifyTime = entry.last_write_time();
+
+                // Load EXIF creation date/time for sorting
+                DocumentInfo docInfo(path);
+                newEntry.exifDateTime = docInfo.exifDateTime();
             } catch (const std::filesystem::filesystem_error &err) {
                 qDebug() << "[DirectoryManager]" << err.what();
                 continue;
@@ -424,6 +498,11 @@ bool DirectoryManager::forceInsertFileEntry(const QString &filePath) {
     std::filesystem::directory_entry stdEntry(toStdString(filePath));
     QString fileName = QString::fromStdString(stdEntry.path().filename().generic_string()); // isn't it beautiful
     FSEntry FSEntry(filePath, fileName, stdEntry.file_size(), stdEntry.last_write_time(), stdEntry.is_directory());
+
+    // Load EXIF creation date/time for sorting
+    DocumentInfo docInfo(filePath);
+    FSEntry.exifDateTime = docInfo.exifDateTime();
+
     insert_sorted(fileEntryVec, FSEntry, std::bind(compareFunction(), this, std::placeholders::_1, std::placeholders::_2));
     if(!directoryPath().isEmpty()) {
         qDebug() << "fileIns" << filePath << directoryPath();
