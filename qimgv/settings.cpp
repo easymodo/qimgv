@@ -426,17 +426,31 @@ void Settings::setBlurBackground(bool mode) {
 }
 //------------------------------------------------------------------------------
 void Settings::setSortingMode(SortingMode mode) {
-    if(mode >= 6)
+    if(mode >= 8)
         mode = SortingMode::SORT_NAME;
     settings->settingsConf->setValue("sortingMode", mode);
 }
 
 SortingMode Settings::sortingMode() {
     int mode = settings->settingsConf->value("sortingMode", 0).toInt();
-    if(mode < 0 || mode >= 6)
+    if(mode < 0 || mode >= 8)
         mode = 0;
     return static_cast<SortingMode>(mode);
 }
+
+void Settings::setExifSortFallback(ExifSortFallback mode) {
+    if(mode > EXIF_FALLBACK_SIZE)
+        mode = EXIF_FALLBACK_TIME;
+    settings->settingsConf->setValue("exifSortFallback", mode);
+}
+
+ExifSortFallback Settings::exifSortFallback() {
+    int mode = settings->settingsConf->value("exifSortFallback", EXIF_FALLBACK_TIME).toInt();
+    if(mode < 0 || mode > EXIF_FALLBACK_SIZE)
+        mode = EXIF_FALLBACK_TIME;
+    return static_cast<ExifSortFallback>(mode);
+}
+
 //------------------------------------------------------------------------------
 bool Settings::playVideoSounds() {
     return settings->settingsConf->value("playVideoSounds", false).toBool();

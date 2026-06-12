@@ -25,7 +25,15 @@ enum SortingMode {
     SORT_SIZE,
     SORT_SIZE_DESC,
     SORT_TIME,
-    SORT_TIME_DESC
+    SORT_TIME_DESC,
+    SORT_EXIF_TIME,
+    SORT_EXIF_TIME_DESC
+};
+
+enum ExifSortFallback {
+    EXIF_FALLBACK_TIME,
+    EXIF_FALLBACK_NAME,
+    EXIF_FALLBACK_SIZE
 };
 
 enum ImageFitMode {
@@ -165,7 +173,9 @@ public:
     bool blurBackground();
     void setBlurBackground(bool mode);
     void setSortingMode(SortingMode mode);
-    SortingMode sortingMode();    
+    SortingMode sortingMode();
+    void setExifSortFallback(ExifSortFallback mode);
+    ExifSortFallback exifSortFallback();
     void readScripts(QMap<QString, Script> &scripts);
     void saveScripts(const QMap<QString, Script> &scripts);
     int folderViewIconSize();

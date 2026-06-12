@@ -188,6 +188,7 @@ void SettingsDialog::readSettings() {
     ui->bgOpacitySlider->setValue(static_cast<int>(settings->backgroundOpacity() * 100));
     ui->blurBackgroundCheckBox->setChecked(settings->blurBackground());
     ui->sortingComboBox->setCurrentIndex(settings->sortingMode());
+    ui->exifSortFallbackComboBox->setCurrentIndex(settings->exifSortFallback());
     ui->confirmDeleteCheckBox->setChecked(settings->confirmDelete());
     ui->confirmTrashCheckBox->setChecked(settings->confirmTrash());
     ui->unlockMinZoomCheckBox->setChecked(settings->unlockMinZoom());
@@ -336,6 +337,7 @@ void SettingsDialog::saveSettings() {
     settings->setBackgroundOpacity(static_cast<qreal>(ui->bgOpacitySlider->value()) / 100.f);
     settings->setBlurBackground(ui->blurBackgroundCheckBox->isChecked());
     settings->setSortingMode(static_cast<SortingMode>(ui->sortingComboBox->currentIndex()));
+    settings->setExifSortFallback(static_cast<ExifSortFallback>(ui->exifSortFallbackComboBox->currentIndex()));
     settings->setConfirmDelete(ui->confirmDeleteCheckBox->isChecked());
     settings->setConfirmTrash(ui->confirmTrashCheckBox->isChecked());
     settings->setUnlockMinZoom(ui->unlockMinZoomCheckBox->isChecked());

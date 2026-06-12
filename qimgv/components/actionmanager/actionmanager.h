@@ -107,6 +107,7 @@ signals:
     void sortByName();
     void sortByTime();
     void sortBySize();
+    void sortByExif();
     void toggleImageInfo();
     void toggleShuffle();
     void toggleScalingFilter();

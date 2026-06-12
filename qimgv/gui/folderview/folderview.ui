@@ -306,6 +306,16 @@
           <string>Newest</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>EXIF Date (oldest)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>EXIF Date (newest)</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>
