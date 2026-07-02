@@ -78,6 +78,7 @@ public slots:
     virtual void zoomOut();
     virtual void zoomInCursor();
     virtual void zoomOutCursor();
+    virtual void zoomInCenterCursor();
     virtual void readSettings();
     virtual void scrollUp();
     virtual void scrollDown();
@@ -157,6 +158,8 @@ private:
 
     float zoomStep = 0.1, dpr;
     float minScale, maxScale, fitWindowScale, fitWindowStretchScale, expandLimit, lockedScale;
+    QPointF zoomCursorPosition = QPointF(-1.0, 0.0);
+    
     QPointF savedViewportPos;
     ViewLockMode mViewLock;
 
@@ -177,6 +180,8 @@ private:
     void fitWindowStretch();
 
     void scroll(int dx, int dy, bool animated);
+    void doZoomInCenterCursor(float newScale);
+    QPointF zoomBoxCenterCursor(float zoom_factor);
 
     void mousePanWrapping(QMouseEvent *event);
     void mousePan(QMouseEvent *event);
@@ -204,6 +209,6 @@ private:
     void applySavedViewportPos();
     void saveViewportPos();
     void lockZoom();
-    void doZoomIn(bool atCursor);
+    void doZoomIn(bool atCursor, bool pullCenter);
     void doZoomOut(bool atCursor);
 };

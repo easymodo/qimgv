@@ -67,9 +67,12 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     pixmapItem.setScale(1.0f);
     pixmapItem.setOffset(10000, 10000);
     pixmapItem.setTransformOriginPoint(10000, 10000);
+    // setShapeMode influences pixmapItem.isUnderMouse(). Transparent image areas are now considered part of the pixmap.
+    pixmapItem.setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
     pixmapItemScaled.setScale(1.0f);
     pixmapItemScaled.setOffset(10000, 10000);
     pixmapItemScaled.setTransformOriginPoint(10000, 10000);
+    pixmapItemScaled.setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -525,9 +528,14 @@ void ImageViewerV2::mousePressEvent(QMouseEvent *event) {
 
 void ImageViewerV2::mouseMoveEvent(QMouseEvent *event) {
     QWidget::mouseMoveEvent(event);
-    if(!pixmap || mouseInteraction == MouseInteractionState::MOUSE_DRAG || mouseInteraction == MouseInteractionState::MOUSE_WHEEL_ZOOM)
+    if(!pixmap)
         return;
-
+    
+    zoomCursorPosition.rx() = -1.0;
+    
+    if(mouseInteraction == MouseInteractionState::MOUSE_DRAG || mouseInteraction == MouseInteractionState::MOUSE_WHEEL_ZOOM)
+        return;
+    
     if(event->buttons() & Qt::LeftButton) {
         // ---------------- DRAG / PAN -------------------
         // select which action to start
@@ -1077,21 +1085,120 @@ void ImageViewerV2::zoomAnchored(float newScale) {
     }
 }
 
-// zoom in around viewport center
+// zoom into viewport center
 void ImageViewerV2::zoomIn() {
-    doZoomIn(false);
+    doZoomIn(false, false);
 }
 
-// zoom in around cursor if its inside window
+// zoom in and and ensure that the pixel hovered by the mouse stays exactly on the same screen position
 void ImageViewerV2::zoomInCursor() {
-    doZoomIn(true);
+    doZoomIn(true, false);
 }
 
-void ImageViewerV2::doZoomIn(bool atCursor) {
-    if(atCursor && underMouse())
-        setZoomAnchor(mapFromGlobal(cursor().pos()));
-    else
-        setZoomAnchor(viewport()->rect().center());
+// zoom in and eventually center the pixel that was originally hovered the last time the mouse moved
+void ImageViewerV2::zoomInCenterCursor() {
+    doZoomIn(true, true);
+}
+
+
+QPointF ImageViewerV2::zoomBoxCenterCursor(float zoom_factor) {
+    QRectF viewport_rect = mapToScene(viewport()->rect()).boundingRect();
+    
+    QPointF top_left_viewport_pix = pixmapItem.mapFromScene(viewport_rect.topLeft());
+    QPointF bottom_right_viewport_pix = pixmapItem.mapFromScene(viewport_rect.bottomRight());
+    
+    QRectF img_rect_pix = pixmapItem.boundingRect();
+    QRectF img_rect = pixmapItem.sceneBoundingRect();
+    
+    /* For whatever reason viewport_rect.bottomRight() doesn't exactly match img_rect.bottomRight() when the image's bottom right corner
+       matches the viewport's bottom right corner (the image was moved to the most bottom right position via dragging/scrolling).
+       The cool thing is that when converting the scene coordinates into viewport coordinates they perfectly match in this case. The following
+       is a fix that when the viewport coordinates match, the scene coordinates of img_rect.bottomRight() are always used instead of
+       viewport_rect.bottomRight(). This fixes the slight drift away from the image border when zooming in on the right/bottom side of the image.
+    */
+    QPointF bottom_right_img_vp = mapFromScene(img_rect.bottomRight());
+    bool right_border_collapse = viewport()->width() == bottom_right_img_vp.x();
+    bool bottom_border_collapse = viewport()->height() == bottom_right_img_vp.y();
+    
+    /* When the image's width is smaller than the viewport's width, choose the image's left and right border,
+       otherwise the viewport's left and right border. When the image's height is smaller than the viewport's height,
+       choose the image's top and bottom border, otherwise the viewport's top and bottom border.
+    */
+    QPointF top_left_viewport_or_picture = QPointF(
+        qMax(img_rect.left(), viewport_rect.left()),
+        qMax(img_rect.top(), viewport_rect.top()));
+    QPointF bottom_right_viewport_or_picture = QPointF(
+        right_border_collapse ? img_rect.right() : qMin(img_rect.right(), viewport_rect.right()),
+        bottom_border_collapse ? img_rect.bottom() : qMin(img_rect.bottom(), viewport_rect.bottom()));
+    
+    QPointF top_left_viewport_or_picture_pix = pixmapItem.mapFromScene(top_left_viewport_or_picture);
+    QPointF bottom_right_viewport_or_picture_pix = pixmapItem.mapFromScene(bottom_right_viewport_or_picture);
+    
+    // The zoom box is the viewport after the zoom operation
+    qreal viewport_width_pix = bottom_right_viewport_pix.x() - top_left_viewport_pix.x();
+    qreal zoom_box_width_pix = viewport_width_pix/zoom_factor;
+    qreal half_zoom_box_width_pix = zoom_box_width_pix/2;
+    
+    qreal viewport_height_pix = bottom_right_viewport_pix.y() - top_left_viewport_pix.y();
+    qreal zoom_box_height_pix = viewport_height_pix/zoom_factor;
+    qreal half_zoom_box_height_pix = zoom_box_height_pix/2;
+    
+    qreal cursor_minimum_x_pix = top_left_viewport_or_picture_pix.x()+half_zoom_box_width_pix;
+    qreal cursor_maximum_x_pix = bottom_right_viewport_or_picture_pix.x()-half_zoom_box_width_pix;
+    
+    qreal cursor_minimum_y_pix = top_left_viewport_or_picture_pix.y()+half_zoom_box_height_pix;
+    qreal cursor_maximum_y_pix = bottom_right_viewport_or_picture_pix.y()-half_zoom_box_height_pix;
+    
+    // zoom_box_width_pix >= img_rect_pix.width() is pretty much identical with cursor_minimum_x_pix >= cursor_maximum_x_pix
+    qreal new_zoom_box_x_pix = zoom_box_width_pix >= img_rect_pix.width() ?
+        img_rect_pix.center().x() :
+        qBound(cursor_minimum_x_pix, zoomCursorPosition.x(), cursor_maximum_x_pix);
+    
+    qreal new_zoom_box_y_pix = zoom_box_height_pix >= img_rect_pix.height() ?
+        img_rect_pix.center().y() :
+        qBound(cursor_minimum_y_pix, zoomCursorPosition.y(), cursor_maximum_y_pix);
+    
+    return QPointF(new_zoom_box_x_pix, new_zoom_box_y_pix);
+}
+
+
+void ImageViewerV2::doZoomInCenterCursor(float new_scale) {
+    new_scale = qMin(new_scale, maxScale);
+    float current_scale = pixmapItem.scale();
+    if(!pixmapItem.isUnderMouse() || current_scale == new_scale) return;
+    
+    if(zoomCursorPosition.x() == -1.0 /*indicates that the cursor moved since last function call*/) {
+        QPoint cursor_screen = cursor().pos();
+        QPoint cursor_viewport = viewport()->mapFromGlobal(cursor_screen);
+        QPointF cursor = mapToScene(cursor_viewport);
+        // Cannot contain negative x coordinate because isUnderMouse() blocks this case.
+        zoomCursorPosition = pixmapItem.mapFromScene(cursor);
+    }
+    
+    float zoom_factor = new_scale / current_scale;
+    
+    QPointF zoom_box_center_pix = zoomBoxCenterCursor(zoom_factor);
+    
+    doZoom(new_scale);
+    
+    QPointF zoom_box_center = pixmapItem.mapToScene(zoom_box_center_pix);
+    
+    /* This increases the accuracy of the zoom SO MUCH
+       I was very disappointed that for some reason the zoom had a terrible accuracy and began to hate Qt for it
+       BUT THIS FIXES IT COMPLETELY. IT'S MAGIC!
+    */
+    zoom_box_center = sceneRoundPos(zoom_box_center);
+    
+    centerOn(zoom_box_center);
+    
+    requestScaling();
+}
+
+
+
+
+
+void ImageViewerV2::doZoomIn(bool atCursor, bool pullCenter) {
     float newScale = currentScale() * (1.0f + zoomStep);
     if(useFixedZoomLevels && zoomLevels.count()) {
         if(currentScale() < zoomLevels.first()) {
@@ -1108,9 +1215,22 @@ void ImageViewerV2::doZoomIn(bool atCursor) {
             }
         }
     }
-    zoomAnchored(newScale);
-    centerIfNecessary();
-    snapToEdges();
+    
+    
+    // if the cursor isn't over the picture, fallback to other zoom
+    if(pullCenter && pixmapItem.isUnderMouse()) {
+        doZoomInCenterCursor(newScale);
+    } else if(atCursor && underMouse()) {
+        setZoomAnchor(mapFromGlobal(cursor().pos()));
+        zoomAnchored(newScale);
+        centerIfNecessary();
+        snapToEdges();
+    } else {
+        setZoomAnchor(viewport()->rect().center());
+        zoomAnchored(newScale);
+        centerIfNecessary();
+    }
+    
     imageFitMode = FIT_FREE;
     if(pixmapItem.scale() == fitWindowScale)
         imageFitMode = FIT_WINDOW;
@@ -1129,10 +1249,6 @@ void ImageViewerV2::zoomOutCursor() {
 }
 
 void ImageViewerV2::doZoomOut(bool atCursor) {
-    if(atCursor && underMouse())
-        setZoomAnchor(mapFromGlobal(cursor().pos()));
-    else
-        setZoomAnchor(viewport()->rect().center());
     float newScale = currentScale() * (1.0f - zoomStep);
     if(useFixedZoomLevels && zoomLevels.count()) {
         if(currentScale() > zoomLevels.last()) {
@@ -1149,6 +1265,12 @@ void ImageViewerV2::doZoomOut(bool atCursor) {
             }
         }
     }
+    
+    if(atCursor && underMouse())
+        setZoomAnchor(mapFromGlobal(cursor().pos()));
+    else
+        setZoomAnchor(viewport()->rect().center());
+    
     zoomAnchored(newScale);
     centerIfNecessary();
     snapToEdges();
@@ -1219,6 +1341,7 @@ void ImageViewerV2::applySavedViewportPos() {
     snapToEdges();
 }
 
+// If the image is smaller than the viewport, center it
 void ImageViewerV2::centerIfNecessary() {
     if(!pixmap)
         return;
@@ -1231,6 +1354,7 @@ void ImageViewerV2::centerIfNecessary() {
         vs->setValue(pixmapItem.offset().y() - (int)(vport.height() - imgRect.height()) / 2);
 }
 
+// Ensures that the user can't move past the image's borders, except when the image is smaller than the viewport
 void ImageViewerV2::snapToEdges() {
     QRect imgRect = scaledRectR();
     // current vport center

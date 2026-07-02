@@ -90,6 +90,7 @@ void Actions::init() {
     mActions.insert("lockView", QVersionNumber(0,9,2));
     mActions.insert("print", QVersionNumber(1,0,0));
     mActions.insert("toggleFullscreenInfoBar", QVersionNumber(1,0,0));
+    mActions.insert("zoomInCenterCursor", QVersionNumber(1,0,3));
     mActions.insert("pasteFile", QVersionNumber(1,0,3));
 }
 

@@ -147,6 +147,7 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::zoomOut, mw, &MW::zoomOut);
     connect(actionManager, &ActionManager::zoomInCursor, mw, &MW::zoomInCursor);
     connect(actionManager, &ActionManager::zoomOutCursor, mw, &MW::zoomOutCursor);
+    connect(actionManager, &ActionManager::zoomInCenterCursor, mw, &MW::zoomInCenterCursor);
     connect(actionManager, &ActionManager::scrollUp, mw, &MW::scrollUp);
     connect(actionManager, &ActionManager::scrollDown, mw, &MW::scrollDown);
     connect(actionManager, &ActionManager::scrollLeft, mw, &MW::scrollLeft);

@@ -84,6 +84,7 @@ void MW::setupUi() {
     connect(this, &MW::zoomOut,       viewerWidget.get(), &ViewerWidget::zoomOut);
     connect(this, &MW::zoomInCursor,  viewerWidget.get(), &ViewerWidget::zoomInCursor);
     connect(this, &MW::zoomOutCursor, viewerWidget.get(), &ViewerWidget::zoomOutCursor);
+    connect(this, &MW::zoomInCenterCursor,  viewerWidget.get(), &ViewerWidget::zoomInCenterCursor);
     connect(this, &MW::scrollUp,    viewerWidget.get(), &ViewerWidget::scrollUp);
     connect(this, &MW::scrollDown,  viewerWidget.get(), &ViewerWidget::scrollDown);
     connect(this, &MW::scrollLeft,  viewerWidget.get(), &ViewerWidget::scrollLeft);

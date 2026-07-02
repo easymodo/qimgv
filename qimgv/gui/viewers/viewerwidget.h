@@ -71,6 +71,7 @@ signals:
     void zoomOut();
     void zoomInCursor();
     void zoomOutCursor();
+    void zoomInCenterCursor();
     void scrollUp();
     void scrollDown();
     void scrollLeft();

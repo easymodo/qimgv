@@ -78,6 +78,7 @@ signals:
     void zoomOut();
     void zoomInCursor();
     void zoomOutCursor();
+    void zoomInCenterCursor();
     void resize();
     void rotateLeft();
     void rotateRight();
