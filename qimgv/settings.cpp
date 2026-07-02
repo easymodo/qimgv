@@ -824,7 +824,7 @@ void Settings::setExpandImage(bool mode) {
 }
 //------------------------------------------------------------------------------
 int Settings::expandLimit() {
-    return settings->settingsConf->value("expandLimit", 2).toInt();
+    return settings->settingsConf->value("expandLimit", 1).toInt();
 }
 
 void Settings::setExpandLimit(int value) {

@@ -645,10 +645,10 @@ void SettingsDialog::selectMpvPath() {
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::onExpandLimitSliderChanged(int value) {
-    if(value == 0)
-        ui->expandLimitLabel->setText("-");
+    if(value == 4)
+        ui->expandLimitLabel->setText(tr("Maximum"));
     else
-        ui->expandLimitLabel->setText(QString::number(value) + "x");
+        ui->expandLimitLabel->setText(QString::number(value+1) + "x");
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::onJPEGQualitySliderChanged(int value) {
