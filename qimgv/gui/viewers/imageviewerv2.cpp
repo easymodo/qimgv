@@ -78,7 +78,6 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     scene = new QGraphicsScene();
-    scene->setSceneRect(0,0,200000,200000);
     scene->setBackgroundBrush(QColor(60,60,103));
     scene->addItem(&pixmapItem);
     scene->addItem(&pixmapItemScaled);
@@ -123,6 +122,7 @@ void ImageViewerV2::onDPRChanged() {
     if(pixmap) {
         pixmap->setDevicePixelRatio(dpr);
         pixmapItem.setPixmap(*pixmap);
+        updateSceneRect();
         pixmapItem.show();
         pixmapItem.update();
         updateMinScale();
@@ -281,6 +281,7 @@ void ImageViewerV2::updatePixmap(std::unique_ptr<QPixmap> newPixmap) {
     pixmap = std::move(newPixmap);
     pixmap->setDevicePixelRatio(dpr);
     pixmapItem.setPixmap(*pixmap);
+    updateSceneRect();
     pixmapItem.show();
     pixmapItem.update();
 }
@@ -322,6 +323,7 @@ void ImageViewerV2::showImage(std::unique_ptr<QPixmap> _pixmap) {
         pixmap = std::move(_pixmap);
         pixmap->setDevicePixelRatio(dpr);
         pixmapItem.setPixmap(*pixmap);
+        updateSceneRect();
         Qt::TransformationMode mode = Qt::SmoothTransformation;
         if(mScalingFilter == QI_FILTER_NEAREST)
             mode = Qt::FastTransformation;
@@ -351,6 +353,7 @@ void ImageViewerV2::reset() {
     pixmapItemScaled.setPixmap(QPixmap());
     pixmapScaled.reset(nullptr);
     pixmapItem.setPixmap(QPixmap());
+    updateSceneRect();
     pixmapItem.setScale(1.0f);
     pixmapItem.setOffset(10000,10000);
     pixmap.reset();
@@ -940,6 +943,7 @@ void ImageViewerV2::setFitWindowStretch() {
 
 void ImageViewerV2::resizeEvent(QResizeEvent *event) {
     QGraphicsView::resizeEvent(event);
+    updateSceneRect(true);
     // reset this so we won't generate unnecessary drag'n'drop event
     mousePressPos = mapFromGlobal(cursor().pos());
     // Qt emits some unnecessary resizeEvents on startup
@@ -1066,6 +1070,50 @@ void ImageViewerV2::swapToOriginalPixmap() {
     pixmapItemScaled.setPixmap(QPixmap());
     pixmapScaled.reset(nullptr);
     pixmapItem.show();
+}
+
+
+// This function updates the scene size so that the view is able to move to any relevant point of the image.
+// It must therefore be called whenever the image or viewport/screen dimensions change.
+void ImageViewerV2::updateSceneRect(bool called_by_resize_event) {
+    /*  The scene must be big enough to
+        1. contain the bottom right point of the pixmapItem when it is scaled (zoomed) to the maximum in scene coordinates
+        2. display the center point of the pixmapItem when it is scaled to the maximum at the center of the viewport
+        When an image is very small (1x1 or similar) and scaled to the maximum, requirement 1 will create a scene too small for the image to be actually centered, that's why requirement 2 is needed. pixmapItemScaled is not relevant because it has the same size as pixmapItem.
+    */
+    
+    if(!screen()) {
+        qDebug() << "ImageViewerV2: screen() is null.\n";
+        return;
+    }
+    
+    // Use screen dimensions, not viewport dimensions because they are available way earlier than (correct) viewport coordinates
+    // and the screen rect doesn't have to be updated for every single pixel the window resizes.
+    QRect screen_rect_screen = screen()->geometry();
+    QRectF screen_rect = mapToScene(screen_rect_screen).boundingRect();
+    
+    if(called_by_resize_event) {
+        if(screenDimensions == screen_rect_screen.size())
+            return;
+        
+        screenDimensions = screen_rect_screen.size();
+    }
+    
+    QPointF img_offset = pixmapItem.mapToScene(pixmapItem.offset());
+    
+    // Since there are no unusual transformations applied to the scene or the image, this code ASSUMES that
+    // pixmapItem.boundingRect().width()*pixmapItem.scale() == pixmapItem.sceneBoundingRect().width()
+    qreal max_img_width = pixmapItem.boundingRect().width()*maxScale;
+    qreal max_img_height = pixmapItem.boundingRect().height()*maxScale;
+    
+    // requirement 1: max_img_width/2           requirement 2: screen_rect.width()/2
+    qreal new_scene_width = img_offset.x() + max_img_width/2 +
+        qMax(max_img_width/2, screen_rect.width()/2);
+    
+    qreal new_scene_height = img_offset.y() + max_img_height/2 +
+        qMax(max_img_height/2, screen_rect.height()/2);
+    
+    scene->setSceneRect(0, 0, new_scene_width, new_scene_height);
 }
 
 void ImageViewerV2::setZoomAnchor(QPoint viewportPos) {
@@ -1379,12 +1427,13 @@ void ImageViewerV2::snapToEdges() {
 void ImageViewerV2::doZoom(float newScale) {
     if(!pixmap)
         return;
-    newScale = qBound(minScale, newScale, 500.0f);
+    
+    newScale = qBound(minScale, newScale, maxScale);
     // fix scene position to integer values
     auto tl = pixmapItem.sceneBoundingRect().topLeft().toPoint();
     pixmapItem.setOffset(tl);
     pixmapItem.setScale(newScale);
-
+    
     pixmapItem.setTransformationMode(selectTransformationMode());
     swapToOriginalPixmap();
     emit scaleChanged(newScale);

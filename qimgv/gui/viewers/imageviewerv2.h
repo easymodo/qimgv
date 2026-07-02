@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QScreen>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
@@ -182,6 +183,7 @@ private:
     void scroll(int dx, int dy, bool animated);
     void doZoomInCenterCursor(float newScale);
     QPointF zoomBoxCenterCursor(float zoom_factor);
+    void updateSceneRect(bool called_by_resize_event = false);
 
     void mousePanWrapping(QMouseEvent *event);
     void mousePan(QMouseEvent *event);
@@ -211,4 +213,6 @@ private:
     void lockZoom();
     void doZoomIn(bool atCursor, bool pullCenter);
     void doZoomOut(bool atCursor);
+    
+    QSize screenDimensions;
 };
