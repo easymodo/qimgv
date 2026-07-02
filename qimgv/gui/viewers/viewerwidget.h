@@ -32,7 +32,8 @@ public:
     void onScalingFinished(std::unique_ptr<QPixmap> scaled);
     bool isDisplaying();
     bool lockZoomEnabled();
-    bool lockViewEnabled();
+    bool preserveCurrentViewEnabled();
+    bool preserveViewEnabled();
     ScalingFilter scalingFilter();
 
 private:
@@ -87,7 +88,8 @@ signals:
     void setScalingFilter(ScalingFilter filter);
     void playbackFinished();
     void toggleLockZoom();
-    void toggleLockView();
+    void togglePreserveView();
+    void togglePreserveCurrentView();
     void showScriptSettings();
 
 public slots:

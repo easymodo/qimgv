@@ -20,7 +20,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     maxScale(500.0f),
     fitWindowScale(0.125f),
     fitWindowStretchScale(0.125f),
-    mViewLock(LOCK_NONE),
+    viewPreservationMode(PRESERVE_NONE),
     imageFitMode(FIT_WINDOW),
     mScalingFilter(QI_FILTER_BILINEAR),
     imageFitModeDefault(FIT_WINDOW),
@@ -134,6 +134,7 @@ void ImageViewerV2::onDPRChanged() {
 }
 
 void ImageViewerV2::readSettings() {
+    zoomPreservationMode = (ZoomPreservationMode) settings->zoomPreservationMode();
     transparencyGrid = settings->transparencyGrid();
     smoothAnimatedImages = settings->smoothAnimatedImages();
     smoothUpscaling = settings->smoothUpscaling();
@@ -310,12 +311,12 @@ void ImageViewerV2::showAnimation(std::shared_ptr<QMovie> _movie) {
         if(!keepFitMode || imageFitMode == FIT_FREE)
             imageFitMode = imageFitModeDefault;
 
-        if(mViewLock == LOCK_NONE) {
+        if(viewPreservationMode == PRESERVE_NONE) {
             applyFitMode();
         } else {
             imageFitMode = FIT_FREE;
-            fitFree(lockedScale);
-            if(mViewLock == LOCK_ALL)
+            fitFree(savedZoomFactor());
+            if(viewPreservationMode != PRESERVE_ZOOM)
                 applySavedViewportPos();
         }
         startAnimation();
@@ -341,12 +342,12 @@ void ImageViewerV2::showImage(std::unique_ptr<QPixmap> _pixmap) {
         if(!keepFitMode || imageFitMode == FIT_FREE)
             imageFitMode = imageFitModeDefault;
 
-        if(mViewLock == LOCK_NONE) {
+        if(viewPreservationMode == PRESERVE_NONE) {
             applyFitMode();
         } else {
             imageFitMode = FIT_FREE;
-            fitFree(lockedScale);
-            if(mViewLock == LOCK_ALL)
+            fitFree(savedZoomFactor());
+            if(viewPreservationMode != PRESERVE_ZOOM)
                 applySavedViewportPos();
         }
         requestScaling();
@@ -356,6 +357,14 @@ void ImageViewerV2::showImage(std::unique_ptr<QPixmap> _pixmap) {
 
 // reset state, remove image & stop animation
 void ImageViewerV2::reset() {
+    if(viewPreservationMode == PRESERVE_ZOOM) {
+        saveZoomFactor();
+    }
+    if(viewPreservationMode == PRESERVE_VIEW) {
+        saveViewportPos();
+        saveZoomFactor();
+    }
+
     stopPosAnimation();
     pixmapItemScaled.setPixmap(QPixmap());
     pixmapScaled.reset(nullptr);
@@ -701,7 +710,6 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
            event->ignore();
            QWidget::wheelEvent(event);
         }
-        saveViewportPos();
     } else {
         event->ignore();
         QWidget::wheelEvent(event);
@@ -732,7 +740,6 @@ void ImageViewerV2::mousePan(QMouseEvent *event) {
     mouseMoveStartPos -= event->pos();
     scroll(mouseMoveStartPos.x(), mouseMoveStartPos.y(), false);
     mouseMoveStartPos = event->pos();
-    saveViewportPos();
 }
 
 //  zooming while the right button is pressed
@@ -800,8 +807,8 @@ void ImageViewerV2::updateMinScale() {
         else
             minScale = fitWindowScale;
     }
-    if(mViewLock != LOCK_NONE && lockedScale < minScale)
-        minScale = lockedScale;
+    if(viewPreservationMode != PRESERVE_NONE && savedZoomFactor() < minScale)
+        minScale = savedZoomFactor();
 }
 
 void ImageViewerV2::fitWidth() {
@@ -968,7 +975,6 @@ void ImageViewerV2::resizeEvent(QResizeEvent *event) {
         if(scaleTimer->isActive())
             scaleTimer->stop();
         scaleTimer->start();
-        saveViewportPos();
     }
 }
 
@@ -1036,7 +1042,6 @@ void ImageViewerV2::scrollSmooth(int dx, int dy) {
         scrollTimeLineY->setFrameRange(currentYPos, newEndFrame);
         scrollTimeLineY->start();
     }
-    saveViewportPos();
 }
 
 void ImageViewerV2::scrollPrecise(int dx, int dy) {
@@ -1045,7 +1050,6 @@ void ImageViewerV2::scrollPrecise(int dx, int dy) {
     vs->setValue(vs->value() + dy);
     centerIfNecessary();
     snapToEdges();
-    saveViewportPos();
 }
 
 // used by scrollTimeLine
@@ -1067,7 +1071,7 @@ void ImageViewerV2::scrollToY(int y) {
 }
 
 void ImageViewerV2::onScrollTimelineFinished() {
-    saveViewportPos();
+    
 }
 
 void ImageViewerV2::swapToOriginalPixmap() {
@@ -1355,61 +1359,134 @@ float ImageViewerV2::nextScale(bool zoom_in_or_out) {
 void ImageViewerV2::toggleLockZoom() {
     if(!isDisplaying())
         return;
-    if(mViewLock != LOCK_ZOOM) {
-        mViewLock = LOCK_ZOOM;
-        lockZoom();
-    } else {
-        mViewLock = LOCK_NONE;
-    }
+    
+    viewPreservationMode = viewPreservationMode == PRESERVE_ZOOM ? PRESERVE_NONE : PRESERVE_ZOOM;
 }
 
 bool ImageViewerV2::lockZoomEnabled() {
-    return (mViewLock == LOCK_ZOOM);
+    return (viewPreservationMode == PRESERVE_ZOOM);
 }
 
-void ImageViewerV2::lockZoom() {
-    lockedScale = pixmapItem.scale();
-    imageFitMode = FIT_FREE;
-    saveViewportPos();
+qreal ImageViewerV2::savedZoomFactor() {
+    QRectF img_rect_pix = pixmapItem.boundingRect();
+    
+    if(zoomPreservationMode == PRESERVE_IMG_PIXEL_DENSITY) {
+        return savedZoomFactor_;
+    } else if(zoomPreservationMode == PRESERVE_IMG_SCENE_WIDTH) {
+        return savedZoomFactor_ / img_rect_pix.width();
+    } else if(zoomPreservationMode == PRESERVE_IMG_SCENE_HEIGHT) {
+        return savedZoomFactor_ / img_rect_pix.height();
+    }
+    return 1;
 }
 
-void ImageViewerV2::toggleLockView() {
-    if(!isDisplaying())
-        return;
-    if(mViewLock != LOCK_ALL) {
-        mViewLock = LOCK_ALL;
-        lockZoom();
-        saveViewportPos();
-    } else {
-        mViewLock = LOCK_NONE;
+void ImageViewerV2::saveZoomFactor() {
+    /*  To preserve the zoom level ("physical" image size) when switching between two images there are two approaches:
+        (1) Both images have the same logical to physical size ratio. This means a pixel of image A covers the same physical size as a pixel of image B.
+        (2) Both images cover the same physical size (even when image dimensions differ).
+        Approach (1) can be implemented by simply saving and setting the image scale (pixmapItem.scale()) of the next image to the previous image.
+        For Approach (2) we effectively must to preserve the viewport width (or height). The goal is fomalized: img1_vp_width = img2_vp_width
+        Since the scene isn't rotated, sheared or scaled we can assume a constant conversation factor between viewport and scene:
+        vp_width = scene_width*C => img1_scene_width*C = img2_scene_width*C => img1_scene_width = img2_scene_width
+        The QGraphicsPixmapItem does not have any unusual transformations applied so we ASSUME:
+        img_scene_width = img_width * img_scaling_factor => img1_width * img1_scaling_factor = img2_width * img2_scaling_factor
+        => img2_scaling_factor = (img1_width * img1_scaling_factor) / img2_width
+    */
+    
+    QRectF img_rect_pix = pixmapItem.boundingRect();
+    
+    if(zoomPreservationMode == PRESERVE_IMG_PIXEL_DENSITY) { // (1)
+        savedZoomFactor_ = pixmapItem.scale();
+    } else if(zoomPreservationMode == PRESERVE_IMG_SCENE_WIDTH) { // (2)
+        savedZoomFactor_ = pixmapItem.scale() * img_rect_pix.width();
+    } else if(zoomPreservationMode == PRESERVE_IMG_SCENE_HEIGHT) { // (2)
+        savedZoomFactor_ = pixmapItem.scale() * img_rect_pix.height();
     }
 }
 
-bool ImageViewerV2::lockViewEnabled() {
-    return (mViewLock == LOCK_ALL);
+void ImageViewerV2::togglePreserveCurrentView() {
+    if(!isDisplaying())
+        return;
+
+    viewPreservationMode = viewPreservationMode == PRESERVE_CURRENT_VIEW ? PRESERVE_NONE : PRESERVE_CURRENT_VIEW;
+    if(viewPreservationMode == PRESERVE_CURRENT_VIEW) {
+        saveZoomFactor();
+        saveViewportPos();
+    }
 }
 
-// savedViewportPos is [0...1][0...1]
-// values are where viewport center is on the image
-void ImageViewerV2::saveViewportPos() {
-    if(mViewLock != LOCK_ALL)
+void ImageViewerV2::togglePreserveView() {
+    if(!isDisplaying())
         return;
-    QGraphicsPixmapItem *item = &pixmapItem;
-    QPointF sceneCenter = mapToScene( viewport()->rect().center() ) + QPointF(1,1);
-    auto itemRect = item->sceneBoundingRect();
-    savedViewportPos.setX(qBound(qreal(0), (sceneCenter.x() - itemRect.left()) / itemRect.width(),  qreal(1)));
-    savedViewportPos.setY(qBound(qreal(0), (sceneCenter.y() - itemRect.top())  / itemRect.height(), qreal(1)));
+    
+     viewPreservationMode = viewPreservationMode == PRESERVE_VIEW ? PRESERVE_NONE : PRESERVE_VIEW;
+}
+
+bool ImageViewerV2::preserveViewEnabled() {
+    return (viewPreservationMode == PRESERVE_VIEW);
+}
+
+bool ImageViewerV2::preserveCurrentViewEnabled() {
+    return (viewPreservationMode == PRESERVE_CURRENT_VIEW);
+}
+
+void ImageViewerV2::saveViewportPos() {
+    /*  To preserve the relative view when switching to another image means:
+        When the viewport is currently in a corner (bounded by two image borders) and the user switches to another image, the new viewport must be located in the same corner.
+        Everything in between must be interpolated.
+        For that, we have to calculate the viewport relative to the image's rect.
+        Since the viewport is a rect itself (rect relative to rect) we'll take the viewport's center relative to the "inner box".
+        The inner box is a rect defined by all possible positions where the viewport's center can be when scrolling/moving the image.
+        Its top-left corner is at img_rect.topLeft() + viewport_dim/2 and its bottom-right corner at img_rect.bottomRight() - viewport_dim/2
+        The exception is when the image is smaller than the viewport. In that case the viewport's center can only be at the image's center.
+    */
+    
+    
+    QRectF viewport_rect = mapToScene(viewport()->rect()).boundingRect();
+    QPointF top_left_viewport = viewport_rect.topLeft();
+    QPointF viewport_dim = QPointF(viewport_rect.width(), viewport_rect.height());
+    
+    QRectF img_rect = pixmapItem.sceneBoundingRect();
+    QRect img_rect_vp = viewportTransform().mapRect(img_rect).toRect();
+    QPointF img_dim = QPointF(img_rect.width(), img_rect.height());
+    QPointF inner_box_dim = img_dim - viewport_dim;
+    QPointF vp_abs_pos_inner_box = top_left_viewport - img_rect.topLeft();
+    
+    QPointF bottom_right_img_vp = mapFromScene(img_rect.bottomRight());
+    bool right_border_collapse = viewport()->width() == bottom_right_img_vp.x();
+    bool bottom_border_collapse = viewport()->height() == bottom_right_img_vp.y();
+    bool img_bigger_viewport_x = viewport()->width() < img_rect_vp.width();
+    bool img_bigger_viewport_y = viewport()->height() < img_rect_vp.height();
+    
+    qreal vp_rel_pos_inner_box_x = !img_bigger_viewport_x ? 0.5 :
+        right_border_collapse ? 1 : vp_abs_pos_inner_box.x() / inner_box_dim.x();
+    qreal vp_rel_pos_inner_box_y = !img_bigger_viewport_y ? 0.5 :
+        bottom_border_collapse ? 1 : vp_abs_pos_inner_box.y() / inner_box_dim.y();
+    
+    // savedViewportPos is (0...1, 0...1) indicating where the viewport center is on the image
+    savedViewportPos.rx() = vp_rel_pos_inner_box_x;
+    savedViewportPos.ry() = vp_rel_pos_inner_box_y;
 }
 
 void ImageViewerV2::applySavedViewportPos() {
-    QGraphicsPixmapItem *item = &pixmapItem;
-    auto itemRect = item->sceneBoundingRect();
-    QPointF newScenePos;
-    newScenePos.setX(itemRect.left() + itemRect.width()  * savedViewportPos.x());
-    newScenePos.setY(itemRect.top()  + itemRect.height() * savedViewportPos.y());
-    centerOn(newScenePos);
-    centerIfNecessary();
-    snapToEdges();
+    QRectF viewport_rect = mapToScene(viewport()->rect()).boundingRect();
+    QPointF viewport_dim = QPointF(viewport_rect.width(), viewport_rect.height());
+    
+    QRectF img_rect = pixmapItem.sceneBoundingRect();
+    QPointF img_dim = QPointF(img_rect.width(), img_rect.height());
+    QPointF inner_box_dim = img_dim - viewport_dim;
+    QPointF top_left_inner_box = img_rect.topLeft() + viewport_dim/2;
+    
+    qreal viewport_center_x = inner_box_dim.x() > 0 ?
+        savedViewportPos.x() * inner_box_dim.x() + top_left_inner_box.x() : img_rect.center().x();
+    
+    qreal viewport_center_y = inner_box_dim.y() > 0 ?
+        savedViewportPos.y() * inner_box_dim.y() + top_left_inner_box.y() : img_rect.center().y();
+    
+    // Again, sceneRoundPos fixes every position drift. MAGIC!
+    QPointF viewport_center = sceneRoundPos(QPointF(viewport_center_x, viewport_center_y));
+    
+    centerOn(viewport_center);
 }
 
 // If the image is smaller than the viewport, center it

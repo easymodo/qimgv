@@ -304,12 +304,21 @@ void MW::toggleLockZoom() {
     onInfoUpdated();
 }
 
-void MW::toggleLockView() {
-    viewerWidget->toggleLockView();
-    if(viewerWidget->lockViewEnabled())
-        showMessage("View lock: ON");
+void MW::togglePreserveView() {
+    viewerWidget->togglePreserveView();
+    if(viewerWidget->preserveViewEnabled())
+        showMessage("Preserve view: ON");
     else
-        showMessage("View lock: OFF");
+        showMessage("Preserve view: OFF");
+    onInfoUpdated();
+}
+
+void MW::togglePreserveCurrentView() {
+    viewerWidget->togglePreserveCurrentView();
+    if(viewerWidget->preserveCurrentViewEnabled())
+        showMessage("Preserve current view: ON");
+    else
+        showMessage("Preserve current view: OFF");
     onInfoUpdated();
 }
 
@@ -837,8 +846,8 @@ void MW::onInfoUpdated() {
             states.append(" [shuffle]");
         if(viewerWidget->lockZoomEnabled())
             states.append(" [zoom lock]");
-        if(viewerWidget->lockViewEnabled())
-            states.append(" [view lock]");
+        if(viewerWidget->preserveViewEnabled() || viewerWidget->preserveCurrentViewEnabled())
+            states.append(" [preserved view]");
 
         if(!settings->infoBarWindowed() && !states.isEmpty())
             windowTitle.append(" -" + states);

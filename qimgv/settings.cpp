@@ -1197,3 +1197,11 @@ bool Settings::showHiddenFiles() {
 void Settings::setShowHiddenFiles(bool mode) {
     settings->settingsConf->setValue("showHiddenFiles", mode);
 }
+//------------------------------------------------------------------------------
+int Settings::zoomPreservationMode() {
+    return settings->settingsConf->value("zoomPreservationMode", 0).toInt();
+}
+
+void Settings::setZoomPreservationMode(int mode) {
+    settings->settingsConf->setValue("zoomPreservationMode", mode);
+}

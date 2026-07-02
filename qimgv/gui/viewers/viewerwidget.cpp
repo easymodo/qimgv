@@ -171,7 +171,8 @@ void ViewerWidget::setInteractionEnabled(bool mode) {
     mInteractionEnabled = mode;
     if(mInteractionEnabled) {
         connect(this, &ViewerWidget::toggleLockZoom, imageViewer.get(), &ImageViewerV2::toggleLockZoom);
-        connect(this, &ViewerWidget::toggleLockView, imageViewer.get(), &ImageViewerV2::toggleLockView);
+        connect(this, &ViewerWidget::togglePreserveView, imageViewer.get(), &ImageViewerV2::togglePreserveView);
+        connect(this, &ViewerWidget::togglePreserveCurrentView, imageViewer.get(), &ImageViewerV2::togglePreserveCurrentView);
         connect(this, &ViewerWidget::zoomIn,         imageViewer.get(), &ImageViewerV2::zoomIn);
         connect(this, &ViewerWidget::zoomOut,        imageViewer.get(), &ImageViewerV2::zoomOut);
         connect(this, &ViewerWidget::zoomInCursor,   imageViewer.get(), &ImageViewerV2::zoomInCursor);
@@ -363,8 +364,12 @@ bool ViewerWidget::lockZoomEnabled() {
     return imageViewer->lockZoomEnabled();
 }
 
-bool ViewerWidget::lockViewEnabled() {
-    return imageViewer->lockViewEnabled();
+bool ViewerWidget::preserveViewEnabled() {
+    return imageViewer->preserveViewEnabled();
+}
+
+bool ViewerWidget::preserveCurrentViewEnabled() {
+    return imageViewer->preserveCurrentViewEnabled();
 }
 
 ScalingFilter ViewerWidget::scalingFilter() {

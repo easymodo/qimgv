@@ -25,10 +25,17 @@ enum MouseInteractionState {
     MOUSE_WHEEL_ZOOM
 };
 
-enum ViewLockMode {
-    LOCK_NONE,
-    LOCK_ZOOM,
-    LOCK_ALL
+enum ViewPreservationMode {
+    PRESERVE_NONE,
+    PRESERVE_ZOOM,
+    PRESERVE_VIEW,
+    PRESERVE_CURRENT_VIEW
+};
+
+enum ZoomPreservationMode {
+    PRESERVE_IMG_SCENE_WIDTH,
+    PRESERVE_IMG_SCENE_HEIGHT,
+    PRESERVE_IMG_PIXEL_DENSITY
 };
 
 class ImageViewerV2 : public QGraphicsView
@@ -104,8 +111,10 @@ public slots:
     void onFullscreenModeChanged(bool mode);
     void toggleLockZoom();
     bool lockZoomEnabled();
-    void toggleLockView();
-    bool lockViewEnabled();
+    void togglePreserveView();
+    void togglePreserveCurrentView();
+    bool preserveViewEnabled();
+    bool preserveCurrentViewEnabled();
 
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
@@ -156,13 +165,15 @@ private:
 
     bool dragsEnabled = true;
     bool wayland = false;
+    ZoomPreservationMode zoomPreservationMode = PRESERVE_IMG_SCENE_WIDTH;
 
     float zoomStep = 0.1, dpr;
-    float minScale, maxScale, fitWindowScale, fitWindowStretchScale, expandLimit, lockedScale;
+    float minScale, maxScale, fitWindowScale, fitWindowStretchScale, expandLimit, savedZoomFactor_;
     QPointF zoomCursorPosition = QPointF(-1.0, 0.0);
     
+    qreal savedZoomFactor();
     QPointF savedViewportPos;
-    ViewLockMode mViewLock;
+    ViewPreservationMode viewPreservationMode = PRESERVE_NONE;
 
     QPair<QPointF, QPoint> zoomAnchor; // [pixmap coords, viewport coords]
     
@@ -211,7 +222,7 @@ private:
     void fitFree(float scale);
     void applySavedViewportPos();
     void saveViewportPos();
-    void lockZoom();
+    void saveZoomFactor();
     void doZoomIn(bool atCursor, bool pullCenter);
     void doZoomOut(bool atCursor);
     

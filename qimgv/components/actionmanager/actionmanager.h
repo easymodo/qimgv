@@ -121,7 +121,8 @@ signals:
     void nextDirectory();
     void prevDirectory();
     void lockZoom();
-    void lockView();
+    void togglePreserveView();
+    void togglePreserveCurrentView();
     void print();
     void toggleFullscreenInfoBar();
     void pasteFile();

@@ -253,6 +253,7 @@ public slots:
     void toggleScalingFilter();
     void setDirectoryPath(QString path);
     void toggleLockZoom();
-    void toggleLockView();
+    void togglePreserveView();
+    void togglePreserveCurrentView();
     void toggleFullscreenInfoBar();
 };
