@@ -78,6 +78,7 @@ signals:
     void zoomOut();
     void zoomInCursor();
     void zoomOutCursor();
+    void zoomInCenterCursor();
     void resize();
     void rotateLeft();
     void rotateRight();
@@ -120,7 +121,8 @@ signals:
     void nextDirectory();
     void prevDirectory();
     void lockZoom();
-    void lockView();
+    void togglePreserveView();
+    void togglePreserveCurrentView();
     void print();
     void toggleFullscreenInfoBar();
     void pasteFile();

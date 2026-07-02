@@ -309,6 +309,9 @@ public:
 
     bool showHiddenFiles();
     void setShowHiddenFiles(bool mode);
+    
+    int zoomPreservationMode();
+    void setZoomPreservationMode(int mode);
 
 private:
     explicit Settings(QObject *parent = nullptr);

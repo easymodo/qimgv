@@ -141,12 +141,13 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::fitWindowStretch, mw, &MW::fitWindowStretch);
     connect(actionManager, &ActionManager::toggleFitMode, mw, &MW::switchFitMode);
     connect(actionManager, &ActionManager::toggleFullscreen, mw, &MW::triggerFullScreen);
-    connect(actionManager, &ActionManager::lockZoom, mw, &MW::toggleLockZoom);
-    connect(actionManager, &ActionManager::lockView, mw, &MW::toggleLockView);
+    connect(actionManager, &ActionManager::togglePreserveView, mw, &MW::togglePreserveView);
+    connect(actionManager, &ActionManager::togglePreserveCurrentView, mw, &MW::togglePreserveCurrentView);
     connect(actionManager, &ActionManager::zoomIn, mw, &MW::zoomIn);
     connect(actionManager, &ActionManager::zoomOut, mw, &MW::zoomOut);
     connect(actionManager, &ActionManager::zoomInCursor, mw, &MW::zoomInCursor);
     connect(actionManager, &ActionManager::zoomOutCursor, mw, &MW::zoomOutCursor);
+    connect(actionManager, &ActionManager::zoomInCenterCursor, mw, &MW::zoomInCenterCursor);
     connect(actionManager, &ActionManager::scrollUp, mw, &MW::scrollUp);
     connect(actionManager, &ActionManager::scrollDown, mw, &MW::scrollDown);
     connect(actionManager, &ActionManager::scrollLeft, mw, &MW::scrollLeft);
@@ -729,32 +730,39 @@ void Core::showInDirectory() {
         QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
         return;
     }
+    QStringList cmd;
+    
 #if defined(__linux__) || defined(__FreeBSD__)
     QString fm = ScriptManager::runCommand("xdg-mime query default inode/directory");
-    if(fm.contains("dolphin"))
-        ScriptManager::runCommandDetached("dolphin --select " + selectedPath());
-    else if(fm.contains("nautilus"))
-        ScriptManager::runCommandDetached("nautilus --select " + selectedPath());
+    
+    if(fm.contains("dolphin", Qt::CaseInsensitive))
+        cmd << "dolphin" << "--select" << selectedPath();
+    else if(fm.contains("nautilus", Qt::CaseInsensitive))
+        cmd << "nautilus" << "--select" << selectedPath();
+    else if(fm.contains("nemo", Qt::CaseInsensitive))
+        cmd << "nemo" << selectedPath();
     else
         QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
 #elif __WIN32
-    QStringList args;
-    args << "/select," << QDir::toNativeSeparators(selectedPath());
-    QProcess::startDetached("explorer", args);
+    cmd << "explorer" << "/select," << QDir::toNativeSeparators(selectedPath());
 #elif __APPLE__
-    QStringList args;
-    args << "-e";
-    args << "tell application \"Finder\"";
-    args << "-e";
-    args << "activate";
-    args << "-e";
-    args << "select POSIX file \""+selectedPath()+"\"";
-    args << "-e";
-    args << "end tell";
-    QProcess::startDetached("osascript", args);
+    cmd << "osascript";
+    cmd << "-e";
+    cmd << "tell application \"Finder\"";
+    cmd << "-e";
+    cmd << "activate";
+    cmd << "-e";
+    cmd << "select POSIX file \""+selectedPath()+"\"";
+    cmd << "-e";
+    cmd << "end tell";
 #else
     QDesktopServices::openUrl(QUrl::fromLocalFile(model->directoryPath()));
 #endif
+
+    if(!cmd.isEmpty()) {
+        QProcess::startDetached(cmd.takeFirst(), cmd);
+    }
+
 }
 
 void Core::interactiveCopy(QList<QString> paths, QString destDirectory) {

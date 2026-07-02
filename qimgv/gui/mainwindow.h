@@ -180,6 +180,7 @@ signals:
     void zoomOut();
     void zoomInCursor();
     void zoomOutCursor();
+    void zoomInCenterCursor();
     void scrollUp();
     void scrollDown();
     void scrollLeft();
@@ -251,7 +252,7 @@ public slots:
     void setFilter(ScalingFilter filter);
     void toggleScalingFilter();
     void setDirectoryPath(QString path);
-    void toggleLockZoom();
-    void toggleLockView();
+    void togglePreserveView();
+    void togglePreserveCurrentView();
     void toggleFullscreenInfoBar();
 };

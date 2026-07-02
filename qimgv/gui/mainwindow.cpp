@@ -84,6 +84,7 @@ void MW::setupUi() {
     connect(this, &MW::zoomOut,       viewerWidget.get(), &ViewerWidget::zoomOut);
     connect(this, &MW::zoomInCursor,  viewerWidget.get(), &ViewerWidget::zoomInCursor);
     connect(this, &MW::zoomOutCursor, viewerWidget.get(), &ViewerWidget::zoomOutCursor);
+    connect(this, &MW::zoomInCenterCursor,  viewerWidget.get(), &ViewerWidget::zoomInCenterCursor);
     connect(this, &MW::scrollUp,    viewerWidget.get(), &ViewerWidget::scrollUp);
     connect(this, &MW::scrollDown,  viewerWidget.get(), &ViewerWidget::scrollDown);
     connect(this, &MW::scrollLeft,  viewerWidget.get(), &ViewerWidget::scrollLeft);
@@ -294,21 +295,21 @@ void MW::setDirectoryPath(QString path) {
     onInfoUpdated();
 }
 
-void MW::toggleLockZoom() {
-    viewerWidget->toggleLockZoom();
-    if(viewerWidget->lockZoomEnabled())
-        showMessage("Zoom lock: ON");
+void MW::togglePreserveView() {
+    viewerWidget->togglePreserveView();
+    if(viewerWidget->preserveViewEnabled())
+        showMessage("Preserve view: ON");
     else
-        showMessage("Zoom lock: OFF");
+        showMessage("Preserve view: OFF");
     onInfoUpdated();
 }
 
-void MW::toggleLockView() {
-    viewerWidget->toggleLockView();
-    if(viewerWidget->lockViewEnabled())
-        showMessage("View lock: ON");
+void MW::togglePreserveCurrentView() {
+    viewerWidget->togglePreserveCurrentView();
+    if(viewerWidget->preserveCurrentViewEnabled())
+        showMessage("Preserve current view: ON");
     else
-        showMessage("View lock: OFF");
+        showMessage("Preserve current view: OFF");
     onInfoUpdated();
 }
 
@@ -834,10 +835,8 @@ void MW::onInfoUpdated() {
             states.append(" [slideshow]");
         if(info.shuffle)
             states.append(" [shuffle]");
-        if(viewerWidget->lockZoomEnabled())
-            states.append(" [zoom lock]");
-        if(viewerWidget->lockViewEnabled())
-            states.append(" [view lock]");
+        if(viewerWidget->preserveViewEnabled() || viewerWidget->preserveCurrentViewEnabled())
+            states.append(" [preserved view]");
 
         if(!settings->infoBarWindowed() && !states.isEmpty())
             windowTitle.append(" -" + states);

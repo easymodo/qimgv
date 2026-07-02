@@ -824,7 +824,7 @@ void Settings::setExpandImage(bool mode) {
 }
 //------------------------------------------------------------------------------
 int Settings::expandLimit() {
-    return settings->settingsConf->value("expandLimit", 2).toInt();
+    return settings->settingsConf->value("expandLimit", 1).toInt();
 }
 
 void Settings::setExpandLimit(int value) {
@@ -1196,4 +1196,12 @@ bool Settings::showHiddenFiles() {
 
 void Settings::setShowHiddenFiles(bool mode) {
     settings->settingsConf->setValue("showHiddenFiles", mode);
+}
+//------------------------------------------------------------------------------
+int Settings::zoomPreservationMode() {
+    return settings->settingsConf->value("zoomPreservationMode", 0).toInt();
+}
+
+void Settings::setZoomPreservationMode(int mode) {
+    settings->settingsConf->setValue("zoomPreservationMode", mode);
 }

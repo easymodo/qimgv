@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QScreen>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
@@ -24,10 +25,16 @@ enum MouseInteractionState {
     MOUSE_WHEEL_ZOOM
 };
 
-enum ViewLockMode {
-    LOCK_NONE,
-    LOCK_ZOOM,
-    LOCK_ALL
+enum ViewPreservationMode {
+    PRESERVE_NONE,
+    PRESERVE_VIEW,
+    PRESERVE_CURRENT_VIEW
+};
+
+enum ZoomPreservationMode {
+    PRESERVE_IMG_SCENE_WIDTH,
+    PRESERVE_IMG_SCENE_HEIGHT,
+    PRESERVE_IMG_PIXEL_DENSITY
 };
 
 class ImageViewerV2 : public QGraphicsView
@@ -78,6 +85,7 @@ public slots:
     virtual void zoomOut();
     virtual void zoomInCursor();
     virtual void zoomOutCursor();
+    virtual void zoomInCenterCursor();
     virtual void readSettings();
     virtual void scrollUp();
     virtual void scrollDown();
@@ -100,10 +108,10 @@ public slots:
 
     bool showAnimationFrame(int frame);
     void onFullscreenModeChanged(bool mode);
-    void toggleLockZoom();
-    bool lockZoomEnabled();
-    void toggleLockView();
-    bool lockViewEnabled();
+    void togglePreserveView();
+    void togglePreserveCurrentView();
+    bool preserveViewEnabled();
+    bool preserveCurrentViewEnabled();
 
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
@@ -134,7 +142,7 @@ private:
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
     QTimer *animationTimer, *scaleTimer;
     QScrollBar *hs, *vs;
-    QPoint mouseMoveStartPos, mousePressPos, drawPos;
+    QPoint mouseMoveStartPos, mousePressPos;
     bool transparencyGrid, expandImage,    smoothAnimatedImages,
          smoothUpscaling,  forceFastScale, keepFitMode,
          loopPlayback,     mIsFullscreen,  scrollBarWorkaround,
@@ -154,13 +162,19 @@ private:
 
     bool dragsEnabled = true;
     bool wayland = false;
+    ZoomPreservationMode zoomPreservationMode = PRESERVE_IMG_SCENE_WIDTH;
 
     float zoomStep = 0.1, dpr;
-    float minScale, maxScale, fitWindowScale, fitWindowStretchScale, expandLimit, lockedScale;
+    float minScale, maxScale, fitWindowScale, fitWindowStretchScale, expandLimit, savedZoomFactor_;
+    QPointF zoomCursorPosition = QPointF(-1.0, 0.0);
+    
+    qreal savedZoomFactor();
     QPointF savedViewportPos;
-    ViewLockMode mViewLock;
+    ViewPreservationMode viewPreservationMode = PRESERVE_NONE;
 
     QPair<QPointF, QPoint> zoomAnchor; // [pixmap coords, viewport coords]
+    
+    float nextScale(bool zoom_in_or_out);
 
     QElapsedTimer lastTouchpadScroll;
 
@@ -177,8 +191,10 @@ private:
     void fitWindowStretch();
 
     void scroll(int dx, int dy, bool animated);
+    void doZoomInCenterCursor(float newScale);
+    QPointF zoomBoxCenterCursor(float zoom_factor);
+    void updateSceneRect(bool called_by_resize_event = false);
 
-    void mousePanWrapping(QMouseEvent *event);
     void mousePan(QMouseEvent *event);
     void mouseMoveZoom(QMouseEvent *event);
     void reset();
@@ -203,7 +219,9 @@ private:
     void fitFree(float scale);
     void applySavedViewportPos();
     void saveViewportPos();
-    void lockZoom();
-    void doZoomIn(bool atCursor);
+    void saveZoomFactor();
+    void doZoomIn(bool atCursor, bool pullCenter);
     void doZoomOut(bool atCursor);
+    
+    QSize screenDimensions;
 };

@@ -170,12 +170,13 @@ void ViewerWidget::setInteractionEnabled(bool mode) {
         return;
     mInteractionEnabled = mode;
     if(mInteractionEnabled) {
-        connect(this, &ViewerWidget::toggleLockZoom, imageViewer.get(), &ImageViewerV2::toggleLockZoom);
-        connect(this, &ViewerWidget::toggleLockView, imageViewer.get(), &ImageViewerV2::toggleLockView);
+        connect(this, &ViewerWidget::togglePreserveView, imageViewer.get(), &ImageViewerV2::togglePreserveView);
+        connect(this, &ViewerWidget::togglePreserveCurrentView, imageViewer.get(), &ImageViewerV2::togglePreserveCurrentView);
         connect(this, &ViewerWidget::zoomIn,         imageViewer.get(), &ImageViewerV2::zoomIn);
         connect(this, &ViewerWidget::zoomOut,        imageViewer.get(), &ImageViewerV2::zoomOut);
         connect(this, &ViewerWidget::zoomInCursor,   imageViewer.get(), &ImageViewerV2::zoomInCursor);
         connect(this, &ViewerWidget::zoomOutCursor,  imageViewer.get(), &ImageViewerV2::zoomOutCursor);
+        connect(this, &ViewerWidget::zoomInCenterCursor,  imageViewer.get(), &ImageViewerV2::zoomInCenterCursor);
         connect(this, &ViewerWidget::scrollUp,       imageViewer.get(), &ImageViewerV2::scrollUp);
         connect(this, &ViewerWidget::scrollDown,     imageViewer.get(), &ImageViewerV2::scrollDown);
         connect(this, &ViewerWidget::scrollLeft,     imageViewer.get(), &ImageViewerV2::scrollLeft);
@@ -191,6 +192,7 @@ void ViewerWidget::setInteractionEnabled(bool mode) {
         disconnect(this, &ViewerWidget::zoomOut,       imageViewer.get(), &ImageViewerV2::zoomOut);
         disconnect(this, &ViewerWidget::zoomInCursor,  imageViewer.get(), &ImageViewerV2::zoomInCursor);
         disconnect(this, &ViewerWidget::zoomOutCursor, imageViewer.get(), &ImageViewerV2::zoomOutCursor);
+        disconnect(this, &ViewerWidget::zoomInCenterCursor, imageViewer.get(), &ImageViewerV2::zoomInCenterCursor);
         disconnect(this, &ViewerWidget::scrollUp,      imageViewer.get(), &ImageViewerV2::scrollUp);
         disconnect(this, &ViewerWidget::scrollDown,    imageViewer.get(), &ImageViewerV2::scrollDown);
         disconnect(this, &ViewerWidget::scrollLeft,    imageViewer.get(), &ImageViewerV2::scrollLeft);
@@ -357,12 +359,12 @@ bool ViewerWidget::isDisplaying() {
         return false;
 }
 
-bool ViewerWidget::lockZoomEnabled() {
-    return imageViewer->lockZoomEnabled();
+bool ViewerWidget::preserveViewEnabled() {
+    return imageViewer->preserveViewEnabled();
 }
 
-bool ViewerWidget::lockViewEnabled() {
-    return imageViewer->lockViewEnabled();
+bool ViewerWidget::preserveCurrentViewEnabled() {
+    return imageViewer->preserveCurrentViewEnabled();
 }
 
 ScalingFilter ViewerWidget::scalingFilter() {
