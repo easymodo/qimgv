@@ -136,7 +136,7 @@ private:
     QGraphicsPixmapItem pixmapItem, pixmapItemScaled;
     QTimer *animationTimer, *scaleTimer;
     QScrollBar *hs, *vs;
-    QPoint mouseMoveStartPos, mousePressPos, drawPos;
+    QPoint mouseMoveStartPos, mousePressPos;
     bool transparencyGrid, expandImage,    smoothAnimatedImages,
          smoothUpscaling,  forceFastScale, keepFitMode,
          loopPlayback,     mIsFullscreen,  scrollBarWorkaround,
@@ -185,7 +185,6 @@ private:
     QPointF zoomBoxCenterCursor(float zoom_factor);
     void updateSceneRect(bool called_by_resize_event = false);
 
-    void mousePanWrapping(QMouseEvent *event);
     void mousePan(QMouseEvent *event);
     void mouseMoveZoom(QMouseEvent *event);
     void reset();

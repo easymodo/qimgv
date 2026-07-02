@@ -78,6 +78,7 @@ ImageViewerV2::ImageViewerV2(QWidget *parent) : QGraphicsView(parent),
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     scene = new QGraphicsScene();
+    scene->setItemIndexMethod(QGraphicsScene::NoIndex);
     scene->setBackgroundBrush(QColor(60,60,103));
     scene->addItem(&pixmapItem);
     scene->addItem(&pixmapItemScaled);
@@ -145,12 +146,17 @@ void ImageViewerV2::readSettings() {
     zoomStep = settings->zoomStep();
     focusIn1to1 = settings->focusPointIn1to1Mode();
     trackpadDetection = settings->trackpadDetection();
-    if( (useFixedZoomLevels = settings->useFixedZoomLevels()) ) {
-        // zoomlevels are stored as a string, parse into list
-        zoomLevels.clear();
-        auto levelsStr = settings->zoomLevels().split(',');
-        for(const auto& i : levelsStr)
-            zoomLevels.append(i.toFloat());
+    zoomLevels.clear();
+    useFixedZoomLevels = settings->useFixedZoomLevels();
+    
+    if(useFixedZoomLevels) {
+        QStringList levelsStr = settings->zoomLevels().split(',');
+        for(const QString& nrStr : levelsStr) {
+            bool success = false;
+            float nr = nrStr.toFloat(&success);
+            if(success)
+                zoomLevels.append(nr);
+        }
         std::sort(zoomLevels.begin(), zoomLevels.end());
     }
     // set bg color
@@ -179,7 +185,8 @@ void ImageViewerV2::startAnimation() {
         emit animationPaused(false);
         //movie->jumpToFrame(0);
         //emit frameChanged(0);
-        animationTimer->start(movie->nextFrameDelay());
+        // 1000/60*1.5: Ensures that every image frame gets at least one screen frame of time (60Hz)
+        animationTimer->start(qMax(static_cast<int>(1000.0/60.0*1.5), movie->nextFrameDelay()));
     }
 }
 
@@ -834,7 +841,7 @@ void ImageViewerV2::fitWindow() {
         // - unless when called from eventloop
         if(scrollBarWorkaround) {
             scrollBarWorkaround = false;
-            QTimer::singleShot(0, this, SLOT(centerOnPixmap()));
+            QTimer::singleShot(0, this, &ImageViewerV2::centerOnPixmap);
         } else {
             centerOnPixmap();
         }
@@ -860,7 +867,7 @@ void ImageViewerV2::fitWindowStretch() {
     // Handle scrollbar workaround similar to fitWindow()
     if(scrollBarWorkaround) {
         scrollBarWorkaround = false;
-        QTimer::singleShot(0, this, SLOT(centerOnPixmap()));
+        QTimer::singleShot(0, this, &ImageViewerV2::centerOnPixmap);
     } else {
         centerOnPixmap();
     }
@@ -966,8 +973,8 @@ void ImageViewerV2::resizeEvent(QResizeEvent *event) {
 }
 
 void ImageViewerV2::centerOnPixmap() {
-    auto imgRect = pixmapItem.sceneBoundingRect();
-    auto vport = mapToScene(viewport()->geometry()).boundingRect();
+    QRectF imgRect = pixmapItem.sceneBoundingRect();
+    QRectF vport = mapToScene(viewport()->geometry()).boundingRect();
     hs->setValue(pixmapItem.offset().x() - (int)(vport.width()  - imgRect.width())  / 2);
     vs->setValue(pixmapItem.offset().y() - (int)(vport.height() - imgRect.height()) / 2);
 }
@@ -1122,15 +1129,16 @@ void ImageViewerV2::setZoomAnchor(QPoint viewportPos) {
 }
 
 void ImageViewerV2::zoomAnchored(float newScale) {
-    if(currentScale() != newScale) {
-        QPointF vportCenter = mapToScene(viewport()->geometry()).boundingRect().center();
-        doZoom(newScale);
-        // calculate shift to adjust viewport center
-        // we do this in viewport coordinates to avoid any rounding errors
-        QPointF diff = zoomAnchor.second - mapFromScene(pixmapItem.mapToScene(zoomAnchor.first));
-        centerOn(vportCenter - diff);
-        requestScaling();
-    }
+    if(currentScale() == newScale)
+        return;
+    
+    QPointF vportCenter = mapToScene(viewport()->geometry()).boundingRect().center();
+    doZoom(newScale);
+    // calculate shift to adjust viewport center
+    // we do this in viewport coordinates to avoid any rounding errors
+    QPointF diff = zoomAnchor.second - mapFromScene(pixmapItem.mapToScene(zoomAnchor.first));
+    centerOn(vportCenter - diff);
+    requestScaling();
 }
 
 // zoom into viewport center
@@ -1394,8 +1402,8 @@ void ImageViewerV2::centerIfNecessary() {
     if(!pixmap)
         return;
     QSize sz = scaledSizeR();
-    auto imgRect = pixmapItem.sceneBoundingRect();
-    auto vport = mapToScene(viewport()->geometry()).boundingRect();
+    QRectF imgRect = pixmapItem.sceneBoundingRect();
+    QRectF vport = mapToScene(viewport()->geometry()).boundingRect();
     if(sz.width() <= viewport()->width())
         hs->setValue(pixmapItem.offset().x() - (int)(vport.width()  - imgRect.width())  / 2);
     if(sz.height() <= viewport()->height())
@@ -1430,7 +1438,7 @@ void ImageViewerV2::doZoom(float newScale) {
     
     newScale = qBound(minScale, newScale, maxScale);
     // fix scene position to integer values
-    auto tl = pixmapItem.sceneBoundingRect().topLeft().toPoint();
+    QPoint tl = pixmapItem.sceneBoundingRect().topLeft().toPoint();
     pixmapItem.setOffset(tl);
     pixmapItem.setScale(newScale);
     
@@ -1451,7 +1459,6 @@ QPointF ImageViewerV2::sceneRoundPos(QPointF scenePoint) const {
 // rounds a rect in scene coordinates so it stays on the same spot on viewport
 // the result is what's actually drawn on screen (incl. size)
 QRectF ImageViewerV2::sceneRoundRect(QRectF sceneRect) const {
-    QRectF rounded = QRectF(sceneRoundPos(sceneRect.topLeft()), sceneRect.size());
     return QRectF(sceneRoundPos(sceneRect.topLeft()), sceneRect.size());
 }
 
@@ -1459,15 +1466,12 @@ QRectF ImageViewerV2::sceneRoundRect(QRectF sceneRect) const {
 QSize ImageViewerV2::scaledSizeR() const {
     if(!pixmap)
         return QSize(0,0);
-    QRectF pixmapSceneRect = pixmapItem.mapRectToScene(pixmapItem.boundingRect());
-    return sceneRoundRect(pixmapSceneRect).size().toSize();
+    return sceneRoundRect(pixmapItem.sceneBoundingRect()).size().toSize();
 }
 
 // in viewport coords (rounded up)
 QRect ImageViewerV2::scaledRectR() const {
-    QRectF pixmapSceneRect = pixmapItem.mapRectToScene(pixmapItem.boundingRect());
-    return QRect(mapFromScene(pixmapSceneRect.topLeft()),
-                 mapFromScene(pixmapSceneRect.bottomRight()));
+    return mapFromScene(pixmapItem.sceneBoundingRect()).boundingRect();
 }
 
 float ImageViewerV2::currentScale() const {
