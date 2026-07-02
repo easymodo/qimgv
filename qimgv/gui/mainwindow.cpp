@@ -295,15 +295,6 @@ void MW::setDirectoryPath(QString path) {
     onInfoUpdated();
 }
 
-void MW::toggleLockZoom() {
-    viewerWidget->toggleLockZoom();
-    if(viewerWidget->lockZoomEnabled())
-        showMessage("Zoom lock: ON");
-    else
-        showMessage("Zoom lock: OFF");
-    onInfoUpdated();
-}
-
 void MW::togglePreserveView() {
     viewerWidget->togglePreserveView();
     if(viewerWidget->preserveViewEnabled())
@@ -844,8 +835,6 @@ void MW::onInfoUpdated() {
             states.append(" [slideshow]");
         if(info.shuffle)
             states.append(" [shuffle]");
-        if(viewerWidget->lockZoomEnabled())
-            states.append(" [zoom lock]");
         if(viewerWidget->preserveViewEnabled() || viewerWidget->preserveCurrentViewEnabled())
             states.append(" [preserved view]");
 

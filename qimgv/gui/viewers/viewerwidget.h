@@ -31,7 +31,6 @@ public:
     bool showAnimation(std::shared_ptr<QMovie> movie);
     void onScalingFinished(std::unique_ptr<QPixmap> scaled);
     bool isDisplaying();
-    bool lockZoomEnabled();
     bool preserveCurrentViewEnabled();
     bool preserveViewEnabled();
     ScalingFilter scalingFilter();
@@ -87,7 +86,6 @@ signals:
     void setFilterBilinear();
     void setScalingFilter(ScalingFilter filter);
     void playbackFinished();
-    void toggleLockZoom();
     void togglePreserveView();
     void togglePreserveCurrentView();
     void showScriptSettings();

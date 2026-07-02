@@ -27,7 +27,6 @@ enum MouseInteractionState {
 
 enum ViewPreservationMode {
     PRESERVE_NONE,
-    PRESERVE_ZOOM,
     PRESERVE_VIEW,
     PRESERVE_CURRENT_VIEW
 };
@@ -109,8 +108,6 @@ public slots:
 
     bool showAnimationFrame(int frame);
     void onFullscreenModeChanged(bool mode);
-    void toggleLockZoom();
-    bool lockZoomEnabled();
     void togglePreserveView();
     void togglePreserveCurrentView();
     bool preserveViewEnabled();

@@ -170,7 +170,6 @@ void ViewerWidget::setInteractionEnabled(bool mode) {
         return;
     mInteractionEnabled = mode;
     if(mInteractionEnabled) {
-        connect(this, &ViewerWidget::toggleLockZoom, imageViewer.get(), &ImageViewerV2::toggleLockZoom);
         connect(this, &ViewerWidget::togglePreserveView, imageViewer.get(), &ImageViewerV2::togglePreserveView);
         connect(this, &ViewerWidget::togglePreserveCurrentView, imageViewer.get(), &ImageViewerV2::togglePreserveCurrentView);
         connect(this, &ViewerWidget::zoomIn,         imageViewer.get(), &ImageViewerV2::zoomIn);
@@ -358,10 +357,6 @@ bool ViewerWidget::isDisplaying() {
         return true;
     else
         return false;
-}
-
-bool ViewerWidget::lockZoomEnabled() {
-    return imageViewer->lockZoomEnabled();
 }
 
 bool ViewerWidget::preserveViewEnabled() {

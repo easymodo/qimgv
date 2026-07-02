@@ -316,8 +316,7 @@ void ImageViewerV2::showAnimation(std::shared_ptr<QMovie> _movie) {
         } else {
             imageFitMode = FIT_FREE;
             fitFree(savedZoomFactor());
-            if(viewPreservationMode != PRESERVE_ZOOM)
-                applySavedViewportPos();
+            applySavedViewportPos();
         }
         startAnimation();
     }
@@ -347,8 +346,7 @@ void ImageViewerV2::showImage(std::unique_ptr<QPixmap> _pixmap) {
         } else {
             imageFitMode = FIT_FREE;
             fitFree(savedZoomFactor());
-            if(viewPreservationMode != PRESERVE_ZOOM)
-                applySavedViewportPos();
+            applySavedViewportPos();
         }
         requestScaling();
         update();
@@ -357,9 +355,6 @@ void ImageViewerV2::showImage(std::unique_ptr<QPixmap> _pixmap) {
 
 // reset state, remove image & stop animation
 void ImageViewerV2::reset() {
-    if(viewPreservationMode == PRESERVE_ZOOM) {
-        saveZoomFactor();
-    }
     if(viewPreservationMode == PRESERVE_VIEW) {
         saveViewportPos();
         saveZoomFactor();
@@ -1354,17 +1349,6 @@ float ImageViewerV2::nextScale(bool zoom_in_or_out) {
     
     qDebug() << "error: unreachable code reached.\n";
     return 1;
-}
-
-void ImageViewerV2::toggleLockZoom() {
-    if(!isDisplaying())
-        return;
-    
-    viewPreservationMode = viewPreservationMode == PRESERVE_ZOOM ? PRESERVE_NONE : PRESERVE_ZOOM;
-}
-
-bool ImageViewerV2::lockZoomEnabled() {
-    return (viewPreservationMode == PRESERVE_ZOOM);
 }
 
 qreal ImageViewerV2::savedZoomFactor() {
