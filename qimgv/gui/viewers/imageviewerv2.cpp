@@ -1219,7 +1219,6 @@ QPointF ImageViewerV2::zoomBoxCenterCursor(float zoom_factor) {
 
 
 void ImageViewerV2::doZoomInCenterCursor(float new_scale) {
-    new_scale = qMin(new_scale, maxScale);
     float current_scale = pixmapItem.scale();
     if(!pixmapItem.isUnderMouse() || current_scale == new_scale) return;
     
@@ -1255,23 +1254,9 @@ void ImageViewerV2::doZoomInCenterCursor(float new_scale) {
 
 
 void ImageViewerV2::doZoomIn(bool atCursor, bool pullCenter) {
-    float newScale = currentScale() * (1.0f + zoomStep);
-    if(useFixedZoomLevels && zoomLevels.count()) {
-        if(currentScale() < zoomLevels.first()) {
-            newScale = qMin(currentScale() * (1.0f + zoomStep), zoomLevels.first());
-        } else if(currentScale() >= zoomLevels.last()) {
-            newScale = currentScale() * (1.0f + zoomStep);
-        } else {
-            for(int i = 0; i < zoomLevels.count(); i++) {
-                float level = zoomLevels.at(i);
-                if(currentScale() < level) {
-                    newScale = level;
-                    break;
-                }
-            }
-        }
-    }
-    
+    float newScale = nextScale(true);
+    if(currentScale() == newScale)
+        return;
     
     // if the cursor isn't over the picture, fallback to other zoom
     if(pullCenter && pixmapItem.isUnderMouse()) {
@@ -1305,22 +1290,9 @@ void ImageViewerV2::zoomOutCursor() {
 }
 
 void ImageViewerV2::doZoomOut(bool atCursor) {
-    float newScale = currentScale() * (1.0f - zoomStep);
-    if(useFixedZoomLevels && zoomLevels.count()) {
-        if(currentScale() > zoomLevels.last()) {
-            newScale = qMax(zoomLevels.last(), currentScale() * (1.0f - zoomStep));
-        } else if(currentScale() <= zoomLevels.first()) {
-            newScale = currentScale() * (1.0f - zoomStep);
-        } else {
-            for(int i = zoomLevels.count() - 1; i >= 0; i--) {
-                float level = zoomLevels.at(i);
-                if(currentScale() > level) {
-                    newScale = level;
-                    break;
-                }
-            }
-        }
-    }
+    float newScale = nextScale(false);
+    if(currentScale() == newScale)
+        return;
     
     if(atCursor && underMouse())
         setZoomAnchor(mapFromGlobal(cursor().pos()));
@@ -1335,6 +1307,49 @@ void ImageViewerV2::doZoomOut(bool atCursor) {
         imageFitMode = FIT_WINDOW;
     else if(pixmapItem.scale() == fitWindowStretchScale)
         imageFitMode = FIT_WINDOW_STRETCH;
+}
+
+float ImageViewerV2::nextScale(bool zoom_in_or_out) {
+    float current_scale = pixmapItem.scale();
+    
+    float default_scale = current_scale * (zoom_in_or_out ? 1.0f+zoomStep : 1.0f-zoomStep);
+    
+    default_scale = qBound(minScale, default_scale, maxScale);
+    
+    if(!useFixedZoomLevels || !zoomLevels.count()) {
+        return default_scale;
+    }
+    
+    if(zoom_in_or_out ? zoomLevels.last() <= current_scale : current_scale <= zoomLevels.first()) {
+        return default_scale;
+    }
+    
+    if(zoom_in_or_out ? current_scale < zoomLevels.first() : zoomLevels.last() < current_scale) {
+        return zoom_in_or_out ?
+            qMin(default_scale, zoomLevels.first()) : qMax(default_scale, zoomLevels.last());
+    }
+    
+    // At this point we know that:
+    // zoom_in_or_out ? zoomLevels.first() <= current_scale < zoomLevels.last() : zoomLevels.first() < current_scale <= zoomLevels.last()
+    
+    if(zoom_in_or_out) {
+        for(int i = 0; i < zoomLevels.count(); i++) {
+            float scale = zoomLevels.at(i);
+            if(current_scale < scale)
+                return scale;
+            
+        }
+    } else {
+        for(int i = zoomLevels.count() - 1; i >= 0; i--) {
+            float scale = zoomLevels.at(i);
+            if(scale < current_scale)
+                return scale;
+            
+        }
+    }
+    
+    qDebug() << "error: unreachable code reached.\n";
+    return 1;
 }
 
 void ImageViewerV2::toggleLockZoom() {

@@ -165,6 +165,8 @@ private:
     ViewLockMode mViewLock;
 
     QPair<QPointF, QPoint> zoomAnchor; // [pixmap coords, viewport coords]
+    
+    float nextScale(bool zoom_in_or_out);
 
     QElapsedTimer lastTouchpadScroll;
 
