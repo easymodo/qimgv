@@ -148,6 +148,9 @@ public:
     void setUseThumbnailCache(bool mode);
     QStringList savedPaths();
     void setSavedPaths(QStringList paths);
+    // whether the quick copy/move panel last showed configured folders or disk folders
+    bool savedPathsDiskMode();
+    void setSavedPathsDiskMode(bool mode);
     QString tmpDir();
     int thumbnailerThreadCount();
     void setThumbnailerThreadCount(int count);

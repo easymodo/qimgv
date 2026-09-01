@@ -3,8 +3,11 @@
 MenuItem::MenuItem(QWidget *parent)
     : QWidget(parent)
 {
-    mLayout.setContentsMargins(6,0,8,0);
-    mLayout.setSpacing(2);
+    // owned by the widget (via setLayout below) and torn down by Qt,
+    // so it must be heap-allocated rather than a plain member
+    mLayout = new QHBoxLayout();
+    mLayout->setContentsMargins(6,0,8,0);
+    mLayout->setSpacing(2);
 
     setAccessibleName("MenuItem");
     this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -14,22 +17,23 @@ MenuItem::MenuItem(QWidget *parent)
 
     mIconWidget.installEventFilter(this);
 
+    // ownership passes to mLayout; it gets deleted along with the layout,
+    // do not delete it again in the destructor
     spacer = new QSpacerItem(3, 1, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     mIconWidget.setAttribute(Qt::WA_TransparentForMouseEvents, true);
     mIconWidget.setAccessibleName("MenuItemIcon");
     mTextLabel.setAccessibleName("MenuItemText");
     mShortcutLabel.setAccessibleName("MenuItemShortcutLabel");
-    mLayout.addWidget(&mIconWidget);
-    mLayout.addWidget(&mTextLabel);
-    mLayout.addSpacerItem(spacer);
-    mLayout.addWidget(&mShortcutLabel);
-    mLayout.setStretch(1,1);
+    mLayout->addWidget(&mIconWidget);
+    mLayout->addWidget(&mTextLabel);
+    mLayout->addSpacerItem(spacer);
+    mLayout->addWidget(&mShortcutLabel);
+    mLayout->setStretch(1,1);
 
-    setLayout(&mLayout);
+    setLayout(mLayout);
 }
 
 MenuItem::~MenuItem() {
-    delete spacer;
 }
 
 void MenuItem::setText(QString text) {

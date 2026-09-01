@@ -770,6 +770,14 @@ void Settings::setSavedPaths(QStringList paths) {
     settings->stateConf->setValue("savedPaths", paths);
 }
 //------------------------------------------------------------------------------
+bool Settings::savedPathsDiskMode() {
+    return settings->stateConf->value("savedPathsDiskMode", false).toBool();
+}
+
+void Settings::setSavedPathsDiskMode(bool mode) {
+    settings->stateConf->setValue("savedPathsDiskMode", mode);
+}
+//------------------------------------------------------------------------------
 QStringList Settings::bookmarks() {
     return settings->stateConf->value("bookmarks").toStringList();
 }

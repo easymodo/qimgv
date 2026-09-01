@@ -125,6 +125,7 @@ void MW::setupCopyOverlay() {
     copyOverlay = new CopyOverlay(viewerWidget.get());
     connect(copyOverlay, &CopyOverlay::copyRequested, this, &MW::copyRequested);
     connect(copyOverlay, &CopyOverlay::moveRequested, this, &MW::moveRequested);
+    copyOverlay->setCurrentDirectory(info.directoryPath);
 }
 
 void MW::setupSaveOverlay() {
@@ -292,6 +293,8 @@ void MW::setDirectoryPath(QString path) {
     info.directoryName = path.split("/").last();
     folderView->setDirectoryPath(path);
     onInfoUpdated();
+    if(copyOverlay)
+        copyOverlay->setCurrentDirectory(path);
 }
 
 void MW::toggleLockZoom() {
