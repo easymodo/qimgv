@@ -12,6 +12,8 @@
 #include <QDir>
 #include <QKeySequence>
 #include <QMap>
+#include <QPair>
+#include <QVector>
 #include <QFont>
 #include <QFontMetrics>
 #include <QVersionNumber>
@@ -129,6 +131,9 @@ public:
     void setLoopSlideshow(bool mode);
     void readShortcuts(QMap<QString, QString> &shortcuts);
     void saveShortcuts(const QMap<QString, QString> &shortcuts);
+    // ordered list of (exif tag key, enabled) pairs; always contains every known key
+    QVector<QPair<QString, bool>> exifFields();
+    void setExifFields(const QVector<QPair<QString, bool>> &fields);
     bool panelEnabled();
     void setPanelEnabled(bool mode);
     int lastDisplay();

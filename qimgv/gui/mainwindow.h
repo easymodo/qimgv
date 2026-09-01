@@ -73,7 +73,7 @@ public:
     void showVideo(QString file);
 
     void setCurrentInfo(int fileIndex, int fileCount, QString filePath, QString fileName, QSize imageSize, qint64 fileSize, bool slideshow, bool shuffle, bool edited);
-    void setExifInfo(QMap<QString, QString>);
+    void setExifInfo(QVector<QPair<QString, QString>>);
     std::shared_ptr<FolderViewProxy> getFolderView();
     std::shared_ptr<ThumbnailStripProxy> getThumbnailPanel();
 

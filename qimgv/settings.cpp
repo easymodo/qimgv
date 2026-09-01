@@ -1,4 +1,6 @@
 #include "settings.h"
+#include "sourcecontainers/documentinfo.h"
+#include <QSet>
 
 Settings *settings = nullptr;
 
@@ -663,6 +665,37 @@ void Settings::saveShortcuts(const QMap<QString, QString> &shortcuts) {
             out << i.value() + "=" + i.key();
     }
     settings->settingsConf->setValue("shortcuts", out);
+    settings->settingsConf->endGroup();
+}
+//------------------------------------------------------------------------------
+QVector<QPair<QString, bool>> Settings::exifFields() {
+    QVector<QPair<QString, bool>> result;
+    settings->settingsConf->beginGroup("View");
+    const QStringList in = settings->settingsConf->value("exifFields").toStringList();
+    settings->settingsConf->endGroup();
+
+    QSet<QString> seen;
+    for(const QString &entry : in) {
+        const QStringList pair = entry.split("=");
+        if(pair.count() != 2 || !DocumentInfo::exifFieldKeys().contains(pair[0]))
+            continue;
+        result.append({pair[0], pair[1] == "1"});
+        seen.insert(pair[0]);
+    }
+    // append any known key missing from the saved list (e.g. added after an update), enabled by default
+    for(const QString &key : DocumentInfo::exifFieldKeys()) {
+        if(!seen.contains(key))
+            result.append({key, true});
+    }
+    return result;
+}
+
+void Settings::setExifFields(const QVector<QPair<QString, bool>> &fields) {
+    QStringList out;
+    for(const auto &field : fields)
+        out << field.first + "=" + (field.second ? "1" : "0");
+    settings->settingsConf->beginGroup("View");
+    settings->settingsConf->setValue("exifFields", out);
     settings->settingsConf->endGroup();
 }
 //------------------------------------------------------------------------------

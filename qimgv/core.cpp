@@ -44,6 +44,8 @@ void Core::readSettings() {
         folderViewPresenter.setShowDirs(showDirs);
     if(shuffle)
         syncRandomizer();
+    if(state.currentImg)
+        mw->setExifInfo(state.currentImg->getExifTags());
 }
 
 void Core::showGui() {

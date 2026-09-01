@@ -45,7 +45,13 @@ public:
     QDateTime lastModified() const;
     void refresh();
     void loadExifTags();
-    QMap<QString, QString> getExifTags();
+    // ordered (label, value) pairs, filtered & ordered per Settings::exifFields()
+    QVector<QPair<QString, QString>> getExifTags();
+
+    // stable, non-translated identifiers for every extractable exif tag, in default order
+    static QStringList exifFieldKeys();
+    // translated display label for a stable exif tag identifier
+    static QString exifFieldLabel(const QString &key);
 
 private:
     QFileInfo fileInfo;
@@ -62,6 +68,6 @@ private:
     bool detectAnimatedWebP();
     bool detectAnimatedJxl();
     bool detectAnimatedAvif();
-    QMap<QString, QString> exifTags;
+    QMap<QString, QString> exifTags; // stable key -> raw value, as extracted from the file
     QMimeType mMimeType;
 };

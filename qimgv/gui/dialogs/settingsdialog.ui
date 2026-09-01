@@ -2728,6 +2728,147 @@
                 </widget>
                </item>
                <item>
+                <spacer name="verticalSpacer_exifPreGroup">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Fixed</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>12</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QWidget" name="exifFieldsGroup" native="true">
+                 <property name="accessibleName">
+                  <string notr="true">SGroup</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_exif">
+                  <property name="spacing">
+                   <number>7</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>13</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>13</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>10</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_exifFields">
+                    <property name="font">
+                     <font>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>EXIF info fields</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_exifFieldsDesc">
+                    <property name="text">
+                     <string>Choose which EXIF tags are shown in the info panel (I key), and in what order.</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_exif">
+                    <item>
+                     <widget class="QTableWidget" name="exifFieldsTableWidget">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>1</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>180</height>
+                       </size>
+                      </property>
+                      <property name="editTriggers">
+                       <set>QAbstractItemView::NoEditTriggers</set>
+                      </property>
+                      <property name="alternatingRowColors">
+                       <bool>true</bool>
+                      </property>
+                      <property name="selectionMode">
+                       <enum>QAbstractItemView::SingleSelection</enum>
+                      </property>
+                      <property name="selectionBehavior">
+                       <enum>QAbstractItemView::SelectRows</enum>
+                      </property>
+                      <property name="sortingEnabled">
+                       <bool>false</bool>
+                      </property>
+                      <attribute name="verticalHeaderVisible">
+                       <bool>false</bool>
+                      </attribute>
+                      <column>
+                       <property name="text">
+                        <string>Show</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Field</string>
+                       </property>
+                      </column>
+                     </widget>
+                    </item>
+                    <item>
+                     <layout class="QVBoxLayout" name="verticalLayout_exifBtns">
+                      <item>
+                       <widget class="QPushButton" name="exifFieldUpButton">
+                        <property name="text">
+                         <string>Move up</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="exifFieldDownButton">
+                        <property name="text">
+                         <string>Move down</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_exifBtns">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacer_7">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -5028,6 +5169,38 @@ li.checked::marker { content: &quot;\2612&quot;; }
  <resources/>
  <connections>
   <connection>
+   <sender>exifFieldUpButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>moveExifFieldUp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>0</x>
+     <y>0</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>exifFieldDownButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>moveExifFieldDown()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>0</x>
+     <y>0</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>Cancel</sender>
    <signal>clicked()</signal>
    <receiver>SettingsDialog</receiver>
@@ -5489,5 +5662,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <slot>onAutoResizeLimitSliderChanged(int)</slot>
   <slot>resetZoomLevels()</slot>
   <slot>onMouseScrollingSpeedSliderChanged(int)</slot>
+  <slot>moveExifFieldUp()</slot>
+  <slot>moveExifFieldDown()</slot>
  </slots>
 </ui>

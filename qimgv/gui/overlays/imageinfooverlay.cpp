@@ -23,7 +23,7 @@ ImageInfoOverlay::~ImageInfoOverlay() {
         delete entries.takeAt(i);
 }
 
-void ImageInfoOverlay::setExifInfo(QMap<QString, QString> info) {
+void ImageInfoOverlay::setExifInfo(QVector<QPair<QString, QString>> info) {
     // remove/add entries
     int entryCount = entries.count();
     if(entryCount > info.count()) {
@@ -37,13 +37,8 @@ void ImageInfoOverlay::setExifInfo(QMap<QString, QString> info) {
             ui->entryLayout->addWidget(entries.last());
         }
     }
-    QMap<QString, QString>::const_iterator i = info.constBegin();
-    int entryIdx = 0;
-    while(i != info.constEnd()) {
-        entries.at(entryIdx)->setInfo(i.key(), i.value());
-        ++i;
-        ++entryIdx;
-    }
+    for(int entryIdx = 0; entryIdx < info.count(); ++entryIdx)
+        entries.at(entryIdx)->setInfo(info.at(entryIdx).first, info.at(entryIdx).second);
 
     // Hiding/showing entryStub causes flicker,
     // so we just remove it from layout and clear the text.
