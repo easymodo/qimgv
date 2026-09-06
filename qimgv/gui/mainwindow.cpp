@@ -784,10 +784,11 @@ void MW::closeFullScreenOrExit() {
 }
 
 // todo: this is crap, use shared state object
-void MW::setCurrentInfo(int _index, int _fileCount, QString _filePath, QString _fileName, QSize _imageSize, qint64 _fileSize, bool slideshow, bool shuffle, bool edited) {
+void MW::setCurrentInfo(int _index, int _fileCount, QString _filePath, QString _fileName, QString _groupNameSuffix, QSize _imageSize, qint64 _fileSize, bool slideshow, bool shuffle, bool edited) {
     info.index = _index;
     info.fileCount = _fileCount;
     info.fileName = _fileName;
+    info.groupNameSuffix = _groupNameSuffix;
     info.filePath = _filePath;
     info.imageSize = _imageSize;
     info.fileSize = _fileSize;
@@ -822,7 +823,7 @@ void MW::onInfoUpdated() {
         infoBarFullscreen->setInfo("", tr("No file opened."), "");
         infoBarWindowed->setInfo("", tr("No file opened."), "");
     } else {
-        windowTitle = info.fileName;
+        windowTitle = info.fileName + info.groupNameSuffix;
         if(settings->windowTitleExtendedInfo()) {
             windowTitle.prepend(posString + "  ");
             if(!resString.isEmpty())

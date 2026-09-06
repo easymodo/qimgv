@@ -1238,3 +1238,33 @@ bool Settings::showHiddenFiles() {
 void Settings::setShowHiddenFiles(bool mode) {
     settings->settingsConf->setValue("showHiddenFiles", mode);
 }
+//------------------------------------------------------------------------------
+bool Settings::groupingEnabled() {
+    return settings->settingsConf->value("groupingEnabled", false).toBool();
+}
+
+void Settings::setGroupingEnabled(bool mode) {
+    settings->settingsConf->setValue("groupingEnabled", mode);
+}
+//------------------------------------------------------------------------------
+QString Settings::defaultGroupingExtensionPriority() {
+    return QString("mov,mp4,mkv,jpg,jpeg,png,tif,tiff,raw,rw2,arw,dng,cr2,cr3,nef,orf,raf,pef,srw,xmp");
+}
+
+QString Settings::groupingExtensionPriority() {
+    return settingsConf->value("groupingExtensionPriority", defaultGroupingExtensionPriority()).toString();
+}
+
+void Settings::setGroupingExtensionPriority(QString priority) {
+    settingsConf->setValue("groupingExtensionPriority", priority);
+}
+
+QStringList Settings::groupingExtensionPriorityList() {
+    QStringList list;
+    for(const QString &ext : groupingExtensionPriority().split(',', Qt::SkipEmptyParts)) {
+        QString trimmed = ext.trimmed().toLower();
+        if(!trimmed.isEmpty())
+            list << trimmed;
+    }
+    return list;
+}

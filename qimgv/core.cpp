@@ -774,14 +774,14 @@ void Core::doInteractiveCopy(QString path, QString destDirectory, DialogResult &
 // SINGLE FILE COPY ===========================================================================
     if(!srcFi.isDir()) {
         FileOpResult result;
-        FileOperations::copyFileTo(path, destDirectory, overwriteFiles, result);
+        model->copyFileTo(path, destDirectory, overwriteFiles, result);
         if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
             if(overwriteFiles.all) // skipping all
                 return;
             overwriteFiles = mw->fileReplaceDialog(srcFi.absoluteFilePath(), destDirectory + "/" + srcFi.fileName(), FILE_TO_FILE, true);
             if(!overwriteFiles || overwriteFiles.cancel)
                 return;
-            FileOperations::copyFileTo(path, destDirectory, true, result);
+            model->copyFileTo(path, destDirectory, true, result);
         }
         if(result != FileOpResult::SUCCESS && !(result == FileOpResult::DESTINATION_FILE_EXISTS && !overwriteFiles)) {
             mw->showError(FileOperations::decodeResult(result));
@@ -1532,6 +1532,7 @@ void Core::updateInfoString() {
                        model->fileCount(),
                        model->filePathAt(index),
                        model->fileNameAt(index),
+                       model->groupNameSuffix(state.currentFilePath),
                        imageSize,
                        fileSize,
                        slideshow,

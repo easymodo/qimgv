@@ -318,6 +318,14 @@ public:
     bool showHiddenFiles();
     void setShowHiddenFiles(bool mode);
 
+    bool groupingEnabled();
+    void setGroupingEnabled(bool mode);
+    QString defaultGroupingExtensionPriority();
+    QString groupingExtensionPriority();
+    void setGroupingExtensionPriority(QString priority);
+    // parsed, trimmed, lowercased extensions from groupingExtensionPriority(), in order
+    QStringList groupingExtensionPriorityList();
+
 private:
     explicit Settings(QObject *parent = nullptr);
     QSettings *settingsConf, *stateConf, *themeConf;

@@ -3,6 +3,8 @@
 namespace fs = std::filesystem;
 
 DirectoryManager::DirectoryManager() :
+    mLastGroupingEnabled(settings->groupingEnabled()),
+    mLastGroupingPriority(settings->groupingExtensionPriority()),
     watcher(nullptr),
     mSortingMode(SORT_NAME)
 {
@@ -100,6 +102,19 @@ void DirectoryManager::stopFileWatcher() {
 
 void DirectoryManager::readSettings() {
     regex.setPattern(settings->supportedFormatsRegex());
+
+    bool groupingNow = settings->groupingEnabled();
+    QString groupingPriorityNow = settings->groupingExtensionPriority();
+    bool groupingChanged = (groupingNow != mLastGroupingEnabled) ||
+                           (groupingNow && groupingPriorityNow != mLastGroupingPriority);
+    mLastGroupingEnabled = groupingNow;
+    mLastGroupingPriority = groupingPriorityNow;
+
+    if(groupingChanged && !mDirectoryPath.isEmpty()) {
+        loadEntryList(mDirectoryPath, mListSource == SOURCE_DIRECTORY_RECURSIVE);
+        sortEntryLists();
+        emit loaded(mDirectoryPath);
+    }
 }
 
 bool DirectoryManager::setDirectory(QString dirPath) {
@@ -311,16 +326,84 @@ bool DirectoryManager::containsDir(QString dirPath) const {
 void DirectoryManager::loadEntryList(QString directoryPath, bool recursive) {
     dirEntryVec.clear();
     fileEntryVec.clear();
+    fileGroups.clear();
     if(recursive) { // load files only
         addEntriesFromDirectoryRecursive(fileEntryVec, directoryPath);
     } else { // load dirs & files
         addEntriesFromDirectory(fileEntryVec, directoryPath);
     }
+    groupEntries(fileEntryVec);
+}
+
+// lower score = higher display priority; entries whose extension isn't
+// in the priority list fall back to alphabetical order by extension
+static QString groupingPriorityScore(const QString &path, const QStringList &priorityList) {
+    QString ext = QFileInfo(path).suffix().toLower();
+    int rank = priorityList.indexOf(ext);
+    if(rank >= 0)
+        return QStringLiteral("0%1").arg(rank, 6, 10, QChar('0'));
+    return QStringLiteral("1%1").arg(ext);
+}
+
+void DirectoryManager::groupEntries(std::vector<FSEntry> &entryVec) {
+    fileGroups.clear();
+    if(!settings->groupingEnabled() || entryVec.empty())
+        return;
+
+    // group indices by directory + base name (without extension), case-sensitive
+    QHash<QString, QVector<int>> groups;
+    for(int i = 0; i < (int)entryVec.size(); i++) {
+        QFileInfo fi(entryVec[i].path);
+        groups[fi.absolutePath() + "/" + fi.completeBaseName()].append(i);
+    }
+
+    QStringList priorityList = settings->groupingExtensionPriorityList();
+    std::vector<FSEntry> result;
+    result.reserve(entryVec.size());
+    for(auto it = groups.constBegin(); it != groups.constEnd(); ++it) {
+        const QVector<int> &indices = it.value();
+        // the representative must be a genuinely supported (viewable) file; entries
+        // only scanned because their extension is in the priority list (e.g. a
+        // .xmp sidecar) can never be shown on their own, only tucked into a group
+        int repIndex = -1;
+        QString repScore;
+        for(int idx : indices) {
+            if(!regex.match(entryVec[idx].name).hasMatch())
+                continue;
+            QString score = groupingPriorityScore(entryVec[idx].path, priorityList);
+            if(repIndex == -1 || score < repScore) {
+                repIndex = idx;
+                repScore = score;
+            }
+        }
+        if(repIndex == -1)
+            continue; // no viewable file in this group (e.g. an orphan sidecar) -> drop it
+
+        if(indices.size() > 1) {
+            QVector<QString> groupPaths;
+            groupPaths.reserve(indices.size());
+            for(int idx : indices)
+                groupPaths.append(entryVec[idx].path);
+            fileGroups.insert(entryVec[repIndex].path, groupPaths);
+        }
+        result.push_back(entryVec[repIndex]);
+    }
+    entryVec = std::move(result);
+}
+
+QVector<QString> DirectoryManager::groupedPaths(const QString &filePath) const {
+    auto it = fileGroups.constFind(filePath);
+    if(it != fileGroups.constEnd())
+        return it.value();
+    return QVector<QString>{filePath};
 }
 
 // both directories & files
 void DirectoryManager::addEntriesFromDirectory(std::vector<FSEntry> &entryVec, QString directoryPath) {
     QRegularExpressionMatch match;
+    // sidecar-only files (e.g. .xmp) aren't a supported/viewable format on their own, but
+    // still need to be scanned so groupEntries() can tuck them into their file's group
+    QStringList groupingPriorityList = settings->groupingEnabled() ? settings->groupingExtensionPriorityList() : QStringList();
     for(const auto & entry : fs::directory_iterator(toStdString(directoryPath))) {
         QString name = QString::fromStdString(entry.path().filename().generic_string());
 #ifndef Q_OS_WIN32
@@ -334,6 +417,7 @@ void DirectoryManager::addEntriesFromDirectory(std::vector<FSEntry> &entryVec, Q
 #endif
         QString path = QString::fromStdString(entry.path().generic_string());
         match = regex.match(name);
+        bool isGroupingSidecar = !match.hasMatch() && groupingPriorityList.contains(QFileInfo(name).suffix().toLower());
         if(entry.is_directory()) { // this can still throw std::bad_alloc ..
             FSEntry newEntry;
             try {
@@ -347,7 +431,7 @@ void DirectoryManager::addEntriesFromDirectory(std::vector<FSEntry> &entryVec, Q
                 continue;
             }
             dirEntryVec.emplace_back(newEntry);
-        } else if (match.hasMatch()) {
+        } else if (match.hasMatch() || isGroupingSidecar) {
             FSEntry newEntry;
             try {
                 newEntry.name = name;
@@ -366,11 +450,13 @@ void DirectoryManager::addEntriesFromDirectory(std::vector<FSEntry> &entryVec, Q
 
 void DirectoryManager::addEntriesFromDirectoryRecursive(std::vector<FSEntry> &entryVec, QString directoryPath) {
     QRegularExpressionMatch match;
+    QStringList groupingPriorityList = settings->groupingEnabled() ? settings->groupingExtensionPriorityList() : QStringList();
     for(const auto & entry : fs::recursive_directory_iterator(toStdString(directoryPath))) {
         QString name = QString::fromStdString(entry.path().filename().generic_string());
         QString path = QString::fromStdString(entry.path().generic_string());
         match = regex.match(name);
-        if(!entry.is_directory() && match.hasMatch()) {
+        bool isGroupingSidecar = !match.hasMatch() && groupingPriorityList.contains(QFileInfo(name).suffix().toLower());
+        if(!entry.is_directory() && (match.hasMatch() || isGroupingSidecar)) {
             FSEntry newEntry;
             try {
                 newEntry.name = name;

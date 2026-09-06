@@ -8,6 +8,9 @@
 #include <QDebug>
 #include <QDateTime>
 #include <QRegularExpression>
+#include <QFileInfo>
+#include <QHash>
+#include <QVector>
 
 #include <vector>
 #include <string>
@@ -90,18 +93,29 @@ public:
 
     QStringList fileList() const;
 
+    // all file paths in the same group as filePath (grouping by base name), including filePath itself;
+    // returns {filePath} if grouping is disabled or filePath isn't part of a multi-file group
+    QVector<QString> groupedPaths(const QString &filePath) const;
+
 private:
     QRegularExpression regex;
     QCollator collator;
     std::vector<FSEntry> fileEntryVec, dirEntryVec;
     const FSEntry defaultEntry;
     QString mDirectoryPath;
+    // representative file path -> all file paths in its group (only entries with >1 file)
+    QHash<QString, QVector<QString>> fileGroups;
+    bool mLastGroupingEnabled;
+    QString mLastGroupingPriority;
 
     DirectoryWatcher* watcher;
     void readSettings();
     SortingMode mSortingMode;
     FileListSource mListSource;
     void loadEntryList(QString directoryPath, bool recursive);
+    // collapses entryVec down to one representative FSEntry per base name group,
+    // and fills fileGroups accordingly; no-op if grouping is disabled
+    void groupEntries(std::vector<FSEntry> &entryVec);
 
     bool path_entry_compare(const FSEntry &e1, const FSEntry &e2) const;
     bool path_entry_compare_reverse(const FSEntry &e1, const FSEntry &e2) const;

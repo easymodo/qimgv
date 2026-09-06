@@ -231,6 +231,10 @@ void SettingsDialog::readSettings() {
     ui->useFixedZoomLevelsCheckBox->setChecked(settings->useFixedZoomLevels());
     ui->zoomLevels->setText(settings->zoomLevels());
 
+    ui->enableGroupingCheckBox->setChecked(settings->groupingEnabled());
+    ui->groupingPriorityWidget->setEnabled(settings->groupingEnabled());
+    ui->groupingExtensionPriorityEdit->setText(settings->groupingExtensionPriority());
+
     if(settings->defaultViewMode() == MODE_FOLDERVIEW)
         ui->startInFolderViewCheckBox->setChecked(true);
     else
@@ -393,6 +397,9 @@ void SettingsDialog::saveSettings() {
     settings->setPanelCenterSelection(ui->panelCenterSelectionCheckBox->isChecked());
     settings->setUseFixedZoomLevels(ui->useFixedZoomLevelsCheckBox->isChecked());
     settings->setZoomLevels(ui->zoomLevels->text());
+
+    settings->setGroupingEnabled(ui->enableGroupingCheckBox->isChecked());
+    settings->setGroupingExtensionPriority(ui->groupingExtensionPriorityEdit->text());
 
     settings->setPanelPinned(ui->pinPanelCheckBox->isChecked());
     int panelPos = ui->panelPositionComboBox->currentIndex();
