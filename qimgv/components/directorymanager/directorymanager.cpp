@@ -22,20 +22,57 @@ insert_sorted(std::vector<T> & vec, T const& item, Pred pred) {
     return vec.insert(std::upper_bound(vec.begin(), vec.end(), item, pred), item);
 }
 
+namespace {
+
+bool isAsciiDigit(QChar c) {
+    return c >= QLatin1Char('0') && c <= QLatin1Char('9');
+}
+
+// locates the '.' that separates a name from its extension, the same way Dolphin's
+// KFileItemModel::findExtensionSeparator does: scanning from the end, skipping a '.' that
+// sits between two digits (a decimal point inside a version-like number, e.g. "file1.2.jpg"
+// separates only the ".jpg"). Returns -1 if the name has no extension.
+int findExtensionSeparator(const QString &text) {
+    for(int i = text.length() - 1; i > 0; --i) {
+        if(text.at(i) != QLatin1Char('.'))
+            continue;
+        if(isAsciiDigit(text.at(i - 1)) && i + 1 < text.length() && isAsciiDigit(text.at(i + 1)))
+            continue;
+        return i;
+    }
+    return -1;
+}
+
+} // namespace
+
+int DirectoryManager::naturalCompare(const QString &a, const QString &b) const {
+    const int aSep = findExtensionSeparator(a);
+    const int bSep = findExtensionSeparator(b);
+    const int aBaseLen = aSep < 0 ? a.length() : aSep;
+    const int bBaseLen = bSep < 0 ? b.length() : bSep;
+
+    int result = collator.compare(a.left(aBaseLen), b.left(bBaseLen));
+    if(result != 0 || (aSep < 0 && bSep < 0))
+        return result;
+
+    // base names are equal (or one/both have no extension), compare the extension too
+    return collator.compare(a.mid(aBaseLen), b.mid(bBaseLen));
+}
+
 bool DirectoryManager::path_entry_compare(const FSEntry &e1, const FSEntry &e2) const {
-    return collator.compare(e1.path, e2.path) < 0;
+    return naturalCompare(e1.path, e2.path) < 0;
 };
 
 bool DirectoryManager::path_entry_compare_reverse(const FSEntry &e1, const FSEntry &e2) const {
-    return collator.compare(e1.path, e2.path) > 0;
+    return naturalCompare(e1.path, e2.path) > 0;
 };
 
 bool DirectoryManager::name_entry_compare(const FSEntry &e1, const FSEntry &e2) const {
-    return collator.compare(e1.name, e2.name) < 0;
+    return naturalCompare(e1.name, e2.name) < 0;
 };
 
 bool DirectoryManager::name_entry_compare_reverse(const FSEntry &e1, const FSEntry &e2) const {
-    return collator.compare(e1.name, e2.name) > 0;
+    return naturalCompare(e1.name, e2.name) > 0;
 };
 
 bool DirectoryManager::date_entry_compare(const FSEntry& e1, const FSEntry& e2) const {
