@@ -40,6 +40,15 @@ void ImageInfoOverlay::setExifInfo(QVector<QPair<QString, QString>> info) {
     for(int entryIdx = 0; entryIdx < info.count(); ++entryIdx)
         entries.at(entryIdx)->setInfo(info.at(entryIdx).first, info.at(entryIdx).second);
 
+    // size the name column to fit the widest rendered label instead of
+    // relying on a fixed pixel guess
+    int nameColumnWidth = 0;
+    for(auto *entry : entries)
+        nameColumnWidth = qMax(nameColumnWidth, entry->nameWidthHint());
+    nameColumnWidth += 4; // rounding safety margin
+    for(auto *entry : entries)
+        entry->setNameColumnWidth(nameColumnWidth);
+
     // Hiding/showing entryStub causes flicker,
     // so we just remove it from layout and clear the text.
     // It's still there but basically not visible
@@ -51,8 +60,9 @@ void ImageInfoOverlay::setExifInfo(QVector<QPair<QString, QString>> info) {
         entryStub.setText("<no metadata found>");
     }
 
-    if(!isHidden() && entryCount != info.count()) {
-        // wait for layout change
+    if(!isHidden()) {
+        // wait for layout change (entry count, name column width or
+        // wrapped value height may all have changed the overlay's size)
         qApp->processEvents();
         // reposition
         recalculateGeometry();
