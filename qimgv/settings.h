@@ -12,6 +12,8 @@
 #include <QDir>
 #include <QKeySequence>
 #include <QMap>
+#include <QPair>
+#include <QVector>
 #include <QFont>
 #include <QFontMetrics>
 #include <QVersionNumber>
@@ -129,6 +131,9 @@ public:
     void setLoopSlideshow(bool mode);
     void readShortcuts(QMap<QString, QString> &shortcuts);
     void saveShortcuts(const QMap<QString, QString> &shortcuts);
+    // ordered list of (exif tag key, enabled) pairs; always contains every known key
+    QVector<QPair<QString, bool>> exifFields();
+    void setExifFields(const QVector<QPair<QString, bool>> &fields);
     bool panelEnabled();
     void setPanelEnabled(bool mode);
     int lastDisplay();
@@ -143,6 +148,9 @@ public:
     void setUseThumbnailCache(bool mode);
     QStringList savedPaths();
     void setSavedPaths(QStringList paths);
+    // whether the quick copy/move panel last showed configured folders or disk folders
+    bool savedPathsDiskMode();
+    void setSavedPathsDiskMode(bool mode);
     QString tmpDir();
     int thumbnailerThreadCount();
     void setThumbnailerThreadCount(int count);
@@ -309,6 +317,14 @@ public:
 
     bool showHiddenFiles();
     void setShowHiddenFiles(bool mode);
+
+    bool groupingEnabled();
+    void setGroupingEnabled(bool mode);
+    QString defaultGroupingExtensionPriority();
+    QString groupingExtensionPriority();
+    void setGroupingExtensionPriority(QString priority);
+    // parsed, trimmed, lowercased extensions from groupingExtensionPriority(), in order
+    QStringList groupingExtensionPriorityList();
 
 private:
     explicit Settings(QObject *parent = nullptr);

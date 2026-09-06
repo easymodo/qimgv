@@ -17,6 +17,7 @@
 #include "gui/dialogs/scripteditordialog.h"
 #include "settings.h"
 #include "components/actionmanager/actionmanager.h"
+#include "sourcecontainers/documentinfo.h"
 
 namespace Ui {
 class SettingsDialog;
@@ -47,6 +48,10 @@ private:
     void addShortcutToTable(const QString &action, const QString &shortcut);
     void addScriptToList(const QString &name);
 
+    void readExifFields();
+    void saveExifFields();
+    void addExifFieldToTable(const QString &key, bool enabled);
+
     void setupSidebar();
     void removeShortcutAt(int row);
     void adjustSizeToContents();
@@ -68,6 +73,8 @@ private slots:
     void editShortcut(int row);
     void removeShortcut();
     void resetShortcuts();
+    void moveExifFieldUp();
+    void moveExifFieldDown();
     void selectMpvPath();
     void onBgOpacitySliderChanged(int value);
     void onThumbnailerThreadsSliderChanged(int value);

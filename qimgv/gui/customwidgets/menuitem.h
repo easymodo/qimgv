@@ -26,7 +26,7 @@ protected:
     IconButton mIconWidget;
     QLabel mTextLabel, mShortcutLabel;
     QSpacerItem *spacer;
-    QHBoxLayout mLayout;
+    QHBoxLayout *mLayout;
     bool passthroughClicks = true;
     void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *event);

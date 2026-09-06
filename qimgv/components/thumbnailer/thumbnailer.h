@@ -16,12 +16,12 @@ public:
     void waitForDone();
 
 public slots:
-    void getThumbnailAsync(QString path, int size, bool crop, bool force);
+    void getThumbnailAsync(QString path, int size, bool crop, bool force, QString nameSuffix = QString());
 
 private:
     ThumbnailCache *cache;
     QThreadPool *pool;
-    void startThumbnailerThread(QString filePath, int size, bool crop, bool force);
+    void startThumbnailerThread(QString filePath, int size, bool crop, bool force, QString nameSuffix);
     QMultiMap<QString, int> runningTasks;
 
 private slots:

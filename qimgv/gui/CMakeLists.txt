@@ -8,6 +8,7 @@ target_sources(qimgv PRIVATE
     mainwindow.cpp
 
     customwidgets/actionbutton.cpp
+    customwidgets/actionmenuitem.cpp
     customwidgets/clickablelabel.cpp
     customwidgets/contextmenuitem.cpp
     customwidgets/floatingwidget.cpp

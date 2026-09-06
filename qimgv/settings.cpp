@@ -1,4 +1,6 @@
 #include "settings.h"
+#include "sourcecontainers/documentinfo.h"
+#include <QSet>
 
 Settings *settings = nullptr;
 
@@ -666,6 +668,37 @@ void Settings::saveShortcuts(const QMap<QString, QString> &shortcuts) {
     settings->settingsConf->endGroup();
 }
 //------------------------------------------------------------------------------
+QVector<QPair<QString, bool>> Settings::exifFields() {
+    QVector<QPair<QString, bool>> result;
+    settings->settingsConf->beginGroup("View");
+    const QStringList in = settings->settingsConf->value("exifFields").toStringList();
+    settings->settingsConf->endGroup();
+
+    QSet<QString> seen;
+    for(const QString &entry : in) {
+        const QStringList pair = entry.split("=");
+        if(pair.count() != 2 || !DocumentInfo::exifFieldKeys().contains(pair[0]))
+            continue;
+        result.append({pair[0], pair[1] == "1"});
+        seen.insert(pair[0]);
+    }
+    // append any known key missing from the saved list (e.g. added after an update), enabled by default
+    for(const QString &key : DocumentInfo::exifFieldKeys()) {
+        if(!seen.contains(key))
+            result.append({key, true});
+    }
+    return result;
+}
+
+void Settings::setExifFields(const QVector<QPair<QString, bool>> &fields) {
+    QStringList out;
+    for(const auto &field : fields)
+        out << field.first + "=" + (field.second ? "1" : "0");
+    settings->settingsConf->beginGroup("View");
+    settings->settingsConf->setValue("exifFields", out);
+    settings->settingsConf->endGroup();
+}
+//------------------------------------------------------------------------------
 void Settings::readScripts(QMap<QString, Script> &scripts) {
     scripts.clear();
     settings->settingsConf->beginGroup("Scripts");
@@ -735,6 +768,14 @@ QStringList Settings::savedPaths() {
 
 void Settings::setSavedPaths(QStringList paths) {
     settings->stateConf->setValue("savedPaths", paths);
+}
+//------------------------------------------------------------------------------
+bool Settings::savedPathsDiskMode() {
+    return settings->stateConf->value("savedPathsDiskMode", false).toBool();
+}
+
+void Settings::setSavedPathsDiskMode(bool mode) {
+    settings->stateConf->setValue("savedPathsDiskMode", mode);
 }
 //------------------------------------------------------------------------------
 QStringList Settings::bookmarks() {
@@ -1196,4 +1237,34 @@ bool Settings::showHiddenFiles() {
 
 void Settings::setShowHiddenFiles(bool mode) {
     settings->settingsConf->setValue("showHiddenFiles", mode);
+}
+//------------------------------------------------------------------------------
+bool Settings::groupingEnabled() {
+    return settings->settingsConf->value("groupingEnabled", false).toBool();
+}
+
+void Settings::setGroupingEnabled(bool mode) {
+    settings->settingsConf->setValue("groupingEnabled", mode);
+}
+//------------------------------------------------------------------------------
+QString Settings::defaultGroupingExtensionPriority() {
+    return QString("mov,mp4,mkv,jpg,jpeg,png,tif,tiff,raw,rw2,arw,dng,cr2,cr3,nef,orf,raf,pef,srw,xmp");
+}
+
+QString Settings::groupingExtensionPriority() {
+    return settingsConf->value("groupingExtensionPriority", defaultGroupingExtensionPriority()).toString();
+}
+
+void Settings::setGroupingExtensionPriority(QString priority) {
+    settingsConf->setValue("groupingExtensionPriority", priority);
+}
+
+QStringList Settings::groupingExtensionPriorityList() {
+    QStringList list;
+    for(const QString &ext : groupingExtensionPriority().split(',', Qt::SkipEmptyParts)) {
+        QString trimmed = ext.trimmed().toLower();
+        if(!trimmed.isEmpty())
+            list << trimmed;
+    }
+    return list;
 }

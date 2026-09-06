@@ -89,6 +89,22 @@ bool DirectoryModel::containsDir(QString dirPath) const {
     return dirManager.containsDir(dirPath);
 }
 
+QVector<QString> DirectoryModel::groupedPaths(const QString &filePath) const {
+    return dirManager.groupedPaths(filePath);
+}
+
+QString DirectoryModel::groupNameSuffix(const QString &filePath) const {
+    QVector<QString> group = groupedPaths(filePath);
+    if(group.size() <= 1)
+        return QString();
+    QStringList extras;
+    for(const QString &groupedPath : group) {
+        if(groupedPath != filePath)
+            extras << QFileInfo(groupedPath).suffix().toLower();
+    }
+    return " + " + extras.join(" + ");
+}
+
 bool DirectoryModel::isEmpty() const {
     return dirManager.isEmpty();
 }
@@ -124,6 +140,17 @@ void DirectoryModel::setSortingMode(SortingMode mode) {
 }
 
 void DirectoryModel::removeFile(const QString &filePath, bool trash, FileOpResult &result) {
+    // grouped siblings (if any) are removed first; the representative last, as usual
+    for(const QString &groupedPath : dirManager.groupedPaths(filePath)) {
+        if(groupedPath == filePath)
+            continue;
+        if(trash)
+            FileOperations::moveToTrash(groupedPath, result);
+        else
+            FileOperations::removeFile(groupedPath, result);
+        if(result != FileOpResult::SUCCESS)
+            return;
+    }
     if(trash)
         FileOperations::moveToTrash(filePath, result);
     else
@@ -135,6 +162,17 @@ void DirectoryModel::removeFile(const QString &filePath, bool trash, FileOpResul
 }
 
 void DirectoryModel::renameEntry(const QString &oldPath, const QString &newName, bool force, FileOpResult &result) {
+    // grouped siblings keep their own extension but take the new base name
+    QString newBaseName = QFileInfo(newName).completeBaseName();
+    for(const QString &groupedPath : dirManager.groupedPaths(oldPath)) {
+        if(groupedPath == oldPath)
+            continue;
+        QString siblingNewName = newBaseName + "." + QFileInfo(groupedPath).suffix();
+        FileOperations::rename(groupedPath, siblingNewName, force, result);
+        qApp->processEvents();
+        if(result != FileOpResult::SUCCESS)
+            return;
+    }
     bool isDir = dirManager.isDir(oldPath);
     FileOperations::rename(oldPath, newName, force, result);
     // chew through watcher events so they wont be processed out of order
@@ -160,10 +198,25 @@ void DirectoryModel::removeDir(const QString &dirPath, bool trash, bool recursiv
 }
 
 void DirectoryModel::copyFileTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
+    for(const QString &groupedPath : dirManager.groupedPaths(srcFile)) {
+        if(groupedPath == srcFile)
+            continue;
+        FileOperations::copyFileTo(groupedPath, destDirPath, force, result);
+        if(result != FileOpResult::SUCCESS)
+            return;
+    }
     FileOperations::copyFileTo(srcFile, destDirPath, force, result);
 }
 
 void DirectoryModel::moveFileTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
+    for(const QString &groupedPath : dirManager.groupedPaths(srcFile)) {
+        if(groupedPath == srcFile)
+            continue;
+        FileOperations::moveFileTo(groupedPath, destDirPath, force, result);
+        qApp->processEvents();
+        if(result != FileOpResult::SUCCESS)
+            return;
+    }
     FileOperations::moveFileTo(srcFile, destDirPath, force, result);
     // chew through watcher events so they wont be processed out of order
     qApp->processEvents();
