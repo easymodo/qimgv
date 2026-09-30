@@ -22,6 +22,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # USER OPTIONS
 # Usage: cmake -DVIDEO_SUPPORT=ON [...]
 option(EXIV2 "For reading/writing exif tags" ON)
+option(TURBOJPEG "For lossless JPEG rotation/flip/crop via libjpeg-turbo" ON)
 option(VIDEO_SUPPORT "Enable video support" ON)
 option(OPENCV_SUPPORT "Enable HQ scaling via OpenCV" ON)
 option(KDE_SUPPORT "Support blur when using KDE" OFF)
@@ -62,6 +63,18 @@ endif()
 if(EXIV2)
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(Exiv2 REQUIRED IMPORTED_TARGET exiv2)
+endif()
+
+if(TURBOJPEG)
+    find_package(PkgConfig REQUIRED)
+    # module name differs across distros: try "turbojpeg" then fall back to "libturbojpeg"
+    pkg_check_modules(TurboJPEG IMPORTED_TARGET turbojpeg)
+    if(NOT TurboJPEG_FOUND)
+        pkg_check_modules(TurboJPEG IMPORTED_TARGET libturbojpeg)
+    endif()
+    if(NOT TurboJPEG_FOUND)
+        message(WARNING "libjpeg-turbo (TurboJPEG API) not found, lossless JPEG rotation will be disabled")
+    endif()
 endif()
 
 if(KDE_SUPPORT)

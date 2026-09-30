@@ -12,6 +12,16 @@
         <file>res/icons/common/buttons/contextmenu/zoom-original18@2x.png</file>
         <file>res/icons/common/buttons/contextmenu/zoom-out18.png</file>
         <file>res/icons/common/buttons/contextmenu/zoom-out18@2x.png</file>
+        <file>res/icons/common/buttons/contextmenu/split-none18.png</file>
+        <file>res/icons/common/buttons/contextmenu/split-none18@2x.png</file>
+        <file>res/icons/common/buttons/contextmenu/split-horizontal18.png</file>
+        <file>res/icons/common/buttons/contextmenu/split-horizontal18@2x.png</file>
+        <file>res/icons/common/buttons/contextmenu/split-vertical18.png</file>
+        <file>res/icons/common/buttons/contextmenu/split-vertical18@2x.png</file>
+        <file>res/icons/common/buttons/contextmenu/grouping-on18.png</file>
+        <file>res/icons/common/buttons/contextmenu/grouping-on18@2x.png</file>
+        <file>res/icons/common/buttons/contextmenu/grouping-off18.png</file>
+        <file>res/icons/common/buttons/contextmenu/grouping-off18@2x.png</file>
         <file>res/icons/common/buttons/panel/close16.png</file>
         <file>res/icons/common/buttons/panel/close16@2x.png</file>
         <file>res/icons/common/buttons/panel/folderview20.png</file>

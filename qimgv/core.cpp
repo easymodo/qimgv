@@ -7,6 +7,11 @@
 
 #include "core.h"
 
+#include <QFileInfo>
+#include <QMessageBox>
+#include <QPushButton>
+#include "utils/losslessjpegtransform.h"
+
 #ifdef __WIN32
 #include <tchar.h>
 #endif
@@ -19,6 +24,7 @@ Core::Core()
       slideshow(false),
       shuffle(false)
 {
+    setActivePane(0);
     loadTranslation();
     initGui();
     initComponents();
@@ -44,6 +50,8 @@ void Core::readSettings() {
         folderViewPresenter.setShowDirs(showDirs);
     if(shuffle)
         syncRandomizer();
+    if(activePane->img)
+        mw->setExifInfo(activePane->img->getExifTags());
 }
 
 void Core::showGui() {
@@ -117,6 +125,7 @@ void Core::connectComponents() {
     connect(mw, &MW::playbackFinished, this, &Core::onPlaybackFinished);
 
     connect(mw, &MW::scalingRequested, this, &Core::scalingRequest);
+    connect(mw, &MW::scalingRequestedInactive, this, &Core::scalingRequestInactive);
     connect(model->scaler, &Scaler::scalingFinished, this, &Core::onScalingFinished);
 
     connect(model.get(), &DirectoryModel::fileAdded,      this, &Core::onFileAdded);
@@ -201,8 +210,17 @@ void Core::initActions() {
     connect(actionManager, &ActionManager::nextDirectory, this, &Core::nextDirectory);
     connect(actionManager, &ActionManager::prevDirectory, this, qOverload<>(&Core::prevDirectory));
     connect(actionManager, &ActionManager::print, this, &Core::print);
+    connect(actionManager, &ActionManager::splitView, this, &Core::toggleSplitView);
+    connect(actionManager, &ActionManager::splitViewNone, this, &Core::splitViewNone);
+    connect(actionManager, &ActionManager::splitViewHorizontal, this, &Core::splitViewHorizontal);
+    connect(actionManager, &ActionManager::splitViewVertical, this, &Core::splitViewVertical);
+    connect(actionManager, &ActionManager::splitViewSwitchFocus, mw, &MW::toggleSplitFocus);
+    connect(mw, &MW::splitFocusToggled, this, &Core::onSplitFocusToggled);
     connect(actionManager, &ActionManager::toggleFullscreenInfoBar, this, &Core::toggleFullscreenInfoBar);
     connect(actionManager, &ActionManager::pasteFile, this, &Core::openFromClipboard);
+    connect(actionManager, &ActionManager::toggleGrouping, this, &Core::toggleGrouping);
+    connect(actionManager, &ActionManager::groupingOn, this, &Core::groupingOn);
+    connect(actionManager, &ActionManager::groupingOff, this, &Core::groupingOff);
 }
 
 void Core::loadTranslation() {
@@ -275,6 +293,53 @@ void Core::toggleShuffle() {
     updateInfoString();
 }
 
+void Core::toggleGrouping() {
+    setGrouping(!settings->groupingEnabled());
+}
+
+void Core::groupingOn() {
+    setGrouping(true);
+}
+
+void Core::groupingOff() {
+    setGrouping(false);
+}
+
+void Core::setGrouping(bool enabled) {
+    if(settings->groupingEnabled() == enabled) {
+        // nothing to rebuild, but still confirm which mode we are in
+        mw->showMessage(enabled ? tr("Grouping: ON") : tr("Grouping: OFF"));
+        return;
+    }
+    settings->setGroupingEnabled(enabled);
+    // the directory listing is rebuilt from scratch, so a file a pane sits on may no longer
+    // be in it: turning grouping on tucks it into a group that is shown as another file.
+    // Both panes have to follow their group's representative, or they keep pointing at a
+    // path the model no longer knows - which leaves the info bar blank and makes navigation
+    // restart from the first file. Turning grouping off keeps every path valid, so there is
+    // nothing to follow in that direction.
+    QString activeTarget = activePane->filePath, inactiveTarget = inactivePane->filePath;
+    if(enabled) {
+        activeTarget = FileGrouping::resolvePath(activeTarget);
+        if(splitMode != SPLIT_NONE)
+            inactiveTarget = FileGrouping::resolvePath(inactiveTarget);
+    }
+    bool replacingImages = (activeTarget != activePane->filePath) ||
+                           (splitMode != SPLIT_NONE && inactiveTarget != inactivePane->filePath);
+    settings->setImageReloadPending(replacingImages);
+    settings->sendChangeNotification();
+    settings->setImageReloadPending(false);
+    mw->showMessage(enabled ? tr("Grouping: ON") : tr("Grouping: OFF"));
+    if(!activeTarget.isEmpty() && activeTarget != activePane->filePath) {
+        int index = model->indexOfFile(activeTarget);
+        if(index != -1)
+            loadFileIndex(index, true, settings->usePreloader());
+    }
+    if(splitMode != SPLIT_NONE && !inactiveTarget.isEmpty() && inactiveTarget != inactivePane->filePath)
+        loadInactiveImage(inactiveTarget);
+    updateInfoString();
+}
+
 void Core::toggleSlideshow() {
     if(slideshow) {
         stopSlideshow();
@@ -315,15 +380,15 @@ void Core::syncRandomizer() {
     if(model) {
         randomizer.setCount(model->fileCount());
         randomizer.shuffle();
-        randomizer.setCurrent(model->indexOfFile(state.currentFilePath));
+        randomizer.setCurrent(model->indexOfFile(activePane->filePath));
     }
 }
 
 void Core::onModelLoaded() {
     thumbPanelPresenter.reloadModel();
     folderViewPresenter.reloadModel();
-    thumbPanelPresenter.selectAndFocus(state.currentFilePath);
-    folderViewPresenter.selectAndFocus(state.currentFilePath);
+    thumbPanelPresenter.selectAndFocus(activePane->filePath);
+    folderViewPresenter.selectAndFocus(activePane->filePath);
     if(shuffle)
         syncRandomizer();
 }
@@ -431,7 +496,7 @@ void Core::enableDocumentView() {
     if(mw->currentViewMode() == MODE_DOCUMENT)
         return;
     mw->enableDocumentView();
-    if(model && model->fileCount() && state.currentFilePath == "") {
+    if(model && model->fileCount() && activePane->filePath == "") {
         auto selected = folderViewPresenter.selectedPaths().first();
         // if it is a directory - ignore and just open the first file
         if(model->containsFile(selected))
@@ -658,7 +723,7 @@ FileOpResult Core::removeFile(QString filePath, bool trash) {
 
     bool reopen = false;
     std::shared_ptr<Image> img;
-    if(state.currentFilePath == filePath) {
+    if(activePane->filePath == filePath) {
         img = model->getImage(filePath);
         if(img->type() == ANIMATED || img->type() == VIDEO) {
             mw->closeImage();
@@ -673,27 +738,30 @@ FileOpResult Core::removeFile(QString filePath, bool trash) {
 }
 
 void Core::onFileRemoved(QString filePath, int index) {
+    // the second pane would be left showing a file that is gone
+    if(splitMode != SPLIT_NONE && inactivePane->filePath == filePath)
+        setSplitViewMode(SPLIT_NONE);
     // no files left
     if(model->isEmpty()) {
         mw->closeImage();
-        state.hasActiveImage = false;
-        state.currentFilePath = "";
+        activePane->clear();
     }
     // image mode && removed current file
-    if(state.currentFilePath == filePath) {
+    if(activePane->filePath == filePath) {
         if(mw->currentViewMode() == MODE_DOCUMENT) {
             if(!loadFileIndex(index, true, settings->usePreloader()))
                 loadFileIndex(--index, true, settings->usePreloader());
         } else {
-            state.hasActiveImage = false;
-            state.currentFilePath = "";
+            activePane->clear();
         }
     }
     updateInfoString();
 }
 
 void Core::onFileRenamed(QString fromPath, int /*indexFrom*/, QString /*toPath*/, int indexTo) {
-    if(state.currentFilePath == fromPath) {
+    if(splitMode != SPLIT_NONE && inactivePane->filePath == fromPath)
+        setSplitViewMode(SPLIT_NONE);
+    if(activePane->filePath == fromPath) {
         loadFileIndex(indexTo, true, settings->usePreloader());
     }
 }
@@ -702,7 +770,7 @@ void Core::onFileAdded(QString filePath) {
     Q_UNUSED(filePath)
     // update file count
     updateInfoString();
-    if(model->fileCount() == 1 && state.currentFilePath == "")
+    if(model->fileCount() == 1 && activePane->filePath == "")
         loadFileIndex(0, false, settings->usePreloader());
 }
 
@@ -772,14 +840,14 @@ void Core::doInteractiveCopy(QString path, QString destDirectory, DialogResult &
 // SINGLE FILE COPY ===========================================================================
     if(!srcFi.isDir()) {
         FileOpResult result;
-        FileOperations::copyFileTo(path, destDirectory, overwriteFiles, result);
+        model->copyFileTo(path, destDirectory, overwriteFiles, result);
         if(result == FileOpResult::DESTINATION_FILE_EXISTS) {
             if(overwriteFiles.all) // skipping all
                 return;
             overwriteFiles = mw->fileReplaceDialog(srcFi.absoluteFilePath(), destDirectory + "/" + srcFi.fileName(), FILE_TO_FILE, true);
             if(!overwriteFiles || overwriteFiles.cancel)
                 return;
-            FileOperations::copyFileTo(path, destDirectory, true, result);
+            model->copyFileTo(path, destDirectory, true, result);
         }
         if(result != FileOpResult::SUCCESS && !(result == FileOpResult::DESTINATION_FILE_EXISTS && !overwriteFiles)) {
             mw->showError(FileOperations::decodeResult(result));
@@ -947,9 +1015,12 @@ void Core::copyCurrentFile(QString destDirectory) {
 void Core::toggleCropPanel() {
     if(model->isEmpty())
         return;
+    // the crop overlay only covers the main pane
+    if(!mw->isCropPanelActive())
+        setSplitViewMode(SPLIT_NONE);
     if(mw->isCropPanelActive()) {
         mw->triggerCropPanel();
-    } else if(state.hasActiveImage) {
+    } else if(activePane->hasImage) {
         mw->triggerCropPanel();
     }
 }
@@ -979,7 +1050,10 @@ std::shared_ptr<ImageStatic> Core::getEditableImage(const QString &filePath) {
 }
 
 template<typename... Args>
-void Core::edit_template(bool save, QString action, const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& editFunc, Args&&... as) {
+void Core::edit_template(bool save, QString action,
+                          const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& editFunc,
+                          const std::function<void(std::shared_ptr<ImageStatic>, QSize)>& onEdited,
+                          Args&&... as) {
     if(model->isEmpty())
         return;
     if(save && !mw->showConfirmation(action, tr("Perform action \"") + action + "\"? \n\n" + tr("Changes will be saved immediately.")))
@@ -988,43 +1062,98 @@ void Core::edit_template(bool save, QString action, const std::function<QImage*(
         auto img = getEditableImage(path);
         if(!img)
             continue;
+        QSize sizeBeforeEdit = img->size();
         img->setEditedImage(std::unique_ptr<const QImage>( editFunc(img->getImage(), std::forward<Args>(as)...) ));
+        if(onEdited)
+            onEdited(img, sizeBeforeEdit);
+        else
+            img->invalidatePendingLossless(); // can't be replayed as a JPEG transform
         model->updateImage(path, std::static_pointer_cast<Image>(img));
         if(save) {
             saveFile(path);
-            if(state.currentFilePath != path)
+            if(activePane->filePath != path)
                 model->unload(path);
         }
     }
     updateInfoString();
 }
 
+bool Core::isJpegPath(const QString &path) {
+    QString ext = QFileInfo(path).suffix();
+    return ext.compare("jpg", Qt::CaseInsensitive) == 0 || ext.compare("jpeg", Qt::CaseInsensitive) == 0;
+}
+
+// The tracking below records what the user did in a form that can be
+// replayed on the JPEG file itself at save time (see
+// LosslessJpegTransform::PendingTransform). Rotates, flips and crops mix
+// freely; anything else (a resize) gives up on lossless tracking and
+// leaves the save to the regular raster/lossy path.
+void Core::trackLosslessRotate(std::shared_ptr<ImageStatic> img, int degrees) {
+    using Op = LosslessJpegTransform::DihedralOp;
+    Op requested = Op::None;
+    if(degrees == 90)
+        requested = Op::Rotate90;
+    else if(degrees == -90 || degrees == 270)
+        requested = Op::Rotate270;
+    if(!losslessTrackingApplies(img) || requested == Op::None) {
+        img->invalidatePendingLossless();
+        return;
+    }
+    img->addPendingLosslessOp(requested);
+}
+
+void Core::trackLosslessFlip(std::shared_ptr<ImageStatic> img, bool horizontal) {
+    if(!losslessTrackingApplies(img)) {
+        img->invalidatePendingLossless();
+        return;
+    }
+    img->addPendingLosslessOp(horizontal ? LosslessJpegTransform::DihedralOp::Mirror
+                                          : LosslessJpegTransform::DihedralOp::Flip);
+}
+
+void Core::trackLosslessCrop(std::shared_ptr<ImageStatic> img, QRect rect, QSize sizeBeforeCrop) {
+    if(!losslessTrackingApplies(img)) {
+        img->invalidatePendingLossless();
+        return;
+    }
+    img->addPendingLosslessCrop(rect, sizeBeforeCrop);
+}
+
+bool Core::losslessTrackingApplies(std::shared_ptr<ImageStatic> img) {
+    return settings->losslessRotation() && isJpegPath(img->filePath());
+}
+
 void Core::flipH() {
-    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), tr("Flip horizontal"), { ImageLib::flippedH });
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), tr("Flip horizontal"), { ImageLib::flippedH },
+                  [this](std::shared_ptr<ImageStatic> img, QSize) { trackLosslessFlip(img, true); });
 }
 
 void Core::flipV() {
-    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), tr("Flip vertical"), { ImageLib::flippedV });
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), tr("Flip vertical"), { ImageLib::flippedV },
+                  [this](std::shared_ptr<ImageStatic> img, QSize) { trackLosslessFlip(img, false); });
 }
 
 void Core::rotateByDegrees(int degrees) {
-    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), tr("Rotate"), { ImageLib::rotated }, degrees);
+    edit_template((mw->currentViewMode() == MODE_FOLDERVIEW), tr("Rotate"), { ImageLib::rotated },
+                  [this, degrees](std::shared_ptr<ImageStatic> img, QSize) { trackLosslessRotate(img, degrees); }, degrees);
 }
 
 void Core::resize(QSize size) {
-    edit_template(false, tr("Resize"), { ImageLib::scaled }, size, QI_FILTER_BILINEAR);
+    edit_template(false, tr("Resize"), { ImageLib::scaled }, nullptr, size, QI_FILTER_BILINEAR);
 }
 
 void Core::crop(QRect rect) {
     if(mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
-    edit_template(false, tr("Crop"), { ImageLib::cropped }, rect);
+    edit_template(false, tr("Crop"), { ImageLib::cropped },
+                  [this, rect](std::shared_ptr<ImageStatic> img, QSize sizeBefore) { trackLosslessCrop(img, rect, sizeBefore); }, rect);
 }
 
 void Core::cropAndSave(QRect rect) {
     if(mw->currentViewMode() == MODE_FOLDERVIEW)
         return;
-    edit_template(false, tr("Crop"), { ImageLib::cropped }, rect);
+    edit_template(false, tr("Crop"), { ImageLib::cropped },
+                  [this, rect](std::shared_ptr<ImageStatic> img, QSize sizeBefore) { trackLosslessCrop(img, rect, sizeBefore); }, rect);
     saveFile(selectedPath());
     updateInfoString();
 }
@@ -1036,11 +1165,75 @@ bool Core::saveFile(const QString &filePath) {
 }
 
 bool Core::saveFile(const QString &filePath, const QString &newPath) {
-    if(!model->saveFile(filePath, newPath))
+    bool losslessHandled = false;
+    bool saved = false;
+    bool trimmed = false;
+
+    auto imgStatic = getEditableImage(filePath);
+#ifdef USE_TURBOJPEG
+    // isJpegPath(newPath) too: a save-as that changes the format has to
+    // go through the raster path, or we'd write JPEG bytes into a file
+    // named .png
+    if(imgStatic && settings->losslessRotation() && isJpegPath(filePath) && isJpegPath(newPath)
+       && imgStatic->hasPendingLosslessChanges()) {
+        auto pending = imgStatic->pendingLossless();
+        QByteArray outBytes;
+        auto result = LosslessJpegTransform::tryTransform(filePath, pending.op(), pending.crop(), outBytes);
+        if(result == LosslessJpegTransform::Result::NotAligned) {
+            QMessageBox msgBox(mw);
+            msgBox.setWindowTitle(tr("Lossless rotation"));
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.setText(tr("These edits don't line up with JPEG's internal pixel blocks, so they "
+                               "can't be applied without losing quality.\n\n"
+                               "A few pixels can be trimmed off the edges to make them fit, or the "
+                               "image can be re-encoded at the JPEG quality set in preferences."));
+            QAbstractButton *trimButton = msgBox.addButton(tr("Trim a few pixels"), QMessageBox::AcceptRole);
+            QAbstractButton *lossyButton = msgBox.addButton(tr("Save with quality loss"), QMessageBox::DestructiveRole);
+            msgBox.addButton(QMessageBox::Cancel);
+            msgBox.setDefaultButton(static_cast<QPushButton*>(trimButton));
+            msgBox.setModal(true);
+            msgBox.exec();
+            QAbstractButton *clicked = msgBox.clickedButton();
+            if(clicked == trimButton) {
+                outBytes = LosslessJpegTransform::transformWithAlignmentTrim(filePath, pending.op(), pending.crop());
+                result = outBytes.isEmpty() ? LosslessJpegTransform::Result::Failed : LosslessJpegTransform::Result::Ok;
+                trimmed = (result == LosslessJpegTransform::Result::Ok);
+            } else if(clicked == lossyButton) {
+                result = LosslessJpegTransform::Result::Failed; // falls through to the raster path below
+            } else {
+                return false; // cancelled
+            }
+        }
+        if(result == LosslessJpegTransform::Result::Ok) {
+            saved = model->saveFileLossless(filePath, newPath, outBytes);
+            // Saving over the file itself already promoted the edited image to
+            // the source one, so what is on screen matches what is on disk and
+            // there is nothing to reload - which also keeps the current zoom.
+            // Two cases still need the file read back: a trim shaves a few
+            // pixels off the edges that the in-memory copy doesn't have, and a
+            // save-as leaves this image untouched while overwriting another one
+            // that may well be cached.
+            if(saved && (trimmed || newPath != filePath))
+                model->reload(newPath);
+            losslessHandled = true;
+        }
+        // anything else (Failed, or the user picked "save with quality loss")
+        // falls through to the regular raster/lossy path below
+    }
+#else
+    (void)imgStatic;
+#endif
+
+    if(!losslessHandled) {
+        if(!model->saveFile(filePath, newPath))
+            return false;
+    } else if(!saved) {
         return false;
+    }
+
     mw->hideSaveOverlay();
     // switch to the new file
-    if(model->containsFile(newPath) && state.currentFilePath != newPath) {
+    if(model->containsFile(newPath) && activePane->filePath != newPath) {
         discardEdits();
         if(mw->currentViewMode() == MODE_DOCUMENT)
             loadPath(newPath);
@@ -1071,6 +1264,7 @@ void Core::discardEdits() {
     if(img && img->type() == STATIC) {
         auto imgStatic = dynamic_cast<ImageStatic *>(img.get());
         imgStatic->discardEditedImage();
+        imgStatic->resetPendingLossless();
         model->updateImage(selectedPath(), img);
     }
     mw->hideSaveOverlay();
@@ -1083,7 +1277,27 @@ QString Core::selectedPath() {
     else if(mw->currentViewMode() == MODE_FOLDERVIEW)
         return folderViewPresenter.selectedPaths().last();
     else
-        return state.currentFilePath;
+        return activePane->filePath;
+}
+
+/* Tab moves the frame to the other pane. Nothing is copied around: the two
+ * panes keep their own state and we just point at the other one.
+ */
+void Core::setActivePane(int index) {
+    activePane = &panes[index];
+    inactivePane = &panes[index ^ 1];
+}
+
+void Core::onSplitFocusToggled() {
+    setActivePane(mw->splitFocusIndex());
+    thumbPanelPresenter.selectAndFocus(activePane->filePath);
+    folderViewPresenter.selectAndFocus(activePane->filePath);
+    // the save prompt belongs to the focused pane
+    if(activePane->img && activePane->img->isEdited())
+        mw->showSaveOverlay();
+    else
+        mw->hideSaveOverlay();
+    updateInfoString();
 }
 
 QList<QString> Core::currentSelection() {
@@ -1092,7 +1306,7 @@ QList<QString> Core::currentSelection() {
     else if(mw->currentViewMode() == MODE_FOLDERVIEW)
         return folderViewPresenter.selectedPaths();
     else
-        return QList<QString>() << state.currentFilePath;
+        return QList<QString>() << activePane->filePath;
 }
 
 //------------------------
@@ -1182,29 +1396,75 @@ void Core::print() {
     p.exec();
 }
 
+/* The image to hand the scaler for a pane. Never ask the model to produce one it doesn't
+ * already hold: on a cache miss DirectoryModel::getImage() decodes the file on this thread,
+ * which for a raw file costs seconds - and it doesn't even keep the result, so the next
+ * request pays it again. The pane holds the decoded image anyway, and the only reason to
+ * prefer the model's copy is that a reload (e.g. after a lossless save) hands out a new one.
+ */
+std::shared_ptr<Image> Core::imageForScaling(const PaneState *pane) const {
+    if(model->isLoaded(pane->filePath))
+        return model->getImage(pane->filePath);
+    return pane->img;
+}
+
 void Core::scalingRequest(QSize size, ScalingFilter filter) {
     // filter out an unnecessary scale request at statup
-    if(mw->isVisible() && state.hasActiveImage) {
-        std::shared_ptr<Image> forScale = model->getImage(state.currentFilePath);
-        if(forScale) {
-            model->scaler->requestScaled(ScalerRequest(forScale, size, state.currentFilePath, filter));
-        }
+    if(mw->isVisible() && activePane->hasImage) {
+        activePane->scaleRequest = {true, size, filter};
+        std::shared_ptr<Image> forScale = imageForScaling(activePane);
+        if(forScale)
+            model->scaler->requestScaled(ScalerRequest(forScale, size, activePane->filePath, filter));
+        else
+            activePane->scaleRequest.pending = false;
+    }
+}
+
+void Core::scalingRequestInactive(QSize size, ScalingFilter filter) {
+    if(mw->isVisible() && splitMode != SPLIT_NONE && !inactivePane->filePath.isEmpty()) {
+        inactivePane->scaleRequest = {true, size, filter};
+        std::shared_ptr<Image> forScale = imageForScaling(inactivePane);
+        if(forScale)
+            model->scaler->requestScaled(ScalerRequest(forScale, size, inactivePane->filePath, filter));
+        else
+            inactivePane->scaleRequest.pending = false;
     }
 }
 
 // TODO: don't use connect? otherwise there is no point using unique_ptr
 void Core::onScalingFinished(QPixmap *scaled, ScalerRequest req) {
-    if(state.hasActiveImage /* TODO: a better fix > */ && req.path == state.currentFilePath) {
+    // both panes can hold the same file, so the requested size tells them apart
+    bool forActive = activePane->hasImage && req.path == activePane->filePath &&
+                     (!activePane->scaleRequest.pending || req.size == activePane->scaleRequest.size);
+    bool forInactive = splitMode != SPLIT_NONE && !inactivePane->filePath.isEmpty() &&
+                       req.path == inactivePane->filePath &&
+                       (!inactivePane->scaleRequest.pending || req.size == inactivePane->scaleRequest.size);
+    if(forActive) {
+        activePane->scaleRequest.pending = false;
+        auto copy = forInactive ? std::make_unique<QPixmap>(*scaled) : nullptr;
         mw->onScalingFinished(std::unique_ptr<QPixmap>(scaled));
+        if(forInactive) {
+            inactivePane->scaleRequest.pending = false;
+            mw->onScalingFinishedInactive(std::move(copy));
+        }
+    } else if(forInactive) {
+        inactivePane->scaleRequest.pending = false;
+        mw->onScalingFinishedInactive(std::unique_ptr<QPixmap>(scaled));
     } else {
         delete scaled;
     }
+    // the scaler only queues one request, so re-issue whatever it dropped
+    if(activePane->scaleRequest.pending)
+        scalingRequest(activePane->scaleRequest.size, activePane->scaleRequest.filter);
+    else if(inactivePane->scaleRequest.pending)
+        scalingRequestInactive(inactivePane->scaleRequest.size, inactivePane->scaleRequest.filter);
 }
 
 // reset state; clear cache; etc
 void Core::reset() {
-    state.hasActiveImage = false;
-    state.currentFilePath = "";
+    setSplitViewMode(SPLIT_NONE);
+    panes[0].clear();
+    panes[1].clear();
     model->setDirectory("");
 }
 
@@ -1220,6 +1480,10 @@ bool Core::loadPath(QString path) {
     if(fileInfo.isDir()) {
         state.directoryPath = QDir(path).absolutePath();
     } else if(fileInfo.isFile()) {
+        // with grouping on, the file we were handed may not be the one its group is shown
+        // as (e.g. opening pippo.jpg while pippo.cr2 takes priority) - open that one instead
+        path = FileGrouping::resolvePath(fileInfo.absoluteFilePath());
+        fileInfo.setFile(path);
         state.directoryPath = fileInfo.absolutePath();
         if(model->directoryPath() != state.directoryPath)
             state.delayModel = true;
@@ -1272,7 +1536,7 @@ bool Core::loadFileIndex(int index, bool async, bool preload) {
     auto entry = model->fileEntryAt(index);
     if(entry.path.isEmpty())
         return false;
-    state.currentFilePath = entry.path;
+    activePane->filePath = entry.path;
     model->unloadExcept(entry.path, preload);
     model->load(entry.path, async);
     if(preload) {
@@ -1358,7 +1622,7 @@ void Core::nextImage() {
         loadFileIndex(randomizer.next(), true, false);
         return;
     }
-    int newIndex = model->indexOfFile(state.currentFilePath) + 1;
+    int newIndex = model->indexOfFile(activePane->filePath) + 1;
     if(newIndex >= model->fileCount()) {
         if(folderEndAction == FOLDER_END_LOOP) {
             newIndex = 0;
@@ -1383,7 +1647,7 @@ void Core::prevImage() {
         return;
     }
 
-    int newIndex = model->indexOfFile(state.currentFilePath) - 1;
+    int newIndex = model->indexOfFile(activePane->filePath) - 1;
     if(newIndex < 0) {
         if(folderEndAction == FOLDER_END_LOOP) {
             newIndex = model->fileCount() - 1;
@@ -1405,7 +1669,7 @@ void Core::nextImageSlideshow() {
     if(shuffle) {
         loadFileIndex(randomizer.next(), false, false);
     } else {
-        int newIndex = model->indexOfFile(state.currentFilePath) + 1;
+        int newIndex = model->indexOfFile(activePane->filePath) + 1;
         if(newIndex >= model->fileCount()) {
             if(loopSlideshow) {
                 newIndex = 0;
@@ -1423,7 +1687,7 @@ void Core::nextImageSlideshow() {
 void Core::startSlideshowTimer() {
     // start timer only for static images or single frame gifs
     // for proper gifs and video we get a playbackFinished() signal
-    auto img = model->getImage(state.currentFilePath);
+    auto img = model->getImage(activePane->filePath);
     if(img->type() == STATIC) {
         slideshowTimer.start();
     } else if(img->type() == ANIMATED) {
@@ -1451,13 +1715,20 @@ void Core::jumpToLast() {
 
 void Core::onLoadFailed(const QString &path) {
     mw->showMessage(tr("Load failed: ") + path);
-    if(path == state.currentFilePath)
+    if(path == activePane->filePath)
         mw->closeImage();
 }
 
 void Core::onModelItemReady(std::shared_ptr<Image> img, const QString &path) {
-    if(path == state.currentFilePath) {
-        state.currentImg = img;
+    // both panes can sit on the same file, and the reload after a lossless save
+    // hands out a brand new Image - the inactive pane has to pick it up too, or
+    // it keeps a stale one that still claims to have unsaved edits.
+    // Handing it the very same Image it already shows would only throw away
+    // its zoom and pan, which is what happens when the active pane navigates
+    // onto the file the other pane is sitting on.
+    if(splitMode != SPLIT_NONE && path == inactivePane->filePath && img != inactivePane->img)
+        guiSetImageInactive(img);
+    if(path == activePane->filePath) {
         guiSetImage(img);
         updateInfoString();
         if(state.delayModel) {
@@ -1465,19 +1736,21 @@ void Core::onModelItemReady(std::shared_ptr<Image> img, const QString &path) {
             state.delayModel = false;
             QTimer::singleShot(40, this, SLOT(modelDelayLoad()));
         }
-        model->unloadExcept(state.currentFilePath, settings->usePreloader());
+        model->unloadExcept(activePane->filePath, settings->usePreloader());
     }
 }
 
 void Core::modelDelayLoad() {
     model->setDirectory(state.directoryPath);
     mw->setDirectoryPath(state.directoryPath);
-    model->updateImage(state.currentFilePath, state.currentImg);
+    model->updateImage(activePane->filePath, activePane->img);
     updateInfoString();
 }
 
 void Core::onModelItemUpdated(QString filePath) {
-    if(filePath == state.currentFilePath) {
+    if(splitMode != SPLIT_NONE && filePath == inactivePane->filePath)
+        guiSetImageInactive(model->getImage(filePath));
+    if(filePath == activePane->filePath) {
         guiSetImage(model->getImage(filePath));
         updateInfoString();
     }
@@ -1486,13 +1759,14 @@ void Core::onModelItemUpdated(QString filePath) {
 void Core::onModelSortingChanged(SortingMode mode) {
     mw->onSortingChanged(mode);
     thumbPanelPresenter.reloadModel();
-    thumbPanelPresenter.selectAndFocus(state.currentFilePath);
+    thumbPanelPresenter.selectAndFocus(activePane->filePath);
     folderViewPresenter.reloadModel();
-    folderViewPresenter.selectAndFocus(state.currentFilePath);
+    folderViewPresenter.selectAndFocus(activePane->filePath);
 }
 
 void Core::guiSetImage(std::shared_ptr<Image> img) {
-    state.hasActiveImage = true;
+    activePane->hasImage = true;
+    activePane->img = img;
     if(!img) {
         mw->showMessage(tr("Error: could not load image."));
         return;
@@ -1514,22 +1788,121 @@ void Core::guiSetImage(std::shared_ptr<Image> img) {
     mw->setExifInfo(img->getExifTags());
 }
 
+void Core::guiSetImageInactive(std::shared_ptr<Image> img) {
+    if(!img)
+        return;
+    inactivePane->img = img;
+    inactivePane->hasImage = true;
+    DocumentType type = img->type();
+    if(type == STATIC) {
+        mw->showImageInactive(img->getPixmap());
+    } else if(type == ANIMATED) {
+        auto animated = dynamic_cast<ImageAnimated *>(img.get());
+        mw->showAnimationInactive(animated->getMovie());
+    } else if(type == VIDEO) {
+        auto video = dynamic_cast<Video *>(img.get());
+        mw->showVideoInactive(video->filePath());
+    }
+    mw->setExifInfoInactive(img->getExifTags());
+}
+
+/* Cycles through side-by-side, stacked and back to a single image.
+ * The second pane starts on the next image in the folder, or on a copy of
+ * the current one when there is no next. From then on the two panes browse
+ * independently.
+ */
+void Core::toggleSplitView() {
+    if(splitMode == SPLIT_HORIZONTAL) {
+        setSplitViewMode(SPLIT_VERTICAL);
+        return;
+    }
+    if(splitMode == SPLIT_VERTICAL) {
+        setSplitViewMode(SPLIT_NONE);
+        return;
+    }
+    requestSplitViewMode(SPLIT_HORIZONTAL);
+}
+
+void Core::splitViewNone() {
+    requestSplitViewMode(SPLIT_NONE);
+}
+
+void Core::splitViewHorizontal() {
+    requestSplitViewMode(SPLIT_HORIZONTAL);
+}
+
+void Core::splitViewVertical() {
+    requestSplitViewMode(SPLIT_VERTICAL);
+}
+
+/* Splitting needs an image to split off from, but only when we are not in a
+ * split already; switching between the two split layouts is always allowed.
+ */
+void Core::requestSplitViewMode(SplitViewMode mode) {
+    if(mode != SPLIT_NONE && splitMode == SPLIT_NONE &&
+       (mw->currentViewMode() != MODE_DOCUMENT || !activePane->hasImage || activePane->filePath.isEmpty()))
+        return;
+    setSplitViewMode(mode);
+}
+
+void Core::setSplitViewMode(SplitViewMode mode) {
+    if(splitMode == mode)
+        return;
+    bool leaving = (mode == SPLIT_NONE);
+    // when the frame sits on the second pane, that pane is the one going away,
+    // so its state has to move over to the pane that stays
+    bool moveState = leaving && mw->splitFocusIndex() == 1;
+    splitMode = mode;
+    mw->setSplitViewMode(mode);
+    if(leaving) {
+        if(moveState)
+            panes[0] = panes[1];
+        panes[1].clear();
+        setActivePane(0);
+        if(moveState && activePane->img)
+            guiSetImage(activePane->img);
+    } else {
+        setActivePane(mw->splitFocusIndex());
+        QString other = model ? model->nextOf(activePane->filePath) : QString();
+        if(other.isEmpty())
+            other = activePane->filePath;
+        loadInactiveImage(other);
+    }
+}
+
+void Core::loadInactiveImage(const QString &path) {
+    inactivePane->clear();
+    inactivePane->filePath = path;
+    model->load(path, false);
+    guiSetImageInactive(model->getImage(path));
+}
+
 void Core::updateInfoString() {
     QSize imageSize(0,0);
     qint64 fileSize = 0;
     bool edited = false;
+    QSize cropMcuSize;
+    QString infoPath = activePane->filePath;
 
-    if(model->isLoaded(state.currentFilePath)) {
-        auto img = model->getImage(state.currentFilePath);
+    if(model->isLoaded(infoPath)) {
+        auto img = model->getImage(infoPath);
         imageSize = img->size();
         fileSize  = img->fileSize();
         edited = img->isEdited();
+        // feeds the crop tool the grid a selection has to line up with
+        // for the crop to stay lossless
+        if(settings->losslessRotation() && isJpegPath(infoPath)) {
+            if(auto imgStatic = std::dynamic_pointer_cast<ImageStatic>(img))
+                cropMcuSize = imgStatic->losslessMcuSize();
+        }
     }
-    int index = model->indexOfFile(state.currentFilePath);
+    mw->setCropMcuSize(cropMcuSize);
+    int index = model->indexOfFile(infoPath);
     mw->setCurrentInfo(index,
                        model->fileCount(),
                        model->filePathAt(index),
                        model->fileNameAt(index),
+                       model->groupNameSuffix(infoPath),
                        imageSize,
                        fileSize,
                        slideshow,

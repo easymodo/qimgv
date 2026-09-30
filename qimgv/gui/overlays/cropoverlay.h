@@ -31,6 +31,11 @@ public:
     void setButtonText(QString text);
     void setImageScale(float scale);
     void clearSelection();
+    // Set to the JPEG's MCU block size (see
+    // LosslessJpegTransform::mcuSize()) when lossless rotation is
+    // enabled, so the selection snaps to that grid and the crop can be
+    // applied to the file losslessly. An empty QSize disables snapping.
+    void setMcuSize(QSize size);
 
 signals:
     void positionChanged(float x, float y);
@@ -70,6 +75,8 @@ private:
     void resizeSelection(QPoint d);
     void resizeSelectionAR(QPoint d);
     void resizeSelectionFree(QPoint d);
+    void alignSelectionOriginToMcuGrid(bool keepSize);
+    QSize mcuSize;
     void recalculateGeometry();
     QPoint mapPointToImage(QPoint p);
     void updateSelectionDrawRect();

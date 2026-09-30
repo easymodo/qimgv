@@ -51,6 +51,16 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+Up", "zoomIn");
     actionManager->defaults.insert("Up", "scrollUp");
     actionManager->defaults.insert("Down", "scrollDown");
+    // full scroll set; the Shift variants are what sync the two panes in split view
+    for(int withShift = 0; withShift <= 1; withShift++) {
+        QString mods = InputMap::keyNameAlt() + "+";
+        if(withShift)
+            mods += InputMap::keyNameShift() + "+";
+        actionManager->defaults.insert(mods + "Up",    "scrollUp");
+        actionManager->defaults.insert(mods + "Down",  "scrollDown");
+        actionManager->defaults.insert(mods + "Left",  "scrollLeft");
+        actionManager->defaults.insert(mods + "Right", "scrollRight");
+    }
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+O", "open");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+S", "save");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+" + InputMap::keyNameShift() + "+S", "saveAs");
@@ -87,6 +97,9 @@ void ActionManager::initDefaults() {
     actionManager->defaults.insert(InputMap::keyNameShift() + "+Left", "prevDirectory");
     actionManager->defaults.insert(InputMap::keyNameShift() + "+F", "toggleFullscreenInfoBar");
     actionManager->defaults.insert(InputMap::keyNameCtrl() + "+V", "pasteFile");
+    actionManager->defaults.insert("S", "splitView");
+    actionManager->defaults.insert("Tab", "splitViewSwitchFocus");
+    actionManager->defaults.insert("G", "toggleGrouping");
 
 #ifdef __APPLE__
     actionManager->defaults.insert(InputMap::keyNameAlt() + "+Up", "zoomIn");
@@ -187,6 +200,17 @@ void ActionManager::adjustFromVersion(QVersionNumber lastVer) {
             swapped.insert(key, i.value());
         }
         shortcuts = swapped;
+    }
+    // scroll gained a full set of Alt+arrow binds (and their Shift variants)
+    if(lastVer < QVersionNumber(1,0,4)) {
+        QMapIterator<QString, QString> s(defaults);
+        while(s.hasNext()) {
+            s.next();
+            if(s.value().startsWith("scroll") && !shortcuts.contains(s.key())) {
+                shortcuts.insert(s.key(), s.value());
+                qDebug() << "[ActionManager] new default" << s.value() << "- assigning as [" << s.key() << "]";
+            }
+        }
     }
     // add new default actions
     QMapIterator<QString, QString> i(defaults);

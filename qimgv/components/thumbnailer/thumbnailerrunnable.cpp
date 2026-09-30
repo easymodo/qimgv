@@ -1,17 +1,18 @@
 #include "thumbnailerrunnable.h"
 
-ThumbnailerRunnable::ThumbnailerRunnable(ThumbnailCache* _cache, QString _path, int _size, bool _crop, bool _force) :
+ThumbnailerRunnable::ThumbnailerRunnable(ThumbnailCache* _cache, QString _path, int _size, bool _crop, bool _force, QString _nameSuffix) :
     path(_path),
     size(_size),
     crop(_crop),
     force(_force),
+    nameSuffix(_nameSuffix),
     cache(_cache)
 {
 }
 
 void ThumbnailerRunnable::run() {
     emit taskStart(path, size);
-    std::shared_ptr<Thumbnail> thumbnail = generate(cache, path, size, crop, force);
+    std::shared_ptr<Thumbnail> thumbnail = generate(cache, path, size, crop, force, nameSuffix);
     emit taskEnd(thumbnail, path);
 }
 
@@ -23,7 +24,7 @@ QString ThumbnailerRunnable::generateIdString(QString path, int size, bool crop)
     return queryStr;
 }
 
-std::shared_ptr<Thumbnail> ThumbnailerRunnable::generate(ThumbnailCache* cache, QString path, int size, bool crop, bool force) {
+std::shared_ptr<Thumbnail> ThumbnailerRunnable::generate(ThumbnailCache* cache, QString path, int size, bool crop, bool force, QString nameSuffix) {
     DocumentInfo imgInfo(path);
     QString thumbnailId = generateIdString(path, size, crop);
     std::unique_ptr<QImage> image;
@@ -38,7 +39,7 @@ std::shared_ptr<Thumbnail> ThumbnailerRunnable::generate(ThumbnailCache* cache, 
 
     if(!image) {
         if(imgInfo.type() == DocumentType::NONE) {
-            std::shared_ptr<Thumbnail> thumbnail(new Thumbnail(imgInfo.fileName(), "", size, nullptr));
+            std::shared_ptr<Thumbnail> thumbnail(new Thumbnail(imgInfo.fileName() + nameSuffix, "", size, nullptr));
             return thumbnail;
         }
         std::pair<QImage*, QSize> pair;
@@ -83,7 +84,7 @@ std::shared_ptr<Thumbnail> ThumbnailerRunnable::generate(ThumbnailCache* cache, 
                 image->text("label");
     }
     std::shared_ptr<QPixmap> pixmapPtr(tmpPixmap);
-    std::shared_ptr<Thumbnail> thumbnail(new Thumbnail(imgInfo.fileName(), label, size, pixmapPtr));
+    std::shared_ptr<Thumbnail> thumbnail(new Thumbnail(imgInfo.fileName() + nameSuffix, label, size, pixmapPtr));
     return thumbnail;
 }
 

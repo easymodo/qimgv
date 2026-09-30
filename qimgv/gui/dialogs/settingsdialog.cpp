@@ -8,7 +8,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle(tr("Preferences — ") + qApp->applicationName());
 
-    ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);   
+    ui->shortcutsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->exifFieldsTableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    ui->exifFieldsTableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->aboutAppTextBrowser->viewport()->setAutoFillBackground(false);
     ui->versionLabel->setText("" + QApplication::applicationVersion());
     ui->qtVersionLabel->setText(qVersion());
@@ -229,6 +231,10 @@ void SettingsDialog::readSettings() {
     ui->useFixedZoomLevelsCheckBox->setChecked(settings->useFixedZoomLevels());
     ui->zoomLevels->setText(settings->zoomLevels());
 
+    ui->enableGroupingCheckBox->setChecked(settings->groupingEnabled());
+    ui->groupingPriorityWidget->setEnabled(settings->groupingEnabled());
+    ui->groupingExtensionPriorityEdit->setText(settings->groupingExtensionPriority());
+
     if(settings->defaultViewMode() == MODE_FOLDERVIEW)
         ui->startInFolderViewCheckBox->setChecked(true);
     else
@@ -254,6 +260,15 @@ void SettingsDialog::readSettings() {
 
     ui->JPEGQualitySlider->setValue(settings->JPEGSaveQuality());
     onJPEGQualitySliderChanged(ui->JPEGQualitySlider->value());
+
+#ifdef USE_TURBOJPEG
+    ui->losslessRotationCheckBox->setChecked(settings->losslessRotation());
+#else
+    ui->losslessRotationCheckBox->setChecked(false);
+    ui->losslessRotationCheckBox->setEnabled(false);
+    ui->losslessRotationCheckBox->setToolTip(tr("qimgv was built without libjpeg-turbo support, lossless rotation is unavailable."));
+#endif
+    onLosslessRotationToggled(ui->losslessRotationCheckBox->isChecked());
 
     ui->expandLimitSlider->setValue(settings->expandLimit());
     onExpandLimitSliderChanged(ui->expandLimitSlider->value());
@@ -298,6 +313,7 @@ void SettingsDialog::readSettings() {
     readColorScheme();
     readShortcuts();
     readScripts();
+    readExifFields();
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::saveSettings() {
@@ -391,6 +407,9 @@ void SettingsDialog::saveSettings() {
     settings->setUseFixedZoomLevels(ui->useFixedZoomLevelsCheckBox->isChecked());
     settings->setZoomLevels(ui->zoomLevels->text());
 
+    settings->setGroupingEnabled(ui->enableGroupingCheckBox->isChecked());
+    settings->setGroupingExtensionPriority(ui->groupingExtensionPriorityEdit->text());
+
     settings->setPanelPinned(ui->pinPanelCheckBox->isChecked());
     int panelPos = ui->panelPositionComboBox->currentIndex();
     settings->setPanelPosition(static_cast<PanelPosition>(panelPos));
@@ -398,6 +417,7 @@ void SettingsDialog::saveSettings() {
     settings->setPanelPreviewsSize(ui->panelSizeSlider->value() * 10);
 
     settings->setJPEGSaveQuality(ui->JPEGQualitySlider->value());
+    settings->setLosslessRotation(ui->losslessRotationCheckBox->isChecked());
     settings->setZoomStep(static_cast<qreal>(ui->zoomStepSlider->value() / 100.f));
     settings->setMouseScrollingSpeed(static_cast<qreal>(0.5f + (ui->mouseScrollingSpeedSlider->value() * 0.25f)));
     settings->setAutoResizeLimit(ui->autoResizeLimitSlider->value() * 5);
@@ -409,6 +429,7 @@ void SettingsDialog::saveSettings() {
 
     saveColorScheme();
     saveShortcuts();
+    saveExifFields();
 
     scriptManager->saveScripts();
     actionManager->saveShortcuts();
@@ -631,6 +652,70 @@ void SettingsDialog::resetShortcuts() {
     readShortcuts();
 }
 //------------------------------------------------------------------------------
+void SettingsDialog::readExifFields() {
+    ui->exifFieldsTableWidget->clearContents();
+    ui->exifFieldsTableWidget->setRowCount(0);
+    const auto fields = settings->exifFields();
+    for(const auto &field : fields)
+        addExifFieldToTable(field.first, field.second);
+}
+//------------------------------------------------------------------------------
+void SettingsDialog::addExifFieldToTable(const QString &key, bool enabled) {
+    QTableWidget *table = ui->exifFieldsTableWidget;
+    int row = table->rowCount();
+    table->setRowCount(row + 1);
+
+    QTableWidgetItem *checkItem = new QTableWidgetItem();
+    checkItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+    checkItem->setCheckState(enabled ? Qt::Checked : Qt::Unchecked);
+    checkItem->setTextAlignment(Qt::AlignCenter);
+    table->setItem(row, 0, checkItem);
+
+    QTableWidgetItem *nameItem = new QTableWidgetItem(DocumentInfo::exifFieldLabel(key));
+    nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsEditable);
+    nameItem->setData(Qt::UserRole, key);
+    table->setItem(row, 1, nameItem);
+}
+//------------------------------------------------------------------------------
+void SettingsDialog::saveExifFields() {
+    QVector<QPair<QString, bool>> fields;
+    QTableWidget *table = ui->exifFieldsTableWidget;
+    for(int row = 0; row < table->rowCount(); row++) {
+        QString key = table->item(row, 1)->data(Qt::UserRole).toString();
+        bool enabled = table->item(row, 0)->checkState() == Qt::Checked;
+        fields.append({key, enabled});
+    }
+    settings->setExifFields(fields);
+}
+//------------------------------------------------------------------------------
+void SettingsDialog::moveExifFieldUp() {
+    QTableWidget *table = ui->exifFieldsTableWidget;
+    int row = table->currentRow();
+    if(row <= 0)
+        return;
+    for(int col = 0; col < table->columnCount(); col++) {
+        QTableWidgetItem *above = table->takeItem(row - 1, col);
+        QTableWidgetItem *current = table->takeItem(row, col);
+        table->setItem(row - 1, col, current);
+        table->setItem(row, col, above);
+    }
+    table->setCurrentCell(row - 1, 1);
+}
+//------------------------------------------------------------------------------
+void SettingsDialog::moveExifFieldDown() {
+    QTableWidget *table = ui->exifFieldsTableWidget;
+    int row = table->currentRow();
+    if(row < 0 || row >= table->rowCount() - 1)
+        return;
+    for(int col = 0; col < table->columnCount(); col++) {
+        QTableWidgetItem *current = table->takeItem(row, col);
+        QTableWidgetItem *below = table->takeItem(row + 1, col);
+        table->setItem(row, col, below);
+        table->setItem(row + 1, col, current);
+    }
+    table->setCurrentCell(row + 1, 1);
+}
+//------------------------------------------------------------------------------
 void SettingsDialog::resetZoomLevels() {
     ui->zoomLevels->setText(settings->defaultZoomLevels());
 }
@@ -653,6 +738,12 @@ void SettingsDialog::onExpandLimitSliderChanged(int value) {
 //------------------------------------------------------------------------------
 void SettingsDialog::onJPEGQualitySliderChanged(int value) {
     ui->JPEGQualityLabel->setText(QString::number(value) + "%");
+}
+//------------------------------------------------------------------------------
+void SettingsDialog::onLosslessRotationToggled(bool checked) {
+    ui->JPEGQualitySlider->setEnabled(!checked);
+    ui->JPEGQualityLabel->setEnabled(!checked);
+    ui->label_3->setEnabled(!checked);
 }
 //------------------------------------------------------------------------------
 void SettingsDialog::onZoomStepSliderChanged(int value) {

@@ -46,6 +46,7 @@ struct CurrentInfo {
     int index;
     int fileCount;
     QString fileName;
+    QString groupNameSuffix;
     QString filePath;
     QString directoryName;
     QString directoryPath;
@@ -72,8 +73,20 @@ public:
     void showAnimation(std::shared_ptr<QMovie> movie);
     void showVideo(QString file);
 
-    void setCurrentInfo(int fileIndex, int fileCount, QString filePath, QString fileName, QSize imageSize, qint64 fileSize, bool slideshow, bool shuffle, bool edited);
-    void setExifInfo(QMap<QString, QString>);
+    // "inactive" is the pane without the focus frame; in split view the two
+    // panes hold unrelated images and are driven separately
+    void showImageInactive(std::unique_ptr<QPixmap> pixmap);
+    void showAnimationInactive(std::shared_ptr<QMovie> movie);
+    void showVideoInactive(QString file);
+    void closeImageInactive();
+    void onScalingFinishedInactive(std::unique_ptr<QPixmap> scaled);
+    void setExifInfoInactive(QVector<QPair<QString, QString>>);
+    void setSplitViewMode(SplitViewMode mode);
+    SplitViewMode splitViewMode();
+    int splitFocusIndex();
+
+    void setCurrentInfo(int fileIndex, int fileCount, QString filePath, QString fileName, QString groupNameSuffix, QSize imageSize, qint64 fileSize, bool slideshow, bool shuffle, bool edited);
+    void setExifInfo(QVector<QPair<QString, QString>>);
     std::shared_ptr<FolderViewProxy> getFolderView();
     std::shared_ptr<ThumbnailStripProxy> getThumbnailPanel();
 
@@ -83,7 +96,10 @@ public:
     DialogResult fileReplaceDialog(QString source, QString target, FileReplaceMode mode, bool multiple);
 
 private:
-    std::shared_ptr<ViewerWidget> viewerWidget;
+    std::shared_ptr<ViewerWidget> viewerWidget, viewerWidgetSecondary;
+    ViewerWidget *mActiveViewer;
+    SplitViewMode mSplitMode;
+    int mSplitFocus;
     QHBoxLayout layout;
     QTimer windowGeometryChangeTimer;
     int currentDisplay;
@@ -96,14 +112,14 @@ private:
     SidePanel *sidePanel;
     CropPanel *cropPanel;
     CropOverlay *cropOverlay;
-    SaveConfirmOverlay *saveOverlay;
+    SaveConfirmOverlay *saveOverlay[2];
     ChangelogWindow *changelogWindow;
 
     CopyOverlay *copyOverlay;
 
     RenameOverlay *renameOverlay;
 
-    ImageInfoOverlayProxy *imageInfoOverlay;
+    ImageInfoOverlayProxy *imageInfoOverlay, *imageInfoOverlaySecondary;
 
     ControlsOverlay *controlsOverlay;
     FullscreenInfoOverlayProxy *infoBarFullscreen;
@@ -112,6 +128,7 @@ private:
 
     PanelPosition panelPosition;
     CurrentInfo info;
+    QSize cropMcuSize;
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QDesktopWidget desktopWidget;
 #endif
@@ -127,10 +144,18 @@ private:
 
     void setupCropPanel();
     void setupCopyOverlay();
-    void setupSaveOverlay();
+    void setupSaveOverlay(int pane);
     void setupRenameOverlay();
     void preShowResize(QSize sz);
     void setInteractionEnabled(bool mode);
+
+    ViewerWidget *activeViewer();
+    ViewerWidget *inactiveViewer();
+    ImageInfoOverlayProxy *activeInfoOverlay();
+    ImageInfoOverlayProxy *inactiveInfoOverlay();
+    void updateActiveViewer();
+    void setViewerActionsConnected(ViewerWidget *w, bool connected);
+    void syncScroll(ViewerWidget *source, int dx, int dy, bool smooth);
 
 private slots:
     void updateCurrentDisplay();
@@ -155,7 +180,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void leaveEvent(QEvent *event);
 
-   // bool focusNextPrevChild(bool);
+    bool focusNextPrevChild(bool next);
 signals:
     void opened(QString);
     void fullscreenStateChanged(bool);
@@ -176,6 +201,8 @@ signals:
 
     // viewerWidget
     void scalingRequested(QSize, ScalingFilter);
+    void scalingRequestedInactive(QSize, ScalingFilter);
+    void splitFocusToggled();
     void zoomIn();
     void zoomOut();
     void zoomInCursor();
@@ -232,6 +259,7 @@ public slots:
     void close();
     void triggerCropPanel();
     void updateCropPanelData();
+    void setCropMcuSize(QSize size);
     void showSaveOverlay();
     void hideSaveOverlay();
     void showChangelogWindow();
@@ -254,4 +282,5 @@ public slots:
     void toggleLockZoom();
     void toggleLockView();
     void toggleFullscreenInfoBar();
+    void toggleSplitFocus();
 };

@@ -57,12 +57,16 @@ public:
     void enableDrags();
     void disableDrags();
 
+    // applies a scroll delta without reporting it back (used by split view sync)
+    void scrollRelative(int dx, int dy, bool smooth);
+
 signals:
     void scalingRequested(QSize, ScalingFilter);
     void scaleChanged(qreal);
     void sourceSizeChanged(QSize);
     void imageAreaChanged(QRect);
     void draggedOut();
+    void scrolled(int dx, int dy, bool smooth);
     void playbackFinished();
     void animationPaused(bool);
     void frameChanged(int);
@@ -154,6 +158,7 @@ private:
 
     bool dragsEnabled = true;
     bool wayland = false;
+    bool scrollSyncGuard = false;
 
     float zoomStep = 0.1, dpr;
     float minScale, maxScale, fitWindowScale, fitWindowStretchScale, expandLimit, lockedScale;
@@ -195,6 +200,9 @@ private:
     Qt::TransformationMode selectTransformationMode();
     void centerIfNecessary();
     void snapToEdges();
+    int pendingScrollPos(QScrollBar *bar, QTimeLine *timeLine) const;
+    QPoint pendingScrollPos() const;
+    int nextScrollPos(QScrollBar *bar, QTimeLine *timeLine, int delta) const;
     void scrollSmooth(int dx, int dy);
     void scrollPrecise(int dx, int dy);
     void updateFitWindowScale();

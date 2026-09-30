@@ -15,18 +15,43 @@
 #include "components/scriptmanager/scriptmanager.h"
 #include "gui/mainwindow.h"
 #include "utils/randomizer.h"
+#include "utils/filegrouping.h"
 #include "gui/dialogs/printdialog.h"
 
 #ifdef __GLIBC__
 #include <malloc.h>
 #endif
 
+// the scaler only remembers one pending request, so in split view we have to
+// keep track of what each pane asked for and re-issue whatever got dropped
+struct PendingScaleRequest {
+    bool pending = false;
+    QSize size;
+    ScalingFilter filter = QI_FILTER_BILINEAR;
+};
+
+/* Everything that belongs to a single pane. In split view the two panes browse
+ * independently, so each one carries its own copy and switching the focus is
+ * just a matter of pointing at the other one.
+ */
+struct PaneState {
+    bool hasImage = false;
+    QString filePath = "";
+    std::shared_ptr<Image> img;
+    PendingScaleRequest scaleRequest;
+
+    void clear() {
+        hasImage = false;
+        filePath = "";
+        img = nullptr;
+        scaleRequest.pending = false;
+    }
+};
+
+// state shared by both panes
 struct State {
-    bool hasActiveImage = false;
     bool delayModel = false;
-    QString currentFilePath = "";
     QString directoryPath = "";
-    std::shared_ptr<Image> currentImg;
 };
 
 enum MimeDataTarget {
@@ -59,6 +84,11 @@ private:
     MW *mw;
 
     State state;
+    PaneState panes[2];
+    // always point at the pane holding the focus frame and at the other one
+    PaneState *activePane, *inactivePane;
+    void setActivePane(int index);
+
     bool loopSlideshow, slideshow, shuffle;
     FolderEndAction folderEndAction;
 
@@ -81,6 +111,14 @@ private:
     void attachModel(DirectoryModel *_model);
     QString selectedPath();
     void guiSetImage(std::shared_ptr<Image> img);
+    void guiSetImageInactive(std::shared_ptr<Image> img);
+
+    SplitViewMode splitMode = SPLIT_NONE;
+    void setSplitViewMode(SplitViewMode mode);
+    void requestSplitViewMode(SplitViewMode mode);
+    void setGrouping(bool enabled);
+    void loadInactiveImage(const QString &path);
+    std::shared_ptr<Image> imageForScaling(const PaneState *pane) const;
     QTimer slideshowTimer;
 
     void startSlideshowTimer();
@@ -93,8 +131,21 @@ private:
     std::shared_ptr<ImageStatic> getEditableImage(const QString &filePath);
     QList<QString> currentSelection();
 
+    // `onEdited` gets the image and its size from before the edit was
+    // applied, so a crop can be recorded in the coordinates it was
+    // drawn in. Leave it empty for edits that can't be replayed as a
+    // JPEG transform - lossless tracking is then dropped.
     template<typename... Args>
-    void edit_template(bool save, QString actionName, const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& func, Args&&... as);
+    void edit_template(bool save, QString actionName,
+                        const std::function<QImage*(std::shared_ptr<const QImage>, Args...)>& func,
+                        const std::function<void(std::shared_ptr<ImageStatic>, QSize)>& onEdited,
+                        Args&&... as);
+
+    static bool isJpegPath(const QString &path);
+    bool losslessTrackingApplies(std::shared_ptr<ImageStatic> img);
+    void trackLosslessRotate(std::shared_ptr<ImageStatic> img, int degrees);
+    void trackLosslessFlip(std::shared_ptr<ImageStatic> img, bool horizontal);
+    void trackLosslessCrop(std::shared_ptr<ImageStatic> img, QRect rect, QSize sizeBeforeCrop);
 
     void doInteractiveCopy(QString path, QString destDirectory, DialogResult &overwriteAllFiles);
     void doInteractiveMove(QString path, QString destDirectory, DialogResult &overwriteAllFiles);
@@ -114,6 +165,12 @@ private slots:
     void rotateRight();
     void close();
     void scalingRequest(QSize, ScalingFilter);
+    void scalingRequestInactive(QSize, ScalingFilter);
+    void toggleSplitView();
+    void splitViewNone();
+    void splitViewHorizontal();
+    void splitViewVertical();
+    void onSplitFocusToggled();
     void onScalingFinished(QPixmap* scaled, ScalerRequest req);
     void copyCurrentFile(QString destDirectory);
     void moveCurrentFile(QString destDirectory);
@@ -157,6 +214,9 @@ private slots:
     void onDraggedOut(QList<QString> paths);
     void onDropIn(const QMimeData *mimeData, QObject* source);
     void toggleShuffle();
+    void toggleGrouping();
+    void groupingOn();
+    void groupingOff();
     void onModelLoaded();
     void outputError(const FileOpResult &error) const;
     void showOpenDialog();

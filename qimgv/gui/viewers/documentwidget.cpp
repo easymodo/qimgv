@@ -1,6 +1,6 @@
 #include "documentwidget.h"
 
-DocumentWidget::DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::shared_ptr<InfoBarProxy> infoBar, QWidget *parent)
+DocumentWidget::DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::shared_ptr<ViewerWidget> viewWidgetSecondary, std::shared_ptr<InfoBarProxy> infoBar, QWidget *parent)
     : FloatingWidgetContainer(parent),
       mainPanel(nullptr),
       mPanelPinned(false),
@@ -22,8 +22,18 @@ DocumentWidget::DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::sh
     setAttribute(Qt::WA_TranslucentBackground, true);
     setMouseTracking(true);
     mViewWidget = viewWidget;
-    mViewWidget->setParent(this);
-    layout->addWidget(mViewWidget.get());
+    mViewWidgetSecondary = viewWidgetSecondary;
+    // the two viewers live inside their own layout so that the main panel,
+    // which is inserted into `layout` at index 1, keeps its place
+    splitLayout = new QBoxLayout(QBoxLayout::LeftToRight);
+    splitLayout->setContentsMargins(0,0,0,0);
+    splitLayout->setSpacing(0);
+    paneMain = new SplitPane(mViewWidget.get(), this);
+    paneSecondary = new SplitPane(mViewWidgetSecondary.get(), this);
+    splitLayout->addWidget(paneMain, 1);
+    splitLayout->addWidget(paneSecondary, 1);
+    layout->addLayout(splitLayout);
+    paneSecondary->hide();
     mViewWidget.get()->show();
     mInfoBar = infoBar;
     mInfoBar->setParent(this);
@@ -41,6 +51,24 @@ DocumentWidget::DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::sh
 
 std::shared_ptr<ViewerWidget> DocumentWidget::viewWidget() {
     return mViewWidget;
+}
+
+std::shared_ptr<ViewerWidget> DocumentWidget::viewWidgetSecondary() {
+    return mViewWidgetSecondary;
+}
+
+void DocumentWidget::setSplitViewMode(SplitViewMode mode) {
+    bool split = (mode != SPLIT_NONE);
+    splitLayout->setDirection(mode == SPLIT_VERTICAL ? QBoxLayout::TopToBottom
+                                                     : QBoxLayout::LeftToRight);
+    paneMain->setFrameVisible(split);
+    paneSecondary->setFrameVisible(split);
+    paneSecondary->setVisible(split);
+}
+
+void DocumentWidget::setSplitFocus(int index) {
+    paneMain->setActive(index == 0);
+    paneSecondary->setActive(index == 1);
 }
 
 void DocumentWidget::readSettings() {

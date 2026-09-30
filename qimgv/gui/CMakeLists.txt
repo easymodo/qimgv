@@ -8,6 +8,7 @@ target_sources(qimgv PRIVATE
     mainwindow.cpp
 
     customwidgets/actionbutton.cpp
+    customwidgets/actionmenuitem.cpp
     customwidgets/clickablelabel.cpp
     customwidgets/contextmenuitem.cpp
     customwidgets/floatingwidget.cpp
@@ -66,6 +67,7 @@ target_sources(qimgv PRIVATE
     panels/infobar/infobarproxy.cpp
 
     viewers/documentwidget.cpp
+    viewers/splitpane.cpp
     viewers/imageviewerv2.cpp
     viewers/videoplayer.cpp
     viewers/videoplayerinitproxy.cpp

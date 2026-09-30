@@ -13,6 +13,7 @@ CopyOverlay::CopyOverlay(FloatingWidgetContainer *parent) :
     ui->headerIcon->setIconPath(":/res/icons/common/overlay/copy16.png");
     ui->headerLabel->setText(tr("Copy to..."));
     mode = OVERLAY_COPY;
+    folderSource = settings->savedPathsDiskMode() ? SOURCE_DISK : SOURCE_CONFIGURED;
 
     createShortcuts();
 
@@ -62,27 +63,105 @@ void CopyOverlay::removePathWidgets() {
     for(int i = 0; i < pathWidgets.count(); i++) {
         QWidget *tmp = pathWidgets.at(i);
         ui->pathSelectorsLayout->removeWidget(tmp);
-        delete tmp;
+        // deleteLater(): this may be called from inside one of these
+        // widgets' own click handler (e.g. via toggleFolderSource()),
+        // so deleting immediately would destroy a widget still on the stack
+        tmp->deleteLater();
     }
     pathWidgets.clear();
+    if(sourceToggleWidget) {
+        ui->pathSelectorsLayout->removeWidget(sourceToggleWidget);
+        sourceToggleWidget->deleteLater();
+        sourceToggleWidget = nullptr;
+    }
 }
 
 void CopyOverlay::createPathWidgets() {
     removePathWidgets();
-    int count = (paths.length() > maxPathCount) ? maxPathCount : paths.length();
+
+    // key "0": switches the list below between configured folders and
+    // subfolders of the current image's directory
+    sourceToggleWidget = new ActionMenuItem(this);
+    sourceToggleWidget->setIconPath(":/res/icons/common/menuitem/folderview16.png");
+    sourceToggleWidget->setShortcutText("0");
+    sourceToggleWidget->setText(folderSource == SOURCE_CONFIGURED ? tr("Disk folders") : tr("Configured folders"));
+    connect(sourceToggleWidget, &ActionMenuItem::activated, this, &CopyOverlay::toggleFolderSource);
+    ui->pathSelectorsLayout->addWidget(sourceToggleWidget);
+    // a widget added to an already-visible layout is not shown automatically,
+    // and an unshown widget is treated as empty (zero size) by the layout;
+    // only force this while already visible - explicitly hiding it here
+    // (i.e. while constructing, before the overlay is ever shown) would
+    // stick, since a parent's later show() does not override an explicit hide
+    if(!isHidden())
+        sourceToggleWidget->show();
+
+    const QStringList &activePaths = (folderSource == SOURCE_CONFIGURED) ? paths : diskPaths;
+    int count = (activePaths.length() > maxPathCount) ? maxPathCount : activePaths.length();
     for(int i = 0; i < count; i++) {
         PathSelectorMenuItem *item = new PathSelectorMenuItem(this);
-        item->setDirectory(paths.at(i));
+        item->setDirectory(activePaths.at(i));
         item->setShortcutText(shortcuts.key(i));
         connect(item, &PathSelectorMenuItem::directorySelected, this, &CopyOverlay::requestFileOperation);
         pathWidgets.append(item);
         ui->pathSelectorsLayout->addWidget(item);
+        if(!isHidden())
+            item->show();
     }
+
+    // row count may have changed (toggling source, or the current
+    // directory's subfolder count); force the cached sizeHint to be
+    // recomputed, then resize & reposition accordingly
+    ui->pathSelectorsLayout->invalidate();
+    if(layout())
+        layout()->invalidate();
+    recalculateGeometry();
 }
 
 void CopyOverlay::createShortcuts() {
     for(int i = 0; i < maxPathCount; i++)
         shortcuts.insert(QString::number(i + 1), i);
+}
+
+void CopyOverlay::toggleFolderSource() {
+    if(folderSource == SOURCE_CONFIGURED) {
+        // capture any in-place edits (folder icon -> pick new directory)
+        // made to the configured list before we replace the widgets
+        syncConfiguredPaths();
+        folderSource = SOURCE_DISK;
+        refreshDiskPaths();
+    } else {
+        folderSource = SOURCE_CONFIGURED;
+    }
+    settings->setSavedPathsDiskMode(folderSource == SOURCE_DISK);
+    createPathWidgets();
+}
+
+void CopyOverlay::syncConfiguredPaths() {
+    QStringList updated;
+    for(int i = 0; i < pathWidgets.count(); i++)
+        updated << pathWidgets.at(i)->directory();
+    paths = updated;
+}
+
+void CopyOverlay::refreshDiskPaths() {
+    diskPaths.clear();
+    if(currentDir.isEmpty())
+        return;
+    QDir dir(currentDir);
+    const auto entries = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+    for(const QFileInfo &fi : entries) {
+        if(diskPaths.count() >= maxPathCount)
+            break;
+        diskPaths << fi.absoluteFilePath();
+    }
+}
+
+void CopyOverlay::setCurrentDirectory(QString dir) {
+    currentDir = dir;
+    if(folderSource == SOURCE_DISK) {
+        refreshDiskPaths();
+        createPathWidgets();
+    }
 }
 
 void CopyOverlay::requestFileOperation(QString path) {
@@ -105,6 +184,11 @@ void CopyOverlay::readSettings() {
 // for some reason, duplicate folders may appear in the configuration
 // we remove duplicate directories
 void CopyOverlay::saveSettings() {
+    // the disk-listed folders are transient and not part of the user's
+    // configuration; any edits made while in configured mode were already
+    // captured into `paths` by syncConfiguredPaths() when switching away
+    if(folderSource != SOURCE_CONFIGURED)
+        return;
     paths.clear();
     QStringList temp;
     for(int i = 0; i< pathWidgets.count(); i++) {
@@ -167,7 +251,9 @@ bool CopyOverlay::focusNextPrevChild(bool mode) {
 void CopyOverlay::keyPressEvent(QKeyEvent *event) {
     event->accept();
     QString key = actionManager->keyForNativeScancode(event->nativeScanCode());
-    if(shortcuts.contains(key))
+    if(key == "0")
+        toggleFolderSource();
+    else if(shortcuts.contains(key) && shortcuts[key] < pathWidgets.count())
         requestFileOperation(pathWidgets.at(shortcuts[key])->directory());
     else
         actionManager->processEvent(event);

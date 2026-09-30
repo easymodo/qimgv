@@ -4,6 +4,7 @@
 #include <QBoxLayout>
 #include "gui/customwidgets/floatingwidgetcontainer.h"
 #include "gui/viewers/viewerwidget.h"
+#include "gui/viewers/splitpane.h"
 #include "gui/panels/mainpanel/mainpanel.h"
 #include "gui/panels/infobar/infobarproxy.h"
 
@@ -11,8 +12,11 @@
 
 class DocumentWidget : public FloatingWidgetContainer {
 public:
-    DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::shared_ptr<InfoBarProxy> infoBar, QWidget* parent = nullptr);
+    DocumentWidget(std::shared_ptr<ViewerWidget> viewWidget, std::shared_ptr<ViewerWidget> viewWidgetSecondary, std::shared_ptr<InfoBarProxy> infoBar, QWidget* parent = nullptr);
     std::shared_ptr<ViewerWidget> viewWidget();
+    std::shared_ptr<ViewerWidget> viewWidgetSecondary();
+    void setSplitViewMode(SplitViewMode mode);
+    void setSplitFocus(int index);
     std::shared_ptr<ThumbnailStripProxy> thumbPanel();
     void setFocus();
     void hideFloatingPanel();
@@ -37,8 +41,9 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
 
 private:
-    QBoxLayout *layout, *layoutRoot;
-    std::shared_ptr<ViewerWidget> mViewWidget;
+    QBoxLayout *layout, *layoutRoot, *splitLayout;
+    SplitPane *paneMain, *paneSecondary;
+    std::shared_ptr<ViewerWidget> mViewWidget, mViewWidgetSecondary;
     std::shared_ptr<InfoBarProxy> mInfoBar;
     std::shared_ptr<MainPanel> mainPanel;
     bool avoidPanelFlag, mPanelEnabled, mPanelFullscreenOnly, mIsFullscreen, mPanelPinned, mInteractionEnabled, mAllowPanelInit;

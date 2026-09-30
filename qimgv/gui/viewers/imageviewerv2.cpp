@@ -152,6 +152,16 @@ void ImageViewerV2::readSettings() {
     }
     // set bg color
     onFullscreenModeChanged(mIsFullscreen);
+    if(settings->imageReloadPending()) {
+        // the image on screen is on its way out: keep the new values, but don't re-apply
+        // them to it. Doing so also fires a scale request, and serving one for an image
+        // that has fallen out of the cache decodes the file again - seconds, for a raw.
+        // showImage() applies all of this to the replacement when it arrives.
+        mScalingFilter = settings->scalingFilter();
+        pixmapItem.setTransformationMode(selectTransformationMode());
+        imageFitMode = imageFitModeDefault;
+        return;
+    }
     updateMinScale();
     setScalingFilter(settings->scalingFilter());
     setFitMode(imageFitModeDefault);
@@ -608,7 +618,9 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
             zoomInCursor();
         else if(angleDelta < 0)
             zoomOutCursor();
-    } else if(event->modifiers() == Qt::NoModifier) {
+    } else if(event->modifiers() == Qt::NoModifier || event->modifiers() == Qt::ShiftModifier) {
+        // Shift scrolls just like no modifier does; in split view it also
+        // mirrors the scroll onto the other pane
         QPoint pixelDelta = event->pixelDelta();
         QPoint angleDelta = event->angleDelta();
         /* for reference
@@ -664,6 +676,9 @@ void ImageViewerV2::wheelEvent(QWheelEvent *event) {
                 vs->setValue(vs->value() - dy * TRACKPAD_SCROLL_MULTIPLIER);
                 centerIfNecessary();
                 snapToEdges();
+                if(!scrollSyncGuard)
+                    emit scrolled(qRound(-dx * TRACKPAD_SCROLL_MULTIPLIER),
+                                  qRound(-dy * TRACKPAD_SCROLL_MULTIPLIER), false);
             }
         } else if(isWheel && settings->imageScrolling() == SCROLL_BY_TRACKPAD_AND_WHEEL) {
             // scroll by interval
@@ -969,50 +984,77 @@ void ImageViewerV2::stopPosAnimation() {
 
 inline
 void ImageViewerV2::scroll(int dx, int dy, bool smooth) {
+    QPoint before = pendingScrollPos();
     if(smooth) {
         scrollSmooth(dx, dy);
     } else {
         scrollPrecise(dx, dy);
     }
+    /* Report how far we are actually going to travel, not the delta we were
+     * handed: an edge clamp or the direction-change shortcut in nextScrollPos()
+     * make the two differ, and the other pane has to end up alongside us either
+     * way.
+     */
+    if(!scrollSyncGuard) {
+        QPoint moved = pendingScrollPos() - before;
+        if(!moved.isNull())
+            emit scrolled(moved.x(), moved.y(), smooth);
+    }
+}
+
+// apply a scroll delta coming from another viewer; do not echo it back
+void ImageViewerV2::scrollRelative(int dx, int dy, bool smooth) {
+    if(!dx && !dy)
+        return;
+    bool wasGuarded = scrollSyncGuard;
+    scrollSyncGuard = true;
+    scroll(dx, dy, smooth);
+    scrollSyncGuard = wasGuarded;
+}
+
+// where a running scroll animation is headed; where we sit if there is none
+int ImageViewerV2::pendingScrollPos(QScrollBar *bar, QTimeLine *timeLine) const {
+    if(timeLine->state() == QTimeLine::Running)
+        return timeLine->endFrame();
+    return bar->value();
+}
+
+QPoint ImageViewerV2::pendingScrollPos() const {
+    return QPoint(pendingScrollPos(hs, scrollTimeLineX),
+                  pendingScrollPos(vs, scrollTimeLineY));
+}
+
+/* Where a fresh delta takes us. It normally stacks onto the destination of the
+ * scroll already under way, so quick repeats add up. When it reverses that
+ * direction we drop the pending remainder and start over from where we are
+ * right now, which is what keeps a direction change snappy.
+ *
+ * That shortcut is off while mirroring a scroll from the other split pane: the
+ * two animations are never quite in phase, so "where we are right now" is not
+ * the same place in both panes, and letting each of them decide for itself
+ * leaves the images offset for good - a little more on every reversal.
+ */
+int ImageViewerV2::nextScrollPos(QScrollBar *bar, QTimeLine *timeLine, int delta) const {
+    int pending = pendingScrollPos(bar, timeLine);
+    int current = bar->value();
+    bool reversing = (delta < 0 && current < pending) || (delta > 0 && current > pending);
+    int base = (reversing && !scrollSyncGuard) ? current : pending;
+    // clamped, otherwise the destination would keep running past the edge and
+    // the scrolls that follow would go into undoing that
+    return qBound(bar->minimum(), base + delta, bar->maximum());
 }
 
 void ImageViewerV2::scrollSmooth(int dx, int dy) {
     if(dx) {
-        bool redirect = false;
         int currentXPos = hs->value();
-        int newEndFrame = currentXPos + static_cast<int>(dx);
-        if( (newEndFrame < currentXPos && currentXPos < scrollTimeLineX->endFrame()) ||
-            (newEndFrame > currentXPos && currentXPos > scrollTimeLineX->endFrame()) )
-        {
-            redirect = true;
-        }
-        if(scrollTimeLineX->state() == QTimeLine::Running) {
-            int oldEndFrame = scrollTimeLineX->endFrame();
-            //if(oldEndFrame == currentYPos)
-            //    createScrollTimeLine();
-            if(!redirect)
-                newEndFrame = oldEndFrame + static_cast<int>(dx);
-        }
+        int newEndFrame = nextScrollPos(hs, scrollTimeLineX, dx);
         scrollTimeLineX->stop();
         scrollTimeLineX->setFrameRange(currentXPos, newEndFrame);
         scrollTimeLineX->start();
     }
     if(dy) {
-        bool redirect = false;
         int currentYPos = vs->value();
-        int newEndFrame = currentYPos + static_cast<int>(dy);
-        if( (newEndFrame < currentYPos && currentYPos < scrollTimeLineY->endFrame()) ||
-            (newEndFrame > currentYPos && currentYPos > scrollTimeLineY->endFrame()) )
-        {
-            redirect = true;
-        }
-        if(scrollTimeLineY->state() == QTimeLine::Running) {
-            int oldEndFrame = scrollTimeLineY->endFrame();
-            //if(oldEndFrame == currentYPos)
-            //    createScrollTimeLine();
-            if(!redirect)
-                newEndFrame = oldEndFrame + static_cast<int>(dy);
-        }
+        int newEndFrame = nextScrollPos(vs, scrollTimeLineY, dy);
         scrollTimeLineY->stop();
         scrollTimeLineY->setFrameRange(currentYPos, newEndFrame);
         scrollTimeLineY->start();
@@ -1029,22 +1071,24 @@ void ImageViewerV2::scrollPrecise(int dx, int dy) {
     saveViewportPos();
 }
 
-// used by scrollTimeLine
+/* Used by scrollTimeLine. These run from inside the timeline's frameChanged
+ * emission, so they must not spin a nested event loop: doing so delivers the
+ * next key press (think auto-repeat) in the middle of a timeline update, and
+ * the reentrant scrollSmooth() restarts the very timeline that is emitting.
+ * The two split panes then drift apart, as only one of them is reentered.
+ */
 void ImageViewerV2::scrollToX(int x) {
     hs->setValue(x);
     centerIfNecessary();
     snapToEdges();
     update();
-    qApp->processEvents();
 }
 
-// used by scrollTimeLine
 void ImageViewerV2::scrollToY(int y) {
     vs->setValue(y);
     centerIfNecessary();
     snapToEdges();
     update();
-    qApp->processEvents();
 }
 
 void ImageViewerV2::onScrollTimelineFinished() {

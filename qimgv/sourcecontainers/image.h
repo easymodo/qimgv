@@ -28,7 +28,7 @@ public:
     bool isEdited() const;
     qint64 fileSize() const;
     QDateTime lastModified() const;
-    QMap<QString, QString> getExifTags();
+    QVector<QPair<QString, QString>> getExifTags();
 
 protected:
     virtual void load() = 0;

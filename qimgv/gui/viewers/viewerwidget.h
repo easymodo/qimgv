@@ -34,6 +34,7 @@ public:
     bool lockZoomEnabled();
     bool lockViewEnabled();
     ScalingFilter scalingFilter();
+    void scrollRelative(int dx, int dy, bool smooth);
 
 private:
     QVBoxLayout layout;
@@ -81,6 +82,7 @@ signals:
     void fitWindowStretch();
     void toggleTransparencyGrid();
     void draggedOut();
+    void scrolled(int dx, int dy, bool smooth);
     void setFilterNearest();
     void setFilterBilinear();
     void setScalingFilter(ScalingFilter filter);

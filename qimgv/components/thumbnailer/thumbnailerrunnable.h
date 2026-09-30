@@ -16,10 +16,11 @@
 class ThumbnailerRunnable : public QObject, public QRunnable {
     Q_OBJECT
 public:
-    ThumbnailerRunnable(ThumbnailCache* _cache, QString _path, int _size, bool _crop, bool _force);
+    ThumbnailerRunnable(ThumbnailCache* _cache, QString _path, int _size, bool _crop, bool _force, QString _nameSuffix = QString());
     ~ThumbnailerRunnable();
     void run();
-    static std::shared_ptr<Thumbnail> generate(ThumbnailCache *cache, QString path, int size, bool crop, bool force);
+    // nameSuffix is appended to the displayed file name as-is (e.g. " + arw + xmp" for a grouped file)
+    static std::shared_ptr<Thumbnail> generate(ThumbnailCache *cache, QString path, int size, bool crop, bool force, QString nameSuffix = QString());
 private:
     static QString generateIdString(QString path, int size, bool crop);
     static std::pair<QImage*, QSize> createThumbnail(QString path, const char* format, int size, bool crop);
@@ -27,6 +28,7 @@ private:
     QString path;
     int size;
     bool crop, force;
+    QString nameSuffix;
     ThumbnailCache* cache = nullptr;
 
 signals:

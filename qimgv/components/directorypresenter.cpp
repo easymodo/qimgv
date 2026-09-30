@@ -181,8 +181,10 @@ void DirectoryPresenter::generateThumbnails(QList<int> indexes, int size, bool c
         return;
     thumbnailer.clearTasks();
     if(!mShowDirs) {
-        for(int i : indexes)
-            thumbnailer.getThumbnailAsync(model->filePathAt(i), size, crop, force);
+        for(int i : indexes) {
+            QString path = model->filePathAt(i);
+            thumbnailer.getThumbnailAsync(path, size, crop, force, model->groupNameSuffix(path));
+        }
         return;
     }
     for(int i : indexes) {
@@ -210,7 +212,7 @@ void DirectoryPresenter::generateThumbnails(QList<int> indexes, int size, bool c
             view->setThumbnail(i, thumb);
         } else {
             QString path = model->filePathAt(i - model->dirCount());
-            thumbnailer.getThumbnailAsync(path, size, crop, force);
+            thumbnailer.getThumbnailAsync(path, size, crop, force, model->groupNameSuffix(path));
         }
     }
 }

@@ -1,4 +1,5 @@
 #include "directorymodel.h"
+#include "sourcecontainers/imagestatic.h"
 
 DirectoryModel::DirectoryModel(QObject *parent) :
     QObject(parent),
@@ -89,6 +90,32 @@ bool DirectoryModel::containsDir(QString dirPath) const {
     return dirManager.containsDir(dirPath);
 }
 
+QVector<QString> DirectoryModel::groupedPaths(const QString &filePath) const {
+    return dirManager.groupedPaths(filePath);
+}
+
+// everything a grouped sibling's name has past the group's shared base name, so a
+// double-extended sidecar reads as its full tail ("jpg.xmp") rather than just "xmp"
+static QString groupExtensionTail(const QString &filePath, const QString &siblingPath) {
+    QString prefix = QFileInfo(filePath).completeBaseName() + ".";
+    QString siblingName = QFileInfo(siblingPath).fileName();
+    if(siblingName.startsWith(prefix))
+        return siblingName.mid(prefix.length());
+    return QFileInfo(siblingPath).suffix();
+}
+
+QString DirectoryModel::groupNameSuffix(const QString &filePath) const {
+    QVector<QString> group = groupedPaths(filePath);
+    if(group.size() <= 1)
+        return QString();
+    QStringList extras;
+    for(const QString &groupedPath : group) {
+        if(groupedPath != filePath)
+            extras << groupExtensionTail(filePath, groupedPath).toLower();
+    }
+    return " + " + extras.join(" + ");
+}
+
 bool DirectoryModel::isEmpty() const {
     return dirManager.isEmpty();
 }
@@ -124,6 +151,17 @@ void DirectoryModel::setSortingMode(SortingMode mode) {
 }
 
 void DirectoryModel::removeFile(const QString &filePath, bool trash, FileOpResult &result) {
+    // grouped siblings (if any) are removed first; the representative last, as usual
+    for(const QString &groupedPath : dirManager.groupedPaths(filePath)) {
+        if(groupedPath == filePath)
+            continue;
+        if(trash)
+            FileOperations::moveToTrash(groupedPath, result);
+        else
+            FileOperations::removeFile(groupedPath, result);
+        if(result != FileOpResult::SUCCESS)
+            return;
+    }
     if(trash)
         FileOperations::moveToTrash(filePath, result);
     else
@@ -135,6 +173,17 @@ void DirectoryModel::removeFile(const QString &filePath, bool trash, FileOpResul
 }
 
 void DirectoryModel::renameEntry(const QString &oldPath, const QString &newName, bool force, FileOpResult &result) {
+    // grouped siblings keep their own extension but take the new base name
+    QString newBaseName = QFileInfo(newName).completeBaseName();
+    for(const QString &groupedPath : dirManager.groupedPaths(oldPath)) {
+        if(groupedPath == oldPath)
+            continue;
+        QString siblingNewName = newBaseName + "." + groupExtensionTail(oldPath, groupedPath);
+        FileOperations::rename(groupedPath, siblingNewName, force, result);
+        qApp->processEvents();
+        if(result != FileOpResult::SUCCESS)
+            return;
+    }
     bool isDir = dirManager.isDir(oldPath);
     FileOperations::rename(oldPath, newName, force, result);
     // chew through watcher events so they wont be processed out of order
@@ -160,10 +209,25 @@ void DirectoryModel::removeDir(const QString &dirPath, bool trash, bool recursiv
 }
 
 void DirectoryModel::copyFileTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
+    for(const QString &groupedPath : dirManager.groupedPaths(srcFile)) {
+        if(groupedPath == srcFile)
+            continue;
+        FileOperations::copyFileTo(groupedPath, destDirPath, force, result);
+        if(result != FileOpResult::SUCCESS)
+            return;
+    }
     FileOperations::copyFileTo(srcFile, destDirPath, force, result);
 }
 
 void DirectoryModel::moveFileTo(const QString &srcFile, const QString &destDirPath, bool force, FileOpResult &result) {
+    for(const QString &groupedPath : dirManager.groupedPaths(srcFile)) {
+        if(groupedPath == srcFile)
+            continue;
+        FileOperations::moveFileTo(groupedPath, destDirPath, force, result);
+        qApp->processEvents();
+        if(result != FileOpResult::SUCCESS)
+            return;
+    }
     FileOperations::moveFileTo(srcFile, destDirPath, force, result);
     // chew through watcher events so they wont be processed out of order
     qApp->processEvents();
@@ -220,6 +284,31 @@ bool DirectoryModel::saveFile(const QString &filePath, const QString &destPath) 
         return false;
     auto img = cache.get(filePath);
     if(img->save(destPath)) {
+        if(filePath == destPath) { // replace
+            dirManager.updateFileEntry(destPath);
+            emit fileModified(destPath);
+        } else { // manually add if we are saving to the same dir
+            QFileInfo fiSrc(filePath);
+            QFileInfo fiDest(destPath);
+            // handle same dir
+            if(fiSrc.absolutePath() == fiDest.absolutePath()) {
+                // overwrite
+                if(!dirManager.containsFile(destPath) && dirManager.insertFileEntry(destPath))
+                    emit fileModified(destPath);
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+bool DirectoryModel::saveFileLossless(const QString &filePath, const QString &destPath, const QByteArray &jpegBytes) {
+    if(!containsFile(filePath) || !cache.contains(filePath))
+        return false;
+    auto img = std::dynamic_pointer_cast<ImageStatic>(cache.get(filePath));
+    if(!img)
+        return false;
+    if(img->saveLosslessBytes(destPath, jpegBytes)) {
         if(filePath == destPath) { // replace
             dirManager.updateFileEntry(destPath);
             emit fileModified(destPath);

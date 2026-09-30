@@ -69,9 +69,13 @@ public:
 
     bool saveFile(const QString &filePath);
     bool saveFile(const QString &filePath, const QString &destPath);
+    bool saveFileLossless(const QString &filePath, const QString &destPath, const QByteArray &jpegBytes);
 
     bool containsDir(QString dirPath) const;
     FileListSource source();
+    QVector<QString> groupedPaths(const QString &filePath) const;
+    // for a grouped file, e.g. " + arw + xmp"; empty string otherwise
+    QString groupNameSuffix(const QString &filePath) const;
 signals:
     void fileRemoved(QString filePath, int index);
     void fileRenamed(QString fromPath, int indexFrom, QString toPath, int indexTo);

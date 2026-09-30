@@ -91,5 +91,13 @@ void Actions::init() {
     mActions.insert("print", QVersionNumber(1,0,0));
     mActions.insert("toggleFullscreenInfoBar", QVersionNumber(1,0,0));
     mActions.insert("pasteFile", QVersionNumber(1,0,3));
+    mActions.insert("splitView", QVersionNumber(1,0,4));
+    mActions.insert("splitViewSwitchFocus", QVersionNumber(1,0,4));
+    mActions.insert("toggleGrouping", QVersionNumber(1,0,5));
+    mActions.insert("splitViewNone", QVersionNumber(1,0,6));
+    mActions.insert("splitViewHorizontal", QVersionNumber(1,0,6));
+    mActions.insert("splitViewVertical", QVersionNumber(1,0,6));
+    mActions.insert("groupingOn", QVersionNumber(1,0,6));
+    mActions.insert("groupingOff", QVersionNumber(1,0,6));
 }
 

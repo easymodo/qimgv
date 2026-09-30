@@ -60,14 +60,21 @@ bool Cache::release(QString path) {
     return false;
 }
 
-// removes all items except the ones in list
+/* Removes all items except the ones in list.
+ * Images carrying unsaved edits are kept regardless: dropping one would make
+ * the next load read the untouched file back from disk, silently throwing the
+ * user's work away.
+ */
 void Cache::trimTo(QStringList pathList) {
     for(auto path : items.keys()) {
-        if(!pathList.contains(path)) {
-            items[path]->lock();
-            auto *item = items.take(path);
-            delete item;
-        }
+        if(pathList.contains(path))
+            continue;
+        auto contents = items[path]->getContents();
+        if(contents && contents->isEdited())
+            continue;
+        items[path]->lock();
+        auto *item = items.take(path);
+        delete item;
     }
 }
 

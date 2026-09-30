@@ -64,6 +64,81 @@ void CropOverlay::setImageScale(float scale) {
 }
 
 //------------------------------------------------------------------------------
+void CropOverlay::setMcuSize(QSize size) {
+    mcuSize = size;
+}
+
+//------------------------------------------------------------------------------
+// A lossless crop has to line up with the JPEG's MCU grid, and that
+// constrains all four edges, not just where the selection starts:
+// trimming the right/bottom edges away is free in JPEG, but only as
+// long as they stay right/bottom - a later rotation or flip turns them
+// into top/left edges, which do have to sit on a grid line. So the
+// selection's size is snapped to whole blocks too, which is what keeps
+// "crop, then rotate" lossless. (See LosslessJpegTransform.)
+//
+// Snapping happens once, when the mouse is released: dragging itself
+// stays completely free. Snapping mid-drag doesn't work here, because
+// each mouse move applies an incremental delta to the current rectangle
+// - pulling an edge back onto a grid line every time makes it stick
+// there until a single mouse move jumps clear of it.
+//
+// All of this is skipped when mcuSize is unset (not a JPEG, or lossless
+// rotation turned off).
+
+static int nearestMultiple(int value, int step) {
+    if(step <= 0 || value <= 0)
+        return qMax(value, 0);
+    return ((value + step / 2) / step) * step;
+}
+
+// Nearest grid line the origin can sit on with the selection this size
+// and still fit in the image.
+static int nearestMultipleThatFits(int origin, int extent, int available, int step) {
+    int lastFitting = ((available - extent) / step) * step;
+    if(lastFitting < 0)
+        return 0;
+    return qBound(0, nearestMultiple(origin, step), lastFitting);
+}
+
+// Snaps the selection onto the MCU grid. When `keepSize` is set the
+// whole rectangle just slides over (for a selection that was dragged
+// around, and whose size is already snapped); otherwise each of the four
+// edges moves to its own nearest grid line - which can make the
+// selection a little bigger or a little smaller - so the selection also
+// changes size (for one that was just drawn or resized).
+void CropOverlay::alignSelectionOriginToMcuGrid(bool keepSize) {
+    if(mcuSize.isEmpty())
+        return;
+    if(keepSize) {
+        selectionRect.moveTo(nearestMultipleThatFits(selectionRect.left(), selectionRect.width(),
+                                                      imageRect.width(), mcuSize.width()),
+                              nearestMultipleThatFits(selectionRect.top(), selectionRect.height(),
+                                                      imageRect.height(), mcuSize.height()));
+        return;
+    }
+    if(lockAspectRatio) // can't honour both the ratio and the grid
+        return;
+    if(imageRect.width() < mcuSize.width() || imageRect.height() < mcuSize.height())
+        return; // image smaller than a single block, nothing to snap to
+    // last grid line that still fits in the image: an image whose own
+    // dimensions aren't a whole number of blocks has a leftover strip at
+    // the right/bottom that a lossless crop can't include
+    int lastX = (imageRect.width()  / mcuSize.width())  * mcuSize.width();
+    int lastY = (imageRect.height() / mcuSize.height()) * mcuSize.height();
+    // QRect::right() is inclusive, so work with the exclusive edges
+    int left   = qMin(nearestMultiple(selectionRect.left(), mcuSize.width()), lastX - mcuSize.width());
+    int top    = qMin(nearestMultiple(selectionRect.top(), mcuSize.height()), lastY - mcuSize.height());
+    int right  = qBound(left + mcuSize.width(),
+                         nearestMultiple(selectionRect.left() + selectionRect.width(), mcuSize.width()),
+                         lastX);
+    int bottom = qBound(top + mcuSize.height(),
+                         nearestMultiple(selectionRect.top() + selectionRect.height(), mcuSize.height()),
+                         lastY);
+    selectionRect = QRect(left, top, right - left, bottom - top);
+}
+
+//------------------------------------------------------------------------------
 void CropOverlay::clearSelection() {
     if(hasSelection()) {
         startPos = QPoint(0,0);
@@ -524,8 +599,16 @@ void CropOverlay::mouseMoveEvent(QMouseEvent *event) {
 //------------------------------------------------------------------------------
 void CropOverlay::mouseReleaseEvent(QMouseEvent *event) {
     // user just clicked without moving the mouse, clear
-    if(cursorAction == SELECTION_START)
+    if(cursorAction == SELECTION_START) {
         clearSelection();
+    } else if(cursorAction != NO_DRAG && hasSelection()) {
+        // the selection was drawn, resized or moved freely; now put its
+        // origin on the MCU grid so the crop can be applied losslessly
+        alignSelectionOriginToMcuGrid(cursorAction == DRAG_MOVE);
+        updateSelectionDrawRect();
+        updateHandlePositions();
+        emit selectionChanged(selectionRect);
+    }
     cursorAction = NO_DRAG;
     setCursorAction(hoverTarget(event->pos() * dpr));
     update();

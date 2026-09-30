@@ -16,41 +16,75 @@ ContextMenu::ContextMenu(QWidget *parent) :
     // top zoom buttons
     ui->zoomIn->setAction("zoomIn");
     ui->zoomIn->setIconPath(":/res/icons/common/buttons/contextmenu/zoom-in18.png");
+    ui->zoomIn->setToolTip(tr("Zoom in"));
     ui->zoomIn->setTriggerMode(TriggerMode::PressTrigger);
     ui->zoomOut->setAction("zoomOut");
     ui->zoomOut->setIconPath(":/res/icons/common/buttons/contextmenu/zoom-out18.png");
+    ui->zoomOut->setToolTip(tr("Zoom out"));
     ui->zoomOut->setTriggerMode(TriggerMode::PressTrigger);
     ui->zoomOriginal->setAction("fitNormal");
     ui->zoomOriginal->setIconPath(":/res/icons/common/buttons/contextmenu/zoom-original18.png");
+    ui->zoomOriginal->setToolTip(tr("Original size"));
     ui->zoomOriginal->setTriggerMode(TriggerMode::PressTrigger);
     ui->fitWidth->setAction("fitWidth");
     ui->fitWidth->setIconPath(":/res/icons/common/buttons/contextmenu/fit-width18.png");
+    ui->fitWidth->setToolTip(tr("Fit width"));
     ui->fitWidth->setTriggerMode(TriggerMode::PressTrigger);
     ui->fitWindow->setAction("fitWindow");
     ui->fitWindow->setIconPath(":/res/icons/common/buttons/contextmenu/fit-window18.png");
+    ui->fitWindow->setToolTip(tr("Fit to window"));
     ui->fitWindow->setTriggerMode(TriggerMode::PressTrigger);
     ui->fitWindowStretch->setAction("fitWindowStretch");
     ui->fitWindowStretch->setIconPath(":/res/icons/common/buttons/contextmenu/fit-height-stretch18.png");
+    ui->fitWindowStretch->setToolTip(tr("Fit to window (stretch)"));
     ui->fitWindowStretch->setTriggerMode(TriggerMode::PressTrigger);
+    // -------------------------------------------------------------------------
+    // split view & grouping buttons
+    ui->splitNone->setAction("splitViewNone");
+    ui->splitNone->setIconPath(":/res/icons/common/buttons/contextmenu/split-none18.png");
+    ui->splitNone->setToolTip(tr("Single image"));
+    ui->splitNone->setTriggerMode(TriggerMode::PressTrigger);
+    ui->splitHorizontal->setAction("splitViewHorizontal");
+    ui->splitHorizontal->setIconPath(":/res/icons/common/buttons/contextmenu/split-horizontal18.png");
+    ui->splitHorizontal->setToolTip(tr("Split view: side by side"));
+    ui->splitHorizontal->setTriggerMode(TriggerMode::PressTrigger);
+    ui->splitVertical->setAction("splitViewVertical");
+    ui->splitVertical->setIconPath(":/res/icons/common/buttons/contextmenu/split-vertical18.png");
+    ui->splitVertical->setToolTip(tr("Split view: stacked"));
+    ui->splitVertical->setTriggerMode(TriggerMode::PressTrigger);
+    ui->groupingOn->setAction("groupingOn");
+    ui->groupingOn->setIconPath(":/res/icons/common/buttons/contextmenu/grouping-on18.png");
+    ui->groupingOn->setToolTip(tr("Grouping: ON"));
+    ui->groupingOn->setTriggerMode(TriggerMode::PressTrigger);
+    ui->groupingOff->setAction("groupingOff");
+    ui->groupingOff->setIconPath(":/res/icons/common/buttons/contextmenu/grouping-off18.png");
+    ui->groupingOff->setToolTip(tr("Grouping: OFF"));
+    ui->groupingOff->setTriggerMode(TriggerMode::PressTrigger);
     // -------------------------------------------------------------------------
     // transform buttons
     ui->rotateLeft->setAction("rotateLeft");
     ui->rotateLeft->setIconPath(":/res/icons/common/menuitem/rotate-left16.png");
+    ui->rotateLeft->setToolTip(tr("Rotate left"));
     ui->rotateLeft->setTriggerMode(TriggerMode::PressTrigger);
     ui->rotateRight->setAction("rotateRight");
     ui->rotateRight->setIconPath(":/res/icons/common/menuitem/rotate-right16.png");
+    ui->rotateRight->setToolTip(tr("Rotate right"));
     ui->rotateRight->setTriggerMode(TriggerMode::PressTrigger);
     ui->flipH->setAction("flipH");
     ui->flipH->setIconPath(":/res/icons/common/menuitem/flip-h16.png");
+    ui->flipH->setToolTip(tr("Flip horizontally"));
     ui->flipH->setTriggerMode(TriggerMode::PressTrigger);
     ui->flipV->setAction("flipV");
     ui->flipV->setIconPath(":/res/icons/common/menuitem/flip-v16.png");
+    ui->flipV->setToolTip(tr("Flip vertically"));
     ui->flipV->setTriggerMode(TriggerMode::PressTrigger);
     ui->crop->setAction("crop");
     ui->crop->setIconPath(":/res/icons/common/menuitem/image-crop16.png");
+    ui->crop->setToolTip(tr("Crop"));
     ui->crop->setTriggerMode(TriggerMode::PressTrigger);
     ui->resize->setAction("resize");
     ui->resize->setIconPath(":/res/icons/common/menuitem/resize16.png");
+    ui->resize->setToolTip(tr("Resize"));
     ui->resize->setTriggerMode(TriggerMode::PressTrigger);
     // -------------------------------------------------------------------------
     //  entries

@@ -14,6 +14,8 @@ class EntryInfoItem : public QWidget
 public:
     explicit EntryInfoItem(QWidget *parent = nullptr);
     void setInfo(QString _name, QString _value);
+    void setNameColumnWidth(int width);
+    int nameWidthHint() const;
 
 protected:
     void paintEvent(QPaintEvent *event);

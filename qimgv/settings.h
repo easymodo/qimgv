@@ -12,6 +12,8 @@
 #include <QDir>
 #include <QKeySequence>
 #include <QMap>
+#include <QPair>
+#include <QVector>
 #include <QFont>
 #include <QFontMetrics>
 #include <QVersionNumber>
@@ -79,6 +81,12 @@ enum ViewMode {
     MODE_FOLDERVIEW
 };
 
+enum SplitViewMode {
+    SPLIT_NONE,
+    SPLIT_HORIZONTAL, // two panes, side by side
+    SPLIT_VERTICAL    // two panes, one above the other
+};
+
 enum FolderEndAction {
     FOLDER_END_NO_ACTION,
     FOLDER_END_LOOP,
@@ -129,6 +137,9 @@ public:
     void setLoopSlideshow(bool mode);
     void readShortcuts(QMap<QString, QString> &shortcuts);
     void saveShortcuts(const QMap<QString, QString> &shortcuts);
+    // ordered list of (exif tag key, enabled) pairs; always contains every known key
+    QVector<QPair<QString, bool>> exifFields();
+    void setExifFields(const QVector<QPair<QString, bool>> &fields);
     bool panelEnabled();
     void setPanelEnabled(bool mode);
     int lastDisplay();
@@ -143,6 +154,9 @@ public:
     void setUseThumbnailCache(bool mode);
     QStringList savedPaths();
     void setSavedPaths(QStringList paths);
+    // whether the quick copy/move panel last showed configured folders or disk folders
+    bool savedPathsDiskMode();
+    void setSavedPathsDiskMode(bool mode);
     QString tmpDir();
     int thumbnailerThreadCount();
     void setThumbnailerThreadCount(int count);
@@ -199,6 +213,8 @@ public:
     void setZoomStep(float value);
     int JPEGSaveQuality();
     void setJPEGSaveQuality(int value);
+    bool losslessRotation();
+    void setLosslessRotation(bool mode);
     void setZoomIndicatorMode(ZoomIndicatorMode mode);
     ZoomIndicatorMode zoomIndicatorMode();
     void setFocusPointIn1to1Mode(ImageFocusPoint mode);
@@ -310,11 +326,28 @@ public:
     bool showHiddenFiles();
     void setShowHiddenFiles(bool mode);
 
+    bool groupingEnabled();
+    void setGroupingEnabled(bool mode);
+    QString defaultGroupingExtensionPriority();
+    QString groupingExtensionPriority();
+    void setGroupingExtensionPriority(QString priority);
+    // parsed, trimmed, lowercased extensions from groupingExtensionPriority(), in order
+    QStringList groupingExtensionPriorityList();
+
+    /* Set around a settingsChanged() broadcast that is known to be followed by different
+     * images being loaded into the panes. Components that would re-apply the new settings
+     * to the image currently on screen can skip that work: it is about to be thrown away,
+     * and the replacement applies everything on arrival. Transient, never persisted.
+     */
+    bool imageReloadPending() const;
+    void setImageReloadPending(bool mode);
+
 private:
     explicit Settings(QObject *parent = nullptr);
     QSettings *settingsConf, *stateConf, *themeConf;
     QDir *mTmpDir, *mThumbCacheDir, *mConfDir;
     ColorScheme mColorScheme;
+    bool mImageReloadPending = false;
     QMultiMap<QByteArray, QByteArray> mVideoFormatsMap; // [mimetype, format]
     void loadTheme();
     void saveTheme();
