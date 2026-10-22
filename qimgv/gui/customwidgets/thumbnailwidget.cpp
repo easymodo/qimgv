@@ -28,11 +28,25 @@ ThumbnailWidget::ThumbnailWidget(QGraphicsItem *parent) :
 void ThumbnailWidget::updateDpr(qreal newDpr) {
     if(dpr != newDpr) {
         dpr = newDpr;
-        if(trunc(dpr) == dpr) // don't enable for fractional scaling
-            setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+        refreshCacheMode();
         updateThumbnailDrawPosition();
         updateBackgroundRect();
     }
+}
+
+/// Re-applies the device coordinate cache once the current paint pass is over.
+/// setCacheMode() purges the item cache, and calling it from inside paint()
+/// frees the device cache entry the scene is drawing into, which crashes.
+void ThumbnailWidget::refreshCacheMode() {
+    if(trunc(dpr) != dpr) // don't enable for fractional scaling
+        return;
+    QMetaObject::invokeMethod(this, [this] {
+        if(trunc(dpr) != dpr)
+            return;
+        setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+        // re-setting the mode only purges the cache, it does not repaint
+        update();
+    }, Qt::QueuedConnection);
 }
 
 void ThumbnailWidget::setThumbnailSize(int size) {

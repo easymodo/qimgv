@@ -74,6 +74,7 @@ protected:
     void updateBackgroundRect();
     void updateThumbnailDrawPosition();
     void updateDpr(qreal newDpr);
+    void refreshCacheMode();
 
     std::shared_ptr<Thumbnail> thumbnail;
     bool highlighted, hovered, dropHovered;
